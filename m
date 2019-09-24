@@ -2,74 +2,74 @@ Return-Path: <SRS0=SJ4a=XT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A08BEC432C2
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 13:54:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2D27C432C1
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 14:08:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C07F214DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 13:54:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B049921655
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 14:08:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l0J7bd7a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C07F214DA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UStC5rj4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B049921655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 499E31694;
-	Tue, 24 Sep 2019 15:53:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 499E31694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8936E1693;
+	Tue, 24 Sep 2019 16:07:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8936E1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569333255;
-	bh=nbg7nw4Q1mNdXIPDluFhHnumA5lCmC1hc4rb7HIku4A=;
+	s=default; t=1569334124;
+	bh=T3uhN0PJlxDOJs+H/DJgFrykd7KPCe+cX7yB7aOHqK0=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l0J7bd7ae9wdInmqEg1toDADGsV4LQhm5eK97wFlXsN0HLkX7Sd5BC2F/oVLCG8ci
-	 UHwHefRPbOScesUC+VfxVsV7/tCRyDOlUEBx0xIu52bc57SKF1uSfYz4HeoBwtv8ue
-	 4PpgtAZBHUCKMUE07hHGdELZA6/c0vjAK1U61/Jk=
+	b=UStC5rj4P2L7Relq0R1noBhWHf/UHyLNi8u1jneYdfaEzNHEOhwNellSWFRcEFPuL
+	 YvEyDfmysAsVGBcu5iKyeS8ZVqekAgQ+UL6EeJcaQlDN5fL3Ri/tjdznwbHYSn7BRh
+	 ipzwdVr8TdXFlG9SZ+ifxT2BvNnIR5u+8BmVIQ8o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBF2FF8048D;
-	Tue, 24 Sep 2019 15:52:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10325F803F4;
+	Tue, 24 Sep 2019 16:07:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23629F80213; Tue, 24 Sep 2019 15:52:50 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id DD0C4F8045F; Tue, 24 Sep 2019 16:07:52 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0C4DF80213
- for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2019 15:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0C4DF80213
+ by alsa1.perex.cz (Postfix) with ESMTPS id D14F6F800B4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2019 16:07:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D14F6F800B4
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Sep 2019 06:52:45 -0700
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 24 Sep 2019 07:07:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,544,1559545200"; d="scan'208";a="389865974"
-Received: from conradji-mobl.amr.corp.intel.com (HELO [10.255.94.212])
- ([10.255.94.212])
- by fmsmga006.fm.intel.com with ESMTP; 24 Sep 2019 06:52:45 -0700
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, sathya.prakash.m.r@intel.com
-References: <1569312546-16393-1-git-send-email-sathya.prakash.m.r@intel.com>
- <1569312546-16393-2-git-send-email-sathya.prakash.m.r@intel.com>
- <20190924110700.2897cc18@xxx>
+X-IronPort-AV: E=Sophos;i="5.64,544,1559545200"; d="scan'208";a="195704658"
+Received: from kmohamme-mobl.amr.corp.intel.com (HELO [10.254.185.205])
+ ([10.254.185.205])
+ by FMSMGA003.fm.intel.com with ESMTP; 24 Sep 2019 07:07:45 -0700
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, broonie@kernel.org,
+ lgirdwood@gmail.com
+References: <20190924114146.8116-1-peter.ujfalusi@ti.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <01929cf2-6bae-8099-e432-d76286ab0114@linux.intel.com>
-Date: Tue, 24 Sep 2019 08:52:44 -0500
+Message-ID: <ca102437-80e2-9e17-c40e-c50f2ac8e6d5@linux.intel.com>
+Date: Tue, 24 Sep 2019 09:07:45 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190924110700.2897cc18@xxx>
+In-Reply-To: <20190924114146.8116-1-peter.ujfalusi@ti.com>
 Content-Language: en-US
-Cc: naveen.m@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: Intel: boards: Add CML m/c using
- RT1011 and RT5682
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com
+Subject: Re: [alsa-devel] [RFC] ASoC: soc-pcm: Use different sequence for
+ start/stop trigger
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,37 +89,178 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
->> +static const struct snd_soc_dapm_route cml_rt1011_rt5682_map[] = {
->> +	/*speaker*/
->> +	{"TL Ext Spk", NULL, "TL SPO"},
->> +	{"TR Ext Spk", NULL, "TR SPO"},
->> +	{"WL Ext Spk", NULL, "WL SPO"},
->> +	{"WR Ext Spk", NULL, "WR SPO"},
->> +
->> +	/* HP jack connectors - unknown if we have jack detection */
->> +	{ "Headphone Jack", NULL, "HPOL" },
->> +	{ "Headphone Jack", NULL, "HPOR" },
->> +
->> +	/* other jacks */
->> +	{ "IN1P", NULL, "Headset Mic" },
->> +
->> +	/* DMIC */
->> +	{"DMic", NULL, "SoC DMIC"},
+On 9/24/19 6:41 AM, Peter Ujfalusi wrote:
+> On stream stop currently we stop the DMA first followed by the CPU DAI.
+> This can cause underflow (playback) or overflow (capture) on the DAI side
+> as the DMA is no longer feeding data while the DAI is still active.
+> It can be observed easily if the DAI side does not have FIFO (or it is
+> disabled) to survive the time while the DMA is stopped, but still can
+> happen on relatively slow CPUs when relatively high sampling rate is used:
+> the FIFO is drained between the time the DMA is stopped and the DAI is
+> stopped.
 > 
-> There is some inconsistent spacing around the braces.
-
-Indeed, thanks for spotting this. checkpatch did not complain in the 
-previous reviews.
-
->> +	for (i = 0; i < rtd->num_codecs; i++) {
->> +		codec_dai = rtd->codec_dais[i];
+> It can only fixed by using different sequence within trigger for 'stop' and
+> 'start':
+> case SNDRV_PCM_TRIGGER_START:
+> case SNDRV_PCM_TRIGGER_RESUME:
+> case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> 	Start DMA first followed by CPU DAI (currently used sequence)
 > 
-> This looks like candidate for for_each_rtd_codec_dai macro
+> case SNDRV_PCM_TRIGGER_STOP:
+> case SNDRV_PCM_TRIGGER_SUSPEND:
+> case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> 	Stop CPU DAI first followed by DMA
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+> Hi,
+> 
+> on a new TI platform (j721e) where we can disable the McASP FIFO (the CPU dai)
+> since the UDMA + PDMA provides the buffering I have started to see error
+> interrupts right after pcm_trigger:STOP and in rare cases even on PAUSE that
+> McASP underruns.
+> I was also able to reproduce the same issue on am335x board, but it is much
+> harder to trigger it.
+> 
+> With this patch the underrun after trigger:STOP is gone.
+> 
+> If I think about the issue, I'm not sure why it was not noticed before as the
+> behavior makes sense:
+> we stop the DMA first then we stop the CPU DAI. If between the DMA stop and DAI
+> stop we would need a sample in the DAI (which is still running) then for sure we
+> will underrun in the HW (or overrun in case of capture).
+> 
+> When I run the ALSA conformance test [1] it is easier to trigger.
+> 
+> Not sure if anyone else have seen such underrun/overrun when stopping a stream,
+> but the fact that I have seen it with both UDMA+PDMA and EDMA on different
+> platforms makes me wonder if the issue can be seen on other platforms as well.
+> 
+> [1] https://chromium.googlesource.com/chromiumos/platform/audiotest/+/master/alsa_conformance_test.md
 
+This is interesting, we had a similar issue for SOF on HDaudio platforms 
+with underruns on stop [1], which we fixed 'locally' with a change 
+between IPC and DMA stop.
 
-Good suggestion.
+I'll ask our CI/QA folks to check if this patch improves the results 
+further.
 
-Sathya P, can you update this patch and send a v2? Thanks!
+[1] https://github.com/thesofproject/linux/pull/1169/commits
+
+> 
+> Regards,
+> Peter
+> ---
+>   sound/soc/soc-pcm.c | 66 ++++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 62 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index e163dde5eab1..c96430e70752 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -1047,7 +1047,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+>   	return 0;
+>   }
+>   
+> -static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+> +static int soc_pcm_trigger_start(struct snd_pcm_substream *substream, int cmd)
+>   {
+>   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>   	struct snd_soc_component *component;
+> @@ -1056,24 +1056,60 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+>   	struct snd_soc_dai *codec_dai;
+>   	int i, ret;
+>   
+> +	for_each_rtdcom(rtd, rtdcom) {
+> +		component = rtdcom->component;
+> +
+> +		ret = snd_soc_component_trigger(component, substream, cmd);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+>   	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+>   		ret = snd_soc_dai_trigger(codec_dai, substream, cmd);
+>   		if (ret < 0)
+>   			return ret;
+>   	}
+>   
+> -	for_each_rtdcom(rtd, rtdcom) {
+> -		component = rtdcom->component;
+> +	snd_soc_dai_trigger(cpu_dai, substream, cmd);
+> +	if (ret < 0)
+> +		return ret;
+>   
+> -		ret = snd_soc_component_trigger(component, substream, cmd);
+> +	if (rtd->dai_link->ops->trigger) {
+> +		ret = rtd->dai_link->ops->trigger(substream, cmd);
+>   		if (ret < 0)
+>   			return ret;
+>   	}
+>   
+> +	return 0;
+> +}
+> +
+> +static int soc_pcm_trigger_stop(struct snd_pcm_substream *substream, int cmd)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_component *component;
+> +	struct snd_soc_rtdcom_list *rtdcom;
+> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +	struct snd_soc_dai *codec_dai;
+> +	int i, ret;
+> +
+>   	snd_soc_dai_trigger(cpu_dai, substream, cmd);
+>   	if (ret < 0)
+>   		return ret;
+>   
+> +	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+> +		ret = snd_soc_dai_trigger(codec_dai, substream, cmd);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	for_each_rtdcom(rtd, rtdcom) {
+> +		component = rtdcom->component;
+> +
+> +		ret = snd_soc_component_trigger(component, substream, cmd);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+>   	if (rtd->dai_link->ops->trigger) {
+>   		ret = rtd->dai_link->ops->trigger(substream, cmd);
+>   		if (ret < 0)
+> @@ -1083,6 +1119,28 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+>   	return 0;
+>   }
+>   
+> +static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+> +{
+> +	int ret;
+> +
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		ret = soc_pcm_trigger_start(substream, cmd);
+> +		break;
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		ret = soc_pcm_trigger_stop(substream, cmd);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>   static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+>   				   int cmd)
+>   {
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
