@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEA47C432C1
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 10:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E945C432C1
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 10:57:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57AA3214AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 10:56:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F2EF214D9
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Sep 2019 10:57:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IekbL9Ho"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57AA3214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Piv6MTHt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F2EF214D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F1FE1676;
-	Tue, 24 Sep 2019 12:55:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F1FE1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id B23AF167C;
+	Tue, 24 Sep 2019 12:56:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B23AF167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569322571;
-	bh=hdrurDyGthe/wf40wKe2m0Q48vUI3U+Fy/0n1ogJVQY=;
+	s=default; t=1569322625;
+	bh=TSg7G60LYga0VayX1LpQS0ggFCoPeo/++bKm6lxqHQM=;
 	h=From:To:Date:In-Reply-To:References:In-Reply-To:References:
 	 Subject:List-Id:List-Unsubscribe:List-Archive:List-Post:List-Help:
 	 List-Subscribe:From;
-	b=IekbL9Hoc7OmcSJhUw6Y2BHQd2/k1lSDYyZ1YDw3fzmNxv14gcD4iatqA+wH1lvNz
-	 KuR2EmQxm1ZRcunTANcJX/Jfpa2T4JmgGrf6NQQ75/9Y5xxfix43DyIFAPCpiG8xa8
-	 XfGgDaZwsHu9JuF806xJ+jXLvWIJOlz1mrZp6ahY=
+	b=Piv6MTHtaavCakTtVzx0Qw/qQNc2kY+JzK+5V9OqAnErI7oVEAKu/7IGNvUrmT4TA
+	 ubXb7AExPqrx4uVjeVSxiliyTmQhKNxYyZo06bWtTqL+fVxti4x9sWhzEZUR4vxPlG
+	 IEKYYg1Nxv7o4e89fQS4Jo8MNR/tBx6Tdz4hTzIs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0495F800B4;
-	Tue, 24 Sep 2019 12:54:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B98EBF805FD;
+	Tue, 24 Sep 2019 12:54:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8C9FF80534; Tue, 24 Sep 2019 12:54:23 +0200 (CEST)
+ id 61465F805A0; Tue, 24 Sep 2019 12:54:25 +0200 (CEST)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60125F80213
- for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2019 12:54:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60125F80213
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AD89F8048D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Sep 2019 12:54:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AD89F8048D
 Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 710091A03C3;
- Tue, 24 Sep 2019 12:54:19 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 082221A00DE;
+ Tue, 24 Sep 2019 12:54:22 +0200 (CEST)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DA4D21A00E7;
- Tue, 24 Sep 2019 12:54:12 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3D9AF1A02DD;
+ Tue, 24 Sep 2019 12:54:15 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9AB2C40324;
- Tue, 24 Sep 2019 18:54:04 +0800 (SGT)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 626174030F;
+ Tue, 24 Sep 2019 18:54:07 +0800 (SGT)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
@@ -63,16 +63,16 @@ To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
  robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org,
  lars@metafoo.de
-Date: Tue, 24 Sep 2019 18:52:33 +0800
-Message-Id: <45a7c383f43cc1dd9d0934846447aee653278c03.1569296075.git.shengjiu.wang@nxp.com>
+Date: Tue, 24 Sep 2019 18:52:35 +0800
+Message-Id: <b93ce3dced55bbad8e0b4b7e700cf394b1ae1551.1569296075.git.shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1569296075.git.shengjiu.wang@nxp.com>
 References: <cover.1569296075.git.shengjiu.wang@nxp.com>
 In-Reply-To: <cover.1569296075.git.shengjiu.wang@nxp.com>
 References: <cover.1569296075.git.shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Subject: [alsa-devel] [PATCH V4 2/4] ASoC: fsl_asrc: update supported sample
-	format
+Subject: [alsa-devel] [PATCH V4 4/4] ASoC: fsl_asrc: Fix error with S24_3LE
+	format bitstream in i.MX8
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,46 +91,150 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The ASRC support 24bit/16bit/8bit input width, which is
-data width, not slot width.
+There is error "aplay: pcm_write:2023: write error: Input/output error"
+on i.MX8QM/i.MX8QXP platform for S24_3LE format.
 
-For the S20_3LE format, the data with is 20bit, slot width
-is 24bit, if we set ASRMCR1n.IWD to be 24bits, the result
-is the volume is lower than expected, it likes 24bit data
-right shift 4 bits
+In i.MX8QM/i.MX8QXP, the DMA is EDMA, which don't support 24bit
+sample, but we didn't add any constraint, that cause issues.
 
-So replace S20_3LE with S24_3LE in supported list and add S8
-format in TX supported list
+So we need to query the caps of dma, then update the hw parameters
+according to the caps.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/soc/fsl/fsl_asrc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_asrc.c     |  4 +--
+ sound/soc/fsl/fsl_asrc.h     |  3 ++
+ sound/soc/fsl/fsl_asrc_dma.c | 59 +++++++++++++++++++++++++++++++-----
+ 3 files changed, 56 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 4d3804a1ea55..584badf956d2 100644
+index 584badf956d2..0bf91a6f54b9 100644
 --- a/sound/soc/fsl/fsl_asrc.c
 +++ b/sound/soc/fsl/fsl_asrc.c
-@@ -624,7 +624,7 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
+@@ -115,7 +115,7 @@ static void fsl_asrc_sel_proc(int inrate, int outrate,
+  * within range [ANCA, ANCA+ANCB-1], depends on the channels of pair A
+  * while pair A and pair C are comparatively independent.
+  */
+-static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
++int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
+ {
+ 	enum asrc_pair_index index = ASRC_INVALID_PAIR;
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+@@ -158,7 +158,7 @@ static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
+  *
+  * It clears the resource from asrc_priv and releases the occupied channels.
+  */
+-static void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
++void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
+ {
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+ 	enum asrc_pair_index index = pair->index;
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 38af485bdd22..2b57e8c53728 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -462,4 +462,7 @@ struct fsl_asrc {
+ #define DRV_NAME "fsl-asrc-dai"
+ extern struct snd_soc_component_driver fsl_asrc_component;
+ struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair, bool dir);
++int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair);
++void fsl_asrc_release_pair(struct fsl_asrc_pair *pair);
++
+ #endif /* _FSL_ASRC_H */
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 01052a0808b0..3b87badb8f00 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -16,13 +16,11 @@
  
- #define FSL_ASRC_FORMATS	(SNDRV_PCM_FMTBIT_S24_LE | \
- 				 SNDRV_PCM_FMTBIT_S16_LE | \
--				 SNDRV_PCM_FMTBIT_S20_3LE)
-+				 SNDRV_PCM_FMTBIT_S24_3LE)
+ #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
  
- static struct snd_soc_dai_driver fsl_asrc_dai = {
- 	.probe = fsl_asrc_dai_probe,
-@@ -635,7 +635,8 @@ static struct snd_soc_dai_driver fsl_asrc_dai = {
- 		.rate_min = 5512,
- 		.rate_max = 192000,
- 		.rates = SNDRV_PCM_RATE_KNOT,
--		.formats = FSL_ASRC_FORMATS,
-+		.formats = FSL_ASRC_FORMATS |
-+			   SNDRV_PCM_FMTBIT_S8,
- 	},
- 	.capture = {
- 		.stream_name = "ASRC-Capture",
+-static const struct snd_pcm_hardware snd_imx_hardware = {
++static struct snd_pcm_hardware snd_imx_hardware = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_MMAP |
+-		SNDRV_PCM_INFO_MMAP_VALID |
+-		SNDRV_PCM_INFO_PAUSE |
+-		SNDRV_PCM_INFO_RESUME,
++		SNDRV_PCM_INFO_MMAP_VALID,
+ 	.buffer_bytes_max = FSL_ASRC_DMABUF_SIZE,
+ 	.period_bytes_min = 128,
+ 	.period_bytes_max = 65535, /* Limited by SDMA engine */
+@@ -270,12 +268,17 @@ static int fsl_asrc_dma_hw_free(struct snd_pcm_substream *substream)
+ 
+ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
+ {
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	struct device *dev = component->dev;
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+ 	struct fsl_asrc_pair *pair;
++	struct dma_chan *tmp_chan = NULL;
++	u8 dir = tx ? OUT : IN;
++	int ret = 0;
+ 
+ 	pair = kzalloc(sizeof(struct fsl_asrc_pair), GFP_KERNEL);
+ 	if (!pair)
+@@ -285,11 +288,51 @@ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
+ 
+ 	runtime->private_data = pair;
+ 
+-	snd_pcm_hw_constraint_integer(substream->runtime,
+-				      SNDRV_PCM_HW_PARAM_PERIODS);
+-	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
++	ret = snd_pcm_hw_constraint_integer(substream->runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		dev_err(dev, "failed to set pcm hw params periods\n");
++		return ret;
++	}
+ 
+-	return 0;
++	/* Request a dummy pair, which will be released later.
++	 * Request pair function needs channel num as input, for this
++	 * dummy pair, we just request "1" channel temporary.
++	 */
++	ret = fsl_asrc_request_pair(1, pair);
++	if (ret < 0) {
++		dev_err(dev, "failed to request asrc pair\n");
++		return ret;
++	}
++
++	/* Request a dummy dma channel, which will be release later. */
++	tmp_chan = fsl_asrc_get_dma_channel(pair, dir);
++	if (!tmp_chan) {
++		dev_err(dev, "failed to get dma channel\n");
++		ret = -EINVAL;
++		goto out;
++	}
++
++	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++
++	/* Refine the snd_imx_hardware according to caps of DMA. */
++	ret = snd_dmaengine_pcm_refine_runtime_hwparams(substream,
++							dma_data,
++							&snd_imx_hardware,
++							tmp_chan);
++	if (ret < 0) {
++		dev_err(dev, "failed to refine runtime hwparams\n");
++		goto out;
++	}
++
++	ret = snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
++
++out:
++	if (tmp_chan)
++		dma_release_channel(tmp_chan);
++	fsl_asrc_release_pair(pair);
++
++	return ret;
+ }
+ 
+ static int fsl_asrc_dma_shutdown(struct snd_pcm_substream *substream)
 -- 
 2.21.0
 
