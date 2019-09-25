@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4345BC432C1
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 11:39:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05D6FC432C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 11:56:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6CEF21D7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 11:39:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F405021D7E
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 11:56:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I4l70bBN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6CEF21D7F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lbPwAgUf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F405021D7E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79E2416EE;
-	Wed, 25 Sep 2019 13:39:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79E2416EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68EF116F2;
+	Wed, 25 Sep 2019 13:46:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68EF116F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569411594;
-	bh=MbGIuQ33KkvFtfUyWQ9xZwdM/rMc0No65L2hDgkGFm8=;
+	s=default; t=1569412051;
+	bh=maS/02eZ/O/dNSo7rwZKkPZ8Rii8Y8Q8Xkm3nZCG15w=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I4l70bBNEj1nzMG02Rhxtf5zM4XRRr7fY/Yc+VXhpl+TUA/zwZ/Io8ckcIkXw3i8j
-	 hB0MP80wb7Zj2PTPI9e5WLjD73aDTQqN61iUJV2uvarP/rxXH6Cijb04hWPt/wS8wk
-	 VweHeGxKmZHxrCtR205O5XVBeRP61d44fBypKLbI=
+	b=lbPwAgUfY/PvOp3wt3g52yHVkbCcX1tlAf90hwDVCSW01Lr6cdu0MplGdaPPDE51O
+	 5Oyq7HPUa0R0WgTAULh+pGnDbl598lVrIvnCv1aiSynK88Rzt/sRg5wyYZ4K5k6xtR
+	 7/up7eU1JBHSPW6in0e1P12qzGfnOP0A9OdKekuo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5341F80323;
-	Wed, 25 Sep 2019 13:39:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E198F80323;
+	Wed, 25 Sep 2019 13:46:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23522F8044C; Wed, 25 Sep 2019 13:39:02 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 51982F80138; Wed, 25 Sep 2019 13:46:39 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F278FF80138
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2019 13:38:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F278FF80138
+ by alsa1.perex.cz (Postfix) with ESMTPS id 789F8F80138
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2019 13:46:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 789F8F80138
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 25 Sep 2019 04:38:52 -0700
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 25 Sep 2019 04:46:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,547,1559545200"; d="scan'208";a="191312951"
+X-IronPort-AV: E=Sophos;i="5.64,547,1559545200"; d="scan'208";a="364299773"
 Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga003.jf.intel.com with ESMTP; 25 Sep 2019 04:38:51 -0700
-Date: Wed, 25 Sep 2019 14:38:50 +0300 (EEST)
+ by orsmga005.jf.intel.com with ESMTP; 25 Sep 2019 04:46:33 -0700
+Date: Wed, 25 Sep 2019 14:46:32 +0300 (EEST)
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-X-Sender: kvehmane@zeliteleevi
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-In-Reply-To: <20190925112409.1762-3-kai.vehmanen@linux.intel.com>
-Message-ID: <alpine.DEB.2.21.1909251424570.16459@zeliteleevi>
-References: <20190925112409.1762-1-kai.vehmanen@linux.intel.com>
- <20190925112409.1762-3-kai.vehmanen@linux.intel.com>
+To: sathya.prakash.m.r@intel.com
+In-Reply-To: <1569391390-15328-1-git-send-email-sathya.prakash.m.r@intel.com>
+Message-ID: <alpine.DEB.2.21.1909251444540.16459@zeliteleevi>
+References: <1569391390-15328-1-git-send-email-sathya.prakash.m.r@intel.com>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Cc: libin.yang@intel.com, pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH v5 2/9] ASoC: hdac_hda: add support for
- HDMI/DP as a HDA codec
+Cc: naveen.m@intel.com, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com
+Subject: Re: [alsa-devel] [PATCH v3 0/2] Add CML M/C for RT5682 and RT1011
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,44 +83,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+Hi,
 
-Takashi, please check whether this is ok. I'll highlight the changed 
-section below:
+On Wed, 25 Sep 2019, sathya.prakash.m.r@intel.com wrote:
 
-On Wed, 25 Sep 2019, Kai Vehmanen wrote:
+> From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+> 
+> The series adds CML m/c driver with RT5682 on SSP0 and
+> RT1011 on SSP1.
 
->  static int hdac_hda_codec_probe(struct snd_soc_component *component)
->  {
->  	struct hdac_hda_priv *hda_pvt =
-> @@ -322,6 +392,15 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
->  
->  	snd_hdac_ext_bus_link_get(hdev->bus, hlink);
->  
-> +	/*
-> +	 * Ensure any HDA display is powered at codec probe.
-> +	 * After snd_hda_codec_device_new(), display power is
-> +	 * managed by runtime PM.
-> +	 */
-> +	if (hda_pvt->need_display_power)
-> +		snd_hdac_display_power(hdev->bus, HDA_CODEC_IDX_CONTROLLER,
-> +				       true);
-> +
+thanks, seems good now. For the series:
 
-This is the new bit (and matching logic in patch 5).The bug required a 
-very specific timing sequence to trigger, but a clear bug nevertheless. I 
-tried to fix it in spirit of your refactoring patch of to this area 
-029d92c289bd, "ALSA: hda: Refactor display power management". I.e. just 
-like snd_hda_intel's controller code, display power is enabled before 
-probe and later managed by codec using common code.
-
-Additional SOF specific twist is that I need to pass the 
-"need_display_power" info from SOF code (where the initial codec probe is 
-done and we detect a HDMI HDA codec)), to soc/codecs/hdac_hda.c where the 
-actual driver probe is run for the codec. In snd_hda_intel this is all in 
-one place, so somewhat more straighforward, but logic is the same.
-
-Br, Kai
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
