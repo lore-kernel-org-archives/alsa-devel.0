@@ -2,70 +2,67 @@ Return-Path: <SRS0=mf6l=XU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05D6FC432C1
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 11:56:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4889FC432C2
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 12:01:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F405021D7E
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 11:56:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C3B6C21D7E
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Sep 2019 12:01:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lbPwAgUf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F405021D7E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TH+fr6jf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3B6C21D7E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68EF116F2;
-	Wed, 25 Sep 2019 13:46:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68EF116F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BC1A16ED;
+	Wed, 25 Sep 2019 13:44:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BC1A16ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569412051;
-	bh=maS/02eZ/O/dNSo7rwZKkPZ8Rii8Y8Q8Xkm3nZCG15w=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1569411903;
+	bh=POVSyxJB1MXwdAmemNAduDU3e/ujnQ+6KSWhnug2qik=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lbPwAgUfY/PvOp3wt3g52yHVkbCcX1tlAf90hwDVCSW01Lr6cdu0MplGdaPPDE51O
-	 5Oyq7HPUa0R0WgTAULh+pGnDbl598lVrIvnCv1aiSynK88Rzt/sRg5wyYZ4K5k6xtR
-	 7/up7eU1JBHSPW6in0e1P12qzGfnOP0A9OdKekuo=
+	b=TH+fr6jfwJYU+L7wSzKSfk81vX5A/KIBupRnKRGZo+qE3YhAtq9dfhhuKVyDraBHg
+	 D3/FVesMotX252OxlD9pRIyjN8HaUVqYncNFJw7BHzWZGG1/v+ztrjopSpmXP+mTYi
+	 rVJdFFnvG+QThy3GPLpnjdMYGliqaRecLEA2HvGI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E198F80323;
-	Wed, 25 Sep 2019 13:46:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 866F8F80323;
+	Wed, 25 Sep 2019 13:44:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51982F80138; Wed, 25 Sep 2019 13:46:39 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C3611F8044C; Wed, 25 Sep 2019 13:44:10 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 789F8F80138
- for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2019 13:46:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 789F8F80138
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 25 Sep 2019 04:46:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,547,1559545200"; d="scan'208";a="364299773"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga005.jf.intel.com with ESMTP; 25 Sep 2019 04:46:33 -0700
-Date: Wed, 25 Sep 2019 14:46:32 +0300 (EEST)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@zeliteleevi
-To: sathya.prakash.m.r@intel.com
-In-Reply-To: <1569391390-15328-1-git-send-email-sathya.prakash.m.r@intel.com>
-Message-ID: <alpine.DEB.2.21.1909251444540.16459@zeliteleevi>
-References: <1569391390-15328-1-git-send-email-sathya.prakash.m.r@intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
-MIME-Version: 1.0
-Cc: naveen.m@intel.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH v3 0/2] Add CML M/C for RT5682 and RT1011
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CC7BF80213
+ for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2019 13:44:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CC7BF80213
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
+ helo=localhost) by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>)
+ id 1iD5iC-0004n8-1R; Wed, 25 Sep 2019 11:44:00 +0000
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: bhelgaas@google.com,
+	tiwai@suse.com
+Date: Wed, 25 Sep 2019 19:43:53 +0800
+Message-Id: <20190925114353.25600-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190925113255.25062-2-kai.heng.feng@canonical.com>
+References: <20190925113255.25062-2-kai.heng.feng@canonical.com>
+Cc: linux-pci@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH v5 1/2] PCI: Add pci_pr3_present() helper to
+	check Power Resource for D3hot
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,23 +75,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Add pci_pr3_present() to check whether the platform supplies _PR3 to
+tell us which power resources the device depends on when in D3hot. This
+information is useful to let drivers choose different runtime suspend
+behavior. A user will be add in next patch.
 
-On Wed, 25 Sep 2019, sathya.prakash.m.r@intel.com wrote:
+This is mostly the same as nouveau_pr3_present().
 
-> From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-> 
-> The series adds CML m/c driver with RT5682 on SSP0 and
-> RT1011 on SSP1.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v5:
+- Add wording suggestion from Bjorn.
+v4:
+- Let caller to find its upstream port device.
 
-thanks, seems good now. For the series:
+ drivers/pci/pci.c   | 16 ++++++++++++++++
+ include/linux/pci.h |  2 ++
+ 2 files changed, 18 insertions(+)
 
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index e7982af9a5d8..d03f624d8928 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -5856,6 +5856,22 @@ int pci_set_vga_state(struct pci_dev *dev, bool decode,
+ 	return 0;
+ }
+ 
++bool pci_pr3_present(struct pci_dev *pdev)
++{
++	struct acpi_device *adev;
++
++	if (acpi_disabled)
++		return false;
++
++	adev = ACPI_COMPANION(&pdev->dev);
++	if (!adev)
++		return false;
++
++	return adev->power.flags.power_resources &&
++		acpi_has_method(adev->handle, "_PR3");
++}
++EXPORT_SYMBOL_GPL(pci_pr3_present);
++
+ /**
+  * pci_add_dma_alias - Add a DMA devfn alias for a device
+  * @dev: the PCI device for which alias is added
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index f9088c89a534..1d15c5d49cdd 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -2310,9 +2310,11 @@ struct irq_domain *pci_host_bridge_acpi_msi_domain(struct pci_bus *bus);
+ 
+ void
+ pci_msi_register_fwnode_provider(struct fwnode_handle *(*fn)(struct device *));
++bool pci_pr3_present(struct pci_dev *pdev);
+ #else
+ static inline struct irq_domain *
+ pci_host_bridge_acpi_msi_domain(struct pci_bus *bus) { return NULL; }
++static bool pci_pr3_present(struct pci_dev *pdev) { return false; }
+ #endif
+ 
+ #ifdef CONFIG_EEH
+-- 
+2.17.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
