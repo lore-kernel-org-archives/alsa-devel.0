@@ -6,84 +6,84 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35FA6C4360C
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 13:55:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CDE5C4360C
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 14:14:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4393222C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 13:55:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0904C222C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 14:14:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="djSv2wjo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4393222C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MYzix5cz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0904C222C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92BF1174C;
-	Thu, 26 Sep 2019 15:54:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92BF1174C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4C04174C;
+	Thu, 26 Sep 2019 16:13:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4C04174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569506148;
-	bh=nhpZlU0dPKpM/bPwWlObne5IzKKTf1KFfn6c+vqb1Eo=;
+	s=default; t=1569507256;
+	bh=lBVh6iswywJBD8J7X6og7Ag4wcW00Bljh6iYgTEKeG4=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=djSv2wjoh1i3o9+WAjPVIjkp/yaYJkAciUEcMqxa3208bICALReTE5uPmoj6xqioX
-	 10bVmC2P13EQhrVym7uyilZung9XZ61ZFnfeVpplYWNT1P/2JIEn45I4bU+JHsbh1V
-	 Ky4BqnuM8BsIVpLMFHkTAr8by//YMbcxIAunSjLE=
+	b=MYzix5czUxx5rrBzGX0e2tKfBBDHdVvhePywAx08tJ5mv7PzqyKA7hwtPy2rzc76h
+	 3woIkJvhmBgfUlyshlQx3fdBQ28lirNE1MtO2l/PI+B+IuDdnwR2Z2xg879Y7Garp7
+	 jzUhiFvbLAXbL4eYZTTcB81Abc12ktypNDBZK6Q0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 198BFF802BD;
-	Thu, 26 Sep 2019 15:54:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 580A8F80213;
+	Thu, 26 Sep 2019 16:13:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F657F803F4; Thu, 26 Sep 2019 15:54:56 +0200 (CEST)
+ id 12941F803F4; Thu, 26 Sep 2019 16:13:25 +0200 (CEST)
 Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com
  [209.85.128.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9CAF6F80213
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2019 15:54:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CAF6F80213
-Received: by mail-wm1-f65.google.com with SMTP id v17so2674376wml.4
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2019 06:54:53 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6798F80213
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2019 16:13:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6798F80213
+Received: by mail-wm1-f65.google.com with SMTP id f22so2766785wmc.2
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2019 07:13:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=5wV+knHWT3pYBu8f1yGbF2JMv7/SsKIGIbzvgHlj+ME=;
- b=K52KBKsTDzPLlEVR+YMpSWpvV+WXR8OOCem+peKnOzAO5v2aySCeczPlD51F2a8IoL
- z5G/2pWfopcyU8GCH8a3BVtw4pk4y+eQ2Qii3Lzs0hcu5SUHcFmxs5Zn7r6m3B/RYr76
- 3DNKtK0ioVRL3Q9WnXvxKQWtT0QTF4nXDHEA+w69/GH1xuQEHOIGLSAnURzjLga/2/PP
- L3WuBdSWqyR6Qkar/0bt/G5u50d1Ge4wxuULw4/fXQ+ZsFDx3vu3o1lnmwp8FIc9Hjra
- HSOrutWibSSbiqYkVZLD76QnaCKN1KmU3HkYeMsQlDzovfVwg6Nb+ghsawrIMJ6MBRqq
- WgYA==
-X-Gm-Message-State: APjAAAVPwDTAT2i6Ge4a0BBY/Zf5XLqTHk+0oXyygcKaOx0f/rIGNqm5
- VKt0N3MozNeFH75O5QSCeKM=
-X-Google-Smtp-Source: APXvYqxMWSiEBcFYFgkxhkOkbLWb5nMuD3l2ak3ZLUUZEhI7MlrM1L7wlshwHZt+wX2Q+NqzPP5UKg==
-X-Received: by 2002:a7b:cc0b:: with SMTP id f11mr3204892wmh.112.1569506092705; 
- Thu, 26 Sep 2019 06:54:52 -0700 (PDT)
+ bh=hBZ8CcivE1NYUxc5O3ZPMVIRE/wsSIlTMNpDwyj/BXg=;
+ b=plFgSPAZeGRkMtXxtUXv4o9DM1einkDaayfEFSrH025lRYdQYX1J44jIl8lY4gRV1r
+ Qnrf0GPAtXfiJHYCvXORmvuUmBccPeklkW9w0fuAopew+KwPg0kxGLwWa1dnBAO0l393
+ QN9R/wpOny2M+ESFKWlnI+8WfrXzGB1hTrLV7bqyupoXKz/WoVfcc2GnArQCIDsh9Nk3
+ OK29EjG0bjZHu/fjjGYbzQoHM5YGRUaDqPwQq7wr9kRY4w02M4kNhW/DoLJ9omf8VdFx
+ jPUYgatH133SBGd0XKQyJXewhm8zfKwrLB67Ny/pCd8vRx5vHFbl6Yi+JhbnWMzBZhrk
+ VYDQ==
+X-Gm-Message-State: APjAAAX0uNpYG4fZdeRh/os+wjPeewb/Rnx/O+bMmIDZXnUXt7VDXmvO
+ dPq3eJtJGckO8PKxwbqAPWs=
+X-Google-Smtp-Source: APXvYqwFGmBsmHkzm5BSclLX9I0aHlju/5ZEtE1O/WmLwArVHDoSrkBS7RuTKuyW+Dop4GgKC7Wfrg==
+X-Received: by 2002:a1c:9dc1:: with SMTP id g184mr3132920wme.77.1569507200896; 
+ Thu, 26 Sep 2019 07:13:20 -0700 (PDT)
 Received: from pi3 ([194.230.155.145])
- by smtp.googlemail.com with ESMTPSA id j1sm6011300wrg.24.2019.09.26.06.54.49
+ by smtp.googlemail.com with ESMTPSA id h63sm4348246wmf.15.2019.09.26.07.13.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 26 Sep 2019 06:54:50 -0700 (PDT)
-Date: Thu, 26 Sep 2019 15:54:47 +0200
+ Thu, 26 Sep 2019 07:13:20 -0700 (PDT)
+Date: Thu, 26 Sep 2019 16:13:17 +0200
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <20190926135447.GA15983@pi3>
-References: <CGME20190926120221eucas1p1a11b4182b93b408d5d5507dc65c951b4@eucas1p1.samsung.com>
- <20190926120210.8544-1-m.szyprowski@samsung.com>
+Message-ID: <20190926141317.GA16044@pi3>
+References: <CGME20190926110226eucas1p24dbb1b39ffa3f607aa28c0c4d9ff6aba@eucas1p2.samsung.com>
+ <20190926110219.6144-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190926120210.8544-1-m.szyprowski@samsung.com>
+In-Reply-To: <20190926110219.6144-1-m.szyprowski@samsung.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
  Maciej Falkowski <m.falkowski@samsung.com>, Mark Brown <broonie@kernel.org>,
  linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
  Rob Herring <robh+dt@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2] dt-bindings: sound: Convert Samsung
- Exynos5433 TM2(E) audio complex with WM5110 codec to dt-schema
+Subject: Re: [alsa-devel] [PATCH v2] ASoC: samsung: i2s: Document clocks
+	macros
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,21 +101,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 26, 2019 at 02:02:10PM +0200, Marek Szyprowski wrote:
+On Thu, Sep 26, 2019 at 01:02:19PM +0200, Marek Szyprowski wrote:
 > From: Maciej Falkowski <m.falkowski@samsung.com>
 > 
-> Convert Samsung Exynos5433 TM2(E) audio complex with WM5110 codec to
-> newer dt-schema format.
+> Document clocks macros with their description
+> from 'Documentation/devicetree/bindings/sound/samsung-i2s.txt'
 > 
 > Signed-off-by: Maciej Falkowski <m.falkowski@samsung.com>
 > Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 > ---
 > v2:
-> - Added type and description and removed number of items from 'model' property.
+> - Added proper commit message and description
+> - Moved comments to the right side
+> 
+> Best regards,
+> Maciej Falkowski
 
-Thanks for the changes. However still you have non-standard properties
-put in random order. Argument that the order follows example-schema is
-not correct. These are not standard properties.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
