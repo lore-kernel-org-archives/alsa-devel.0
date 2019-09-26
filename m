@@ -2,76 +2,84 @@ Return-Path: <SRS0=yO1c=XV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FAKE_REPLY_C,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B319C4360C
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 18:37:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB0E3C4360C
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 18:44:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4AC7D206E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 18:37:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 384A32245A
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Sep 2019 18:44:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UtG75n2h";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZcG3VjJr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AC7D206E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VgdQcBJw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="oSdSPqNS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 384A32245A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97C7A1711;
-	Thu, 26 Sep 2019 20:37:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97C7A1711
+	by alsa0.perex.cz (Postfix) with ESMTPS id 216D4175C;
+	Thu, 26 Sep 2019 20:43:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 216D4175C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569523074;
-	bh=zNM95T3WJkrIgE0tHnT4fv8AIZvP7IxQmvmGcP3CVfo=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=UtG75n2hdEScVBJLhqVQktFseOV8kcya0ZojB8DOraYTHKcrIXTCaS8PZQu/5QPCv
-	 F9ahgskS7Eg6t56jrRDFmocHrSfKK61eFCl4xzD4J0N4DWbCmNPy3e8PUwRiPbNBQ/
-	 zSWquaFPDq8eWR0GMBzr4Mm8tN0PuYI74OwApnEw=
+	s=default; t=1569523455;
+	bh=1+XS9Fe7Wa/uoOKx58MZuv8M2bGoinFAgSbXmuimExA=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VgdQcBJwMrmJxmNeDI0k6DUZrs6MR5OtMdEezysAx29BhXyqiMcOtlxlgwcm8y07v
+	 w4hf0zy72EBkUsgxe6ebfAdSegmZ5a8HFfuvIsZeRR1awwNqlgoWTBZwX99PaaYKJt
+	 nTzMJrNqrlUo5N4t4xqRTBS3kvSbfA7RnjqlpsG0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C88DF802BD;
-	Thu, 26 Sep 2019 20:37:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAF0FF802BD;
+	Thu, 26 Sep 2019 20:43:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C5A5F803F4; Thu, 26 Sep 2019 20:37:03 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 736E6F80140
- for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2019 20:37:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 736E6F80140
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZcG3VjJr"
-Received: from localhost (unknown [69.71.4.100])
+ id 7D644F803F4; Thu, 26 Sep 2019 20:43:23 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 37046206E0;
- Thu, 26 Sep 2019 18:36:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1569523017;
- bh=xjjJ++Pq6pOD0Z6Bdeb/NVVwlH+p3eI+ZRk1UkqiyYo=;
- h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=ZcG3VjJrl3BAKIBfQjtCDBTWUYTWLaJXI7+Y00RIpzUCYRYonx4XTADUBDABzUZZ7
- gjTsHFXMiRyxUrIWm0oqpbpbQM1PPwiQSp21NUcXQdRFDrwMIIPaIhASUlwMCZmoVT
- KkVeQ62odeM+2uCiQIPN5atEcU1CJPJy1HRJHwBs=
-Date: Thu, 26 Sep 2019 13:36:54 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Message-ID: <20190926183654.GA171415@google.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F40EF80138
+ for <alsa-devel@alsa-project.org>; Thu, 26 Sep 2019 20:43:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F40EF80138
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="oSdSPqNS"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=9pxSNyNmfZiT3djCXj3rcac0J+iDZI7xFpm9oqEfs/g=; b=oSdSPqNSLJDc4umz8eSiwSl9G
+ c1BiukUR/sHNoy3gfFxQtH++AZ8UIwPFBxIOtZnSW4AmnplpJx5Zkm8XZ8zo7CRW16UESEsIMvag9
+ KjtO0OFMiUhrCsJ2JmeSEXs8/x0qIOSjF84vkNm4r/N+YvyJm6prpWmS0fyOdJCeSlYpQ=;
+Received: from [12.157.10.118] (helo=fitzroy.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1iDYjX-0004Uc-UW; Thu, 26 Sep 2019 18:43:20 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 65C16D02DD8; Thu, 26 Sep 2019 19:43:18 +0100 (BST)
+Date: Thu, 26 Sep 2019 11:43:18 -0700
+From: Mark Brown <broonie@kernel.org>
+To: Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>
+Message-ID: <20190926184318.GF2036@sirena.org.uk>
+References: <20190926071707.17557-1-nuno.sa@analog.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190925114353.25600-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20190926071707.17557-1-nuno.sa@analog.com>
+X-Cookie: Be careful!  UGLY strikes 9 out of 10!
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-pci@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH v5 1/2] PCI: Add pci_pr3_present() helper
- to check Power Resource for D3hot
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASOC: Add ADAU7118 8 Channel
+ PDM-to-I2S/TDM Converter driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,82 +92,126 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2580827850041757329=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 25, 2019 at 07:43:53PM +0800, Kai-Heng Feng wrote:
-> Add pci_pr3_present() to check whether the platform supplies _PR3 to
-> tell us which power resources the device depends on when in D3hot. This
-> information is useful to let drivers choose different runtime suspend
-> behavior. A user will be add in next patch.
-> 
-> This is mostly the same as nouveau_pr3_present().
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+--===============2580827850041757329==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="TWLMYU3k2ba4mEMM"
+Content-Disposition: inline
 
-I assume Takashi will merge this along with the ALSA patch.
 
-> ---
-> v5:
-> - Add wording suggestion from Bjorn.
-> v4:
-> - Let caller to find its upstream port device.
-> 
->  drivers/pci/pci.c   | 16 ++++++++++++++++
->  include/linux/pci.h |  2 ++
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index e7982af9a5d8..d03f624d8928 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -5856,6 +5856,22 @@ int pci_set_vga_state(struct pci_dev *dev, bool decode,
->  	return 0;
->  }
->  
-> +bool pci_pr3_present(struct pci_dev *pdev)
-> +{
-> +	struct acpi_device *adev;
+--TWLMYU3k2ba4mEMM
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Sep 26, 2019 at 09:17:06AM +0200, Nuno S=E1 wrote:
+
+> --- /dev/null
+> +++ b/sound/soc/codecs/adau7118-hw.c
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Analog Devices ADAU7118 8 channel PDM-to-I2S/TDM Converter Standalone=
+ Hw
+> + * driver
+> + *
+> + * Copyright 2019 Analog Devices Inc.
+> + */
+
+Please make the entire comment a C++ style one in the .c files so
+things look more intentional.
+
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		ret =3D snd_soc_component_update_bits(dai->component,
+> +						    ADAU7118_REG_SPT_CTRL1,
+> +						    ADAU7118_DATA_FMT_MASK,
+> +						    ADAU7118_DATA_FMT(0));
+> +		break;
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		ret =3D snd_soc_component_update_bits(dai->component,
+> +						    ADAU7118_REG_SPT_CTRL1,
+> +						    ADAU7118_DATA_FMT_MASK,
+> +						    ADAU7118_DATA_FMT(1));
+> +		break;
+> +	case SND_SOC_DAIFMT_RIGHT_J:
+> +		st->right_j =3D true;
+> +		break;
+
+Don't we need to set any register values here?
+
 > +
-> +	if (acpi_disabled)
-> +		return false;
-> +
-> +	adev = ACPI_COMPANION(&pdev->dev);
-> +	if (!adev)
-> +		return false;
-> +
-> +	return adev->power.flags.power_resources &&
-> +		acpi_has_method(adev->handle, "_PR3");
+> +	return ret < 0 ? ret : 0;
 > +}
-> +EXPORT_SYMBOL_GPL(pci_pr3_present);
+
+Please don't use the ternery operator like this, it just makes
+things harder to read - write normal if conditional statements.
+
+> +	case SND_SOC_BIAS_STANDBY:
+> +		if (snd_soc_component_get_bias_level(component) =3D=3D
+> +							SND_SOC_BIAS_OFF) {
+> +			if (!st->iovdd)
+> +				return 0;
+
+This is broken, the device will always require power so it should
+always control the regulators.
+
+> +static int adau7118_suspend(struct snd_soc_component *component)
+> +{
+> +	return snd_soc_component_force_bias_level(component, SND_SOC_BIAS_OFF);
+> +}
 > +
->  /**
->   * pci_add_dma_alias - Add a DMA devfn alias for a device
->   * @dev: the PCI device for which alias is added
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index f9088c89a534..1d15c5d49cdd 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -2310,9 +2310,11 @@ struct irq_domain *pci_host_bridge_acpi_msi_domain(struct pci_bus *bus);
->  
->  void
->  pci_msi_register_fwnode_provider(struct fwnode_handle *(*fn)(struct device *));
-> +bool pci_pr3_present(struct pci_dev *pdev);
->  #else
->  static inline struct irq_domain *
->  pci_host_bridge_acpi_msi_domain(struct pci_bus *bus) { return NULL; }
-> +static bool pci_pr3_present(struct pci_dev *pdev) { return false; }
->  #endif
->  
->  #ifdef CONFIG_EEH
-> -- 
-> 2.17.1
-> 
+> +static int adau7118_resume(struct snd_soc_component *component)
+> +{
+> +	return snd_soc_component_force_bias_level(component,
+> +						  SND_SOC_BIAS_STANDBY);
+> +}
+
+Let DAPM do this for you, there's no substantial delays on power
+on so you're probably best just setting idle_bias_off.
+
+> +static int adau7118_regulator_setup(struct adau7118_data *st)
+> +{
+> +	int ret =3D 0;
+> +
+> +	st->iovdd =3D devm_regulator_get_optional(st->dev, "IOVDD");
+> +	if (!IS_ERR(st->iovdd)) {
+
+Unless the device can operate with supplies physically absent it
+should not be requesting regulators as optional, this breaks your
+error handling especially with probe deferral which is a fairly
+common case.
+
+--TWLMYU3k2ba4mEMM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2NBsUACgkQJNaLcl1U
+h9DTSwf6A3j4WBOC0vVeOzs40lDzb88KcOkWvTA0Pt+vEUZ0DUHQ/AOX1GgN6Zh6
+At4k18u+ptataFlScXDHRmrtEcz3Eu8n/gRTXvpifr6z/8EwVhvAMEu5PbL2zHqG
+vpV3LE8V0HLflyp+e7V44W8MkLTm21G3xVTqnKEpxFkaUTm/V9nXXZFMHc5249tb
+oyHXflE5Ykbp52INzLLjkcIAsg8znpl+RFezGG1GmU8arFGMmnxmMc4Dc+owEC9p
+eaXVLp0KTPw+J3h6ajs8jSffq9IxT+124gSvooJoJo009cRjSNP83OHKwdoyLFxc
+fbPqwfsORdF+ZnG8k0XqhLjiGYZYWQ==
+=3zRw
+-----END PGP SIGNATURE-----
+
+--TWLMYU3k2ba4mEMM--
+
+--===============2580827850041757329==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2580827850041757329==--
