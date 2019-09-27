@@ -2,71 +2,75 @@ Return-Path: <SRS0=P2CN=XW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85EE2C4360C
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 10:33:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA74EC4360C
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 10:34:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0FDE217D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 10:33:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 42648207E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 10:34:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p7bLinfx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0FDE217D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O1tZaiEQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42648207E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E2941614;
-	Fri, 27 Sep 2019 12:32:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E2941614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66C771675;
+	Fri, 27 Sep 2019 12:33:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66C771675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569580386;
-	bh=2Qk/oCJNqawU3pOUNn29sB7Jm4Ag6Lc5w5pbQ3Bdp5w=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=p7bLinfxpwEoAv9IXKZ5nux5OBF0xW/xvhnD2zlMVq2bSIuIZWKk2hraTUjnNPzP3
-	 y8RFvh6uc3YhPcfFsvmLwp3tNvFsYcWf+xjA2xr1QtnXP7ty1LMUdKxKNe/oaMeyc9
-	 hlqZxVpW/Up/lzBLABS6EMDJ2pKPiuarr6Nv67as=
+	s=default; t=1569580442;
+	bh=zrwALuege2EMQy/qG4pd4nVXojuTA4o21r6V1OXc4lg=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=O1tZaiEQPaBbo6XOUK9tcawzHGxmnH4r1MDp1wfoYWpxW2mQoof2x9Pijbvo2SUJi
+	 FnjP8jOROAsefSSGYkROEnoovQRhn1jDuiawYaDgMUYfy0xlZL8OD+ywz7obqJ6Rc1
+	 /pMioZaBQKM9K8dUxGdpSTQHMbbpM17YaoxOBGAc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC08FF8044C;
-	Fri, 27 Sep 2019 12:32:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24C8CF805F7;
+	Fri, 27 Sep 2019 12:32:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91C9CF805A8; Fri, 27 Sep 2019 12:32:14 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa1.perex.cz (Postfix) with ESMTP id 0A137F80140
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2019 12:32:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A137F80140
-X-UUID: ccbf7ee149e74c3faf74a0849cd0bc5e-20190927
-X-UUID: ccbf7ee149e74c3faf74a0849cd0bc5e-20190927
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ id A8A7DF80138; Fri, 27 Sep 2019 12:32:14 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa1.perex.cz (Postfix) with ESMTP id E791AF80138
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2019 12:32:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E791AF80138
+X-UUID: 057813407c7240b7a88d70ea8fddf1df-20190927
+X-UUID: 057813407c7240b7a88d70ea8fddf1df-20190927
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
  (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
- with ESMTP id 1138489025; Fri, 27 Sep 2019 18:32:01 +0800
+ with ESMTP id 1641109216; Fri, 27 Sep 2019 18:32:04 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
  mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Fri, 27 Sep 2019 18:31:58 +0800
+ 15.0.1395.4; Fri, 27 Sep 2019 18:32:01 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Fri, 27 Sep 2019 18:31:57 +0800
+ Transport; Fri, 27 Sep 2019 18:32:00 +0800
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: <broonie@kernel.org>, <mark.rutland@arm.com>, <robh+dt@kernel.org>,
  <linux@roeck-us.net>, <wim@linux-watchdog.org>
-Date: Fri, 27 Sep 2019 18:31:53 +0800
-Message-ID: <1569580317-21181-1-git-send-email-jiaxin.yu@mediatek.com>
+Date: Fri, 27 Sep 2019 18:31:56 +0800
+Message-ID: <1569580317-21181-4-git-send-email-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1569580317-21181-1-git-send-email-jiaxin.yu@mediatek.com>
+References: <1569580317-21181-1-git-send-email-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 9EC9B41ACD81D96D4657B1B000FF35A2B3D68B95758CA29C6DC62AD7B037718E2000:8
+X-TM-SNTS-SMTP: 8C046FB2E695B053F5ED743E5B75C07E536E6BA4D9E3A7B02692CA63E4D01D562000:8
 X-MTK: N
 Cc: alsa-devel@alsa-project.org, yong.liang@mediatek.com, lgirdwood@gmail.com,
  jiaxin.yu@mediatek.com, tzungbi@google.com, linux-mediatek@lists.infradead.org,
  eason.yen@mediatek.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH v2 0/4] ASoC: mt8183: fix audio playback slowly
-	after playback
+Subject: [alsa-devel] [PATCH v2 3/4] dt-bindings: medaitek: mt8183: add
+	property "resets" && "reset-names"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,33 +88,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series patches add reset controller for MT8183, and audio will use it in 
-machine driver during bootup, they depend on the following patch:
+This patch add property "resets" && "reset-names" in examples so that we can
+use reset controller to reset audio domain regs.
 
-1. this series add support reset-controller in infra
-	[v5,2/2] clk: reset: Modify reset-controller driver
-	https://patchwork.kernel.org/patch/11060419/
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+---
+ Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-v2 changes:
-	1. remove "WIP" that in the title of patches
-	2. add hyper link for the patch that depends on
-
-Jiaxin Yu (2):
-  dt-bindings: medaitek: mt8183: add property "resets" && "reset-names"
-  ASoC: mt8183: fix audio playback slowly after playback during bootup
-
-yong.liang (2):
-  dt-bindings: mediatek: mt8183: Add #reset-cells
-  watchdog: mtk_wdt: mt8183: Add reset controller
-
- .../bindings/sound/mt8183-afe-pcm.txt         |   6 +
- .../devicetree/bindings/watchdog/mtk-wdt.txt  |   9 +-
- drivers/watchdog/Kconfig                      |   1 +
- drivers/watchdog/mtk_wdt.c                    | 110 +++++++++++++++++-
- .../reset-controller/mt8183-resets.h          |  13 +++
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c    |  15 +++
- 6 files changed, 150 insertions(+), 4 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
+index 396ba38619f6..1f1cba4152ce 100644
+--- a/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
++++ b/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
+@@ -4,6 +4,10 @@ Required properties:
+ - compatible = "mediatek,mt68183-audio";
+ - reg: register location and size
+ - interrupts: should contain AFE interrupt
++- resets: Must contain an entry for each entry in reset-names
++  See ../reset/reset.txt for details.
++- reset-names: should have these reset names:
++		"audiosys";
+ - power-domains: should define the power domain
+ - clocks: Must contain an entry for each entry in clock-names
+ - clock-names: should have these clock names:
+@@ -20,6 +24,8 @@ Example:
+ 		compatible = "mediatek,mt8183-audio";
+ 		reg = <0 0x11220000 0 0x1000>;
+ 		interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
++		resets = <&watchdog MT8183_TOPRGU_AUDIO_SW_RST>;
++		reset-names = "audiosys";
+ 		power-domains = <&scpsys MT8183_POWER_DOMAIN_AUDIO>;
+ 		clocks = <&infrasys CLK_INFRA_AUDIO>,
+ 			 <&infrasys CLK_INFRA_AUDIO_26M_BCLK>,
 -- 
 2.18.0
 
