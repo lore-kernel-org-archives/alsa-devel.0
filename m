@@ -2,98 +2,82 @@ Return-Path: <SRS0=P2CN=XW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7E79C4360C
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 12:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07921C4360C
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 13:15:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7535217D9
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 12:39:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EFDBC207FF
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 13:15:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X6He2OzC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7535217D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UU6ssEks"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFDBC207FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C64C1607;
-	Fri, 27 Sep 2019 14:38:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C64C1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id B608C15F9;
+	Fri, 27 Sep 2019 15:14:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B608C15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569587948;
-	bh=TXIkhx4Jj0ZjDCPOE/HtObKxvMFlpG7Tz7S/CUac/wM=;
-	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1569590098;
+	bh=+fvhwM254hKRm1QIk7KTqTOiRdjc8MBaQs52aW2EdHY=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X6He2OzCGTiCpfkOxEgBHOOqHGKUYT74J2rSFE33CHyE0fF67ZazRRHi0b+HZXWok
-	 VvR2e5tlHDd8oD+sI9ACubPYuIVH2kp/xVYl5hFecY0wlcTfl5xNZeYpZkm0LACFNy
-	 9M1yI2+jegs54cr4XPGDzAt0ZDYLj8GcmQYCG5U0=
+	b=UU6ssEksxCCYJQPiQOllKTlF45jgZQLTVRe2mOxx1dKbVGV+vGSGUU3mzKPOFXzYV
+	 OGOxCc41nFSULAItrMSA7FvXvVg9OKnOOXb+SQFE2hp51rpNIwqeXyG9wpeRxwN42N
+	 2Cmv2wHK9HsYnF3jg1lgtbTiksiNkIPyWWomS7pA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3C66F8044C;
-	Fri, 27 Sep 2019 14:38:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C6B8F8044C;
+	Fri, 27 Sep 2019 15:14:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DC45F8049A; Fri, 27 Sep 2019 14:38:16 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id DA127F8049A; Fri, 27 Sep 2019 15:14:06 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DEE9F800B3
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2019 14:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DEE9F800B3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47480F80138
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2019 15:14:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47480F80138
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2019 05:38:09 -0700
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 27 Sep 2019 06:14:00 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,555,1559545200"; d="scan'208";a="391148068"
-Received: from kmsmsx155.gar.corp.intel.com ([172.21.73.106])
- by fmsmga006.fm.intel.com with ESMTP; 27 Sep 2019 05:38:06 -0700
-Received: from pgsmsx108.gar.corp.intel.com ([169.254.8.138]) by
- KMSMSX155.gar.corp.intel.com ([169.254.15.100]) with mapi id 14.03.0439.000;
- Fri, 27 Sep 2019 20:34:33 +0800
-From: "Lu, Brent" <brent.lu@intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Thread-Topic: [alsa-devel] [PATCH] ASoC: bdw-rt5677: channel constraint support
-Thread-Index: AQHVZFJP8PyrEMjcjUeZpcb0xW/mNqceLbmAgASxdDCAAEEEgIABJDyggAAwUICAAuppgIAAJ+iAgBgJ7jA=
-Date: Fri, 27 Sep 2019 12:34:32 +0000
-Message-ID: <CF33C36214C39B4496568E5578BE70C7402EABB2@PGSMSX108.gar.corp.intel.com>
-References: <1567733058-9561-1-git-send-email-brent.lu@intel.com>
- <391e8f6c-7e35-deb4-4f4d-c39396b778ba@linux.intel.com>
- <CF33C36214C39B4496568E5578BE70C7402C9EA2@PGSMSX108.gar.corp.intel.com>
- <29b9fd4e-3d78-b4a3-e61a-c066bf24995a@linux.intel.com>
- <CF33C36214C39B4496568E5578BE70C7402CB9AC@PGSMSX108.gar.corp.intel.com>
- <99769525-779a-59aa-96da-da96f8f09a8a@linux.intel.com>
- <CF33C36214C39B4496568E5578BE70C7402DBB9B@PGSMSX108.gar.corp.intel.com>
- <34604b9a-f479-3f92-7917-84f295a82fd8@linux.intel.com>
-In-Reply-To: <34604b9a-f479-3f92-7917-84f295a82fd8@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiM2I2MGNkZDAtNGE0ZC00MTkwLTlkMGMtNjEwNmUyZTA2NjEwIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoidzBOK0ZiUmJcL3A3QWtVOHptV2ZMbGdRcnViU0pvSXVsdEdWR0ltS1diaDhlUU9uZWVoN2ZGWm9QU2d3RHBhZjEifQ==
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [172.30.20.206]
+X-IronPort-AV: E=Sophos;i="5.64,555,1559545200"; d="scan'208";a="183972918"
+Received: from linux.intel.com ([10.54.29.200])
+ by orsmga008.jf.intel.com with ESMTP; 27 Sep 2019 06:13:59 -0700
+Received: from jastaffa-mobl3.amr.corp.intel.com (unknown [10.251.18.83])
+ by linux.intel.com (Postfix) with ESMTP id 661845801E6;
+ Fri, 27 Sep 2019 06:13:58 -0700 (PDT)
+To: Navid Emamdoost <navid.emamdoost@gmail.com>
+References: <20190925161922.22479-1-navid.emamdoost@gmail.com>
+ <13f4bd40-dbaa-e24e-edca-4b4acff9d9c5@linux.intel.com>
+ <20190927025526.GD22969@cs-dulles.cs.umn.edu>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <dc68e0dc-9a8e-cc52-c560-3e86c783dbb3@linux.intel.com>
+Date: Fri, 27 Sep 2019 08:14:00 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
- "yang.jie@linux.intel.com" <yang.jie@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "tiwai@suse.com" <tiwai@suse.com>,
- "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: bdw-rt5677: channel constraint
- support
+In-Reply-To: <20190927025526.GD22969@cs-dulles.cs.umn.edu>
+Content-Language: en-US
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kjlu@umn.edu,
+ Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ emamd001@umn.edu, smccaman@umn.edu, Thomas Gleixner <tglx@linutronix.de>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Enrico Weigelt <info@metux.net>, linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH v2] ASoC: Intel: Skylake: prevent memory
+ leak in snd_skl_parse_uuids
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,40 +90,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> >
-> > It's not only the mismatch but also the design limitation. According
-> > to the information from google, the board (samus) only uses two
-> > microphone so
-> > 3 or 4 channel recording are not supported. That's the reason we
-> > leverage the constraint from other machine driver (like
-> > kbl_da7219_max98357a.c) to remove the 3 and 4 channel recording option.
-> 
-> The design limitation is already handled by the fact that the SSP operates in
-> 2ch mode, so it's a different case from KBL where indeed the DMIC-based
-> back-end can support 4 channels.
-> 
-> >
-> > The difference after the constraint is implemented is that the
-> > snd_pcm_hw_params_set_channels() function will return error (Invalid
-> > argument) when channel number is 3 or 4 so the application knows the
-> > configuration is not supported.
-> 
-> I get the error, I am just wondering if the fix is at the right location. I'll look
-> into it, give me until tomorrow.
+On 9/26/19 9:55 PM, Navid Emamdoost wrote:
+> On Wed, Sep 25, 2019 at 12:05:28PM -0500, Pierre-Louis Bossart wrote:
+>> On 9/25/19 11:19 AM, Navid Emamdoost wrote:
+>>> In snd_skl_parse_uuids if allocation for module->instance_id fails, the
+>>> allocated memory for module shoulde be released. I changes the
+>>> allocation for module to use devm_kzalloc to be resource_managed
+>>> allocation and avoid the release in error path.
+>>
+>> if you use devm_, don't you need to fix the error path as well then, I see a
+>> kfree(uuid) in skl_freeup_uuid_list().
+>>
+>> I am not very familiar with this code but the error seems to be that the
+>> list_add_tail() is called after the module->instance_id is allocated, so
+>> there is a risk that the module allocated earlier is not freed (since it's
+>> not yet added to the list). Freeing the module as done in patch 1 works,
+>> using devm_ without fixing the error path does not seem correct to me.
+>>
+> Thanks for the feedback, then it's your call if you can accept patch 1 as
+> fix.
 
-I think I got your point. I cherry-pick these commits back to v3.14 branch to fix
-the FE/BE mismatch without adding constraint in machine driver. Thanks.
+Cezary, it's really your call.
 
-b073ed4e ASoC: soc-pcm: DPCM cares BE format
-f4c277b8 ASoC: soc-pcm: DPCM cares BE channel constraint
-4f2bd18b ASoC: dpcm: extend channel merging to the backend cpu dai
-435ffb76 ASoC: dpcm: rework runtime stream merge
-baacd8d1 ASoC: dpcm: add rate merge to the BE stream merge
+> Navid.
+>>>
+>>> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+>>> ---
+>>> Changes in v2:
+>>> 	- Changed the allocation for module from kzalloc to devm_kzalloc
+>>> ---
+>>>    sound/soc/intel/skylake/skl-sst-utils.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+>>> index d43cbf4a71ef..ac37f04b0eea 100644
+>>> --- a/sound/soc/intel/skylake/skl-sst-utils.c
+>>> +++ b/sound/soc/intel/skylake/skl-sst-utils.c
+>>> @@ -284,7 +284,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
+>>>    	 */
+>>>    	for (i = 0; i < num_entry; i++, mod_entry++) {
+>>> -		module = kzalloc(sizeof(*module), GFP_KERNEL);
+>>> +		module = devm_kzalloc(ctx->dev, sizeof(*module), GFP_KERNEL);
+>>>    		if (!module) {
+>>>    			ret = -ENOMEM;
+>>>    			goto free_uuid_list;
+>>>
+>>
 
 _______________________________________________
 Alsa-devel mailing list
