@@ -2,89 +2,84 @@ Return-Path: <SRS0=P2CN=XW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52C8DC388F3
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 16:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 272EFC4360C
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 16:38:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55F98217D9
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 16:18:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 26DB421841
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Sep 2019 16:38:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IRRcME8G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55F98217D9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kn8ZFpO3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26DB421841
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE73415E4;
-	Fri, 27 Sep 2019 18:18:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE73415E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id F14A615E4;
+	Fri, 27 Sep 2019 18:37:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F14A615E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569601131;
-	bh=7SN7yzycSXB0KiGdzaY5f+GE1CQYV9iyHNVegQHdQgE=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1569602303;
+	bh=X5nHxTxwV8EazKxYKZTaicl68S2JYJVaISvZXHEiHb0=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IRRcME8GUt8XxMxSq17Cbzz3OfoDisDR/Q9I53f4TZs5asWGo6yZe9KM2fJQLHLBG
-	 Qs0DdSCZf9BeM7IuYaNfNMROcfwHUeo7UbKVOakQ0HiJfOsWlK9iJbdhoi9oO6oD95
-	 UnU8MsoCpxMU5n41S+qtenaJQRQ+gTbVKfMLtDOs=
+	b=Kn8ZFpO37mg3ZZPr0E6SwBvcoNv5x0PIJj7wqTic+X74GG3rnzM2B/hUxdX9oLsLY
+	 xcvbG6A9m3s5DDuC5A7O7PWIaUXW7c5OuWqplFPAR/9UcQvWTRbgshF0bfs1N6iYCa
+	 dKhLmHYA0WL5KUZ4r4vJI1pG8IrtYx+A3DxP3954=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81CE2F800B3;
-	Fri, 27 Sep 2019 18:18:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F637F800B3;
+	Fri, 27 Sep 2019 18:37:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DA19F8049A; Fri, 27 Sep 2019 18:17:59 +0200 (CEST)
-Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
- [209.85.167.193])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E99F4F8049A; Fri, 27 Sep 2019 18:37:30 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE536F800B3
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2019 18:17:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE536F800B3
-Received: by mail-oi1-f193.google.com with SMTP id k9so5668724oib.7
- for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2019 09:17:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=61wEmdcrcYWJhNxd2306tXwFPpNdjt5BEaPJ4YXafyM=;
- b=o9zie7fPwnls5gwz9zrcfi8e7e48nXlQ/Jnyj8AXMVuLW95IJGS1GMLM7BwKcVkTPu
- aacLhNRbK+GD669B4MDQqtpyx7OsBLQ/OtUgMCDPfK1wYVAvP0DeJ2o57jpVPNCR8ZvZ
- 3TSx1HMRmb2Kx3sDVoJMwpk+le1tUz6zqOM3Ufk2NGO26KWunF6NMVeHrLiLg2+P4smw
- K2e8i0JfNnEHYK56ObGTtcN+Wy/W8sKscC3YG2ZYwfhMfW9lsziJVFTVpmS+llh26Jao
- VHchZDZbxawSshaZlE+657VuOvnTsxK8ok59/0t5+gpRq9qqw6uCKP9ko2tkIsyTweeu
- Ejsw==
-X-Gm-Message-State: APjAAAUW5OjLdvfMINiKlD+y0qZ+X8Zi0qS66FxjfMxPjSV/HdLEQGHv
- 3cMkcQzlHijekE7DgvvD0Q==
-X-Google-Smtp-Source: APXvYqzQ50C+MzxL+jlDDEzxwVOUDJXNh2/Ri5dfX21zjNX52KVp6n8DSiAfRPZ1iIKlDQ96r5QBdw==
-X-Received: by 2002:aca:d58c:: with SMTP id m134mr7507074oig.178.1569601074750; 
- Fri, 27 Sep 2019 09:17:54 -0700 (PDT)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id l81sm1778474oih.10.2019.09.27.09.17.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 27 Sep 2019 09:17:54 -0700 (PDT)
-Date: Fri, 27 Sep 2019 11:17:53 -0500
-From: Rob Herring <robh@kernel.org>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <20190927161753.GA30805@bogus>
-References: <CGME20190925132644eucas1p2716a805d184f9bbc4ad7a94cc9cca633@eucas1p2.samsung.com>
- <20190925132628.31858-1-m.szyprowski@samsung.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA568F80138
+ for <alsa-devel@alsa-project.org>; Fri, 27 Sep 2019 18:37:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA568F80138
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 27 Sep 2019 09:37:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,556,1559545200"; d="scan'208";a="189493023"
+Received: from sanyamba-mobl.amr.corp.intel.com (HELO [10.254.4.17])
+ ([10.254.4.17])
+ by fmsmga008.fm.intel.com with ESMTP; 27 Sep 2019 09:37:24 -0700
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>
+References: <20190925161922.22479-1-navid.emamdoost@gmail.com>
+ <13f4bd40-dbaa-e24e-edca-4b4acff9d9c5@linux.intel.com>
+ <20190927025526.GD22969@cs-dulles.cs.umn.edu>
+ <dc68e0dc-9a8e-cc52-c560-3e86c783dbb3@linux.intel.com>
+ <6966df25-e82c-1abe-6a0f-ff497dcda23b@intel.com>
+ <20190927153304.GS32742@smile.fi.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <2e8ef4df-9c5f-f6e0-23ee-32d3bc555330@linux.intel.com>
+Date: Fri, 27 Sep 2019 11:37:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20190925132628.31858-1-m.szyprowski@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, Maciej Falkowski <m.falkowski@samsung.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [alsa-devel] [PATCH v5] dt-bindings: sound: Convert Samsung I2S
- controller to dt-schema
+In-Reply-To: <20190927153304.GS32742@smile.fi.intel.com>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kjlu@umn.edu,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, smccaman@umn.edu,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Navid Emamdoost <navid.emamdoost@gmail.com>, Enrico Weigelt <info@metux.net>,
+ linux-kernel@vger.kernel.org, emamd001@umn.edu
+Subject: Re: [alsa-devel] [PATCH v2] ASoC: Intel: Skylake: prevent memory
+ leak in snd_skl_parse_uuids
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,35 +92,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 25 Sep 2019 15:26:28 +0200, Marek Szyprowski wrote:
-> From: Maciej Falkowski <m.falkowski@samsung.com>
-> 
-> Convert Samsung I2S controller to newer dt-schema format.
-> 
-> Signed-off-by: Maciej Falkowski <m.falkowski@samsung.com>
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
-> v5:
-> - Removed '#clock-cells' property from required properties
-> - Added deprecated property to 'clock-output-names'
-> and removed corresponding comment. 
-> 
-> Best regards, 
-> Maciej Falkowski
-> ---
->  .../devicetree/bindings/sound/samsung-i2s.txt |  84 -----------
->  .../bindings/sound/samsung-i2s.yaml           | 136 ++++++++++++++++++
->  2 files changed, 136 insertions(+), 84 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/samsung-i2s.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/samsung-i2s.yaml
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+> The problem with solution #1 is freeing orphaned pointer. It will work,
+> but it's simple is not okay from object life time prospective.
+
+?? I don't get your point at all Andy.
+Two allocations happens in a loop and if the second fails, you free the 
+first and then jump to free everything allocated in the previous 
+iterations. what am I missing?
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
