@@ -2,71 +2,71 @@ Return-Path: <SRS0=ugne=XZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20D93C32792
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2019 16:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51FB6C32792
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2019 16:57:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DA3920815
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2019 16:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D0ECE20815
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Sep 2019 16:57:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DBSilKNz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DA3920815
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V/TS94ov"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0ECE20815
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E21A61607;
-	Mon, 30 Sep 2019 18:55:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E21A61607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25F50166C;
+	Mon, 30 Sep 2019 18:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25F50166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569862609;
-	bh=6RDl5XAy0Wbiz08aGqjeZLwnrwE2+mVTkIFSCTxyx5o=;
+	s=default; t=1569862658;
+	bh=ZDg2hbKJ2MNeK+bDY1YtkHYcJnEffyCe5jE5RfulHkM=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DBSilKNzsZW0bZMp3rhlTW7A7+xuo/brAf8V/SVlxXbAXnXe/usZHOMtl0aFVeW32
-	 +Jcv2WSwQBuDDhf/GqokR8DTOTAojwtif7Q8fQG4bioNTMuNyouv67iLR+qolETW//
-	 eXj+ebjD5dpNDlnFCeZnVJUi23R1Vhlcd6dLLcuU=
+	b=V/TS94ovDAQ/xwjGAJ6GDRgmFIekpkRxVP2pOf9GOpQMKrVETuXLZqSbwPzsnT5g4
+	 3N2QhtCg/EVBuhYSg6JQOlllJaYkL27paTie4xl8FEhenMbbvsWprYRDMbLacM8Sbw
+	 tq4kMsnyCJdal2WE9x2ybzpI+glRyLNeBmY36BHY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A68FF80636;
-	Mon, 30 Sep 2019 18:51:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2896F8065B;
+	Mon, 30 Sep 2019 18:51:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2745F805FA; Mon, 30 Sep 2019 18:51:41 +0200 (CEST)
+ id 10A4BF805FD; Mon, 30 Sep 2019 18:51:44 +0200 (CEST)
 Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB9D4F80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB919F804CB
  for <alsa-devel@alsa-project.org>; Mon, 30 Sep 2019 18:51:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB9D4F80528
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB919F804CB
 Received: from [167.98.27.226] (helo=rainbowdash.codethink.co.uk)
  by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
- id 1iEytZ-0004A0-1u; Mon, 30 Sep 2019 17:51:33 +0100
+ id 1iEytZ-0004A2-3p; Mon, 30 Sep 2019 17:51:33 +0100
 Received: from ben by rainbowdash.codethink.co.uk with local (Exim 4.92.2)
  (envelope-from <ben@rainbowdash.codethink.co.uk>)
- id 1iEytY-0002mf-OS; Mon, 30 Sep 2019 17:51:32 +0100
+ id 1iEytY-0002ml-Ql; Mon, 30 Sep 2019 17:51:32 +0100
 From: Ben Dooks <ben.dooks@codethink.co.uk>
 To: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>
-Date: Mon, 30 Sep 2019 17:51:24 +0100
-Message-Id: <20190930165130.10642-2-ben.dooks@codethink.co.uk>
+Date: Mon, 30 Sep 2019 17:51:26 +0100
+Message-Id: <20190930165130.10642-4-ben.dooks@codethink.co.uk>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190930165130.10642-1-ben.dooks@codethink.co.uk>
 References: <20190930165130.10642-1-ben.dooks@codethink.co.uk>
 MIME-Version: 1.0
 Cc: linux-kernel@lists.codethink.co.uk, Ben Dooks <ben.dooks@codethink.co.uk>,
  Edward Cragg <edward.cragg@codethink.co.uk>
-Subject: [alsa-devel] [PATCH v3 1/7] ASoC: tegra: add a TDM configuration
-	callback
+Subject: [alsa-devel] [PATCH v3 3/7] ASoC: tegra: i2s: Add support for more
+	than 2 channels
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,68 +86,116 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Edward Cragg <edward.cragg@codethink.co.uk>
 
-Add a callback to configure TDM settings for the Tegra30 I2S ASoC 'platform'
-driver.
+The CIF configuration and clock setting is currently hard coded for 2
+channels. Since the hardware is capable of supporting 1-8 channels add
+support for reading the channel count from the supplied parameters to
+allow for better TDM support. It seems the original implementation of this
+driver was fixed at 2 channels for simplicity, and not implementing TDM.
 
 Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
-[ben.dooks@codethink.co.uk: merge fix for power management]
-[ben.dooks@codethink.co.uk: add review change for fsync of 1 clock]
+[ben.dooks@codethink.co.uk: added is_tdm and channel nr check]
+[ben.dooks@codethink.co.uk: merge edge control into set-format]
+[ben.dooks@codethink.co.uk: removed is_tdm and moved edge to hw_params]
 Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 ---
- sound/soc/tegra/tegra30_i2s.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ sound/soc/tegra/tegra30_i2s.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index ac6983c6bd72..7f9ef6abeae2 100644
+index b948b010c057..0fee59171d3b 100644
 --- a/sound/soc/tegra/tegra30_i2s.c
 +++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -254,6 +254,38 @@ static int tegra30_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return 0;
- }
- 
-+/*
-+ * Set up TDM
-+ */
-+static int tegra30_i2s_set_tdm(struct snd_soc_dai *dai,
-+			       unsigned int tx_mask, unsigned int rx_mask,
-+			       int slots, int slot_width)
-+{
-+	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	unsigned int mask, val;
-+
-+	dev_dbg(dai->dev, "%s: txmask=0x%08x rxmask=0x%08x slots=%d width=%d\n",
-+		 __func__, tx_mask, rx_mask, slots, slot_width);
-+
-+	/* Set up slots and tx/rx masks */
-+	mask = TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK |
-+	       TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_MASK |
-+	       TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_MASK;
-+
-+	val = (tx_mask << TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_SHIFT) |
-+	      (rx_mask << TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_SHIFT) |
-+	      ((slots - 1) << TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_SHIFT);
-+
-+	pm_runtime_get_sync(dai->dev);
-+	regmap_update_bits(i2s->regmap, TEGRA30_I2S_SLOT_CTRL, mask, val);
-+	// set the fsync width to minimum of 1 clock width
-+	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL,
-+			   TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_MASK, 0x0);
-+	pm_runtime_put(dai->dev);
-+
-+	return 0;
-+}
-+
- static int tegra30_i2s_probe(struct snd_soc_dai *dai)
+@@ -67,6 +67,7 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
  {
  	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-@@ -268,6 +300,7 @@ static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
- 	.set_fmt	= tegra30_i2s_set_fmt,
- 	.hw_params	= tegra30_i2s_hw_params,
- 	.trigger	= tegra30_i2s_trigger,
-+	.set_tdm_slot	= tegra30_i2s_set_tdm,
- };
+ 	unsigned int mask = 0, val = 0;
++	unsigned int ch_mask, ch_val = 0;
  
- static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+@@ -75,6 +76,7 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
+ 		return -EINVAL;
+ 	}
+ 
++	ch_mask = TEGRA30_I2S_CH_CTRL_EGDE_CTRL_MASK;
+ 	mask |= TEGRA30_I2S_CTRL_MASTER_ENABLE;
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+@@ -90,10 +92,12 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
+ 		TEGRA30_I2S_CTRL_LRCK_MASK;
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_DSP_A:
++		ch_val = TEGRA30_I2S_CH_CTRL_EGDE_CTRL_NEG_EDGE;
+ 		val |= TEGRA30_I2S_CTRL_FRAME_FORMAT_FSYNC;
+ 		val |= TEGRA30_I2S_CTRL_LRCK_L_LOW;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
++		ch_val = TEGRA30_I2S_CH_CTRL_EGDE_CTRL_NEG_EDGE;
+ 		val |= TEGRA30_I2S_CTRL_FRAME_FORMAT_FSYNC;
+ 		val |= TEGRA30_I2S_CTRL_LRCK_R_LOW;
+ 		break;
+@@ -115,6 +119,7 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
+ 
+ 	pm_runtime_get_sync(dai->dev);
+ 	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CTRL, mask, val);
++	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL, ch_mask, ch_val);
+ 	pm_runtime_put(dai->dev);
+ 
+ 	return 0;
+@@ -127,10 +132,11 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct device *dev = dai->dev;
+ 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	unsigned int mask, val, reg;
+-	int ret, sample_size, srate, i2sclock, bitcnt, audio_bits;
++	int ret, sample_size, srate, i2sclock, bitcnt, audio_bits, channels;
+ 	struct tegra30_ahub_cif_conf cif_conf;
+ 
+-	if (params_channels(params) != 2)
++	channels = params_channels(params);
++	if (channels > 8)
+ 		return -EINVAL;
+ 
+ 	mask = TEGRA30_I2S_CTRL_BIT_SIZE_MASK;
+@@ -157,9 +163,8 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CTRL, mask, val);
+ 
+ 	srate = params_rate(params);
+-
+ 	/* Final "* 2" required by Tegra hardware */
+-	i2sclock = srate * params_channels(params) * sample_size * 2;
++	i2sclock = srate * channels * sample_size * 2;
+ 
+ 	bitcnt = (i2sclock / (2 * srate)) - 1;
+ 	if (bitcnt < 0 || bitcnt > TEGRA30_I2S_TIMING_CHANNEL_BIT_COUNT_MASK_US)
+@@ -179,8 +184,8 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_write(i2s->regmap, TEGRA30_I2S_TIMING, val);
+ 
+ 	cif_conf.threshold = 0;
+-	cif_conf.audio_channels = 2;
+-	cif_conf.client_channels = 2;
++	cif_conf.audio_channels = channels;
++	cif_conf.client_channels = channels;
+ 	cif_conf.audio_bits = audio_bits;
+ 	cif_conf.client_bits = audio_bits;
+ 	cif_conf.expand = 0;
+@@ -319,7 +324,7 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_96000,
+ 		.formats = SNDRV_PCM_FMTBIT_S32_LE |
+ 			   SNDRV_PCM_FMTBIT_S24_LE |
+@@ -328,7 +333,7 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_96000,
+ 		.formats = SNDRV_PCM_FMTBIT_S32_LE |
+ 			   SNDRV_PCM_FMTBIT_S24_LE |
 -- 
 2.23.0
 
