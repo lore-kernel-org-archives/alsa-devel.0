@@ -6,78 +6,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1B61C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC004C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:46:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5AF182133F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:45:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 344AE21906
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:46:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D02FPWBm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ukEO4Ubf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AF182133F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gxno9rGD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="uXNWd2PI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 344AE21906
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C4B3168D;
-	Tue,  1 Oct 2019 13:44:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C4B3168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54A051694;
+	Tue,  1 Oct 2019 13:45:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54A051694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569930326;
-	bh=9VEvfY+b14Tg89sQVbeNMebqaCxGFXAKJ+lTcTgqMdI=;
+	s=default; t=1569930381;
+	bh=aC083apcZQL5xGJtTBVsJkDdG/z7yC0JdB6AkJ9mo7o=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=D02FPWBmcdmt72qAD1te6zuperQNokodFBX7SDWzqV3FxWgI0Px+Fl1pBS0QeTjg4
-	 hYunSpCDA+fQ2OzS3Z0VrwJBYWbvczSUdPrTFRHrumodMOaGEj6WsDvzNix48U7v98
-	 fLykUyqZesVQtVKpboDafY11CtI6okX+vnPJPwXQ=
+	b=Gxno9rGDHUr3zhmpIubuUOVPKhDinDIff4bWdKPLTnuaryfKL/dDmFWBRJHBClYLS
+	 k+KOUvTV1UuuIgsyB156DT4PutBvgJbpV2B2+p/hk0lSazqVhZ00SQkEB5T0VBuigL
+	 g0xW88Hiw60mePdLw9Ug7dzUVzISKsBVYoXkkvLg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 196F9F805FD;
-	Tue,  1 Oct 2019 13:41:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F33F6F806F0;
+	Tue,  1 Oct 2019 13:41:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3175CF80659; Tue,  1 Oct 2019 13:40:57 +0200 (CEST)
+ id B66EAF805F9; Tue,  1 Oct 2019 13:40:58 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA98CF805F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8EC8F805F9
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA98CF805F8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8EC8F805F9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ukEO4Ubf"
+ header.b="uXNWd2PI"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=WERVSR+BAQJwf3PYWWyXu5R8XD5gifIGU8k5q5E4VGw=; b=ukEO4Ubfs4C5
- e1EtMwu3yNT9/lC1hpLzQoFaXSxdrgrdBa2Pzi2yVPVmti3JfFiBgAESsr49bHkXbEIUqnP9Vr1Bm
- XQ1uPFV8VeDkyRKhKv+GQ5kaxYZ+WjMfvoeb7ReGSUTWi8m9lMwbxPP6SwbRDtSXBbQvkkZK1D/tS
- yIXBU=;
+ List-Archive; bh=Pm5Wzk3cyK4n7/BtFOzOjGj6C3W93IFmNChDWB7dwI4=; b=uXNWd2PIwgpR
+ hgkZkcPTAFdL9w9SWVnGl7urBvpK8OVyoFjjJCt1GgT2bdc3na6aA4sGbeL5bxDj16hVs52E2AuED
+ sebSZceCiLS90t0hRKJcyTTlqw24tX/TIY3Euj/LpHrdbLelziRXNwgfyOR1eyXrHBD3cGYXGwrS9
+ YlS0A=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWN-0004Sz-Tb; Tue, 01 Oct 2019 11:40:47 +0000
+ id 1iFGWO-0004TF-GP; Tue, 01 Oct 2019 11:40:48 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 6CF3527429C0; Tue,  1 Oct 2019 12:40:47 +0100 (BST)
+ id E96E82742A30; Tue,  1 Oct 2019 12:40:47 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Colin Ian King <colin.king@canonical.com>
-In-Reply-To: <20190925111023.7771-1-colin.king@canonical.com>
+In-Reply-To: <20190925094545.19941-1-colin.king@canonical.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114047.6CF3527429C0@ypsilon.sirena.org.uk>
+Message-Id: <20191001114047.E96E82742A30@ypsilon.sirena.org.uk>
 Date: Tue,  1 Oct 2019 12:40:47 +0100 (BST)
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
  kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] Applied "ASoC: wcd9335: clean up indentation issue" to
-	the asoc tree
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [alsa-devel] Applied "ASoC: amd: acp3x: clean up indentation issue"
+	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: wcd9335: clean up indentation issue
+   ASoC: amd: acp3x: clean up indentation issue
 
 has been applied to the asoc tree at
 
@@ -123,42 +123,34 @@ to this mail.
 Thanks,
 Mark
 
-From 944eedd8c021893d08d02a8eec8e5161327316cd Mon Sep 17 00:00:00 2001
+From 67f798c78242ef3051bf6bf304ddb8a09514e1c5 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 25 Sep 2019 12:10:23 +0100
-Subject: [PATCH] ASoC: wcd9335: clean up indentation issue
+Date: Wed, 25 Sep 2019 10:45:45 +0100
+Subject: [PATCH] ASoC: amd: acp3x: clean up indentation issue
 
-There is an if statement that is indented one level too deeply,
-remove the extraneous tabs.
+There is a statement that is indented one level too deeply,
+remove the extraneous tab.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20190925111023.7771-1-colin.king@canonical.com
+Link: https://lore.kernel.org/r/20190925094545.19941-1-colin.king@canonical.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wcd9335.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index f318403133e9..f11ffa28683b 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -2837,11 +2837,11 @@ static int wcd9335_codec_enable_dec(struct snd_soc_dapm_widget *w,
- 				   TX_HPF_CUT_OFF_FREQ_MASK) >> 5;
- 		snd_soc_component_update_bits(comp, tx_vol_ctl_reg, 0x10, 0x10);
- 		snd_soc_component_update_bits(comp, dec_cfg_reg, 0x08, 0x00);
--			if (hpf_coff_freq != CF_MIN_3DB_150HZ) {
--				snd_soc_component_update_bits(comp, dec_cfg_reg,
--						    TX_HPF_CUT_OFF_FREQ_MASK,
--						    hpf_coff_freq << 5);
--			}
-+		if (hpf_coff_freq != CF_MIN_3DB_150HZ) {
-+			snd_soc_component_update_bits(comp, dec_cfg_reg,
-+						      TX_HPF_CUT_OFF_FREQ_MASK,
-+						      hpf_coff_freq << 5);
-+		}
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
- 		snd_soc_component_update_bits(comp, tx_vol_ctl_reg, 0x10, 0x00);
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index bc4dfafdfcd1..ea57088d50ce 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -631,7 +631,7 @@ static int acp3x_audio_probe(struct platform_device *pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res) {
+ 		dev_err(&pdev->dev, "IORESOURCE_IRQ FAILED\n");
+-			return -ENODEV;
++		return -ENODEV;
+ 	}
+ 
+ 	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
 -- 
 2.20.1
 
