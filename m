@@ -7,129 +7,133 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 114A7C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 12:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 530C6ECE587
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 12:38:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F7E821924
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 12:37:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3D9521920
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 12:38:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lDJgdhJP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="ckSan4VK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F7E821924
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K9qLa0o5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="VEhDDGOA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3D9521920
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2208166C;
-	Tue,  1 Oct 2019 14:36:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2208166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 200AD1675;
+	Tue,  1 Oct 2019 14:37:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 200AD1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569933456;
-	bh=xUf2E2Zg7MtLgd55pcjlUbecG9yx7lXeSgmM4wDdPcU=;
-	h=From:To:Date:References:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=lDJgdhJPMKm0VPm3FT9/ZMS0roxi5DIQpw7VVQpqSt8lWpoBuy8SkKLvS1CA5Pm57
-	 5ZUUiMg6ehaotdfjfEOsfIeUijOJxlIRad6L7joq/64YLOvP5N4JKuhiHL+7BU42I2
-	 QwXk7G9+wzI1Ji5qju30kBDBwlqSi957Q6QbdVWA=
+	s=default; t=1569933513;
+	bh=dwMvrwDpUBlksOBRZdp1yfZL2P701O6KOIfR2q8dyCU=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=K9qLa0o5MO629dJHF4WNwXXlWU6Xs+J+hz+P5P0RNSxrUne6MXjMkDzvXkamIdSAA
+	 SxvO2SoBBLgiXtjINFuatN+SWete+TdHZPhEsxj/oHrA2+559gNweUJzONgP3d+3/0
+	 m4EpuEvbMBazaI8C8RJvA8kE9KnU/x8y2Y+MKnOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CDC5F80518;
-	Tue,  1 Oct 2019 14:36:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D45CF800D0;
+	Tue,  1 Oct 2019 14:36:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADEABF80519; Tue,  1 Oct 2019 14:36:44 +0200 (CEST)
+ id 4FE51F80482; Tue,  1 Oct 2019 14:36:46 +0200 (CEST)
 Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com
  [210.118.77.11])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4A6BF800D0
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 14:36:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4A6BF800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B656F80482
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 14:36:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B656F80482
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="ckSan4VK"
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+ header.b="VEhDDGOA"
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
  by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id
- 20191001123637euoutp017e35793321459e11adf5c45bbd1a68ef~JhhuErhn71111811118euoutp01S
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 12:36:37 +0000 (GMT)
+ 20191001123641euoutp01781401e0b8026153afd789eb8f0dddbd~JhhxNmnEv1111811118euoutp01X
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 12:36:41 +0000 (GMT)
 DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com
- 20191001123637euoutp017e35793321459e11adf5c45bbd1a68ef~JhhuErhn71111811118euoutp01S
+ 20191001123641euoutp01781401e0b8026153afd789eb8f0dddbd~JhhxNmnEv1111811118euoutp01X
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1569933397;
- bh=2CZIhLH33tEifh3ALDvkkJLDMm/NCNj9OqRYGF4YRHk=;
- h=From:To:Cc:Subject:Date:References:From;
- b=ckSan4VK7cEsHAvZuvv36CifaRibVleBDm0C3HRMPlZv00wCdmxZNb1E+6ZpolXSv
- 7nyC2fKOHOwUXN9Ugx+TmwzTmLR3F+skJ0GH214zzNSuGMH5TvsmfALu8ALrOkI96E
- w6GNEKKd8eLCGr0Js4jo+2TfrYVFgLiRN9mDpmoE=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
- eucas1p1.samsung.com (KnoxPortal) with ESMTP id
- 20191001123637eucas1p1a5a031dcebe72e27a5623cf58ee42ea4~Jhhtzy6gb1358913589eucas1p1C;
- Tue,  1 Oct 2019 12:36:37 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
- eusmges2new.samsung.com (EUCPMTA) with SMTP id 28.19.04309.558439D5; Tue,  1
- Oct 2019 13:36:37 +0100 (BST)
+ s=mail20170921; t=1569933401;
+ bh=6Pr3bvlwTEEuaJryJIjyun0TpsiDiHDMaMQxx7hutTk=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=VEhDDGOAJcXcLxe+oLqmkUtIfGibVYCn3SHrBjdPXiXV+lZJCqaxqCPyQD0RyzVb2
+ X7kuz057tW+timTJgXhB65EyIyVIUNe+pT6FEba50Cye6I6A4ep8A9ljJjt6WDWBo0
+ Z/5EtmEGZZSVpwgVRPulBlBw+XW01xfcZg89oBhw=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+ eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+ 20191001123640eucas1p20b765903788d7e533396cf28af66f0f2~Jhhw8BUhk0767207672eucas1p28;
+ Tue,  1 Oct 2019 12:36:40 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+ eusmges3new.samsung.com (EUCPMTA) with SMTP id A5.33.04374.858439D5; Tue,  1
+ Oct 2019 13:36:40 +0100 (BST)
 Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
  eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
- 20191001123637eucas1p25c7551d4c967e4a2855f6c8d3b096ff5~JhhtfxpQU2028820288eucas1p27;
- Tue,  1 Oct 2019 12:36:37 +0000 (GMT)
+ 20191001123640eucas1p265d38cc9ad2a3103abd63b5d04d18628~JhhwqTg3E0566705667eucas1p2K;
+ Tue,  1 Oct 2019 12:36:40 +0000 (GMT)
 Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
  eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20191001123637eusmtrp144f2a02a099c64eb7f5304a4055ad78f~JhhtfBv3U0398103981eusmtrp1h;
- Tue,  1 Oct 2019 12:36:37 +0000 (GMT)
-X-AuditID: cbfec7f4-afbff700000010d5-06-5d9348554c06
+ 20191001123640eusmtrp108eb05d1591c62afe095edda02189ddf~Jhhwpo-zP0390803908eusmtrp1P;
+ Tue,  1 Oct 2019 12:36:40 +0000 (GMT)
+X-AuditID: cbfec7f5-4f7ff70000001116-be-5d934858d106
 Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
- eusmgms2.samsung.com (EUCPMTA) with SMTP id CC.33.04117.558439D5; Tue,  1
- Oct 2019 13:36:37 +0100 (BST)
+ eusmgms2.samsung.com (EUCPMTA) with SMTP id 1F.33.04117.858439D5; Tue,  1
+ Oct 2019 13:36:40 +0100 (BST)
 Received: from AMDC3061.DIGITAL.local (unknown [106.120.51.75]) by
  eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
- 20191001123636eusmtip2b2bcedc6b7a6d9d900c1886ae301bccc~Jhhs5dkDU0870908709eusmtip2d;
- Tue,  1 Oct 2019 12:36:36 +0000 (GMT)
+ 20191001123640eusmtip25fdf9f8993637bb262eebb300b1dd1a5~JhhwEfYGH1272012720eusmtip2i;
+ Tue,  1 Oct 2019 12:36:39 +0000 (GMT)
 From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 To: broonie@kernel.org, krzk@kernel.org
-Date: Tue,  1 Oct 2019 14:36:23 +0200
-Message-Id: <20191001123625.19370-1-s.nawrocki@samsung.com>
+Date: Tue,  1 Oct 2019 14:36:25 +0200
+Message-Id: <20191001123625.19370-3-s.nawrocki@samsung.com>
 X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA0VSe0hTcRTudx+71+HiOhV/rbIaSQ/IF2UXtNAQvD3+kCDKZOktLyq5abs+
- siDNWJmPtZSaicEITZmYOkVSydl8LDK5CfOFiJUSJJngRPKR5na1/vvO953vfIfDIVF5Ga4g
- UzWZnFbDpiklUqytf1k4dokpVwV/+n6AdgzZELq5ohGnn32dkdAOnQXQgtBE0EuOQoS2TI/g
- dIXQhdANvZME7Zy34nTPz0c4PVS3iER6Mk3OAgnTXjlJMBbzYwnTUp3HGKs2AKNvNQPGafGP
- Ja5KI5K4tNRsTht0OlGa0qFrITJ0vrcHBwUsH4x4FQEPElLH4ZihBC8CUlJO1QHYZ23dKhYB
- FOx6VCycAOpWOiXbFuNoMyIKtQDWLy+Bf5aBj+uoq0tChcDSPj1wYR/qEJyqKHDPRal2BH4b
- nsJcgjcVBy0fTJujSBKjAmD+E7dXRoXDggk7ENP2wfqmbvcakCom4MK7WUIUomGN/hcuYm84
- a2/d4vfAgfISTDQ8ALCkc4IQCwOAU3bT1thw2GMfwl3JKHUENnYEiXQU7Kl+j7poSO2EY3Pu
- K6GbsKzNuEXLYOFDudh9EK6ajYiIFbB4ZgMTMQOnC7vc15JTKtg72okYgH/l/ywTAGbgx2Xx
- 6mSOD9VwOYE8q+azNMmBN9LVFrD5KQPr9sW3oGPtug1QJFB6ygw/nqrkOJvN56ptAJKo0kcW
- sVamksuS2Nw7nDY9QZuVxvE2sJvElH6yuzu+xMupZDaTu8lxGZx2W0VID0U+2D/PelQ6VgXm
- d2P8m7AY2wnTRM3zFLz9yquVbgTBNmw56tUz45qSvMtz1wRFWHn+Z8VF75jw3HMJoQHRp4jE
- w82l49HKqKI5r07rvCPyfN9rhfcf68AF8GLBEB83/vL+yaTgW6aq4fUutnbXvZU2c46vc0f6
- 3tizDWT/5t7tSoxPYUOOolqe/QvfcePkJQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsVy+t/xe7qhHpNjDW7O4rC4cvEQk8XGGetZ
+In-Reply-To: <20191001123625.19370-1-s.nawrocki@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA0WSe0hTYRjG+85lO1ueOk7JL7OkpZRCXjLihNIFw47/xP4Iisxq5Ulnbsrm
+ JY1ILC9NU1Nqy5Q0ZtnUnJuKZllMc5DV0LS0EF0KZiYDp0klmdtR+u/3PM/78L58fAQqqsS9
+ CZkilVUqpElinhBr6/31fvdJpjw2ZHpqHz3Yb0boZm0TTt+xTfLowVwjoK1WA5/+OViA0MaJ
+ jzittXYhdGPPKJ922F/idPePfJzur5tHDrkxBkcOj+moGOUzRv1NHmPSXWM0lcuAKW7RA8Zh
+ 3CbhnxJGxLFJsnRWGXzgnDDhTXkhSLGJLptbZpFsML5RDQQEpPZC63Q9Tw2EhIiqA9Dc3bUq
+ 5gGs6elBOOEA0GjUgLXKk7d3MS54DOCCYYbnDFyVkqciJ/OoUHjrdbGr4EnthGPaHNxZQKkO
+ BH4dGsOcgQfFwPxPcy7GKH9Ya83GnUxS4dA2N4xx23xhveEVqgYEIaAiYIFewNmP+HBAd4zj
+ I9D2rX31OA/43dLC59gH9pUXuQ6F1HUAizq/8DlRCuCYpXq1EQ67Lf24cwFKBcCmZ8GcfRh2
+ PLcjThtSG+DwrLvTRlewrE2DcjYJC/JE3LQf/KPXIBx7w8LJZYwbYWDvvQzuqUoA1FXp+KXA
+ t+L/rmoA9MCLTVPJ41lVmILNCFJJ5ao0RXzQhWS5Eaz8mb6/loV20LV03gwoAojdSHrqdqwI
+ l6arMuVmAAlU7ElGLJXFisg4aWYWq0w+q0xLYlVmsIXAxF7klXXjMSIqXprKXmLZFFa5liKE
+ wDsbSELco37nHR9wJwNytye/aMjCpurFHyYSvBKx2hOF8vGaeptpz6bGKrt4UfaQIWdkiRlZ
+ pzc3fE4IGzbFPNhlUSOsRCLY0XoGOVjeOsprXh8dRXZuNeWH40fDyEXPG6iPn+ni/c7IIXmd
+ ttY/sFe+/133yEJAdKTWXjGiuZomxlQJ0tBAVKmS/gOln6FGLwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLLMWRmVeSWpSXmKPExsVy+t/xe7oRHpNjDaZOVLS4cvEQk8XGGetZ
  LaY+fMJmcaV1E6PF+fMb2C2+Xelgstj0+BqrxYzz+5gs1h65y27x+f1+VovDb9pZLS6u+MLk
  wOOx4XMTm8fOWXfZPTat6mTz2Lyk3mP6nP+MHn1bVjF6fN4kF8AepWdTlF9akqqQkV9cYqsU
- bWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJexq3Uze0GraMXZs+dZGhivCXYx
- cnJICJhITL++kQnEFhJYyijx/XBBFyMHUFxKYn6LEkSJsMSfa11sXYxcQCWfGCUWvtjCDJJg
- EzCU6D3axwhiiwhoSnTMu80KUsQscJhJYnHHQRaQhLBAuMTNhxOZQIayCKhKNPSD9fIKWEs0
- 3T7OCLFAXmL1hgPMExh5FjAyrGIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAgM4m3Hfm7Zwdj1
- LvgQowAHoxIPr8XzibFCrIllxZW5hxglOJiVRHht/kyKFeJNSaysSi3Kjy8qzUktPsRoCrR7
- IrOUaHI+MMLySuINTQ3NLSwNzY3Njc0slMR5OwQOxggJpCeWpGanphakFsH0MXFwSjUwcr7S
- DHqiE7VtuWcq25sN79b8yFyXqnh774ZFAs5t6d0detbROaGLFprdkp/jyDRR0FCs65isbmKr
- ZvqLC/7ssXd0j7kfOl33ZEGB3byCa/Ovmp+qjrXx2S7PdnD1akHGk0GmdzXuec3lYnvm+EF8
- bV3AlldZB8/f/vfq5lz1FcuVZVndHqi8U2Ipzkg01GIuKk4EANvBA+t4AgAA
-X-CMS-MailID: 20191001123637eucas1p25c7551d4c967e4a2855f6c8d3b096ff5
+ bWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJdxanI3Y8FDoYpDW94yNTA+4O9i
+ 5OSQEDCRWHlmGksXIxeHkMBSRolfX2YxdjFyACWkJOa3KEHUCEv8udbFBmILCXxiBHJcQWw2
+ AUOJ3qN9jCC2iICmRMe826wgc5gFDjNJLO44yAKSEBbwkGi//gnMZhFQlVh6voEVxOYVsJZ4
+ +OkGC8QCeYnVGw4wg+zlFLCR6FjFCbHLWqLl6xrGCYx8CxgZVjGKpJYW56bnFhvpFSfmFpfm
+ pesl5+duYgQG/bZjP7fsYOx6F3yIUYCDUYmH1+L5xFgh1sSy4srcQ4wSHMxKIrw2fybFCvGm
+ JFZWpRblxxeV5qQWH2I0BbppIrOUaHI+MCLzSuINTQ3NLSwNzY3Njc0slMR5OwQOxggJpCeW
+ pGanphakFsH0MXFwSjUw7pl0b+vCKWH5Zf7ea+XMe3Yqei/lZFtyJ8D83Jwfl7WfMR1y7v9l
+ ljn/zpoVAelVjdemLNUtW///SFLX+t0Mnq21q44FSPxjatVSDdo5bc8PLoaY+fkvDh00+afc
+ m9agN7FtzeMdai93KDht2BKgdujlT64JlnnlAtdr/mimn+sRTZH6tPWFqBJLcUaioRZzUXEi
+ AJfY47SQAgAA
+X-CMS-MailID: 20191001123640eucas1p265d38cc9ad2a3103abd63b5d04d18628
 X-Msg-Generator: CA
-X-RootMTR: 20191001123637eucas1p25c7551d4c967e4a2855f6c8d3b096ff5
+X-RootMTR: 20191001123640eucas1p265d38cc9ad2a3103abd63b5d04d18628
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20191001123637eucas1p25c7551d4c967e4a2855f6c8d3b096ff5
-References: <CGME20191001123637eucas1p25c7551d4c967e4a2855f6c8d3b096ff5@eucas1p2.samsung.com>
+X-CMS-RootMailID: 20191001123640eucas1p265d38cc9ad2a3103abd63b5d04d18628
+References: <20191001123625.19370-1-s.nawrocki@samsung.com>
+ <CGME20191001123640eucas1p265d38cc9ad2a3103abd63b5d04d18628@eucas1p2.samsung.com>
 Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
  ckeepax@opensource.cirrus.com, b.zolnierkie@samsung.com, sbkim73@samsung.com,
  patches@opensource.cirrus.com, lgirdwood@gmail.com,
  Sylwester Nawrocki <s.nawrocki@samsung.com>,
  linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
-Subject: [alsa-devel] [PATCH v3 RESEND 1/3] ASoC: samsung: arndale: Simplify
- DAI link initialization
+Subject: [alsa-devel] [PATCH v3 RESEND 3/3] ASoC: samsung: Rename Arndale
+	card driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -148,80 +152,65 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is only one DAI link so we can drop an unnecessary loop statement.
-Use card->dai_link in place of direct static arndale_rt5631_dai[] array
-dereference as a prerequisite for adding support for other CODECs.
-Unnecessary assignment of dai_link->codecs->name to NULL is removed.
+Rename arndale_rt5631.c to just arnddale.c as we support other CODECs
+than RT5631.  While at it replace spaces in Kconfig with tabs.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 ---
 Changes since v1:
- - rebased due to reordering patches in the series
+ - new patch.
 ---
- sound/soc/samsung/arndale_rt5631.c | 42 +++++++++++++-----------------
- 1 file changed, 18 insertions(+), 24 deletions(-)
+ sound/soc/samsung/Kconfig                         | 10 +++++-----
+ sound/soc/samsung/Makefile                        |  4 ++--
+ sound/soc/samsung/{arndale_rt5631.c => arndale.c} |  0
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+ rename sound/soc/samsung/{arndale_rt5631.c => arndale.c} (100%)
 
-diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
-index fd8c6642fb0d..004c84fafad9 100644
---- a/sound/soc/samsung/arndale_rt5631.c
-+++ b/sound/soc/samsung/arndale_rt5631.c
-@@ -88,36 +88,30 @@ static void arndale_put_of_nodes(struct snd_soc_card *card)
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 6803cbfa9e46..1a0b163ca47b 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -194,11 +194,11 @@ config SND_SOC_ODROID
+ 	help
+ 	  Say Y here to enable audio support for the Odroid XU3/XU4.
  
- static int arndale_audio_probe(struct platform_device *pdev)
- {
--	int n, ret;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct snd_soc_card *card = &arndale_rt5631;
-+	struct snd_soc_dai_link *dai_link;
-+	int ret;
+-config SND_SOC_ARNDALE_RT5631_ALC5631
+-        tristate "Audio support for RT5631(ALC5631) on Arndale Board"
+-        depends on I2C
+-        select SND_SAMSUNG_I2S
+-        select SND_SOC_RT5631
++config SND_SOC_ARNDALE
++	tristate "Audio support for Arndale Board"
++	depends on I2C
++	select SND_SAMSUNG_I2S
++	select SND_SOC_RT5631
+ 	select MFD_WM8994
+ 	select SND_SOC_WM8994
  
- 	card->dev = &pdev->dev;
-+	dai_link = card->dai_link;
-+
-+	dai_link->cpus->of_node = of_parse_phandle(np, "samsung,audio-cpu", 0);
-+	if (!dai_link->cpus->of_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'samsung,audio-cpu' missing or invalid\n");
-+		return -EINVAL;
-+	}
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index c3b76035f69c..8f5dfe20b9f1 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -39,7 +39,7 @@ snd-soc-lowland-objs := lowland.o
+ snd-soc-littlemill-objs := littlemill.o
+ snd-soc-bells-objs := bells.o
+ snd-soc-odroid-objs := odroid.o
+-snd-soc-arndale-rt5631-objs := arndale_rt5631.o
++snd-soc-arndale-objs := arndale.o
+ snd-soc-tm2-wm5110-objs := tm2_wm5110.o
  
--	for (n = 0; np && n < ARRAY_SIZE(arndale_rt5631_dai); n++) {
--		if (!arndale_rt5631_dai[n].cpus->dai_name) {
--			arndale_rt5631_dai[n].cpus->of_node = of_parse_phandle(np,
--					"samsung,audio-cpu", n);
--
--			if (!arndale_rt5631_dai[n].cpus->of_node) {
--				dev_err(&pdev->dev,
--				"Property 'samsung,audio-cpu' missing or invalid\n");
--				return -EINVAL;
--			}
--		}
--		if (!arndale_rt5631_dai[n].platforms->name)
--			arndale_rt5631_dai[n].platforms->of_node =
--					arndale_rt5631_dai[n].cpus->of_node;
--
--		arndale_rt5631_dai[n].codecs->name = NULL;
--		arndale_rt5631_dai[n].codecs->of_node = of_parse_phandle(np,
--					"samsung,audio-codec", n);
--		if (!arndale_rt5631_dai[0].codecs->of_node) {
--			dev_err(&pdev->dev,
-+	if (!dai_link->platforms->name)
-+		dai_link->platforms->of_node = dai_link->cpus->of_node;
-+
-+	dai_link->codecs->of_node = of_parse_phandle(np, "samsung,audio-codec", 0);
-+	if (!dai_link->codecs->of_node) {
-+		dev_err(&pdev->dev,
- 			"Property 'samsung,audio-codec' missing or invalid\n");
--			ret = -EINVAL;
--			goto err_put_of_nodes;
--		}
-+		ret = -EINVAL;
-+		goto err_put_of_nodes;
- 	}
- 
- 	ret = devm_snd_soc_register_card(card->dev, card);
+ obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
+@@ -62,5 +62,5 @@ obj-$(CONFIG_SND_SOC_LOWLAND) += snd-soc-lowland.o
+ obj-$(CONFIG_SND_SOC_LITTLEMILL) += snd-soc-littlemill.o
+ obj-$(CONFIG_SND_SOC_BELLS) += snd-soc-bells.o
+ obj-$(CONFIG_SND_SOC_ODROID) += snd-soc-odroid.o
+-obj-$(CONFIG_SND_SOC_ARNDALE_RT5631_ALC5631) += snd-soc-arndale-rt5631.o
++obj-$(CONFIG_SND_SOC_ARNDALE) += snd-soc-arndale.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_TM2_WM5110) += snd-soc-tm2-wm5110.o
+diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale.c
+similarity index 100%
+rename from sound/soc/samsung/arndale_rt5631.c
+rename to sound/soc/samsung/arndale.c
 -- 
 2.17.1
 
