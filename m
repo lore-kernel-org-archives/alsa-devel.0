@@ -6,86 +6,85 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC3E8ECE587
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 17:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83B82ECE587
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 17:56:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 528A72190F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 17:30:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 84C012070B
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 17:56:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nl/gyQK4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="vUbZIQnO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 528A72190F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YgBC7INm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="cI5pL9xv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84C012070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41360166F;
-	Tue,  1 Oct 2019 19:29:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41360166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 668AF166F;
+	Tue,  1 Oct 2019 19:55:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 668AF166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569951038;
-	bh=e+jTsBz26ZJGf1QZuXOtCY1XicEIRiL3RE0SRigEm1M=;
+	s=default; t=1569952559;
+	bh=fvBTofsdGYz6jlQQwzsf3++lwnu7SMY6VB3L0E+PSTc=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nl/gyQK4mosLO3yzT1U0kAWEdcQ1/9OexUzoMigBgtdDSfxzvg2X+Xs4beyUOr9rD
-	 iM3dM6RqH/k9co1BncKV2HyK4TsVzWqwmiXgwShBww/koDx20cEUnQY4kdB7lY06yf
-	 Jr3pzVwRV+yRZksvjMS3a0dCRpYQl8djoLggUQpg=
+	b=YgBC7INm7abdS+XYBmk8bdCKB7UJ08tEBWlFC43W4RcAk97YbtRU8OvmGHN/uKX0k
+	 WRXEVBRbo8kxUnx25fCod0qbCvd0dxEWE4a/rowvVEA6916axesF8tQfnmN17TVdKA
+	 rOHrr45l2+FzL++3xM8Yx5zAUc7WRK8lyV5PFiQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C05BBF804FF;
-	Tue,  1 Oct 2019 19:29:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE798F804FF;
+	Tue,  1 Oct 2019 19:55:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84A41F80506; Tue,  1 Oct 2019 19:29:46 +0200 (CEST)
+ id 0D843F80506; Tue,  1 Oct 2019 19:55:07 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03E83F800D0
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03E83F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3F43F80482
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:55:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3F43F80482
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="vUbZIQnO"
+ header.b="cI5pL9xv"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
  MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
  List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=lTpgWj/lyGtni4J5FE3WcdA3ifqDB8F61MancmRFDZg=; b=vUbZIQnOOGi7W7s9lj1TMqWRC
- yO20baUmYZDsdtuApUVxVzFG5CbwY5MfFgLMA6Qa4kca7r1Ny1PULNyujxF0m2xtRYykLB/ktEWWv
- etnJvn7TtcqmdIx3UOpgg2Q/fqmt8gNunVeX03s9nTi0yWN4DIpUWzmPc10xDkKf1eO2Y=;
+ bh=UdeDTcRqRLmOWNI66TIvhiXBuusNntkv2kJPDqWMITI=; b=cI5pL9xvdMaZoQSXt/BoTvwCf
+ 6MS2X7NqiP8DNfNNUfGVb1cu90q/m0myKcYkXX8xFft8BLi1/eB1uQnWkEvPaSyVqJ7zv254ZjiaL
+ 0xfG4zbL4U3UWysSzRXKZSORC6SNhkkmiB1vOhVgMIPOuM7iGQ26qhGgh++OtljBweJ90=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFLy2-0005mV-JZ; Tue, 01 Oct 2019 17:29:42 +0000
+ id 1iFMMZ-0005rl-6M; Tue, 01 Oct 2019 17:55:03 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 7977927429C0; Tue,  1 Oct 2019 18:29:41 +0100 (BST)
-Date: Tue, 1 Oct 2019 18:29:41 +0100
+ id 13E7327429C0; Tue,  1 Oct 2019 18:55:02 +0100 (BST)
+Date: Tue, 1 Oct 2019 18:55:01 +0100
 From: Mark Brown <broonie@kernel.org>
-To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Message-ID: <20191001172941.GC4786@sirena.co.uk>
-References: <1569891524-18875-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
- <BN6PR12MB18093C8EDE60811B3D917DEAF79D0@BN6PR12MB1809.namprd12.prod.outlook.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20191001175501.GA14762@sirena.co.uk>
+References: <20191001142116.1172290-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <BN6PR12MB18093C8EDE60811B3D917DEAF79D0@BN6PR12MB1809.namprd12.prod.outlook.com>
-X-Cookie: Keep refrigerated.
+In-Reply-To: <20191001142116.1172290-1-arnd@arndb.de>
+X-Cookie: Happiness is twin floppies.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, "RAVULAPATI,
- VISHNU VARDHAN RAO" <Vishnuvardhanrao.Ravulapati@amd.com>,
- Colin Ian King <colin.king@canonical.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [alsa-devel] [PATCH 1/7] ASoC: amd: No need PCI-MSI interrupts
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+ linux-arm-kernel@lists.infradead.org,
+ Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: atmel: fix atmel_ssc_set_audio link
+	failure
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,56 +97,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2255107037218985941=="
+Content-Type: multipart/mixed; boundary="===============2647782273404721673=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============2255107037218985941==
+--===============2647782273404721673==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Y5rl02BVI9TCfPar"
+	protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
 Content-Disposition: inline
 
 
---Y5rl02BVI9TCfPar
+--7JfCtLOvnd9MIVvH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 01, 2019 at 05:23:43PM +0000, Deucher, Alexander wrote:
+On Tue, Oct 01, 2019 at 04:20:55PM +0200, Arnd Bergmann wrote:
+> The ssc audio driver can call into both pdc and dma backends.  With the
+> latest rework, the logic to do this in a safe way avoiding link errors
+> was removed, bringing back link errors that were fixed long ago in commit
+> 061981ff8cc8 ("ASoC: atmel: properly select dma driver state") such as
 
-> > ACP-PCI controller driver does not depends msi interrupts.
-> > So removed msi related pci functions which have no use and does not impact
-> > on existing functionality.
+This doesn't apply against current code, please check and resend.
 
-> In general, however, aren't MSIs preferred to legacy interrupts?
-
-As I understand it.  Or at the very least I'm not aware of any situation
-where they're harmful.  It'd be good to have a clear explanation of why
-we're removing the support.
-
-> Doesn't the driver have to opt into MSI support?  As such, won't
-> removing this code effectively disable MSI support?
-
-Yes.
-
---Y5rl02BVI9TCfPar
+--7JfCtLOvnd9MIVvH
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2TjQQACgkQJNaLcl1U
-h9DC/gf8C6vOACPQWvbRJO9LfPWnIyOnAhpmiVNNeGV59bbMmSRSjT3zuIsVNoMe
-6J498TvqIOcb2NxSsGukipQbrWSYomHT7+XmgDjXSQGPGkZ86bgiP95O+ZqKAXqT
-1RjADLkZQpQMsmDSqFeWNJP0dlYrIs9uPmUCuhI+bHdtiF6Sc2cJL9wtiHZDXS3T
-qmFaFOu4+1bGoKNDITbdLBEAsn7mSmLc0GolWCrf9BeymlF4Vuarm9fx6GP3JBlf
-G/UN8F8FEfvNa+3dGj+TyU7D+0uErLvwhy+d0Cm5eiw//fgjQhrNyDp7EbRlvbrr
-v/RCUHZ9c4/5k6QHNr8OUNcCB7rURw==
-=5uDK
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2TkvUACgkQJNaLcl1U
+h9BpXwf/ZbLU57SSOIs72nreZTj7QYl5ewRdha8NvlgMpwL9Tpoann2+x+D1YwW4
+YrgZi10+u/d5JJXj26Le5tfl9/XHOiEtnsmSGeyyZ4HCMkGdsN/pbOteyNVq8OSm
+m0kbUZzyPrs4UShvQmtmf/NVGAEMno5FWExHJMesI+HCkAguc43qkgPrhCK6w6hE
+OTG/+vIokBlBGCwqdM597185U5H/O/zeEtMF//UhLEOyzm7SiowvGAFOukr7PQzK
+UCJeArfyY1ik0gYbptXvjoo3+Y1DKg/sRNdtNoF14WIS2oHOkTKm6dpuqxfN2RIt
+He43J5QRq+JEaBnzvw/+7mvakg5Rjg==
+=mk8+
 -----END PGP SIGNATURE-----
 
---Y5rl02BVI9TCfPar--
+--7JfCtLOvnd9MIVvH--
 
---===============2255107037218985941==
+--===============2647782273404721673==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -158,4 +148,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============2255107037218985941==--
+--===============2647782273404721673==--
