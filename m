@@ -2,100 +2,77 @@ Return-Path: <SRS0=w4sP=X2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80B87C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 13:10:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F8C2C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 13:36:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BED621906
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 13:10:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 953F120815
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 13:36:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M7UJ/XZ5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="qnd0HF55"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BED621906
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RqKyRTFo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 953F120815
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 548C5166E;
-	Tue,  1 Oct 2019 15:09:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 548C5166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65EB41663;
+	Tue,  1 Oct 2019 15:35:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65EB41663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569935414;
-	bh=EnPUXkZn4esEq59I52Hv1aRLGkgy32Dxv0btJLT3wp4=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=M7UJ/XZ5XG4CUGnynXZ5JLPFOjn2NKrbTCRWRA8qTPoi3s7D7WCHWl/3l5nLnXW4o
-	 dRtnBKletmBs0liqk0qm5bVN5xIvBCBxrNSJxDtCDPwgdIuXtVaZoJeZMmWTKPsNUE
-	 bmGZ/nUxwCfuDWBq0TZRq2CD+kuFAkENWB6FakMI=
+	s=default; t=1569936963;
+	bh=zdntYU24hvR4SyRhaIMaF0REvCg0iM3Yd2Ef0TrLsC0=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=RqKyRTFoMAOamr2W9B0dXpAM6CKeKaKx1MKH7wIP/FyCVNiTwu0eFYiIqxqDrIcJe
+	 Xa8MlY1xu4iPhQN4+OR1XPAlvZR5RtfQAWt0iCQ6RyFKL6MX+4evJnd+Nexrcnuhn/
+	 dnC/MW0rELltHdFi957K3QGaBgwE59vpp/caoSAQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDA93F80482;
-	Tue,  1 Oct 2019 15:09:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2184F804FF;
+	Tue,  1 Oct 2019 15:35:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE1F3F80506; Tue,  1 Oct 2019 15:09:21 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 30738F80506; Tue,  1 Oct 2019 15:35:12 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D525F800D0
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 15:09:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D525F800D0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="qnd0HF55"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- x91D9Emh027781; Tue, 1 Oct 2019 08:09:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=aSH8ncgP7236E961CB/XfLmWAPt5py85qN59SXsfjHs=;
- b=qnd0HF55L6FUi4c5n6XgqFBAu+Np2XBTMWLMVh1CQd0rx3JkyIu5mveo+gF6T+xIsnnX
- C+N6cbS/Z8772ZyUKD77xaG4T8jOD42tTVEG/CwHX43e5/nK1eE+oixnX5UI1FZ/d4V0
- KXrEmp4RMI5LURHZDwKg3R5iRa+6h9DUB9u1WYJWppEcHJ3zJ3Ls+MEdFrKZ8dQcNBRQ
- Hj6ffCMAvItfcygx6iFUtU/mWe8jjozzN0i8JBaMrsKENfF6ZN1Yi/zvVRApquLoYDOF
- dgSkGhM18qm8oVXCt+sK3UdDfatsf4r75a+SKlqD1qiLJQeoLqZvkVbMsqQ1iYG2GXub Nw== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 2va4x4nb52-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 01 Oct 2019 08:09:15 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Tue, 1 Oct
- 2019 14:09:11 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
- Frontend Transport; Tue, 1 Oct 2019 14:09:11 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 704DA2B3;
- Tue,  1 Oct 2019 13:09:11 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Date: Tue, 1 Oct 2019 14:09:11 +0100
-Message-ID: <20191001130911.19238-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23AC1F800DE
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 15:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23AC1F800DE
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 01 Oct 2019 06:35:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,571,1559545200"; d="scan'208";a="194529042"
+Received: from linux.intel.com ([10.54.29.200])
+ by orsmga003.jf.intel.com with ESMTP; 01 Oct 2019 06:35:05 -0700
+Received: from anuprani-mobl2.gar.corp.intel.com (unknown [10.251.3.192])
+ by linux.intel.com (Postfix) with ESMTP id 1897E5803DA;
+ Tue,  1 Oct 2019 06:35:04 -0700 (PDT)
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+References: <1569919250-24472-1-git-send-email-brent.lu@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <823bff94-3135-c3a9-4d7f-c07b564faba2@linux.intel.com>
+Date: Tue, 1 Oct 2019 08:35:03 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- mlxlogscore=884
- malwarescore=0 adultscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 suspectscore=1 bulkscore=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910010119
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, li.xu@cirrus.com
-Subject: [alsa-devel] [PATCH] ASoC: wm_adsp: Fix theoretical NULL pointer
-	for alg_region
+In-Reply-To: <1569919250-24472-1-git-send-email-brent.lu@intel.com>
+Content-Language: en-US
+Cc: cezary.rojewski@intel.com, harshapriya.n@intel.com,
+ "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>,
+ yang.jie@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ mac.chiang@intel.com, broonie@kernel.org, naveen.m@intel.com,
+ yung-chuan.liao@linux.intel.com
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: eve: Enable mclk and ssp sclk
+ early
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,50 +85,107 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Li Xu <li.xu@cirrus.com>
 
-Fix potential NULL pointer dereference for alg_region in
-wm_adsp_buffer_parse_legacy. In practice this can never happen as
-loading the firmware should have failed at the wm_adsp2_setup_algs
-stage, however probably better for the code to be robust against
-future changes and this is more helpful for static analysis.
+> rt5663 and rt5514 needs mclk/sclk early to synchronize its internal
+> clocks.
 
-Signed-off-by: Li Xu <li.xu@cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+There are a couple of differences with similar code used in 
+kbl_rt5663_max98927, see below
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index ae28d9907c30f..85396d920e0a9 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3697,11 +3697,16 @@ static int wm_adsp_buffer_parse_legacy(struct wm_adsp *dsp)
- 	u32 xmalg, addr, magic;
- 	int i, ret;
- 
-+	alg_region = wm_adsp_find_alg_region(dsp, WMFW_ADSP2_XM, dsp->fw_id);
-+	if (!alg_region) {
-+		adsp_err(dsp, "No algorithm region found\n");
-+		return -EINVAL;
-+	}
-+
- 	buf = wm_adsp_buffer_alloc(dsp);
- 	if (!buf)
- 		return -ENOMEM;
- 
--	alg_region = wm_adsp_find_alg_region(dsp, WMFW_ADSP2_XM, dsp->fw_id);
- 	xmalg = dsp->ops->sys_config_size / sizeof(__be32);
- 
- 	addr = alg_region->base + xmalg + ALG_XM_FIELD(magic);
--- 
-2.11.0
 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index 5c27f7a..d5f167e 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -315,6 +315,7 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+>   	depends on I2C && ACPI
+>   	depends on MFD_INTEL_LPSS || COMPILE_TEST
+>           depends on SPI
+> +	select SND_SOC_INTEL_SKYLAKE_SSP_CLK
+
+It would be nicer to follow the same order as for kbl_rt5663_max98927, 
+with this SKYLAKE_SSP_CLK added last after HDAC_HDMI
+
+
+> +static int platform_clock_control(struct snd_soc_dapm_widget *w,
+> +			struct snd_kcontrol *k, int  event)
+> +{
+> +	struct snd_soc_dapm_context *dapm = w->dapm;
+> +	struct snd_soc_card *card = dapm->card;
+> +	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(card);
+> +	int ret = 0;
+> +
+> +	/*
+> +	 * MCLK/SCLK need to be ON early for a successful synchronization of
+> +	 * codec internal clock. And the clocks are turned off during
+> +	 * POST_PMD after the stream is stopped.
+> +	 */
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		if (__clk_is_enabled(priv->mclk))
+> +			return 0;
+
+Is this if() test needed? it's not part of the code for 
+kbl_rt5663_max98927, despite all the comments and code structure being 
+identical.
+
+> +
+> +		/* Enable MCLK */
+> +		ret = clk_set_rate(priv->mclk, 24000000);
+> +		if (ret < 0) {
+> +			dev_err(card->dev, "Can't set rate for mclk, err: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +
+> +		ret = clk_prepare_enable(priv->mclk);
+> +		if (ret < 0) {
+> +			dev_err(card->dev, "Can't enable mclk, err: %d\n", ret);
+> +			return ret;
+> +		}
+> +
+> +		/* Enable SCLK */
+> +		ret = clk_set_rate(priv->sclk, 3072000);
+> +		if (ret < 0) {
+> +			dev_err(card->dev, "Can't set rate for sclk, err: %d\n",
+> +				ret);
+> +			clk_disable_unprepare(priv->mclk);
+> +			return ret;
+> +		}
+> +
+> +		ret = clk_prepare_enable(priv->sclk);
+> +		if (ret < 0) {
+> +			dev_err(card->dev, "Can't enable sclk, err: %d\n", ret);
+> +			clk_disable_unprepare(priv->mclk);
+> +		}
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		if (!__clk_is_enabled(priv->mclk))
+> +			return 0;
+
+same here, is this if() test needed? If yes, isn't it needed in 
+kbl_rt5663_max98927?
+
+> +
+> +		clk_disable_unprepare(priv->mclk);
+> +		clk_disable_unprepare(priv->sclk);
+> +		break;
+> +	default:
+> +		return 0;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+
+While I am at it, this machine driver uses .ignore_pmdown_time, which is 
+typically used to avoid clock issues. Now that you have an explicit 
+control on clocks, is .ignore_pmdown_time actually required?
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
