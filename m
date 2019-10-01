@@ -6,78 +6,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C79CC352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62CBFC352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C78D021906
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:47:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E0F1421924
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S0oY9gMO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="W6+VhIel"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C78D021906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HLRbujZQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="hGjRKc5z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0F1421924
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A7BE166E;
-	Tue,  1 Oct 2019 13:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A7BE166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2809C1684;
+	Tue,  1 Oct 2019 13:47:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2809C1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569930456;
-	bh=I98ex7BOrazPo8Y/qxlFTWnhJGn0MS/pB67t0H6g3Iw=;
+	s=default; t=1569930496;
+	bh=kE7yihrFi05wg2Ohf23n7bH0MSr72gfXKwF9c7jMnzk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=S0oY9gMOVj3JcLqIOrFVXKOkDwQx85Eb9h3BB5cdVLn9gbDAG/Hdh2CeGTWnFSQ5h
-	 C8i7bAWfgOPZighz8q0djjrN1vnSW3zJ/zlbfqFdkQvuX1SXkpnUBE1/WjLjGwpjzq
-	 jFRSoAptCoj91rLLrTMvqcsCKLeeA5bC2WQ0BDjo=
+	b=HLRbujZQezGkOv1FjeCRGewAyHO1Zg2HWb6uYvWs3hvIfyjaWsl/bG5l0BV9mCI1m
+	 fhXvXaRMIWuIqmCMDfF9VTNAm7586ze9ji3PYcSh/jCbGyngP2HQaNMG4za4ZQqW57
+	 9RmD9sVzBWmb3/bPD5CiqSqZLtVd6ltAcvAI2flw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82737F806F8;
-	Tue,  1 Oct 2019 13:41:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19A59F80610;
+	Tue,  1 Oct 2019 13:41:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28192F8067A; Tue,  1 Oct 2019 13:41:01 +0200 (CEST)
+ id 3A0EBF805FF; Tue,  1 Oct 2019 13:41:01 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF34FF805FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 309BEF805FB
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF34FF805FF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 309BEF805FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="W6+VhIel"
+ header.b="hGjRKc5z"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=+gqFQySrShV/ToSh8YGHlEnWI1hCCq31xeGoKbe2xP8=; b=W6+VhIelim16
- 88zCkz/rOj4zN0jeG1fTJB2sQdqgKIRWUbskh8rnG2yZOw3/dzTeSqk3/AkE03V52p9H5WIc2T32r
- zbQTwiI49zMC75YmcNFGM73DgP5pKKXqv0qI/H4cM7CfKlYsi6blQdfAPmFZjTg1qOthqj0ce+ZVv
- JEDPc=;
+ List-Archive; bh=ZGl+hCx9u/66B7tvLuoBxNOYAm3sNLNizym3DyA34fs=; b=hGjRKc5zycsW
+ CPYR6e2IPZO68ULxAdUEptle9zMo6ktB6gTeZN86uQWLQ4iVEKZEigYGKtttEjR7sSsQKLZ/KP22R
+ 7ZyAUeZCqjf7oMOM/yuNvXGODmDMdVJqWWQ36VEJcL+V/JqscXWamMcrPTdbZOi3CfdTUZQ9iUSVy
+ W19ro=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWN-0004Sl-FO; Tue, 01 Oct 2019 11:40:47 +0000
+ id 1iFGWO-0004T4-8k; Tue, 01 Oct 2019 11:40:48 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E68622742A10; Tue,  1 Oct 2019 12:40:46 +0100 (BST)
+ id AA2AA2742A10; Tue,  1 Oct 2019 12:40:47 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@nxp.com>
-In-Reply-To: <20190925183358.11955-1-daniel.baluta@nxp.com>
+To: Colin Ian King <colin.king@canonical.com>
+In-Reply-To: <20190925100330.20695-1-colin.king@canonical.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114046.E68622742A10@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:46 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, ranjani.sridharan@intel.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, linux-imx@nxp.com,
- pierre-louis.bossart@intel.com
-Subject: [alsa-devel] Applied "ASoC: core: Clarify usage of ignore_machine"
-	to the asoc tree
+Message-Id: <20191001114047.AA2AA2742A10@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:47 +0100 (BST)
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] Applied "ASoC: rt5663: clean up indentation issues" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: core: Clarify usage of ignore_machine
+   ASoC: rt5663: clean up indentation issues
 
 has been applied to the asoc tree at
 
@@ -123,46 +123,43 @@ to this mail.
 Thanks,
 Mark
 
-From 49f9c4f2e83cf562f1a6e3f62eafa4ede5343e4a Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Wed, 25 Sep 2019 21:33:58 +0300
-Subject: [PATCH] ASoC: core: Clarify usage of ignore_machine
+From bd1468f252e85280b71a069a2255842d78133cc4 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 25 Sep 2019 11:03:30 +0100
+Subject: [PATCH] ASoC: rt5663: clean up indentation issues
 
-For a sound card ignore_machine means that existing FEs links should be
-ignored and existing BEs links should be overridden with some information
-from the matching component driver.
+There are two break statements that are indented one level too deeply,
+remove the extraneous tabs.
 
-Current code make some confusions about this so fix it!
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/20190925183358.11955-1-daniel.baluta@nxp.com
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20190925100330.20695-1-colin.king@canonical.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 4 ++--
+ sound/soc/codecs/rt5663.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d2842a383846..4a47ba94559f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1859,7 +1859,7 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
- 
- 	for_each_component(component) {
- 
--		/* does this component override FEs ? */
-+		/* does this component override BEs ? */
- 		if (!component->driver->ignore_machine)
- 			continue;
- 
-@@ -1880,7 +1880,7 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
- 				continue;
- 			}
- 
--			dev_info(card->dev, "info: override FE DAI link %s\n",
-+			dev_info(card->dev, "info: override BE DAI link %s\n",
- 				 card->dai_link[i].name);
- 
- 			/* override platform component */
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 2943692f66ed..e6c1ec6c426e 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -3644,7 +3644,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
+ 		regmap_update_bits(rt5663->regmap, RT5663_PWR_ANLG_1,
+ 			RT5663_LDO1_DVO_MASK | RT5663_AMP_HP_MASK,
+ 			RT5663_LDO1_DVO_0_9V | RT5663_AMP_HP_3X);
+-			break;
++		break;
+ 	case CODEC_VER_0:
+ 		regmap_update_bits(rt5663->regmap, RT5663_DIG_MISC,
+ 			RT5663_DIG_GATE_CTRL_MASK, RT5663_DIG_GATE_CTRL_EN);
+@@ -3663,7 +3663,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
+ 		regmap_update_bits(rt5663->regmap, RT5663_TDM_2,
+ 			RT5663_DATA_SWAP_ADCDAT1_MASK,
+ 			RT5663_DATA_SWAP_ADCDAT1_LL);
+-			break;
++		break;
+ 	default:
+ 		dev_err(&i2c->dev, "%s:Unknown codec type\n", __func__);
+ 	}
 -- 
 2.20.1
 
