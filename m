@@ -4,136 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6718AC352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 12:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80B87C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 13:10:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3FE521920
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 12:39:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BED621906
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 13:10:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MR7cB7zt";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="GE3FSZJ0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3FE521920
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M7UJ/XZ5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="qnd0HF55"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BED621906
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00FBC168F;
-	Tue,  1 Oct 2019 14:38:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00FBC168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 548C5166E;
+	Tue,  1 Oct 2019 15:09:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 548C5166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569933558;
-	bh=C8XjvR5ctKXfg5QoZRnY0y1Av0t+2E3VkaReFnLeJxA=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MR7cB7ztzFyV+5svd1WBIMYlz9iYCiwtXboY9Rp0tmsRQj3YV0voxaItNTg7IZKwN
-	 KExEHZXtlJceAtJEH/pTc+d4I11D3JK7ivhzpbongb6pjXgX07HThsK3THQYtWNqkq
-	 xdfvkA6pKqTTlEseSpYx9buRVHeZf1K9hWFnF9Ps=
+	s=default; t=1569935414;
+	bh=EnPUXkZn4esEq59I52Hv1aRLGkgy32Dxv0btJLT3wp4=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=M7UJ/XZ5XG4CUGnynXZ5JLPFOjn2NKrbTCRWRA8qTPoi3s7D7WCHWl/3l5nLnXW4o
+	 dRtnBKletmBs0liqk0qm5bVN5xIvBCBxrNSJxDtCDPwgdIuXtVaZoJeZMmWTKPsNUE
+	 bmGZ/nUxwCfuDWBq0TZRq2CD+kuFAkENWB6FakMI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E326F800DE;
-	Tue,  1 Oct 2019 14:37:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDA93F80482;
+	Tue,  1 Oct 2019 15:09:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEDC1F805FC; Tue,  1 Oct 2019 14:36:58 +0200 (CEST)
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com
- [210.118.77.12])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BE1F3F80506; Tue,  1 Oct 2019 15:09:21 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5B43F800DE
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 14:36:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5B43F800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D525F800D0
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 15:09:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D525F800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="GE3FSZJ0"
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
- by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id
- 20191001123640euoutp02633518b4cc3031b2315fe3f26b43ee58~JhhwQHTwj1325713257euoutp025
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 12:36:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com
- 20191001123640euoutp02633518b4cc3031b2315fe3f26b43ee58~JhhwQHTwj1325713257euoutp025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1569933400;
- bh=fCiCWDJV6hWzdPW9ipEdQhbwyGKQwzSf6QI+SV7DvCc=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GE3FSZJ0qz1StqLogNI9kq8AxJlKoF81tszRC23ihkCRxsEZ9vG8K8ns1XpAvX1yP
- iTW0pimlHItT9MvPcLuk6Ofoym9F1skhX6FDcivNHv/flmbwjcJWMuSsqbYMzwBYdX
- 0q8OkOUHkOdP+HBG/AeUlRA9cripst9+Kf9A9DnE=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
- eucas1p2.samsung.com (KnoxPortal) with ESMTP id
- 20191001123639eucas1p2863ecda3f268cb7ac9af1ceb0a361647~Jhhv6Qvrm2036020360eucas1p2z;
- Tue,  1 Oct 2019 12:36:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
- eusmges1new.samsung.com (EUCPMTA) with SMTP id F6.34.04469.758439D5; Tue,  1
- Oct 2019 13:36:39 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
- eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
- 20191001123639eucas1p2b15309e0b0008b2627b8630082d69f41~Jhhvcxwil2871028710eucas1p2D;
- Tue,  1 Oct 2019 12:36:39 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
- eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
- 20191001123639eusmtrp18dd6256ce969a8955cc442c85f1530d5~JhhvcH4l_0390803908eusmtrp1O;
- Tue,  1 Oct 2019 12:36:39 +0000 (GMT)
-X-AuditID: cbfec7f2-54fff70000001175-7d-5d934857b521
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
- eusmgms2.samsung.com (EUCPMTA) with SMTP id 2E.33.04117.758439D5; Tue,  1
- Oct 2019 13:36:39 +0100 (BST)
-Received: from AMDC3061.DIGITAL.local (unknown [106.120.51.75]) by
- eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
- 20191001123638eusmtip2789263881057d4881d8e654111c6f0e5~Jhhu2Rlgr1272012720eusmtip2h;
- Tue,  1 Oct 2019 12:36:38 +0000 (GMT)
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-To: broonie@kernel.org, krzk@kernel.org
-Date: Tue,  1 Oct 2019 14:36:24 +0200
-Message-Id: <20191001123625.19370-2-s.nawrocki@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191001123625.19370-1-s.nawrocki@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA0VSf0hTURjt7r239zacPKfoRSPZKMxIbRD0QIkCiQdC7R8JlDGnvlTSKZvz
- R0IOzVzqzDbSZRJmZTYNdS5Tw6xZDrNayjRTxDQrEqV0KmqpOZ/Wf+ec75zvfFwugQjvYP5E
- ijKTUSkVqWIuH23vW3OEnKeNsmOuwqOUc9DGoVpNzRh1c2qGSzmLLIByOFpwasWp41CWLyMY
- ZXI851CPX03glOtnD0b1zhVj1GDDEueUB93iKuDSndUTOG0xX+PSbffz6aqaLUCXW82AdlkO
- SPEYfkQik5qSxajCTsbxk8fblBnfJDm9q42oFpiDSwCPgORx2LE4xSkBfEJINgC4tmXAWLIE
- YP8tHcISF4C2hjl8L7Lww4Szg4cAavs38X8Rm6sYdbu4pATqX5cDN/Yhg+CkqWBnL0J2cuD0
- 8OSOyZuMhnWWzR0TSh6C1v6ZHSwgw+FQqwtj6wJhY8uL7TsIgkdGQJ2Z594DyXocVuqbENYT
- CZd6FnbP84azdusu3g8HjGUoGygEsOzZOM6SCgAn7bWAdYXDXvsg5m5AyGDY3BXGyqfhsPUe
- 7pYh6QlH573cMrINDe1VCCsLoO6qkHUfhL/NVRwW+8PSmS2UxTRcf9O1+6bXAdzoXgEVILD6
- f1ktAGbgx2jUaUmMWqJkskPVijS1RpkUmpCeZgHbv2Zg077YAZaH4m2AJIDYQ0B9vyETYoos
- dW6aDUACEfsIIv4YZEJBoiL3EqNKl6s0qYzaBgIIVOwnyNv3OVZIJikymYsMk8Go9qYcguev
- BSI0+1ec33xkpehM+pr0dvzbR9PvL2/orzQV15WG5Mlnv3rkzs4HjWmLAj6cE+mHmrt5TzT5
- ffRy0bI8X1ZhzRDRSe9KhAljBSOumFFctC58ejgsyvAyIEqc5VnWeyJHb/xk1UuN0TUxlrvR
- H33rpasPvHwvyM9uhCUmOA2xQIyqkxWSI4hKrfgLzwtGxDEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLLMWRmVeSWpSXmKPExsVy+t/xe7rhHpNjDc6/4bW4cvEQk8XGGetZ
- LaY+fMJmcaV1E6PF+fMb2C2+Xelgstj0+BqrxYzz+5gs1h65y27x+f1+VovDb9pZLS6u+MLk
- wOOx4XMTm8fOWXfZPTat6mTz2Lyk3mP6nP+MHn1bVjF6fN4kF8AepWdTlF9akqqQkV9cYqsU
- bWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJdxe3NewTPDisM/VrM0MK7S7GLk
- 5JAQMJH4+HIGexcjF4eQwFJGid4H/axdjBxACSmJ+S1KEDXCEn+udbFB1HxilFh57iALSIJN
- wFCi92gfI4gtIqAp0THvNitIEbPAYSaJxR0QRcICwRIHb85hA7FZBFQltpx8AtbAK2AtcWnj
- Z1aIDfISqzccYAZZzClgI9GxihMkLARU0vJ1DeMERr4FjAyrGEVSS4tz03OLjfSKE3OLS/PS
- 9ZLzczcxAoN+27GfW3Ywdr0LPsQowMGoxMNr8XxirBBrYllxZe4hRgkOZiURXps/k2KFeFMS
- K6tSi/Lji0pzUosPMZoC3TSRWUo0OR8YkXkl8YamhuYWlobmxubGZhZK4rwdAgdjhATSE0tS
- s1NTC1KLYPqYODilGhjXCj6MFIz+UHFikqtZvMX2o0dz7W4ub6xaa7DuUOG7//f2Sj+9GGkX
- tKrdNdJ33u0iH8aPHCIPp/1LVLk55ejpDTYsvnc82vW3TjsasS2B/clmrt5nfbqlKlET9WL5
- vq2a5FHxYtqtIgneVzf4+p+EMZyNWxl8bnI9m/D2vBN3+BJ+LE2vCdmmxFKckWioxVxUnAgA
- +FRj1JACAAA=
-X-CMS-MailID: 20191001123639eucas1p2b15309e0b0008b2627b8630082d69f41
-X-Msg-Generator: CA
-X-RootMTR: 20191001123639eucas1p2b15309e0b0008b2627b8630082d69f41
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20191001123639eucas1p2b15309e0b0008b2627b8630082d69f41
-References: <20191001123625.19370-1-s.nawrocki@samsung.com>
- <CGME20191001123639eucas1p2b15309e0b0008b2627b8630082d69f41@eucas1p2.samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
- ckeepax@opensource.cirrus.com, b.zolnierkie@samsung.com, sbkim73@samsung.com,
- patches@opensource.cirrus.com, lgirdwood@gmail.com,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
-Subject: [alsa-devel] [PATCH v3 RESEND 2/3] ASoC: samsung: arndale: Add
- support for WM1811 CODEC
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="qnd0HF55"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ x91D9Emh027781; Tue, 1 Oct 2019 08:09:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=aSH8ncgP7236E961CB/XfLmWAPt5py85qN59SXsfjHs=;
+ b=qnd0HF55L6FUi4c5n6XgqFBAu+Np2XBTMWLMVh1CQd0rx3JkyIu5mveo+gF6T+xIsnnX
+ C+N6cbS/Z8772ZyUKD77xaG4T8jOD42tTVEG/CwHX43e5/nK1eE+oixnX5UI1FZ/d4V0
+ KXrEmp4RMI5LURHZDwKg3R5iRa+6h9DUB9u1WYJWppEcHJ3zJ3Ls+MEdFrKZ8dQcNBRQ
+ Hj6ffCMAvItfcygx6iFUtU/mWe8jjozzN0i8JBaMrsKENfF6ZN1Yi/zvVRApquLoYDOF
+ dgSkGhM18qm8oVXCt+sK3UdDfatsf4r75a+SKlqD1qiLJQeoLqZvkVbMsqQ1iYG2GXub Nw== 
+Authentication-Results: ppops.net;
+ spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 2va4x4nb52-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 01 Oct 2019 08:09:15 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Tue, 1 Oct
+ 2019 14:09:11 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
+ Frontend Transport; Tue, 1 Oct 2019 14:09:11 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 704DA2B3;
+ Tue,  1 Oct 2019 13:09:11 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Date: Tue, 1 Oct 2019 14:09:11 +0100
+Message-ID: <20191001130911.19238-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
+MIME-Version: 1.0
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ mlxlogscore=884
+ malwarescore=0 adultscore=0 phishscore=0 impostorscore=0
+ priorityscore=1501 suspectscore=1 bulkscore=0 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910010119
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, li.xu@cirrus.com
+Subject: [alsa-devel] [PATCH] ASoC: wm_adsp: Fix theoretical NULL pointer
+	for alg_region
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -146,194 +108,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Arndale boards come with different types of the audio daughter
-board.  In order to support the WM1811 one we add new definition of
-an ASoC card which will be registered when the driver matches on
-"samsung,arndale-wm1811" compatible.  There is no runtime detection of
-the audio daughter board type at the moment, compatible string of the
-audio card needs to be adjusted in DT, e.g. by the bootloader,
-depending on actual audio board (CODEC) used.
+From: Li Xu <li.xu@cirrus.com>
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
-Changes since v1:
- - removed unneeded __maybe_used attribute
----
- sound/soc/samsung/Kconfig          |  2 +
- sound/soc/samsung/arndale_rt5631.c | 85 +++++++++++++++++++++++++-----
- 2 files changed, 74 insertions(+), 13 deletions(-)
+Fix potential NULL pointer dereference for alg_region in
+wm_adsp_buffer_parse_legacy. In practice this can never happen as
+loading the firmware should have failed at the wm_adsp2_setup_algs
+stage, however probably better for the code to be robust against
+future changes and this is more helpful for static analysis.
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 638983123d8f..6803cbfa9e46 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -199,6 +199,8 @@ config SND_SOC_ARNDALE_RT5631_ALC5631
-         depends on I2C
-         select SND_SAMSUNG_I2S
-         select SND_SOC_RT5631
-+	select MFD_WM8994
-+	select SND_SOC_WM8994
+Signed-off-by: Li Xu <li.xu@cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index ae28d9907c30f..85396d920e0a9 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -3697,11 +3697,16 @@ static int wm_adsp_buffer_parse_legacy(struct wm_adsp *dsp)
+ 	u32 xmalg, addr, magic;
+ 	int i, ret;
  
- config SND_SOC_SAMSUNG_TM2_WM5110
- 	tristate "SoC I2S Audio support for WM5110 on TM2 board"
-diff --git a/sound/soc/samsung/arndale_rt5631.c b/sound/soc/samsung/arndale_rt5631.c
-index 004c84fafad9..1e8badb1b8f9 100644
---- a/sound/soc/samsung/arndale_rt5631.c
-+++ b/sound/soc/samsung/arndale_rt5631.c
-@@ -14,10 +14,11 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- 
-+#include "../codecs/wm8994.h"
- #include "i2s.h"
- 
--static int arndale_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
-+static int arndale_rt5631_hw_params(struct snd_pcm_substream *substream,
-+				    struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-@@ -47,13 +48,45 @@ static int arndale_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops arndale_ops = {
--	.hw_params = arndale_hw_params,
-+static struct snd_soc_ops arndale_rt5631_ops = {
-+	.hw_params = arndale_rt5631_hw_params,
-+};
++	alg_region = wm_adsp_find_alg_region(dsp, WMFW_ADSP2_XM, dsp->fw_id);
++	if (!alg_region) {
++		adsp_err(dsp, "No algorithm region found\n");
++		return -EINVAL;
++	}
 +
-+static int arndale_wm1811_hw_params(struct snd_pcm_substream *substream,
-+				    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	unsigned int rfs, rclk;
-+
-+	/* Ensure AIF1CLK is >= 3 MHz for optimal performance */
-+	if (params_width(params) == 24)
-+		rfs = 384;
-+	else if (params_rate(params) == 8000 || params_rate(params) == 11025)
-+		rfs = 512;
-+	else
-+		rfs = 256;
-+
-+	rclk = params_rate(params) * rfs;
-+
-+	/*
-+	 * We add 1 to the frequency value to ensure proper EPLL setting
-+	 * for each audio sampling rate (see epll_24mhz_tbl in drivers/clk/
-+	 * samsung/clk-exynos5250.c for list of available EPLL rates).
-+	 * The CODEC uses clk API and the value will be rounded hence the MCLK1
-+	 * clock's frequency will still be exact multiple of the sample rate.
-+	 */
-+	return snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_MCLK1,
-+					rclk + 1, SND_SOC_CLOCK_IN);
-+}
-+
-+static struct snd_soc_ops arndale_wm1811_ops = {
-+	.hw_params = arndale_wm1811_hw_params,
- };
+ 	buf = wm_adsp_buffer_alloc(dsp);
+ 	if (!buf)
+ 		return -ENOMEM;
  
- SND_SOC_DAILINK_DEFS(rt5631_hifi,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
--	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-aif1")),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+-	alg_region = wm_adsp_find_alg_region(dsp, WMFW_ADSP2_XM, dsp->fw_id);
+ 	xmalg = dsp->ops->sys_config_size / sizeof(__be32);
  
- static struct snd_soc_dai_link arndale_rt5631_dai[] = {
-@@ -63,11 +96,28 @@ static struct snd_soc_dai_link arndale_rt5631_dai[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S
- 			| SND_SOC_DAIFMT_NB_NF
- 			| SND_SOC_DAIFMT_CBS_CFS,
--		.ops = &arndale_ops,
-+		.ops = &arndale_rt5631_ops,
- 		SND_SOC_DAILINK_REG(rt5631_hifi),
- 	},
- };
- 
-+SND_SOC_DAILINK_DEFS(wm1811_hifi,
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8994-aif1")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+static struct snd_soc_dai_link arndale_wm1811_dai[] = {
-+	{
-+		.name = "WM1811 HiFi",
-+		.stream_name = "Primary",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S
-+			| SND_SOC_DAIFMT_NB_NF
-+			| SND_SOC_DAIFMT_CBM_CFM,
-+		.ops = &arndale_wm1811_ops,
-+		SND_SOC_DAILINK_REG(wm1811_hifi),
-+	},
-+};
-+
- static struct snd_soc_card arndale_rt5631 = {
- 	.name = "Arndale RT5631",
- 	.owner = THIS_MODULE,
-@@ -75,6 +125,13 @@ static struct snd_soc_card arndale_rt5631 = {
- 	.num_links = ARRAY_SIZE(arndale_rt5631_dai),
- };
- 
-+static struct snd_soc_card arndale_wm1811 = {
-+	.name = "Arndale WM1811",
-+	.owner = THIS_MODULE,
-+	.dai_link = arndale_wm1811_dai,
-+	.num_links = ARRAY_SIZE(arndale_wm1811_dai),
-+};
-+
- static void arndale_put_of_nodes(struct snd_soc_card *card)
- {
- 	struct snd_soc_dai_link *dai_link;
-@@ -89,10 +146,11 @@ static void arndale_put_of_nodes(struct snd_soc_card *card)
- static int arndale_audio_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	struct snd_soc_card *card = &arndale_rt5631;
-+	struct snd_soc_card *card;
- 	struct snd_soc_dai_link *dai_link;
- 	int ret;
- 
-+	card = (struct snd_soc_card *)of_device_get_match_data(&pdev->dev);
- 	card->dev = &pdev->dev;
- 	dai_link = card->dai_link;
- 
-@@ -134,18 +192,19 @@ static int arndale_audio_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct of_device_id samsung_arndale_rt5631_of_match[] __maybe_unused = {
--	{ .compatible = "samsung,arndale-rt5631", },
--	{ .compatible = "samsung,arndale-alc5631", },
-+static const struct of_device_id arndale_audio_of_match[] = {
-+	{ .compatible = "samsung,arndale-rt5631",  .data = &arndale_rt5631 },
-+	{ .compatible = "samsung,arndale-alc5631", .data = &arndale_rt5631 },
-+	{ .compatible = "samsung,arndale-wm1811",  .data = &arndale_wm1811 },
- 	{},
- };
--MODULE_DEVICE_TABLE(of, samsung_arndale_rt5631_of_match);
-+MODULE_DEVICE_TABLE(of, arndale_of_match);
- 
- static struct platform_driver arndale_audio_driver = {
- 	.driver = {
--		.name   = "arndale-audio",
-+		.name = "arndale-audio",
- 		.pm = &snd_soc_pm_ops,
--		.of_match_table = of_match_ptr(samsung_arndale_rt5631_of_match),
-+		.of_match_table = arndale_audio_of_match,
- 	},
- 	.probe = arndale_audio_probe,
- 	.remove = arndale_audio_remove,
+ 	addr = alg_region->base + xmalg + ALG_XM_FIELD(magic);
 -- 
-2.17.1
+2.11.0
 
 _______________________________________________
 Alsa-devel mailing list
