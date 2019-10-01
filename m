@@ -4,82 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27972C388F3
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D740BC352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:57:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4AA520640
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:57:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5DCBB20640
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:57:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t+tfSY9r";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="tCb9X5iS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4AA520640
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RmsqUR+t";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="fkXHGQmK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DCBB20640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAA02169F;
-	Tue,  1 Oct 2019 13:56:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAA02169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B17F516A6;
+	Tue,  1 Oct 2019 13:57:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B17F516A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569931034;
-	bh=euCqUfWxE3+31aLProQGxphK1P74liJlu8orwd7T9io=;
+	s=default; t=1569931071;
+	bh=TkFyvjZdBuCTiDGgA1lpGQVb8t3Qn/wrMOtcjPiujgc=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=t+tfSY9rOorx5VsKWo0iotuYNyfirjBSxuQQp2t9dYQBHwQHwf7g7LV1omvfsTEqX
-	 Z9UZ0qEcUGjwdsM84cefRLpZtjox+yfkEpJTh9XdEx6wqv7owqKxeb9+LV2gsiChWm
-	 E4BVASsBTDKVJ3EtLwfH4l9FWxXt/jkdi+R+c9ck=
+	b=RmsqUR+tpQTSy6CBQzXYgCiKH2bT8l9vM30U5PO7g1M4/BADmfAmFRArzRuWwCbKV
+	 92KsdI1wGZHPvwagRKmPo4tPEjZaCyoTezra+4pAllDBg5boZaF6Wr3n8j4k7+37J8
+	 tyiidAkaFM4fBSN8PHe2yZRlL34mWgVFr5ShsB3Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13B31F80862;
+	by alsa1.perex.cz (Postfix) with ESMTP id E466CF80878;
 	Tue,  1 Oct 2019 13:41:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23372F806F8; Tue,  1 Oct 2019 13:41:13 +0200 (CEST)
+ id A99A6F8070C; Tue,  1 Oct 2019 13:41:14 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28E75F8060F
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28E75F8060F
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED8ACF80610
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED8ACF80610
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="tCb9X5iS"
+ header.b="fkXHGQmK"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=fST/AH+GOt2GHguW9Cy53gJrYgbzWWwyPXEqzuvSsEs=; b=tCb9X5iSdz0b
- Xn1KGOQTBvZ2Z6OVme0fjPxRVkv5AEjseEShBXVJMwGRdua+NxRxVeWRY0ZQQ+TAdA4vdPZdGo0gV
- A4jbN5nN+OwUmDI4e0LUa5vnuad2n0YS/DDUV8xELsEVOmGdCmQ+FqEFgbyhoOzvuddfSngWrAUfG
- NRjAE=;
+ List-Archive; bh=b0stKEdyVX3aTCnyP8Y+NZxscAvzUSD7HEvqZHp/HS4=; b=fkXHGQmKYYS0
+ 2D5KiYPcPuDMEW20wVRIGLIWzUHZFbSGcxcI9q2vYBwGZh3iRjfknV+1RyWJiOo5iocN5wwGr2pIY
+ X41LhE1N+peTDYR1l5l2f+nNFcZCdyPCyBTbQWFNt1c85NuMmyXJh3HrsbL49y/CRKJruFXZLu1Ke
+ uYWP4=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWQ-0004UX-V9; Tue, 01 Oct 2019 11:40:51 +0000
+ id 1iFGWR-0004Uy-Mt; Tue, 01 Oct 2019 11:40:51 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 5D7C527429C0; Tue,  1 Oct 2019 12:40:50 +0100 (BST)
+ id 293F627429C0; Tue,  1 Oct 2019 12:40:51 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-In-Reply-To: <20190920130218.32690-7-s.nawrocki@samsung.com>
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20190920112320.166052-1-tzungbi@google.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114050.5D7C527429C0@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:50 +0100 (BST)
+Message-Id: <20191001114051.293F627429C0@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:51 +0100 (BST)
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, ckeepax@opensource.cirrus.com,
- b.zolnierkie@samsung.com, sbkim73@samsung.com, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, Krzysztof Kozlowski <krzk@kernel.org>, robh+dt@kernel.org,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
- m.szyprowski@samsung.com
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: Document "samsung,
-	arndale-wm1811" compatible" to the asoc tree
+ cychiang@google.com, robh+dt@kernel.org, tzungbi@google.com,
+ Mark Brown <broonie@kernel.org>, dgreid@google.com
+Subject: [alsa-devel] Applied "ASoC: dt-bindings: mt8183: add missing
+	update" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dt-bindings: Document "samsung, arndale-wm1811" compatible
+   ASoC: dt-bindings: mt8183: add missing update
 
 has been applied to the asoc tree at
 
@@ -125,38 +122,38 @@ to this mail.
 Thanks,
 Mark
 
-From f4528af69fdc112247a78599c6e8f7f618aff4e6 Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Fri, 20 Sep 2019 15:02:15 +0200
-Subject: [PATCH] ASoC: dt-bindings: Document "samsung, arndale-wm1811"
- compatible
+From 7cf2804775f8a388411624b3e768e55d08711e9d Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 20 Sep 2019 19:23:20 +0800
+Subject: [PATCH] ASoC: dt-bindings: mt8183: add missing update
 
-Add compatible string for boards with WM1811 CODEC to the list.
+Headset codec is optional.  Add missing update to DT binding document.
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Link: https://lore.kernel.org/r/20190920130218.32690-7-s.nawrocki@samsung.com
+Fixes: a962a809e5e4 ("ASoC: mediatek: mt8183: make headset codec optional")
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20190920112320.166052-1-tzungbi@google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/arndale.txt | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../bindings/sound/mt8183-mt6358-ts3a227-max98357.txt         | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/arndale.txt b/Documentation/devicetree/bindings/sound/arndale.txt
-index 0e76946385ae..17530120ccfc 100644
---- a/Documentation/devicetree/bindings/sound/arndale.txt
-+++ b/Documentation/devicetree/bindings/sound/arndale.txt
-@@ -1,8 +1,9 @@
- Audio Binding for Arndale boards
+diff --git a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
+index d6d5207fa996..17ff3892f439 100644
+--- a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
++++ b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
+@@ -2,9 +2,11 @@ MT8183 with MT6358, TS3A227 and MAX98357 CODECS
  
  Required properties:
--- compatible : Can be the following,
--			"samsung,arndale-rt5631"
-+- compatible : Can be one of the following:
-+		"samsung,arndale-rt5631",
-+		"samsung,arndale-wm1811"
+ - compatible : "mediatek,mt8183_mt6358_ts3a227_max98357"
+-- mediatek,headset-codec: the phandles of ts3a227 codecs
+ - mediatek,platform: the phandle of MT8183 ASoC platform
  
- - samsung,audio-cpu: The phandle of the Samsung I2S controller
- - samsung,audio-codec: The phandle of the audio codec
++Optional properties:
++- mediatek,headset-codec: the phandles of ts3a227 codecs
++
+ Example:
+ 
+ 	sound {
 -- 
 2.20.1
 
