@@ -6,80 +6,80 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E94F8C388F3
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77A51C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:49:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73FF221906
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F193321920
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:49:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lIznUwG4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="a0FYSRLw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73FF221906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c567AuFr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="q6SqyX1C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F193321920
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C03071668;
-	Tue,  1 Oct 2019 13:48:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C03071668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 436701676;
+	Tue,  1 Oct 2019 13:48:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 436701676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569930534;
-	bh=54OEFINkJsRFF/HGdEQ38bkCIyyIT3B9+NZ5DQucN4k=;
+	s=default; t=1569930583;
+	bh=m9STAxu6scKMERJ7m3ULZlgsExDomAAGEUR7uPA4ypc=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=lIznUwG4pirvaw/LDFC6ESI+D6PRYMqyGJOvBxF6hyz0uDAayez4Snm/CuyTPXbaF
-	 cJlEsaf9TrtjiFwW1gLXwjSDMhNTMwX2VoTgmtfe0S0wN7wQckw2dajtctlvxyKGFx
-	 yug0NbV4VX7CWpN+Te7Q+UbGsZI9UbzRu9G5QEz0=
+	b=c567AuFrkxXdh3fddTUqft0L8+EopLfFgxFnh1EeV10hcBbRwqt2lBVtrRzSFVW64
+	 POWMuu4JTiyo0Bt5njf+SV5vb7H77z9HfxQfelx3mpNINdagcJzWFpGOiDUJ5FQ6E0
+	 JlKAQGWO2JKhXGoPfo5Ous/g527Z0UDr/8UHOWW4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74F5CF80713;
-	Tue,  1 Oct 2019 13:41:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2EB6F80638;
+	Tue,  1 Oct 2019 13:41:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B937EF8067B; Tue,  1 Oct 2019 13:41:02 +0200 (CEST)
+ id 35D8BF80679; Tue,  1 Oct 2019 13:41:03 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B41EF80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4395F8053A
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B41EF80506
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4395F8053A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="a0FYSRLw"
+ header.b="q6SqyX1C"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=EZwXH2/aboNMmkJHaxOZm8Q5obeSzSnzi54A3erjNLY=; b=a0FYSRLwPqIy
- 7f9N2YC5sUglieOL4Sk813LoHqYbsXCQB1TKMJ9g0HIyUbbZmTdr72dI9gwQbzDSEjc81igak3EqX
- ySK9pcDJYCNs2yAnz8Shb9Nc21UNcSDFt33CpSD9Owhknmd7fWV/LZSaOr0pnYXXQdzhH/rg1M3Jh
- VhZgA=;
+ List-Archive; bh=iY6ES9hP3CWF4u3OHcTrGb1l/ZeOMGCP6gxjprw6Y3c=; b=q6SqyX1CYEul
+ 7ipsRGWpXBg9WW6ZuvTlIVkZyOqJJM/sdVVqPQ4ns9LN+ku3dxFiJ8t6g+eoDyeptQRHIePZLbML3
+ JPzcpjFofHJEPCa6sL8eFjLoUW9795g9ecRk3toF1sABLnjbDMN5e5IQXC4jpiBb13DGRrN3Sm6yF
+ g7g2I=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWM-0004SZ-FF; Tue, 01 Oct 2019 11:40:46 +0000
+ id 1iFGWM-0004Sc-L8; Tue, 01 Oct 2019 11:40:46 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E1B2827429C0; Tue,  1 Oct 2019 12:40:45 +0100 (BST)
+ id 2CCFA2742A10; Tue,  1 Oct 2019 12:40:46 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <45a7c383f43cc1dd9d0934846447aee653278c03.1569493933.git.shengjiu.wang@nxp.com>
+In-Reply-To: <7937c1404ee327ce141cb03b3575b02ea01a740c.1569493933.git.shengjiu.wang@nxp.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114045.E1B2827429C0@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:45 +0100 (BST)
+Message-Id: <20191001114046.2CCFA2742A10@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:46 +0100 (BST)
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
  alsa-devel@alsa-project.org, lars@metafoo.de, timur@kernel.org,
  Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
  lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
  Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
  festevam@gmail.com
-Subject: [alsa-devel] Applied "ASoC: fsl_asrc: update supported sample
-	format" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: fsl_asrc: Use in(out)put_format instead
+	of in(out)put_word_width" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: fsl_asrc: update supported sample format
+   ASoC: fsl_asrc: Use in(out)put_format instead of in(out)put_word_width
 
 has been applied to the asoc tree at
 
@@ -125,53 +125,153 @@ to this mail.
 Thanks,
 Mark
 
-From 109539c986cee525e5ff9ae98793f23c2b29e54d Mon Sep 17 00:00:00 2001
+From 4bf62571070dd1021556e275d9221f736b2ffcf3 Mon Sep 17 00:00:00 2001
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Fri, 27 Sep 2019 09:46:10 +0800
-Subject: [PATCH] ASoC: fsl_asrc: update supported sample format
+Date: Fri, 27 Sep 2019 09:46:09 +0800
+Subject: [PATCH] ASoC: fsl_asrc: Use in(out)put_format instead of
+ in(out)put_word_width
 
-The ASRC support 24bit/16bit/8bit input width, which is
-data width, not slot width.
-
-For the S20_3LE format, the data with is 20bit, slot width
-is 24bit, if we set ASRMCR1n.IWD to be 24bits, the result
-is the volume is lower than expected, it likes 24bit data
-right shift 4 bits
-
-So replace S20_3LE with S24_3LE in supported list and add S8
-format in TX supported list
+snd_pcm_format_t is more formal than enum asrc_word_width, which has
+two property, width and physical width, which is more accurate than
+enum asrc_word_width. So it is better to use in(out)put_format
+instead of in(out)put_word_width.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/45a7c383f43cc1dd9d0934846447aee653278c03.1569493933.git.shengjiu.wang@nxp.com
+Link: https://lore.kernel.org/r/7937c1404ee327ce141cb03b3575b02ea01a740c.1569493933.git.shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 56 +++++++++++++++++++++++++++-------------
+ sound/soc/fsl/fsl_asrc.h |  4 +--
+ 2 files changed, 40 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 4d3804a1ea55..584badf956d2 100644
+index cfa40ef6b1ca..4d3804a1ea55 100644
 --- a/sound/soc/fsl/fsl_asrc.c
 +++ b/sound/soc/fsl/fsl_asrc.c
-@@ -624,7 +624,7 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
+@@ -265,6 +265,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	struct asrc_config *config = pair->config;
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+ 	enum asrc_pair_index index = pair->index;
++	enum asrc_word_width input_word_width;
++	enum asrc_word_width output_word_width;
+ 	u32 inrate, outrate, indiv, outdiv;
+ 	u32 clk_index[2], div[2];
+ 	int in, out, channels;
+@@ -283,9 +285,32 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 		return -EINVAL;
+ 	}
  
- #define FSL_ASRC_FORMATS	(SNDRV_PCM_FMTBIT_S24_LE | \
- 				 SNDRV_PCM_FMTBIT_S16_LE | \
--				 SNDRV_PCM_FMTBIT_S20_3LE)
-+				 SNDRV_PCM_FMTBIT_S24_3LE)
+-	/* Validate output width */
+-	if (config->output_word_width == ASRC_WIDTH_8_BIT) {
+-		pair_err("does not support 8bit width output\n");
++	switch (snd_pcm_format_width(config->input_format)) {
++	case 8:
++		input_word_width = ASRC_WIDTH_8_BIT;
++		break;
++	case 16:
++		input_word_width = ASRC_WIDTH_16_BIT;
++		break;
++	case 24:
++		input_word_width = ASRC_WIDTH_24_BIT;
++		break;
++	default:
++		pair_err("does not support this input format, %d\n",
++			 config->input_format);
++		return -EINVAL;
++	}
++
++	switch (snd_pcm_format_width(config->output_format)) {
++	case 16:
++		output_word_width = ASRC_WIDTH_16_BIT;
++		break;
++	case 24:
++		output_word_width = ASRC_WIDTH_24_BIT;
++		break;
++	default:
++		pair_err("does not support this output format, %d\n",
++			 config->output_format);
+ 		return -EINVAL;
+ 	}
  
- static struct snd_soc_dai_driver fsl_asrc_dai = {
- 	.probe = fsl_asrc_dai_probe,
-@@ -635,7 +635,8 @@ static struct snd_soc_dai_driver fsl_asrc_dai = {
- 		.rate_min = 5512,
- 		.rate_max = 192000,
- 		.rates = SNDRV_PCM_RATE_KNOT,
--		.formats = FSL_ASRC_FORMATS,
-+		.formats = FSL_ASRC_FORMATS |
-+			   SNDRV_PCM_FMTBIT_S8,
- 	},
- 	.capture = {
- 		.stream_name = "ASRC-Capture",
+@@ -383,8 +408,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	/* Implement word_width configurations */
+ 	regmap_update_bits(asrc_priv->regmap, REG_ASRMCR1(index),
+ 			   ASRMCR1i_OW16_MASK | ASRMCR1i_IWD_MASK,
+-			   ASRMCR1i_OW16(config->output_word_width) |
+-			   ASRMCR1i_IWD(config->input_word_width));
++			   ASRMCR1i_OW16(output_word_width) |
++			   ASRMCR1i_IWD(input_word_width));
+ 
+ 	/* Enable BUFFER STALL */
+ 	regmap_update_bits(asrc_priv->regmap, REG_ASRMCR(index),
+@@ -497,13 +522,13 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct fsl_asrc *asrc_priv = snd_soc_dai_get_drvdata(dai);
+-	int width = params_width(params);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int rate = params_rate(params);
+ 	struct asrc_config config;
+-	int word_width, ret;
++	snd_pcm_format_t format;
++	int ret;
+ 
+ 	ret = fsl_asrc_request_pair(channels, pair);
+ 	if (ret) {
+@@ -513,15 +538,10 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	pair->config = &config;
+ 
+-	if (width == 16)
+-		width = ASRC_WIDTH_16_BIT;
+-	else
+-		width = ASRC_WIDTH_24_BIT;
+-
+ 	if (asrc_priv->asrc_width == 16)
+-		word_width = ASRC_WIDTH_16_BIT;
++		format = SNDRV_PCM_FORMAT_S16_LE;
+ 	else
+-		word_width = ASRC_WIDTH_24_BIT;
++		format = SNDRV_PCM_FORMAT_S24_LE;
+ 
+ 	config.pair = pair->index;
+ 	config.channel_num = channels;
+@@ -529,13 +549,13 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 	config.outclk = OUTCLK_ASRCK1_CLK;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		config.input_word_width   = width;
+-		config.output_word_width  = word_width;
++		config.input_format   = params_format(params);
++		config.output_format  = format;
+ 		config.input_sample_rate  = rate;
+ 		config.output_sample_rate = asrc_priv->asrc_rate;
+ 	} else {
+-		config.input_word_width   = word_width;
+-		config.output_word_width  = width;
++		config.input_format   = format;
++		config.output_format  = params_format(params);
+ 		config.input_sample_rate  = asrc_priv->asrc_rate;
+ 		config.output_sample_rate = rate;
+ 	}
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index c60075112570..38af485bdd22 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -342,8 +342,8 @@ struct asrc_config {
+ 	unsigned int dma_buffer_size;
+ 	unsigned int input_sample_rate;
+ 	unsigned int output_sample_rate;
+-	enum asrc_word_width input_word_width;
+-	enum asrc_word_width output_word_width;
++	snd_pcm_format_t input_format;
++	snd_pcm_format_t output_format;
+ 	enum asrc_inclk inclk;
+ 	enum asrc_outclk outclk;
+ };
 -- 
 2.20.1
 
