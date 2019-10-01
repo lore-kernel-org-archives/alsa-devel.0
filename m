@@ -2,88 +2,81 @@ Return-Path: <SRS0=w4sP=X2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F3F5C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:24:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11ECCC388F3
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:41:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DEB1E21906
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:24:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1172F21D79
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:41:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D2KRMaha";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="UuD2xK4+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEB1E21906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oYs6BssN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="K1/NLJIz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1172F21D79
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33E7D167E;
-	Tue,  1 Oct 2019 13:23:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E7D167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDE061668;
+	Tue,  1 Oct 2019 13:40:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDE061668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569929066;
-	bh=1ZI2P5zv5Rc/zEvuVhRQglwPBEuC2F1rkJQItSpvlC8=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=D2KRMahaR2MQsR1wbq2USt7TiUfCliscEVpStRjF51hJvEJLPoDIvRvppDU47jMPo
-	 bDY6aRi9BWYEi8F+fDdDwkUjV18OvWIHVGB12q7loqAaeC4S+Bi5MVliZce3Mkf4dv
-	 QHSZM13LoDk7n2jqyYxrs8XLAV0g+QTsQ2iLkfys=
+	s=default; t=1569930105;
+	bh=Eby4/eyhjXD8gWUpUQeUHDrtAotC6ys/ECmuefkog30=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=oYs6BssNmh8g069jlQ3IAuypUrGlvcHtEZN/Au1GWJjcFy2QP07bSbAr2w+MhJT/P
+	 097wAmqcnCvai3aUABSJ58041YbamAv2g8NE0fLxiSLJIVh4tp7HlwKkG84eYn14JV
+	 4Yo42kBbtPM8onyEleaH4Ljjn11rlwk3CIRO1660=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A6D0F805FA;
-	Tue,  1 Oct 2019 13:22:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CB3CF80635;
+	Tue,  1 Oct 2019 13:40:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03D3DF805FC; Tue,  1 Oct 2019 13:22:31 +0200 (CEST)
+ id 98DDCF805FE; Tue,  1 Oct 2019 13:40:50 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD84DF805FA
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:22:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD84DF805FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93381F800D0
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93381F800D0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="UuD2xK4+"
+ header.b="K1/NLJIz"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=h0oq3hgGKfDpPykm12Ho/6mx7zx/DDd3ddTmuUJvbLg=; b=UuD2xK4+FD+o6WJLN+Z/Qktx9
- XDiLn0jqNIDd163JcaLJ/MExArYp/HdllmlH9PFpC27RB/XLKqkfDAJwXB7At1ux1xpmBz343DEVl
- 4lbddFgH6aPU1e0YyeDXREXxUaBwBsmge0wnxWy1pqyZCWBDG8meMf2b38yWO0kuGR43k=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=ZvGw8/uoJRphIfhJ0LqVgcvpfsqfHsblu0820aGetRQ=; b=K1/NLJIzAOvM
+ tVaMkhxx/ISVqhHGPvxVImvYhJAGDXL+n7YBdiws1LK0a40dWc7n2PW0N+eCEjxCkP3Jni8eSNuQv
+ Kn4vw2GT8BWhDjoBTDwWnBAhD7tNAl9iI/4VUs/bdohZvC58EdJ7V3f3Q+ttDSyUE7C1kjNM7veK/
+ 2h7K8=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGEe-0004Ox-O5; Tue, 01 Oct 2019 11:22:28 +0000
+ id 1iFGWL-0004SP-Ma; Tue, 01 Oct 2019 11:40:45 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 2E5FD274299F; Tue,  1 Oct 2019 12:22:28 +0100 (BST)
-Date: Tue, 1 Oct 2019 12:22:28 +0100
+ id 25F9B2742A10; Tue,  1 Oct 2019 12:40:45 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <20191001112228.GC5618@sirena.co.uk>
-References: <20190920130218.32690-1-s.nawrocki@samsung.com>
- <CGME20190920130323eucas1p218c6822eca3869eb0d3b7380497bbca4@eucas1p2.samsung.com>
- <20190920130218.32690-9-s.nawrocki@samsung.com>
-MIME-Version: 1.0
-In-Reply-To: <20190920130218.32690-9-s.nawrocki@samsung.com>
-X-Cookie: Dyslexics have more fnu.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, ckeepax@opensource.cirrus.com,
- b.zolnierkie@samsung.com, sbkim73@samsung.com, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, krzk@kernel.org, robh+dt@kernel.org,
- linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
-Subject: Re: [alsa-devel] [PATCH v2 08/10] ASoC: samsung: Rename Arndale
-	card driver
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+In-Reply-To: <20190927071646.22319-1-peter.ujfalusi@ti.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20191001114045.25F9B2742A10@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:45 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+ tiwai@suse.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-pcm: Use different sequence for
+	start/stop trigger" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,53 +89,173 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3133106887215763532=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---===============3133106887215763532==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ghzN8eJ9Qlbqn3iT"
-Content-Disposition: inline
+   ASoC: soc-pcm: Use different sequence for start/stop trigger
 
+has been applied to the asoc tree at
 
---ghzN8eJ9Qlbqn3iT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
-On Fri, Sep 20, 2019 at 03:02:17PM +0200, Sylwester Nawrocki wrote:
-> Rename arndale_rt5631.c to just arnddale.c as we support other CODECs
-> than RT5631.  While at it replace spaces in Kconfig with tabs.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't apply against current code, please check and resend.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---ghzN8eJ9Qlbqn3iT
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2TNvMACgkQJNaLcl1U
-h9B5/Qf/X9rpGHePKhgNMopSnhX5Qe21BJNNbNjUxWxPTwsw2b1QJJ6tvlNU1Plj
-JxKTplpI0I8fQNhgBgK1zkc8SECbUDRSwkR/UOBthGp2s7/ZeClSHvyTD6Z2j5IT
-OyFKkFi7MLpjK4eBoIlbW5NnfZYKyC7edq5RgFBn1TZsbdaGaDrx9urqoSQwJfTF
-APcyzdbqNU0Y1UzyZ8jKGGXOLljoDAHW8gpGnunvRyE3Vaw4KLG6spBkuxIuep0L
-hjlRBSmx0lR4UrG7CKYmWK6UmxDIaKIUfbp5nqKOQ8V3x0mHbw4cQxQp3hv7+WYk
-R5jy35YHbr0NyF5bGBiPWb8OZxJhxw==
-=x8KZ
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---ghzN8eJ9Qlbqn3iT--
+From 4378f1fbe924054a09ff0d4e39e1a581b9245252 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Fri, 27 Sep 2019 10:16:46 +0300
+Subject: [PATCH] ASoC: soc-pcm: Use different sequence for start/stop trigger
 
---===============3133106887215763532==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On stream stop currently we stop the DMA first followed by the CPU DAI.
+This can cause underflow (playback) or overflow (capture) on the DAI side
+as the DMA is no longer feeding data while the DAI is still active.
+It can be observed easily if the DAI side does not have FIFO (or it is
+disabled) to survive the time while the DMA is stopped, but still can
+happen on relatively slow CPUs when relatively high sampling rate is used:
+the FIFO is drained between the time the DMA is stopped and the DAI is
+stopped.
+
+It can only fixed by using different sequence within trigger for 'stop' and
+'start':
+case SNDRV_PCM_TRIGGER_START:
+case SNDRV_PCM_TRIGGER_RESUME:
+case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+	Trigger order: dai_link, DMA, CPU DAI then the codec
+
+case SNDRV_PCM_TRIGGER_STOP:
+case SNDRV_PCM_TRIGGER_SUSPEND:
+case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+	Trigger order: codec, CPU DAI, DMA then dai_link
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190927071646.22319-1-peter.ujfalusi@ti.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-pcm.c | 64 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 61 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e163dde5eab1..e7a04c892817 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1047,7 +1047,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int soc_pcm_trigger_start(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_component *component;
+@@ -1056,8 +1056,8 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	struct snd_soc_dai *codec_dai;
+ 	int i, ret;
+ 
+-	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		ret = snd_soc_dai_trigger(codec_dai, substream, cmd);
++	if (rtd->dai_link->ops->trigger) {
++		ret = rtd->dai_link->ops->trigger(substream, cmd);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -1074,6 +1074,42 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	for_each_rtd_codec_dai(rtd, i, codec_dai) {
++		ret = snd_soc_dai_trigger(codec_dai, substream, cmd);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int soc_pcm_trigger_stop(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component;
++	struct snd_soc_rtdcom_list *rtdcom;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_dai *codec_dai;
++	int i, ret;
++
++	for_each_rtd_codec_dai(rtd, i, codec_dai) {
++		ret = snd_soc_dai_trigger(codec_dai, substream, cmd);
++		if (ret < 0)
++			return ret;
++	}
++
++	ret = snd_soc_dai_trigger(cpu_dai, substream, cmd);
++	if (ret < 0)
++		return ret;
++
++	for_each_rtdcom(rtd, rtdcom) {
++		component = rtdcom->component;
++
++		ret = snd_soc_component_trigger(component, substream, cmd);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	if (rtd->dai_link->ops->trigger) {
+ 		ret = rtd->dai_link->ops->trigger(substream, cmd);
+ 		if (ret < 0)
+@@ -1083,6 +1119,28 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return 0;
+ }
+ 
++static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	int ret;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ret = soc_pcm_trigger_start(substream, cmd);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = soc_pcm_trigger_stop(substream, cmd);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return ret;
++}
++
+ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+ 				   int cmd)
+ {
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3133106887215763532==--
