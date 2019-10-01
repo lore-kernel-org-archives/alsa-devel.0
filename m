@@ -6,76 +6,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9728C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E28E5C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:06:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7067721906
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:06:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6252920B7C
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:06:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PT7eblLa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="TVQ3I3T/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7067721906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QwGMPt0e";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="xTIZO8UY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6252920B7C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A57161694;
-	Tue,  1 Oct 2019 20:05:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A57161694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 904231689;
+	Tue,  1 Oct 2019 20:05:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 904231689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569953161;
-	bh=4HzH6bD1D0dDCHpM/UWcwktJyY7HFZc2+IuHrIq6of0=;
+	s=default; t=1569953191;
+	bh=AeWmitR5i4NAheCRI6VaQEuC+YfmwkBQOs1nbplGgNE=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=PT7eblLaTOJfttL+KQFNHFhYyjc5NdRo2UPhgFwJNZe5PsWznT66+t6vDWCYY8w6b
-	 jex9NVatZ4a1N13QFvQz0X/7JyWaG0bcZJDI41NbAgFScddQ+s1y+qHHaXwcbCeIxb
-	 idnWx/T4Gk56W4L/6+F2qxYZFeibkd/BLWaiicoU=
+	b=QwGMPt0eEX/p8HtETsCymF1f0NE4OlkhwG7EeyPnl/erFehqrpo1q8lOA0oGwjMIb
+	 /VYpE3hZAXONgYYZlustTlIEZjqvI7LLOSRwVr4Xj3Lm5kgcqqQXXCxDah2pGnugjx
+	 kOd/rnFBrF5uglEAMz60/pf/zYonHn/mbA+tDS8g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A116DF80720;
-	Tue,  1 Oct 2019 19:57:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 835C7F8072A;
+	Tue,  1 Oct 2019 19:57:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A272F8067A; Tue,  1 Oct 2019 19:57:03 +0200 (CEST)
+ id F1EF5F8067A; Tue,  1 Oct 2019 19:57:03 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06901F8063A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46428F8063D
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:56:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06901F8063A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46428F8063D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="TVQ3I3T/"
+ header.b="xTIZO8UY"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=BXpY8LkvBELJJsn3zZ+R6i87/EGtGz+bVwF6i1tRvgk=; b=TVQ3I3T/xiqE
- PhDOsakalFltvTigZVuH46obY78kVlyrLYhWktDPAJQLNi+MPRmZF7JpKKiitM13T9xJDNHQX5qqK
- G9LvxLPYD49wJdWJVFeNCPTeCsHmdaki8Jt9TkyCN6Pp/YigQ7feRMhm8BBViRblh+JAvuuCmtL33
- 0KaDs=;
+ List-Archive; bh=oGq3dcxFZdfc+SzvExu63VshJG/4jbN07FiDw/u06Qs=; b=xTIZO8UYZNDP
+ 5uxoB7afKR+kPmMjlWwiZMjJWFe9RFILutebOYY2YS1QOjcrbNVixM2WxesjxDb+Cc4i1z2yrD5Ir
+ b2sjuugkAmQ3St3xgU58YKGOKqKDsXaJLOpk21JbRrfjCaUNkYTfiOcR12/pYZIdcADSzIzlvXOax
+ YGcrE=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFMOH-0005tN-Bl; Tue, 01 Oct 2019 17:56:49 +0000
+ id 1iFMOG-0005t0-7h; Tue, 01 Oct 2019 17:56:48 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id D1F0C2742A10; Tue,  1 Oct 2019 18:56:48 +0100 (BST)
+ id BEB032742A30; Tue,  1 Oct 2019 18:56:47 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Pan Xiuli <xiuli.pan@linux.intel.com>
-In-Reply-To: <20190927200538.660-7-pierre-louis.bossart@linux.intel.com>
+To: Jaska Uimonen <jaska.uimonen@intel.com>
+In-Reply-To: <20190927201408.925-4-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001175648.D1F0C2742A10@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 18:56:48 +0100 (BST)
+Message-Id: <20191001175647.BEB032742A30@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 18:56:47 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: pcm: harden PCM STOP sequence" to
-	the asoc tree
+Subject: [alsa-devel] Applied "ASoC: rt5682: add NULL handler to set_jack
+	function" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: pcm: harden PCM STOP sequence
+   ASoC: rt5682: add NULL handler to set_jack function
 
 has been applied to the asoc tree at
 
@@ -121,78 +121,51 @@ to this mail.
 Thanks,
 Mark
 
-From 0a1b08345bc5d9214dc701f8ec5d67c473fab735 Mon Sep 17 00:00:00 2001
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
-Date: Fri, 27 Sep 2019 15:05:31 -0500
-Subject: [PATCH] ASoC: SOF: pcm: harden PCM STOP sequence
+From a315e76fc544f09daf619530a7b2f85865e6b25e Mon Sep 17 00:00:00 2001
+From: Jaska Uimonen <jaska.uimonen@intel.com>
+Date: Fri, 27 Sep 2019 15:14:07 -0500
+Subject: [PATCH] ASoC: rt5682: add NULL handler to set_jack function
 
-The old STOP sequence is: 1. stop DMA 2. send STOP ipc
-If delay happen before the steps 1 and 2, the DMA buffer will be empty in
-short time and cause pipeline xrun then stop the pipeline.
-Then the step 2 ipc stop will return error as pipeline is already stopped.
+Implement NULL handler in set_jack function to disable
+irq's.
 
-Suggested change to avoid the issue is to switch the order of steps 1 and 2
-for the stop sequence.
-
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190927200538.660-7-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190927201408.925-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pcm.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5682.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index fa7769dd825c..2b876d497447 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -323,6 +323,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct sof_ipc_stream stream;
- 	struct sof_ipc_reply reply;
- 	bool reset_hw_params = false;
-+	bool ipc_first = false;
- 	int ret;
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 1ef470700ed5..c50b75ce82e0 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -995,6 +995,16 @@ static int rt5682_set_jack_detect(struct snd_soc_component *component,
+ {
+ 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
  
- 	/* nothing to do for BE */
-@@ -343,6 +344,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_PAUSE;
-+		ipc_first = true;
++	rt5682->hs_jack = hs_jack;
++
++	if (!hs_jack) {
++		regmap_update_bits(rt5682->regmap, RT5682_IRQ_CTRL_2,
++				   RT5682_JD1_EN_MASK, RT5682_JD1_DIS);
++		regmap_update_bits(rt5682->regmap, RT5682_RC_CLK_CTRL,
++				   RT5682_POW_JDH | RT5682_POW_JDL, 0);
++		return 0;
++	}
++
+ 	switch (rt5682->pdata.jd_src) {
+ 	case RT5682_JD1:
+ 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_2,
+@@ -1032,8 +1042,6 @@ static int rt5682_set_jack_detect(struct snd_soc_component *component,
  		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_RELEASE;
-@@ -363,6 +365,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_STOP;
-+		ipc_first = true;
- 		reset_hw_params = true;
- 		break;
- 	default:
-@@ -370,12 +373,22 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		return -EINVAL;
  	}
  
--	snd_sof_pcm_platform_trigger(sdev, substream, cmd);
-+	/*
-+	 * DMA and IPC sequence is different for start and stop. Need to send
-+	 * STOP IPC before stop DMA
-+	 */
-+	if (!ipc_first)
-+		snd_sof_pcm_platform_trigger(sdev, substream, cmd);
- 
- 	/* send IPC to the DSP */
- 	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
- 				 sizeof(stream), &reply, sizeof(reply));
- 
-+	/* need to STOP DMA even if STOP IPC failed */
-+	if (ipc_first)
-+		snd_sof_pcm_platform_trigger(sdev, substream, cmd);
-+
-+	/* free PCM if reset_hw_params is set and the STOP IPC is successful */
- 	if (!ret && reset_hw_params)
- 		ret = sof_pcm_dsp_pcm_free(substream, sdev, spcm);
+-	rt5682->hs_jack = hs_jack;
+-
+ 	return 0;
+ }
  
 -- 
 2.20.1
