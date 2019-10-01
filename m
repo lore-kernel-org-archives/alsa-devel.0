@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0007C388F3
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5448CC388F3
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:59:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B02620640
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:58:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D067821920
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:59:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iuAqieAX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="wbsvENvl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B02620640
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uQ0d2p9o";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="uba1xh6I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D067821920
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A842116A0;
-	Tue,  1 Oct 2019 13:57:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A842116A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24E32169F;
+	Tue,  1 Oct 2019 13:58:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24E32169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569931112;
-	bh=5CM3ju3DAErAzDmg4MGzRyDqxsxg27UX8cbY2Brr/wQ=;
+	s=default; t=1569931151;
+	bh=J5HkFmAuy4wpOwtH7r0JTaO9HbJVGzIsKk3EtMSMWSQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=iuAqieAX7OBD7yHukckHvWytkJAg62gSblHcp2ekkBpLnCqf/LnfcvUHrhJGRu7T/
-	 xyqpuLM3MhwlLilEzDy8bU+w21p/jrcrSwmq+QWpvijQbSM2sjaI2LpTDgqEuRzKZW
-	 bo24x7Dj6pcphXS80mn+XdSeZUc606fSySxo+UJ4=
+	b=uQ0d2p9oRu9tV6KWNHwiK4CbLlMrhG1MCdfsVk215GJG9xcqgiuv1f5w2EQHpTtN6
+	 QQlFUhcKDTiO5ayuyaX+ImMkPBs5JNdypmyz/Wa/Q36iYQ31GMqweibhTdBHf+oRaz
+	 a7r2Am79EjJIXDy8+WKZ+2EI7b4PSIHOJatLG5CI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAF7FF8087D;
-	Tue,  1 Oct 2019 13:41:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9849F80BF3;
+	Tue,  1 Oct 2019 13:41:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0CDEF8070E; Tue,  1 Oct 2019 13:41:14 +0200 (CEST)
+ id 477A1F8070B; Tue,  1 Oct 2019 13:41:15 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35200F80612
+ by alsa1.perex.cz (Postfix) with ESMTPS id E803AF804FF
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35200F80612
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E803AF804FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="wbsvENvl"
+ header.b="uba1xh6I"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=QZypRfIKtbbv6yAIONU+jaxY/eYAyxms/xepNaDfALc=; b=wbsvENvljTZo
- WUDQeFm+64tWr1H3idrIlT3wH1+Xvwh1UFIcXjrrSQSUS9tgvozAr5V04n7jlNWpA5G4I5rWbqVup
- +hypTn/zJsy6y3352ABwCWiJ7SKqQy+6Kum2ELnb9f8DuTaCZLnZARfZhERscUomwj1vKsxfNc+oI
- yjl+c=;
+ List-Archive; bh=wF9PhMGH+Lj8JE4h4I6EzLCX3sM3u3HxgVYZ38hhRes=; b=uba1xh6IxCh3
+ mNCRfDNXG4p3kkva09171A1GXfohYxq+9sSRvGfn+542pH8dR2h9H0hjiJN07JU0+1aK/H5eihoAh
+ aFQ7plk/mdhJk498J3sKpffCyYW0lx1XBGMIoyJHDoSSZWj7xhdl5tQuE+Chw1kHVHSnMhh6GO9Yj
+ sXO4s=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWR-0004V2-Se; Tue, 01 Oct 2019 11:40:51 +0000
+ id 1iFGWR-0004Ur-Ew; Tue, 01 Oct 2019 11:40:51 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 5C4892742A10; Tue,  1 Oct 2019 12:40:51 +0100 (BST)
+ id DE1BD2742A30; Tue,  1 Oct 2019 12:40:50 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <8736grafp5.wl-kuninori.morimoto.gx@renesas.com>
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+In-Reply-To: <20190920130218.32690-4-s.nawrocki@samsung.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114051.5C4892742A10@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:51 +0100 (BST)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-component.h: remove GPL explanation
-	from header" to the asoc tree
+Message-Id: <20191001114050.DE1BD2742A30@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:50 +0100 (BST)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-samsung-soc@vger.kernel.org, ckeepax@opensource.cirrus.com,
+ b.zolnierkie@samsung.com, sbkim73@samsung.com, patches@opensource.cirrus.com,
+ lgirdwood@gmail.com, Krzysztof Kozlowski <krzk@kernel.org>, robh+dt@kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ m.szyprowski@samsung.com
+Subject: [alsa-devel] Applied "ASoC: wm8994: Add support for setting MCLK
+	clock rate" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-component.h: remove GPL explanation from header
+   ASoC: wm8994: Add support for setting MCLK clock rate
 
 has been applied to the asoc tree at
 
@@ -120,36 +125,165 @@ to this mail.
 Thanks,
 Mark
 
-From fd5d3907197c60464672c8a32edeea66e01f6222 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 20 Sep 2019 11:01:42 +0900
-Subject: [PATCH] ASoC: soc-component.h: remove GPL explanation from header
+From 419e2f50833661cec15200d5ee7385daee733667 Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Fri, 20 Sep 2019 15:02:12 +0200
+Subject: [PATCH] ASoC: wm8994: Add support for setting MCLK clock rate
 
-soc-component.h already has SPDX License, thus, GPL explanation
-is not needed. This patch removes it.
+Extend the set_sysclk() handler so we also set frequency of the MCLK1,
+MCLK2 clocks through clk API when those clocks are specified in DT.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/8736grafp5.wl-kuninori.morimoto.gx@renesas.com
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20190920130218.32690-4-s.nawrocki@samsung.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-component.h | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/codecs/wm8994.c | 48 +++++++++++++++++++++++++++++++++++----
+ sound/soc/codecs/wm8994.h | 10 +++++++-
+ 2 files changed, 52 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 5d80b2eef525..1a832695f69c 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -3,10 +3,6 @@
-  * soc-component.h
-  *
-  * Copyright (c) 2019 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
- #ifndef __SOC_COMPONENT_H
- #define __SOC_COMPONENT_H
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index c3d06e8bc54f..35fbaa0138bf 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -167,12 +167,12 @@ static int configure_aif_clock(struct snd_soc_component *component, int aif)
+ 
+ 	switch (wm8994->sysclk[aif]) {
+ 	case WM8994_SYSCLK_MCLK1:
+-		rate = wm8994->mclk[0];
++		rate = wm8994->mclk_rate[0];
+ 		break;
+ 
+ 	case WM8994_SYSCLK_MCLK2:
+ 		reg1 |= 0x8;
+-		rate = wm8994->mclk[1];
++		rate = wm8994->mclk_rate[1];
+ 		break;
+ 
+ 	case WM8994_SYSCLK_FLL1:
+@@ -2367,12 +2367,29 @@ static int wm8994_set_fll(struct snd_soc_dai *dai, int id, int src,
+ 	return _wm8994_set_fll(dai->component, id, src, freq_in, freq_out);
+ }
+ 
++static int wm8994_set_mclk_rate(struct wm8994_priv *wm8994, unsigned int id,
++				unsigned int *freq)
++{
++	int ret;
++
++	if (!wm8994->mclk[id].clk || *freq == wm8994->mclk_rate[id])
++		return 0;
++
++	ret = clk_set_rate(wm8994->mclk[id].clk, *freq);
++	if (ret < 0)
++		return ret;
++
++	*freq = clk_get_rate(wm8994->mclk[id].clk);
++
++	return 0;
++}
++
+ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 	struct wm8994_priv *wm8994 = snd_soc_component_get_drvdata(component);
+-	int i;
++	int ret, i;
+ 
+ 	switch (dai->id) {
+ 	case 1:
+@@ -2387,7 +2404,12 @@ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	switch (clk_id) {
+ 	case WM8994_SYSCLK_MCLK1:
+ 		wm8994->sysclk[dai->id - 1] = WM8994_SYSCLK_MCLK1;
+-		wm8994->mclk[0] = freq;
++
++		ret = wm8994_set_mclk_rate(wm8994, dai->id - 1, &freq);
++		if (ret < 0)
++			return ret;
++
++		wm8994->mclk_rate[0] = freq;
+ 		dev_dbg(dai->dev, "AIF%d using MCLK1 at %uHz\n",
+ 			dai->id, freq);
+ 		break;
+@@ -2395,7 +2417,12 @@ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	case WM8994_SYSCLK_MCLK2:
+ 		/* TODO: Set GPIO AF */
+ 		wm8994->sysclk[dai->id - 1] = WM8994_SYSCLK_MCLK2;
+-		wm8994->mclk[1] = freq;
++
++		ret = wm8994_set_mclk_rate(wm8994, dai->id - 1, &freq);
++		if (ret < 0)
++			return ret;
++
++		wm8994->mclk_rate[1] = freq;
+ 		dev_dbg(dai->dev, "AIF%d using MCLK2 at %uHz\n",
+ 			dai->id, freq);
+ 		break;
+@@ -4447,6 +4474,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8994 = {
+ static int wm8994_probe(struct platform_device *pdev)
+ {
+ 	struct wm8994_priv *wm8994;
++	int ret;
+ 
+ 	wm8994 = devm_kzalloc(&pdev->dev, sizeof(struct wm8994_priv),
+ 			      GFP_KERNEL);
+@@ -4458,6 +4486,16 @@ static int wm8994_probe(struct platform_device *pdev)
+ 
+ 	wm8994->wm8994 = dev_get_drvdata(pdev->dev.parent);
+ 
++	wm8994->mclk[WM8994_MCLK1].id = "MCLK1";
++	wm8994->mclk[WM8994_MCLK2].id = "MCLK2";
++
++	ret = devm_clk_bulk_get_optional(pdev->dev.parent, ARRAY_SIZE(wm8994->mclk),
++					 wm8994->mclk);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to get clocks: %d\n", ret);
++		return ret;
++	}
++
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_idle(&pdev->dev);
+ 
+diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
+index 1d6f2abe1c11..41c4b126114d 100644
+--- a/sound/soc/codecs/wm8994.h
++++ b/sound/soc/codecs/wm8994.h
+@@ -6,6 +6,7 @@
+ #ifndef _WM8994_H
+ #define _WM8994_H
+ 
++#include <linux/clk.h>
+ #include <sound/soc.h>
+ #include <linux/firmware.h>
+ #include <linux/completion.h>
+@@ -14,6 +15,12 @@
+ 
+ #include "wm_hubs.h"
+ 
++enum {
++	WM8994_MCLK1,
++	WM8994_MCLK2,
++	WM8994_NUM_MCLK
++};
++
+ /* Sources for AIF1/2 SYSCLK - use with set_dai_sysclk() */
+ #define WM8994_SYSCLK_MCLK1 1
+ #define WM8994_SYSCLK_MCLK2 2
+@@ -73,9 +80,10 @@ struct wm8994;
+ struct wm8994_priv {
+ 	struct wm_hubs_data hubs;
+ 	struct wm8994 *wm8994;
++	struct clk_bulk_data mclk[WM8994_NUM_MCLK];
+ 	int sysclk[2];
+ 	int sysclk_rate[2];
+-	int mclk[2];
++	int mclk_rate[2];
+ 	int aifclk[2];
+ 	int aifdiv[2];
+ 	int channels[2];
 -- 
 2.20.1
 
