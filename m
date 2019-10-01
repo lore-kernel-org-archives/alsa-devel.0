@@ -6,75 +6,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C5D5C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90BB3C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:54:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D44DF20640
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:54:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1805E20640
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:54:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bCQph8/0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="t2bgkGL6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D44DF20640
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i5JJhzf9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="h+F8h5Bm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1805E20640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25DCE169F;
-	Tue,  1 Oct 2019 13:53:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25DCE169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E71D1699;
+	Tue,  1 Oct 2019 13:53:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E71D1699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569930839;
-	bh=Xu+qR5gkhwLMuJ2Lv8puCdWOSNfWdNCBxgTUBvt8QEM=;
+	s=default; t=1569930876;
+	bh=ASu/PYO98+2O3HrE98U2DRWwbrlv7mDR/2lDH2J9Ync=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=bCQph8/0KKauI2y9PfBK0ZyzPFmYidn5rIKqEGOAyn2tj1hCU4/Hqc4ez+G1Mnq/0
-	 zWrnwG4sUADm8gUyZ0dJHtc9IlKPAQ/LeqQQgRGJr8kKMbDutqJMiJaODdSqnHZQ1a
-	 w1PmToXC6UYz5VMk5OjHLSIX9/KFvtEomDfiWFzw=
+	b=i5JJhzf9UF+9Nah/C1dzAEFs1CQAZaQKUXfPzRuZmFzbRf9+vstCU/Vk9t/KpVz4z
+	 IQlINBXNyxPf7nVSQKBeI6u0yBuAWjCWaQ4phdHNl5LYqOF41uQjQ8Hqq/CsV8WQ/J
+	 Ee8P2zCA6p+GJ8GqcefF9UZHBS2QPzFZXPdWjjZg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD317F80771;
-	Tue,  1 Oct 2019 13:41:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B54B8F8078F;
+	Tue,  1 Oct 2019 13:41:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BFC7F806F0; Tue,  1 Oct 2019 13:41:09 +0200 (CEST)
+ id CE5B3F806FA; Tue,  1 Oct 2019 13:41:10 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DA8BF805FC
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DA8BF805FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22682F805FE
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22682F805FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="t2bgkGL6"
+ header.b="h+F8h5Bm"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=s3p4rmlmUbzDJNW2fuWXnTHtv9wgy3UZVTXQUqDOxJA=; b=t2bgkGL61/EQ
- NasEQORrsiv1oP8DusXqEB9PqgFwMTA8myX6iX4Y2jKZ0sI4VEUJpvN7L/xb7w6aKoUt6+j5S7wc6
- W+W/gHb2vIGcqFyTuk8q3/qq0IsjroTXVmFCB0ZTboX4oNHk0im2iREOHL22DcIH+Y56LiM0V4Osk
- ejWXo=;
+ List-Archive; bh=mhWHWBwXSbknkb3rCE8Kq54ngtwnC6sNCqslzzoP/mY=; b=h+F8h5BmdFrM
+ LwarzQ0UJn8y1BAA6wDIE5Kc2ykAnLw30sa7nr202zk1THlrdrZAVQkD6R1WRg5Cy9mcmOkN91RdJ
+ 4kmiv+JQW4+ZvROrqWp+AYBxSQvKYjP2kh27FI7O3G0DDHEhO5h1/Xz/k5nmutDkX0/LtwMl3SR3L
+ avrwg=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWP-0004Tf-EI; Tue, 01 Oct 2019 11:40:49 +0000
+ id 1iFGWQ-0004UC-9E; Tue, 01 Oct 2019 11:40:50 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E624927429C0; Tue,  1 Oct 2019 12:40:48 +0100 (BST)
+ id A9B8727429C0; Tue,  1 Oct 2019 12:40:49 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <878squf7oi.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87d0g6f7s5.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114048.E624927429C0@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:48 +0100 (BST)
+Message-Id: <20191001114049.A9B8727429C0@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:49 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-core: merge soc_free_pcm_runtime()
-	and soc_rtd_free()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: call list_del(&rtd->list) at
+	soc_free_pcm_runtime()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,7 +95,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: merge soc_free_pcm_runtime() and soc_rtd_free()
+   ASoC: soc-core: call list_del(&rtd->list) at soc_free_pcm_runtime()
 
 has been applied to the asoc tree at
 
@@ -120,129 +120,61 @@ to this mail.
 Thanks,
 Mark
 
-From b7c5bc45ee94a03a0dc45a862180e17db8ea8e9d Mon Sep 17 00:00:00 2001
+From 753ace0a34fbd39ac2ec654c6859823db420f69e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 12 Sep 2019 13:41:01 +0900
-Subject: [PATCH] ASoC: soc-core: merge soc_free_pcm_runtime() and
- soc_rtd_free()
+Date: Thu, 12 Sep 2019 13:38:50 +0900
+Subject: [PATCH] ASoC: soc-core: call list_del(&rtd->list) at
+ soc_free_pcm_runtime()
 
-"rtd"      is handled by soc_xxx_pcm_runtime(), and
-"rtd->dev" is handled by soc_rtd_xxx().
+Current ALSA SoC is calling list_del(&rtd->list) at (1)
 
-There is no reason to separate these, and it makes code complex.
-We can free these in the same time.
-
-Here soc_rtd_free() (A) which frees rtd->dev is called from
-soc_remove_link_dais() many times (1).
-Then, it is using dev_registered flags to avoid multi kfree() (2).
-This is no longer needed if we can merge these functions.
-
-	static void soc_remove_link_dais(...)
+	static void soc_remove_pcm_runtimes(...)
 	{
 		...
-(1)		for_each_comp_order(order) {
-(1)			for_each_card_rtds(card, rtd) {
-
-(A)				soc_rtd_free(rtd);
-				...
-			}
+		for_each_card_rtds_safe(card, rtd, _rtd) {
+(1)			list_del(&rtd->list);
+(2)			soc_free_pcm_runtime(rtd);
 		}
+		...
 	}
 
-(A)	static void soc_rtd_free(...)
-	{
-(2)		if (rtd->dev_registered) {
-			/* we don't need to call kfree() for rtd->dev */
-			device_unregister(rtd->dev);
-(2)			rtd->dev_registered = 0;
-		}
-	}
+But, we will call soc_free_pcm_runtime() after that (2).
+&rtd->list is         connected at soc_new_pcm_runtime(),
+Thus, it should be disconnected at soc_free_pcm_runtime().
 
-This patch merges soc_rtd_free() into soc_free_pcm_runtime().
+This patch calls list_del(&rtd->list) at soc_free_pcm_runtime().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/878squf7oi.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87d0g6f7s5.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  1 -
- sound/soc/soc-core.c | 24 ++++++++----------------
- 2 files changed, 8 insertions(+), 17 deletions(-)
+ sound/soc/soc-core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f264c6509f00..d93cb46c536d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1148,7 +1148,6 @@ struct snd_soc_pcm_runtime {
- 	struct list_head component_list; /* list of connected components */
- 
- 	/* bit field */
--	unsigned int dev_registered:1;
- 	unsigned int pop_wait:1;
- 	unsigned int fe_compr:1; /* for Dynamic PCM */
- };
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6abc1bc9a236..8a37850291bd 100644
+index cadf96bc0097..7a3f4783adf6 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -369,6 +369,14 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
+@@ -359,6 +359,7 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
+ {
  	kfree(rtd->codec_dais);
  	snd_soc_rtdcom_del_all(rtd);
- 	list_del(&rtd->list);
-+
-+	/*
-+	 * we don't need to call kfree() for rtd->dev
-+	 * see
-+	 *	soc_release_rtd_dev()
-+	 */
-+	if (rtd->dev)
-+		device_unregister(rtd->dev);
++	list_del(&rtd->list);
  	kfree(rtd);
  }
  
-@@ -434,8 +442,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	rtd->num = card->num_rtd;
- 	card->num_rtd++;
- 
--	rtd->dev_registered = 1;
--
- 	return rtd;
- 
- free_rtd:
-@@ -1169,7 +1175,6 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
- 	return 0;
- }
- 
--static void soc_rtd_free(struct snd_soc_pcm_runtime *rtd); /* remove me */
- static void soc_remove_link_dais(struct snd_soc_card *card)
+@@ -397,10 +398,8 @@ static void soc_remove_pcm_runtimes(struct snd_soc_card *card)
  {
- 	int i;
-@@ -1179,10 +1184,6 @@ static void soc_remove_link_dais(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd, *_rtd;
  
- 	for_each_comp_order(order) {
- 		for_each_card_rtds(card, rtd) {
--
--			/* finalize rtd device */
--			soc_rtd_free(rtd);
--
- 			/* remove the CODEC DAI */
- 			for_each_rtd_codec_dai(rtd, i, codec_dai)
- 				soc_remove_dai(codec_dai, order);
-@@ -1460,15 +1461,6 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(snd_soc_remove_dai_link);
- 
--static void soc_rtd_free(struct snd_soc_pcm_runtime *rtd)
--{
--	if (rtd->dev_registered) {
--		/* we don't need to call kfree() for rtd->dev */
--		device_unregister(rtd->dev);
--		rtd->dev_registered = 0;
+-	for_each_card_rtds_safe(card, rtd, _rtd) {
+-		list_del(&rtd->list);
++	for_each_card_rtds_safe(card, rtd, _rtd)
+ 		soc_free_pcm_runtime(rtd);
 -	}
--}
--
- static int soc_link_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
- 				struct snd_soc_pcm_runtime *rtd)
- {
+ 
+ 	card->num_rtd = 0;
+ }
 -- 
 2.20.1
 
