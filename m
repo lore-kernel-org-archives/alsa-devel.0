@@ -6,76 +6,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E92AFECE587
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:04:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6249EECE587
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:05:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7752621924
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:04:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE79821906
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:05:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sq0VL2Pc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="rk70wCnh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7752621924
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PYxDm7gR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="i8Umd+Lk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE79821906
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EB491689;
-	Tue,  1 Oct 2019 20:03:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EB491689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29192167A;
+	Tue,  1 Oct 2019 20:04:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29192167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569953069;
-	bh=SdpZgQX5U27YOg/PMv2qcXuImg43YIMVo5qs6uldvWk=;
+	s=default; t=1569953111;
+	bh=nCXCyLrZayCwfRZG2sCu9+QBYolugvYp38CemPHG2kw=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=sq0VL2PcXycq/XYzOtJZqXxdZ4N1j29qRF9lyvPmIjZFLJ+JVEV1tUgh9UxNsPZmf
-	 GoV3kBJcd43fGuDl+2k4GB9aK3vkesHNbbPI8tuUcN98vFDTQwJS5GwITC9ZSJHUr9
-	 wAvtbfhSbwI5M2pccJpbcgBD8anfvPV0yMtu1MZM=
+	b=PYxDm7gRz9qtyQfsQ0/ed09v2z18odQWaD4odlq+CAnb5zMMj8v/UCHQ4D15a6D6t
+	 q50t9oeIUcV6Ha1G7MXw39iROsoh46Bu+MTsuNtceqaHC0wXfkX9f61WEf4TN8jHEr
+	 quxpvr1eaadeZyP1NDoOydNQ93F968QYQJbCPq+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BCDAF806F7;
-	Tue,  1 Oct 2019 19:57:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 552B8F8070C;
+	Tue,  1 Oct 2019 19:57:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26B1BF80518; Tue,  1 Oct 2019 19:57:00 +0200 (CEST)
+ id 86E4FF805F8; Tue,  1 Oct 2019 19:57:00 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6681F80611
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4FF1F8063B
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:56:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6681F80611
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4FF1F8063B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="rk70wCnh"
+ header.b="i8Umd+Lk"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=7UBpcegGIUWg4BqGsiKTjX42kqeB7JoOYWG3hHw3omM=; b=rk70wCnhD8bO
- kWuHoEs/faF5se31LqszcvHvvlTOn3FNYGPiTVESuJiXD7WYom6RfebGGLbCNUrnqvPkRzfqDkxSe
- Ivwh7GugJWPrIemCwpQ3SzLKOA6ka+3MECrbFMaEZvuyQ5yFHd4PoMAqqVN5wk7Dc5gTECECE0XS8
- 662ww=;
+ List-Archive; bh=Uc/HpAiM8ZgLHCo5sXA8wZ5+f4owcA5J3+Cdtx9zvBQ=; b=i8Umd+LkzA/0
+ FxEh9Kum4fkAQtO01lMscecLolUYkzmdmZBJGqtRezC1WcRybDsQn2Engu9j3QtKSKNSBHMlsVFCt
+ Q5hEfMyFQDSb+gd53L1CEYoVYA9dGCOOkMcuaWO+v1A8I62raA2u4n73hSb8lktH1vreZUh49niQa
+ NAmUw=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFMOF-0005so-QQ; Tue, 01 Oct 2019 17:56:47 +0000
+ id 1iFMOG-0005tC-U3; Tue, 01 Oct 2019 17:56:49 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 443A727429C0; Tue,  1 Oct 2019 18:56:47 +0100 (BST)
+ id 69C4D2742A30; Tue,  1 Oct 2019 18:56:48 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Jaska Uimonen <jaska.uimonen@intel.com>
-In-Reply-To: <20190927201408.925-2-pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+In-Reply-To: <20190927200538.660-12-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001175647.443A727429C0@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 18:56:47 +0100 (BST)
+Message-Id: <20191001175648.69C4D2742A30@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 18:56:48 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: intel: bytcr_rt5651: add null check to
-	support_button_press" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: initialise and verify FW
+	crash dump data." to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: bytcr_rt5651: add null check to support_button_press
+   ASoC: SOF: Intel: initialise and verify FW crash dump data.
 
 has been applied to the asoc tree at
 
@@ -121,38 +121,105 @@ to this mail.
 Thanks,
 Mark
 
-From 2bdf194e2030fce4f2e91300817338353414ab3b Mon Sep 17 00:00:00 2001
-From: Jaska Uimonen <jaska.uimonen@intel.com>
-Date: Fri, 27 Sep 2019 15:14:05 -0500
-Subject: [PATCH] ASoC: intel: bytcr_rt5651: add null check to
- support_button_press
+From ff2be865633e6fa523cd2db3b73197d795dec991 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Fri, 27 Sep 2019 15:05:36 -0500
+Subject: [PATCH] ASoC: SOF: Intel: initialise and verify FW crash dump data.
 
-When removing sof module the support_button_press function will oops
-because hp_jack pointer is not checked for NULL. So add a check to fix
-this.
+FW mailbox offset was not set before use and HDR size was not validated.
+Fix this.
 
-Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190927201408.925-2-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190927200538.660-12-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sof/intel/bdw.c | 7 +++++++
+ sound/soc/sof/intel/byt.c | 6 ++++++
+ sound/soc/sof/intel/hda.c | 7 +++++++
+ 3 files changed, 20 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 762595de956c..c506c9305043 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -1770,6 +1770,9 @@ static int rt5651_detect_headset(struct snd_soc_component *component)
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index e282179263e8..80e2826fb447 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -37,6 +37,7 @@
+ #define MBOX_SIZE       0x1000
+ #define MBOX_DUMP_SIZE 0x30
+ #define EXCEPT_OFFSET	0x800
++#define EXCEPT_MAX_HDR_SIZE	0x400
  
- static bool rt5651_support_button_press(struct rt5651_priv *rt5651)
- {
-+	if (!rt5651->hp_jack)
-+		return false;
+ /* DSP peripherals */
+ #define DMAC0_OFFSET    0xFE000
+@@ -228,6 +229,11 @@ static void bdw_get_registers(struct snd_sof_dev *sdev,
+ 	/* note: variable AR register array is not read */
+ 
+ 	/* then get panic info */
++	if (xoops->arch_hdr.totalsize > EXCEPT_MAX_HDR_SIZE) {
++		dev_err(sdev->dev, "invalid header size 0x%x. FW oops is bogus\n",
++			xoops->arch_hdr.totalsize);
++		return;
++	}
+ 	offset += xoops->arch_hdr.totalsize;
+ 	sof_mailbox_read(sdev, offset, panic_info, sizeof(*panic_info));
+ 
+@@ -451,6 +457,7 @@ static int bdw_probe(struct snd_sof_dev *sdev)
+ 	/* TODO: add offsets */
+ 	sdev->mmio_bar = BDW_DSP_BAR;
+ 	sdev->mailbox_bar = BDW_DSP_BAR;
++	sdev->dsp_oops_offset = MBOX_OFFSET;
+ 
+ 	/* PCI base */
+ 	mmio = platform_get_resource(pdev, IORESOURCE_MEM,
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 5e7a6aaa627a..a1e514f71739 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -28,6 +28,7 @@
+ #define MBOX_OFFSET		0x144000
+ #define MBOX_SIZE		0x1000
+ #define EXCEPT_OFFSET		0x800
++#define EXCEPT_MAX_HDR_SIZE	0x400
+ 
+ /* DSP peripherals */
+ #define DMAC0_OFFSET		0x098000
+@@ -126,6 +127,11 @@ static void byt_get_registers(struct snd_sof_dev *sdev,
+ 	/* note: variable AR register array is not read */
+ 
+ 	/* then get panic info */
++	if (xoops->arch_hdr.totalsize > EXCEPT_MAX_HDR_SIZE) {
++		dev_err(sdev->dev, "invalid header size 0x%x. FW oops is bogus\n",
++			xoops->arch_hdr.totalsize);
++		return;
++	}
+ 	offset += xoops->arch_hdr.totalsize;
+ 	sof_mailbox_read(sdev, offset, panic_info, sizeof(*panic_info));
+ 
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index c72e9a09eee1..06e84679087b 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -35,6 +35,8 @@
+ #define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa348)
+ #define IS_CNL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9dc8)
+ 
++#define EXCEPT_MAX_HDR_SIZE	0x400
 +
- 	/* Button press support only works with internal jack-detection */
- 	return (rt5651->hp_jack->status & SND_JACK_MICROPHONE) &&
- 		rt5651->gpiod_hp_det == NULL;
+ /*
+  * Debug
+  */
+@@ -131,6 +133,11 @@ static void hda_dsp_get_registers(struct snd_sof_dev *sdev,
+ 	/* note: variable AR register array is not read */
+ 
+ 	/* then get panic info */
++	if (xoops->arch_hdr.totalsize > EXCEPT_MAX_HDR_SIZE) {
++		dev_err(sdev->dev, "invalid header size 0x%x. FW oops is bogus\n",
++			xoops->arch_hdr.totalsize);
++		return;
++	}
+ 	offset += xoops->arch_hdr.totalsize;
+ 	sof_block_read(sdev, sdev->mmio_bar, offset,
+ 		       panic_info, sizeof(*panic_info));
 -- 
 2.20.1
 
