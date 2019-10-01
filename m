@@ -6,78 +6,80 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 598A7C388F3
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BE83C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:44:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D607E2133F
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:44:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D6F9921855
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:44:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UCL1MQv/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Rm1HYTga"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D607E2133F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vWuR0TQo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="FVkhLUQV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6F9921855
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 176ED1683;
-	Tue,  1 Oct 2019 13:43:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 176ED1683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 305B31684;
+	Tue,  1 Oct 2019 13:43:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 305B31684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569930261;
-	bh=tdj7ZKRTVFOOng0pIk7Qqe9Bwl/ei/uuGBW46v+HwtA=;
+	s=default; t=1569930285;
+	bh=q9MzMgon51wIH3OvMu7g2nrBdlNZGoocHmCCJooRZTU=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=UCL1MQv/gfXf3s97rVFd8VE1+GiST7O18UBPZZl40rcgmf/9pSHFd+tqksQC/tfyx
-	 DTtHITaAAhFDrNFnzdRuRVyLrg56YdxiqB6iWL5pytyzobHT7kXgH3Btf2YApZUWJf
-	 wyxHgVofBswwVZVYNkPKIO6fKETjiQ6Zl4lUigME=
+	b=vWuR0TQoqjsFuBTteD7TsO9drMrl1lVlSpJF4CyrEUYpbhOrT/EL1v7P+95Da2zrO
+	 9pUnMyBvsmMvhqYAWyJiXd9G5qCk6tBA8DUPbTgXHkNQemdmbVyi3MrTunyUEUMia8
+	 hov+m93ucDR5JOMOeZNAEvWDhQm46ojgmkpLTY5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E199BF80676;
-	Tue,  1 Oct 2019 13:41:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74B61F805FB;
+	Tue,  1 Oct 2019 13:41:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACB98F80636; Tue,  1 Oct 2019 13:40:53 +0200 (CEST)
+ id E6966F8065A; Tue,  1 Oct 2019 13:40:56 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4162BF80518
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4162BF80518
+ by alsa1.perex.cz (Postfix) with ESMTPS id B72CCF805E1
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B72CCF805E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="Rm1HYTga"
+ header.b="FVkhLUQV"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Iv9wdKvTB0h+dHZKzI9dA1j0Tf9XKyywHQlK8mDvtjk=; b=Rm1HYTgatKnU
- DPpL4yS+eCBVV1I1h0pIsCWojSnTboCNhulb67RhJ5tQnl/DpUB+I/xGkR52TWvqtu9yjPf01jjJC
- dQ4oppb6IEyuoqWUconqjzpx1hTNZ3tJt2/+UjL1hmO4dVURdWVloe+Xyyv3JQWiQd4QzD5YGgBqp
- W467w=;
+ List-Archive; bh=J7yyok7EgwSLFPHzLp/yUCoO3tHmw6Vh5y9GcDVlxFk=; b=FVkhLUQVyayW
+ Kkzu0jN74+INu8rGDPFImqpfPBxjiEtFXRy3dL/VZp7SWaFbIqdRNhKKK10+ivcLX6pqBRVngW/Uo
+ vn0+IO1HnPdIzGNU5Tr8UivXQBicSbAD6ctllvMZE1XLYzVXHzLpW1rc3NSx3UuCbVGkIgRZzGv7G
+ Q1o8o=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWN-0004Si-5U; Tue, 01 Oct 2019 11:40:47 +0000
+ id 1iFGWL-0004SR-Ty; Tue, 01 Oct 2019 11:40:46 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id A948D27429C0; Tue,  1 Oct 2019 12:40:46 +0100 (BST)
+ id 5F1C72742A30; Tue,  1 Oct 2019 12:40:45 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>
-In-Reply-To: <20190926115012.24049-1-alexandru.ardelean@analog.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <b6a4de2bbf960ef291ee902afe4388bd0fc1d347.1569493933.git.shengjiu.wang@nxp.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114046.A948D27429C0@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:46 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>,
- Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [alsa-devel] Applied "ASoC: adau1761: Add PGA Slew time control" to
-	the asoc tree
+Message-Id: <20191001114045.5F1C72742A30@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:45 +0100 (BST)
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, lars@metafoo.de, timur@kernel.org,
+ Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ festevam@gmail.com
+Subject: [alsa-devel] Applied "ASoC: fsl_asrc: Fix error with S24_3LE format
+	bitstream in i.MX8" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: adau1761: Add PGA Slew time control
+   ASoC: fsl_asrc: Fix error with S24_3LE format bitstream in i.MX8
 
 has been applied to the asoc tree at
 
@@ -123,85 +125,165 @@ to this mail.
 Thanks,
 Mark
 
-From 83078521072e95cf555d356f9e0b39021c46ac76 Mon Sep 17 00:00:00 2001
-From: Lars-Peter Clausen <lars@metafoo.de>
-Date: Thu, 26 Sep 2019 14:50:11 +0300
-Subject: [PATCH] ASoC: adau1761: Add PGA Slew time control
+From 703df4413ff6cf1812922522daa7c0610f087910 Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Date: Fri, 27 Sep 2019 09:46:12 +0800
+Subject: [PATCH] ASoC: fsl_asrc: Fix error with S24_3LE format bitstream in
+ i.MX8
 
-The PGA Slew Time control allows to configure the rate with which the PGA
-gain control ramps up/down to the target setting.
+There is error "aplay: pcm_write:2023: write error: Input/output error"
+on i.MX8QM/i.MX8QXP platform for S24_3LE format.
 
-The PGA slew control is done via the ALC Control 0 register. There are 2
-bits on that reg, that control PGA slew time, while the other bits control
-parts of the ALC (automatic level control) block.
+In i.MX8QM/i.MX8QXP, the DMA is EDMA, which don't support 24bit
+sample, but we didn't add any constraint, that cause issues.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Link: https://lore.kernel.org/r/20190926115012.24049-1-alexandru.ardelean@analog.com
+So we need to query the caps of dma, then update the hw parameters
+according to the caps.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/b6a4de2bbf960ef291ee902afe4388bd0fc1d347.1569493933.git.shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1761.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/soc/fsl/fsl_asrc.c     |  4 +--
+ sound/soc/fsl/fsl_asrc.h     |  3 ++
+ sound/soc/fsl/fsl_asrc_dma.c | 64 ++++++++++++++++++++++++++++++++----
+ 3 files changed, 62 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
-index 977f5a63be3f..a9ef735f8b4e 100644
---- a/sound/soc/codecs/adau1761.c
-+++ b/sound/soc/codecs/adau1761.c
-@@ -28,6 +28,7 @@
- #define ADAU1761_REC_MIXER_RIGHT1	0x400d
- #define ADAU1761_LEFT_DIFF_INPUT_VOL	0x400e
- #define ADAU1761_RIGHT_DIFF_INPUT_VOL	0x400f
-+#define ADAU1761_ALC_CTRL0		0x4011
- #define ADAU1761_PLAY_LR_MIXER_LEFT	0x4020
- #define ADAU1761_PLAY_MIXER_LEFT0	0x401c
- #define ADAU1761_PLAY_MIXER_LEFT1	0x401d
-@@ -71,6 +72,7 @@ static const struct reg_default adau1761_reg_defaults[] = {
- 	{ ADAU1761_REC_MIXER_RIGHT0,		0x00 },
- 	{ ADAU1761_REC_MIXER_RIGHT1,		0x00 },
- 	{ ADAU1761_LEFT_DIFF_INPUT_VOL,		0x00 },
-+	{ ADAU1761_ALC_CTRL0,			0x00 },
- 	{ ADAU1761_RIGHT_DIFF_INPUT_VOL,	0x00 },
- 	{ ADAU1761_PLAY_LR_MIXER_LEFT,		0x00 },
- 	{ ADAU1761_PLAY_MIXER_LEFT0,		0x00 },
-@@ -147,6 +149,21 @@ static SOC_VALUE_ENUM_SINGLE_DECL(adau1761_capture_bias_enum,
- 		ADAU17X1_REC_POWER_MGMT, 1, 0x3, adau1761_bias_select_text,
- 		adau1761_bias_select_values);
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 584badf956d2..0bf91a6f54b9 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -115,7 +115,7 @@ static void fsl_asrc_sel_proc(int inrate, int outrate,
+  * within range [ANCA, ANCA+ANCB-1], depends on the channels of pair A
+  * while pair A and pair C are comparatively independent.
+  */
+-static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
++int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
+ {
+ 	enum asrc_pair_index index = ASRC_INVALID_PAIR;
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+@@ -158,7 +158,7 @@ static int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair)
+  *
+  * It clears the resource from asrc_priv and releases the occupied channels.
+  */
+-static void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
++void fsl_asrc_release_pair(struct fsl_asrc_pair *pair)
+ {
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+ 	enum asrc_pair_index index = pair->index;
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 38af485bdd22..2b57e8c53728 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -462,4 +462,7 @@ struct fsl_asrc {
+ #define DRV_NAME "fsl-asrc-dai"
+ extern struct snd_soc_component_driver fsl_asrc_component;
+ struct dma_chan *fsl_asrc_get_dma_channel(struct fsl_asrc_pair *pair, bool dir);
++int fsl_asrc_request_pair(int channels, struct fsl_asrc_pair *pair);
++void fsl_asrc_release_pair(struct fsl_asrc_pair *pair);
++
+ #endif /* _FSL_ASRC_H */
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 01052a0808b0..2a60fc6142b1 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -16,13 +16,11 @@
  
-+static const unsigned int adau1761_pga_slew_time_values[] = {
-+	3, 0, 1, 2,
-+};
-+
-+static const char * const adau1761_pga_slew_time_text[] = {
-+	"Off",
-+	"24 ms",
-+	"48 ms",
-+	"96 ms",
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(adau1761_pga_slew_time_enum,
-+		ADAU1761_ALC_CTRL0, 6, 0x3, adau1761_pga_slew_time_text,
-+		adau1761_pga_slew_time_values);
-+
- static const struct snd_kcontrol_new adau1761_jack_detect_controls[] = {
- 	SOC_SINGLE("Speaker Auto-mute Switch", ADAU1761_DIGMIC_JACKDETECT,
- 		4, 1, 0),
-@@ -161,6 +178,8 @@ static const struct snd_kcontrol_new adau1761_differential_mode_controls[] = {
+ #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
  
- 	SOC_DOUBLE_R_TLV("PGA Boost Capture Volume", ADAU1761_REC_MIXER_LEFT1,
- 		ADAU1761_REC_MIXER_RIGHT1, 3, 2, 0, adau1761_pga_boost_tlv),
-+
-+	SOC_ENUM("PGA Capture Slew Time", adau1761_pga_slew_time_enum),
- };
+-static const struct snd_pcm_hardware snd_imx_hardware = {
++static struct snd_pcm_hardware snd_imx_hardware = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_MMAP |
+-		SNDRV_PCM_INFO_MMAP_VALID |
+-		SNDRV_PCM_INFO_PAUSE |
+-		SNDRV_PCM_INFO_RESUME,
++		SNDRV_PCM_INFO_MMAP_VALID,
+ 	.buffer_bytes_max = FSL_ASRC_DMABUF_SIZE,
+ 	.period_bytes_min = 128,
+ 	.period_bytes_max = 65535, /* Limited by SDMA engine */
+@@ -270,12 +268,25 @@ static int fsl_asrc_dma_hw_free(struct snd_pcm_substream *substream)
  
- static const struct snd_kcontrol_new adau1761_single_mode_controls[] = {
-@@ -632,6 +651,7 @@ static bool adau1761_readable_register(struct device *dev, unsigned int reg)
- 	case ADAU1761_DEJITTER:
- 	case ADAU1761_CLK_ENABLE0:
- 	case ADAU1761_CLK_ENABLE1:
-+	case ADAU1761_ALC_CTRL0:
- 		return true;
- 	default:
- 		break;
+ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
+ {
++	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	struct device *dev = component->dev;
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+ 	struct fsl_asrc_pair *pair;
++	struct dma_chan *tmp_chan = NULL;
++	u8 dir = tx ? OUT : IN;
++	bool release_pair = true;
++	int ret = 0;
++
++	ret = snd_pcm_hw_constraint_integer(substream->runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0) {
++		dev_err(dev, "failed to set pcm hw params periods\n");
++		return ret;
++	}
+ 
+ 	pair = kzalloc(sizeof(struct fsl_asrc_pair), GFP_KERNEL);
+ 	if (!pair)
+@@ -285,11 +296,50 @@ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
+ 
+ 	runtime->private_data = pair;
+ 
+-	snd_pcm_hw_constraint_integer(substream->runtime,
+-				      SNDRV_PCM_HW_PARAM_PERIODS);
++	/* Request a dummy pair, which will be released later.
++	 * Request pair function needs channel num as input, for this
++	 * dummy pair, we just request "1" channel temporarily.
++	 */
++	ret = fsl_asrc_request_pair(1, pair);
++	if (ret < 0) {
++		dev_err(dev, "failed to request asrc pair\n");
++		goto req_pair_err;
++	}
++
++	/* Request a dummy dma channel, which will be released later. */
++	tmp_chan = fsl_asrc_get_dma_channel(pair, dir);
++	if (!tmp_chan) {
++		dev_err(dev, "failed to get dma channel\n");
++		ret = -EINVAL;
++		goto dma_chan_err;
++	}
++
++	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++
++	/* Refine the snd_imx_hardware according to caps of DMA. */
++	ret = snd_dmaengine_pcm_refine_runtime_hwparams(substream,
++							dma_data,
++							&snd_imx_hardware,
++							tmp_chan);
++	if (ret < 0) {
++		dev_err(dev, "failed to refine runtime hwparams\n");
++		goto out;
++	}
++
++	release_pair = false;
+ 	snd_soc_set_runtime_hwparams(substream, &snd_imx_hardware);
+ 
+-	return 0;
++out:
++	dma_release_channel(tmp_chan);
++
++dma_chan_err:
++	fsl_asrc_release_pair(pair);
++
++req_pair_err:
++	if (release_pair)
++		kfree(pair);
++
++	return ret;
+ }
+ 
+ static int fsl_asrc_dma_shutdown(struct snd_pcm_substream *substream)
 -- 
 2.20.1
 
