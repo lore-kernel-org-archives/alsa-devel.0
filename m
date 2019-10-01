@@ -6,76 +6,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE262C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:09:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABC12C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:10:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BF8E20B7C
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:09:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 348EF20B7C
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:10:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IGeKg84E";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="aSRtwJJe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BF8E20B7C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mGDel8Iy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="svKeY3oL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 348EF20B7C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE08D1657;
-	Tue,  1 Oct 2019 20:08:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE08D1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D21A167F;
+	Tue,  1 Oct 2019 20:09:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D21A167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569953352;
-	bh=L4Czwh1tbmG07QXA17aurR3J1p9rCHGboObIajmr5Pc=;
+	s=default; t=1569953405;
+	bh=RziuoFQrC/i6ZZ0yd3juCWvhszcuvXtjMppD3nQ0N3s=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=IGeKg84EKFx9H9coof2ibx5UFq+Hv7ZAjaBa47j8m4KTrF4T7vGO1qqziIOU7YLU8
-	 ik+ACcr9nwS3vIbaif1JBHsoh5eIv+dPnakjysMa/DA5jefhdadduO26huMZZz2cYB
-	 xvuBvBQMJGe8Bs1idZCylWDmzI3GwxdD1h10raKc=
+	b=mGDel8IyqQtjpW20hb76RiGNAGzibCvbhbZ9rQts7XXgAcXDIWUnl0n8UMgvmyRPy
+	 Z5RrZ8VJCp8/LVqG+QTFWLHBHu0DkRZclr7oxaVAbegDl1D4+MKNimmb/lhQ1VDCsm
+	 aJCyFPOElHV+Tt3zr/zvlQXxATaFw6FR9SJYmSMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA0C4F80764;
-	Tue,  1 Oct 2019 19:57:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 457A2F80771;
+	Tue,  1 Oct 2019 19:57:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53E03F8067A; Tue,  1 Oct 2019 19:57:06 +0200 (CEST)
+ id CBD03F806E9; Tue,  1 Oct 2019 19:57:08 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4491F80659
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EC0AF8065B
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:56:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4491F80659
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EC0AF8065B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="aSRtwJJe"
+ header.b="svKeY3oL"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=i73WWIk8B01MifqSkaP+B1kg3FODZ6/7rXNN7lYIPZ8=; b=aSRtwJJef93l
- x0/9nu9rsorryiY/9cgELatUJhOfEX5EPwLodzkZo4I19jCvXxmpbSzLFdcohnJkfsS0pPPdIgynp
- o3QpgtihXNWv0e8La1HFJtLN7BRUooOK2K5UvDvq9c6Tydw/isqHidqDBOoq4aBnFFAP0VnV05Azg
- ohlxQ=;
+ List-Archive; bh=9EAGnyIIY36FLxL/CsFiT1vCK4WTnCAjPwIEVVODkFY=; b=svKeY3oLbQOt
+ h6l1/HHW+wYiwvso2XUCCpWD7o/gyrFmq8SLOCueaZqgsNPazes/neZGGVlbJjRrb2gxZEVh6VCb7
+ HyAJ1y1eR/v1op10kNoSbAORY3fOHagIuuElS57pg3RD3LVxmNHtBvpMXE2ABe0ANag6vVGcJkdpV
+ K3Krk=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFMOI-0005tr-CZ; Tue, 01 Oct 2019 17:56:50 +0000
+ id 1iFMOI-0005tm-41; Tue, 01 Oct 2019 17:56:50 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id BC7A62742A30; Tue,  1 Oct 2019 18:56:49 +0100 (BST)
+ id 855502742A10; Tue,  1 Oct 2019 18:56:49 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20191001135700.31017-1-ckeepax@opensource.cirrus.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20190927200538.660-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001175649.BC7A62742A30@ypsilon.sirena.org.uk>
+Message-Id: <20191001175649.855502742A10@ypsilon.sirena.org.uk>
 Date: Tue,  1 Oct 2019 18:56:49 +0100 (BST)
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
-Subject: [alsa-devel] Applied "ASoC: madera: Add support for using MCLK3" to
-	the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: SOF: loader: fix kernel oops on
+	firmware boot failure" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,11 +95,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: madera: Add support for using MCLK3
+   ASoC: SOF: loader: fix kernel oops on firmware boot failure
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -121,41 +120,42 @@ to this mail.
 Thanks,
 Mark
 
-From 767b0bc590576cfda6e6bf2cd45fb8e1843b3ecb Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 1 Oct 2019 14:57:00 +0100
-Subject: [PATCH] ASoC: madera: Add support for using MCLK3
+From 798614885a0e1b867ceb0197c30c2d82575c73b0 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 27 Sep 2019 15:05:26 -0500
+Subject: [PATCH] ASoC: SOF: loader: fix kernel oops on firmware boot failure
 
-Some Madera CODECs have a third MCLK pin allow this to be sourced for
-the FLLs and system clocks.
+When we fail to boot the firmware, we encounter a kernel oops in
+hda_dsp_get_registers(), which is called conditionally in
+hda_dsp_dump() when the sdev_>boot_complete flag is set.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20191001135700.31017-1-ckeepax@opensource.cirrus.com
+Setting this flag _after_ dumping the data fixes the issue and does
+not change the programming flow.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190927200538.660-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/madera.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sof/loader.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
-index 1f3e8e230cf2..6d8938a3fb64 100644
---- a/sound/soc/codecs/madera.h
-+++ b/sound/soc/codecs/madera.h
-@@ -27,6 +27,7 @@
- #define MADERA_FLL_SRC_NONE		-1
- #define MADERA_FLL_SRC_MCLK1		0
- #define MADERA_FLL_SRC_MCLK2		1
-+#define MADERA_FLL_SRC_MCLK3		2
- #define MADERA_FLL_SRC_SLIMCLK		3
- #define MADERA_FLL_SRC_FLL1		4
- #define MADERA_FLL_SRC_FLL2		5
-@@ -51,6 +52,7 @@
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index d7f32745fefe..9a9a381a908d 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -546,10 +546,10 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
+ 				 msecs_to_jiffies(sdev->boot_timeout));
+ 	if (ret == 0) {
+ 		dev_err(sdev->dev, "error: firmware boot failure\n");
+-		/* after this point FW_READY msg should be ignored */
+-		sdev->boot_complete = true;
+ 		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
+ 			SOF_DBG_TEXT | SOF_DBG_PCI);
++		/* after this point FW_READY msg should be ignored */
++		sdev->boot_complete = true;
+ 		return -EIO;
+ 	}
  
- #define MADERA_CLK_SRC_MCLK1		0x0
- #define MADERA_CLK_SRC_MCLK2		0x1
-+#define MADERA_CLK_SRC_MCLK3		0x2
- #define MADERA_CLK_SRC_FLL1		0x4
- #define MADERA_CLK_SRC_FLL2		0x5
- #define MADERA_CLK_SRC_FLL3		0x6
 -- 
 2.20.1
 
