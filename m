@@ -2,86 +2,84 @@ Return-Path: <SRS0=w4sP=X2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A94CECE587
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 16:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF101ECE587
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 16:04:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C2622168B
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 16:00:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A3EA2053B
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 16:04:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W3QFU/mS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C2622168B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u6Ygrwg8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A3EA2053B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41C0F166E;
-	Tue,  1 Oct 2019 17:59:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41C0F166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6787E1675;
+	Tue,  1 Oct 2019 18:03:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6787E1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569945626;
-	bh=yK7XawW45ieBw9PhAsWs9iNiGSenmhG3SHYrqKsmwDA=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1569945885;
+	bh=3Wjv6ZBqW1SFv0ZPbn9bHf3yZ4KwWLSlKcVzLp0ByE8=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W3QFU/mS2dY/eOPTDVwidwCmrjPURBQrpgHt+ed24h2s/OrBZwq6AjDrj5wFVi8pK
-	 9igjj8S2uys27teg6exBhKHYyP3yqAAakGx6EAz0Qy/f/ShXccN/HmtBXXIklA4mpH
-	 L0bp1XVqFnu0QvxLeNvD8rdK5yBcrw3n7JqEK10w=
+	b=u6Ygrwg8ArxOBz3NGveDRxtcYzb5bgNbdhBNVrRZImqj/HZd4ABaTISwsWK2H5NI3
+	 lTseYklT6vF/orHK00mdyzKnwb+5ZuIASNcrMkDrAf4Ous0m9dnD2X9YbTkjjUBRtA
+	 BxCzdppr0WTD2BHLPDZef/NmhcTKKuVAtEMdcmg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C68D1F804FF;
-	Tue,  1 Oct 2019 17:59:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F006BF804FF;
+	Tue,  1 Oct 2019 18:03:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 221E4F80506; Tue,  1 Oct 2019 17:59:34 +0200 (CEST)
-Received: from mail-qk1-f194.google.com (mail-qk1-f194.google.com
- [209.85.222.194])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5143DF80506; Tue,  1 Oct 2019 18:03:53 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D371F80482
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 17:59:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D371F80482
-Received: by mail-qk1-f194.google.com with SMTP id p10so11715597qkg.8
- for <alsa-devel@alsa-project.org>; Tue, 01 Oct 2019 08:59:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=PVA9zycwwTmxrHgzivoqyA4S7B6/Ae12ZgJJqfTA6ZE=;
- b=bjYEoQvLP0aMMhfVPqi4/1E1H4BC1i8XrJSgZmyfSPwPuTPAS5KWL+rJ8X72mSCD9C
- darTi60wB0vvAmptszeEo8kZjvdOzIjyrP2fZSGdZ4iDjs+3qsm1Hae/JCJW58vPsw/q
- YC/EhGQeuB+vzWyJp9Pckb4OGG9dZDeXToIC8ZbTidbj0m9in0K04S0AFJAMT+4AlRcU
- orWz1O0BDuQFXLrZbB7J9PiJQ76YvUL4XTa8wjO+wbhB+36NWfUYivrb/3AX5tb8XsnN
- YTP5awQsJc076NiBaa88ML1gDKe6iyLztLbxdTCAG2mWIgHTH4VtpJp67mpAZVzeg0L0
- 2vHw==
-X-Gm-Message-State: APjAAAUdv4ITEDTyUFmxYZBhDvip+i7Zphji6GyGcJuV8EbZuswWcj6e
- ucOzTcf4fovyxBihX0LHkGauFtScvSkVWjVU984=
-X-Google-Smtp-Source: APXvYqw8OSzTRQKAtzD5yJNb3X/TKsuG58PVn13xDbhiPbbzHk02DUCmHWqaGsNg1xN9FhUJmk9LIa3wCb6Y08Qz7k8=
-X-Received: by 2002:ae9:ef8c:: with SMTP id d134mr1425740qkg.286.1569945569712; 
- Tue, 01 Oct 2019 08:59:29 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18CBAF80482
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 18:03:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18CBAF80482
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 01 Oct 2019 09:03:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,571,1559545200"; d="scan'208";a="216117152"
+Received: from linux.intel.com ([10.54.29.200])
+ by fmsmga004.fm.intel.com with ESMTP; 01 Oct 2019 09:03:46 -0700
+Received: from abapat-mobl1.amr.corp.intel.com (unknown [10.251.1.101])
+ by linux.intel.com (Postfix) with ESMTP id 1AC725803FA;
+ Tue,  1 Oct 2019 09:03:46 -0700 (PDT)
+To: Arnd Bergmann <arnd@arndb.de>
+References: <20191001142026.1124917-1-arnd@arndb.de>
+ <bb58c7cc-209d-7a2f-0e5b-95a9605ffe7b@linux.intel.com>
+ <CAK8P3a3Js2dNhnRhP7PLadWZ69DZr1mz6DowN9HDJL4CFDAAFw@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <e4b90233-846c-bfc1-68a3-a7b7c28b60bd@linux.intel.com>
+Date: Tue, 1 Oct 2019 11:03:45 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20191001142116.1172290-1-arnd@arndb.de>
- <20191001142734.GD4106@piout.net>
-In-Reply-To: <20191001142734.GD4106@piout.net>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 1 Oct 2019 17:59:13 +0200
-Message-ID: <CAK8P3a3ovgR4THuXb17Fh7DDts188jWRqP3OAZ7cknNUsWQ-dg@mail.gmail.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+In-Reply-To: <CAK8P3a3Js2dNhnRhP7PLadWZ69DZr1mz6DowN9HDJL4CFDAAFw@mail.gmail.com>
+Content-Language: en-US
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Mark Brown <broonie@kernel.org>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Hulk Robot <hulkci@huawei.com>,
+ Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: atmel: fix atmel_ssc_set_audio link
-	failure
+Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: imx: fix reverse
+ CONFIG_SND_SOC_SOF_OF dependency
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,32 +92,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 1, 2019 at 4:27 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
+On 10/1/19 10:41 AM, Arnd Bergmann wrote:
+> On Tue, Oct 1, 2019 at 5:32 PM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>> On 10/1/19 9:20 AM, Arnd Bergmann wrote:
+>>> CONFIG_SND_SOC_SOF_IMX depends on CONFIG_SND_SOC_SOF, but is in
+>>> turn referenced by the sof-of-dev driver. This creates a reverse
+>>> dependency that manifests in a link error when CONFIG_SND_SOC_SOF_OF
+>>> is built-in but CONFIG_SND_SOC_SOF_IMX=m:
+>>>
+>>> sound/soc/sof/sof-of-dev.o:(.data+0x118): undefined reference to `sof_imx8_ops'
+>>>
+>>> Make the latter a 'bool' symbol and change the Makefile so the imx8
+>>> driver is compiled the same way as the driver using it.
+>>>
+>>> A nicer way would be to reverse the layering and move all
+>>> the imx specific bits of sof-of-dev.c into the imx driver
+>>> itself, which can then call into the common code. Doing this
+>>> would need more testing and can be done if we add another
+>>> driver like the first one.
+>>
+>> Or use something like
+>>
+>> config SND_SOC_SOF_IMX8_SUPPORT
+>>          bool "SOF support for i.MX8"
+>>          depends on IMX_SCU
+>>          depends on IMX_DSP
+>>
+>> config SND_SOC_SOF_IMX8
+>>          tristate
+>>          <i.mx selects>
+>>
+>> config SND_SOC_SOF_OF
+>>          depends on OF
+>>          select SND_SOC_SOF_IMX8 if SND_SOC_SOF_IMX8_SUPPORT
+>>
+>> That way you propagate the module/built-in information. That's how we
+>> fixed those issues for the Intel parts.
+> 
+> Yes, I think that would work here as well, but it keeps even more
+> information about the specific drivers in the generic code. It also
+> requires adding more 'select' statements that tend to cause more
+> problems.
+> 
+> The same could be done with a Kconfig-only solution avoiding
+> 'select' such as:
+> 
+> config SND_SOC_SOF_IMX8_SUPPORT
+>           bool "SOF support for i.MX8"
+>           depends on IMX_SCU
+>           depends on IMX_DSP
+> 
+>   config SND_SOC_SOF_IMX8
+>           def_tristate SND_SOC_SOF_OF
+>           depends on SND_SOC_SOF_IMX8_SUPPORT
 
-> > -obj-$(CONFIG_SND_ATMEL_SOC_PDC) += snd-soc-atmel-pcm-pdc.o
-> > -obj-$(CONFIG_SND_ATMEL_SOC_DMA) += snd-soc-atmel-pcm-dma.o
-> > +# pdc and dma need to both be built-in if any user of
-> > +# ssc is built-in.
-> > +ifdef CONFIG_SND_ATMEL_SOC_PDC
-> > +obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel-pcm-pdc.o
-> > +endif
-> > +ifdef CONFIG_SND_ATMEL_SOC_DMA
-> > +obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel-pcm-dma.o
-> > +endif
->
-> Doesn't that prevent them to be built as a module at all?
-> I'm not sure there is a use case though.
+Ah, nice, thanks for the suggestion! That would be my preference, we 
+have a similar select for PCI and ACPI parts in sound/soc/sof/Kconfig 
+and I was looking for a means to do this more elegantly.
+I can submit a new fix or let you sent a v2, whatever is more convenient.
 
-It should not: the idea was that snd-soc-atmel-pcm-{pdc,dma}.o
-get built as modules if CONFIG_SND_ATMEL_SOC_SSC=m.
-
-      arnd
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
