@@ -6,76 +6,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B883C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E92AFECE587
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:04:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C651C21906
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:03:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7752621924
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:04:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L0MeuZ2L";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="P4J+dOga"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C651C21906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sq0VL2Pc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="rk70wCnh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7752621924
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08EEE1691;
-	Tue,  1 Oct 2019 20:02:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08EEE1691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EB491689;
+	Tue,  1 Oct 2019 20:03:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EB491689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569953025;
-	bh=3N+4SMLXudUb94FTZHLgUZcAVH4zW4v6fU/VpeK1uwE=;
+	s=default; t=1569953069;
+	bh=SdpZgQX5U27YOg/PMv2qcXuImg43YIMVo5qs6uldvWk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=L0MeuZ2LMuWUyEZH/4u9148ydXdPclEtKp4ORUVshdXoIVtBHbBsYP8884hj2/XSy
-	 HO0T34vugXz0dl7JjwfhhT3Rqc6zhuH5qpr3UM6QxdhMUgys9zohB5myUMDISiZeUq
-	 33LBdTufB8EsR1GCYvdSLI3B3IhRs044r482eto8=
+	b=sq0VL2PcXycq/XYzOtJZqXxdZ4N1j29qRF9lyvPmIjZFLJ+JVEV1tUgh9UxNsPZmf
+	 GoV3kBJcd43fGuDl+2k4GB9aK3vkesHNbbPI8tuUcN98vFDTQwJS5GwITC9ZSJHUr9
+	 wAvtbfhSbwI5M2pccJpbcgBD8anfvPV0yMtu1MZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8595FF806E9;
-	Tue,  1 Oct 2019 19:57:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BCDAF806F7;
+	Tue,  1 Oct 2019 19:57:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F24EF80677; Tue,  1 Oct 2019 19:56:59 +0200 (CEST)
+ id 26B1BF80518; Tue,  1 Oct 2019 19:57:00 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A3A5F80518
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6681F80611
  for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:56:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A3A5F80518
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6681F80611
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="P4J+dOga"
+ header.b="rk70wCnh"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=JOzIGoWsYc9b6MMnt7vMbH9iqMEnHPnU/05PA8VRD98=; b=P4J+dOgavaEf
- Y+tJdOBzltBAtmkRPTKNRO9XnLhoYDuy7cC/AExMOT4TbF2sCVwG5tzt7amqzFCez9CKj7sVCNhT5
- AjH3oY0wknVhNsV53G2u5aFTPZLo3gPw9pV+XS+WfOTpkUCS688B1so9eE6o5l0rShBP5ITaGjLLn
- NyOCo=;
+ List-Archive; bh=7UBpcegGIUWg4BqGsiKTjX42kqeB7JoOYWG3hHw3omM=; b=rk70wCnhD8bO
+ kWuHoEs/faF5se31LqszcvHvvlTOn3FNYGPiTVESuJiXD7WYom6RfebGGLbCNUrnqvPkRzfqDkxSe
+ Ivwh7GugJWPrIemCwpQ3SzLKOA6ka+3MECrbFMaEZvuyQ5yFHd4PoMAqqVN5wk7Dc5gTECECE0XS8
+ 662ww=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFMOH-0005tE-3d; Tue, 01 Oct 2019 17:56:49 +0000
+ id 1iFMOF-0005so-QQ; Tue, 01 Oct 2019 17:56:47 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 9CDCE27429C0; Tue,  1 Oct 2019 18:56:48 +0100 (BST)
+ id 443A727429C0; Tue,  1 Oct 2019 18:56:47 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20190927200538.660-11-pierre-louis.bossart@linux.intel.com>
+To: Jaska Uimonen <jaska.uimonen@intel.com>
+In-Reply-To: <20190927201408.925-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001175648.9CDCE27429C0@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 18:56:48 +0100 (BST)
+Message-Id: <20191001175647.443A727429C0@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 18:56:47 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda: fix warnings during FW
-	load" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: intel: bytcr_rt5651: add null check to
+	support_button_press" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda: fix warnings during FW load
+   ASoC: intel: bytcr_rt5651: add null check to support_button_press
 
 has been applied to the asoc tree at
 
@@ -121,42 +121,38 @@ to this mail.
 Thanks,
 Mark
 
-From 4ff5f6439fe69624e8f7d559915e9b54a6477684 Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Fri, 27 Sep 2019 15:05:35 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda: fix warnings during FW load
+From 2bdf194e2030fce4f2e91300817338353414ab3b Mon Sep 17 00:00:00 2001
+From: Jaska Uimonen <jaska.uimonen@intel.com>
+Date: Fri, 27 Sep 2019 15:14:05 -0500
+Subject: [PATCH] ASoC: intel: bytcr_rt5651: add null check to
+ support_button_press
 
-The "snd_pcm_substream" handle was not initialized properly
-in hda-loader.c for firmware load.
+When removing sof module the support_button_press function will oops
+because hp_jack pointer is not checked for NULL. So add a check to fix
+this.
 
-When the HDA DMAs were used to load the firmware,
-the interrupts related to firmware load also triggered
-calls to snd_sof_pcm_period_elapsed() on a non-existent ALSA
-PCM stream.
-
-This caused runtime kernel warnings from
-pcm_lib.c:snd_pcm_period_elapsed().
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Jaska Uimonen <jaska.uimonen@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190927200538.660-11-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190927201408.925-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-loader.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5651.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 6427f0b3a2f1..65c2af3fcaab 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -44,6 +44,7 @@ static int cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
- 		return -ENODEV;
- 	}
- 	hstream = &dsp_stream->hstream;
-+	hstream->substream = NULL;
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 762595de956c..c506c9305043 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1770,6 +1770,9 @@ static int rt5651_detect_headset(struct snd_soc_component *component)
  
- 	/* allocate DMA buffer */
- 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, &pci->dev, size, dmab);
+ static bool rt5651_support_button_press(struct rt5651_priv *rt5651)
+ {
++	if (!rt5651->hp_jack)
++		return false;
++
+ 	/* Button press support only works with internal jack-detection */
+ 	return (rt5651->hp_jack->status & SND_JACK_MICROPHONE) &&
+ 		rt5651->gpiod_hp_det == NULL;
 -- 
 2.20.1
 
