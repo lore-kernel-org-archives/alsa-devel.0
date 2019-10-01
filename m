@@ -6,76 +6,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7668ECE587
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:02:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83258C352AA
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:03:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EE5D21924
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:02:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F2D1B21906
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 18:03:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iRLL4hqn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="G2+l4MY0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EE5D21924
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ljUSXbi4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="PJskfDOv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2D1B21906
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EEA11692;
-	Tue,  1 Oct 2019 20:01:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EEA11692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32CF71684;
+	Tue,  1 Oct 2019 20:02:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32CF71684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569952950;
-	bh=A6USRrCYv7synLGjX0w/1hW2OFCPwINAzLRPEaNnBpY=;
+	s=default; t=1569952983;
+	bh=tgvyyGoCG39AtYS8s6yS1h7OeMzu7VJW4jMlZa1oyS0=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=iRLL4hqnnqM9/VVDz0MJiYtRiZAzO5uCZ7Bz4O0F9xaP20B8gfSfE4owgkrgZRJPv
-	 HjG/dfwtpgJFlFoB0B/pFwPn9/8gLcSHK8x4tzKEUd4sfy+6z3Cg/yOtHiXKhfx0CB
-	 n+d9XGUU+OIaYET24mi4ceDgu5yagskld44/fJVU=
+	b=ljUSXbi46cAnH4t3WGwI2/vopzX+jxnCVwuA5R5d8QU3KmZuONzO2htv6C/46iOi7
+	 CZqdMGyXNQwYs7uycUN7qJLdMKEK2kCnGnO7cTotkiOes9rmjaPNbdwhH57a9WNQLQ
+	 obCyPJk7QAQvWsxupeHLMeHmjorCsD29Jo9JYSo0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 280C5F8067A;
-	Tue,  1 Oct 2019 19:57:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70427F8065B;
+	Tue,  1 Oct 2019 19:57:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33E95F80676; Tue,  1 Oct 2019 19:56:57 +0200 (CEST)
+ id CEDB2F80638; Tue,  1 Oct 2019 19:56:57 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50601F80637
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:56:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50601F80637
+ by alsa1.perex.cz (Postfix) with ESMTPS id E21B0F80639
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 19:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E21B0F80639
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="G2+l4MY0"
+ header.b="PJskfDOv"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=DEfXYrKjS6J2FIDss+6rZUiZXHq1vTtLYaASeO4Exsw=; b=G2+l4MY0L2Vv
- 9guPutQG3Og6+sMU0gKjlMjJIexVH3WqkK0ow+6mMpEJu1OjxZ1wVrwHAv5EzcWVZ63L6XfjyBddT
- mIqgDQ3qqONY7IC2x2FKCF53puBJwb58cLqfFIvIdPl5bHK3/jP6lVMQJ79yh5uGW902Nwe5OlxT7
- YMGko=;
+ List-Archive; bh=TP7J7RxCKgomzG3FJWaRMpH7H34VKPRCeYak3IF93bE=; b=PJskfDOvY6QV
+ yLhmVSmO+al6SwpUw/mwjtPrCLxR/4fcqh5IgK2/oMI0W9ZgPwz5/ljeUIxgBI0vbVr/4IDc2DT1a
+ FKt+kt3/JbMVqOc1HSMABPES0kcZgPWrxbVWoCs+ifbvPGla7eybFZWSm0DZd2G4cssal9opiAE4z
+ 3NlyY=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFMOF-0005sc-7u; Tue, 01 Oct 2019 17:56:47 +0000
+ id 1iFMOG-0005t6-M4; Tue, 01 Oct 2019 17:56:48 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id BDBAE2742A10; Tue,  1 Oct 2019 18:56:46 +0100 (BST)
+ id 34B3A2742A10; Tue,  1 Oct 2019 18:56:48 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-In-Reply-To: <20190927200538.660-5-pierre-louis.bossart@linux.intel.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20190927200538.660-14-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001175646.BDBAE2742A10@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 18:56:46 +0100 (BST)
+Message-Id: <20191001175648.34B3A2742A10@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 18:56:48 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: ipc: retain DSP context after FW
-	exception." to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda: Disable DMI L1 entry
+	during capture" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,11 +96,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: ipc: retain DSP context after FW exception.
+   ASoC: SOF: Intel: hda: Disable DMI L1 entry during capture
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -121,103 +121,174 @@ to this mail.
 Thanks,
 Mark
 
-From 9a06508bf7824ba34f2e1e9e08df505ac14a44c2 Mon Sep 17 00:00:00 2001
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 27 Sep 2019 15:05:29 -0500
-Subject: [PATCH] ASoC: SOF: ipc: retain DSP context after FW exception.
+From 43b2ab9009b13bfff47fcc1893de9244b39bdd54 Mon Sep 17 00:00:00 2001
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Date: Fri, 27 Sep 2019 15:05:38 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda: Disable DMI L1 entry during capture
 
-Add config option to prevent DSP entering D3 after any FW exception.
-This can then be used to dump FW context for debug.
+There is a known issue on some Intel platforms which causes
+pause/release to run into xrun's during capture usecases.
+The suggested workaround to address the issue is to
+disable the entry of lower power L1 state in the physical
+DMI link when there is a capture stream open.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20190927200538.660-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20190927200538.660-14-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/Kconfig    |  8 ++++++++
- sound/soc/sof/debug.c    | 16 ++++++++++++++++
- sound/soc/sof/ipc.c      |  4 +---
- sound/soc/sof/sof-priv.h |  2 ++
- 4 files changed, 27 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/Kconfig      | 10 +++++++
+ sound/soc/sof/intel/hda-ctrl.c   | 12 +++------
+ sound/soc/sof/intel/hda-stream.c | 45 +++++++++++++++++++++++++++-----
+ sound/soc/sof/intel/hda.h        |  5 +++-
+ 4 files changed, 56 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index cc592bcadae7..56a3ab66b46b 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -158,6 +158,14 @@ config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
- 	  Say Y if you want to enable IPC flood test.
- 	  If unsure, select "N".
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 479ba249e219..d62f51d33be1 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -273,6 +273,16 @@ config SND_SOC_SOF_HDA_AUDIO_CODEC
+ 	  Say Y if you want to enable HDAudio codecs with SOF.
+ 	  If unsure select "N".
  
-+config SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT
-+	bool "SOF retain DSP context on any FW exceptions"
++config SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1
++	bool "SOF enable DMI Link L1"
 +	help
-+	  This option keeps the DSP in D0 state so that firmware debug
-+	  information can be retained and dumped to userspace.
-+	  Say Y if you want to retain DSP context for FW exceptions.
++	  This option enables DMI L1 for both playback and capture
++	  and disables known workarounds for specific HDaudio platforms.
++	  Only use to look into power optimizations on platforms not
++	  affected by DMI L1 issues. This option is not recommended.
++	  Say Y if you want to enable DMI Link L1
 +	  If unsure, select "N".
 +
- endif ## SND_SOC_SOF_DEBUG
+ endif ## SND_SOC_SOF_HDA_COMMON
  
- endif ## SND_SOC_SOF_OPTIONS
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 54cd431faab7..b8a4e899154c 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -461,3 +461,19 @@ void snd_sof_free_debug(struct snd_sof_dev *sdev)
- 	debugfs_remove_recursive(sdev->debugfs_root);
- }
- EXPORT_SYMBOL_GPL(snd_sof_free_debug);
+ config SND_SOC_SOF_HDA_LINK_BASELINE
+diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+index bc41028a7a01..df1909e1d950 100644
+--- a/sound/soc/sof/intel/hda-ctrl.c
++++ b/sound/soc/sof/intel/hda-ctrl.c
+@@ -139,20 +139,16 @@ void hda_dsp_ctrl_misc_clock_gating(struct snd_sof_dev *sdev, bool enable)
+  */
+ int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable)
+ {
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	struct hdac_bus *bus = sof_to_bus(sdev);
+-#endif
+ 	u32 val;
+ 
+ 	/* enable/disable audio dsp clock gating */
+ 	val = enable ? PCI_CGCTL_ADSPDCGE : 0;
+ 	snd_sof_pci_update_bits(sdev, PCI_CGCTL, PCI_CGCTL_ADSPDCGE, val);
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	/* enable/disable L1 support */
+-	val = enable ? SOF_HDA_VS_EM2_L1SEN : 0;
+-	snd_hdac_chip_updatel(bus, VS_EM2, SOF_HDA_VS_EM2_L1SEN, val);
+-#endif
++	/* enable/disable DMI Link L1 support */
++	val = enable ? HDA_VS_INTEL_EM2_L1SEN : 0;
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, HDA_VS_INTEL_EM2,
++				HDA_VS_INTEL_EM2_L1SEN, val);
+ 
+ 	/* enable/disable audio dsp power gating */
+ 	val = enable ? 0 : PCI_PGCTL_ADSPPGD;
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index ad8d41f22e92..2c7447188402 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -185,6 +185,17 @@ hda_dsp_stream_get(struct snd_sof_dev *sdev, int direction)
+ 			direction == SNDRV_PCM_STREAM_PLAYBACK ?
+ 			"playback" : "capture");
+ 
++	/*
++	 * Disable DMI Link L1 entry when capture stream is opened.
++	 * Workaround to address a known issue with host DMA that results
++	 * in xruns during pause/release in capture scenarios.
++	 */
++	if (!IS_ENABLED(SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1))
++		if (stream && direction == SNDRV_PCM_STREAM_CAPTURE)
++			snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++						HDA_VS_INTEL_EM2,
++						HDA_VS_INTEL_EM2_L1SEN, 0);
 +
-+void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
-+{
-+	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT) ||
-+	    (sof_core_debug & SOF_DBG_RETAIN_CTX)) {
-+		/* should we prevent DSP entering D3 ? */
-+		dev_info(sdev->dev, "info: preventing DSP entering D3 state to preserve context\n");
-+		pm_runtime_get_noresume(sdev->dev);
+ 	return stream;
+ }
+ 
+@@ -193,23 +204,43 @@ int hda_dsp_stream_put(struct snd_sof_dev *sdev, int direction, int stream_tag)
+ {
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	struct hdac_stream *s;
++	bool active_capture_stream = false;
++	bool found = false;
+ 
+ 	spin_lock_irq(&bus->reg_lock);
+ 
+-	/* find used stream */
++	/*
++	 * close stream matching the stream tag
++	 * and check if there are any open capture streams.
++	 */
+ 	list_for_each_entry(s, &bus->stream_list, list) {
+-		if (s->direction == direction &&
+-		    s->opened && s->stream_tag == stream_tag) {
++		if (!s->opened)
++			continue;
++
++		if (s->direction == direction && s->stream_tag == stream_tag) {
+ 			s->opened = false;
+-			spin_unlock_irq(&bus->reg_lock);
+-			return 0;
++			found = true;
++		} else if (s->direction == SNDRV_PCM_STREAM_CAPTURE) {
++			active_capture_stream = true;
+ 		}
+ 	}
+ 
+ 	spin_unlock_irq(&bus->reg_lock);
+ 
+-	dev_dbg(sdev->dev, "stream_tag %d not opened!\n", stream_tag);
+-	return -ENODEV;
++	/* Enable DMI L1 entry if there are no capture streams open */
++	if (!IS_ENABLED(SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1))
++		if (!active_capture_stream)
++			snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
++						HDA_VS_INTEL_EM2,
++						HDA_VS_INTEL_EM2_L1SEN,
++						HDA_VS_INTEL_EM2_L1SEN);
++
++	if (!found) {
++		dev_dbg(sdev->dev, "stream_tag %d not opened!\n", stream_tag);
++		return -ENODEV;
 +	}
 +
-+	/* dump vital information to the logs */
-+	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
-+	snd_sof_ipc_dump(sdev);
-+	snd_sof_trace_notify_for_error(sdev);
-+}
-+EXPORT_SYMBOL(snd_sof_handle_fw_exception);
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index b2f359d2f7e5..b946c81197a1 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -210,9 +210,7 @@ static int tx_wait_done(struct snd_sof_ipc *ipc, struct snd_sof_ipc_msg *msg,
- 	if (ret == 0) {
- 		dev_err(sdev->dev, "error: ipc timed out for 0x%x size %d\n",
- 			hdr->cmd, hdr->size);
--		snd_sof_dsp_dbg_dump(ipc->sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
--		snd_sof_ipc_dump(ipc->sdev);
--		snd_sof_trace_notify_for_error(ipc->sdev);
-+		snd_sof_handle_fw_exception(ipc->sdev);
- 		ret = -ETIMEDOUT;
- 	} else {
- 		/* copy the data returned from DSP */
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index d5b1a4f895da..348759035dd0 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -33,6 +33,7 @@
- #define SOF_DBG_MBOX		BIT(2)
- #define SOF_DBG_TEXT		BIT(3)
- #define SOF_DBG_PCI		BIT(4)
-+#define SOF_DBG_RETAIN_CTX	BIT(5)	/* prevent DSP D3 on FW exception */
++	return 0;
+ }
  
- /* global debug state set by SOF_DBG_ flags */
- extern int sof_core_debug;
-@@ -580,6 +581,7 @@ void snd_sof_get_status(struct snd_sof_dev *sdev, u32 panic_code,
- 			struct sof_ipc_panic_info *panic_info,
- 			void *stack, size_t stack_words);
- int snd_sof_init_trace_ipc(struct snd_sof_dev *sdev);
-+void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev);
+ int hda_dsp_stream_trigger(struct snd_sof_dev *sdev,
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 5591841a1b6f..23e430d3e056 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -39,7 +39,6 @@
+ #define SOF_HDA_WAKESTS			0x0E
+ #define SOF_HDA_WAKESTS_INT_MASK	((1 << 8) - 1)
+ #define SOF_HDA_RIRBSTS			0x5d
+-#define SOF_HDA_VS_EM2_L1SEN            BIT(13)
  
- /*
-  * Platform specific ops.
+ /* SOF_HDA_GCTL register bist */
+ #define SOF_HDA_GCTL_RESET		BIT(0)
+@@ -228,6 +227,10 @@
+ #define HDA_DSP_REG_HIPCIE		(HDA_DSP_IPC_BASE + 0x0C)
+ #define HDA_DSP_REG_HIPCCTL		(HDA_DSP_IPC_BASE + 0x10)
+ 
++/* Intel Vendor Specific Registers */
++#define HDA_VS_INTEL_EM2		0x1030
++#define HDA_VS_INTEL_EM2_L1SEN		BIT(13)
++
+ /*  HIPCI */
+ #define HDA_DSP_REG_HIPCI_BUSY		BIT(31)
+ #define HDA_DSP_REG_HIPCI_MSG_MASK	0x7FFFFFFF
 -- 
 2.20.1
 
