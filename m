@@ -4,81 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F440C352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:50:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07D5AC388F3
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:51:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 184DD21906
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:50:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 84DBA20659
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:51:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vJ0Jp6ff";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="V/Sz9RRP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 184DD21906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="orKK/QKu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="bdKcW4bC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84DBA20659
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5005F1686;
-	Tue,  1 Oct 2019 13:49:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5005F1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBE111697;
+	Tue,  1 Oct 2019 13:50:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBE111697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569930618;
-	bh=O/ejF3X33IqPnPaM581Fkz//8iL5l1mlUOPNUST+/pE=;
+	s=default; t=1569930671;
+	bh=/ooiCe/G46xhXrMU/pFRBgCI7PvCePwXm/YtqmvWgdQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=vJ0Jp6ffC/6KNYGnYVUI9xtD+lAD9WrZRDTL2vZs88Dha/rOuKkn4udNPLg2UB5/k
-	 piXskcYQb9hIHKmUzFaLplZqnJyoO/lW013TlSOSywwYcvtERxb2OMsHsZ32C+XLyh
-	 ZBzlDA+5niHA0p5u2Fa+u4GcaTFqtXMzbxECb4QQ=
+	b=orKK/QKuSiszo4wqNIduWt/vL2D9DMOMzofloO1nOHPWlx/bbCsFoJz3fOkJwhV82
+	 SarLGz/hmob7zE7x9BoZaLIgBDLJ4iIdAvzCCodNfOSE/p3AkoQs11gR7M9LeYAPBm
+	 TGyO1aX0DuLI04HF0OX8Y5+IbS3UMvV0efboEhjU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D262FF80716;
-	Tue,  1 Oct 2019 13:41:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E51EF80733;
+	Tue,  1 Oct 2019 13:41:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8A1DF805FB; Tue,  1 Oct 2019 13:41:03 +0200 (CEST)
+ id 11D62F806E5; Tue,  1 Oct 2019 13:41:06 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5303F80519
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5303F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7F5FF805FD
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7F5FF805FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="V/Sz9RRP"
+ header.b="bdKcW4bC"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=RaehcVWI7CqFqJ3sZaDsrRQlx6JMqoPgEGwPcYTozzY=; b=V/Sz9RRPzg5A
- xKBq6NbmMeQKbD6lx5Z/CCT3ASOmtBGiUFBNdAYUpLomqjwo3x6XaI/rEhcAbzvKYfk1epb4eJPQc
- m//MQwL54TC1ov35IidCpvuvoD4LlIAYj1N0BDtmXn3ndrXGzAj8IuHcsiBG6UOYW2V5gmYLGURCy
- wK7gY=;
+ List-Archive; bh=84IFzwBiDY/bCbD2z9RiSXCpIU1NkPEmM33xbwUri9o=; b=bdKcW4bCIKEa
+ b8FeoGVeSJyyPNezM8gvntBuAXTtnOIGPXIG1Ea1n5uxTaw40SYF0x82bxt6dSsZRixmc7THG3bIQ
+ /O9G/6lKxeV1E91/st0aG4EUR82x6H9JuTuKUsuhq+vKb4eJja7oKQyD5X93Cw7W/jK+CNdQww1tJ
+ myc5g=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWM-0004ST-5i; Tue, 01 Oct 2019 11:40:46 +0000
+ id 1iFGWO-0004TL-Tu; Tue, 01 Oct 2019 11:40:48 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id A06972742A31; Tue,  1 Oct 2019 12:40:45 +0100 (BST)
+ id 6BAB12742A10; Tue,  1 Oct 2019 12:40:48 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <d728f65194e9978cbec4132b522d4fed420d704a.1569493933.git.shengjiu.wang@nxp.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875zlyf7ln.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114045.A06972742A31@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:45 +0100 (BST)
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, lars@metafoo.de, timur@kernel.org,
- Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
- nicoleotsuka@gmail.com, Mark Brown <broonie@kernel.org>, festevam@gmail.com
-Subject: [alsa-devel] Applied "ASoC: pcm_dmaengine: Extract
-	snd_dmaengine_pcm_refine_runtime_hwparams" to the asoc tree
+Message-Id: <20191001114048.6BAB12742A10@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:48 +0100 (BST)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-core: remove
+	snd_soc_rtdcom_del_all()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +95,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: pcm_dmaengine: Extract snd_dmaengine_pcm_refine_runtime_hwparams
+   ASoC: soc-core: remove snd_soc_rtdcom_del_all()
 
 has been applied to the asoc tree at
 
@@ -124,218 +120,76 @@ to this mail.
 Thanks,
 Mark
 
-From e957204e732bc2916a241dc61dd7dd14e9a98350 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Fri, 27 Sep 2019 09:46:11 +0800
-Subject: [PATCH] ASoC: pcm_dmaengine: Extract
- snd_dmaengine_pcm_refine_runtime_hwparams
+From 353e16bf60458fae5927cf04ff668fc152fff465 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 12 Sep 2019 13:42:44 +0900
+Subject: [PATCH] ASoC: soc-core: remove snd_soc_rtdcom_del_all()
 
-When set the runtime hardware parameters, we may need to query
-the capability of DMA to complete the parameters.
+If we can use devm_kzalloc(rtd->dev, xxx) for rtdcom,
+we don't need to call snd_soc_rtdcom_del_all() for kfree().
+This patch uses devm_kzalloc(rtd->dev, xxx) for rtdcom,
+and remove snd_soc_rtdcom_del_all().
 
-This patch is to Extract this operation from
-dmaengine_pcm_set_runtime_hwparams function to a separate function
-snd_dmaengine_pcm_refine_runtime_hwparams, that other components
-which need this feature can call this function.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/d728f65194e9978cbec4132b522d4fed420d704a.1569493933.git.shengjiu.wang@nxp.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/875zlyf7ln.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/dmaengine_pcm.h         |  5 ++
- sound/core/pcm_dmaengine.c            | 83 +++++++++++++++++++++++++++
- sound/soc/soc-generic-dmaengine-pcm.c | 61 ++------------------
- 3 files changed, 94 insertions(+), 55 deletions(-)
+ sound/soc/soc-core.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index c679f6116580..b65220685920 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -83,6 +83,11 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
- 	const struct snd_dmaengine_dai_dma_data *dma_data,
- 	struct dma_slave_config *config);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b72207412c73..d2842a383846 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -288,28 +288,29 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+ 			return 0;
+ 	}
  
-+int snd_dmaengine_pcm_refine_runtime_hwparams(
-+	struct snd_pcm_substream *substream,
-+	struct snd_dmaengine_dai_dma_data *dma_data,
-+	struct snd_pcm_hardware *hw,
-+	struct dma_chan *chan);
- 
- /*
-  * Try to request the DMA channel using compat_request_channel or
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 89a05926ac73..5749a8a49784 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -369,4 +369,87 @@ int snd_dmaengine_pcm_close_release_chan(struct snd_pcm_substream *substream)
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_close_release_chan);
- 
-+/**
-+ * snd_dmaengine_pcm_refine_runtime_hwparams - Refine runtime hw params
-+ * @substream: PCM substream
-+ * @dma_data: DAI DMA data
-+ * @hw: PCM hw params
-+ * @chan: DMA channel to use for data transfers
-+ *
-+ * Returns 0 on success, a negative error code otherwise.
-+ *
-+ * This function will query DMA capability, then refine the pcm hardware
-+ * parameters.
-+ */
-+int snd_dmaengine_pcm_refine_runtime_hwparams(
-+	struct snd_pcm_substream *substream,
-+	struct snd_dmaengine_dai_dma_data *dma_data,
-+	struct snd_pcm_hardware *hw,
-+	struct dma_chan *chan)
-+{
-+	struct dma_slave_caps dma_caps;
-+	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
-+			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
-+			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-+	snd_pcm_format_t i;
-+	int ret = 0;
-+
-+	if (!hw || !chan || !dma_data)
-+		return -EINVAL;
-+
-+	ret = dma_get_slave_caps(chan, &dma_caps);
-+	if (ret == 0) {
-+		if (dma_caps.cmd_pause && dma_caps.cmd_resume)
-+			hw->info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
-+		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
-+			hw->info |= SNDRV_PCM_INFO_BATCH;
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			addr_widths = dma_caps.dst_addr_widths;
-+		else
-+			addr_widths = dma_caps.src_addr_widths;
-+	}
-+
+-	rtdcom = kmalloc(sizeof(*rtdcom), GFP_KERNEL);
 +	/*
-+	 * If SND_DMAENGINE_PCM_DAI_FLAG_PACK is set keep
-+	 * hw.formats set to 0, meaning no restrictions are in place.
-+	 * In this case it's the responsibility of the DAI driver to
-+	 * provide the supported format information.
++	 * created rtdcom here will be freed when rtd->dev was freed.
++	 * see
++	 *	soc_free_pcm_runtime() :: device_unregister(rtd->dev)
 +	 */
-+	if (!(dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK))
-+		/*
-+		 * Prepare formats mask for valid/allowed sample types. If the
-+		 * dma does not have support for the given physical word size,
-+		 * it needs to be masked out so user space can not use the
-+		 * format which produces corrupted audio.
-+		 * In case the dma driver does not implement the slave_caps the
-+		 * default assumption is that it supports 1, 2 and 4 bytes
-+		 * widths.
-+		 */
-+		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
-+			int bits = snd_pcm_format_physical_width(i);
-+
-+			/*
-+			 * Enable only samples with DMA supported physical
-+			 * widths
-+			 */
-+			switch (bits) {
-+			case 8:
-+			case 16:
-+			case 24:
-+			case 32:
-+			case 64:
-+				if (addr_widths & (1 << (bits / 8)))
-+					hw->formats |= pcm_format_to_bits(i);
-+				break;
-+			default:
-+				/* Unsupported types */
-+				break;
-+			}
-+		}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_refine_runtime_hwparams);
-+
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 5552c66ca642..f2c98a9cbf75 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -118,12 +118,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	struct device *dma_dev = dmaengine_dma_dev(pcm, substream);
- 	struct dma_chan *chan = pcm->chan[substream->stream];
- 	struct snd_dmaengine_dai_dma_data *dma_data;
--	struct dma_slave_caps dma_caps;
- 	struct snd_pcm_hardware hw;
--	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
--			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
--			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
--	snd_pcm_format_t i;
- 	int ret;
++	rtdcom = devm_kzalloc(rtd->dev, sizeof(*rtdcom), GFP_KERNEL);
+ 	if (!rtdcom)
+ 		return -ENOMEM;
  
- 	if (pcm->config && pcm->config->pcm_hardware)
-@@ -145,56 +140,12 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
- 		hw.info |= SNDRV_PCM_INFO_BATCH;
+ 	rtdcom->component = component;
+ 	INIT_LIST_HEAD(&rtdcom->list);
  
--	ret = dma_get_slave_caps(chan, &dma_caps);
--	if (ret == 0) {
--		if (dma_caps.cmd_pause && dma_caps.cmd_resume)
--			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
--		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
--			hw.info |= SNDRV_PCM_INFO_BATCH;
--
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			addr_widths = dma_caps.dst_addr_widths;
--		else
--			addr_widths = dma_caps.src_addr_widths;
--	}
--
--	/*
--	 * If SND_DMAENGINE_PCM_DAI_FLAG_PACK is set keep
--	 * hw.formats set to 0, meaning no restrictions are in place.
--	 * In this case it's the responsibility of the DAI driver to
--	 * provide the supported format information.
--	 */
--	if (!(dma_data->flags & SND_DMAENGINE_PCM_DAI_FLAG_PACK))
--		/*
--		 * Prepare formats mask for valid/allowed sample types. If the
--		 * dma does not have support for the given physical word size,
--		 * it needs to be masked out so user space can not use the
--		 * format which produces corrupted audio.
--		 * In case the dma driver does not implement the slave_caps the
--		 * default assumption is that it supports 1, 2 and 4 bytes
--		 * widths.
--		 */
--		for (i = SNDRV_PCM_FORMAT_FIRST; i <= SNDRV_PCM_FORMAT_LAST; i++) {
--			int bits = snd_pcm_format_physical_width(i);
--
--			/*
--			 * Enable only samples with DMA supported physical
--			 * widths
--			 */
--			switch (bits) {
--			case 8:
--			case 16:
--			case 24:
--			case 32:
--			case 64:
--				if (addr_widths & (1 << (bits / 8)))
--					hw.formats |= pcm_format_to_bits(i);
--				break;
--			default:
--				/* Unsupported types */
--				break;
--			}
--		}
-+	ret = snd_dmaengine_pcm_refine_runtime_hwparams(substream,
-+							dma_data,
-+							&hw,
-+							chan);
-+	if (ret)
-+		return ret;
++	/*
++	 * When rtd was freed, created rtdcom here will be
++	 * also freed.
++	 * And we don't need to call list_del(&rtdcom->list)
++	 * when freed, because rtd is also freed.
++	 */
+ 	list_add_tail(&rtdcom->list, &rtd->component_list);
  
- 	return snd_soc_set_runtime_hwparams(substream, &hw);
+ 	return 0;
  }
+ 
+-static void snd_soc_rtdcom_del_all(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_rtdcom_list *rtdcom1, *rtdcom2;
+-
+-	for_each_rtdcom_safe(rtd, rtdcom1, rtdcom2)
+-		kfree(rtdcom1);
+-
+-	INIT_LIST_HEAD(&rtd->component_list);
+-}
+-
+ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
+ 						const char *driver_name)
+ {
+@@ -370,7 +371,6 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
+ 		return;
+ 
+ 	kfree(rtd->codec_dais);
+-	snd_soc_rtdcom_del_all(rtd);
+ 	list_del(&rtd->list);
+ 
+ 	/*
 -- 
 2.20.1
 
