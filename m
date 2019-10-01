@@ -6,78 +6,80 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62CBFC352AA
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E94F8C388F3
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0F1421924
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73FF221906
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Oct 2019 11:48:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HLRbujZQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="hGjRKc5z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0F1421924
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lIznUwG4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="a0FYSRLw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73FF221906
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2809C1684;
-	Tue,  1 Oct 2019 13:47:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2809C1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id C03071668;
+	Tue,  1 Oct 2019 13:48:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C03071668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569930496;
-	bh=kE7yihrFi05wg2Ohf23n7bH0MSr72gfXKwF9c7jMnzk=;
+	s=default; t=1569930534;
+	bh=54OEFINkJsRFF/HGdEQ38bkCIyyIT3B9+NZ5DQucN4k=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=HLRbujZQezGkOv1FjeCRGewAyHO1Zg2HWb6uYvWs3hvIfyjaWsl/bG5l0BV9mCI1m
-	 fhXvXaRMIWuIqmCMDfF9VTNAm7586ze9ji3PYcSh/jCbGyngP2HQaNMG4za4ZQqW57
-	 9RmD9sVzBWmb3/bPD5CiqSqZLtVd6ltAcvAI2flw=
+	b=lIznUwG4pirvaw/LDFC6ESI+D6PRYMqyGJOvBxF6hyz0uDAayez4Snm/CuyTPXbaF
+	 cJlEsaf9TrtjiFwW1gLXwjSDMhNTMwX2VoTgmtfe0S0wN7wQckw2dajtctlvxyKGFx
+	 yug0NbV4VX7CWpN+Te7Q+UbGsZI9UbzRu9G5QEz0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19A59F80610;
-	Tue,  1 Oct 2019 13:41:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74F5CF80713;
+	Tue,  1 Oct 2019 13:41:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A0EBF805FF; Tue,  1 Oct 2019 13:41:01 +0200 (CEST)
+ id B937EF8067B; Tue,  1 Oct 2019 13:41:02 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 309BEF805FB
- for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 309BEF805FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B41EF80506
+ for <alsa-devel@alsa-project.org>; Tue,  1 Oct 2019 13:40:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B41EF80506
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="hGjRKc5z"
+ header.b="a0FYSRLw"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=ZGl+hCx9u/66B7tvLuoBxNOYAm3sNLNizym3DyA34fs=; b=hGjRKc5zycsW
- CPYR6e2IPZO68ULxAdUEptle9zMo6ktB6gTeZN86uQWLQ4iVEKZEigYGKtttEjR7sSsQKLZ/KP22R
- 7ZyAUeZCqjf7oMOM/yuNvXGODmDMdVJqWWQ36VEJcL+V/JqscXWamMcrPTdbZOi3CfdTUZQ9iUSVy
- W19ro=;
+ List-Archive; bh=EZwXH2/aboNMmkJHaxOZm8Q5obeSzSnzi54A3erjNLY=; b=a0FYSRLwPqIy
+ 7f9N2YC5sUglieOL4Sk813LoHqYbsXCQB1TKMJ9g0HIyUbbZmTdr72dI9gwQbzDSEjc81igak3EqX
+ ySK9pcDJYCNs2yAnz8Shb9Nc21UNcSDFt33CpSD9Owhknmd7fWV/LZSaOr0pnYXXQdzhH/rg1M3Jh
+ VhZgA=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iFGWO-0004T4-8k; Tue, 01 Oct 2019 11:40:48 +0000
+ id 1iFGWM-0004SZ-FF; Tue, 01 Oct 2019 11:40:46 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id AA2AA2742A10; Tue,  1 Oct 2019 12:40:47 +0100 (BST)
+ id E1B2827429C0; Tue,  1 Oct 2019 12:40:45 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Colin Ian King <colin.king@canonical.com>
-In-Reply-To: <20190925100330.20695-1-colin.king@canonical.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <45a7c383f43cc1dd9d0934846447aee653278c03.1569493933.git.shengjiu.wang@nxp.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191001114047.AA2AA2742A10@ypsilon.sirena.org.uk>
-Date: Tue,  1 Oct 2019 12:40:47 +0100 (BST)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
-Subject: [alsa-devel] Applied "ASoC: rt5663: clean up indentation issues" to
-	the asoc tree
+Message-Id: <20191001114045.E1B2827429C0@ypsilon.sirena.org.uk>
+Date: Tue,  1 Oct 2019 12:40:45 +0100 (BST)
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, lars@metafoo.de, timur@kernel.org,
+ Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ festevam@gmail.com
+Subject: [alsa-devel] Applied "ASoC: fsl_asrc: update supported sample
+	format" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt5663: clean up indentation issues
+   ASoC: fsl_asrc: update supported sample format
 
 has been applied to the asoc tree at
 
@@ -123,43 +125,53 @@ to this mail.
 Thanks,
 Mark
 
-From bd1468f252e85280b71a069a2255842d78133cc4 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 25 Sep 2019 11:03:30 +0100
-Subject: [PATCH] ASoC: rt5663: clean up indentation issues
+From 109539c986cee525e5ff9ae98793f23c2b29e54d Mon Sep 17 00:00:00 2001
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+Date: Fri, 27 Sep 2019 09:46:10 +0800
+Subject: [PATCH] ASoC: fsl_asrc: update supported sample format
 
-There are two break statements that are indented one level too deeply,
-remove the extraneous tabs.
+The ASRC support 24bit/16bit/8bit input width, which is
+data width, not slot width.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20190925100330.20695-1-colin.king@canonical.com
+For the S20_3LE format, the data with is 20bit, slot width
+is 24bit, if we set ASRMCR1n.IWD to be 24bits, the result
+is the volume is lower than expected, it likes 24bit data
+right shift 4 bits
+
+So replace S20_3LE with S24_3LE in supported list and add S8
+format in TX supported list
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/45a7c383f43cc1dd9d0934846447aee653278c03.1569493933.git.shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 2943692f66ed..e6c1ec6c426e 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -3644,7 +3644,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 		regmap_update_bits(rt5663->regmap, RT5663_PWR_ANLG_1,
- 			RT5663_LDO1_DVO_MASK | RT5663_AMP_HP_MASK,
- 			RT5663_LDO1_DVO_0_9V | RT5663_AMP_HP_3X);
--			break;
-+		break;
- 	case CODEC_VER_0:
- 		regmap_update_bits(rt5663->regmap, RT5663_DIG_MISC,
- 			RT5663_DIG_GATE_CTRL_MASK, RT5663_DIG_GATE_CTRL_EN);
-@@ -3663,7 +3663,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 		regmap_update_bits(rt5663->regmap, RT5663_TDM_2,
- 			RT5663_DATA_SWAP_ADCDAT1_MASK,
- 			RT5663_DATA_SWAP_ADCDAT1_LL);
--			break;
-+		break;
- 	default:
- 		dev_err(&i2c->dev, "%s:Unknown codec type\n", __func__);
- 	}
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 4d3804a1ea55..584badf956d2 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -624,7 +624,7 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
+ 
+ #define FSL_ASRC_FORMATS	(SNDRV_PCM_FMTBIT_S24_LE | \
+ 				 SNDRV_PCM_FMTBIT_S16_LE | \
+-				 SNDRV_PCM_FMTBIT_S20_3LE)
++				 SNDRV_PCM_FMTBIT_S24_3LE)
+ 
+ static struct snd_soc_dai_driver fsl_asrc_dai = {
+ 	.probe = fsl_asrc_dai_probe,
+@@ -635,7 +635,8 @@ static struct snd_soc_dai_driver fsl_asrc_dai = {
+ 		.rate_min = 5512,
+ 		.rate_max = 192000,
+ 		.rates = SNDRV_PCM_RATE_KNOT,
+-		.formats = FSL_ASRC_FORMATS,
++		.formats = FSL_ASRC_FORMATS |
++			   SNDRV_PCM_FMTBIT_S8,
+ 	},
+ 	.capture = {
+ 		.stream_name = "ASRC-Capture",
 -- 
 2.20.1
 
