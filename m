@@ -7,95 +7,66 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF78C35280
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 08:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD715C352AA
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 09:08:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD0A1206C0
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 08:43:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB30921783
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 09:08:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kIynSB8W";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="beuSgqoM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD0A1206C0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qXrH4Slq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB30921783
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7CF6165D;
-	Wed,  2 Oct 2019 10:42:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7CF6165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95E7A1661;
+	Wed,  2 Oct 2019 11:07:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95E7A1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570005820;
-	bh=88T2M9WySDespDDqgELOIPHB5z0RVqcb3/Ix+3w2Ey0=;
+	s=default; t=1570007294;
+	bh=rC5lDIPxnvO/cOcwCZ/aD/Oq7CRcrbkp/Oos547XB2c=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=kIynSB8WjhXSnu4bQhXqTbhgzK+dSjPM4S7+YrI8nVJl4SZaAjGn12XHnFxcx1qlo
-	 5xmt1jYW21BQeGluU2lu4hpVYWq1Wx6R9wlubpV6wul/VcyKNDm3ysarer3CBH9OFm
-	 5EZdpdaB4amXm3yojTfuaQNA0RFedllTDq8Bfedw=
+	b=qXrH4SlqDrOPkD8d32ZOsYeT86kGPnQOVklzyCUyB4Ag8AHbEeMuMIZ+ubY8LDexg
+	 bHNidnNr1HXU0DKKmtGiHUSI75SfaqZvMxS1zsgNzSOUWdCNPUR2iIW+L0N5ejZnC9
+	 7mtSXS++692gFDBbwHqByMhXLk58VLg3b6ZTr/mI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40720F80377;
-	Wed,  2 Oct 2019 10:42:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 279B3F8036E;
+	Wed,  2 Oct 2019 11:07:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 558EAF80391; Wed,  2 Oct 2019 10:42:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id BDF7DF80391; Wed,  2 Oct 2019 11:07:22 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C55CF8036E
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 10:42:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C55CF8036E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="beuSgqoM"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- x928cxLp000582; Wed, 2 Oct 2019 03:42:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type;
- s=PODMain02222019; bh=WB7+FG8tIlNPodINVvK+ytEK10JE2ZHiG0dXcoI2+Qo=;
- b=beuSgqoMezH7EkJKxg9T1B6VUuqdjb0OCqZNLNqWStwnNRNCrVs/E5tl45LRuxrZKj8B
- u4ww9FD2xvDbTh+jvO/5oCe0E7eW+8gQ6d3UOWwA2XYGI5K0wigiD7bAVXBeqTuQHRF0
- AA3piMkMz3v+MNVgZi2LAUkWEaOsc2GGOtcb7HyliZBmQ9XgcEbQKrKw6+Uvrm7b0jJd
- SQWLtK12MLwzRkudv0ri3czQEUfC+WGJLFmx28bwiXcoASVYvlKKVkzctrZvCJCpNAcO
- 7H/LzRZ1AqhVQTUPLIDkoO30aqJJ1WeH4Jt4LKCfzqgfLkyDN3IH/PmQCArZPzM+iOtO pw== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 2va4x4pjwa-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 02 Oct 2019 03:42:44 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Wed, 2 Oct
- 2019 09:42:40 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
- Frontend Transport; Wed, 2 Oct 2019 09:42:40 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9B0032A1;
- Wed,  2 Oct 2019 08:42:40 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Date: Wed, 2 Oct 2019 09:42:40 +0100
-Message-ID: <20191002084240.21589-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
-MIME-Version: 1.0
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- mlxlogscore=676
- malwarescore=0 adultscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 suspectscore=1 bulkscore=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910020082
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com
-Subject: [alsa-devel] [PATCH] ASoC: wm_adsp: Don't generate kcontrols
-	without READ flags
+ by alsa1.perex.cz (Postfix) with ESMTPS id A298AF8036E
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 11:07:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A298AF8036E
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 02 Oct 2019 02:07:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,573,1559545200"; d="scan'208";a="343268371"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+ by orsmga004.jf.intel.com with ESMTP; 02 Oct 2019 02:07:12 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Date: Wed,  2 Oct 2019 17:04:32 +0800
+Message-Id: <1570007072-23049-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Alexios Zavras <alexios.zavras@intel.com>, Mark Brown <broonie@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Brent Lu <brent.lu@intel.com>
+Subject: [alsa-devel] [PATCH] ASoC: bdw-rt5677: enable runtime channel merge
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,39 +79,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
+In the DAI link "Capture PCM", the FE DAI "Capture Pin" supports 4-channel
+capture but the BE DAI supports only 2-channel capture. To fix the channel
+mismatch, we need to enable the runtime channel merge for this DAI link.
 
-User space always expects to be able to read ALSA controls, so ensure
-no kcontrols are generated without an appropriate READ flag. In the case
-of a read of such a control zeros will be returned.
-
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- sound/soc/codecs/wm_adsp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/boards/bdw-rt5677.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 85396d920e0a9..9b8bb7bbe945d 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1259,8 +1259,7 @@ static unsigned int wmfw_convert_flags(unsigned int in, unsigned int len)
- 	}
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index 4a4d335..8d07038 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -273,6 +273,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
+ 		},
+ 		.dpcm_capture = 1,
+ 		.dpcm_playback = 1,
++		.dpcm_merged_chan = 1,
+ 		SND_SOC_DAILINK_REG(fe, dummy, platform),
+ 	},
  
- 	if (in) {
--		if (in & WMFW_CTL_FLAG_READABLE)
--			out |= rd;
-+		out |= rd;
- 		if (in & WMFW_CTL_FLAG_WRITEABLE)
- 			out |= wr;
- 		if (in & WMFW_CTL_FLAG_VOLATILE)
 -- 
-2.11.0
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
