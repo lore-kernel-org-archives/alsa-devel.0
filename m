@@ -2,56 +2,55 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0906ECE58D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3393ECE598
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:07:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5AAAD222CC
+	by mail.kernel.org (Postfix) with ESMTPS id 4FF21222CA
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:07:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="foX+OmMa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AAAD222CC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t71h58BE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FF21222CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AE5F16CA;
-	Wed,  2 Oct 2019 07:48:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AE5F16CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12E981717;
+	Wed,  2 Oct 2019 07:56:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12E981717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569995389;
-	bh=et17pqgsBR63aWeOlvMhH/X06XW41sjDPzviFi8L8CQ=;
+	s=default; t=1569995813;
+	bh=i4twwmUcIHLJw4xnmVThbmiVpuC7X9Y5mO9uSSEeFoI=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=foX+OmMaTA8wXhKTIvMZI4b2b8Aho5ayPAp296myLmCka7laMotsBi8Vh0NOnVeBf
-	 atvP7kxNBYPP8rtlOtFyZlUE1qOCttdIhk+fP/6SmGVFA/DnCJvQuIitq9jH1D1rVy
-	 wIiW5xhJnTTf4co27n4/P6s3XoX5ybJa2pNQWgkU=
+	b=t71h58BEq1C4utnl0yG7/OpPLSz1WXMH6fMv5gevR+sp4y3VDObREkq0UNSfl76KJ
+	 OrLoJoxfztsOwn7Fvj/Hjl/jNyGvDXAU3SIUHYXyaBre7QFh5pSSZRfKwHr1XMlfJr
+	 KBRorv/KuLvvgDiu6ZgYGG7ZkR+OViasuljtvCNs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B90BF8087A;
-	Wed,  2 Oct 2019 07:33:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68DE2F89629;
+	Wed,  2 Oct 2019 07:34:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89DB6F8087B; Wed,  2 Oct 2019 07:33:33 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8351FF8060F
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:33:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8351FF8060F
-Date: 02 Oct 2019 14:33:29 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857477"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:33:29 +0900
+ id 89ED2F8962C; Wed,  2 Oct 2019 07:34:23 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id B082BF8961D
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:34:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B082BF8961D
+Date: 02 Oct 2019 14:34:20 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076467"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:34:20 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 123DF41ACACA;
- Wed,  2 Oct 2019 14:33:29 +0900 (JST)
-Message-ID: <87tv8r90eu.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 44EE24007547;
+ Wed,  2 Oct 2019 14:34:20 +0900 (JST)
+Message-ID: <87ftkb90df.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +58,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 25/44] ASoC: qcom: lpass-platform: remove
-	snd_pcm_ops
+Subject: [alsa-devel] [PATCH 35/44] ASoC: rt5514-spi: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,188 +84,99 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/qcom/lpass-platform.c | 70 ++++++++++++++++++++---------------------
- 1 file changed, 34 insertions(+), 36 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 4c745ba..2e88923 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -50,12 +50,12 @@ static const struct snd_pcm_hardware lpass_platform_pcm_hardware = {
- 	.fifo_size		=	0,
- };
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 892ea40..57ff5ae 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -201,18 +201,18 @@ static irqreturn_t rt5514_spi_irq(int irq, void *data)
+ }
  
--static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
-+static int lpass_platform_pcmops_open(struct snd_soc_component *component,
-+				      struct snd_pcm_substream *substream)
+ /* PCM for streaming audio from the DSP buffer */
+-static int rt5514_spi_pcm_open(struct snd_pcm_substream *substream)
++static int rt5514_spi_pcm_open(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
- 	struct lpass_variant *v = drvdata->variant;
- 	int ret, dma_ch, dir = substream->stream;
-@@ -105,11 +105,10 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
+ 	snd_soc_set_runtime_hwparams(substream, &rt5514_spi_pcm_hardware);
+ 
  	return 0;
  }
  
--static int lpass_platform_pcmops_close(struct snd_pcm_substream *substream)
-+static int lpass_platform_pcmops_close(struct snd_soc_component *component,
-+				       struct snd_pcm_substream *substream)
+-static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
+-			       struct snd_pcm_hw_params *hw_params)
++static int rt5514_spi_hw_params(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *hw_params)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
- 	struct lpass_variant *v = drvdata->variant;
- 	struct lpass_pcm_data *data;
-@@ -122,11 +121,11 @@ static int lpass_platform_pcmops_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
-+static int lpass_platform_pcmops_hw_params(struct snd_soc_component *component,
-+					   struct snd_pcm_substream *substream,
-+					   struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
- 	struct snd_pcm_runtime *rt = substream->runtime;
- 	struct lpass_pcm_data *pcm_data = rt->private_data;
-@@ -216,10 +215,10 @@ static int lpass_platform_pcmops_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int lpass_platform_pcmops_hw_free(struct snd_pcm_substream *substream)
-+static int lpass_platform_pcmops_hw_free(struct snd_soc_component *component,
-+					 struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
- 	struct snd_pcm_runtime *rt = substream->runtime;
- 	struct lpass_pcm_data *pcm_data = rt->private_data;
-@@ -236,11 +235,11 @@ static int lpass_platform_pcmops_hw_free(struct snd_pcm_substream *substream)
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
+ 	int ret;
+@@ -234,10 +234,9 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
  	return ret;
  }
  
--static int lpass_platform_pcmops_prepare(struct snd_pcm_substream *substream)
-+static int lpass_platform_pcmops_prepare(struct snd_soc_component *component,
-+					 struct snd_pcm_substream *substream)
+-static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
++static int rt5514_spi_hw_free(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
- 	struct snd_pcm_runtime *rt = substream->runtime;
- 	struct lpass_pcm_data *pcm_data = rt->private_data;
-@@ -288,11 +287,11 @@ static int lpass_platform_pcmops_prepare(struct snd_pcm_substream *substream)
- 	return 0;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
+ 
+@@ -251,24 +250,22 @@ static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
  }
  
--static int lpass_platform_pcmops_trigger(struct snd_pcm_substream *substream,
--		int cmd)
-+static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
-+					 struct snd_pcm_substream *substream,
-+					 int cmd)
- {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
- 	struct snd_pcm_runtime *rt = substream->runtime;
- 	struct lpass_pcm_data *pcm_data = rt->private_data;
-@@ -363,10 +362,10 @@ static int lpass_platform_pcmops_trigger(struct snd_pcm_substream *substream,
- }
- 
- static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
 +		struct snd_soc_component *component,
  		struct snd_pcm_substream *substream)
  {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
- 	struct snd_pcm_runtime *rt = substream->runtime;
- 	struct lpass_pcm_data *pcm_data = rt->private_data;
-@@ -395,8 +394,9 @@ static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
- 	return bytes_to_frames(substream->runtime, curr_addr - base_addr);
- }
- 
--static int lpass_platform_pcmops_mmap(struct snd_pcm_substream *substream,
--		struct vm_area_struct *vma)
-+static int lpass_platform_pcmops_mmap(struct snd_soc_component *component,
-+				      struct snd_pcm_substream *substream,
-+				      struct vm_area_struct *vma)
- {
  	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
  
-@@ -405,18 +405,6 @@ static int lpass_platform_pcmops_mmap(struct snd_pcm_substream *substream,
- 			runtime->dma_bytes);
+ 	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
  }
  
--static const struct snd_pcm_ops lpass_platform_pcm_ops = {
--	.open		= lpass_platform_pcmops_open,
--	.close		= lpass_platform_pcmops_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= lpass_platform_pcmops_hw_params,
--	.hw_free	= lpass_platform_pcmops_hw_free,
--	.prepare	= lpass_platform_pcmops_prepare,
--	.trigger	= lpass_platform_pcmops_trigger,
--	.pointer	= lpass_platform_pcmops_pointer,
--	.mmap		= lpass_platform_pcmops_mmap,
+-static const struct snd_pcm_ops rt5514_spi_pcm_ops = {
+-	.open		= rt5514_spi_pcm_open,
+-	.hw_params	= rt5514_spi_hw_params,
+-	.hw_free	= rt5514_spi_hw_free,
+-	.pointer	= rt5514_spi_pcm_pointer,
+-	.page		= snd_pcm_lib_get_vmalloc_page,
 -};
--
- static irqreturn_t lpass_dma_interrupt_handler(
- 			struct snd_pcm_substream *substream,
- 			struct lpass_data *drvdata,
-@@ -499,11 +487,11 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
- 	return IRQ_HANDLED;
++static struct page *rt5514_spi_pcm_page(struct snd_soc_component *component,
++					struct snd_pcm_substream *substream,
++					unsigned long offset)
++{
++	return snd_pcm_lib_get_vmalloc_page(substream, offset);
++}
+ 
+ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ {
+@@ -302,9 +299,13 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
  }
  
--static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
-+static int lpass_platform_pcm_new(struct snd_soc_component *component,
-+				  struct snd_soc_pcm_runtime *soc_runtime)
- {
- 	struct snd_pcm *pcm = soc_runtime->pcm;
- 	struct snd_pcm_substream *psubstream, *csubstream;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(soc_runtime, DRV_NAME);
- 	int ret = -EINVAL;
- 	size_t size = lpass_platform_pcm_hardware.buffer_bytes_max;
- 
-@@ -535,7 +523,8 @@ static int lpass_platform_pcm_new(struct snd_soc_pcm_runtime *soc_runtime)
- 	return 0;
- }
- 
--static void lpass_platform_pcm_free(struct snd_pcm *pcm)
-+static void lpass_platform_pcm_free(struct snd_soc_component *component,
-+				    struct snd_pcm *pcm)
- {
- 	struct snd_pcm_substream *substream;
- 	int i;
-@@ -552,9 +541,18 @@ static void lpass_platform_pcm_free(struct snd_pcm *pcm)
- 
- static const struct snd_soc_component_driver lpass_component_driver = {
- 	.name		= DRV_NAME,
--	.pcm_new	= lpass_platform_pcm_new,
--	.pcm_free	= lpass_platform_pcm_free,
--	.ops		= &lpass_platform_pcm_ops,
-+	.open		= lpass_platform_pcmops_open,
-+	.close		= lpass_platform_pcmops_close,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.hw_params	= lpass_platform_pcmops_hw_params,
-+	.hw_free	= lpass_platform_pcmops_hw_free,
-+	.prepare	= lpass_platform_pcmops_prepare,
-+	.trigger	= lpass_platform_pcmops_trigger,
-+	.pointer	= lpass_platform_pcmops_pointer,
-+	.mmap		= lpass_platform_pcmops_mmap,
-+	.pcm_construct	= lpass_platform_pcm_new,
-+	.pcm_destruct	= lpass_platform_pcm_free,
-+
+ static const struct snd_soc_component_driver rt5514_spi_component = {
+-	.name  = DRV_NAME,
+-	.probe = rt5514_spi_pcm_probe,
+-	.ops = &rt5514_spi_pcm_ops,
++	.name		= DRV_NAME,
++	.probe		= rt5514_spi_pcm_probe,
++	.open		= rt5514_spi_pcm_open,
++	.hw_params	= rt5514_spi_hw_params,
++	.hw_free	= rt5514_spi_hw_free,
++	.pointer	= rt5514_spi_pcm_pointer,
++	.page		= rt5514_spi_pcm_page,
  };
  
- int asoc_qcom_lpass_platform_register(struct platform_device *pdev)
+ /**
 -- 
 2.7.4
 
