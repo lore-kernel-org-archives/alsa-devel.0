@@ -2,56 +2,55 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0646C35280
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:38:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B368C35280
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:00:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 697002133F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:38:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2BA12086A
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:00:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kYw9UAk2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 697002133F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b8ZMcRcv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2BA12086A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC3101684;
-	Wed,  2 Oct 2019 07:37:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC3101684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45F7D1726;
+	Wed,  2 Oct 2019 07:59:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F7D1726
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569994679;
-	bh=ZDSclYlaB2Q1D9dBOkNCQEKgJUBvbfu7FlpLPulK4d0=;
+	s=default; t=1569996022;
+	bh=2VDQSZHT8OuEDik0IWVqHZEaXTxEmcO0ZSwv9ywE+80=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kYw9UAk2R3fWrL20PWk+gjFjxhd/9DXpVoVWfMeIRENNHxZ/NQypbK3DAqlUzivKC
-	 rzO8yynA3inuhERIzw28PRBFj6u2vijzU2F8bKqq+mqTRlJQ9JgXWPD5w4rSQx3myl
-	 1hLFEaTs3cpDWW18dtjdm3U6r0ahRZIIVPMUmmIQ=
+	b=b8ZMcRcvq6qBSNL3dDOltlzRT7ZIRJYN8kzOtx5mRpUUuS9jZ+o+Pig8ibwc1qoia
+	 uJrHCbPzj7Y7CSEYvU9v/0g9UiayOeU0qFGFGnV4MpTeadMD6yPma+aZgci91NkVTY
+	 X7CixcD9pucMt6AXkGhdM0OZuBpn09PHJ6DSUjHo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 783FFF80678;
-	Wed,  2 Oct 2019 07:32:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32301F896B8;
+	Wed,  2 Oct 2019 07:34:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1C53F80677; Wed,  2 Oct 2019 07:32:03 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B924CF805FD
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:31:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B924CF805FD
-Date: 02 Oct 2019 14:31:58 +0900
-X-IronPort-AV: E=Sophos;i="5.64,572,1559487600"; d="scan'208";a="28076186"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:31:58 +0900
+ id 9488FF896B9; Wed,  2 Oct 2019 07:34:49 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8EB21F8968D
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:34:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EB21F8968D
+Date: 02 Oct 2019 14:34:43 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857618"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:34:43 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4F43341AC467;
- Wed,  2 Oct 2019 14:31:58 +0900 (JST)
-Message-ID: <87imp7af1t.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5E57D4007F39;
+ Wed,  2 Oct 2019 14:34:43 +0900 (JST)
+Message-ID: <878sq390cs.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,7 +58,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 09/44] ASoC: amd: acp-pcm-dma: remove
+Subject: [alsa-devel] [PATCH 40/44] ASoC: fsl: fsl_asrc_dma: remove
 	snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -86,161 +85,160 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 63 +++++++++++++++++++++------------------------
- 1 file changed, 29 insertions(+), 34 deletions(-)
+ sound/soc/fsl/fsl_asrc_dma.c | 56 +++++++++++++++++++++++---------------------
+ 1 file changed, 29 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 52225b4..4b9a27e 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -759,14 +759,12 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 		return IRQ_NONE;
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 2a60fc6..d6146de 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -52,13 +52,12 @@ static void fsl_asrc_dma_complete(void *arg)
+ 	snd_pcm_period_elapsed(substream);
  }
  
--static int acp_dma_open(struct snd_pcm_substream *substream)
-+static int acp_dma_open(struct snd_soc_component *component,
-+			struct snd_pcm_substream *substream)
+-static int fsl_asrc_dma_prepare_and_submit(struct snd_pcm_substream *substream)
++static int fsl_asrc_dma_prepare_and_submit(struct snd_pcm_substream *substream,
++					   struct snd_soc_component *component)
  {
- 	u16 bank;
- 	int ret = 0;
+ 	u8 dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? OUT : IN;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *prtd = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
--								    DRV_NAME);
- 	struct audio_drv_data *intr_data = dev_get_drvdata(component->dev);
- 	struct audio_substream_data *adata =
- 		kzalloc(sizeof(struct audio_substream_data), GFP_KERNEL);
-@@ -834,7 +832,8 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct device *dev = component->dev;
+ 	unsigned long flags = DMA_CTRL_ACK;
+ 
+@@ -95,7 +94,8 @@ static int fsl_asrc_dma_prepare_and_submit(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static int acp_dma_hw_params(struct snd_pcm_substream *substream,
-+static int acp_dma_hw_params(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
- 	int status;
-@@ -843,8 +842,6 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_runtime *runtime;
- 	struct audio_substream_data *rtd;
- 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
--								    DRV_NAME);
- 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
- 	struct snd_soc_card *card = prtd->card;
- 	struct acp_platform_info *pinfo = snd_soc_card_get_drvdata(card);
-@@ -995,7 +992,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
- 	return status;
- }
- 
--static int acp_dma_hw_free(struct snd_pcm_substream *substream)
-+static int acp_dma_hw_free(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
- {
- 	return snd_pcm_lib_free_pages(substream);
- }
-@@ -1011,7 +1009,8 @@ static u64 acp_get_byte_count(struct audio_substream_data *rtd)
- 	return byte_count.bytescount;
- }
- 
--static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t acp_dma_pointer(struct snd_soc_component *component,
-+					 struct snd_pcm_substream *substream)
- {
- 	u32 buffersize;
- 	u32 pos = 0;
-@@ -1053,13 +1052,15 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 	return bytes_to_frames(runtime, pos);
- }
- 
--static int acp_dma_mmap(struct snd_pcm_substream *substream,
-+static int acp_dma_mmap(struct snd_soc_component *component,
-+			struct snd_pcm_substream *substream,
- 			struct vm_area_struct *vma)
- {
- 	return snd_pcm_lib_default_mmap(substream, vma);
- }
- 
--static int acp_dma_prepare(struct snd_pcm_substream *substream)
-+static int acp_dma_prepare(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
+-static int fsl_asrc_dma_trigger(struct snd_pcm_substream *substream, int cmd)
++static int fsl_asrc_dma_trigger(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream, int cmd)
  {
  	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
-@@ -1086,7 +1087,8 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+@@ -105,7 +105,7 @@ static int fsl_asrc_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		ret = fsl_asrc_dma_prepare_and_submit(substream);
++		ret = fsl_asrc_dma_prepare_and_submit(substream, component);
+ 		if (ret)
+ 			return ret;
+ 		dma_async_issue_pending(pair->dma_chan[IN]);
+@@ -124,7 +124,8 @@ static int fsl_asrc_dma_trigger(struct snd_pcm_substream *substream, int cmd)
  	return 0;
  }
  
--static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int acp_dma_trigger(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream, int cmd)
+-static int fsl_asrc_dma_hw_params(struct snd_pcm_substream *substream,
++static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params)
  {
- 	int ret;
+ 	enum dma_slave_buswidth buswidth = DMA_SLAVE_BUSWIDTH_2_BYTES;
+@@ -132,7 +133,6 @@ static int fsl_asrc_dma_hw_params(struct snd_pcm_substream *substream,
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct snd_dmaengine_dai_dma_data *dma_params_fe = NULL;
+ 	struct snd_dmaengine_dai_dma_data *dma_params_be = NULL;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+@@ -247,7 +247,8 @@ static int fsl_asrc_dma_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
-@@ -1132,10 +1134,9 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+-static int fsl_asrc_dma_hw_free(struct snd_pcm_substream *substream)
++static int fsl_asrc_dma_hw_free(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+@@ -266,12 +267,12 @@ static int fsl_asrc_dma_hw_free(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
++static int fsl_asrc_dma_startup(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream)
+ {
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	struct device *dev = component->dev;
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+@@ -342,7 +343,8 @@ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
  	return ret;
  }
  
--static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
-+static int acp_dma_new(struct snd_soc_component *component,
-+		       struct snd_soc_pcm_runtime *rtd)
+-static int fsl_asrc_dma_shutdown(struct snd_pcm_substream *substream)
++static int fsl_asrc_dma_shutdown(struct snd_soc_component *component,
++				 struct snd_pcm_substream *substream)
  {
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd,
--								    DRV_NAME);
- 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
- 	struct device *parent = component->dev->parent;
- 
-@@ -1158,14 +1159,12 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+@@ -361,7 +363,9 @@ static int fsl_asrc_dma_shutdown(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static int acp_dma_close(struct snd_pcm_substream *substream)
-+static int acp_dma_close(struct snd_soc_component *component,
+-static snd_pcm_uframes_t fsl_asrc_dma_pcm_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t
++fsl_asrc_dma_pcm_pointer(struct snd_soc_component *component,
 +			 struct snd_pcm_substream *substream)
  {
- 	u16 bank;
  	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
--	struct snd_soc_pcm_runtime *prtd = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
--								    DRV_NAME);
- 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-@@ -1216,22 +1215,18 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
- 	return 0;
+ 	struct fsl_asrc_pair *pair = runtime->private_data;
+@@ -369,17 +373,8 @@ static snd_pcm_uframes_t fsl_asrc_dma_pcm_pointer(struct snd_pcm_substream *subs
+ 	return bytes_to_frames(substream->runtime, pair->pos);
  }
  
--static const struct snd_pcm_ops acp_dma_ops = {
--	.open = acp_dma_open,
--	.close = acp_dma_close,
--	.ioctl = snd_pcm_lib_ioctl,
--	.hw_params = acp_dma_hw_params,
--	.hw_free = acp_dma_hw_free,
--	.trigger = acp_dma_trigger,
--	.pointer = acp_dma_pointer,
--	.mmap = acp_dma_mmap,
--	.prepare = acp_dma_prepare,
+-static const struct snd_pcm_ops fsl_asrc_dma_pcm_ops = {
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= fsl_asrc_dma_hw_params,
+-	.hw_free	= fsl_asrc_dma_hw_free,
+-	.trigger	= fsl_asrc_dma_trigger,
+-	.open		= fsl_asrc_dma_startup,
+-	.close		= fsl_asrc_dma_shutdown,
+-	.pointer	= fsl_asrc_dma_pcm_pointer,
 -};
 -
- static const struct snd_soc_component_driver acp_asoc_platform = {
--	.name = DRV_NAME,
--	.ops = &acp_dma_ops,
--	.pcm_new = acp_dma_new,
-+	.name		= DRV_NAME,
-+	.open		= acp_dma_open,
-+	.close		= acp_dma_close,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.hw_params	= acp_dma_hw_params,
-+	.hw_free	= acp_dma_hw_free,
-+	.trigger	= acp_dma_trigger,
-+	.pointer	= acp_dma_pointer,
-+	.mmap		= acp_dma_mmap,
-+	.prepare	= acp_dma_prepare,
-+	.pcm_construct	= acp_dma_new,
- };
+-static int fsl_asrc_dma_pcm_new(struct snd_soc_pcm_runtime *rtd)
++static int fsl_asrc_dma_pcm_new(struct snd_soc_component *component,
++				struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm_substream *substream;
+@@ -414,7 +409,8 @@ static int fsl_asrc_dma_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return ret;
+ }
  
- static int acp_audio_probe(struct platform_device *pdev)
+-static void fsl_asrc_dma_pcm_free(struct snd_pcm *pcm)
++static void fsl_asrc_dma_pcm_free(struct snd_soc_component *component,
++				  struct snd_pcm *pcm)
+ {
+ 	struct snd_pcm_substream *substream;
+ 	int i;
+@@ -432,8 +428,14 @@ static void fsl_asrc_dma_pcm_free(struct snd_pcm *pcm)
+ 
+ struct snd_soc_component_driver fsl_asrc_component = {
+ 	.name		= DRV_NAME,
+-	.ops		= &fsl_asrc_dma_pcm_ops,
+-	.pcm_new	= fsl_asrc_dma_pcm_new,
+-	.pcm_free	= fsl_asrc_dma_pcm_free,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= fsl_asrc_dma_hw_params,
++	.hw_free	= fsl_asrc_dma_hw_free,
++	.trigger	= fsl_asrc_dma_trigger,
++	.open		= fsl_asrc_dma_startup,
++	.close		= fsl_asrc_dma_shutdown,
++	.pointer	= fsl_asrc_dma_pcm_pointer,
++	.pcm_construct	= fsl_asrc_dma_pcm_new,
++	.pcm_destruct	= fsl_asrc_dma_pcm_free,
+ };
+ EXPORT_SYMBOL_GPL(fsl_asrc_component);
 -- 
 2.7.4
 
