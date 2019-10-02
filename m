@@ -2,56 +2,55 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA73ECE596
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4E75ECE58F
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:07:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CA5B222C8
+	by mail.kernel.org (Postfix) with ESMTPS id 2D5ED222C4
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:07:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r2K2cCmi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CA5B222C8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XNY9B37D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D5ED222C4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F5D516E6;
-	Wed,  2 Oct 2019 07:50:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F5D516E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 209B116E2;
+	Wed,  2 Oct 2019 07:49:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 209B116E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569995465;
-	bh=405+sASGexDZDeiVsZ1H/bcDAiu6jSMrCyK6i+SG2kU=;
+	s=default; t=1569995423;
+	bh=4MUbdoH0Mt9R0P2RU3J6Ck66wP+tZdeyYmBRMySja/Y=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r2K2cCmiP6LvufQW2Ynsd8fkgTPg1E7KXY6bkRhiEDGfsjJeyPwcGr2/sB5EenVyB
-	 karL9LNOoKcz+xSNlfgNTdrAa1DFjkI75SfKFMPqdCiu8UlOegT0NuryJ90TWO2C35
-	 9IipKyDids+oKb2wdrAwe564DQ4Kr1r4sQxpJgYA=
+	b=XNY9B37DtcvRx4TwgLGML8WIJmjT2YxN/xnIbUMVLBhPngTWs2FgMeicI/woIuYDw
+	 k4A0/KufVCk+OUZHPJ9lH2R+r4sDyg38M05vUAFPfFUvG7+JB3JLHTYYXVVLdsw30Z
+	 sd8czRD3lxFZQP8o8k5WG5NlxgoVhWD22FYQkGc4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39385F80BF3;
-	Wed,  2 Oct 2019 07:33:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A894F80612;
+	Wed,  2 Oct 2019 07:33:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5C6DF808F5; Wed,  2 Oct 2019 07:33:45 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0EBD6F80BF3
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:33:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EBD6F80BF3
-Date: 02 Oct 2019 14:33:39 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857502"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:33:39 +0900
+ id DFB16F808E7; Wed,  2 Oct 2019 07:33:39 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id B74A5F8087C
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:33:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B74A5F8087C
+Date: 02 Oct 2019 14:33:34 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076378"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:33:34 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D01774007F39;
- Wed,  2 Oct 2019 14:33:39 +0900 (JST)
-Message-ID: <87r23v90ek.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 84C0D41AD5AE;
+ Wed,  2 Oct 2019 14:33:34 +0900 (JST)
+Message-ID: <87sgob90ep.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,7 +58,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 27/44] ASoC: qcom: q6asm-dai: remove snd_pcm_ops
+Subject: [alsa-devel] [PATCH 26/44] ASoC: qcom: q6routing: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,186 +84,52 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 71 ++++++++++++++++++++--------------------
- 1 file changed, 35 insertions(+), 36 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 548eb4f..f59353f 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -206,16 +206,16 @@ static void event_handler(uint32_t opcode, uint32_t token,
- 	}
- }
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index ddcd997..2072410 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -939,12 +939,12 @@ static const struct snd_soc_dapm_route intercon[] = {
  
--static int q6asm_dai_prepare(struct snd_pcm_substream *substream)
-+static int q6asm_dai_prepare(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream)
+ };
+ 
+-static int routing_hw_params(struct snd_pcm_substream *substream,
+-				     struct snd_pcm_hw_params *params)
++static int routing_hw_params(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
- 	struct q6asm_dai_data *pdata;
- 	int ret, i;
- 
--	pdata = snd_soc_component_get_drvdata(c);
-+	pdata = snd_soc_component_get_drvdata(component);
- 	if (!pdata)
- 		return -EINVAL;
- 
-@@ -294,7 +294,8 @@ static int q6asm_dai_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+-	struct msm_routing_data *data = dev_get_drvdata(c->dev);
++	struct msm_routing_data *data = dev_get_drvdata(component->dev);
+ 	unsigned int be_id = rtd->cpu_dai->id;
+ 	struct session_data *session;
+ 	int path_type;
+@@ -980,10 +980,6 @@ static int routing_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
--static int q6asm_dai_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int q6asm_dai_trigger(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream, int cmd)
- {
- 	int ret = 0;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -322,21 +323,21 @@ static int q6asm_dai_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--static int q6asm_dai_open(struct snd_pcm_substream *substream)
-+static int q6asm_dai_open(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = soc_prtd->cpu_dai;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
- 	struct q6asm_dai_rtd *prtd;
- 	struct q6asm_dai_data *pdata;
--	struct device *dev = c->dev;
-+	struct device *dev = component->dev;
- 	int ret = 0;
- 	int stream_id;
- 
- 	stream_id = cpu_dai->driver->id;
- 
--	pdata = snd_soc_component_get_drvdata(c);
-+	pdata = snd_soc_component_get_drvdata(component);
- 	if (!pdata) {
- 		pr_err("Drv data not found ..\n");
- 		return -EINVAL;
-@@ -414,7 +415,8 @@ static int q6asm_dai_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int q6asm_dai_close(struct snd_pcm_substream *substream)
-+static int q6asm_dai_close(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
-@@ -435,7 +437,8 @@ static int q6asm_dai_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static snd_pcm_uframes_t q6asm_dai_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t q6asm_dai_pointer(struct snd_soc_component *component,
-+					   struct snd_pcm_substream *substream)
- {
- 
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -447,22 +450,21 @@ static snd_pcm_uframes_t q6asm_dai_pointer(struct snd_pcm_substream *substream)
- 	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
- }
- 
--static int q6asm_dai_mmap(struct snd_pcm_substream *substream,
--				struct vm_area_struct *vma)
-+static int q6asm_dai_mmap(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream,
-+			  struct vm_area_struct *vma)
- {
--
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
--	struct device *dev = c->dev;
-+	struct device *dev = component->dev;
- 
- 	return dma_mmap_coherent(dev, vma,
- 			runtime->dma_area, runtime->dma_addr,
- 			runtime->dma_bytes);
- }
- 
--static int q6asm_dai_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params)
-+static int q6asm_dai_hw_params(struct snd_soc_component *component,
-+			       struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *params)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
-@@ -482,17 +484,6 @@ static int q6asm_dai_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_pcm_ops q6asm_dai_ops = {
--	.open           = q6asm_dai_open,
--	.hw_params	= q6asm_dai_hw_params,
--	.close          = q6asm_dai_close,
--	.ioctl          = snd_pcm_lib_ioctl,
--	.prepare        = q6asm_dai_prepare,
--	.trigger        = q6asm_dai_trigger,
--	.pointer        = q6asm_dai_pointer,
--	.mmap		= q6asm_dai_mmap,
+-static struct snd_pcm_ops q6pcm_routing_ops = {
+-	.hw_params = routing_hw_params,
 -};
 -
- static void compress_event_handler(uint32_t opcode, uint32_t token,
- 				   uint32_t *payload, void *priv)
+ static int msm_routing_probe(struct snd_soc_component *c)
  {
-@@ -800,15 +791,15 @@ static struct snd_compr_ops q6asm_dai_compr_ops = {
- 	.ack		= q6asm_dai_compr_ack,
- };
- 
--static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int q6asm_dai_pcm_new(struct snd_soc_component *component,
-+			     struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_pcm_substream *psubstream, *csubstream;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct snd_pcm *pcm = rtd->pcm;
- 	struct device *dev;
- 	int size, ret;
- 
--	dev = c->dev;
-+	dev = component->dev;
- 	size = q6asm_dai_hardware_playback.buffer_bytes_max;
- 	psubstream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
- 	if (psubstream) {
-@@ -835,7 +826,8 @@ static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
+ 	int i;
+@@ -997,9 +993,9 @@ static int msm_routing_probe(struct snd_soc_component *c)
  }
  
--static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
-+static void q6asm_dai_pcm_free(struct snd_soc_component *component,
-+			       struct snd_pcm *pcm)
- {
- 	struct snd_pcm_substream *substream;
- 	int i;
-@@ -852,9 +844,16 @@ static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
- 
- static const struct snd_soc_component_driver q6asm_fe_dai_component = {
- 	.name		= DRV_NAME,
--	.ops		= &q6asm_dai_ops,
--	.pcm_new	= q6asm_dai_pcm_new,
--	.pcm_free	= q6asm_dai_pcm_free,
-+	.open		= q6asm_dai_open,
-+	.hw_params	= q6asm_dai_hw_params,
-+	.close		= q6asm_dai_close,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.prepare	= q6asm_dai_prepare,
-+	.trigger	= q6asm_dai_trigger,
-+	.pointer	= q6asm_dai_pointer,
-+	.mmap		= q6asm_dai_mmap,
-+	.pcm_construct	= q6asm_dai_pcm_new,
-+	.pcm_destruct	= q6asm_dai_pcm_free,
- 	.compr_ops	= &q6asm_dai_compr_ops,
- };
- 
+ static const struct snd_soc_component_driver msm_soc_routing_component = {
+-	.ops = &q6pcm_routing_ops,
+ 	.probe = msm_routing_probe,
+ 	.name = DRV_NAME,
++	.hw_params = routing_hw_params,
+ 	.dapm_widgets = msm_qdsp6_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
+ 	.dapm_routes = intercon,
 -- 
 2.7.4
 
