@@ -2,55 +2,56 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62B91ECE599
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EF24ECE596
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3F64222C4
+	by mail.kernel.org (Postfix) with ESMTPS id D7600222C7
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rngC6YqH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3F64222C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tb7nJMwP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7600222C7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5A0C16E0;
-	Wed,  2 Oct 2019 07:53:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5A0C16E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E19616B1;
+	Wed,  2 Oct 2019 07:42:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E19616B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569995678;
-	bh=Lo5uPH0I0RTorR7Oz1w6ZShWWhzTf56iPwA91LtFaho=;
+	s=default; t=1569995014;
+	bh=BDRgxQE8vAl0rLCkXUQp+vQpDTgATRJPV2vdIvFO73M=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rngC6YqHZIVwhCXlcELrG8ORLr/PcPJa/TH2/WWUcWJQ+GIy6Ql1yYB9AhadWRL28
-	 0wP0zNiAvZzhlPeWlAAUPbUq7jR2cEpHOUdPJ5Z9h5VxsGCnN+G04aAdsKGKxOTH9J
-	 s/5k9itOKWwtpXcibB4T8dJMcJYZtlQjfvrrP5gg=
+	b=Tb7nJMwPd2BL7ayp1ERQeVGE0HBnrdzkj08vBtS6Q8CCacYNYCXN0ncvB3P10TMIh
+	 BUDtjbTJPxKSLt7m8cotdn4PrRNN2NPC6PASNnwFUDhTLZg1QOr8rjwJpZHcl4mJ6S
+	 qpevb4KVsssuXXsdJcRtTKbzCoLFYNDkexWwFjLc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 622C3F80CC0;
-	Wed,  2 Oct 2019 07:34:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32B82F80752;
+	Wed,  2 Oct 2019 07:32:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81387F80CC1; Wed,  2 Oct 2019 07:34:10 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id EC614F80CBF
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:34:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC614F80CBF
-Date: 02 Oct 2019 14:34:05 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857547"
+ id EB37EF80752; Wed,  2 Oct 2019 07:32:46 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id E9797F80737
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:32:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9797F80737
+Date: 02 Oct 2019 14:32:41 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076291"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:34:05 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:32:41 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7F2CE41AE04D;
- Wed,  2 Oct 2019 14:34:05 +0900 (JST)
-Message-ID: <87k19n90du.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7F5F541AC467;
+ Wed,  2 Oct 2019 14:32:41 +0900 (JST)
+Message-ID: <877e5naf0m.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +59,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 32/44] ASoC: mediatek: remove snd_pcm_ops
+Subject: [alsa-devel] [PATCH 16/44] ASoC: txx9: txx9aclc: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,149 +85,128 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- .../soc/mediatek/common/mtk-afe-platform-driver.c  | 28 ++++++++++------------
- .../soc/mediatek/common/mtk-afe-platform-driver.h  | 10 ++++----
- sound/soc/mediatek/mt6797/mt6797-afe-pcm.c         | 11 +++++----
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c         | 11 +++++----
- 4 files changed, 30 insertions(+), 30 deletions(-)
+ sound/soc/txx9/txx9aclc.c | 48 ++++++++++++++++++++++++-----------------------
+ 1 file changed, 25 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index 3ce527c..b6624d8 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -77,11 +77,10 @@ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
- }
- EXPORT_SYMBOL_GPL(mtk_afe_add_sub_dai_control);
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index 6604455..33c78d3 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -47,12 +47,12 @@ static const struct snd_pcm_hardware txx9aclc_pcm_hardware = {
+ 	.buffer_bytes_max = 32 * 1024,
+ };
  
--static snd_pcm_uframes_t mtk_afe_pcm_pointer
--			 (struct snd_pcm_substream *substream)
-+snd_pcm_uframes_t mtk_afe_pcm_pointer(struct snd_soc_component *component,
-+				      struct snd_pcm_substream *substream)
+-static int txx9aclc_pcm_hw_params(struct snd_pcm_substream *substream,
++static int txx9aclc_pcm_hw_params(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
- 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
- 	const struct mtk_base_memif_data *memif_data = memif->data;
-@@ -111,18 +110,13 @@ static snd_pcm_uframes_t mtk_afe_pcm_pointer
- POINTER_RETURN_FRAMES:
- 	return bytes_to_frames(substream->runtime, pcm_ptr_bytes);
- }
-+EXPORT_SYMBOL_GPL(mtk_afe_pcm_pointer);
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct txx9aclc_dmadata *dmadata = runtime->private_data;
+ 	int ret;
  
--const struct snd_pcm_ops mtk_afe_pcm_ops = {
--	.ioctl = snd_pcm_lib_ioctl,
--	.pointer = mtk_afe_pcm_pointer,
+@@ -76,12 +76,14 @@ static int txx9aclc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int txx9aclc_pcm_hw_free(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_hw_free(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream)
+ {
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-static int txx9aclc_pcm_prepare(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_prepare(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct txx9aclc_dmadata *dmadata = runtime->private_data;
+@@ -203,7 +205,8 @@ static void txx9aclc_dma_tasklet(unsigned long data)
+ 	spin_unlock_irqrestore(&dmadata->dma_lock, flags);
+ }
+ 
+-static int txx9aclc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int txx9aclc_pcm_trigger(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
+ 	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
+@@ -236,14 +239,16 @@ static int txx9aclc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ }
+ 
+ static snd_pcm_uframes_t
+-txx9aclc_pcm_pointer(struct snd_pcm_substream *substream)
++txx9aclc_pcm_pointer(struct snd_soc_component *component,
++		     struct snd_pcm_substream *substream)
+ {
+ 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
+ 
+ 	return bytes_to_frames(substream->runtime, dmadata->pos);
+ }
+ 
+-static int txx9aclc_pcm_open(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_open(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream)
+ {
+ 	struct txx9aclc_soc_device *dev = &txx9aclc_soc_device;
+ 	struct txx9aclc_dmadata *dmadata = &dev->dmadata[substream->stream];
+@@ -261,7 +266,8 @@ static int txx9aclc_pcm_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int txx9aclc_pcm_close(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_close(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream)
+ {
+ 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
+ 	struct dma_chan *chan = dmadata->dma_chan;
+@@ -271,23 +277,12 @@ static int txx9aclc_pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static const struct snd_pcm_ops txx9aclc_pcm_ops = {
+-	.open		= txx9aclc_pcm_open,
+-	.close		= txx9aclc_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= txx9aclc_pcm_hw_params,
+-	.hw_free	= txx9aclc_pcm_hw_free,
+-	.prepare	= txx9aclc_pcm_prepare,
+-	.trigger	= txx9aclc_pcm_trigger,
+-	.pointer	= txx9aclc_pcm_pointer,
 -};
--EXPORT_SYMBOL_GPL(mtk_afe_pcm_ops);
 -
--int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+int mtk_afe_pcm_new(struct snd_soc_component *component,
-+		    struct snd_soc_pcm_runtime *rtd)
+-static int txx9aclc_pcm_new(struct snd_soc_pcm_runtime *rtd)
++static int txx9aclc_pcm_new(struct snd_soc_component *component,
++			    struct snd_soc_pcm_runtime *rtd)
  {
- 	size_t size;
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
  	struct snd_pcm *pcm = rtd->pcm;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
- 
- 	size = afe->mtk_afe_hardware->buffer_bytes_max;
-@@ -132,17 +126,19 @@ int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
- }
- EXPORT_SYMBOL_GPL(mtk_afe_pcm_new);
- 
--void mtk_afe_pcm_free(struct snd_pcm *pcm)
-+void mtk_afe_pcm_free(struct snd_soc_component *component,
-+		      struct snd_pcm *pcm)
- {
- 	snd_pcm_lib_preallocate_free_for_all(pcm);
- }
- EXPORT_SYMBOL_GPL(mtk_afe_pcm_free);
- 
- const struct snd_soc_component_driver mtk_afe_pcm_platform = {
--	.name = AFE_PCM_NAME,
--	.ops = &mtk_afe_pcm_ops,
--	.pcm_new = mtk_afe_pcm_new,
--	.pcm_free = mtk_afe_pcm_free,
-+	.name		= AFE_PCM_NAME,
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct platform_device *pdev = to_platform_device(component->dev);
+ 	struct txx9aclc_soc_device *dev;
+ 	struct resource *r;
+@@ -409,8 +404,15 @@ static const struct snd_soc_component_driver txx9aclc_soc_component = {
+ 	.name		= DRV_NAME,
+ 	.probe		= txx9aclc_pcm_probe,
+ 	.remove		= txx9aclc_pcm_remove,
+-	.ops		= &txx9aclc_pcm_ops,
+-	.pcm_new	= txx9aclc_pcm_new,
++	.open		= txx9aclc_pcm_open,
++	.close		= txx9aclc_pcm_close,
 +	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.pointer	= mtk_afe_pcm_pointer,
-+	.pcm_construct	= mtk_afe_pcm_new,
-+	.pcm_destruct	= mtk_afe_pcm_free,
- };
- EXPORT_SYMBOL_GPL(mtk_afe_pcm_platform);
- 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.h b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-index 88df679..e550d11 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-@@ -10,7 +10,6 @@
- #define _MTK_AFE_PLATFORM_DRIVER_H_
- 
- #define AFE_PCM_NAME "mtk-afe-pcm"
--extern const struct snd_pcm_ops mtk_afe_pcm_ops;
- extern const struct snd_soc_component_driver mtk_afe_pcm_platform;
- 
- struct mtk_base_afe;
-@@ -18,9 +17,12 @@ struct snd_pcm;
- struct snd_soc_component;
- struct snd_soc_pcm_runtime;
- 
--
--int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd);
--void mtk_afe_pcm_free(struct snd_pcm *pcm);
-+snd_pcm_uframes_t mtk_afe_pcm_pointer(struct snd_soc_component *component,
-+				      struct snd_pcm_substream *substream);
-+int mtk_afe_pcm_new(struct snd_soc_component *component,
-+		    struct snd_soc_pcm_runtime *rtd);
-+void mtk_afe_pcm_free(struct snd_soc_component *component,
-+		      struct snd_pcm *pcm);
- 
- int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe);
- int mtk_afe_add_sub_dai_control(struct snd_soc_component *component);
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-index e52c032..033c07f 100644
---- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-@@ -710,11 +710,12 @@ static int mt6797_afe_component_probe(struct snd_soc_component *component)
- }
- 
- static const struct snd_soc_component_driver mt6797_afe_component = {
--	.name = AFE_PCM_NAME,
--	.ops = &mtk_afe_pcm_ops,
--	.pcm_new = mtk_afe_pcm_new,
--	.pcm_free = mtk_afe_pcm_free,
--	.probe = mt6797_afe_component_probe,
-+	.name		= AFE_PCM_NAME,
-+	.probe		= mt6797_afe_component_probe,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.pointer	= mtk_afe_pcm_pointer,
-+	.pcm_construct	= mtk_afe_pcm_new,
-+	.pcm_destruct	= mtk_afe_pcm_free,
++	.hw_params	= txx9aclc_pcm_hw_params,
++	.hw_free	= txx9aclc_pcm_hw_free,
++	.prepare	= txx9aclc_pcm_prepare,
++	.trigger	= txx9aclc_pcm_trigger,
++	.pointer	= txx9aclc_pcm_pointer,
++	.pcm_construct	= txx9aclc_pcm_new,
  };
  
- static int mt6797_dai_memif_register(struct mtk_base_afe *afe)
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index 4a31106..c208878 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -1047,11 +1047,12 @@ static int mt8183_afe_component_probe(struct snd_soc_component *component)
- }
- 
- static const struct snd_soc_component_driver mt8183_afe_component = {
--	.name = AFE_PCM_NAME,
--	.ops = &mtk_afe_pcm_ops,
--	.pcm_new = mtk_afe_pcm_new,
--	.pcm_free = mtk_afe_pcm_free,
--	.probe = mt8183_afe_component_probe,
-+	.name		= AFE_PCM_NAME,
-+	.probe		= mt8183_afe_component_probe,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.pointer	= mtk_afe_pcm_pointer,
-+	.pcm_construct	= mtk_afe_pcm_new,
-+	.pcm_destruct	= mtk_afe_pcm_free,
- };
- 
- static int mt8183_dai_memif_register(struct mtk_base_afe *afe)
+ static int txx9aclc_soc_platform_probe(struct platform_device *pdev)
 -- 
 2.7.4
 
