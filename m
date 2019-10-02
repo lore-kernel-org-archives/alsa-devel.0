@@ -2,55 +2,56 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF7D3C35280
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A95D6C352AA
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:25:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78652215EA
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:24:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 315B7215EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:25:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OzIYvgwn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78652215EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h484a0LE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 315B7215EA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA11E167C;
-	Wed,  2 Oct 2019 07:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA11E167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 742A1166E;
+	Wed,  2 Oct 2019 07:24:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 742A1166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569993884;
-	bh=KxH5F0mIX4/vbkbwTSDhepM/Uy/iMMFVSkWF2nb8PlI=;
+	s=default; t=1569993908;
+	bh=jIPO6IfDSVWMgRgA2x35OlZPSuCXVoztupi+/fjVAbI=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OzIYvgwnozz8q6Wm0Qv7NR5H/xaAzJOQHWQmW7PFvDpLHlnvsGNjy200FYewM553/
-	 XgBgMhw9nQ23+hKCzTT0qUte2oh7SgBFLhGOP6Llshr8gUbubi5gSe009wBz8U/LJU
-	 5m2/inJEgIUs0VS2pBpT/aj5V9HIftJ/iTBMQkYM=
+	b=h484a0LEuBjS997vzTuxH2glNnChw1t5TEAiwbTRCC+B+Mn28/aXSGDB6GgMjYn1f
+	 oN4fO24m+5eUCDcfaoOpfKO26IYzhLbptb4tmnL84QmMq9pvXmpa7MkAHMSNNym9Nv
+	 /jikCMsqS7vz9nAcb1aOg8mC/tIY+XAaMxtTRfrI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38085F805AE;
-	Wed,  2 Oct 2019 07:22:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CC9DF80600;
+	Wed,  2 Oct 2019 07:22:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43953F805FC; Wed,  2 Oct 2019 07:22:47 +0200 (CEST)
+ id D3402F8060D; Wed,  2 Oct 2019 07:22:55 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8D754F805FA
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:22:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D754F805FA
-Date: 02 Oct 2019 14:22:40 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27856522"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:22:40 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 25D75F805FE
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:22:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25D75F805FE
+Date: 02 Oct 2019 14:22:49 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27856535"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:22:49 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 71D5741A8B45;
- Wed,  2 Oct 2019 14:22:40 +0900 (JST)
-Message-ID: <875zl7bu1r.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 67ACD400857D;
+ Wed,  2 Oct 2019 14:22:49 +0900 (JST)
+Message-ID: <874l0rbu1i.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,8 +59,7 @@ In-Reply-To: <878sq3bu2t.wl-kuninori.morimoto.gx@renesas.com>
 References: <878sq3bu2t.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 2/6] ASoC: soc-core: remove
-	soc_remove_dai_links()
+Subject: [alsa-devel] [PATCH 3/6] ASoC: soc-core: add soc_setup_card_name()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,118 +80,93 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-It is easy to read code if it is cleanly using paired function/naming,
-like start <-> stop, register <-> unregister, etc, etc.
-But, current ALSA SoC code is very random, unbalance, not paired, etc.
-It is easy to create bug at the such code, and it will be difficult to
-debug.
-
-soc_cleanup_card_resources() (a) which is paired function of
-snd_soc_instantiate_card() (A) is calling soc_remove_dai_links() (*)
-to remove card related resources, but it is breaking
-add/remove balance (B)(b)(C)(c)(D)(d), in other words
-these should be called from soc_cleanup_card_resources() (a)
-from balance point of view.
-
-More headacke is that it is using original removing method for
-dai_link even though we already have snd_soc_remove_dai_link()
-which is the function for it (d).
-
-This patch removes snd_soc_remove_dai_links() and balance up code.
-
-	static void soc_remove_dai_links(...)
-	{
-		...
-(b)		soc_remove_link_dais(card);
-(c)		soc_remove_link_components(card);
-
-		for_each_card_links_safe(card, link, _link) {
-			...
-			/* it should use snd_soc_remove_dai_link() here */
-(d)			list_del(&link->list);
-		}
-	}
-
-(a)	static int soc_cleanup_card_resources(...)
-	{
-		...
-
-		/* remove and free each DAI */
-(*)		soc_remove_dai_links(card);
-		...
-	}
-
-(A)	static int snd_soc_instantiate_card(struct snd_soc_card *card)
-	{
-		...
-		/* add predefined DAI links to the list */
-		for_each_card_prelinks(card, i, dai_link)
-(B)			snd_soc_add_dai_link(card, dai_link);
-		...
-		/* probe all components used by DAI links on this card */
-(C)		ret = soc_probe_link_components(card);
-		...
-		/* probe all DAI links on this card */
-(D)		ret = soc_probe_link_dais(card);
-		...
-	}
+ALSA needs to setup shortname, longname, and driver.
+These methods are very similar.
+This patch adds new soc_setup_card_name() and setup these.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
+ sound/soc/soc-core.c | 60 ++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 42 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b16a9422..a34000d 100644
+index a34000d..f79ffc4 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1275,23 +1275,6 @@ static int soc_probe_link_components(struct snd_soc_card *card)
- 	return 0;
+@@ -1905,6 +1905,42 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ 	}
  }
  
--static void soc_remove_dai_links(struct snd_soc_card *card)
--{
--	struct snd_soc_dai_link *link, *_link;
--
--	soc_remove_link_dais(card);
--
--	soc_remove_link_components(card);
--
--	for_each_card_links_safe(card, link, _link) {
--		if (link->dobj.type == SND_SOC_DOBJ_DAI_LINK)
--			dev_warn(card->dev, "Topology forgot to remove link %s?\n",
--				link->name);
--
--		list_del(&link->list);
--	}
--}
--
- static int soc_init_dai_link(struct snd_soc_card *card,
- 			     struct snd_soc_dai_link *link)
- {
-@@ -1924,6 +1907,8 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
- 
++#define soc_setup_card_name(name, name1, name2, norm)		\
++	__soc_setup_card_name(name, sizeof(name), name1, name2, norm)
++static void __soc_setup_card_name(char *name, int len,
++				  const char *name1, const char *name2,
++				  int normalization)
++{
++	int i;
++
++	snprintf(name, len, "%s", name1 ? name1 : name2);
++
++	if (!normalization)
++		return;
++
++	/*
++	 * Name normalization
++	 *
++	 * The driver name is somewhat special, as it's used as a key for
++	 * searches in the user-space.
++	 *
++	 * ex)
++	 *	"abcd??efg" -> "abcd__efg"
++	 */
++	for (i = 0; i < len; i++) {
++		switch (name[i]) {
++		case '_':
++		case '-':
++		case '\0':
++			break;
++		default:
++			if (!isalnum(name[i]))
++				name[i] = '_';
++			break;
++		}
++	}
++}
++
  static void soc_cleanup_card_resources(struct snd_soc_card *card)
  {
-+	struct snd_soc_dai_link *link, *_link;
-+
- 	/* free the ALSA card at first; this syncs with pending operations */
- 	if (card->snd_card) {
- 		snd_card_free(card->snd_card);
-@@ -1931,7 +1916,12 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
- 	}
+ 	struct snd_soc_dai_link *link, *_link;
+@@ -2070,24 +2106,12 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	/* try to set some sane longname if DMI is available */
+ 	snd_soc_set_dmi_name(card, NULL);
  
- 	/* remove and free each DAI */
--	soc_remove_dai_links(card);
-+	soc_remove_link_dais(card);
-+	soc_remove_link_components(card);
-+
-+	for_each_card_links_safe(card, link, _link)
-+		snd_soc_remove_dai_link(card, link);
-+
- 	soc_remove_pcm_runtimes(card);
+-	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
+-		 "%s", card->name);
+-	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
+-		 "%s", card->long_name ? card->long_name : card->name);
+-	snprintf(card->snd_card->driver, sizeof(card->snd_card->driver),
+-		 "%s", card->driver_name ? card->driver_name : card->name);
+-	for (i = 0; i < ARRAY_SIZE(card->snd_card->driver); i++) {
+-		switch (card->snd_card->driver[i]) {
+-		case '_':
+-		case '-':
+-		case '\0':
+-			break;
+-		default:
+-			if (!isalnum(card->snd_card->driver[i]))
+-				card->snd_card->driver[i] = '_';
+-			break;
+-		}
+-	}
++	soc_setup_card_name(card->snd_card->shortname,
++			    card->name, NULL, 0);
++	soc_setup_card_name(card->snd_card->longname,
++			    card->long_name, card->name, 0);
++	soc_setup_card_name(card->snd_card->driver,
++			    card->driver_name, card->name, 1);
  
- 	/* remove auxiliary devices */
+ 	if (card->late_probe) {
+ 		ret = card->late_probe(card);
 -- 
 2.7.4
 
