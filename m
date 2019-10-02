@@ -6,50 +6,50 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3043ECE58B
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:30:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CC4BC35280
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:31:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DB4121906
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:30:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0598C2133F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:31:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D4X3SwSQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DB4121906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WPCKEyyq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0598C2133F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68EB11661;
-	Wed,  2 Oct 2019 07:30:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68EB11661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C5FE1614;
+	Wed,  2 Oct 2019 07:31:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C5FE1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569994254;
+	s=default; t=1569994310;
 	bh=c0KAxzYeLJMLC/h6zmlEHj/uH3Hnu+f784LqNou6Qiw=;
 	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=D4X3SwSQPhMx2YdNJCVEZYph/sHuzoMoin7FoUHk0T4ZVj9sZ+NMIRd5XJizbArHr
-	 oW9XyJ0HIqbr+i25QhVdfmfI8RghJz4kygPek8YFMP9AXZy11Iz7W6DTe91/XGmDyj
-	 TKGwGZGLxherp+8FZDbr4WqK84cMwKTtOGaGloR0=
+	b=WPCKEyyqsLmysQWlR2+FEmchRx99Hb0SalwANFN41H+HfHc1lVP+miZRoym/7qrwP
+	 3GbfxqbBOqN74oP0YDwmY5pHPVGWlXTLDIzVsNzWyFpDQWZsclDQ/XJKn2Z7bfoU2q
+	 4Ydo9FPSEh+4/12ipWCylzCoV3qrQHl0WFrKXB6g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3D85F80391;
-	Wed,  2 Oct 2019 07:30:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BCA1F8036E;
+	Wed,  2 Oct 2019 07:30:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00A96F803D5; Wed,  2 Oct 2019 07:30:01 +0200 (CEST)
+ id 6015CF805AE; Wed,  2 Oct 2019 07:30:05 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D0FD4F8016F
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:29:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0FD4F8016F
-Date: 02 Oct 2019 14:29:55 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857043"
+ by alsa1.perex.cz (Postfix) with ESMTP id E08D2F8036E
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:29:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E08D2F8036E
+Date: 02 Oct 2019 14:29:59 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857047"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:29:55 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:29:59 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5A96540062C8;
- Wed,  2 Oct 2019 14:29:55 +0900 (JST)
-Message-ID: <87wodnaf58.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7499D40062C8;
+ Wed,  2 Oct 2019 14:29:59 +0900 (JST)
+Message-ID: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
