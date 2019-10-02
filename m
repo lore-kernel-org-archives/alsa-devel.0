@@ -2,56 +2,55 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F3E5C35280
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56AB3ECE595
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6D4321A4A
+	by mail.kernel.org (Postfix) with ESMTPS id CEF2D222C0
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NHUWpoda"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6D4321A4A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OfIV9PLA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEF2D222C0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DCB2169B;
-	Wed,  2 Oct 2019 07:44:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DCB2169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 111FA16F3;
+	Wed,  2 Oct 2019 07:51:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 111FA16F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569995094;
-	bh=m2PLEsasUSghMfQyYS6IS0pW26oMGCoEWVwMWbIKkG0=;
+	s=default; t=1569995556;
+	bh=K1D9qQlCJqT92Ej3llmtYv7CwIuNL3nVbhSMmk6VNJU=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NHUWpoda5dhG/FZAPGqRVZ4vAIWMdrEKmSddgxmuvqX8kcRiinBzX+I1m/1y4EeXd
-	 An5XpeflXV7lKUb73IvXTNw3OvHtn94QXvuy9wE//Ef4m+Ud69jwnyCeIODS+7Il87
-	 8sasFAPQbkWVdwOblFYw2EB3bQ75m4YiUTAZlgnE=
+	b=OfIV9PLAL9JVcF2K9d0uhuKwO9UvZaMgICzeUdFJLt65tgiK1NxC5x65wDVDtnabE
+	 DTtQYOJcgsPo+EEWFR41oJsLiXAD+5D1XgSM4FolJyHUqusKoOJj1MsRF9tLONQGSQ
+	 ed5/t9kq+DyIKBJKZnUy5SYsErRnrv9PAqu8hAPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33ED4F80765;
-	Wed,  2 Oct 2019 07:32:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2116F80C41;
+	Wed,  2 Oct 2019 07:33:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B545AF8075E; Wed,  2 Oct 2019 07:32:57 +0200 (CEST)
+ id 875C0F80C41; Wed,  2 Oct 2019 07:33:56 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 00200F8075E
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:32:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00200F8075E
-Date: 02 Oct 2019 14:32:51 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857410"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:32:51 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id A308FF80C25
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:33:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A308FF80C25
+Date: 02 Oct 2019 14:33:50 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857518"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:33:50 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5523A41AC467;
- Wed,  2 Oct 2019 14:32:51 +0900 (JST)
-Message-ID: <874l0raf0c.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6CDA24004953;
+ Wed,  2 Oct 2019 14:33:50 +0900 (JST)
+Message-ID: <87o8yz90e9.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +58,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 18/44] ASoC: sprd: sprd-pcm-dma: remove
-	snd_pcm_ops
+Subject: [alsa-devel] [PATCH 29/44] ASoC: pxa: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,192 +84,256 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sprd/sprd-pcm-dma.c | 74 +++++++++++++++++++------------------------
- 1 file changed, 32 insertions(+), 42 deletions(-)
+ include/sound/pxa2xx-lib.h  | 26 +++++++++++++--
+ sound/arm/pxa2xx-pcm-lib.c  | 80 +++++++++++++++++++++++++++++++++++++--------
+ sound/soc/pxa/pxa-ssp.c     | 14 ++++++--
+ sound/soc/pxa/pxa2xx-ac97.c | 14 ++++++--
+ sound/soc/pxa/pxa2xx-i2s.c  | 14 ++++++--
+ sound/soc/pxa/pxa2xx-pcm.c  | 14 ++++++--
+ 6 files changed, 135 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-index d38ebbb..da4b8f5 100644
---- a/sound/soc/sprd/sprd-pcm-dma.c
-+++ b/sound/soc/sprd/sprd-pcm-dma.c
-@@ -46,12 +46,10 @@ static const struct snd_pcm_hardware sprd_pcm_hardware = {
- 	.buffer_bytes_max = 64 * 1024,
- };
+diff --git a/include/sound/pxa2xx-lib.h b/include/sound/pxa2xx-lib.h
+index 6758fc1..0feaf16 100644
+--- a/include/sound/pxa2xx-lib.h
++++ b/include/sound/pxa2xx-lib.h
+@@ -10,6 +10,7 @@ struct snd_pcm_substream;
+ struct snd_pcm_hw_params;
+ struct snd_soc_pcm_runtime;
+ struct snd_pcm;
++struct snd_soc_component;
  
--static int sprd_pcm_open(struct snd_pcm_substream *substream)
-+static int sprd_pcm_open(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct device *dev = component->dev;
- 	struct sprd_pcm_dma_private *dma_private;
- 	int hw_chan = SPRD_PCM_CHANNEL_MAX;
-@@ -111,13 +109,11 @@ static int sprd_pcm_open(struct snd_pcm_substream *substream)
- 	return ret;
+ extern int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params);
+@@ -23,8 +24,29 @@ extern int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
+ 	struct vm_area_struct *vma);
+ extern int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream);
+ extern void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm);
+-extern int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd);
+-extern const struct snd_pcm_ops pxa2xx_pcm_ops;
++extern void pxa2xx_soc_pcm_free(struct snd_soc_component *component,
++				struct snd_pcm *pcm);
++extern int pxa2xx_soc_pcm_new(struct snd_soc_component *component,
++			      struct snd_soc_pcm_runtime *rtd);
++extern int pxa2xx_soc_pcm_open(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_close(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_hw_params(struct snd_soc_component *component,
++				    struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params);
++extern int pxa2xx_soc_pcm_hw_free(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_prepare(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_trigger(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream, int cmd);
++extern snd_pcm_uframes_t
++pxa2xx_soc_pcm_pointer(struct snd_soc_component *component,
++		       struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_mmap(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream,
++			       struct vm_area_struct *vma);
+ 
+ /* AC97 */
+ 
+diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
+index 54500bd..a86c95d 100644
+--- a/sound/arm/pxa2xx-pcm-lib.c
++++ b/sound/arm/pxa2xx-pcm-lib.c
+@@ -175,7 +175,15 @@ void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
  }
+ EXPORT_SYMBOL(pxa2xx_pcm_free_dma_buffers);
  
--static int sprd_pcm_close(struct snd_pcm_substream *substream)
-+static int sprd_pcm_close(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct device *dev = component->dev;
- 	int size = runtime->hw.periods_max * SPRD_PCM_DMA_LINKLIST_SIZE;
- 	int i;
-@@ -157,14 +153,12 @@ static void sprd_pcm_release_dma_channel(struct snd_pcm_substream *substream)
- 	}
- }
- 
--static int sprd_pcm_request_dma_channel(struct snd_pcm_substream *substream,
-+static int sprd_pcm_request_dma_channel(struct snd_soc_component *component,
-+					struct snd_pcm_substream *substream,
- 					int channels)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct device *dev = component->dev;
- 	struct sprd_pcm_dma_params *dma_params = dma_private->params;
- 	int i;
-@@ -190,14 +184,13 @@ static int sprd_pcm_request_dma_channel(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int sprd_pcm_hw_params(struct snd_pcm_substream *substream,
-+static int sprd_pcm_hw_params(struct snd_soc_component *component,
-+			      struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct sprd_pcm_dma_params *dma_params;
- 	size_t totsize = params_buffer_bytes(params);
- 	size_t period = params_period_bytes(params);
-@@ -218,7 +211,8 @@ static int sprd_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- 	if (!dma_private->params) {
- 		dma_private->params = dma_params;
--		ret = sprd_pcm_request_dma_channel(substream, channels);
-+		ret = sprd_pcm_request_dma_channel(component,
-+						   substream, channels);
- 		if (ret)
- 			return ret;
- 	}
-@@ -313,7 +307,8 @@ static int sprd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static int sprd_pcm_hw_free(struct snd_pcm_substream *substream)
-+static int sprd_pcm_hw_free(struct snd_soc_component *component,
-+			    struct snd_pcm_substream *substream)
- {
- 	snd_pcm_set_runtime_buffer(substream, NULL);
- 	sprd_pcm_release_dma_channel(substream);
-@@ -321,13 +316,11 @@ static int sprd_pcm_hw_free(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int sprd_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int sprd_pcm_trigger(struct snd_soc_component *component,
-+			    struct snd_pcm_substream *substream, int cmd)
- {
- 	struct sprd_pcm_dma_private *dma_private =
- 		substream->runtime->private_data;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	int ret = 0, i;
- 
- 	switch (cmd) {
-@@ -387,13 +380,11 @@ static int sprd_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--static snd_pcm_uframes_t sprd_pcm_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t sprd_pcm_pointer(struct snd_soc_component *component,
-+					  struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct sprd_pcm_dma_private *dma_private = runtime->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	int pointer[SPRD_PCM_CHANNEL_MAX];
- 	int bytes_of_pointer = 0, sel_max = 0, i;
- 	snd_pcm_uframes_t x;
-@@ -444,7 +435,8 @@ static snd_pcm_uframes_t sprd_pcm_pointer(struct snd_pcm_substream *substream)
- 	return x;
- }
- 
--static int sprd_pcm_mmap(struct snd_pcm_substream *substream,
-+static int sprd_pcm_mmap(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *substream,
- 			 struct vm_area_struct *vma)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -456,18 +448,8 @@ static int sprd_pcm_mmap(struct snd_pcm_substream *substream,
- 			       vma->vm_page_prot);
- }
- 
--static struct snd_pcm_ops sprd_pcm_ops = {
--	.open = sprd_pcm_open,
--	.close = sprd_pcm_close,
--	.ioctl = snd_pcm_lib_ioctl,
--	.hw_params = sprd_pcm_hw_params,
--	.hw_free = sprd_pcm_hw_free,
--	.trigger = sprd_pcm_trigger,
--	.pointer = sprd_pcm_pointer,
--	.mmap = sprd_pcm_mmap,
--};
--
--static int sprd_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int sprd_pcm_new(struct snd_soc_component *component,
-+			struct snd_soc_pcm_runtime *rtd)
+-int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
++void pxa2xx_soc_pcm_free(struct snd_soc_component *component,
++			 struct snd_pcm *pcm)
++{
++	pxa2xx_pcm_free_dma_buffers(pcm);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_free);
++
++int pxa2xx_soc_pcm_new(struct snd_soc_component *component,
++		       struct snd_soc_pcm_runtime *rtd)
  {
  	struct snd_card *card = rtd->card->snd_card;
  	struct snd_pcm *pcm = rtd->pcm;
-@@ -506,7 +488,8 @@ static int sprd_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
+@@ -203,18 +211,64 @@ int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
  }
+ EXPORT_SYMBOL(pxa2xx_soc_pcm_new);
  
--static void sprd_pcm_free(struct snd_pcm *pcm)
-+static void sprd_pcm_free(struct snd_soc_component *component,
-+			  struct snd_pcm *pcm)
- {
- 	struct snd_pcm_substream *substream;
- 	int i;
-@@ -523,10 +506,17 @@ static void sprd_pcm_free(struct snd_pcm *pcm)
+-const struct snd_pcm_ops pxa2xx_pcm_ops = {
+-	.open		= pxa2xx_pcm_open,
+-	.close		= pxa2xx_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= pxa2xx_pcm_hw_params,
+-	.hw_free	= pxa2xx_pcm_hw_free,
+-	.prepare	= pxa2xx_pcm_prepare,
+-	.trigger	= pxa2xx_pcm_trigger,
+-	.pointer	= pxa2xx_pcm_pointer,
+-	.mmap		= pxa2xx_pcm_mmap,
+-};
+-EXPORT_SYMBOL(pxa2xx_pcm_ops);
++int pxa2xx_soc_pcm_open(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_open(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_open);
++
++int pxa2xx_soc_pcm_close(struct snd_soc_component *component,
++			 struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_close(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_close);
++
++int pxa2xx_soc_pcm_hw_params(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	return pxa2xx_pcm_hw_params(substream, params);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_hw_params);
++
++int pxa2xx_soc_pcm_hw_free(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_hw_free(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_hw_free);
++
++int pxa2xx_soc_pcm_prepare(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_prepare(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_prepare);
++
++int pxa2xx_soc_pcm_trigger(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream, int cmd)
++{
++	return pxa2xx_pcm_trigger(substream, cmd);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_trigger);
++
++snd_pcm_uframes_t
++pxa2xx_soc_pcm_pointer(struct snd_soc_component *component,
++		       struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_pointer(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_pointer);
++
++int pxa2xx_soc_pcm_mmap(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream,
++			struct vm_area_struct *vma)
++{
++	return pxa2xx_pcm_mmap(substream, vma);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_mmap);
  
- static const struct snd_soc_component_driver sprd_soc_component = {
- 	.name		= DRV_NAME,
--	.ops		= &sprd_pcm_ops,
-+	.open		= sprd_pcm_open,
-+	.close		= sprd_pcm_close,
+ MODULE_AUTHOR("Nicolas Pitre");
+ MODULE_DESCRIPTION("Intel PXA2xx sound library");
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 5fdd1a2..49cb3ba 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -869,9 +869,17 @@ static struct snd_soc_dai_driver pxa_ssp_dai = {
+ 
+ static const struct snd_soc_component_driver pxa_ssp_component = {
+ 	.name		= "pxa-ssp",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
 +	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.hw_params	= sprd_pcm_hw_params,
-+	.hw_free	= sprd_pcm_hw_free,
-+	.trigger	= sprd_pcm_trigger,
-+	.pointer	= sprd_pcm_pointer,
-+	.mmap		= sprd_pcm_mmap,
-+	.pcm_construct	= sprd_pcm_new,
-+	.pcm_destruct	= sprd_pcm_free,
- 	.compr_ops	= &sprd_platform_compr_ops,
--	.pcm_new	= sprd_pcm_new,
--	.pcm_free	= sprd_pcm_free,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
  };
  
- static int sprd_soc_platform_probe(struct platform_device *pdev)
+ #ifdef CONFIG_OF
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index bf28187..31e81a6 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -204,9 +204,17 @@ static struct snd_soc_dai_driver pxa_ac97_dai_driver[] = {
+ 
+ static const struct snd_soc_component_driver pxa_ac97_component = {
+ 	.name		= "pxa-ac97",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
+ };
+ 
+ #ifdef CONFIG_OF
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 9f7fb73..e77d707 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -360,9 +360,17 @@ static struct snd_soc_dai_driver pxa_i2s_dai = {
+ 
+ static const struct snd_soc_component_driver pxa_i2s_component = {
+ 	.name		= "pxa-i2s",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
+ };
+ 
+ static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 74b56fa..07b3455 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -18,9 +18,17 @@
+ #include <sound/dmaengine_pcm.h>
+ 
+ static const struct snd_soc_component_driver pxa2xx_soc_platform = {
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
+ };
+ 
+ static int pxa2xx_soc_platform_probe(struct platform_device *pdev)
 -- 
 2.7.4
 
