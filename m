@@ -2,55 +2,56 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B5F3ECE58B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DB86C35280
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:07:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED49821906
+	by mail.kernel.org (Postfix) with ESMTPS id DC970215EA
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:07:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kaq8CbrI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED49821906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jBa0fNz+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC970215EA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4466C168B;
-	Wed,  2 Oct 2019 07:47:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4466C168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3589016B5;
+	Wed,  2 Oct 2019 07:56:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3589016B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569995303;
-	bh=eWL9wVHzjxoKH5UWvUvfDwSVYID6CS970HgZxgnD8ds=;
+	s=default; t=1569995849;
+	bh=iCHJMbupG4J4mHCvAiirh3UHEsEWVCXq4ZQEHP1OX4o=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kaq8CbrIZyuxcG62XqJoFdupv8tsOV3YzdOVuXMytwpEMvZAp3tf2TZP9TUdHoxhb
-	 QL9IbQWuCb3kw5peT4GIlaFKYExPHZIfw14mbkAEqiPp2/lv+9vhR2NXXwDTLXusfT
-	 hhr2mdOotg3ymlEJwDA+0SIVGClwb/irsi0dzW0Q=
+	b=jBa0fNz+FSRdBS5nF948GxHRbcIiqgzuW5U37e+a7ZSjSZUKtvD5/i6cvJUmbi3kP
+	 Ho1aNDhgAb6D4OibDFs2Jdqjliila3bxKgQjdLFYUnSSaj+hrd16Z4AAfTzoyKuKy3
+	 q/Ypt2zxkXxcBWPYSC5V0f7Tuj9y8REZQx1IuIbE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D136FF807B6;
-	Wed,  2 Oct 2019 07:33:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 431CBF8063C;
+	Wed,  2 Oct 2019 07:34:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7C25F80859; Wed,  2 Oct 2019 07:33:20 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E1B01F807CA
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:33:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1B01F807CA
-Date: 02 Oct 2019 14:33:16 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076343"
+ id E0E66F89630; Wed,  2 Oct 2019 07:34:30 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1DDD6F8962D
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:34:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DDD6F8962D
+Date: 02 Oct 2019 14:34:24 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857580"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:33:16 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:34:24 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id AEDFF4007F28;
- Wed,  2 Oct 2019 14:33:16 +0900 (JST)
-Message-ID: <87wodn90f7.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D5EBB4007F28;
+ Wed,  2 Oct 2019 14:34:24 +0900 (JST)
+Message-ID: <87eezv90db.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +59,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 23/44] ASoC: sh: siu_pcm: remove snd_pcm_ops
+Subject: [alsa-devel] [PATCH 36/44] ASoC: bcm: cygnus-pcm: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,135 +85,146 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/siu_pcm.c | 44 ++++++++++++++++++++++++--------------------
- 1 file changed, 24 insertions(+), 20 deletions(-)
+ sound/soc/bcm/cygnus-pcm.c | 56 +++++++++++++++++++++++++---------------------
+ 1 file changed, 30 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index 78c3145..a5e21e5 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -281,7 +281,8 @@ static int siu_pcm_stmread_stop(struct siu_port *port_info)
+diff --git a/sound/soc/bcm/cygnus-pcm.c b/sound/soc/bcm/cygnus-pcm.c
+index 8966b02..c654080 100644
+--- a/sound/soc/bcm/cygnus-pcm.c
++++ b/sound/soc/bcm/cygnus-pcm.c
+@@ -376,7 +376,8 @@ static void disable_intr(struct snd_pcm_substream *substream)
+ 
+ }
+ 
+-static int cygnus_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int cygnus_pcm_trigger(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream, int cmd)
+ {
+ 	int ret = 0;
+ 
+@@ -577,7 +578,8 @@ static irqreturn_t cygnus_dma_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int cygnus_pcm_open(struct snd_pcm_substream *substream)
++static int cygnus_pcm_open(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -613,7 +615,8 @@ static int cygnus_pcm_open(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static int siu_pcm_hw_params(struct snd_pcm_substream *ss,
-+static int siu_pcm_hw_params(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *ss,
- 			     struct snd_pcm_hw_params *hw_params)
+-static int cygnus_pcm_close(struct snd_pcm_substream *substream)
++static int cygnus_pcm_close(struct snd_soc_component *component,
++			    struct snd_pcm_substream *substream)
  {
- 	struct siu_info *info = siu_i2s_data;
-@@ -297,7 +298,8 @@ static int siu_pcm_hw_params(struct snd_pcm_substream *ss,
- 	return ret;
- }
- 
--static int siu_pcm_hw_free(struct snd_pcm_substream *ss)
-+static int siu_pcm_hw_free(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *ss)
- {
- 	struct siu_info *info = siu_i2s_data;
- 	struct siu_port	*port_info = siu_port_info(ss);
-@@ -324,11 +326,10 @@ static bool filter(struct dma_chan *chan, void *slave)
- 	return true;
- }
- 
--static int siu_pcm_open(struct snd_pcm_substream *ss)
-+static int siu_pcm_open(struct snd_soc_component *component,
-+			struct snd_pcm_substream *ss)
- {
- 	/* Playback / Capture */
--	struct snd_soc_pcm_runtime *rtd = ss->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct siu_platform *pdata = component->dev->platform_data;
- 	struct siu_info *info = siu_i2s_data;
- 	struct siu_port *port_info = siu_port_info(ss);
-@@ -367,7 +368,8 @@ static int siu_pcm_open(struct snd_pcm_substream *ss)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct cygnus_aio_port *aio;
+@@ -633,8 +636,9 @@ static int cygnus_pcm_close(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static int siu_pcm_close(struct snd_pcm_substream *ss)
-+static int siu_pcm_close(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *ss)
+-static int cygnus_pcm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
++static int cygnus_pcm_hw_params(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
  {
- 	struct siu_info *info = siu_i2s_data;
- 	struct device *dev = ss->pcm->card->dev;
-@@ -389,7 +391,8 @@ static int siu_pcm_close(struct snd_pcm_substream *ss)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -649,7 +653,8 @@ static int cygnus_pcm_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
--static int siu_pcm_prepare(struct snd_pcm_substream *ss)
-+static int siu_pcm_prepare(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *ss)
+-static int cygnus_pcm_hw_free(struct snd_pcm_substream *substream)
++static int cygnus_pcm_hw_free(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream)
  {
- 	struct siu_info *info = siu_i2s_data;
- 	struct siu_port *port_info = siu_port_info(ss);
-@@ -435,7 +438,8 @@ static int siu_pcm_prepare(struct snd_pcm_substream *ss)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct cygnus_aio_port *aio;
+@@ -661,7 +666,8 @@ static int cygnus_pcm_hw_free(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static int siu_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
-+static int siu_pcm_trigger(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *ss, int cmd)
+-static int cygnus_pcm_prepare(struct snd_pcm_substream *substream)
++static int cygnus_pcm_prepare(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream)
  {
- 	struct siu_info *info = siu_i2s_data;
- 	struct device *dev = ss->pcm->card->dev;
-@@ -477,7 +481,9 @@ static int siu_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
-  * So far only resolution of one period is supported, subject to extending the
-  * dmangine API
-  */
--static snd_pcm_uframes_t siu_pcm_pointer_dma(struct snd_pcm_substream *ss)
-+static snd_pcm_uframes_t
-+siu_pcm_pointer_dma(struct snd_soc_component *component,
-+		    struct snd_pcm_substream *ss)
- {
- 	struct device *dev = ss->pcm->card->dev;
- 	struct siu_info *info = siu_i2s_data;
-@@ -512,7 +518,8 @@ static snd_pcm_uframes_t siu_pcm_pointer_dma(struct snd_pcm_substream *ss)
- 	return bytes_to_frames(ss->runtime, ptr);
- }
- 
--static int siu_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int siu_pcm_new(struct snd_soc_component *component,
-+		       struct snd_soc_pcm_runtime *rtd)
- {
- 	/* card->dev == socdev->dev, see snd_soc_new_pcms() */
- 	struct snd_card *card = rtd->card->snd_card;
-@@ -558,7 +565,8 @@ static int siu_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -694,7 +700,8 @@ static int cygnus_pcm_prepare(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static void siu_pcm_free(struct snd_pcm *pcm)
-+static void siu_pcm_free(struct snd_soc_component *component,
-+			 struct snd_pcm *pcm)
+-static snd_pcm_uframes_t cygnus_pcm_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t cygnus_pcm_pointer(struct snd_soc_component *component,
++					    struct snd_pcm_substream *substream)
  {
- 	struct platform_device *pdev = to_platform_device(pcm->card->dev);
- 	struct siu_port *port_info = siu_ports[pdev->id];
-@@ -571,21 +579,17 @@ static void siu_pcm_free(struct snd_pcm *pcm)
- 	dev_dbg(pcm->card->dev, "%s\n", __func__);
+ 	struct cygnus_aio_port *aio;
+ 	unsigned int res = 0, cur = 0, base = 0;
+@@ -750,19 +757,8 @@ static int cygnus_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
+ 	return 0;
  }
  
--static const struct snd_pcm_ops siu_pcm_ops = {
-+struct const snd_soc_component_driver siu_component = {
-+	.name		= DRV_NAME,
- 	.open		= siu_pcm_open,
- 	.close		= siu_pcm_close,
+-
+-static const struct snd_pcm_ops cygnus_pcm_ops = {
+-	.open		= cygnus_pcm_open,
+-	.close		= cygnus_pcm_close,
 -	.ioctl		= snd_pcm_lib_ioctl,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= siu_pcm_hw_params,
- 	.hw_free	= siu_pcm_hw_free,
- 	.prepare	= siu_pcm_prepare,
- 	.trigger	= siu_pcm_trigger,
- 	.pointer	= siu_pcm_pointer_dma,
+-	.hw_params	= cygnus_pcm_hw_params,
+-	.hw_free	= cygnus_pcm_hw_free,
+-	.prepare	= cygnus_pcm_prepare,
+-	.trigger	= cygnus_pcm_trigger,
+-	.pointer	= cygnus_pcm_pointer,
 -};
 -
--struct snd_soc_component_driver siu_component = {
--	.name		= DRV_NAME,
--	.ops			= &siu_pcm_ops,
--	.pcm_new	= siu_pcm_new,
--	.pcm_free	= siu_pcm_free,
-+	.pcm_construct	= siu_pcm_new,
-+	.pcm_destruct	= siu_pcm_free,
+-static void cygnus_dma_free_dma_buffers(struct snd_pcm *pcm)
++static void cygnus_dma_free_dma_buffers(struct snd_soc_component *component,
++					struct snd_pcm *pcm)
+ {
+ 	struct snd_pcm_substream *substream;
+ 	struct snd_dma_buffer *buf;
+@@ -788,7 +784,8 @@ static void cygnus_dma_free_dma_buffers(struct snd_pcm *pcm)
+ 	}
+ }
+ 
+-static int cygnus_dma_new(struct snd_soc_pcm_runtime *rtd)
++static int cygnus_dma_new(struct snd_soc_component *component,
++			  struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+@@ -810,7 +807,7 @@ static int cygnus_dma_new(struct snd_soc_pcm_runtime *rtd)
+ 		ret = cygnus_pcm_preallocate_dma_buffer(pcm,
+ 				SNDRV_PCM_STREAM_CAPTURE);
+ 		if (ret) {
+-			cygnus_dma_free_dma_buffers(pcm);
++			cygnus_dma_free_dma_buffers(component, pcm);
+ 			return ret;
+ 		}
+ 	}
+@@ -819,9 +816,16 @@ static int cygnus_dma_new(struct snd_soc_pcm_runtime *rtd)
+ }
+ 
+ static struct snd_soc_component_driver cygnus_soc_platform = {
+-	.ops		= &cygnus_pcm_ops,
+-	.pcm_new	= cygnus_dma_new,
+-	.pcm_free	= cygnus_dma_free_dma_buffers,
++	.open		= cygnus_pcm_open,
++	.close		= cygnus_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= cygnus_pcm_hw_params,
++	.hw_free	= cygnus_pcm_hw_free,
++	.prepare	= cygnus_pcm_prepare,
++	.trigger	= cygnus_pcm_trigger,
++	.pointer	= cygnus_pcm_pointer,
++	.pcm_construct	= cygnus_dma_new,
++	.pcm_destruct	= cygnus_dma_free_dma_buffers,
  };
- EXPORT_SYMBOL_GPL(siu_component);
+ 
+ int cygnus_soc_platform_register(struct device *dev,
 -- 
 2.7.4
 
