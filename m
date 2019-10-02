@@ -2,56 +2,55 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 334EEECE58B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59A28ECE58C
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:17:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5898205C9
+	by mail.kernel.org (Postfix) with ESMTPS id D1A2D2190F
 	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:17:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gc7i4uRW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5898205C9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nKN3amde"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1A2D2190F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36CA8169A;
-	Wed,  2 Oct 2019 07:39:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36CA8169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FC471657;
+	Wed,  2 Oct 2019 07:39:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FC471657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569994842;
-	bh=XPGc34ggVBJuVe/wGuOfWWSJMoOObscHhzDlIj3AUqc=;
+	s=default; t=1569994807;
+	bh=/zjmANJYN3sWvKf6WFJxB1JLqTrG5+/ysX9sVjpTq7c=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gc7i4uRWyKXfuMdmIvVahrZ+lJ7bonG4sTvzrgX0x5ohKxd6m7RnMGkmaP0AiiexA
-	 rEPk+KdgedmQpX1dcyKY7lc2MALzLPawmGm6GM7RXPmdyGJdo7C3qxKdBaivkYrAzF
-	 XzJsXRGlxPXRDQCJSoZiBST9zUq0xz2/G/9uXB0w=
+	b=nKN3amdeNfB02mMbPB4hPrk97Awgl4KE5RYLUYMX3H5QoSwXIS7ONrhNspKdjbwsU
+	 63ESxEcSk3NdmHdO1tYgnyvZ2s5ch0/xvFCjbbWmtjwk/pSEuESPm9cJECtfVy8Phu
+	 W61eA2J1pM/bXRRe0Tn6tPBUIiYiB7Glb7u/0Rq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 832C7F80715;
-	Wed,  2 Oct 2019 07:32:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6F73F8070C;
+	Wed,  2 Oct 2019 07:32:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1D8FF80716; Wed,  2 Oct 2019 07:32:28 +0200 (CEST)
+ id A761CF8070D; Wed,  2 Oct 2019 07:32:23 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 526DCF80714
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:32:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 526DCF80714
-Date: 02 Oct 2019 14:32:23 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076266"
+ by alsa1.perex.cz (Postfix) with ESMTP id 6423CF8070B
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:32:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6423CF8070B
+Date: 02 Oct 2019 14:32:13 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076233"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:32:23 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:32:13 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D9F274004BA5;
- Wed,  2 Oct 2019 14:32:23 +0900 (JST)
-Message-ID: <87d0ffaf14.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id EE92C4007F28;
+ Wed,  2 Oct 2019 14:32:12 +0900 (JST)
+Message-ID: <87eezvaf1f.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +58,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 13/44] ASoC: xtensa: xtfpga-i2s: remove
-	snd_pcm_ops
+Subject: [alsa-devel] [PATCH 12/44] ASoC: au1x: dma: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,95 +84,144 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+ sound/soc/au1x/dma.c | 63 +++++++++++++++++++++++++++-------------------------
+ 1 file changed, 33 insertions(+), 30 deletions(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index efd374f..e08f4fe 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -365,7 +365,8 @@ static const struct snd_pcm_hardware xtfpga_pcm_hardware = {
- 	.fifo_size		= 16,
+diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+index 1e98cc4..49556eb 100644
+--- a/sound/soc/au1x/dma.c
++++ b/sound/soc/au1x/dma.c
+@@ -174,22 +174,23 @@ static const struct snd_pcm_hardware alchemy_pcm_hardware = {
+ 	.fifo_size	  = 16,
  };
  
--static int xtfpga_pcm_open(struct snd_pcm_substream *substream)
-+static int xtfpga_pcm_open(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
+-static inline struct alchemy_pcm_ctx *ss_to_ctx(struct snd_pcm_substream *ss)
++static inline struct alchemy_pcm_ctx *ss_to_ctx(struct snd_pcm_substream *ss,
++						struct snd_soc_component *component)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -378,13 +379,15 @@ static int xtfpga_pcm_open(struct snd_pcm_substream *substream)
- 	return 0;
+-	struct snd_soc_pcm_runtime *rtd = ss->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	return snd_soc_component_get_drvdata(component);
  }
  
--static int xtfpga_pcm_close(struct snd_pcm_substream *substream)
-+static int xtfpga_pcm_close(struct snd_soc_component *component,
+-static inline struct audio_stream *ss_to_as(struct snd_pcm_substream *ss)
++static inline struct audio_stream *ss_to_as(struct snd_pcm_substream *ss,
++					    struct snd_soc_component *component)
+ {
+-	struct alchemy_pcm_ctx *ctx = ss_to_ctx(ss);
++	struct alchemy_pcm_ctx *ctx = ss_to_ctx(ss, component);
+ 	return &(ctx->stream[ss->stream]);
+ }
+ 
+-static int alchemy_pcm_open(struct snd_pcm_substream *substream)
++static int alchemy_pcm_open(struct snd_soc_component *component,
 +			    struct snd_pcm_substream *substream)
  {
- 	synchronize_rcu();
+-	struct alchemy_pcm_ctx *ctx = ss_to_ctx(substream);
++	struct alchemy_pcm_ctx *ctx = ss_to_ctx(substream, component);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	int *dmaids, s = substream->stream;
+ 	char *name;
+@@ -213,9 +214,10 @@ static int alchemy_pcm_open(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static int xtfpga_pcm_hw_params(struct snd_pcm_substream *substream,
-+static int xtfpga_pcm_hw_params(struct snd_soc_component *component,
-+				struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *hw_params)
+-static int alchemy_pcm_close(struct snd_pcm_substream *substream)
++static int alchemy_pcm_close(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream)
  {
- 	int ret;
-@@ -424,7 +427,8 @@ static int xtfpga_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
+-	struct alchemy_pcm_ctx *ctx = ss_to_ctx(substream);
++	struct alchemy_pcm_ctx *ctx = ss_to_ctx(substream, component);
+ 	int stype = substream->stream;
  
--static int xtfpga_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int xtfpga_pcm_trigger(struct snd_soc_component *component,
-+			      struct snd_pcm_substream *substream, int cmd)
- {
- 	int ret = 0;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -452,7 +456,8 @@ static int xtfpga_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--static snd_pcm_uframes_t xtfpga_pcm_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t xtfpga_pcm_pointer(struct snd_soc_component *component,
-+					    struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct xtfpga_i2s *i2s = runtime->private_data;
-@@ -461,7 +466,8 @@ static snd_pcm_uframes_t xtfpga_pcm_pointer(struct snd_pcm_substream *substream)
- 	return pos < runtime->buffer_size ? pos : 0;
- }
- 
--static int xtfpga_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int xtfpga_pcm_new(struct snd_soc_component *component,
-+			  struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_card *card = rtd->card->snd_card;
- 	size_t size = xtfpga_pcm_hardware.buffer_bytes_max;
-@@ -471,19 +477,15 @@ static int xtfpga_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	ctx->stream[stype].substream = NULL;
+@@ -224,10 +226,11 @@ static int alchemy_pcm_close(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static const struct snd_pcm_ops xtfpga_pcm_ops = {
-+static const struct snd_soc_component_driver xtfpga_i2s_component = {
-+	.name		= DRV_NAME,
- 	.open		= xtfpga_pcm_open,
- 	.close		= xtfpga_pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= xtfpga_pcm_hw_params,
- 	.trigger	= xtfpga_pcm_trigger,
- 	.pointer	= xtfpga_pcm_pointer,
+-static int alchemy_pcm_hw_params(struct snd_pcm_substream *substream,
++static int alchemy_pcm_hw_params(struct snd_soc_component *component,
++				 struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *hw_params)
+ {
+-	struct audio_stream *stream = ss_to_as(substream);
++	struct audio_stream *stream = ss_to_as(substream, component);
+ 	int err;
+ 
+ 	err = snd_pcm_lib_malloc_pages(substream,
+@@ -243,16 +246,18 @@ static int alchemy_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return err;
+ }
+ 
+-static int alchemy_pcm_hw_free(struct snd_pcm_substream *substream)
++static int alchemy_pcm_hw_free(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream)
+ {
+-	struct audio_stream *stream = ss_to_as(substream);
++	struct audio_stream *stream = ss_to_as(substream, component);
+ 	au1000_release_dma_link(stream);
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-static int alchemy_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int alchemy_pcm_trigger(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream, int cmd)
+ {
+-	struct audio_stream *stream = ss_to_as(substream);
++	struct audio_stream *stream = ss_to_as(substream, component);
+ 	int err = 0;
+ 
+ 	switch (cmd) {
+@@ -269,9 +274,10 @@ static int alchemy_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return err;
+ }
+ 
+-static snd_pcm_uframes_t alchemy_pcm_pointer(struct snd_pcm_substream *ss)
++static snd_pcm_uframes_t alchemy_pcm_pointer(struct snd_soc_component *component,
++					     struct snd_pcm_substream *ss)
+ {
+-	struct audio_stream *stream = ss_to_as(ss);
++	struct audio_stream *stream = ss_to_as(ss, component);
+ 	long location;
+ 
+ 	location = get_dma_residue(stream->dma);
+@@ -281,17 +287,8 @@ static snd_pcm_uframes_t alchemy_pcm_pointer(struct snd_pcm_substream *ss)
+ 	return bytes_to_frames(ss->runtime, location);
+ }
+ 
+-static const struct snd_pcm_ops alchemy_pcm_ops = {
+-	.open			= alchemy_pcm_open,
+-	.close			= alchemy_pcm_close,
+-	.ioctl			= snd_pcm_lib_ioctl,
+-	.hw_params	        = alchemy_pcm_hw_params,
+-	.hw_free	        = alchemy_pcm_hw_free,
+-	.trigger		= alchemy_pcm_trigger,
+-	.pointer		= alchemy_pcm_pointer,
 -};
 -
--static const struct snd_soc_component_driver xtfpga_i2s_component = {
--	.name		= DRV_NAME,
--	.pcm_new	= xtfpga_pcm_new,
--	.ops		= &xtfpga_pcm_ops,
-+	.pcm_construct	= xtfpga_pcm_new,
+-static int alchemy_pcm_new(struct snd_soc_pcm_runtime *rtd)
++static int alchemy_pcm_new(struct snd_soc_component *component,
++			   struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 
+@@ -303,8 +300,14 @@ static int alchemy_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 
+ static struct snd_soc_component_driver alchemy_pcm_soc_component = {
+ 	.name		= DRV_NAME,
+-	.ops		= &alchemy_pcm_ops,
+-	.pcm_new	= alchemy_pcm_new,
++	.open		= alchemy_pcm_open,
++	.close		= alchemy_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= alchemy_pcm_hw_params,
++	.hw_free	= alchemy_pcm_hw_free,
++	.trigger	= alchemy_pcm_trigger,
++	.pointer	= alchemy_pcm_pointer,
++	.pcm_construct	= alchemy_pcm_new,
  };
  
- static const struct snd_soc_dai_ops xtfpga_i2s_dai_ops = {
+ static int alchemy_pcm_drvprobe(struct platform_device *pdev)
 -- 
 2.7.4
 
