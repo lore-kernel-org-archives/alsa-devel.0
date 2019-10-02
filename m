@@ -2,56 +2,55 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 836E0C35280
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:27:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CCDCC352AA
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:28:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F03E9215EA
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:27:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B867C215EA
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 05:28:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CxBUBFeU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F03E9215EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WYttJXHL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B867C215EA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F8BE168B;
-	Wed,  2 Oct 2019 07:26:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F8BE168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD6C167E;
+	Wed,  2 Oct 2019 07:27:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD6C167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569994045;
-	bh=mmb4bhsChJ+7NdxwbVqF0z8to/GTS44rqaPIED61xYs=;
+	s=default; t=1569994087;
+	bh=gFxD8zjNNeqWN8pewp+tO2c+VaxpWEgCVyrkqQiXHv4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CxBUBFeUhnb8KhHsoK1K3teIPmzwX46NJ+wKos2eWuCYxHXuDFio1uN+8NfZnqi5w
-	 2JKFbD4ploBeRXi8Oz69/OgpfdWYIzBNhHzm+t4x8EshiZJ2sYvj7jFaCIcV/Aqks8
-	 1ETRJNxRLVCnHvsmJzbSUfYKpUKOQfuWGgki/7Go=
+	b=WYttJXHLtMoreV+Q8lyfJZWF+6nWG8zUbFeSh9Kit+pc0HV7xBTpTz2O5cJ/b+ymX
+	 zzUS6C04j4XHpNPxj92aM6jftOFF0cc/E5vJ/FWWDhGm4b49aLRasdJPWGSopuKUSi
+	 z0eAbB7cushci+QlJEglfypfR3ezekcKf6iV3ih8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EF31F8063E;
-	Wed,  2 Oct 2019 07:23:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29BF9F8065A;
+	Wed,  2 Oct 2019 07:23:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 480EBF80649; Wed,  2 Oct 2019 07:23:13 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D45E0F8063E
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:23:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D45E0F8063E
-Date: 02 Oct 2019 14:23:07 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27856559"
+ id 9BCBFF8065B; Wed,  2 Oct 2019 07:23:20 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 461B3F8064C
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:23:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 461B3F8064C
+Date: 02 Oct 2019 14:23:14 +0900
+X-IronPort-AV: E=Sophos;i="5.64,572,1559487600"; d="scan'208";a="28075485"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:23:07 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:23:14 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9E155400857D;
- Wed,  2 Oct 2019 14:23:07 +0900 (JST)
-Message-ID: <87zhijafgk.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CF09D400857D;
+ Wed,  2 Oct 2019 14:23:14 +0900 (JST)
+Message-ID: <87y2y3afgd.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +58,8 @@ In-Reply-To: <878sq3bu2t.wl-kuninori.morimoto.gx@renesas.com>
 References: <878sq3bu2t.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 5/6] ASoC: soc-core: setup card->rtd_num at
-	snd_soc_instantiate_card()
+Subject: [alsa-devel] [PATCH 6/6] ASoC: soc-ops: use
+	snd_soc_card_get_kcontrol() at snd_soc_limit_volume()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,43 +79,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-card->rtd_num is used to count rtd. Initialize it at
-snd_soc_instantiate_card() is very natural and less confusion.
+snd_soc_limit_volume() is finding snd_kcontrol by using original coding,
+but we already have snd_soc_card_get_kcontrol().
+Let's use existing function.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/soc-ops.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2c2803e..d39d908 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -462,8 +462,6 @@ static void soc_remove_pcm_runtimes(struct snd_soc_card *card)
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index f4dc3d4..652657d 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -592,23 +592,16 @@ EXPORT_SYMBOL_GPL(snd_soc_get_volsw_range);
+ int snd_soc_limit_volume(struct snd_soc_card *card,
+ 	const char *name, int max)
+ {
+-	struct snd_card *snd_card = card->snd_card;
+ 	struct snd_kcontrol *kctl;
+ 	struct soc_mixer_control *mc;
+-	int found = 0;
+ 	int ret = -EINVAL;
  
- 	for_each_card_rtds_safe(card, rtd, _rtd)
- 		soc_free_pcm_runtime(rtd);
--
--	card->num_rtd = 0;
- }
+ 	/* Sanity check for name and max */
+ 	if (unlikely(!name || max <= 0))
+ 		return -EINVAL;
  
- struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
-@@ -2008,6 +2006,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		goto probe_end;
- 
- 	/* add predefined DAI links to the list */
-+	card->num_rtd = 0;
- 	for_each_card_prelinks(card, i, dai_link) {
- 		ret = snd_soc_add_dai_link(card, dai_link);
- 		if (ret < 0)
-@@ -2418,7 +2417,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	INIT_LIST_HEAD(&card->dapm_dirty);
- 	INIT_LIST_HEAD(&card->dobj_list);
- 
--	card->num_rtd = 0;
- 	card->instantiated = 0;
- 	mutex_init(&card->mutex);
- 	mutex_init(&card->dapm_mutex);
+-	list_for_each_entry(kctl, &snd_card->controls, list) {
+-		if (!strncmp(kctl->id.name, name, sizeof(kctl->id.name))) {
+-			found = 1;
+-			break;
+-		}
+-	}
+-	if (found) {
++	kctl = snd_soc_card_get_kcontrol(card, name);
++	if (kctl) {
+ 		mc = (struct soc_mixer_control *)kctl->private_value;
+ 		if (max <= mc->max) {
+ 			mc->platform_max = max;
 -- 
 2.7.4
 
