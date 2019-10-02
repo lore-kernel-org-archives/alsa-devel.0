@@ -2,55 +2,56 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93F08C35280
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 213FDC35280
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12B4521906
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9F90421929
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mOpO5Xpq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12B4521906
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JBKZpyD6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F90421929
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B7EE1730;
-	Wed,  2 Oct 2019 08:01:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B7EE1730
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E557168D;
+	Wed,  2 Oct 2019 07:55:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E557168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569996135;
-	bh=Nz+t2m35Pb9LNBwYQxdJxM/7MqC21ORfeqzD8bUBvtc=;
+	s=default; t=1569995759;
+	bh=JhUr320xObvGjXz9B1OjvUiM7NWEAAbKrJws07uEMr4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mOpO5XpqCeIShVd20/njt3KmwdBicAF/SO6zXdVt2MRVkS4S8c9lzuMAckIO0CfUW
-	 ccPE/zsdPthoX4LYeD2Yn8s2aVoqVU/A6W8FaBoGvZKn7CAGrX8/rUvSXOW1j9w3Ca
-	 h40ej50PaXlWM+jAYGKWIyiQCSAYUQ6WYPLXVqbc=
+	b=JBKZpyD6dVPziuDdNxe2orhNdoJxv/QKIah292Q9UpORHT5XlOj3IPA1b92Wgd6/I
+	 gnHUPUu2juSuFe2MUz0QXU6H5FOwPcehfKBSVkCY6Ewtxstj18jD30HadablPllcUW
+	 gYlWI+qzWewPQWDDLRMtY3U+gqZnbbASOTiZQM7w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA3BAF896E3;
-	Wed,  2 Oct 2019 07:35:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1328CF80CC4;
+	Wed,  2 Oct 2019 07:34:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9474CF896E5; Wed,  2 Oct 2019 07:35:10 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8FE2DF896DF
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:35:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FE2DF896DF
-Date: 02 Oct 2019 14:35:05 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857648"
+ id 8C69FF89619; Wed,  2 Oct 2019 07:34:19 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 38456F80CC4
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:34:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38456F80CC4
+Date: 02 Oct 2019 14:34:15 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076459"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:35:05 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:34:15 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D468341AE7C5;
- Wed,  2 Oct 2019 14:35:05 +0900 (JST)
-Message-ID: <874l0r90c6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C15A341AE04D;
+ Wed,  2 Oct 2019 14:34:15 +0900 (JST)
+Message-ID: <87h84r90dk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +59,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 43/44] ASoC: soc-utils: remove snd_pcm_ops
+Subject: [alsa-devel] [PATCH 34/44] ASoC: dwc: dwc-pcm: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,39 +85,117 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-utils.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/dwc/dwc-pcm.c | 48 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 26 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 54dcece..2fd4562 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -63,7 +63,8 @@ static const struct snd_pcm_hardware dummy_dma_hardware = {
- 	.periods_max		= 128,
- };
+diff --git a/sound/soc/dwc/dwc-pcm.c b/sound/soc/dwc/dwc-pcm.c
+index a9ae91c..de6fcc8 100644
+--- a/sound/soc/dwc/dwc-pcm.c
++++ b/sound/soc/dwc/dwc-pcm.c
+@@ -135,7 +135,8 @@ void dw_pcm_pop_rx(struct dw_i2s_dev *dev)
+ 	dw_pcm_transfer(dev, false);
+ }
  
--static int dummy_dma_open(struct snd_pcm_substream *substream)
-+static int dummy_dma_open(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream)
+-static int dw_pcm_open(struct snd_pcm_substream *substream)
++static int dw_pcm_open(struct snd_soc_component *component,
++		       struct snd_pcm_substream *substream)
  {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 
-@@ -74,13 +75,9 @@ static int dummy_dma_open(struct snd_pcm_substream *substream)
+@@ -148,14 +149,16 @@ static int dw_pcm_open(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static const struct snd_pcm_ops snd_dummy_dma_ops = {
--	.open		= dummy_dma_open,
--	.ioctl		= snd_pcm_lib_ioctl,
+-static int dw_pcm_close(struct snd_pcm_substream *substream)
++static int dw_pcm_close(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream)
+ {
+ 	synchronize_rcu();
+ 	return 0;
+ }
+ 
+-static int dw_pcm_hw_params(struct snd_pcm_substream *substream,
+-		struct snd_pcm_hw_params *hw_params)
++static int dw_pcm_hw_params(struct snd_soc_component *component,
++			    struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct dw_i2s_dev *dev = runtime->private_data;
+@@ -192,12 +195,14 @@ static int dw_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		return 0;
+ }
+ 
+-static int dw_pcm_hw_free(struct snd_pcm_substream *substream)
++static int dw_pcm_hw_free(struct snd_soc_component *component,
++			  struct snd_pcm_substream *substream)
+ {
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-static int dw_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int dw_pcm_trigger(struct snd_soc_component *component,
++			  struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct dw_i2s_dev *dev = runtime->private_data;
+@@ -231,7 +236,8 @@ static int dw_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return ret;
+ }
+ 
+-static snd_pcm_uframes_t dw_pcm_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t dw_pcm_pointer(struct snd_soc_component *component,
++					struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct dw_i2s_dev *dev = runtime->private_data;
+@@ -245,7 +251,8 @@ static snd_pcm_uframes_t dw_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return pos < runtime->buffer_size ? pos : 0;
+ }
+ 
+-static int dw_pcm_new(struct snd_soc_pcm_runtime *rtd)
++static int dw_pcm_new(struct snd_soc_component *component,
++		      struct snd_soc_pcm_runtime *rtd)
+ {
+ 	size_t size = dw_pcm_hardware.buffer_bytes_max;
+ 
+@@ -255,25 +262,22 @@ static int dw_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static void dw_pcm_free(struct snd_pcm *pcm)
++static void dw_pcm_free(struct snd_soc_component *component,
++			struct snd_pcm *pcm)
+ {
+ 	snd_pcm_lib_preallocate_free_for_all(pcm);
+ }
+ 
+-static const struct snd_pcm_ops dw_pcm_ops = {
+-	.open = dw_pcm_open,
+-	.close = dw_pcm_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+-	.hw_params = dw_pcm_hw_params,
+-	.hw_free = dw_pcm_hw_free,
+-	.trigger = dw_pcm_trigger,
+-	.pointer = dw_pcm_pointer,
 -};
 -
- static const struct snd_soc_component_driver dummy_platform = {
--	.ops = &snd_dummy_dma_ops,
-+	.open		= dummy_dma_open,
+ static const struct snd_soc_component_driver dw_pcm_component = {
+-	.pcm_new = dw_pcm_new,
+-	.pcm_free = dw_pcm_free,
+-	.ops = &dw_pcm_ops,
++	.open		= dw_pcm_open,
++	.close		= dw_pcm_close,
 +	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= dw_pcm_hw_params,
++	.hw_free	= dw_pcm_hw_free,
++	.trigger	= dw_pcm_trigger,
++	.pointer	= dw_pcm_pointer,
++	.pcm_construct	= dw_pcm_new,
++	.pcm_destruct	= dw_pcm_free,
  };
  
- static const struct snd_soc_component_driver dummy_codec = {
+ int dw_pcm_register(struct platform_device *pdev)
 -- 
 2.7.4
 
