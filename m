@@ -2,56 +2,55 @@ Return-Path: <SRS0=2KR+=X3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3297AECE58E
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D6B4ECE597
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB681222C0
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D60E4222C5
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Oct 2019 06:02:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tLrkgzkX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB681222C0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AqCO/Hi0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D60E4222C5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8668D1684;
-	Wed,  2 Oct 2019 07:43:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8668D1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BF5F16AF;
+	Wed,  2 Oct 2019 07:52:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BF5F16AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1569995048;
-	bh=zHw+Q0r77fkqdDXaRqwSHdB1wEQOM7mxPw/GKj1S6gI=;
+	s=default; t=1569995592;
+	bh=AaFZiYDE+3LVHZHiGXY3329C7sRtIeR3MQd/ZPF+LeE=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tLrkgzkXMvi8GUWKJV2RCnVXpBSm0M79gXFXXxDiWHT1J87QOjO5JYmde1rLduBaY
-	 9WogWb8YQtdYH8w7oBYPpWagZ4yJFsdiHm+18APpePxknjjG3wDEsr3Se8Wmuw40Q6
-	 a7YhZ7R03R68ZKWljeZLZZV4Tk64RckCBIg81UZ0=
+	b=AqCO/Hi0BGB8aGQK6KTXrrmMbjJXyxONBR6ODoHdn0YqST7mCSCclPgGFBsmnAwXS
+	 bGazh9lPY5FmACvok7QOyh0762YW6KPXOmfsGGfS3dOL+mUr0AggzO7bMVNjaMRd0s
+	 KufqhFQj4DWhoQ+R5fZOcalZXk1S1r4xamhi4/Mc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35F68F80737;
-	Wed,  2 Oct 2019 07:32:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B36EBF80CAA;
+	Wed,  2 Oct 2019 07:34:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AEB2DF8075B; Wed,  2 Oct 2019 07:32:51 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E80C5F80737
- for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:32:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E80C5F80737
-Date: 02 Oct 2019 14:32:46 +0900
-X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="28076304"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 02 Oct 2019 14:32:46 +0900
+ id 19FF5F80CAB; Wed,  2 Oct 2019 07:34:00 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0A2BFF80C25
+ for <alsa-devel@alsa-project.org>; Wed,  2 Oct 2019 07:33:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A2BFF80C25
+Date: 02 Oct 2019 14:33:55 +0900
+X-IronPort-AV: E=Sophos;i="5.64,573,1559487600"; d="scan'208";a="27857532"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 02 Oct 2019 14:33:55 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7CBD04007F28;
- Wed,  2 Oct 2019 14:32:46 +0900 (JST)
-Message-ID: <875zl7af0h.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 92E1A41AD782;
+ Wed,  2 Oct 2019 14:33:55 +0900 (JST)
+Message-ID: <87muej90e4.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +58,7 @@ In-Reply-To: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 References: <87v9t7af54.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 17/44] ASoC: stm: stm32_adfsdm: remove
-	snd_pcm_ops
+Subject: [alsa-devel] [PATCH 30/44] ASoC: meson: remove snd_pcm_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,117 +84,281 @@ Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/stm/stm32_adfsdm.c | 42 +++++++++++++++++++++++-------------------
- 1 file changed, 23 insertions(+), 19 deletions(-)
+ sound/soc/meson/axg-fifo.c  | 56 +++++++++++++++++++--------------------------
+ sound/soc/meson/axg-fifo.h  | 20 +++++++++++++---
+ sound/soc/meson/axg-frddr.c | 24 ++++++++++++++++---
+ sound/soc/meson/axg-toddr.c | 24 ++++++++++++++++---
+ 4 files changed, 83 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index 3c9a9de..81c407d 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -210,7 +210,8 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
+diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
+index 5a37499..d6f3eef 100644
+--- a/sound/soc/meson/axg-fifo.c
++++ b/sound/soc/meson/axg-fifo.c
+@@ -70,7 +70,8 @@ static void __dma_enable(struct axg_fifo *fifo,  bool enable)
+ 			   enable ? CTRL0_DMA_EN : 0);
+ }
+ 
+-static int axg_fifo_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
++int axg_fifo_pcm_trigger(struct snd_soc_component *component,
++			 struct snd_pcm_substream *ss, int cmd)
+ {
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+ 
+@@ -91,8 +92,10 @@ static int axg_fifo_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
+ 
  	return 0;
  }
++EXPORT_SYMBOL_GPL(axg_fifo_pcm_trigger);
  
--static int stm32_adfsdm_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int stm32_adfsdm_trigger(struct snd_soc_component *component,
-+				struct snd_pcm_substream *substream, int cmd)
+-static snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_pcm_substream *ss)
++snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_soc_component *component,
++				       struct snd_pcm_substream *ss)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct stm32_adfsdm_priv *priv =
-@@ -230,7 +231,8 @@ static int stm32_adfsdm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return -EINVAL;
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+ 	struct snd_pcm_runtime *runtime = ss->runtime;
+@@ -102,9 +105,11 @@ static snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_pcm_substream *ss)
+ 
+ 	return bytes_to_frames(runtime, addr - (unsigned int)runtime->dma_addr);
+ }
++EXPORT_SYMBOL_GPL(axg_fifo_pcm_pointer);
+ 
+-static int axg_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
+-				  struct snd_pcm_hw_params *params)
++int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
++			   struct snd_pcm_substream *ss,
++			   struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_pcm_runtime *runtime = ss->runtime;
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+@@ -132,15 +137,17 @@ static int axg_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(axg_fifo_pcm_hw_params);
+ 
+-static int g12a_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
+-				   struct snd_pcm_hw_params *params)
++int g12a_fifo_pcm_hw_params(struct snd_soc_component *component,
++			    struct snd_pcm_substream *ss,
++			    struct snd_pcm_hw_params *params)
+ {
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+ 	struct snd_pcm_runtime *runtime = ss->runtime;
+ 	int ret;
+ 
+-	ret = axg_fifo_pcm_hw_params(ss, params);
++	ret = axg_fifo_pcm_hw_params(component, ss, params);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -149,8 +156,10 @@ static int g12a_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(g12a_fifo_pcm_hw_params);
+ 
+-static int axg_fifo_pcm_hw_free(struct snd_pcm_substream *ss)
++int axg_fifo_pcm_hw_free(struct snd_soc_component *component,
++			 struct snd_pcm_substream *ss)
+ {
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+ 
+@@ -160,6 +169,7 @@ static int axg_fifo_pcm_hw_free(struct snd_pcm_substream *ss)
+ 
+ 	return snd_pcm_lib_free_pages(ss);
+ }
++EXPORT_SYMBOL_GPL(axg_fifo_pcm_hw_free);
+ 
+ static void axg_fifo_ack_irq(struct axg_fifo *fifo, u8 mask)
+ {
+@@ -194,7 +204,8 @@ static irqreturn_t axg_fifo_pcm_irq_block(int irq, void *dev_id)
+ 	return IRQ_RETVAL(status);
  }
  
--static int stm32_adfsdm_pcm_open(struct snd_pcm_substream *substream)
-+static int stm32_adfsdm_pcm_open(struct snd_soc_component *component,
-+				 struct snd_pcm_substream *substream)
+-static int axg_fifo_pcm_open(struct snd_pcm_substream *ss)
++int axg_fifo_pcm_open(struct snd_soc_component *component,
++		      struct snd_pcm_substream *ss)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct stm32_adfsdm_priv *priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-@@ -243,7 +245,8 @@ static int stm32_adfsdm_pcm_open(struct snd_pcm_substream *substream)
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+ 	struct device *dev = axg_fifo_dev(ss);
+@@ -250,8 +261,10 @@ static int axg_fifo_pcm_open(struct snd_pcm_substream *ss)
+ 
  	return ret;
  }
++EXPORT_SYMBOL_GPL(axg_fifo_pcm_open);
  
--static int stm32_adfsdm_pcm_close(struct snd_pcm_substream *substream)
-+static int stm32_adfsdm_pcm_close(struct snd_soc_component *component,
-+				  struct snd_pcm_substream *substream)
+-static int axg_fifo_pcm_close(struct snd_pcm_substream *ss)
++int axg_fifo_pcm_close(struct snd_soc_component *component,
++		       struct snd_pcm_substream *ss)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct stm32_adfsdm_priv *priv =
-@@ -256,6 +259,7 @@ static int stm32_adfsdm_pcm_close(struct snd_pcm_substream *substream)
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+ 	int ret;
+@@ -267,28 +280,7 @@ static int axg_fifo_pcm_close(struct snd_pcm_substream *ss)
+ 
+ 	return ret;
  }
- 
- static snd_pcm_uframes_t stm32_adfsdm_pcm_pointer(
-+					    struct snd_soc_component *component,
- 					    struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -265,7 +269,8 @@ static snd_pcm_uframes_t stm32_adfsdm_pcm_pointer(
- 	return bytes_to_frames(substream->runtime, priv->pos);
- }
- 
--static int stm32_adfsdm_pcm_hw_params(struct snd_pcm_substream *substream,
-+static int stm32_adfsdm_pcm_hw_params(struct snd_soc_component *component,
-+				      struct snd_pcm_substream *substream,
- 				      struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -282,23 +287,16 @@ static int stm32_adfsdm_pcm_hw_params(struct snd_pcm_substream *substream,
- 						   params_period_size(params));
- }
- 
--static int stm32_adfsdm_pcm_hw_free(struct snd_pcm_substream *substream)
-+static int stm32_adfsdm_pcm_hw_free(struct snd_soc_component *component,
-+				    struct snd_pcm_substream *substream)
- {
- 	snd_pcm_lib_free_pages(substream);
- 
- 	return 0;
- }
- 
--static struct snd_pcm_ops stm32_adfsdm_pcm_ops = {
--	.open		= stm32_adfsdm_pcm_open,
--	.close		= stm32_adfsdm_pcm_close,
--	.hw_params	= stm32_adfsdm_pcm_hw_params,
--	.hw_free	= stm32_adfsdm_pcm_hw_free,
--	.trigger	= stm32_adfsdm_trigger,
--	.pointer	= stm32_adfsdm_pcm_pointer,
--};
 -
--static int stm32_adfsdm_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int stm32_adfsdm_pcm_new(struct snd_soc_component *component,
-+				struct snd_soc_pcm_runtime *rtd)
+-const struct snd_pcm_ops axg_fifo_pcm_ops = {
+-	.open =		axg_fifo_pcm_open,
+-	.close =        axg_fifo_pcm_close,
+-	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	axg_fifo_pcm_hw_params,
+-	.hw_free =      axg_fifo_pcm_hw_free,
+-	.pointer =	axg_fifo_pcm_pointer,
+-	.trigger =	axg_fifo_pcm_trigger,
+-};
+-EXPORT_SYMBOL_GPL(axg_fifo_pcm_ops);
+-
+-const struct snd_pcm_ops g12a_fifo_pcm_ops = {
+-	.open =		axg_fifo_pcm_open,
+-	.close =        axg_fifo_pcm_close,
+-	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	g12a_fifo_pcm_hw_params,
+-	.hw_free =      axg_fifo_pcm_hw_free,
+-	.pointer =	axg_fifo_pcm_pointer,
+-	.trigger =	axg_fifo_pcm_trigger,
+-};
+-EXPORT_SYMBOL_GPL(g12a_fifo_pcm_ops);
++EXPORT_SYMBOL_GPL(axg_fifo_pcm_close);
+ 
+ int axg_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd, unsigned int type)
  {
- 	struct snd_pcm *pcm = rtd->pcm;
- 	struct stm32_adfsdm_priv *priv =
-@@ -310,7 +308,8 @@ static int stm32_adfsdm_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
+diff --git a/sound/soc/meson/axg-fifo.h b/sound/soc/meson/axg-fifo.h
+index bb1e2ce..cf928d4 100644
+--- a/sound/soc/meson/axg-fifo.h
++++ b/sound/soc/meson/axg-fifo.h
+@@ -15,7 +15,7 @@ struct reset_control;
+ struct snd_soc_component_driver;
+ struct snd_soc_dai;
+ struct snd_soc_dai_driver;
+-struct snd_pcm_ops;
++
+ struct snd_soc_pcm_runtime;
  
--static void stm32_adfsdm_pcm_free(struct snd_pcm *pcm)
-+static void stm32_adfsdm_pcm_free(struct snd_soc_component *component,
-+				  struct snd_pcm *pcm)
- {
- 	struct snd_pcm_substream *substream;
- 
-@@ -320,9 +319,14 @@ static void stm32_adfsdm_pcm_free(struct snd_pcm *pcm)
- }
- 
- static struct snd_soc_component_driver stm32_adfsdm_soc_platform = {
--	.ops		= &stm32_adfsdm_pcm_ops,
--	.pcm_new	= stm32_adfsdm_pcm_new,
--	.pcm_free	= stm32_adfsdm_pcm_free,
-+	.open		= stm32_adfsdm_pcm_open,
-+	.close		= stm32_adfsdm_pcm_close,
-+	.hw_params	= stm32_adfsdm_pcm_hw_params,
-+	.hw_free	= stm32_adfsdm_pcm_hw_free,
-+	.trigger	= stm32_adfsdm_trigger,
-+	.pointer	= stm32_adfsdm_pcm_pointer,
-+	.pcm_construct	= stm32_adfsdm_pcm_new,
-+	.pcm_destruct	= stm32_adfsdm_pcm_free,
+ #define AXG_FIFO_CH_MAX			128
+@@ -75,8 +75,22 @@ struct axg_fifo_match_data {
+ 	struct snd_soc_dai_driver *dai_drv;
  };
  
- static const struct of_device_id stm32_adfsdm_of_match[] = {
+-extern const struct snd_pcm_ops axg_fifo_pcm_ops;
+-extern const struct snd_pcm_ops g12a_fifo_pcm_ops;
++int axg_fifo_pcm_open(struct snd_soc_component *component,
++		      struct snd_pcm_substream *ss);
++int axg_fifo_pcm_close(struct snd_soc_component *component,
++		       struct snd_pcm_substream *ss);
++int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
++			   struct snd_pcm_substream *ss,
++			   struct snd_pcm_hw_params *params);
++int g12a_fifo_pcm_hw_params(struct snd_soc_component *component,
++			    struct snd_pcm_substream *ss,
++			    struct snd_pcm_hw_params *params);
++int axg_fifo_pcm_hw_free(struct snd_soc_component *component,
++			 struct snd_pcm_substream *ss);
++snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_soc_component *component,
++				       struct snd_pcm_substream *ss);
++int axg_fifo_pcm_trigger(struct snd_soc_component *component,
++			 struct snd_pcm_substream *ss, int cmd);
+ 
+ int axg_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd, unsigned int type);
+ int axg_fifo_probe(struct platform_device *pdev);
+diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
+index 6ab111c..665d75d 100644
+--- a/sound/soc/meson/axg-frddr.c
++++ b/sound/soc/meson/axg-frddr.c
+@@ -149,7 +149,13 @@ static const struct snd_soc_component_driver axg_frddr_component_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(axg_frddr_dapm_widgets),
+ 	.dapm_routes		= axg_frddr_dapm_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(axg_frddr_dapm_routes),
+-	.ops			= &axg_fifo_pcm_ops
++	.open			= axg_fifo_pcm_open,
++	.close			= axg_fifo_pcm_close,
++	.ioctl			= snd_soc_pcm_lib_ioctl,
++	.hw_params		= axg_fifo_pcm_hw_params,
++	.hw_free		= axg_fifo_pcm_hw_free,
++	.pointer		= axg_fifo_pcm_pointer,
++	.trigger		= axg_fifo_pcm_trigger,
+ };
+ 
+ static const struct axg_fifo_match_data axg_frddr_match_data = {
+@@ -267,7 +273,13 @@ static const struct snd_soc_component_driver g12a_frddr_component_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(g12a_frddr_dapm_widgets),
+ 	.dapm_routes		= g12a_frddr_dapm_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
+-	.ops			= &g12a_fifo_pcm_ops
++	.open			= axg_fifo_pcm_open,
++	.close			= axg_fifo_pcm_close,
++	.ioctl			= snd_soc_pcm_lib_ioctl,
++	.hw_params		= g12a_fifo_pcm_hw_params,
++	.hw_free		= axg_fifo_pcm_hw_free,
++	.pointer		= axg_fifo_pcm_pointer,
++	.trigger		= axg_fifo_pcm_trigger,
+ };
+ 
+ static const struct axg_fifo_match_data g12a_frddr_match_data = {
+@@ -331,7 +343,13 @@ static const struct snd_soc_component_driver sm1_frddr_component_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(sm1_frddr_dapm_widgets),
+ 	.dapm_routes		= g12a_frddr_dapm_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
+-	.ops			= &g12a_fifo_pcm_ops
++	.open			= axg_fifo_pcm_open,
++	.close			= axg_fifo_pcm_close,
++	.ioctl			= snd_soc_pcm_lib_ioctl,
++	.hw_params		= g12a_fifo_pcm_hw_params,
++	.hw_free		= axg_fifo_pcm_hw_free,
++	.pointer		= axg_fifo_pcm_pointer,
++	.trigger		= axg_fifo_pcm_trigger,
+ };
+ 
+ static const struct axg_fifo_match_data sm1_frddr_match_data = {
+diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
+index c8ea214..7fef0b96 100644
+--- a/sound/soc/meson/axg-toddr.c
++++ b/sound/soc/meson/axg-toddr.c
+@@ -181,7 +181,13 @@ static const struct snd_soc_component_driver axg_toddr_component_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(axg_toddr_dapm_widgets),
+ 	.dapm_routes		= axg_toddr_dapm_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
+-	.ops			= &axg_fifo_pcm_ops
++	.open			= axg_fifo_pcm_open,
++	.close			= axg_fifo_pcm_close,
++	.ioctl			= snd_soc_pcm_lib_ioctl,
++	.hw_params		= axg_fifo_pcm_hw_params,
++	.hw_free		= axg_fifo_pcm_hw_free,
++	.pointer		= axg_fifo_pcm_pointer,
++	.trigger		= axg_fifo_pcm_trigger,
+ };
+ 
+ static const struct axg_fifo_match_data axg_toddr_match_data = {
+@@ -214,7 +220,13 @@ static const struct snd_soc_component_driver g12a_toddr_component_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(axg_toddr_dapm_widgets),
+ 	.dapm_routes		= axg_toddr_dapm_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
+-	.ops			= &g12a_fifo_pcm_ops
++	.open			= axg_fifo_pcm_open,
++	.close			= axg_fifo_pcm_close,
++	.ioctl			= snd_soc_pcm_lib_ioctl,
++	.hw_params		= g12a_fifo_pcm_hw_params,
++	.hw_free		= axg_fifo_pcm_hw_free,
++	.pointer		= axg_fifo_pcm_pointer,
++	.trigger		= axg_fifo_pcm_trigger,
+ };
+ 
+ static const struct axg_fifo_match_data g12a_toddr_match_data = {
+@@ -278,7 +290,13 @@ static const struct snd_soc_component_driver sm1_toddr_component_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(sm1_toddr_dapm_widgets),
+ 	.dapm_routes		= sm1_toddr_dapm_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(sm1_toddr_dapm_routes),
+-	.ops			= &g12a_fifo_pcm_ops
++	.open			= axg_fifo_pcm_open,
++	.close			= axg_fifo_pcm_close,
++	.ioctl			= snd_soc_pcm_lib_ioctl,
++	.hw_params		= g12a_fifo_pcm_hw_params,
++	.hw_free		= axg_fifo_pcm_hw_free,
++	.pointer		= axg_fifo_pcm_pointer,
++	.trigger		= axg_fifo_pcm_trigger,
+ };
+ 
+ static const struct axg_fifo_match_data sm1_toddr_match_data = {
 -- 
 2.7.4
 
