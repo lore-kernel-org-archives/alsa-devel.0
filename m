@@ -6,62 +6,63 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6916C4360C
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 00:32:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EBA1C4360C
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 00:57:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4E0021A4C
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 00:32:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BEF1222BE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 00:57:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CIzBzN+Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4E0021A4C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DpxRN3kP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BEF1222BE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FB6C166C;
-	Thu,  3 Oct 2019 02:31:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FB6C166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0844E1668;
+	Thu,  3 Oct 2019 02:56:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0844E1668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570062756;
-	bh=fB/khJvsVcua0MhfUb2YhvyPy+tWNDQ/yBKZ2Wjjj+w=;
+	s=default; t=1570064264;
+	bh=0wFwLud8zDRyGSmjiFiwsYCOTpEYfPwxUiKyG95EQvQ=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CIzBzN+Z9a4zpt1UuvayDx2yiYlT551XRvuPE6ghPnqSWQsWXqZQv6kmoqHHflfOT
-	 XlvGzcc8W1VcoEdxNDx34naNGipx/A9edyhhiWbB8zmgmMdLoocmUlSTHD/MtXdJJ/
-	 HUFtk+fshCIT1m2m3Si/AHcIwgjDPNKO8X4TFXCI=
+	b=DpxRN3kPTTXw8Y5IDJzm0QTpEVYKUO/yOFzWpC3mZgQwVuidKSia5fxmQ6iJLrI5S
+	 eXmDVuMnk908OM+urkhFYA/PAVBft0JqaCgfDFJfofVfLuF2oPzVwVzNHWMW7XnK4y
+	 jJnm2SpdJ+waRNV/lqnbHpKjvH1lwsFwjMVp606c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA4B6F80377;
-	Thu,  3 Oct 2019 02:31:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D2CAF80377;
+	Thu,  3 Oct 2019 02:56:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B00AEF80391; Thu,  3 Oct 2019 02:31:43 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9BCB1F8036E
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2019 02:31:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BCB1F8036E
-Date: 03 Oct 2019 09:31:33 +0900
-X-IronPort-AV: E=Sophos;i="5.67,250,1566831600"; d="scan'208";a="27924067"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 03 Oct 2019 09:31:33 +0900
+ id 23A29F80391; Thu,  3 Oct 2019 02:56:51 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id B9155F8036E
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2019 02:56:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9155F8036E
+Date: 03 Oct 2019 09:56:42 +0900
+X-IronPort-AV: E=Sophos;i="5.67,250,1566831600"; d="scan'208";a="28145151"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 03 Oct 2019 09:56:42 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 99DD9400C0BD;
- Thu,  3 Oct 2019 09:31:33 +0900 (JST)
-Message-ID: <87o8yy8yai.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id F066E413EB78;
+ Thu,  3 Oct 2019 09:56:41 +0900 (JST)
+Message-ID: <87muei8x4l.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191002185534.GB6538@sirena.co.uk>
+In-Reply-To: <87o8yy8yai.wl-kuninori.morimoto.gx@renesas.com>
 References: <878sq3bu2t.wl-kuninori.morimoto.gx@renesas.com>
  <877e5nbu1z.wl-kuninori.morimoto.gx@renesas.com>
  <20191002185534.GB6538@sirena.co.uk>
+ <87o8yy8yai.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: soc-core: use devm_kzalloc() for
-	rtd
+Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: soc-core: use devm_kzalloc()
+	for	rtd
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,27 +81,55 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+Hi Mark, again
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> > Current rtd, rtd->dev, rtd->codec_dais are created by normal kzalloc(),
-> > but we want to use devm_kzalloc() as much as possible.
+> > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > > 
-> > Created rtd->dev is registered by device_register() at
-> > soc_new_pcm_runtime(), and it will be freed at
-> > soc_free_pcm_runtime() by device_unregister().
+> > > Current rtd, rtd->dev, rtd->codec_dais are created by normal kzalloc(),
+> > > but we want to use devm_kzalloc() as much as possible.
+> > > 
+> > > Created rtd->dev is registered by device_register() at
+> > > soc_new_pcm_runtime(), and it will be freed at
+> > > soc_free_pcm_runtime() by device_unregister().
+> > 
+> > These aren't using devm_ because they are done at card init time and so
+> > might happen multiple times when other card components get removed and
+> > added.  This shouldn't happen too much but if it does then it could end
+> > up consuming a noticeable amount of memory.
 > 
-> These aren't using devm_ because they are done at card init time and so
-> might happen multiple times when other card components get removed and
-> added.  This shouldn't happen too much but if it does then it could end
-> up consuming a noticeable amount of memory.
+> I see.
+> Actually my local patch which is not yet posted can solve this
+> multiple times issue.
+> Mergeing these can be good solution.
+> Please drop it so far.
 
-I see.
-Actually my local patch which is not yet posted can solve this
-multiple times issue.
-Mergeing these can be good solution.
-Please drop it so far.
+Oops, it was alreay posted and accepted :)
+
+	d918a37610b1bf71faa86f589bd7604f71c1e05f
+	("ASoC: soc-core: tidyup soc_new_pcm_runtime() alloc order")
+
+above rtd, rtd->codec_dais are devm_kzalloc() by original dev
+(which will be rtd->dev) instead of card/component dev.
+
+It is registered by device_register() at soc_new_pcm_runtime(),
+and will be unregistered by device_unregister() at soc_free_pcm_runtime()
+when card was removed.
+
+It is a little bit tricky, but 
+these are chain-freed when card was removed.
+If my understanding was correct, we don't have memory leak
+by multiple times card/components remove.
+But, please double check.
+
+	user removed card
+	 -> snd_soc_unbind_card()
+	  -> soc_cleanup_card_resources()
+	   -> soc_remove_pcm_runtimes()
+	    -> soc_free_pcm_runtime()
+(*)	     -> device_unregister(rtd->dev);
+
+rtd->dev will be kfree() by soc_release_rtd_dev at (*),
+then, rtd, rtd->codec_dais will be kfree() via devm_
 
 Thank you for your help !!
 Best regards
