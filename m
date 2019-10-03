@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 784B5C10F14
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 04:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B943C32792
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 04:15:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78ACD222C2
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 04:06:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E7177222C4
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Oct 2019 04:15:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uONMJdH9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GJ8dCYph"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78ACD222C2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FF1SdoCG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XqXsTJWV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7177222C4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47BEF1668;
-	Thu,  3 Oct 2019 06:05:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47BEF1668
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8F751668;
+	Thu,  3 Oct 2019 06:14:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8F751668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570075609;
-	bh=FXatHJE3eHKIm21qFXfOFioWg9koGkUoNW6Ik5OKpSQ=;
+	s=default; t=1570076141;
+	bh=uSjKqLaManQlR7sUAiDp4zXqIZqKkWDEIFv+AujWT5M=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=uONMJdH9yC5TqTwIKQyDdtTHNSk8reZw1NC/iv+pFdq9gck6izqqoOs/315kewPws
-	 ZVBFOKYwctkECB7egWYNS6vr2WSfXmH901xRcUkmpfRT+kIgPZ7l8bYbs3uk/75bkE
-	 I34sk19Yq+cOhhtpL7uGYJFyxpkelhx2yu5lGNy0=
+	b=FF1SdoCGYreIlNiZoToAoCwaatRv/BCqhKqgPpsBUdx7SSV1PEyc3h6wx0An1ZA1E
+	 4i8EpB1fglycIPP2dUk2y7+xowF9rtn5AbAsLyVsn3V47/61gAQ89vQjHm45dPz4ca
+	 /RUqt7HS1TZQnQraKbrxZvT7N6Ncp3egjN1ea2dk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93FF1F804FF;
-	Thu,  3 Oct 2019 06:05:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5923FF8013F;
+	Thu,  3 Oct 2019 06:14:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87CCFF80506; Thu,  3 Oct 2019 06:05:56 +0200 (CEST)
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com
- [IPv6:2607:f8b0:4864:20::544])
+ id E33CCF80506; Thu,  3 Oct 2019 06:14:49 +0200 (CEST)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
+ [IPv6:2607:f8b0:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 157A0F80137
- for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2019 06:05:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 157A0F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0002F80137
+ for <alsa-devel@alsa-project.org>; Thu,  3 Oct 2019 06:14:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0002F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="GJ8dCYph"
-Received: by mail-pg1-x544.google.com with SMTP id z12so883270pgp.9
- for <alsa-devel@alsa-project.org>; Wed, 02 Oct 2019 21:05:52 -0700 (PDT)
+ header.b="XqXsTJWV"
+Received: by mail-pf1-x443.google.com with SMTP id y72so821203pfb.12
+ for <alsa-devel@alsa-project.org>; Wed, 02 Oct 2019 21:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=ipcV5l1n/8It2aLom5M2l+YXf6MikdW6xOH7ijHIWC4=;
- b=GJ8dCYphiCUor6hJ8Gk2a0LVJjkKGKBK0qYgul5TeGjsdlVTkyabw4iWB5Tf+iw8Ua
- FiN7fu0PJaIxegA5BQ9wp6F5l6rFTNhY5aFK9pAnie4HM6QzrpFmxoq8pnTTVRFeYJAV
- OE4PSBL5YMHVsOurDvxBxxhEypEBCMV34tWV0=
+ bh=FMBWBObY5TAg6ccjViv94lsR9vhyqh//qqXjnxybPn4=;
+ b=XqXsTJWVRpZea6TA7FBFgnhTI63A2/g03nfSRRb33FkaY5eHoSUvNUKEOdIMbnpkbB
+ Pecea+Q0A331rSFnGj2eJ25IBgyIygcpzhSbOdlVrje4TCo89GmFdQxR3an9e70yYyn9
+ A+wMolfWeeZXTHrgo82zxfTc7I+G9zjh+5wFk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=ipcV5l1n/8It2aLom5M2l+YXf6MikdW6xOH7ijHIWC4=;
- b=YBQJ16kILwtHUr0OiFIGwhzlU/DEqHjv7cJWqZHHJLH+7Af9Xrh0zHebBBopr8gwCX
- Rpeop59Zdt3XL77/ukUB/UNYmspqF5TpmyacObH4JcFt/TkKfrqW8cfrmidY6wHuf7Zp
- E30RXvK9B8dEGXz3MS1FP5cJUqudyzRiYEFmMcW1VnXk05sKhPF2D/hYW58VAG1AL9L1
- DXvKg9+FZ0j+bBnPrfSk64TScHqUCNXKzBiGoVSgQ4MVXtVhjMJw8MMreKt1HWcxIykX
- MAWFqWA//1fPuJNkcig7qesKt4Yzf8SCt2W0LFS0oGZi9y0fY9qkEGhqgqED88pinmNA
- 7lUg==
-X-Gm-Message-State: APjAAAXOkfVRkv01GRO4nVK51Y6ek3fFAMFNdlNxovOcZoBMBjcHvHHZ
- J1Xd50TZnCrUZPSTMqD4lqeX/g==
-X-Google-Smtp-Source: APXvYqzWiB8hQkm2uo7S8xni0GVmAx2W9Y1kaKW4dhI8KN2xpmpX/enaUKzWwxDftTpN40iGJ57rhw==
-X-Received: by 2002:a62:754a:: with SMTP id q71mr8685426pfc.70.1570075550111; 
- Wed, 02 Oct 2019 21:05:50 -0700 (PDT)
+ bh=FMBWBObY5TAg6ccjViv94lsR9vhyqh//qqXjnxybPn4=;
+ b=hmdt8lIv4c9rP4Ww6CfZ8cDA96/QmWBjJx32Hv4vdPoEypdBOjI374YSjfV9kxvMrE
+ r/aE8OrWM4TajQgEWF9C+xr2wX/IU7Rq33S/UDA5LRkl7Fflm1uoioPtNOAgrYOhZUFH
+ q2hOR8sy+FJzJYhq6abaCAPLwbUQYMOv8TYuLW/Era7BOzEh4FaUI74bgjl+z6i3RZq6
+ DXCemmf3L5k66DV+xBcKX2M+Tven2sVyEVyR9ep6R8xOOXCg2sPT+Zep+aXGrfX5v6RX
+ hHR9Ez5LeQ7OUHyLG13mVOb0TTAeoCvdKdl0VZyDylJ2QUhhi4+/tvvBP2TE9UaBGsRm
+ yG5Q==
+X-Gm-Message-State: APjAAAVGXu/eP1Vvr6zimwy/2vR1m1pooqktLGF1TosAbtvZXv8ZU6XV
+ PGEtDz7kuFMvtc8ffo+AxFKmRA==
+X-Google-Smtp-Source: APXvYqz6+m0BHndgOBBpcbuerLKGK0gYMwBss4tu7T/iC6fV04yrpAecbt/bgBysta04HsJtKsYn4A==
+X-Received: by 2002:a63:1c09:: with SMTP id c9mr7498204pgc.347.1570076084849; 
+ Wed, 02 Oct 2019 21:14:44 -0700 (PDT)
 Received: from localhost ([2401:fa00:1:10:79b4:bd83:e4a5:a720])
- by smtp.gmail.com with ESMTPSA id z5sm954845pgi.19.2019.10.02.21.05.46
+ by smtp.gmail.com with ESMTPSA id q42sm718700pja.16.2019.10.02.21.14.41
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 02 Oct 2019 21:05:49 -0700 (PDT)
+ Wed, 02 Oct 2019 21:14:44 -0700 (PDT)
 From: Cheng-Yi Chiang <cychiang@chromium.org>
 To: linux-kernel@vger.kernel.org
-Date: Thu,  3 Oct 2019 12:05:40 +0800
-Message-Id: <20191003040540.180310-1-cychiang@chromium.org>
+Date: Thu,  3 Oct 2019 12:14:38 +0800
+Message-Id: <20191003041438.194224-1-cychiang@chromium.org>
 X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
 MIME-Version: 1.0
 Cc: Jernej Skrabec <jernej.skrabec@siol.net>, tzungbi@chromium.org,
@@ -93,8 +93,8 @@ Cc: Jernej Skrabec <jernej.skrabec@siol.net>, tzungbi@chromium.org,
  Yakir Yang <ykk@rock-chips.com>, dgreid@chromium.org,
  Cheng-Yi Chiang <cychiang@chromium.org>, linux-arm-kernel@lists.infradead.org,
  Jerome Brunet <jbrunet@baylibre.com>
-Subject: [alsa-devel] [PATCH v2] FROMLIST: drm/bridge: dw-hdmi: Restore
-	audio when setting a mode
+Subject: [alsa-devel] [PATCH v2 RESEND] drm/bridge: dw-hdmi: Restore audio
+	when setting a mode
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -130,7 +130,8 @@ Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
 Signed-off-by: Yakir Yang <ykk@rock-chips.com>
 ---
  Change from v1 to v2:
- - Use audio_lock to protect audio clock.
+  - Use audio_lock to protect audio clock.
+  - Fix the patch title.
 
  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)
