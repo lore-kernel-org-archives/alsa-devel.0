@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A032BC4360C
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F4EC47404
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:58:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2869C21D81
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:57:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 25BEC2077B
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:58:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EDpG9CVO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="pZ6/MkUj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2869C21D81
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nucV9Bur";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="A/efAStV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25BEC2077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F667168E;
-	Fri,  4 Oct 2019 19:57:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F667168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 724AF169C;
+	Fri,  4 Oct 2019 19:57:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 724AF169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570211874;
-	bh=lakVTLyokueuSULpqxY+AE2gjX0sBk+2Qob7/BMpHm0=;
+	s=default; t=1570211925;
+	bh=ExK4eqYiuayKHa9k3q4n7V9wXMjoVmzPeTeB1mlOflk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=EDpG9CVO9XsswfXl1g+Zr0xeuhivrdaJe1F6FR7lJfcsFDk72asy0eDPkMslSTHpH
-	 oE9acuuXUV3OTB0t3tAj6PAw7vW/gcwEPaOIua6MAY8qVbAC3r54VVYaaKjchK8lLT
-	 11FBRr7cN+2UmOir0QHUwRCXtp8tTPJG+OEVvjn4=
+	b=nucV9BurZZP6leWaAnjrD/Gzs3xgR26wmg7dXzYFjulfiPMMoc27SUAxDtiPMD2W3
+	 u2D3mqkTwmdQb2IVd5H80+coysiQ9rPtyAbK0z4Vuk85ruj8qrIDRbONUm2EBu6Xyu
+	 idhh2aTl9ng0sV7TZUz/jzNh3PmKFhG/CU72rvts=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3F49F8064C;
-	Fri,  4 Oct 2019 19:52:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75492F80672;
+	Fri,  4 Oct 2019 19:52:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 972D2F804CB; Fri,  4 Oct 2019 19:52:44 +0200 (CEST)
+ id CE1E0F80634; Fri,  4 Oct 2019 19:52:47 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 510A4F803D5
- for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2019 19:52:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 510A4F803D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id D150DF800C2
+ for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2019 19:52:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D150DF800C2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="pZ6/MkUj"
+ header.b="A/efAStV"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=cS+jo8LBA03xYK7fm14UrQ0XyQr5XUe/O4gHWm3YGTQ=; b=pZ6/MkUjCz+c
- 1PdZb86uvJR/5tGO4sdMf0dNENHbkFCrRA63hlQHB3v1o9Jr7539m0+u6K2EUJGE8TZ+RDdNRQyqZ
- n3nWNx2oB8JMtxYToxG0lURpI7NAyYOOFnENYgD2nYK3CkmzV1Z4jCwUEUdCG/K1rMyyGxgK5oX3u
- dDde8=;
+ List-Archive; bh=/tVPZenYEEvKXdV0H0rtDml9JDehxDB1KYdDNZdz9Gs=; b=A/efAStVmGes
+ N7QaUZoz9lOew9PUrjMART1+Yl7PLXIHavgkzsw8c6ERp/n2niBgG+bcfdakdNvVoIWUdXdJWbSaY
+ aKUrJLBglIzmH3mxhP0TTlXIScO3xzxpHgGR7yNWtNpGG9HqcA1h/Otf1gBVzVoDyBKQBGalVKsvK
+ ZTkCY=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iGRkp-0003uv-Ld; Fri, 04 Oct 2019 17:52:35 +0000
+ id 1iGRkq-0003vE-Fz; Fri, 04 Oct 2019 17:52:36 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 2E1F72741EF0; Fri,  4 Oct 2019 18:52:35 +0100 (BST)
+ id 060992741EF0; Fri,  4 Oct 2019 18:52:35 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <875zl7bu1r.wl-kuninori.morimoto.gx@renesas.com>
+To: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <bcb12a849a05437fb18372bc7536c649b94bdf07.1570029862.git.robin.murphy@arm.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191004175235.2E1F72741EF0@ypsilon.sirena.org.uk>
+Message-Id: <20191004175236.060992741EF0@ypsilon.sirena.org.uk>
 Date: Fri,  4 Oct 2019 18:52:35 +0100 (BST)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-core: remove
-	soc_remove_dai_links()" to the asoc tree
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.com,
+ lgirdwood@gmail.com, linux-rockchip@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoc: rockchip: i2s: Fix RPM imbalance" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,11 +97,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: remove soc_remove_dai_links()
+   ASoc: rockchip: i2s: Fix RPM imbalance
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -120,125 +122,37 @@ to this mail.
 Thanks,
 Mark
 
-From 7ce6088f60624805a8d3127185e2830e299849f1 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:22:40 +0900
-Subject: [PATCH] ASoC: soc-core: remove soc_remove_dai_links()
+From b1e620e7d32f5aad5353cc3cfc13ed99fea65d3a Mon Sep 17 00:00:00 2001
+From: Robin Murphy <robin.murphy@arm.com>
+Date: Wed, 2 Oct 2019 16:30:37 +0100
+Subject: [PATCH] ASoc: rockchip: i2s: Fix RPM imbalance
 
-It is easy to read code if it is cleanly using paired function/naming,
-like start <-> stop, register <-> unregister, etc, etc.
-But, current ALSA SoC code is very random, unbalance, not paired, etc.
-It is easy to create bug at the such code, and it will be difficult to
-debug.
+If rockchip_pcm_platform_register() fails, e.g. upon deferring to wait
+for an absent DMA channel, we return without disabling RPM, which makes
+subsequent re-probe attempts scream with errors about the unbalanced
+enable. Don't do that.
 
-soc_cleanup_card_resources() (a) which is paired function of
-snd_soc_instantiate_card() (A) is calling soc_remove_dai_links() (*)
-to remove card related resources, but it is breaking
-add/remove balance (B)(b)(C)(c)(D)(d), in other words
-these should be called from soc_cleanup_card_resources() (a)
-from balance point of view.
-
-More headacke is that it is using original removing method for
-dai_link even though we already have snd_soc_remove_dai_link()
-which is the function for it (d).
-
-This patch removes snd_soc_remove_dai_links() and balance up code.
-
-	static void soc_remove_dai_links(...)
-	{
-		...
-(b)		soc_remove_link_dais(card);
-(c)		soc_remove_link_components(card);
-
-		for_each_card_links_safe(card, link, _link) {
-			...
-			/* it should use snd_soc_remove_dai_link() here */
-(d)			list_del(&link->list);
-		}
-	}
-
-(a)	static int soc_cleanup_card_resources(...)
-	{
-		...
-
-		/* remove and free each DAI */
-(*)		soc_remove_dai_links(card);
-		...
-	}
-
-(A)	static int snd_soc_instantiate_card(struct snd_soc_card *card)
-	{
-		...
-		/* add predefined DAI links to the list */
-		for_each_card_prelinks(card, i, dai_link)
-(B)			snd_soc_add_dai_link(card, dai_link);
-		...
-		/* probe all components used by DAI links on this card */
-(C)		ret = soc_probe_link_components(card);
-		...
-		/* probe all DAI links on this card */
-(D)		ret = soc_probe_link_dais(card);
-		...
-	}
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/875zl7bu1r.wl-kuninori.morimoto.gx@renesas.com
+Fixes: ebb75c0bdba2 ("ASoC: rockchip: i2s: Adjust devm usage")
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/bcb12a849a05437fb18372bc7536c649b94bdf07.1570029862.git.robin.murphy@arm.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b16a94228091..a34000d08856 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1275,23 +1275,6 @@ static int soc_probe_link_components(struct snd_soc_card *card)
- 	return 0;
- }
- 
--static void soc_remove_dai_links(struct snd_soc_card *card)
--{
--	struct snd_soc_dai_link *link, *_link;
--
--	soc_remove_link_dais(card);
--
--	soc_remove_link_components(card);
--
--	for_each_card_links_safe(card, link, _link) {
--		if (link->dobj.type == SND_SOC_DOBJ_DAI_LINK)
--			dev_warn(card->dev, "Topology forgot to remove link %s?\n",
--				link->name);
--
--		list_del(&link->list);
--	}
--}
--
- static int soc_init_dai_link(struct snd_soc_card *card,
- 			     struct snd_soc_dai_link *link)
- {
-@@ -1924,6 +1907,8 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
- 
- static void soc_cleanup_card_resources(struct snd_soc_card *card)
- {
-+	struct snd_soc_dai_link *link, *_link;
-+
- 	/* free the ALSA card at first; this syncs with pending operations */
- 	if (card->snd_card) {
- 		snd_card_free(card->snd_card);
-@@ -1931,7 +1916,12 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index af2d5a6124c8..61c984f10d8e 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -677,7 +677,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 	ret = rockchip_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM\n");
+-		return ret;
++		goto err_suspend;
  	}
  
- 	/* remove and free each DAI */
--	soc_remove_dai_links(card);
-+	soc_remove_link_dais(card);
-+	soc_remove_link_components(card);
-+
-+	for_each_card_links_safe(card, link, _link)
-+		snd_soc_remove_dai_link(card, link);
-+
- 	soc_remove_pcm_runtimes(card);
- 
- 	/* remove auxiliary devices */
+ 	return 0;
 -- 
 2.20.1
 
