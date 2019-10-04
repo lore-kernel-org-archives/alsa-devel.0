@@ -6,75 +6,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F48AC47404
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8D3FC4360C
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:57:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0860E2077B
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:56:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2620D2077B
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:57:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IJgY1lFR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="b8ELJMdv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0860E2077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jSlFrER/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="HkUpiaSm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2620D2077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77A1C167F;
-	Fri,  4 Oct 2019 19:55:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77A1C167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 811BF1699;
+	Fri,  4 Oct 2019 19:56:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 811BF1699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570211784;
-	bh=3omDBv6uyQCP59LcorJ9oS5pSVtgM/tMzAflVvkxnfM=;
+	s=default; t=1570211824;
+	bh=ZuzS86cpOqFv28PtIHjBtEVM+Tvh6k3MCMHqbTLoUQQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=IJgY1lFR7Jsy4vehqZwuk/yIzOmqOEz+IsRGKpiHUHaKvJmQC35BHGA6wUb8xRU5N
-	 J51a+dh3Uf4E+jSMAtRXe0cDfMN+9lhdVFT9Gb33MVpKXJ+ezhkslPExjkFKSvDmPw
-	 uDLhZnIEqZ32OBWcsUuFsnWg8GVnHvYvgNtf7tk4=
+	b=jSlFrER/r69YscULnwc86vkE7k+5QvwjhPJtN0uyHeAysTQ92Zxhd3lYkVVCAgW9U
+	 HwrN+ehz8BhZct/PS3JWhn2sVfMw7MQsU6jPI7llEnAcc7gPHrJHpwUUAler1+ABoS
+	 i8xmvU9w7/RM+1z5XaJ8RjEQItRFbieEuvnXjgWg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 856EEF80637;
-	Fri,  4 Oct 2019 19:52:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79500F8063C;
+	Fri,  4 Oct 2019 19:52:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42401F805FE; Fri,  4 Oct 2019 19:52:43 +0200 (CEST)
+ id 457C5F805FE; Fri,  4 Oct 2019 19:52:44 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86FFEF804CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77153F80377
  for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2019 19:52:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86FFEF804CB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77153F80377
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="b8ELJMdv"
+ header.b="HkUpiaSm"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=jBMEAf9oH++sVWxPcM9wa31UD07A8ZoRnH5qEhdXpKQ=; b=b8ELJMdvTDXA
- Kka0grEWRtC+7h1JqcJcExiGAfFXCzFZJi69xSMoYS0VMovcObAjABYqrx73jo4ExBs5PAk8UKAv6
- eIoe/Yvje5ZGSvir0msZLcst999qnm+ZRzBvrczXHMFeshpxYm5xsisDTeDMD9tZqXnfCWgGty/Xm
- sIqqw=;
+ List-Archive; bh=oYLVZLWmGAZnFnYmN0rAySi9QjYTZ+Q4UCUl8X/mowI=; b=HkUpiaSmuwxf
+ 7WnWfahTPCrjVo8eg5u7IteE44hsXFUzHNZNuEAlLAlxKL53etxoaWQgxTWjOw5EidlardFb/esDU
+ 2kAwrv4JaBqoH4Ip/daD01PSjFx1QZPy1cZ8/lHwsF0hNimGZTQMNaTjUhMO0Bx18turL0CdscOlL
+ DHFpQ=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iGRkp-0003v1-UL; Fri, 04 Oct 2019 17:52:35 +0000
+ id 1iGRkp-0003up-Fp; Fri, 04 Oct 2019 17:52:35 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 695462741F98; Fri,  4 Oct 2019 18:52:35 +0100 (BST)
+ id E712A2741EF2; Fri,  4 Oct 2019 18:52:34 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <877e5nbu1z.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874l0rbu1i.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191004175235.695462741F98@ypsilon.sirena.org.uk>
-Date: Fri,  4 Oct 2019 18:52:35 +0100 (BST)
+Message-Id: <20191004175234.E712A2741EF2@ypsilon.sirena.org.uk>
+Date: Fri,  4 Oct 2019 18:52:34 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-core: use devm_kzalloc() for rtd"
-	to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: add soc_setup_card_name()" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,7 +95,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: use devm_kzalloc() for rtd
+   ASoC: soc-core: add soc_setup_card_name()
 
 has been applied to the asoc tree at
 
@@ -120,68 +120,100 @@ to this mail.
 Thanks,
 Mark
 
-From 4dc0e7df62839d052476de0f8447f29f857cecda Mon Sep 17 00:00:00 2001
+From 0f23f718ecbc135866ac40db3424dd75f01c76ea Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:22:32 +0900
-Subject: [PATCH] ASoC: soc-core: use devm_kzalloc() for rtd
+Date: Wed, 2 Oct 2019 14:22:49 +0900
+Subject: [PATCH] ASoC: soc-core: add soc_setup_card_name()
 
-Current rtd, rtd->dev, rtd->codec_dais are created by normal kzalloc(),
-but we want to use devm_kzalloc() as much as possible.
-
-Created rtd->dev is registered by device_register() at
-soc_new_pcm_runtime(), and it will be freed at
-soc_free_pcm_runtime() by device_unregister().
-
-This means, if we can use devm_kzalloc(rtd->dev, xxx) for
-rtd / rtd->codec_dais, all these are automatically freed
-via soc_free_pcm_runtime().
-This patch uses devm_kzalloc(rtd->dev, xxx) for rtd / rtd->codec_dais.
+ALSA needs to setup shortname, longname, and driver.
+These methods are very similar.
+This patch adds new soc_setup_card_name() and setup these.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/877e5nbu1z.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/874l0rbu1i.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 60 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 42 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4a47ba94559f..b16a94228091 100644
+index a34000d08856..f79ffc4b5b57 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -370,7 +370,6 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
- 	if (!rtd)
- 		return;
- 
--	kfree(rtd->codec_dais);
- 	list_del(&rtd->list);
- 
- 	/*
-@@ -384,7 +383,6 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
- 	 *	soc_new_pcm_runtime()
- 	 */
- 	device_unregister(rtd->dev);
--	kfree(rtd);
+@@ -1905,6 +1905,42 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ 	}
  }
  
- static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
-@@ -416,7 +414,7 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	/*
- 	 * for rtd
- 	 */
--	rtd = kzalloc(sizeof(struct snd_soc_pcm_runtime), GFP_KERNEL);
-+	rtd = devm_kzalloc(dev, sizeof(*rtd), GFP_KERNEL);
- 	if (!rtd)
- 		goto free_rtd;
++#define soc_setup_card_name(name, name1, name2, norm)		\
++	__soc_setup_card_name(name, sizeof(name), name1, name2, norm)
++static void __soc_setup_card_name(char *name, int len,
++				  const char *name1, const char *name2,
++				  int normalization)
++{
++	int i;
++
++	snprintf(name, len, "%s", name1 ? name1 : name2);
++
++	if (!normalization)
++		return;
++
++	/*
++	 * Name normalization
++	 *
++	 * The driver name is somewhat special, as it's used as a key for
++	 * searches in the user-space.
++	 *
++	 * ex)
++	 *	"abcd??efg" -> "abcd__efg"
++	 */
++	for (i = 0; i < len; i++) {
++		switch (name[i]) {
++		case '_':
++		case '-':
++		case '\0':
++			break;
++		default:
++			if (!isalnum(name[i]))
++				name[i] = '_';
++			break;
++		}
++	}
++}
++
+ static void soc_cleanup_card_resources(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dai_link *link, *_link;
+@@ -2070,24 +2106,12 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	/* try to set some sane longname if DMI is available */
+ 	snd_soc_set_dmi_name(card, NULL);
  
-@@ -426,7 +424,7 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	/*
- 	 * for rtd->codec_dais
- 	 */
--	rtd->codec_dais = kcalloc(dai_link->num_codecs,
-+	rtd->codec_dais = devm_kcalloc(dev, dai_link->num_codecs,
- 					sizeof(struct snd_soc_dai *),
- 					GFP_KERNEL);
- 	if (!rtd->codec_dais)
+-	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
+-		 "%s", card->name);
+-	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
+-		 "%s", card->long_name ? card->long_name : card->name);
+-	snprintf(card->snd_card->driver, sizeof(card->snd_card->driver),
+-		 "%s", card->driver_name ? card->driver_name : card->name);
+-	for (i = 0; i < ARRAY_SIZE(card->snd_card->driver); i++) {
+-		switch (card->snd_card->driver[i]) {
+-		case '_':
+-		case '-':
+-		case '\0':
+-			break;
+-		default:
+-			if (!isalnum(card->snd_card->driver[i]))
+-				card->snd_card->driver[i] = '_';
+-			break;
+-		}
+-	}
++	soc_setup_card_name(card->snd_card->shortname,
++			    card->name, NULL, 0);
++	soc_setup_card_name(card->snd_card->longname,
++			    card->long_name, card->name, 0);
++	soc_setup_card_name(card->snd_card->driver,
++			    card->driver_name, card->name, 1);
+ 
+ 	if (card->late_probe) {
+ 		ret = card->late_probe(card);
 -- 
 2.20.1
 
