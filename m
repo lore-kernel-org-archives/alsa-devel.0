@@ -2,71 +2,79 @@ Return-Path: <SRS0=/e/v=X5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54EADC4360C
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECEF0C4360C
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:53:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 566E0222C0
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:04:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA9452077B
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:53:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ayZTMdn5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 566E0222C0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sqbX038C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NBJuJzhf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA9452077B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F70D1678;
-	Fri,  4 Oct 2019 19:03:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F70D1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 572BB1672;
+	Fri,  4 Oct 2019 19:52:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 572BB1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570208684;
-	bh=DLUetUumF0r+SWYSKcZaDuw0PT5hhayCKAF3vfhVRTk=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ayZTMdn5FsLb+t6jjWvB7QKUUEdfok4rK9QbGmInqK/DtkiZCwG6r0g28KnSklQH3
-	 DT5/hQTsXOL62TJgkgcdEylXQg4B3mIGXP0E6C775qBrSgUzBvOmmtDXOcWWKZpzyw
-	 t1C0gUPXR5DnQgvrUpEBpAz5r8a8u3aDeyGW8ekw=
+	s=default; t=1570211611;
+	bh=VgQlN6p50oG6fw8lgiOewne5IcYeywVJHqd5dUEZ2gE=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=sqbX038C6LYb5iKWHQS8JfuBfD34Cg7xB19yrxVcrD/w5EsEKQ3Xf9nI8Nu0wgDf/
+	 aVF48VNyjqT5yp2ZOYP9goiq0Rr5V3+qkyb5K1fT7/MyoEMWLDNVKvLu1H6RYQvuT5
+	 K08EQxOIf8dL42nSDJhaWDIW/7Wso7UZD4088y0I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA9AFF80377;
-	Fri,  4 Oct 2019 19:03:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CE41F805FB;
+	Fri,  4 Oct 2019 19:52:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4428F80391; Fri,  4 Oct 2019 19:03:51 +0200 (CEST)
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BB093F805FA; Fri,  4 Oct 2019 19:52:38 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A6B8F800DE
- for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2019 19:03:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A6B8F800DE
-Received: from [167.98.27.226] (helo=[10.35.6.110])
- by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
- id 1iGQzU-0000ZT-46; Fri, 04 Oct 2019 18:03:40 +0100
-To: Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org,
- alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
-References: <20190930165130.10642-1-ben.dooks@codethink.co.uk>
- <20190930165130.10642-7-ben.dooks@codethink.co.uk>
- <3a65d828-8430-9739-7973-10e0df360767@nvidia.com>
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <faed4e1f-0e67-88b1-e276-80a8a5cd4b3e@codethink.co.uk>
-Date: Fri, 4 Oct 2019 18:03:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <3a65d828-8430-9739-7973-10e0df360767@nvidia.com>
-Content-Language: en-GB
-Cc: linux-kernel@lists.codethink.co.uk
-Subject: Re: [alsa-devel] [PATCH v3 6/7] ASoC: tegra: config fifos on
-	hw_param changes
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1849F80137
+ for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2019 19:52:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1849F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="NBJuJzhf"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=SnEx+q8UrLxM+Y1tv/S2oUaL3RgTesLf7gwyWzN2SMw=; b=NBJuJzhfasmG
+ /L8j+ItFEuXzXVedB7L/4jv2zIO1V0eSnV834IxhIMOuL8zSvJDtoSVHBsEky5+J4TLy0X3IWEYtR
+ S+veqj358d5/YzsU8jDIAFokiRrKiPN6sw8czu54K4386ibYUcJ83jyUT4YCLhUWBFR7ZT+Tt7uwj
+ GVMCY=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iGRko-0003ui-VK; Fri, 04 Oct 2019 17:52:35 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 6EAF32741F98; Fri,  4 Oct 2019 18:52:34 +0100 (BST)
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zhijafgk.wl-kuninori.morimoto.gx@renesas.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20191004175234.6EAF32741F98@ypsilon.sirena.org.uk>
+Date: Fri,  4 Oct 2019 18:52:34 +0100 (BST)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: soc-core: setup card->rtd_num at
+	snd_soc_instantiate_card()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,256 +87,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 30/09/2019 22:08, Jon Hunter wrote:
-> 
-> On 30/09/2019 17:51, Ben Dooks wrote:
->> If the hw_params uses a different bit or channel count, then we
->> need to change both the I2S unit's CIF configuration as well as
->> the APBIF one.
->>
->> To allow changing the APBIF, add a call to reconfigure the RX or
->> TX FIFO without changing the DMA or allocation, and get the I2S
->> driver to call it once the hw params have been calculate.
->>
->> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
->> ---
->>   sound/soc/tegra/tegra30_ahub.c | 114 ++++++++++++++++++---------------
->>   sound/soc/tegra/tegra30_ahub.h |   5 ++
->>   sound/soc/tegra/tegra30_i2s.c  |   2 +
->>   3 files changed, 69 insertions(+), 52 deletions(-)
->>
->> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
->> index 952381260dc3..58e05ceb86da 100644
->> --- a/sound/soc/tegra/tegra30_ahub.c
->> +++ b/sound/soc/tegra/tegra30_ahub.c
->> @@ -84,12 +84,40 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
->>   	return 0;
->>   }
->>   
->> +int tegra30_ahub_setup_rx_fifo(enum tegra30_ahub_rxcif rxcif,
->> +			       struct tegra30_ahub_cif_conf *cif_conf)
->> +{
->> +	int channel = rxcif - TEGRA30_AHUB_RXCIF_APBIF_RX0;
->> +	u32 reg, val;
->> +
->> +	pm_runtime_get_sync(ahub->dev);
->> +
->> +	reg = TEGRA30_AHUB_CHANNEL_CTRL +
->> +	      (channel * TEGRA30_AHUB_CHANNEL_CTRL_STRIDE);
->> +	val = tegra30_apbif_read(reg);
->> +	val &= ~(TEGRA30_AHUB_CHANNEL_CTRL_RX_THRESHOLD_MASK |
->> +		 TEGRA30_AHUB_CHANNEL_CTRL_RX_PACK_MASK);
->> +	val |= (7 << TEGRA30_AHUB_CHANNEL_CTRL_RX_THRESHOLD_SHIFT) |
->> +	       TEGRA30_AHUB_CHANNEL_CTRL_RX_PACK_EN |
->> +	       TEGRA30_AHUB_CHANNEL_CTRL_RX_PACK_16;
->> +	tegra30_apbif_write(reg, val);
->> +
->> +	cif_conf->direction = TEGRA30_AUDIOCIF_DIRECTION_RX;
->> +
->> +	reg = TEGRA30_AHUB_CIF_RX_CTRL +
->> +	      (channel * TEGRA30_AHUB_CIF_RX_CTRL_STRIDE);
->> +	ahub->soc_data->set_audio_cif(ahub->regmap_apbif, reg, cif_conf);
->> +
->> +	pm_runtime_put(ahub->dev);
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(tegra30_ahub_setup_rx_fifo);
->> +
->>   int tegra30_ahub_allocate_rx_fifo(enum tegra30_ahub_rxcif *rxcif,
->>   				  char *dmachan, int dmachan_len,
->>   				  dma_addr_t *fiforeg)
->>   {
->>   	int channel;
->> -	u32 reg, val;
->>   	struct tegra30_ahub_cif_conf cif_conf;
->>   
->>   	channel = find_first_zero_bit(ahub->rx_usage,
->> @@ -104,37 +132,14 @@ int tegra30_ahub_allocate_rx_fifo(enum tegra30_ahub_rxcif *rxcif,
->>   	*fiforeg = ahub->apbif_addr + TEGRA30_AHUB_CHANNEL_RXFIFO +
->>   		   (channel * TEGRA30_AHUB_CHANNEL_RXFIFO_STRIDE);
->>   
->> -	pm_runtime_get_sync(ahub->dev);
->> +	memset(&cif_conf, 0, sizeof(cif_conf));
->>   
->> -	reg = TEGRA30_AHUB_CHANNEL_CTRL +
->> -	      (channel * TEGRA30_AHUB_CHANNEL_CTRL_STRIDE);
->> -	val = tegra30_apbif_read(reg);
->> -	val &= ~(TEGRA30_AHUB_CHANNEL_CTRL_RX_THRESHOLD_MASK |
->> -		 TEGRA30_AHUB_CHANNEL_CTRL_RX_PACK_MASK);
->> -	val |= (7 << TEGRA30_AHUB_CHANNEL_CTRL_RX_THRESHOLD_SHIFT) |
->> -	       TEGRA30_AHUB_CHANNEL_CTRL_RX_PACK_EN |
->> -	       TEGRA30_AHUB_CHANNEL_CTRL_RX_PACK_16;
->> -	tegra30_apbif_write(reg, val);
->> -
->> -	cif_conf.threshold = 0;
->>   	cif_conf.audio_channels = 2;
->>   	cif_conf.client_channels = 2;
->>   	cif_conf.audio_bits = TEGRA30_AUDIOCIF_BITS_16;
->>   	cif_conf.client_bits = TEGRA30_AUDIOCIF_BITS_16;
->> -	cif_conf.expand = 0;
->> -	cif_conf.stereo_conv = 0;
->> -	cif_conf.replicate = 0;
->> -	cif_conf.direction = TEGRA30_AUDIOCIF_DIRECTION_RX;
->> -	cif_conf.truncate = 0;
->> -	cif_conf.mono_conv = 0;
->> -
->> -	reg = TEGRA30_AHUB_CIF_RX_CTRL +
->> -	      (channel * TEGRA30_AHUB_CIF_RX_CTRL_STRIDE);
->> -	ahub->soc_data->set_audio_cif(ahub->regmap_apbif, reg, &cif_conf);
->> -
->> -	pm_runtime_put(ahub->dev);
->>   
->> -	return 0;
->> +	return tegra30_ahub_setup_rx_fifo(*rxcif, &cif_conf);
-> 
-> It seems a bit odd, that you still configure some of the cif_conf
-> members and then call tegra30_ahub_setup_rx_fifo() here. Why not just
-> allocate it and then move all the programming to
-> tegra30_ahub_setup_rx_fifo()?
+The patch
 
-I was trying to keep the behaviour the same, IIRC the original is first
-called before the format information is known.
+   ASoC: soc-core: setup card->rtd_num at snd_soc_instantiate_card()
 
->>   }
->>   EXPORT_SYMBOL_GPL(tegra30_ahub_allocate_rx_fifo);
->>   
->> @@ -186,12 +191,40 @@ int tegra30_ahub_free_rx_fifo(enum tegra30_ahub_rxcif rxcif)
->>   }
->>   EXPORT_SYMBOL_GPL(tegra30_ahub_free_rx_fifo);
->>   
->> +int tegra30_ahub_setup_tx_fifo(enum tegra30_ahub_txcif txcif,
->> +			       struct tegra30_ahub_cif_conf *cif_conf)
->> +{
->> +	int channel = txcif - TEGRA30_AHUB_TXCIF_APBIF_TX0;
->> +	u32 reg, val;
->> +
->> +	pm_runtime_get_sync(ahub->dev);
->> +
->> +	reg = TEGRA30_AHUB_CHANNEL_CTRL +
->> +	      (channel * TEGRA30_AHUB_CHANNEL_CTRL_STRIDE);
->> +	val = tegra30_apbif_read(reg);
->> +	val &= ~(TEGRA30_AHUB_CHANNEL_CTRL_TX_THRESHOLD_MASK |
->> +		 TEGRA30_AHUB_CHANNEL_CTRL_TX_PACK_MASK);
->> +	val |= (7 << TEGRA30_AHUB_CHANNEL_CTRL_TX_THRESHOLD_SHIFT) |
->> +	       TEGRA30_AHUB_CHANNEL_CTRL_TX_PACK_EN |
->> +	       TEGRA30_AHUB_CHANNEL_CTRL_TX_PACK_16;
->> +	tegra30_apbif_write(reg, val);
->> +
->> +	cif_conf->direction = TEGRA30_AUDIOCIF_DIRECTION_TX;
->> +
->> +	reg = TEGRA30_AHUB_CIF_TX_CTRL +
->> +	      (channel * TEGRA30_AHUB_CIF_TX_CTRL_STRIDE);
->> +	ahub->soc_data->set_audio_cif(ahub->regmap_apbif, reg, cif_conf);
->> +
->> +	pm_runtime_put(ahub->dev);
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(tegra30_ahub_setup_tx_fifo);
->> +
->>   int tegra30_ahub_allocate_tx_fifo(enum tegra30_ahub_txcif *txcif,
->>   				  char *dmachan, int dmachan_len,
->>   				  dma_addr_t *fiforeg)
->>   {
->>   	int channel;
->> -	u32 reg, val;
->>   	struct tegra30_ahub_cif_conf cif_conf;
->>   
->>   	channel = find_first_zero_bit(ahub->tx_usage,
->> @@ -206,37 +239,14 @@ int tegra30_ahub_allocate_tx_fifo(enum tegra30_ahub_txcif *txcif,
->>   	*fiforeg = ahub->apbif_addr + TEGRA30_AHUB_CHANNEL_TXFIFO +
->>   		   (channel * TEGRA30_AHUB_CHANNEL_TXFIFO_STRIDE);
->>   
->> -	pm_runtime_get_sync(ahub->dev);
->> -
->> -	reg = TEGRA30_AHUB_CHANNEL_CTRL +
->> -	      (channel * TEGRA30_AHUB_CHANNEL_CTRL_STRIDE);
->> -	val = tegra30_apbif_read(reg);
->> -	val &= ~(TEGRA30_AHUB_CHANNEL_CTRL_TX_THRESHOLD_MASK |
->> -		 TEGRA30_AHUB_CHANNEL_CTRL_TX_PACK_MASK);
->> -	val |= (7 << TEGRA30_AHUB_CHANNEL_CTRL_TX_THRESHOLD_SHIFT) |
->> -	       TEGRA30_AHUB_CHANNEL_CTRL_TX_PACK_EN |
->> -	       TEGRA30_AHUB_CHANNEL_CTRL_TX_PACK_16;
->> -	tegra30_apbif_write(reg, val);
->> -
->> -	cif_conf.threshold = 0;
->> +	memset(&cif_conf, 0, sizeof(cif_conf));
->>   	cif_conf.audio_channels = 2;
->>   	cif_conf.client_channels = 2;
->>   	cif_conf.audio_bits = TEGRA30_AUDIOCIF_BITS_16;
->>   	cif_conf.client_bits = TEGRA30_AUDIOCIF_BITS_16;
->> -	cif_conf.expand = 0;
->> -	cif_conf.stereo_conv = 0;
->> -	cif_conf.replicate = 0;
->>   	cif_conf.direction = TEGRA30_AUDIOCIF_DIRECTION_TX;
->> -	cif_conf.truncate = 0;
->> -	cif_conf.mono_conv = 0;
->> -
->> -	reg = TEGRA30_AHUB_CIF_TX_CTRL +
->> -	      (channel * TEGRA30_AHUB_CIF_TX_CTRL_STRIDE);
->> -	ahub->soc_data->set_audio_cif(ahub->regmap_apbif, reg, &cif_conf);
->>   
->> -	pm_runtime_put(ahub->dev);
->> -
->> -	return 0;
->> +	return tegra30_ahub_setup_tx_fifo(*txcif, &cif_conf);
->>   }
->>   EXPORT_SYMBOL_GPL(tegra30_ahub_allocate_tx_fifo);
->>   
->> diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
->> index 6889c5f23d02..26120aee64b3 100644
->> --- a/sound/soc/tegra/tegra30_ahub.h
->> +++ b/sound/soc/tegra/tegra30_ahub.h
->> @@ -490,6 +490,11 @@ void tegra30_ahub_set_cif(struct regmap *regmap, unsigned int reg,
->>   void tegra124_ahub_set_cif(struct regmap *regmap, unsigned int reg,
->>   			   struct tegra30_ahub_cif_conf *conf);
->>   
->> +extern int tegra30_ahub_setup_tx_fifo(enum tegra30_ahub_txcif txcif,
->> +				      struct tegra30_ahub_cif_conf *cif_conf);
->> +extern int tegra30_ahub_setup_rx_fifo(enum tegra30_ahub_rxcif,
->> +				      struct tegra30_ahub_cif_conf *cif_conf);
->> +
->>   struct tegra30_ahub_soc_data {
->>   	u32 mod_list_mask;
->>   	void (*set_audio_cif)(struct regmap *regmap,
->> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
->> index a03692b0afc3..19ac49df6cc8 100644
->> --- a/sound/soc/tegra/tegra30_i2s.c
->> +++ b/sound/soc/tegra/tegra30_i2s.c
->> @@ -202,9 +202,11 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
->>   
->>   	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->>   		cif_conf.direction = TEGRA30_AUDIOCIF_DIRECTION_RX;
-> 
-> You set the direction here and then set it again in
-> tegra30_ahub_setup_tx_fifo(). It only needs to be done once.
+has been applied to the asoc tree at
 
-ok, will fix that.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
->> +		tegra30_ahub_setup_tx_fifo(i2s->playback_fifo_cif, &cif_conf);
->>   		reg = TEGRA30_I2S_CIF_RX_CTRL;
->>   	} else {
->>   		cif_conf.direction = TEGRA30_AUDIOCIF_DIRECTION_TX;
->> +		tegra30_ahub_setup_rx_fifo(i2s->capture_fifo_cif, &cif_conf);
->>   		reg = TEGRA30_I2S_CIF_TX_CTRL;
->>   	}
->>   
->>
-> 
-> Cheers
-> Jon
-> 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From d8145989ff8c2a938be372b728f90e23de8557a2 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 2 Oct 2019 14:23:07 +0900
+Subject: [PATCH] ASoC: soc-core: setup card->rtd_num at
+ snd_soc_instantiate_card()
+
+card->rtd_num is used to count rtd. Initialize it at
+snd_soc_instantiate_card() is very natural and less confusion.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87zhijafgk.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 2c2803e6544b..d39d908f3204 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -462,8 +462,6 @@ static void soc_remove_pcm_runtimes(struct snd_soc_card *card)
+ 
+ 	for_each_card_rtds_safe(card, rtd, _rtd)
+ 		soc_free_pcm_runtime(rtd);
+-
+-	card->num_rtd = 0;
+ }
+ 
+ struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
+@@ -2008,6 +2006,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		goto probe_end;
+ 
+ 	/* add predefined DAI links to the list */
++	card->num_rtd = 0;
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		ret = snd_soc_add_dai_link(card, dai_link);
+ 		if (ret < 0)
+@@ -2418,7 +2417,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	INIT_LIST_HEAD(&card->dapm_dirty);
+ 	INIT_LIST_HEAD(&card->dobj_list);
+ 
+-	card->num_rtd = 0;
+ 	card->instantiated = 0;
+ 	mutex_init(&card->mutex);
+ 	mutex_init(&card->dapm_mutex);
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+2.20.1
 
-https://www.codethink.co.uk/privacy.html
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
