@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F4EC47404
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D64E4C4360C
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:59:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25BEC2077B
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:58:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F1292077B
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Oct 2019 17:59:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nucV9Bur";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="A/efAStV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25BEC2077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uRyOZD5P";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="jl+bIApn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F1292077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 724AF169C;
-	Fri,  4 Oct 2019 19:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 724AF169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 993B51692;
+	Fri,  4 Oct 2019 19:58:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 993B51692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570211925;
-	bh=ExK4eqYiuayKHa9k3q4n7V9wXMjoVmzPeTeB1mlOflk=;
+	s=default; t=1570211953;
+	bh=LD04KBwwt2LSC8I03dKli93wfpl6nF/ygj+ZhGp9Ptk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=nucV9BurZZP6leWaAnjrD/Gzs3xgR26wmg7dXzYFjulfiPMMoc27SUAxDtiPMD2W3
-	 u2D3mqkTwmdQb2IVd5H80+coysiQ9rPtyAbK0z4Vuk85ruj8qrIDRbONUm2EBu6Xyu
-	 idhh2aTl9ng0sV7TZUz/jzNh3PmKFhG/CU72rvts=
+	b=uRyOZD5PD/4FHkA5lwMH2aOh1k0jUgE9DkFfmR1CyOyanL3vZTOTep8VeY5iTkiI1
+	 dsAMGnLfy2qMn/avldUydDWNZHecJmUWJlLUMqa8V3M4nmj9GVoWj4qcLUUrq0E15k
+	 d5a6V2m8Eg5ZESJJ34bqlt0KLjV2l2vtYI0U2rEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75492F80672;
-	Fri,  4 Oct 2019 19:52:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55190F8067A;
+	Fri,  4 Oct 2019 19:52:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE1E0F80634; Fri,  4 Oct 2019 19:52:47 +0200 (CEST)
+ id 133E0F80633; Fri,  4 Oct 2019 19:52:48 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D150DF800C2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 496ADF80528
  for <alsa-devel@alsa-project.org>; Fri,  4 Oct 2019 19:52:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D150DF800C2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 496ADF80528
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="A/efAStV"
+ header.b="jl+bIApn"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=/tVPZenYEEvKXdV0H0rtDml9JDehxDB1KYdDNZdz9Gs=; b=A/efAStVmGes
- N7QaUZoz9lOew9PUrjMART1+Yl7PLXIHavgkzsw8c6ERp/n2niBgG+bcfdakdNvVoIWUdXdJWbSaY
- aKUrJLBglIzmH3mxhP0TTlXIScO3xzxpHgGR7yNWtNpGG9HqcA1h/Otf1gBVzVoDyBKQBGalVKsvK
- ZTkCY=;
+ List-Archive; bh=23h7hrNuuBzYxbv0A+McL9EDRzTDvU0UkCbQmXL7gEU=; b=jl+bIApnjKcO
+ B7wXEYeEghjPpo1OZHbNdn43BbvsHqMHb+zeZofoqkPAnIhHMm2Glf1A71hluVJ+0xCREAjU58Jpl
+ 8a2nCIFDnY/mmLcYnd7gTqbXXrF+JyaaCRlpTrnlD/3AOmvbrSHOy3ftRDBNjNhkec+P5TYUcovwv
+ dhGOM=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iGRkq-0003vE-Fz; Fri, 04 Oct 2019 17:52:36 +0000
+ id 1iGRkq-0003vH-Ok; Fri, 04 Oct 2019 17:52:36 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 060992741EF0; Fri,  4 Oct 2019 18:52:35 +0100 (BST)
+ id 4139E2741EF2; Fri,  4 Oct 2019 18:52:36 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <bcb12a849a05437fb18372bc7536c649b94bdf07.1570029862.git.robin.murphy@arm.com>
+To: Stuart Henderson <stuarth@opensource.cirrus.com>
+In-Reply-To: <20191002084240.21589-1-ckeepax@opensource.cirrus.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191004175236.060992741EF0@ypsilon.sirena.org.uk>
-Date: Fri,  4 Oct 2019 18:52:35 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.com,
- lgirdwood@gmail.com, linux-rockchip@lists.infradead.org,
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoc: rockchip: i2s: Fix RPM imbalance" to
-	the asoc tree
+Message-Id: <20191004175236.4139E2741EF2@ypsilon.sirena.org.uk>
+Date: Fri,  4 Oct 2019 18:52:36 +0100 (BST)
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, lgirdwood@gmail.com
+Subject: [alsa-devel] Applied "ASoC: wm_adsp: Don't generate kcontrols
+	without READ flags" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoc: rockchip: i2s: Fix RPM imbalance
+   ASoC: wm_adsp: Don't generate kcontrols without READ flags
 
 has been applied to the asoc tree at
 
@@ -122,37 +122,37 @@ to this mail.
 Thanks,
 Mark
 
-From b1e620e7d32f5aad5353cc3cfc13ed99fea65d3a Mon Sep 17 00:00:00 2001
-From: Robin Murphy <robin.murphy@arm.com>
-Date: Wed, 2 Oct 2019 16:30:37 +0100
-Subject: [PATCH] ASoc: rockchip: i2s: Fix RPM imbalance
+From 3ae7359c0e39f42a96284d6798fc669acff38140 Mon Sep 17 00:00:00 2001
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
+Date: Wed, 2 Oct 2019 09:42:40 +0100
+Subject: [PATCH] ASoC: wm_adsp: Don't generate kcontrols without READ flags
 
-If rockchip_pcm_platform_register() fails, e.g. upon deferring to wait
-for an absent DMA channel, we return without disabling RPM, which makes
-subsequent re-probe attempts scream with errors about the unbalanced
-enable. Don't do that.
+User space always expects to be able to read ALSA controls, so ensure
+no kcontrols are generated without an appropriate READ flag. In the case
+of a read of such a control zeros will be returned.
 
-Fixes: ebb75c0bdba2 ("ASoC: rockchip: i2s: Adjust devm usage")
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/bcb12a849a05437fb18372bc7536c649b94bdf07.1570029862.git.robin.murphy@arm.com
+Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20191002084240.21589-1-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index af2d5a6124c8..61c984f10d8e 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -677,7 +677,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 	ret = rockchip_pcm_platform_register(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register PCM\n");
--		return ret;
-+		goto err_suspend;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 85396d920e0a..9b8bb7bbe945 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1259,8 +1259,7 @@ static unsigned int wmfw_convert_flags(unsigned int in, unsigned int len)
  	}
  
- 	return 0;
+ 	if (in) {
+-		if (in & WMFW_CTL_FLAG_READABLE)
+-			out |= rd;
++		out |= rd;
+ 		if (in & WMFW_CTL_FLAG_WRITEABLE)
+ 			out |= wr;
+ 		if (in & WMFW_CTL_FLAG_VOLATILE)
 -- 
 2.20.1
 
