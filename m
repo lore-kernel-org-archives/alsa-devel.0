@@ -2,94 +2,78 @@ Return-Path: <SRS0=ok5v=X6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67742C4CED1
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Oct 2019 06:06:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 550C9C47404
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Oct 2019 06:07:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6434C2133F
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Oct 2019 06:06:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D2B532133F
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Oct 2019 06:07:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OaxTuarj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="BX8Y/5Zn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6434C2133F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tjD6HBgW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2B532133F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81B5B1695;
-	Sat,  5 Oct 2019 08:05:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81B5B1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29D5D1693;
+	Sat,  5 Oct 2019 08:06:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29D5D1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570255597;
-	bh=MkoGuavGoOYmDb1rQq9CogQgljWl2JKKzQcfgJJWMxE=;
-	h=Date:In-Reply-To:References:From:To:Cc:Subject:List-Id:
+	s=default; t=1570255640;
+	bh=gb8s1sMaPU8PDoQXY6E3SMfTiZ04bS2BT/qdRIfI1aM=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OaxTuarjp/aF0eyaqZUcdaYkLXTeZFBht/mgyFzZvp/ywyPPYNCUfqGBTSWEICMnM
-	 fBLjosE6kqL7X+TzgJQSgsZaophngsOgm6v9omLgus8V+E6D6qKpRqvkCve53mSlwn
-	 WCuHE4yIOhdxVuLykAj3Qdvna3AAfIAS5+fKchp4=
+	b=tjD6HBgWhZuXSgVBHv4w9ASxMB2RTKkLSvnhvQToQLFjgmfY8w1L6h4BZDPjYv94I
+	 af40MTTVhGViNlMzNhDLtqxRY29Qauj7lv6dWtqCOeSQqaDltToIDKmJdCXHHWnJt1
+	 xGQ7wKELRHWxZk3bcCkjptGK9hTeWdB/KapU7MfA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AED5F8070B;
-	Sat,  5 Oct 2019 07:59:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1483F8053A;
+	Sat,  5 Oct 2019 07:59:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A869F8070C; Sat,  5 Oct 2019 07:59:27 +0200 (CEST)
-Received: from mail-vk1-xa4a.google.com (mail-vk1-xa4a.google.com
- [IPv6:2607:f8b0:4864:20::a4a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF6D4F80709
- for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2019 07:59:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF6D4F80709
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="BX8Y/5Zn"
-Received: by mail-vk1-xa4a.google.com with SMTP id x128so3662531vkx.16
- for <alsa-devel@alsa-project.org>; Fri, 04 Oct 2019 22:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=wFKIOToRbdu3m60b5e+tQ6dn8L8Tfr3EeQzYLtHUnvY=;
- b=BX8Y/5ZnAVOwdwTaaOj3xlZG9yaLNx/lWLp0xCiJ+YAQbzLO1/H7MWVfOS9zyVn2Hq
- 6DmJsbHEAYHSI5ykSn+SF/fLa7J/pbS0JTn6ozAxgAQv+g6EaWidIvhS2PvZTNkadvNW
- kBwAY+QMO0ZuEQHuKI3MH+ydudPLul3Z2tfllT1Za97JZI36sI+YN4rnuJnmWDXyA9w0
- JfR9PcI0Qiy/j6r0PjQkoiXJFT0SVCH+J/6QoT8zNo8U5tpXQ8e1CZuZpdR3J/cO9Pow
- xFI8hY9w2ambpomcFxlD1eHaOo4gRWdnCXaim60GnlzdFp7WHOAwe4LUWsWE0FJ4XU8l
- 1F4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=wFKIOToRbdu3m60b5e+tQ6dn8L8Tfr3EeQzYLtHUnvY=;
- b=kz/vArKEEqRE57eeoPb3KFWqSCfy2njhdjTf0Q0+CpUaQe6kuycf4Gwi3iU0nJROis
- IbJin88Q2donVCHAnHej/gOIQ/gVggzIlkkQ6/2AjLAKXNtaytbsst9SQRigx2LG9tez
- e6n49GHcTlSw250yt6KVVxFwOrI/tpteeMk+ug9NxGxJXndj0fSB9M9KzLeIQM/T2YU9
- uqLHRfzo5JX59o6soMWr5m3C4LTiJgZ/wDV9ZYJYUvAi1zyxt79lhdQwONEDhVsGgxUF
- YwdYxp3XhLAP3GheWhf/01hpHQe1rhqSrp3YnCHgF1oiU05tSPm30Ksg8PrutUX7e7YQ
- rEUA==
-X-Gm-Message-State: APjAAAWHvzHaOIoeD2gxxiNifJeAjPa3izi6ks8L2WS7obBzEHAfFEZz
- yFLyaf5DR4/DZ3uIS0C1AcQyaHyUkb84
-X-Google-Smtp-Source: APXvYqyoB3OHuRFIyy3n6oDmCcP3tbotAm1PNN/nfJ/Sjg3TJ9YV+pkvlVVzUuCrfqFFRw6Y4K/Xin44PkWY
-X-Received: by 2002:ab0:658a:: with SMTP id v10mr2608199uam.73.1570255162880; 
- Fri, 04 Oct 2019 22:59:22 -0700 (PDT)
-Date: Sat,  5 Oct 2019 13:58:08 +0800
-In-Reply-To: <20191005055808.249089-1-tzungbi@google.com>
-Message-Id: <20191005130552.10.Ibf012d0cd8679d846213606dc5f426aea1ff590a@changeid>
-Mime-Version: 1.0
-References: <20191005055808.249089-1-tzungbi@google.com>
-X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org
-Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- cychiang@google.com, drinkcat@google.com, tzungbi@google.com,
- robh+dt@kernel.org, enric.balletbo@collabora.com, bleung@google.com,
- dgreid@google.com
-Subject: [alsa-devel] [PATCH 10/10] ASoC: mediatek: mt8183: support WoV
+ id 15412F8070E; Sat,  5 Oct 2019 07:59:51 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7DACFF80506
+ for <alsa-devel@alsa-project.org>; Sat,  5 Oct 2019 07:59:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DACFF80506
+X-UUID: c482a5b751ea4e828975679a310b3ef0-20191005
+X-UUID: c482a5b751ea4e828975679a310b3ef0-20191005
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+ (envelope-from <yingjoe.chen@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+ with ESMTP id 332400420; Sat, 05 Oct 2019 13:59:41 +0800
+Received: from mtkcas09.mediatek.inc (172.21.101.178) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Sat, 5 Oct 2019 13:59:38 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas09.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Sat, 5 Oct 2019 13:59:38 +0800
+Message-ID: <1570255179.29077.24.camel@mtksdaap41>
+From: Yingjoe Chen <yingjoe.chen@mediatek.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Date: Sat, 5 Oct 2019 13:59:39 +0800
+In-Reply-To: <a0b2e9a3-ca77-814f-b7bd-edc69f00fce2@roeck-us.net>
+References: <1569580317-21181-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1569580317-21181-3-git-send-email-jiaxin.yu@mediatek.com>
+ <a0b2e9a3-ca77-814f-b7bd-edc69f00fce2@roeck-us.net>
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK: N
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, broonie@kernel.org,
+ yong.liang@mediatek.com, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ lgirdwood@gmail.com, tzungbi@google.com, robh+dt@kernel.org,
+ linux-mediatek@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>,
+ eason.yen@mediatek.com, wim@linux-watchdog.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH v2 2/4] watchdog: mtk_wdt: mt8183: Add
+	reset controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,151 +91,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add DAI link and pin muxing for wake on voice.
+On Thu, 2019-10-03 at 06:49 -0700, Guenter Roeck wrote:
+> On 9/27/19 3:31 AM, Jiaxin Yu wrote:
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/mediatek/Kconfig                    |  1 +
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 70 ++++++++++++++++++-
- 2 files changed, 68 insertions(+), 3 deletions(-)
+<snip..>
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 111e44b64b38..8b29f3979899 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -125,6 +125,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_BT_SCO
- 	select SND_SOC_TS3A227E
-+	select SND_SOC_CROS_EC_CODEC
- 	help
- 	  This adds ASoC driver for Mediatek MT8183 boards
- 	  with the MT6358 TS3A227E MAX98357A audio codec.
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index bb9cdc0d6552..0555f7d73d05 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -19,11 +19,12 @@ enum PINCTRL_PIN_STATE {
- 	PIN_STATE_DEFAULT = 0,
- 	PIN_TDM_OUT_ON,
- 	PIN_TDM_OUT_OFF,
-+	PIN_WOV,
- 	PIN_STATE_MAX
- };
- 
- static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
--	"default", "aud_tdm_out_on", "aud_tdm_out_off",
-+	"default", "aud_tdm_out_on", "aud_tdm_out_off", "wov",
- };
- 
- struct mt8183_mt6358_ts3a227_max98357_priv {
-@@ -142,6 +143,11 @@ SND_SOC_DAILINK_DEFS(playback_hdmi,
- 	DAILINK_COMP_ARRAY(COMP_DUMMY()),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
-+SND_SOC_DAILINK_DEFS(wake_on_voice,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
- /* BE */
- SND_SOC_DAILINK_DEFS(primary_codec,
- 	DAILINK_COMP_ARRAY(COMP_CPU("ADDA")),
-@@ -229,6 +235,41 @@ static struct snd_soc_ops mt8183_mt6358_tdm_ops = {
- 	.shutdown = mt8183_mt6358_tdm_shutdown,
- };
- 
-+static int
-+mt8183_mt6358_ts3a227_max98357_wov_startup(
-+	struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
-+			snd_soc_card_get_drvdata(card);
-+
-+	return pinctrl_select_state(priv->pinctrl,
-+				    priv->pin_states[PIN_WOV]);
-+}
-+
-+static void
-+mt8183_mt6358_ts3a227_max98357_wov_shutdown(
-+	struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
-+			snd_soc_card_get_drvdata(card);
-+	int ret;
-+
-+	ret = pinctrl_select_state(priv->pinctrl,
-+				   priv->pin_states[PIN_STATE_DEFAULT]);
-+	if (ret)
-+		dev_err(card->dev, "%s failed to select state %d\n",
-+			__func__, ret);
-+}
-+
-+static const struct snd_soc_ops mt8183_mt6358_ts3a227_max98357_wov_ops = {
-+	.startup = mt8183_mt6358_ts3a227_max98357_wov_startup,
-+	.shutdown = mt8183_mt6358_ts3a227_max98357_wov_shutdown,
-+};
-+
- static struct snd_soc_dai_link
- mt8183_mt6358_ts3a227_max98357_dai_links[] = {
- 	/* FE */
-@@ -306,6 +347,15 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
- 		.dpcm_playback = 1,
- 		SND_SOC_DAILINK_REG(playback_hdmi),
- 	},
-+	{
-+		.name = "Wake on Voice",
-+		.stream_name = "Wake on Voice",
-+		.ignore_suspend = 1,
-+		.ignore = 1,
-+		SND_SOC_DAILINK_REG(wake_on_voice),
-+		.ops = &mt8183_mt6358_ts3a227_max98357_wov_ops,
-+	},
-+
- 	/* BE */
- 	{
- 		.name = "Primary Codec",
-@@ -429,7 +479,7 @@ static int
- mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &mt8183_mt6358_ts3a227_max98357_card;
--	struct device_node *platform_node;
-+	struct device_node *platform_node, *ec_codec;
- 	struct snd_soc_dai_link *dai_link;
- 	struct mt8183_mt6358_ts3a227_max98357_priv *priv;
- 	int ret;
-@@ -444,10 +494,24 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
-+	ec_codec = of_parse_phandle(pdev->dev.of_node, "mediatek,ec-codec", 0);
-+
- 	for_each_card_prelinks(card, i, dai_link) {
- 		if (dai_link->platforms->name)
- 			continue;
--		dai_link->platforms->of_node = platform_node;
-+
-+		if (ec_codec && strcmp(dai_link->name, "Wake on Voice") == 0) {
-+			dai_link->cpus[0].name = NULL;
-+			dai_link->cpus[0].of_node = ec_codec;
-+			dai_link->cpus[0].dai_name = NULL;
-+			dai_link->codecs[0].name = NULL;
-+			dai_link->codecs[0].of_node = ec_codec;
-+			dai_link->codecs[0].dai_name = "Wake on Voice";
-+			dai_link->platforms[0].of_node = ec_codec;
-+			dai_link->ignore = 0;
-+		} else {
-+			dai_link->platforms->of_node = platform_node;
-+		}
- 	}
- 
- 	mt8183_mt6358_ts3a227_max98357_headset_dev.dlc.of_node =
--- 
-2.23.0.581.g78d2f28ef7-goog
+
+> > +static int toprgu_reset_assert(struct reset_controller_dev *rcdev,
+> > +			       unsigned long id)
+> > +{
+> > +	unsigned int tmp;
+> > +	unsigned long flags;
+> > +	struct toprgu_reset *data = container_of(rcdev,
+> > +				struct toprgu_reset, rcdev);
+> > +
+> > +	spin_lock_irqsave(&data->lock, flags);
+> > +
+> > +	tmp = __raw_readl(data->toprgu_swrst_base + data->regofs);
+> > +	tmp |= BIT(id);
+> > +	tmp |= WDT_SWSYS_RST_KEY;
+> > +	writel(tmp, data->toprgu_swrst_base + data->regofs);
+> > +
+> > +	spin_unlock_irqrestore(&data->lock, flags);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int toprgu_reset_deassert(struct reset_controller_dev *rcdev,
+> > +				 unsigned long id)
+> > +{
+> > +	unsigned int tmp;
+> > +	unsigned long flags;
+> > +	struct toprgu_reset *data = container_of(rcdev,
+> > +					struct toprgu_reset, rcdev);
+> > +
+> > +	spin_lock_irqsave(&data->lock, flags);
+> > +
+> > +	tmp = __raw_readl(data->toprgu_swrst_base + data->regofs);
+> > +	tmp &= ~BIT(id);
+> > +	tmp |= WDT_SWSYS_RST_KEY;
+> > +	writel(tmp, data->toprgu_swrst_base + data->regofs);
+> > +
+> > +	spin_unlock_irqrestore(&data->lock, flags);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int toprgu_reset(struct reset_controller_dev *rcdev,
+> > +			unsigned long id)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = toprgu_reset_assert(rcdev, id);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return toprgu_reset_deassert(rcdev, id);
+> 
+> Unless there is additional synchronization elsewhere, parallel calls
+> to the -> assert, and ->reset callbacks may result in the reset being
+> deasserted while at least one caller (the one who called the ->assert
+> function) believes that it is still asserted.
+> 
+> [ ... and if there _is_ additional synchronization elsewhere, the
+>    local spinlock would be unnecessary ]
+> 
+
+I'm not sure if this count as additional synchronization, but you could
+get exclusive control to the reset by calling
+reset_control_get_exclusive so others won't try to reset the component
+while you are using it.
+
+In this case, you still need spinlock because other drivers might trying
+to reset their components and they share same register.
+
+Joe.C
+
 
 _______________________________________________
 Alsa-devel mailing list
