@@ -2,65 +2,66 @@ Return-Path: <SRS0=Jk6f=YA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A28C9C4360C
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 01:57:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0941EC4360C
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 01:58:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 171CD2080F
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 01:57:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8314A2080F
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 01:58:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XgAUug58"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 171CD2080F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wy12wghN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8314A2080F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BF1915E0;
-	Mon,  7 Oct 2019 03:56:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BF1915E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD25B166B;
+	Mon,  7 Oct 2019 03:57:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD25B166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570413444;
-	bh=CEsTPziTAYk1MsGAn7tljicBUCwUw9zwzCRX7oONwJU=;
+	s=default; t=1570413518;
+	bh=peMnlwoje0mNJ6us0jXKL8C7amMGLOS/jb4Se5F5/2g=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XgAUug58E1tbMxV7xbuAspGnVRP7PeuOMw3oMQ4BgGo5pghWPqJ7tIM8gzc8RnQT1
-	 YhUNNbyWpNqzQdTdsYTpdErgcXt/9FkB5dVqxuCXQG2nImTrdZjEKhTpYzHoRiUrsj
-	 2+vNpcelqvvRDqmF8Ha5fX+7F3E8zR6fkUH6MjLg=
+	b=Wy12wghNCtf9hTn7jCcIdKwE2F7yT7uQ8mNqyqNjenPr96CTWYAE38e8BxuFrBJe6
+	 6f9t8veEUZ3dkNkR41l20J7a76p/FYf/xfZx1ALXZpd2W2l9N83FfdKtLZ+WGyhI+/
+	 GFBC2S6fmguxVg3XPuAUC3TZoOjhGC0rkHlRS1fw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E21F0F802BD;
-	Mon,  7 Oct 2019 03:56:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60930F802BD;
+	Mon,  7 Oct 2019 03:57:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60098F802BE; Mon,  7 Oct 2019 03:56:32 +0200 (CEST)
+ id 858E5F802FB; Mon,  7 Oct 2019 03:57:46 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 002B5F80273
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 03:56:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 002B5F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id F06BDF80096
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 03:57:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F06BDF80096
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3E475ACD9;
- Mon,  7 Oct 2019 01:56:29 +0000 (UTC)
-Date: Mon, 07 Oct 2019 03:56:29 +0200
-Message-ID: <s5h36g5jp2q.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 92E6CAC8E;
+ Mon,  7 Oct 2019 01:57:43 +0000 (UTC)
+Date: Mon, 07 Oct 2019 03:57:43 +0200
+Message-ID: <s5h1rvpjp0o.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191004143527.5575-1-kai.vehmanen@linux.intel.com>
-References: <20191004143527.5575-1-kai.vehmanen@linux.intel.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20191003043919.10960-1-kai.heng.feng@canonical.com>
+References: <20191003043919.10960-1-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH 0/1] ALSA: hda: add fallback to polling to
-	hdac_bus_get_response()
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda/realtek: Reduce the Headphone
+	static noise on XPS 9350/9360
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,42 +79,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 04 Oct 2019 16:35:26 +0200,
-Kai Vehmanen wrote:
+On Thu, 03 Oct 2019 06:39:19 +0200,
+Kai-Heng Feng wrote:
 > 
-> Hey all,
+> Headphone on XPS 9350/9360 produces a background white noise. The The
+> noise level somehow correlates with "Headphone Mic Boost", when it sets
+> to 1 the noise disappears. However, doing this has a side effect, which
+> also decreases the overall headphone volume so I didn't send the patch
+> upstream.
 > 
-> while debugging issues with some Intel platforms related to display
-> audio codec probe (see
-> https://lists.freedesktop.org/archives/intel-gfx/2019-October/214621.html ),
-> I found a discrepancy in behaviour between snd-hda-intel and SOF, despite
-> using the same snd-hda-codec-hdmi as the codec driver.
+> The noise was bearable back then, but after commit 717f43d81afc ("ALSA:
+> hda/realtek - Update headset mode for ALC256") the noise exacerbates to
+> a point it starts hurting ears.
 > 
-> The specific problem I was debugging appears in a stress test
-> (designed to uncover the above display driver issue) where
-> driver-unload, s3-suspend, resume and driver-reload is done in a loop
-> and repeated for hundreds of iterations. When using SOF, I would get
-> occasional probe fail due to a missing HDA irq. The AZX snd_hda_intel
-> driver nicely survives this test. The explanation seems to be differences
-> in the hdac get_response() implementation.
+> So let's use the workaround to set "Headphone Mic Boost" to 1 and lock
+> it so it's not touchable by userspace.
 > 
-> While the specific issue could be solved with other means,
-> the git history shows a number of rare issues with HDA codecs
-> where polling has helped. It would seem best to align the logic
-> with the AZX driver implementation that has seen much more usage
-> over the years. This will benefit SOF and any other users of the HDAC
-> library.
+> Fixes: 717f43d81afc ("ALSA: hda/realtek - Update headset mode for ALC256")
+> BugLink: https://bugs.launchpad.net/bugs/1654448
+> BugLink: https://bugs.launchpad.net/bugs/1845810
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-While it's OK to add the polling support in the core code, I suspect
-that the main problem gets solved by setting the write_sync flag as
-the commit 2756d9143aa5.  For SOF/SST, you may set the flag
-unconditionally since they support only the new chipsets.
+Applied now.  Thanks.
 
-I've been traveling (still for the next week), so the further reply
-may be delayed.
-
-
-thanks,
 
 Takashi
 _______________________________________________
