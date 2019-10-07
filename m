@@ -2,71 +2,74 @@ Return-Path: <SRS0=Jk6f=YA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF97DECE58D
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 14:17:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C61EECE58C
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 14:18:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A753206C2
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 14:17:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 18CDB206BB
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 14:18:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dvzTm2nI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A753206C2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J0lCDSRJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18CDB206BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B54A1857;
-	Mon,  7 Oct 2019 16:17:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B54A1857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C0B51671;
+	Mon,  7 Oct 2019 16:18:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C0B51671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570457870;
-	bh=G5STUMb8Yjz+gXBAaL4ia6X29t7BQNa2YXm7WheQqH0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1570457931;
+	bh=Cp8NvVOtBNm30WGiojdAybEoIRc7pvJneoR60p0gCz4=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dvzTm2nIrApZyVslpT8cChZau4fRaC29XJ9YDb6iSivlGCKl2kS6N9a+lP1XAQHro
-	 m7SDZbfS1o8nH9zA8orR5jlddvfmFelzFMEqE4T0tMq4nrkKVRwYbRDP46svHue0TG
-	 RXChKVYN0b+RuPY1Pue0y9zILfntyRB1LXqoD7Y4=
+	b=J0lCDSRJY5pFnj86KyT0eEkBVJv1rpX3iPCVFzsYkb+PJZEFtjpFM5C6Ve7XEn56y
+	 B62rS+8ny7+2pM5ifkIPxzr82sePCMioSOWMy9z/8eXj+OaFfJcewl3blOPkwppgre
+	 2oIZ46YFzvAJOWXCUkMuaYVqmjjsuT4cT33K/TEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DCE5F80137;
-	Mon,  7 Oct 2019 16:17:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 305F6F805FC;
+	Mon,  7 Oct 2019 16:17:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F04DEF802BE; Mon,  7 Oct 2019 16:16:58 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 8657FF805FD; Mon,  7 Oct 2019 16:17:49 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D077CF80137
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 16:16:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D077CF80137
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B522F80273
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 16:17:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B522F80273
+X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 07 Oct 2019 07:16:53 -0700
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 07 Oct 2019 07:17:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,268,1566889200"; d="scan'208";a="206419116"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.41.73])
- by fmsmga001.fm.intel.com with ESMTP; 07 Oct 2019 07:16:52 -0700
-Date: Mon, 7 Oct 2019 16:16:51 +0200
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <20191007141650.GA9384@ubuntu>
-References: <20191006104715.GA14691@ubuntu>
- <7f7434ad-407b-002d-d2af-860ce49bae32@perex.cz>
+X-IronPort-AV: E=Sophos;i="5.67,268,1566889200"; d="scan'208";a="196299008"
+Received: from apulla-mobl.amr.corp.intel.com (HELO [10.251.4.206])
+ ([10.251.4.206])
+ by orsmga003.jf.intel.com with ESMTP; 07 Oct 2019 07:17:43 -0700
+To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20191007084133.7674-1-guennadi.liakhovetski@linux.intel.com>
+ <20191007084133.7674-2-guennadi.liakhovetski@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <72bd64d9-1a40-0358-2e8b-64cb1ddec0d9@linux.intel.com>
+Date: Mon, 7 Oct 2019 09:17:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7f7434ad-407b-002d-d2af-860ce49bae32@perex.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] what's the kernel policy WRT firmware parsing
- security?
+In-Reply-To: <20191007084133.7674-2-guennadi.liakhovetski@linux.intel.com>
+Content-Language: en-US
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: topology: protect against
+ accessing beyond loaded topology data
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,43 +82,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jaroslav,
+[Adding Mark and Takashi in Cc: ]
 
-On Sun, Oct 06, 2019 at 04:10:28PM +0200, Jaroslav Kysela wrote:
-> Dne 06. 10. 19 v 12:47 Guennadi Liakhovetski napsal(a):
-> > Hi,
-> > 
-> > I decided to have a look at whether the ALSA topology parsing is bullet
-> > proof against malformed topology files. It seems not quite to be the case.
-> > At least I seem to have found a possibility of crashing the kernel by a
-> > malformed topology file. I haven't tested it, so, maybe I'm wrong.
-> > 
-> > In principle, firmware files can only be written by root, and if you have
-> > root access to the system, it's anyway doomed. Is this the approach and
-> > we aren't really trying to make topology parsing 100% safe, or do we want
-> > to fix any such possible parsing issues?
+On 10/7/19 3:41 AM, Guennadi Liakhovetski wrote:
+> Add checks for sufficient topology data length before accessing data
+> according to its internal structure. Without these checks malformed
+> or corrupted topology images can lead to accessing invalid addresses
+> in the kernel.
 > 
-> The kernel should not crash. Dot. If you found a serious issue, please,
-> report it or better, send the fix.
-
-Sorry, I'm still configuring / getting used to mutt and git send-mail on this
-PC, so adding you to CC didn't work out :-/ Here's a link:
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/156352.html
-
-Thanks
-Guennadi
-
-> 				Thanks,
-> 					Jaroslav
+> Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> ---
+>   sound/soc/soc-topology.c | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
 > 
-> -- 
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 0fd0329..d1d3c6f 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -2501,9 +2501,18 @@ static int soc_tplg_manifest_load(struct soc_tplg *tplg,
+>   static int soc_valid_header(struct soc_tplg *tplg,
+>   	struct snd_soc_tplg_hdr *hdr)
+>   {
+> +	size_t remainder = tplg->fw->size - soc_tplg_get_hdr_offset(tplg);
+> +
+>   	if (soc_tplg_get_hdr_offset(tplg) >= tplg->fw->size)
+>   		return 0;
+>   
+> +	/* Check that we have enough data before accessing the header */
+> +	if (remainder < sizeof(*hdr)) {
+> +		dev_err(tplg->dev, "ASoC: insufficient %zd bytes.\n",
+> +			remainder);
+> +		return -EINVAL;
+> +	}
+
+do we still need the first test above? This only tests that remainder is 
+<= 0, which is covered in the second added case (with the wrap-around).
+
+> +
+>   	if (le32_to_cpu(hdr->size) != sizeof(*hdr)) {
+>   		dev_err(tplg->dev,
+>   			"ASoC: invalid header size for type %d at offset 0x%lx size 0x%zx.\n",
+> @@ -2546,6 +2555,14 @@ static int soc_valid_header(struct soc_tplg *tplg,
+>   		return -EINVAL;
+>   	}
+>   
+> +	if (le32_to_cpu(hdr->payload_size) + sizeof(*hdr) > remainder) {
+> +		dev_err(tplg->dev,
+> +			"ASoC: payload size %zu too large at offset 0x%lx.\n",
+> +			le32_to_cpu(hdr->payload_size),
+> +			soc_tplg_get_hdr_offset(tplg));
+> +		return -EINVAL;
+> +	}
+> +
+>   	if (tplg->pass == le32_to_cpu(hdr->type))
+>   		dev_dbg(tplg->dev,
+>   			"ASoC: Got 0x%x bytes of type %d version %d vendor %d at pass %d\n",
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
