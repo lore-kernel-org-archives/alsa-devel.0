@@ -6,77 +6,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88003ECE58C
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 18:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99ADFC47404
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 18:15:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8788C206C2
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 18:14:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 27404206C2
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 18:15:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EJugIMOX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GaYXeXG9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8788C206C2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WfBAEeEQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="xAoCDiDe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27404206C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55FE482C;
-	Mon,  7 Oct 2019 20:13:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55FE482C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 773751607;
+	Mon,  7 Oct 2019 20:14:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 773751607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570472063;
-	bh=v+X1IkWfN0QkzFMlUtu6o8bT4lzqmAZKByZGDWGA+bI=;
+	s=default; t=1570472118;
+	bh=oBvbBPlh+9APe3fbNnmx/AO8ytN0cu0lUWS3GWwCyt4=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=EJugIMOXGkJqRTD28Dqn925LVxrn9OdMtdgI9kbsV9ILA0ESmcV8ban/Aw5CU6l4K
-	 PfMUpLtYniO0hliHiOgvTXwDjYDnDlkMQosYnmVJjeDE0NtjF1rfB05XAZ12ItIkUE
-	 KcZWalGxu6o5gMq+D0RLxDcVyndGLa1Ow6VT26q0=
+	b=WfBAEeEQf43GkyI8cNjeqPLefiz6TcJPf05iSFRamPOmE1ZbqXJnH6lgTOijj5QSX
+	 5JLRMs2tUFchPPo6/x78r5wXYdWn+zjjtfZkQqKTY9EAOD0Oyk1FWdmjIyBGgZc8I8
+	 Jv8MBEbT1K3A0N298LwDUFnWRdMUAODD1+6hKozQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D046EF802BE;
-	Mon,  7 Oct 2019 20:13:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34B3AF80308;
+	Mon,  7 Oct 2019 20:13:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E50BF802FB; Mon,  7 Oct 2019 20:13:30 +0200 (CEST)
+ id C4FBFF802DF; Mon,  7 Oct 2019 20:13:31 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7D5FF800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32F11F802BD
  for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 20:13:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7D5FF800BF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32F11F802BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="GaYXeXG9"
+ header.b="xAoCDiDe"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=YszzIRRq8+HMe+uWy5lgHyDF5uj3GQ+Jn/wpF3eKyO4=; b=GaYXeXG9/kZA
- xoRoklbcb21LauF4f0MDmub9bJdPkJYpgJBMBQpQ/Vkmbh288FFFllOjhsaDZtDi/71KJJK9qjauh
- iFkLS8na+vM6ThtkF/TlQYWmNR/KxtMd0ROzrP7t4v6ZxfoF3LwTl9i37LSqEDt/bCSE3ESIF0waa
- EpZ0w=;
+ List-Archive; bh=F/519QCZ2cPEiTPBsN/gfjftRPvGaCJLTY4nnrMZONU=; b=xAoCDiDeBOBg
+ +yP/gYICl4E0AJFQbECVzr+VI3P783zvguMUugFprIVgZnMp+zQ0wgxOjCeRrJHL5xZLyFJvXmce4
+ ovZUxARgZunEn1df47fHhCNwKGpozH+DyUQT69MvI7xYyg4U02b0hNHmJYgnVUNS3ygEGJwJhhOQ1
+ 69Lxc=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHXVe-0004GD-1J; Mon, 07 Oct 2019 18:13:26 +0000
+ id 1iHXVe-0004GF-8B; Mon, 07 Oct 2019 18:13:26 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 42DD6274162F; Mon,  7 Oct 2019 19:13:25 +0100 (BST)
+ id B7D8E2741EF0; Mon,  7 Oct 2019 19:13:25 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Dan Murphy <dmurphy@ti.com>
-In-Reply-To: <20191007171157.17813-1-dmurphy@ti.com>
+In-Reply-To: <20191007171157.17813-2-dmurphy@ti.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191007181325.42DD6274162F@ypsilon.sirena.org.uk>
+Message-Id: <20191007181325.B7D8E2741EF0@ypsilon.sirena.org.uk>
 Date: Mon,  7 Oct 2019 19:13:25 +0100 (BST)
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
  lgirdwood@gmail.com, navada@ti.com, Mark Brown <broonie@kernel.org>,
  shifu0704@thundersoft.com
-Subject: [alsa-devel] Applied "ASoC: tas2770: Fix snd_soc_update_bits error
-	handling" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: tas2770: Remove unneeded read of the
+	TDM_CFG3 register" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: tas2770: Fix snd_soc_update_bits error handling
+   ASoC: tas2770: Remove unneeded read of the TDM_CFG3 register
 
 has been applied to the asoc tree at
 
@@ -122,152 +122,42 @@ to this mail.
 Thanks,
 Mark
 
-From edd6d5393206ec9bfc74776f6f20a57f11327e1b Mon Sep 17 00:00:00 2001
+From 5911e6729e0886a3fb00b897b73892134d37158a Mon Sep 17 00:00:00 2001
 From: Dan Murphy <dmurphy@ti.com>
-Date: Mon, 7 Oct 2019 12:11:55 -0500
-Subject: [PATCH] ASoC: tas2770: Fix snd_soc_update_bits error handling
+Date: Mon, 7 Oct 2019 12:11:56 -0500
+Subject: [PATCH] ASoC: tas2770: Remove unneeded read of the TDM_CFG3 register
 
-According the documentation for snd_soc_update_bits the API
-will return a 1 if the update was successful with a value change,
-a 0 if the update was successful with no value change or a negative
-if the command just failed.
-
-So the value of return in the driver needs to be checked for being less
-then 0 or the caller may indicate failure when the value actually
-changed.
+Remove the unneeded and incorrect read of the TDM_CFG3 register.
+The read is done but the value is never used.
 
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20191007171157.17813-1-dmurphy@ti.com
+Link: https://lore.kernel.org/r/20191007171157.17813-2-dmurphy@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2770.c | 46 +++++++++++++++++++++++++-------------
- 1 file changed, 30 insertions(+), 16 deletions(-)
+ sound/soc/codecs/tas2770.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index f3a665b64fd6..ad76f22fcfac 100644
+index 15f6fcc6d87e..f3a665b64fd6 100644
 --- a/sound/soc/codecs/tas2770.c
 +++ b/sound/soc/codecs/tas2770.c
-@@ -83,7 +83,8 @@ static int tas2770_codec_suspend(struct snd_soc_component *component)
- 		TAS2770_PWR_CTRL,
- 		TAS2770_PWR_CTRL_MASK,
- 		TAS2770_PWR_CTRL_SHUTDOWN);
--	if (ret)
-+
-+	if (ret < 0)
+@@ -374,7 +374,6 @@ static int tas2770_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	u8 tdm_rx_start_slot = 0, asi_cfg_1 = 0;
+ 	int ret;
+-	int value = 0;
+ 	struct snd_soc_component *component = dai->component;
+ 	struct tas2770_priv *tas2770 =
+ 			snd_soc_component_get_drvdata(component);
+@@ -430,8 +429,6 @@ static int tas2770_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	if (ret)
  		return ret;
  
- 	return 0;
-@@ -97,8 +98,9 @@ static int tas2770_codec_resume(struct snd_soc_component *component)
- 		TAS2770_PWR_CTRL,
- 		TAS2770_PWR_CTRL_MASK,
- 		TAS2770_PWR_CTRL_ACTIVE);
--	if (ret)
--		return -EINVAL;
-+
-+	if (ret < 0)
-+		return ret;
- 
- 	return 0;
- }
-@@ -150,7 +152,10 @@ static int tas2770_dac_event(struct snd_soc_dapm_widget *w,
- 	}
- 
- end:
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
- }
- 
- static const struct snd_kcontrol_new isense_switch =
-@@ -200,7 +205,10 @@ static int tas2770_mute(struct snd_soc_dai *dai, int mute)
- 			TAS2770_PWR_CTRL_MASK,
- 			TAS2770_PWR_CTRL_ACTIVE);
- 
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
- }
- 
- static int tas2770_set_bitwidth(struct tas2770_priv *tas2770, int bitwidth)
-@@ -253,7 +261,10 @@ static int tas2770_set_bitwidth(struct tas2770_priv *tas2770, int bitwidth)
- 		tas2770->i_sense_slot);
- 
- end:
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
- }
- 
- static int tas2770_set_samplerate(struct tas2770_priv *tas2770, int samplerate)
-@@ -345,9 +356,11 @@ static int tas2770_set_samplerate(struct tas2770_priv *tas2770, int samplerate)
- 	}
- 
- end:
--	if (!ret)
--		tas2770->sampling_rate = samplerate;
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+
-+	tas2770->sampling_rate = samplerate;
-+	return 0;
- }
- 
- static int tas2770_hw_params(struct snd_pcm_substream *substream,
-@@ -401,7 +414,7 @@ static int tas2770_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG1,
- 		TAS2770_TDM_CFG_REG1_RX_MASK,
- 		asi_cfg_1);
--	if (ret)
-+	if (ret < 0)
- 		return ret;
- 
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-@@ -426,7 +439,7 @@ static int tas2770_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG1,
- 		TAS2770_TDM_CFG_REG1_MASK,
- 	(tdm_rx_start_slot << TAS2770_TDM_CFG_REG1_51_SHIFT));
--	if (ret)
-+	if (ret < 0)
- 		return ret;
- 
+-	value = snd_soc_component_read32(component, TAS2770_TDM_CFG_REG3);
+-
  	tas2770->asi_format = fmt;
-@@ -470,12 +483,12 @@ static int tas2770_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG3,
- 		TAS2770_TDM_CFG_REG3_30_MASK,
- 		(left_slot << TAS2770_TDM_CFG_REG3_30_SHIFT));
--	if (ret)
-+	if (ret < 0)
- 		return ret;
- 	ret = snd_soc_component_update_bits(component, TAS2770_TDM_CFG_REG3,
- 		TAS2770_TDM_CFG_REG3_RXS_MASK,
- 	(right_slot << TAS2770_TDM_CFG_REG3_RXS_SHIFT));
--	if (ret)
-+	if (ret < 0)
- 		return ret;
  
- 	switch (slot_width) {
-@@ -509,10 +522,11 @@ static int tas2770_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 		ret = -EINVAL;
- 	}
- 
--	if (!ret)
--		tas2770->slot_width = slot_width;
-+	if (ret < 0)
-+		return ret;
- 
--	return ret;
-+	tas2770->slot_width = slot_width;
-+	return 0;
- }
- 
- static struct snd_soc_dai_ops tas2770_dai_ops = {
+ 	return 0;
 -- 
 2.20.1
 
