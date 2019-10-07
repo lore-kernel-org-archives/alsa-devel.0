@@ -7,64 +7,66 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B15FC47404
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 15:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8F66C47404
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 15:35:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87F36206C2
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 15:35:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 563D02173B
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 15:35:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pY/7v0hV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87F36206C2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tisQzxzP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 563D02173B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99941166B;
-	Mon,  7 Oct 2019 17:34:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99941166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 801831673;
+	Mon,  7 Oct 2019 17:34:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 801831673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570462506;
-	bh=XXeOiPovtdIvOLOqQlLASQtzzHINc5J5D8BwbsPYmrA=;
+	s=default; t=1570462529;
+	bh=E02lIoFUkfw5HQb9Ywe9g8FayjG+s+e1rphMC/bMl00=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pY/7v0hVRblF7eep9/F1Vw7RdmAd0LEei4KvDzCVO3LAwORSpNfniwEJxmI33LIBG
-	 aC+5S2oB2QbH6FQ4VTyBSWKwS4U09J7SwXq8uldROuc3Dw7NOs9y4nNkuv6QQVWUdf
-	 JX9j3IdmbtKwLMk2F1/KbBIEd17feL7IH63MPGtA=
+	b=tisQzxzPPcOT0Nw9JGoyVMzzNRsE3W4RPOFI685lLZl+lCqYUr6f0MhlEy05U8hGL
+	 IAuNJQhPy+UaQi10jbYuFs6z9iYcpccP6wAlbp09iMCeHgMJHQRuFrGnUPGhBzvTjj
+	 LJZBsLDztu6d5mBbrjNlBDvXPTnrn/v4kezPZLdo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8A6EF80308;
-	Mon,  7 Oct 2019 17:31:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F29C5F80611;
+	Mon,  7 Oct 2019 17:31:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 163EAF80600; Mon,  7 Oct 2019 17:31:47 +0200 (CEST)
+ id 350C2F805FE; Mon,  7 Oct 2019 17:31:47 +0200 (CEST)
 Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27219F802BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D18AF80308
  for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 17:31:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27219F802BE
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D18AF80308
 Received: from [167.98.27.226] (helo=rainbowdash.codethink.co.uk)
  by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
- id 1iHUz4-0003mg-QU; Mon, 07 Oct 2019 16:31:38 +0100
+ id 1iHUz4-0003md-M0; Mon, 07 Oct 2019 16:31:38 +0100
 Received: from ben by rainbowdash.codethink.co.uk with local (Exim 4.92.2)
  (envelope-from <ben@rainbowdash.codethink.co.uk>)
- id 1iHUz4-0001IR-DM; Mon, 07 Oct 2019 16:31:38 +0100
+ id 1iHUz4-0001IE-9N; Mon, 07 Oct 2019 16:31:38 +0100
 From: Ben Dooks <ben.dooks@codethink.co.uk>
 To: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>
-Date: Mon,  7 Oct 2019 16:31:34 +0100
-Message-Id: <20191007153136.4920-6-ben.dooks@codethink.co.uk>
+Date: Mon,  7 Oct 2019 16:31:30 +0100
+Message-Id: <20191007153136.4920-2-ben.dooks@codethink.co.uk>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191007153136.4920-1-ben.dooks@codethink.co.uk>
 References: <20191007153136.4920-1-ben.dooks@codethink.co.uk>
 MIME-Version: 1.0
-Cc: linux-kernel@lists.codethink.co.uk, Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [alsa-devel] [PATCH v4 5/7] ASoC: tegra: set i2s_offset to 0 for tdm
+Cc: linux-kernel@lists.codethink.co.uk, Ben Dooks <ben.dooks@codethink.co.uk>,
+ Edward Cragg <edward.cragg@codethink.co.uk>
+Subject: [alsa-devel] [PATCH v4 1/7] ASoC: tegra: add a TDM configuration
+	callback
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,64 +84,66 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Set the offset to 0 for TDM mode, as per the current setup. Note we also
-move the data offset programming to the i2s hw_parameters call as per
-the suggestion from Jon Hunter.
+From: Edward Cragg <edward.cragg@codethink.co.uk>
 
+Add a callback to configure TDM settings for the Tegra30 I2S ASoC 'platform'
+driver.
+
+Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
+[ben.dooks@codethink.co.uk: merge fix for power management]
+[ben.dooks@codethink.co.uk: add review change for fsync of 1 clock]
 Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 ---
-v2:
- - fix the review comments and move the i2s offset setting
-v3:
- - fix data-offset for dsp-a and dsp-b
----
- sound/soc/tegra/tegra30_i2s.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/tegra/tegra30_i2s.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index f87ab1e36369..76fa3a086e56 100644
+index ac6983c6bd72..73f0dddeaef3 100644
 --- a/sound/soc/tegra/tegra30_i2s.c
 +++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -66,7 +66,7 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
- 				unsigned int fmt)
- {
- 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--	unsigned int mask = 0, val = 0;
-+	unsigned int mask = 0, val = 0, data_offset = 1;
- 	unsigned int ch_mask, ch_val = 0;
- 
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-@@ -100,6 +100,7 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
- 		ch_val = TEGRA30_I2S_CH_CTRL_EGDE_CTRL_NEG_EDGE;
- 		val |= TEGRA30_I2S_CTRL_FRAME_FORMAT_FSYNC;
- 		val |= TEGRA30_I2S_CTRL_LRCK_R_LOW;
-+		data_offset = 0;
- 		break;
- 	case SND_SOC_DAIFMT_I2S:
- 		val |= TEGRA30_I2S_CTRL_FRAME_FORMAT_LRCK;
-@@ -120,6 +121,10 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
- 	pm_runtime_get_sync(dai->dev);
- 	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CTRL, mask, val);
- 	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL, ch_mask, ch_val);
-+	val = (data_offset << TEGRA30_I2S_OFFSET_RX_DATA_OFFSET_SHIFT) |
-+		(data_offset << TEGRA30_I2S_OFFSET_TX_DATA_OFFSET_SHIFT);
-+	regmap_write(i2s->regmap, TEGRA30_I2S_OFFSET, val);
-+
- 	pm_runtime_put(dai->dev);
- 
- 	return 0;
-@@ -203,11 +208,6 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	i2s->soc_data->set_audio_cif(i2s->regmap, reg, &cif_conf);
--
--	val = (1 << TEGRA30_I2S_OFFSET_RX_DATA_OFFSET_SHIFT) |
--	      (1 << TEGRA30_I2S_OFFSET_TX_DATA_OFFSET_SHIFT);
--	regmap_write(i2s->regmap, TEGRA30_I2S_OFFSET, val);
--
+@@ -254,6 +254,34 @@ static int tegra30_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
  	return 0;
  }
  
++static int tegra30_i2s_set_tdm(struct snd_soc_dai *dai,
++			       unsigned int tx_mask, unsigned int rx_mask,
++			       int slots, int slot_width)
++{
++	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	unsigned int mask, val;
++
++	dev_dbg(dai->dev, "%s: txmask=0x%08x rxmask=0x%08x slots=%d width=%d\n",
++		 __func__, tx_mask, rx_mask, slots, slot_width);
++
++	mask = TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK |
++	       TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_MASK |
++	       TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_MASK;
++
++	val = (tx_mask << TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_SHIFT) |
++	      (rx_mask << TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_SHIFT) |
++	      ((slots - 1) << TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_SHIFT);
++
++	pm_runtime_get_sync(dai->dev);
++	regmap_update_bits(i2s->regmap, TEGRA30_I2S_SLOT_CTRL, mask, val);
++	/* set the fsync width to minimum of 1 clock width */
++	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL,
++			   TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_MASK, 0x0);
++	pm_runtime_put(dai->dev);
++
++	return 0;
++}
++
+ static int tegra30_i2s_probe(struct snd_soc_dai *dai)
+ {
+ 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -268,6 +296,7 @@ static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
+ 	.set_fmt	= tegra30_i2s_set_fmt,
+ 	.hw_params	= tegra30_i2s_hw_params,
+ 	.trigger	= tegra30_i2s_trigger,
++	.set_tdm_slot	= tegra30_i2s_set_tdm,
+ };
+ 
+ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
 -- 
 2.23.0
 
