@@ -2,106 +2,110 @@ Return-Path: <SRS0=Jk6f=YA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A2D6C47404
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 11:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 706B4C352AA
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 11:08:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 935F92064A
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 11:07:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC95C2064A
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 11:08:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ttyUNqHA";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="AiODNizj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="R1wV9sLf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 935F92064A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X1rQ+q1b";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="eVnt7T+3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RqKw1YZs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC95C2064A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40C5F1614;
-	Mon,  7 Oct 2019 13:06:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40C5F1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2959167E;
+	Mon,  7 Oct 2019 13:07:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2959167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570446451;
-	bh=9t0sSA4l0zyGaHQf6+RodZHQnBQDIB7v2NQIsLcxLeE=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ttyUNqHA+6gXokJvbPBBJwTW5DKkmD3rMXh+I0Jq+GlDV/gxzmfyUX6ay3BrZltvc
-	 euU7CIeNdwrk/0Mddy1Gkt95dWhTja8hoM0B1uux+umSxNCeCnd0e4WdPgDTvhM2Dn
-	 NY9VkZch2tqTimTIEnL7i5nn35zpNO/dZ4Jzq9P0=
+	s=default; t=1570446497;
+	bh=I+QQ9utPmsUwTNteX1Im4pGfoKnGzc9dvl8G23dXCxU=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=X1rQ+q1bcSrhOnCc5evb2eaRrA1VaaNrTY94hWlikIWgEwivHfktNKnSxEpHkvJGT
+	 1N4PBzmVid8ygfxoIikp6rDo9CcL22NvseWr2DQQJSQBpU76sGHd/ioUD0IR7XqRI0
+	 G/4I8+Asuuyx4kuMV8i92Jfbt1+WNFXZCi1cJWfw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94045F8059F;
-	Mon,  7 Oct 2019 13:05:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E217BF805FE;
+	Mon,  7 Oct 2019 13:05:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89D25F80273; Mon,  7 Oct 2019 13:05:44 +0200 (CEST)
+ id 85D79F805FA; Mon,  7 Oct 2019 13:05:46 +0200 (CEST)
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56337F80273
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 13:05:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56337F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3EFBF800BF
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 13:05:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3EFBF800BF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="AiODNizj"; 
+ header.b="eVnt7T+3"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="R1wV9sLf"
+ header.i=@messagingengine.com header.b="RqKw1YZs"
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 5537420D56;
- Mon,  7 Oct 2019 07:05:37 -0400 (EDT)
+ by mailout.nyi.internal (Postfix) with ESMTP id 927E92067B;
+ Mon,  7 Oct 2019 07:05:39 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute1.internal (MEProxy); Mon, 07 Oct 2019 07:05:37 -0400
+ by compute1.internal (MEProxy); Mon, 07 Oct 2019 07:05:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm2; bh=qT7b8RgwOvGHqgapDwdO3gokfs
- 9wsPBQFA4PLAKL5Jw=; b=AiODNizj2y9MJshEAkF6Cv/OmF16WztmwAQlVJcDQ2
- 7HWDK9AboeGMg2/enwSCBRQz5PmIWJFrHPyCiULRLMNcsIlunRB8uKp40gTkhQpD
- nrWiYRd3s6KA6G6nTDfh1heRwNB/mr2nJtwsdzV2OpNQ2GgoTVXF60gn1/V+G329
- Ntr2cgiyQs00OUcSkgP3z3BZDvbtEkQdb5SpBzXFdFnlR4XeUNDv65t8mq6Pfjuz
- b6Qa0oV1shr8C/Qp0z4AdmYRi14nbItHBWxzO1q5RNrqAwN+v0OM1ki2/KRYMGx2
- b4B8rZVj+AESOcZwJLVXiRU9GEFl3CxOlLIgl9DsY2iw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm2; bh=mnBEDLcTgcXz+
+ 8mOJe8yz/sLblacVGailhfmQRcEnFs=; b=eVnt7T+3a3e0ABW6mgYHGeL9eurVn
+ 5yT3ajjtF8mIHFrpoWP9TCFCkQaC0tm9JNzApxn7ID5y4rfuRb0fDZMzei5Lc2s3
+ ksj9rr/lUvRFp1yvyYrCoYyoBoovRintMDgLDTg5rM662l7TuVgjHEaw/HYHn577
+ 3uC9GtbsPh1UrrZCXRhfFrx7vs4ALiktmDhDfYLb2elLXfyj1Os+HCVK++v3WB8P
+ M79yKKOg4vk7rgEiLhrU0LesbYropQhJe1UVbEoLVYOZaXWnwWVmaE3sivyUPQI7
+ o+egfFMts/lwa5Vv3LuVJ/FmQlR1bbLfCfc2Drwg13P/we8qF7f1q9rvQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qT7b8RgwOvGHqgapD
- wdO3gokfs9wsPBQFA4PLAKL5Jw=; b=R1wV9sLfY4fD+aGnHU4vk0dQNvx/ts5HN
- egu0vpGpo5P5iBrwlzND7GXt/FgTYO7hD8qhPS4AzVIigez2KtvJHd2VK9e+SGzF
- VPMc6Rawk4JPW1O3KWlhD1skRbSJKrqCi88fMN6gYcvbTRX7VElnUGwkODhBc2qX
- kOwMjsI7iCbE7F75Tlyu+b3qbiJqQMdxHCIUrc5sw5ANFPKowyJLqiqFpGMij+xh
- 0q2WvHLF+6icYbYm7UjU9X7/T222igiuNqgxqPNTiLdNJ1174sW0mC3t1AB6j+Gr
- QdYM+QQ6neNOC9+Lb0Qrrq8Z+WI1unOLtskbDfCPY6x/NXCKVElWQ==
-X-ME-Sender: <xms:ABybXTJ5yFoahL-xIo9svmcSWUVMy1Fr4ETsWt_bp-aXR_STzLt7dA>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm1; bh=mnBEDLcTgcXz+8mOJe8yz/sLblacVGailhfmQRcEnFs=; b=RqKw1YZs
+ 9CGRJRBMqw5wAAgocGThoCDDJEfe7BmkRGMT9Cd0nQCsWPJDjgkpIBB7N7pEVIgG
+ K2nM9TDTG0R/aXRg8SRY+9DbHZSjVSPimgA8wzx6M1n03bJAwJcqz6mJKUTMIPS7
+ 4Xe4KiAKIn1jyaEpdroJg/9QJIISfWCqldVXa0WZRMurV6M9E9Vemp+Jy5aSLow9
+ dYn9ObfBAhIgNnPJw6Kzi4kO14bAstaqy98LMHsGFS2Vinm42GoTR1RwteXuAnY/
+ 17PS2YoLxO06/iPl7T+e9KfcjTbOvt41Z3uxk464IOzC1i6IrCabbDUc12RgrPSj
+ 9kCvqJcV1z6TqA==
+X-ME-Sender: <xms:AxybXVEu8eC54hJGIwTk2rJWKVCE4TgEY1Yr9hnK70GGiuwRHVoyZg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrheejgddvhecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
- dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
- sehsrghkrghmohgttghhihdrjhhpqeenucffohhmrghinheprghlshgrqdhprhhojhgvtg
- htrdhorhhgnecukfhppedugedrfedrjeehrddukedunecurfgrrhgrmhepmhgrihhlfhhr
- ohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhpnecuvehluhhsthgvrh
- fuihiivgeptd
-X-ME-Proxy: <xmx:ABybXXRmXkgWbP0taVGyrl-wAljFBVIeOCaZk-ixnq5PtOk0e5fRpw>
- <xmx:ABybXZg1BKasfjgU8yCB4mrwgtcC8udAq5HGxr0-KkzbfQK6Z5SoJA>
- <xmx:ABybXQqhBkSiszBT4nh50tD6_FrgwTvZLtdVCCXFdGOyZQ6n-klvIg>
- <xmx:ARybXQOuktksBLkHT5gJeJxm4Ma4pBVkX_rePGrou8G8zYMw7eSn1g>
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+ ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+ hhhisehsrghkrghmohgttghhihdrjhhpqeenucfkphepudegrdefrdejhedrudekudenuc
+ frrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhi
+ rdhjphenucevlhhushhtvghrufhiiigvpedu
+X-ME-Proxy: <xmx:AxybXareRUk0ukIEFQy3UKQtf_b9xjZVj5lVz0AP1JRRBmbel2Ib2Q>
+ <xmx:AxybXSmrUJNoEiBo7YiT4dgBd6Jy6oy4uXDVr7TIRyQCEVconBv7rQ>
+ <xmx:AxybXVjgFmmsS2Ys6r91CHpqaobyJQHSHSpRQ2nRjogW54p05eGC3g>
+ <xmx:AxybXUp-znTq0XI9cw9WyeZ366XzT5qWmCwhNC1zsgAdPD5dIiFlAg>
 Received: from workstation.flets-east.jp (ae075181.dynamic.ppp.asahi-net.or.jp
  [14.3.75.181])
- by mail.messagingengine.com (Postfix) with ESMTPA id 22F1D80062;
- Mon,  7 Oct 2019 07:05:34 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 2CF9F8005A;
+ Mon,  7 Oct 2019 07:05:37 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
-Date: Mon,  7 Oct 2019 20:05:15 +0900
-Message-Id: <20191007110532.30270-1-o-takashi@sakamocchi.jp>
+Date: Mon,  7 Oct 2019 20:05:17 +0900
+Message-Id: <20191007110532.30270-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191007110532.30270-1-o-takashi@sakamocchi.jp>
+References: <20191007110532.30270-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 00/17] firewire: share the size of period for
-	both playback and capture PCM substreams
+Subject: [alsa-devel] [PATCH 02/17] bebob: register the size of PCM period
+	to AMDTP domain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,83 +123,92 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+This commit is a preparation to share the size of PCM period between
+PCM substreams on AMDTP streams in the same domain. At this time,
+the size of PCM period in PCM substream which starts AMDTP streams in the
+same domain is recorded.
 
-This patchset is a preparation for enhancement of AMDTP domain that I
-addressed to my previous patchset:
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-July/152430.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob.h        |  3 ++-
+ sound/firewire/bebob/bebob_midi.c   |  2 +-
+ sound/firewire/bebob/bebob_pcm.c    |  4 +++-
+ sound/firewire/bebob/bebob_stream.c | 11 ++++++++++-
+ 4 files changed, 16 insertions(+), 4 deletions(-)
 
-When queued packets for several IT/IR contexts in the same domain are
-handled in hardware IRQ context for an IT context, the number of events
-in the packets are mostly the same for each of contexts. This means that
-the size of period for PCM substreams associated to the contexts is also
-the same.
-
-At present, PCM substreams for the contexts can have own size of period.
-This commit adds a member into AMDTP domain to share the size of period
-for PCM substreams on AMDTP streams in the same domain.
-
-This patchset includes optimization to detect whether isochronous
-resources for AMDTP streams are reserved or not in pcm.open callback.
-
-Takashi Sakamoto (17):
-  firewire-lib: add a member into AMDTP domain for events per period
-  bebob: register the size of PCM period to AMDTP domain
-  fireworks: register the size of PCM period to AMDTP domain
-  oxfw: register the size of PCM period to AMDTP domain
-  dice: register the size of PCM period to AMDTP domain
-  firewire-digi00x: register the size of PCM period to AMDTP domain
-  firewire-tascam: register the size of PCM period to AMDTP domain
-  firewire-motu: register the size of PCM period to AMDTP domain
-  fireface: register the size of PCM period to AMDTP domain
-  bebob: use the same size of period for PCM substream in AMDTP streams
-  fireworks: use the same size of period for PCM substream in AMDTP
-    streams
-  oxfw: use the same size of period for PCM substream in AMDTP streams
-  dice: use the same size of period for PCM substream in AMDTP streams
-  firewire-digi00x: use the same size of period for PCM substream in
-    AMDTP streams
-  firewire-tascam: use the same size of period for PCM substream in
-    AMDTP streams
-  firewire-motu: use the same size of period for PCM substream in AMDTP
-    streams
-  fireface: use the same size of period for PCM substreams in AMDTP
-    streams
-
- sound/firewire/amdtp-stream.c               |  4 ++
- sound/firewire/amdtp-stream.h               | 10 +++++
- sound/firewire/bebob/bebob.h                |  3 +-
- sound/firewire/bebob/bebob_midi.c           |  2 +-
- sound/firewire/bebob/bebob_pcm.c            | 43 ++++++++++++------
- sound/firewire/bebob/bebob_stream.c         | 11 ++++-
- sound/firewire/dice/dice-midi.c             |  2 +-
- sound/firewire/dice/dice-pcm.c              | 50 +++++++++++++++------
- sound/firewire/dice/dice-stream.c           |  8 +++-
- sound/firewire/dice/dice.h                  |  3 +-
- sound/firewire/digi00x/digi00x-midi.c       |  2 +-
- sound/firewire/digi00x/digi00x-pcm.c        | 39 ++++++++++++----
- sound/firewire/digi00x/digi00x-stream.c     | 11 ++++-
- sound/firewire/digi00x/digi00x.h            |  3 +-
- sound/firewire/fireface/ff-pcm.c            | 32 ++++++++++---
- sound/firewire/fireface/ff-stream.c         | 11 ++++-
- sound/firewire/fireface/ff.h                |  3 +-
- sound/firewire/fireworks/fireworks.h        |  3 +-
- sound/firewire/fireworks/fireworks_midi.c   |  2 +-
- sound/firewire/fireworks/fireworks_pcm.c    | 43 +++++++++++++-----
- sound/firewire/fireworks/fireworks_stream.c | 11 ++++-
- sound/firewire/motu/motu-midi.c             |  2 +-
- sound/firewire/motu/motu-pcm.c              | 33 ++++++++++----
- sound/firewire/motu/motu-stream.c           | 11 ++++-
- sound/firewire/motu/motu.h                  |  3 +-
- sound/firewire/oxfw/oxfw-midi.c             |  4 +-
- sound/firewire/oxfw/oxfw-pcm.c              | 45 +++++++++++++------
- sound/firewire/oxfw/oxfw-stream.c           | 12 ++++-
- sound/firewire/oxfw/oxfw.h                  |  3 +-
- sound/firewire/tascam/tascam-pcm.c          | 38 ++++++++++++----
- sound/firewire/tascam/tascam-stream.c       | 11 ++++-
- sound/firewire/tascam/tascam.h              |  3 +-
- 32 files changed, 354 insertions(+), 107 deletions(-)
-
+diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
+index 356d6ba60959..8738c1d8abf7 100644
+--- a/sound/firewire/bebob/bebob.h
++++ b/sound/firewire/bebob/bebob.h
+@@ -217,7 +217,8 @@ int snd_bebob_stream_get_clock_src(struct snd_bebob *bebob,
+ 				   enum snd_bebob_clock_type *src);
+ int snd_bebob_stream_discover(struct snd_bebob *bebob);
+ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob);
+-int snd_bebob_stream_reserve_duplex(struct snd_bebob *bebob, unsigned int rate);
++int snd_bebob_stream_reserve_duplex(struct snd_bebob *bebob, unsigned int rate,
++				    unsigned int frames_per_period);
+ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob);
+ void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob);
+ void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
+diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
+index 4d8805fa8a00..e8f9edf50be5 100644
+--- a/sound/firewire/bebob/bebob_midi.c
++++ b/sound/firewire/bebob/bebob_midi.c
+@@ -17,7 +17,7 @@ static int midi_open(struct snd_rawmidi_substream *substream)
+ 		return err;
+ 
+ 	mutex_lock(&bebob->mutex);
+-	err = snd_bebob_stream_reserve_duplex(bebob, 0);
++	err = snd_bebob_stream_reserve_duplex(bebob, 0, 0);
+ 	if (err >= 0) {
+ 		++bebob->substreams_counter;
+ 		err = snd_bebob_stream_start_duplex(bebob);
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index 0fb9eed46837..3b2227abf8a9 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -197,9 +197,11 @@ static int pcm_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
+ 		unsigned int rate = params_rate(hw_params);
++		unsigned int frames_per_period = params_period_size(hw_params);
+ 
+ 		mutex_lock(&bebob->mutex);
+-		err = snd_bebob_stream_reserve_duplex(bebob, rate);
++		err = snd_bebob_stream_reserve_duplex(bebob, rate,
++						      frames_per_period);
+ 		if (err >= 0)
+ 			++bebob->substreams_counter;
+ 		mutex_unlock(&bebob->mutex);
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 73fee991bd75..f1db3ddc3e00 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -554,7 +554,8 @@ static int keep_resources(struct snd_bebob *bebob, struct amdtp_stream *stream,
+ 	return cmp_connection_reserve(conn, amdtp_stream_get_max_payload(stream));
+ }
+ 
+-int snd_bebob_stream_reserve_duplex(struct snd_bebob *bebob, unsigned int rate)
++int snd_bebob_stream_reserve_duplex(struct snd_bebob *bebob, unsigned int rate,
++				    unsigned int frames_per_period)
+ {
+ 	unsigned int curr_rate;
+ 	int err;
+@@ -607,6 +608,14 @@ int snd_bebob_stream_reserve_duplex(struct snd_bebob *bebob, unsigned int rate)
+ 			cmp_connection_release(&bebob->out_conn);
+ 			return err;
+ 		}
++
++		err = amdtp_domain_set_events_per_period(&bebob->domain,
++							 frames_per_period);
++		if (err < 0) {
++			cmp_connection_release(&bebob->out_conn);
++			cmp_connection_release(&bebob->in_conn);
++			return err;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.20.1
 
