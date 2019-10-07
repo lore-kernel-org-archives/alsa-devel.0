@@ -2,80 +2,74 @@ Return-Path: <SRS0=Jk6f=YA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE919ECE58C
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 16:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E782ECE58C
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 16:45:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B9CD21924
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 16:15:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1AC62206BB
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 16:45:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cw44cFIj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="kEj2+PNe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B9CD21924
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V6gJqyrS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AC62206BB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7373685D;
-	Mon,  7 Oct 2019 18:14:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7373685D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D285D857;
+	Mon,  7 Oct 2019 18:44:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D285D857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570464900;
-	bh=nZcAUvKn1lDM/Hf+V7jjwy2BxPnsrpdKjGzGP6mvl0E=;
+	s=default; t=1570466706;
+	bh=hrvuAq+nunreJyovlOD9qgF+IpVYTOsNdWwcDBqwJPE=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cw44cFIjfTwTG0ijlpptzZpT5mWiMNatu+XivsattiDvfpmmpar69KNvT6u5oj+q6
-	 zUw6qzk4WeZjcr5WAbEpHkcUWN6n+UMFY7PcWna8WfhpQss5qLX9W/Ds6XmCxSIAWi
-	 Vec9YWA9C+SOo+D3+GZ5j2ycrssT7+MyRJlN6BeA=
+	b=V6gJqyrSTuBOD7b2Q1aDvWrgsgtizosElmyK8ZYN9pIVM3gQ1wP4Q/pQCj9b6sIZO
+	 P2yOFuoYtygQqCqISnHEwkVA2gByPwI4lTDVAT00RtpKtBiEMKAlQfG/Wo4i2REM0L
+	 7fEugn4W/BEsQES6hXJej0qKwyCoBxYymKxqcSq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03F09F802BD;
-	Mon,  7 Oct 2019 18:14:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DEDFF80273;
+	Mon,  7 Oct 2019 18:44:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7B9EF802BE; Mon,  7 Oct 2019 18:14:07 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 32B47F802BE; Mon,  7 Oct 2019 18:44:13 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B440F800BF
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 18:14:04 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 38FEAA003E;
- Mon,  7 Oct 2019 18:14:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 38FEAA003E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1570464844; bh=JH1M2tTYqnA+645nxMbq3gxdi7bemumYieZeyxx0pV4=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=kEj2+PNeBL2yVBBkxIW4wFkpYutNAu21xIl90zIMEjAFAmm0nlC6cKcQf/SNEzIIb
- dznMEyexZzg7no+4quHka1O7fs3M6KKshigFWqsoOUbludo9YFQ8I7lkXxD4YO2R8t
- q84xtZREa+5eJmoRE/mCPAQ5bvljjCapCK6mJAL4=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon,  7 Oct 2019 18:14:00 +0200 (CEST)
-To: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CDFEDF80273
+ for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 18:44:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDFEDF80273
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 07 Oct 2019 09:44:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,268,1566889200"; d="scan'208";a="222965624"
+Received: from cbeck2-t460s.amr.corp.intel.com (HELO [10.255.228.186])
+ ([10.255.228.186])
+ by fmsmga002.fm.intel.com with ESMTP; 07 Oct 2019 09:44:05 -0700
+To: Jaroslav Kysela <perex@perex.cz>,
+ ALSA development <alsa-devel@alsa-project.org>
 References: <20191006152232.17701-1-perex@perex.cz>
- <s5h5zl1jpcx.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <faa55989-4e04-3463-384f-1bb35e5d3816@perex.cz>
-Date: Mon, 7 Oct 2019 18:13:59 +0200
+ <fd997c93-c7c9-6ede-90c2-a94df93a613e@linux.intel.com>
+ <d79e7cdd-2f94-1f00-0025-907682ab9988@perex.cz>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ad1e5360-6eb6-c22c-b29a-b990447e2d14@linux.intel.com>
+Date: Mon, 7 Oct 2019 11:44:05 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <s5h5zl1jpcx.wl-tiwai@suse.de>
+In-Reply-To: <d79e7cdd-2f94-1f00-0025-907682ab9988@perex.cz>
 Content-Language: en-US
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- ALSA development <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Cezary Rojewski <cezary.rojewski@intel.com>
 Subject: Re: [alsa-devel] [PATCH v3] ALSA: hda: add Intel DSP configuration
-	/ probe code
+ / probe code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,150 +82,94 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 07. 10. 19 v 3:50 Takashi Iwai napsal(a):
-> On Sun, 06 Oct 2019 17:22:32 +0200,
-> Jaroslav Kysela wrote:
->>
->> For distributions, we need one place where we can decide
->> which driver will be activated for the auto-configation of the
->> Intel's HDA hardware with DSP. Actually, we cover three drivers:
->>
->> * Legacy HDA
->> * Intel SST
->> * Intel Sound Open Firmware (SOF)
->>
->> All those drivers registers similar PCI IDs, so the first
->> driver probed from the PCI stack can win. But... it is not
->> guaranteed that the correct driver wins.
->>
->> This commit changes Intel's NHLT ACPI module to a common
->> DSP probe module for the Intel's hardware. All above sound
->> drivers calls this code. The user can force another behaviour
->> using the module parameter 'dsp_driver' located in
->> the 'snd-intel-dspcfg' module.
->>
->> This change allows to add specific dmi checks for the specific
->> systems. The examples are taken from the pull request:
->>
->>   https://github.com/thesofproject/linux/pull/927
->>
->> Tested on Lenovo Carbon X1 7th gen.
->>
->> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
->> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-> 
-> Since I've been still traveling, just a few nitpicking:
-> 
->> --- a/sound/hda/Makefile
->> +++ b/sound/hda/Makefile
->> @@ -14,5 +14,8 @@ obj-$(CONFIG_SND_HDA_CORE) += snd-hda-core.o
->>  #extended hda
->>  obj-$(CONFIG_SND_HDA_EXT_CORE) += ext/
->>  
->> -snd-intel-nhlt-objs := intel-nhlt.o
->> -obj-$(CONFIG_SND_INTEL_NHLT) += snd-intel-nhlt.o
->> +snd-intel-dspcfg-objs := intel-dsp-config.o
->> +ifneq ($(CONFIG_ACPI),)
->> +  snd-intel-dspcfg-objs += intel-nhlt.o
->> +endif
-> 
-> This can be simplified by
->   snd-intel-dspcfg-$(CONFIG_SND_INTEL_NHLT) += intel-nhlt.o
 
-Yes, I added the ACPI condition later and didn't return back to Makefile.
-Fixed in v4 (will post after comments from Pierre-Louis).
-
->> --- /dev/null
->> +++ b/sound/hda/intel-dsp-config.c
->> @@ -0,0 +1,247 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +// Copyright (c) 2019 Jaroslav Kysela <perex@perex.cz>
->> +
->> +#include <sound/core.h>
->> +#include <linux/module.h>
->> +#include <linux/pci.h>
->> +#include <linux/dmi.h>
->> +#include <sound/intel-nhlt.h>
->> +#include <sound/intel-dsp-config.h>
+>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
+>>> +	{
+>>> +		.flags = FLAG_SOF,
+>>
+>> can we have more than one table per PCI ID? e.g. in this case it'd be
+>> good to have the DMIC case separate from Google.
 > 
-> Please put sound/core.h after linux/*.h inclusions.
-> Also in general the inclusions are arranged in the alphabetical order
-> nowadays.
+> Yes, first match wins. So we need to add flags = FLAG_SOF |
+> FLAG_SOF_ONLY_IF_DMIC entry bellow the dmi exceptions for device == 0x3198, too?
 
-Uff. Rules and rules for rules. Will fix that in v4.
-
->> +int snd_intel_dsp_driver_probe(struct pci_dev *pci)
->> +{
->> +	const struct config_entry *cfg;
->> +
->> +	if (dsp_driver > 0 && dsp_driver <= SND_INTEL_DSP_DRIVER_LAST)
->> +		return dsp_driver;
->> +
->> +	/* Intel vendor only */
->> +	if (snd_BUG_ON(pci->vendor != 0x8086))
->> +		return SND_INTEL_DSP_DRIVER_ANY;
->> +
->> +	/*
->> +	 * detect DSP by checking class/subclass/prog-id information
->> +	 * class=04 subclass 03 prog-if 00: no DSP, use legacy driver
->> +	 * class=04 subclass 01 prog-if 00: DSP is present
->> +	 *  (and may be required e.g. for DMIC or SSP support)
->> +	 * class=04 subclass 03 prog-if 80: use DSP or legacy mode
->> +	 */
->> +	if (pci->class == 0x040300)
->> +		return SND_INTEL_DSP_DRIVER_LEGACY;
->> +	if (pci->class != 0x040100 && pci->class != 0x040380) {
->> +		dev_err(&pci->dev, "Unknown PCI class/subclass/prog-if information (0x%06x) found, selecting HDA legacy driver\n", pci->class);
->> +		return SND_INTEL_DSP_DRIVER_LEGACY;
->> +	}
+I need to check this, I am not sure if the firmware (Coreboot or Legacy) 
+includes the NHLT definitions.
 > 
-> If we treat this as an error, we should provide a code to work around
-> this (e.g. quirk entry or such), so that the error can be avoided
-> later.
-It' s really an error. This path should not be executed with the known,
-functional hardware. The user might use dsp_driver module parameter to change
-the behaviour.
+>>
+>>> +		.device = 0x3198,
+>>> +		.dmi_table = (const struct dmi_system_id []) {
+>>> +			{
+>>> +				.ident = "Google Chromebooks",
+>>> +				.matches = {
+>>> +					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+>>> +				}
+>>> +			},
+>>> +			{}
+>>> +		}
+>>> +	},
+>>> +#endif
+>>> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_GLK)
+>>
+>> should it be elif, as done for CometLake/CML?
+> 
+> I though that the SST driver is the default for 0x3198. Or the legacy driver
+> is in the game, too? If yes, we need to add conditional SST entries.
+
+I am not aware of any GLK platform where the SST driver is required.
+
+let me work off-line on a list of quirks that are needed.
 
 > 
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
-> ....
->> @@ -124,7 +124,7 @@ static char *patch[SNDRV_CARDS];
->>  static bool beep_mode[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] =
->>  					CONFIG_SND_HDA_INPUT_BEEP_MODE};
->>  #endif
->> -static bool dmic_detect = IS_ENABLED(CONFIG_SND_HDA_INTEL_DETECT_DMIC);
->> +static bool no_dsp_driver;
->>  
->>  module_param_array(index, int, NULL, 0444);
->>  MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
->> @@ -159,8 +159,8 @@ module_param_array(beep_mode, bool, NULL, 0444);
->>  MODULE_PARM_DESC(beep_mode, "Select HDA Beep registration mode "
->>  			    "(0=off, 1=on) (default=1).");
->>  #endif
->> -module_param(dmic_detect, bool, 0444);
->> -MODULE_PARM_DESC(dmic_detect, "DMIC detect on SKL+ platforms");
->> +module_param(no_dsp_driver, bool, 0444);
->> +MODULE_PARM_DESC(no_dsp_driver, "Force this driver to be used and bypass the DSP driver selection");
+>>> +	{
+>>> +		.flags = FLAG_SST,
+>>> +		.device = 0x3198,
+>>> +	},
+>>> +#endif
+>>> +/* Icelake */
+>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
+>>> +	{
+>>> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
+>>> +		.device = 0x34c8,
+>>> +	},
+>>> +#endif
+>>> +/* Elkhart Lake */
+>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
+>>> +	{
+>>> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
+>>> +		.device = 0x4b55,
+>>> +	},
+>>> +#endif
+>>> +/* Appololake (Broxton-P) */
+>>> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+>>> +	{
+>>> +		.flags = FLAG_SOF,
+>>> +		.device = 0x5a98,
+>>> +		.dmi_table = (const struct dmi_system_id []) {
+>>> +			{
+>>> +				.ident = "Up Squared",
+>>> +				.matches = {
+>>> +					DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
+>>> +					DMI_MATCH(DMI_BOARD_NAME, "UP-APL01"),
+>>> +				}
+>>> +			},
+>>> +			{}
+>>> +		}
+>>> +	},
+>>> +#endif
+>>> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
+>>
+>> elif?
 > 
-> A negative option is often confusing, e.g. you may pass like
-> no_dsp_driver=no.  Better to use a positive form if possible.
+> Same. What's the default driver for APL?
 
-I just tried to copy the dmic_detect value, but yes, it might be confusion. I
-will change that in v4.
+Should be legacy except for Chromebooks where it's SST.
 
-				Jaroslav
-
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
