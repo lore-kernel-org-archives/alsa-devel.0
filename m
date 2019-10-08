@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A71BC4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 307C0C4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:58:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8D9620673
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:58:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B066420815
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:58:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WM5GsjuO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="gnHamUD+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8D9620673
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iSMtRapO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LHGZxK8c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B066420815
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1DA515E2;
-	Tue,  8 Oct 2019 14:57:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1DA515E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38C1E167D;
+	Tue,  8 Oct 2019 14:57:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38C1E167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570539487;
-	bh=4ZEbwMgSNU2VCkyLgwpm7u5KuwNd4fXpWRAI6KxfWnA=;
+	s=default; t=1570539520;
+	bh=GQ86Wfidts0OE8mYK7ieqsYJIGCp+zSGi4BddcdN6dI=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=WM5GsjuOzj/NeqmTaAzK0obWGb1MycM5Xlebd84G9TdfmbE7AmLac4b6zu8549hdh
-	 pTNS0s8wLrjCsRri8KjMhWoOVRbmzFWQQIcvx/1AJhrX/J32BdIrMaFDT+wOEVMk3u
-	 4BpMxXitA+PZ8cbKdXpNbxz4Lp6SrknhIA5bFiXk=
+	b=iSMtRapOyNm+QQAthen4SUs0uomkLskQzCaxghfUzHCD2K5D/VhMLaX7fZIcEOopJ
+	 DzLucE1DaQE76B7sBtERAZmGCpsKJVQnkAnTTiYOkgPVYGTBQdkW+U56jGGKWjaIF0
+	 L74dAlj5/d2gEbQS6+eZxlRh2e0v4kZEf8MtTB78=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 935B0F806EF;
-	Tue,  8 Oct 2019 14:53:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66903F806FA;
+	Tue,  8 Oct 2019 14:53:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A96F9F80659; Tue,  8 Oct 2019 14:53:34 +0200 (CEST)
+ id E23C8F8065A; Tue,  8 Oct 2019 14:53:34 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CEB3F800BF
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CEB3F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD3C7F8038F
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD3C7F8038F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="gnHamUD+"
+ header.b="LHGZxK8c"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=O4gd209kfpQlZPxIHFvbBZnMgdzW5Hdu+QSutVV5l0c=; b=gnHamUD+7Opk
- 2dM2c3l4LQz0DM4D/N9cScPegjHu7MVswMq/laz3nrT7D4fwL+O6cGD42EbusZM6zIVJx1aueIJM+
- pHQhovrW5I/fCcZDZ5k7TWRcFKyuRP2aw7v08Qq8ow0hK+nD34u0MkGYUtBcu2IxB4pLRl3a2fWoj
- zQ1AA=;
+ List-Archive; bh=nJbDa23/n+MdV0gwmK3lwG7XFLsWrhKAAcP+rl146e4=; b=LHGZxK8cZI6e
+ VOPULEFWOqixecKFBJYKoEs64XhPtTGQ74hJNXbJGP3+ITnAZsT5j1P6KMyz4Vp6alUv22DIdXZtK
+ gay/LeUbj/un72Q9dg3kTRrN/GpvlNX0rYbPIRysWOh3aS4xgTfJcyKP9s0hRPQ9ttOokvBNSGvni
+ kg2/o=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHozV-0008M0-I8; Tue, 08 Oct 2019 12:53:25 +0000
+ id 1iHozW-0008ML-EW; Tue, 08 Oct 2019 12:53:26 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 0B01B2740D4B; Tue,  8 Oct 2019 13:53:24 +0100 (BST)
+ id DF4B62740D4B; Tue,  8 Oct 2019 13:53:25 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <875zl790cb.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87bluz90d1.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125325.0B01B2740D4B@ypsilon.sirena.org.uk>
+Message-Id: <20191008125325.DF4B62740D4B@ypsilon.sirena.org.uk>
 Date: Tue,  8 Oct 2019 13:53:25 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-generic-dmaengine-pcm: remove
-	snd_pcm_ops" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: fsl: fsl_dma: remove snd_pcm_ops" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-generic-dmaengine-pcm: remove snd_pcm_ops
+   ASoC: fsl: fsl_dma: remove snd_pcm_ops
 
 has been applied to the asoc tree at
 
@@ -121,216 +121,149 @@ to this mail.
 Thanks,
 Mark
 
-From ece23171ea95c4fe9395c1c861af0c1bd50ad9e5 Mon Sep 17 00:00:00 2001
+From 4ac85de9977e7361ef10be23a33313f3cf56e073 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:35:00 +0900
-Subject: [PATCH] ASoC: soc-generic-dmaengine-pcm: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:34:34 +0900
+Subject: [PATCH] ASoC: fsl: fsl_dma: remove snd_pcm_ops
 
 snd_pcm_ops is no longer needed.
 Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/875zl790cb.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87bluz90d1.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-generic-dmaengine-pcm.c | 102 +++++++++++++-------------
- 1 file changed, 51 insertions(+), 51 deletions(-)
+ sound/soc/fsl/fsl_dma.c | 50 +++++++++++++++++++----------------------
+ 1 file changed, 23 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index f2c98a9cbf75..f4c755209e03 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -75,12 +75,10 @@ int snd_dmaengine_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_prepare_slave_config);
- 
--static int dmaengine_pcm_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
-+static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
-+				   struct snd_pcm_substream *substream,
-+				   struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index e22508301412..bc8691a45131 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -280,7 +280,8 @@ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
+  * Regardless of where the memory is actually allocated, since the device can
+  * technically DMA to any 36-bit address, we do need to set the DMA mask to 36.
+  */
+-static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
++static int fsl_dma_new(struct snd_soc_component *component,
++		       struct snd_soc_pcm_runtime *rtd)
  {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, SND_DMAENGINE_PCM_DRV_NAME);
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
- 	int (*prepare_slave_config)(struct snd_pcm_substream *substream,
-@@ -109,11 +107,11 @@ static int dmaengine_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
- }
- 
--static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substream)
-+static int
-+dmaengine_pcm_set_runtime_hwparams(struct snd_soc_component *component,
-+				   struct snd_pcm_substream *substream)
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+@@ -380,11 +381,10 @@ static int fsl_dma_new(struct snd_soc_pcm_runtime *rtd)
+  *    buffer, which is what ALSA expects.  We're just dividing it into
+  *    contiguous parts, and creating a link descriptor for each one.
+  */
+-static int fsl_dma_open(struct snd_pcm_substream *substream)
++static int fsl_dma_open(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, SND_DMAENGINE_PCM_DRV_NAME);
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	struct device *dma_dev = dmaengine_dma_dev(pcm, substream);
- 	struct dma_chan *chan = pcm->chan[substream->stream];
-@@ -150,28 +148,43 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 	return snd_soc_set_runtime_hwparams(substream, &hw);
- }
- 
--static int dmaengine_pcm_open(struct snd_pcm_substream *substream)
-+static int dmaengine_pcm_open(struct snd_soc_component *component,
-+			      struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, SND_DMAENGINE_PCM_DRV_NAME);
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	struct dma_chan *chan = pcm->chan[substream->stream];
- 	int ret;
- 
--	ret = dmaengine_pcm_set_runtime_hwparams(substream);
-+	ret = dmaengine_pcm_set_runtime_hwparams(component, substream);
- 	if (ret)
- 		return ret;
- 
- 	return snd_dmaengine_pcm_open(substream, chan);
- }
- 
-+static int dmaengine_pcm_close(struct snd_soc_component *component,
-+			       struct snd_pcm_substream *substream)
-+{
-+	return snd_dmaengine_pcm_close(substream);
-+}
-+
-+static int dmaengine_pcm_hw_free(struct snd_soc_component *component,
-+				 struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_lib_free_pages(substream);
-+}
-+
-+static int dmaengine_pcm_trigger(struct snd_soc_component *component,
-+				 struct snd_pcm_substream *substream, int cmd)
-+{
-+	return snd_dmaengine_pcm_trigger(substream, cmd);
-+}
-+
- static struct dma_chan *dmaengine_pcm_compat_request_channel(
-+	struct snd_soc_component *component,
- 	struct snd_soc_pcm_runtime *rtd,
- 	struct snd_pcm_substream *substream)
- {
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, SND_DMAENGINE_PCM_DRV_NAME);
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	struct snd_dmaengine_dai_dma_data *dma_data;
- 	dma_filter_fn fn = NULL;
-@@ -209,10 +222,9 @@ static bool dmaengine_pcm_can_report_residue(struct device *dev,
- 	return true;
- }
- 
--static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int dmaengine_pcm_new(struct snd_soc_component *component,
-+			     struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, SND_DMAENGINE_PCM_DRV_NAME);
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	const struct snd_dmaengine_pcm_config *config = pcm->config;
- 	struct device *dev = component->dev;
-@@ -239,8 +251,8 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 				config->chan_names[i]);
- 
- 		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
--			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
--				substream);
-+			pcm->chan[i] = dmaengine_pcm_compat_request_channel(
-+				component, rtd, substream);
- 		}
- 
- 		if (!pcm->chan[i]) {
-@@ -269,11 +281,9 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- }
- 
- static snd_pcm_uframes_t dmaengine_pcm_pointer(
-+	struct snd_soc_component *component,
- 	struct snd_pcm_substream *substream)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, SND_DMAENGINE_PCM_DRV_NAME);
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 
- 	if (pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_RESIDUE)
-@@ -282,13 +292,11 @@ static snd_pcm_uframes_t dmaengine_pcm_pointer(
- 		return snd_dmaengine_pcm_pointer(substream);
- }
- 
--static int dmaengine_copy_user(struct snd_pcm_substream *substream,
-+static int dmaengine_copy_user(struct snd_soc_component *component,
-+			       struct snd_pcm_substream *substream,
- 			       int channel, unsigned long hwoff,
- 			       void __user *buf, unsigned long bytes)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component =
--		snd_soc_rtdcom_lookup(rtd, SND_DMAENGINE_PCM_DRV_NAME);
  	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	int (*process)(struct snd_pcm_substream *substream,
-@@ -316,39 +324,31 @@ static int dmaengine_copy_user(struct snd_pcm_substream *substream,
- 	return 0;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct device *dev = component->dev;
+ 	struct dma_object *dma =
+ 		container_of(component->driver, struct dma_object, dai);
+@@ -533,13 +533,12 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
+  * and 8 bytes at a time).  So we do not support packed 24-bit samples.
+  * 24-bit data must be padded to 32 bits.
+  */
+-static int fsl_dma_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *hw_params)
++static int fsl_dma_hw_params(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_dma_private *dma_private = runtime->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct device *dev = component->dev;
+ 
+ 	/* Number of bits per sample */
+@@ -698,12 +697,11 @@ static int fsl_dma_hw_params(struct snd_pcm_substream *substream,
+  * The base address of the buffer is stored in the source_addr field of the
+  * first link descriptor.
+  */
+-static snd_pcm_uframes_t fsl_dma_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t fsl_dma_pointer(struct snd_soc_component *component,
++					 struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_dma_private *dma_private = runtime->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct device *dev = component->dev;
+ 	struct ccsr_dma_channel __iomem *dma_channel = dma_private->dma_channel;
+ 	dma_addr_t position;
+@@ -763,7 +761,8 @@ static snd_pcm_uframes_t fsl_dma_pointer(struct snd_pcm_substream *substream)
+  *
+  * This function can be called multiple times.
+  */
+-static int fsl_dma_hw_free(struct snd_pcm_substream *substream)
++static int fsl_dma_hw_free(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_dma_private *dma_private = runtime->private_data;
+@@ -796,12 +795,11 @@ static int fsl_dma_hw_free(struct snd_pcm_substream *substream)
+ /**
+  * fsl_dma_close: close the stream.
+  */
+-static int fsl_dma_close(struct snd_pcm_substream *substream)
++static int fsl_dma_close(struct snd_soc_component *component,
++			 struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_dma_private *dma_private = runtime->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct device *dev = component->dev;
+ 	struct dma_object *dma =
+ 		container_of(component->driver, struct dma_object, dai);
+@@ -824,7 +822,8 @@ static int fsl_dma_close(struct snd_pcm_substream *substream)
+ /*
+  * Remove this PCM driver.
+  */
+-static void fsl_dma_free_dma_buffers(struct snd_pcm *pcm)
++static void fsl_dma_free_dma_buffers(struct snd_soc_component *component,
++				     struct snd_pcm *pcm)
+ {
+ 	struct snd_pcm_substream *substream;
+ 	unsigned int i;
+@@ -872,15 +871,6 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
+ 	return NULL;
  }
  
--static const struct snd_pcm_ops dmaengine_pcm_ops = {
-+static const struct snd_soc_component_driver dmaengine_pcm_component = {
-+	.name		= SND_DMAENGINE_PCM_DRV_NAME,
-+	.probe_order	= SND_SOC_COMP_ORDER_LATE,
- 	.open		= dmaengine_pcm_open,
--	.close		= snd_dmaengine_pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
-+	.close		= dmaengine_pcm_close,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= dmaengine_pcm_hw_params,
--	.hw_free	= snd_pcm_lib_free_pages,
--	.trigger	= snd_dmaengine_pcm_trigger,
-+	.hw_free	= dmaengine_pcm_hw_free,
-+	.trigger	= dmaengine_pcm_trigger,
- 	.pointer	= dmaengine_pcm_pointer,
-+	.pcm_construct	= dmaengine_pcm_new,
- };
- 
--static const struct snd_pcm_ops dmaengine_pcm_process_ops = {
-+static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
-+	.name		= SND_DMAENGINE_PCM_DRV_NAME,
-+	.probe_order	= SND_SOC_COMP_ORDER_LATE,
- 	.open		= dmaengine_pcm_open,
--	.close		= snd_dmaengine_pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
-+	.close		= dmaengine_pcm_close,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= dmaengine_pcm_hw_params,
--	.hw_free	= snd_pcm_lib_free_pages,
--	.trigger	= snd_dmaengine_pcm_trigger,
-+	.hw_free	= dmaengine_pcm_hw_free,
-+	.trigger	= dmaengine_pcm_trigger,
- 	.pointer	= dmaengine_pcm_pointer,
- 	.copy_user	= dmaengine_copy_user,
+-static const struct snd_pcm_ops fsl_dma_ops = {
+-	.open   	= fsl_dma_open,
+-	.close  	= fsl_dma_close,
+-	.ioctl  	= snd_pcm_lib_ioctl,
+-	.hw_params      = fsl_dma_hw_params,
+-	.hw_free	= fsl_dma_hw_free,
+-	.pointer	= fsl_dma_pointer,
 -};
 -
--static const struct snd_soc_component_driver dmaengine_pcm_component = {
--	.name		= SND_DMAENGINE_PCM_DRV_NAME,
--	.probe_order	= SND_SOC_COMP_ORDER_LATE,
--	.ops		= &dmaengine_pcm_ops,
--	.pcm_new	= dmaengine_pcm_new,
--};
--
--static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
--	.name		= SND_DMAENGINE_PCM_DRV_NAME,
--	.probe_order	= SND_SOC_COMP_ORDER_LATE,
--	.ops		= &dmaengine_pcm_process_ops,
--	.pcm_new	= dmaengine_pcm_new,
-+	.pcm_construct	= dmaengine_pcm_new,
- };
+ static int fsl_soc_dma_probe(struct platform_device *pdev)
+ {
+ 	struct dma_object *dma;
+@@ -913,8 +903,14 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
  
- static const char * const dmaengine_pcm_dma_channel_names[] = {
+ 	dma->dai.name = DRV_NAME;
+ 	dma->dai.ops = &fsl_dma_ops;
+-	dma->dai.pcm_new = fsl_dma_new;
+-	dma->dai.pcm_free = fsl_dma_free_dma_buffers;
++	dma->dai.open = fsl_dma_open;
++	dma->dai.close = fsl_dma_close;
++	dma->dai.ioctl = snd_soc_pcm_lib_ioctl;
++	dma->dai.hw_params = fsl_dma_hw_params;
++	dma->dai.hw_free = fsl_dma_hw_free;
++	dma->dai.pointer = fsl_dma_pointer;
++	dma->dai.pcm_construct = fsl_dma_new;
++	dma->dai.pcm_destruct = fsl_dma_free_dma_buffers;
+ 
+ 	/* Store the SSI-specific information that we need */
+ 	dma->ssi_stx_phys = res.start + REG_SSI_STX0;
 -- 
 2.20.1
 
