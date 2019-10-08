@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06E3EC10F14
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3AF5C4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:05:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85DA2206BB
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:04:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 57881206BB
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:05:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cxLfKfyH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GIH9Y2Y3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85DA2206BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dSfMMJJ1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="jDkfnvyL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57881206BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9B9885D;
-	Tue,  8 Oct 2019 15:03:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9B9885D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A072D1676;
+	Tue,  8 Oct 2019 15:04:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A072D1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570539857;
-	bh=LdaG8VZbzdKXd0Ode+HtRloqPENFISG8J1H7Pgp0qiU=;
+	s=default; t=1570539898;
+	bh=x7gT9ivEKLXzkdzrku448rp0TZ7z3r8E9g6wqm1n9LY=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=cxLfKfyHY34KgFeSzpI5DiP7szvDtAF2i2AEdiN9WdIjSZaQMDxq8SPrh3+QDrenX
-	 BaH3O3jzksrYUAEkb+MPUus7kaxeaVdjWvadPkTadUR7LMl3Z4Y0yhLpx5/tbFTY4x
-	 IU50XpfLBMY/k8M8f/D8B96lXECfbIc3LF7FhxeU=
+	b=dSfMMJJ1kBM5G1PLzU+vUT8bNFidFuer91jrleW1Z73dNWz/5ePnEVwFwGoUsHx3M
+	 yB90q/G85pmWJnr0qTQ5aE+pGZutReWKGmEnM/WSF1O/F3u5s6nLfd7IZWpCTQmRGV
+	 h73Jsi4sGmmqd9d+NAzazIuNpve7hkUyXqSypUlw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 669B6F8063D;
-	Tue,  8 Oct 2019 14:54:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 203DCF80447;
+	Tue,  8 Oct 2019 14:54:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E64BCF806E9; Tue,  8 Oct 2019 14:53:45 +0200 (CEST)
+ id D0615F806FA; Tue,  8 Oct 2019 14:53:46 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC837F805FF
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC837F805FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A3AEF80135
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A3AEF80135
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="GIH9Y2Y3"
+ header.b="jDkfnvyL"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=C+Qk/CFuJzUDtVjTz5g9HG1KoD3pOnH274iLnc6+uXk=; b=GIH9Y2Y3bAJq
- J+BWc/JSCyQfZxvJJ+NUH/asvGUuepiYhy/agr7ocBM6JigtqqRNWnzbadyKVwiHw6OyssgX78NAy
- g7MUAOje45kov3pdaEmrrl3v1xdILnYXjy8dkPczC02+q66E7WF+1HUocdFaG7ZWbLaIUH9nni13v
- OaJes=;
+ List-Archive; bh=5cjxPNSxnRQv9dLyP982ZfFO50IFMkpt1P/wlhG9nxc=; b=jDkfnvyL9juH
+ +gC8clYlg9mZpU98JiQ/Jdziq8jRYOsrqtyukE/5Ia28p6swxBGR/zvRrdF6KWM0n58ayvcOTFjOq
+ mrfkDwB0WWLGejOMyutFuu3+1m3QWXbxwCxiEIqE19OOA9PdgzaDAWkQm+VnhPtFaEDBvOlUM4g4a
+ Y0bpg=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHozY-0008N4-Bo; Tue, 08 Oct 2019 12:53:28 +0000
+ id 1iHozY-0008NE-Nf; Tue, 08 Oct 2019 12:53:28 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id DAC9C2740D4A; Tue,  8 Oct 2019 13:53:27 +0100 (BST)
+ id 29F642740D4B; Tue,  8 Oct 2019 13:53:28 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87muej90e4.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87o8yz90e9.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125327.DAC9C2740D4A@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:27 +0100 (BST)
+Message-Id: <20191008125328.29F642740D4B@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:28 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: meson: remove snd_pcm_ops" to the asoc
+Subject: [alsa-devel] Applied "ASoC: pxa: remove snd_pcm_ops" to the asoc
 	tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: meson: remove snd_pcm_ops
+   ASoC: pxa: remove snd_pcm_ops
 
 has been applied to the asoc tree at
 
@@ -121,293 +121,268 @@ to this mail.
 Thanks,
 Mark
 
-From bb4ba744b1701caf6148ff3b4e8656bf4f6b4758 Mon Sep 17 00:00:00 2001
+From f8772e17def20470f94bd1d6e1cf24badb2611de Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:33:55 +0900
-Subject: [PATCH] ASoC: meson: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:33:50 +0900
+Subject: [PATCH] ASoC: pxa: remove snd_pcm_ops
 
 snd_pcm_ops is no longer needed.
 Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87muej90e4.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87o8yz90e9.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-fifo.c  | 56 ++++++++++++++++---------------------
- sound/soc/meson/axg-fifo.h  | 20 +++++++++++--
- sound/soc/meson/axg-frddr.c | 24 ++++++++++++++--
- sound/soc/meson/axg-toddr.c | 24 ++++++++++++++--
- 4 files changed, 83 insertions(+), 41 deletions(-)
+ include/sound/pxa2xx-lib.h  | 26 +++++++++++-
+ sound/arm/pxa2xx-pcm-lib.c  | 80 +++++++++++++++++++++++++++++++------
+ sound/soc/pxa/pxa-ssp.c     | 14 +++++--
+ sound/soc/pxa/pxa2xx-ac97.c | 14 +++++--
+ sound/soc/pxa/pxa2xx-i2s.c  | 14 +++++--
+ sound/soc/pxa/pxa2xx-pcm.c  | 14 +++++--
+ 6 files changed, 135 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index 5a3749938900..d6f3eefb8f09 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -70,7 +70,8 @@ static void __dma_enable(struct axg_fifo *fifo,  bool enable)
- 			   enable ? CTRL0_DMA_EN : 0);
- }
- 
--static int axg_fifo_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
-+int axg_fifo_pcm_trigger(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *ss, int cmd)
- {
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
- 
-@@ -91,8 +92,10 @@ static int axg_fifo_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(axg_fifo_pcm_trigger);
- 
--static snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_pcm_substream *ss)
-+snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_soc_component *component,
-+				       struct snd_pcm_substream *ss)
- {
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
- 	struct snd_pcm_runtime *runtime = ss->runtime;
-@@ -102,9 +105,11 @@ static snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_pcm_substream *ss)
- 
- 	return bytes_to_frames(runtime, addr - (unsigned int)runtime->dma_addr);
- }
-+EXPORT_SYMBOL_GPL(axg_fifo_pcm_pointer);
- 
--static int axg_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
--				  struct snd_pcm_hw_params *params)
-+int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *ss,
-+			   struct snd_pcm_hw_params *params)
- {
- 	struct snd_pcm_runtime *runtime = ss->runtime;
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
-@@ -132,15 +137,17 @@ static int axg_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(axg_fifo_pcm_hw_params);
- 
--static int g12a_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
--				   struct snd_pcm_hw_params *params)
-+int g12a_fifo_pcm_hw_params(struct snd_soc_component *component,
-+			    struct snd_pcm_substream *ss,
-+			    struct snd_pcm_hw_params *params)
- {
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
- 	struct snd_pcm_runtime *runtime = ss->runtime;
- 	int ret;
- 
--	ret = axg_fifo_pcm_hw_params(ss, params);
-+	ret = axg_fifo_pcm_hw_params(component, ss, params);
- 	if (ret)
- 		return ret;
- 
-@@ -149,8 +156,10 @@ static int g12a_fifo_pcm_hw_params(struct snd_pcm_substream *ss,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(g12a_fifo_pcm_hw_params);
- 
--static int axg_fifo_pcm_hw_free(struct snd_pcm_substream *ss)
-+int axg_fifo_pcm_hw_free(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *ss)
- {
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
- 
-@@ -160,6 +169,7 @@ static int axg_fifo_pcm_hw_free(struct snd_pcm_substream *ss)
- 
- 	return snd_pcm_lib_free_pages(ss);
- }
-+EXPORT_SYMBOL_GPL(axg_fifo_pcm_hw_free);
- 
- static void axg_fifo_ack_irq(struct axg_fifo *fifo, u8 mask)
- {
-@@ -194,7 +204,8 @@ static irqreturn_t axg_fifo_pcm_irq_block(int irq, void *dev_id)
- 	return IRQ_RETVAL(status);
- }
- 
--static int axg_fifo_pcm_open(struct snd_pcm_substream *ss)
-+int axg_fifo_pcm_open(struct snd_soc_component *component,
-+		      struct snd_pcm_substream *ss)
- {
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
- 	struct device *dev = axg_fifo_dev(ss);
-@@ -250,8 +261,10 @@ static int axg_fifo_pcm_open(struct snd_pcm_substream *ss)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(axg_fifo_pcm_open);
- 
--static int axg_fifo_pcm_close(struct snd_pcm_substream *ss)
-+int axg_fifo_pcm_close(struct snd_soc_component *component,
-+		       struct snd_pcm_substream *ss)
- {
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
- 	int ret;
-@@ -267,28 +280,7 @@ static int axg_fifo_pcm_close(struct snd_pcm_substream *ss)
- 
- 	return ret;
- }
--
--const struct snd_pcm_ops axg_fifo_pcm_ops = {
--	.open =		axg_fifo_pcm_open,
--	.close =        axg_fifo_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	axg_fifo_pcm_hw_params,
--	.hw_free =      axg_fifo_pcm_hw_free,
--	.pointer =	axg_fifo_pcm_pointer,
--	.trigger =	axg_fifo_pcm_trigger,
--};
--EXPORT_SYMBOL_GPL(axg_fifo_pcm_ops);
--
--const struct snd_pcm_ops g12a_fifo_pcm_ops = {
--	.open =		axg_fifo_pcm_open,
--	.close =        axg_fifo_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	g12a_fifo_pcm_hw_params,
--	.hw_free =      axg_fifo_pcm_hw_free,
--	.pointer =	axg_fifo_pcm_pointer,
--	.trigger =	axg_fifo_pcm_trigger,
--};
--EXPORT_SYMBOL_GPL(g12a_fifo_pcm_ops);
-+EXPORT_SYMBOL_GPL(axg_fifo_pcm_close);
- 
- int axg_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd, unsigned int type)
- {
-diff --git a/sound/soc/meson/axg-fifo.h b/sound/soc/meson/axg-fifo.h
-index bb1e2ce50256..cf928d43b558 100644
---- a/sound/soc/meson/axg-fifo.h
-+++ b/sound/soc/meson/axg-fifo.h
-@@ -15,7 +15,7 @@ struct reset_control;
- struct snd_soc_component_driver;
- struct snd_soc_dai;
- struct snd_soc_dai_driver;
--struct snd_pcm_ops;
-+
+diff --git a/include/sound/pxa2xx-lib.h b/include/sound/pxa2xx-lib.h
+index 6758fc12fa84..0feaf16e6ac0 100644
+--- a/include/sound/pxa2xx-lib.h
++++ b/include/sound/pxa2xx-lib.h
+@@ -10,6 +10,7 @@ struct snd_pcm_substream;
+ struct snd_pcm_hw_params;
  struct snd_soc_pcm_runtime;
+ struct snd_pcm;
++struct snd_soc_component;
  
- #define AXG_FIFO_CH_MAX			128
-@@ -75,8 +75,22 @@ struct axg_fifo_match_data {
- 	struct snd_soc_dai_driver *dai_drv;
+ extern int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params);
+@@ -23,8 +24,29 @@ extern int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
+ 	struct vm_area_struct *vma);
+ extern int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream);
+ extern void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm);
+-extern int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd);
+-extern const struct snd_pcm_ops pxa2xx_pcm_ops;
++extern void pxa2xx_soc_pcm_free(struct snd_soc_component *component,
++				struct snd_pcm *pcm);
++extern int pxa2xx_soc_pcm_new(struct snd_soc_component *component,
++			      struct snd_soc_pcm_runtime *rtd);
++extern int pxa2xx_soc_pcm_open(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_close(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_hw_params(struct snd_soc_component *component,
++				    struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params);
++extern int pxa2xx_soc_pcm_hw_free(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_prepare(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_trigger(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream, int cmd);
++extern snd_pcm_uframes_t
++pxa2xx_soc_pcm_pointer(struct snd_soc_component *component,
++		       struct snd_pcm_substream *substream);
++extern int pxa2xx_soc_pcm_mmap(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream,
++			       struct vm_area_struct *vma);
+ 
+ /* AC97 */
+ 
+diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
+index 54500bd098f9..a86c95d89824 100644
+--- a/sound/arm/pxa2xx-pcm-lib.c
++++ b/sound/arm/pxa2xx-pcm-lib.c
+@@ -175,7 +175,15 @@ void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ }
+ EXPORT_SYMBOL(pxa2xx_pcm_free_dma_buffers);
+ 
+-int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
++void pxa2xx_soc_pcm_free(struct snd_soc_component *component,
++			 struct snd_pcm *pcm)
++{
++	pxa2xx_pcm_free_dma_buffers(pcm);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_free);
++
++int pxa2xx_soc_pcm_new(struct snd_soc_component *component,
++		       struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+@@ -203,18 +211,64 @@ int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ }
+ EXPORT_SYMBOL(pxa2xx_soc_pcm_new);
+ 
+-const struct snd_pcm_ops pxa2xx_pcm_ops = {
+-	.open		= pxa2xx_pcm_open,
+-	.close		= pxa2xx_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= pxa2xx_pcm_hw_params,
+-	.hw_free	= pxa2xx_pcm_hw_free,
+-	.prepare	= pxa2xx_pcm_prepare,
+-	.trigger	= pxa2xx_pcm_trigger,
+-	.pointer	= pxa2xx_pcm_pointer,
+-	.mmap		= pxa2xx_pcm_mmap,
+-};
+-EXPORT_SYMBOL(pxa2xx_pcm_ops);
++int pxa2xx_soc_pcm_open(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_open(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_open);
++
++int pxa2xx_soc_pcm_close(struct snd_soc_component *component,
++			 struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_close(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_close);
++
++int pxa2xx_soc_pcm_hw_params(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	return pxa2xx_pcm_hw_params(substream, params);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_hw_params);
++
++int pxa2xx_soc_pcm_hw_free(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_hw_free(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_hw_free);
++
++int pxa2xx_soc_pcm_prepare(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_prepare(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_prepare);
++
++int pxa2xx_soc_pcm_trigger(struct snd_soc_component *component,
++			   struct snd_pcm_substream *substream, int cmd)
++{
++	return pxa2xx_pcm_trigger(substream, cmd);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_trigger);
++
++snd_pcm_uframes_t
++pxa2xx_soc_pcm_pointer(struct snd_soc_component *component,
++		       struct snd_pcm_substream *substream)
++{
++	return pxa2xx_pcm_pointer(substream);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_pointer);
++
++int pxa2xx_soc_pcm_mmap(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream,
++			struct vm_area_struct *vma)
++{
++	return pxa2xx_pcm_mmap(substream, vma);
++}
++EXPORT_SYMBOL(pxa2xx_soc_pcm_mmap);
+ 
+ MODULE_AUTHOR("Nicolas Pitre");
+ MODULE_DESCRIPTION("Intel PXA2xx sound library");
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 5fdd1a24c232..49cb3ba1519f 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -869,9 +869,17 @@ static struct snd_soc_dai_driver pxa_ssp_dai = {
+ 
+ static const struct snd_soc_component_driver pxa_ssp_component = {
+ 	.name		= "pxa-ssp",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
  };
  
--extern const struct snd_pcm_ops axg_fifo_pcm_ops;
--extern const struct snd_pcm_ops g12a_fifo_pcm_ops;
-+int axg_fifo_pcm_open(struct snd_soc_component *component,
-+		      struct snd_pcm_substream *ss);
-+int axg_fifo_pcm_close(struct snd_soc_component *component,
-+		       struct snd_pcm_substream *ss);
-+int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *ss,
-+			   struct snd_pcm_hw_params *params);
-+int g12a_fifo_pcm_hw_params(struct snd_soc_component *component,
-+			    struct snd_pcm_substream *ss,
-+			    struct snd_pcm_hw_params *params);
-+int axg_fifo_pcm_hw_free(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *ss);
-+snd_pcm_uframes_t axg_fifo_pcm_pointer(struct snd_soc_component *component,
-+				       struct snd_pcm_substream *ss);
-+int axg_fifo_pcm_trigger(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *ss, int cmd);
+ #ifdef CONFIG_OF
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index bf28187315db..31e81a6f616f 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -204,9 +204,17 @@ static struct snd_soc_dai_driver pxa_ac97_dai_driver[] = {
  
- int axg_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd, unsigned int type);
- int axg_fifo_probe(struct platform_device *pdev);
-diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
-index 6ab111c31b28..665d75d49d7b 100644
---- a/sound/soc/meson/axg-frddr.c
-+++ b/sound/soc/meson/axg-frddr.c
-@@ -149,7 +149,13 @@ static const struct snd_soc_component_driver axg_frddr_component_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(axg_frddr_dapm_widgets),
- 	.dapm_routes		= axg_frddr_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(axg_frddr_dapm_routes),
--	.ops			= &axg_fifo_pcm_ops
-+	.open			= axg_fifo_pcm_open,
-+	.close			= axg_fifo_pcm_close,
-+	.ioctl			= snd_soc_pcm_lib_ioctl,
-+	.hw_params		= axg_fifo_pcm_hw_params,
-+	.hw_free		= axg_fifo_pcm_hw_free,
-+	.pointer		= axg_fifo_pcm_pointer,
-+	.trigger		= axg_fifo_pcm_trigger,
+ static const struct snd_soc_component_driver pxa_ac97_component = {
+ 	.name		= "pxa-ac97",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
  };
  
- static const struct axg_fifo_match_data axg_frddr_match_data = {
-@@ -267,7 +273,13 @@ static const struct snd_soc_component_driver g12a_frddr_component_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(g12a_frddr_dapm_widgets),
- 	.dapm_routes		= g12a_frddr_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
--	.ops			= &g12a_fifo_pcm_ops
-+	.open			= axg_fifo_pcm_open,
-+	.close			= axg_fifo_pcm_close,
-+	.ioctl			= snd_soc_pcm_lib_ioctl,
-+	.hw_params		= g12a_fifo_pcm_hw_params,
-+	.hw_free		= axg_fifo_pcm_hw_free,
-+	.pointer		= axg_fifo_pcm_pointer,
-+	.trigger		= axg_fifo_pcm_trigger,
+ #ifdef CONFIG_OF
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 9f7fb7335ac0..e77d707efde7 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -360,9 +360,17 @@ static struct snd_soc_dai_driver pxa_i2s_dai = {
+ 
+ static const struct snd_soc_component_driver pxa_i2s_component = {
+ 	.name		= "pxa-i2s",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
  };
  
- static const struct axg_fifo_match_data g12a_frddr_match_data = {
-@@ -331,7 +343,13 @@ static const struct snd_soc_component_driver sm1_frddr_component_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(sm1_frddr_dapm_widgets),
- 	.dapm_routes		= g12a_frddr_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
--	.ops			= &g12a_fifo_pcm_ops
-+	.open			= axg_fifo_pcm_open,
-+	.close			= axg_fifo_pcm_close,
-+	.ioctl			= snd_soc_pcm_lib_ioctl,
-+	.hw_params		= g12a_fifo_pcm_hw_params,
-+	.hw_free		= axg_fifo_pcm_hw_free,
-+	.pointer		= axg_fifo_pcm_pointer,
-+	.trigger		= axg_fifo_pcm_trigger,
+ static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 74b56fa0870f..07b3455a6f23 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -18,9 +18,17 @@
+ #include <sound/dmaengine_pcm.h>
+ 
+ static const struct snd_soc_component_driver pxa2xx_soc_platform = {
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
++	.pcm_construct	= pxa2xx_soc_pcm_new,
++	.pcm_destruct	= pxa2xx_soc_pcm_free,
++	.open		= pxa2xx_soc_pcm_open,
++	.close		= pxa2xx_soc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= pxa2xx_soc_pcm_hw_params,
++	.hw_free	= pxa2xx_soc_pcm_hw_free,
++	.prepare	= pxa2xx_soc_pcm_prepare,
++	.trigger	= pxa2xx_soc_pcm_trigger,
++	.pointer	= pxa2xx_soc_pcm_pointer,
++	.mmap		= pxa2xx_soc_pcm_mmap,
  };
  
- static const struct axg_fifo_match_data sm1_frddr_match_data = {
-diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
-index c8ea2145f576..7fef0b961496 100644
---- a/sound/soc/meson/axg-toddr.c
-+++ b/sound/soc/meson/axg-toddr.c
-@@ -181,7 +181,13 @@ static const struct snd_soc_component_driver axg_toddr_component_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(axg_toddr_dapm_widgets),
- 	.dapm_routes		= axg_toddr_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
--	.ops			= &axg_fifo_pcm_ops
-+	.open			= axg_fifo_pcm_open,
-+	.close			= axg_fifo_pcm_close,
-+	.ioctl			= snd_soc_pcm_lib_ioctl,
-+	.hw_params		= axg_fifo_pcm_hw_params,
-+	.hw_free		= axg_fifo_pcm_hw_free,
-+	.pointer		= axg_fifo_pcm_pointer,
-+	.trigger		= axg_fifo_pcm_trigger,
- };
- 
- static const struct axg_fifo_match_data axg_toddr_match_data = {
-@@ -214,7 +220,13 @@ static const struct snd_soc_component_driver g12a_toddr_component_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(axg_toddr_dapm_widgets),
- 	.dapm_routes		= axg_toddr_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
--	.ops			= &g12a_fifo_pcm_ops
-+	.open			= axg_fifo_pcm_open,
-+	.close			= axg_fifo_pcm_close,
-+	.ioctl			= snd_soc_pcm_lib_ioctl,
-+	.hw_params		= g12a_fifo_pcm_hw_params,
-+	.hw_free		= axg_fifo_pcm_hw_free,
-+	.pointer		= axg_fifo_pcm_pointer,
-+	.trigger		= axg_fifo_pcm_trigger,
- };
- 
- static const struct axg_fifo_match_data g12a_toddr_match_data = {
-@@ -278,7 +290,13 @@ static const struct snd_soc_component_driver sm1_toddr_component_drv = {
- 	.num_dapm_widgets	= ARRAY_SIZE(sm1_toddr_dapm_widgets),
- 	.dapm_routes		= sm1_toddr_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(sm1_toddr_dapm_routes),
--	.ops			= &g12a_fifo_pcm_ops
-+	.open			= axg_fifo_pcm_open,
-+	.close			= axg_fifo_pcm_close,
-+	.ioctl			= snd_soc_pcm_lib_ioctl,
-+	.hw_params		= g12a_fifo_pcm_hw_params,
-+	.hw_free		= axg_fifo_pcm_hw_free,
-+	.pointer		= axg_fifo_pcm_pointer,
-+	.trigger		= axg_fifo_pcm_trigger,
- };
- 
- static const struct axg_fifo_match_data sm1_toddr_match_data = {
+ static int pxa2xx_soc_platform_probe(struct platform_device *pdev)
 -- 
 2.20.1
 
