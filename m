@@ -2,90 +2,79 @@ Return-Path: <SRS0=gTnd=YB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AF12C4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F342C4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 14:09:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9458720673
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:31:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1ECE92064A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 14:09:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ubeWEcdl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VdBf8oOe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9458720673
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cIRIexEy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ECE92064A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27631166B;
-	Tue,  8 Oct 2019 15:30:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27631166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6167950;
+	Tue,  8 Oct 2019 16:09:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6167950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570541482;
-	bh=9/zaq3OyDs9QynI9z2dpV4Gv+a87XNN6jxtFah7meTs=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1570543793;
+	bh=aE0WBhQX/Z1/s+YEsZsMjNtpNVgiu2ZIixsDyoKnSFA=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ubeWEcdle3Dc6ZRyTwytlV4r97E1c8tbMODK8YvlhPtUr65uiHQ10SR4CPivsxPy7
-	 /BjMdqmeQpMOCbKZYYOmbqsH7t7+cG/X7N9t0Th7GBlt8W6o3AC0MnBsG8wXLqoqJh
-	 LlBYGtihTf4HsAt56lLpOwfgZFOH6LU5D9FxoHfw=
+	b=cIRIexEyXpFjIWig74plqMlqkHl5KiLtSarBBUQKtBd+iebVJx05voS3ts3Tb7B+W
+	 N8LetNcnhTtJvn9clUKxQHUcxWANV6EV/pBEI39LkYAm1Mg11ykC722d6c2qq2uP5i
+	 ucIR7k95DMaIyLWgMg9eU/CdniYH8kbMPuuVHKzM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 980A7F800BF;
-	Tue,  8 Oct 2019 15:30:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 698C8F80135;
+	Tue,  8 Oct 2019 16:09:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BB05F8038F; Tue,  8 Oct 2019 15:30:29 +0200 (CEST)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BF1DDF8038F; Tue,  8 Oct 2019 16:09:01 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2B3EF800BF
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 15:30:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2B3EF800BF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="VdBf8oOe"
-Received: by mail-wr1-x429.google.com with SMTP id r5so19358537wrm.12
- for <alsa-devel@alsa-project.org>; Tue, 08 Oct 2019 06:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=lF1ENjDc7NOoUQXgV6aVu9kc443TEhXbF15hOeLH97g=;
- b=VdBf8oOexOt3xjfB3oECFftWp2HTYmWp79e6V9+Rq/hPjUr9eRQWCHUieHFfHJTMxj
- yKmj/9RHuy4PYkIfaDBx6lAARiFZIYdOgQL+XttH+6gRV+vTarni43s+25gmcYNUEY56
- ZBscXAbUhlKzB3/e5Dn+XJ+cTEe+YKYtIJcRhOOEKMz0sDW+R44oC/AJCaNgOsfmX89x
- 4tNNbrMa721xWEUV2aG2CdkHAcQ+56fDywok1aUP+iAFIeUqJxMIngd3z8cw7dtfj4gT
- ncwvRRvBqU5uYvIravGAR7KYIcO8AwP/Hhj5+a9voa42iPoHtqv/5vNjU0Nm8DY6fG0P
- VtKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=lF1ENjDc7NOoUQXgV6aVu9kc443TEhXbF15hOeLH97g=;
- b=QbPxiO5HypZNU6QEbprQ7GinZ1TH249TM6Ch9RZ0y/z9CX5pY2s0U2NJFXhcXhA1J4
- EShrtKaUSAcsg0tCBc9sNlMqw9ni6IZdqom5KaWcd4Cz5qQltxpqvxzB/sx+ro5zer3d
- H76+s6lFpRUF4qiaXm5iiTGgsql5fzUAneS+wDXQ3/l8NZCT0VO6uTXOnbwn+BpyF5EV
- z/8EKIAArZhfebRKUnAFWEvqjp+4sYBtCaGzfukB6hsMMX58vwmS77idvpQ4oeQkGABi
- gSj53iqi4FWWTDSnHnJT7/M+KVpfPk0xJFrKL7z14YtkjF2tx3xUS+EkG1Z9Y+qgEIZi
- 0hdQ==
-X-Gm-Message-State: APjAAAX4YhYkRint1AtUOWrQczEgFWiFhdD9o1uRVCRGwQMRnadVZNz7
- Tt6n4/ULrZ8EtXE1TVlORPZvhLY/dVIdW2fGnJ6IQVFC
-X-Google-Smtp-Source: APXvYqzOYxYXCwDPQN5UE9l/U4r2dPmzrtpTmvECwBwbagme+6jPK64sTDN8BEqfMKl0WL3jdzcYQMkDPTyMek4MmCo=
-X-Received: by 2002:a5d:630d:: with SMTP id i13mr5863518wru.230.1570541425439; 
- Tue, 08 Oct 2019 06:30:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAEnQRZDhhZHOyqC8QSmgy+CY5eYSktPUiL6tVF9z_5ACegCsQw@mail.gmail.com>
-In-Reply-To: <CAEnQRZDhhZHOyqC8QSmgy+CY5eYSktPUiL6tVF9z_5ACegCsQw@mail.gmail.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Tue, 8 Oct 2019 16:30:13 +0300
-Message-ID: <CAEnQRZABxV+s3bF1yRr2TF0EJhZ-u+ZXxuvvz5so8AfyHVm8wA@mail.gmail.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Counting links in simple-card
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B97DF80113
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 16:08:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B97DF80113
+Received: from lupine.hi.pengutronix.de
+ ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+ by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+ (envelope-from <p.zabel@pengutronix.de>)
+ id 1iHqAL-0005tE-74; Tue, 08 Oct 2019 16:08:41 +0200
+Message-ID: <1570543719.18914.7.camel@pengutronix.de>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Guenter Roeck <linux@roeck-us.net>, Yingjoe Chen
+ <yingjoe.chen@mediatek.com>
+Date: Tue, 08 Oct 2019 16:08:39 +0200
+In-Reply-To: <70b77fb3-7186-734d-3415-64acb30bab8f@roeck-us.net>
+References: <1569580317-21181-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1569580317-21181-3-git-send-email-jiaxin.yu@mediatek.com>
+ <a0b2e9a3-ca77-814f-b7bd-edc69f00fce2@roeck-us.net>
+ <1570255179.29077.24.camel@mtksdaap41>
+ <70b77fb3-7186-734d-3415-64acb30bab8f@roeck-us.net>
+X-Mailer: Evolution 3.22.6-1+deb9u2 
+Mime-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, broonie@kernel.org,
+ yong.liang@mediatek.com, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ lgirdwood@gmail.com, tzungbi@google.com, robh+dt@kernel.org,
+ linux-mediatek@lists.infradead.org, eason.yen@mediatek.com,
+ wim@linux-watchdog.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH v2 2/4] watchdog: mtk_wdt: mt8183: Add
+	reset controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,36 +92,107 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Also, I wonder how can i use simple-card to create just a backend link
-CPU-dummy + Codec :).
+Hi Guenter, Yingjoe,
 
-Is this supported?
+On Sat, 2019-10-05 at 07:46 -0700, Guenter Roeck wrote:
+> On 10/4/19 10:59 PM, Yingjoe Chen wrote:
+> > On Thu, 2019-10-03 at 06:49 -0700, Guenter Roeck wrote:
+> > > On 9/27/19 3:31 AM, Jiaxin Yu wrote:
+> > 
+> > <snip..>
+> > 
+> > 
+> > > > +static int toprgu_reset_assert(struct reset_controller_dev *rcdev,
+> > > > +			       unsigned long id)
+> > > > +{
+> > > > +	unsigned int tmp;
+> > > > +	unsigned long flags;
+> > > > +	struct toprgu_reset *data = container_of(rcdev,
+> > > > +				struct toprgu_reset, rcdev);
+> > > > +
+> > > > +	spin_lock_irqsave(&data->lock, flags);
+> > > > +
+> > > > +	tmp = __raw_readl(data->toprgu_swrst_base + data->regofs);
+> > > > +	tmp |= BIT(id);
+> > > > +	tmp |= WDT_SWSYS_RST_KEY;
+> > > > +	writel(tmp, data->toprgu_swrst_base + data->regofs);
+> > > > +
+> > > > +	spin_unlock_irqrestore(&data->lock, flags);
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int toprgu_reset_deassert(struct reset_controller_dev *rcdev,
+> > > > +				 unsigned long id)
+> > > > +{
+> > > > +	unsigned int tmp;
+> > > > +	unsigned long flags;
+> > > > +	struct toprgu_reset *data = container_of(rcdev,
+> > > > +					struct toprgu_reset, rcdev);
+> > > > +
+> > > > +	spin_lock_irqsave(&data->lock, flags);
+> > > > +
+> > > > +	tmp = __raw_readl(data->toprgu_swrst_base + data->regofs);
+> > > > +	tmp &= ~BIT(id);
+> > > > +	tmp |= WDT_SWSYS_RST_KEY;
+> > > > +	writel(tmp, data->toprgu_swrst_base + data->regofs);
+> > > > +
+> > > > +	spin_unlock_irqrestore(&data->lock, flags);
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int toprgu_reset(struct reset_controller_dev *rcdev,
+> > > > +			unsigned long id)
+> > > > +{
+> > > > +	int ret;
+> > > > +
+> > > > +	ret = toprgu_reset_assert(rcdev, id);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	return toprgu_reset_deassert(rcdev, id);
+> > > 
+> > > Unless there is additional synchronization elsewhere, parallel calls
+> > > to the -> assert, and ->reset callbacks may result in the reset being
+> > > deasserted while at least one caller (the one who called the ->assert
+> > > function) believes that it is still asserted.
+> > > 
+> > > [ ... and if there _is_ additional synchronization elsewhere, the
+> > >     local spinlock would be unnecessary ]
+> > > 
+> > 
+> > I'm not sure if this count as additional synchronization, but you could
+> > get exclusive control to the reset by calling
+> > reset_control_get_exclusive so others won't try to reset the component
+> > while you are using it.
+> > 
+> > In this case, you still need spinlock because other drivers might trying
+> > to reset their components and they share same register.
+> 
+> That isn't what I meant. I referred to synchronization in the reset
+> controller core. AFAICS the reset controller core prevents parallel
+> calls into the same reset controller driver using atomics.
 
-thanks,
-Daniel.
+No, it doesn't. The atomics in struct reset_control prevent parallel
+calls on the same, reset control only, for shared reset controls.
+Two calls on different reset controls can still run simultaneously on
+the same rcdev.
 
-On Tue, Oct 8, 2019 at 4:03 PM Daniel Baluta <daniel.baluta@gmail.com> wrote:
->
-> Hi Morimoto-san,
->
-> In simple-card.c simple_get_dais_count function there is this comment:
->
->      * ex1)
->      * CPU0 --- Codec0
->      * CPU1 --- Codec1
->      * CPU2 -----/
->      * CPU3 --- Codec2
->      *
->      *    => 5 links = 2xCPU-Codec + 2xCPU-dummy + 1xdummy-Codec
->      *    => 7 DAIs  = 4xCPU + 3xCodec
->      *    => 1 ccnf  = 1xdummy-Codec
->
->
-> So, I don't understand exactly how did you get the formula for links. AFAICT
-> there should be 3 x CPU-Codec + 1 x CPU-dummy.
->
-> thanks,
-> Daniel.
+> Unfortunately, it is not well defined if additional synchronization on
+> driver level is needed - some drivers implement it, some drivers
+> don't,
+
+I think all drivers protect read/modify/write cycles to shared registers
+with a spinlock. Those that don't either have separate set/clear
+registers or use regmap, otherwise it might be a bug.
+
+> and I don't find a documentation.
+
+I am aware this is a problem.
+
+regards
+Philipp
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
