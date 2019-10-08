@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B390C10F14
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C25FBC4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:07:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7A71206BB
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:06:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BE59206BB
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:07:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gg21sKzp";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NjnXhQ3w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7A71206BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TUgGUtq7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="suFynw3x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BE59206BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EF9D168F;
-	Tue,  8 Oct 2019 15:06:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EF9D168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C692168D;
+	Tue,  8 Oct 2019 15:06:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C692168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570540017;
-	bh=C3Mf7BYrdl+qggqspBN3tK4fEA9IRklpdEYOcAs1KhM=;
+	s=default; t=1570540053;
+	bh=iZUh2ojrSTSrXPvCnBVFwaXfIgOr59pRmaA0gn6WdNU=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=gg21sKzpMfIibuudkucs2ZdLP6bYHmqKGNxb0/CKSA1JpsGbP+d0sjRbX6lQ4KwY6
-	 gLqrjdncR7djn0yk8KlIDtvTNSbFnsjASkzfiLquo3kg97tq4T8NJ5liDIFeB1zPH1
-	 MMGHheV0oFdXs7IWeo5XNdHdQsImAWl+kEQ9RuuU=
+	b=TUgGUtq72+T4+X2ibFKMG50zTrD3uHDDRfZgVnOqSs6f0cF96tAbujisozsScb5Ir
+	 5O1xC5I9LDJURTR1sX4BGz5jVtaH9SvAZa1OquW5kGpJdfV0hJRLigOeLTT2oVt9Am
+	 1YfYDzjOZp160V1h5uswFqTkEZxDqQ8qsrjGKPtg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E0EEF80792;
-	Tue,  8 Oct 2019 14:54:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CE54F80794;
+	Tue,  8 Oct 2019 14:54:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E662F8071C; Tue,  8 Oct 2019 14:53:52 +0200 (CEST)
+ id 9EDA2F8071D; Tue,  8 Oct 2019 14:53:52 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67E13F805FE
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67E13F805FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 539DBF80633
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 539DBF80633
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="NjnXhQ3w"
+ header.b="suFynw3x"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=uGIVP3omgvJQ9D8erB1JgvaOO1PGS9/Or+tkdY1hCdc=; b=NjnXhQ3wIxR1
- DFynqPxA3PrHiMtKCkaXXTwNccdyOz5f6x3dpX1j79gws6A2AJ4cBtFoPqq/hua8YfD/wp3s97m3W
- tJwN8WpCRyOnfVCi5L4yXN4kUci0tOdVoKMZTfL3o3c2ysWAcCHCcv7plJvhXnJHQVo6qIJz3hrpU
- 6u7xI=;
+ List-Archive; bh=Cn5+6goNFk2sxtodoF0l7JZHZegARrzLxNxc3TB+L7Q=; b=suFynw3xk175
+ 9a54WzT3efmyYvvZohuqs+InQjdHIvLioaKGCJ1yNiVeY7PgrQHEvvcbBV5TxguS2SbxaVOYkEczN
+ iYl/5M/Ps/KP0aH47zeHZyBuDl2yS7IRgKAtGzZkmFiWH1znsjDXEnRaxDTDaAROVdXAq2qNJG8Yl
+ ncnAU=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHozZ-0008NL-3r; Tue, 08 Oct 2019 12:53:29 +0000
+ id 1iHozZ-0008Nj-Sg; Tue, 08 Oct 2019 12:53:29 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 9E4702740D4A; Tue,  8 Oct 2019 13:53:28 +0100 (BST)
+ id 5DB592740D4A; Tue,  8 Oct 2019 13:53:29 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87r23v90ek.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v9t790f2.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125328.9E4702740D4A@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:28 +0100 (BST)
+Message-Id: <20191008125329.5DB592740D4A@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:29 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: qcom: q6asm-dai: remove snd_pcm_ops" to
+Subject: [alsa-devel] Applied "ASoC: samsung: idma: remove snd_pcm_ops" to
 	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: qcom: q6asm-dai: remove snd_pcm_ops
+   ASoC: samsung: idma: remove snd_pcm_ops
 
 has been applied to the asoc tree at
 
@@ -121,198 +121,159 @@ to this mail.
 Thanks,
 Mark
 
-From 2324c8f4cd35280272419df0f45b37429d3256d4 Mon Sep 17 00:00:00 2001
+From ba40ab6275173ef9b35b466324a25921a3f49b42 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:33:39 +0900
-Subject: [PATCH] ASoC: qcom: q6asm-dai: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:33:21 +0900
+Subject: [PATCH] ASoC: samsung: idma: remove snd_pcm_ops
 
 snd_pcm_ops is no longer needed.
 Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87r23v90ek.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87v9t790f2.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 71 ++++++++++++++++----------------
- 1 file changed, 35 insertions(+), 36 deletions(-)
+ sound/soc/samsung/idma.c | 58 ++++++++++++++++++++++------------------
+ 1 file changed, 32 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 548eb4fa2da6..f59353f510b8 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -206,16 +206,16 @@ static void event_handler(uint32_t opcode, uint32_t token,
- 	}
+diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
+index 65497cd477a5..294dce111b05 100644
+--- a/sound/soc/samsung/idma.c
++++ b/sound/soc/samsung/idma.c
+@@ -137,8 +137,9 @@ static void idma_done(void *id, int bytes_xfer)
+ 		snd_pcm_period_elapsed(substream);
  }
  
--static int q6asm_dai_prepare(struct snd_pcm_substream *substream)
-+static int q6asm_dai_prepare(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
- 	struct q6asm_dai_data *pdata;
- 	int ret, i;
- 
--	pdata = snd_soc_component_get_drvdata(c);
-+	pdata = snd_soc_component_get_drvdata(component);
- 	if (!pdata)
- 		return -EINVAL;
- 
-@@ -294,7 +294,8 @@ static int q6asm_dai_prepare(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int q6asm_dai_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int q6asm_dai_trigger(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream, int cmd)
- {
- 	int ret = 0;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -322,21 +323,21 @@ static int q6asm_dai_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return ret;
- }
- 
--static int q6asm_dai_open(struct snd_pcm_substream *substream)
-+static int q6asm_dai_open(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = soc_prtd->cpu_dai;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
- 	struct q6asm_dai_rtd *prtd;
- 	struct q6asm_dai_data *pdata;
--	struct device *dev = c->dev;
-+	struct device *dev = component->dev;
- 	int ret = 0;
- 	int stream_id;
- 
- 	stream_id = cpu_dai->driver->id;
- 
--	pdata = snd_soc_component_get_drvdata(c);
-+	pdata = snd_soc_component_get_drvdata(component);
- 	if (!pdata) {
- 		pr_err("Drv data not found ..\n");
- 		return -EINVAL;
-@@ -414,7 +415,8 @@ static int q6asm_dai_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int q6asm_dai_close(struct snd_pcm_substream *substream)
-+static int q6asm_dai_close(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
-@@ -435,7 +437,8 @@ static int q6asm_dai_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static snd_pcm_uframes_t q6asm_dai_pointer(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t q6asm_dai_pointer(struct snd_soc_component *component,
-+					   struct snd_pcm_substream *substream)
- {
- 
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -447,22 +450,21 @@ static snd_pcm_uframes_t q6asm_dai_pointer(struct snd_pcm_substream *substream)
- 	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
- }
- 
--static int q6asm_dai_mmap(struct snd_pcm_substream *substream,
--				struct vm_area_struct *vma)
-+static int q6asm_dai_mmap(struct snd_soc_component *component,
-+			  struct snd_pcm_substream *substream,
-+			  struct vm_area_struct *vma)
- {
--
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
--	struct device *dev = c->dev;
-+	struct device *dev = component->dev;
- 
- 	return dma_mmap_coherent(dev, vma,
- 			runtime->dma_area, runtime->dma_addr,
- 			runtime->dma_bytes);
- }
- 
--static int q6asm_dai_hw_params(struct snd_pcm_substream *substream,
+-static int idma_hw_params(struct snd_pcm_substream *substream,
 -				struct snd_pcm_hw_params *params)
-+static int q6asm_dai_hw_params(struct snd_soc_component *component,
-+			       struct snd_pcm_substream *substream,
-+			       struct snd_pcm_hw_params *params)
++static int idma_hw_params(struct snd_soc_component *component,
++			  struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params)
  {
  	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
-@@ -482,17 +484,6 @@ static int q6asm_dai_hw_params(struct snd_pcm_substream *substream,
+ 	struct idma_ctrl *prtd = substream->runtime->private_data;
+@@ -163,14 +164,16 @@ static int idma_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
--static struct snd_pcm_ops q6asm_dai_ops = {
--	.open           = q6asm_dai_open,
--	.hw_params	= q6asm_dai_hw_params,
--	.close          = q6asm_dai_close,
--	.ioctl          = snd_pcm_lib_ioctl,
--	.prepare        = q6asm_dai_prepare,
--	.trigger        = q6asm_dai_trigger,
--	.pointer        = q6asm_dai_pointer,
--	.mmap		= q6asm_dai_mmap,
+-static int idma_hw_free(struct snd_pcm_substream *substream)
++static int idma_hw_free(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream)
+ {
+ 	snd_pcm_set_runtime_buffer(substream, NULL);
+ 
+ 	return 0;
+ }
+ 
+-static int idma_prepare(struct snd_pcm_substream *substream)
++static int idma_prepare(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream)
+ {
+ 	struct idma_ctrl *prtd = substream->runtime->private_data;
+ 
+@@ -183,7 +186,8 @@ static int idma_prepare(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int idma_trigger(struct snd_pcm_substream *substream, int cmd)
++static int idma_trigger(struct snd_soc_component *component,
++			struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct idma_ctrl *prtd = substream->runtime->private_data;
+ 	int ret = 0;
+@@ -216,7 +220,8 @@ static int idma_trigger(struct snd_pcm_substream *substream, int cmd)
+ }
+ 
+ static snd_pcm_uframes_t
+-	idma_pointer(struct snd_pcm_substream *substream)
++idma_pointer(struct snd_soc_component *component,
++	     struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct idma_ctrl *prtd = runtime->private_data;
+@@ -233,7 +238,8 @@ static snd_pcm_uframes_t
+ 	return bytes_to_frames(substream->runtime, res);
+ }
+ 
+-static int idma_mmap(struct snd_pcm_substream *substream,
++static int idma_mmap(struct snd_soc_component *component,
++		     struct snd_pcm_substream *substream,
+ 	struct vm_area_struct *vma)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -278,7 +284,8 @@ static irqreturn_t iis_irq(int irqno, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int idma_open(struct snd_pcm_substream *substream)
++static int idma_open(struct snd_soc_component *component,
++		     struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct idma_ctrl *prtd;
+@@ -304,7 +311,8 @@ static int idma_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int idma_close(struct snd_pcm_substream *substream)
++static int idma_close(struct snd_soc_component *component,
++		      struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct idma_ctrl *prtd = runtime->private_data;
+@@ -319,19 +327,8 @@ static int idma_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static const struct snd_pcm_ops idma_ops = {
+-	.open		= idma_open,
+-	.close		= idma_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.trigger	= idma_trigger,
+-	.pointer	= idma_pointer,
+-	.mmap		= idma_mmap,
+-	.hw_params	= idma_hw_params,
+-	.hw_free	= idma_hw_free,
+-	.prepare	= idma_prepare,
 -};
 -
- static void compress_event_handler(uint32_t opcode, uint32_t token,
- 				   uint32_t *payload, void *priv)
+-static void idma_free(struct snd_pcm *pcm)
++static void idma_free(struct snd_soc_component *component,
++		      struct snd_pcm *pcm)
  {
-@@ -800,15 +791,15 @@ static struct snd_compr_ops q6asm_dai_compr_ops = {
- 	.ack		= q6asm_dai_compr_ack,
- };
- 
--static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int q6asm_dai_pcm_new(struct snd_soc_component *component,
-+			     struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_pcm_substream *psubstream, *csubstream;
--	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct snd_pcm *pcm = rtd->pcm;
- 	struct device *dev;
- 	int size, ret;
- 
--	dev = c->dev;
-+	dev = component->dev;
- 	size = q6asm_dai_hardware_playback.buffer_bytes_max;
- 	psubstream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
- 	if (psubstream) {
-@@ -835,7 +826,8 @@ static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_pcm_substream *substream;
+ 	struct snd_dma_buffer *buf;
+@@ -367,7 +364,8 @@ static int preallocate_idma_buffer(struct snd_pcm *pcm, int stream)
  	return 0;
  }
  
--static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
-+static void q6asm_dai_pcm_free(struct snd_soc_component *component,
-+			       struct snd_pcm *pcm)
+-static int idma_new(struct snd_soc_pcm_runtime *rtd)
++static int idma_new(struct snd_soc_component *component,
++		    struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_pcm_substream *substream;
- 	int i;
-@@ -852,9 +844,16 @@ static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+@@ -394,9 +392,17 @@ void idma_reg_addr_init(void __iomem *regs, dma_addr_t addr)
+ EXPORT_SYMBOL_GPL(idma_reg_addr_init);
  
- static const struct snd_soc_component_driver q6asm_fe_dai_component = {
- 	.name		= DRV_NAME,
--	.ops		= &q6asm_dai_ops,
--	.pcm_new	= q6asm_dai_pcm_new,
--	.pcm_free	= q6asm_dai_pcm_free,
-+	.open		= q6asm_dai_open,
-+	.hw_params	= q6asm_dai_hw_params,
-+	.close		= q6asm_dai_close,
+ static const struct snd_soc_component_driver asoc_idma_platform = {
+-	.ops = &idma_ops,
+-	.pcm_new = idma_new,
+-	.pcm_free = idma_free,
++	.open		= idma_open,
++	.close		= idma_close,
 +	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.prepare	= q6asm_dai_prepare,
-+	.trigger	= q6asm_dai_trigger,
-+	.pointer	= q6asm_dai_pointer,
-+	.mmap		= q6asm_dai_mmap,
-+	.pcm_construct	= q6asm_dai_pcm_new,
-+	.pcm_destruct	= q6asm_dai_pcm_free,
- 	.compr_ops	= &q6asm_dai_compr_ops,
++	.trigger	= idma_trigger,
++	.pointer	= idma_pointer,
++	.mmap		= idma_mmap,
++	.hw_params	= idma_hw_params,
++	.hw_free	= idma_hw_free,
++	.prepare	= idma_prepare,
++	.pcm_construct	= idma_new,
++	.pcm_destruct	= idma_free,
  };
  
+ static int asoc_idma_platform_probe(struct platform_device *pdev)
 -- 
 2.20.1
 
