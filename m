@@ -2,95 +2,80 @@ Return-Path: <SRS0=gTnd=YB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38E2BC4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACC4AC10F14
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:54:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65A3420815
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:39:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3499720640
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:54:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XcvnLdTT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NEn7pVo3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65A3420815
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lGlWlXUL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="xMrqWQy0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3499720640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 445BF950;
-	Tue,  8 Oct 2019 14:38:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 445BF950
+	by alsa0.perex.cz (Postfix) with ESMTPS id B111B86E;
+	Tue,  8 Oct 2019 14:53:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B111B86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570538374;
-	bh=q8H58rAhap1jcZPdrbntUnbZq/zPnQQ61RkjKOxmou0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XcvnLdTTipvUIWceh64NTGr54oTWH6CqXxtGLqd6kfQS+MJ8XaqriBJWm0Dxba5I7
-	 ZmorXpVKtR5fWUNnIJrXdiUwm3arjQ3aqqsCXc8T0MAIG15+eN+lBpMUhpkp3WIXs2
-	 My+zw6S7kT14kfPAbmHY8RpiPOkS6ad+aVSZP4Yw=
+	s=default; t=1570539261;
+	bh=zO4XVI/zv+F9ct5f62v+6xphvn4meDH1fQERa7iVK0o=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=lGlWlXULoTMDf4vQ7Zn61Ax3PTO0O5WTjHk+jheB547Cx6BHm04lefStr96OP32SE
+	 aVoNYXt6z2ACHAnAmVurqdd7UHAKV8dXc/CikKrRhIBUeb2RxJiU7skqxUAY9fmIbV
+	 +/sJQ1Vvwgm8VNv9miseWoZ18m4pbz5trKJP7tUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94AC1F80322;
-	Tue,  8 Oct 2019 14:38:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08C67F8060F;
+	Tue,  8 Oct 2019 14:53:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF175F8038F; Tue,  8 Oct 2019 14:38:41 +0200 (CEST)
+ id 0EF55F805FE; Tue,  8 Oct 2019 14:53:29 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89152F80135
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:38:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89152F80135
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FAECF80322
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FAECF80322
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="NEn7pVo3"
+ header.b="xMrqWQy0"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=XCRqrE/2wFsLdYy7LCWtwbzFTzuN+bJ6NPUhISRg/+c=; b=NEn7pVo3NzrSTlTkfh3cRQ09n
- 4wIsRY45dmBmn5n9cNtD0ref5gCFA4QHNrme6us45WTWbET85LtDY8CQaOuoCRwzgE7CVqYyNJ492
- Jmj+k+BrvM7fBFQOfLVtb4DtG1WmWYW+gazptdKy4i4BCy0u0pbg0NdZLIFP6XVoKKvis=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=N2b44ekOcHDAUqcKoAlTM3iiANbayraUeeFGMrJ8/Q4=; b=xMrqWQy0MbJm
+ STgJ/5MCiukWtJJ0lzZjyi7bC4SaTMUBdZerwJIv98C6uey+t9zLZfv/bHEq7Tz28Dm6zsDeS8tuM
+ lEL2utyXUrbIIRH8kpDv48ZH74kpx6pTOr73GSXhprbqD7GbrnUvisC0QD311tpu5zqpTHiDgU+Gs
+ dQKK8=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHol9-0008JO-LL; Tue, 08 Oct 2019 12:38:35 +0000
+ id 1iHozV-0008M5-Ps; Tue, 08 Oct 2019 12:53:25 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id DF22C2740D48; Tue,  8 Oct 2019 13:38:34 +0100 (BST)
-Date: Tue, 8 Oct 2019 13:38:34 +0100
+ id 3E0782740D4C; Tue,  8 Oct 2019 13:53:25 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Cheng-yi Chiang <cychiang@chromium.org>
-Message-ID: <20191008123834.GI4382@sirena.co.uk>
-References: <8f933cee57fc4420875e1e2ba14f1937@realtek.com>
- <20191008105138.GC4382@sirena.co.uk>
- <CAFv8NwJ+g+ESJJ5JxaLHADhBASKsjTE7pqY=HhcZZcT2Yy+Ygw@mail.gmail.com>
- <20191008110643.GD4382@sirena.co.uk>
- <CAFv8Nw+68LkmCmPnq5+rvf3Ffnh1kRROdjrx=nN8tgMTGEq+xQ@mail.gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <CAFv8Nw+68LkmCmPnq5+rvf3Ffnh1kRROdjrx=nN8tgMTGEq+xQ@mail.gmail.com>
-X-Cookie: Do not disturb.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "lars@metafoo.de" <lars@metafoo.de>, SteveS.Lee@maximintegrated.com,
- George.Song@maximintegrated.com, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- pierre-louis.bossart@linux.intel.com, "M R,
- Sathya Prakash" <sathya.prakash.m.r@intel.com>, jinho.ahn@maximintegrated.com,
- Tzung-Bi Shih <tzungbi@chromium.org>,
- Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
- Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
- Dylan Reid <dgreid@chromium.org>, "Flove\(HsinFu\)" <flove@realtek.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rt1011: export r0 and temperature
-	config
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877e5n90cn.wl-kuninori.morimoto.gx@renesas.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20191008125325.3E0782740D4C@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:25 +0100 (BST)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: fsl: fsl_dma: don't use
+	snd_soc_rtdcom_lookup()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,82 +88,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7568904205338259817=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---===============7568904205338259817==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qLni7iB6Dl8qUSwk"
-Content-Disposition: inline
+   ASoC: fsl: fsl_dma: don't use snd_soc_rtdcom_lookup()
 
+has been applied to the asoc tree at
 
---qLni7iB6Dl8qUSwk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
-On Tue, Oct 08, 2019 at 07:22:17PM +0800, Cheng-yi Chiang wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> The VPD is not part of the codec.
-> It is a binary blob in system firmware where we can store important
-> information per-device.
-> The calibration data is written to RO section of VPD in the factory
-> during calibration step.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Ugh, this is not idiomatic for a DT system :(
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> The codec driver is not suitable of reading this information directly
-> because the string format written into VPD is customized per board.
-> For example on cml_rt1011_rt5682.c there are four R0 values for four
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-The expected model for a DT system is that this stuff should just come
-in through DT properties, if for system design/manufacturing reasons it
-needs to be stored separately then you'd expect it to be merged into the
-main DT by the bootloader or something else earlier on in boot.
+Thanks,
+Mark
 
-> speakers, and one temperature values . So in this case, there are
-> totally 5 values in a VPD dsm_calib key. In VPD, the format is like
-> "dsm_calib"="0x00278F09 0x00251E1B 0x0021AFE6 0x0022720A 0x0000012E"
-> We put all the information into one string to allow arbitrary
-> calibration data needed for smart amp calibration in the future.
-> On other system using smart amp, there might be two speakers, with two
-> temperature values..etc. The format will be changed accordingly.
-> Number of temperature values depends on number of temperature sensor
-> available near the speakers.
-> Since machine driver knows the combination of speakers and the
-> available temperature sensor, we think that machine driver is the
-> better place to put this per-board logic.
+From a21192a7daf45f14120d6976b64efc3234499de7 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 2 Oct 2019 14:34:48 +0900
+Subject: [PATCH] ASoC: fsl: fsl_dma: don't use snd_soc_rtdcom_lookup()
 
-I'm not sure why they all need to be in one property?  That's a
-secondary problem though.
+snd_soc_rtdcom_lookup() will be removed.
+It is used at fsl_dma_isr(), but it is just for dev_err(dev..).
+rtd->dev is very enough for it.
+This patch replace component->dev to rtd->dev
 
---qLni7iB6Dl8qUSwk
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/877e5n90cn.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2cg0oACgkQJNaLcl1U
-h9DLegf+OMHE3OKMfnhkxLZeVAELDJ0QQnAGWR38mLUcQf0bbBwmQAxI+8qv+oc8
-RFbx1/uqzRo4wj6BpMdjlopkFUmEIFbVpC86NOeRRI2kTAi7/aIdYCpWE2YNjsh0
-Qz7tVxXYISFA0ELT/PV/QubmRVqZFJvUCJbvLwplKn7I4dLj1yDBeU3bHprSWE1v
-cANV0wY28Ug7P7JvpLQfNwpYQMZrH5SEbEyT/Oe0k2sdE7KjEGSRVRdY1yLxJ5g5
-8ffyUP60mBFScMszpeZP5KXsHgztj5eQMApdtBIGve88JF24AWLuOFeGmErE8i7A
-nWQCAj0oCKBZJbGimWqGYS/0rynCWQ==
-=NQog
------END PGP SIGNATURE-----
-
---qLni7iB6Dl8qUSwk--
-
---===============7568904205338259817==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index bc8691a45131..a092726510d4 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -201,8 +201,7 @@ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
+ 	struct fsl_dma_private *dma_private = dev_id;
+ 	struct snd_pcm_substream *substream = dma_private->substream;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+-	struct device *dev = component->dev;
++	struct device *dev = rtd->dev;
+ 	struct ccsr_dma_channel __iomem *dma_channel = dma_private->dma_channel;
+ 	irqreturn_t ret = IRQ_NONE;
+ 	u32 sr, sr2 = 0;
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7568904205338259817==--
