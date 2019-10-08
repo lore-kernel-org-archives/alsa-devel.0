@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E277C10F14
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4760FC10F14
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:06:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1775D206BB
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:05:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C9631206BB
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:06:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gh5kRqqx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="C4Jj+a+/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1775D206BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qi6VLpV2";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="s2ksn9Xu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9631206BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 633B31685;
-	Tue,  8 Oct 2019 15:04:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 633B31685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FEB7167D;
+	Tue,  8 Oct 2019 15:05:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FEB7167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570539941;
-	bh=1DE05biKR0nMIgDvYiiIYTu/gKUcGGVnWY9jD3ddOEw=;
+	s=default; t=1570539975;
+	bh=iPeSy6RnlZ+XjdlfOHrDCRRppqYm8LenFPvLgEHuisE=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Gh5kRqqxfmY6hkQdeK1+CP7C1xghBNdQ7aeOkC0V8njrr/2hyi26vGTG9Wd3gFiQn
-	 se8L9/gQ16peNk92oPgnJCx9y7faVxIC5Gs4sn7qm7RZYPDgs/eihFraTbWQrVFbUe
-	 tRwhMEeDfbi0TPrAr6oDH9CxYOG+KwE6NyGcH7mE=
+	b=Qi6VLpV2dh7K+YZnLKmTQzsxMKqhJJuLYIRgWWnUbfnc9ldj7x5ir4Nh50Ouo+Snc
+	 npSmXe2bc6YP8A0DYrf6YCYr91NOK9zUSEb+oOwq+dvMdUNBqhNoT14NAs8l8xhYij
+	 UrAOpshlcLy/MJE5zrKHRA/jiu0Upoc4ZFyX1Gdg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF336F8076C;
-	Tue,  8 Oct 2019 14:54:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FC8CF8077B;
+	Tue,  8 Oct 2019 14:54:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C666F80709; Tue,  8 Oct 2019 14:53:48 +0200 (CEST)
+ id 55FC2F80716; Tue,  8 Oct 2019 14:53:50 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5328CF80600
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91F1EF8060D
  for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5328CF80600
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91F1EF8060D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="C4Jj+a+/"
+ header.b="s2ksn9Xu"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=QKmM8ituZZLezOrtfZEpY4ng2nKgrHO7pE8iYUreKyw=; b=C4Jj+a+/SWRv
- ZTDUwel9DOJ7oJnqUvuOqMzWdaPxW6OXn3Jbia58BH+oTb3BOv5XOC89iAzcwRxHXhSOr2EhD9dhP
- tEUGp037Kiixglhxe6SSjZuZyX/U67eFRYZSZpyA0iyQT1cFRyNhdm8+FkOhkLwYfYii2VbCEm1uI
- vU5Dc=;
+ List-Archive; bh=uBcv8XILeaNU+eKErtknmtYPBjSwRaMR4JiU12iwSVs=; b=s2ksn9XuJCCJ
+ v9WUCi2xqEB20DXzHwfs0XYlYP2AKy+QWXcE0EKRcgyWKrzd7xCT8evUjd6sH3iLwUGrnjRrgXFoD
+ IBX/cJPecrcRFYndnSfj9grd4Ksc0Jy87INJbsCaRANbDXj9Qj5wFtrv3IArMaiGm6qG1JtNU7xfd
+ tI4Pc=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHozY-0008NK-UJ; Tue, 08 Oct 2019 12:53:29 +0000
+ id 1iHozZ-0008NT-Bh; Tue, 08 Oct 2019 12:53:29 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 631D72740D48; Tue,  8 Oct 2019 13:53:28 +0100 (BST)
+ id DD8AD2740D4B; Tue,  8 Oct 2019 13:53:28 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87pnjf90ef.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sgob90ep.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125328.631D72740D48@ypsilon.sirena.org.uk>
+Message-Id: <20191008125328.DD8AD2740D4B@ypsilon.sirena.org.uk>
 Date: Tue,  8 Oct 2019 13:53:28 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: pxa: mmp-pcm: remove snd_pcm_ops" to
+Subject: [alsa-devel] Applied "ASoC: qcom: q6routing: remove snd_pcm_ops" to
 	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: pxa: mmp-pcm: remove snd_pcm_ops
+   ASoC: qcom: q6routing: remove snd_pcm_ops
 
 has been applied to the asoc tree at
 
@@ -121,143 +121,64 @@ to this mail.
 Thanks,
 Mark
 
-From 540e59c68bbcd450d711aaddddc9332507a5a504 Mon Sep 17 00:00:00 2001
+From e198048bdc63b8a5f258c990b4d9ad8a08b7932a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:33:44 +0900
-Subject: [PATCH] ASoC: pxa: mmp-pcm: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:33:34 +0900
+Subject: [PATCH] ASoC: qcom: q6routing: remove snd_pcm_ops
 
 snd_pcm_ops is no longer needed.
 Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87pnjf90ef.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87sgob90ep.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mmp-pcm.c | 62 ++++++++++++++++++++++++++---------------
- 1 file changed, 40 insertions(+), 22 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 7096b5263e25..54a4c9213e83 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -55,8 +55,9 @@ static struct snd_pcm_hardware mmp_pcm_hardware[] = {
- 	},
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index ddcd9978cf57..20724102e85a 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -939,12 +939,12 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 
  };
  
--static int mmp_pcm_hw_params(struct snd_pcm_substream *substream,
--			      struct snd_pcm_hw_params *params)
-+static int mmp_pcm_hw_params(struct snd_soc_component *component,
+-static int routing_hw_params(struct snd_pcm_substream *substream,
+-				     struct snd_pcm_hw_params *params)
++static int routing_hw_params(struct snd_soc_component *component,
 +			     struct snd_pcm_substream *substream,
 +			     struct snd_pcm_hw_params *params)
  {
- 	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
- 	struct dma_slave_config slave_config;
-@@ -77,6 +78,18 @@ static int mmp_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+-	struct msm_routing_data *data = dev_get_drvdata(c->dev);
++	struct msm_routing_data *data = dev_get_drvdata(component->dev);
+ 	unsigned int be_id = rtd->cpu_dai->id;
+ 	struct session_data *session;
+ 	int path_type;
+@@ -980,10 +980,6 @@ static int routing_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
-+static int mmp_pcm_trigger(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream, int cmd)
-+{
-+	return snd_dmaengine_pcm_trigger(substream, cmd);
-+}
-+
-+static snd_pcm_uframes_t mmp_pcm_pointer(struct snd_soc_component *component,
-+					 struct snd_pcm_substream *substream)
-+{
-+	return snd_dmaengine_pcm_pointer(substream);
-+}
-+
- static bool filter(struct dma_chan *chan, void *param)
- {
- 	struct mmp_dma_data *dma_data = param;
-@@ -94,10 +107,10 @@ static bool filter(struct dma_chan *chan, void *param)
- 	return found;
- }
- 
--static int mmp_pcm_open(struct snd_pcm_substream *substream)
-+static int mmp_pcm_open(struct snd_soc_component *component,
-+			struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
- 	struct platform_device *pdev = to_platform_device(component->dev);
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct mmp_dma_data dma_data;
-@@ -117,8 +130,15 @@ static int mmp_pcm_open(struct snd_pcm_substream *substream)
- 		    &dma_data);
- }
- 
--static int mmp_pcm_mmap(struct snd_pcm_substream *substream,
--			 struct vm_area_struct *vma)
-+static int mmp_pcm_close(struct snd_soc_component *component,
-+			 struct snd_pcm_substream *substream)
-+{
-+	return snd_dmaengine_pcm_close_release_chan(substream);
-+}
-+
-+static int mmp_pcm_mmap(struct snd_soc_component *component,
-+			struct snd_pcm_substream *substream,
-+			struct vm_area_struct *vma)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned long off = vma->vm_pgoff;
-@@ -129,17 +149,8 @@ static int mmp_pcm_mmap(struct snd_pcm_substream *substream,
- 		vma->vm_end - vma->vm_start, vma->vm_page_prot);
- }
- 
--static const struct snd_pcm_ops mmp_pcm_ops = {
--	.open		= mmp_pcm_open,
--	.close		= snd_dmaengine_pcm_close_release_chan,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= mmp_pcm_hw_params,
--	.trigger	= snd_dmaengine_pcm_trigger,
--	.pointer	= snd_dmaengine_pcm_pointer,
--	.mmap		= mmp_pcm_mmap,
+-static struct snd_pcm_ops q6pcm_routing_ops = {
+-	.hw_params = routing_hw_params,
 -};
 -
--static void mmp_pcm_free_dma_buffers(struct snd_pcm *pcm)
-+static void mmp_pcm_free_dma_buffers(struct snd_soc_component *component,
-+				     struct snd_pcm *pcm)
+ static int msm_routing_probe(struct snd_soc_component *c)
  {
- 	struct snd_pcm_substream *substream;
- 	struct snd_dma_buffer *buf;
-@@ -188,7 +199,8 @@ static int mmp_pcm_preallocate_dma_buffer(struct snd_pcm_substream *substream,
- 	return 0;
+ 	int i;
+@@ -997,9 +993,9 @@ static int msm_routing_probe(struct snd_soc_component *c)
  }
  
--static int mmp_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int mmp_pcm_new(struct snd_soc_component *component,
-+		       struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_pcm_substream *substream;
- 	struct snd_pcm *pcm = rtd->pcm;
-@@ -205,15 +217,21 @@ static int mmp_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- 
- err:
--	mmp_pcm_free_dma_buffers(pcm);
-+	mmp_pcm_free_dma_buffers(component, pcm);
- 	return ret;
- }
- 
- static const struct snd_soc_component_driver mmp_soc_component = {
- 	.name		= DRV_NAME,
--	.ops		= &mmp_pcm_ops,
--	.pcm_new	= mmp_pcm_new,
--	.pcm_free	= mmp_pcm_free_dma_buffers,
-+	.open		= mmp_pcm_open,
-+	.close		= mmp_pcm_close,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.hw_params	= mmp_pcm_hw_params,
-+	.trigger	= mmp_pcm_trigger,
-+	.pointer	= mmp_pcm_pointer,
-+	.mmap		= mmp_pcm_mmap,
-+	.pcm_construct	= mmp_pcm_new,
-+	.pcm_destruct	= mmp_pcm_free_dma_buffers,
- };
- 
- static int mmp_pcm_probe(struct platform_device *pdev)
+ static const struct snd_soc_component_driver msm_soc_routing_component = {
+-	.ops = &q6pcm_routing_ops,
+ 	.probe = msm_routing_probe,
+ 	.name = DRV_NAME,
++	.hw_params = routing_hw_params,
+ 	.dapm_widgets = msm_qdsp6_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
+ 	.dapm_routes = intercon,
 -- 
 2.20.1
 
