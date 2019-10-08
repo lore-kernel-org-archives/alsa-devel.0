@@ -2,91 +2,88 @@ Return-Path: <SRS0=gTnd=YB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65404C4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 16:53:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFE39C10F14
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 18:16:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF6F721835
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 16:53:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B38CF2070B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 18:16:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZvzX/fkb";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LAN2pwMT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF6F721835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AJo1z3qy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c3Y+k5fg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B38CF2070B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CB9C15E2;
-	Tue,  8 Oct 2019 18:52:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CB9C15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68F86857;
+	Tue,  8 Oct 2019 20:15:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68F86857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570553611;
-	bh=Pb03JxmCRTmGZKRDRU22THYRtO5mzYXOM3Xbc5xNbBg=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZvzX/fkbSS921KwJswYadITlx70zl1jRWhkfk2meDjGxpIrAvV2QLlGEN4TCeeDjx
-	 Y5X4YfzqZrXGlBFGlYQkHcPN1Xoox+oFCdjelE0VD9irznEFkGP0yEjgDbP+ocS9p3
-	 oEkGqYe7pLtgkif2lMrrKioE9tT2BKq0TQ3dYNJA=
+	s=default; t=1570558595;
+	bh=Nz7FKEkjqF1lItTrSttDmaIxrRypsyxxonlkC1pHO50=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AJo1z3qyqiEvCMO7ssLxX8V1eZJhQFH3DAGmOSaKQkkrdDH3m5pi1XA/lj3kybs3J
+	 NaBRKIiW2c1QFLRlfl1xIdTplcWl6dN1L1G9a5eEvqZ842E1K6HtogwuonWPYZNBYP
+	 x26gHcmuvL55Td3HhnE3F86bFGYFBshRnLbnK8Xs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A47CF80322;
-	Tue,  8 Oct 2019 18:52:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9ED0F80322;
+	Tue,  8 Oct 2019 20:15:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF82AF8038F; Tue,  8 Oct 2019 18:52:38 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id B969DF80447; Tue,  8 Oct 2019 20:15:42 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6A60F800BF
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 18:52:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6A60F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEABBF80113
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 20:15:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEABBF80113
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="LAN2pwMT"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=bxciPF2qPn6AVINPKLIOVCuywf0FCe9PPs/xWu6z0Tk=; b=LAN2pwMT0t97CtLQP2ucTpwAW
- UE2/K1a7mzPqprHmvlGXliUK2y+1MyChVWUn8Qgf9whpl4Y7SD89JyxScg+PFExLw3y62yrjY7+cZ
- URNkjYrQflcsIYtheCswHdyywCUfG5hGkx2DM+pmgY2oH04f2ZUO8dYMiNLLxK5+06Q5I=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iHsit-0000Xu-O3; Tue, 08 Oct 2019 16:52:31 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id D4E342740D4A; Tue,  8 Oct 2019 17:52:30 +0100 (BST)
-Date: Tue, 8 Oct 2019 17:52:30 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Ladislav Michl <ladis@linux-mips.org>
-Message-ID: <20191008165230.GR4382@sirena.co.uk>
-References: <20191006104631.60608-1-yuehaibing@huawei.com>
- <20191007130309.EAEBE2741EF0@ypsilon.sirena.org.uk>
- <20191008163508.GA16283@lenoch>
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="c3Y+k5fg"
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id x98IFZYd055295;
+ Tue, 8 Oct 2019 13:15:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1570558535;
+ bh=MHbt/egTxGNc/lCwyNbm8rdYzujVZ7DY1baO8ocVABU=;
+ h=From:To:CC:Subject:Date;
+ b=c3Y+k5fgd7o03DtgIecpJ/TGaYIJGTN0hde/Hu9HP21ivAvfZjAR1Ej1ZJJ/XE1L6
+ HKJQrAhfAZyVGu4GLaEEjfgtY7u0vlZ5E12Fos/zlSNhfsz9UI38rlD2FwzH/GdKza
+ OtOaDPet+pflnPMTxUc8wzLPMsCDRKOlogeoJTKo=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id x98IFZ72085052
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 8 Oct 2019 13:15:35 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5; Tue, 8 Oct
+ 2019 13:15:32 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1713.5 via
+ Frontend Transport; Tue, 8 Oct 2019 13:15:35 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id x98IFZD4029023;
+ Tue, 8 Oct 2019 13:15:35 -0500
+From: Dan Murphy <dmurphy@ti.com>
+To: <broonie@kernel.org>
+Date: Tue, 8 Oct 2019 13:15:16 -0500
+Message-ID: <20191008181517.5332-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.22.0.214.g8dca754b1e
 MIME-Version: 1.0
-In-Reply-To: <20191008163508.GA16283@lenoch>
-X-Cookie: Do not disturb.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
- piotrs@opensource.cirrus.com, YueHaibing <yuehaibing@huawei.com>,
- m.felsch@pengutronix.de, linux-kernel@vger.kernel.org, paul@crapouillou.net,
- Hulk Robot <hulkci@huawei.com>, srinivas.kandagatla@linaro.org,
- andradanciu1997@gmail.com, enric.balletbo@collabora.com,
- shifu0704@thundersoft.com, tiwai@suse.com, mirq-linux@rere.qmqm.pl,
- rf@opensource.wolfsonmicro.com
-Subject: Re: [alsa-devel] Applied "ASoc: tas2770: Fix build error without
- GPIOLIB" to the asoc tree
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, navada@ti.com,
+ Dan Murphy <dmurphy@ti.com>
+Subject: [alsa-devel] [PATCH 1/2] ASoc: Add Texas Instruments TAS2562
+	amplifier binding
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,68 +96,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4728741462699406682=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add the DT binding for the TAS2562 amplifier.
 
---===============4728741462699406682==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="o99acAvKqrTZeiCU"
-Content-Disposition: inline
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../devicetree/bindings/sound/tas2562.txt     | 34 +++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
 
-
---o99acAvKqrTZeiCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Oct 08, 2019 at 06:35:08PM +0200, Ladislav Michl wrote:
-
-> Hmm, too late it seems...
-> Patch should actually remove <linux/gpio.h> as this is legacy one (see comment
-> on the top and also Documentation/driver-api/gpio/consumer.rst)
-
-Yes, leaving that is an oversight.
-
-> And that brings a question. Given this is -next only is it actually possible
-> to squash fixes into 1a476abc723e ("tas2770: add tas2770 smart PA kernel driver")
-> just to make bisect a bit more happy?
-
-No:
-
-> > If any updates are required or you are submitting further changes they
-> > should be sent as incremental updates against current git, existing
-> > patches will not be replaced.
-
-Apart from anything else I've merged up the fixes branch IIRC which
-causes trouble.
-
---o99acAvKqrTZeiCU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2cvs0ACgkQJNaLcl1U
-h9AmBQf+LFk5zJqNRstdPMwgLOJGb5LX3O5w3BWeoMJNChq1Mdb1mJ+aaafn3HtA
-lgfos+SLHeSz48AHvgTqZ7DvEyjx2abNyeWCc3LH0S0mIp6RQey9Vxtt5eVP3yav
-5E6bRHBoX+Nv+0MqM73S31xLehzpo68qL9Iy2a5yh9TIRFjrVHZjIslo2CgNPkd4
-EQDMuoYYooV3BBHGFIiCAOpS8RA5eSgIUN6Cg/M9/+BHGsLW4bako+iFjIbHgH4F
-32VljVKllo5noLJsauG+ImjqHJGt11YCjp0AJL60CApDiLLFrUucBV3G/Hj5VHDt
-taLaofFv9ONyk9UWxKcoCAqTYirgIw==
-=rHvp
------END PGP SIGNATURE-----
-
---o99acAvKqrTZeiCU--
-
---===============4728741462699406682==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.txt b/Documentation/devicetree/bindings/sound/tas2562.txt
+new file mode 100644
+index 000000000000..658e1fb18a99
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2562.txt
+@@ -0,0 +1,34 @@
++Texas Instruments TAS2562 Smart PA
++
++The TAS2562 is a mono, digital input Class-D audio amplifier optimized for
++efficiently driving high peak power into small loudspeakers.
++Integrated speaker voltage and current sense provides for
++real time monitoring of loudspeaker behavior.
++
++Required properties:
++ - #address-cells  - Should be <1>.
++ - #size-cells     - Should be <0>.
++ - compatible:	   - Should contain "ti,tas2562".
++ - reg:		   - The i2c address. Should be 0x4c, 0x4d, 0x4e or 0x4f.
++ - ti,imon-slot-no:- TDM TX current sense time slot.
++
++Optional properties:
++- interrupt-parent: phandle to the interrupt controller which provides
++                    the interrupt.
++- interrupts: (GPIO) interrupt to which the chip is connected.
++- shut-down: GPIO used to control the state of the device.
++
++Examples:
++tas2562@4c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        compatible = "ti,tas2562";
++        reg = <0x4c>;
++
++        interrupt-parent = <&gpio1>;
++        interrupts = <14>;
++
++	shut-down = <&gpio1 15 0>;
++        ti,imon-slot-no = <0>;
++};
++
+-- 
+2.22.0.214.g8dca754b1e
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4728741462699406682==--
