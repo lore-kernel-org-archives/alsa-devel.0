@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96C56C4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:20:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14C22C10F14
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:20:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CF8A21721
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:20:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93FC62070B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:20:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mVF3/95C";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="AH1XE+7v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CF8A21721
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B9YMFfcR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="HVSdCjjm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93FC62070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36C1416A5;
-	Tue,  8 Oct 2019 15:19:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36C1416A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB59016B1;
+	Tue,  8 Oct 2019 15:19:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB59016B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570540805;
-	bh=xLIfep4USvoUHFu0afqyPsKzrIUNLfxAroYJZcjfS78=;
+	s=default; t=1570540842;
+	bh=N4d5cRekZj4TzgQ0r45dRd+15yDlNMRs0FeRdyZcH3w=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=mVF3/95Cy7wFZJUenqHP3xODxjqlkRaTj5HQLsMd7RcpPke6awdkJcFdLBGTepMMS
-	 z9PGumc4ZFsx7JQzpbdjgCRBLBH7N/bef6WjiwfcXy+/xbUzZCsI4/P31Ojqj9IITh
-	 MFcaPKnUBhJgQtkWa1fsDZQoBpiMl2CnHun0Y8Og=
+	b=B9YMFfcRffjWoc12pNhZSJigNmnob1QpQ4UrF+Cu1QifUmGPP/0TiMy9RnyEMD/ig
+	 0HnjALEq5YPQG8v3E8IKSkhHWwuRb+/kJST8RWJO48ral4u+1OTpLWiQKOBYMJLOkF
+	 uAw+oueIXEByaFQeDapHSVIW7lQS3bQZopDUCu7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16F74F89622;
+	by alsa1.perex.cz (Postfix) with ESMTP id E35DFF89629;
 	Tue,  8 Oct 2019 14:54:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64AA5F80797; Tue,  8 Oct 2019 14:54:18 +0200 (CEST)
+ id 9FE04F80798; Tue,  8 Oct 2019 14:54:20 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78678F800BF
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78678F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83772F80671
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83772F80671
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="AH1XE+7v"
+ header.b="HVSdCjjm"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=URqKzeEmWOcCNjkN9I1aw1JlNE3kX7DXdBciof+oso0=; b=AH1XE+7vWemW
- 8XcMdq9xl6EfRpK+f9Om9bs/Xrdus9AGI29NCi64g92ZEnFQjJ7WA3lszo3A1RCKWLb2lkAnS2Fzp
- l/V280qk5f7XWIw69hg9lCeVi5L/ESD73bbVrZ238QFKDfigucrkRyG1gnbYVmbxW2ov2L2GtZVyG
- 5rDEg=;
+ List-Archive; bh=AwXRVjzjJUXTb5UyN6oVANOuZxhOXPjvgM82D2Msmd4=; b=HVSdCjjmJoaS
+ OqvDO4vPmZAYstPgi/3i3BzAZkM1iNwP98wP0t4sUBU46PNZG30+0lKmwUM8n5a0Py1PoBsl2Nq9n
+ Dp+aMhM5nlD1zsi98SP2A/SdpC6S50sxsN7On0AxeASIenfTLjVkCJAGBE4fS/YjkHcmfNrWjJXQA
+ drTiU=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHoze-0008PQ-4k; Tue, 08 Oct 2019 12:53:34 +0000
+ id 1iHoze-0008Pm-V9; Tue, 08 Oct 2019 12:53:35 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 963862740D4A; Tue,  8 Oct 2019 13:53:33 +0100 (BST)
+ id 7C78E2740D4B; Tue,  8 Oct 2019 13:53:34 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87muejaf2a.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sgobaf3g.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125333.963862740D4A@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:33 +0100 (BST)
+Message-Id: <20191008125334.7C78E2740D4B@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:34 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: intel: sst-mfld-platform-pcm: remove
-	snd_pcm_ops" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: add new
+	pcm_construct/pcm_destruct" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: sst-mfld-platform-pcm: remove snd_pcm_ops
+   ASoC: soc-core: add new pcm_construct/pcm_destruct
 
 has been applied to the asoc tree at
 
@@ -121,97 +121,83 @@ to this mail.
 Thanks,
 Mark
 
-From 9b9974d3d5d732a3897c9fa08f43aff65f917738 Mon Sep 17 00:00:00 2001
+From c64bfc9066007962fca1b9b2d426b1efc171cac9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:31:41 +0900
-Subject: [PATCH] ASoC: intel: sst-mfld-platform-pcm: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:30:59 +0900
+Subject: [PATCH] ASoC: soc-core: add new pcm_construct/pcm_destruct
 
-snd_pcm_ops is no longer needed.
-Let's use component driver callback.
+Current snd_soc_component_driver has pcm_new/pcm_free, but,
+it doesn't have "component" at parameter.
+Thus, each callback can't know it is called for which component.
+Each callback currently is getting "component" by using
+snd_soc_rtdcom_lookup() with driver name.
+
+It works today, but, will not work in the future if we support multi
+CPU/Codec/Platform, because 1 rtd might have multiple same driver
+name component.
+
+To solve this issue, each callback need to be called with component.
+This patch adds new pcm_construct/pcm_destruct with "component"
+parameter.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87muejaf2a.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87sgobaf3g.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 30 +++++++++-----------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+ include/sound/soc-component.h |  6 ++++++
+ sound/soc/soc-component.c     | 11 +++++++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 8cc3cc363eb0..47e3d1943d7e 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -586,7 +586,8 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- },
- };
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index a6a3b696d5b0..aa2e2cbc1ee5 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -46,10 +46,16 @@ struct snd_soc_component_driver {
+ 	int (*write)(struct snd_soc_component *component,
+ 		     unsigned int reg, unsigned int val);
  
--static int sst_platform_open(struct snd_pcm_substream *substream)
-+static int sst_soc_open(struct snd_soc_component *component,
-+			struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime;
++	/* remove me */
+ 	/* pcm creation and destruction */
+ 	int (*pcm_new)(struct snd_soc_pcm_runtime *rtd);
+ 	void (*pcm_free)(struct snd_pcm *pcm);
  
-@@ -598,15 +599,15 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
++	int (*pcm_construct)(struct snd_soc_component *component,
++			     struct snd_soc_pcm_runtime *rtd);
++	void (*pcm_destruct)(struct snd_soc_component *component,
++			     struct snd_pcm *pcm);
++
+ 	/* component wide operations */
+ 	int (*set_sysclk)(struct snd_soc_component *component,
+ 			  int clk_id, int source, unsigned int freq, int dir);
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 2d9cb763e63a..d2b052ac88cd 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -588,6 +588,13 @@ int snd_soc_pcm_component_new(struct snd_pcm *pcm)
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
  
--static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
--					int cmd)
-+static int sst_soc_trigger(struct snd_soc_component *component,
-+			   struct snd_pcm_substream *substream, int cmd)
- {
- 	int ret_val = 0, str_id;
- 	struct sst_runtime_stream *stream;
- 	int status;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++		if (component->driver->pcm_construct) {
++			ret = component->driver->pcm_construct(component, rtd);
++			if (ret < 0)
++				return ret;
++		}
++
++		/* remove me */
+ 		if (component->driver->pcm_new) {
+ 			ret = component->driver->pcm_new(rtd);
+ 			if (ret < 0)
+@@ -607,6 +614,10 @@ void snd_soc_pcm_component_free(struct snd_pcm *pcm)
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
  
--	dev_dbg(rtd->dev, "sst_platform_pcm_trigger called\n");
-+	dev_dbg(rtd->dev, "%s called\n", __func__);
- 	if (substream->pcm->internal)
- 		return 0;
- 	stream = substream->runtime->private_data;
-@@ -646,8 +647,8 @@ static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
- }
- 
- 
--static snd_pcm_uframes_t sst_platform_pcm_pointer
--			(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t sst_soc_pointer(struct snd_soc_component *component,
-+					 struct snd_pcm_substream *substream)
- {
- 	struct sst_runtime_stream *stream;
- 	int ret_val, status;
-@@ -668,14 +669,8 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
- 	return str_info->buffer_ptr;
- }
- 
--static const struct snd_pcm_ops sst_platform_ops = {
--	.open = sst_platform_open,
--	.ioctl = snd_pcm_lib_ioctl,
--	.trigger = sst_platform_pcm_trigger,
--	.pointer = sst_platform_pcm_pointer,
--};
--
--static int sst_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int sst_soc_pcm_new(struct snd_soc_component *component,
-+			   struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *dai = rtd->cpu_dai;
- 	struct snd_pcm *pcm = rtd->pcm;
-@@ -709,9 +704,12 @@ static const struct snd_soc_component_driver sst_soc_platform_drv  = {
- 	.name		= DRV_NAME,
- 	.probe		= sst_soc_probe,
- 	.remove		= sst_soc_remove,
--	.ops		= &sst_platform_ops,
-+	.open		= sst_soc_open,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.trigger	= sst_soc_trigger,
-+	.pointer	= sst_soc_pointer,
- 	.compr_ops	= &sst_platform_compr_ops,
--	.pcm_new	= sst_pcm_new,
-+	.pcm_construct	= sst_soc_pcm_new,
- };
- 
- static int sst_platform_probe(struct platform_device *pdev)
++		if (component->driver->pcm_destruct)
++			component->driver->pcm_destruct(component, pcm);
++
++		/* remove me */
+ 		if (component->driver->pcm_free)
+ 			component->driver->pcm_free(pcm);
+ 	}
 -- 
 2.20.1
 
