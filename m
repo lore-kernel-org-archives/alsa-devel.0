@@ -7,66 +7,67 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5E0DC4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 16:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BF68C4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 16:51:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E3A72070B
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 16:50:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D62A821871
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 16:51:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jqn83UVy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E3A72070B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="icgIwsUl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D62A821871
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DB9215E2;
-	Tue,  8 Oct 2019 18:50:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DB9215E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C99D1612;
+	Tue,  8 Oct 2019 18:50:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C99D1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570553451;
-	bh=EA1OMy9QUONg4YtOTkhRmqj2jvvDBvCObV/LDfTvP4E=;
+	s=default; t=1570553502;
+	bh=9DeLmkUqjnA8c6T4pOkw/DTAnujB8LKYbbou8kkI4Oo=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Jqn83UVyCB+/o9zz9/cRHV5ARHLeWrKAHZkou0XZi+AJUO8ZvzdxhhYRFBQ8pCpIG
-	 T4apeTVry95RF4ePsG1o1cYGF+xyIYmPo0v98LsJQB7lNTvQRPZpEbfCKT3kBjO2AQ
-	 QkK9DGuTfAbK6/Ba95lw9BHGCXAWxz6J/F+adXZ0=
+	b=icgIwsUlklqb63QnFSHZotsj2c4iiZUnqodPnKLSfbMMJ0DPL/tfKoyHCwOtUj91u
+	 6mbwqmTCYeRmAQ1NyVEeK6NoI8d45W9XRUj0m30OKavgvvJHK76BfiBWJcNb+fZB3r
+	 DlzB2QnDeFyUg3xZluj92yKdZGX6lcbqHU6fnojI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7645F80649;
-	Tue,  8 Oct 2019 18:45:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49536F80674;
+	Tue,  8 Oct 2019 18:45:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F062BF8060D; Tue,  8 Oct 2019 18:44:59 +0200 (CEST)
+ id 1255BF8060F; Tue,  8 Oct 2019 18:45:01 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EC01F8059F
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 18:44:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EC01F8059F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50D49F80322
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 18:44:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50D49F80322
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 08 Oct 2019 09:44:50 -0700
+ 08 Oct 2019 09:44:52 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,270,1566889200"; d="scan'208";a="218338338"
+X-IronPort-AV: E=Sophos;i="5.67,270,1566889200"; d="scan'208";a="218338342"
 Received: from kwwong-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.251.150.53])
- by fmsmga004.fm.intel.com with ESMTP; 08 Oct 2019 09:44:50 -0700
+ by fmsmga004.fm.intel.com with ESMTP; 08 Oct 2019 09:44:52 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue,  8 Oct 2019 11:44:40 -0500
-Message-Id: <20191008164443.1358-7-pierre-louis.bossart@linux.intel.com>
+Date: Tue,  8 Oct 2019 11:44:43 -0500
+Message-Id: <20191008164443.1358-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191008164443.1358-1-pierre-louis.bossart@linux.intel.com>
 References: <20191008164443.1358-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Jaska Uimonen <jaska.uimonen@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 6/9] ASoC: SOF: imx: Read ESAI parameters and
-	send them to DSP
+Subject: [alsa-devel] [PATCH 9/9] ASoC: SOF: acpi led support for switch
+	controls
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,124 +85,154 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 
-ESAI parameters are read for topology file, packed into
-sof_ipc_dai_esai_parms struct and then sent to DSP.
+Currently sof doesn't support acpi leds with mute switches. So implement
+acpi leds following quite shamelessly existing HDA implementation by
+Takashi Iwai.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Mute leds can be enabled in topology by adding led and direction token
+in switch control private data.
+
+Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pcm.c      |  8 +++++
- sound/soc/sof/topology.c | 69 ++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 75 insertions(+), 2 deletions(-)
+ include/uapi/sound/sof/tokens.h |  4 ++++
+ sound/soc/sof/control.c         | 32 ++++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-priv.h        |  9 +++++++++
+ sound/soc/sof/topology.c        | 13 +++++++++++++
+ 4 files changed, 58 insertions(+)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 2b876d497447..b0f4217433e5 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -691,6 +691,14 @@ static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
- 	case SOF_DAI_INTEL_ALH:
- 		/* do nothing for ALH dai_link */
- 		break;
-+	case SOF_DAI_IMX_ESAI:
-+		channels->min = dai->dai_config->esai.tdm_slots;
-+		channels->max = dai->dai_config->esai.tdm_slots;
-+
-+		dev_dbg(sdev->dev,
-+			"channels_min: %d channels_max: %d\n",
-+			channels->min, channels->max);
-+		break;
- 	default:
- 		dev_err(sdev->dev, "error: invalid DAI type %d\n",
- 			dai->dai_config->type);
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 0aabb3190ddc..d8172d3f672f 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -798,6 +798,13 @@ static const struct sof_topology_token dmic_tokens[] = {
+diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
+index da18c9de1056..d65406f34361 100644
+--- a/include/uapi/sound/sof/tokens.h
++++ b/include/uapi/sound/sof/tokens.h
+@@ -113,4 +113,8 @@
+ /* ESAI */
+ #define SOF_TKN_IMX_ESAI_MCLK_ID		1100
  
++/* Led control for mute switches */
++#define SOF_TKN_MUTE_LED_USE			1300
++#define SOF_TKN_MUTE_LED_DIRECTION		1301
++
+ #endif
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index a4983f90ff5b..41551e8f6ac3 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -11,8 +11,37 @@
+ /* Mixer Controls */
+ 
+ #include <linux/pm_runtime.h>
++#include <linux/leds.h>
+ #include "sof-priv.h"
+ 
++static void update_mute_led(struct snd_sof_control *scontrol,
++			    struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	unsigned int temp = 0;
++	unsigned int mask;
++	int i;
++
++	mask = 1U << snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
++
++	for (i = 0; i < scontrol->num_channels; i++) {
++		if (ucontrol->value.integer.value[i]) {
++			temp |= mask;
++			break;
++		}
++	}
++
++	if (temp == scontrol->led_ctl.led_value)
++		return;
++
++	scontrol->led_ctl.led_value = temp;
++
++	if (!scontrol->led_ctl.direction)
++		ledtrig_audio_set(LED_AUDIO_MUTE, temp ? LED_OFF : LED_ON);
++	else
++		ledtrig_audio_set(LED_AUDIO_MICMUTE, temp ? LED_OFF : LED_ON);
++}
++
+ static inline u32 mixer_to_ipc(unsigned int value, u32 *volume_map, int size)
+ {
+ 	if (value >= size)
+@@ -112,6 +141,9 @@ int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
+ 		cdata->chanv[i].channel = i;
+ 	}
+ 
++	if (scontrol->led_ctl.use_led)
++		update_mute_led(scontrol, kcontrol, ucontrol);
++
+ 	/* notify DSP of mixer updates */
+ 	if (pm_runtime_active(sdev->dev))
+ 		snd_sof_ipc_set_get_comp_data(sdev->ipc, scontrol,
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 44f789bf7fb0..5a11a8517fa5 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -15,6 +15,7 @@
+ 
+ #include <sound/hdaudio.h>
+ #include <sound/soc.h>
++#include <sound/control.h>
+ 
+ #include <sound/sof.h>
+ #include <sound/sof/stream.h> /* needs to be included before control.h */
+@@ -310,6 +311,12 @@ struct snd_sof_pcm {
+ 	bool prepared[2]; /* PCM_PARAMS set successfully */
  };
  
-+/* ESAI */
-+static const struct sof_topology_token esai_tokens[] = {
-+	{SOF_TKN_IMX_ESAI_MCLK_ID,
-+		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
-+		offsetof(struct sof_ipc_dai_esai_params, mclk_id), 0},
++struct snd_sof_led_control {
++	unsigned int use_led;
++	unsigned int direction;
++	unsigned int led_value;
 +};
 +
- /*
-  * DMIC PDM Tokens
-  * SOF_TKN_INTEL_DMIC_PDM_CTRL_ID should be the first token
-@@ -2535,8 +2542,66 @@ static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
- 			      struct snd_soc_tplg_hw_config *hw_config,
- 			      struct sof_ipc_dai_config *config)
- {
--	/*TODO: Add implementation */
--	return 0;
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	struct snd_soc_tplg_private *private = &cfg->priv;
-+	struct sof_ipc_reply reply;
-+	u32 size = sizeof(*config);
-+	int ret;
-+
-+	/* handle master/slave and inverted clocks */
-+	sof_dai_set_format(hw_config, config);
-+
-+	/* init IPC */
-+	memset(&config->esai, 0, sizeof(struct sof_ipc_dai_esai_params));
-+	config->hdr.size = size;
-+
-+	ret = sof_parse_tokens(scomp, &config->esai, esai_tokens,
-+			       ARRAY_SIZE(esai_tokens), private->array,
-+			       le32_to_cpu(private->size));
-+	if (ret != 0) {
-+		dev_err(sdev->dev, "error: parse esai tokens failed %d\n",
-+			le32_to_cpu(private->size));
-+		return ret;
-+	}
-+
-+	config->esai.mclk_rate = le32_to_cpu(hw_config->mclk_rate);
-+	config->esai.bclk_rate = le32_to_cpu(hw_config->bclk_rate);
-+	config->esai.fsync_rate = le32_to_cpu(hw_config->fsync_rate);
-+	config->esai.mclk_direction = hw_config->mclk_direction;
-+	config->esai.tdm_slots = le32_to_cpu(hw_config->tdm_slots);
-+	config->esai.tdm_slot_width = le32_to_cpu(hw_config->tdm_slot_width);
-+	config->esai.rx_slots = le32_to_cpu(hw_config->rx_slots);
-+	config->esai.tx_slots = le32_to_cpu(hw_config->tx_slots);
-+
-+	dev_info(sdev->dev,
-+		 "tplg: config ESAI%d fmt 0x%x mclk %d width %d slots %d mclk id %d\n",
-+		config->dai_index, config->format,
-+		config->esai.mclk_rate, config->esai.tdm_slot_width,
-+		config->esai.tdm_slots, config->esai.mclk_id);
-+
-+	if (config->esai.tdm_slots < 1 || config->esai.tdm_slots > 8) {
-+		dev_err(sdev->dev, "error: invalid channel count for ESAI%d\n",
-+			config->dai_index);
-+		return -EINVAL;
-+	}
-+
-+	/* send message to DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 config->hdr.cmd, config, size, &reply,
-+				 sizeof(reply));
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to set DAI config for ESAI%d\n",
-+			config->dai_index);
-+		return ret;
-+	}
-+
-+	/* set config for all DAI's with name matching the link name */
-+	ret = sof_set_dai_config(sdev, size, link, config);
-+	if (ret < 0)
-+		dev_err(sdev->dev, "error: failed to save DAI config for ESAI%d\n",
-+			config->dai_index);
-+
-+	return ret;
- }
+ /* ALSA SOF Kcontrol device */
+ struct snd_sof_control {
+ 	struct snd_sof_dev *sdev;
+@@ -324,6 +331,8 @@ struct snd_sof_control {
+ 	u32 *volume_table; /* volume table computed from tlv data*/
  
- static int sof_link_dmic_load(struct snd_soc_component *scomp, int index,
+ 	struct list_head list;	/* list in sdev control list */
++
++	struct snd_sof_led_control led_ctl;
+ };
+ 
+ /* ASoC SOF DAPM widget */
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 3f598c18a5da..a29109ea3c06 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -689,6 +689,14 @@ static const struct sof_topology_token dmic_pdm_tokens[] = {
+ static const struct sof_topology_token hda_tokens[] = {
+ };
+ 
++/* Leds */
++static const struct sof_topology_token led_tokens[] = {
++	{SOF_TKN_MUTE_LED_USE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++	 offsetof(struct snd_sof_led_control, use_led), 0},
++	{SOF_TKN_MUTE_LED_DIRECTION, SND_SOC_TPLG_TUPLE_TYPE_WORD,
++	 get_token_u32, offsetof(struct snd_sof_led_control, direction), 0},
++};
++
+ static void sof_parse_uuid_tokens(struct snd_soc_component *scomp,
+ 				  void *object,
+ 				  const struct sof_topology_token *tokens,
+@@ -951,6 +959,11 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	}
+ 
+ out:
++	/* set up possible led control from mixer private data */
++	ret = sof_parse_tokens(scomp, &scontrol->led_ctl, led_tokens,
++			       ARRAY_SIZE(led_tokens), mc->priv.array,
++			       le32_to_cpu(mc->priv.size));
++
+ 	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
+ 		scontrol->comp_id, scontrol->num_channels);
+ 
 -- 
 2.20.1
 
