@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02438ECE58E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BDFCC10F14
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:00:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81FB42173B
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:59:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C409620673
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:00:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CXzdbgao";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="aR9JGc3o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81FB42173B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oYdP0OfG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="dCPTLbBK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C409620673
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3DD31614;
-	Tue,  8 Oct 2019 14:58:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3DD31614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15B921661;
+	Tue,  8 Oct 2019 14:59:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15B921661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570539569;
-	bh=VthqIZiyUtjmdQVh3ne3cbd8NJ+/udbHF6OgAkZ7PkU=;
+	s=default; t=1570539616;
+	bh=1X0SbSUTcVV6bkS/Eud5N3zNQxTmmNa8xKRW39eAHgw=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=CXzdbgaoZCKQ+ciLNQzKqH25Wj2kdD9dt8bKIk7wTkRqMsu8oK1tIulv+LOcLE9dj
-	 ltElQqR7xtVMGnhN5afJCICuoaZdbyRTQieTplVjr+99eUm/QsbIVWUNu2k8uidc0N
-	 yImgLFty65gd4EN92p2VjndnpNj3RDzqRK7/Jero=
+	b=oYdP0OfG00M4jKC6a5z3Mzu8ABKf16go0lczfUPMGhrJ0o50K6/yj6SJ+h0bkA1ze
+	 3X+iNzKCCiPuXyvxbdCn/bfGXOXLNf5PChyveuebD0NJZD7eyNFbrNVU9etLUSvEJ5
+	 yQkBwfD5cuj2YT2/sagpFLw95mBqDLUDDI8x0DAA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEB41F8070E;
-	Tue,  8 Oct 2019 14:53:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 986A7F80716;
+	Tue,  8 Oct 2019 14:53:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75D1BF8067A; Tue,  8 Oct 2019 14:53:38 +0200 (CEST)
+ id 8D238F8068A; Tue,  8 Oct 2019 14:53:39 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD1B4F805FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id C546FF8045E
  for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD1B4F805FB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C546FF8045E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="aR9JGc3o"
+ header.b="dCPTLbBK"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=xEVTEbhNolDEFrFX/RNo0wo3oooFI7XxMbOLyoNkVgE=; b=aR9JGc3oTHcw
- gw/GY0EE+sQj/bCeeaHmNNftqs7y8/lQ0fQ/o1xpq+D9gRJcCr9sRv+5GSOLWUYFjAt+i82BZWkj/
- hT7THxVs3B1Pc3qrbtH1ZdU+26GWKy0hDrYDKi2z+sGzDGoKLT4bS9bPy669x6reK9qP6zObKS+hp
- Fcg3w=;
+ List-Archive; bh=D0TXRfZces3MnCWgZphYw9PP+mp3smqfjMd1mStxSOI=; b=dCPTLbBKIguM
+ EL9b1RHsOHA1JRpEwVKGEEMakI8f4TGnV7jgOq8DP957klKxXWrCV/3qRwXdnEF/mWv1KM6hVClQF
+ CBc+m3cpj7ZatJGmyYIYzzk48ed3tvCb2UzJmTrFGgTJq7t3eDwxv+tv25L6I9Tf0ku1wUJVeob6R
+ P4Lwo=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHozX-0008Mk-KO; Tue, 08 Oct 2019 12:53:27 +0000
+ id 1iHozX-0008Md-4J; Tue, 08 Oct 2019 12:53:27 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 2118B2740D4A; Tue,  8 Oct 2019 13:53:27 +0100 (BST)
+ id 98A322740D4B; Tue,  8 Oct 2019 13:53:26 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87imp790dp.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87ftkb90df.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125327.2118B2740D4A@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:27 +0100 (BST)
+Message-Id: <20191008125326.98A322740D4B@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:26 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: kirkwood: kirkwood-dma: remove
-	snd_pcm_ops" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: rt5514-spi: remove snd_pcm_ops" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: kirkwood: kirkwood-dma: remove snd_pcm_ops
+   ASoC: rt5514-spi: remove snd_pcm_ops
 
 has been applied to the asoc tree at
 
@@ -121,141 +121,111 @@ to this mail.
 Thanks,
 Mark
 
-From 851f5abfc83d75b9d021887bd7e89c8dd27a9bd4 Mon Sep 17 00:00:00 2001
+From 85efbc911ed5ae1d458fe3fc05c4d9cfe13836d6 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:34:10 +0900
-Subject: [PATCH] ASoC: kirkwood: kirkwood-dma: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:34:20 +0900
+Subject: [PATCH] ASoC: rt5514-spi: remove snd_pcm_ops
 
 snd_pcm_ops is no longer needed.
 Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87imp790dp.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87ftkb90df.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 50 +++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 23 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 41 ++++++++++++++++++-----------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index 6f69f314f2c2..42bbb7ea20b5 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -98,7 +98,8 @@ kirkwood_dma_conf_mbus_windows(void __iomem *base, int win,
- 	}
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 892ea406a69b..57ff5aee452d 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -201,18 +201,18 @@ static irqreturn_t rt5514_spi_irq(int irq, void *data)
  }
  
--static int kirkwood_dma_open(struct snd_pcm_substream *substream)
-+static int kirkwood_dma_open(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream)
+ /* PCM for streaming audio from the DSP buffer */
+-static int rt5514_spi_pcm_open(struct snd_pcm_substream *substream)
++static int rt5514_spi_pcm_open(struct snd_soc_component *component,
++			       struct snd_pcm_substream *substream)
  {
- 	int err;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -160,7 +161,8 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
+ 	snd_soc_set_runtime_hwparams(substream, &rt5514_spi_pcm_hardware);
+ 
  	return 0;
  }
  
--static int kirkwood_dma_close(struct snd_pcm_substream *substream)
-+static int kirkwood_dma_close(struct snd_soc_component *component,
+-static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
+-			       struct snd_pcm_hw_params *hw_params)
++static int rt5514_spi_hw_params(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *hw_params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
+ 	int ret;
+@@ -234,10 +234,9 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
++static int rt5514_spi_hw_free(struct snd_soc_component *component,
 +			      struct snd_pcm_substream *substream)
  {
- 	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
  
-@@ -180,8 +182,9 @@ static int kirkwood_dma_close(struct snd_pcm_substream *substream)
- 	return 0;
+@@ -251,24 +250,22 @@ static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
  }
  
--static int kirkwood_dma_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params)
-+static int kirkwood_dma_hw_params(struct snd_soc_component *component,
-+				  struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params)
+ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
++		struct snd_soc_component *component,
+ 		struct snd_pcm_substream *substream)
  {
  	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
  
-@@ -191,13 +194,15 @@ static int kirkwood_dma_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
+ 	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
  }
  
--static int kirkwood_dma_hw_free(struct snd_pcm_substream *substream)
-+static int kirkwood_dma_hw_free(struct snd_soc_component *component,
-+				struct snd_pcm_substream *substream)
- {
- 	snd_pcm_set_runtime_buffer(substream, NULL);
- 	return 0;
- }
- 
--static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
-+static int kirkwood_dma_prepare(struct snd_soc_component *component,
-+				struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
-@@ -222,8 +227,9 @@ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
--						*substream)
-+static snd_pcm_uframes_t kirkwood_dma_pointer(
-+	struct snd_soc_component *component,
-+	struct snd_pcm_substream *substream)
- {
- 	struct kirkwood_dma_data *priv = kirkwood_priv(substream);
- 	snd_pcm_uframes_t count;
-@@ -238,16 +244,6 @@ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
- 	return count;
- }
- 
--static const struct snd_pcm_ops kirkwood_dma_ops = {
--	.open =		kirkwood_dma_open,
--	.close =        kirkwood_dma_close,
--	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	kirkwood_dma_hw_params,
--	.hw_free =      kirkwood_dma_hw_free,
--	.prepare =      kirkwood_dma_prepare,
--	.pointer =	kirkwood_dma_pointer,
+-static const struct snd_pcm_ops rt5514_spi_pcm_ops = {
+-	.open		= rt5514_spi_pcm_open,
+-	.hw_params	= rt5514_spi_hw_params,
+-	.hw_free	= rt5514_spi_hw_free,
+-	.pointer	= rt5514_spi_pcm_pointer,
+-	.page		= snd_pcm_lib_get_vmalloc_page,
 -};
--
- static int kirkwood_dma_preallocate_dma_buffer(struct snd_pcm *pcm,
- 		int stream)
++static struct page *rt5514_spi_pcm_page(struct snd_soc_component *component,
++					struct snd_pcm_substream *substream,
++					unsigned long offset)
++{
++	return snd_pcm_lib_get_vmalloc_page(substream, offset);
++}
+ 
+ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
  {
-@@ -267,7 +263,8 @@ static int kirkwood_dma_preallocate_dma_buffer(struct snd_pcm *pcm,
- 	return 0;
+@@ -302,9 +299,13 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
  }
  
--static int kirkwood_dma_new(struct snd_soc_pcm_runtime *rtd)
-+static int kirkwood_dma_new(struct snd_soc_component *component,
-+			    struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_card *card = rtd->card->snd_card;
- 	struct snd_pcm *pcm = rtd->pcm;
-@@ -294,7 +291,8 @@ static int kirkwood_dma_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
--static void kirkwood_dma_free_dma_buffers(struct snd_pcm *pcm)
-+static void kirkwood_dma_free_dma_buffers(struct snd_soc_component *component,
-+					  struct snd_pcm *pcm)
- {
- 	struct snd_pcm_substream *substream;
- 	struct snd_dma_buffer *buf;
-@@ -316,7 +314,13 @@ static void kirkwood_dma_free_dma_buffers(struct snd_pcm *pcm)
- 
- const struct snd_soc_component_driver kirkwood_soc_component = {
- 	.name		= DRV_NAME,
--	.ops		= &kirkwood_dma_ops,
--	.pcm_new	= kirkwood_dma_new,
--	.pcm_free	= kirkwood_dma_free_dma_buffers,
-+	.open		= kirkwood_dma_open,
-+	.close		= kirkwood_dma_close,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.hw_params	= kirkwood_dma_hw_params,
-+	.hw_free	= kirkwood_dma_hw_free,
-+	.prepare	= kirkwood_dma_prepare,
-+	.pointer	= kirkwood_dma_pointer,
-+	.pcm_construct	= kirkwood_dma_new,
-+	.pcm_destruct	= kirkwood_dma_free_dma_buffers,
+ static const struct snd_soc_component_driver rt5514_spi_component = {
+-	.name  = DRV_NAME,
+-	.probe = rt5514_spi_pcm_probe,
+-	.ops = &rt5514_spi_pcm_ops,
++	.name		= DRV_NAME,
++	.probe		= rt5514_spi_pcm_probe,
++	.open		= rt5514_spi_pcm_open,
++	.hw_params	= rt5514_spi_hw_params,
++	.hw_free	= rt5514_spi_hw_free,
++	.pointer	= rt5514_spi_pcm_pointer,
++	.page		= rt5514_spi_pcm_page,
  };
+ 
+ /**
 -- 
 2.20.1
 
