@@ -1,99 +1,61 @@
-Return-Path: <SRS0=Jk6f=YA=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=gTnd=YB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7351C47404
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 18:52:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 779AAC4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 06:54:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50CF7206C0
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Oct 2019 18:52:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 75BCC206C2
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 06:54:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BrOY1FKy";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OVAe8zoq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50CF7206C0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fHDmp4wQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75BCC206C2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A1DF857;
-	Mon,  7 Oct 2019 20:51:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A1DF857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48137851;
+	Tue,  8 Oct 2019 08:53:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48137851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570474322;
-	bh=yavLJ+UYVv6ZXxlqUIQr9/n4TwwBW7NBSxr4sxbAbAM=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BrOY1FKyj5Lr8QRqfVAv/RFZqDNyQHx9/qQX4mayxtypRybDAVwnBVh/MrvhavUB8
-	 GFTMDw1elBjC/bfD9rfcSHKLG+opymdZHzXGPRvaeMISLjSgOBo/hs9Ci3l8vPp/1p
-	 IAmYX0dwMe0nHxU1B2zQmgF82i+CvKIRR7hI7I0I=
+	s=default; t=1570517671;
+	bh=vPoZL0FQvHfyDERL4/wmJNVS49BR65V+bOhNL04MoZg=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fHDmp4wQgPAmJQOC6BAmeIOH6kBNPzwSiwtbGOyii20u0vuHgFR7uFM5OaNH52v06
+	 6uS5jI78AMM2LGGE4QkY8xUYou4I5YGc0fq34+9zPHVmqHZ24gY3El9zHC1IdPDmZM
+	 A61gbz16PBAcdgSwZj0R4VDvzRVWYEDppTlEsxak=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51927F800BF;
-	Mon,  7 Oct 2019 20:51:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3D2FF80322;
+	Tue,  8 Oct 2019 08:53:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5564AF8059F; Mon,  7 Oct 2019 20:51:04 +0200 (CEST)
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com
- [IPv6:2607:f8b0:4864:20::a44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE3FAF800BF
- for <alsa-devel@alsa-project.org>; Mon,  7 Oct 2019 20:51:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE3FAF800BF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="OVAe8zoq"
-Received: by mail-vk1-xa44.google.com with SMTP id v78so3222506vke.4
- for <alsa-devel@alsa-project.org>; Mon, 07 Oct 2019 11:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Py90T7+TOHoY4y4lQF72qi6auVcn9VleVh+vvTZakMs=;
- b=OVAe8zoqFnXj2Iv/T3srEGEE1Kd0JS8O49MQyreVdxAUfbrHgl8+3b09Opie6N0kA4
- N7LebgCcZO00dhMKgEFV8FCEA5mkFivAHI9vNyglEltwMeYiiQBHPRCfwzMkoWZhdjlf
- jfGPvIvTAtt069I4+IeaPVd8GHxj5K2eRhizY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Py90T7+TOHoY4y4lQF72qi6auVcn9VleVh+vvTZakMs=;
- b=ECxvtU/zutt4BE5ZMznxd8kdZSV0e7eIo/UXPlAJqZLgxArd0SKceNmuou/bm4OClo
- ow27yzgB1OMVc1lEqnHRw6XV4bYEpbqVwxuqJ5EoOGNtIdQ1nN+k/N+q9+Lmhh0TY2Pr
- 3iMevVPDfxQnr89+YYi/IsRFpIhf9+ldPK7bNgui7oY7LnzNJDSobrPf+1cQOSEgRoM9
- Ke2+heXreVw2IVV5Sf6ZVsPF+TDJmx7b5Y8RRYMcRoZ6Em5/P9q2wLVvFl3Jb+JtLvaV
- TY0vCmCcmZ3gFwZm9wR25YsEQOGg60c4YJJHEx4/R1sZ/IYNcVx0GNn5T9hL8FIAD1fD
- ZMmA==
-X-Gm-Message-State: APjAAAU2/69UVb9jlMDRGdUFtWp6XaWCygfqt5slfnSb1Qt0ZKAYkaPb
- /DPQEytWHDAzL5xjElYSyIblu1mIjPbczWEkhr+N/w==
-X-Google-Smtp-Source: APXvYqzKcYn+QyEkep5BPOvhXlmMCn4pYfv1ojDrA+z7FDOd4AW/2yHhLJhMd3ZbFPU80M3ZE1qO494JaRdPjJnSuk8=
-X-Received: by 2002:a1f:cd81:: with SMTP id d123mr15355291vkg.21.1570474258651; 
- Mon, 07 Oct 2019 11:50:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191007071610.65714-1-cychiang@chromium.org>
- <CA+Px+wWkr1xmSpgEkSaGS7UZu8TKUYvSnbjimBRH29=kDtcHKA@mail.gmail.com>
- <ebf9bc3f-a531-6c5b-a146-d80fe6c5d772@roeck-us.net>
- <CAFv8NwLuYKHJoG9YR3WvofwiMnXCgYv-Sk7t5jCvTZbST+Ctjw@mail.gmail.com>
- <5d9b5b3e.1c69fb81.7203c.1215@mx.google.com>
-In-Reply-To: <5d9b5b3e.1c69fb81.7203c.1215@mx.google.com>
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Date: Tue, 8 Oct 2019 02:50:31 +0800
-Message-ID: <CAFv8Nw+x6V-995ijyws1Q36W1MpaP=kNJeiVtNakH-uC3Vgg9Q@mail.gmail.com>
-To: Stephen Boyd <swboyd@chromium.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Tzung-Bi Shih <tzungbi@chromium.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Hung-Te Lin <hungte@chromium.org>, Tzung-Bi Shih <tzungbi@google.com>,
- Mark Brown <broonie@kernel.org>, Sean Paul <seanpaul@chromium.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Dylan Reid <dgreid@chromium.org>, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [alsa-devel] [PATCH] firmware: vpd: Add an interface to read
-	VPD value
+ id 46F23F80135; Tue,  8 Oct 2019 08:53:39 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A0C3AF80135
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 08:53:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0C3AF80135
+Date: 08 Oct 2019 15:53:30 +0900
+X-IronPort-AV: E=Sophos;i="5.67,269,1566831600"; d="scan'208";a="28556313"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 08 Oct 2019 15:53:30 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 724AA4008C69;
+ Tue,  8 Oct 2019 15:53:30 +0900 (JST)
+Message-ID: <87k19f4tjp.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] Is this bug ? dpcm_prune_paths()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,77 +73,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 7, 2019 at 11:35 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Cheng-yi Chiang (2019-10-07 06:58:41)
-> >
-> > Hi Guenter,
-> > Thanks for the quick review.
-> > I'll update accordingly in v2.
->
-> I'd prefer this use the nvmem framework which already handles many of
-> the requirements discussed here. Implement an nvmem provider and figure
-> out how to wire that up to the kernel users. Also, please include a user
-> of the added support, otherwise it is impossible to understand how this
-> code is used.
->
-Hi Stephen,
-Thanks for the suggestion.
-My usage is for Intel machine driver to read a string for speaker calibration.
 
-https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1838091/4/sound/soc/intel/boards/cml_rt1011_rt5682.c#325
+Hi ALSA ML.
 
-Based on the comments in this thread, its usage would look like
+I'm checking soc-pcm.c, and I noticed strange code at
+dpcm_prune_paths().
 
-#define DSM_CALIB_KEY "dsm_calib"
-static int load_calibration_data(struct cml_card_private *ctx) {
-          char *data = NULL;
-          int ret;
-          u32 value_len;
+	static int dpcm_prune_paths(...)
+	{
+		...
+		/* Destroy any old FE <--> BE connections */
+(1)		for_each_dpcm_be(fe, stream, dpcm) {
+			unsigned int i;
 
-          /* Read calibration data from VPD. */
-          ret = vpd_attribute_read(1, DSM_CALIB_KEY,
-                                         (u8 **)&data, &value_len);
+ -			/* is there a valid CPU DAI widget for this BE */
+ |			widget = dai_get_widget(dpcm->be->cpu_dai, stream);
+ |
+(A)			/* prune the BE if it's no longer in our active list */
+ |			if (widget && widget_in_list(list, widget))
+ |(a)				continue;
+ -
+ |			/* is there a valid CODEC DAI widget for this BE */
+ |(2)			for_each_rtd_codec_dai(dpcm->be, i, dai) {
+ |				widget = dai_get_widget(dai, stream);
+(B)
+ |				/* prune the BE if it's no longer in our active list */
+ |				if (widget && widget_in_list(list, widget))
+ |(b)					continue;
+ -			}
 
-          /* Parsing of this string...*/
-}
+ -			...
+ |			dpcm->state = ...
+(C)			dpcm->be->dpcm[stream].runtime_update = ...
+ |			prune++;
+ -		}
+		...
+	}
 
-It is currently pending on unmerged machine driver cml_rt1011_rt5682.c
-in ASoC so I can not post it for review for now.
+In my understanding, (A) part is for CPU, and (B) part is for Codec.
+Guessing from (a), I think it want to skip setup (C) if CPU widget
+exist and matches to list.
+If so, I guess (b) is maybe bug ?
+This continue is for (2) loop, thus, it is totally do nothing now.
+But maybe it want to be continue for (1) loop ?
 
-As for nvmem approach, I looked into examples of nvmem usage, and have
-a rough idea how to do this.
-
-1) In vpd.c, as it parses key and value in the VPD section, add nvmem cell  with
-{
-.name=key,
-.offset=consumed,   // need some change in vpd_decodec.c to get the
-offset of value in the section.
-.bytes=value
-}
-Implement read function with vpd_section as context.
-
-2) In vpd.c, register an nvm_device using devm_nvmem_register in
-coreboot_driver's probe function vpd_probe.
-
-3) As my use case does not use device tree, it is hard for ASoC
-machine to access nvmem device. I am wondering if I can use
-nvm_cell_lookup so machine driver can find the nvmem device using a
-con_id. But currently the cell lookup API requires a matched device,
-which does not fit my usage because there will be different machine
-drivers requesting the value.
-I think I can still workaround this by adding the lookup table in
-machine driver. This would seem to be a bit weird because I found that
-most lookup table is added in provider side, not consumer side. Not
-sure if this is logically correct.
-
-IMO the nvmem approach would create more complexity to support this
-simple usage. Plus, the underlying assumption of accessing data with
-offset in a buffer does not fit well with the already parsed VPD
-values in a list of vpd_attrib_info. But if you strongly feel that
-this is a better approach I can work toward this.
-
-Thanks!
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
