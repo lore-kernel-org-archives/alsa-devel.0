@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54870C4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:21:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DA00C10F14
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:22:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0E25206C0
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:21:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA29820815
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:22:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XV0Z7vmX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ZEL6Wz1V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0E25206C0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hVuwK0uR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Oq2UZ/iK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA29820815
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2010916A5;
-	Tue,  8 Oct 2019 15:20:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2010916A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id F350316BA;
+	Tue,  8 Oct 2019 15:21:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F350316BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570540883;
-	bh=/AdJQ5AE/jZq9xMRxxDTaWsUUvyicrQFUc0ekfEXRH4=;
+	s=default; t=1570540921;
+	bh=ISNpG5MOiK0yR0MHukTDt85q25w8NFxjVuPwhul7dYA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=XV0Z7vmXFxLKIykd5HSp71SXGSggMd1dyWl70wZqng7IT4EefRnKunIRgnXZLw+Rr
-	 X7Qmc2herqXaDWh2HWVjx+mYxFRBHvz8a6oTMX+Wm0SBNKLn6CfyDwIf9pUHjZ0eMD
-	 ENhIeKnq1fPB4ScJGGCEzOyVCs/2UzPlUzAdawcY=
+	b=hVuwK0uRNLcQa49oL0gbU2i2PbGEImd3A3bdbfOPqfrqgv0EpPUF4sJ8n4JEHm/Ey
+	 UzGBz2EI330PwPSK1CAeqbEY7Vvl7FpxfBAFKvNCH/OuIlQ/q8ChLlIrB1gDFR8y9c
+	 hSJJaKTOO5Qkib8fuCe4RZbnw05Kz2qW0TPaHbPM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B782BF89631;
-	Tue,  8 Oct 2019 14:54:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9387F89664;
+	Tue,  8 Oct 2019 14:54:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89685F80797; Tue,  8 Oct 2019 14:54:21 +0200 (CEST)
+ id C4EF1F80671; Tue,  8 Oct 2019 14:54:21 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFCA7F80659
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFCA7F80659
+ by alsa1.perex.cz (Postfix) with ESMTPS id 341B0F8065E
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 341B0F8065E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ZEL6Wz1V"
+ header.b="Oq2UZ/iK"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=B0Nj2Kw9ukhjjdhGjo4U8NVq83If+b0T9FCafsmr+dw=; b=ZEL6Wz1VOMiR
- rfiyNxjt1D+fP3nz8os+BpFSqdR+Xrwdppvt7Io8yAjcgZHD1X9PwhohNjYhVjwidu3POKtxwtIyZ
- SCoX1sVwbFsPRMe6bbGL//kmgcnQ7FfpLLAcvZyNW3xTw8Iz/b4Xk1YVR4xdFD19WvMHHoXvRKHR7
- jkaIs=;
+ List-Archive; bh=BG68NqVOXumpkWCkn0OWV2VnbqS6lWwOjOIssdMs54E=; b=Oq2UZ/iKXvYY
+ 2k9XJAOIPBnHG81Y57F9wo7mHYd1VdMS8WY+SI1RGIevxLvhKvsBqYB/ev15F59uCw/38fwLhD/uV
+ CVR6Yw2GKJxF/ipPxbWttia4pz9/yZ+xliwNksZRBzI1z3PcjhgFANWkJSL1+47HJeFTKaA/y7yuT
+ e+bXo=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHoze-0008PV-Bh; Tue, 08 Oct 2019 12:53:34 +0000
+ id 1iHoze-0008Ph-Q0; Tue, 08 Oct 2019 12:53:34 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id CD5112740D4B; Tue,  8 Oct 2019 13:53:33 +0100 (BST)
+ id 435272740D4A; Tue,  8 Oct 2019 13:53:34 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87o8yzaf2f.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r23vaf39.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125333.CD5112740D4B@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:33 +0100 (BST)
+Message-Id: <20191008125334.435272740D4A@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:34 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: intel: skl-pcm: remove snd_pcm_ops" to
-	the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: add snd_soc_pcm_lib_ioctl()"
+	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: skl-pcm: remove snd_pcm_ops
+   ASoC: soc-core: add snd_soc_pcm_lib_ioctl()
 
 has been applied to the asoc tree at
 
@@ -121,162 +121,60 @@ to this mail.
 Thanks,
 Mark
 
-From 3507bb5fe46d12f517b68ea612159376c7ccce09 Mon Sep 17 00:00:00 2001
+From 8ec241c495dde3d19a0459304298c2468c60182b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:31:36 +0900
-Subject: [PATCH] ASoC: intel: skl-pcm: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:31:06 +0900
+Subject: [PATCH] ASoC: soc-core: add snd_soc_pcm_lib_ioctl()
 
-snd_pcm_ops is no longer needed.
-Let's use component driver callback.
-
-*Note*
-
-Only Intel skl-pcm has .get_time_info implementation, but ALSA SoC
-framework doesn't call it so far.
-To keep its implementation, this patch keeps .get_time_info,
-but it is still not called.
-Intel guy need to support it in the future.
+add snd_soc_pcm_lib_ioctl() to bypass to snd_pcm_lib_ioctl()
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87o8yzaf2f.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87r23vaf39.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 67 ++++++++++++++++++++-----------
- 1 file changed, 44 insertions(+), 23 deletions(-)
+ include/sound/soc.h  |  5 +++++
+ sound/soc/soc-core.c | 12 ++++++++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 7f287424af9b..0850141c7d47 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1081,7 +1081,8 @@ int skl_dai_load(struct snd_soc_component *cmp, int index,
- 	return 0;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index d93cb46c536d..32748f78060a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1390,6 +1390,11 @@ static inline void snd_soc_dapm_mutex_unlock(struct snd_soc_dapm_context *dapm)
+ 	mutex_unlock(&dapm->card->dapm_mutex);
  }
  
--static int skl_platform_open(struct snd_pcm_substream *substream)
-+static int skl_platform_soc_open(struct snd_soc_component *component,
-+				 struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
-@@ -1167,8 +1168,9 @@ static int skl_coupled_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
--					int cmd)
-+static int skl_platform_soc_trigger(struct snd_soc_component *component,
-+				    struct snd_pcm_substream *substream,
-+				    int cmd)
- {
- 	struct hdac_bus *bus = get_bus_ctx(substream);
- 
-@@ -1178,8 +1180,9 @@ static int skl_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static snd_pcm_uframes_t skl_platform_pcm_pointer
--			(struct snd_pcm_substream *substream)
-+static snd_pcm_uframes_t skl_platform_soc_pointer(
-+	struct snd_soc_component *component,
-+	struct snd_pcm_substream *substream)
- {
- 	struct hdac_ext_stream *hstream = get_hdac_ext_stream(substream);
- 	struct hdac_bus *bus = get_bus_ctx(substream);
-@@ -1225,6 +1228,24 @@ static snd_pcm_uframes_t skl_platform_pcm_pointer
- 	return bytes_to_frames(substream->runtime, pos);
- }
- 
-+static int skl_platform_soc_mmap(struct snd_soc_component *component,
-+				 struct snd_pcm_substream *substream,
-+				 struct vm_area_struct *area)
-+{
-+	return snd_pcm_lib_default_mmap(substream, area);
-+}
++/* bypass */
++int snd_soc_pcm_lib_ioctl(struct snd_soc_component *component,
++			  struct snd_pcm_substream *substream,
++			  unsigned int cmd, void *arg);
 +
-+#ifdef CONFIG_SND_DMA_SGBUF
-+static struct page *skl_platform_soc_page(struct snd_soc_component *component,
-+					  struct snd_pcm_substream *substream,
-+					  unsigned long offset)
+ #include <sound/soc-component.h>
+ 
+ #endif
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d39d908f3204..bd2ac1912466 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -277,6 +277,18 @@ static inline void snd_soc_debugfs_exit(void)
+ 
+ #endif
+ 
++/*
++ * This is glue code between snd_pcm_lib_ioctl() and
++ * snd_soc_component_driver :: ioctl
++ */
++int snd_soc_pcm_lib_ioctl(struct snd_soc_component *component,
++			  struct snd_pcm_substream *substream,
++			  unsigned int cmd, void *arg)
 +{
-+	return snd_pcm_sgbuf_ops_page(substream, offset);
++	return snd_pcm_lib_ioctl(substream, cmd, arg);
 +}
-+#else
-+#define skl_platform_soc_page NULL
-+#endif /* CONFIG_SND_DMA_SGBUF */
++EXPORT_SYMBOL_GPL(snd_soc_pcm_lib_ioctl);
 +
- static u64 skl_adjust_codec_delay(struct snd_pcm_substream *substream,
- 				u64 nsec)
+ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+ 			      struct snd_soc_component *component)
  {
-@@ -1245,7 +1266,9 @@ static u64 skl_adjust_codec_delay(struct snd_pcm_substream *substream,
- 	return (nsec > codec_nsecs) ? nsec - codec_nsecs : 0;
- }
- 
--static int skl_get_time_info(struct snd_pcm_substream *substream,
-+static int skl_platform_soc_get_time_info(
-+			struct snd_soc_component *component,
-+			struct snd_pcm_substream *substream,
- 			struct timespec *system_ts, struct timespec *audio_ts,
- 			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
- 			struct snd_pcm_audio_tstamp_report *audio_tstamp_report)
-@@ -1277,24 +1300,16 @@ static int skl_get_time_info(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static const struct snd_pcm_ops skl_platform_ops = {
--	.open = skl_platform_open,
--	.ioctl = snd_pcm_lib_ioctl,
--	.trigger = skl_platform_pcm_trigger,
--	.pointer = skl_platform_pcm_pointer,
--	.get_time_info =  skl_get_time_info,
--	.mmap = snd_pcm_lib_default_mmap,
--	.page = snd_pcm_sgbuf_ops_page,
--};
--
--static void skl_pcm_free(struct snd_pcm *pcm)
-+static void skl_platform_soc_free(struct snd_soc_component *component,
-+				  struct snd_pcm *pcm)
- {
- 	snd_pcm_lib_preallocate_free_for_all(pcm);
- }
- 
- #define MAX_PREALLOC_SIZE	(32 * 1024 * 1024)
- 
--static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int skl_platform_soc_new(struct snd_soc_component *component,
-+				struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *dai = rtd->cpu_dai;
- 	struct hdac_bus *bus = dev_get_drvdata(dai->dev);
-@@ -1458,7 +1473,7 @@ static int skl_platform_soc_probe(struct snd_soc_component *component)
- 	return 0;
- }
- 
--static void skl_pcm_remove(struct snd_soc_component *component)
-+static void skl_platform_soc_remove(struct snd_soc_component *component)
- {
- 	struct hdac_bus *bus = dev_get_drvdata(component->dev);
- 	struct skl_dev *skl = bus_to_skl(bus);
-@@ -1471,10 +1486,16 @@ static void skl_pcm_remove(struct snd_soc_component *component)
- static const struct snd_soc_component_driver skl_component  = {
- 	.name		= "pcm",
- 	.probe		= skl_platform_soc_probe,
--	.remove		= skl_pcm_remove,
--	.ops		= &skl_platform_ops,
--	.pcm_new	= skl_pcm_new,
--	.pcm_free	= skl_pcm_free,
-+	.remove		= skl_platform_soc_remove,
-+	.open		= skl_platform_soc_open,
-+	.ioctl		= snd_soc_pcm_lib_ioctl,
-+	.trigger	= skl_platform_soc_trigger,
-+	.pointer	= skl_platform_soc_pointer,
-+	.get_time_info	= skl_platform_soc_get_time_info,
-+	.mmap		= skl_platform_soc_mmap,
-+	.page		= skl_platform_soc_page,
-+	.pcm_construct	= skl_platform_soc_new,
-+	.pcm_destruct	= skl_platform_soc_free,
- 	.module_get_upon_open = 1, /* increment refcount when a pcm is opened */
- };
- 
 -- 
 2.20.1
 
