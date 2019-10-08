@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99D8EC4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D797C10F14
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:13:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26D7A2070B
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:12:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 15F7D2070B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:13:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mb/b+q/Q";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="tEUWmBCu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26D7A2070B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BpcF31oY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BxE/F4Gd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15F7D2070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 698231698;
-	Tue,  8 Oct 2019 15:12:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 698231698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55BC4169F;
+	Tue,  8 Oct 2019 15:12:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55BC4169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570540370;
-	bh=1U9c7FSYM8gunpmlrfpci9SNxdyPW9vw2Ywp0puRrBQ=;
+	s=default; t=1570540411;
+	bh=MmCXSCGxC1U+kQjKkyVBfXJZFLJrenlNnVwJi3I9dY4=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=mb/b+q/Q7ncrwLhwogaoGMmWohKu7gGxdF4PWX8s/Gwp0Z9vAD+YTeAVnsUcNU6Hf
-	 55AK6gE9x6STFi7PuzHwsV1iQVOssuLTiWFdjKyzQTSLerZCGsdiAT1sjlwo/aR4zN
-	 cO9i2YvZpQ0Pjb9evuDmHvkFw9Xl30tNPiaJ2+9w=
+	b=BpcF31oYukuCygTVTVZlLc483ooOz5rrJqmFuwEtQbXv5yghpCl11P3xfP+GVnMr1
+	 KiAT0Pg/V/ILufInjmayTUXltctm+iVwdBpxQCKNW1N5GSfLJ/UE3uWeSvGQybSwQT
+	 UQWDqAoGkfvFXnxDIJZcoiWHLC/yTRusygfpMQC8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 849E1F8087D;
-	Tue,  8 Oct 2019 14:54:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BF29F808F4;
+	Tue,  8 Oct 2019 14:54:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E4453F80753; Tue,  8 Oct 2019 14:54:00 +0200 (CEST)
+ id 153A9F8075B; Tue,  8 Oct 2019 14:54:04 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B46B7F8063A
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B46B7F8063A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C29DF8063C
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C29DF8063C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="tEUWmBCu"
+ header.b="BxE/F4Gd"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=UMM8E8WKevKXSwXRRQgIDF0ccpgajz5KlSVK7l2LkWA=; b=tEUWmBCu4bL3
- Ga8b8Gm15jhP3n7TRiKBJGVQXZJ0uhxzTBAhcW0POTrnbZrIfqOz6ZySDmOAa36Vv1/QV+W45l2A2
- HRs7Soj0SyJjiMTqraB0rqUF8ciX0iqgqj/cTw4+IIdjQN87k1xavhyf4yfCZujeZGnfu2iPDi/iB
- zZS+4=;
+ List-Archive; bh=7puKZiu81VlBdB6A/XNF8MLuv1fbPvZitb/FZF2m+aE=; b=BxE/F4GdAIhz
+ 0ud+xmxKIemWWNew9UW9nLSJfmTY3mTlTVqKe6a2nmlcTOF+/2AmEZkKQGiJD0nbYzNFKO+WZzu68
+ P10dg6vdC6slGk8be4i8Vv2eb7L3jyfMmZ7NSTnF0WCrwMbImCPa+/EGv1aT2W/XTenXjjB9LvgtS
+ pnPtU=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHozb-0008OK-EG; Tue, 08 Oct 2019 12:53:31 +0000
+ id 1iHozb-0008OR-NK; Tue, 08 Oct 2019 12:53:31 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E96B22740D4B; Tue,  8 Oct 2019 13:53:30 +0100 (BST)
+ id 348702740D48; Tue,  8 Oct 2019 13:53:31 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <875zl7af0h.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <877e5naf0m.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125330.E96B22740D4B@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:30 +0100 (BST)
+Message-Id: <20191008125331.348702740D48@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:31 +0100 (BST)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: stm: stm32_adfsdm: remove snd_pcm_ops"
-	to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: txx9: txx9aclc: remove snd_pcm_ops" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: stm: stm32_adfsdm: remove snd_pcm_ops
+   ASoC: txx9: txx9aclc: remove snd_pcm_ops
 
 has been applied to the asoc tree at
 
@@ -121,129 +121,140 @@ to this mail.
 Thanks,
 Mark
 
-From 21499089765f1e8f69998c0506f69158db821c14 Mon Sep 17 00:00:00 2001
+From a857e073ffc67f95ddd6f3f427d0a62edd633d7d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 2 Oct 2019 14:32:46 +0900
-Subject: [PATCH] ASoC: stm: stm32_adfsdm: remove snd_pcm_ops
+Date: Wed, 2 Oct 2019 14:32:41 +0900
+Subject: [PATCH] ASoC: txx9: txx9aclc: remove snd_pcm_ops
 
 snd_pcm_ops is no longer needed.
 Let's use component driver callback.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/875zl7af0h.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/877e5naf0m.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_adfsdm.c | 42 ++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 19 deletions(-)
+ sound/soc/txx9/txx9aclc.c | 48 ++++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index 3c9a9deec9af..81c407da15c5 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -210,7 +210,8 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
- 	return 0;
- }
- 
--static int stm32_adfsdm_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int stm32_adfsdm_trigger(struct snd_soc_component *component,
-+				struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct stm32_adfsdm_priv *priv =
-@@ -230,7 +231,8 @@ static int stm32_adfsdm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return -EINVAL;
- }
- 
--static int stm32_adfsdm_pcm_open(struct snd_pcm_substream *substream)
-+static int stm32_adfsdm_pcm_open(struct snd_soc_component *component,
-+				 struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct stm32_adfsdm_priv *priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-@@ -243,7 +245,8 @@ static int stm32_adfsdm_pcm_open(struct snd_pcm_substream *substream)
- 	return ret;
- }
- 
--static int stm32_adfsdm_pcm_close(struct snd_pcm_substream *substream)
-+static int stm32_adfsdm_pcm_close(struct snd_soc_component *component,
-+				  struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct stm32_adfsdm_priv *priv =
-@@ -256,6 +259,7 @@ static int stm32_adfsdm_pcm_close(struct snd_pcm_substream *substream)
- }
- 
- static snd_pcm_uframes_t stm32_adfsdm_pcm_pointer(
-+					    struct snd_soc_component *component,
- 					    struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -265,7 +269,8 @@ static snd_pcm_uframes_t stm32_adfsdm_pcm_pointer(
- 	return bytes_to_frames(substream->runtime, priv->pos);
- }
- 
--static int stm32_adfsdm_pcm_hw_params(struct snd_pcm_substream *substream,
-+static int stm32_adfsdm_pcm_hw_params(struct snd_soc_component *component,
-+				      struct snd_pcm_substream *substream,
- 				      struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -282,23 +287,16 @@ static int stm32_adfsdm_pcm_hw_params(struct snd_pcm_substream *substream,
- 						   params_period_size(params));
- }
- 
--static int stm32_adfsdm_pcm_hw_free(struct snd_pcm_substream *substream)
-+static int stm32_adfsdm_pcm_hw_free(struct snd_soc_component *component,
-+				    struct snd_pcm_substream *substream)
- {
- 	snd_pcm_lib_free_pages(substream);
- 
- 	return 0;
- }
- 
--static struct snd_pcm_ops stm32_adfsdm_pcm_ops = {
--	.open		= stm32_adfsdm_pcm_open,
--	.close		= stm32_adfsdm_pcm_close,
--	.hw_params	= stm32_adfsdm_pcm_hw_params,
--	.hw_free	= stm32_adfsdm_pcm_hw_free,
--	.trigger	= stm32_adfsdm_trigger,
--	.pointer	= stm32_adfsdm_pcm_pointer,
--};
--
--static int stm32_adfsdm_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+static int stm32_adfsdm_pcm_new(struct snd_soc_component *component,
-+				struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_pcm *pcm = rtd->pcm;
- 	struct stm32_adfsdm_priv *priv =
-@@ -310,7 +308,8 @@ static int stm32_adfsdm_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
--static void stm32_adfsdm_pcm_free(struct snd_pcm *pcm)
-+static void stm32_adfsdm_pcm_free(struct snd_soc_component *component,
-+				  struct snd_pcm *pcm)
- {
- 	struct snd_pcm_substream *substream;
- 
-@@ -320,9 +319,14 @@ static void stm32_adfsdm_pcm_free(struct snd_pcm *pcm)
- }
- 
- static struct snd_soc_component_driver stm32_adfsdm_soc_platform = {
--	.ops		= &stm32_adfsdm_pcm_ops,
--	.pcm_new	= stm32_adfsdm_pcm_new,
--	.pcm_free	= stm32_adfsdm_pcm_free,
-+	.open		= stm32_adfsdm_pcm_open,
-+	.close		= stm32_adfsdm_pcm_close,
-+	.hw_params	= stm32_adfsdm_pcm_hw_params,
-+	.hw_free	= stm32_adfsdm_pcm_hw_free,
-+	.trigger	= stm32_adfsdm_trigger,
-+	.pointer	= stm32_adfsdm_pcm_pointer,
-+	.pcm_construct	= stm32_adfsdm_pcm_new,
-+	.pcm_destruct	= stm32_adfsdm_pcm_free,
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index 66044559f70f..33c78d33e5a1 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -47,12 +47,12 @@ static const struct snd_pcm_hardware txx9aclc_pcm_hardware = {
+ 	.buffer_bytes_max = 32 * 1024,
  };
  
- static const struct of_device_id stm32_adfsdm_of_match[] = {
+-static int txx9aclc_pcm_hw_params(struct snd_pcm_substream *substream,
++static int txx9aclc_pcm_hw_params(struct snd_soc_component *component,
++				  struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct txx9aclc_dmadata *dmadata = runtime->private_data;
+ 	int ret;
+ 
+@@ -76,12 +76,14 @@ static int txx9aclc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int txx9aclc_pcm_hw_free(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_hw_free(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream)
+ {
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-static int txx9aclc_pcm_prepare(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_prepare(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct txx9aclc_dmadata *dmadata = runtime->private_data;
+@@ -203,7 +205,8 @@ static void txx9aclc_dma_tasklet(unsigned long data)
+ 	spin_unlock_irqrestore(&dmadata->dma_lock, flags);
+ }
+ 
+-static int txx9aclc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int txx9aclc_pcm_trigger(struct snd_soc_component *component,
++				struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
+ 	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
+@@ -236,14 +239,16 @@ static int txx9aclc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ }
+ 
+ static snd_pcm_uframes_t
+-txx9aclc_pcm_pointer(struct snd_pcm_substream *substream)
++txx9aclc_pcm_pointer(struct snd_soc_component *component,
++		     struct snd_pcm_substream *substream)
+ {
+ 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
+ 
+ 	return bytes_to_frames(substream->runtime, dmadata->pos);
+ }
+ 
+-static int txx9aclc_pcm_open(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_open(struct snd_soc_component *component,
++			     struct snd_pcm_substream *substream)
+ {
+ 	struct txx9aclc_soc_device *dev = &txx9aclc_soc_device;
+ 	struct txx9aclc_dmadata *dmadata = &dev->dmadata[substream->stream];
+@@ -261,7 +266,8 @@ static int txx9aclc_pcm_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int txx9aclc_pcm_close(struct snd_pcm_substream *substream)
++static int txx9aclc_pcm_close(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream)
+ {
+ 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
+ 	struct dma_chan *chan = dmadata->dma_chan;
+@@ -271,23 +277,12 @@ static int txx9aclc_pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static const struct snd_pcm_ops txx9aclc_pcm_ops = {
+-	.open		= txx9aclc_pcm_open,
+-	.close		= txx9aclc_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+-	.hw_params	= txx9aclc_pcm_hw_params,
+-	.hw_free	= txx9aclc_pcm_hw_free,
+-	.prepare	= txx9aclc_pcm_prepare,
+-	.trigger	= txx9aclc_pcm_trigger,
+-	.pointer	= txx9aclc_pcm_pointer,
+-};
+-
+-static int txx9aclc_pcm_new(struct snd_soc_pcm_runtime *rtd)
++static int txx9aclc_pcm_new(struct snd_soc_component *component,
++			    struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
+ 	struct snd_pcm *pcm = rtd->pcm;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+ 	struct platform_device *pdev = to_platform_device(component->dev);
+ 	struct txx9aclc_soc_device *dev;
+ 	struct resource *r;
+@@ -409,8 +404,15 @@ static const struct snd_soc_component_driver txx9aclc_soc_component = {
+ 	.name		= DRV_NAME,
+ 	.probe		= txx9aclc_pcm_probe,
+ 	.remove		= txx9aclc_pcm_remove,
+-	.ops		= &txx9aclc_pcm_ops,
+-	.pcm_new	= txx9aclc_pcm_new,
++	.open		= txx9aclc_pcm_open,
++	.close		= txx9aclc_pcm_close,
++	.ioctl		= snd_soc_pcm_lib_ioctl,
++	.hw_params	= txx9aclc_pcm_hw_params,
++	.hw_free	= txx9aclc_pcm_hw_free,
++	.prepare	= txx9aclc_pcm_prepare,
++	.trigger	= txx9aclc_pcm_trigger,
++	.pointer	= txx9aclc_pcm_pointer,
++	.pcm_construct	= txx9aclc_pcm_new,
+ };
+ 
+ static int txx9aclc_soc_platform_probe(struct platform_device *pdev)
 -- 
 2.20.1
 
