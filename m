@@ -2,84 +2,86 @@ Return-Path: <SRS0=gTnd=YB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F55C4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:26:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30058C4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:27:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7DA42070B
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:26:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A7D5520815
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:27:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Zy1wH7/F";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GCgkapxY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7DA42070B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t4lFmOIY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jIRzZaMl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7D5520815
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 130D916C5;
-	Tue,  8 Oct 2019 15:25:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 130D916C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB3D216C7;
+	Tue,  8 Oct 2019 15:26:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB3D216C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570541188;
-	bh=PfqtoJiIvnjlkJkpCaB2rK6ci75/NVY6h/e0Uh2YCqg=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Zy1wH7/F+r3Gu9JpC0o8087dNX5wOctFNPVoLotaFErQfU2WGnw53OTLUGv661RB5
-	 XLVYsdjjQVgEk2PeiX0YefqpkP8li1Duyv7/aWzZi6Ql9IcxCV29Sr4zrIFdOmDfid
-	 lIXuIAySTSGJLC16F4tyAZHFipTxGH0Q8lbQnCtk=
+	s=default; t=1570541242;
+	bh=NQ/nX8yOJdsciDoyNy80M/l4p0HjwNWzA9jDVze/e7U=;
+	h=From:Date:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=t4lFmOIY881R7S9SzgfqtryIYKxraw+4EyN2zCvW4ca/B/409X37mnBnVxjl/rj0B
+	 9c2wJxPWAgXyz9e3gg69NlrSB53bCSFyFu87VKpvNztb7medr07z2c/6g1s8WgSG3w
+	 HBybgI+tNZFPlV1rgIHCvcQH7tcNqaSbnbW/7B98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B09EBF89717;
-	Tue,  8 Oct 2019 14:54:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92FF3F8059F;
+	Tue,  8 Oct 2019 15:04:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69E5BF8086D; Tue,  8 Oct 2019 14:54:30 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 49455F80322; Tue,  8 Oct 2019 15:04:06 +0200 (CEST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9020DF80676
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9020DF80676
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0023F80322
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 15:04:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0023F80322
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="GCgkapxY"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=8ZyBzxmPDZ0eyBVDumHL6hLnaIS3O2/wuFjVBskv8A0=; b=GCgkapxY4U32
- 9NmKd3Htg5Cpu644HnC16Ccvdz3q1wX1FFX1Vy9XaLSdkMwCTursu7O6K0dKsMd5bW+iw1AV7NZEl
- hyMkhWGy7zwumga4kqgo8JkpT1hOCDXF+zOZvpNFrgmNDvfCgRF8n6L1M/haxW7KvdXwrOw4DTKtf
- IAGAw=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iHozf-0008Q0-H9; Tue, 08 Oct 2019 12:53:35 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 00B9F2740D4A; Tue,  8 Oct 2019 13:53:34 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-In-Reply-To: <1569580317-21181-5-git-send-email-jiaxin.yu@mediatek.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20191008125335.00B9F2740D4A@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:34 +0100 (BST)
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, tzungbi@google.com,
- yong.liang@mediatek.com, lgirdwood@gmail.com, jiaxin.yu@mediatek.com,
- robh+dt@kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, linux@roeck-us.net, eason.yen@mediatek.com,
- wim@linux-watchdog.org, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: mt8183: fix audio playback slowly after
-	playback during bootup" to the asoc tree
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jIRzZaMl"
+Received: by mail-wm1-x330.google.com with SMTP id p7so3061077wmp.4
+ for <alsa-devel@alsa-project.org>; Tue, 08 Oct 2019 06:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=xJIgnbCApKHBJqe6vRTqyHV3VztHtnNpVAryaZhUllc=;
+ b=jIRzZaMl2XKOdOhgcpf5sbVwpTY5AfqPHMTZIXZMG9MtTVydK/GpgjLjhX4RwmaRFH
+ oqo9s/19QMb7fCzP6oN1Lm8bZXc6IsdBIMcqw3G3a3+zXfxKvT3yQNN+TuNbEvzXkbvl
+ 2i7ZQ/ENr3Wm/lDYgdCwPfmCiHFmFxZBq80KDzX969EoiMzY9uCulkY2C2J0aZGU48P2
+ 47157RS2pfpNGHHqPyeUphBLX6yuxKI3JGFkN464oYYxTl0Ox7m/9ZDP0KpFXVH5+ObI
+ pCZc1+MDE4p0HlIP6fHs8BkNbDUdMU0VGeHGPt3LgLkXgIO3aPQa5QGXUXkgd5MRhPi5
+ dSgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=xJIgnbCApKHBJqe6vRTqyHV3VztHtnNpVAryaZhUllc=;
+ b=FPyj6ZxadQmY3yQBEqs3rmapN+kWWOE4G+GdFhcpy7Pj+zbbzzACbKN+Cvph/Jnbzw
+ kFP4PBO9sitN46Tv+3Vxw29FC+H/u1y4gfLQ5V17dGtpiIjvprFyGEbTVUR9iPkMJdte
+ e94c3jAsnRXvZhX0Ee2v5S5F0eGMrra3S6aHkt7oV5z6Vz2cmSNiDno7+SY43fNMqH+O
+ zGtu3pzDZjZ1A58ABlPjYa/Kt+X8P2ZR5irhF9At2WGXNhosLZJyCDd493EWxsLYwkYS
+ Kpu2Lu9gCaPoBMf5fpa8tYvbUUamwOkEcHkudGBZgUZkB+qN+EqQU+Z5YqBvRIwFNnAK
+ QUCg==
+X-Gm-Message-State: APjAAAUkmD6C9DJpo5GKU5HZDoS2+OsnLPAshf/Zof8x5FHEl9Dw1HW0
+ JUtPsq23RCX949NBI1+nYuUfK3kHG4mV5vLr9PzPdLVUqmE=
+X-Google-Smtp-Source: APXvYqw+edtYapkcUYa7SRW28e+EN7DTvx2WokozQh8CSfZakvYyIE0/lRZH2eQJngOuW7Gny/r7gPL7ONk2Kg8LEWA=
+X-Received: by 2002:a1c:7dce:: with SMTP id y197mr3666269wmc.171.1570539843135; 
+ Tue, 08 Oct 2019 06:04:03 -0700 (PDT)
+MIME-Version: 1.0
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Tue, 8 Oct 2019 16:03:51 +0300
+Message-ID: <CAEnQRZDhhZHOyqC8QSmgy+CY5eYSktPUiL6tVF9z_5ACegCsQw@mail.gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] Counting links in simple-card
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,99 +94,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Hi Morimoto-san,
 
-   ASoC: mt8183: fix audio playback slowly after playback during bootup
+In simple-card.c simple_get_dais_count function there is this comment:
 
-has been applied to the asoc tree at
+     * ex1)
+     * CPU0 --- Codec0
+     * CPU1 --- Codec1
+     * CPU2 -----/
+     * CPU3 --- Codec2
+     *
+     *    => 5 links = 2xCPU-Codec + 2xCPU-dummy + 1xdummy-Codec
+     *    => 7 DAIs  = 4xCPU + 3xCodec
+     *    => 1 ccnf  = 1xdummy-Codec
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+So, I don't understand exactly how did you get the formula for links. AFAICT
+there should be 3 x CPU-Codec + 1 x CPU-dummy.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 9e985503ee4b23d576c303a17dfe52cfc8f32727 Mon Sep 17 00:00:00 2001
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Date: Fri, 27 Sep 2019 18:31:57 +0800
-Subject: [PATCH] ASoC: mt8183: fix audio playback slowly after playback during
- bootup
-
-Before regmap_reinit_cache we must reset audio regs as default values.
-So we use reset controller unit(toprgu) to reset audio hw.
-
-Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Reviewed-by: Yingjoe Chen <yingjoe.chen@mediatek.com>
-Link: https://lore.kernel.org/r/1569580317-21181-5-git-send-email-jiaxin.yu@mediatek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index 4a31106d3471..721632386a50 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -11,6 +11,7 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/pm_runtime.h>
-+#include <linux/reset.h>
- 
- #include "mt8183-afe-common.h"
- #include "mt8183-afe-clk.h"
-@@ -1089,6 +1090,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 	struct mtk_base_afe *afe;
- 	struct mt8183_afe_private *afe_priv;
- 	struct device *dev;
-+	struct reset_control *rstc;
- 	int i, irq_id, ret;
- 
- 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
-@@ -1126,6 +1128,19 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	rstc = devm_reset_control_get(dev, "audiosys");
-+	if (IS_ERR(rstc)) {
-+		ret = PTR_ERR(rstc);
-+		dev_err(dev, "could not get audiosys reset:%d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = reset_control_reset(rstc);
-+	if (ret) {
-+		dev_err(dev, "failed to trigger audio reset:%d\n", ret);
-+		return ret;
-+	}
-+
- 	/* enable clock for regcache get default value from hw */
- 	afe_priv->pm_runtime_bypass_reg_ctl = true;
- 	pm_runtime_get_sync(&pdev->dev);
--- 
-2.20.1
-
+thanks,
+Daniel.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
