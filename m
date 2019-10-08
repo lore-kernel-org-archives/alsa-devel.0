@@ -2,97 +2,86 @@ Return-Path: <SRS0=gTnd=YB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B15A0ECE58E
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:11:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33973C4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:12:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BA1F206C2
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:11:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B992206C2
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 12:12:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T9mO4cYf";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lmcxJg+W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BA1F206C2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WBzwar0D";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="AOpRW42g"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B992206C2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91C6C851;
-	Tue,  8 Oct 2019 14:10:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91C6C851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 840BB15E0;
+	Tue,  8 Oct 2019 14:11:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 840BB15E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570536704;
-	bh=RhByLoeBp6tofJ5fTO1dX+AE6K9BVqrG71qfoAoSm14=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1570536760;
+	bh=Eu37ukQjAKOITRsoa72EJufPGOY29ujvYzX7SedhyZs=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T9mO4cYf6XIGoxPImPc+i/yzR/UL4yp+wTnTdecYesMEDvOX9z1AAE784etQfPTwM
-	 o4JVizCOUJ+klbz+7yYzCcIpwBmFRvQvYzjjGKFI2rtQI44OeCfJhKBOdaXzdDCC+X
-	 /Fym7dnBqsW6XdTTkOWP12so3Ft5TR/UxkRe7Ffs=
+	b=WBzwar0DsH9Zn4nQ7pUKgChQQnZhcUyuyoL/5MAaR6XzU1HIrTvug56Ba8JGJ77xD
+	 tB3LV+yH1OIkg+BJayEmbQECuuk4set/8AtyRgczoansDTJwrjJa58benN7SNfVrrj
+	 RSg+YzTeYIFtSG46FiVFCCIzzYfRKi5L6jhi7LME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27D4FF80322;
-	Tue,  8 Oct 2019 14:10:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F415F804CB;
+	Tue,  8 Oct 2019 14:11:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A221F8038F; Tue,  8 Oct 2019 14:10:53 +0200 (CEST)
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com
- [IPv6:2607:f8b0:4864:20::a41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EFED2F8059F; Tue,  8 Oct 2019 14:11:39 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A62B7F800BF
- for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:10:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A62B7F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4EBEF804CA
+ for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:11:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4EBEF804CA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="lmcxJg+W"
-Received: by mail-vk1-xa41.google.com with SMTP id q25so3679863vkn.12
- for <alsa-devel@alsa-project.org>; Tue, 08 Oct 2019 05:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Qc61QyZfZZYMqB8OD9rsg9gHOoNYnkxxv7LFR8LDv3U=;
- b=lmcxJg+WAumgYsryhw1/rF2wSdetdsrVtKSmsoEXbgowdVvGVIzdMGBxgiUogalR6w
- pdGBW7IF1uVYrcXD1XWnUsJPNXl/lfI2wl2UaHC04Fy6NjB2SOukNg8I1TqSTn4iNQbX
- FAh8tSWkRqkUrXnaB/WQ/Ow2m+iIkdMG/YENI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Qc61QyZfZZYMqB8OD9rsg9gHOoNYnkxxv7LFR8LDv3U=;
- b=dlY5yyrr0sBY/99Onv+1HUHzuF4ZGGDdlH+Sv4569BpnDeXVDWs5PDEBTfCUCZBlz7
- 6hkVd3Bj5F9NYTYNlnUirQUUDAO5L2/RSRUrl73xG00hCHh479onJxZ1AoLbO0/qkGwH
- +1JD9F/WPQ9EuUTS198XAy6m6xn3bIyfhF/cgCOd8Uoh8hdIn9brrdAGRi+lWX+SWIGw
- a+OzQ2HMq2oSNk9uKUdc6sDTz3dzV2dURFkIZwb+VgW1MVD+Td/Qcxvvw/LwRJnotr4g
- xaW7fBJoTZhOQb+BusBYO8dX5aFT1vW0754KMDlLamQntYmhePndFdZTUASoqu1nq5+M
- 8gSQ==
-X-Gm-Message-State: APjAAAXauQDgp67WE2UAbTSsV9uAZXWCrympoAmnaxNJzo8dCawIT2ql
- 6MuFo4ocIP5BVJvukOA3omK7LwRA8y3Y531qW0si0A==
-X-Google-Smtp-Source: APXvYqwxv7te0+g5CNTJMkvkyE0zFacwdpsQDxej3YHeqIGBVQ5w5lPw/kLCFgvz5h6g5SEqlsPKUjZrX2lW7zRSn0o=
-X-Received: by 2002:a1f:2192:: with SMTP id h140mr16721053vkh.92.1570536648132; 
- Tue, 08 Oct 2019 05:10:48 -0700 (PDT)
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="AOpRW42g"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=XnGLjmPea/2MBiFxRMNh1Uce2kBW2+LZpU9p5w1o46E=; b=AOpRW42gTmGp/m6Yvu47Dceyd
+ HQa4Zq6TwpJRor+NhfzFAupU+9W7r11iNLdBEvTs496e0AiuAjxYsE53JB+Idv+HC7Ap4EXDOLM96
+ QZ6o4JrOJbLBuUfcr3yItn5mgCCHpbsgUzbQ8Zrl+xFVwyZrlnHW3oICCnWqUqQ2vA8Ls=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iHoL1-0008FT-SY; Tue, 08 Oct 2019 12:11:35 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 215612742998; Tue,  8 Oct 2019 13:11:35 +0100 (BST)
+Date: Tue, 8 Oct 2019 13:11:35 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Message-ID: <20191008121135.GH4382@sirena.co.uk>
+References: <1569580317-21181-1-git-send-email-jiaxin.yu@mediatek.com>
+ <1569580317-21181-5-git-send-email-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
-References: <20191008101144.39342-1-cychiang@chromium.org>
- <20191008120649.GC2761030@kroah.com>
-In-Reply-To: <20191008120649.GC2761030@kroah.com>
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Date: Tue, 8 Oct 2019 20:10:21 +0800
-Message-ID: <CAFv8NwL2xRFUSRwiD4=mPg1zWm0gmzUQmhaU9SKCdc+=r7pjrg@mail.gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Tzung-Bi Shih <tzungbi@chromium.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Stephen Boyd <swboyd@chromium.org>, Hung-Te Lin <hungte@chromium.org>, "M R,
- Sathya Prakash" <sathya.prakash.m.r@intel.com>,
- Mark Brown <broonie@kernel.org>, Sean Paul <seanpaul@chromium.org>,
- Shuming Fan <shumingf@realtek.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Dylan Reid <dgreid@chromium.org>, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [alsa-devel] [PATCH v2] firmware: vpd: Add an interface to read
-	VPD value
+In-Reply-To: <1569580317-21181-5-git-send-email-jiaxin.yu@mediatek.com>
+X-Cookie: Do not disturb.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, yong.liang@mediatek.com,
+ lgirdwood@gmail.com, tzungbi@google.com, robh+dt@kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ eason.yen@mediatek.com, wim@linux-watchdog.org, linux@roeck-us.net
+Subject: Re: [alsa-devel] [PATCH v2 4/4] ASoC: mt8183: fix audio playback
+ slowly after playback during bootup
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,58 +94,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7999926455208215326=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 8, 2019 at 8:06 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Oct 08, 2019 at 06:11:44PM +0800, Cheng-Yi Chiang wrote:
-> > Add an interface for other driver to query VPD value.
-> > This will be used for ASoC machine driver to query calibration
-> > data stored in VPD for smart amplifier speaker resistor
-> > calibration.
-> >
-> > The example usage in ASoC machine driver is like:
-> >
-> > #define DSM_CALIB_KEY "dsm_calib"
-> > static int load_calibration_data(struct cml_card_private *ctx) {
-> >     char *data = NULL;
-> >     int ret;
-> >     u32 value_len;
-> >
-> >     /* Read calibration data from VPD. */
-> >     ret = vpd_attribute_read(1, DSM_CALIB_KEY,
-> >                             (u8 **)&data, &value_len);
-> >
-> >     /* Parsing of this string...*/
-> > }
-> >
-> >
-> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > ---
->
-> I can't take this patch without a real user of this function in the
-> kernel tree at the same time.  Please submit it as part of a patch
-> series with that change as well.
->
 
-Hi Greg,
-I see.
-There is an ongoing discussion with Mark in
+--===============7999926455208215326==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gTtJ75FAzB1T2CN6"
+Content-Disposition: inline
 
-https://patchwork.kernel.org/patch/11179237/
 
-I will resend this after machine driver is merged, and after codec
-driver change get sorted out there.
-Thanks!
+--gTtJ75FAzB1T2CN6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> thanks,
->
-> greg k-h
+On Fri, Sep 27, 2019 at 06:31:57PM +0800, Jiaxin Yu wrote:
+
+> +	rstc = devm_reset_control_get(dev, "audiosys");
+> +	if (IS_ERR(rstc)) {
+> +		ret = PTR_ERR(rstc);
+> +		dev_err(dev, "could not get audiosys reset:%d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = reset_control_reset(rstc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to trigger audio reset:%d\n", ret);
+> +		return ret;
+> +	}
+
+This means that we're going to be incompatible with old DT bindings that
+don't specify a reset controller.  I don't know how widely used these
+bindings are so we may be able to get away with this and I'll apply but
+we shouldn't be doing it, the code might need to be fixed to make this
+optional if people complain.
+
+--gTtJ75FAzB1T2CN6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2cfPYACgkQJNaLcl1U
+h9C3vQgAgs/NciVNbX5yhkOJpscZQdjIcphQ+vTFVbzD6Lve7ubMPRDHKDTnJis5
+SBzLgKfpjz+jOKtQaLf43hbnbt3ysqb6OtPbksAhTWkP6Ba8haD/hl8rgpdgQmqr
+g+O2wiaiqRa2TsSL7A325WO+UBSPfbMabkWPF0MAtZWXclvUY8PSt8TixhP7DRIX
+ryvcXlv51QVrRxIyNG/oSSKw6+wqNco5t894qo6Ca6I277zpR5f9gtEt19sqiqW9
+pKGSu3ma/B9i7uEmrpytoBfPGdl+65X1DQq1DRb1A7D5phUuSKeFwQidnptm2Phr
+0C6SxsX4Y3qTydnI7JMV241vAHiuGQ==
+=JJJV
+-----END PGP SIGNATURE-----
+
+--gTtJ75FAzB1T2CN6--
+
+--===============7999926455208215326==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============7999926455208215326==--
