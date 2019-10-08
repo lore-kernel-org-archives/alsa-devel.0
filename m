@@ -7,79 +7,79 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E19FEC10F14
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F55C4360C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:26:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7047E20815
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:25:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7DA42070B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 13:26:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gl8lCaHc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="vYr26ruW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7047E20815
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Zy1wH7/F";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GCgkapxY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7DA42070B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE90A1696;
-	Tue,  8 Oct 2019 15:25:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE90A1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 130D916C5;
+	Tue,  8 Oct 2019 15:25:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 130D916C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570541155;
-	bh=dIqXn/XyFd4jCMEnt6u66/7IpwD3xv950ff5TRVi8YA=;
+	s=default; t=1570541188;
+	bh=PfqtoJiIvnjlkJkpCaB2rK6ci75/NVY6h/e0Uh2YCqg=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Gl8lCaHcwD3wR4le7fa/ylyYPbODf0Uonw+gaD/cyJLffNIyLp5aBskqPX9dbAXCn
-	 Jy+OuNf5iIX2TEm3O1CRu5xrwf26sKBdSOo7vrugn3RPEGSJOZVbw5fDmFIn+rppZ7
-	 x0OjTDEmO6HE3GQa16h4q/tDiQQqqn1GvhKWhEHw=
+	b=Zy1wH7/F+r3Gu9JpC0o8087dNX5wOctFNPVoLotaFErQfU2WGnw53OTLUGv661RB5
+	 XLVYsdjjQVgEk2PeiX0YefqpkP8li1Duyv7/aWzZi6Ql9IcxCV29Sr4zrIFdOmDfid
+	 lIXuIAySTSGJLC16F4tyAZHFipTxGH0Q8lbQnCtk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8E08F89712;
-	Tue,  8 Oct 2019 14:54:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B09EBF89717;
+	Tue,  8 Oct 2019 14:54:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 432A6F80878; Tue,  8 Oct 2019 14:54:30 +0200 (CEST)
+ id 69E5BF8086D; Tue,  8 Oct 2019 14:54:30 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F35F7F80673
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9020DF80676
  for <alsa-devel@alsa-project.org>; Tue,  8 Oct 2019 14:53:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F35F7F80673
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9020DF80676
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="vYr26ruW"
+ header.b="GCgkapxY"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=xN0L1YScEecIyFUIxb8q+rh8vnFHGS6oLYCHYCaipws=; b=vYr26ruWcI++
- X7bErmRt5OFrwfxpHf231YHSeI1gJAECrzkKK9MXbb3JHfl+ZakZ2sXWL8MItni9DC+4sKnDlVKAm
- pfWzs3MTKbkDgRfGlQ2LqvXnKRIHkyKGnWDq6BVlPrcwdik5cUuTKj/EXpJD1MyuR3LqQWRk7omfl
- 4ZqHc=;
+ List-Archive; bh=8ZyBzxmPDZ0eyBVDumHL6hLnaIS3O2/wuFjVBskv8A0=; b=GCgkapxY4U32
+ 9NmKd3Htg5Cpu644HnC16Ccvdz3q1wX1FFX1Vy9XaLSdkMwCTursu7O6K0dKsMd5bW+iw1AV7NZEl
+ hyMkhWGy7zwumga4kqgo8JkpT1hOCDXF+zOZvpNFrgmNDvfCgRF8n6L1M/haxW7KvdXwrOw4DTKtf
+ IAGAw=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iHozf-0008Q4-OU; Tue, 08 Oct 2019 12:53:35 +0000
+ id 1iHozf-0008Q0-H9; Tue, 08 Oct 2019 12:53:35 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 35CED2740D4B; Tue,  8 Oct 2019 13:53:35 +0100 (BST)
+ id 00B9F2740D4A; Tue,  8 Oct 2019 13:53:34 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-In-Reply-To: <1569580317-21181-4-git-send-email-jiaxin.yu@mediatek.com>
+In-Reply-To: <1569580317-21181-5-git-send-email-jiaxin.yu@mediatek.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191008125335.35CED2740D4B@ypsilon.sirena.org.uk>
-Date: Tue,  8 Oct 2019 13:53:35 +0100 (BST)
+Message-Id: <20191008125335.00B9F2740D4A@ypsilon.sirena.org.uk>
+Date: Tue,  8 Oct 2019 13:53:34 +0100 (BST)
 Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, tzungbi@google.com,
  yong.liang@mediatek.com, lgirdwood@gmail.com, jiaxin.yu@mediatek.com,
  robh+dt@kernel.org, Mark Brown <broonie@kernel.org>,
  linux-mediatek@lists.infradead.org, linux@roeck-us.net, eason.yen@mediatek.com,
  wim@linux-watchdog.org, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "dt-bindings: medaitek: mt8183: add property
-	"resets" && "reset-names"" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: mt8183: fix audio playback slowly after
+	playback during bootup" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   dt-bindings: medaitek: mt8183: add property "resets" && "reset-names"
+   ASoC: mt8183: fix audio playback slowly after playback during bootup
 
 has been applied to the asoc tree at
 
@@ -125,46 +125,63 @@ to this mail.
 Thanks,
 Mark
 
-From 8d6aa1367a7df44bb5939c4bb2727b8d8f7d01b3 Mon Sep 17 00:00:00 2001
+From 9e985503ee4b23d576c303a17dfe52cfc8f32727 Mon Sep 17 00:00:00 2001
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Date: Fri, 27 Sep 2019 18:31:56 +0800
-Subject: [PATCH] dt-bindings: medaitek: mt8183: add property "resets" &&
- "reset-names"
+Date: Fri, 27 Sep 2019 18:31:57 +0800
+Subject: [PATCH] ASoC: mt8183: fix audio playback slowly after playback during
+ bootup
 
-This patch add property "resets" && "reset-names" in examples so that we can
-use reset controller to reset audio domain regs.
+Before regmap_reinit_cache we must reset audio regs as default values.
+So we use reset controller unit(toprgu) to reset audio hw.
 
 Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Link: https://lore.kernel.org/r/1569580317-21181-4-git-send-email-jiaxin.yu@mediatek.com
+Reviewed-by: Yingjoe Chen <yingjoe.chen@mediatek.com>
+Link: https://lore.kernel.org/r/1569580317-21181-5-git-send-email-jiaxin.yu@mediatek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
-index 396ba38619f6..1f1cba4152ce 100644
---- a/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8183-afe-pcm.txt
-@@ -4,6 +4,10 @@ Required properties:
- - compatible = "mediatek,mt68183-audio";
- - reg: register location and size
- - interrupts: should contain AFE interrupt
-+- resets: Must contain an entry for each entry in reset-names
-+  See ../reset/reset.txt for details.
-+- reset-names: should have these reset names:
-+		"audiosys";
- - power-domains: should define the power domain
- - clocks: Must contain an entry for each entry in clock-names
- - clock-names: should have these clock names:
-@@ -20,6 +24,8 @@ Example:
- 		compatible = "mediatek,mt8183-audio";
- 		reg = <0 0x11220000 0 0x1000>;
- 		interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
-+		resets = <&watchdog MT8183_TOPRGU_AUDIO_SW_RST>;
-+		reset-names = "audiosys";
- 		power-domains = <&scpsys MT8183_POWER_DOMAIN_AUDIO>;
- 		clocks = <&infrasys CLK_INFRA_AUDIO>,
- 			 <&infrasys CLK_INFRA_AUDIO_26M_BCLK>,
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 4a31106d3471..721632386a50 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -11,6 +11,7 @@
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/pm_runtime.h>
++#include <linux/reset.h>
+ 
+ #include "mt8183-afe-common.h"
+ #include "mt8183-afe-clk.h"
+@@ -1089,6 +1090,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	struct mtk_base_afe *afe;
+ 	struct mt8183_afe_private *afe_priv;
+ 	struct device *dev;
++	struct reset_control *rstc;
+ 	int i, irq_id, ret;
+ 
+ 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+@@ -1126,6 +1128,19 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	rstc = devm_reset_control_get(dev, "audiosys");
++	if (IS_ERR(rstc)) {
++		ret = PTR_ERR(rstc);
++		dev_err(dev, "could not get audiosys reset:%d\n", ret);
++		return ret;
++	}
++
++	ret = reset_control_reset(rstc);
++	if (ret) {
++		dev_err(dev, "failed to trigger audio reset:%d\n", ret);
++		return ret;
++	}
++
+ 	/* enable clock for regcache get default value from hw */
+ 	afe_priv->pm_runtime_bypass_reg_ctl = true;
+ 	pm_runtime_get_sync(&pdev->dev);
 -- 
 2.20.1
 
