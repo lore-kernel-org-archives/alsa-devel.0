@@ -6,266 +6,245 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63B9BC10F14
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Oct 2019 03:44:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5C49C4360C
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Oct 2019 04:03:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6293921D56
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Oct 2019 03:43:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96EB42087E
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Oct 2019 04:03:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H1oDaTZ6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Av22dA3b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6293921D56
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tixiwayd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUtF2zmo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96EB42087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA83A886;
-	Sun, 13 Oct 2019 05:43:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA83A886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F74F41;
+	Sun, 13 Oct 2019 06:02:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F74F41
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570938236;
-	bh=Zxn/1t0zlsFzNVCNroShZLyS5KUg5+6qL4w3en4K4WA=;
+	s=default; t=1570939412;
+	bh=pUy3u4CdArDNWRKvVVHNFL07EiV9J9JOY90uyGhyLSY=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H1oDaTZ63NQ1/0FinTpQOCwg4Q5r/tqH+BDhrje/GFxDeNOIySpio9DrGkZu+QUrE
-	 rmJzRCPtAHNbxYHo1RoQjLznM5+mYznvBQSXUxf8n37pP5+J5pCLjZaq/JiFs4R4jT
-	 74WqWWpn0mVLwxTDs43J7Adktc3RV0fi5rPaplQc=
+	b=tixiwayddDQqsGeoMgZvyYGeGB0q2zRx3CzucP0T5ic8d95vdjtk+MebndxiSshgc
+	 NLXQcHi4Db/wHgWEJV9hhfLGLFkf9+vI7FxHB6L1kSfHxnj/bhy+BjSkNKQ8SFYa6Z
+	 XjguzZKp8LsnH1hKg8UwNPtRBEt1ofYyq1/eoeO4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF7E9F80369;
-	Sun, 13 Oct 2019 05:43:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B96A3F80369;
+	Sun, 13 Oct 2019 06:02:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4587FF8036C; Sun, 13 Oct 2019 05:43:00 +0200 (CEST)
+ id 1ACB1F8036C; Sun, 13 Oct 2019 05:59:01 +0200 (CEST)
 Received: from listssympa-test.colorado.edu (listssympa-test.colorado.edu
  [128.138.129.156])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25835F80212
- for <alsa-devel@alsa-project.org>; Sun, 13 Oct 2019 05:42:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25835F80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id 411BCF80322
+ for <alsa-devel@alsa-project.org>; Sun, 13 Oct 2019 05:55:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 411BCF80322
 Authentication-Results: alsa1.perex.cz;
  dkim=fail reason="signature verification failed" (1024-bit key)
- header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Av22dA3b"
+ header.d=kernel.org header.i=@kernel.org header.b="RUtF2zmo"
 Received: from listssympa-test.colorado.edu (localhost [127.0.0.1])
  by listssympa-test.colorado.edu (8.15.2/8.15.2/MJC-8.0/sympa) with ESMTPS id
- x9D3gpvP003627
+ x9D3tchT031324
  (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
- Sat, 12 Oct 2019 21:42:51 -0600
+ Sat, 12 Oct 2019 21:55:38 -0600
 Received: (from root@localhost)
  by listssympa-test.colorado.edu (8.15.2/8.15.2/MJC-8.0/submit) id
- x9D3goxO003584; Sat, 12 Oct 2019 21:42:50 -0600
-Received: from MN2PR03MB4717.namprd03.prod.outlook.com (2603:10b6:a03:f4::43)
+ x9D3tcDF031313; Sat, 12 Oct 2019 21:55:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org; s=default; 
+ t=1570637969; bh=8OFuYNdXenlIjXhNk+D84skEN7SLhZksMmULahT16D4=; 
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From; 
+ b=RUtF2zmoOA+Eyi5K7g4B0P1QN6UnntoqpXCRKzFWti0cpfF8VaNRqyfctxgOzK793 
+ 5+hggukDZPOHe30wTWuPrOdLMzyAYdTX83ggiL60exti/cDqaDaTHFC/hDQWREuKo1        
+ ttBuOSNBHEyzVPHxnmOIrHdY5GwQBzwlKDT8zhQo=
+Received: from BY5PR03MB5284.namprd03.prod.outlook.com (2603:10b6:a02:ee::49)
  by BYAPR03MB4376.namprd03.prod.outlook.com with HTTPS via
- BYAPR11CA0102.NAMPRD11.PROD.OUTLOOK.COM; Wed, 9 Oct 2019 19:27:50 +0000
-Received: from CY1PR03CA0017.namprd03.prod.outlook.com (2603:10b6:600::27) by
- MN2PR03MB4717.namprd03.prod.outlook.com (2603:10b6:208:100::23) with
+ BYAPR02CA0036.NAMPRD02.PROD.OUTLOOK.COM; Wed, 9 Oct 2019 19:18:42 +0000
+Received: from BYAPR03CA0019.namprd03.prod.outlook.com (2603:10b6:a02:a8::32)
+ by
+ BY5PR03MB5284.namprd03.prod.outlook.com (2603:10b6:a03:222::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2347.16; Wed, 9 Oct
- 2019 18:11:58 +0000
-Received: from BY2NAM01FT008.eop-nam01.prod.protection.outlook.com
- (2a01:111:f400:7e42::209) by CY1PR03CA0017.outlook.office365.com
- (2603:10b6:600::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.2347.17 via Frontend
- Transport; Wed, 9 Oct 2019 18:11:58 +0000
-Received: from ipmx2.colorado.edu (128.138.128.232) by
- BY2NAM01FT008.mail.protection.outlook.com (10.152.69.25) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2347.16 via Frontend Transport; Wed, 9 Oct 2019 18:11:57 +0000
+ 2019 18:13:53 +0000
+Received: from BY2NAM01FT040.eop-nam01.prod.protection.outlook.com
+ (2a01:111:f400:7e42::206) by BYAPR03CA0019.outlook.office365.com
+ (2603:10b6:a02:a8::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.2347.16 via Frontend
+ Transport; Wed, 9 Oct 2019 18:13:53 +0000
+Received: from ipmx1.colorado.edu (128.138.128.231) by
+ BY2NAM01FT040.mail.protection.outlook.com (10.152.68.174) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384)
+ id 15.20.2347.16 via Frontend Transport; Wed, 9 Oct 2019 18:13:52 +0000
+Received: from mx.colorado.edu ([128.138.128.150]) by mx.colorado.edu with
+ ESMTP; 09 Oct 2019 11:19:12 -0600
 Received: from ipmx4.colorado.edu ([128.138.67.75])  by mx.colorado.edu with
- ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2019 11:19:03 -0600
+ ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2019 10:40:33 -0600
 Received: from vger.kernel.org ([209.132.180.67]) by mx.colorado.edu with
- ESMTP; 09 Oct 2019 10:48:07 -0600
+ ESMTP; 09 Oct 2019 10:19:32 -0600
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand id
- S1731478AbfJIQsF (ORCPT <rfc822; michael.gilroy@colorado.edu>);
- Wed, 9 Oct 2019 12:48:05 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:43354 "EHLO 
- heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by
- vger.kernel.org with ESMTP id S1730490AbfJIQsF (ORCPT       
- <rfc822; linux-kernel@vger.kernel.org>); Wed, 9 Oct 2019 12:48:05 -0400
-Received: from 188.31.199.195.threembb.co.uk ([188.31.199.195]
- helo=fitzroy.sirena.org.uk)        by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)        (Exim 4.92)       
- (envelope-from <broonie@sirena.org.uk>)        id 1iIF84-0005G5-IY; Wed, 09
- Oct 2019 16:48:01 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000) id A3798D03ED3; 
- Wed,  9 Oct 2019 17:47:36 +0100 (BST)
-Authentication-Results: spf=none (sender IP is 128.138.128.232)
+ S1731777AbfJIQTb (ORCPT <rfc822; michael.gilroy@colorado.edu>);
+ Wed, 9 Oct 2019 12:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org" 
+ rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP        id
+ S1731083AbfJIQTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);        Wed,
+ 9 Oct 2019 12:19:31 -0400
+Received: from localhost (unknown [167.220.2.234]) (using TLSv1.2 with cipher
+ ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits)) (No client certificate
+ requested) by mail.kernel.org (Postfix) with ESMTPSA id 7B9782067B; 
+ Wed,  9 Oct 2019 16:19:29 +0000 (UTC)
+Authentication-Results: spf=none (sender IP is 128.138.128.231)
  smtp.mailfrom=vger.kernel.org; 
- o365.colorado.edu; dkim=fail (signature did not verify)
- header.d=sirena.org.uk;o365.colorado.edu; dmarc=fail action=none
+ o365.colorado.edu; dkim=pass (signature was verified)
+ header.d=kernel.org;o365.colorado.edu; dmarc=pass action=none
  header.from=kernel.org;
 Received-SPF: None (protection.outlook.com: vger.kernel.org does not designate
  permitted sender hosts)
+IronPort-SDR: gfJBjV9xkdt4kyB4pJ8cumqdS+zSul47FxwqNTbI4km9ljw1I6+vO/l7Tx/QUj9c5VxFQ0nIFO
+ GR/5xim3PppsNqx6v3ycgbX7PpQuvrcKE=
+IronPort-SDR: op9/PYM5BPXHkgbkxKbHFb9/kO2UoBYHpDAMCRszpH+50+4DhDUqQAAf52Cd6WQ30CgrUvVQjW
+ l6u9VE4TFwTvFUsAAjfXkzuvmN2zc4QRM=
+IronPort-SDR: wklZqGOAcKL+Ij9DiyzuLCuDqIP64MREvnS1+PTAFvEmZ2vvIb3QgooNF9FcNJYuNyd2Pb+wWd
+ J8XrxI0bIuOBFkSbYYiw+26NWpI32nuag=
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
 Authentication-Results-Original: mx.colorado.edu;
- dkim=hardfail (signature did not verify
- [final]) header.i=@sirena.org.uk
-IronPort-SDR: YtQuImWslxQkxXgL4f1X37AAYGa4waMj15vjLZy+Ulml7Wo1bOUVY9ZX4Az1JVHnl0JXHJIos/
- 5oI/5zjUbhG/t/d6nNzKNW3ruCAlVSK5Q=
-IronPort-SDR: jJWRZBFTy0a37iMxGHxDzPpUIEN8roNX12C1DGl2w9PgzO3dIXzcfWwXSElMgZ7QTihWPDTkrH
- QaKSTl+iju703Gb7FfepGYgHG50A+mxfo=
-IronPort-PHdr: =?us-ascii?q?9a23=3Apr3cxBM5m8G/RomXko8l6mtUO3oLmJTReyML45?=
- =?us-ascii?q?46gq5PdaL8rs6wIhmGtr1k2UXSVMDA6/se1rSF+7m1VWobpoqRrCNKe8lWWh?=
- =?us-ascii?q?sMmcga2BYtBMeVBEGoSZyiJ2RyVIwKHFMw5HChPE5cXsHkaBvPoS769mtIQk?=
- =?us-ascii?q?ygbVose6H1F4rTiN+v1+2o9s6bY1Bpgn+HbKt2PVCKqlf6sc8KjI1+b5og0h?=
- =?us-ascii?q?abxxkAM6wejSsgbXeyuju52Mqq559k9XZqtvws7cNGWqjhLYE1VqdRAzljEk?=
- =?us-ascii?q?xn39DhtxTIUVmk7SkgVTc4iB1NUSTM8ByoZZr3vibg5NBwwC2LePHxH9VWEX?=
- =?us-ascii?q?zqp+8jAFfDjyEbOjgltV3Ng8prgq9B5T+nrBtzwojbMqqSMuZzeL+YXP9Ibm?=
- =?us-ascii?q?1HQstXS2ltD5i3dYoXE+sGO7RiopLwoUdLgRKiCFvJZqungncAzje+56Ah3u?=
- =?us-ascii?q?I9VC/c2wlyJd8VvXLI6e74MqsfS7KPwbLFyymGU/QE4zrm5Y7UNzsq88uBRr?=
- =?us-ascii?q?92bY/0xFI0HgzIy3S8+6jkJC/Q9+hf1grTp6IoHarnw0omsB00gjWr3pUIi5?=
- =?us-ascii?q?LVw78T0U3O7i5jwYw4d/m5U1I+WsOuC5BKtiuXZa93Wd9ne2ZzpHQey6Ya/L?=
- =?us-ascii?q?mkeiUQmrAm3AKaQuaMc4mW70GGNq7ZaX8wzDotMLi/0gaz8Xbjyvffa9OE6l?=
- =?us-ascii?q?9nqSNjr4XHpFQW6xj2wNKFUsJP4UqT3Cei7i3/t7kRcgg+wIPFccQt6+U6y7?=
- =?us-ascii?q?wNrE/5RQ/EsUanob21UURBmKDgo6yvKv2updi6HtNqoR+9C54DnMGxIs4REQ?=
- =?us-ascii?q?okADbA8NygyLLT8m3Zb7JLid1utrv1vovYDJw3pbKnIxVfjtgzt0mZCzXhk+?=
- =?us-ascii?q?gemV4tPVkcfUq40IyMWRmGaLiwRb/3gX2VnxIxy+HrH4bHGdLMc0HfyZKmTZ?=
- =?us-ascii?q?FXqHFB6FUiyMJuv41xNe8EY9X1cQj7uNbbJzBnahCW4trOLNVF8ZIHdCXMXb?=
- =?us-ascii?q?KoZfCaoRqJ/OUpO+6WeMoPtS3gL+Rw5/f0gXEwmFtONbns3IEQbmi/BOgjLl?=
- =?us-ascii?q?+DZmC5mdYOF24WoxAzBODrhBWEViIbeXuoXqwtrgI1CYSvCbKQHNr/qaGd3C?=
- =?us-ascii?q?q9Apxdb3xHDVbJK3rzaoGYQKddOieCZMRmljseXLSmDYItyELmuAz7zu9nJ/?=
- =?us-ascii?q?DY9CQZsdqjz9l64eTPiAs/vTB1A4yb1H3FUWxun20ZDww43aZ2pXk8gleO2K?=
- =?us-ascii?q?R1mbpZQPRI5ulEVA58MoTTifF5Bg=3D=3D?=
-IronPort-PHdr: =?us-ascii?q?9a23=3Ab1/XcRM/13YiSvulrscl6mtUO3oLmJTReyML45?=
- =?us-ascii?q?46gq5PdaL8rs6wIhmGtr1k2UXSVMDA6/se1rSF+7m1VWobpoqRrCNKe8lWWh?=
- =?us-ascii?q?sMmcga2BYtBMeVBEGoSZyiJ2RyVIwKHFMw5HChPE5cXsHkaBvPoS769mtIQk?=
- =?us-ascii?q?ygbVose6H1F4rTiN+v1+2o9s6bY1Bpgn+HbKt2PVCKqlf6sc8KjI1+b5og0h?=
- =?us-ascii?q?abxxkAM6wejSsgbXeyuju52Mqq559k9XZqtvws7cNGWqjhLYE1VqdRAzljEk?=
- =?us-ascii?q?xn39DhtxTIUVmk7SkgVTc4iB1NUSTM8ByoZZr3vibg5NBwwC2LePHxH9VWEX?=
- =?us-ascii?q?zqp+8jAFfDjyEbOjgltV3Ng8prgq9B5T+nrBtzwojbMqqSMuZzeL+YXP9Ibm?=
- =?us-ascii?q?1HQstXS2ltD5i3dYoXE+sGO7RiopLwoUdLgRKiCFvJZqungncAzje+56Ah3u?=
- =?us-ascii?q?I9VC/c2wlyJd8VvXLI6e74MqsfS7KPwbLFyymGU/QE4zrm5Y7UNzsq88uBRr?=
- =?us-ascii?q?92bY/0xFI0HgzIy3S8+6jkJC/Q9+hf1grTp6IoHarnw0omsB00gjWr3pUIi5?=
- =?us-ascii?q?LVw78T0U3O7i5jwYw4d/m5U1I+WsOuC5BKtiuXZa93Wd9ne2ZzpHQey6Ya/L?=
- =?us-ascii?q?mkeiUQmrAm3AKaQuaMc4mW70GGNq7ZaX8wzDotMLi/0gaz8Xbjyvffa9OE6l?=
- =?us-ascii?q?9nqSNjr4XHpFQW6xj2wNKFUsJP4UqT3Cei7i3/t7kRcgg+wIPFccQt6+U6y7?=
- =?us-ascii?q?wNrE/5RQ/EsUanob21UURBmKDgo6yvKv2updi6HtNqoR+9C54DnMGxIs4REQ?=
- =?us-ascii?q?okADbA8NygyLLT8m3Zb7JLid1utrv1vovYDJw3pbKnIxVfjtgzt0mZCzXhk+?=
- =?us-ascii?q?gemV4tPVkcfUq40IyMWRmGaLiwRb/3gX2VnxIxy+HrH4bHGdLMc0HfyZKmTZ?=
- =?us-ascii?q?FXqHFB6FUiyMJuv41xNe8EY9X1cQj7uNbbJzBnahCW4trOLNVF8ZIHdCXMXb?=
- =?us-ascii?q?KoZfCaoRqJ/OUpO+6WeMoPtS3gL+Rw5/f0gXEwmFtONbns3IEQbmi/BOgjLl?=
- =?us-ascii?q?+DZmC5mdYOF24WoxAzBODrhBWEViIbeXuoXqwtrgI1CYSvCbKQHNr/qaGd3C?=
- =?us-ascii?q?q9Apxdb3xHDVbJK3rzaoGYQKddOieCZMRmljseXLSmDYItyELmuAz7zu9nJ/?=
- =?us-ascii?q?DY9CQZsdqjz9l64eTPiAs/vTB1A4yb1H3FUWxun20ZDww43aZ2pXk8gleO2K?=
- =?us-ascii?q?R1mbpZQPRI5ulEVA58MoTTifF5Bg=3D=3D?=
+ dkim=pass (signature verified)
+ header.i=@kernel.org
+IronPort-PHdr: =?us-ascii?q?9a23=3AGFGtwx307IOUHct1smDT+DJfSgsGnvDZIAcR95?=
+ =?us-ascii?q?M7irVILv/8rYq3ZR+X7KB3l1aMRoXSsa8a2KLd5rrtXWUQ7JrGq3EHaJhBBF?=
+ =?us-ascii?q?cJ3MYbhQotBIiCE0KoSZyiJ2RyVIwKHEQw83y1OFVRBJW2ewiL/yLqs2VNS0?=
+ =?us-ascii?q?uuZm8Xbqy9Usaax4y917Xi3LPOUiNEtDe7ZZJwHBWQrkb95pUNgqZEdZ0Vyi?=
+ =?us-ascii?q?nKuV5NRsBfxV8xe37PykWZhI/4tNYru2wYu6cN/tJNA4vgeKFqcbsKJz90CH?=
+ =?us-ascii?q?0/5sDgqUv5QAWC/HYaWWgNwDtORjLI9BXrG6v24AXgse8uvUvSdYW+Bfh8ET?=
+ =?us-ascii?q?731Zp3ZkX6jSAgHn0U4WCKqZN/0IgDmEuYgUJCxYjIZ5iNBNFEXbHzQs8bHW?=
+ =?us-ascii?q?FZUOgBaSVnOJqtYYATH+UmL8UH/tKYxRNG5VP2TUHkTL6syjBHm3za75Ud8+?=
+ =?us-ascii?q?l6SR764xEYBfUClFHGvfzEOJsiAbu6w6jsk23Of+9XnjzR8YHkeywBj9rLXZ?=
+ =?us-ascii?q?5JTvD81GooTmanxh3Y4cStd3vdyvgnrk+gycBAePO9tVYHuwd0hRm15ssd16?=
+ =?us-ascii?q?bWv6gH1VTn2Rkp0oYMIojrAF4+YMSjFoNXrT3fLYZtX8c+Fnlhoz1pkOdUkI?=
+ =?us-ascii?q?OnfCUM1JUszgLebPrCSYWT/xb/T7jBczJownlifLWljhq1t0Ws1760Wsq11Q?=
+ =?us-ascii?q?NSpzFe2pnXt38L3gDO8MXPVPZn/0mg1DrOnwDe4+1JOwY1wILYJoQnz7p2kY?=
+ =?us-ascii?q?AcvA=3D=3D?=
+IronPort-PHdr: =?us-ascii?q?9a23=3AO9atdhW/hJs40rhS2us1wfNIO8rV8LGtY1w5yb?=
+ =?us-ascii?q?sCzp9Qe6C+9ojjO0qDvqo/kgqQDs3Svuhfgq/Ns6m6BDJTqZ3Uqn0GeYxBW1?=
+ =?us-ascii?q?geiMAOmwFzSMLQCkDhKvPuKSsgE5cnNhcttznzeQAdA5PyalPbv3muvnYOT0?=
+ =?us-ascii?q?yialIrfbukRN+B6qb/n6j6s9WbKw9I0WqaT65DChmGoAPVl8smga1haYphlg?=
+ =?us-ascii?q?DKj10XQMBW92BzAFeuux/82p7u0MI2oEEy87ppv4YIGe36KogxUbEKIi4hNj?=
+ =?us-ascii?q?IJ45/Avkv4UAGN63AAAF8bnBdSDg7O4Qqof5G0iCbisvs45C7IE9fxSONRO3?=
+ =?us-ascii?q?zqp+8jAFeggnI9CiIXqnPSjetZz49KoU+C+BMj6dbsObizasd4eL/aZMsqbl?=
+ =?us-ascii?q?BiTOhuSy0ZCZuyQdsxBsw7JPdWpJXtqHwcjkTvXmzOTKungncAzje+gO463O?=
+ =?us-ascii?q?s8Ei305CsAEolWr0jrse3vE6s2dPKk5ZjE8QWTNPxZ2BOjsIXYbhFmqt2VVJ?=
+ =?us-ascii?q?55Ter/4g4vOzr6tHiNiou8WlHdnqxF+yDTp6J8SciyrFUBgSFcsyqR/uc8jI?=
+ =?us-ascii?q?zup5g1xmGZ2jpA6pQqIf6UdB5pYeejRcgYp2SbLYxwWsQ4XyRytT0nzqFToZ?=
+ =?us-ascii?q?egZ3tQksYO2gLfZvqbcoOB/hPkUqOrLCxlgG5+JuLtggb0+k+kzff1Ws7y3V?=
+ =?us-ascii?q?pX/WJJkdjJ42gEzAebqtOGRf104lq71H6R2hrS5OBJLQF8lafSJ5M7hL9lvp?=
+ =?us-ascii?q?keq0LOGmnxgkr7?=
 X-IronPort-Anti-Spam-Filtered: true
 X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0FMAADGIZ5dbUtDioBlGQEBAQEBAQE?=
- =?us-ascii?q?BAQEBAQEBAQEBEQEBAQEBAQEBAQEBTYEughsFgXEqjSWFW04BAQEBAQZTY4E?=
- =?us-ascii?q?iiFaRJQMIBwEBAQEBAQEBAQMFGBUCAQEBhxEjOBMCAQEBCQEBAQMBAQECAQU?=
- =?us-ascii?q?CAQECAhANCwkGK4U0DIQwLA1UYwEBAQEDAQI9AQE3AQUJAQEKFQMJExIDDAU?=
- =?us-ascii?q?YMRMFgx6CUiUEsAaCJ4J+AYcyBwmBNIFTijsYeIEHhCM+ijAErUOCLIIvkl4?=
- =?us-ascii?q?MG4IqlxaoC4FpgXszGggoCIMnUBAUgU+LbYJaQjGBCI0/AiQBAoIrAQE?=
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0FUAACKFJ5dh0O0hNFlGQEBAQEBAQE?=
- =?us-ascii?q?BAQEBAQEBAQEBEQEBAQEBAQEBAQEBTYEughuBRTEqjSWFWlEBAQZTYxSBDoh?=
- =?us-ascii?q?WkSUDCAcBAQEBAQEBAQEDBRgUAQIBAQGHESM4EwIBAQEJAQEBAwEBAQIBBQI?=
- =?us-ascii?q?BAQICEAEBAQoLCQgphTQMhDAsDVRjAQEBAQMBAj0BATcBBQkBAQoVAwkTEgM?=
- =?us-ascii?q?MBRgxEwWDHQGCUiUEr2WCJ4J+AYc1BwmBNIFTijsYeIEHhCM+ijAErUOCLII?=
- =?us-ascii?q?vkl4MG4IqlxaoC4FpgXszGggoCIMnUBAUgU+LbYJaQTKBBgEBjT8CJAECgis?=
- =?us-ascii?q?BAQ?=
-X-IPAS-Result: =?us-ascii?q?A0FMAADGIZ5dbUtDioBlGQEBAQEBAQEBAQEBAQEBAQEBE?=
- =?us-ascii?q?QEBAQEBAQEBAQEBTYEughsFgXEqjSWFW04BAQEBAQZTY4EiiFaRJQMIBwEBA?=
- =?us-ascii?q?QEBAQEBAQMFGBUCAQEBhxEjOBMCAQEBCQEBAQMBAQECAQUCAQECAhANCwkGK?=
- =?us-ascii?q?4U0DIQwLA1UYwEBAQEDAQI9AQE3AQUJAQEKFQMJExIDDAUYMRMFgx6CUiUEs?=
- =?us-ascii?q?AaCJ4J+AYcyBwmBNIFTijsYeIEHhCM+ijAErUOCLIIvkl4MG4IqlxaoC4Fpg?=
- =?us-ascii?q?XszGggoCIMnUBAUgU+LbYJaQjGBCI0/AiQBAoIrAQE?=
-X-IPAS-Result: =?us-ascii?q?A0FUAACKFJ5dh0O0hNFlGQEBAQEBAQEBAQEBAQEBAQEBE?=
- =?us-ascii?q?QEBAQEBAQEBAQEBTYEughuBRTEqjSWFWlEBAQZTYxSBDohWkSUDCAcBAQEBA?=
- =?us-ascii?q?QEBAQEDBRgUAQIBAQGHESM4EwIBAQEJAQEBAwEBAQIBBQIBAQICEAEBAQoLC?=
- =?us-ascii?q?QgphTQMhDAsDVRjAQEBAQMBAj0BATcBBQkBAQoVAwkTEgMMBRgxEwWDHQGCU?=
- =?us-ascii?q?iUEr2WCJ4J+AYc1BwmBNIFTijsYeIEHhCM+ijAErUOCLIIvkl4MG4IqlxaoC?=
- =?us-ascii?q?4FpgXszGggoCIMnUBAUgU+LbYJaQTKBBgEBjT8CJAECgisBAQ?=
-X-IronPort-AV: E=Sophos; i="5.67,277,1566885600"; d="asc'?scan'208";
- a="414288113"
-X-IronPort-AV: E=Sophos; i="5.67,277,1566885600"; d="asc'?scan'208";
- a="369236112"
-X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
-X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0FJAABOFp5dh0tDioBlGgEBAQEBAQE?=
+ =?us-ascii?q?BAQMBAQEBEQEBAQICAQEBAYF7ghuBdiqSf4IPjxiMFwEBAQEBAQEBAQgtAgE?=
+ =?us-ascii?q?BAQGHECM4EwIBAgkBAQEDAQEBAgEFAgEBAgIQAQEBCgsJCCmFNAyDRmsBAQE?=
+ =?us-ascii?q?BAQEBAQEBAQEBAQEBAQEBFgINVGQBAgMBAjUCBgEBNwEFCQEBChgJJQMMBUk?=
+ =?us-ascii?q?Ygx2CeLIOgn0BAQWFdYE/CYE0inGBHRiBQD+EIz6EKIYIjzieD4IsapQjJwy?=
+ =?us-ascii?q?CHgGXFagLgWmBezMaCCgIgydQEBSBT4kHhVsnMYEDBSETj18BAQ?=
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0FMAABKBp5dh0O0hNFlGgEBAQEBAQE?=
+ =?us-ascii?q?BAQMBAQEBEQEBAQICAQEBAYF7ghuBRDEqkn+CDxSPBIwXAQEBAQEBAQEBCCw?=
+ =?us-ascii?q?BAgEBAQGHECM4EwIBAgkBAQEDAQEBAgEFAgEBAgIQAQEBCgsJCCmFNAyDRms?=
+ =?us-ascii?q?BAQEBAQEBAQEBAQEBAQEBAQEBFgINVGQBAgMBAjUCBgEBNwEFCQEBChgJJQM?=
+ =?us-ascii?q?MBUkYgx2CC7IKgn0BAQWFd4E/CYE0inGBHRiBQD+EIz6EKIYCjzieD4IsapQ?=
+ =?us-ascii?q?jJwyCHgGXFagLgWmBezMaCCgIgydQEBSBT4kHhVsmMoEDAwEBIROTKQEB?=
+X-IPAS-Result: =?us-ascii?q?A0FJAABOFp5dh0tDioBlGgEBAQEBAQEBAQMBAQEBEQEBA?=
+ =?us-ascii?q?QICAQEBAYF7ghuBdiqSf4IPjxiMFwEBAQEBAQEBAQgtAgEBAQGHECM4EwIBA?=
+ =?us-ascii?q?gkBAQEDAQEBAgEFAgEBAgIQAQEBCgsJCCmFNAyDRmsBAQEBAQEBAQEBAQEBA?=
+ =?us-ascii?q?QEBAQEBFgINVGQBAgMBAjUCBgEBNwEFCQEBChgJJQMMBUkYgx2CeLIOgn0BA?=
+ =?us-ascii?q?QWFdYE/CYE0inGBHRiBQD+EIz6EKIYIjzieD4IsapQjJwyCHgGXFagLgWmBe?=
+ =?us-ascii?q?zMaCCgIgydQEBSBT4kHhVsnMYEDBSETj18BAQ?=
+X-IPAS-Result: =?us-ascii?q?A0FMAABKBp5dh0O0hNFlGgEBAQEBAQEBAQMBAQEBEQEBA?=
+ =?us-ascii?q?QICAQEBAYF7ghuBRDEqkn+CDxSPBIwXAQEBAQEBAQEBCCwBAgEBAQGHECM4E?=
+ =?us-ascii?q?wIBAgkBAQEDAQEBAgEFAgEBAgIQAQEBCgsJCCmFNAyDRmsBAQEBAQEBAQEBA?=
+ =?us-ascii?q?QEBAQEBAQEBFgINVGQBAgMBAjUCBgEBNwEFCQEBChgJJQMMBUkYgx2CC7IKg?=
+ =?us-ascii?q?n0BAQWFd4E/CYE0inGBHRiBQD+EIz6EKIYCjzieD4IsapQjJwyCHgGXFagLg?=
+ =?us-ascii?q?WmBezMaCCgIgydQEBSBT4kHhVsmMoEDAwEBIROTKQEB?=
+X-IronPort-AV: E=Sophos; i="5.67,277,1566885600"; d="scan'208"; a="414433458"
+X-IronPort-AV: E=Sophos; i="5.67,276,1566885600"; d="scan'208"; a="369154081"
+X-Original-Recipients: gasiewsk@o365.colorado.edu
 X-Original-Recipients: migi9492@g.colorado.edu
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; 
- s=20170815-heliosphere; h=In-Reply-To:Content-Type:       
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To: 
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date: 
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:    
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=xihV+hrKUrXRaEoaNU4czLsTlMBrjpQZweZmyEQED50=;
- b=Av22dA3b5NvucR3HZAk9EzKOi       
- k/NA4vCv+QREnefKBAKjB763aPttgXgHHGoioH0LzDfsjA0DktvHrb46x47Nlj/+TnlOByc1m0W7l 
- jAQgM2dyEISNs/i5Qt1M/XOB+WuH7ymzY0wMW6m+OnC/bdbkAG61tJITALhPOyqE/+7uY=;
-Date: Wed, 9 Oct 2019 17:47:36 +0100
-From: "Mark Brown" <broonie@kernel.org>
-To: "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>
-Message-ID: <20191009164736.GL2036@sirena.org.uk>
-References: <20191009104603.15412-1-srinivas.kandagatla@linaro.org>
+Date: Wed, 9 Oct 2019 12:19:28 -0400
+From: "Sasha Levin" <sashal@kernel.org>
+To: "Oleksandr Suvorov" <oleksandr.suvorov@toradex.com>
+Message-ID: <20191009161928.GT1396@sasha-vm>
+References: <20191009143836.16009-1-oleksandr.suvorov@toradex.com>
 MIME-Version: 1.0
-In-Reply-To: <20191009104603.15412-1-srinivas.kandagatla@linaro.org>
-X-Cookie: Be careful!  UGLY strikes 9 out of 10!
+Content-Disposition: inline
+In-Reply-To: <20191009143836.16009-1-oleksandr.suvorov@toradex.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
-X-MS-Exchange-Organization-ExpirationStartTime: 09 Oct 2019 18:11:57.8874 (UTC)
+X-MS-Exchange-Organization-ExpirationStartTime: 09 Oct 2019 18:13:53.2715 (UTC)
 X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
 X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
 X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
-X-MS-Exchange-Organization-Network-Message-Id: 32de43c7-fc34-40b7-3df7-08d74ce42c7d
+X-MS-Exchange-Organization-Network-Message-Id: 0187f2b9-863c-4ff7-77ca-08d74ce47143
 X-EOPAttributedMessage: 0
 X-MS-Exchange-Organization-MessageDirectionality: Originating
-X-Forefront-Antispam-Report: CIP:128.138.128.232; IPV:NLI; CTRY:US; EFV:NLI;
- SFV:SKN; SFS:; DIR:INB; SFP:; SCL:-1; SRVR:MN2PR03MB4717; H:ipmx2.colorado.edu;
+X-Forefront-Antispam-Report: CIP:128.138.128.231; IPV:NLI; CTRY:US; EFV:NLI;
+ SFV:SKN; SFS:; DIR:INB; SFP:; SCL:-1; SRVR:BY5PR03MB5284; H:ipmx1.colorado.edu;
  FPR:; SPF:None; LANG:en; ; SKIP:1; 
-X-MS-Exchange-Organization-AuthSource: BY2NAM01FT008.eop-nam01.prod.protection.outlook.com
+X-MS-Exchange-Organization-AuthSource: BY2NAM01FT040.eop-nam01.prod.protection.outlook.com
 X-MS-Exchange-Organization-AuthAs: Anonymous
 X-OriginatorOrg: colorado.edu
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32de43c7-fc34-40b7-3df7-08d74ce42c7d
-X-MS-TrafficTypeDiagnostic: MN2PR03MB4717:|MN2PR03MB4717:
+X-MS-Office365-Filtering-Correlation-Id: 0187f2b9-863c-4ff7-77ca-08d74ce47143
+X-MS-TrafficTypeDiagnostic: BY5PR03MB5284:|BY5PR03MB5284:
 X-MS-Exchange-Organization-SCL: -1
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-Microsoft-Antispam: BCL:0;
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2019 18:11:57.6002 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32de43c7-fc34-40b7-3df7-08d74ce42c7d
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2019 18:13:52.2196 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0187f2b9-863c-4ff7-77ca-08d74ce47143
 X-MS-Exchange-CrossTenant-Id: 3ded8b1b-070d-4629-82e4-c0b019f46057
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3ded8b1b-070d-4629-82e4-c0b019f46057; Ip=[128.138.128.232];
- Helo=[ipmx2.colorado.edu]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3ded8b1b-070d-4629-82e4-c0b019f46057; Ip=[128.138.128.231];
+ Helo=[ipmx1.colorado.edu]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR03MB4717
-X-MS-Exchange-Transport-EndToEndLatency: 01:15:56.0796371
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5284
+X-MS-Exchange-Transport-EndToEndLatency: 01:04:51.3649967
 X-MS-Exchange-Processed-By-BccFoldering: 15.20.2347.014
 X-Microsoft-Antispam-Mailbox-Delivery: ucf:0; jmr:0; ex:0; auth:0; dest:I;
  ENG:(750127)(520002050)(944506383)(944626516); 
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?B4HpossYxyBqpjPch3uUKwETkqYJHpZ0oVR677eBerFzJ+aK9HKcUYF1PM4a?=
- =?us-ascii?Q?fMeuC8IZKdvZPKKrzDotxGvK63P4b6ZsQIL+0gMmduhuRxhcP6I6NEmcaG8X?=
- =?us-ascii?Q?HYvzkRlKBYJR2yk+4kdtMj6KKaa0KywdjMMEM90FNpgzlxv1r4GUehsrOyZk?=
- =?us-ascii?Q?DCOTP6T3joOM/dBWgE4+x5GN6cL4iqaUaUvPOsI+vktCO0DKOb4j2usur0j/?=
- =?us-ascii?Q?sy72X0Uf1CHwIaT1GnlMV9xzd0fZf6BUDmGJ4mzGAUXxGKABUGFuXriRzMrm?=
- =?us-ascii?Q?18AoA4lCiqqVZm0S7A2gWyJk1PGXh8i9DiiJZXDgJADkE3m4b77BBwH/ysZN?=
- =?us-ascii?Q?sRt7qJ5ssAgzlrSQceadNXVaHIIWzys1A2tRWacOrj11wVv2LuoP6G/4e+t+?=
- =?us-ascii?Q?6ZFyqN07hOqgJlqlv/VPUQeyZLG3ktwXZTpwc+PfR5uzIwRPlFtWYzv6HehD?=
- =?us-ascii?Q?+lP1+3eecU84QMpm4X2BhOKbvh/SQpvnMpYPPU8ivvUgFuBwakHV5GOgL/Hx?=
- =?us-ascii?Q?kPmOrarXNhAQt0v1ITw2oxu3fyr/bu303GFZaHzwnuYXzQuMSJx0DvoRtSfU?=
- =?us-ascii?Q?yFqYw+NhwRP5Sp5pugQQy4lUZj2GFuQc4qxNG/eh/MzvxUJNr5RLKoHqizFe?=
- =?us-ascii?Q?8Sh7W6Md355Av73BTzLD7vnx6a110Xz78ukhCu0Pk1B3OklXkRQ4hyRFzN5n?=
- =?us-ascii?Q?rd7eOiT9MTI2UbURX9BMmDZ+BMVn5l8ZYmPEnmR93H+lGp1Nuxn12oIBEWjR?=
- =?us-ascii?Q?qjszYTVCAgks2iPry36PYmKyPuuj4wa8Fq4sfaQxPmCjSb5sv/l1Q9XtuOF8?=
- =?us-ascii?Q?x5Oqhmq5X4iS2VGj/b6hnGMCpcKjqHmq6uXuw9pLGhSv9jxpC/sf6VsVKAtc?=
- =?us-ascii?Q?bNRG1+kWLzzQ1x7hB247+xYGN+MU4dhF9OnSDbajWbZcj8XydNrOUhHYO2vN?=
- =?us-ascii?Q?5ygytjFhztH00XkDMUcYO6NMVAMgDVjvOQiCDlvte1mAqWrD/w5Cdlh+eWz5?=
- =?us-ascii?Q?dzSfSMTm3NYs5gyg1WANZiVfXxlHu2sC4191se0+MsdzXnzNY9ZPwXDYEG/4?=
- =?us-ascii?Q?+df01UU6DdpZQZc9lczSjz+XQ8qcAPieSAmuRrLLRSP9JaMVr/I=3D?=
-Content-Disposition: inline
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "bgoswami@codeaurora.org" <bgoswami@codeaurora.org>,
- "spapothi@codeaurora.org" <spapothi@codeaurora.org>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Vg7svxFX2MsUdsHtE1YpcCky02pMNrCw7oNJlNgVmhLaWtCrjVamQ8/YYheC?=
+ =?us-ascii?Q?PfLHQQFv5E8Dyi73bmq+J+o9pYGElChB0SZIkpcseS5YCaZeW07tU/KWnC/l?=
+ =?us-ascii?Q?KxBVLWIpAZkFGjPGUQYrn8XdouZrnvXKBy6GIV5IHxrcI712jiSuhV5J4vau?=
+ =?us-ascii?Q?IBoVl2LeROiXW3Kbp8Fgqh1Kejz1HSUdFkdjitXLH5hu1n1dhaJFPtO0npDv?=
+ =?us-ascii?Q?LVcamcw1E+X9e8376XqVrVpkN0+tsVVVdvypjPR1+Ql5NFTw87EA7uZymLOn?=
+ =?us-ascii?Q?aAb8HsKP7GYf+gmmOkA4pfvubnEnS7vbn29JENoeKcfdkLBy9Qd0YaGYqukS?=
+ =?us-ascii?Q?Ynje4FHcWcPK1gaVgurL6UOe3d6OJ1o2QcC/jHoxSVX2v/AVT5U7WhoFHbCL?=
+ =?us-ascii?Q?vBOJsJCB/9J1xeQXck6yLqa2VhtVPTSwI2NV9krpKq44hdcuti4w6GfAEjyT?=
+ =?us-ascii?Q?sq2VMgaqgiu4aB836dLIUgBwUJIsIsNdf08/TKh1VhiqvLJ3wtnk769hUBtj?=
+ =?us-ascii?Q?DMn9H3ZrUCdpG2D1+G+OFxUAZJ/7PhLqarb5hmVMQyt/R/qVPgBJgYKaj9eq?=
+ =?us-ascii?Q?oi1cd7iGLNSUz8m4twLgXxrLInO/6aZdgwhMm3U7GZ+0ND/23FGxy+xZIlkn?=
+ =?us-ascii?Q?slP99mU39FFzbRwR0FVTTkAi2I34qRfWx06tKDlrUZz3hm9pzIPUffV+IBLZ?=
+ =?us-ascii?Q?ARDE/a6Ches8IeBNc5CedT/VUmXDfK+1/K+F1IuABPpU7NXDp00o10MORl97?=
+ =?us-ascii?Q?Y8ERx+1aokRk1oI9RHukeDYI0ZJv7aiH1NTcxZTIwOk7yLoReIA9KH9afowT?=
+ =?us-ascii?Q?WeHz/3xU8oSbuqD333/y+pqbBCbAt4M3nkT7MFDuvD3i/oXyUWwiiiiB5tV7?=
+ =?us-ascii?Q?425+qyBpjUs0vPb17Dfj4qshxNL51P+D+/SNwifUm6TSRPvFe9JEVJr4q2B9?=
+ =?us-ascii?Q?feaktBFS+FZUJ/tMXmQSy2nwtDhaojNBDfWHP7MzupHW7Maza7Ygs2bTlQCu?=
+ =?us-ascii?Q?FhjsEyOY43c9intq/RmB1La3i66CTQxUF9jV+tJzwDHNsZH1fhtaIKblaPLg?=
+ =?us-ascii?Q?A+LdutbS/cbGKVo0IvgiWRGeYkuuNx+wkKno1FKxx5gU0Nbl8Vu5ZjVyO2Kd?=
+ =?us-ascii?Q?Iep7CwJJPrdaHmR8s+neGtAvtxGs+LhEfg=3D=3D?=
+Cc: Igor Opaniuk <igor.opaniuk@toradex.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "vkoul@kernel.org" <vkoul@kernel.org>,
- Gopikrishnaiah Anandan <agopik@codeaurora.org>
-Subject: Re: [alsa-devel] [RFC PATCH] ASoC: soc-dapm: Skip suspending
-	widgets with ignore flag
+ Takashi Iwai <tiwai@suse.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 0/1] [for 4.14] VAG power control
+	improvement for sgtl5000 codec
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -281,18 +260,18 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20191009164736.djXGSgzVipAtfDKSbPzzB8yUZzdr5Nzowy4HohGEDeg@z>
+Message-ID: <20191009161928.dfoLjn4SsOllRFwFo50duk4JCytYQ8SWDUjCuPbAbew@z>
 
-On Wed, Oct 09, 2019 at 11:46:03AM +0100, Srinivas Kandagatla wrote:
-> From: Sudheer Papothi <spapothi@codeaurora.org>
-> 
-> For wigdets which have set the suspend ignore flag asoc framework
-> shouldn't mark them as dirty when ASoC suspend function is called.
-> This change adds check to skip suspending the widgets with the flag set.
+On Wed, Oct 09, 2019 at 02:38:40PM +0000, Oleksandr Suvorov wrote:
+>
+>This backport is for 4.14-stable.
 
-Why?  The goal here is to ensure we revalidate everything on
-resume, and flow any changes out.  It doesn't actually result in
-changes in state on these widgets if they're still powered on.
+I queued this one and the 4.9/4.4 patches, thanks!
+
+-- 
+Thanks,
+Sasha
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
