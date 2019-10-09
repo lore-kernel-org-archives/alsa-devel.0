@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 538E1C47404
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 17:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AFA9C47404
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 17:24:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0765206BB
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 17:23:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 067542196E
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 17:24:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ASJzbQ03";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="iZcejeOl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0765206BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BKofvzld";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NF9/Mx18"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 067542196E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A456B167F;
-	Wed,  9 Oct 2019 19:22:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A456B167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A844169A;
+	Wed,  9 Oct 2019 19:23:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A844169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570641825;
-	bh=VxwKXSZoJOE3uK2tAfcrkv8WUUsfpRYFSN+B6rwZUGk=;
+	s=default; t=1570641876;
+	bh=gyO+ekhRjGRhpQluBIAzPEc0Of7ih1J7MjTzMxdkHik=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ASJzbQ03A9Wfm9Iyba9sW1eBQ54RLVz6837oN1zZxV0QbyayzF6qRIWI+aYM40o2n
-	 E9acUJRywymjptXUTiA1UHziJzKzQRvYeXRbtw0M2hVydYFzKm4sPZsIon09NDK6ci
-	 +1NXAKks0M0S3kO/y97ayc+UEK3NQ+VxM8XUXb7c=
+	b=BKofvzld3hYNbJ8287dVgBkOF+QARt1QoZE3XJUrVQKSHJMzoBgirQ9UkcdztaTZ/
+	 2yXf3EU9TXhJ8AdMRaXtpWsuJu+VVgNXlZKnH3Cvcb0B60n0npCjcCkOeL5bPZSC5p
+	 arZbwEC8Id5CfDV4RfmIXH0yNsGelR7ly39HMKro=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0D18F80308;
-	Wed,  9 Oct 2019 19:22:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 779F1F8060E;
+	Wed,  9 Oct 2019 19:22:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F173F802FB; Wed,  9 Oct 2019 19:21:58 +0200 (CEST)
+ id 72436F802DF; Wed,  9 Oct 2019 19:21:59 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C62E6F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FD79F802BE
  for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 19:21:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C62E6F80113
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FD79F802BE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="iZcejeOl"
+ header.b="NF9/Mx18"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=TKg7v6WJnfalf3/eDZyUsArggkC5Wu/TWTDuseQcCOg=; b=iZcejeOlvIs8
- AvpDHdDwFddODe7PpldqSNZhqCbEV0+F2Kc1ttGpzZFn63sOlGhxe1d314M8htdGp0KjV3NE+A1Ja
- ato26IZALx88FURRdVOJBj81FuB99Nx/7FFM+GYZkys4V3arLJg6zw3fFqgbdODaTrXgwjN7YfOqH
- VFlik=;
+ List-Archive; bh=pz74bknz997j+mbCprEwkouLntFbN+WYwKb9bknd7z0=; b=NF9/Mx18Kz0v
+ YIL+dR5MoM9xvdC1mu1883UhUY9H1bCAeExmrq2aIxUNL+yhuAG0OeGYBf8GDwVFa00ak40Oda4f2
+ j8oBCCbpAPczOzr1cF+Nr88t+N3ysugyhrSH/7sSz1i7/lvC90uFpnZmduyeD9YrXcUjRMmO6rgZm
+ YbTbc=;
 Received: from 188.31.199.195.threembb.co.uk ([188.31.199.195]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1iIFer-0005Js-J7; Wed, 09 Oct 2019 17:21:54 +0000
+ id 1iIFer-0005Jt-Jh; Wed, 09 Oct 2019 17:21:54 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 3C7EBD03ED3; Wed,  9 Oct 2019 18:21:48 +0100 (BST)
+ id 77012D03ED5; Wed,  9 Oct 2019 18:21:48 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Daniel Baluta <daniel.baluta@nxp.com>
-In-Reply-To: <20191009153615.32105-2-daniel.baluta@nxp.com>
+In-Reply-To: <20191009153615.32105-3-daniel.baluta@nxp.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191009172148.3C7EBD03ED3@fitzroy.sirena.org.uk>
+Message-Id: <20191009172148.77012D03ED5@fitzroy.sirena.org.uk>
 Date: Wed,  9 Oct 2019 18:21:48 +0100 (BST)
 Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
  tiwai@suse.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
  linux-imx@nxp.com
-Subject: [alsa-devel] Applied "ASoC: simple_card_utils.h: Add missing
-	include" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: simple_card_utils.h: Fix potential
+	multiple redefinition error" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,20 +90,18 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0582680514241896018=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---===============0582680514241896018==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: simple_card_utils.h: Add missing include
+   ASoC: simple_card_utils.h: Fix potential multiple redefinition error
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -124,59 +122,54 @@ to this mail.
 Thanks,
 Mark
 
-From 4bbee14d8e5487e3d2662138e3767cf4678cdf57 Mon Sep 17 00:00:00 2001
+From af6219590b541418d3192e9bfa03989834ca0e78 Mon Sep 17 00:00:00 2001
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Wed, 9 Oct 2019 18:36:14 +0300
-Subject: [PATCH] ASoC: simple_card_utils.h: Add missing include
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Wed, 9 Oct 2019 18:36:15 +0300
+Subject: [PATCH] ASoC: simple_card_utils.h: Fix potential multiple
+ redefinition error
 
-When debug is enabled compiler cannot find the definition of
-clk_get_rate resulting in the following error:
-
-./include/sound/simple_card_utils.h:168:40: note: previous implicit
-declaration of ‘clk_get_rate’ was here
-   dev_dbg(dev, "%s clk %luHz\n", name, clk_get_rate(dai->clk));
-./include/sound/simple_card_utils.h:168:3: note: in expansion of macro
-‘dev_dbg’
-   dev_dbg(dev, "%s clk %luHz\n", name, clk_get_rate(dai->clk));
-
-Fix this by including the appropriate header.
+asoc_simple_debug_info and asoc_simple_debug_dai must be static
+otherwise we might a compilation error if the compiler decides
+not to inline the given function.
 
 Fixes: 0580dde59438686d ("ASoC: simple-card-utils: add asoc_simple_debug_info()")
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/20191009153615.32105-2-daniel.baluta@nxp.com
+Link: https://lore.kernel.org/r/20191009153615.32105-3-daniel.baluta@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/sound/simple_card_utils.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 985a5f583de4..293ff8115960 100644
+index 985a5f583de4..31f76b6abf71 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -8,6 +8,7 @@
- #ifndef __SIMPLE_CARD_UTILS_H
- #define __SIMPLE_CARD_UTILS_H
+@@ -135,9 +135,9 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 			       struct link_info *li);
  
-+#include <linux/clk.h>
- #include <sound/soc.h>
+ #ifdef DEBUG
+-inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
+-				  char *name,
+-				  struct asoc_simple_dai *dai)
++static inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
++					 char *name,
++					 struct asoc_simple_dai *dai)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
  
- #define asoc_simple_init_hp(card, sjack, prefix) \
+@@ -167,7 +167,7 @@ inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
+ 		dev_dbg(dev, "%s clk %luHz\n", name, clk_get_rate(dai->clk));
+ }
+ 
+-inline void asoc_simple_debug_info(struct asoc_simple_priv *priv)
++static inline void asoc_simple_debug_info(struct asoc_simple_priv *priv)
+ {
+ 	struct snd_soc_card *card = simple_priv_to_card(priv);
+ 	struct device *dev = simple_priv_to_dev(priv);
 -- 
 2.20.1
-
-
---===============0582680514241896018==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0582680514241896018==--
