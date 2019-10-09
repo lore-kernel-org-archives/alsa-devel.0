@@ -1,101 +1,65 @@
-Return-Path: <SRS0=gTnd=YB=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=0KZO=YC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B189EC4360C
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 23:53:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3455C4360C
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 00:19:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDBDC21871
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Oct 2019 23:53:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C73121835
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 00:19:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WTxCye4t";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eXNI7uF0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDBDC21871
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="onBAWmk+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C73121835
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8EAA4851;
-	Wed,  9 Oct 2019 01:52:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EAA4851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FE8310E;
+	Wed,  9 Oct 2019 02:18:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FE8310E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570578791;
-	bh=erKSEuUepUR0cDMD+8eRN3XhyBzq3WFSvT6Qb1unPkQ=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1570580348;
+	bh=a+/FfLpo2M/5gifkw4ufoy5dgTjtgwbKfHK0Yl/YY0U=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WTxCye4tGQax78WbcJOExQ+9kiRGgwiiWIDcOgBUR9e+crBh00McVLC16gdm3CMqF
-	 IN4m/eeLjkaWytunGGegmL1L+jc+mDM+7OcUuGqei4VO+Mh/jtW3iSXH3AlIwCZP7j
-	 lbVrhXJLzsuNTN7W6AxknDFhQnPnj/vnhuc7Ld9I=
+	b=onBAWmk+M0mBgS5ThvCoUbmJ5Y0+munlIf3aMKPYI7UyVupqEPLHQDdPZykoyD9p+
+	 bwl7/t4fZPr2ey3sYdJMYgVbSgxB1MqJTGQP9dBY7HlLz6qmiRkuWXCVJ3mZ008i6x
+	 +oC1xFXX0m7mT+w4/EbEL6Nesh/h556t+9+ISHqw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FA2BF80322;
-	Wed,  9 Oct 2019 01:52:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0F06F80322;
+	Wed,  9 Oct 2019 02:18:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA116F800BF; Wed,  9 Oct 2019 01:52:19 +0200 (CEST)
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
- [IPv6:2607:f8b0:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87C0DF800BF
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 01:52:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87C0DF800BF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="eXNI7uF0"
-Received: by mail-pf1-x442.google.com with SMTP id q7so364880pfh.8
- for <alsa-devel@alsa-project.org>; Tue, 08 Oct 2019 16:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=93hNjDd5eCXL0gLM7IExhV/a9m9EoJoT7fu4u8l/oCM=;
- b=eXNI7uF0qS/fCt2cI6utGIXdycLWTx96ipuD1Awfs01s+oJasZqugJxfDr8XHm7lUZ
- 8tjlu5fsX2JbhTMn9QkyqTBi6P7kyUsVaADWNvk/F75Y9kugrTQpZvB6/pg38RoNPDCR
- T6hxia1aurk05lY6rJaRTTdgwcuzUcea4EHyw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=93hNjDd5eCXL0gLM7IExhV/a9m9EoJoT7fu4u8l/oCM=;
- b=noCsoug21jnTwXXvBYxAIVBS8nOTinIXYesn12uwF5U0h8kTfWt++fBJe+/DEm9I9t
- c6T9AkNX9jE/RenN4ktUJhIkIdreEk8LVApGN2Sx3PA4w+xBu0IPOGDyxeyL0QqNcWuj
- OQ6QYh1CX5pUjBl1N+DKpLOivK0t7f9WupVCcdM17rwfm2MS6kG48fDPvgNhJo7y19na
- LVq2W+WfwDOr00/2IvP9XKzKRqOlg87BdXXDiuoKjZ9axoaZf5nBPHsyhMg3GJOSXhv5
- 8Eo09QnXHbdSZQVFcOlbLf1B8DgPT1xoi6RPH6SGC2Znlj26YchmIygB976rIhoTR+rP
- RDcA==
-X-Gm-Message-State: APjAAAWSkPJfwU2QQXxc16JtWXQmG07DPFWkzFnKmbp8T9VYvRUFo2XC
- S1oEUHt8sKGSpAprPQD/nl541w==
-X-Google-Smtp-Source: APXvYqyazmsIa9xT1DjyyRpW2ecIG7h2tPAxbPMK5zo+csVhL9H79eaaMl3eZK/YO3F1MgHPdxSGMg==
-X-Received: by 2002:a62:1d8e:: with SMTP id d136mr617041pfd.49.1570578734052; 
- Tue, 08 Oct 2019 16:52:14 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
- by smtp.gmail.com with ESMTPSA id o11sm252083pgp.13.2019.10.08.16.52.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Oct 2019 16:52:13 -0700 (PDT)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Date: Tue,  8 Oct 2019 16:52:12 -0700
-Message-Id: <20191008235212.228856-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
-In-Reply-To: <20191008105815.1011a0fc@canb.auug.org.au>
-References: <20191008105815.1011a0fc@canb.auug.org.au>
-MIME-Version: 1.0
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org,
- Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Paul Cercueil <paul@crapouillou.net>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Frank Rowand <frowand.list@gmail.com>
-Subject: [alsa-devel] [PATCH] ASoC: jz4740: Remove unused match variable
+ id 9D0CFF8038F; Wed,  9 Oct 2019 02:18:16 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id E8D0AF800BF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 02:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D0AF800BF
+Date: 09 Oct 2019 09:18:08 +0900
+X-IronPort-AV: E=Sophos;i="5.67,273,1566831600"; d="scan'208";a="28616346"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 09 Oct 2019 09:18:08 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 352BA412388D;
+ Wed,  9 Oct 2019 09:18:08 +0900 (JST)
+Message-ID: <87zhiaixfj.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Daniel Baluta <daniel.baluta@gmail.com>
+In-Reply-To: <CAEnQRZABxV+s3bF1yRr2TF0EJhZ-u+ZXxuvvz5so8AfyHVm8wA@mail.gmail.com>
+References: <CAEnQRZDhhZHOyqC8QSmgy+CY5eYSktPUiL6tVF9z_5ACegCsQw@mail.gmail.com>
+ <CAEnQRZABxV+s3bF1yRr2TF0EJhZ-u+ZXxuvvz5so8AfyHVm8wA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Counting links in simple-card
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,53 +77,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After commit 67ad656bdd70 ("ASoC: jz4740: Use
-of_device_get_match_data()"), the match local variable is unused and the
-compiler rightly warns.
 
-sound/soc/jz4740/jz4740-i2s.c: In function 'jz4740_i2s_dev_probe':                                                                                                   
-sound/soc/jz4740/jz4740-i2s.c:500:29: warning: unused variable 'match' [-Wunused-variable]                                                                           
-  500 |  const struct of_device_id *match;                                                                                                                           
+Hi Daniel
 
-Drop it.
+> >      * ex1)
+> >      * CPU0 --- Codec0
+> >      * CPU1 --- Codec1
+> >      * CPU2 -----/
+> >      * CPU3 --- Codec2
+> >      *
+> >      *    => 5 links = 2xCPU-Codec + 2xCPU-dummy + 1xdummy-Codec
+> >      *    => 7 DAIs  = 4xCPU + 3xCodec
+> >      *    => 1 ccnf  = 1xdummy-Codec
+> >
+> >
+> > So, I don't understand exactly how did you get the formula for links. AFAICT
+> > there should be 3 x CPU-Codec + 1 x CPU-dummy.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: <alsa-devel@alsa-project.org>
-Fixes: 67ad656bdd70 ("ASoC: jz4740: Use of_device_get_match_data()")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+CPU1/CPU2 and Codec1 are using DPCM.
+Thus, it is...
+
+ 2xCPU-Codec:
+	CPU0 - Codec0
+	CPU3 - Codec2
+
+ 2xCPU-dummy:
+	CPU1 - dummy
+	CPU2 - dummy
+
+ 1xdummy-Codec:
+	dummy - Codec1
+
+
+> Also, I wonder how can i use simple-card to create just a backend link
+> CPU-dummy + Codec :).
+> 
+> Is this supported?
+
+Do you mean CPU-dummy + dummy-Codec ?
+But anyway, simple-card/audio-graph DPCM support is very limited.
+Unfortunately it doesn't have flexibility...
+
+Thank you for your help !!
+Best regards
 ---
-
-Can also be squashed. Sorry I missed this warning in the compile log.
-
- sound/soc/jz4740/jz4740-i2s.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index d2dab4d24b87..38d48d101783 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -497,7 +497,6 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
- 	struct jz4740_i2s *i2s;
- 	struct resource *mem;
- 	int ret;
--	const struct of_device_id *match;
- 
- 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
- 	if (!i2s)
-
-base-commit: 442630f691a1537b7e0cc35e3d580222077549cb
--- 
-Sent by a computer through tubes
-
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
