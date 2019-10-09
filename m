@@ -2,74 +2,88 @@ Return-Path: <SRS0=0KZO=YC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E503DC47404
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 13:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51207C47404
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 14:06:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E490D218AC
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 13:38:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 52265218AC
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 14:06:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cTWC0bGF";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="TkpLetSu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E490D218AC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wp8p+L81";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r0N9yf2b"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52265218AC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A688F86E;
-	Wed,  9 Oct 2019 15:37:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A688F86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12AFD86E;
+	Wed,  9 Oct 2019 16:05:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12AFD86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570628286;
-	bh=FDkJTNysqSfgaCuMRxKchzaIKQ50LK/hhVeuhpcRrrs=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1570629971;
+	bh=y19Re3ZHYWK7TgI9oWVLDz76u8xSW7ivo2qCCTxsRHQ=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cTWC0bGF/OW2sM4J+15nuo0NoFnuLctve6UE9jZh54iILDXnGi9F8y9VKX5cD3Vbx
-	 GOKQ8P3xx4hLb0RHnOQns6r5oHnRZ+c9pgGfPFrASswFbIunqfTpK9m/pjF9/GCFTq
-	 CWBWz81kexVfkUUROS7z7GTjTTb3YPe8dJNbD3g4=
+	b=Wp8p+L81rxegs+K/8nFLG/bvQ1BDqQXDnB4sBrLoQ8Tczg8If93c0cB0Q7NK6W7dk
+	 adPaLTdxkybg9/KbsYEJJnIF9MET5ptetFsCsoupye5RUjVor80hDwvJq2IaxTL/+z
+	 tkkh0wrEsM2g8qcaNrEbBjkSDrTzIqVDSkpukPfM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39523F802BD;
-	Wed,  9 Oct 2019 15:37:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82BE8F800BF;
+	Wed,  9 Oct 2019 16:05:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64104F802BE; Wed,  9 Oct 2019 15:37:14 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 51891F802BE; Wed,  9 Oct 2019 16:05:18 +0200 (CEST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16DD5F80113
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 15:37:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16DD5F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id C59E6F800BF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 16:05:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C59E6F800BF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="TkpLetSu"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=XfFUTXDUlOBhRb5NjOcI6XT8SYuoYPJzK11sfR/uJkA=; b=TkpLetSuWl8IcRpP8aCZuAweh
- rQ//FqOsPsXPcYJaQWrJ5aAhgDZL0qJHoZ73wlcoyF1KNoBWv0Ino2ACKa67KCOxx20xy3XCwf6+O
- VXo+b4KcDuCtrfE7AJaVQcVmRn82phybnp+1dy1SUQZZAO/1ZqWLk6cWTpjLlVIMtR5cw=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iIC9O-0004sS-EY; Wed, 09 Oct 2019 13:37:10 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 2E1F92741DF9; Wed,  9 Oct 2019 14:37:09 +0100 (BST)
-Date: Wed, 9 Oct 2019 14:37:09 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Stephen Boyd <swboyd@chromium.org>
-Message-ID: <20191009133709.GB3929@sirena.co.uk>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="r0N9yf2b"
+Received: by mail-wm1-x341.google.com with SMTP id 7so2781707wme.1
+ for <alsa-devel@alsa-project.org>; Wed, 09 Oct 2019 07:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=Uj3uK+PXxvqbeopMnt61nNLWeJ5KhO8l4CJVLwumEdU=;
+ b=r0N9yf2b+byu4vuI8y0JeeHavanBpTMDQpn/KaBT8Gm4fGqhrZiXJi0RqeKptEsRWn
+ Br9sL6Yil/FWaiOqUwPcODWe94yJNRyZzu/B8LEWYVr9gHUdwbSDbtiDcmi2byyJImGC
+ YXqINhsTJVv9QKm5SIub8rUPhTw6lqrIfQDn6bO+Fhi9lPH2JT8Tz16ne+srPsgphekB
+ 7HBBcyqyGGKSqEmo58Ndwm8VYH6Q/cg0zXvAVuOMeGHts28iFJiR2szzJePhV1zYuapJ
+ ORG/XU7r4bwCNqLU+5GO4AscWIvAVeOsZPxTu36s4L+htHTizyP8MCAdOnMgeKp0V12x
+ 8nKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=Uj3uK+PXxvqbeopMnt61nNLWeJ5KhO8l4CJVLwumEdU=;
+ b=WrRNn554IDHtp/dxDss5/KWMIGLHJ+XatqcC8XPPAZsPizy6nNJixQFKnxytX+X9KP
+ EFq40eNZnLgSbegOxlb3vtEfZTx6ngOUV4vO3qZ1HNeiEV7J5tGUacU8Z2un6t4oHjAf
+ FsT2OEKO40r0XpnOgsu5coRGW5UJK4+zN+97qW4PzDLwmzTIMUsk35jM2ENfFAZDGZyO
+ viJQmziZH1RVMtyM9JiLR9xu7t5G9KvKYRDN70V0BHjV45md9bLynjdciFdftEhFj7aa
+ 9qOXICsI/Z/k7mpvL3jZKugRR9B1dtpUhFI/x1MN0NIDRwAusnk1dWj/1NEl674eT/n6
+ GCvw==
+X-Gm-Message-State: APjAAAU6Zm9dgtK1CdETXeBi0U3oFLdIBrTU5/IMx8eSH+APEv618/wx
+ La/TQLpUqtc15ze3YZKm0UJ8/g==
+X-Google-Smtp-Source: APXvYqwTU1rnlyXZsfzUTaF2tYxe+uafBqiZSZYxBNpBuDzM8Nr7Tt4r2+AOyoXwV4lcRyYbLYeo8Q==
+X-Received: by 2002:a7b:ce12:: with SMTP id m18mr2759228wmc.108.1570629914590; 
+ Wed, 09 Oct 2019 07:05:14 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id s12sm2897774wra.82.2019.10.09.07.05.13
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 09 Oct 2019 07:05:13 -0700 (PDT)
+To: Stephen Boyd <swboyd@chromium.org>, Cheng-yi Chiang <cychiang@chromium.org>
 References: <20191007071610.65714-1-cychiang@chromium.org>
  <CA+Px+wWkr1xmSpgEkSaGS7UZu8TKUYvSnbjimBRH29=kDtcHKA@mail.gmail.com>
  <ebf9bc3f-a531-6c5b-a146-d80fe6c5d772@roeck-us.net>
@@ -77,19 +91,21 @@ References: <20191007071610.65714-1-cychiang@chromium.org>
  <5d9b5b3e.1c69fb81.7203c.1215@mx.google.com>
  <CAFv8Nw+x6V-995ijyws1Q36W1MpaP=kNJeiVtNakH-uC3Vgg9Q@mail.gmail.com>
  <5d9ca7e4.1c69fb81.7f8fa.3f7d@mx.google.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <e968e478-bb48-5b05-b6c4-ae1bf77f714f@linaro.org>
+Date: Wed, 9 Oct 2019 15:05:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
 In-Reply-To: <5d9ca7e4.1c69fb81.7f8fa.3f7d@mx.google.com>
-X-Cookie: Every path has its puddle.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
 Cc: ALSA development <alsa-devel@alsa-project.org>,
  Tzung-Bi Shih <tzungbi@chromium.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Hung-Te Lin <hungte@chromium.org>, Tzung-Bi Shih <tzungbi@google.com>,
- Sean Paul <seanpaul@chromium.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Dylan Reid <dgreid@chromium.org>, Guenter Roeck <linux@roeck-us.net>,
- Cheng-yi Chiang <cychiang@chromium.org>
+ Mark Brown <broonie@kernel.org>, Sean Paul <seanpaul@chromium.org>,
+ Dylan Reid <dgreid@chromium.org>, Guenter Roeck <linux@roeck-us.net>
 Subject: Re: [alsa-devel] [PATCH] firmware: vpd: Add an interface to read
 	VPD value
 X-BeenThere: alsa-devel@alsa-project.org
@@ -104,68 +120,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1617050330080636101=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============1617050330080636101==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
-Content-Disposition: inline
+
+On 08/10/2019 16:14, Stephen Boyd wrote:
+>> 3) As my use case does not use device tree, it is hard for ASoC
+>> machine to access nvmem device. I am wondering if I can use
+>> nvm_cell_lookup so machine driver can find the nvmem device using a
+>> con_id. But currently the cell lookup API requires a matched device,
+>> which does not fit my usage because there will be different machine
+>> drivers requesting the value.
+>> I think I can still workaround this by adding the lookup table in
+>> machine driver. This would seem to be a bit weird because I found that
+>> most lookup table is added in provider side, not consumer side. Not
+>> sure if this is logically correct.
+> Maybe Srini has some input here. It looks like your main concern is
+> consumer to provider mapping?
+> 
+
+In non-DT setup, there are various ways to lookup nvmem provider.
+
+1> nvmem_device_get()/put() using provider devid/name. I think you 
+should be able to use this in your case.
+2> nvmem_register_notifier() which notifies when nvmem provider is added 
+to system.
+3> nvmem_device_find() with own match function this will be merged in 
+next window (https://lkml.org/lkml/2019/10/3/215)
 
 
---xgyAXRrhYN0wYx8y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If none of these are of any help, could explain what exactly are you 
+looking for w.r.t nvmem to be able to move to what Stephen Boyd suggested?
 
-On Tue, Oct 08, 2019 at 08:14:43AM -0700, Stephen Boyd wrote:
-> Quoting Cheng-yi Chiang (2019-10-07 11:50:31)
-
-> > IMO the nvmem approach would create more complexity to support this
-> > simple usage. Plus, the underlying assumption of accessing data with
-> > offset in a buffer does not fit well with the already parsed VPD
-> > values in a list of vpd_attrib_info. But if you strongly feel that
-> > this is a better approach I can work toward this.
-
-> I'm not sure how an ACPI system like this would work because my exposure
-> to ACPI is extremely limited. I would expect there to be some sort of
-> firmware property indicating that an nvmem should be used and it's
-> provided by VPD or for firmware to parse VPD itself and put the
-> information into the ACPI table for this device.
-
-I fear this is optimistic.  It's fairly idiomatic for ACPI for stuff
-like this to be keyed off DMI information rather than integrated with
-anything, basically once you get out of the bits that are explictly
-standardized you're into board file territory.  There is the _DSD stuff
-for using DT properties in ACPI but it's had limited use AFAICT.
-
---xgyAXRrhYN0wYx8y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2d4oQACgkQJNaLcl1U
-h9AkxAf/WtJz8gLoIEhfmWFM3Y4Qvz6cFPqsO5kNBWEQH18SykjRbNumBoeynRlg
-0j+2Vz6nFCns429nsLJ/ooS/sKbFGY9UfK8TDxJdUiifheot3MJahzT92vTj7LbB
-AGk+U9e4/n627enaqdqDGmf8m2aPpUqJdmPhr0zuV8/N2c3SMzCTcBXB4BGqkd9I
-My1IdAX5qlmi5+Q0SXmUJjwJtiVs0rdurw3TcKaOdpvhDmyLdJVuaLYmM1QXh0v8
-G5UNLVXzEN0RJZO7dDnbImprk1hOTC7Sze0T5ykh0W0UeydBAw7stk0zVGYro7jO
-K/UYMfOOX3LPFttYf22WeGOLFUf5TQ==
-=UWfy
------END PGP SIGNATURE-----
-
---xgyAXRrhYN0wYx8y--
-
---===============1617050330080636101==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+--srini
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1617050330080636101==--
