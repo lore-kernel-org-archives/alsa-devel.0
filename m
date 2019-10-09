@@ -2,56 +2,56 @@ Return-Path: <SRS0=0KZO=YC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAA7DECE58D
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:33:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56539C47404
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:34:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C19D206C0
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:33:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA298206C0
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:34:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nc/Oyxe0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C19D206C0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XXXrTo//"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA298206C0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86FCD9F6;
-	Wed,  9 Oct 2019 06:32:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86FCD9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 041FA166B;
+	Wed,  9 Oct 2019 06:33:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 041FA166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570595623;
-	bh=v2n2IzleASLnhfJRLg4nXROk59O8b+wr/JWGv1HUkF4=;
+	s=default; t=1570595648;
+	bh=d9Pw0g7kFHpkPPgdj+aivdkg2tR4M29GSq4DCFruHwI=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nc/Oyxe0Fc+BzGmKP70GxLaWPUKw1mDwUkmhIVsUXhMAixkeOAdzDof9vLbxL2Gp2
-	 kL99b5IybuzoIaeajaZHk+bcW+QxNnQHpxmATX94JVDQo7TFgCWoiqcqRESM7/VRZU
-	 JfFBAWhrnU+Raj4z314QGRXNpKRu87PZKx+B9flQ=
+	b=XXXrTo//rwJP+nLruCxl6e+2Pzd6TjGxaXcYXjzGmt8SdeUOk/NQ8YqGTBbXJVYd9
+	 /65ES9ENLK3COAVC2ul7zuEartFCN8AxzICDnDb85NM0D6A+UmidxJVKxbP364o8fj
+	 ukAJT3arAn0TCf+hizibcMZgA7MwpJ58pxlmGY74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8E01F80638;
-	Wed,  9 Oct 2019 06:30:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 282EAF80635;
+	Wed,  9 Oct 2019 06:30:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF787F80638; Wed,  9 Oct 2019 06:30:10 +0200 (CEST)
+ id E2EC6F8063D; Wed,  9 Oct 2019 06:30:14 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 09179F805FA
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 06:30:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09179F805FA
-Date: 09 Oct 2019 13:30:04 +0900
-X-IronPort-AV: E=Sophos;i="5.67,273,1566831600"; d="scan'208";a="28427595"
+ by alsa1.perex.cz (Postfix) with ESMTP id 35CBCF80635
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 06:30:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35CBCF80635
+Date: 09 Oct 2019 13:30:09 +0900
+X-IronPort-AV: E=Sophos;i="5.67,273,1566831600"; d="scan'208";a="28427613"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 09 Oct 2019 13:30:04 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 09 Oct 2019 13:30:09 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id C805D4002643;
- Wed,  9 Oct 2019 13:30:04 +0900 (JST)
-Message-ID: <87mueailrn.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id BE9344007F2C;
+ Wed,  9 Oct 2019 13:30:09 +0900 (JST)
+Message-ID: <87lftuilri.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -60,8 +60,8 @@ References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 04/21] ASoC: soc-core: rename
-	soc_init_dai_link() to soc_dai_link_sanity_check()
+Subject: [alsa-devel] [PATCH 05/21] ASoC: soc-core: remove duplicated
+	soc_is_dai_link_bound()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,73 +81,51 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc_init_dai_link() is checking dai_link only, not initializing today.
-Therefore, we can rename it as sanity_check.
+soc_is_dai_link_bound() check will be called both
+*before* soc_bind_dai_link() (A), and
+*under*  soc_bind_dai_link() (B).
+These are very verboqse code. Let's remove one of them.
 
-And this check is for soc_bind_dai_link().
-Thus, we can check it under soc_bind_dai_link() to more clear code.
-This patch rename it, and call it from soc_bind_dai_link().
+*	static int soc_bind_dai_link(...)
+	{
+		...
+(B)		if (soc_is_dai_link_bound(...)) {
+			...
+			return 0;
+		}
+		...
+	}
+
+	static int snd_soc_instantiate_card(...)
+	{
+		...
+		for_each_card_links(...) {
+(A)			if (soc_is_dai_link_bound(...))
+				continue;
+
+*			ret = soc_bind_dai_link(...);
+			if (ret)
+				goto probe_end;
+		}
+		...
+	}
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 22 +++++++---------------
- 1 file changed, 7 insertions(+), 15 deletions(-)
+ sound/soc/soc-core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 335dc8f..f440022 100644
+index f440022..4edac93 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -941,8 +941,8 @@ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
- 	return false;
- }
- 
--static int soc_init_dai_link(struct snd_soc_card *card,
--			     struct snd_soc_dai_link *link)
-+static int soc_dai_link_sanity_check(struct snd_soc_card *card,
-+				     struct snd_soc_dai_link *link)
- {
- 	int i;
- 	struct snd_soc_dai_link_component *codec, *platform;
-@@ -1043,11 +1043,15 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_dai_link_component *codec, *platform;
- 	struct snd_soc_component *component;
--	int i;
-+	int i, ret;
- 
- 	if (dai_link->ignore)
- 		return 0;
- 
-+	ret = soc_dai_link_sanity_check(card, dai_link);
-+	if (ret < 0)
-+		return ret;
-+
- 	dev_dbg(card->dev, "ASoC: binding %s\n", dai_link->name);
- 
- 	if (soc_is_dai_link_bound(card, dai_link)) {
-@@ -1985,15 +1989,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	int ret, i;
- 
- 	mutex_lock(&client_mutex);
--	for_each_card_prelinks(card, i, dai_link) {
--		ret = soc_init_dai_link(card, dai_link);
--		if (ret) {
--			dev_err(card->dev, "ASoC: failed to init link %s: %d\n",
--				dai_link->name, ret);
--			mutex_unlock(&client_mutex);
--			return ret;
--		}
--	}
- 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
- 
- 	snd_soc_dapm_init(&card->dapm, card, NULL);
-@@ -2073,9 +2068,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		if (soc_is_dai_link_bound(card, dai_link))
- 			continue;
- 
--		ret = soc_init_dai_link(card, dai_link);
--		if (ret)
--			goto probe_end;
+@@ -2065,9 +2065,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	 * Components with topology may bring new DAIs and DAI links.
+ 	 */
+ 	for_each_card_links(card, dai_link) {
+-		if (soc_is_dai_link_bound(card, dai_link))
+-			continue;
+-
  		ret = soc_bind_dai_link(card, dai_link);
  		if (ret)
  			goto probe_end;
