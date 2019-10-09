@@ -6,67 +6,67 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C924ECE58D
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 15:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE96ECE58D
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 15:40:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1448D21848
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 15:39:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D632721848
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 15:40:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B6Wez/as"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1448D21848
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eiKny57X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D632721848
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 418701671;
-	Wed,  9 Oct 2019 17:38:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 418701671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1852A1675;
+	Wed,  9 Oct 2019 17:39:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1852A1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570635584;
-	bh=obXQGBz3M2+vG8W4W/R7kCMdyTpB8D1ox8jJGRY7QMQ=;
+	s=default; t=1570635609;
+	bh=tacDbGdR7TCRIyRuIWeJg5zYrrMayG+imO7i+Mc+hqo=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B6Wez/asjaUfmhC2J7k3dpyV8fXN4ys0aK7+bIWaHqlOS2L9CgsYGifZCsVHHnZwB
-	 KsgKYHINjuQxrN6nqIy6MBkQbH0o8WjYngv9qzHR1nDidnRk26j/NumfPjx9F3tnx3
-	 E2M0T4vn+jwOt0Xz4Zn2PS2CuvZO2XuwdROebhRE=
+	b=eiKny57XdAjHVaw520yGjP8rIn/aYcOMfRbZdfeuAQcTWFMJkZsG3vuQJ0JX/SCrQ
+	 9+h95cGauyNxrSuncYr40umAhnQgBjoAB5rbr9YTBK9jaL7By162KBNu0zbuYEAPTV
+	 6BLblwnxxa4ro8VLVcboHmoKJT3stmKDzHQRpWiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2765F802BE;
-	Wed,  9 Oct 2019 17:37:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F2ECF8060E;
+	Wed,  9 Oct 2019 17:37:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04E6DF805FD; Wed,  9 Oct 2019 17:37:36 +0200 (CEST)
+ id C7155F80610; Wed,  9 Oct 2019 17:37:37 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08A5AF80113
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 17:37:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08A5AF80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84BA9F800AE
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 17:37:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84BA9F800AE
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Oct 2019 08:37:30 -0700
+ 09 Oct 2019 08:37:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,276,1566889200"; d="scan'208";a="223620845"
+X-IronPort-AV: E=Sophos;i="5.67,276,1566889200"; d="scan'208";a="223620854"
 Received: from mmahler-mobl1.amr.corp.intel.com (HELO [10.251.30.188])
  ([10.251.30.188])
- by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2019 08:37:29 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2019 08:37:31 -0700
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Mark Brown <broonie@kernel.org>
-References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
+References: <87r23mgxl7.wl-kuninori.morimoto.gx@renesas.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a14ceebd-d910-eb9f-8462-0036ee40b6d8@linux.intel.com>
-Date: Wed, 9 Oct 2019 09:16:40 -0500
+Message-ID: <2a28be44-91ad-c140-062b-4d14982042e9@linux.intel.com>
+Date: Wed, 9 Oct 2019 09:20:42 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r23mgxl7.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 00/21] ASoC: soc-core cleanup - step 4
+Subject: Re: [alsa-devel] Question about DPCM FE vs BE
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,59 +86,52 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 10/8/19 11:29 PM, Kuninori Morimoto wrote:
+On 10/9/19 2:57 AM, Kuninori Morimoto wrote:
 > 
-> Hi Mark
-> Cc Pierre-Louis
+> Hi ALSA ML
 > 
-> These are step4 of soc-core cleanup.
-> These related to soc-topology.
-> If my understanding and my code are correct,
-> there is no effect to topology side, but I can't test.
+> In my understanding, DPCM needs FE and BE.
+> And, one FE can have multiple BE, and one BE can have multiple FE.
 > 
-> I'm not sure who can test these, but I guess
-> Pierre-Louis knows ?
-> Pierre-Louis, can you help it ?
+> My question this time is that one snd_soc_pcm_runtime can be both
+> FE and BE in the same time (= Sometimes FE, sometimes BE) ??
+> 
+> In my understanding, it never happen.
+> But, is this correct ?
 
-we can use GitHub and create a pull request with these patches, that 
-will be tested on a variety of platforms. We unfortunately have a random 
-IPC error at the moment which sometimes makes it difficult to judge if 
-errors reported are due to the patch being tested or just bad timing.
+It is my understanding that the current code would not support a case 
+where a FE is also a BE.
 
-I tried to apply the series but I get errors on the 2nd patch. I first 
-need to rebase on Mark's tree.
+That said, do we want to preclude it? at some point we probably want to 
+get rid of the FE/BE distinction and have 'domains' that can be chained. 
+So it may not be a good thing to cast a restriction in stone. If at some 
+point we need a list of upstream/downstream clients maybe we should keep 
+this.
 
 > 
-> Kuninori Morimoto (21):
->    ASoC: soc-core: remove for_each_rtdcom_safe()
->    ASoC: soc-core: add for_each_rtd_components() and replace
->    ASoC: soc-core: move soc_init_dai_link()
->    ASoC: soc-core: rename soc_init_dai_link() to soc_dai_link_sanity_check()
->    ASoC: soc-core: remove duplicated soc_is_dai_link_bound()
->    ASoC: soc-core: call soc_bind_dai_link() under snd_soc_add_dai_link()
->    ASoC: soc-core: add soc_unbind_dai_link()
->    ASoC: soc-core: snd_soc_unbind_card() cleanup
->    ASoC: soc-core: remove unneeded snd_soc_tplg_component_remove()
->    ASoC: soc-core: move snd_soc_lookup_component()
->    ASoC: soc-core: add snd_soc_del_component()
->    ASoC: soc-core: use snd_soc_lookup_component() at snd_soc_unregister_component()
->    ASoC: soc-core: move snd_soc_register_dai()
->    ASoC: soc-core: have legacy_dai_naming at snd_soc_register_dai()
->    ASoC: soc-core: move snd_soc_unregister_dais()
->    ASoC: soc-core: add snd_soc_unregister_dai()
->    ASoC: soc-core: don't call snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()
->    ASoC: soc-core: use mutex_lock() at snd_soc_add_component()
->    ASoC: soc-core: call snd_soc_register_dai() from snd_soc_register_dais()
->    ASoC: soc-core: remove topology specific operation
->    ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
+> I'm asking because do we need .be_clients/.fe_clients ?
+> If one pcm_runtime can't be FE / BE in the same time,
+> just .clients is enough I think.
 > 
->   include/sound/soc.h       |  25 ++-
->   sound/soc/soc-component.c |  43 +---
->   sound/soc/soc-compress.c  |  52 ++---
->   sound/soc/soc-core.c      | 542 ++++++++++++++++++++--------------------------
->   sound/soc/soc-pcm.c       |  49 ++---
->   sound/soc/soc-topology.c  |  32 ++-
->   6 files changed, 320 insertions(+), 423 deletions(-)
+> 	static int dpcm_be_connect(...)
+> 	{
+> 		...
+> -		list_add(&dpcm->list_be, &fe->dpcm[stream].be_clients);
+> -		list_add(&dpcm->list_fe, &be->dpcm[stream].fe_clients);
+> +		list_add(&dpcm->list_be, &fe->dpcm[stream].clients);
+> +		list_add(&dpcm->list_fe, &be->dpcm[stream].clients);
+> 		...
+> 	}
+> 
+> 
+> Thank you for your help !!
+> Best regards
+> ---
+> Kuninori Morimoto
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 > 
 _______________________________________________
 Alsa-devel mailing list
