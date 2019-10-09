@@ -6,60 +6,61 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3455C4360C
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 00:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CCE2C4360C
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 00:59:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C73121835
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 00:19:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1FB1E2070B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 00:59:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="onBAWmk+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C73121835
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E65jU0qm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FB1E2070B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FE8310E;
-	Wed,  9 Oct 2019 02:18:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FE8310E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3E01851;
+	Wed,  9 Oct 2019 02:58:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3E01851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570580348;
-	bh=a+/FfLpo2M/5gifkw4ufoy5dgTjtgwbKfHK0Yl/YY0U=;
+	s=default; t=1570582759;
+	bh=/ho6GHItjsjZRijFRFaDSSX3nHBJFpK4VKV0DC29GJI=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=onBAWmk+M0mBgS5ThvCoUbmJ5Y0+munlIf3aMKPYI7UyVupqEPLHQDdPZykoyD9p+
-	 bwl7/t4fZPr2ey3sYdJMYgVbSgxB1MqJTGQP9dBY7HlLz6qmiRkuWXCVJ3mZ008i6x
-	 +oC1xFXX0m7mT+w4/EbEL6Nesh/h556t+9+ISHqw=
+	b=E65jU0qmqWpyPhu2xJuOlPT0ypPyv8NBxxme8vztgfePbASilIEZcBIC9gQlvdXuf
+	 xaOlGyXEBykvV9I9G+gEeSPAuJECAKYInJvRCK1pXPJ6a/tZhRL5E9N2OAd4wwi1Ps
+	 8dP4q/DxP3UICge9RBC+95yEAogLQllNw7wuThrs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0F06F80322;
-	Wed,  9 Oct 2019 02:18:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F449F80322;
+	Wed,  9 Oct 2019 02:58:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D0CFF8038F; Wed,  9 Oct 2019 02:18:16 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E8D0AF800BF
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 02:18:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D0AF800BF
-Date: 09 Oct 2019 09:18:08 +0900
-X-IronPort-AV: E=Sophos;i="5.67,273,1566831600"; d="scan'208";a="28616346"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 09 Oct 2019 09:18:08 +0900
+ id 0029EF8038F; Wed,  9 Oct 2019 02:58:26 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0F830F80135
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 02:58:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F830F80135
+Date: 09 Oct 2019 09:58:17 +0900
+X-IronPort-AV: E=Sophos;i="5.67,273,1566831600"; d="scan'208";a="28401237"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 09 Oct 2019 09:58:17 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 352BA412388D;
- Wed,  9 Oct 2019 09:18:08 +0900 (JST)
-Message-ID: <87zhiaixfj.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8E0F5400D0EF;
+ Wed,  9 Oct 2019 09:58:17 +0900 (JST)
+Message-ID: <87wodeivkm.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Daniel Baluta <daniel.baluta@gmail.com>
-In-Reply-To: <CAEnQRZABxV+s3bF1yRr2TF0EJhZ-u+ZXxuvvz5so8AfyHVm8wA@mail.gmail.com>
-References: <CAEnQRZDhhZHOyqC8QSmgy+CY5eYSktPUiL6tVF9z_5ACegCsQw@mail.gmail.com>
- <CAEnQRZABxV+s3bF1yRr2TF0EJhZ-u+ZXxuvvz5so8AfyHVm8wA@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <efe1f700-16cc-a766-e30e-b2039085cbe5@linux.intel.com>
+References: <87k19f4tjp.wl-kuninori.morimoto.gx@renesas.com>
+ <efe1f700-16cc-a766-e30e-b2039085cbe5@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Counting links in simple-card
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Benoit Cousson <bcousson@baylibre.com>
+Subject: Re: [alsa-devel] Is this bug ? dpcm_prune_paths()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,45 +79,48 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Daniel
+Hi Pierre-Louis
 
-> >      * ex1)
-> >      * CPU0 --- Codec0
-> >      * CPU1 --- Codec1
-> >      * CPU2 -----/
-> >      * CPU3 --- Codec2
-> >      *
-> >      *    => 5 links = 2xCPU-Codec + 2xCPU-dummy + 1xdummy-Codec
-> >      *    => 7 DAIs  = 4xCPU + 3xCodec
-> >      *    => 1 ccnf  = 1xdummy-Codec
-> >
-> >
-> > So, I don't understand exactly how did you get the formula for links. AFAICT
-> > there should be 3 x CPU-Codec + 1 x CPU-dummy.
+> > 	static int dpcm_prune_paths(...)
+> > 	{
+> > 		...
+> > 		/* Destroy any old FE <--> BE connections */
+> > (1)		for_each_dpcm_be(fe, stream, dpcm) {
+> > 			unsigned int i;
+> > 
+> >   -			/* is there a valid CPU DAI widget for this BE */
+> >   |			widget = dai_get_widget(dpcm->be->cpu_dai, stream);
+> >   |
+> > (A)			/* prune the BE if it's no longer in our active list */
+> >   |			if (widget && widget_in_list(list, widget))
+> >   |(a)				continue;
+> >   -
+> >   |			/* is there a valid CODEC DAI widget for this BE */
+> >   |(2)			for_each_rtd_codec_dai(dpcm->be, i, dai) {
+> >   |				widget = dai_get_widget(dai, stream);
+> > (B)
+> >   |				/* prune the BE if it's no longer in our active list */
+> >   |				if (widget && widget_in_list(list, widget))
+> >   |(b)					continue;
+> >   -			}
+> > 
+> >   -			...
+> >   |			dpcm->state = ...
+> > (C)			dpcm->be->dpcm[stream].runtime_update = ...
+> >   |			prune++;
+> >   -		}
+> > 		...
+> > 	}
+(snip)
+> Nice catch. This looks like a problem added during the transition to
+> multi-codec.
+(snip)
+> the continue was not meant to continue the for loop on num_codecs, but
+> the outer loop for dpcm.
 
-CPU1/CPU2 and Codec1 are using DPCM.
-Thus, it is...
-
- 2xCPU-Codec:
-	CPU0 - Codec0
-	CPU3 - Codec2
-
- 2xCPU-dummy:
-	CPU1 - dummy
-	CPU2 - dummy
-
- 1xdummy-Codec:
-	dummy - Codec1
-
-
-> Also, I wonder how can i use simple-card to create just a backend link
-> CPU-dummy + Codec :).
-> 
-> Is this supported?
-
-Do you mean CPU-dummy + dummy-Codec ?
-But anyway, simple-card/audio-graph DPCM support is very limited.
-Unfortunately it doesn't have flexibility...
+Thank for checking !!
+OK, it is bug.
+I will post patch for it.
 
 Thank you for your help !!
 Best regards
