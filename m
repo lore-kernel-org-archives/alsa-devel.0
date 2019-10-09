@@ -2,63 +2,61 @@ Return-Path: <SRS0=0KZO=YC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA0E8C47404
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:17:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE5FC47404
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:30:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9E6D20B7C
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:16:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8F1220B7C
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Oct 2019 04:30:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IQEHegyC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9E6D20B7C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fJIj4tRK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8F1220B7C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F58A857;
-	Wed,  9 Oct 2019 06:16:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F58A857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F481857;
+	Wed,  9 Oct 2019 06:29:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F481857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570594617;
-	bh=AE6QRSl8ZQkUM2fAgoMT6LSKkLVp4DJC6smT21jYuX8=;
+	s=default; t=1570595429;
+	bh=j0uchCYYx/jiMsM8LC9QvmkRm/Ulr27iuO84RdW5TG0=;
 	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=IQEHegyCFsU88D/RXU4x8cZx8Lnj5gMDs4uxbCYFC5y1wiIWtRhcqXHSkHl1aEMgM
-	 0ZmvI+hOgUXmerXPU9BJ89kyDRNPzyCE0ldhhsDs7UJ0kOBKiQzvAJZgVKr10T73Rm
-	 4xfqOOO8kGyQ7+HqjrCvwDNcC6aE4JjqUFIrtNjA=
+	b=fJIj4tRKolaP1DA9nOlACPMkckFN13YzAfZ5ndayRWGExK5mEZfaPDlgH7h0R5VXa
+	 v/jU7Ru0jkU0lnRfxm3DZM1IYQoa+/3JXMqBUwC4/brgFTUs0Rap+ZG3lNLGG72WfJ
+	 mOjJaiC6pwoZj9BjMsj8o/kXg0Xr07rSA0gnYEWw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D8EEF80113;
-	Wed,  9 Oct 2019 06:16:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9446FF802BD;
+	Wed,  9 Oct 2019 06:29:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6ED23F800BF; Wed,  9 Oct 2019 06:16:05 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2C902F800BF
- for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 06:15:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C902F800BF
-Date: 09 Oct 2019 13:15:55 +0900
-X-IronPort-AV: E=Sophos;i="5.67,273,1566831600"; d="scan'208";a="28426060"
+ id 103BCF802BE; Wed,  9 Oct 2019 06:29:37 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C1767F800BF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Oct 2019 06:29:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1767F800BF
+Date: 09 Oct 2019 13:29:28 +0900
+X-IronPort-AV: E=Sophos;i="5.67,273,1566831600"; d="scan'208";a="28646324"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 09 Oct 2019 13:15:55 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 09 Oct 2019 13:29:28 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B90584006189;
- Wed,  9 Oct 2019 13:15:55 +0900 (JST)
-Message-ID: <87tv8iimf8.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D0E6A4007F2C;
+ Wed,  9 Oct 2019 13:29:27 +0900 (JST)
+Message-ID: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH] ASoC: soc-pcm: fixup dpcm_prune_paths() loop
-	continue
+Subject: [alsa-devel] [PATCH 00/21] ASoC: soc-core cleanup - step 4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,73 +75,60 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Hi Mark
+Cc Pierre-Louis
 
-dpcm_prune_paths() is checking widget at 2 parts.
-(A) is for CPU, (B) is for Codec.
-If we focus to (A) part, continue at (a) is for (1) loop. But,
-if we focus to (B) part, continue at (b) is for (2) loop, not for (1).
-This is bug.
-This patch fixup this issue.
+These are step4 of soc-core cleanup.
+These related to soc-topology.
+If my understanding and my code are correct,
+there is no effect to topology side, but I can't test.
 
-	static int dpcm_prune_paths(...)
-	{
-		...
-   (1)		for_each_dpcm_be(fe, stream, dpcm) {
-			...
+I'm not sure who can test these, but I guess
+Pierre-Louis knows ?
+Pierre-Louis, can you help it ?
 
- ^			widget = dai_get_widget(...);
- |
-(A)			if (widget && widget_in_list(...))
- | (a)				continue;
- v
- ^ (2)			for_each_rtd_codec_dai(...) {
- |				widget = dai_get_widget(...);
-(B)
- |				if (widget && widget_in_list(...))
- v (b)					continue;
-			}
-			...
+Kuninori Morimoto (21):
+  ASoC: soc-core: remove for_each_rtdcom_safe()
+  ASoC: soc-core: add for_each_rtd_components() and replace
+  ASoC: soc-core: move soc_init_dai_link()
+  ASoC: soc-core: rename soc_init_dai_link() to soc_dai_link_sanity_check()
+  ASoC: soc-core: remove duplicated soc_is_dai_link_bound()
+  ASoC: soc-core: call soc_bind_dai_link() under snd_soc_add_dai_link()
+  ASoC: soc-core: add soc_unbind_dai_link()
+  ASoC: soc-core: snd_soc_unbind_card() cleanup
+  ASoC: soc-core: remove unneeded snd_soc_tplg_component_remove()
+  ASoC: soc-core: move snd_soc_lookup_component()
+  ASoC: soc-core: add snd_soc_del_component()
+  ASoC: soc-core: use snd_soc_lookup_component() at snd_soc_unregister_component()
+  ASoC: soc-core: move snd_soc_register_dai()
+  ASoC: soc-core: have legacy_dai_naming at snd_soc_register_dai()
+  ASoC: soc-core: move snd_soc_unregister_dais()
+  ASoC: soc-core: add snd_soc_unregister_dai()
+  ASoC: soc-core: don't call snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()
+  ASoC: soc-core: use mutex_lock() at snd_soc_add_component()
+  ASoC: soc-core: call snd_soc_register_dai() from snd_soc_register_dais()
+  ASoC: soc-core: remove topology specific operation
+  ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
 
-Fixes: 2e5894d73789 ("ASoC: pcm: Add support for DAI multicodec")
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/soc-pcm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/sound/soc.h       |  25 ++-
+ sound/soc/soc-component.c |  43 +---
+ sound/soc/soc-compress.c  |  52 ++---
+ sound/soc/soc-core.c      | 542 ++++++++++++++++++++--------------------------
+ sound/soc/soc-pcm.c       |  49 ++---
+ sound/soc/soc-topology.c  |  32 ++-
+ 6 files changed, 320 insertions(+), 423 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 6706b91..5d973ac 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1443,6 +1443,7 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
- 	struct snd_soc_dapm_widget *widget;
- 	struct snd_soc_dai *dai;
- 	int prune = 0;
-+	int do_prune;
- 
- 	/* Destroy any old FE <--> BE connections */
- 	for_each_dpcm_be(fe, stream, dpcm) {
-@@ -1456,13 +1457,16 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
- 			continue;
- 
- 		/* is there a valid CODEC DAI widget for this BE */
-+		do_prune = 1;
- 		for_each_rtd_codec_dai(dpcm->be, i, dai) {
- 			widget = dai_get_widget(dai, stream);
- 
- 			/* prune the BE if it's no longer in our active list */
- 			if (widget && widget_in_list(list, widget))
--				continue;
-+				do_prune = 0;
- 		}
-+		if (!do_prune)
-+			continue;
- 
- 		dev_dbg(fe->dev, "ASoC: pruning %s BE %s for %s\n",
- 			stream ? "capture" : "playback",
 -- 
 2.7.4
 
+
+
+
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
