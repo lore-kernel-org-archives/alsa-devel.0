@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A95C10F14
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FFABC4360C
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:42:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BE73208C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:41:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BD4322064A
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:42:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="daroFJ/l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BE73208C3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Spxkgb/s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD4322064A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D16F1670;
-	Thu, 10 Oct 2019 17:41:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D16F1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A0B91657;
+	Thu, 10 Oct 2019 17:41:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A0B91657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570722115;
-	bh=w4Qge4GTwzo42lx8Iz6R5p7mddheSdq29KbvlRp8yes=;
+	s=default; t=1570722153;
+	bh=Br/ln855n06mLDbCiCbQMGaHTG+SamLEgHi5K2ykUIc=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=daroFJ/lSQ+zAtYxOF8rPTxP1w2lPiKy1a40TgtcHo7FUe8cpOgTWPoYO7nLWNGql
-	 jIpR2/9AxUKD/0ZixLuO9YnA8sXuurhJhoDRUZUmiOmb7MNwvlNy5/5njIAEfBZCPX
-	 bpD3h3TYVdlENKor6bzXWVVbYCRSK3Gzn+nMIoCA=
+	b=Spxkgb/skVvA+K2s+JfKmgG6I4XXRSS4ajf5Prcj+Pa9RGnzYzvK+yJGkOq82naO6
+	 S8VNr5HS4u7Th6WTbY7c4dOlOYTjj/KeUVC/JgPK7pbgUqHj9Uy+JZYQURU707s/oC
+	 3nOFMSc/p/7MimaO9GseRxhSzNkoI+6GQTaBUxpQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28D28F8058C;
-	Thu, 10 Oct 2019 17:41:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67E1BF805FC;
+	Thu, 10 Oct 2019 17:41:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37682F804CA; Thu, 10 Oct 2019 17:41:03 +0200 (CEST)
+ id B2EF0F805FD; Thu, 10 Oct 2019 17:41:05 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1412DF80322
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 17:40:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1412DF80322
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04E9EF80113
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 17:41:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04E9EF80113
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2019 08:40:57 -0700
+ 10 Oct 2019 08:40:59 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,280,1566889200"; d="scan'208";a="369125041"
+X-IronPort-AV: E=Sophos;i="5.67,280,1566889200"; d="scan'208";a="369125055"
 Received: from aandraox-mobl1.amr.corp.intel.com (HELO [10.254.98.68])
  ([10.254.98.68])
- by orsmga005.jf.intel.com with ESMTP; 10 Oct 2019 08:40:57 -0700
+ by orsmga005.jf.intel.com with ESMTP; 10 Oct 2019 08:40:59 -0700
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Mark Brown <broonie@kernel.org>
 References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
- <87lftuilri.wl-kuninori.morimoto.gx@renesas.com>
+ <87bluqilqm.wl-kuninori.morimoto.gx@renesas.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cf18ce51-d1ed-ba9c-c0a9-40d29aef857e@linux.intel.com>
-Date: Thu, 10 Oct 2019 10:09:54 -0500
+Message-ID: <562d76de-c724-e98b-ce7d-105a88bf17ce@linux.intel.com>
+Date: Thu, 10 Oct 2019 10:19:09 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <87lftuilri.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87bluqilqm.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 05/21] ASoC: soc-core: remove duplicated
- soc_is_dai_link_bound()
+Subject: Re: [alsa-devel] [PATCH 12/21] ASoC: soc-core: use
+ snd_soc_lookup_component() at snd_soc_unregister_component()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,57 +92,69 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On 10/8/19 11:30 PM, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> soc_is_dai_link_bound() check will be called both
-> *before* soc_bind_dai_link() (A), and
-> *under*  soc_bind_dai_link() (B).
-> These are very verboqse code. Let's remove one of them.
-
-typo: verbose.
-
-> 
-> *	static int soc_bind_dai_link(...)
-> 	{
-> 		...
-> (B)		if (soc_is_dai_link_bound(...)) {
-> 			...
-> 			return 0;
-> 		}
-> 		...
-> 	}
-> 
-> 	static int snd_soc_instantiate_card(...)
-> 	{
-> 		...
-> 		for_each_card_links(...) {
-> (A)			if (soc_is_dai_link_bound(...))
-> 				continue;
-> 
-> *			ret = soc_bind_dai_link(...);
-> 			if (ret)
-> 				goto probe_end;
-> 		}
-> 		...
-> 	}
+> snd_soc_unregister_component() is now finding component manually,
+> but we already have snd_soc_lookup_component() to find component;
+> Let's use existing function.
 > 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->   sound/soc/soc-core.c | 3 ---
->   1 file changed, 3 deletions(-)
+>   sound/soc/soc-core.c | 25 +++++++------------------
+>   1 file changed, 7 insertions(+), 18 deletions(-)
 > 
 > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index f440022..4edac93 100644
+> index 7c0bb32..3e8ed4f 100644
 > --- a/sound/soc/soc-core.c
 > +++ b/sound/soc/soc-core.c
-> @@ -2065,9 +2065,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
->   	 * Components with topology may bring new DAIs and DAI links.
->   	 */
->   	for_each_card_links(card, dai_link) {
-> -		if (soc_is_dai_link_bound(card, dai_link))
-> -			continue;
+> @@ -2823,8 +2823,10 @@ static void snd_soc_try_rebind_card(void)
+>   
+>   static void snd_soc_del_component(struct snd_soc_component *component)
+>   {
+> +	mutex_lock(&client_mutex);
+>   	snd_soc_unregister_dais(component);
+>   	snd_soc_component_del(component);
+> +	mutex_unlock(&client_mutex);
+>   }
+>   
+>   int snd_soc_add_component(struct device *dev,
+> @@ -2887,29 +2889,16 @@ EXPORT_SYMBOL_GPL(snd_soc_register_component);
+>    *
+>    * @dev: The device to unregister
+>    */
+> -static int __snd_soc_unregister_component(struct device *dev)
+> +void snd_soc_unregister_component(struct device *dev)
+>   {
+>   	struct snd_soc_component *component;
+> -	int found = 0;
 > -
->   		ret = soc_bind_dai_link(card, dai_link);
->   		if (ret)
->   			goto probe_end;
+> -	mutex_lock(&client_mutex);
+> -	for_each_component(component) {
+> -		if (dev != component->dev)
+> -			continue;
+>   
+> +	while (1) {
+> +		component = snd_soc_lookup_component(dev, NULL);
+> +		if (!component)
+> +			break;
+>   		snd_soc_del_component(component);
+
+is it ok/intended that the mutex lock is now taken *after* looking up 
+the component and after each iteration ?
+
+> -		found = 1;
+> -		break;
+>   	}
+> -	mutex_unlock(&client_mutex);
+> -
+> -	return found;
+> -}
+> -
+> -void snd_soc_unregister_component(struct device *dev)
+> -{
+> -	while (__snd_soc_unregister_component(dev))
+> -		;
+>   }
+>   EXPORT_SYMBOL_GPL(snd_soc_unregister_component);
+>   
 > 
 _______________________________________________
 Alsa-devel mailing list
