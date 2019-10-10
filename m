@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28413C4360C
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:28:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 871BDC4360C
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:29:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6BAA206B6
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:28:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 103A5206B6
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:29:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pbNJ/2az";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Y590+UzW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6BAA206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hth2cpDp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="otTcds4z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 103A5206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C76A31670;
-	Thu, 10 Oct 2019 16:27:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C76A31670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C375169E;
+	Thu, 10 Oct 2019 16:28:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C375169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570717721;
-	bh=N/WkPlLj/k5ZnbUjhCG0kaCta0QzxeA5EATrpN5D6yg=;
+	s=default; t=1570717761;
+	bh=3RPCicTEnUlo0FxEB8j0MhzisQxuMnlH2XPuIlA6mTE=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=pbNJ/2azVA741oFDwSEGlmNsUus6kiFy8IM5YtaW/NA/EocayqPLvG7jXVwAAIa+G
-	 DShDQEd49jkO5eR6vU/q2kdoEmcnx2MrNW2xEZmrTT5E6W/DKFtLHtrpHcJx4OoQsN
-	 31P3/J3qhWF/SSrNMc/f6YZ5n6o0E5fkDDZXuGtM=
+	b=Hth2cpDpzYKJMWXiOofDzpqixri1UttbkrBizdsT/sDLp0VV0FQISCcBe7X8l6pbF
+	 YMzxhOkC0n7XrMttm/W9PqZoxFJ3Ck0gryBxbsvqLQ8TWjvJS79ba1I0NNPIqMg5t/
+	 11m0T7jTSVrF/8DW5sFACA/VUNcxNs4l/QwbU88k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 928B0F80675;
-	Thu, 10 Oct 2019 16:22:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71053F8067A;
+	Thu, 10 Oct 2019 16:22:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2CEF4F804CB; Thu, 10 Oct 2019 16:22:44 +0200 (CEST)
+ id B37B3F80447; Thu, 10 Oct 2019 16:22:44 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 185CBF804CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 215D5F805FA
  for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 16:22:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 185CBF804CB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 215D5F805FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="Y590+UzW"
+ header.b="otTcds4z"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=7qsObDUakfI+NdzVoGHp13GLyDn26DFRKOzdJ5fHpV4=; b=Y590+UzWWTFt
- QZbd6V8BpHw6OcOGiG408JXCqd5bf+nMmLqWKSZw8f+Wye9LqwwZ6BiGL1r3Oc3w55b3gkiXEBqz8
- ezNPkmqsMHw7WG0XZlcIUR1sW7saLu5ohgVlB+CEHHMbPeqgGNliI76/ljYloz8F4IDqgCAmgiOVt
- LKkHE=;
+ List-Archive; bh=Eh/dJ/g5/MHpbsUs/aakrqudygWl36PX93T5HzQdA6U=; b=otTcds4zHN/z
+ ThmK63nfdFGBxtftBGvzs4WxsXyP14LTyWtAOOpQixCiCV7vpRBmY30394KpoPz4L+9fQiCZDw2yM
+ s9f0iN5Wdv6cIhxGjEBCvLcNn/MBdfYNwtSh1QGvsy/OVyTmlk90wHZrJW5UxWe8U2jo/Sp62lCfn
+ Ym4Ow=;
 Received: from fw-tnat-cam3.arm.com ([217.140.106.51]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1iIZKq-0001Zx-Dw; Thu, 10 Oct 2019 14:22:32 +0000
+ id 1iIZKq-0001Zl-6p; Thu, 10 Oct 2019 14:22:32 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 15A61D0003C; Thu, 10 Oct 2019 15:22:32 +0100 (BST)
+ id CC795D0003A; Thu, 10 Oct 2019 15:22:31 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191008164443.1358-2-pierre-louis.bossart@linux.intel.com>
+To: Jaska Uimonen <jaska.uimonen@linux.intel.com>
+In-Reply-To: <20191008164443.1358-9-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191010142232.15A61D0003C@fitzroy.sirena.org.uk>
-Date: Thu, 10 Oct 2019 15:22:32 +0100 (BST)
+Message-Id: <20191010142231.CC795D0003A@fitzroy.sirena.org.uk>
+Date: Thu, 10 Oct 2019 15:22:31 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: enable sync_write in hdac_bus" to
-	the asoc tree
+Subject: [alsa-devel] Applied "AsoC: SOF: refactor control load code" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: enable sync_write in hdac_bus
+   AsoC: SOF: refactor control load code
 
 has been applied to the asoc tree at
 
@@ -121,42 +121,353 @@ to this mail.
 Thanks,
 Mark
 
-From f3416e7144f5d4ba0fc5dcef6ebfff891266c46a Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Tue, 8 Oct 2019 11:44:35 -0500
-Subject: [PATCH] ASoC: SOF: enable sync_write in hdac_bus
+From acf1b71cb693263c7c9373296e872a8fa61a5cf3 Mon Sep 17 00:00:00 2001
+From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
+Date: Tue, 8 Oct 2019 11:44:42 -0500
+Subject: [PATCH] AsoC: SOF: refactor control load code
 
-Align SOF HDA implementation with snd-hda-intel driver and enable
-sync_write flag for all supported Intel platforms in SOF. When set,
-a sync is issued after each verb write.
+Move code around to enable token parsing in control load.
 
-Sync after write has helped to overcome intermittent delays in
-system resume flow on Intel Coffee Lake systems, and most recently
-probe errors related to the HDMI codec on Ice Lake systems.
-
-Matches the snd-hda-intel driver change done in commit 2756d9143aa5
-("ALSA: hda - Fix intermittent CORB/RIRB stall on Intel chips").
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191008164443.1358-2-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191008164443.1358-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/topology.c | 314 +++++++++++++++++++--------------------
+ 1 file changed, 157 insertions(+), 157 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 06e84679087b..5a5163eef2ef 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -268,6 +268,7 @@ static int hda_init(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index a0b1c38e666b..3918301c573b 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -432,163 +432,6 @@ static enum sof_comp_type find_process_comp_type(enum sof_ipc_process_type type)
+ 	return SOF_COMP_NONE;
+ }
  
- 	bus->use_posbuf = 1;
- 	bus->bdl_pos_adj = 0;
-+	bus->sync_write = 1;
+-/*
+- * Standard Kcontrols.
+- */
+-
+-static int sof_control_load_volume(struct snd_soc_component *scomp,
+-				   struct snd_sof_control *scontrol,
+-				   struct snd_kcontrol_new *kc,
+-				   struct snd_soc_tplg_ctl_hdr *hdr)
+-{
+-	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+-	struct snd_soc_tplg_mixer_control *mc =
+-		container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
+-	struct sof_ipc_ctrl_data *cdata;
+-	int tlv[TLV_ITEMS];
+-	unsigned int i;
+-	int ret;
+-
+-	/* validate topology data */
+-	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN)
+-		return -EINVAL;
+-
+-	/* init the volume get/put data */
+-	scontrol->size = struct_size(scontrol->control_data, chanv,
+-				     le32_to_cpu(mc->num_channels));
+-	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
+-	if (!scontrol->control_data)
+-		return -ENOMEM;
+-
+-	scontrol->comp_id = sdev->next_comp_id;
+-	scontrol->min_volume_step = le32_to_cpu(mc->min);
+-	scontrol->max_volume_step = le32_to_cpu(mc->max);
+-	scontrol->num_channels = le32_to_cpu(mc->num_channels);
+-
+-	/* set cmd for mixer control */
+-	if (le32_to_cpu(mc->max) == 1) {
+-		scontrol->cmd = SOF_CTRL_CMD_SWITCH;
+-		goto out;
+-	}
+-
+-	scontrol->cmd = SOF_CTRL_CMD_VOLUME;
+-
+-	/* extract tlv data */
+-	if (get_tlv_data(kc->tlv.p, tlv) < 0) {
+-		dev_err(sdev->dev, "error: invalid TLV data\n");
+-		return -EINVAL;
+-	}
+-
+-	/* set up volume table */
+-	ret = set_up_volume_table(scontrol, tlv, le32_to_cpu(mc->max) + 1);
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: setting up volume table\n");
+-		return ret;
+-	}
+-
+-	/* set default volume values to 0dB in control */
+-	cdata = scontrol->control_data;
+-	for (i = 0; i < scontrol->num_channels; i++) {
+-		cdata->chanv[i].channel = i;
+-		cdata->chanv[i].value = VOL_ZERO_DB;
+-	}
+-
+-out:
+-	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
+-		scontrol->comp_id, scontrol->num_channels);
+-
+-	return 0;
+-}
+-
+-static int sof_control_load_enum(struct snd_soc_component *scomp,
+-				 struct snd_sof_control *scontrol,
+-				 struct snd_kcontrol_new *kc,
+-				 struct snd_soc_tplg_ctl_hdr *hdr)
+-{
+-	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+-	struct snd_soc_tplg_enum_control *ec =
+-		container_of(hdr, struct snd_soc_tplg_enum_control, hdr);
+-
+-	/* validate topology data */
+-	if (le32_to_cpu(ec->num_channels) > SND_SOC_TPLG_MAX_CHAN)
+-		return -EINVAL;
+-
+-	/* init the enum get/put data */
+-	scontrol->size = struct_size(scontrol->control_data, chanv,
+-				     le32_to_cpu(ec->num_channels));
+-	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
+-	if (!scontrol->control_data)
+-		return -ENOMEM;
+-
+-	scontrol->comp_id = sdev->next_comp_id;
+-	scontrol->num_channels = le32_to_cpu(ec->num_channels);
+-
+-	scontrol->cmd = SOF_CTRL_CMD_ENUM;
+-
+-	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d comp_id %d\n",
+-		scontrol->comp_id, scontrol->num_channels, scontrol->comp_id);
+-
+-	return 0;
+-}
+-
+-static int sof_control_load_bytes(struct snd_soc_component *scomp,
+-				  struct snd_sof_control *scontrol,
+-				  struct snd_kcontrol_new *kc,
+-				  struct snd_soc_tplg_ctl_hdr *hdr)
+-{
+-	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+-	struct sof_ipc_ctrl_data *cdata;
+-	struct snd_soc_tplg_bytes_control *control =
+-		container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
+-	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
+-	int max_size = sbe->max;
+-
+-	if (le32_to_cpu(control->priv.size) > max_size) {
+-		dev_err(sdev->dev, "err: bytes data size %d exceeds max %d.\n",
+-			control->priv.size, max_size);
+-		return -EINVAL;
+-	}
+-
+-	/* init the get/put bytes data */
+-	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
+-		le32_to_cpu(control->priv.size);
+-	scontrol->control_data = kzalloc(max_size, GFP_KERNEL);
+-	cdata = scontrol->control_data;
+-	if (!scontrol->control_data)
+-		return -ENOMEM;
+-
+-	scontrol->comp_id = sdev->next_comp_id;
+-	scontrol->cmd = SOF_CTRL_CMD_BINARY;
+-
+-	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
+-		scontrol->comp_id, scontrol->num_channels);
+-
+-	if (le32_to_cpu(control->priv.size) > 0) {
+-		memcpy(cdata->data, control->priv.data,
+-		       le32_to_cpu(control->priv.size));
+-
+-		if (cdata->data->magic != SOF_ABI_MAGIC) {
+-			dev_err(sdev->dev, "error: Wrong ABI magic 0x%08x.\n",
+-				cdata->data->magic);
+-			return -EINVAL;
+-		}
+-		if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION,
+-						 cdata->data->abi)) {
+-			dev_err(sdev->dev,
+-				"error: Incompatible ABI version 0x%08x.\n",
+-				cdata->data->abi);
+-			return -EINVAL;
+-		}
+-		if (cdata->data->size + sizeof(const struct sof_abi_hdr) !=
+-		    le32_to_cpu(control->priv.size)) {
+-			dev_err(sdev->dev,
+-				"error: Conflict in bytes vs. priv size.\n");
+-			return -EINVAL;
+-		}
+-	}
+-	return 0;
+-}
+-
+ /*
+  * Topology Token Parsing.
+  * New tokens should be added to headers and parsing tables below.
+@@ -1039,6 +882,163 @@ static void sof_dbg_comp_config(struct snd_soc_component *scomp,
+ 		config->frame_fmt);
+ }
  
- 	mutex_init(&hbus->prepare_mutex);
- 	hbus->pci = pci;
++/*
++ * Standard Kcontrols.
++ */
++
++static int sof_control_load_volume(struct snd_soc_component *scomp,
++				   struct snd_sof_control *scontrol,
++				   struct snd_kcontrol_new *kc,
++				   struct snd_soc_tplg_ctl_hdr *hdr)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_mixer_control *mc =
++		container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
++	struct sof_ipc_ctrl_data *cdata;
++	int tlv[TLV_ITEMS];
++	unsigned int i;
++	int ret;
++
++	/* validate topology data */
++	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN)
++		return -EINVAL;
++
++	/* init the volume get/put data */
++	scontrol->size = struct_size(scontrol->control_data, chanv,
++				     le32_to_cpu(mc->num_channels));
++	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
++	if (!scontrol->control_data)
++		return -ENOMEM;
++
++	scontrol->comp_id = sdev->next_comp_id;
++	scontrol->min_volume_step = le32_to_cpu(mc->min);
++	scontrol->max_volume_step = le32_to_cpu(mc->max);
++	scontrol->num_channels = le32_to_cpu(mc->num_channels);
++
++	/* set cmd for mixer control */
++	if (le32_to_cpu(mc->max) == 1) {
++		scontrol->cmd = SOF_CTRL_CMD_SWITCH;
++		goto out;
++	}
++
++	scontrol->cmd = SOF_CTRL_CMD_VOLUME;
++
++	/* extract tlv data */
++	if (get_tlv_data(kc->tlv.p, tlv) < 0) {
++		dev_err(sdev->dev, "error: invalid TLV data\n");
++		return -EINVAL;
++	}
++
++	/* set up volume table */
++	ret = set_up_volume_table(scontrol, tlv, le32_to_cpu(mc->max) + 1);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: setting up volume table\n");
++		return ret;
++	}
++
++	/* set default volume values to 0dB in control */
++	cdata = scontrol->control_data;
++	for (i = 0; i < scontrol->num_channels; i++) {
++		cdata->chanv[i].channel = i;
++		cdata->chanv[i].value = VOL_ZERO_DB;
++	}
++
++out:
++	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
++		scontrol->comp_id, scontrol->num_channels);
++
++	return 0;
++}
++
++static int sof_control_load_enum(struct snd_soc_component *scomp,
++				 struct snd_sof_control *scontrol,
++				 struct snd_kcontrol_new *kc,
++				 struct snd_soc_tplg_ctl_hdr *hdr)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_enum_control *ec =
++		container_of(hdr, struct snd_soc_tplg_enum_control, hdr);
++
++	/* validate topology data */
++	if (le32_to_cpu(ec->num_channels) > SND_SOC_TPLG_MAX_CHAN)
++		return -EINVAL;
++
++	/* init the enum get/put data */
++	scontrol->size = struct_size(scontrol->control_data, chanv,
++				     le32_to_cpu(ec->num_channels));
++	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
++	if (!scontrol->control_data)
++		return -ENOMEM;
++
++	scontrol->comp_id = sdev->next_comp_id;
++	scontrol->num_channels = le32_to_cpu(ec->num_channels);
++
++	scontrol->cmd = SOF_CTRL_CMD_ENUM;
++
++	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d comp_id %d\n",
++		scontrol->comp_id, scontrol->num_channels, scontrol->comp_id);
++
++	return 0;
++}
++
++static int sof_control_load_bytes(struct snd_soc_component *scomp,
++				  struct snd_sof_control *scontrol,
++				  struct snd_kcontrol_new *kc,
++				  struct snd_soc_tplg_ctl_hdr *hdr)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc_ctrl_data *cdata;
++	struct snd_soc_tplg_bytes_control *control =
++		container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
++	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
++	int max_size = sbe->max;
++
++	if (le32_to_cpu(control->priv.size) > max_size) {
++		dev_err(sdev->dev, "err: bytes data size %d exceeds max %d.\n",
++			control->priv.size, max_size);
++		return -EINVAL;
++	}
++
++	/* init the get/put bytes data */
++	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
++		le32_to_cpu(control->priv.size);
++	scontrol->control_data = kzalloc(max_size, GFP_KERNEL);
++	cdata = scontrol->control_data;
++	if (!scontrol->control_data)
++		return -ENOMEM;
++
++	scontrol->comp_id = sdev->next_comp_id;
++	scontrol->cmd = SOF_CTRL_CMD_BINARY;
++
++	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
++		scontrol->comp_id, scontrol->num_channels);
++
++	if (le32_to_cpu(control->priv.size) > 0) {
++		memcpy(cdata->data, control->priv.data,
++		       le32_to_cpu(control->priv.size));
++
++		if (cdata->data->magic != SOF_ABI_MAGIC) {
++			dev_err(sdev->dev, "error: Wrong ABI magic 0x%08x.\n",
++				cdata->data->magic);
++			return -EINVAL;
++		}
++		if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION,
++						 cdata->data->abi)) {
++			dev_err(sdev->dev,
++				"error: Incompatible ABI version 0x%08x.\n",
++				cdata->data->abi);
++			return -EINVAL;
++		}
++		if (cdata->data->size + sizeof(const struct sof_abi_hdr) !=
++		    le32_to_cpu(control->priv.size)) {
++			dev_err(sdev->dev,
++				"error: Conflict in bytes vs. priv size.\n");
++			return -EINVAL;
++		}
++	}
++	return 0;
++}
++
+ /* external kcontrol init - used for any driver specific init */
+ static int sof_control_load(struct snd_soc_component *scomp, int index,
+ 			    struct snd_kcontrol_new *kc,
 -- 
 2.20.1
 
