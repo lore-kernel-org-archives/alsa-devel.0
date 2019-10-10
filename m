@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FFABC4360C
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:42:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F0C3C10F14
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:42:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD4322064A
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:42:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0928C208C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:42:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Spxkgb/s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD4322064A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WXpE+rqH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0928C208C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A0B91657;
-	Thu, 10 Oct 2019 17:41:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A0B91657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A6271670;
+	Thu, 10 Oct 2019 17:42:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A6271670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570722153;
-	bh=Br/ln855n06mLDbCiCbQMGaHTG+SamLEgHi5K2ykUIc=;
+	s=default; t=1570722177;
+	bh=qwnPkLvUSwFpe2nAJRO0oVquSp3dqrdhF49zX14YZdA=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Spxkgb/skVvA+K2s+JfKmgG6I4XXRSS4ajf5Prcj+Pa9RGnzYzvK+yJGkOq82naO6
-	 S8VNr5HS4u7Th6WTbY7c4dOlOYTjj/KeUVC/JgPK7pbgUqHj9Uy+JZYQURU707s/oC
-	 3nOFMSc/p/7MimaO9GseRxhSzNkoI+6GQTaBUxpQ=
+	b=WXpE+rqHpxDLoatzbnuCnyjo2almvvaTevKauL+BGQ7oc00Df7wz9CiD/fLYjZWJA
+	 eXMYACuxijX3Y+I6Zm6C4W6PICKY95kxp9m+WUlYO+7esQvpcaeAymlNEGVaQooyae
+	 HqDsF2plmuGZU2wXIddcTO+mXQGfOausDi6tPYuE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67E1BF805FC;
-	Thu, 10 Oct 2019 17:41:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31357F805FB;
+	Thu, 10 Oct 2019 17:41:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2EF0F805FD; Thu, 10 Oct 2019 17:41:05 +0200 (CEST)
+ id EE88EF805FB; Thu, 10 Oct 2019 17:41:05 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04E9EF80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 346E8F8045E
  for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 17:41:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04E9EF80113
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 346E8F8045E
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2019 08:40:59 -0700
+ 10 Oct 2019 08:40:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,280,1566889200"; d="scan'208";a="369125055"
+X-IronPort-AV: E=Sophos;i="5.67,280,1566889200"; d="scan'208";a="369125051"
 Received: from aandraox-mobl1.amr.corp.intel.com (HELO [10.254.98.68])
  ([10.254.98.68])
- by orsmga005.jf.intel.com with ESMTP; 10 Oct 2019 08:40:59 -0700
+ by orsmga005.jf.intel.com with ESMTP; 10 Oct 2019 08:40:58 -0700
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Mark Brown <broonie@kernel.org>
 References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
- <87bluqilqm.wl-kuninori.morimoto.gx@renesas.com>
+ <87d0f6ilqq.wl-kuninori.morimoto.gx@renesas.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <562d76de-c724-e98b-ce7d-105a88bf17ce@linux.intel.com>
-Date: Thu, 10 Oct 2019 10:19:09 -0500
+Message-ID: <b6b3dc35-e596-7005-3cad-516c65fe7784@linux.intel.com>
+Date: Thu, 10 Oct 2019 10:16:36 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <87bluqilqm.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87d0f6ilqq.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 12/21] ASoC: soc-core: use
- snd_soc_lookup_component() at snd_soc_unregister_component()
+Subject: Re: [alsa-devel] [PATCH 11/21] ASoC: soc-core: add
+	snd_soc_del_component()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,70 +90,92 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 10/8/19 11:30 PM, Kuninori Morimoto wrote:
+> 
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> snd_soc_unregister_component() is now finding component manually,
-> but we already have snd_soc_lookup_component() to find component;
-> Let's use existing function.
+> It is easy to read code if it is cleanly using paired function/naming,
+> like start <-> stop, register <-> unregister, etc, etc.
+> But, current ALSA SoC code is very random, unbalance, not paired, etc.
+> It is easy to create bug at the such code, and is difficult to debug.
+> 
+> Now ALSA SoC has snd_soc_add_component(), but there is no paired
+> snd_soc_del_component(). Thus, snd_soc_unregister_component() is
+> calling cleanup function randomly. it is difficult to read.
+> This patch adds missing snd_soc_del_component() and balance up code.
+
+
+the problem now is that the naming is confusing
+
+we have snd_soc_component_del and snd_soc_del_component.
+we already had snd_soc_component_add and snd_soc_add_component.
+
+Also I find it useful to keep the _unlocked suffix when relevant, it 
+adds value that is lost otherwise.
+
+Can we avoid this pretty please?
+
 > 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->   sound/soc/soc-core.c | 25 +++++++------------------
->   1 file changed, 7 insertions(+), 18 deletions(-)
+>   sound/soc/soc-core.c | 20 +++++++++-----------
+>   1 file changed, 9 insertions(+), 11 deletions(-)
 > 
 > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 7c0bb32..3e8ed4f 100644
+> index 72eb59c..7c0bb32 100644
 > --- a/sound/soc/soc-core.c
 > +++ b/sound/soc/soc-core.c
-> @@ -2823,8 +2823,10 @@ static void snd_soc_try_rebind_card(void)
->   
->   static void snd_soc_del_component(struct snd_soc_component *component)
->   {
-> +	mutex_lock(&client_mutex);
->   	snd_soc_unregister_dais(component);
->   	snd_soc_component_del(component);
-> +	mutex_unlock(&client_mutex);
+> @@ -2767,12 +2767,7 @@ static void snd_soc_component_add(struct snd_soc_component *component)
+>   	mutex_unlock(&client_mutex);
 >   }
 >   
->   int snd_soc_add_component(struct device *dev,
-> @@ -2887,29 +2889,16 @@ EXPORT_SYMBOL_GPL(snd_soc_register_component);
->    *
->    * @dev: The device to unregister
->    */
-> -static int __snd_soc_unregister_component(struct device *dev)
-> +void snd_soc_unregister_component(struct device *dev)
->   {
->   	struct snd_soc_component *component;
-> -	int found = 0;
-> -
-> -	mutex_lock(&client_mutex);
-> -	for_each_component(component) {
-> -		if (dev != component->dev)
-> -			continue;
->   
-> +	while (1) {
-> +		component = snd_soc_lookup_component(dev, NULL);
-> +		if (!component)
-> +			break;
->   		snd_soc_del_component(component);
-
-is it ok/intended that the mutex lock is now taken *after* looking up 
-the component and after each iteration ?
-
-> -		found = 1;
-> -		break;
->   	}
-> -	mutex_unlock(&client_mutex);
-> -
-> -	return found;
+> -static void snd_soc_component_cleanup(struct snd_soc_component *component)
+> -{
+> -	snd_soc_unregister_dais(component);
 > -}
 > -
-> -void snd_soc_unregister_component(struct device *dev)
-> -{
-> -	while (__snd_soc_unregister_component(dev))
-> -		;
+> -static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
+> +static void snd_soc_component_del(struct snd_soc_component *component)
+>   {
+>   	struct snd_soc_card *card = component->card;
+>   
+> @@ -2826,6 +2821,12 @@ static void snd_soc_try_rebind_card(void)
+>   			list_del(&card->list);
 >   }
->   EXPORT_SYMBOL_GPL(snd_soc_unregister_component);
+>   
+> +static void snd_soc_del_component(struct snd_soc_component *component)
+> +{
+> +	snd_soc_unregister_dais(component);
+> +	snd_soc_component_del(component);
+> +}
+> +
+>   int snd_soc_add_component(struct device *dev,
+>   			struct snd_soc_component *component,
+>   			const struct snd_soc_component_driver *component_driver,
+> @@ -2858,7 +2859,7 @@ int snd_soc_add_component(struct device *dev,
+>   	return 0;
+>   
+>   err_cleanup:
+> -	snd_soc_component_cleanup(component);
+> +	snd_soc_del_component(component);
+>   err_free:
+>   	return ret;
+>   }
+> @@ -2896,15 +2897,12 @@ static int __snd_soc_unregister_component(struct device *dev)
+>   		if (dev != component->dev)
+>   			continue;
+>   
+> -		snd_soc_component_del_unlocked(component);
+> +		snd_soc_del_component(component);
+>   		found = 1;
+>   		break;
+>   	}
+>   	mutex_unlock(&client_mutex);
+>   
+> -	if (found)
+> -		snd_soc_component_cleanup(component);
+> -
+>   	return found;
+>   }
 >   
 > 
 _______________________________________________
