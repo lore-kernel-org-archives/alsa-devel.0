@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44A3CC10F14
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28413C4360C
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:28:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2ECC21835
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:27:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A6BAA206B6
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:28:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FuqDCMCL";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BUJfO5yx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2ECC21835
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pbNJ/2az";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Y590+UzW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6BAA206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03FCA1694;
-	Thu, 10 Oct 2019 16:27:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03FCA1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id C76A31670;
+	Thu, 10 Oct 2019 16:27:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C76A31670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570717671;
-	bh=oXBl+ck8PI1KNuiCUa62m5sJbq5ZUKaH2qxiqILkG4E=;
+	s=default; t=1570717721;
+	bh=N/WkPlLj/k5ZnbUjhCG0kaCta0QzxeA5EATrpN5D6yg=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=FuqDCMCLnzAc492YAPalgHoktvHlRC3T93+aimXOhPS+eDsRCiDuBWEiwPXC72fjh
-	 LAIQRA09m9FBEnSS+FXvI58kUIoyS9C6bB2hhAY2vebRMWSrGSRRykyvj1KDVTqToJ
-	 pSAXz0qcqPbjJdM4rYTePQ8/G+4oSNdPfCsJAx24=
+	b=pbNJ/2azVA741oFDwSEGlmNsUus6kiFy8IM5YtaW/NA/EocayqPLvG7jXVwAAIa+G
+	 DShDQEd49jkO5eR6vU/q2kdoEmcnx2MrNW2xEZmrTT5E6W/DKFtLHtrpHcJx4OoQsN
+	 31P3/J3qhWF/SSrNMc/f6YZ5n6o0E5fkDDZXuGtM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DC63F8064C;
-	Thu, 10 Oct 2019 16:22:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 928B0F80675;
+	Thu, 10 Oct 2019 16:22:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F5C1F805FF; Thu, 10 Oct 2019 16:22:42 +0200 (CEST)
+ id 2CEF4F804CB; Thu, 10 Oct 2019 16:22:44 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B6E0F8058C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 185CBF804CB
  for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 16:22:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B6E0F8058C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 185CBF804CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="BUJfO5yx"
+ header.b="Y590+UzW"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=6Gm/abNPetZXAUHM0GbkD5WLrN7q8SYd3vr7pXqm0ZA=; b=BUJfO5yxqgnz
- KtSZYGNJ+jYOlrOvFARa+U5fpSNt1AAXIJe/Xl6+snV+pT3ly3mlDMa8avOboV45uqBTabik6GTDl
- qwy+N62Uz1r+pJXSoe0N27dU6tVjVhqwiXRmxUJXahp7fcpXiDj7Eco6YF0tvHLjjBWcFnzPq6NAM
- Q72QI=;
+ List-Archive; bh=7qsObDUakfI+NdzVoGHp13GLyDn26DFRKOzdJ5fHpV4=; b=Y590+UzWWTFt
+ QZbd6V8BpHw6OcOGiG408JXCqd5bf+nMmLqWKSZw8f+Wye9LqwwZ6BiGL1r3Oc3w55b3gkiXEBqz8
+ ezNPkmqsMHw7WG0XZlcIUR1sW7saLu5ohgVlB+CEHHMbPeqgGNliI76/ljYloz8F4IDqgCAmgiOVt
+ LKkHE=;
 Received: from fw-tnat-cam3.arm.com ([217.140.106.51]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1iIZKp-0001ZZ-LN; Thu, 10 Oct 2019 14:22:31 +0000
+ id 1iIZKq-0001Zx-Dw; Thu, 10 Oct 2019 14:22:32 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 4B492D0003A; Thu, 10 Oct 2019 15:22:31 +0100 (BST)
+ id 15A61D0003C; Thu, 10 Oct 2019 15:22:32 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@nxp.com>
-In-Reply-To: <20191008164443.1358-6-pierre-louis.bossart@linux.intel.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20191008164443.1358-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191010142231.4B492D0003A@fitzroy.sirena.org.uk>
-Date: Thu, 10 Oct 2019 15:22:31 +0100 (BST)
+Message-Id: <20191010142232.15A61D0003C@fitzroy.sirena.org.uk>
+Date: Thu, 10 Oct 2019 15:22:32 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: imx: Describe ESAI parameters to
-	be sent to DSP" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: enable sync_write in hdac_bus" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: imx: Describe ESAI parameters to be sent to DSP
+   ASoC: SOF: enable sync_write in hdac_bus
 
 has been applied to the asoc tree at
 
@@ -121,114 +121,42 @@ to this mail.
 Thanks,
 Mark
 
-From b4be427683cf6debda331a5d6a4af34885851d19 Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Tue, 8 Oct 2019 11:44:39 -0500
-Subject: [PATCH] ASoC: SOF: imx: Describe ESAI parameters to be sent to DSP
+From f3416e7144f5d4ba0fc5dcef6ebfff891266c46a Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Tue, 8 Oct 2019 11:44:35 -0500
+Subject: [PATCH] ASoC: SOF: enable sync_write in hdac_bus
 
-Introduce sof_ipc_dai_esai_params to keep information that
-we get from topology and we send to DSP FW.
+Align SOF HDA implementation with snd-hda-intel driver and enable
+sync_write flag for all supported Intel platforms in SOF. When set,
+a sync is issued after each verb write.
 
-Also bump the ABI minor to reflect the changes on DSP FW.
+Sync after write has helped to overcome intermittent delays in
+system resume flow on Intel Coffee Lake systems, and most recently
+probe errors related to the HDMI codec on Ice Lake systems.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Matches the snd-hda-intel driver change done in commit 2756d9143aa5
+("ALSA: hda - Fix intermittent CORB/RIRB stall on Intel chips").
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191008164443.1358-6-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191008164443.1358-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sof/dai-imx.h     | 34 +++++++++++++++++++++++++++++++++
- include/sound/sof/dai.h         |  2 ++
- include/uapi/sound/sof/abi.h    |  2 +-
- include/uapi/sound/sof/tokens.h |  3 +--
- 4 files changed, 38 insertions(+), 3 deletions(-)
- create mode 100644 include/sound/sof/dai-imx.h
+ sound/soc/sof/intel/hda.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/sof/dai-imx.h b/include/sound/sof/dai-imx.h
-new file mode 100644
-index 000000000000..e02fb0b0fae1
---- /dev/null
-+++ b/include/sound/sof/dai-imx.h
-@@ -0,0 +1,34 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * Copyright 2019 NXP
-+ *
-+ * Author: Daniel Baluta <daniel.baluta@nxp.com>
-+ */
-+
-+#ifndef __INCLUDE_SOUND_SOF_DAI_IMX_H__
-+#define __INCLUDE_SOUND_SOF_DAI_IMX_H__
-+
-+#include <sound/sof/header.h>
-+
-+/* ESAI Configuration Request - SOF_IPC_DAI_ESAI_CONFIG */
-+struct sof_ipc_dai_esai_params {
-+	struct sof_ipc_hdr hdr;
-+
-+	/* MCLK */
-+	uint16_t reserved1;
-+	uint16_t mclk_id;
-+	uint32_t mclk_direction;
-+
-+	uint32_t mclk_rate;	/* MCLK frequency in Hz */
-+	uint32_t fsync_rate;	/* FSYNC frequency in Hz */
-+	uint32_t bclk_rate;	/* BCLK frequency in Hz */
-+
-+	/* TDM */
-+	uint32_t tdm_slots;
-+	uint32_t rx_slots;
-+	uint32_t tx_slots;
-+	uint16_t tdm_slot_width;
-+	uint16_t reserved2;	/* alignment */
-+} __packed;
-+
-+#endif
-diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
-index 0f1235022146..c229565767e5 100644
---- a/include/sound/sof/dai.h
-+++ b/include/sound/sof/dai.h
-@@ -11,6 +11,7 @@
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 06e84679087b..5a5163eef2ef 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -268,6 +268,7 @@ static int hda_init(struct snd_sof_dev *sdev)
  
- #include <sound/sof/header.h>
- #include <sound/sof/dai-intel.h>
-+#include <sound/sof/dai-imx.h>
+ 	bus->use_posbuf = 1;
+ 	bus->bdl_pos_adj = 0;
++	bus->sync_write = 1;
  
- /*
-  * DAI Configuration.
-@@ -73,6 +74,7 @@ struct sof_ipc_dai_config {
- 		struct sof_ipc_dai_dmic_params dmic;
- 		struct sof_ipc_dai_hda_params hda;
- 		struct sof_ipc_dai_alh_params alh;
-+		struct sof_ipc_dai_esai_params esai;
- 	};
- } __packed;
- 
-diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
-index a0fe0d4c4b66..ebfdc20ca081 100644
---- a/include/uapi/sound/sof/abi.h
-+++ b/include/uapi/sound/sof/abi.h
-@@ -26,7 +26,7 @@
- 
- /* SOF ABI version major, minor and patch numbers */
- #define SOF_ABI_MAJOR 3
--#define SOF_ABI_MINOR 10
-+#define SOF_ABI_MINOR 11
- #define SOF_ABI_PATCH 0
- 
- /* SOF ABI version number. Format within 32bit word is MMmmmppp */
-diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
-index 8f996857fb24..da18c9de1056 100644
---- a/include/uapi/sound/sof/tokens.h
-+++ b/include/uapi/sound/sof/tokens.h
-@@ -111,7 +111,6 @@
- /* TODO: Add SAI tokens */
- 
- /* ESAI */
--#define SOF_TKN_IMX_ESAI_FIRST_TOKEN		1100
--/* TODO: Add ESAI tokens */
-+#define SOF_TKN_IMX_ESAI_MCLK_ID		1100
- 
- #endif
+ 	mutex_init(&hbus->prepare_mutex);
+ 	hbus->pci = pci;
 -- 
 2.20.1
 
