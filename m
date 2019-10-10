@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCDB1C4360C
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8996CC4360C
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:27:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53BC4206B6
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:26:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0F198206B6
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 14:27:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nOgMa9hf";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ndzeu7DV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53BC4206B6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hwg5QUCV";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Bq6NmWRO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F198206B6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1C2F1657;
-	Thu, 10 Oct 2019 16:25:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1C2F1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58782167D;
+	Thu, 10 Oct 2019 16:26:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58782167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570717603;
-	bh=cq7l92AkQz5guCql4aeCAN7QeB5niIfys8KyRA+6Bds=;
+	s=default; t=1570717627;
+	bh=9IdMQGLuYB4CW2DGkHkjN7qqF3/JwY/fPGBMNF20a1Q=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=nOgMa9hfThrpWF2KiMNXomqto266Ne3+EW8GnZT26ZDsrukU9tIEV3vGgcUyAWxDx
-	 9Wm1oZsp6MzvUpKnCbM1Wj0T3e5TEZeXjd1FiFKCJJ2sccnF+Ia0ypPEB8ROZ+tARN
-	 VKqR+vq8JLaaGw64xMPh4asANW7uk+Vfe+qZc2J0=
+	b=Hwg5QUCVOSXSX69x43I92exu5HA75y67TObpDKlyVbQzOGWFg97+ZXpzTR4/tYA92
+	 sHFl1chwThonjrI6+bPMYC3nYEkWQ0erKkWaEzPpPcyd1wPANzJTd15gPXUkECaHeD
+	 5Sx4W8vbF86h2AZsq6NG3JphI6cUIfFk1XAlV0z8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DE0EF80634;
-	Thu, 10 Oct 2019 16:22:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51CD0F8063B;
+	Thu, 10 Oct 2019 16:22:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CCFCF805FF; Thu, 10 Oct 2019 16:22:40 +0200 (CEST)
+ id A38E9F805FF; Thu, 10 Oct 2019 16:22:40 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8A2CF8045E
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADF1CF8038F
  for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 16:22:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8A2CF8045E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADF1CF8038F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ndzeu7DV"
+ header.b="Bq6NmWRO"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=fH8Gr0gVZgg0km6M3wKZie7oRbqMt5A6Hv6J4ECL2Zc=; b=ndzeu7DVWXXq
- S9bLDwLNbOL0NblKxkv5c5Y4JMbH+U8zaiwxqX6ZxvHnSqoR7HwmrvTd5/Nws+GInS43UtIAK7WuD
- cy24gZfTWVfX/vAMXueJIheMv2yR4EboWiMgBYJ23sCLyYkTUMkqzqjhVLhra1y1xPaPqU4uZi3wB
- jjeAk=;
+ List-Archive; bh=Vu26j0pkksd5a+5AFHdMUJqu3g0GR+no5stRlOk1dVY=; b=Bq6NmWRO4EiN
+ YqLGK1KjfixASfBlpa9xCr++pzXvPUXqXBSIHokhAER9TQDwoUf3wdMYj95SP2Ks/VmPVCN5V4o1k
+ 40pSAZMkFXFsff2/sdn707LhoJywC06bspd/oFhgkx4SrnySk+TZVTy+S5ma+LYMBVKEo59FxZvkk
+ 45VTU=;
 Received: from fw-tnat-cam3.arm.com ([217.140.106.51]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1iIZKp-0001Za-Oq; Thu, 10 Oct 2019 14:22:31 +0000
+ id 1iIZKq-0001Zj-2v; Thu, 10 Oct 2019 14:22:32 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 6B70ED0003B; Thu, 10 Oct 2019 15:22:31 +0100 (BST)
+ id AD5CAD0003D; Thu, 10 Oct 2019 15:22:31 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191008164443.1358-5-pierre-louis.bossart@linux.intel.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20191008164443.1358-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191010142231.6B70ED0003B@fitzroy.sirena.org.uk>
+Message-Id: <20191010142231.AD5CAD0003D@fitzroy.sirena.org.uk>
 Date: Thu, 10 Oct 2019 15:22:31 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: pci: add debug module param" to
-	the asoc tree
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "Revert "ASoC: SOF: Force polling mode on CFL
+	and CNL"" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: pci: add debug module param
+   Revert "ASoC: SOF: Force polling mode on CFL and CNL"
 
 has been applied to the asoc tree at
 
@@ -120,64 +121,49 @@ to this mail.
 Thanks,
 Mark
 
-From 8b160dc2a92c83a566b0596c79febb5933f9a6b5 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 8 Oct 2019 11:44:38 -0500
-Subject: [PATCH] ASoC: SOF: pci: add debug module param
+From 902fd492d5ea2c02666ddadc1da977ca94e6b52c Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Tue, 8 Oct 2019 11:44:36 -0500
+Subject: [PATCH] Revert "ASoC: SOF: Force polling mode on CFL and CNL"
 
-Add debug parameter for snd-sof-pci.
+This reverts commit 64ca9d9fcb3e3c86b1417e3d17a90b43dd660f81.
 
-One of the usages for this debug parameter to disable pm_runtime,
-which can be useful for platform bringup, or keep the parent device
-active while enabling pm_runtime for child devices (e.g. with
-SoundWire or MFD). This can also be useful to measure suspend-resume
-latencies or child devices.
+The workaround is no longer needed after configuring HDAC
+bus with sync_write=1.
 
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191008164443.1358-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191008164443.1358-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/sof-pci-dev.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index d66412a77873..030f2cb06921 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -29,6 +29,12 @@ static char *tplg_path;
- module_param(tplg_path, charp, 0444);
- MODULE_PARM_DESC(tplg_path, "alternate path for SOF topology.");
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 5a5163eef2ef..103f4273c4d3 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -32,9 +32,6 @@
+ /* platform specific devices */
+ #include "shim.h"
  
-+static int sof_pci_debug;
-+module_param_named(sof_pci_debug, sof_pci_debug, int, 0444);
-+MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
-+
-+#define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
- static const struct sof_dev_desc bxt_desc = {
- 	.machines		= snd_soc_acpi_intel_bxt_machines,
-@@ -249,6 +255,9 @@ static void sof_pci_probe_complete(struct device *dev)
- {
- 	dev_dbg(dev, "Completing SOF PCI probe");
+-#define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa348)
+-#define IS_CNL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9dc8)
+-
+ #define EXCEPT_MAX_HDR_SIZE	0x400
  
-+	if (sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME)
-+		return;
-+
- 	/* allow runtime_pm */
- 	pm_runtime_set_autosuspend_delay(dev, SND_SOF_SUSPEND_DELAY_MS);
- 	pm_runtime_use_autosuspend(dev);
-@@ -370,7 +379,8 @@ static void sof_pci_remove(struct pci_dev *pci)
- 	snd_sof_device_remove(&pci->dev);
+ /*
+@@ -262,10 +259,6 @@ static int hda_init(struct snd_sof_dev *sdev)
+ 	/* HDA bus init */
+ 	sof_hda_bus_init(bus, &pci->dev);
  
- 	/* follow recommendation in pci-driver.c to increment usage counter */
--	pm_runtime_get_noresume(&pci->dev);
-+	if (!(sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME))
-+		pm_runtime_get_noresume(&pci->dev);
- 
- 	/* release pci regions and disable device */
- 	pci_release_regions(pci);
+-	/* Workaround for a communication error on CFL (bko#199007) and CNL */
+-	if (IS_CFL(pci) || IS_CNL(pci))
+-		bus->polling_mode = 1;
+-
+ 	bus->use_posbuf = 1;
+ 	bus->bdl_pos_adj = 0;
+ 	bus->sync_write = 1;
 -- 
 2.20.1
 
