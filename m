@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A338AC4360C
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:41:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A95C10F14
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:41:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 227F32064A
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:41:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BE73208C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Oct 2019 15:41:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rieRcwGX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 227F32064A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="daroFJ/l"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BE73208C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C09915E0;
-	Thu, 10 Oct 2019 17:40:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C09915E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D16F1670;
+	Thu, 10 Oct 2019 17:41:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D16F1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570722059;
-	bh=sWGTjFtJ2BMTsn88WNfKU4ZqmGloInpmpArLnQw1kOg=;
+	s=default; t=1570722115;
+	bh=w4Qge4GTwzo42lx8Iz6R5p7mddheSdq29KbvlRp8yes=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rieRcwGX8Pukm8/ubNCBspn96jGtE6EQzc2Jfnox5L3VYSRiY/RlKI3j8gseB5hhO
-	 hVcUWcVlegX+a5xPftWZN8SGYo7FkiiSxNif0rupYDgk4+RFVB1h4BuARqVb+uE6am
-	 bze2dIadvHZEWFmu7UPyWY1b4Ittb6QgZqT5z18M=
+	b=daroFJ/lSQ+zAtYxOF8rPTxP1w2lPiKy1a40TgtcHo7FUe8cpOgTWPoYO7nLWNGql
+	 jIpR2/9AxUKD/0ZixLuO9YnA8sXuurhJhoDRUZUmiOmb7MNwvlNy5/5njIAEfBZCPX
+	 bpD3h3TYVdlENKor6bzXWVVbYCRSK3Gzn+nMIoCA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F38DF804CA;
-	Thu, 10 Oct 2019 17:39:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28D28F8058C;
+	Thu, 10 Oct 2019 17:41:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D9B5F804CB; Thu, 10 Oct 2019 17:39:53 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 37682F804CA; Thu, 10 Oct 2019 17:41:03 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53DBEF802BC
- for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 17:39:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53DBEF802BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1412DF80322
+ for <alsa-devel@alsa-project.org>; Thu, 10 Oct 2019 17:40:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1412DF80322
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2019 08:39:48 -0700
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 10 Oct 2019 08:40:57 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,280,1566889200"; d="scan'208";a="369124825"
+X-IronPort-AV: E=Sophos;i="5.67,280,1566889200"; d="scan'208";a="369125041"
 Received: from aandraox-mobl1.amr.corp.intel.com (HELO [10.254.98.68])
  ([10.254.98.68])
- by orsmga005.jf.intel.com with ESMTP; 10 Oct 2019 08:39:47 -0700
+ by orsmga005.jf.intel.com with ESMTP; 10 Oct 2019 08:40:57 -0700
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Mark Brown <broonie@kernel.org>
 References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
- <87ftk2ilqz.wl-kuninori.morimoto.gx@renesas.com>
+ <87lftuilri.wl-kuninori.morimoto.gx@renesas.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <bc534b3d-9575-06df-9bcc-4d11f19006cb@linux.intel.com>
-Date: Thu, 10 Oct 2019 10:09:18 -0500
+Message-ID: <cf18ce51-d1ed-ba9c-c0a9-40d29aef857e@linux.intel.com>
+Date: Thu, 10 Oct 2019 10:09:54 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <87ftk2ilqz.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87lftuilri.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 09/21] ASoC: soc-core: remove unneeded
- snd_soc_tplg_component_remove()
+Subject: Re: [alsa-devel] [PATCH 05/21] ASoC: soc-core: remove duplicated
+ soc_is_dai_link_bound()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,33 +92,57 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On 10/8/19 11:30 PM, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> snd_soc_tplg_component_remove() is topology related cleanup function.
-> The driver which added topology needed cleanup it, not by soc-core.
-> Only topology user skl-pcm is calling it, there is no effect by
-> this patch.
+> soc_is_dai_link_bound() check will be called both
+> *before* soc_bind_dai_link() (A), and
+> *under*  soc_bind_dai_link() (B).
+> These are very verboqse code. Let's remove one of them.
 
-the SOF driver also calls snd_soc_tplg_component_remove(), so not sure 
-what you meant by the comment?
+typo: verbose.
 
+> 
+> *	static int soc_bind_dai_link(...)
+> 	{
+> 		...
+> (B)		if (soc_is_dai_link_bound(...)) {
+> 			...
+> 			return 0;
+> 		}
+> 		...
+> 	}
+> 
+> 	static int snd_soc_instantiate_card(...)
+> 	{
+> 		...
+> 		for_each_card_links(...) {
+> (A)			if (soc_is_dai_link_bound(...))
+> 				continue;
+> 
+> *			ret = soc_bind_dai_link(...);
+> 			if (ret)
+> 				goto probe_end;
+> 		}
+> 		...
+> 	}
 > 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->   sound/soc/soc-core.c | 2 --
->   1 file changed, 2 deletions(-)
+>   sound/soc/soc-core.c | 3 ---
+>   1 file changed, 3 deletions(-)
 > 
 > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 283ac63..fa837c0 100644
+> index f440022..4edac93 100644
 > --- a/sound/soc/soc-core.c
 > +++ b/sound/soc/soc-core.c
-> @@ -2870,8 +2870,6 @@ static int __snd_soc_unregister_component(struct device *dev)
->   		if (dev != component->dev)
->   			continue;
->   
-> -		snd_soc_tplg_component_remove(component,
-> -					      SND_SOC_TPLG_INDEX_ALL);
->   		snd_soc_component_del_unlocked(component);
->   		found = 1;
->   		break;
+> @@ -2065,9 +2065,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+>   	 * Components with topology may bring new DAIs and DAI links.
+>   	 */
+>   	for_each_card_links(card, dai_link) {
+> -		if (soc_is_dai_link_bound(card, dai_link))
+> -			continue;
+> -
+>   		ret = soc_bind_dai_link(card, dai_link);
+>   		if (ret)
+>   			goto probe_end;
 > 
 _______________________________________________
 Alsa-devel mailing list
