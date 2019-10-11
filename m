@@ -2,88 +2,87 @@ Return-Path: <SRS0=IN0D=YE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6EC9C47404
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 15:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9D18C47404
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 15:21:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F41F21A4A
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 15:15:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44E23206A1
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 15:21:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FvmPqo9W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F41F21A4A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DCcIexZG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44E23206A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45983166B;
-	Fri, 11 Oct 2019 17:14:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45983166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 837AA1615;
+	Fri, 11 Oct 2019 17:20:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 837AA1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570806948;
-	bh=u+9ilYV3fbQsVOwKDlyC4g9DTyQxbNjyvcUXQNzRTTw=;
+	s=default; t=1570807291;
+	bh=xIx7Fz5bm9cgNwYX8/ym7B3exR7vLtqrXDdz0BjJTz4=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FvmPqo9WCi5ohQVIw76Qb5BBUf3UgHE3q5mx2SpkxEITgP/m6LpppI1dffJ1jrhb4
-	 4LNKGRs4L+XcjS2f8nh1VMns0gSzxdoIDtv1g1PYwGYlcjW4+veYBQKmAK6Z8zycFq
-	 kevGEQyxU/JfAL++u9f6R5Syf/lB94PEsCOI+/SY=
+	b=DCcIexZGVwhF/qIkTbNGAyWg54LVu62SvkCVs0R4BkOylad64utsccWOM9xcd8Leg
+	 iPnUIeQQxyajZWyyHkSjfeRmVT6ETIiB5DzcuzBF1o+Ix/Nh57UG95JTtRHYwgRWn+
+	 VxLRQEpjwDy7+43A3vGi3hJFqP2Anv0Ef1/A598E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4473AF80308;
-	Fri, 11 Oct 2019 17:14:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E2EEF80113;
+	Fri, 11 Oct 2019 17:20:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE867F80323; Fri, 11 Oct 2019 17:14:11 +0200 (CEST)
-Received: from mail-ot1-f67.google.com (mail-ot1-f67.google.com
- [209.85.210.67])
+ id 95AC4F802BE; Fri, 11 Oct 2019 17:20:39 +0200 (CEST)
+Received: from mail-oi1-f196.google.com (mail-oi1-f196.google.com
+ [209.85.167.196])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80933F802FB
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 17:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80933F802FB
-Received: by mail-ot1-f67.google.com with SMTP id y39so8251040ota.7
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 08:14:09 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F107F80113
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 17:20:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F107F80113
+Received: by mail-oi1-f196.google.com with SMTP id i185so8276763oif.9
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 08:20:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=W01GRpRBdQLkNYt/6/DmE6Y13Qt+kQqmJcdbIFQHXv0=;
- b=noEeVEjSp+gCueFFiyIik/vSxM6RRP1EEBQkNNSs9KL6X8z6XTvNYwwbsGlC84AVm0
- hsXLFmIeloIAHRVTIFsHGgrNmZkoFpqcQcU6AIBiKuZiMC8iecpajVXSJWBMxk+AW8o5
- AEWgkf8l8dEgRhlacTmn/qdpl0KIzVNGQ0FZ83/vTG+8hlm3IJVzLuCVAWbho9R83gDL
- 58rmMuw/ref19apR9r9HDsEiGR6ZnqrJYemNiBnMqwkx3/IgoMCFB3aszxamR8X/VUJv
- gJJM2pAW++l9XBjVNP+R4I/FBZK7HkyGfLp9VTaCHwnBQ9fKmAB91EhS6GPS1xKjxuEe
- dcdA==
-X-Gm-Message-State: APjAAAXoFVUuFGqvlzBru2UrmTmH3qqXcSj4P4vEUIL7VKs5q3sTSJcV
- dR1TQe33xMAMvxAFkngGxA==
-X-Google-Smtp-Source: APXvYqzhey1oOTnA0w0d9o/KuIH33dNcRfhzSqT0Ru6dq2J5unDcqbcklT5cAwpziCP+n3Kod/dEqg==
-X-Received: by 2002:a9d:7a8d:: with SMTP id l13mr12194525otn.351.1570806847891; 
- Fri, 11 Oct 2019 08:14:07 -0700 (PDT)
+ bh=zwS8rnb6Pul2Tj4IPe9QhJRNl+DNx3RdlplLF9pczuk=;
+ b=J+hcs6xAZ4JWSPtDudwSXyqk8S2rsNduQINkYkmBVdWkgydQkm1h2s6rJ0sGj7w0vW
+ kCiCMjIL7Ags+YqD+d5q7jg9o19WOIyTmjzT33d0RRqpX0UJp78C2+RdSMSFRbcTHGyX
+ +xMRfs9fBQ7vc44q1h2CAbOg0N8igI13h11VvQMmzuGrg1SpboOosJ/KHuztAmLZmrdm
+ Hd4JWKJ+G0cJjK6eE3MAPZByrbxE0K/4Z8wsyGuqp619WNB54Scp1wfOzGt3h3AyMPy8
+ GCCs+4SiFOCKHs71iizMZDbi6+MVOrp0MwmAG4Qvl7f1GfnwmA0qmEPNZjUEGwA/zNh+
+ zIXQ==
+X-Gm-Message-State: APjAAAX1FmpKztCaSqVo7Ws9KogG+e12t/MR+hbxfUXpweLs+tGCFxp3
+ 3xKePs0lWRYEU/RCijTtng==
+X-Google-Smtp-Source: APXvYqxeMfb0jpX/cZhqRDivEunM6dWUjFbeka9g66lQDFOgGGwSJoMxBm/KHFglSYdf+wWw96sJEQ==
+X-Received: by 2002:a54:4481:: with SMTP id v1mr12176488oiv.152.1570807231287; 
+ Fri, 11 Oct 2019 08:20:31 -0700 (PDT)
 Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
  [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id d69sm2726364oig.32.2019.10.11.08.14.07
+ by smtp.gmail.com with ESMTPSA id i5sm2638917otk.10.2019.10.11.08.20.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 11 Oct 2019 08:14:07 -0700 (PDT)
-Date: Fri, 11 Oct 2019 10:14:06 -0500
+ Fri, 11 Oct 2019 08:20:30 -0700 (PDT)
+Date: Fri, 11 Oct 2019 10:20:29 -0500
 From: Rob Herring <robh@kernel.org>
 To: Tzung-Bi Shih <tzungbi@google.com>
-Message-ID: <20191011151406.GA18450@bogus>
+Message-ID: <20191011152029.GA18877@bogus>
 References: <20191005085509.187179-1-tzungbi@google.com>
- <20191005164320.05.Id4657c864d544634f2b5c1c9b34fa8232ecba44d@changeid>
+ <20191005164320.09.Iec97a3f137148cdf316056612590b3e0b302f5f3@changeid>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191005164320.05.Id4657c864d544634f2b5c1c9b34fa8232ecba44d@changeid>
+In-Reply-To: <20191005164320.09.Iec97a3f137148cdf316056612590b3e0b302f5f3@changeid>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- cychiang@google.com, drinkcat@google.com, robh+dt@kernel.org,
- tzungbi@google.com, broonie@kernel.org, enric.balletbo@collabora.com,
- bleung@google.com, dgreid@google.com
-Subject: Re: [alsa-devel] [PATCH v2 05/10] ASoC: cros_ec_codec: read max
- DMIC gain from EC codec
+ cychiang@google.com, drinkcat@google.com, broonie@kernel.org,
+ enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com
+Subject: Re: [alsa-devel] [PATCH v2 09/10] ASoC: dt-bindings: mt8183: add
+	ec-codec
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,19 +100,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat,  5 Oct 2019 16:55:04 +0800, Tzung-Bi Shih wrote:
-> Read max DMIC gain from EC codec instead of DTS.  Also removes the
-> dt-binding of max-dmic-gain.
+On Sat, Oct 05, 2019 at 04:55:08PM +0800, Tzung-Bi Shih wrote:
+> Add an optional property "ec-codec".  If specified, mt8183 could use the
+> "wake on voice" feature offered by EC codec.
 > 
 > Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 > ---
->  .../bindings/sound/google,cros-ec-codec.txt   |  4 +-
->  .../linux/platform_data/cros_ec_commands.h    | 43 +++++++++++----
->  sound/soc/codecs/cros_ec_codec.c              | 53 ++++++++++++++-----
->  3 files changed, 73 insertions(+), 27 deletions(-)
+>  .../bindings/sound/mt8183-mt6358-ts3a227-max98357.txt          | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
+> index 17ff3892f439..decaa013a07e 100644
+> --- a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
+> +++ b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
+> @@ -6,12 +6,15 @@ Required properties:
+>  
+>  Optional properties:
+>  - mediatek,headset-codec: the phandles of ts3a227 codecs
+> +- mediatek,ec-codec: the phandle of EC codecs.
+> +                     See google,cros-ec-codec.txt for more details.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Not the best designed audio binding here. We really should just have 
+links to codecs and then you can look at the codec nodes to determine 
+the type.
+
+>  
+>  Example:
+>  
+>  	sound {
+>  		compatible = "mediatek,mt8183_mt6358_ts3a227_max98357";
+
+Don't you need to add EC codec to this? Just kidding. Just highlighting 
+the weirdness of this binding.
+
+>  		mediatek,headset-codec = <&ts3a227>;
+> +		mediatek,ec-codec = <&ec_codec>;
+>  		mediatek,platform = <&afe>;
+>  	};
+>  
+> -- 
+> 2.23.0.581.g78d2f28ef7-goog
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
