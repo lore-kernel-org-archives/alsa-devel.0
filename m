@@ -2,97 +2,88 @@ Return-Path: <SRS0=IN0D=YE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 222D8ECE58C
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 08:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CEE3C47404
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 10:51:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19BED21D71
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 08:49:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4CF84206CD
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 10:51:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="od0pqEoj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="PKMm3t0O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19BED21D71
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=st.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jxbH5u45";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="oFF+nMW8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CF84206CD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB85A1612;
-	Fri, 11 Oct 2019 10:48:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB85A1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECFB51615;
+	Fri, 11 Oct 2019 12:50:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECFB51615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570783756;
-	bh=u3rMbNVPbF+pS/Rv2BT+32+9c5dRT3TD7Qt7Gv5QT3c=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=od0pqEoj5XBi8pMoMIvjg6r0qrOYkM9zLipBFY4KBqvf4WIb+tNxa+BIN6Ici/LNB
-	 e7B7pAHpW/thFdRCFEvawOyrFhGFko4+0sFQA1nzkiKC5JefPD0paxkz90rsrFRjlz
-	 VdMWk2KzELDbQW8XVhplfNEQ29Z0nG6lygXniDwQ=
+	s=default; t=1570791062;
+	bh=5O3t8gqMQ/ara/KGccnq/qqvH2ZfH2W36Gu6Jd1L/VY=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jxbH5u45uZ5noVI0QmUddG5NvLv7LANaGoI5efPyhK0TR7reV22MPEvM8dLQ+eZ7R
+	 tDCNXCFg7DSXcTgjMpw0pw2xG50bVfx59+Vk3rUEp2nAttpbDF1s2jNwxOIIbqKEQB
+	 2FdYHaB3FNTaTVkzhuswRAup8qzbTz84jnaNJ9kM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 637C3F802BD;
-	Fri, 11 Oct 2019 10:48:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A9F1F802BD;
+	Fri, 11 Oct 2019 12:50:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A115F802BE; Fri, 11 Oct 2019 10:48:24 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+ id 02956F802BE; Fri, 11 Oct 2019 12:50:07 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD141F80113
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 10:48:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD141F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67F26F80113
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 12:50:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67F26F80113
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="PKMm3t0O"
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx08-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- x9B8jVnm018619; Fri, 11 Oct 2019 10:48:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=from : to : subject :
- date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=dn57trJDwkZf1zTqrirKMCOuNO/LkBA2sd55GnG6NrU=;
- b=PKMm3t0OsAVAyHFmAAlnAP0bWm6GHiWzxQmRPaq1eXJD1wgLj5zdV8OvDjkWAtvgOdYR
- 8ii3smM+kk5ljgpYs+HOATNvoJG1BIBTlvlNi5mpmQjjy+hfac7Q8+qFBWsipIUzfiHj
- O0ALWBKDhiIs4PSeevSExUmfbcjbPTMd5lPnaRXzk8LUox7HIeg4Ld0GtTL/O9sWaZhb
- UL0yG/OJC35RRR8oSNysU+ktBDANlgq1OsXl4f7LdpTdr0esEJfaJtfJI1RY7S67PXY1
- s6wuaRxaW+wNtVD/l8xUtM5vlCPjHopuYdMhPFBHRgcJB9yizr6MDxRfp/d7ERK2ZhpC EA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx08-00178001.pphosted.com with ESMTP id 2vegahhecn-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 11 Oct 2019 10:48:20 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A6F1710002A;
- Fri, 11 Oct 2019 10:48:19 +0200 (CEST)
-Received: from Webmail-eu.st.com (Safex1hubcas22.st.com [10.75.90.92])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 19BF12AF4B7;
- Fri, 11 Oct 2019 10:48:19 +0200 (CEST)
-Received: from SAFEX1HUBCAS24.st.com (10.75.90.95) by Safex1hubcas22.st.com
- (10.75.90.92) with Microsoft SMTP Server (TLS) id 14.3.439.0; Fri, 11 Oct
- 2019 10:48:19 +0200
-Received: from localhost (10.201.21.218) by webmail-ga.st.com (10.75.90.48)
- with Microsoft SMTP Server (TLS) id 14.3.439.0; Fri, 11 Oct 2019 10:48:18
- +0200
-From: Olivier Moysan <olivier.moysan@st.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <mcoquelin.stm32@gmail.com>,
- <alexandre.torgue@st.com>, <alsa-devel@alsa-project.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-kernel@vger.kernel.org>, <olivier.moysan@st.com>,
- <arnaud.pouliquen@st.com>
-Date: Fri, 11 Oct 2019 10:48:16 +0200
-Message-ID: <20191011084816.14279-1-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="oFF+nMW8"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=+GYaGvn6aQG4ujRHeTb1+lopvEhjRcfgUQWj4NEdRZ0=; b=oFF+nMW8ULTocBKQP7Rg0G0OD
+ ULnpmBNgzEV4j+EqDbOV/8Kdzb2mh5FWrQeFQm7wEwX6fdvC1FsK8ujWRciwYHXfBbq3oXwwe+HGq
+ Baau7aDhUJjlC4PE6unDctPMCzjGx3HIrkGX42kkWsJ45W2xe8WLLJQIaNMl1O16Npsb0=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1iIsUk-0005Sr-Uf; Fri, 11 Oct 2019 10:50:03 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 3111DD0019E; Fri, 11 Oct 2019 11:50:01 +0100 (BST)
+Date: Fri, 11 Oct 2019 11:50:01 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20191011105001.GG4741@sirena.org.uk>
+References: <20191010202802.1132272-1-arnd@arndb.de>
+ <20191010203043.1241612-1-arnd@arndb.de>
+ <20191010203043.1241612-20-arnd@arndb.de>
 MIME-Version: 1.0
-X-Originating-IP: [10.201.21.218]
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-11_06:2019-10-10,2019-10-11 signatures=0
-Subject: [alsa-devel] [PATCH] ASoC: stm32: spdifrx: retry synchronization in
-	sync state
+In-Reply-To: <20191010203043.1241612-20-arnd@arndb.de>
+X-Cookie: Void where prohibited by law.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+ Sangbeom Kim <sbkim73@samsung.com>, linus.walleij@linaro.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ linux-kernel@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH 20/36] ASoC: samsung: s3c2412-i2s: avoid
+ hardcoded S3C2410_PA_IIS
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,73 +96,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8991946021695153129=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When STM32 SPDIFRX is in sync state, allow multiple
-synchro attempts, instead of exiting on first unsuccessful
-trial. This is useful when spdif signal is not immediately
-available on input. This also allows Pulseaudio to check
-iec capture device availability when no signal is present.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- sound/soc/stm/stm32_spdifrx.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+--===============8991946021695153129==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rV8arf8D5Dod9UkK"
+Content-Disposition: inline
 
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index cd4b235fce57..3fd28ee01675 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -351,6 +351,8 @@ static int stm32_spdifrx_start_sync(struct stm32_spdifrx_data *spdifrx)
- 		     SPDIFRX_CR_CUMSK | SPDIFRX_CR_PTMSK | SPDIFRX_CR_RXSTEO;
- 		cr_mask = cr;
- 
-+		cr |= SPDIFRX_CR_NBTRSET(SPDIFRX_NBTR_63);
-+		cr_mask |= SPDIFRX_CR_NBTR_MASK;
- 		cr |= SPDIFRX_CR_SPDIFENSET(SPDIFRX_SPDIFEN_SYNC);
- 		cr_mask |= SPDIFRX_CR_SPDIFEN_MASK;
- 		ret = regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
-@@ -666,7 +668,7 @@ static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
- 	struct snd_pcm_substream *substream = spdifrx->substream;
- 	struct platform_device *pdev = spdifrx->pdev;
- 	unsigned int cr, mask, sr, imr;
--	unsigned int flags;
-+	unsigned int flags, sync_state;
- 	int err = 0, err_xrun = 0;
- 
- 	regmap_read(spdifrx->regmap, STM32_SPDIFRX_SR, &sr);
-@@ -726,11 +728,23 @@ static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
- 	}
- 
- 	if (err) {
--		/* SPDIFRX in STATE_STOP. Disable SPDIFRX to clear errors */
-+		regmap_read(spdifrx->regmap, STM32_SPDIFRX_CR, &cr);
-+		sync_state = FIELD_GET(SPDIFRX_CR_SPDIFEN_MASK, cr) &&
-+			     SPDIFRX_SPDIFEN_SYNC;
-+
-+		/* SPDIFRX is in STATE_STOP. Disable SPDIFRX to clear errors */
- 		cr = SPDIFRX_CR_SPDIFENSET(SPDIFRX_SPDIFEN_DISABLE);
- 		regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
- 				   SPDIFRX_CR_SPDIFEN_MASK, cr);
- 
-+		/* If SPDIFRX was in STATE_SYNC, retry synchro */
-+		if (sync_state) {
-+			cr = SPDIFRX_CR_SPDIFENSET(SPDIFRX_SPDIFEN_SYNC);
-+			regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
-+					   SPDIFRX_CR_SPDIFEN_MASK, cr);
-+			return IRQ_HANDLED;
-+		}
-+
- 		if (substream)
- 			snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
- 
--- 
-2.17.1
+
+--rV8arf8D5Dod9UkK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 10, 2019 at 10:30:04PM +0200, Arnd Bergmann wrote:
+> The constant requires indirectly including a machine header file,
+> but it's not actually used any more since commit 87b132bc0315 ("ASoC:
+> samsung: s3c24{xx,12}-i2s: port to use generic dmaengine API"), so
+> remove it completely.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--rV8arf8D5Dod9UkK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2gXlgACgkQJNaLcl1U
+h9DRDwf/Z97B2zjL3Z9O+QU4Fp9jlers2KrllaRLXhvKAvYYwb8JNWOGuedCmQDi
+C6Gj9aBSXHmzjjFCM08/QJMG8u6TcM5H2gCjEVFOiRCMqP5DPX5qCIiiQ0SnBrdi
+G78NJlKJRTR9kLnVYFd8DRx4fOHelhaH0X7n5EPUliwMpydcV81iL9zttP39m5+h
+bTSe5rNrUxE6oNaq/1Ud7YFogrTUUSHQugLgRHDwsGakNFIYpP7HYvd9lYfAlX0C
+dz+DUqy/Yq8FJMN3SUlsUyNx3X1LVOkKbKCiKbcwoYIaXy+YyNCPAja8eRtrWVZU
+tdnsAgWDN5OszUmItgS481uI9UwV6Q==
+=6yUg
+-----END PGP SIGNATURE-----
+
+--rV8arf8D5Dod9UkK--
+
+--===============8991946021695153129==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8991946021695153129==--
