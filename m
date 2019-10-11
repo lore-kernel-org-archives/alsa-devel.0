@@ -3,65 +3,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD319C10F14
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:08:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16A7AC4360C
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:20:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC24620B7C
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:08:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 85FA02196E
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:20:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L1drVegB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC24620B7C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EV1sQujT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85FA02196E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 688EE1614;
-	Fri, 11 Oct 2019 03:07:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 688EE1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 679611614;
+	Fri, 11 Oct 2019 03:19:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 679611614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570756097;
-	bh=o5u63mvPDAGHr1aOYN5Tbn7yV97eIXKhUKu7a3XNdQc=;
+	s=default; t=1570756834;
+	bh=hU2p3x9//hamS3o56FHU8qY6qOB6Qdt83zUjzEqe3g4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L1drVegB7eljxcbk4WQjuMCwG6s+OZEN99/bI2dBTmjQqcZfvb1rk3aVY+xJ+nua6
-	 KGCDeYgBWd//ug8x6EZ/Xr3/vk0NvXExqJYT3KNfCWLgej8a7FLe3ks+TZ4ihMfbDv
-	 EGJBrYk8LwwxnMVmpF9VU/QD1yH/vXpTEEkDukvU=
+	b=EV1sQujTi/cKAB2BwMEphgv4lCSXboHU2zGWHC7RptH/250pNf4GOnspFLFMssX7+
+	 P6yB66cgLoCVVJI3vueEBWJPuhkz2r2lFcK4fHDTfSnUR1CTWK2fQVRydrkemiMX1w
+	 ynQPl0KQrNEqAIV+yNdPclUP00kz0QOeIcq75UrE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD83CF80322;
-	Fri, 11 Oct 2019 03:07:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8084F80322;
+	Fri, 11 Oct 2019 03:19:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1E4CF8038F; Fri, 11 Oct 2019 03:07:25 +0200 (CEST)
+ id 972F7F8038F; Fri, 11 Oct 2019 03:19:42 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B5CDFF80113
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 03:07:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5CDFF80113
-Date: 11 Oct 2019 10:07:14 +0900
-X-IronPort-AV: E=Sophos;i="5.67,281,1566831600"; d="scan'208";a="28606541"
+ by alsa1.perex.cz (Postfix) with ESMTP id B3C31F80113
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 03:19:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3C31F80113
+Date: 11 Oct 2019 10:19:35 +0900
+X-IronPort-AV: E=Sophos;i="5.67,282,1566831600"; d="scan'208";a="28608099"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 11 Oct 2019 10:07:14 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 11 Oct 2019 10:19:35 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 98E67400F93B;
- Fri, 11 Oct 2019 10:07:14 +0900 (JST)
-Message-ID: <87sgo0w0n1.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id ACC5E400857D;
+ Fri, 11 Oct 2019 10:19:35 +0900 (JST)
+Message-ID: <87r23kw02g.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <df9de456-a4c2-53c4-2143-edb4d4b2292f@linux.intel.com>
+In-Reply-To: <c594c9fd-1001-a50f-d6c2-06298a1c2110@linux.intel.com>
 References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
- <878spuilqd.wl-kuninori.morimoto.gx@renesas.com>
- <df9de456-a4c2-53c4-2143-edb4d4b2292f@linux.intel.com>
+ <87mueailrn.wl-kuninori.morimoto.gx@renesas.com>
+ <c594c9fd-1001-a50f-d6c2-06298a1c2110@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 14/21] ASoC: soc-core: have
-	legacy_dai_naming at snd_soc_register_dai()
+Subject: Re: [alsa-devel] [PATCH 04/21] ASoC: soc-core: rename
+	soc_init_dai_link() to soc_dai_link_sanity_check()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,52 +82,56 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Pierre-Louis
 
-Thank you for your feedback
-
-> > snd_soc_register_dai() is now used from topology.
-> > But, to reduce duplicated code, it will be used from soc-core, too.
-> > To prepare for it, this patch adds missing parameter legacy_dai_naming
-> > to snd_soc_register_dai().
+> > -	for_each_card_prelinks(card, i, dai_link) {
+> > -		ret = soc_init_dai_link(card, dai_link);
+> > -		if (ret) {
+> > -			dev_err(card->dev, "ASoC: failed to init link %s: %d\n",
+> > -				dai_link->name, ret);
+> > -			mutex_unlock(&client_mutex);
+> > -			return ret;
+> > -		}
+> > -	}
 > 
-> It doesn't look like this series reduces the confusion between
-> snd_soc_register_dai() and snd_soc_register_dais() ?
+> This part is difficult to understand.
 > 
-> maybe for the latter case since it's a static function we don't want
-> the entire prefix then?
+> There were two calls to soc_init_dai_link(), here and [2] below.
+> Your patch removes the first call and the for loop, is this
+> intentional and needed?
 
-Maybe my explain is not so good...
-The point is that, in general people think like below from naming.
-Other functions are this style.
+soc_init_dai_link() is just sanity_check now.
+In my understanding, it is needed before soc_bind_dai_link().
 
-=>	int snd_soc_register_dai()
+Current code is like below.
+(1) and (2) are for care prelink:ed dai_link.
+(A) and (B) are for topology added new dai_link.
+and
+(1) is for (2)
+(A) is for (B)
+
+	int snd_soc_instantiate_card()
 	{
+		for_each_card_prelinks(...) {
+(1)			ret = soc_init_dai_link(...);
+			...
+		}
 		...
+		for_each_card_prelinks(...) {
+(2)			ret = soc_bind_dai_link(...);
+			...
+		}
+		...
+		for_each_card_links(...) {
+			...
+(A)			ret = soc_init_dai_link(...);
+			...
+(B)			ret = soc_bind_dai_link(...);
+		}
 	}
 
-	int snd_soc_register_dais()
-	{
-		for(..) {
-=>			snd_soc_register_dai()
-		}		
-	}
+It is very confusing/verbose code for me.
+It can be more simple if we can call soc_init_dai_link()
+from soc_bind_dai_link().
 
-But in reality is like this
-
-	int snd_soc_register_dai()
-	{
-		/* almost same but different code */
-	}
-
-	snd_soc_register_dais()
-	{
-		/* almost same but different code */
-	}
-
-To avoid duplicate code and confusion,
-this patchset try to implement "general" style.
-But needs some preparation.
-
-I will fix log and English.
 
 Thank you for your help !!
 Best regards
