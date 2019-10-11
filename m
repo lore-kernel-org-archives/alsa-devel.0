@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8269C4360C
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:36:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCF0BC4360C
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:39:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3146421920
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:36:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4EAAA21920
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:39:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZOUhkkgw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3146421920
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pdlq0x3R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EAAA21920
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF2161657;
-	Fri, 11 Oct 2019 03:35:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF2161657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EBA31615;
+	Fri, 11 Oct 2019 03:38:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EBA31615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570757784;
-	bh=yaErqHnFKAuOXtlyogO7Up4K8QsHgeKz5MhAIprZq3I=;
+	s=default; t=1570757968;
+	bh=H9eulC3Otg8i7+rWpCUqM338VNwZUfHa8gsRdmSFaA8=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZOUhkkgwluFXT8xL1G+N7DhK6Ype/5Xq1DNL9UTWox4J873DosvGjn5uSJjLk+MDr
-	 mlQ7FUUpGbK7gR5dOnWDdB0+upLglp3uyt3uiatBWk+wTC8nuIRcRcHr2Z6fZTT3e0
-	 8VN5MkDKiLlU9LJyfCQ1ec+9+U4BT83i7HKhXAxk=
+	b=Pdlq0x3RS3FY0F58hd5RG+QKsMXGLfmCNVSOV21GlnEJuwErWNz4ihLrDOifH2mlu
+	 Ly8gqnv40hdxsjcT5vwfNrgSS5R5XE/miliG1exN5bJvn1XD4DgiRCWd5pW7s6mkwH
+	 4S1rDzTv5aSlQB/jjh9jNSBfWc7aGcb3JLBPgeB8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 715C7F802BD;
-	Fri, 11 Oct 2019 03:35:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3975F802BD;
+	Fri, 11 Oct 2019 03:38:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C498F802BE; Fri, 11 Oct 2019 03:35:32 +0200 (CEST)
+ id 772FFF802BE; Fri, 11 Oct 2019 03:38:36 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 99789F8026F
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 03:35:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99789F8026F
-Date: 11 Oct 2019 10:35:25 +0900
-X-IronPort-AV: E=Sophos;i="5.67,282,1566831600"; d="scan'208";a="28609933"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 11 Oct 2019 10:35:25 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 8E760F800E3
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 03:38:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E760F800E3
+Date: 11 Oct 2019 10:38:28 +0900
+X-IronPort-AV: E=Sophos;i="5.67,282,1566831600"; d="scan'208";a="28610244"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 11 Oct 2019 10:38:28 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8367B40083ED;
- Fri, 11 Oct 2019 10:35:25 +0900 (JST)
-Message-ID: <87o8yovzc2.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 6260040B8E11;
+ Fri, 11 Oct 2019 10:38:28 +0900 (JST)
+Message-ID: <87mue8vz6z.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <b6b3dc35-e596-7005-3cad-516c65fe7784@linux.intel.com>
+In-Reply-To: <562d76de-c724-e98b-ce7d-105a88bf17ce@linux.intel.com>
 References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
- <87d0f6ilqq.wl-kuninori.morimoto.gx@renesas.com>
- <b6b3dc35-e596-7005-3cad-516c65fe7784@linux.intel.com>
+ <87bluqilqm.wl-kuninori.morimoto.gx@renesas.com>
+ <562d76de-c724-e98b-ce7d-105a88bf17ce@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 11/21] ASoC: soc-core: add
-	snd_soc_del_component()
+Subject: Re: [alsa-devel] [PATCH 12/21] ASoC: soc-core: use
+	snd_soc_lookup_component() at snd_soc_unregister_component()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,33 +82,26 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Pierre-Louis
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > It is easy to read code if it is cleanly using paired function/naming,
-> > like start <-> stop, register <-> unregister, etc, etc.
-> > But, current ALSA SoC code is very random, unbalance, not paired, etc.
-> > It is easy to create bug at the such code, and is difficult to debug.
-> > 
-> > Now ALSA SoC has snd_soc_add_component(), but there is no paired
-> > snd_soc_del_component(). Thus, snd_soc_unregister_component() is
-> > calling cleanup function randomly. it is difficult to read.
-> > This patch adds missing snd_soc_del_component() and balance up code.
+> > +void snd_soc_unregister_component(struct device *dev)
+> >   {
+> >   	struct snd_soc_component *component;
+> > -	int found = 0;
+> > -
+> > -	mutex_lock(&client_mutex);
+> > -	for_each_component(component) {
+> > -		if (dev != component->dev)
+> > -			continue;
+> >   +	while (1) {
+> > +		component = snd_soc_lookup_component(dev, NULL);
+> > +		if (!component)
+> > +			break;
+> >   		snd_soc_del_component(component);
 > 
-> 
-> the problem now is that the naming is confusing
-> 
-> we have snd_soc_component_del and snd_soc_del_component.
-> we already had snd_soc_component_add and snd_soc_add_component.
+> is it ok/intended that the mutex lock is now taken *after* looking up
+> the component and after each iteration ?
 
-Yes, very confusing.
-
-> Also I find it useful to keep the _unlocked suffix when relevant, it
-> adds value that is lost otherwise.
-> 
-> Can we avoid this pretty please?
-
-Yeah, thanks.
-The only issue for it is that my English naming sense/skill ;P
+Hmm.. maybe not good.
+I will keep _unlocked() naming and mutex
 
 Thank you for your help !!
 Best regards
