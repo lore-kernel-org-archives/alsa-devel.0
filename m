@@ -2,104 +2,89 @@ Return-Path: <SRS0=IN0D=YE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56A39C47404
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 19:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95AE1ECE58D
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 21:06:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A99A3214E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 19:03:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8A7592196E
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 21:06:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lVSs1EUd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GznRhmLr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A99A3214E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pu/R2uzy";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jO0f7w4T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A7592196E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA8621664;
-	Fri, 11 Oct 2019 21:02:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA8621664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37A891607;
+	Fri, 11 Oct 2019 23:05:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37A891607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570820604;
-	bh=atoJ+9b4aszoG1r+I3w9l58K9C88f42EpERGa4CQCkU=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lVSs1EUdZyzyIZyIujJ/+QyrfmNr8aSsAtTRScuAmepmIgDtwtK2xayGxonKalZEm
-	 E1dzvcxLheb2s9Y4z1yCGxWRJ96gky86NyLFJIKBq+BG64uIe+iimPpnOmIS/OvciW
-	 wlIwHpx5X0Osxm9yEsNszxqwWWExnaLHbHDg2Knk=
+	s=default; t=1570827972;
+	bh=S6yct1GUHL0MaupZ+Mcymmyx79iMtfwAsZNwqjR/LLo=;
+	h=From:Date:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Pu/R2uzywm1OOhFT1Y36bKZxc7eB2CKjYhzuvWrIPm9dPJVEyGeko+Ur8SO/ZgNCr
+	 S3r2ZUywuqpa6+oATBoZjFVdZVrbO7XUnsmk52ro0SbLYwUwtZdGtcJQSev3h9mEk7
+	 I4DX+CcO3rgUrN3rEteIMckHBkE2RR+oXSCRimvQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19D6CF8026F;
-	Fri, 11 Oct 2019 21:01:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B34EAF80113;
+	Fri, 11 Oct 2019 23:05:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2EE4AF80323; Fri, 11 Oct 2019 21:01:52 +0200 (CEST)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
+ id 0C05FF802BE; Fri, 11 Oct 2019 23:05:19 +0200 (CEST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69210F8026F
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 21:01:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69210F8026F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70F2EF80113
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 23:05:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F2EF80113
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="GznRhmLr"
-Received: by mail-pg1-x541.google.com with SMTP id i32so6293808pgl.10
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 12:01:48 -0700 (PDT)
+ header.b="jO0f7w4T"
+Received: by mail-wm1-x334.google.com with SMTP id 7so11701507wme.1
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 14:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=snyWrZAMzq5lG4lRitPx2HIrUxhSjSwDEgHLW43m85M=;
- b=GznRhmLrbiSnSNMpKRKnZtnlVJUIMgZ5Igqj7k9gAh6/KvPPfvWFNm4bhCg1Mjmon4
- QWfPt7fCzGhhjewfN7/xsx1noFZf/yGyTuHATAyzBFFdqKhf3aUtwrWOl4/GAHGDz7wN
- m95NHX/mg+2ktdRy+xO5ADuqFShgN1Fh+GuTUMvkFeJ5230WGT1RQ6hHyY5er+XwKBVZ
- oHeE102rEFQdllfnccTjWkHAtgT3oTF5lt+iFboSsSp8ux7FNO64p0/Qbk/zDYcS8szC
- 6edlryYvHz1TGfH/ZKKmM956bYuizF4DOVQLn9Vo9qfQo2AVRfqN/PYmw8aKHsj3gfOm
- SVAg==
+ h=mime-version:from:date:message-id:subject:to:cc
+ :content-transfer-encoding;
+ bh=jA6dfJWqr0dJgDD2s+9+iGGdyjYB0avPNXoMgPLkvnE=;
+ b=jO0f7w4TOC06sDI8te1eEmKojRDHRG2AKBcFH/7JfQQ0OTLmHHKO895SdMrbUvTySd
+ 9lET9GBxKwrrLHglSap4VfoOMpgepbmz+UNz9tCdMG41kqAerg3wqWK2j5gRzFwWR7+r
+ 2z7fa0NX9WLjZ1My+URjNYnUF+UlMAj/ObBHswNHskt+nEsK5btLgbQhj2i0skExeYMR
+ 6Mm0SJYxk7oXlBRXwzX3229QZN5X2AmlGiM3iWtn1k5huOzZN7sO9sk6WzXR9rFdU7go
+ jhUN45eMheSHX2m1iElzMm2tfiL8N/uousDRQjc22xXPpz7wPYx+yIw3PIXGnc7AgDqK
+ gwCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=snyWrZAMzq5lG4lRitPx2HIrUxhSjSwDEgHLW43m85M=;
- b=MLnRoyf/wTW/jPhmjfHHI/rFOet4nMF50ibWipG3Y6AvYN3Xoan3igowjs8FDmm7Q5
- Sp75AZSDlNzdJXNCpoSnxlrFCfXCiPdWyTMJDZZsufwAN2fMnYuKVTFcNpzIb4nEpNHw
- KKxDL3UdpD72Z2xGFRl5Aw6Fh5I6PyyWFgmcfpdHkYy3l/ngBgqDkqqysHo/UetdlKIf
- sDh8DtjzXPGhhMEYGJHZmZKglNWPXzr2jNb9YPy6Vk4GtpB9RSQTIBIf5TaJQxXp8HF4
- VXArx0eRPpuP2AZyVE28DbXM7jY9n8Tcn/Cc37RKRIba7OxMXiiVxmJmfqV5tepTxxd0
- u41g==
-X-Gm-Message-State: APjAAAXhnncwcQWk/+ywJUvP8D1pSZ/27T4E33EiWAdrJVATo6tBlXA+
- LLJ3Tq3w92bwT5YjX6Q2NAs=
-X-Google-Smtp-Source: APXvYqyNO2jGjTM35Zx7/wYo2IA/ONK6kVXQIM80NOoaCi6xPGZ50ucYajK+oHsuTMe+0WILniPrqg==
-X-Received: by 2002:a17:90a:2ec1:: with SMTP id
- h1mr19140199pjs.96.1570820506438; 
- Fri, 11 Oct 2019 12:01:46 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com.
- [216.228.112.22])
- by smtp.gmail.com with ESMTPSA id q13sm11663683pfn.150.2019.10.11.12.01.45
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 11 Oct 2019 12:01:45 -0700 (PDT)
-Date: Fri, 11 Oct 2019 12:01:06 -0700
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: YueHaibing <yuehaibing@huawei.com>
-Message-ID: <20191011190105.GA18114@Asurada-Nvidia.nvidia.com>
-References: <20191011105606.19428-1-yuehaibing@huawei.com>
- <20191011143538.15300-1-yuehaibing@huawei.com>
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+ :content-transfer-encoding;
+ bh=jA6dfJWqr0dJgDD2s+9+iGGdyjYB0avPNXoMgPLkvnE=;
+ b=nqSZRpLyX4vayAsvaId5Py5V0YavitH+hFDCjHEGsN5ZSkAEQyQm2sW7iyTH0kxKZU
+ LXB79YnLKB9ZoAZhi1iwFCsNE1v1XpyMg3t0T7r7pdXOVUO/x4FXtv7WBKUcpJYnLnkA
+ O77/Ar8DEKO05oDbEWSxfhhvBwbGSLutB4yL7i7/9LJa78H20JK65DNRDU7bookkeJm5
+ mQw0kRe6fsoW4cZS96DkFxYWF1fY6RmfM4Loqvu6SOXJpCMWahLVFQyCaktAGQMkpYnS
+ lrJy7K31rWrmct2kcXJ0ZoRRzIO5YWcJQBMrxTBZHXFhj59sx5BIg5AbWLJsv1vAQfGU
+ LU2w==
+X-Gm-Message-State: APjAAAWWt5hinjz21TRJh7CKp19MzSILruFHZkoVayeINLIxD3KVKkY4
+ POPTbN9mvSmBPgSTqjNtFyZ0xaI+xa1gUqOtBZk=
+X-Google-Smtp-Source: APXvYqwwR16BWzDaAQdj18EwQcW1QMM6zqb8OWy376Z5AQ1ScvVjMFkTX84URhUQqc/33uixneB1tf8mR2ARBj2Espo=
+X-Received: by 2002:a1c:7dce:: with SMTP id y197mr4612866wmc.171.1570827915260; 
+ Fri, 11 Oct 2019 14:05:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191011143538.15300-1-yuehaibing@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
- broonie@kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH v2 -next] ASoC: fsl_mqs: Move static
- keyword to the front of declarations
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Sat, 12 Oct 2019 00:05:03 +0300
+Message-ID: <CAEnQRZAen_Aa7SMdnPY4ezzbYtUypShto7ENGV_FhnsNhnxmBQ@mail.gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
+ Ranjani" <ranjani.sridharan@intel.com>
+Subject: [alsa-devel] Question about FE & BE DPCM
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,45 +97,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Oct 11, 2019 at 10:35:38PM +0800, YueHaibing wrote:
-> gcc warn about this:
-> 
-> sound/soc/fsl/fsl_mqs.c:146:1: warning:
->  static is not at beginning of declaration [-Wold-style-declaration]
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
-> ---
-> v2: Fix patch title
-> ---
->  sound/soc/fsl/fsl_mqs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
-> index f7fc44e..0c813a4 100644
-> --- a/sound/soc/fsl/fsl_mqs.c
-> +++ b/sound/soc/fsl/fsl_mqs.c
-> @@ -143,7 +143,7 @@ static void fsl_mqs_shutdown(struct snd_pcm_substream *substream,
->  				   MQS_EN_MASK, 0);
->  }
->  
-> -const static struct snd_soc_component_driver soc_codec_fsl_mqs = {
-> +static const struct snd_soc_component_driver soc_codec_fsl_mqs = {
->  	.idle_bias_on = 1,
->  	.non_legacy_dai_naming	= 1,
->  };
-> -- 
-> 2.7.4
-> 
-> 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+SGkgTW9yaW1vdG8tc2FuLAoKSSdtIHJlYWxseSBjb25mdXNlZCBvbiB3aGF0IGV4YWN0bHkgaXMg
+RnJvbnQgRW5kIGFuZCBCYWNrIEVuZC4KCklzIEZFIGEgREFJIG9yIGEgREFJIGxpbmsgb3IgcGFy
+dCBvZiBhIERBSSBsaW5rPwoKSW4gc2ltcGxlLWNhcmQuYyB0aGVyZSBpcyBzaW1wbGVfZGFpX2xp
+bmtfb2ZfZHBjbSBmdW5jdGlvbjoKCnN0cnVjdCBzbmRfc29jX2RhaV9saW5rX2NvbXBvbmVudCAq
+Y29kZWNzID0gZGFpX2xpbmstPmNvZGVjczsKCsK7ICAgICAgIC8qIEJFIGlzIGR1bW15ICovCsK7
+ICAgICAgIMK7ICAgICAgIGNvZGVjcy0+b2Zfbm9kZcK7wrsgICAgICAgPSBOVUxMOwrCuyAgICAg
+ICDCuyAgICAgICBjb2RlY3MtPmRhaV9uYW1lwrsgICAgICAgPSAic25kLXNvYy1kdW1teS1kYWki
+OwrCuyAgICAgICDCuyAgICAgICBjb2RlY3MtPm5hbWXCuyAgIMK7ICAgICAgID0gInNuZC1zb2Mt
+ZHVtbXkiOwoKwrsgICAgICAgwrsgICAgICAgLyogRkUgc2V0dGluZ3MgKi8KwrsgICAgICAgwrsg
+ICAgICAgZGFpX2xpbmstPmR5bmFtaWPCuyAgICAgIMK7ICAgICAgID0gMTsKwrsgICAgICAgwrsg
+ICAgICAgZGFpX2xpbmstPmRwY21fbWVyZ2VkX2Zvcm1hdMK7ICAgPSAxOwoKU28sIGZyb20gaGVy
+ZSBpdCBsb29rcyBsaWtlIEJFL0ZFIGFyZSBjb21wb25lbnRzIGJlaW5nIHBhcnQgb2YgdGhlIHNh
+bWUgbGluay4KCkFub3RoZXIgdGhpbmcgaXM6Cgphc29jX3NpbXBsZV9jYW5vbmljYWxpemVfcGxh
+dGZvcm0gZnVuY3Rpb24gd2hlcmUgaXQgZG9lcyBzYXk6CgrCuyAgICAgICAgKiBEUENNIEJFIGNh
+biBiZSBubyBwbGF0Zm9ybS4KwrsgICAgICAgICogQWxsb2NlZCBtZW1vcnkgd2lsbCBiZSB3YXN0
+ZSwgYnV0IG5vdCBsZWFrLgrCuyAgICAgICAgKi8KwrsgICAgICAgaWYgKCFkYWlfbGluay0+cGxh
+dGZvcm1zLT5vZl9ub2RlKQrCuyAgICAgICDCuyAgICAgICBkYWlfbGluay0+bnVtX3BsYXRmb3Jt
+cyA9IDA7CgpCdXQgSSBkbyB3YW50IHRvIGNyZWF0ZSBhIEJFIHdpdGggYSBwbGF0Zm9ybS4gU28s
+IHNob3VsZCBJIHRyeSB0bwpyZXZlcnQgdGhlIGZvbGxvd2luZwpwYXRjaDoKCmNvbW1pdCA3OTRm
+Y2VlOGRhM2MwYzhhMDFiMDhlY2FkMWMxODFjYjBhNjIyODY4CkF1dGhvcjogS3VuaW5vcmkgTW9y
+aW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgpEYXRlOiAgIFdlZCBKdWwg
+MTAgMTc6MDE6MTIgMjAxOSArMDkwMAoKICAgIEFTb0M6IHNpbXBsZS1jYXJkLXV0aWxzOiBjYXJl
+IG5vIFBsYXRmb3JtIGZvciBEUENNCgogICAgY29tbWl0IDM0NjE0NzM5OTg4YWQgKCJBU29DOiBz
+b2MtY29yZTogc3VwcG9ydCBkYWlfbGluayB3aXRoCiAgICBwbGF0Zm9ybXNfbnVtICE9IDEiKSBz
+dXBwb3J0cyBtdWx0aSBQbGF0Zm9ybSwgYW5kCiAgICBjb21taXQgOWYzZWI5MTc1MzQ1MSAoIkFT
+b0M6IHNpbXBsZS1jYXJkLXV0aWxzOiBjb25zaWRlciBDUFUtUGxhdGZvcm0KICAgIHBvc3NpYmls
+aXR5IikgcmVtb3ZlZCBubyBQbGF0Zm9ybSBmcm9tIHNpbXBsZS1jYXJkLgoKICAgIE11bHRpIFBs
+YXRmb3JtIGlzIG5vdyBjaGVja2luZyBib3RoIFBsYXRmb3JtIG5hbWUvb2Zfbm9kZSBhcmUgTlVM
+TCBjYXNlLgogICAgQnV0IGluIG5vcm1hbCBjYXNlLCBEUENNIGJlIGRvZXNuJ3QgaGF2ZSBQbGF0
+Zm9ybS4KCgoKQmFzaWNhbGx5LCB3aGF0IEkgd2FudCB0byBkbyBpczogYWZ0ZXIgdGhlIERBSSBs
+aW5rIGlzIGNyZWF0ZWQgdG8gY2FsbDoKc25kX3NvY19maXh1cF9kYWlfbGlua3NfcGxhdGZvcm1f
+bmFtZSBmdW5jdGlvbiB0byBzZXQgYSBwcm9wZXIgbmFtZQpmb3IgQkUgcGxhdGZvcm0uCgpUaGUg
+cHJvYmxlbSBpcyB0aGF0IGFib3ZlIG1lbnRpb25lZCBwYXRjaCBzZXRzIGRhaV9saW5rLT5udW1f
+cGxhdGZvcm1zID0gMDsKc28gZXZlbiB0aGUgbmFtZSBpcyBzZXQgdGhlIHBsYXRmb3JtIGNvbXBv
+bmVudCBpcyBub3QgcHJvYmVkLgoKdGhhbmtzLApEYW5pZWwuCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
