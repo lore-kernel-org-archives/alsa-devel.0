@@ -2,119 +2,85 @@ Return-Path: <SRS0=IN0D=YE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B03AC47404
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 12:31:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E99FECE58C
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 13:13:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99833206A1
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 12:31:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FD882089F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 13:13:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L9VXGVs8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RNtV53yj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99833206A1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vqUSQdJ3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FD882089F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CDCD15E0;
-	Fri, 11 Oct 2019 14:30:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CDCD15E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF91A1612;
+	Fri, 11 Oct 2019 15:12:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF91A1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570797077;
-	bh=LgTJxDjc9vHxCNAdysEyFCxjWt8JFN64GiJtxtw5BUE=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1570799622;
+	bh=0h77Pz9FbBpYhtQ04q4kuq/K/NPkfnhuhXltWVswrxI=;
+	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L9VXGVs8Lzzc8pPJy9RjHh2RwnWc+Tcm537pX/lQBDOU57AgU2YkRKfX8KJll2v6s
-	 Wtj0yUp4J2KWeV0EN0a4H5txinnsAfy7DoYFCbys/msQmjQsVLt4MnYFGLrvmkyP6i
-	 SmdXJryfsbnNh4wpXxVXAAaVNPoabZHy0TGJmMQo=
+	b=vqUSQdJ3eNP2kCjxiEwkXxW7ONjeaxH4RJStg/8Qpfgl+HCFkDzJVHcWHzxz+qRA/
+	 RS+hvuchg6XID2XhUIHzc7Ics/XZpSH9jWUUb9+R1Pfiwhdy/KC4M4UXLYQYrLrxO2
+	 zNdXQWWw/yOSuxc05vzRHO2gQKDw3SW1WhSw2mWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D76B3F802BD;
-	Fri, 11 Oct 2019 14:30:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 580DDF802BD;
+	Fri, 11 Oct 2019 15:12:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FFA7F802BE; Fri, 11 Oct 2019 14:30:25 +0200 (CEST)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 22B97F802BE; Fri, 11 Oct 2019 15:12:50 +0200 (CEST)
+Received: from mail-out.m-online.net (mail-out.m-online.net
+ [IPv6:2001:a60:0:28:0:1:25:1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC572F80113
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 14:30:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC572F80113
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="RNtV53yj"
-Received: by mail-wr1-x442.google.com with SMTP id h4so11744054wrv.7
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 05:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=eUAVKWO5tGOGok/vKm5I9Fla/1z4P3pvPIySfc1WbLY=;
- b=RNtV53yjZdIOhcHzhhnYIbDQbJJ7VLlvGAzwvvD7Iz76cQbWeEsAAgKU1UR+xBYFbD
- lTQhpVC6KvASGkVqJcSNfXZ/GTqhbSdUv8IG0CQGmGNDckpp6soaH5cLty0VtOsEsyfW
- bs5sbmKzARNsPY/zhYADlpWpebgW5RjvmCEwfBToNFd+nDMpLYY92kmn+8tnJTWP1HsO
- 9BtBLlg5UjgSUmztX1EnqGaORzA7BZSjQYHtLB6/ec9ZaWSFwbAdmhjHwMFoc0acGGvq
- BmJqKwLrbeoLV3+S6GDB4j/73HchdsOTO6JU/1xHhUl5XUkjmyf0qOTNi8UQA/IDUEiv
- j2Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=eUAVKWO5tGOGok/vKm5I9Fla/1z4P3pvPIySfc1WbLY=;
- b=D4lt+gsNmrPCBhDbxkFi9l7dU/OpUzSnivTiGcCcwe7hBJoRqHfjGpRkl/9LgB4JrM
- b2D6lby0iR6KOQ2tXBGlU04dSM8RTP0Bq+nIGvm2fHH1b1PPyO0e8LZM7ddMyrKuMoi6
- qY7YFgREVDbPkBX6UESuCS1hw2dCVTG2/06paA4BQTWUJwONnLNhh8rO6T5WI0eGx6PQ
- AB5cf1D+ySr+CQR7uGYwml/Mboz2Jb4Zv7nvVuIG8lQSmLd+lW+93z726yqqadtquqfi
- x5s/+s9XenTvVfriu863cAbYWOX4JpT2+ygsSMxvWrPoO3p6/P1Sm9+VscJMTuVllh1u
- LOgg==
-X-Gm-Message-State: APjAAAVCPwIHuC9dVg+4z7zkDjPk6jfZHfNpPEMPqOqBwnakiGpWE60F
- 5qiStr27cJD9TxYT4T91mgV81g==
-X-Google-Smtp-Source: APXvYqx1rdX0PmyUW4J4n+ZmiD+1KiVOhomZpcCLUgiE5LNwHT/pvqwwgRHD7MkrHSBvv4avhMCG2Q==
-X-Received: by 2002:adf:f4c2:: with SMTP id h2mr13353630wrp.69.1570797021729; 
- Fri, 11 Oct 2019 05:30:21 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id
- t123sm14523710wma.40.2019.10.11.05.30.19
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 11 Oct 2019 05:30:20 -0700 (PDT)
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>
-References: <20190813191827.GI5093@sirena.co.uk>
- <cc360858-571a-6a46-1789-1020bcbe4bca@linux.intel.com>
- <20190813195804.GL5093@sirena.co.uk>
- <20190814041142.GU12733@vkoul-mobl.Dlink>
- <99d35a9d-cbd8-f0da-4701-92ef650afe5a@linux.intel.com>
- <5e08f822-3507-6c69-5d83-4ce2a9f5c04f@linaro.org>
- <53bb3105-8e85-a972-fce8-a7911ae4d461@linux.intel.com>
- <95870089-25da-11ea-19fd-0504daa98994@linaro.org>
- <2326a155-332e-fda0-b7a2-b48f348e1911@linux.intel.com>
- <34e4cde8-f2e5-0943-115a-651d86f87c1a@linaro.org>
- <20191010120337.GB31391@ediswmail.ad.cirrus.com>
- <22eff3aa-dfd6-1ee5-8f22-2af492286053@linux.intel.com>
- <e671930b-645a-7ee3-6926-eea39626c0a3@linaro.org>
- <c9203f7f-f360-0ede-d351-cfdbec03299c@linux.intel.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <dbb25f4c-7198-ef28-ec6a-9ac5676122b6@linaro.org>
-Date: Fri, 11 Oct 2019 13:30:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAC4DF8026F
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 15:12:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAC4DF8026F
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+ by mail-out.m-online.net (Postfix) with ESMTP id 46qSzx30QXz1rdjb;
+ Fri, 11 Oct 2019 15:12:45 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+ by mail.m-online.net (Postfix) with ESMTP id 46qSzx0Xm2z1qqkW;
+ Fri, 11 Oct 2019 15:12:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
+ port 10024)
+ with ESMTP id 1iBTdqjoxA5y; Fri, 11 Oct 2019 15:12:44 +0200 (CEST)
+X-Auth-Info: P6pHhQefh826x5I3OGRMQajpdWG1pcG3yVxAquADxtTDkGfuDnxuuMluprMpWmf5
+Received: from igel.home (ppp-46-244-181-31.dynamic.mnet-online.de
+ [46.244.181.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.mnet-online.de (Postfix) with ESMTPSA;
+ Fri, 11 Oct 2019 15:12:43 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+ id 4F2242C01FC; Fri, 11 Oct 2019 15:12:43 +0200 (CEST)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: YueHaibing <yuehaibing@huawei.com>
+References: <20191011105606.19428-1-yuehaibing@huawei.com>
+X-Yow: I'll show you MY telex number if you show me YOURS...
+Date: Fri, 11 Oct 2019 15:12:43 +0200
+In-Reply-To: <20191011105606.19428-1-yuehaibing@huawei.com>
+ (yuehaibing@huawei.com's message of "Fri, 11 Oct 2019 18:56:06 +0800")
+Message-ID: <87mue7ifxw.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <c9203f7f-f360-0ede-d351-cfdbec03299c@linux.intel.com>
-Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, plai@codeaurora.org, linux-kernel@vger.kernel.org,
- lgirdwood@gmail.com, Vinod Koul <vkoul@kernel.org>, robh+dt@kernel.org,
- Mark Brown <broonie@kernel.org>, spapothi@codeaurora.org
-Subject: Re: [alsa-devel] [PATCH v2 3/5] ASoC: core: add support to
- snd_soc_dai_get_sdw_stream()
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
+ nicoleotsuka@gmail.com, broonie@kernel.org, festevam@gmail.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH -next] ASoC: fsl_mqs: fix old-style
+	function declaration
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -127,33 +93,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CgpPbiAxMC8xMC8yMDE5IDE2OjQ5LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiAKPiAK
-Pj4gSSBzdGlsbCBuZWVkIHRvIGZpZ3VyZSBvdXQgcHJlZml4aW5nIG11bHRpcGxlIGluc3RhbmNl
-cyBvZiB0aGlzIAo+PiBBbXBsaWZpZXIgY29udHJvbHMgd2l0aCAiTGVmdCIgYW5kICJSaWdodCIK
-PiAKPiBGV0lXIHdlIHVzZSB0aGUgInNuZF9jb2RlY19jb25mIiBzdHVmZiB0byBhZGQgYSBwcmVm
-aXggZm9yIGVhY2ggCj4gYW1wbGlmaWVyLCBzbyB0aGF0IHRoZSBjb250cm9scyBhcmUgbm90IG1p
-eGVkIHVwIGJldHdlZW4gaW5zdGFuY2VzIG9mIAo+IHRoZSBzYW1lIGFtcCwgc2VlIGUuZy4KPiAK
-VGhhbmtzIFBpZXJyZSBmb3IgdGhlIGlucHV0cy4KQW0gdXNpbmcgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL3NvdW5kL25hbWUtcHJlZml4LnR4dCBmb3IgZHQgCmFuZCBpdCB3b3Jr
-cyEKCkkgd2lsbCBzZW5kIG5ldyBzZXQgb2YgcGF0Y2hlcyBieSBkcm9wcGluZyB0aGlzIHBhdGNo
-IQoKLS1zcmluaQo+IAo+IHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jb2RlY19jb25mIGNvZGVjX2Nv
-bmZbXSA9IHsKPiAgwqDCoMKgwqB7Cj4gIMKgwqDCoMKgwqDCoMKgIC5kZXZfbmFtZSA9ICJzZHc6
-MDoyNWQ6NzExOjA6MSIsCj4gIMKgwqDCoMKgwqDCoMKgIC5uYW1lX3ByZWZpeCA9ICJydDcxMSIs
-Cj4gIMKgwqDCoMKgfSwKPiAgwqDCoMKgwqB7Cj4gIMKgwqDCoMKgwqDCoMKgIC5kZXZfbmFtZSA9
-ICJzZHc6MToyNWQ6MTMwODowOjAiLAo+ICDCoMKgwqDCoMKgwqDCoCAubmFtZV9wcmVmaXggPSAi
-cnQxMzA4LTEiLAo+ICDCoMKgwqDCoH0sCj4gIMKgwqDCoMKgewo+ICDCoMKgwqDCoMKgwqDCoCAu
-ZGV2X25hbWUgPSAic2R3OjI6MjVkOjEzMDg6MDoyIiwKPiAgwqDCoMKgwqDCoMKgwqAgLm5hbWVf
-cHJlZml4ID0gInJ0MTMwOC0yIiwKPiAgwqDCoMKgwqB9LAo+ICDCoMKgwqDCoHsKPiAgwqDCoMKg
-wqDCoMKgwqAgLmRldl9uYW1lID0gInNkdzozOjI1ZDo3MTU6MDoxIiwKPiAgwqDCoMKgwqDCoMKg
-wqAgLm5hbWVfcHJlZml4ID0gInJ0NzE1IiwKPiAgwqDCoMKgwqB9LAo+IH07Cj4gCj4gCj4gaHR0
-cHM6Ly9naXRodWIuY29tL3RoZXNvZnByb2plY3QvbGludXgvcHVsbC8xMTQyL2NvbW1pdHMvOWZm
-OWNmOWQ4OTk0MzMzZGYyMjUwNjQxYzk1NDMxMjYxYmM2NmQ2OSNkaWZmLTg5MjU2MGY4MGQ2MDM0
-MjBiYWVjNzM5NWUwYjQ1ZDgxUjIxMiAKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Okt 11 2019, YueHaibing <yuehaibing@huawei.com> wrote:
+
+> gcc warn about this:
+>
+> sound/soc/fsl/fsl_mqs.c:146:1: warning:
+>  static is not at beginning of declaration [-Wold-style-declaration]
+
+It's not a function, though.
+
+Andreas.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
