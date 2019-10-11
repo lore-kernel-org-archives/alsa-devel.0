@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B70EC10F14
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 00:42:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD319C10F14
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:08:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F9FD21920
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 00:42:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC24620B7C
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Oct 2019 01:08:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c1ez5ZyJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F9FD21920
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L1drVegB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC24620B7C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6965F1612;
-	Fri, 11 Oct 2019 02:41:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6965F1612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 688EE1614;
+	Fri, 11 Oct 2019 03:07:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 688EE1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1570754524;
-	bh=gh1p8M28Eyv1yzuZ/W2B2lVOHe77uU9N6/OklBbMRTI=;
+	s=default; t=1570756097;
+	bh=o5u63mvPDAGHr1aOYN5Tbn7yV97eIXKhUKu7a3XNdQc=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c1ez5ZyJW5YS+7JPfqaVyI8VUkMOFUdf+aM7aqUpseyt66Dek5tEvN9zzgvE+A4xM
-	 gN1HG+9e+I2ZI4/Jw90wPHhkN7S0k8xFgq0Q3Req5iwkW7MYa4EqvSAu4Otsl00PuZ
-	 avf28cBgT7D4gMzhdF0i120Yt2pNGAENEAzSoofc=
+	b=L1drVegB7eljxcbk4WQjuMCwG6s+OZEN99/bI2dBTmjQqcZfvb1rk3aVY+xJ+nua6
+	 KGCDeYgBWd//ug8x6EZ/Xr3/vk0NvXExqJYT3KNfCWLgej8a7FLe3ks+TZ4ihMfbDv
+	 EGJBrYk8LwwxnMVmpF9VU/QD1yH/vXpTEEkDukvU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF702F80322;
-	Fri, 11 Oct 2019 02:41:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD83CF80322;
+	Fri, 11 Oct 2019 03:07:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DA30F8038F; Fri, 11 Oct 2019 02:41:11 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A4F3CF80113
- for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 02:41:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4F3CF80113
-Date: 11 Oct 2019 09:41:01 +0900
-X-IronPort-AV: E=Sophos;i="5.67,282,1566831600"; d="scan'208";a="28822203"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 11 Oct 2019 09:41:01 +0900
+ id C1E4CF8038F; Fri, 11 Oct 2019 03:07:25 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B5CDFF80113
+ for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2019 03:07:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5CDFF80113
+Date: 11 Oct 2019 10:07:14 +0900
+X-IronPort-AV: E=Sophos;i="5.67,281,1566831600"; d="scan'208";a="28606541"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 11 Oct 2019 10:07:14 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4E4B04139F16;
- Fri, 11 Oct 2019 09:41:01 +0900 (JST)
-Message-ID: <87v9sww1uq.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 98E67400F93B;
+ Fri, 11 Oct 2019 10:07:14 +0900 (JST)
+Message-ID: <87sgo0w0n1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Daniel Baluta <daniel.baluta@gmail.com>
-In-Reply-To: <CAEnQRZDZc3vWVQTTa37opRs7aqx8xzTHTBB3oHXCrmeFTZRBhQ@mail.gmail.com>
-References: <CAEnQRZDhhZHOyqC8QSmgy+CY5eYSktPUiL6tVF9z_5ACegCsQw@mail.gmail.com>
- <CAEnQRZABxV+s3bF1yRr2TF0EJhZ-u+ZXxuvvz5so8AfyHVm8wA@mail.gmail.com>
- <87zhiaixfj.wl-kuninori.morimoto.gx@renesas.com>
- <CAEnQRZDZc3vWVQTTa37opRs7aqx8xzTHTBB3oHXCrmeFTZRBhQ@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <df9de456-a4c2-53c4-2143-edb4d4b2292f@linux.intel.com>
+References: <87sgo2ilso.wl-kuninori.morimoto.gx@renesas.com>
+ <878spuilqd.wl-kuninori.morimoto.gx@renesas.com>
+ <df9de456-a4c2-53c4-2143-edb4d4b2292f@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Counting links in simple-card
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 14/21] ASoC: soc-core: have
+	legacy_dai_naming at snd_soc_register_dai()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,42 +80,54 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Daniel
+Hi Pierre-Louis
 
-Thank you for your email
+Thank you for your feedback
 
-> I think I can modify simple-card to do this. Just let me know if you
-> see something obviously wrong
-> on making the simple-card / simple-scu-card handling this case with
-> creating just 1 BE DAI link.
+> > snd_soc_register_dai() is now used from topology.
+> > But, to reduce duplicated code, it will be used from soc-core, too.
+> > To prepare for it, this patch adds missing parameter legacy_dai_naming
+> > to snd_soc_register_dai().
+> 
+> It doesn't look like this series reduces the confusion between
+> snd_soc_register_dai() and snd_soc_register_dais() ?
+> 
+> maybe for the latter case since it's a static function we don't want
+> the entire prefix then?
 
-Current DPCM support is used for "TDM-Split mode",
-"MIXer", "Sampling rate convert" for now.
+Maybe my explain is not so good...
+The point is that, in general people think like below from naming.
+Other functions are this style.
 
-But, of course I have no objection if you can add new feature.
-
-> simple-audio-card,dai-link@2 {
->            cpu {
->                   sound-dai=<&cpu1>;
->            }
->        }
-
-It looks FE, but is this for BE ?
-
-> Maybe add a property like "dpcm".
-
-I think property "dpcm" is very ALSA-SoC naming, DT guy don't like it (?).
-"simple-xxx-card" (1) or new node (2) can be acceptable ?
-I'm not sure...
-
-	machine_drv {
-(1)	        compatible = "simple-xxx-card";
+=>	int snd_soc_register_dai()
+	{
 		...
+	}
 
-		simple-audio-card,dai-link@2 {
-(2)			dpcm-fe {
-				sound-dai=<&cpu1>;
-				...
+	int snd_soc_register_dais()
+	{
+		for(..) {
+=>			snd_soc_register_dai()
+		}		
+	}
+
+But in reality is like this
+
+	int snd_soc_register_dai()
+	{
+		/* almost same but different code */
+	}
+
+	snd_soc_register_dais()
+	{
+		/* almost same but different code */
+	}
+
+To avoid duplicate code and confusion,
+this patchset try to implement "general" style.
+But needs some preparation.
+
+I will fix log and English.
 
 Thank you for your help !!
 Best regards
