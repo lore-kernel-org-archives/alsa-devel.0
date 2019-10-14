@@ -4,78 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31E80C4CECE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:08:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C7D6C4CECE
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:09:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEDAD20854
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:08:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14DB420673
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:09:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CjzuGcZn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="FvbcA3cT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEDAD20854
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pXpmdyC/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="qn+OlOED"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14DB420673
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E25711654;
-	Mon, 14 Oct 2019 14:07:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E25711654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5799F1677;
+	Mon, 14 Oct 2019 14:08:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5799F1677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571054930;
-	bh=TZqoJVGCduk/7YsJ8AFkmltLG3wzUAxflzjlayft3zk=;
+	s=default; t=1571054966;
+	bh=N7N7kk75UWlXlRLZHQCbubU2IqAx9LK8T1YftVtyKg4=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=CjzuGcZnBTiTZovrmUXd6CBZi/95k4orivumrMih4/WxDRHBgfBUSan2yH48XhGGk
-	 7cRqMc26y3zmtng2nzAB+ajj5PyA1KsDQdV1vVVSWwnT/S0CakaZP24L8VtwDCKdX4
-	 4vDV2+UR0nKrZzi9+5Ch94Sz6pK9aRoIjEjrcbP8=
+	b=pXpmdyC/X3mmutZLP214V28TFIzx4uOD2+AaVov7h0Mc7c+LrbF5Es5zLl9tAga8J
+	 fwMpEYNG9BuFaRdN1r9slZzttMoUF/ir3shYwUh2oNygW21FHyLbuKufr/u4Vgnhv3
+	 aPjqf46kWH8eyD00yl8zI/FWxUtGznCobEGH4mmg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 418ABF80612;
-	Mon, 14 Oct 2019 14:05:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7088AF80634;
+	Mon, 14 Oct 2019 14:05:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E9D6F80529; Mon, 14 Oct 2019 14:05:06 +0200 (CEST)
+ id F1A54F80529; Mon, 14 Oct 2019 14:05:06 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CF16F80369
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 14:04:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CF16F80369
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61655F8036C
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 14:05:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61655F8036C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="FvbcA3cT"
+ header.b="qn+OlOED"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=zlWDxHDmKVfS5xoigAUF+CKDSepQej2BJcgQwBIF0jw=; b=FvbcA3cT+/xd
- Yzhpsz26cTAGMFFRPGZrYjupURACDQrm1GBpUhZoO1AEIppgI4SJTT07fFxZBlFMYOp8k0RfeTWsb
- ZipYtRLsWzPI3/4FFSBpZOrXJRgtiZ/QFkvxYwr4Kp6nna6FCr8oqqyTEgXauTg0FisjJrx9AjxdO
- aqX1s=;
+ List-Archive; bh=T57gFAQ2HL0OrNojxYT6RFsspIHb42s2lXo+OYKN3oU=; b=qn+OlOED4Bqj
+ 8Fv1zdAGKWWZJCAl7bXukw7iCCsS86IVOk6Mc697BCVuVlyI5GBGOmiMeEE9XE0ZIsA0ucaybSXqm
+ nKaikyzKNfIiccC5JDwiL+VAehIFfeFonC2FpRJ8UOp9yVraGm0018xuq4i3Xl6EfsREU4OKoipca
+ iOpJQ=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iJz5t-0007WA-L2; Mon, 14 Oct 2019 12:04:57 +0000
+ id 1iJz5u-0007WM-UW; Mon, 14 Oct 2019 12:04:58 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id D0BA12741EED; Mon, 14 Oct 2019 13:04:56 +0100 (BST)
+ id D43862741EED; Mon, 14 Oct 2019 13:04:57 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191011164312.7988-5-pierre-louis.bossart@linux.intel.com>
+To: YueHaibing <yuehaibing@huawei.com>
+In-Reply-To: <20191011143538.15300-1-yuehaibing@huawei.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191014120456.D0BA12741EED@ypsilon.sirena.org.uk>
-Date: Mon, 14 Oct 2019 13:04:56 +0100 (BST)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: topology: check errors when
-	parsing LED tokens" to the asoc tree
+Message-Id: <20191014120457.D43862741EED@ypsilon.sirena.org.uk>
+Date: Mon, 14 Oct 2019 13:04:57 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, tiwai@suse.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [alsa-devel] Applied "ASoC: fsl_mqs: Move static keyword to the
+	front of declarations" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: topology: check errors when parsing LED tokens
+   ASoC: fsl_mqs: Move static keyword to the front of declarations
 
 has been applied to the asoc tree at
 
@@ -121,45 +124,38 @@ to this mail.
 Thanks,
 Mark
 
-From 8a3ab38c36926ddbda3d2a3086c0a741fa175cff Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 11 Oct 2019 11:43:12 -0500
-Subject: [PATCH] ASoC: SOF: topology: check errors when parsing LED tokens
+From dd79841ca66ff509660880237dc286d7f116a766 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Fri, 11 Oct 2019 22:35:38 +0800
+Subject: [PATCH] ASoC: fsl_mqs: Move static keyword to the front of
+ declarations
 
-sof_parse_tokens() returns a value that is checked on every call
-except for LED tokens, fix with explicit test.
+gcc warn about this:
 
-Detected with cppcheck warning:
+sound/soc/fsl/fsl_mqs.c:146:1: warning:
+ static is not at beginning of declaration [-Wold-style-declaration]
 
-sound/soc/sof/topology.c:973:6: style: Variable 'ret' is assigned a
-value that is never used. [unreadVariable]
- ret = sof_parse_tokens(scomp, &scontrol->led_ctl, led_tokens,
-     ^
-
-Fixes: 5d43001ae4360 ("ASoC: SOF: acpi led support for switch controls")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191011164312.7988-5-pierre-louis.bossart@linux.intel.com
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/20191011143538.15300-1-yuehaibing@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/topology.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/fsl/fsl_mqs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 3fad1d5cb2ca..b3ab6f23fc93 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -963,6 +963,11 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 	ret = sof_parse_tokens(scomp, &scontrol->led_ctl, led_tokens,
- 			       ARRAY_SIZE(led_tokens), mc->priv.array,
- 			       le32_to_cpu(mc->priv.size));
-+	if (ret != 0) {
-+		dev_err(sdev->dev, "error: parse led tokens failed %d\n",
-+			le32_to_cpu(mc->priv.size));
-+		return ret;
-+	}
+diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
+index f7fc44e8fb27..0c813a45bba7 100644
+--- a/sound/soc/fsl/fsl_mqs.c
++++ b/sound/soc/fsl/fsl_mqs.c
+@@ -143,7 +143,7 @@ static void fsl_mqs_shutdown(struct snd_pcm_substream *substream,
+ 				   MQS_EN_MASK, 0);
+ }
  
- 	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
- 		scontrol->comp_id, scontrol->num_channels);
+-const static struct snd_soc_component_driver soc_codec_fsl_mqs = {
++static const struct snd_soc_component_driver soc_codec_fsl_mqs = {
+ 	.idle_bias_on = 1,
+ 	.non_legacy_dai_naming	= 1,
+ };
 -- 
 2.20.1
 
