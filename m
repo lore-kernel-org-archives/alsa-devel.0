@@ -2,67 +2,91 @@ Return-Path: <SRS0=QzCZ=YH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDEECC4CECE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 09:24:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4030FC4CECE
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 10:21:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9BA420659
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 09:24:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3B4C320854
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 10:21:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gxiPu1DK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9BA420659
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dGIVVYUu";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Mf+/ukDv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B4C320854
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A89661612;
-	Mon, 14 Oct 2019 11:24:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A89661612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C15015E0;
+	Mon, 14 Oct 2019 12:20:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C15015E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571045096;
-	bh=4zDOsgpJobvmKiiltC8ltwkWjZxDV9ILpHZ9tbjItk0=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1571048497;
+	bh=2tsdZk77BE9Uo5KRkBcfpT+6MvbmuQluLsyetYE7wo4=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=gxiPu1DKnQnECONzcXUUFnOteE0mXibUvUJPlTUJI1ir6E36dHMlCTxRk+7xw2J9T
-	 A1jqo3pwmJyIO0ndxZqrbmY+bdHBjT+zZsCwBGSFHJo1c1Yentlc7YfvVpgQUOt+sN
-	 ttUrxkBeHpdbmBn91h4mHnGQ9LlG3QJfHNKnct7g=
+	b=dGIVVYUuT3xvP4H5w2/knAhZBah8O98cO6wXVdRW46P3WiP4aOgD9htlkWrqemFUS
+	 ZbpeeqUObZGBf/tOzOUOinZ/Y0Iys7uRB6BFbl7noUcSODU/7/q54XMsth0Z71Evm0
+	 mO085skXBx4uMomEkIKdtHh9gBGEq239+1+x4giA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36A10F80322;
-	Mon, 14 Oct 2019 11:24:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93887F80322;
+	Mon, 14 Oct 2019 12:20:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82F4BF80362; Mon, 14 Oct 2019 11:24:04 +0200 (CEST)
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 127E9F80362; Mon, 14 Oct 2019 12:20:44 +0200 (CEST)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com
+ [IPv6:2607:f8b0:4864:20::54a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7539FF8011D
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 11:24:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7539FF8011D
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id 170999F73C384615EB6A;
- Mon, 14 Oct 2019 17:23:57 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Mon, 14 Oct 2019
- 17:23:46 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <pierre-louis.bossart@linux.intel.com>,
- <jaska.uimonen@linux.intel.com>, <yuehaibing@huawei.com>,
- <yang.jie@linux.intel.com>, <yung-chuan.liao@linux.intel.com>
-Date: Mon, 14 Oct 2019 17:13:08 +0800
-Message-ID: <20191014091308.23688-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH -next] ASoC: SOF: Fix randbuild error
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0485FF80138
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 12:20:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0485FF80138
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="Mf+/ukDv"
+Received: by mail-pg1-x54a.google.com with SMTP id z7so12349530pgk.11
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 03:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=NUWv3pS6i68MPyjlBfm0nFo2xRHgz4DI1UFPygXWc14=;
+ b=Mf+/ukDvCvG79e+JKV/LbVKJnZ317XOeJkfVvPRDrUlNFL4aJeeYA8ORopngzAoY6s
+ xdwCooAwsc4aUOg0vs36dVFlDSvf88OZvj5C9Dq3gJG3No2op8TbR2JVM788ZjdXRkss
+ 2tIrMu7pTC8/u19pHTBITL/KLx969HshJYvtt59VIzhX9ig6VlBA7t4RBz1Z0Ny5zcaa
+ cEH9EpheAGIcCPgP5OGQz/Z8TCjnisJFR1Qxjx9a9XgvkkwEjq/bB9ZWNtmIzAotLNV0
+ lsTzzJUOexSrh+8v6uUjTrRF5FuxGS0gjLfyQtIaxyL1XWXmjloOkVmNHoNIxVW9JaXE
+ wrqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=NUWv3pS6i68MPyjlBfm0nFo2xRHgz4DI1UFPygXWc14=;
+ b=jupumvrcrTMo2w8FP8qnAuKi09nEEQ1oSU/TJh8AKuG0j6LZ1AoIJY5zJ3BekxmP4n
+ +yxGqTVpAMW+r7VPSF1BpmKRnGGNxb+6GL3ezaPEJcorgCxXgcYFjfuE+asoJTNNfrex
+ ukIOPKcTfocu1EAwMyMCUg5ATYcX2ubfQxyI7Vc4R2fWPEMpHGmzujjPtzKlSGFO4YdG
+ IDRdH9SSCjNnEohKe7VmNsebCpG1yNDR2yWJEWy8JhwxCnwhOMh1EqOpSilkdk65EQni
+ sU/g5JC8PD/JHdgLvw7Wo6IvnHGbBsouQT8XDCA1EjI9ZX5AAGY+79DwZwvd1aabzLXj
+ TXAA==
+X-Gm-Message-State: APjAAAX6+MuoYz0Ek8jsEGKvcT3CLpl/TE/jQcu1Ng0OshgxH2Ugafs9
+ 77BKrMeG414UMCLxTouMBi5jVgvOjcwT
+X-Google-Smtp-Source: APXvYqybl2o6f9MpE2y0b4jGAulKGhnTL0ZJF7GuOPvB9xeT2A80cEhd29tNE2grvM2fiuFrEaqpmfICjoBn
+X-Received: by 2002:a63:c911:: with SMTP id o17mr32400264pgg.150.1571048439006; 
+ Mon, 14 Oct 2019 03:20:39 -0700 (PDT)
+Date: Mon, 14 Oct 2019 18:20:12 +0800
+Message-Id: <20191014102022.236013-1-tzungbi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.700.g56cf767bdb-goog
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: broonie@kernel.org
+Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ cychiang@google.com, drinkcat@google.com, tzungbi@google.com,
+ robh+dt@kernel.org, enric.balletbo@collabora.com, bleung@google.com,
+ dgreid@google.com
+Subject: [alsa-devel] [PATCH v3 00/10] ASoC: mediatek:
+ mt8183-mt6358-ts3a227-max98357: support WoV
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,39 +104,71 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When LEDS_TRIGGER_AUDIO is m and SND_SOC_SOF is y,
+This series makes mt6358, cros_ec_codec, and mt8183-mt6358-ts3a227-max98357
+support WoV (wake on voice).
 
-sound/soc/sof/control.o: In function `snd_sof_switch_put':
-control.c:(.text+0x587): undefined reference to `ledtrig_audio_set'
-control.c:(.text+0x593): undefined reference to `ledtrig_audio_set'
+The first 3 commits are some cleanups and refactors.  It looks like
+breaking the existing interface.  But please be noticed that, the
+cros_ec_codec has not used by any real device yet.  The refactor is
+very necessary to keep the style consistent and for easier to further
+extend and maintain.
+  platform/chrome: cros_ec: remove unused EC feature
+  ASoC: cros_ec_codec: refactor I2S RX
+  ASoC: cros_ec_codec: extract DMIC EC command from I2S RX
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 5d43001ae436 ("ASoC: SOF: acpi led support for switch controls")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/sof/control.c | 2 ++
- 1 file changed, 2 insertions(+)
+The 4th commit extends the feature offered from EC codec.
+  platform/chrome: cros_ec: add common commands for EC codec
 
-diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
-index 41551e8..2c4abd4 100644
---- a/sound/soc/sof/control.c
-+++ b/sound/soc/sof/control.c
-@@ -36,10 +36,12 @@ static void update_mute_led(struct snd_sof_control *scontrol,
- 
- 	scontrol->led_ctl.led_value = temp;
- 
-+#if IS_REACHABLE(CONFIG_LEDS_TRIGGER_AUDIO)
- 	if (!scontrol->led_ctl.direction)
- 		ledtrig_audio_set(LED_AUDIO_MUTE, temp ? LED_OFF : LED_ON);
- 	else
- 		ledtrig_audio_set(LED_AUDIO_MICMUTE, temp ? LED_OFF : LED_ON);
-+#endif
- }
- 
- static inline u32 mixer_to_ipc(unsigned int value, u32 *volume_map, int size)
+The 5th commit changes the behavior of setting and getting DMIC gains.
+  ASoC: cros_ec_codec: read max DMIC gain from EC codec
+
+The 6th and 7th commit make cros_ec_codec support WoV.
+  ASoC: dt-bindings: cros_ec_codec: add SHM bindings
+  ASoC: cros_ec_codec: support WoV
+
+The 8th commit sets necessary registers on mt6358 to support WoV.
+  ASoC: mediatek: mt6358: support WoV
+
+The last 2 commit make machine driver mt8183-mt6358-ts3a227-max98357
+support WoV if ec-codec is in DTS.
+  ASoC: dt-bindings: mt8183: add ec-codec
+  ASoC: mediatek: mt8183: support WoV
+
+Changes from v1:
+- fix a compile error and make kbuild bot happy
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/156315.html
+Changes from v2:
+- rebase upon to "don't use snd_pcm_ops" series
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/156170.html
+- fix sparse errors
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/156328.html
+- use "reg" for SHM binding
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/156657.html
+
+Tzung-Bi Shih (10):
+  WIP: platform/chrome: cros_ec: remove unused EC feature
+  WIP: ASoC: cros_ec_codec: refactor I2S RX
+  WIP: ASoC: cros_ec_codec: extract DMIC EC command from I2S RX
+  WIP: platform/chrome: cros_ec: add common commands for EC codec
+  WIP: ASoC: cros_ec_codec: read max DMIC gain from EC codec
+  WIP: ASoC: dt-bindings: cros_ec_codec: add SHM bindings
+  WIP: ASoC: cros_ec_codec: support WoV
+  WIP: ASoC: mediatek: mt6358: support WoV
+  WIP: ASoC: dt-bindings: mt8183: add ec-codec
+  WIP: ASoC: mediatek: mt8183: support WoV
+
+ .../bindings/sound/google,cros-ec-codec.txt   |   24 +-
+ .../sound/mt8183-mt6358-ts3a227-max98357.txt  |    3 +
+ drivers/platform/chrome/cros_ec_trace.c       |    5 +-
+ .../linux/platform_data/cros_ec_commands.h    |  285 ++++-
+ sound/soc/codecs/cros_ec_codec.c              | 1128 +++++++++++++----
+ sound/soc/codecs/mt6358.c                     |  105 ++
+ sound/soc/mediatek/Kconfig                    |    1 +
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   |   70 +-
+ 8 files changed, 1296 insertions(+), 325 deletions(-)
+
 -- 
-2.7.4
-
+2.23.0.700.g56cf767bdb-goog
 
 _______________________________________________
 Alsa-devel mailing list
