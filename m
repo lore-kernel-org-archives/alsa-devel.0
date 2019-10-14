@@ -2,76 +2,68 @@ Return-Path: <SRS0=QzCZ=YH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 078C3C4CECE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 18:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD6BECE58C
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 19:48:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03E7120873
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 18:41:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6BE7C217D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 19:48:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bv4dwZbs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03E7120873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i5RqZ065"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BE7C217D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB3D2847;
-	Mon, 14 Oct 2019 20:40:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB3D2847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E4FE84C;
+	Mon, 14 Oct 2019 21:47:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E4FE84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571078472;
-	bh=zAnAwCqxBYhe1yDmVVbiFfzT/lQgFjwE1Y7/I5t+T0A=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1571082492;
+	bh=IHW0LW4BZlzc7wTqWcPtyTisS+APRLd/0u5efucVrrQ=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bv4dwZbsCquV8/9YpTqrIHJI7UgIONDgG0eXISNAmo0rtP1HY/oFSSHQiPVxeBg3q
-	 5lw1fzGE/qsfBZnbiHe82sKWBSRFwAS+Czo5aRMRDc2Qgc1JSsquWNU68sjx9eSm3W
-	 GmT5yT7uwNMGD6yPsK7jQwQPtJg3t7FGFHoiifLA=
+	b=i5RqZ065nTBmCJzlak+rpKH/bHULBgVBqizL5/WMycjoKzgD9HoQidr+xmL7tbAyq
+	 abfewsX6VUzi8cNzPNFHU0KLfFefG911aDBKMyFLVV/Fu4sySuUverIPrgXk285Uzt
+	 rFmsoARURoCfCPCCpU8d249lL6F0+Wtn9V5rTU30=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 199EBF80138;
-	Mon, 14 Oct 2019 20:40:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3DCAF80322;
+	Mon, 14 Oct 2019 21:47:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8404DF80362; Mon, 14 Oct 2019 20:40:19 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 4809DF8011D; Mon, 14 Oct 2019 21:47:20 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01112F80138
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 20:40:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01112F80138
+ by alsa1.perex.cz (Postfix) with ESMTPS id EFF89F8011D
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 21:47:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFF89F8011D
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Oct 2019 11:40:11 -0700
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 14 Oct 2019 12:47:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,296,1566889200"; d="scan'208";a="185568300"
-Received: from sayantik-mobl.amr.corp.intel.com (HELO [10.252.207.98])
- ([10.252.207.98])
- by orsmga007.jf.intel.com with ESMTP; 14 Oct 2019 11:40:10 -0700
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-References: <1571070480-25666-1-git-send-email-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <be3ed1bd-be46-7f6f-fdff-c20ed2dae616@linux.intel.com>
-Date: Mon, 14 Oct 2019 13:40:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+X-IronPort-AV: E=Sophos;i="5.67,296,1566889200"; d="scan'208";a="194309101"
+Received: from dmccormi-mobl1.ger.corp.intel.com ([10.251.80.150])
+ by fmsmga008.fm.intel.com with ESMTP; 14 Oct 2019 12:47:09 -0700
+Message-ID: <3811afd6d83c491077dd30089bcf836f56f146c3.camel@linux.intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Date: Mon, 14 Oct 2019 20:47:07 +0100
+In-Reply-To: <20191009181356.GO2036@sirena.org.uk>
+References: <20191009181356.GO2036@sirena.org.uk>
+User-Agent: Evolution 3.32.1-2 
 MIME-Version: 1.0
-In-Reply-To: <1571070480-25666-1-git-send-email-brent.lu@intel.com>
-Content-Language: en-US
-Cc: cezary.rojewski@intel.com, harshapriya.n@intel.com,
- "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>,
- yang.jie@linux.intel.com, liam.r.girdwood@linux.intel.com,
- mac.chiang@intel.com, broonie@kernel.org, naveen.m@intel.com,
- yung-chuan.liao@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: Intel: eve: Enable mclk and ssp
-	sclk early
+Cc: Takashi Iwai <tiwai@suse.de>, Curtis Malainey <cujomalainey@google.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [ANNOUNCE] 2019 Linux Audio miniconference
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,198 +76,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 10/14/19 11:28 AM, Brent Lu wrote:
-> From: Naveen M <naveen.m@intel.com>
+On Wed, 2019-10-09 at 19:13 +0100, Mark Brown wrote:
+> Hi,
 > 
-> rt5663 and rt5514 needs mclk/sclk early to synchronize its internal
-> clocks.
-
-Thanks, this looks quite similar to the changes from kbl_rt5663_max98927 so
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
+> As in previous years we're going to have an audio miniconference so
+> we can
+> get together and talk through issues, especially design decisions,
+> face to
+> face.  This year's event will be held on October 31st in Lyon,
+> France,
+> the day after ELC-E.  This will be held at the Lyon Convention Center
+> (the
+> ELC-E venue) and will be free of charge to attend, generously
+> sponsored by Intel.
 > 
-> Signed-off-by: Naveen M <naveen.m@intel.com>
-> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->   sound/soc/intel/boards/Kconfig                     |  1 +
->   .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 94 ++++++++++++++++++++++
->   2 files changed, 95 insertions(+)
+> Thus far for the agenda we have:
 > 
-> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-> index 5c27f7a..5e0e7db 100644
-> --- a/sound/soc/intel/boards/Kconfig
-> +++ b/sound/soc/intel/boards/Kconfig
-> @@ -320,6 +320,7 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
->           select SND_SOC_RT5514_SPI
->           select SND_SOC_MAX98927
->           select SND_SOC_HDAC_HDMI
-> +	select SND_SOC_INTEL_SKYLAKE_SSP_CLK
->           help
->             This adds support for ASoC Onboard Codec I2S machine driver. This will
->             create an alsa sound card for RT5663 + RT5514 + MAX98927.
-> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> index 74dda87..dc09a85 100644
-> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> @@ -22,6 +22,9 @@
->   #include "../../codecs/rt5514.h"
->   #include "../../codecs/rt5663.h"
->   #include "../../codecs/hdac_hdmi.h"
-> +#include <linux/clk.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/clkdev.h>
->   
->   #define KBL_REALTEK_CODEC_DAI "rt5663-aif"
->   #define KBL_REALTEK_DMIC_CODEC_DAI "rt5514-aif1"
-> @@ -50,6 +53,8 @@ struct kbl_codec_private {
->   	struct snd_soc_jack kabylake_headset;
->   	struct list_head hdmi_pcm_list;
->   	struct snd_soc_jack kabylake_hdmi[2];
-> +	struct clk *mclk;
-> +	struct clk *sclk;
->   };
->   
->   enum {
-> @@ -71,6 +76,61 @@ static const struct snd_kcontrol_new kabylake_controls[] = {
->   	SOC_DAPM_PIN_SWITCH("DMIC"),
->   };
->   
-> +static int platform_clock_control(struct snd_soc_dapm_widget *w,
-> +			struct snd_kcontrol *k, int  event)
-> +{
-> +	struct snd_soc_dapm_context *dapm = w->dapm;
-> +	struct snd_soc_card *card = dapm->card;
-> +	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(card);
-> +	int ret = 0;
-> +
-> +	/*
-> +	 * MCLK/SCLK need to be ON early for a successful synchronization of
-> +	 * codec internal clock. And the clocks are turned off during
-> +	 * POST_PMD after the stream is stopped.
-> +	 */
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		/* Enable MCLK */
-> +		ret = clk_set_rate(priv->mclk, 24000000);
-> +		if (ret < 0) {
-> +			dev_err(card->dev, "Can't set rate for mclk, err: %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +
-> +		ret = clk_prepare_enable(priv->mclk);
-> +		if (ret < 0) {
-> +			dev_err(card->dev, "Can't enable mclk, err: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		/* Enable SCLK */
-> +		ret = clk_set_rate(priv->sclk, 3072000);
-> +		if (ret < 0) {
-> +			dev_err(card->dev, "Can't set rate for sclk, err: %d\n",
-> +				ret);
-> +			clk_disable_unprepare(priv->mclk);
-> +			return ret;
-> +		}
-> +
-> +		ret = clk_prepare_enable(priv->sclk);
-> +		if (ret < 0) {
-> +			dev_err(card->dev, "Can't enable sclk, err: %d\n", ret);
-> +			clk_disable_unprepare(priv->mclk);
-> +		}
-> +		break;
-> +	case SND_SOC_DAPM_POST_PMD:
-> +		clk_disable_unprepare(priv->mclk);
-> +		clk_disable_unprepare(priv->sclk);
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static const struct snd_soc_dapm_widget kabylake_widgets[] = {
->   	SND_SOC_DAPM_HP("Headphone Jack", NULL),
->   	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-> @@ -79,11 +139,15 @@ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
->   	SND_SOC_DAPM_MIC("DMIC", NULL),
->   	SND_SOC_DAPM_SPK("HDMI1", NULL),
->   	SND_SOC_DAPM_SPK("HDMI2", NULL),
-> +	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-> +			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
-> +			SND_SOC_DAPM_POST_PMD),
->   
->   };
->   
->   static const struct snd_soc_dapm_route kabylake_map[] = {
->   	/* Headphones */
-> +	{ "Headphone Jack", NULL, "Platform Clock" },
->   	{ "Headphone Jack", NULL, "HPOL" },
->   	{ "Headphone Jack", NULL, "HPOR" },
->   
-> @@ -92,6 +156,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
->   	{ "Right Spk", NULL, "Right BE_OUT" },
->   
->   	/* other jacks */
-> +	{ "Headset Mic", NULL, "Platform Clock" },
->   	{ "IN1P", NULL, "Headset Mic" },
->   	{ "IN1N", NULL, "Headset Mic" },
->   
-> @@ -643,6 +708,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
->   {
->   	struct kbl_codec_private *ctx;
->   	struct snd_soc_acpi_mach *mach;
-> +	int ret = 0;
->   
->   	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
->   	if (!ctx)
-> @@ -658,6 +724,34 @@ static int kabylake_audio_probe(struct platform_device *pdev)
->   		dmic_constraints = mach->mach_params.dmic_num == 2 ?
->   			&constraints_dmic_2ch : &constraints_dmic_channels;
->   
-> +	ctx->mclk = devm_clk_get(&pdev->dev, "ssp1_mclk");
-> +	if (IS_ERR(ctx->mclk)) {
-> +		ret = PTR_ERR(ctx->mclk);
-> +		if (ret == -ENOENT) {
-> +			dev_info(&pdev->dev,
-> +				"Failed to get ssp1_mclk, defer probe\n");
-> +			return -EPROBE_DEFER;
-> +		}
-> +
-> +		dev_err(&pdev->dev, "Failed to get ssp1_mclk with err:%d\n",
-> +								ret);
-> +		return ret;
-> +	}
-> +
-> +	ctx->sclk = devm_clk_get(&pdev->dev, "ssp1_sclk");
-> +	if (IS_ERR(ctx->sclk)) {
-> +		ret = PTR_ERR(ctx->sclk);
-> +		if (ret == -ENOENT) {
-> +			dev_info(&pdev->dev,
-> +				"Failed to get ssp1_sclk, defer probe\n");
-> +			return -EPROBE_DEFER;
-> +		}
-> +
-> +		dev_err(&pdev->dev, "Failed to get ssp1_sclk with err:%d\n",
-> +								ret);
-> +		return ret;
-> +	}
-> +
->   	return devm_snd_soc_register_card(&pdev->dev, &kabylake_audio_card);
->   }
->   
-> 
+>  - Use case management enhancements (Curtis)
+>  - DSP framework integration (Liam?)
+>  - Soundwire status (Pierre?)
+>  - Componentisation status/plans (Me)
+
+Audio Virtualisation. (Me).
+
+Liam
+
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
