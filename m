@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A07BFC4CECE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78174C4CECE
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:07:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25D1320673
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:06:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01D8020673
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:07:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EZW4J3ri";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="H6UN6SO2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25D1320673
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KZ9j7fhx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="cRcG44pd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01D8020673
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65B57166E;
-	Mon, 14 Oct 2019 14:06:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65B57166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAA491675;
+	Mon, 14 Oct 2019 14:06:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAA491675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571054810;
-	bh=WDkibVOxFL+oc88myl1McmIR8p9//SaF3Url9/p14Qs=;
+	s=default; t=1571054855;
+	bh=CyqdUp2nT9VD3SbnXqzQ5uqEHLOZTlL14exoIMDFBTc=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=EZW4J3riRkRp3QwtpnVSnQQ0iJZUtUO7bCVYS2Mx9zrXgUzwztfpzJ193rpUflaiY
-	 zHYp7oH6R/95aDy4VJywYQE6oMRmzQA6ZwyI4PCd99YkEJ8yMJj1PmYmuLB8R6QWFh
-	 Q2l/DH5gxU8tS2N7b6w4WjKUzY26gMAQwl+iK+uQ=
+	b=KZ9j7fhxsKPmrwhlgy0c3/epjGzhRCDF8R9eBkVTSMplVhtDzrR646UkRYmhYs6pu
+	 ZRXasL10KFaaWrDvmF/F8XC+Gm/93dxuVz1aOB+cUoRHFREBrraFfJyV+Fl2tcDaMF
+	 Cfh8nnx2oJYXv+8jwdisv1mjPh6tJRKnzwk2GtNE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D669CF80322;
-	Mon, 14 Oct 2019 14:05:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9C27F8036C;
+	Mon, 14 Oct 2019 14:05:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99192F8045D; Mon, 14 Oct 2019 14:05:02 +0200 (CEST)
+ id 69F7EF804AB; Mon, 14 Oct 2019 14:05:05 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFAD0F80362
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC392F80322
  for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 14:04:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFAD0F80362
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC392F80322
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="H6UN6SO2"
+ header.b="cRcG44pd"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=JMCzNGjkdJrly3/aH/7UDDl727DQ/lS3yFqmaRkPWeE=; b=H6UN6SO2lufI
- rqUd3aNlg++SEPrt1UgYoodC5QrD+72cQMMqJijKgMlFxL7XSCsni7IwH/683WpPH/mpYBwuIQs39
- ZTugjUo7foaxfHAAVZOeMbEW26cimmk+BFS93sriIfH+Kv8QyxTJEkChj3ErVuib8VKZjg9Qvzx/i
- nIttc=;
+ List-Archive; bh=8tmABv8wIynlKBUhA/5/2HttkPuDhFcFbN22gv8mMIc=; b=cRcG44pdaR8M
+ WV7+m4n+6aqpDVJdpfiMHZTQrOQLO125Ic/jUgoQPbpSpzQtX1QaE0lsIXpLOMe80afAKcrgtHLH8
+ gmC67Sons+EB+ng3gsnl3kmbYNVGVFhSVhNGemZpY0N6TKjzfigqvWiM/ktjMV8XYhaK1/+VLvdDf
+ gjsJ8=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iJz5u-0007WI-4Q; Mon, 14 Oct 2019 12:04:58 +0000
+ id 1iJz5t-0007WC-Qi; Mon, 14 Oct 2019 12:04:57 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 8ED7A27428DF; Mon, 14 Oct 2019 13:04:57 +0100 (BST)
+ id 4D8CF2742162; Mon, 14 Oct 2019 13:04:57 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191011164312.7988-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191011164312.7988-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191014120457.8ED7A27428DF@ypsilon.sirena.org.uk>
+Message-Id: <20191014120457.4D8CF2742162@ypsilon.sirena.org.uk>
 Date: Mon, 14 Oct 2019 13:04:57 +0100 (BST)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: byt: fix operator
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: bdw: fix operator
 	precedence warnings" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -96,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: byt: fix operator precedence warnings
+   ASoC: SOF: Intel: bdw: fix operator precedence warnings
 
 has been applied to the asoc tree at
 
@@ -121,67 +121,67 @@ to this mail.
 Thanks,
 Mark
 
-From f9f618e7128e834db3f54d290a926c4a71104e02 Mon Sep 17 00:00:00 2001
+From 7ad03a2c848f6fb0a8dea656c9c161929696878e Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 11 Oct 2019 11:43:09 -0500
-Subject: [PATCH] ASoC: SOF: Intel: byt: fix operator precedence warnings
+Date: Fri, 11 Oct 2019 11:43:10 -0500
+Subject: [PATCH] ASoC: SOF: Intel: bdw: fix operator precedence warnings
 
 Address cppcheck warnings
 
-sound/soc/sof/intel/byt.c:163:26: style: Clarify calculation
-precedence for '&' and '?'. [clarifyCalculation]
+sound/soc/sof/intel/bdw.c:265:26: style: Clarify calculation precedence
+for '&' and '?'. [clarifyCalculation]
   panic & SHIM_IPCX_BUSY ? "yes" : "no",
                          ^
 
-sound/soc/sof/intel/byt.c:164:26: style: Clarify calculation
+sound/soc/sof/intel/bdw.c:266:26: style: Clarify calculation
 precedence for '&' and '?'. [clarifyCalculation]
   panic & SHIM_IPCX_DONE ? "yes" : "no", panic);
                          ^
 
-sound/soc/sof/intel/byt.c:167:25: style: Clarify calculation
+sound/soc/sof/intel/bdw.c:269:25: style: Clarify calculation
 precedence for '&' and '?'. [clarifyCalculation]
   imrx & SHIM_IMRX_BUSY ? "yes" : "no",
                         ^
 
-sound/soc/sof/intel/byt.c:168:25: style: Clarify calculation
+sound/soc/sof/intel/bdw.c:270:25: style: Clarify calculation
 precedence for '&' and '?'. [clarifyCalculation]
   imrx & SHIM_IMRX_DONE ? "yes" : "no", imrx);
                         ^
 
-sound/soc/sof/intel/byt.c:171:27: style: Clarify calculation
+sound/soc/sof/intel/bdw.c:273:27: style: Clarify calculation
 precedence for '&' and '?'. [clarifyCalculation]
   status & SHIM_IPCD_BUSY ? "yes" : "no",
                           ^
 
-sound/soc/sof/intel/byt.c:172:27: style: Clarify calculation
+sound/soc/sof/intel/bdw.c:274:27: style: Clarify calculation
 precedence for '&' and '?'. [clarifyCalculation]
   status & SHIM_IPCD_DONE ? "yes" : "no", status);
                           ^
 
-sound/soc/sof/intel/byt.c:175:25: style: Clarify calculation
+sound/soc/sof/intel/bdw.c:277:25: style: Clarify calculation
 precedence for '&' and '?'. [clarifyCalculation]
   imrd & SHIM_IMRD_BUSY ? "yes" : "no",
                         ^
 
-sound/soc/sof/intel/byt.c:176:25: style: Clarify calculation
+sound/soc/sof/intel/bdw.c:278:25: style: Clarify calculation
 precedence for '&' and '?'. [clarifyCalculation]
   imrd & SHIM_IMRD_DONE ? "yes" : "no", imrd);
                         ^
 
 Fixes: 3a9e204d4e369 ("ASoC: SOF: Intel: Add context data to any IPC timeout.")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191011164312.7988-2-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191011164312.7988-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/byt.c | 16 ++++++++--------
+ sound/soc/sof/intel/bdw.c | 16 ++++++++--------
  1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index b2597ecfdc1c..07e5efe4945c 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -160,20 +160,20 @@ static void byt_dump(struct snd_sof_dev *sdev, u32 flags)
- 	imrd = snd_sof_dsp_read(sdev, BYT_DSP_BAR, SHIM_IMRD);
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index f395d0638876..bf961a8798a7 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -262,20 +262,20 @@ static void bdw_dump(struct snd_sof_dev *sdev, u32 flags)
+ 	imrd = snd_sof_dsp_read(sdev, BDW_DSP_BAR, SHIM_IMRD);
  	dev_err(sdev->dev,
  		"error: ipc host -> DSP: pending %s complete %s raw 0x%8.8x\n",
 -		panic & SHIM_IPCX_BUSY ? "yes" : "no",
@@ -206,9 +206,9 @@ index b2597ecfdc1c..07e5efe4945c 100644
 -		imrd & SHIM_IMRD_DONE ? "yes" : "no", imrd);
 +		(imrd & SHIM_IMRD_BUSY) ? "yes" : "no",
 +		(imrd & SHIM_IMRD_DONE) ? "yes" : "no", imrd);
- 
  }
  
+ /*
 -- 
 2.20.1
 
