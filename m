@@ -7,78 +7,79 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C7D6C4CECE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:09:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1D8EECE587
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:10:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14DB420673
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:09:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7AB212168B
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:10:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pXpmdyC/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="qn+OlOED"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14DB420673
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jhlvdKqX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="hy0uOOWF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AB212168B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5799F1677;
-	Mon, 14 Oct 2019 14:08:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5799F1677
+	by alsa0.perex.cz (Postfix) with ESMTPS id A174D167F;
+	Mon, 14 Oct 2019 14:09:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A174D167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571054966;
-	bh=N7N7kk75UWlXlRLZHQCbubU2IqAx9LK8T1YftVtyKg4=;
+	s=default; t=1571055012;
+	bh=BhVshP32ltQwLtvIO/l8Q8PGHt7H4szPJ12l+EztnKA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=pXpmdyC/X3mmutZLP214V28TFIzx4uOD2+AaVov7h0Mc7c+LrbF5Es5zLl9tAga8J
-	 fwMpEYNG9BuFaRdN1r9slZzttMoUF/ir3shYwUh2oNygW21FHyLbuKufr/u4Vgnhv3
-	 aPjqf46kWH8eyD00yl8zI/FWxUtGznCobEGH4mmg=
+	b=jhlvdKqXw9pwaGd/NPHyB7o1PlSrF2EjPYjhH315OGoeOEzlg6jVDXnTHkp2cRgra
+	 2xVBqJ4KaeN/8lLsuSsjE2KwffsPs5AvFPKnCEiisUz3+OPO9xIFrh1RpepkDfNhZD
+	 wEpWulHqK8eVkIpOMEEmcZAwvTx97XPZKSCxnvXY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7088AF80634;
-	Mon, 14 Oct 2019 14:05:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CABBF8063C;
+	Mon, 14 Oct 2019 14:05:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1A54F80529; Mon, 14 Oct 2019 14:05:06 +0200 (CEST)
+ id 14D68F80369; Mon, 14 Oct 2019 14:05:07 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61655F8036C
+ by alsa1.perex.cz (Postfix) with ESMTPS id DABEFF80138
  for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 14:05:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61655F8036C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DABEFF80138
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="qn+OlOED"
+ header.b="hy0uOOWF"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=T57gFAQ2HL0OrNojxYT6RFsspIHb42s2lXo+OYKN3oU=; b=qn+OlOED4Bqj
- 8Fv1zdAGKWWZJCAl7bXukw7iCCsS86IVOk6Mc697BCVuVlyI5GBGOmiMeEE9XE0ZIsA0ucaybSXqm
- nKaikyzKNfIiccC5JDwiL+VAehIFfeFonC2FpRJ8UOp9yVraGm0018xuq4i3Xl6EfsREU4OKoipca
- iOpJQ=;
+ List-Archive; bh=ZEvx4rHQS/ChhCZb0lOjQFPU66r3utXfBR2h6nSX49o=; b=hy0uOOWFeDFK
+ 1sjkIDRwNDFgGrVSpw/8V93GKT59q6Xb9FQgw3HmDUZAzJskk40j0j5L1gvpCYXWDSm+vTGKypof0
+ lGkz2Wqv5cimCBiMKF8280h4QfQn16Bvp0P0ssUulEBVScTlPehMSbkm5ftvYuzxi5eIMV0ZRptpo
+ Ahdf0=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iJz5u-0007WM-UW; Mon, 14 Oct 2019 12:04:58 +0000
+ id 1iJz5u-0007WY-Tx; Mon, 14 Oct 2019 12:04:59 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id D43862741EED; Mon, 14 Oct 2019 13:04:57 +0100 (BST)
+ id 64B702742162; Mon, 14 Oct 2019 13:04:58 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20191011143538.15300-1-yuehaibing@huawei.com>
+To: Olivier Moysan <olivier.moysan@st.com>
+In-Reply-To: <20191011084816.14279-1-olivier.moysan@st.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191014120457.D43862741EED@ypsilon.sirena.org.uk>
-Date: Mon, 14 Oct 2019 13:04:57 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- festevam@gmail.com, tiwai@suse.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [alsa-devel] Applied "ASoC: fsl_mqs: Move static keyword to the
-	front of declarations" to the asoc tree
+Message-Id: <20191014120458.64B702742162@ypsilon.sirena.org.uk>
+Date: Mon, 14 Oct 2019 13:04:58 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
+ tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ mcoquelin.stm32@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: stm32: spdifrx: retry synchronization
+	in sync state" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: fsl_mqs: Move static keyword to the front of declarations
+   ASoC: stm32: spdifrx: retry synchronization in sync state
 
 has been applied to the asoc tree at
 
@@ -124,38 +125,71 @@ to this mail.
 Thanks,
 Mark
 
-From dd79841ca66ff509660880237dc286d7f116a766 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 11 Oct 2019 22:35:38 +0800
-Subject: [PATCH] ASoC: fsl_mqs: Move static keyword to the front of
- declarations
+From 0c93c291321f2ba8dc4cd3d4df74801caaa297db Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Fri, 11 Oct 2019 10:48:16 +0200
+Subject: [PATCH] ASoC: stm32: spdifrx: retry synchronization in sync state
 
-gcc warn about this:
+When STM32 SPDIFRX is in sync state, allow multiple
+synchro attempts, instead of exiting on first unsuccessful
+trial. This is useful when spdif signal is not immediately
+available on input. This also allows Pulseaudio to check
+iec capture device availability when no signal is present.
 
-sound/soc/fsl/fsl_mqs.c:146:1: warning:
- static is not at beginning of declaration [-Wold-style-declaration]
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20191011143538.15300-1-yuehaibing@huawei.com
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20191011084816.14279-1-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_mqs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/stm/stm32_spdifrx.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
-index f7fc44e8fb27..0c813a45bba7 100644
---- a/sound/soc/fsl/fsl_mqs.c
-+++ b/sound/soc/fsl/fsl_mqs.c
-@@ -143,7 +143,7 @@ static void fsl_mqs_shutdown(struct snd_pcm_substream *substream,
- 				   MQS_EN_MASK, 0);
- }
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index cd4b235fce57..3fd28ee01675 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -351,6 +351,8 @@ static int stm32_spdifrx_start_sync(struct stm32_spdifrx_data *spdifrx)
+ 		     SPDIFRX_CR_CUMSK | SPDIFRX_CR_PTMSK | SPDIFRX_CR_RXSTEO;
+ 		cr_mask = cr;
  
--const static struct snd_soc_component_driver soc_codec_fsl_mqs = {
-+static const struct snd_soc_component_driver soc_codec_fsl_mqs = {
- 	.idle_bias_on = 1,
- 	.non_legacy_dai_naming	= 1,
- };
++		cr |= SPDIFRX_CR_NBTRSET(SPDIFRX_NBTR_63);
++		cr_mask |= SPDIFRX_CR_NBTR_MASK;
+ 		cr |= SPDIFRX_CR_SPDIFENSET(SPDIFRX_SPDIFEN_SYNC);
+ 		cr_mask |= SPDIFRX_CR_SPDIFEN_MASK;
+ 		ret = regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
+@@ -666,7 +668,7 @@ static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
+ 	struct snd_pcm_substream *substream = spdifrx->substream;
+ 	struct platform_device *pdev = spdifrx->pdev;
+ 	unsigned int cr, mask, sr, imr;
+-	unsigned int flags;
++	unsigned int flags, sync_state;
+ 	int err = 0, err_xrun = 0;
+ 
+ 	regmap_read(spdifrx->regmap, STM32_SPDIFRX_SR, &sr);
+@@ -726,11 +728,23 @@ static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
+ 	}
+ 
+ 	if (err) {
+-		/* SPDIFRX in STATE_STOP. Disable SPDIFRX to clear errors */
++		regmap_read(spdifrx->regmap, STM32_SPDIFRX_CR, &cr);
++		sync_state = FIELD_GET(SPDIFRX_CR_SPDIFEN_MASK, cr) &&
++			     SPDIFRX_SPDIFEN_SYNC;
++
++		/* SPDIFRX is in STATE_STOP. Disable SPDIFRX to clear errors */
+ 		cr = SPDIFRX_CR_SPDIFENSET(SPDIFRX_SPDIFEN_DISABLE);
+ 		regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
+ 				   SPDIFRX_CR_SPDIFEN_MASK, cr);
+ 
++		/* If SPDIFRX was in STATE_SYNC, retry synchro */
++		if (sync_state) {
++			cr = SPDIFRX_CR_SPDIFENSET(SPDIFRX_SPDIFEN_SYNC);
++			regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
++					   SPDIFRX_CR_SPDIFEN_MASK, cr);
++			return IRQ_HANDLED;
++		}
++
+ 		if (substream)
+ 			snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
+ 
 -- 
 2.20.1
 
