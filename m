@@ -3,101 +3,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA38C4360C
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 03:22:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C33BBC4360C
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 03:29:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3852C20815
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 03:22:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4940420867
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 03:29:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kkL90Au6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KEcztLNr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3852C20815
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ptmE695o";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="oS6pE20t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4940420867
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFAFB15E0;
-	Mon, 14 Oct 2019 05:21:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFAFB15E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 248971612;
+	Mon, 14 Oct 2019 05:28:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 248971612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571023349;
-	bh=mXfDOiNfvxiHKmXjFw8cWKgygrwk12YB/We7SxkZ+FM=;
+	s=default; t=1571023773;
+	bh=V0Egbow9X1ICcTkqEos32sNn8utII7+8xT1L9eDfIII=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kkL90Au60xi6lhi30S3hHL2bdzvpskPHVSSw54CFiS6GEL/yx/kmZ1/Bl17Wfe/sD
-	 N/nujEf6UJcA5zRQXicvqVmrhvkG2QX6Jp+MOL9BVfJxskQSN4v6KeMSTeeJliICWL
-	 t25u5B7uTJF9wwi0fILIBBTRB8xmz6Lm1bivePBQ=
+	b=ptmE695oMhpQSy/NFpWZuZsHJv7MU/p52JEu56GNETAfg06GrVoyWKgF4QMEliq3G
+	 dvbR9utGNeKAFoPYfvaqmZesADDRDD5kc4BnN7uyqqSW/Wfi1IfVhUZZUWu/JSsdeD
+	 QMf0vTlbtLZUgteeBpjanm+W+F45BkEmZ5etwJPI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EE52F80322;
-	Mon, 14 Oct 2019 05:21:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F839F80322;
+	Mon, 14 Oct 2019 05:28:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FE35F80362; Mon, 14 Oct 2019 05:21:36 +0200 (CEST)
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com
- [IPv6:2607:f8b0:4864:20::e41])
+ id E82CDF80362; Mon, 14 Oct 2019 05:28:37 +0200 (CEST)
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com
+ [IPv6:2607:f8b0:4864:20::941])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C160F80138
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 05:21:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C160F80138
+ by alsa1.perex.cz (Postfix) with ESMTPS id 755F0F80212
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 05:28:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 755F0F80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="KEcztLNr"
-Received: by mail-vs1-xe41.google.com with SMTP id v10so9908908vsc.7
- for <alsa-devel@alsa-project.org>; Sun, 13 Oct 2019 20:21:32 -0700 (PDT)
+ header.b="oS6pE20t"
+Received: by mail-ua1-x941.google.com with SMTP id b14so4564570uap.6
+ for <alsa-devel@alsa-project.org>; Sun, 13 Oct 2019 20:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=MoAndGD7+xOBQmFjHRilIe31g5IJG3QAYI2h3oVAfaM=;
- b=KEcztLNrUdPKcWuyh2hGeyPVaQfBg/U/7j5i0RNpWCAbI0jKHQPdLtQOyKZlKFk+io
- gQEboJhqjPtjsmxFmgam36eyS7/VqKYyG6aUXo9s3DFRKrICszdqtvoQabD702grmQ5F
- 3a9GW6ba/v4r/6DpR1Y28TAVgEcW+/0ZbvEnU=
+ :cc; bh=+uAit0SREJNRiELJ4OKCvBPLbAJm2+Lw1+Tpx2de+40=;
+ b=oS6pE20tIbgCYicTcvquerz8XaCIP8j31dhBnlwHxPfDSw5JY1HPPG/O5jzCnVaz3Y
+ q8W0P/o8qlWbXq0bJ4Qzd/x7TrY7LTO+ddCYjsz6rxIU4O/CbhQgE3ETbqUj/1bDQKgr
+ m0xzry5ha9ZFaCAwnkcC6hWfGHXNk9dldwGBE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=MoAndGD7+xOBQmFjHRilIe31g5IJG3QAYI2h3oVAfaM=;
- b=R5GQD8AxwXn+RDBixJCPoh+CL51HEOjwPMAIAt4lToQoJqhrOZLUdQ+PJtSH/k3NPY
- hsAtEEKhYiFQP2RS8FUnlCBl9nGORqysNNEnlLkHI/yThOqWSNoGM7UK4stj6PdgX8T5
- dlVIYQ9MtZ8orukWpnLA80EvqCQ7x4fC9iRXevNXp7XepDkrK/9TZWoYbfQvQ89qMvtm
- qWDp7aFApanS44G3YAIj8dXu+yACEqi9YiiV1fh2iWhKRqDHzNXYmsBvMAHFxM7cOUUy
- FUVGdfG9fIlLhLQ7TaO/KTB3lkKRdPaMSCgLg1iMOrOTqLUUsqAJLLXDZd9OdjUFmPtH
- 0qfw==
-X-Gm-Message-State: APjAAAWUmFy+BIau9mEyFjql03ABTUq7MjltBsXBf6tSD8FbEFSwdaMG
- jD048/pyu0pWoESog94bCC+giJdNbFpyCzI6YIUW7Q==
-X-Google-Smtp-Source: APXvYqzUpeUtM7it5vJ7Px2l0C655iX038UrctA+47NpKao+0z1PEHHeav8gnfqe5HbF8piW70zXNvnZHj+qZJIPC8k=
-X-Received: by 2002:a05:6102:227c:: with SMTP id
- v28mr16725837vsd.119.1571023290929; 
- Sun, 13 Oct 2019 20:21:30 -0700 (PDT)
+ bh=+uAit0SREJNRiELJ4OKCvBPLbAJm2+Lw1+Tpx2de+40=;
+ b=J64L3X2H7XOQXO2MFVBA6eSulKFP+Xh7Kb/DcudPE8naZOUc5gTEh13r91ZxdQ+m6R
+ MY3vBHBl1mFnJ7SAcUdhFDOwK7RBQfASuMCDqfuFVf9ngXevxAgQLeaCLdVud3Potcax
+ UapC4K+o0blN2l9XS/Dol3WFcsL/fHZ2Lql89FqGROgokr4LDLj0FmhAwtFqx8B4P462
+ gr9GrnO8QXUVYmkB8eYdz9pqM5uT9bskzpq2B5f1t0SdYXwPZ/0JPSAFvj6vE0/+j7rL
+ no+ui/Rz26diGvX/Qzwt2uW4PaKOAHNIFGveSA8zbgD8UPmVDvDlUcaMGzA9wtlKes/x
+ LNwA==
+X-Gm-Message-State: APjAAAX9CteWBnOFF4yGRmyN/IYxewjsfVyyGr2hZlsBpnhMjki4gCzh
+ HwIT+ZYrDUi+w9UUrgFu1TSBCw8NYjSfx7/2iM5spg==
+X-Google-Smtp-Source: APXvYqyuob+/0KvYeM3s1jllOH4ovf5VWr38UfCbu8IYv4MP9Mr0n8q2DWApAP3bugtsf1sl54DYEAwORJrnq+qgk28=
+X-Received: by 2002:ab0:2bcf:: with SMTP id s15mr15218344uar.55.1571023711060; 
+ Sun, 13 Oct 2019 20:28:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191007071610.65714-1-cychiang@chromium.org>
- <CA+Px+wWkr1xmSpgEkSaGS7UZu8TKUYvSnbjimBRH29=kDtcHKA@mail.gmail.com>
- <ebf9bc3f-a531-6c5b-a146-d80fe6c5d772@roeck-us.net>
- <CAFv8NwLuYKHJoG9YR3WvofwiMnXCgYv-Sk7t5jCvTZbST+Ctjw@mail.gmail.com>
- <5d9b5b3e.1c69fb81.7203c.1215@mx.google.com>
- <CAFv8Nw+x6V-995ijyws1Q36W1MpaP=kNJeiVtNakH-uC3Vgg9Q@mail.gmail.com>
- <5d9ca7e4.1c69fb81.7f8fa.3f7d@mx.google.com>
- <e968e478-bb48-5b05-b6c4-ae1bf77f714f@linaro.org>
-In-Reply-To: <e968e478-bb48-5b05-b6c4-ae1bf77f714f@linaro.org>
+References: <8f933cee57fc4420875e1e2ba14f1937@realtek.com>
+ <20191008105138.GC4382@sirena.co.uk>
+ <CAFv8NwJ+g+ESJJ5JxaLHADhBASKsjTE7pqY=HhcZZcT2Yy+Ygw@mail.gmail.com>
+ <20191008110643.GD4382@sirena.co.uk>
+ <CAFv8Nw+68LkmCmPnq5+rvf3Ffnh1kRROdjrx=nN8tgMTGEq+xQ@mail.gmail.com>
+ <20191008123834.GI4382@sirena.co.uk>
+In-Reply-To: <20191008123834.GI4382@sirena.co.uk>
 From: Cheng-yi Chiang <cychiang@chromium.org>
-Date: Mon, 14 Oct 2019 11:21:04 +0800
-Message-ID: <CAFv8NwKH5rX2cdfbK1XJxUJFU3uo0K4UowUM3Z7447Qoz_y8bA@mail.gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>,
+Date: Mon, 14 Oct 2019 11:28:04 +0800
+Message-ID: <CAFv8NwJEsxomhg_5yKQ4ajwbPvbCKseQYC_8_iqBosU4LZquVQ@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "lars@metafoo.de" <lars@metafoo.de>, SteveS.Lee@maximintegrated.com,
+ George.Song@maximintegrated.com, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "M R,
+ Sathya Prakash" <sathya.prakash.m.r@intel.com>, jinho.ahn@maximintegrated.com,
  Tzung-Bi Shih <tzungbi@chromium.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Stephen Boyd <swboyd@chromium.org>, Hung-Te Lin <hungte@chromium.org>,
- Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
- Sean Paul <seanpaul@chromium.org>, Dylan Reid <dgreid@chromium.org>,
- Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [alsa-devel] [PATCH] firmware: vpd: Add an interface to read
-	VPD value
+ =?UTF-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
+ =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
+ Dylan Reid <dgreid@chromium.org>, "Flove\(HsinFu\)" <flove@realtek.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt1011: export r0 and temperature
+	config
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,58 +114,58 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Oct 9, 2019 at 10:05 PM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
+On Tue, Oct 8, 2019 at 8:38 PM Mark Brown <broonie@kernel.org> wrote:
 >
+> On Tue, Oct 08, 2019 at 07:22:17PM +0800, Cheng-yi Chiang wrote:
 >
+> > The VPD is not part of the codec.
+> > It is a binary blob in system firmware where we can store important
+> > information per-device.
+> > The calibration data is written to RO section of VPD in the factory
+> > during calibration step.
 >
-> On 08/10/2019 16:14, Stephen Boyd wrote:
-> >> 3) As my use case does not use device tree, it is hard for ASoC
-> >> machine to access nvmem device. I am wondering if I can use
-> >> nvm_cell_lookup so machine driver can find the nvmem device using a
-> >> con_id. But currently the cell lookup API requires a matched device,
-> >> which does not fit my usage because there will be different machine
-> >> drivers requesting the value.
-> >> I think I can still workaround this by adding the lookup table in
-> >> machine driver. This would seem to be a bit weird because I found that
-> >> most lookup table is added in provider side, not consumer side. Not
-> >> sure if this is logically correct.
-> > Maybe Srini has some input here. It looks like your main concern is
-> > consumer to provider mapping?
-> >
+> Ugh, this is not idiomatic for a DT system :(
 >
-> In non-DT setup, there are various ways to lookup nvmem provider.
+> > The codec driver is not suitable of reading this information directly
+> > because the string format written into VPD is customized per board.
+> > For example on cml_rt1011_rt5682.c there are four R0 values for four
 >
-> 1> nvmem_device_get()/put() using provider devid/name. I think you
-> should be able to use this in your case.
-> 2> nvmem_register_notifier() which notifies when nvmem provider is added
-> to system.
-> 3> nvmem_device_find() with own match function this will be merged in
-> next window (https://lkml.org/lkml/2019/10/3/215)
+> The expected model for a DT system is that this stuff should just come
+> in through DT properties, if for system design/manufacturing reasons it
+> needs to be stored separately then you'd expect it to be merged into the
+> main DT by the bootloader or something else earlier on in boot.
 >
+> > speakers, and one temperature values . So in this case, there are
+> > totally 5 values in a VPD dsm_calib key. In VPD, the format is like
+> > "dsm_calib"="0x00278F09 0x00251E1B 0x0021AFE6 0x0022720A 0x0000012E"
+> > We put all the information into one string to allow arbitrary
+> > calibration data needed for smart amp calibration in the future.
+> > On other system using smart amp, there might be two speakers, with two
+> > temperature values..etc. The format will be changed accordingly.
+> > Number of temperature values depends on number of temperature sensor
+> > available near the speakers.
+> > Since machine driver knows the combination of speakers and the
+> > available temperature sensor, we think that machine driver is the
+> > better place to put this per-board logic.
 >
-> If none of these are of any help, could explain what exactly are you
-> looking for w.r.t nvmem to be able to move to what Stephen Boyd suggested?
->
-> --srini
->
-
-Hi Stephen, Mark and Srinivas,
-Thank you all for the suggestions.
-In my non-DT setup, I have been working on coreboot changes to prepare
-data in _DSD following suggestion in
-https://patchwork.kernel.org/patch/11179237
-The basic idea is that codec driver should just get data it needs from
-device property.
-The coreboot approach works in my local setup, but I have not sent the
-change to coreboot upstream yet.
-If that path work, then the change needed in kernel will be much simpler.
-
-In the future, there might be DT setup use case, and I think it should
-be doable for VPD to register a nvmem device, and let codec driver
-gets the property.
-But I would drop this path for now.
-Thanks!
+> I'm not sure why they all need to be in one property?  That's a
+> secondary problem though.
+Hi Mark,
+We did not consider this careful enough when we add this VPD field.
+The reason we put them all in one field because we thought that
+machine driver should have the knowledge to parse it.
+Now that it seems there are various places to parse it:
+- coreboot board file
+- coreboot device driver
+- kernel machine driver
+- kernel vpd driver
+- kernel codec driver
+The parsing becomes a problem, let alone that coreboot does not have
+some useful string functions to parse it.
+To ease this effort we are going to separate them into different
+fields, such that whichever driver wants the data, it can get it
+easily with key matching.
+Thanks for the suggestion!
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
