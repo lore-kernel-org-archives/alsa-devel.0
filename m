@@ -4,83 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B144DECE587
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:08:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31E80C4CECE
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:08:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39DEA20673
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:08:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AEDAD20854
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Oct 2019 12:08:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fXD33k12";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ZkvZ04Jy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39DEA20673
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CjzuGcZn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="FvbcA3cT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEDAD20854
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A7ED1677;
-	Mon, 14 Oct 2019 14:07:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A7ED1677
+	by alsa0.perex.cz (Postfix) with ESMTPS id E25711654;
+	Mon, 14 Oct 2019 14:07:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E25711654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571054904;
-	bh=+GmyRRtHlNKGK+WqjVB+FKsdr2bL6fccaXpbzmHK1o0=;
+	s=default; t=1571054930;
+	bh=TZqoJVGCduk/7YsJ8AFkmltLG3wzUAxflzjlayft3zk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=fXD33k121tUIKvKEEFprqHS9sZNRixutUmGSPGXqtU2a1uxyZvROxF1UK6vw+alyw
-	 XTI+yaN7/n18K0Rf+esD1xGcc0ts+e3E6ZCXZowKbsyjlxPy0ksh8a0KYEndpMG5eo
-	 kgM0r1qEdsev1UmH6cKDINYGnjbGlDQHufkMa1xA=
+	b=CjzuGcZnBTiTZovrmUXd6CBZi/95k4orivumrMih4/WxDRHBgfBUSan2yH48XhGGk
+	 7cRqMc26y3zmtng2nzAB+ajj5PyA1KsDQdV1vVVSWwnT/S0CakaZP24L8VtwDCKdX4
+	 4vDV2+UR0nKrZzi9+5Ch94Sz6pK9aRoIjEjrcbP8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67FAEF805FA;
-	Mon, 14 Oct 2019 14:05:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 418ABF80612;
+	Mon, 14 Oct 2019 14:05:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDE4FF804AA; Mon, 14 Oct 2019 14:05:05 +0200 (CEST)
+ id 8E9D6F80529; Mon, 14 Oct 2019 14:05:06 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DD1FF80376
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 14:05:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DD1FF80376
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CF16F80369
+ for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 14:04:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CF16F80369
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ZkvZ04Jy"
+ header.b="FvbcA3cT"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=HTqny5PVHvnmykrT7/i1QnwbFEAoZl4BaIh7+Q4ZBD8=; b=ZkvZ04JyHUqK
- EKhKl9qgVeJw+aFrjyJIXS7+NcnGa5tQma35pvSFybaP2Kua7HqT/YESsko4VZlh983J/GaiDxM/o
- BK/JqULa93WSTPO2lLgkrwv9FGxqdVQ7840MOw8WdgGlK4bgQPdRmuVY9say3n4huwkdDYLkQ5Q2q
- qZpm4=;
+ List-Archive; bh=zlWDxHDmKVfS5xoigAUF+CKDSepQej2BJcgQwBIF0jw=; b=FvbcA3cT+/xd
+ Yzhpsz26cTAGMFFRPGZrYjupURACDQrm1GBpUhZoO1AEIppgI4SJTT07fFxZBlFMYOp8k0RfeTWsb
+ ZipYtRLsWzPI3/4FFSBpZOrXJRgtiZ/QFkvxYwr4Kp6nna6FCr8oqqyTEgXauTg0FisjJrx9AjxdO
+ aqX1s=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iJz5u-0007WR-MS; Mon, 14 Oct 2019 12:04:58 +0000
+ id 1iJz5t-0007WA-L2; Mon, 14 Oct 2019 12:04:57 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 236F02741EF2; Mon, 14 Oct 2019 13:04:58 +0100 (BST)
+ id D0BA12741EED; Mon, 14 Oct 2019 13:04:56 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20191011150042.20096-1-yuehaibing@huawei.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191011164312.7988-5-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191014120458.236F02741EF2@ypsilon.sirena.org.uk>
-Date: Mon, 14 Oct 2019 13:04:58 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- piotrs@opensource.cirrus.com, lgirdwood@gmail.com, krzk@kernel.org,
- linux-kernel@vger.kernel.org, paul@crapouillou.net,
- Hulk Robot <hulkci@huawei.com>, Mark Brown <broonie@kernel.org>,
- npoushin@opensource.cirrus.com, enric.balletbo@collabora.com, tiwai@suse.com,
- nuno.sa@analog.com, rf@opensource.wolfsonmicro.com
-Subject: [alsa-devel] Applied "ASoC: adau7118: Fix Kconfig warning without
-	CONFIG_I2C" to the asoc tree
+Message-Id: <20191014120456.D0BA12741EED@ypsilon.sirena.org.uk>
+Date: Mon, 14 Oct 2019 13:04:56 +0100 (BST)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: SOF: topology: check errors when
+	parsing LED tokens" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: adau7118: Fix Kconfig warning without CONFIG_I2C
+   ASoC: SOF: topology: check errors when parsing LED tokens
 
 has been applied to the asoc tree at
 
@@ -126,41 +121,45 @@ to this mail.
 Thanks,
 Mark
 
-From de729862cc0f0b46dd3a3c11079240ea4e13b97d Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 11 Oct 2019 23:00:42 +0800
-Subject: [PATCH] ASoC: adau7118: Fix Kconfig warning without CONFIG_I2C
+From 8a3ab38c36926ddbda3d2a3086c0a741fa175cff Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 11 Oct 2019 11:43:12 -0500
+Subject: [PATCH] ASoC: SOF: topology: check errors when parsing LED tokens
 
-When building a kernel without CONFIG_I2C, Kconfig warns:
+sof_parse_tokens() returns a value that is checked on every call
+except for LED tokens, fix with explicit test.
 
-WARNING: unmet direct dependencies detected for REGMAP_I2C
-  Depends on [n]: I2C [=n]
-  Selected by [y]:
-  - SND_SOC_ADAU7118_I2C [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y]
+Detected with cppcheck warning:
 
-Add missing I2C dependency to SND_SOC_ADAU7118_I2C to fix this.
+sound/soc/sof/topology.c:973:6: style: Variable 'ret' is assigned a
+value that is never used. [unreadVariable]
+ ret = sof_parse_tokens(scomp, &scontrol->led_ctl, led_tokens,
+     ^
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: ca514c0f12b0 ("ASOC: Add ADAU7118 8 Channel PDM-to-I2S/TDM Converter driver")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20191011150042.20096-1-yuehaibing@huawei.com
+Fixes: 5d43001ae4360 ("ASoC: SOF: acpi led support for switch controls")
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191011164312.7988-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/topology.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f4747ebc251e..5a706102db04 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -416,6 +416,7 @@ config SND_SOC_ADAU7118_HW
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 3fad1d5cb2ca..b3ab6f23fc93 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -963,6 +963,11 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	ret = sof_parse_tokens(scomp, &scontrol->led_ctl, led_tokens,
+ 			       ARRAY_SIZE(led_tokens), mc->priv.array,
+ 			       le32_to_cpu(mc->priv.size));
++	if (ret != 0) {
++		dev_err(sdev->dev, "error: parse led tokens failed %d\n",
++			le32_to_cpu(mc->priv.size));
++		return ret;
++	}
  
- config SND_SOC_ADAU7118_I2C
- 	tristate "Analog Devices ADAU7118 8 Channel PDM-to-I2S/TDM Converter - I2C"
-+	depends on I2C
- 	select SND_SOC_ADAU7118
- 	select REGMAP_I2C
- 	help
+ 	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
+ 		scontrol->comp_id, scontrol->num_channels);
 -- 
 2.20.1
 
