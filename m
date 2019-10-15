@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16BF0C10F14
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 09:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE98AECE58E
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 09:29:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 935D320650
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 09:28:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F99920650
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 09:29:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QwiCLmDN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="UC1KKorc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 935D320650
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aUKzDU/V";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="n1vKB3Zt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F99920650
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B99951616;
-	Tue, 15 Oct 2019 11:27:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B99951616
+	by alsa0.perex.cz (Postfix) with ESMTPS id E62B2167F;
+	Tue, 15 Oct 2019 11:28:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E62B2167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571131725;
-	bh=l2OgVEry49GyGNfVeT+iDqMfki22YUURjCIQPTyut+g=;
+	s=default; t=1571131772;
+	bh=EPvfPyiU1aNIcwdgpHxEUrT/wVTZ1reyctox/Qm3+AY=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QwiCLmDNe5LckcRd6YcjrtJZlVmMWah1EQ8M7GqgUhxnvLouuQyiD46LMrLrDvRxE
-	 XdiRnvxlecqPuhqxWIMC5Tbeu2O91jeJz9cKnQvS0nWisOq79aLOsEXP4qEfcfgx2y
-	 2EMWXxzCd1KA7ITU0Q+sBRKaP8o2Srk/rpLP54JE=
+	b=aUKzDU/VABtkqKe8tksaPRMtMSlaoXIG5J9+mq6rdugQnlQQy6G8EYwQyw2aiKnkm
+	 51D5J0zqSM3dKClcZzfeFaEtvTWE3RBRtKgrc52yLeF4Mjsf+f8js8QknJGqM8rh/Q
+	 DAfaCy7FVEnDgvb7TvV+FusaycYFF5cdM9HhTqRg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 604CAF80529;
-	Tue, 15 Oct 2019 11:27:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89841F805FA;
+	Tue, 15 Oct 2019 11:27:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2CDFFF805AA; Tue, 15 Oct 2019 11:26:57 +0200 (CEST)
+ id 96EABF804A9; Tue, 15 Oct 2019 11:26:59 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B703F8011D
+ by alsa1.perex.cz (Postfix) with ESMTPS id A01C8F804AB
  for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 11:26:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B703F8011D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A01C8F804AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="UC1KKorc"
+ header.b="n1vKB3Zt"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=pbgyFUrGByVb607QmHX37yCPtaNnzrrK1PHzCUea1Vo=; b=UC1KKorcl9vf
- vxEoWnj+HYOtBr+56SCW40IBsuYZWpVbxXm03RmFrf3ijBGYwgG0j0kz5fwD4XdpyVYH57g4I+uoI
- C49aLNYN76mWEqK96yGBUOrx8YY/z0ei57SK0sOVsmN3fqayj13vEHx2C+WBlJPiHSXqgO6SvgodT
- SzHvc=;
+ List-Archive; bh=1NoAFkGBQaadDdmAXYmReUlud2l6fkIqAylkUKYyuVo=; b=n1vKB3ZtWqAO
+ dXUZ2ASxFMfQ6ZLnfAJAF+84s6Nmygb02cWZ9yjy/olhVMO9TwBNu09h3uC+fmRfu1kz29c+xFFGf
+ 7J6O70+NvNPPlWtMG2S9MrxoViqectI+C+RWMXGc6tZY5XH8GJA0uikebpLoScU9eNgYCfTn9vmOr
+ yNGpM=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iKJ6T-0001oc-14; Tue, 15 Oct 2019 09:26:53 +0000
+ id 1iKJ6T-0001ob-14; Tue, 15 Oct 2019 09:26:53 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id D088D274291C; Tue, 15 Oct 2019 10:26:51 +0100 (BST)
+ id 9E5202742905; Tue, 15 Oct 2019 10:26:51 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87eeze67p7.wl-kuninori.morimoto.gx@renesas.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+In-Reply-To: <20191015090037.23271-1-peter.ujfalusi@ti.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191015092651.D088D274291C@ypsilon.sirena.org.uk>
+Message-Id: <20191015092651.9E5202742905@ypsilon.sirena.org.uk>
 Date: Tue, 15 Oct 2019 10:26:51 +0100 (BST)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Daniel Baluta <daniel.baluta@gmail.com>
-Subject: [alsa-devel] Applied "ASoC: audio-graph: fixup
-	graph_dai_link_of_dpcm() comment" to the asoc tree
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ lgirdwood@gmail.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [alsa-devel] Applied "ASoC: pcm3168a: Fix serial mode dependent
+	format support" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: audio-graph: fixup graph_dai_link_of_dpcm() comment
+   ASoC: pcm3168a: Fix serial mode dependent format support
 
 has been applied to the asoc tree at
 
@@ -122,44 +122,37 @@ to this mail.
 Thanks,
 Mark
 
-From 9764beeae7cc477c13ffc451a5edd1ab8891e3ea Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 15 Oct 2019 11:52:52 +0900
-Subject: [PATCH] ASoC: audio-graph: fixup graph_dai_link_of_dpcm() comment
+From a35716a95655d8fc15042c9d574374eceb9daf3d Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Tue, 15 Oct 2019 12:00:37 +0300
+Subject: [PATCH] ASoC: pcm3168a: Fix serial mode dependent format support
 
-The comment is wrong.
-This patch fixup it.
+fmt 0 is perfectly valid (PCM3168A_FMT_I2S). Remove the return in case
+fmt == 0.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Link: https://lore.kernel.org/r/87eeze67p7.wl-kuninori.morimoto.gx@renesas.com
+Fixes: ("ASoC: pcm3168a: Use fixup instead of constraint for channels and formats")
+Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20191015090037.23271-1-peter.ujfalusi@ti.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/pcm3168a.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 6007e6305735..9ad35d9940fe 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -232,7 +232,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 	if (li->cpu) {
- 		int is_single_links = 0;
+diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
+index 708dac27feff..313500ab36df 100644
+--- a/sound/soc/codecs/pcm3168a.c
++++ b/sound/soc/codecs/pcm3168a.c
+@@ -322,9 +322,6 @@ static void pcm3168a_update_fixup_pcm_stream(struct snd_soc_dai *dai)
+ 	u64 formats = SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_LE;
+ 	unsigned int channel_max = dai->id == PCM3168A_DAI_DAC ? 8 : 6;
  
--		/* BE is dummy */
-+		/* Codec is dummy */
- 		codecs->of_node		= NULL;
- 		codecs->dai_name	= "snd-soc-dummy-dai";
- 		codecs->name		= "snd-soc-dummy";
-@@ -263,7 +263,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
- 	} else {
- 		struct snd_soc_codec_conf *cconf;
- 
--		/* FE is dummy */
-+		/* CPU is dummy */
- 		cpus->of_node		= NULL;
- 		cpus->dai_name		= "snd-soc-dummy-dai";
- 		cpus->name		= "snd-soc-dummy";
+-	if (!pcm3168a->io_params[dai->id].fmt)
+-		return;
+-
+ 	if (pcm3168a->io_params[dai->id].fmt == PCM3168A_FMT_RIGHT_J) {
+ 		/* S16_LE is only supported in RIGHT_J mode */
+ 		formats |= SNDRV_PCM_FMTBIT_S16_LE;
 -- 
 2.20.1
 
