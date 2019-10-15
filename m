@@ -2,64 +2,63 @@ Return-Path: <SRS0=gwzj=YI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36CD7C4CECE
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 02:39:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E9BC4CECE
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 02:53:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31C3B20673
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 02:39:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4534820673
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 02:53:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OsckcvXf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31C3B20673
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BA6AoaQD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4534820673
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5F98850;
-	Tue, 15 Oct 2019 04:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5F98850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A02F84C;
+	Tue, 15 Oct 2019 04:52:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A02F84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571107178;
-	bh=2MDqYC4GceW47DcV2vaQlSOtUHyj0Ul+QMhlmqbKfnY=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=OsckcvXfmG99+fmHYre7ga8iwUjEOGWq1v4S1uaaCtrQd2Lxz/Ppj7+S1pc/y78zC
-	 cnUukBm1YOLvhsWdxSO6mZqOyCe0WsLD0bSp3RQnBwFFkTW7BheEXbg0a4oAvdpULp
-	 OIXd/6QGPx4TTsIAmK6SLQ9c3OgliSTEsQsLJcFs=
+	s=default; t=1571108021;
+	bh=BP1m0gt7IBPjjJL5eqz1bLUb6vI7eb+HNt8meMy2rH8=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BA6AoaQD0nUnMHXegLIEFpGer4IQ3yu+oz5oH04jcvcQTg+r0bdfbLvvDSw/zi7Xb
+	 I0kgUsdQ9aquSNCzWSmVuh9hi8cpqwvcwmuWje3XKT+RoXjUaM80UJ8FejUAihfkCc
+	 /sfSevSsRR9mUPrZxVO14shiljV8q1Ycv9/gEN9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43F04F804A9;
-	Tue, 15 Oct 2019 04:38:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0969EF800F4;
+	Tue, 15 Oct 2019 04:52:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1C4DF804AA; Tue, 15 Oct 2019 04:38:44 +0200 (CEST)
+ id 3FDBEF804AA; Tue, 15 Oct 2019 04:52:48 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E2152F800F4
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 04:38:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2152F800F4
-Date: 15 Oct 2019 11:38:29 +0900
-X-IronPort-AV: E=Sophos;i="5.67,297,1566831600"; d="scan'208";a="29098320"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Oct 2019 11:38:29 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 66362F800F4
+ for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 04:52:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66362F800F4
+Date: 15 Oct 2019 11:52:41 +0900
+X-IronPort-AV: E=Sophos;i="5.67,297,1566831600"; d="scan'208";a="29100244"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Oct 2019 11:52:41 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id C7B82416EFF3;
- Tue, 15 Oct 2019 11:38:29 +0900 (JST)
-Message-ID: <87lftm68d6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 15BDF400A8B9;
+ Tue, 15 Oct 2019 11:52:41 +0900 (JST)
+Message-ID: <87ftju67pi.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-In-Reply-To: <20191008115720.7135-1-peter.ujfalusi@ti.com>
-References: <20191008115720.7135-1-peter.ujfalusi@ti.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
-Subject: Re: [alsa-devel] [PATCH] ASoC: pcm3168a: Use fixup instead of
-	constraint for channels and formats
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Daniel Baluta <daniel.baluta@gmail.com>
+Subject: [alsa-devel] [PATCH] ASoC: simple-card: fixup
+	simple_dai_link_of_dpcm() comment
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,31 +76,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Peter
+The comment is wrong.
+This patch fixup it.
 
-> The snd_pcm_hw_constraint_minmax() works fine when a single codec is
-> connected to a single CPU DAI, but in multicodec or DPCM setup the
-> constraints placed by the driver will apply to the whole PCM stream (FE
-> included) and thus prevents more than 8 playback channels for example.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
-
-This patch breaks my sound.
-I'm selecting I2S between CPU<->Codec, and 
-before this patch, it had been selected 24bit + I2S.
-But after this patch, it selects 16bit + I2S,
-and say "16-bit slots are supported only for slave mode using right justified"
-
-I'm not 100% understand pcm3168a.
-I'm happy if you can solve this issue.
-If you can't, can you please teach me where should I check ?
-
-Thank you for your help !!
-Best regards
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+ sound/soc/generic/simple-card.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index fc9c753..10b82bf 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -149,7 +149,7 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	if (li->cpu) {
+ 		int is_single_links = 0;
+ 
+-		/* BE is dummy */
++		/* Codec is dummy */
+ 		codecs->of_node		= NULL;
+ 		codecs->dai_name	= "snd-soc-dummy-dai";
+ 		codecs->name		= "snd-soc-dummy";
+@@ -179,7 +179,7 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	} else {
+ 		struct snd_soc_codec_conf *cconf;
+ 
+-		/* FE is dummy */
++		/* CPU is dummy */
+ 		cpus->of_node		= NULL;
+ 		cpus->dai_name		= "snd-soc-dummy-dai";
+ 		cpus->name		= "snd-soc-dummy";
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
