@@ -2,93 +2,65 @@ Return-Path: <SRS0=gwzj=YI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1AECECE587
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 06:53:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0FFDC10F14
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 06:58:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B7E02086A
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 06:53:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39E4021848
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 06:58:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SNFZDTQl";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DrDJYUtC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B7E02086A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WMBAsQrT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39E4021848
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 943061616;
-	Tue, 15 Oct 2019 08:52:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 943061616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42FA59F6;
+	Tue, 15 Oct 2019 08:57:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42FA59F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571122379;
-	bh=NuQn7SZyoj24CEIjEWn8W6GoG4+9gXtcuKr7qI8NP4I=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1571122724;
+	bh=1dXfy1rOIPf0gaf9b/yDHgEs5usff/9GPK3OIh93BWs=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SNFZDTQlsDMX3NeUlUJL2Nn9I5PAxsAY3R89oFV/Ihf72bCmaZnv4KytdSzM2U7E/
-	 ihq4C4C7cgk3nrx3grkb+u/sIKZiNhxzHAdNVAzPjmxXZ2dcVSeiWWV1YF0lT5wdfi
-	 sKGdsnLkKrm+gOY6YF2cT4u2g4PA59HWtDC8TwJo=
+	b=WMBAsQrTxcziW60roDYpAfsmSBNfoeo47NUm0agWC4TSfCLBiNLrxn2Y0o3P8HPJ0
+	 qZyfA+ikuR195EQEgnhs6cHOmnt3ZsBMcoI8qPFxhshzODaTD4lye7/i26S7wvxO9R
+	 OGZVWbxlafmcbBQfn1oMLkO9FTL1nrZVjbuyW2bY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3F93F805FE;
-	Tue, 15 Oct 2019 08:50:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C52A8F8011D;
+	Tue, 15 Oct 2019 08:57:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62313F805FF; Tue, 15 Oct 2019 08:50:37 +0200 (CEST)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCCC7F804A9
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 08:50:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCCC7F804A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="DrDJYUtC"
-Received: by mail-wm1-x344.google.com with SMTP id 7so19502964wme.1
- for <alsa-devel@alsa-project.org>; Mon, 14 Oct 2019 23:50:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=KCM+QVn9qhwl3rLoG3Kbu6rHvOtYsU8cT188s9EWql4=;
- b=DrDJYUtCyUbXlprwr3jWv2EaUEAaT7FEfxO4NXZykV25YRr2+WYYc9tOe/DjfgWoh/
- kTGKHgmkcfmtgAeX44UXjdLD8ZSB4g9iZ+02uyCkNOOCLWquXcuclWJO7RNEi7x2wx27
- 1RSKjATeMgpJQsHcx9IPl6ddw20uBUWniHjF0da7j/bJMK/wf23MvViG1Yhh5PuHJsW2
- jcQGSP3nNrgnRMhfV6WbjIGx3odzFo9YHcc9e58DsAgGpzl9lKvNDYVoc13qGly0Ey7b
- rvvkFLGZMeQxj8WTc3ORWmjExQEkerbxwruMfZOIpHJ9/8W03tGE/D/vpwr7J9OxQw6n
- IyVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=KCM+QVn9qhwl3rLoG3Kbu6rHvOtYsU8cT188s9EWql4=;
- b=eOJv+CDEkksT3pXUvrVGsOuUK8U0a1mpk9b1b4+tEMCBUuat0uFpWhLQqDbHtsOz3d
- Z7CMys3tc0NDcjcgMBC85mF/O44VcIHUfzEgiIhwzF3ToCjYTpaqed3AJ0B5635QiVXA
- SGPfikV4AwRyS5i/WnOx9TrhdhWMS5hwWY6/ohhpVGlUnIaWxJvW0X2XbOiyRnA0UJ0D
- VDc9yq6ZNG9+Etg68YP/zqLRAWafWNHu5EhQAnGHJgzJEBNhEWwGIodu0KRhuyGd63Zi
- ZJAHUknsrjoYudCzBoz7PONEnVXbOjVvyVyYbpU23UzmLhzPkRgmvsMnUIEnvIcEcoES
- WcnA==
-X-Gm-Message-State: APjAAAVxd7eL+Vxy+g7ADfSOlJcl6UQuXRY4y04iycjjCOmaMTB2gLTD
- EGUxAxzYLoj2VCjTS5KRJNKykQuKZPhMNEfqMtI=
-X-Google-Smtp-Source: APXvYqymI9FR/vb6gxZVfVEbvDaaL3Y7A5pjfrjn2ugNzlETULuOdjng9ETUQ00hDJpxP0SwXfbTOKeBP5CtzNbbNd4=
-X-Received: by 2002:a05:600c:2308:: with SMTP id
- 8mr17339499wmo.73.1571122233469; 
- Mon, 14 Oct 2019 23:50:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <87eeze67p7.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87eeze67p7.wl-kuninori.morimoto.gx@renesas.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Tue, 15 Oct 2019 09:50:22 +0300
-Message-ID: <CAEnQRZCGN=-LEaUXsWqyJYXLK98WAAVLcP-yB0Jf3yZ+J0N-tA@mail.gmail.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: audio-graph: fixup
-	graph_dai_link_of_dpcm() comment
+ id 09BDCF804AA; Tue, 15 Oct 2019 08:57:52 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 57A01F8011D
+ for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 08:57:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57A01F8011D
+Date: 15 Oct 2019 15:57:44 +0900
+X-IronPort-AV: E=Sophos;i="5.67,298,1566831600"; d="scan'208";a="28906230"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 15 Oct 2019 15:57:44 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4232941C2BB7;
+ Tue, 15 Oct 2019 15:57:26 +0900 (JST)
+Message-ID: <877e564ht5.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Daniel Baluta <daniel.baluta@gmail.com>
+In-Reply-To: <CAEnQRZAsZ=Q=tcqCzVp8bvj4Jme+YTH9GxmMoBgvOT+w6z8iiw@mail.gmail.com>
+References: <87a7a24l7r.wl-kuninori.morimoto.gx@renesas.com>
+ <CAEnQRZAsZ=Q=tcqCzVp8bvj4Jme+YTH9GxmMoBgvOT+w6z8iiw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: sof: include types.h at header.h
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,56 +73,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso8859-7"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 15, 2019 at 5:52 AM Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->
->
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-
-
->
-> The comment is wrong.
-> This patch fixup it.
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-
-> ---
->  sound/soc/generic/audio-graph-card.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-> index 6007e63..9ad35d9 100644
-> --- a/sound/soc/generic/audio-graph-card.c
-> +++ b/sound/soc/generic/audio-graph-card.c
-> @@ -232,7 +232,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
->         if (li->cpu) {
->                 int is_single_links = 0;
->
-> -               /* BE is dummy */
-> +               /* Codec is dummy */
->                 codecs->of_node         = NULL;
->                 codecs->dai_name        = "snd-soc-dummy-dai";
->                 codecs->name            = "snd-soc-dummy";
-> @@ -263,7 +263,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
->         } else {
->                 struct snd_soc_codec_conf *cconf;
->
-> -               /* FE is dummy */
-> +               /* CPU is dummy */
->                 cpus->of_node           = NULL;
->                 cpus->dai_name          = "snd-soc-dummy-dai";
->                 cpus->name              = "snd-soc-dummy";
-> --
-> 2.7.4
->
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CkhpIERhbmllbAoKPiA+IENvbnRlbnQtVHJhbnNmZXItRW5jb2Rpbmc6IDhiaXQKPiA+Cj4gPiBX
+aXRob3V0IDx0eXBlcy5oPiB3ZSB3aWxsIGdldCB0aGVzZSBlcnJvcgo+ID4KPiA+IGxpbnV4L2lu
+Y2x1ZGUvc291bmQvc29mL2hlYWRlci5oOjEyNToyOiBlcnJvcjogdW5rbm93biB0eXBlIG5hbWUg
+oXVpbnQzMl90onVpbnQzMl90IHNpemU7Cj4gPiBsaW51eC9pbmNsdWRlL3NvdW5kL3NvZi9oZWFk
+ZXIuaDoxMzY6MjogZXJyb3I6IHVua25vd24gdHlwZSBuYW1lIKF1aW50MzJfdKJ1aW50MzJfdCBz
+aXplOwo+ID4gbGludXgvaW5jbHVkZS9zb3VuZC9zb2YvaGVhZGVyLmg6MTM3OjI6IGVycm9yOiB1
+bmtub3duIHR5cGUgbmFtZSChdWludDMyX3SidWludDMyX3QgY21kOwo+ID4gLi4uCj4gPiBsaW51
+eC9pbmNsdWRlL3NvdW5kL3NvZi9kYWktaW14Lmg6MTg6MjogZXJyb3I6IHVua25vd24gdHlwZSBu
+YW1lIKF1aW50MTZfdKJ1aW50MTZfdCByZXNlcnZlZDE7Cj4gPiBsaW51eC9pbmNsdWRlL3NvdW5k
+L3NvZi9kYWktaW14Lmg6MzA6MjogZXJyb3I6IHVua25vd24gdHlwZSBuYW1lIKF1aW50MTZfdKJ1
+aW50MTZfdCB0ZG1fc2xvdF93aWR0aDsKPiA+IGxpbnV4L2luY2x1ZGUvc291bmQvc29mL2RhaS1p
+bXguaDozMToyOiBlcnJvcjogdW5rbm93biB0eXBlIG5hbWUgoXVpbnQxNl90onVpbnQxNl90IHJl
+c2VydmVkMjsKPiA+Cj4gCj4gSSB0aGluayB5b3VyIHBhdGNoIGlzIE9LLCBidXQgeW91IHNob3Vs
+ZCB1cGRhdGUgdGhlIGNvbW1pdCBtZXNzYWdlIGJlY2F1c2UKPiBTdGVwaGVuIFJvdGh3ZWxsIGFs
+cmVhZHkgZml4ZWQgZGFpLWlteC5oIGNvbXBpbGF0aW9uIGVycm9yICBpbiBsaW51eC1uZXh0LgoK
+SSBzZWUuIFRoYW5rcwoKQnV0IGhtbS4uLiBJIGNvdWxkbid0IGZpbmQgaXQgYXQgbGludXgtbmV4
+dC9tYXN0ZXIgdG9kYXkuLi4KTm90IHlldCBtZXJnZWQgPwoKVGhhbmsgeW91IGZvciB5b3VyIGhl
+bHAgISEKQmVzdCByZWdhcmRzCi0tLQpLdW5pbm9yaSBNb3JpbW90bwpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
