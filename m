@@ -2,77 +2,61 @@ Return-Path: <SRS0=gwzj=YI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BF22C4CECE
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 03:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C183C10F14
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 04:00:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99CC2217F9
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 03:22:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59E372089C
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 04:00:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lDRgJPMW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99CC2217F9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I+/yR4y4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59E372089C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B0A684C;
-	Tue, 15 Oct 2019 05:21:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B0A684C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 012A884C;
+	Tue, 15 Oct 2019 05:59:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012A884C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571109738;
-	bh=41DHb6uZ+5T4zzJ/2JzGsOqLDeM7iMLmxrP/yZR1yVg=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lDRgJPMWEwN8rH1puY83nzzBZ/gZV2K3c9hy214MBTPx8YR9UtLQA+ru1i+APw5Ac
-	 iblgembDf6m1rOoCXO3qIifGrO4ThhsZT+BgM/tq7DcC4kaqJs17YvxNrCGUCt6855
-	 3olXzxo0FHX6IfrzWCR041s7MnRG3oPAOgW/gKWM=
+	s=default; t=1571112015;
+	bh=zACP/coK23bSPlw+xg37WlY8BCdFsRotuqXX6O9dyKA=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=I+/yR4y4Y39K1jSNfVl6I9koX+naJqk7I8iWDM4Peef3yrBqK/NdQwcF+MC9L/Ivy
+	 4a3tWnVr+c22qxC7CJmB+/zhOIaF33u+DOTBI4Ltpaya2Xef+exBC7xQyHmoNi/9ht
+	 AZr6kNEGPTLlTEMv6/npuXMO+/4oRtg4jQwgXfic=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CACF1F804A9;
-	Tue, 15 Oct 2019 05:21:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B075F804A9;
+	Tue, 15 Oct 2019 05:59:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DCF9F804AA; Tue, 15 Oct 2019 05:21:25 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01D84F800F4
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 05:21:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01D84F800F4
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Oct 2019 20:21:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,297,1566889200"; d="scan'208";a="395398741"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
- by fmsmga005.fm.intel.com with ESMTP; 14 Oct 2019 20:21:16 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
- (envelope-from <lkp@intel.com>)
- id 1iKDOd-000Gza-SH; Tue, 15 Oct 2019 11:21:15 +0800
-Date: Tue, 15 Oct 2019 11:20:50 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Tzung-Bi Shih <tzungbi@google.com>
-Message-ID: <201910151124.lU6kl2Qj%lkp@intel.com>
-References: <20191014180059.07.I5388b69a7a9c551078fed216a77440cee6dedf49@changeid>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191014180059.07.I5388b69a7a9c551078fed216a77440cee6dedf49@changeid>
-X-Patchwork-Hint: ignore
-User-Agent: NeoMutt/20170113 (1.7.2)
-Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kbuild-all@lists.01.org, cychiang@google.com, drinkcat@google.com,
- robh+dt@kernel.org, tzungbi@google.com, broonie@kernel.org,
- enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com
-Subject: Re: [alsa-devel] [PATCH v3 07/10] ASoC: cros_ec_codec: support WoV
+ id 3D46AF804AA; Tue, 15 Oct 2019 05:59:22 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id BC44CF800F4
+ for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 05:59:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC44CF800F4
+Date: 15 Oct 2019 12:59:12 +0900
+X-IronPort-AV: E=Sophos;i="5.67,297,1566831600"; d="scan'208";a="29107450"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Oct 2019 12:59:12 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 999FA400B9F5;
+ Tue, 15 Oct 2019 12:58:54 +0900 (JST)
+Message-ID: <87d0ey64n5.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH v2 00/22] ASoC: soc-core cleanup - step 4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,88 +74,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Tzung-Bi,
 
-Thank you for the patch! Perhaps something to improve:
+Hi Mark
 
-[auto build test WARNING on asoc/for-next]
-[cannot apply to v5.4-rc3 next-20191014]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+These are v2 of soc-core cleanup.
+These are related to topology, but according to Intel CI,
+there is no damage to it.
+Some of them need more review.
+I added some mark to such patch.
+I merged posted-but-not-yet-accepted patch on top of it.
 
-url:    https://github.com/0day-ci/linux/commits/Tzung-Bi-Shih/ASoC-mediatek-mt8183-mt6358-ts3a227-max98357-support-WoV/20191014-183227
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Kuninori Morimoto (22):
+  ASoC: soc-pcm: fixup dpcm_prune_paths() loop continue
+  ASoC: soc-core: remove for_each_rtdcom_safe()
+  ASoC: soc-core: add for_each_rtd_components() and replace
+  ASoC: soc-core: snd_soc_unbind_card() cleanup
+  ASoC: soc-core: remove unneeded snd_soc_tplg_component_remove()
+  ASoC: soc-core: move soc_init_dai_link()
+  ASoC: soc-core: tidyup soc_init_dai_link()
+  ASoC: soc-core: remove duplicated soc_is_dai_link_bound()
+  ASoC: soc-core: call soc_bind_dai_link() under snd_soc_add_dai_link()
+  ASoC: soc-core: add soc_unbind_dai_link()
+  ASoC: soc-core: move snd_soc_lookup_component()
+  ASoC: soc-core: add snd_soc_del_component_unlocked()
+  ASoC: soc-core: remove snd_soc_component_add/del()
+  ASoC: soc-core: use snd_soc_lookup_component() at snd_soc_unregister_component()
+  ASoC: soc-core: move snd_soc_register_dai()
+  ASoC: soc-core: move snd_soc_unregister_dais()
+  ASoC: soc-core: add snd_soc_unregister_dai()
+  ASoC: soc-core: have legacy_dai_naming at snd_soc_register_dai()
+  ASoC: soc-core: don't call snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()
+  ASoC: soc-core: call snd_soc_register_dai() from snd_soc_register_dais()
+  ASoC: soc-core: remove topology specific operation
+  ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
+ include/sound/soc.h       |  25 ++-
+ sound/soc/soc-component.c |  43 +---
+ sound/soc/soc-compress.c  |  52 ++---
+ sound/soc/soc-core.c      | 561 ++++++++++++++++++++--------------------------
+ sound/soc/soc-pcm.c       |  55 ++---
+ sound/soc/soc-topology.c  |  17 +-
+ 6 files changed, 322 insertions(+), 431 deletions(-)
 
+-- 
+2.7.4
 
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/cros_ec_codec.c:774:7-14: WARNING opportunity for memdup_user
-
-vim +774 sound/soc/codecs/cros_ec_codec.c
-
-   754	
-   755	static int wov_hotword_model_put(struct snd_kcontrol *kcontrol,
-   756					 const unsigned int __user *bytes,
-   757					 unsigned int size)
-   758	{
-   759		struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-   760		struct cros_ec_codec_priv *priv =
-   761			snd_soc_component_get_drvdata(component);
-   762		struct ec_param_ec_codec_wov p;
-   763		struct ec_response_ec_codec_wov_get_lang r;
-   764		uint8_t digest[SHA256_DIGEST_SIZE];
-   765		uint8_t *buf;
-   766		int ret;
-   767	
-   768		/* Skips the TLV header. */
-   769		bytes += 2;
-   770		size -= 8;
-   771	
-   772		dev_dbg(priv->dev, "%s: size=%d\n", __func__, size);
-   773	
- > 774		buf = kmalloc(size, GFP_KERNEL);
-   775		if (!buf)
-   776			return -ENOMEM;
-   777	
-   778		if (copy_from_user(buf, bytes, size)) {
-   779			ret = -EFAULT;
-   780			goto leave;
-   781		}
-   782	
-   783		ret = calculate_sha256(priv, buf, size, digest);
-   784		if (ret)
-   785			goto leave;
-   786	
-   787		p.cmd = EC_CODEC_WOV_GET_LANG;
-   788		ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_WOV,
-   789					   (uint8_t *)&p, sizeof(p),
-   790					   (uint8_t *)&r, sizeof(r));
-   791		if (ret)
-   792			goto leave;
-   793	
-   794		if (memcmp(digest, r.hash, SHA256_DIGEST_SIZE) == 0) {
-   795			dev_dbg(priv->dev, "not updated");
-   796			goto leave;
-   797		}
-   798	
-   799		if (ec_codec_capable(priv, EC_CODEC_CAP_WOV_LANG_SHM))
-   800			ret = wov_set_lang_shm(priv, buf, size, digest);
-   801		else
-   802			ret = wov_set_lang(priv, buf, size, digest);
-   803	
-   804	leave:
-   805		kfree(buf);
-   806		return ret;
-   807	}
-   808	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
