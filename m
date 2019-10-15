@@ -6,71 +6,60 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75F3AC4CECE
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 01:03:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B277C4CECE
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 01:16:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 71F5F217D9
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 01:03:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFDDF20873
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 01:16:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f0/bnnzf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71F5F217D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jzD/P49c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFDDF20873
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45F0F84C;
-	Tue, 15 Oct 2019 03:02:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F0F84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5DB215E0;
+	Tue, 15 Oct 2019 03:15:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5DB215E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571101425;
-	bh=rvQKS5Skqqv+yqxs0Z+2BQQ2ySfeFuA9XYBaszZmII8=;
+	s=default; t=1571102174;
+	bh=Rbk0dqEcyhDBWgR9tZvRm29jPh2ngs0TUmFoOOODBO8=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f0/bnnzfTXM+NZFTzcpdhR06rdEsZSQ3SNgZ2BO1bB4hemO4KKDx9F6zSdkPZNUzY
-	 u/BbuCw2gcFKG69bK3uwORjbqRHw0zlieyYy3OmTYEY2t1EZJF6VUh2T20LtGqdmVG
-	 K087WK0WObx1O93kJ9s+NnDrSiDB5cWaNDWtyyeg=
+	b=jzD/P49cwGCOlchW4ZPznaXxNDT7xY1nDVmcsddDwUlYbc+Pcivrn7sK/Fpzal3Ev
+	 +81VendiU6z4GsF/d/4lYWUYLsRPdyIGh4bMuFqrdZCfpMUSnrIbvmHRiTozpzQ/re
+	 phi4M4I/ylB0SFUa16Qx8JmMQMu3G0mhBFlbp2Yg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3E6EF80322;
-	Tue, 15 Oct 2019 03:02:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A6E7F80322;
+	Tue, 15 Oct 2019 03:15:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9523F80362; Tue, 15 Oct 2019 03:02:53 +0200 (CEST)
+ id CB817F80362; Tue, 15 Oct 2019 03:15:22 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4E20FF80138
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 03:02:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E20FF80138
-Date: 15 Oct 2019 10:02:47 +0900
-X-IronPort-AV: E=Sophos;i="5.67,296,1566831600"; d="scan'208";a="28867303"
+ by alsa1.perex.cz (Postfix) with ESMTP id 77F19F80138
+ for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 03:15:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77F19F80138
+Date: 15 Oct 2019 10:15:15 +0900
+X-IronPort-AV: E=Sophos;i="5.67,296,1566831600"; d="scan'208";a="28868695"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 15 Oct 2019 10:02:47 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Oct 2019 10:15:15 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 251F6400A0FB;
- Tue, 15 Oct 2019 10:02:47 +0900 (JST)
-Message-ID: <87pniy6cso.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 02DCC4008C74;
+ Tue, 15 Oct 2019 10:15:15 +0900 (JST)
+Message-ID: <87o8yi6c7x.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191014161054.GD4826@sirena.co.uk>
-References: <20191013190014.32138-1-daniel.baluta@nxp.com>
- <20191013190014.32138-3-daniel.baluta@nxp.com>
- <20191014115635.GB4826@sirena.co.uk>
- <CAEnQRZDbXZUhix_aR_DCUzFn1NYz1Zh7MxW5uwnuycps9PNohw@mail.gmail.com>
- <20191014161054.GD4826@sirena.co.uk>
+To: Daniel Baluta <daniel.baluta@gmail.com>
+In-Reply-To: <CAEnQRZAen_Aa7SMdnPY4ezzbYtUypShto7ENGV_FhnsNhnxmBQ@mail.gmail.com>
+References: <CAEnQRZAen_Aa7SMdnPY4ezzbYtUypShto7ENGV_FhnsNhnxmBQ@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Devicetree List <devicetree@vger.kernel.org>,
- Daniel Baluta <daniel.baluta@gmail.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Jerome Laclavere <jerome.laclavere@nxp.com>,
- dl-linux-imx <linux-imx@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>,
- Guido Roncarolo <guido.roncarolo@nxp.com>
-Subject: Re: [alsa-devel] [RFC PATCH 2/2] ASoC: simple-card: Add
-	documentation for force-dpcm property
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
+ Ranjani" <ranjani.sridharan@intel.com>
+Subject: Re: [alsa-devel] Question about FE & BE DPCM
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,26 +72,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+Hi Daniel
 
-> > > DPCM is an implementation detail of Linux (and one that we want to phase
-> > > out going forwards too), we shouldn't be putting it in the DT bindings
-> > > where it becomes an ABI.
-> 
-> > I see your point. This is way I marked the patch series as RFC. I need to find
-> > another way to reuse simple-card as machine driver for SOF.
-> 
-> Have a look at the way the Renesas systems are using this and the audio
-> graph card - they have DPCM.
+> =BB       /* BE is dummy */
+> =BB       =BB       codecs->of_node=BB=BB       =3D NULL;
+> =BB       =BB       codecs->dai_name=BB       =3D "snd-soc-dummy-dai";
+> =BB       =BB       codecs->name=BB   =BB       =3D "snd-soc-dummy";
+> =
 
-Indeed we (= Renesas) are using this as DPCM, but unfortunately
-it is not upstreamed. Using local patch.
+> =BB       =BB       /* FE settings */
+> =BB       =BB       dai_link->dynamic=BB      =BB       =3D 1;
+> =BB       =BB       dai_link->dpcm_merged_format=BB   =3D 1;
+
+Ahh, indeed... it is wrong comment.
+It should be /* Codec is dummy */ here.
+I will post fixup patch, soon.
+
+Current simple-card is assuming
+
+	FE: CPU-dummy
+	BE: dummy-Codec
+
+> asoc_simple_canonicalize_platform function where it does say:
+> =
+
+> =BB        * DPCM BE can be no platform.
+> =BB        * Alloced memory will be waste, but not leak.
+> =BB        */
+> =BB       if (!dai_link->platforms->of_node)
+> =BB       =BB       dai_link->num_platforms =3D 0;
+> =
+
+> But I do want to create a BE with a platform. So, should I try to
+> revert the following
+
+I see.
+I'm not using but someone added asoc_simple_parse_platform().
+Maybe it can help you (?), but it is not called/used under DPCM case.
+If you can support it under DPCM, asoc_simple_canonicalize_platform()
+is no longer your issue ?
 
 Thank you for your help !!
 Best regards
