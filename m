@@ -2,99 +2,94 @@ Return-Path: <SRS0=gwzj=YI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4454ECE588
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 15:38:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9449BC10F14
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 15:53:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF85E2168B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 15:38:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2130D20873
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Oct 2019 15:53:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E2t/OrUt";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="XgpucEun"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF85E2168B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FnozgE4f";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ofb.net header.i=@ofb.net header.b="ytTb7U79"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2130D20873
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ofb.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B405844;
-	Tue, 15 Oct 2019 17:37:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B405844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0430B823;
+	Tue, 15 Oct 2019 17:52:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0430B823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571153902;
-	bh=y/YsG7SHLgzLY6uDHMI7B9ipi6yQXqg6BsSb0U+0H4I=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1571154783;
+	bh=eC3an+sLSJIr7uqaEqfkVyne5T2ssTtoCOuH5pyCbps=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=E2t/OrUtcv1FzpSvqf1ub/OFAg4tXA/fqwcSHu0TeedBsWTYr879Le+6zMOFkJ8+y
-	 9jnKLq7J77Sne/8Cm3ciiAITcsL5hlhxxMHIhifPOL8RQ2T5pE0eZS1QwWsUroTNqW
-	 Cilw3lnQvacAKULpPXdL8koslsH3ZcE/WRBL5CBc=
+	 Reply-To:From;
+	b=FnozgE4f4kH4sPvd87hFtyHZY88mTVi6SAl/XoXudY5oUIk9NACdGgHZMrTKQYh/n
+	 weoU+uZ3nzRJgRUtWbIWITJx0gLXtRRojcvqkHV97XRbZ1NY9CPhICdi4cWbOkne8b
+	 dPbDXHNLzmY8JzcMWBpI+SulqFOnkwOWAqEF9lW0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D830F80323;
-	Tue, 15 Oct 2019 17:37:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A1BFF804A9;
+	Tue, 15 Oct 2019 17:52:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A99EBF804AA; Tue, 15 Oct 2019 17:37:29 +0200 (CEST)
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com
- [IPv6:2607:f8b0:4864:20::341])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 389D7F804AA; Tue, 15 Oct 2019 17:52:10 +0200 (CEST)
+Received: from egnor-li.ofb.net (egnor-li.ofb.net [IPv6:2600:3c01:e000:283::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65612F80323
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 17:37:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65612F80323
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EB60F8011D
+ for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 17:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EB60F8011D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="XgpucEun"
-Received: by mail-ot1-x341.google.com with SMTP id 41so17305405oti.12
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 08:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=cgNM0n5gGfcK7ckXF49wd8P15GFoQ8+bReW9zILWg9Q=;
- b=XgpucEunT3K6pX5ErPI6Wn+W0xlCbsc7WiKcxyEvdXZKAwGdGprhSgYi2SFRsIzoZY
- S9yz5o6ITvJawDH4K4rU5vXRK9KwEay/uKmLzPuYGcX3ldv2jHavQm5wgfvbyXIZ/jMh
- +w5rpwQuyMbqnhHAHz02NJdZ76o8rQPJOK2dZ3x27deuED/Ey41iqCmBy+FZoxlVLr1L
- GYI5nw2WvBk5mHxGH4/pu1lDCWwHqNGYvMNeBKiv7yddiRXeWYixYQggIgo6KurmLGCK
- 1AnVQlthnckQAokX3wYX9Wht5MHsd/LxEa6OpILGleosdgIDTA4YX/cgoaJ0toeAD4lj
- 5URQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=cgNM0n5gGfcK7ckXF49wd8P15GFoQ8+bReW9zILWg9Q=;
- b=qeHYrk58Tq0g0Uti1Skkf+knrwUfDkL8cuohE7MMdkNjYHE0agnbOvYYrV4rr5WXig
- HJNRmj1Vb9jOBxH8XeIJQAToSOscPYyFc+8e7PPOXJwinerHRbdxb/szGLTy0/ZBpdLf
- FssMTySS09nMeA6q+9hL+pE/dY4HpVQe4QBFywWvRGfMWpBpVe39ekmrPrmLyw45uf6C
- /IRJxlzHWNL1vt+XZpQ9dIsAiZsEfrbYZx15GA/eoJKyHe6A7WtcIf+F10llrz7zHLZd
- Jmkk6VohiihntkoP4K8QINcq9lN9rMswgMMSWKMZ5YR0pjJjWe99kjG6kLJ4/EfaGnwa
- 3KWQ==
-X-Gm-Message-State: APjAAAXKyDZA/EMh+pLLpXNLJtUtiWWvQfQSuNmsJTK3vichEN9zW+O6
- VxbqA6AMWHRDoc+y2W4U3zO4AB/ROUq1SON0Ef8S6Q==
-X-Google-Smtp-Source: APXvYqyqTW0ikCL03cio+d+Gzmk4cTMFD83hv3qpHaLEzcsV2fmsdLrCaYZWZY0tNV/gtoVbZOAtyOnX7jjws/nqq2o=
-X-Received: by 2002:a05:6830:14ca:: with SMTP id
- t10mr13652260otq.182.1571153843870; 
- Tue, 15 Oct 2019 08:37:23 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=ofb.net header.i=@ofb.net
+ header.b="ytTb7U79"
+Received: from ofb.net (163.242.197.104.bc.googleusercontent.com
+ [104.197.242.163])
+ by egnor-li.ofb.net (Postfix) with ESMTP id 07F3D117F5C;
+ Tue, 15 Oct 2019 15:52:04 +0000 (UTC)
+Received: from localhost.localdomain (unknown [173.239.75.234])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ofb.net (Postfix) with ESMTPSA id C53BD3E869;
+ Tue, 15 Oct 2019 08:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ofb.net; s=ofb;
+ t=1571154723; bh=Du5GC1eegq5oZfHhj7cgpcqqhcPYzqrMOWf3mSVvhnI=;
+ h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+ b=ytTb7U79swrCWJ3kG4z4gyOYIhgCyJKS8Y6shFebPVkiYf5jd+cI+SddYBrukxLBL
+ I/QN/2/++z4TCHTDHrlAXXzlBPRi1n4dUd1MMJ5Cj3tDcL/sMgSqfbBOWkwWMlLctx
+ XtRVkTsX7/rwbTVsrJQPwpQRlRBx0rKbpjm+9mZtwPzIQLYTPznxIvRB3N73hmDPvg
+ 2vExn4QwOcILomXNZS8En5e1X3v7Az0gUOQDJK8W1DfOB6U8vPEDOE4B67P76LCNaM
+ px4QxtJTGQrTtMFBxXy6+2NcuMxqf6vUHqOZSsSMzbNrkFYDREpe05egkRN7DNEdj0
+ KjEApyfy82e9A==
+Received: from frederik by localhost.localdomain with local (Exim 4.92.2)
+ (envelope-from <frederik@localhost.localdomain>)
+ id 1iKP7C-0004ZZ-P2; Tue, 15 Oct 2019 08:52:02 -0700
+Date: Tue, 15 Oct 2019 08:52:02 -0700
+From: frederik@ofb.net
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20191015155202.bqcqzvvpeesfvuwg@localhost>
+References: <20190904164706.gwjbcywbj7emnwvr@localhost>
+ <s5hv9u19x2f.wl-tiwai@suse.de>
+ <20190910173345.63bv2xa4vlkxicxj@localhost>
+ <365e4bcc033c151076140471225db51c80808b7f.camel@iki.fi>
+ <s5himprulnt.wl-tiwai@suse.de>
+ <e294e2985eda906be3c3625235cc28643208dab2.camel@iki.fi>
+ <s5hblvjukn6.wl-tiwai@suse.de>
+ <20190919211244.buu3d6ey4k2dxyul@localhost>
+ <7c81ae80233efb25b25f2d1f941e9c11acb3967b.camel@iki.fi>
+ <s5hh857o1ik.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <20191014102022.236013-1-tzungbi@google.com>
- <20191014180059.01.I374c311eaca0d47944a37b07acbe48fdb74f734d@changeid>
- <20191015114854.GB4030@sirena.co.uk>
-In-Reply-To: <20191015114854.GB4030@sirena.co.uk>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Tue, 15 Oct 2019 23:37:12 +0800
-Message-ID: <CA+Px+wXoLTdSYQLsg9oTXOW3r9=xqCU4evNcbDjoTcctrtVbPw@mail.gmail.com>
-To: Mark Brown <broonie@kernel.org>, 
- Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc: Gwendal Grignou <gwendal@google.com>, devicetree@vger.kernel.org,
- ALSA development <alsa-devel@alsa-project.org>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>,
- Nicolas Boichat <drinkcat@google.com>, robh+dt@kernel.org,
- Benson Leung <bleung@google.com>, Dylan Reid <dgreid@google.com>
-Subject: Re: [alsa-devel] [PATCH v3 01/10] platform/chrome: cros_ec: remove
-	unused EC feature
+Content-Disposition: inline
+In-Reply-To: <s5hh857o1ik.wl-tiwai@suse.de>
+User-Agent: NeoMutt/20180716
+Cc: Tanu Kaskinen <tanuk@iki.fi>, alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] parameter for pulse device?
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,23 +102,182 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Reply-To: frederik@ofb.net
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 15, 2019 at 7:49 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Oct 14, 2019 at 06:20:13PM +0800, Tzung-Bi Shih wrote:
-> > Remove unused EC_FEATURE_AUDIO_CODEC.
->
-> What's the route to getting these platform/chrome changes reviewed?
-> They don't seem to have got any attention thus far and this one is right
-> at the start of the series.
+Dear Takashi,
 
-Enric, could you help to review the "platform/chrome" changes in this
-series?  All changes have merged in the EC firmware code
-(https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/master/include/ec_commands.h).
+I tested your patch, after commenting some lines in my ~/.asoundrc, and I can confirm that it works. I can now specify a pulse device to 'ecasound':
+
+    ecasound -o alsa,pulse:music -i song.wav
+
+and when I do it with no "DEVICE" argument, then it outputs to the sink defined by "pacmd set-default-sink":
+
+    ecasound -o alsa,pulse -i song.wav
+
+I guess this only exercises one of the cases in your patch where the empty string is recognized as NULL:
+
++			} else if (!*device) {
++				device = NULL;
+
+Let me know if you want me to do more testing, and apologies for the long delay in my reply.
+
+Thanks,
+
+Frederick
+
+
+On Fri, Sep 20, 2019 at 09:44:19AM +0200, Takashi Iwai wrote:
+>On Fri, 20 Sep 2019 09:35:59 +0200,
+>Tanu Kaskinen wrote:
+>>
+>> On Thu, 2019-09-19 at 14:12 -0700, frederik@ofb.net wrote:
+>> > Thank you for the tips.
+>> >
+>> > I don't know if my input is still needed, but I figured out from
+>> > looking at some of the syntax you linked to that I can put this in
+>> > ~/.asoundrc and it does the job (this is what I had had in mind when
+>> > I asked about "magic with macros", it is somewhat advanced for me):
+>> >
+>> >     pcm.!pulse {
+>> >         @args [ DEV ]
+>> >         @args.DEV {
+>> >             type string
+>> >             default "default"
+>> >         }
+>> >         type pulse;
+>> >         device $DEV
+>> >     }
+>> >
+>> > Now I can set up a filter like this:
+>> >
+>> >     ecasound -i alsa,pulse:mic -o alsa,pulse:monitor
+>> >
+>> > Is something like this going into the alsa-plugins repo?
+>>
+>> I'm sure something like this will be accepted if you submit a patch. I
+>> got the impression that Takashi isn't willing to write the patch
+>> himself, and nor am I, so you're in the best position to make this
+>> happen.
+>
+>I have a test patch but had no chance to test the stuff at all
+>currently as I am (and will be for the next few weeks) traveling.
+>
+>> Note that
+>>
+>>             default "default"
+>>
+>> doesn't do the intended thing with the current pcm_pulse.c code. With
+>> the current code the plugin will request PulseAudio to use a device
+>> named "default", which most likely won't exist and playback or
+>> recording will fail. The plugin code needs to pass NULL as the device
+>> name to pa_stream_connect_playback() and pa_stream_connect_record()
+>> when it detects that the default device is requested, so you'll need to
+>> modify pcm_pulse.c in order to make this work. Instead of "default" as
+>> the special string in the configuration, I suggested using "".
+>
+>Below is the totally untested patch (even not build-tested!)
+>If anyone interested, feel free to cook it.
+>
+>
+>thanks,
+>
+>Takashi
+>
+>---
+>diff --git a/pulse/50-pulseaudio.conf b/pulse/50-pulseaudio.conf
+>index 62da207af9ca..916258d942af 100644
+>--- a/pulse/50-pulseaudio.conf
+>+++ b/pulse/50-pulseaudio.conf
+>@@ -1,7 +1,13 @@
+> # Add a specific named PulseAudio pcm and ctl (typically useful for testing)
+>
+> pcm.pulse {
+>+	@args [ DEVICE ]
+>+	@args.DEVICE {
+>+		type string
+>+		default ""
+>+	}
+> 	type pulse
+>+	device $DEVICE
+> 	hint {
+> 		show {
+> 			@func refer
+>diff --git a/pulse/ctl_pulse.c b/pulse/ctl_pulse.c
+>index fbb6eae2ec76..9b820fd04b15 100644
+>--- a/pulse/ctl_pulse.c
+>+++ b/pulse/ctl_pulse.c
+>@@ -664,6 +664,8 @@ SND_CTL_PLUGIN_DEFINE_FUNC(pulse)
+> 			if (snd_config_get_string(n, &server) < 0) {
+> 				SNDERR("Invalid type for %s", id);
+> 				return -EINVAL;
+>+			} else if (!*server) {
+>+				server = NULL;
+> 			}
+> 			continue;
+> 		}
+>@@ -671,6 +673,8 @@ SND_CTL_PLUGIN_DEFINE_FUNC(pulse)
+> 			if (snd_config_get_string(n, &device) < 0) {
+> 				SNDERR("Invalid type for %s", id);
+> 				return -EINVAL;
+>+			} else if (!*device) {
+>+				device = NULL;
+> 			}
+> 			continue;
+> 		}
+>@@ -678,6 +682,8 @@ SND_CTL_PLUGIN_DEFINE_FUNC(pulse)
+> 			if (snd_config_get_string(n, &source) < 0) {
+> 				SNDERR("Invalid type for %s", id);
+> 				return -EINVAL;
+>+			} else if (!*source) {
+>+				source = NULL;
+> 			}
+> 			continue;
+> 		}
+>@@ -685,6 +691,8 @@ SND_CTL_PLUGIN_DEFINE_FUNC(pulse)
+> 			if (snd_config_get_string(n, &sink) < 0) {
+> 				SNDERR("Invalid type for %s", id);
+> 				return -EINVAL;
+>+			} else if (!*sink) {
+>+				sink = NULL;
+> 			}
+> 			continue;
+> 		}
+>diff --git a/pulse/pcm_pulse.c b/pulse/pcm_pulse.c
+>index 283174357e8b..869c9b674c6b 100644
+>--- a/pulse/pcm_pulse.c
+>+++ b/pulse/pcm_pulse.c
+>@@ -1069,6 +1069,8 @@ SND_PCM_PLUGIN_DEFINE_FUNC(pulse)
+> 			if (snd_config_get_string(n, &server) < 0) {
+> 				SNDERR("Invalid type for %s", id);
+> 				return -EINVAL;
+>+			} else if (!*server) {
+>+				server = NULL;
+> 			}
+> 			continue;
+> 		}
+>@@ -1076,6 +1078,8 @@ SND_PCM_PLUGIN_DEFINE_FUNC(pulse)
+> 			if (snd_config_get_string(n, &device) < 0) {
+> 				SNDERR("Invalid type for %s", id);
+> 				return -EINVAL;
+>+			} else if (!*device) {
+>+				device = NULL;
+> 			}
+> 			continue;
+> 		}
+>@@ -1091,6 +1095,8 @@ SND_PCM_PLUGIN_DEFINE_FUNC(pulse)
+> 			if (snd_config_get_string(n, &fallback_name) < 0) {
+> 				SNDERR("Invalid value for %s", id);
+> 				return -EINVAL;
+>+			} else if (!*fallback_name) {
+>+				fallback_name = NULL;
+> 			}
+> 			continue;
+> 		}
+>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
