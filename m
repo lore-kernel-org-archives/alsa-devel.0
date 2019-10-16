@@ -2,66 +2,75 @@ Return-Path: <SRS0=FfYG=YJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11106ECE58F
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 00:34:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FAAFECE58F
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 02:40:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CDC020854
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 00:34:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B7A920873
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 02:39:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mh2Lfmmx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CDC020854
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YVNo4cdm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B7A920873
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAA17846;
-	Wed, 16 Oct 2019 02:34:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAA17846
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA91C844;
+	Wed, 16 Oct 2019 04:39:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA91C844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571186096;
-	bh=6GFDlulFRi+KcV6DbmaY4Ouh/b94FqgtFRAg2e07dF0=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1571193597;
+	bh=vKaugpInW+Epdizl+SYSqJJq47IciVzGxGCHtUc1/3I=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mh2LfmmxkpZXa6ej2Wq1tyHB9NeEqCkZzURhwV3x0D/G+0gaCQQHt33Spdjl6SEUX
-	 2RIaNAYPNCbLSI+209bnxwbtZthD41izXT25VR/7cYMCykMxntxKc0ksGbcVkNS1Yd
-	 2NfJf9xNbm9g+sgI3wtLWOuWNpBKmzMmjMx3al7o=
+	b=YVNo4cdm4w4z/zwbq0umFwF6kL0W9B1KZXfOc4IqgT9WGrBiYLZEs9YUQC5hYzkJW
+	 /kx4wK6Bv8JE3J8QMQn0VQ6qdUmAjwMZcGAciERJ/pw7s3+GuVu7IkqXSMNBxdeIFI
+	 dRvq8nWEjRNaFDQAEsByZKcvrxJvvWsYFeoxLraI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FD02F804A9;
-	Wed, 16 Oct 2019 02:34:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63F7FF80362;
+	Wed, 16 Oct 2019 04:39:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3652F804AA; Wed, 16 Oct 2019 02:34:04 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 310DDF8011D
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 02:33:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 310DDF8011D
-Date: 16 Oct 2019 09:33:56 +0900
-X-IronPort-AV: E=Sophos;i="5.67,301,1566831600"; d="scan'208";a="28965663"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 16 Oct 2019 09:33:56 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 49077400965E;
- Wed, 16 Oct 2019 09:33:56 +0900 (JST)
-Message-ID: <87mue1wmtn.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-In-Reply-To: <eb62a134-5189-eb7c-6083-69302ba590e2@ti.com>
-References: <20191008115720.7135-1-peter.ujfalusi@ti.com>
- <87lftm68d6.wl-kuninori.morimoto.gx@renesas.com>
- <eb62a134-5189-eb7c-6083-69302ba590e2@ti.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
-Subject: Re: [alsa-devel] [PATCH] ASoC: pcm3168a: Use fixup instead of
-	constraint for channels and formats
+ id 1E09CF8036C; Wed, 16 Oct 2019 04:39:06 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa1.perex.cz (Postfix) with ESMTP id F1EBFF80362
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 04:38:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1EBFF80362
+X-UUID: 696304e4c6f3425cbf18b72cd5196de8-20191016
+X-UUID: 696304e4c6f3425cbf18b72cd5196de8-20191016
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+ with ESMTP id 928964542; Wed, 16 Oct 2019 10:38:54 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Wed, 16 Oct 2019 10:38:50 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Wed, 16 Oct 2019 10:38:49 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <mark.rutland@arm.com>, <robh+dt@kernel.org>,
+ <linux@roeck-us.net>, <wim@linux-watchdog.org>
+Date: Wed, 16 Oct 2019 10:38:42 +0800
+Message-ID: <1571193522-11886-3-git-send-email-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1571193522-11886-1-git-send-email-jiaxin.yu@mediatek.com>
+References: <1571193522-11886-1-git-send-email-jiaxin.yu@mediatek.com>
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: EDE643BDA5F2795A887B7DEE791A7E72E79A19DDBB5D9C481F742A084FC346522000:8
+X-MTK: N
+Cc: alsa-devel@alsa-project.org, yong.liang@mediatek.com, lgirdwood@gmail.com,
+ jiaxin.yu@mediatek.com, tzungbi@google.com, linux-mediatek@lists.infradead.org,
+ eason.yen@mediatek.com, linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH 2/2] watchdog: mtk_wdt: mt8183: Add reset
+	controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,36 +88,203 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: "yong.liang" <yong.liang@mediatek.com>
 
-Hi Peter
+Add reset controller API in watchdog driver.
+Besides watchdog, MTK toprgu module also provide sub-system (eg, audio,
+camera, codec and connectivity) software reset functionality.
 
-Thank you for your fixup patch
-
-> > This patch breaks my sound.
-> > I'm selecting I2S between CPU<->Codec, and 
-> > before this patch, it had been selected 24bit + I2S.
-> > But after this patch, it selects 16bit + I2S,
-> > and say "16-bit slots are supported only for slave mode using right justified"
-> 
-> Oops. I have sent a patch to fix this. Sorry for the inconvenience!
-
-No problem.
-Thank you for your quick response.
-
-> > I'm not 100% understand pcm3168a.
-> > I'm happy if you can solve this issue.
-> > If you can't, can you please teach me where should I check ?
-> 
-> Just sent a patch to fix the issue you are seeing with I2S mode (tested
-> it myself).
-
-Yes, Thanks.
-It could solve my issue.
-
-Thank you for your help !!
-Best regards
+Signed-off-by: yong.liang <yong.liang@mediatek.com>
 ---
-Kuninori Morimoto
+ drivers/watchdog/Kconfig   |   1 +
+ drivers/watchdog/mtk_wdt.c | 111 ++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 111 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 2e07caab9db2..629249fe5305 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -717,6 +717,7 @@ config MEDIATEK_WATCHDOG
+ 	tristate "Mediatek SoCs watchdog support"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	select WATCHDOG_CORE
++	select RESET_CONTROLLER
+ 	help
+ 	  Say Y here to include support for the watchdog timer
+ 	  in Mediatek SoCs.
+diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+index 9c3d0033260d..d29484c7940a 100644
+--- a/drivers/watchdog/mtk_wdt.c
++++ b/drivers/watchdog/mtk_wdt.c
+@@ -9,6 +9,9 @@
+  * Based on sunxi_wdt.c
+  */
+ 
++#include <dt-bindings/reset-controller/mt2712-resets.h>
++#include <dt-bindings/reset-controller/mt8183-resets.h>
++#include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -16,10 +19,12 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/reset-controller.h>
++#include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/watchdog.h>
+-#include <linux/delay.h>
+ 
+ #define WDT_MAX_TIMEOUT		31
+ #define WDT_MIN_TIMEOUT		1
+@@ -44,6 +49,9 @@
+ #define WDT_SWRST		0x14
+ #define WDT_SWRST_KEY		0x1209
+ 
++#define WDT_SWSYSRST		0x18U
++#define WDT_SWSYS_RST_KEY	0x88000000
++
+ #define DRV_NAME		"mtk-wdt"
+ #define DRV_VERSION		"1.0"
+ 
+@@ -53,8 +61,99 @@ static unsigned int timeout;
+ struct mtk_wdt_dev {
+ 	struct watchdog_device wdt_dev;
+ 	void __iomem *wdt_base;
++	spinlock_t lock; /* protects WDT_SWSYSRST reg */
++	struct reset_controller_dev rcdev;
++};
++
++struct mtk_wdt_data {
++	int sw_rst_num;
+ };
+ 
++static const struct mtk_wdt_data mt2712_data = {
++	.sw_rst_num = MT2712_TOPRGU_SW_RST_NUM,
++};
++
++static const struct mtk_wdt_data mt8183_data = {
++	.sw_rst_num = MT8183_TOPRGU_SW_RST_NUM,
++};
++
++static int toprgu_reset_assert(struct reset_controller_dev *rcdev,
++			       unsigned long id)
++{
++	unsigned int tmp;
++	unsigned long flags;
++	struct mtk_wdt_dev *data =
++		 container_of(rcdev, struct mtk_wdt_dev, rcdev);
++
++	spin_lock_irqsave(&data->lock, flags);
++
++	tmp = __raw_readl(data->wdt_base + WDT_SWSYSRST);
++	tmp |= BIT(id);
++	tmp |= WDT_SWSYS_RST_KEY;
++	writel(tmp, data->wdt_base + WDT_SWSYSRST);
++
++	spin_unlock_irqrestore(&data->lock, flags);
++
++	return 0;
++}
++
++static int toprgu_reset_deassert(struct reset_controller_dev *rcdev,
++				 unsigned long id)
++{
++	unsigned int tmp;
++	unsigned long flags;
++	struct mtk_wdt_dev *data =
++		 container_of(rcdev, struct mtk_wdt_dev, rcdev);
++
++	spin_lock_irqsave(&data->lock, flags);
++
++	tmp = __raw_readl(data->wdt_base + WDT_SWSYSRST);
++	tmp &= ~BIT(id);
++	tmp |= WDT_SWSYS_RST_KEY;
++	writel(tmp, data->wdt_base + WDT_SWSYSRST);
++
++	spin_unlock_irqrestore(&data->lock, flags);
++
++	return 0;
++}
++
++static int toprgu_reset(struct reset_controller_dev *rcdev,
++			unsigned long id)
++{
++	int ret;
++
++	ret = toprgu_reset_assert(rcdev, id);
++	if (ret)
++		return ret;
++
++	return toprgu_reset_deassert(rcdev, id);
++}
++
++static const struct reset_control_ops toprgu_reset_ops = {
++	.assert = toprgu_reset_assert,
++	.deassert = toprgu_reset_deassert,
++	.reset = toprgu_reset,
++};
++
++static int toprgu_register_reset_controller(struct platform_device *pdev,
++					    int rst_num)
++{
++	int ret;
++	struct mtk_wdt_dev *mtk_wdt = platform_get_drvdata(pdev);
++
++	spin_lock_init(&mtk_wdt->lock);
++
++	mtk_wdt->rcdev.owner = THIS_MODULE;
++	mtk_wdt->rcdev.nr_resets = rst_num;
++	mtk_wdt->rcdev.ops = &toprgu_reset_ops;
++	mtk_wdt->rcdev.of_node = pdev->dev.of_node;
++	ret = reset_controller_register(&mtk_wdt->rcdev);
++	if (ret != 0)
++		dev_err(&pdev->dev,
++			"couldn't register wdt reset controller: %d\n", ret);
++	return ret;
++}
++
+ static int mtk_wdt_restart(struct watchdog_device *wdt_dev,
+ 			   unsigned long action, void *data)
+ {
+@@ -155,6 +254,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct mtk_wdt_dev *mtk_wdt;
++	struct mtk_wdt_data *wdt_data;
+ 	int err;
+ 
+ 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
+@@ -190,6 +290,13 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ 	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)\n",
+ 		 mtk_wdt->wdt_dev.timeout, nowayout);
+ 
++	wdt_data = (struct mtk_wdt_data *)of_device_get_match_data(dev);
++	if (wdt_data) {
++		err = toprgu_register_reset_controller(pdev,
++						       wdt_data->sw_rst_num);
++		if (err)
++			return err;
++	}
+ 	return 0;
+ }
+ 
+@@ -218,7 +325,9 @@ static int mtk_wdt_resume(struct device *dev)
+ #endif
+ 
+ static const struct of_device_id mtk_wdt_dt_ids[] = {
++	{ .compatible = "mediatek,mt2712-wdt", .data = &mt2712_data },
+ 	{ .compatible = "mediatek,mt6589-wdt" },
++	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mtk_wdt_dt_ids);
+-- 
+2.18.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
