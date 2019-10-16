@@ -2,99 +2,70 @@ Return-Path: <SRS0=FfYG=YJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E494ECE588
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 08:42:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 681A4ECE588
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 08:59:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C11D2054F
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 08:42:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BDCC21848
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 08:59:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XwGDjwn5";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cmxLnnlv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C11D2054F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aT/oXyiZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BDCC21848
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FB1C846;
-	Wed, 16 Oct 2019 10:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FB1C846
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4B4B847;
+	Wed, 16 Oct 2019 10:58:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4B4B847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571215362;
-	bh=2uyb/9Yu5WEkLO4ZV7ZfMkmdc+5ocPINu+pXsKNeauI=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XwGDjwn5Ip6GvdUzUZxkfGPp1tOs39ABkM2nV1HKRmfN6RIabiFu04kG65aAYxNFK
-	 2p8GVEbWVHumrVrb/y1udz8zx7Y/zVZ0jD3TwByy2l5oJ2xst7+5VUzFJLpRmiR404
-	 IFNiwJteUC/XCKPkmOE4OKJiUsN6uFL5HxNP+Xn8=
+	s=default; t=1571216351;
+	bh=Y2HvlJuiF1ku634ls81O065dVzZexj/+M/cwNrVfi8s=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aT/oXyiZ77/spWH9l1zWqOug5i1VpLJFeqSx7Oy7wAzkY/N9oZ3NxRSqPlr9LGs8p
+	 mqYQ9IMtY0jo6OGEM5ClynuuekJSD0kPNWjAWITsmdXuUigbIPyUHamspG90qjiB9p
+	 aGH5pz1RCBJFk8rGCzJA9bU4dZlt/RVxyeUqTNVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51AC5F80323;
-	Wed, 16 Oct 2019 10:41:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2742CF80323;
+	Wed, 16 Oct 2019 10:58:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8161F80362; Wed, 16 Oct 2019 10:41:48 +0200 (CEST)
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com
- [IPv6:2a00:1450:4864:20::143])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 79934F80362; Wed, 16 Oct 2019 10:58:19 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A34DDF8011F
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 10:41:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A34DDF8011F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="cmxLnnlv"
-Received: by mail-lf1-x143.google.com with SMTP id w67so16751009lff.4
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 01:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=P5rCHjs55GhS0d4QwWMR+IRXm4cU7A5acMAqOom+agM=;
- b=cmxLnnlv3X8JzjYTOrMqk+TrttOUQO+7Ws5eEWIRsEywSi1lz7WA6MOWF2jvS2WjdU
- kNnUvK2cVJU0uIxO8GhtsUwz7YRYCcSD4sc5HojMnTJHNi7TV/4LE0IDtg48eW6tv4EZ
- yp0HfIdJ3n5GCBA/L3alVcWo6V6kJ0OkrWiyeEiCV+GqXCr+1HCkWjqYygrdRdst0E/s
- Jw0IuQIhHHnjpLvdhnWnk2MEqsxtjlmE0E7FyNcMmIeJWuHqQMjPcMkbaaQ1Yx6fRUuw
- p5rWDLQWh+mWjmnGrmjPilU4K8yetyUqCqxz6D/6lCKowZu9tOEzyy1oZ17LVeq65OFv
- NAmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=P5rCHjs55GhS0d4QwWMR+IRXm4cU7A5acMAqOom+agM=;
- b=FJOpGLiRFfkFS+jE2ITHPnbLCz47WMPM77FpIhXqf66EmEat0jKjnPlh12UMum2Uw2
- QZIFHQtNHVTXMl4hRBH2BNstlCPK+FI6I/OtlYX3SRkYId2Vnz0wKUvDfmvYUT8aQ5mH
- 7fV0rupdjAsaXmMFPQBJyqN98UTcKlD8PDphrtRQvi23OEFjQWT+Ar3oQ70jK3IT6fpd
- C1LEeKvzY+oELQ/fkpSfEKF86pRpqbIQ/4uHHQsdVxEsxLCQ2KPAvDx8vLRKgHRZpNm4
- 6QSXG1MXwzgoSZQIcfZI0X6HcnPopzUW9MXs4wogirTVduQdmcGFtWqLCafJVgSf2EpF
- nshQ==
-X-Gm-Message-State: APjAAAXVk4BaW1vLDD0tr0LHYbalKZIjw+AyFIrDpoUj/mKqmHJZSym+
- vVv4tAiKj2XEC9Lx645MeywopoKisJTJgzvM63Q=
-X-Google-Smtp-Source: APXvYqwMqRyrV6KURGxOk+nK8zfx8iulHbs2fxXoCl2l6ahgWaJLEk4ZRRTnkB348AtFsLAoa2OCoYz7BbpqTULv2UM=
-X-Received: by 2002:ac2:5610:: with SMTP id v16mr23568149lfd.93.1571215303287; 
- Wed, 16 Oct 2019 01:41:43 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FD9FF80322
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 10:58:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FD9FF80322
+Authenticated-By: 
+X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID x9G8w7PY002045,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (RTITCAS12.realtek.com.tw[172.21.6.16])
+ by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id x9G8w7PY002045
+ (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 16 Oct 2019 16:58:07 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTITCAS12.realtek.com.tw (172.21.6.16) with Microsoft SMTP Server id
+ 14.3.439.0; Wed, 16 Oct 2019 16:58:06 +0800
+From: <shumingf@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Date: Wed, 16 Oct 2019 16:57:54 +0800
+Message-ID: <20191016085754.11614-1-shumingf@realtek.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <20191016070740.121435-1-codekipper@gmail.com>
- <20191016070740.121435-2-codekipper@gmail.com>
- <20191016080420.4cbxn2hdt3wwtrhl@gilmour>
-In-Reply-To: <20191016080420.4cbxn2hdt3wwtrhl@gilmour>
-From: Code Kipper <codekipper@gmail.com>
-Date: Wed, 16 Oct 2019 10:41:31 +0200
-Message-ID: <CAEKpxBmNCA4U8-X8iSwOxBZ7T3dp6352S2Kfxc6f5E4N671zvg@mail.gmail.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- linux-sunxi <linux-sunxi@googlegroups.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- "Andrea Venturi \(pers\)" <be17068@iperbole.bo.it>,
- Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [PATCH v6 1/7] ASoC: sun4i-i2s: Move channel
-	select offset
+X-Originating-IP: [172.22.102.1]
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, Shuming Fan <shumingf@realtek.com>, derek.fang@realtek.com,
+ sathya.prakash.m.r@intel.com, flove@realtek.com
+Subject: [alsa-devel] [PATCH v2] ASoC: rt1011: set tx/rx slots from
+	tx/rx_mask in TDM case
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,25 +83,236 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Oct 2019 at 10:04, Maxime Ripard <mripard@kernel.org> wrote:
->
-> On Wed, Oct 16, 2019 at 09:07:34AM +0200, codekipper@gmail.com wrote:
-> > From: Marcus Cooper <codekipper@gmail.com>
-> >
-> > On the newer SoCs the offset is used to set the mode of the
-> > connection. As it is to be used elsewhere then it makes sense
-> > to move it to the main structure.
->
-> Elsewhere where, and to do what?
-Thanks...How does this sound?
+From: Shuming Fan <shumingf@realtek.com>
 
-As it is to be used to set the same offset for each TX data channel in use
-during multi-channel audio then let's move it to the main structure.
+The TX/RX slot configuration use tx/rx_mask which requested
+by the machine driver.
 
-BR,
-CK
->
-> Maxime
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+---
+ sound/soc/codecs/rt1011.c | 142 ++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/rt1011.h |  23 ++++++
+ 2 files changed, 160 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
+index be1e276e3631..b927e61b32df 100644
+--- a/sound/soc/codecs/rt1011.c
++++ b/sound/soc/codecs/rt1011.c
+@@ -1805,8 +1805,8 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct snd_soc_dapm_context *dapm =
+ 		snd_soc_component_get_dapm(component);
+-	unsigned int val = 0, tdm_en = 0;
+-	int ret = 0;
++	unsigned int val = 0, tdm_en = 0, rx_slotnum, tx_slotnum;
++	int ret = 0, first_bit, last_bit;
+ 
+ 	snd_soc_dapm_mutex_lock(dapm);
+ 	if (rx_mask || tx_mask)
+@@ -1829,6 +1829,7 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
++		goto _set_tdm_err_;
+ 	}
+ 
+ 	switch (slot_width) {
+@@ -1848,6 +1849,135 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
++		goto _set_tdm_err_;
++	}
++
++	/* Rx slot configuration */
++	rx_slotnum = hweight_long(rx_mask);
++	first_bit = find_next_bit((unsigned long *)&rx_mask, 32, 0);
++	if (rx_slotnum > 1 || rx_slotnum == 0) {
++		ret = -EINVAL;
++		dev_dbg(component->dev, "too many rx slots or zero slot\n");
++		goto _set_tdm_err_;
++	}
++
++	switch (first_bit) {
++	case 0:
++	case 2:
++	case 4:
++	case 6:
++		snd_soc_component_update_bits(component,
++			RT1011_CROSS_BQ_SET_1, RT1011_MONO_LR_SEL_MASK,
++			RT1011_MONO_L_CHANNEL);
++		snd_soc_component_update_bits(component,
++			RT1011_TDM1_SET_4,
++			RT1011_TDM_I2S_TX_L_DAC1_1_MASK |
++			RT1011_TDM_I2S_TX_R_DAC1_1_MASK,
++			(first_bit << RT1011_TDM_I2S_TX_L_DAC1_1_SFT) |
++			((first_bit+1) << RT1011_TDM_I2S_TX_R_DAC1_1_SFT));
++		break;
++	case 1:
++	case 3:
++	case 5:
++	case 7:
++		snd_soc_component_update_bits(component,
++			RT1011_CROSS_BQ_SET_1, RT1011_MONO_LR_SEL_MASK,
++			RT1011_MONO_R_CHANNEL);
++		snd_soc_component_update_bits(component,
++			RT1011_TDM1_SET_4,
++			RT1011_TDM_I2S_TX_L_DAC1_1_MASK |
++			RT1011_TDM_I2S_TX_R_DAC1_1_MASK,
++			((first_bit-1) << RT1011_TDM_I2S_TX_L_DAC1_1_SFT) |
++			(first_bit << RT1011_TDM_I2S_TX_R_DAC1_1_SFT));
++		break;
++	default:
++		ret = -EINVAL;
++		goto _set_tdm_err_;
++	}
++
++	/* Tx slot configuration */
++	tx_slotnum = hweight_long(tx_mask);
++	first_bit = find_next_bit((unsigned long *)&tx_mask, 32, 0);
++	last_bit = find_last_bit((unsigned long *)&tx_mask, 32);
++	if (tx_slotnum > 2 || (last_bit-first_bit) > 1) {
++		ret = -EINVAL;
++		dev_dbg(component->dev, "too many tx slots or tx slot location error\n");
++		goto _set_tdm_err_;
++	}
++
++	if (tx_slotnum == 1) {
++		snd_soc_component_update_bits(component, RT1011_TDM1_SET_2,
++			RT1011_TDM_I2S_DOCK_ADCDAT_LEN_1_MASK |
++			RT1011_TDM_ADCDAT1_DATA_LOCATION, first_bit);
++		switch (first_bit) {
++		case 1:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC1_1_MASK,
++				RT1011_TDM_I2S_RX_ADC1_1_LL);
++			break;
++		case 3:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC2_1_MASK,
++				RT1011_TDM_I2S_RX_ADC2_1_LL);
++			break;
++		case 5:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC3_1_MASK,
++				RT1011_TDM_I2S_RX_ADC3_1_LL);
++			break;
++		case 7:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC4_1_MASK,
++				RT1011_TDM_I2S_RX_ADC4_1_LL);
++			break;
++		case 0:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC1_1_MASK, 0);
++			break;
++		case 2:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC2_1_MASK, 0);
++			break;
++		case 4:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC3_1_MASK, 0);
++			break;
++		case 6:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_3,
++				RT1011_TDM_I2S_RX_ADC4_1_MASK, 0);
++			break;
++		default:
++			ret = -EINVAL;
++			dev_dbg(component->dev,
++				"tx slot location error\n");
++			goto _set_tdm_err_;
++		}
++	} else if (tx_slotnum == 2) {
++		switch (first_bit) {
++		case 0:
++		case 2:
++		case 4:
++		case 6:
++			snd_soc_component_update_bits(component,
++				RT1011_TDM1_SET_2,
++				RT1011_TDM_I2S_DOCK_ADCDAT_LEN_1_MASK |
++				RT1011_TDM_ADCDAT1_DATA_LOCATION,
++				RT1011_TDM_I2S_DOCK_ADCDAT_2CH | first_bit);
++			break;
++		default:
++			ret = -EINVAL;
++			dev_dbg(component->dev,
++				"tx slot location should be paired and start from slot0/2/4/6\n");
++			goto _set_tdm_err_;
++		}
+ 	}
+ 
+ 	snd_soc_component_update_bits(component, RT1011_TDM1_SET_1,
+@@ -1860,10 +1990,12 @@ static int rt1011_set_tdm_slot(struct snd_soc_dai *dai,
+ 		RT1011_TDM_I2S_DOCK_EN_1_MASK,	tdm_en);
+ 	snd_soc_component_update_bits(component, RT1011_TDM2_SET_2,
+ 		RT1011_TDM_I2S_DOCK_EN_2_MASK,	tdm_en);
+-	snd_soc_component_update_bits(component, RT1011_TDM_TOTAL_SET,
+-		RT1011_ADCDAT1_PIN_CONFIG | RT1011_ADCDAT2_PIN_CONFIG,
+-		RT1011_ADCDAT1_OUTPUT | RT1011_ADCDAT2_OUTPUT);
++	if (tx_slotnum)
++		snd_soc_component_update_bits(component, RT1011_TDM_TOTAL_SET,
++			RT1011_ADCDAT1_PIN_CONFIG | RT1011_ADCDAT2_PIN_CONFIG,
++			RT1011_ADCDAT1_OUTPUT | RT1011_ADCDAT2_OUTPUT);
+ 
++_set_tdm_err_:
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ 	return ret;
+ }
+diff --git a/sound/soc/codecs/rt1011.h b/sound/soc/codecs/rt1011.h
+index 2d65983f3d0f..3f7dea1191ad 100644
+--- a/sound/soc/codecs/rt1011.h
++++ b/sound/soc/codecs/rt1011.h
+@@ -460,6 +460,23 @@
+ #define RT1011_TDM_I2S_DOCK_EN_1_MASK			(0x1 << 3)
+ #define RT1011_TDM_I2S_DOCK_EN_1_SFT			3
+ #define RT1011_TDM_I2S_DOCK_EN_1		(0x1 << 3)
++#define RT1011_TDM_ADCDAT1_DATA_LOCATION			(0x7 << 0)
++
++/* TDM1 Setting-3 (0x0118) */
++#define RT1011_TDM_I2S_RX_ADC1_1_MASK			(0x3 << 6)
++#define RT1011_TDM_I2S_RX_ADC2_1_MASK			(0x3 << 4)
++#define RT1011_TDM_I2S_RX_ADC3_1_MASK			(0x3 << 2)
++#define RT1011_TDM_I2S_RX_ADC4_1_MASK			(0x3 << 0)
++#define RT1011_TDM_I2S_RX_ADC1_1_LL			(0x2 << 6)
++#define RT1011_TDM_I2S_RX_ADC2_1_LL			(0x2 << 4)
++#define RT1011_TDM_I2S_RX_ADC3_1_LL			(0x2 << 2)
++#define RT1011_TDM_I2S_RX_ADC4_1_LL			(0x2 << 0)
++
++/* TDM1 Setting-4 (0x011a) */
++#define RT1011_TDM_I2S_TX_L_DAC1_1_MASK			(0x7 << 12)
++#define RT1011_TDM_I2S_TX_R_DAC1_1_MASK			(0x7 << 8)
++#define RT1011_TDM_I2S_TX_L_DAC1_1_SFT 12
++#define RT1011_TDM_I2S_TX_R_DAC1_1_SFT 8
+ 
+ /* TDM2 Setting-2 (0x0120) */
+ #define RT1011_TDM_I2S_DOCK_ADCDAT_LEN_2_MASK			(0x7 << 13)
+@@ -585,6 +602,12 @@
+ #define RT1011_STP_T0_EN_BIT		6
+ #define RT1011_STP_T0_EN		(0x1 << 6)
+ 
++/* Cross Biquad Setting-1 (0x0702) */
++#define RT1011_MONO_LR_SEL_MASK			(0x3 << 5)
++#define RT1011_MONO_L_CHANNEL			(0x0 << 5)
++#define RT1011_MONO_R_CHANNEL			(0x1 << 5)
++#define RT1011_MONO_LR_MIX_CHANNEL			(0x2 << 5)
++
+ /* ClassD Internal Setting-1 (0x1300) */
+ #define RT1011_DRIVER_READY_SPK			(0x1 << 12)
+ #define RT1011_DRIVER_READY_SPK_BIT		12
+-- 
+2.23.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
