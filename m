@@ -2,74 +2,71 @@ Return-Path: <SRS0=FfYG=YJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDD71ECE59F
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 06:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E27DC4360C
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 06:02:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A4BD21D7B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 06:01:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D0C722168B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 06:02:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LOHOH1HU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A4BD21D7B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X7M2hDjm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0C722168B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BBE51671;
-	Wed, 16 Oct 2019 08:00:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BBE51671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F0D71672;
+	Wed, 16 Oct 2019 08:01:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F0D71672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571205672;
-	bh=vKaugpInW+Epdizl+SYSqJJq47IciVzGxGCHtUc1/3I=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LOHOH1HUunWMGH0B9Q1aOt8gP2wgcbAgnhkpbdqcLu07NgUNip1O4peHpGCD2Gn8y
-	 WMcO4LBH/g+xUEcFrj7rvmyvukdhfdU/cOOOZyq4yptxZZqgPrKtnhUIJuvecRH7LM
-	 GpKaWTBAe3iraFhGnNRsqC4vykYRpb2MnNejeQX8=
+	s=default; t=1571205718;
+	bh=zCvbkDNW+zDEevhBhaGL7WlZtWMLfYokQ3FMKluKqsg=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=X7M2hDjm363Rfo2KNvmFvbTnR9PE+w6czNeWe8txU6Du4hemslYWvOzZsZW1LU6bn
+	 BR7bLbyXdC7Kf9xZ2azV9ayUIx5cyOBmnl9Vc6ng+0+I32deUGdMWV+dru/bUY03+s
+	 2yZH0omyhTcLmZ8mOaLAa6o2DCbZLn1AcWX34ee4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1694F80377;
-	Wed, 16 Oct 2019 07:59:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A520F805FB;
+	Wed, 16 Oct 2019 07:59:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06767F80369; Wed, 16 Oct 2019 07:59:26 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa1.perex.cz (Postfix) with ESMTP id 2797DF80322
+ id 40020F80376; Wed, 16 Oct 2019 07:59:29 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9E6D5F80362
  for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 07:59:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2797DF80322
-X-UUID: dce1ce46f3a44923a4da5420cda6ea70-20191016
-X-UUID: dce1ce46f3a44923a4da5420cda6ea70-20191016
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
- (envelope-from <jiaxin.yu@mediatek.com>)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E6D5F80362
+X-UUID: 710350c18f124dfd9e1b58458556b041-20191016
+X-UUID: 710350c18f124dfd9e1b58458556b041-20191016
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
  (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
- with ESMTP id 1877522701; Wed, 16 Oct 2019 13:59:14 +0800
+ with ESMTP id 555096847; Wed, 16 Oct 2019 13:59:12 +0800
 Received: from mtkcas08.mediatek.inc (172.21.101.126) by
  mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Wed, 16 Oct 2019 13:59:11 +0800
+ 15.0.1395.4; Wed, 16 Oct 2019 13:59:09 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Wed, 16 Oct 2019 13:59:10 +0800
+ Transport; Wed, 16 Oct 2019 13:59:08 +0800
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: <broonie@kernel.org>, <mark.rutland@arm.com>, <robh+dt@kernel.org>,
  <linux@roeck-us.net>, <wim@linux-watchdog.org>
-Date: Wed, 16 Oct 2019 13:59:08 +0800
-Message-ID: <1571205548-13704-3-git-send-email-jiaxin.yu@mediatek.com>
+Date: Wed, 16 Oct 2019 13:59:06 +0800
+Message-ID: <1571205548-13704-1-git-send-email-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1571205548-13704-1-git-send-email-jiaxin.yu@mediatek.com>
-References: <1571205548-13704-1-git-send-email-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
 X-MTK: N
 Cc: alsa-devel@alsa-project.org, yong.liang@mediatek.com, lgirdwood@gmail.com,
  jiaxin.yu@mediatek.com, tzungbi@google.com, linux-mediatek@lists.infradead.org,
  eason.yen@mediatek.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH v4 2/2] watchdog: mtk_wdt: mt8183: Add reset
-	controller
+Subject: [alsa-devel] [PATCH v4 0/2] ASoC: mt8183: fix audio playback slowly
+	after playback
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,200 +84,52 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: "yong.liang" <yong.liang@mediatek.com>
+This series patches add reset controller for MT8183, and audio will use it in 
+machine driver during bootup, they depend on the for-next.
 
-Add reset controller API in watchdog driver.
-Besides watchdog, MTK toprgu module also provide sub-system (eg, audio,
-camera, codec and connectivity) software reset functionality.
+v4 changes:
+	1. Fixed wrong signed-off as correct mail suffix.
+	2. Fixed patch subject that add patch version.
 
-Signed-off-by: yong.liang <yong.liang@mediatek.com>
----
- drivers/watchdog/Kconfig   |   1 +
- drivers/watchdog/mtk_wdt.c | 111 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 111 insertions(+), 1 deletion(-)
+v3 changes:
+	1. https://patchwork.kernel.org/patch/11164283/ and 
+	   https://patchwork.kernel.org/patch/11164305/ has been merged.
+	2. Change the name of mtk_wdt_compatible to mtk_wdt_data.
+	3. Remove toprgu_reset struct and use mtk_wdt_dev instead.
+	4. Get the value of sw_rst_num from .h file.
+	5. Adddd mt2712-resets.h for mt2712.
+	6. Improve commit message.
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 2e07caab9db2..629249fe5305 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -717,6 +717,7 @@ config MEDIATEK_WATCHDOG
- 	tristate "Mediatek SoCs watchdog support"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
- 	select WATCHDOG_CORE
-+	select RESET_CONTROLLER
- 	help
- 	  Say Y here to include support for the watchdog timer
- 	  in Mediatek SoCs.
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 9c3d0033260d..d29484c7940a 100644
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -9,6 +9,9 @@
-  * Based on sunxi_wdt.c
-  */
- 
-+#include <dt-bindings/reset-controller/mt2712-resets.h>
-+#include <dt-bindings/reset-controller/mt8183-resets.h>
-+#include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/init.h>
- #include <linux/io.h>
-@@ -16,10 +19,12 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/reset-controller.h>
-+#include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/watchdog.h>
--#include <linux/delay.h>
- 
- #define WDT_MAX_TIMEOUT		31
- #define WDT_MIN_TIMEOUT		1
-@@ -44,6 +49,9 @@
- #define WDT_SWRST		0x14
- #define WDT_SWRST_KEY		0x1209
- 
-+#define WDT_SWSYSRST		0x18U
-+#define WDT_SWSYS_RST_KEY	0x88000000
-+
- #define DRV_NAME		"mtk-wdt"
- #define DRV_VERSION		"1.0"
- 
-@@ -53,8 +61,99 @@ static unsigned int timeout;
- struct mtk_wdt_dev {
- 	struct watchdog_device wdt_dev;
- 	void __iomem *wdt_base;
-+	spinlock_t lock; /* protects WDT_SWSYSRST reg */
-+	struct reset_controller_dev rcdev;
-+};
-+
-+struct mtk_wdt_data {
-+	int sw_rst_num;
- };
- 
-+static const struct mtk_wdt_data mt2712_data = {
-+	.sw_rst_num = MT2712_TOPRGU_SW_RST_NUM,
-+};
-+
-+static const struct mtk_wdt_data mt8183_data = {
-+	.sw_rst_num = MT8183_TOPRGU_SW_RST_NUM,
-+};
-+
-+static int toprgu_reset_assert(struct reset_controller_dev *rcdev,
-+			       unsigned long id)
-+{
-+	unsigned int tmp;
-+	unsigned long flags;
-+	struct mtk_wdt_dev *data =
-+		 container_of(rcdev, struct mtk_wdt_dev, rcdev);
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	tmp = __raw_readl(data->wdt_base + WDT_SWSYSRST);
-+	tmp |= BIT(id);
-+	tmp |= WDT_SWSYS_RST_KEY;
-+	writel(tmp, data->wdt_base + WDT_SWSYSRST);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int toprgu_reset_deassert(struct reset_controller_dev *rcdev,
-+				 unsigned long id)
-+{
-+	unsigned int tmp;
-+	unsigned long flags;
-+	struct mtk_wdt_dev *data =
-+		 container_of(rcdev, struct mtk_wdt_dev, rcdev);
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	tmp = __raw_readl(data->wdt_base + WDT_SWSYSRST);
-+	tmp &= ~BIT(id);
-+	tmp |= WDT_SWSYS_RST_KEY;
-+	writel(tmp, data->wdt_base + WDT_SWSYSRST);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int toprgu_reset(struct reset_controller_dev *rcdev,
-+			unsigned long id)
-+{
-+	int ret;
-+
-+	ret = toprgu_reset_assert(rcdev, id);
-+	if (ret)
-+		return ret;
-+
-+	return toprgu_reset_deassert(rcdev, id);
-+}
-+
-+static const struct reset_control_ops toprgu_reset_ops = {
-+	.assert = toprgu_reset_assert,
-+	.deassert = toprgu_reset_deassert,
-+	.reset = toprgu_reset,
-+};
-+
-+static int toprgu_register_reset_controller(struct platform_device *pdev,
-+					    int rst_num)
-+{
-+	int ret;
-+	struct mtk_wdt_dev *mtk_wdt = platform_get_drvdata(pdev);
-+
-+	spin_lock_init(&mtk_wdt->lock);
-+
-+	mtk_wdt->rcdev.owner = THIS_MODULE;
-+	mtk_wdt->rcdev.nr_resets = rst_num;
-+	mtk_wdt->rcdev.ops = &toprgu_reset_ops;
-+	mtk_wdt->rcdev.of_node = pdev->dev.of_node;
-+	ret = reset_controller_register(&mtk_wdt->rcdev);
-+	if (ret != 0)
-+		dev_err(&pdev->dev,
-+			"couldn't register wdt reset controller: %d\n", ret);
-+	return ret;
-+}
-+
- static int mtk_wdt_restart(struct watchdog_device *wdt_dev,
- 			   unsigned long action, void *data)
- {
-@@ -155,6 +254,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct mtk_wdt_dev *mtk_wdt;
-+	struct mtk_wdt_data *wdt_data;
- 	int err;
- 
- 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
-@@ -190,6 +290,13 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)\n",
- 		 mtk_wdt->wdt_dev.timeout, nowayout);
- 
-+	wdt_data = (struct mtk_wdt_data *)of_device_get_match_data(dev);
-+	if (wdt_data) {
-+		err = toprgu_register_reset_controller(pdev,
-+						       wdt_data->sw_rst_num);
-+		if (err)
-+			return err;
-+	}
- 	return 0;
- }
- 
-@@ -218,7 +325,9 @@ static int mtk_wdt_resume(struct device *dev)
- #endif
- 
- static const struct of_device_id mtk_wdt_dt_ids[] = {
-+	{ .compatible = "mediatek,mt2712-wdt", .data = &mt2712_data },
- 	{ .compatible = "mediatek,mt6589-wdt" },
-+	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_wdt_dt_ids);
+v2 changes:
+	1. remove "WIP" that in the title of patches
+	2. add hyper link for the patch that depends on
+	3. patchwork list:
+		https://patchwork.kernel.org/cover/11164285/
+		https://patchwork.kernel.org/patch/11164295/
+		https://patchwork.kernel.org/patch/11164299/
+		https://patchwork.kernel.org/patch/11164283/
+		https://patchwork.kernel.org/patch/11164305/
+
+v1 changes:
+	1. patchwork list:
+		https://patchwork.kernel.org/cover/11164173/
+		https://patchwork.kernel.org/patch/11164181/
+		https://patchwork.kernel.org/patch/11164185/
+		https://patchwork.kernel.org/patch/11164187/
+		https://patchwork.kernel.org/patch/11164175/
+
+yong.liang (2):
+  dt-bindings: mediatek: mt8183: Add #reset-cells
+  watchdog: mtk_wdt: mt8183: Add reset controller
+
+ .../devicetree/bindings/watchdog/mtk-wdt.txt  |  10 +-
+ drivers/watchdog/Kconfig                      |   1 +
+ drivers/watchdog/mtk_wdt.c                    | 111 +++++++++++++++++-
+ .../reset-controller/mt2712-resets.h          |  22 ++++
+ .../reset-controller/mt8183-resets.h          |  15 +++
+ 5 files changed, 155 insertions(+), 4 deletions(-)
+ create mode 100644 include/dt-bindings/reset-controller/mt2712-resets.h
+
 -- 
 2.18.0
 
