@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8D91FA372A
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 13:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C52DFA372A
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 13:01:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 408752168B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 13:00:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 265B021848
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 13:01:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cjDnPi5K";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="gExDv11/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 408752168B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LlJlM0hf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="QjhkP2r7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 265B021848
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70C121615;
-	Wed, 16 Oct 2019 14:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70C121615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 588E71681;
+	Wed, 16 Oct 2019 15:00:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 588E71681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571230824;
-	bh=4XgY+X6FpfdEGVT6w9IvbawuMzaMWlXo8tkKaqynDtY=;
+	s=default; t=1571230875;
+	bh=nbmj3eQGKACSv+hxYkLt1C0NppDO3vVj5hKI1Ia6bns=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=cjDnPi5K/ork+s0cESOGhMM/9G2E4iIZtC3p/WxD9zW/e71lxw/PTflnVjXCSZdCy
-	 BC38vOX2o2JGh9XEGOv46Ag5LZn/I+2K10V8BEWrY2TPwNgVjPh0JH6OlvOSfGCtXL
-	 uIE5MjAfVBlC8FbKPJ+rEqcXMmE8+7+rlWPdeHEc=
+	b=LlJlM0hfE7wTH6T2F7P2324BuCs1sqzxWAIRCn5PNCyPt21ruV/RzrIUmuH31fTli
+	 pKagnHqqqml+DoZCl8QfWkoiENEQeed/ywvvGfZdC6qDkbQvpQL72bCSE/HxOveFpD
+	 GrVjlR2gKNW/mJIvoea5H40HvdqINMkLw0/12+VY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F695F805FA;
-	Wed, 16 Oct 2019 14:58:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C8A0F80633;
+	Wed, 16 Oct 2019 14:58:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51344F80445; Wed, 16 Oct 2019 14:58:17 +0200 (CEST)
+ id 83EE5F805FD; Wed, 16 Oct 2019 14:58:19 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80E58F8036C
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 14:58:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80E58F8036C
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2561F80376
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 14:58:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2561F80376
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="gExDv11/"
+ header.b="QjhkP2r7"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=IMV6sxNZsTQbAoCY4QWWlPLCw3v2Erjb3kK1XV7RnoE=; b=gExDv11/E/Lz
- onlO9Z7uV0xfpfU9MDBGC3Nepa5ymqllCL22EyGWw5xdfcQxRbawxWuLKM9TVgqyp1BN1EOrgZFvW
- 3YqzoVSdwNfW2Xkg3Q4PvNlvbuRwt7AWBXwHVgU7Hp1SA+4Cb7dOysMtN2P3n7fAIh+5yiBvCJnps
- x88pE=;
+ List-Archive; bh=i4IFev4hoNhLiHnNyOc0tlmnPsToq3hWRFR2YG1XIyg=; b=QjhkP2r7bmJB
+ KWZo00DROulH/agljegaAJ0/6sVz+AsO89Vle/6GSYlbIRiePP6SDjZZrUh6zoNvtaPl12GoPNn7R
+ BLLhq3LQIsIxCpK/ipX0QfYHV8zNOBo+uJF0lnOtSl14LuzqbtRUZbRQNDU3Pv2/uEUQFlLvtQozk
+ YAMFM=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iKisX-0005MO-No; Wed, 16 Oct 2019 12:58:13 +0000
+ id 1iKisY-0005MR-0T; Wed, 16 Oct 2019 12:58:14 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 31AD92742162; Wed, 16 Oct 2019 13:58:13 +0100 (BST)
+ id 7502027428FD; Wed, 16 Oct 2019 13:58:13 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Shuming Fan <shumingf@realtek.com>
-In-Reply-To: <20191016115617.23213-1-shumingf@realtek.com>
+To: Ben Dooks (Codethink) <ben.dooks@codethink.co.uk>
+In-Reply-To: <20191016120149.5860-1-ben.dooks@codethink.co.uk>
 X-Patchwork-Hint: ignore
-Message-Id: <20191016125813.31AD92742162@ypsilon.sirena.org.uk>
+Message-Id: <20191016125813.7502027428FD@ypsilon.sirena.org.uk>
 Date: Wed, 16 Oct 2019 13:58:13 +0100 (BST)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, cychiang@google.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, flove@realtek.com
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: rt1011: add r0 and
-	temperature device property" to the asoc tree
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [alsa-devel] Applied "ASoC: wm8958: use <asm/unaligned.h> to
+	simplify code" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dt-bindings: rt1011: add r0 and temperature device property
+   ASoC: wm8958: use <asm/unaligned.h> to simplify code
 
 has been applied to the asoc tree at
 
@@ -123,49 +124,133 @@ to this mail.
 Thanks,
 Mark
 
-From cf775f68a0939f0e5aad5855f63338c4b5e51c59 Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Wed, 16 Oct 2019 19:56:17 +0800
-Subject: [PATCH] ASoC: dt-bindings: rt1011: add r0 and temperature device
- property
+From 3ad00f6a5f76d4030a3c712fabe0cf69920925fc Mon Sep 17 00:00:00 2001
+From: "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>
+Date: Wed, 16 Oct 2019 13:01:49 +0100
+Subject: [PATCH] ASoC: wm8958: use <asm/unaligned.h> to simplify code
 
-Typically, the r0 (calibration data) and temperature were measured in the factory.
-This information is written into the non-volatile area
-where keeps data whether factory reset or OS update.
+Simplify the memcpy/be32_to_cpu() code by simply using
+get_unaligned_be32() throughout and makes the code nicer
+to look at.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20191016115617.23213-1-shumingf@realtek.com
+This fixes the following warnings from sparse:
+
+sound/soc/codecs/wm8958-dsp2.c:62:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:62:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:62:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:62:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:62:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:62:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:69:15: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:69:15: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:69:15: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:69:15: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:69:15: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:69:15: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:72:18: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:72:18: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:72:18: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:72:18: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:72:18: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:72:18: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:91:17: warning: cast to restricted __be64
+sound/soc/codecs/wm8958-dsp2.c:108:29: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:108:29: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:108:29: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:108:29: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:108:29: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:108:29: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:120:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:120:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:120:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:120:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:120:26: warning: cast to restricted __be32
+sound/soc/codecs/wm8958-dsp2.c:120:26: warning: cast to restricted __be32
+
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20191016120149.5860-1-ben.dooks@codethink.co.uk
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt1011.txt | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/codecs/wm8958-dsp2.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt1011.txt b/Documentation/devicetree/bindings/sound/rt1011.txt
-index 35a23e60d679..02d53b9aa247 100644
---- a/Documentation/devicetree/bindings/sound/rt1011.txt
-+++ b/Documentation/devicetree/bindings/sound/rt1011.txt
-@@ -20,6 +20,14 @@ Required properties:
-         |     1     |    1     |   0x3b     |
-         -------------------------------------
+diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
+index 18535b326680..ca42445b649d 100644
+--- a/sound/soc/codecs/wm8958-dsp2.c
++++ b/sound/soc/codecs/wm8958-dsp2.c
+@@ -25,6 +25,8 @@
+ #include <linux/mfd/wm8994/pdata.h>
+ #include <linux/mfd/wm8994/gpio.h>
  
-+Optional properties:
++#include <asm/unaligned.h>
 +
-+- realtek,temperature_calib
-+  u32. The temperature was measured while doing the calibration. Units: Celsius degree
-+
-+- realtek,r0_calib
-+  u32. This is r0 calibration data which was measured in factory mode.
-+
- Pins on the device (for linking into audio routes) for RT1011:
+ #include "wm8994.h"
  
-   * SPO
-@@ -29,4 +37,6 @@ Example:
- rt1011: codec@38 {
- 	compatible = "realtek,rt1011";
- 	reg = <0x38>;
-+	realtek,temperature_calib = <25>;
-+	realtek,r0_calib = <0x224050>;
- };
+ #define WM_FW_BLOCK_INFO 0xff
+@@ -58,18 +60,15 @@ static int wm8958_dsp2_fw(struct snd_soc_component *component, const char *name,
+ 	}
+ 
+ 	if (memcmp(fw->data, "WMFW", 4) != 0) {
+-		memcpy(&data32, fw->data, sizeof(data32));
+-		data32 = be32_to_cpu(data32);
++		data32 = get_unaligned_be32(fw->data);
+ 		dev_err(component->dev, "%s: firmware has bad file magic %08x\n",
+ 			name, data32);
+ 		goto err;
+ 	}
+ 
+-	memcpy(&data32, fw->data + 4, sizeof(data32));
+-	len = be32_to_cpu(data32);
++	len = get_unaligned_be32(fw->data + 4);
++	data32 = get_unaligned_be32(fw->data + 8);
+ 
+-	memcpy(&data32, fw->data + 8, sizeof(data32));
+-	data32 = be32_to_cpu(data32);
+ 	if ((data32 >> 24) & 0xff) {
+ 		dev_err(component->dev, "%s: unsupported firmware version %d\n",
+ 			name, (data32 >> 24) & 0xff);
+@@ -87,9 +86,8 @@ static int wm8958_dsp2_fw(struct snd_soc_component *component, const char *name,
+ 	}
+ 
+ 	if (check) {
+-		memcpy(&data64, fw->data + 24, sizeof(u64));
+-		dev_info(component->dev, "%s timestamp %llx\n",
+-			 name, be64_to_cpu(data64));
++		data64 = get_unaligned_be64(fw->data + 24);
++		dev_info(component->dev, "%s timestamp %llx\n",  name, data64);
+ 	} else {
+ 		snd_soc_component_write(component, 0x102, 0x2);
+ 		snd_soc_component_write(component, 0x900, 0x2);
+@@ -104,8 +102,7 @@ static int wm8958_dsp2_fw(struct snd_soc_component *component, const char *name,
+ 			goto err;
+ 		}
+ 
+-		memcpy(&data32, data + 4, sizeof(data32));
+-		block_len = be32_to_cpu(data32);
++		block_len = get_unaligned_be32(data + 4);
+ 		if (block_len + 8 > len) {
+ 			dev_err(component->dev, "%zd byte block longer than file\n",
+ 				block_len);
+@@ -116,8 +113,7 @@ static int wm8958_dsp2_fw(struct snd_soc_component *component, const char *name,
+ 			goto err;
+ 		}
+ 
+-		memcpy(&data32, data, sizeof(data32));
+-		data32 = be32_to_cpu(data32);
++		data32 = get_unaligned_be32(data);
+ 
+ 		switch ((data32 >> 24) & 0xff) {
+ 		case WM_FW_BLOCK_INFO:
 -- 
 2.20.1
 
