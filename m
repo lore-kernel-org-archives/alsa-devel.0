@@ -8,88 +8,88 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A715DC4360C
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 07:09:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3D03ECE599
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 07:10:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FDB52082C
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 07:09:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3DFE920873
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 07:10:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rwPS7Jtf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XNEosleP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FDB52082C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f1tFO8Y0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJD0Y8fa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DFE920873
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9999E1671;
-	Wed, 16 Oct 2019 09:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9999E1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC3531676;
+	Wed, 16 Oct 2019 09:09:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC3531676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571209779;
-	bh=8aS8J536AP+EE7IIvkJPxX86ymhwpfVmHdOl75ALqc8=;
+	s=default; t=1571209826;
+	bh=rHsEnY8oVUbpn+vFLQ2uUd8VsrgDemJC07fjMwcOPeA=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rwPS7JtfgGWxb54BJiXV/BTIhUFruEv+F+AzVoHAl5nEtY1YVTm8dPQJUO4NQiBuJ
-	 GRyO2Cbxh8uz4+zgQqN/4Tfh/EudPUstkkqpCqxfEk/APuIU7HNb1Io3sZFQkWmNMx
-	 8sgIBKz0ifcLYpQ6dW+LMzpHc1V0d7aHJGC2OCsk=
+	b=f1tFO8Y0OmGEr9LZ5CzhRgcmcG+AaabuhN6Pj+OIsS8PdWJxHs0CNCu7rd92vtVZ4
+	 qGpp/gW2Lz8xY9wP34rem7CkJ6/ekc4R4D2AHo7OxqJsQVeYA5OrC81vbR3h5Edtzk
+	 DTEInvnxwCQqEMh5YSgCyMe3jrw0AGzqj4rPylck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE260F80377;
-	Wed, 16 Oct 2019 09:07:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF439F805FC;
+	Wed, 16 Oct 2019 09:07:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83E70F80362; Wed, 16 Oct 2019 09:07:47 +0200 (CEST)
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com
- [IPv6:2a00:1450:4864:20::241])
+ id 21288F80369; Wed, 16 Oct 2019 09:07:49 +0200 (CEST)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
+ [IPv6:2a00:1450:4864:20::242])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1310F8011F
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 09:07:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1310F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91288F8011F
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 09:07:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91288F8011F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XNEosleP"
-Received: by mail-lj1-x241.google.com with SMTP id j19so22839062lja.1
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 00:07:44 -0700 (PDT)
+ header.b="mJD0Y8fa"
+Received: by mail-lj1-x242.google.com with SMTP id y23so22776140lje.9
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 00:07:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=kDtdILcfLHoVejEtGgLfvnr1m900cxUvF44JNpWqBWQ=;
- b=XNEoslePrQiCPCXuOnDyy5PnKlhPhOjFeGvb9qfXg63GuYrL1wakT6kL3MgLI7npCd
- SICpSGkSVRWkjYZ64LBiiMnOtjDXe+5RnsP2Ko1deb/JUik1ialZMRvRvWzFV0ytNCNn
- C1mnQPSR+Zk1niRVJzjo5QCTHUIT+/KwUfAE41lqF0eF/L5vL99jfL/VXmKXS2fSeDEQ
- KjNG0lEiyju1a5qnai9EJJ0oHfwp54AG86k8qK3xtFDreiTsBoGoaZcZxMUeaHW6yPD9
- ynztCpZHXYXllLnfhQsUjlgGCuKzFq9CZmqkAderDUGu4nxmuDpPgqMlD1JuUDMYk1sk
- KJmg==
+ bh=oxDmBN8xjRHLwjCrJVEkKzUtkBzzYQgLKNmxBNYk6Lk=;
+ b=mJD0Y8fakTfV82mrGHxCoBR8AE4xJv6jTGnyRdffnT3gp8w5fy8thy7oRDclKCdlla
+ 9AKy2bnASj/sE5hke5dqFXtvW7zM260aK7qraQkvSRmMbE3qohdSyOgif3XtAsjpgL9U
+ qQogQrSc2/Lngg0Mq/odTr+eGg+gm5xaIJwcIRKs4K/+zPRr+L6Mv9SIDgbtkWJfw6AR
+ e622onDA+2WGpBrRXKKoDwnghIA2tO5jUJPZYBMzz91m3lO7t4XCgGkm3+cKhzhtOkaA
+ 9h1miXyTVi6KvzyaWYfBk3bsBykMkC0+hU7bBluJU3FRdvfiT6TPpzTpOLf7+csf/s1d
+ uHpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=kDtdILcfLHoVejEtGgLfvnr1m900cxUvF44JNpWqBWQ=;
- b=qohJXASL0vQgp7WsH7bTiduOQVmL1l5PV1QtPtCSMPf3zy5VQQ+bPnjMbJO7XipgRj
- MUW2/fB0GdUIvOX8213aWR76uk8iHoc4bxwmAaUtDuaWi9FJnvCFZ5xeC9D9UoKEXVCa
- JrMFJ/NBto+HH2eFpFTsSVBrriSHYcAKuADR4qdxs0P2amOcfev0FPk7YmnJqyeso++t
- IQHdrjdzsV9NmxaXdLYhnLPTD95YqDvWl5lKd6rbrufHiVZV8nNQJf5MfPzayTNqamzY
- q6mARvyc0nYidbYxHEzs8HVbo/tFcQnKwXHcBVKhF5h1hGuyFQ9+AkQVB5Pj3jK9K6At
- TaFA==
-X-Gm-Message-State: APjAAAXnFs8JRpp2xmJcA8/2I9/cqOFgTzf7WLCvGiS2WysIlPkjTxJK
- /oUn0HH4BFrNCX0stcftVWg=
-X-Google-Smtp-Source: APXvYqzPrA41KnDu7zXYKhTKIDFPIusxpkGfQ/f36MqaVUccNYdTjpt+jBN/sHBQmPMYw+AofQ+MZg==
-X-Received: by 2002:a2e:9117:: with SMTP id m23mr24989061ljg.82.1571209663820; 
- Wed, 16 Oct 2019 00:07:43 -0700 (PDT)
+ bh=oxDmBN8xjRHLwjCrJVEkKzUtkBzzYQgLKNmxBNYk6Lk=;
+ b=OPXKps5oC8XHuB7nqhDlieRgYHwyzx/IxNor1AE2zcz54ZtqoSAegAedra6EwChtVn
+ m7EbZkNeEJhsRQY7EdD8gbV0rZy7/aLaRc60QMB8lzPjoGTE81FaykgYxHNS8xzzy8CE
+ NoCU2knyjqSdDdHuWW9kHUW18qh5YWjvf82J0pUYuXJpFImQ/zzR00J69zIVMq+66uQK
+ 2neIz8moh+LfMw0Ovyw0dFo258YPEUlCjYNu+G8eBy1qKQ4gNIYYQC3S7WSScpL5huz/
+ fKYH0fkVILtvKItO+PIshhBK2Mlsl6ZlfXW1IOoyLlQYWThL/D56GPiBZT2K7VuE+3i7
+ 4hTw==
+X-Gm-Message-State: APjAAAXrxDpqvhGdBh3+F/6//WFRw6K5unsm8mPyU/SFGg/EbthQYGkW
+ OgR+XUGC1vcie8XveK/RxOKAgHwL
+X-Google-Smtp-Source: APXvYqzFJq0X14+N0B33ZyE/bD1IVOERGHXz7HXUP3dLkoHMUCclXOJf/F7lmiWKgsFUVqC3O42ZPQ==
+X-Received: by 2002:a2e:8204:: with SMTP id w4mr25118019ljg.212.1571209665267; 
+ Wed, 16 Oct 2019 00:07:45 -0700 (PDT)
 Received: from localhost.localdomain (c213-102-65-51.bredband.comhem.se.
  [213.102.65.51])
- by smtp.gmail.com with ESMTPSA id j191sm1361493lfj.49.2019.10.16.00.07.42
+ by smtp.gmail.com with ESMTPSA id j191sm1361493lfj.49.2019.10.16.00.07.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Oct 2019 00:07:43 -0700 (PDT)
+ Wed, 16 Oct 2019 00:07:44 -0700 (PDT)
 From: codekipper@gmail.com
 To: mripard@kernel.org,
 	wens@csie.org,
 	linux-sunxi@googlegroups.com
-Date: Wed, 16 Oct 2019 09:07:34 +0200
-Message-Id: <20191016070740.121435-2-codekipper@gmail.com>
+Date: Wed, 16 Oct 2019 09:07:35 +0200
+Message-Id: <20191016070740.121435-3-codekipper@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191016070740.121435-1-codekipper@gmail.com>
 References: <20191016070740.121435-1-codekipper@gmail.com>
@@ -97,8 +97,8 @@ MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org, Marcus Cooper <codekipper@gmail.com>,
  lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it,
  broonie@kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH v6 1/7] ASoC: sun4i-i2s: Move channel select
-	offset
+Subject: [alsa-devel] [PATCH v6 2/7] ASoC: sun4i-i2s: Add functions for RX
+	and TX channel offsets
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,104 +118,79 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-On the newer SoCs the offset is used to set the mode of the
-connection. As it is to be used elsewhere then it makes sense
-to move it to the main structure.
+Newer SoCs like the H6 have the channel offset bits in a different
+position to what is on the H3. As we will eventually add multi-
+channel support then create function calls as opposed to regmap
+fields to add support for different devices.
 
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d0a8d5810c0a..f1a80973c450 100644
+index f1a80973c450..875567881f30 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -156,7 +156,7 @@ struct sun4i_i2s_quirks {
- 	s8	(*get_wss)(const struct sun4i_i2s *, int);
+@@ -157,6 +157,8 @@ struct sun4i_i2s_quirks {
  	int	(*set_chan_cfg)(const struct sun4i_i2s *,
  				const struct snd_pcm_hw_params *);
--	int	(*set_fmt)(const struct sun4i_i2s *, unsigned int);
-+	int	(*set_fmt)(struct sun4i_i2s *, unsigned int);
+ 	int	(*set_fmt)(struct sun4i_i2s *, unsigned int);
++	void	(*set_txchanoffset)(const struct sun4i_i2s *, int);
++	void	(*set_rxchanoffset)(const struct sun4i_i2s *);
  };
  
  struct sun4i_i2s {
-@@ -169,6 +169,7 @@ struct sun4i_i2s {
- 	unsigned int	mclk_freq;
- 	unsigned int	slots;
- 	unsigned int	slot_width;
-+	unsigned int	offset;
- 
- 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
-@@ -516,7 +517,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 				      slots, slot_width);
- }
- 
--static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
-+static int sun4i_i2s_set_soc_fmt(struct sun4i_i2s *i2s,
- 				 unsigned int fmt)
- {
- 	u32 val;
-@@ -589,11 +590,10 @@ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+@@ -467,6 +469,23 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
  	return 0;
  }
  
--static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
-+static int sun8i_i2s_set_soc_fmt(struct sun4i_i2s *i2s,
- 				 unsigned int fmt)
- {
- 	u32 mode, val;
--	u8 offset;
++static void sun8i_i2s_set_txchanoffset(const struct sun4i_i2s *i2s, int output)
++{
++	if (output >= 0 && output < 4)
++		regmap_update_bits(i2s->regmap,
++				   SUN8I_I2S_TX_CHAN_SEL_REG + (output * 4),
++				   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
++				   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
++}
++
++static void sun8i_i2s_set_rxchanoffset(const struct sun4i_i2s *i2s)
++{
++	regmap_update_bits(i2s->regmap,
++			   SUN8I_I2S_RX_CHAN_SEL_REG,
++			   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
++			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
++}
++
+ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *params,
+ 			       struct snd_soc_dai *dai)
+@@ -661,12 +680,10 @@ static int sun8i_i2s_set_soc_fmt(struct sun4i_i2s *i2s,
  
- 	/*
- 	 * DAI clock polarity
-@@ -632,27 +632,27 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_DSP_A:
- 		mode = SUN8I_I2S_CTRL_MODE_PCM;
--		offset = 1;
-+		i2s->offset = 1;
- 		break;
- 
- 	case SND_SOC_DAIFMT_DSP_B:
- 		mode = SUN8I_I2S_CTRL_MODE_PCM;
--		offset = 0;
-+		i2s->offset = 0;
- 		break;
- 
- 	case SND_SOC_DAIFMT_I2S:
- 		mode = SUN8I_I2S_CTRL_MODE_LEFT;
--		offset = 1;
-+		i2s->offset = 1;
- 		break;
- 
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		mode = SUN8I_I2S_CTRL_MODE_LEFT;
--		offset = 0;
-+		i2s->offset = 0;
- 		break;
- 
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		mode = SUN8I_I2S_CTRL_MODE_RIGHT;
--		offset = 0;
-+		i2s->offset = 0;
- 		break;
- 
- 	default:
-@@ -663,10 +663,10 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
  			   SUN8I_I2S_CTRL_MODE_MASK, mode);
- 	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
- 			   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
--			   SUN8I_I2S_TX_CHAN_OFFSET(offset));
-+			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
- 	regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
- 			   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
--			   SUN8I_I2S_TX_CHAN_OFFSET(offset));
-+			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
+-	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
+-			   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
+-			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
+-	regmap_update_bits(i2s->regmap, SUN8I_I2S_RX_CHAN_SEL_REG,
+-			   SUN8I_I2S_TX_CHAN_OFFSET_MASK,
+-			   SUN8I_I2S_TX_CHAN_OFFSET(i2s->offset));
++	if (i2s->variant->set_txchanoffset)
++		i2s->variant->set_txchanoffset(i2s, 0);
++	if (i2s->variant->set_rxchanoffset)
++		i2s->variant->set_rxchanoffset(i2s);
  
  	/* DAI clock master masks */
  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -1136,6 +1153,8 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
+ 	.get_wss		= sun8i_i2s_get_sr_wss,
+ 	.set_chan_cfg		= sun8i_i2s_set_chan_cfg,
+ 	.set_fmt		= sun8i_i2s_set_soc_fmt,
++	.set_txchanoffset	= sun8i_i2s_set_txchanoffset,
++	.set_rxchanoffset	= sun8i_i2s_set_rxchanoffset,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
 -- 
 2.23.0
 
