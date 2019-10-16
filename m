@@ -2,71 +2,99 @@ Return-Path: <SRS0=FfYG=YJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E27DC4360C
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 06:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCE43ECE599
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 07:08:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0C722168B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 06:02:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C95D220873
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 07:08:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X7M2hDjm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0C722168B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZdAP+FBi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Do+e/YaG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C95D220873
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F0D71672;
-	Wed, 16 Oct 2019 08:01:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F0D71672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9389A844;
+	Wed, 16 Oct 2019 09:07:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9389A844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571205718;
-	bh=zCvbkDNW+zDEevhBhaGL7WlZtWMLfYokQ3FMKluKqsg=;
+	s=default; t=1571209724;
+	bh=qNs66JWmgMJchGrTRnYqeA0YSdl00HCbc07dAW7ZkDk=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=X7M2hDjm363Rfo2KNvmFvbTnR9PE+w6czNeWe8txU6Du4hemslYWvOzZsZW1LU6bn
-	 BR7bLbyXdC7Kf9xZ2azV9ayUIx5cyOBmnl9Vc6ng+0+I32deUGdMWV+dru/bUY03+s
-	 2yZH0omyhTcLmZ8mOaLAa6o2DCbZLn1AcWX34ee4=
+	b=ZdAP+FBi0Xq4vEeOr7ZDpVeL3pX/FtP2Lc7/EOMZlbSIcAmr6rqFaaPwsh/M9L6YN
+	 B4x495bjxpWBYN5SLmpj8pzVpZ8uKrjKi2kQKnX/iE+39HyCWiu/pQHss4lnMWI3qp
+	 o9arHtEkKJ9SekD/0LUMValBH8w76pAl/nCLMeQE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A520F805FB;
-	Wed, 16 Oct 2019 07:59:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4C08F80323;
+	Wed, 16 Oct 2019 09:07:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40020F80376; Wed, 16 Oct 2019 07:59:29 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa1.perex.cz (Postfix) with ESMTP id 9E6D5F80362
- for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 07:59:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E6D5F80362
-X-UUID: 710350c18f124dfd9e1b58458556b041-20191016
-X-UUID: 710350c18f124dfd9e1b58458556b041-20191016
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
- with ESMTP id 555096847; Wed, 16 Oct 2019 13:59:12 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Wed, 16 Oct 2019 13:59:09 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Wed, 16 Oct 2019 13:59:08 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <broonie@kernel.org>, <mark.rutland@arm.com>, <robh+dt@kernel.org>,
- <linux@roeck-us.net>, <wim@linux-watchdog.org>
-Date: Wed, 16 Oct 2019 13:59:06 +0800
-Message-ID: <1571205548-13704-1-git-send-email-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+ id AA5E7F80369; Wed, 16 Oct 2019 09:07:46 +0200 (CEST)
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com
+ [IPv6:2a00:1450:4864:20::241])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3D0AF80276
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 09:07:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3D0AF80276
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Do+e/YaG"
+Received: by mail-lj1-x241.google.com with SMTP id 7so22809319ljw.7
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 00:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ZhTgNjpKNQusZyPVoOQIc1FXI/m0QRLJulVFef76XX8=;
+ b=Do+e/YaGZ/1kWMOZw1D1T1VnuBALKM+/iodChqull8q+46Lag2kJ3nIo7vEhP38y5z
+ Yx/BSyBkRCVuh2n96BV0wQa7eiQhZ5cUKWivQV2hY6S4HKkKx/H/d/PUMMWgG3ijMTkd
+ FYzGq1f2k8UALpZUFtbNZnLTwxCcUN7lHYIXoZNUxbO8KeQaEDMPbhl+j0zXHFiR6+rE
+ 7uH3DeWFbEeiHiVkSfzGwUCsOhj4OVpiJIsw+y6VTfTeBUUl9E3FK8ZI3X8d0ynXfjnA
+ 3ieluyI+90fOxZE3q2V+qrlN/M0gdWB2+7TCVXM8WXSwLy8VbfZTLXMEAVgGe7ZaYvii
+ SU+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ZhTgNjpKNQusZyPVoOQIc1FXI/m0QRLJulVFef76XX8=;
+ b=SbEg2QtLRI5qR3J8Cd7wnsw6QZVo+bIdi3kmkbNBl2yccJOlxBltHzpjM489VPx/lu
+ UPHSXYCd9KVDnEM6JfDSSGDpVLNVNNHkeUKczpBCmNXX1NB6HfideM0kxAMcmO136fXq
+ vOZ0TwgWK1e3iMGmPI3j2JYm+qA3tRhuiraAtXQQw8dGlIL6ygBKMliwj1ZNw8CLQZGq
+ 5rTZ8gxKQC9YwgzblHLuSSxnY4rD7RLrn8eHlIezKRDakBB+sD0yIvhbAvPqsQjKUVnk
+ TQMBYhOo2jfVNT8E6+Wxvm0WA3q12n9EkNE4l6uo4pp/k5tF35FodU0iXP715mllDvMy
+ pa9w==
+X-Gm-Message-State: APjAAAVV2IbELcCB5OjIW6ZrYbxAdbOA/Z93WRoQ0F0+gGCy3zKLadbY
+ MINtfWervpIV6VRG34sS3g0=
+X-Google-Smtp-Source: APXvYqwClC2cQSENX+/5tnSvwIw58bgtoluNV+WC1Z1QqCdducKDlTv9sD/34p2DOfggOz109aI5SQ==
+X-Received: by 2002:a2e:957:: with SMTP id 84mr25058609ljj.23.1571209662571;
+ Wed, 16 Oct 2019 00:07:42 -0700 (PDT)
+Received: from localhost.localdomain (c213-102-65-51.bredband.comhem.se.
+ [213.102.65.51])
+ by smtp.gmail.com with ESMTPSA id j191sm1361493lfj.49.2019.10.16.00.07.41
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 16 Oct 2019 00:07:41 -0700 (PDT)
+From: codekipper@gmail.com
+To: mripard@kernel.org,
+	wens@csie.org,
+	linux-sunxi@googlegroups.com
+Date: Wed, 16 Oct 2019 09:07:33 +0200
+Message-Id: <20191016070740.121435-1-codekipper@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-X-MTK: N
-Cc: alsa-devel@alsa-project.org, yong.liang@mediatek.com, lgirdwood@gmail.com,
- jiaxin.yu@mediatek.com, tzungbi@google.com, linux-mediatek@lists.infradead.org,
- eason.yen@mediatek.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH v4 0/2] ASoC: mt8183: fix audio playback slowly
-	after playback
+Cc: alsa-devel@alsa-project.org, Marcus Cooper <codekipper@gmail.com>,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it,
+ broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH v6 0/7] ASoC: sun4i-i2s: Updates to the driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,54 +112,74 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series patches add reset controller for MT8183, and audio will use it in 
-machine driver during bootup, they depend on the for-next.
+From: Marcus Cooper <codekipper@gmail.com>
 
-v4 changes:
-	1. Fixed wrong signed-off as correct mail suffix.
-	2. Fixed patch subject that add patch version.
+Hi All,
+To be able to add support for the Allwinner H6 I've changed some of the
+original reg fields into function calls as this made it easier to setup
+for multi-channel audio especially across different SoCs. I've also
+stripped out all the other patches unrelated to this which I will deliver
+after support for the H6 has gone in.
 
-v3 changes:
-	1. https://patchwork.kernel.org/patch/11164283/ and 
-	   https://patchwork.kernel.org/patch/11164305/ has been merged.
-	2. Change the name of mtk_wdt_compatible to mtk_wdt_data.
-	3. Remove toprgu_reset struct and use mtk_wdt_dev instead.
-	4. Get the value of sw_rst_num from .h file.
-	5. Adddd mt2712-resets.h for mt2712.
-	6. Improve commit message.
+These other patches are required for HDMI audio which is driving this
+patchset and they can be found here
+https://github.com/codekipper/linux-sunxi/commits/upstream-i2s
+BR,
+CK
 
-v2 changes:
-	1. remove "WIP" that in the title of patches
-	2. add hyper link for the patch that depends on
-	3. patchwork list:
-		https://patchwork.kernel.org/cover/11164285/
-		https://patchwork.kernel.org/patch/11164295/
-		https://patchwork.kernel.org/patch/11164299/
-		https://patchwork.kernel.org/patch/11164283/
-		https://patchwork.kernel.org/patch/11164305/
+---
+v6 changes compared to v5 are:
+- rebased onto the recent tdm delivery
+- stripped out patches not required for the H6 delivery
 
-v1 changes:
-	1. patchwork list:
-		https://patchwork.kernel.org/cover/11164173/
-		https://patchwork.kernel.org/patch/11164181/
-		https://patchwork.kernel.org/patch/11164185/
-		https://patchwork.kernel.org/patch/11164187/
-		https://patchwork.kernel.org/patch/11164175/
+v5 changes compared to v4 are:
+- removed delivered patches.
+- Added more details to commit messages.
+- replaced some reg fields with function calls.
+- Added DSP_A and DSP_B support for H3 and later SoCs.
+- Added support for the Allwinner H6.
 
-yong.liang (2):
-  dt-bindings: mediatek: mt8183: Add #reset-cells
-  watchdog: mtk_wdt: mt8183: Add reset controller
+v4 changes compared to v3 are:
+- Moved patches around so that the more controversial of patches are
+  at the top of the stack.
+- Added more details to commit messages.
+- Fixed 20bit audio PCM format to use 4 bytes.
+- Reduced number of flags used to indicate a new SoC.
 
- .../devicetree/bindings/watchdog/mtk-wdt.txt  |  10 +-
- drivers/watchdog/Kconfig                      |   1 +
- drivers/watchdog/mtk_wdt.c                    | 111 +++++++++++++++++-
- .../reset-controller/mt2712-resets.h          |  22 ++++
- .../reset-controller/mt8183-resets.h          |  15 +++
- 5 files changed, 155 insertions(+), 4 deletions(-)
- create mode 100644 include/dt-bindings/reset-controller/mt2712-resets.h
+v3 changes compared to v2 are:
+ - added back slave mode changes
+ - added back the use of tdm properties
+ - changes to regmap and caching
+ - removed loopback functionality
+ - fixes to the channel offset mask
+
+v2 changes compared to v1 are:
+ - removed slave mode changes which didn't set mclk and bclk div.
+ - removed use of tdm and now use a dedicated property.
+ - fix commit message to better explain reason for sign extending
+ - add divider calculations for newer SoCs.
+ - add support for multi-lane i2s data output.
+ - add support for 20, 24 and 32 bit samples.
+ - add loopback property so blocks can be tested without a codec.
+
+---
+Jernej Skrabec (2):
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  ASoC: sun4i-i2s: Add support for H6 I2S
+
+Marcus Cooper (5):
+  ASoC: sun4i-i2s: Move channel select offset
+  ASoC: sun4i-i2s: Add functions for RX and TX channel offsets
+  ASoC: sun4i-i2s: Add functions for RX and TX channel enables
+  ASoC: sun4i-i2s: Add functions for RX and TX channel selects
+  ASoC: sun4i-i2s: Add functions for RX and TX channel mapping
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
+ sound/soc/sunxi/sun4i-i2s.c                   | 337 ++++++++++++++++--
+ 2 files changed, 305 insertions(+), 34 deletions(-)
 
 -- 
-2.18.0
+2.23.0
 
 _______________________________________________
 Alsa-devel mailing list
