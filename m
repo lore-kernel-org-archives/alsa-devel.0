@@ -2,101 +2,70 @@ Return-Path: <SRS0=vl9c=YK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2477FA372B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 06:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 915F0FA372B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 06:24:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1573520854
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 06:05:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D73E214E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 06:24:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g3fXnXQb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJ1MunfE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1573520854
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e7AfhULT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D73E214E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 637B91614;
-	Thu, 17 Oct 2019 08:04:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 637B91614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21CF083E;
+	Thu, 17 Oct 2019 08:24:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21CF083E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571292338;
-	bh=31UePl50nyyW5X3w5AxY9zLA5re0PFTNyULBIBzDMLg=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=g3fXnXQbCh+eCIPSp+T0EeyczcNcGJhx6bAnmIhZsRfCBVQvFtC0Y/xSfYLPA0//4
-	 AYjvHN7u5xJ9KqvHhQ6rT484djWDL6hyRRfPMWQRmZrjzf08zUeD/Fm/IHiMQdGLZE
-	 bzBc7EzBbEW8vgA42IKWs+EzTnLVQUwbDyHVNH+s=
+	s=default; t=1571293493;
+	bh=LKe8X/zWLVaAjgeAbFLnz2OihApA2LaVjBV9B4owZQ4=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=e7AfhULTCuhp6z7C3nNl1U3KaWH2t0I8vlGt1GWxUS5gUlHsrVThjXSa43Qd27VAY
+	 uzygyxlORNQfqSdwPbK7rBiEM1/aLqwE5hcNquodF9AfgGZSun3yixb3fI8Q8cNQSf
+	 Gl0UOE1wW5viMI9qKciPrfpZmjeY4ORz3ynEwZs8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 378D6F8060D;
-	Thu, 17 Oct 2019 08:02:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BA82F804A9;
+	Thu, 17 Oct 2019 08:24:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CBB8F804AA; Tue, 15 Oct 2019 22:09:33 +0200 (CEST)
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com
- [IPv6:2a00:1450:4864:20::141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 60381F804AA; Thu, 17 Oct 2019 08:24:00 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF4A5F80323
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 22:09:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF4A5F80323
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LJ1MunfE"
-Received: by mail-lf1-x141.google.com with SMTP id r22so15513548lfm.1
- for <alsa-devel@alsa-project.org>; Tue, 15 Oct 2019 13:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=nr7E38S2s3eAbbfCUSywjHEZ4H8fhbZYB2USx6be+tc=;
- b=LJ1MunfEen/5WdeqXuaYfAP+Mh+nhP6YEzWmf5tSN4j9pOg3kLWozDpA4ZFx9S4KLM
- j4S4Qe1TlUoZ/MjuBP0YlV7Yd4yWwSoEvKWNoxcEEEGZORwpYLk7QM/iyRVTCh7KFEV+
- If0rE6YeD27XziCo8oUODUrM2N5SWDT9OKrfyxImYTkevN67rtFIhlV0X4hnr4uBy9yO
- ag/uvka4qAnkwoEusS9ByPKqLrpoEFYze8o/2ylH3nblVhYDK8lVEq3C4wRQqHz9i4Vz
- 3XXM3DAf9VqDEOxkDwiil7XC2uL+I1dHEofimY7U6Trb+k0L7xi8XYLEDAKgJF9+OJLj
- 3JvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=nr7E38S2s3eAbbfCUSywjHEZ4H8fhbZYB2USx6be+tc=;
- b=QzP3+Wqiu5Omw/ljQQ1koVkjslApkk2KkA2acP/g/ma9TFzoZjt1zCiGaLutTohF6Z
- SnANg0zjg7HqKaRmArfBPKRl49QzSB6newk/lL2plH24XSvTkEV2HNF4EfUI76ZCKiDI
- GWBGiAhH9w8gPY4qyHB4SBQsrq/UlzgIb4jfa+QzDNIMM4nGWKI0VUZz1oa6ndgpN41J
- CIJEFjOnetBxKfJ71FF33fVqeJ+af7jcjXAYlmog/nqw+hUCkMU/4Eq84RUNDTkhnaGu
- Cn4KIYWXXuNAdA+/HHjr7nHNnxvjgzVKq7y3qT9fl13oBSLNry+Y0ZN4TXB2jSZA1xhy
- wgtQ==
-X-Gm-Message-State: APjAAAXsiY2skUXWKOfR1+1VVdzW8S9b/QJBINxJXojKzRnH3iSeCyGT
- bgJAH6k1FgPgEVrDfBTzzsM=
-X-Google-Smtp-Source: APXvYqy6f+ml42eTBF5EHpYvS0lb6p+kxv1I3hYXXpOAPXEeKvhwdtR7+dKPRDqNLQwk6eE/hOn3Sg==
-X-Received: by 2002:ac2:5595:: with SMTP id v21mr9864950lfg.168.1571170169683; 
- Tue, 15 Oct 2019 13:09:29 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-153.NA.cust.bahnhof.se.
- [98.128.228.153])
- by smtp.gmail.com with ESMTPSA id z1sm5266247ljh.88.2019.10.15.13.09.28
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Oct 2019 13:09:28 -0700 (PDT)
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To: dmurphy@ti.com
-Date: Tue, 15 Oct 2019 22:09:00 +0200
-Message-Id: <20191015200900.25798-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191008181517.5332-2-dmurphy@ti.com>
-References: <20191008181517.5332-2-dmurphy@ti.com>
-MIME-Version: 1.0
-X-Mailman-Approved-At: Thu, 17 Oct 2019 08:02:16 +0200
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- navada@ti.com, lgirdwood@gmail.com, broonie@kernel.org,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [alsa-devel] [PATCH] ASoC: tas2562: Fix misuse of GENMASK macro
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50909F802A0
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 08:23:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50909F802A0
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CF242200031;
+ Thu, 17 Oct 2019 08:23:54 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8322220004C;
+ Thu, 17 Oct 2019 08:23:49 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 11186402B4;
+ Thu, 17 Oct 2019 14:23:42 +0800 (SGT)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
+Date: Thu, 17 Oct 2019 14:21:08 +0800
+Message-Id: <1571293268-5146-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ASoC: fsl_asrc: refine the setting of internal
+	clock divider
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,40 +78,116 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Arguments are supposed to be ordered high then low.
+For P2P output, the output divider should align with the output sample
+rate, if use ideal sample rate, there will be a lot of overload, which
+would cause underrun.
 
-Fixes: c173dba44c2d ("ASoC: tas2562: Introduce the TAS2562 amplifier")
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+The maximum divider of asrc clock is 1024, but there is no judgement
+for this limitaion in driver, which may cause the divider setting not
+correct.
+
+For non-ideal ratio mode, the clock rate should divide the sample rate
+with no remainder, and the quotient should be less than 1024.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
-Spotted when trying to introduce compile time checking that the order
-of the arguments to GENMASK are correct [0]. I have only compile tested
-the patch.
+ sound/soc/fsl/fsl_asrc.c | 40 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 31 insertions(+), 9 deletions(-)
 
-[0]: https://lore.kernel.org/lkml/20191009214502.637875-1-rikard.falkeborn@gmail.com/
-
- sound/soc/codecs/tas2562.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/tas2562.h b/sound/soc/codecs/tas2562.h
-index 60f2bb1d198b..62e659ab786d 100644
---- a/sound/soc/codecs/tas2562.h
-+++ b/sound/soc/codecs/tas2562.h
-@@ -62,7 +62,7 @@
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 0bf91a6f54b9..44d05ec28bd3 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -260,7 +260,7 @@ static int fsl_asrc_set_ideal_ratio(struct fsl_asrc_pair *pair,
+  * of struct asrc_config which includes in/output sample rate, width, channel
+  * and clock settings.
+  */
+-static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
++static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool p2p)
+ {
+ 	struct asrc_config *config = pair->config;
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+@@ -268,7 +268,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	enum asrc_word_width input_word_width;
+ 	enum asrc_word_width output_word_width;
+ 	u32 inrate, outrate, indiv, outdiv;
+-	u32 clk_index[2], div[2];
++	u32 clk_index[2], div[2], rem[2];
++	u64 clk_rate;
+ 	int in, out, channels;
+ 	int pre_proc, post_proc;
+ 	struct clk *clk;
+@@ -351,7 +352,9 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	/* We only have output clock for ideal ratio mode */
+ 	clk = asrc_priv->asrck_clk[clk_index[ideal ? OUT : IN]];
  
- #define TAS2562_TDM_CFG2_RIGHT_JUSTIFY	BIT(6)
+-	div[IN] = clk_get_rate(clk) / inrate;
++	clk_rate = clk_get_rate(clk);
++	rem[IN] = do_div(clk_rate, inrate);
++	div[IN] = (u32)clk_rate;
+ 	if (div[IN] == 0) {
+ 		pair_err("failed to support input sample rate %dHz by asrck_%x\n",
+ 				inrate, clk_index[ideal ? OUT : IN]);
+@@ -360,11 +363,20 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
  
--#define TAS2562_TDM_CFG2_RXLEN_MASK	GENMASK(0, 1)
-+#define TAS2562_TDM_CFG2_RXLEN_MASK	GENMASK(1, 0)
- #define TAS2562_TDM_CFG2_RXLEN_16B	0x0
- #define TAS2562_TDM_CFG2_RXLEN_24B	BIT(0)
- #define TAS2562_TDM_CFG2_RXLEN_32B	BIT(1)
+ 	clk = asrc_priv->asrck_clk[clk_index[OUT]];
+ 
+-	/* Use fixed output rate for Ideal Ratio mode (INCLK_NONE) */
+-	if (ideal)
+-		div[OUT] = clk_get_rate(clk) / IDEAL_RATIO_RATE;
+-	else
+-		div[OUT] = clk_get_rate(clk) / outrate;
++	/*
++	 * When P2P mode, output rate should align with the out samplerate.
++	 * if set too high output rate, there will be lots of Overload.
++	 * When M2M mode, output rate should also need to align with the out
++	 * samplerate, but M2M must use less time to achieve good performance.
++	 */
++	clk_rate = clk_get_rate(clk);
++	if (p2p || !ideal) {
++		rem[OUT] = do_div(clk_rate, outrate);
++		div[OUT] = clk_rate;
++	} else {
++		rem[OUT] = do_div(clk_rate, IDEAL_RATIO_RATE);
++		div[OUT] = clk_rate;
++	}
+ 
+ 	if (div[OUT] == 0) {
+ 		pair_err("failed to support output sample rate %dHz by asrck_%x\n",
+@@ -372,6 +384,16 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 		return -EINVAL;
+ 	}
+ 
++	if (!ideal && (div[IN] > 1024 || div[OUT] > 1024 ||
++		       rem[IN] != 0 || rem[OUT] != 0)) {
++		pair_err("The divider can't be used for non ideal mode\n");
++		return -EINVAL;
++	}
++
++	/* Divider range is [1, 1024] */
++	div[IN] = min_t(u32, 1024, div[IN]);
++	div[OUT] = min_t(u32, 1024, div[OUT]);
++
+ 	/* Set the channel number */
+ 	channels = config->channel_num;
+ 
+@@ -560,7 +582,7 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 		config.output_sample_rate = rate;
+ 	}
+ 
+-	ret = fsl_asrc_config_pair(pair);
++	ret = fsl_asrc_config_pair(pair, true);
+ 	if (ret) {
+ 		dev_err(dai->dev, "fail to config asrc pair\n");
+ 		return ret;
 -- 
-2.23.0
+2.21.0
 
 _______________________________________________
 Alsa-devel mailing list
