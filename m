@@ -2,68 +2,66 @@ Return-Path: <SRS0=vl9c=YK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 623E7C4CECE
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:07:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CDC8FA372D
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:26:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDB95214E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:07:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D12120820
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:26:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cY2nr7t7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDB95214E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P13fmPUa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D12120820
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C87E7850;
-	Thu, 17 Oct 2019 10:06:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C87E7850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08ED985D;
+	Thu, 17 Oct 2019 10:25:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08ED985D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571299622;
-	bh=VmI3qGpOFGmWvmhBWoWnonI8exBgXN3NEuIYK8D9rZw=;
+	s=default; t=1571300776;
+	bh=xMyKSKFpxMykwsJ2VhLYeaG1k153a5HaBgF4G3sVU9E=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cY2nr7t7nTMZlTV189E+MRNwtXrPf0+TxZpj+mOL9iGpK/DtvE0e2qUmxNvb7UwEQ
-	 TlLHm22lrAHYNlr/QeXm0SVSVfq2Z10XsV3/woWytTf/R0a2NXpgLycAJLHSXU3/J5
-	 zJHek5UIirSattUDqX/GSpfns/WkS/3qKaTLNisU=
+	b=P13fmPUafnu17+/lxFezT8C/MId0oEW+IRqXBew69YG27VuvmaeOt45LeeYRGtOQj
+	 xuOrZXzbygm8n6idK0YVUYa9ipPzol0TiDdgOoxftLQV1QUK94ci9F99nJk8WxJgEW
+	 3RYit2rrsP6UwNn+dhQIXBx7zOScW124ITG8XGGM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2955FF804A9;
-	Thu, 17 Oct 2019 10:06:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96BE5F804A9;
+	Thu, 17 Oct 2019 10:25:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FEB2F804AA; Thu, 17 Oct 2019 10:06:10 +0200 (CEST)
+ id 803F6F804AA; Thu, 17 Oct 2019 10:25:24 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A774BF80276
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 10:06:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A774BF80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1326CF80276
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 10:25:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1326CF80276
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 7E9E5AFF2;
- Thu, 17 Oct 2019 08:06:06 +0000 (UTC)
-Date: Thu, 17 Oct 2019 10:06:06 +0200
-Message-ID: <s5hk193iyoh.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 508C2B4FB;
+ Thu, 17 Oct 2019 08:25:21 +0000 (UTC)
+Date: Thu, 17 Oct 2019 10:25:21 +0200
+Message-ID: <s5heezbixse.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191011112745.25800-4-kai.vehmanen@linux.intel.com>
-References: <20191011112745.25800-1-kai.vehmanen@linux.intel.com>
- <20191011112745.25800-4-kai.vehmanen@linux.intel.com>
+To: "Daniel Drake" <drake@endlessm.com>
+In-Reply-To: <20191017081501.17135-1-drake@endlessm.com>
+References: <20191017081501.17135-1-drake@endlessm.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: libin.yang@intel.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH v6 3/9] ASoC: Intel: skl-hda-dsp-generic:
-	use snd-hda-codec-hdmi
+Cc: alsa-devel@alsa-project.org, linux@endlessm.com,
+ Takashi Iwai <tiwai@suse.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda/realtek - Enable headset mic on
+	Asus MJ401TA
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,110 +79,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Oct 2019 13:27:39 +0200,
-Kai Vehmanen wrote:
+On Thu, 17 Oct 2019 10:15:01 +0200,
+Daniel Drake wrote:
 > 
-> diff --git a/sound/soc/intel/boards/hda_dsp_common.h b/sound/soc/intel/boards/hda_dsp_common.h
-> new file mode 100644
-> index 000000000000..a4f7ae81bcc0
-> --- /dev/null
-> +++ b/sound/soc/intel/boards/hda_dsp_common.h
-> @@ -0,0 +1,97 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright(c) 2019 Intel Corporation.
-> + */
-> +
-> +/*
-> + * This file defines helper functions used by multiple
-> + * Intel HDA based machine drivers.
-> + */
-> +
-> +#ifndef __HDA_DSP_COMMON_H
-> +#define __HDA_DSP_COMMON_H
-> +
-> +#include <sound/hda_codec.h>
-> +#include <sound/hda_i915.h>
-> +#include "../../codecs/hdac_hda.h"
-> +
-> +/*
-> + * Search card topology and return PCM device number
-> + * matching Nth HDMI device (zero-based index).
-> + */
-> +static inline struct snd_pcm *hda_dsp_hdmi_pcm_handle(struct snd_soc_card *card,
-> +						      int hdmi_idx)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd;
-> +	struct snd_pcm *spcm;
-> +	int i = 0;
-> +
-> +	for_each_card_rtds(card, rtd) {
-> +		spcm = rtd->pcm ?
-> +			rtd->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].pcm : 0;
-> +		if (spcm && strstr(spcm->id, "HDMI")) {
-> +			if (i == hdmi_idx)
-> +				return rtd->pcm;
-> +			++i;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-> +/*
-> + * Search card topology and register HDMI PCM related controls
-> + * to codec driver.
-> + */
-> +static inline int hda_dsp_hdmi_build_controls(struct snd_soc_card *card,
-> +					      struct snd_soc_component *comp)
-> +{
-> +	struct hdac_hda_priv *hda_pvt;
-> +	struct hda_codec *hcodec;
-> +	struct snd_pcm *spcm;
-> +	struct hda_pcm *hpcm;
-> +	int err = 0, i = 0;
-> +
-> +	if (!comp)
-> +		return -EINVAL;
-> +
-> +	hda_pvt = snd_soc_component_get_drvdata(comp);
-> +	hcodec = &hda_pvt->codec;
-> +
-> +	list_for_each_entry(hpcm, &hcodec->pcm_list_head, list) {
-> +		spcm = hda_dsp_hdmi_pcm_handle(card, i);
-> +		if (spcm) {
-> +			hpcm->pcm = spcm;
-> +			hpcm->device = spcm->device;
-> +			dev_dbg(card->dev,
-> +				"%s: mapping HDMI converter %d to PCM %d (%p)\n",
-> +				__func__, i, hpcm->device, spcm);
-> +		} else {
-> +			hpcm->pcm = 0;
-> +			hpcm->device = SNDRV_PCM_INVALID_DEVICE;
-> +			dev_warn(card->dev,
-> +				 "%s: no PCM in topology for HDMI converter %d\n\n",
-> +				 __func__, i);
-> +		}
-> +		i++;
-> +	}
-> +	snd_hdac_display_power(hcodec->core.bus,
-> +			       HDA_CODEC_IDX_CONTROLLER, true);
-> +	err = snd_hda_codec_build_controls(hcodec);
-> +	if (err < 0)
-> +		dev_err(card->dev, "unable to create controls %d\n", err);
-> +	snd_hdac_display_power(hcodec->core.bus,
-> +			       HDA_CODEC_IDX_CONTROLLER, false);
-> +
-> +	return err;
-> +}
-> +#else
+> On Asus MJ401TA (with Realtek ALC256), the headset mic is connected to
+> pin 0x19, with default configuration value 0x411111f0 (indicating no
+> physical connection).
+> 
+> Enable this by quirking the pin. Mic jack detection was also tested and
+> found to be working.
+> 
+> This enables use of the headset mic on this product.
+> 
+> Signed-off-by: Daniel Drake <drake@endlessm.com>
 
-These additions look a bit too large for inline functions.
-Wouldn't it be difficult to make them non-inline?
+Applied now.  Thanks.
 
-
-thanks,
 
 Takashi
 _______________________________________________
