@@ -2,84 +2,85 @@ Return-Path: <SRS0=vl9c=YK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BC44FA372A
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 14:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6F38FA372A
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 14:04:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88D1E2054F
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 14:04:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 71E2A2054F
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 14:04:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QfCmP6/b";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="iqYVq2L7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88D1E2054F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pjqv7qS/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="M6nU9KLE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71E2A2054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97E2F168B;
-	Thu, 17 Oct 2019 16:03:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97E2F168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B218784F;
+	Thu, 17 Oct 2019 16:04:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B218784F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571321042;
-	bh=dLfBVNq9e8JGXhBCnxy2791dTt5qedVagXAOqMl9TUQ=;
+	s=default; t=1571321096;
+	bh=Q5UD8liRTY7ZJFwVOdqIezOTjwkwPebnqnio00GadUA=;
 	h=Date:In-Reply-To:References:From:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QfCmP6/bsiYeqRD+IODrc7na0zjDPAeFaPIXjtNihjjQAnRAZiec/f5saxr2cSu4V
-	 ZSYj35TE71w3ezWoFFmPhk1KW2+VOxyCITQf5nvZ0lEvQJ2Rui7DO6cFS/g3miEqCr
-	 O6jM5i7owmNSktmhsZc3iBpHhQy+XZhj+Izj9LNo=
+	b=Pjqv7qS/TaC30Wwyl5PwqtW3lCz5i3QZs5IfFziC4q+Ea/pUXkDV/giFPPOrHov6J
+	 QRfR54cVt/TH4qaj/92Hr6U0NTmzFBLjtcSjrPWTZECy05hHirbzsouRZf9PuLveMG
+	 ymgHkFXahwktLBsETt51akHzvDYWg8Sgqu5IpRxU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FBC8F80633;
-	Thu, 17 Oct 2019 16:00:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACBE4F8063E;
+	Thu, 17 Oct 2019 16:01:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 595E5F80612; Thu, 17 Oct 2019 16:00:54 +0200 (CEST)
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com
- [IPv6:2607:f8b0:4864:20::549])
+ id DF7D6F80642; Thu, 17 Oct 2019 16:00:58 +0200 (CEST)
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com
+ [IPv6:2607:f8b0:4864:20::44a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A8A2F80612
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 16:00:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A8A2F80612
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BA60F80637
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 16:00:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BA60F80637
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="iqYVq2L7"
-Received: by mail-pg1-x549.google.com with SMTP id e15so1782441pgh.19
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 07:00:50 -0700 (PDT)
+ header.b="M6nU9KLE"
+Received: by mail-pf1-x44a.google.com with SMTP id d126so1778932pfd.5
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 07:00:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=25ynQiwVZQ+dy11FxD/YUoUgn2vdDqDuKQnd4i5dR+A=;
- b=iqYVq2L7ewqe+0Ll7mBY5cBCenBbJbwVyZe1SSyeYdosVOAOyN5qBNYpEA3waH3kO+
- dNPka4is79DD8lYB9au4hZ88AMFEsr6dR1myocl4KYi+96Oe+oJ2vS2puMl5qLgwBQPe
- HdYzViVN1OaH5HzLUh6O9WERnJfy7AM2S9VKQskf546xxDV2kOQDt8Z8w2y7crMPZUy2
- b5NW8BmE+qj3s7PhShFKwPgGxJ3vUOcTRZUnlubdoxytM5G3BmkA3YvF5kfNrE5urpTv
- pKOorPQbRMDIFbRrEVXF2nbdnkOoDx8zI+WX0GdumgGInRhgz+lmA271sgbdvUwSJJU0
- diBw==
+ :cc; bh=ZtxS2Vg5dy9sdeqWSW4v3GMIuu7neueM+a0/0finMLQ=;
+ b=M6nU9KLEjXfvAKGGIcTXI6zJp5ma5N1gkNMHB3hbGpFV61JejCigl7E+o/dhIf83tT
+ j0vlBK7A2lKWCYAlynxa+bA4bVRyB7E8ulDDGQ2l4r3iSw/eIKHnhmHb664mmihZ6hoP
+ SBt9wZ19QKMPhxDsksVnx2dPqZcIXslPF+HjQ21P+sgn2IFXHMwUGXnauHA26gNVrPMK
+ 9TvsBfV2hLW6H0t1m5H2khoawd+BpK0E/GxNZ+w0CB75R4y441lFXdh7yytbXxUwaxXI
+ V3WNRa/tS/NQiGv96/m6ipIt70b014erxEkTEtwMuQlaWOAB4uhhXTl/i95S7C1ktZlf
+ DI/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=25ynQiwVZQ+dy11FxD/YUoUgn2vdDqDuKQnd4i5dR+A=;
- b=RPNM64pGiwaumIFUlyu1QO/+l18s7RQkCg58/KiIkQ775U8Dx1DO7Z6zyjAJ8kqoyy
- A8/rVPnKCKoCZWN+9C/x3qIsozd2AllmG40jB588aTKxuFLnr10O3wwzo4ytzGRGD8/v
- YInbSzRLbp6A8Eihogk3sARGO+Y4ogDU8ygzQ8DRP98aM/CvwkjJzHQMfxWanAn31mVR
- c/i9G8jA3HzaHbxph1AnyqLNybPmEiGgcA4TefPaGli5aOdtXk6hxELmuHCRR6vXGjgd
- YCHutTKM57S0oHTuOlDk1MPGcHGdPzk2KLR97vJWP9Cdp8Ye3TKesqWgJjVqIn5Kk9ji
- 0xnA==
-X-Gm-Message-State: APjAAAUPtaHqmc66p3x6E5Bz4Up7wPrx1b2RAz2sdEg4ND4vcrxgT7B0
- U2g0CPjVf3LWYwugu0xqE0L34CJ5Wz5Q
-X-Google-Smtp-Source: APXvYqydx344sL9u4U6uQaHfZxOZnHeQvkGOH9bdai+Hgi2uHWf67D1O6STtSjmzDBz7/Kt6o0dJK6V0Q1pe
-X-Received: by 2002:a63:7405:: with SMTP id p5mr4398819pgc.264.1571320848295; 
- Thu, 17 Oct 2019 07:00:48 -0700 (PDT)
-Date: Thu, 17 Oct 2019 22:00:08 +0800
+ bh=ZtxS2Vg5dy9sdeqWSW4v3GMIuu7neueM+a0/0finMLQ=;
+ b=eMMrIrg8NZkNzWMZYuTbFlNHYJ6yfzd7EOP5R7b8ZRQHno5UCDtjwNpRHfzbJf5S7v
+ vl2SCjuusmbc2ltoFdNe8/ecJ7C4SfRbY87EgmX7ZjdykKeerm/YgS56w8pinvrUKA5U
+ IxkNifqTxGiqfdB2h6AL3WN2hIsqrAv4fHMHtEfj3pQFB45th01O6VJbdlUGr65mkXmy
+ 5KCIWm3HQh0uqe/1Aw4qVvCbYc31eZ9EuBAE6b9PRixasupIupGUfIA/PLRTZOfCZUEb
+ wCQ2aySJR8eMaUzVoW543zJypG5bQIF8+BKHopPY1Rbxwl0316s6mrCvBOsW/Eumjl+s
+ +9hQ==
+X-Gm-Message-State: APjAAAXcYhl8gNEO8ECP7F9zmxAxoYbPFGKSCtAn7zLlYDTU4nLmuTP3
+ 24smz0Wk26HYfYwmwmDoxgDPbdz0kW1x
+X-Google-Smtp-Source: APXvYqwLBYAeOAkN4xCiOGFngVLfQJS4wUNwXvRTKtCCPOqhKcppsuSiHc0p+LqI7MBnVxOFEUuJC7vx1Xfb
+X-Received: by 2002:a65:6701:: with SMTP id u1mr4348299pgf.368.1571320853382; 
+ Thu, 17 Oct 2019 07:00:53 -0700 (PDT)
+Date: Thu, 17 Oct 2019 22:00:09 +0800
 In-Reply-To: <20191017213539.00-tzungbi@google.com>
-Message-Id: <20191017213539.03.I93d9c65964f3c30f85a36d228e31150ff1917706@changeid>
+Message-Id: <20191017213539.04.Idc3c6e1cd94b70bf010249928d4a93c6c90495b7@changeid>
 Mime-Version: 1.0
 References: <20191017213539.00-tzungbi@google.com>
 X-Mailer: git-send-email 2.23.0.700.g56cf767bdb-goog
@@ -89,8 +90,8 @@ Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  cychiang@google.com, drinkcat@google.com, Benson Leung <bleung@chromium.org>,
  tzungbi@google.com, robh+dt@kernel.org, enric.balletbo@collabora.com,
  bleung@google.com, dgreid@google.com
-Subject: [alsa-devel] [PATCH v4 03/10] ASoC: cros_ec_codec: extract DMIC EC
- command from I2S RX
+Subject: [alsa-devel] [PATCH v4 04/10] platform/chrome: cros_ec: add common
+	commands for EC codec
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,208 +109,113 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Extract DMIC EC command from I2S RX.  Setting and getting
-microphone gains is common features.
+Add the following common commands:
+- GET_CAPABILITIES
+- GET_SHM_ADDR
+- SET_SHM_ADDR
 
 Acked-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
  drivers/platform/chrome/cros_ec_trace.c       |  1 +
- .../linux/platform_data/cros_ec_commands.h    | 49 +++++++++++-----
- sound/soc/codecs/cros_ec_codec.c              | 57 ++++++++++---------
- 3 files changed, 68 insertions(+), 39 deletions(-)
+ .../linux/platform_data/cros_ec_commands.h    | 64 ++++++++++++++++++-
+ 2 files changed, 63 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/platform/chrome/cros_ec_trace.c b/drivers/platform/chrome/cros_ec_trace.c
-index 901850004b2b..e73bb6a8b00e 100644
+index e73bb6a8b00e..2ea0d4e0d54d 100644
 --- a/drivers/platform/chrome/cros_ec_trace.c
 +++ b/drivers/platform/chrome/cros_ec_trace.c
 @@ -98,6 +98,7 @@
  	TRACE_SYMBOL(EC_CMD_SB_READ_BLOCK), \
  	TRACE_SYMBOL(EC_CMD_SB_WRITE_BLOCK), \
  	TRACE_SYMBOL(EC_CMD_BATTERY_VENDOR_PARAM), \
-+	TRACE_SYMBOL(EC_CMD_EC_CODEC_DMIC), \
++	TRACE_SYMBOL(EC_CMD_EC_CODEC), \
+ 	TRACE_SYMBOL(EC_CMD_EC_CODEC_DMIC), \
  	TRACE_SYMBOL(EC_CMD_EC_CODEC_I2S_RX), \
  	TRACE_SYMBOL(EC_CMD_REBOOT_EC), \
- 	TRACE_SYMBOL(EC_CMD_GET_PANIC_INFO), \
 diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-index 261ac83bd007..58e460c015ef 100644
+index 58e460c015ef..3ca0fa9e92a7 100644
 --- a/include/linux/platform_data/cros_ec_commands.h
 +++ b/include/linux/platform_data/cros_ec_commands.h
-@@ -4466,18 +4466,48 @@ enum mkbp_cec_event {
+@@ -4466,8 +4466,68 @@ enum mkbp_cec_event {
  
  /*****************************************************************************/
  
-+/* Commands for DMIC on audio codec. */
-+#define EC_CMD_EC_CODEC_DMIC 0x00BC
++/* Commands for audio codec. */
++#define EC_CMD_EC_CODEC 0x00BC
 +
-+enum ec_codec_dmic_subcmd {
-+	EC_CODEC_DMIC_SET_GAIN = 0x0,
-+	EC_CODEC_DMIC_GET_GAIN = 0x1,
-+	EC_CODEC_DMIC_SUBCMD_COUNT,
++enum ec_codec_subcmd {
++	EC_CODEC_GET_CAPABILITIES = 0x0,
++	EC_CODEC_GET_SHM_ADDR = 0x1,
++	EC_CODEC_SET_SHM_ADDR = 0x2,
++	EC_CODEC_SUBCMD_COUNT,
 +};
 +
-+struct __ec_align1 ec_param_ec_codec_dmic_set_gain {
-+	uint8_t left;
-+	uint8_t right;
-+	uint8_t reserved[2];
++enum ec_codec_cap {
++	EC_CODEC_CAP_LAST = 32,
 +};
 +
-+struct __ec_align4 ec_param_ec_codec_dmic {
-+	uint8_t cmd; /* enum ec_codec_dmic_subcmd */
++enum ec_codec_shm_id {
++	EC_CODEC_SHM_ID_LAST,
++};
++
++enum ec_codec_shm_type {
++	EC_CODEC_SHM_TYPE_EC_RAM = 0x0,
++	EC_CODEC_SHM_TYPE_SYSTEM_RAM = 0x1,
++};
++
++struct __ec_align1 ec_param_ec_codec_get_shm_addr {
++	uint8_t shm_id;
++	uint8_t reserved[3];
++};
++
++struct __ec_align4 ec_param_ec_codec_set_shm_addr {
++	uint64_t phys_addr;
++	uint32_t len;
++	uint8_t shm_id;
++	uint8_t reserved[3];
++};
++
++struct __ec_align4 ec_param_ec_codec {
++	uint8_t cmd; /* enum ec_codec_subcmd */
 +	uint8_t reserved[3];
 +
 +	union {
-+		struct ec_param_ec_codec_dmic_set_gain
-+				set_gain_param;
++		struct ec_param_ec_codec_get_shm_addr
++				get_shm_addr_param;
++		struct ec_param_ec_codec_set_shm_addr
++				set_shm_addr_param;
 +	};
 +};
 +
-+struct __ec_align1 ec_response_ec_codec_dmic_get_gain {
-+	uint8_t left;
-+	uint8_t right;
++struct __ec_align4 ec_response_ec_codec_get_capabilities {
++	uint32_t capabilities;
++};
++
++struct __ec_align4 ec_response_ec_codec_get_shm_addr {
++	uint64_t phys_addr;
++	uint32_t len;
++	uint8_t type;
++	uint8_t reserved[3];
 +};
 +
 +/*****************************************************************************/
 +
+ /* Commands for DMIC on audio codec. */
+-#define EC_CMD_EC_CODEC_DMIC 0x00BC
++#define EC_CMD_EC_CODEC_DMIC 0x00BD
+ 
+ enum ec_codec_dmic_subcmd {
+ 	EC_CODEC_DMIC_SET_GAIN = 0x0,
+@@ -4500,7 +4560,7 @@ struct __ec_align1 ec_response_ec_codec_dmic_get_gain {
+ 
  /* Commands for I2S RX on audio codec. */
  
--#define EC_CMD_EC_CODEC_I2S_RX 0x00BC
-+#define EC_CMD_EC_CODEC_I2S_RX 0x00BD
+-#define EC_CMD_EC_CODEC_I2S_RX 0x00BD
++#define EC_CMD_EC_CODEC_I2S_RX 0x00BE
  
  enum ec_codec_i2s_rx_subcmd {
  	EC_CODEC_I2S_RX_ENABLE = 0x0,
- 	EC_CODEC_I2S_RX_DISABLE = 0x1,
--	EC_CODEC_I2S_RX_SET_GAIN = 0x2,
--	EC_CODEC_I2S_RX_GET_GAIN = 0x3,
--	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x4,
--	EC_CODEC_I2S_RX_SET_DAIFMT = 0x5,
--	EC_CODEC_I2S_RX_SET_BCLK = 0x6,
-+	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
-+	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
-+	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
- 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
- };
- 
-@@ -4521,8 +4551,6 @@ struct __ec_align4 ec_param_ec_codec_i2s_rx {
- 	union {
- 		struct ec_param_ec_codec_i2s_rx_set_sample_depth
- 				set_sample_depth_param;
--		struct ec_param_ec_codec_i2s_rx_set_gain
--				set_gain_param;
- 		struct ec_param_ec_codec_i2s_rx_set_daifmt
- 				set_daifmt_param;
- 		struct ec_param_ec_codec_i2s_rx_set_bclk
-@@ -4530,11 +4558,6 @@ struct __ec_align4 ec_param_ec_codec_i2s_rx {
- 	};
- };
- 
--struct __ec_align1 ec_response_ec_codec_i2s_rx_get_gain {
--	uint8_t left;
--	uint8_t right;
--};
--
- /*****************************************************************************/
- /* System commands */
- 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index 179fa77291cd..c19c7fe42e2e 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -64,12 +64,12 @@ static int dmic_get_gain(struct snd_kcontrol *kcontrol,
- 		snd_soc_kcontrol_component(kcontrol);
- 	struct cros_ec_codec_priv *priv =
- 		snd_soc_component_get_drvdata(component);
--	struct ec_param_ec_codec_i2s_rx p;
--	struct ec_response_ec_codec_i2s_rx_get_gain r;
-+	struct ec_param_ec_codec_dmic p;
-+	struct ec_response_ec_codec_dmic_get_gain r;
- 	int ret;
- 
--	p.cmd = EC_CODEC_I2S_RX_GET_GAIN;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-+	p.cmd = EC_CODEC_DMIC_GET_GAIN;
-+	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
- 				   (uint8_t *)&p, sizeof(p),
- 				   (uint8_t *)&r, sizeof(r));
- 	if (ret < 0)
-@@ -93,17 +93,17 @@ static int dmic_put_gain(struct snd_kcontrol *kcontrol,
- 	int max_dmic_gain = control->max;
- 	int left = ucontrol->value.integer.value[0];
- 	int right = ucontrol->value.integer.value[1];
--	struct ec_param_ec_codec_i2s_rx p;
-+	struct ec_param_ec_codec_dmic p;
- 
- 	if (left > max_dmic_gain || right > max_dmic_gain)
- 		return -EINVAL;
- 
- 	dev_dbg(component->dev, "set mic gain to %u, %u\n", left, right);
- 
--	p.cmd = EC_CODEC_I2S_RX_SET_GAIN;
-+	p.cmd = EC_CODEC_DMIC_SET_GAIN;
- 	p.set_gain_param.left = left;
- 	p.set_gain_param.right = right;
--	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-+	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
- 				    (uint8_t *)&p, sizeof(p), NULL, 0);
- }
- 
-@@ -120,6 +120,29 @@ static struct snd_kcontrol_new dmic_controls[] = {
- 				   dmic_gain_tlv),
- };
- 
-+static int dmic_probe(struct snd_soc_component *component)
-+{
-+	struct cros_ec_codec_priv *priv =
-+		snd_soc_component_get_drvdata(component);
-+	struct device *dev = priv->dev;
-+	int ret, val;
-+	struct soc_mixer_control *control;
-+
-+	ret = device_property_read_u32(dev, "max-dmic-gain", &val);
-+	if (ret) {
-+		dev_err(dev, "Failed to read 'max-dmic-gain'\n");
-+		return ret;
-+	}
-+
-+	control = (struct soc_mixer_control *)
-+		dmic_controls[DMIC_CTL_GAIN].private_value;
-+	control->max = val;
-+	control->platform_max = val;
-+
-+	return snd_soc_add_component_controls(component,
-+			&dmic_controls[DMIC_CTL_GAIN], 1);
-+}
-+
- static int i2s_rx_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
-@@ -265,25 +288,7 @@ static struct snd_soc_dai_driver i2s_rx_dai_driver = {
- 
- static int i2s_rx_probe(struct snd_soc_component *component)
- {
--	struct cros_ec_codec_priv *priv =
--		snd_soc_component_get_drvdata(component);
--	struct device *dev = priv->dev;
--	int ret, val;
--	struct soc_mixer_control *control;
--
--	ret = device_property_read_u32(dev, "max-dmic-gain", &val);
--	if (ret) {
--		dev_err(dev, "Failed to read 'max-dmic-gain'\n");
--		return ret;
--	}
--
--	control = (struct soc_mixer_control *)
--			dmic_controls[DMIC_CTL_GAIN].private_value;
--	control->max = val;
--	control->platform_max = val;
--
--	return snd_soc_add_component_controls(component,
--			&dmic_controls[DMIC_CTL_GAIN], 1);
-+	return dmic_probe(component);
- }
- 
- static const struct snd_soc_component_driver i2s_rx_component_driver = {
 -- 
 2.23.0.700.g56cf767bdb-goog
 
