@@ -2,66 +2,70 @@ Return-Path: <SRS0=vl9c=YK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CDC8FA372D
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:26:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DC81FA3731
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:28:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D12120820
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:26:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 28AF7214E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 08:28:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P13fmPUa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D12120820
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G1hEf7pv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28AF7214E0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08ED985D;
-	Thu, 17 Oct 2019 10:25:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08ED985D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 512AA84F;
+	Thu, 17 Oct 2019 10:19:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 512AA84F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571300776;
-	bh=xMyKSKFpxMykwsJ2VhLYeaG1k153a5HaBgF4G3sVU9E=;
+	s=default; t=1571300441;
+	bh=vuxwEuQ9KB21mqiK0ay8mjpa4++XAAapZnAreZ3WKg0=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P13fmPUafnu17+/lxFezT8C/MId0oEW+IRqXBew69YG27VuvmaeOt45LeeYRGtOQj
-	 xuOrZXzbygm8n6idK0YVUYa9ipPzol0TiDdgOoxftLQV1QUK94ci9F99nJk8WxJgEW
-	 3RYit2rrsP6UwNn+dhQIXBx7zOScW124ITG8XGGM=
+	b=G1hEf7pvJv1a0xB9Ph9lflHulXjJ4rf1zb6rVTPf8FCuZ6B6xDsiz/xQYBktwFjd5
+	 dV2G+eCnswMjqi1zyx4ft9vN4HbKN7nxjWgRI+AhoUcx/X75uGbhkllyXspcdkKiZe
+	 S6Ca0/ns1qEsmOYBhFwN/O57/hsDLa9YwiFk5bBQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96BE5F804A9;
-	Thu, 17 Oct 2019 10:25:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA9D0F804A9;
+	Thu, 17 Oct 2019 10:19:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 803F6F804AA; Thu, 17 Oct 2019 10:25:24 +0200 (CEST)
+ id 04E60F804AA; Thu, 17 Oct 2019 10:19:49 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1326CF80276
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 10:25:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1326CF80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id A789EF80322
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 10:19:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A789EF80322
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 508C2B4FB;
- Thu, 17 Oct 2019 08:25:21 +0000 (UTC)
-Date: Thu, 17 Oct 2019 10:25:21 +0200
-Message-ID: <s5heezbixse.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id F2490B2FD;
+ Thu, 17 Oct 2019 08:19:45 +0000 (UTC)
+Date: Thu, 17 Oct 2019 10:19:45 +0200
+Message-ID: <s5hftjriy1q.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Daniel Drake" <drake@endlessm.com>
-In-Reply-To: <20191017081501.17135-1-drake@endlessm.com>
-References: <20191017081501.17135-1-drake@endlessm.com>
+To: Szabolcs =?UTF-8?B?U3rFkWtl?= <szszoke.code@gmail.com>
+In-Reply-To: <20191011171937.8013-1-szszoke.code@gmail.com>
+References: <20191011171937.8013-1-szszoke.code@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, linux@endlessm.com,
- Takashi Iwai <tiwai@suse.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda/realtek - Enable headset mic on
-	Asus MJ401TA
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Ard van Breemen <ard@kwaak.net>, Manuel Reinhardt <manuel.rhdt@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Richard Fontana <rfontana@redhat.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Disable quirks for BOSS
+	Katana amplifiers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,30 +78,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Oct 2019 10:15:01 +0200,
-Daniel Drake wrote:
-> 
-> On Asus MJ401TA (with Realtek ALC256), the headset mic is connected to
-> pin 0x19, with default configuration value 0x411111f0 (indicating no
-> physical connection).
-> 
-> Enable this by quirking the pin. Mic jack detection was also tested and
-> found to be working.
-> 
-> This enables use of the headset mic on this product.
-> 
-> Signed-off-by: Daniel Drake <drake@endlessm.com>
-
-Applied now.  Thanks.
-
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gRnJpLCAxMSBPY3QgMjAxOSAxOToxOTozNiArMDIwMCwKU3phYm9sY3MgU3rFkWtlIHdyb3Rl
+Ogo+IAo+IEJPU1MgS2F0YW5hIGFtcGxpZmllcnMgY2Fubm90IGJlIHVzZWQgZm9yIHJlY29yZGlu
+ZyBvciBwbGF5YmFjayBpZiBxdWlya3MKPiBhcmUgYXBwbGllZAo+IAo+IEJ1Z0xpbms6IGh0dHBz
+Oi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTk1MjIzCj4gU2lnbmVkLW9m
+Zi1ieTogU3phYm9sY3MgU3rFkWtlIDxzenN6b2tlLmNvZGVAZ21haWwuY29tPgoKQXBwbGllZCBu
+b3cuICBUaGFua3MuCgoKVGFrYXNoaQoKPiAKPiAtLS0KPiAgc291bmQvdXNiL3BjbS5jIHwgMyAr
+KysKPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9z
+b3VuZC91c2IvcGNtLmMgYi9zb3VuZC91c2IvcGNtLmMKPiBpbmRleCAzM2NkMjY3NjNjMGUuLmRh
+YWRiMGM2NmVlZSAxMDA2NDQKPiAtLS0gYS9zb3VuZC91c2IvcGNtLmMKPiArKysgYi9zb3VuZC91
+c2IvcGNtLmMKPiBAQCAtMzQ4LDYgKzM0OCw5IEBAIHN0YXRpYyBpbnQgc2V0X3N5bmNfZXBfaW1w
+bGljaXRfZmJfcXVpcmsoc3RydWN0IHNuZF91c2Jfc3Vic3RyZWFtICpzdWJzLAo+ICAJCWVwID0g
+MHg4NDsKPiAgCQlpZm51bSA9IDA7Cj4gIAkJZ290byBhZGRfc3luY19lcF9mcm9tX2lmbnVtOwo+
+ICsJY2FzZSBVU0JfSUQoMHgwNTgyLCAweDAxZDgpOiAvKiBCT1NTIEthdGFuYSAqLwo+ICsJCS8q
+IEJPU1MgS2F0YW5hIGFtcGxpZmllcnMgZG8gbm90IG5lZWQgcXVpcmtzICovCj4gKwkJcmV0dXJu
+IDA7Cj4gIAl9Cj4gIAo+ICAJaWYgKGF0dHIgPT0gVVNCX0VORFBPSU5UX1NZTkNfQVNZTkMgJiYK
+PiAtLSAKPiAyLjIwLjEKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
