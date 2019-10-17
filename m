@@ -2,67 +2,85 @@ Return-Path: <SRS0=vl9c=YK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61D25ECE58E
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 15:05:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14102ECE58E
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 15:23:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1417720872
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 15:05:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1309220872
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 15:23:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Db3xzly/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1417720872
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XxAVJDwz";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gtWpIetf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1309220872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D23CF1682;
-	Thu, 17 Oct 2019 17:04:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D23CF1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id A70FD1686;
+	Thu, 17 Oct 2019 17:22:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A70FD1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571324729;
-	bh=e758dTVjaVZDesDFi1hK/n/FV37WX6sDOjtyBAA+LO8=;
-	h=From:Date:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Db3xzly/CcR2YXalWKHeGssZ5rJ3GC6SsJusDAvqRrCkIfDaAUznmesJNBkQE120b
-	 g3470/j5XBgU2bXt9GCEzoYQgpptdqsv0SG3PSsQRsDAb8SkstiTa6XExrG11jDJEl
-	 60hLAC2baFJ2d/0TJfTOXr/jU6sGgmZkLx0WJonc=
+	s=default; t=1571325801;
+	bh=7cGuKmxrCNWIzhUIDRl77KQRUiMWEijzJONQy+GJckI=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XxAVJDwzHOD65a2jPH86JERgcZT1bWB6XICLC83PXXkdFke1Bg2cGgwivXOh9UMp1
+	 NHNr4IKJ1gCmOiF07kFEjfKfH9O+bKUPyMRvmzOVsuqQi1sGeaXcdhlcP6lhjDJU+/
+	 jMYL9jlBKDuOLsKow9uY3kvy2/c4SwzyxLVkRxfo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39B6BF804A9;
-	Thu, 17 Oct 2019 17:04:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 144A3F804A9;
+	Thu, 17 Oct 2019 17:22:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77185F804AA; Thu, 17 Oct 2019 17:04:37 +0200 (CEST)
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net
- [176.9.242.62])
+ id 4FA7BF804AA; Thu, 17 Oct 2019 17:22:28 +0200 (CEST)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:e::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B10EF80276
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 17:04:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B10EF80276
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client CN "*.hostsharing.net",
- Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
- by bmailout3.hostsharing.net (Postfix) with ESMTPS id DF5AB100F00C1;
- Thu, 17 Oct 2019 17:04:33 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
- id 88270458E52; Thu, 17 Oct 2019 17:04:33 +0200 (CEST)
-Message-Id: <3086bc75135c1e3567c5bc4f3cc4ff5cbf7a56c2.1571324194.git.lukas@wunner.de>
-From: Lukas Wunner <lukas@wunner.de>
-Date: Thu, 17 Oct 2019 17:04:11 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8109F80276
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 17:22:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8109F80276
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="gtWpIetf"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+ Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=BhyZS7+sRv/JZoP4+6IBFbCyglVKgcF0rn92fjDmAO4=; b=gtWpIetf0FkX1pIJJ0IwoGVv1
+ HsDLDA4LxEH/3ehgYeE2v/v4db7yQfFqttcJ3hZn40dmLYr7HcSeUIEDeiJ+SXdj6qWTsJDunTnJW
+ UsVMf/lRaXRA6k+XOkmMYFfQ7ql2huqjvy76X4Ss6lAckL+3wwNBjXoTscIdmn7FZiz5en14jen27
+ JMuybt8YtEWBjpZhLazYG0NlpASIKyzP0/YxdSi/9XBgUOIlAkuqw7PKFPdQJK0ouTyQSzShFMFkD
+ 9OvxDkSoKwSmw2Ygq9z9CN/k/9Icn8f2HccjIUmvMMzz9uZIagfqbuxRB3y3XfxsVL8Aq6+H9pp6x
+ DFbYCt2dA==;
+Received: from [2601:1c0:6280:3f0::9ef4]
+ by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1iL7bW-0005jG-JK; Thu, 17 Oct 2019 15:22:19 +0000
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20191017152645.65892c78@canb.auug.org.au>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e8994e88-bdab-b3be-d62f-550ce9f2c76d@infradead.org>
+Date: Thu, 17 Oct 2019 08:22:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-To: Takashi Iwai <tiwai@suse.com>
-Cc: Rivera Valdez <riveravaldez@ysinembargo.com>, alsa-devel@alsa-project.org,
- Przemyslaw Kopa <prymoo@gmail.com>, Daniel Drake <dan@reactivated.net>,
- nouveau@lists.freedesktop.org
-Subject: [alsa-devel] [PATCH] ALSA: hda - Force runtime PM on Nvidia HDMI
-	codecs
+In-Reply-To: <20191017152645.65892c78@canb.auug.org.au>
+Content-Language: en-US
+Cc: Vinod Koul <vkoul@kernel.org>,
+ moderated for non-subscribers <alsa-devel@alsa-project.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] linux-next: Tree for Oct 17 (soundwire)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,47 +93,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-UHJ6ZW15c8WCYXcgS29wYSByZXBvcnRzIHRoYXQgc2luY2UgY29tbWl0IGI1MTZlYTU4NmQ3MSAo
-IlBDSTogRW5hYmxlCk5WSURJQSBIREEgY29udHJvbGxlcnMiKSwgdGhlIGRpc2NyZXRlIEdQVSBO
-dmlkaWEgR2VGb3JjZSBHVCA1NDBNIG9uIGhpcwoyMDExIFNhbXN1bmcgbGFwdG9wIHJlZnVzZXMg
-dG8gcnVudGltZSBzdXNwZW5kLCByZXN1bHRpbmcgaW4gYSBwb3dlcgpyZWdyZXNzaW9uIGFuZCBl
-eGNlc3NpdmUgaGVhdC4KClJpdmVyYSBWYWxkZXogd2l0bmVzc2VzIHRoZSBzYW1lIGlzc3VlIHdp
-dGggYSBHZUZvcmNlIEdUIDUyNU0gKEdGMTA4TSkKb2YgdGhlIHNhbWUgZXJhLCBhcyBkb2VzIGFu
-b3RoZXIgQXJjaCBMaW51eCB1c2VyIG5hbWVkICJSMEFSIiB3aXRoIGEKbW9yZSByZWNlbnQgR2VG
-b3JjZSBHVFggMTA1MCBUaSAoR1AxMDdNKS4KClRoZSBjb21taXQgZXhwb3NlcyB0aGUgZGlzY3Jl
-dGUgR1BVJ3MgSERBIGNvbnRyb2xsZXIgYW5kIGFsbCBmb3VyIGNvZGVjcwpvbiB0aGUgY29udHJv
-bGxlciBkbyBub3Qgc2V0IHRoZSBDTEtTVE9QIGFuZCBFUFNTIGJpdHMgaW4gdGhlIFN1cHBvcnRl
-ZApQb3dlciBTdGF0ZXMgUmVzcG9uc2UuICBUaGV5IGFsc28gZG8gbm90IHNldCB0aGUgUFMtQ2xr
-U3RvcE9rIGJpdCBpbiB0aGUKR2V0IFBvd2VyIFN0YXRlIFJlc3BvbnNlLiAgaGRhX2NvZGVjX3J1
-bnRpbWVfc3VzcGVuZCgpIHRoZXJlZm9yZSBkb2VzCm5vdCBjYWxsIHNuZF9oZGFjX2NvZGVjX2xp
-bmtfZG93bigpLCB3aGljaCBwcmV2ZW50cyBlYWNoIGNvZGVjIGFuZCB0aGUKUENJIGRldmljZSBm
-cm9tIHJ1bnRpbWUgc3VzcGVuZGluZy4KClRoZSBzYW1lIGlzc3VlIGlzIHByZXNlbnQgb24gc29t
-ZSBBTUQgZGlzY3JldGUgR1BVcyBhbmQgd2UgYWRkcmVzc2VkIGl0CmJ5IGZvcmNpbmcgcnVudGlt
-ZSBQTSBkZXNwaXRlIHRoZSBiaXRzIG5vdCBiZWluZyBzZXQsIHNlZSBjb21taXQKNTdjYjU0ZTUz
-YmRkICgiQUxTQTogaGRhIC0gRm9yY2UgdG8gbGluayBkb3duIGF0IHJ1bnRpbWUgc3VzcGVuZCBv
-bgpBVEkvQU1EIEhETUkiKS4KCkRvIHRoZSBzYW1lIGZvciBOdmlkaWEgSERNSSBjb2RlY3MuCgpG
-aXhlczogYjUxNmVhNTg2ZDcxICgiUENJOiBFbmFibGUgTlZJRElBIEhEQSBjb250cm9sbGVycyIp
-Ckxpbms6IGh0dHBzOi8vYmJzLmFyY2hsaW51eC5vcmcvdmlld3RvcGljLnBocD9waWQ9MTg2NTUx
-MgpMaW5rOiBodHRwczovL2J1Z3MuZnJlZWRlc2t0b3Aub3JnL3Nob3dfYnVnLmNnaT9pZD03NTk4
-NSNjODEKUmVwb3J0ZWQtYnk6IFByemVteXPFgmF3IEtvcGEgPHByeW1vb0BnbWFpbC5jb20+ClJl
-cG9ydGVkLWJ5OiBSaXZlcmEgVmFsZGV6IDxyaXZlcmF2YWxkZXpAeXNpbmVtYmFyZ28uY29tPgpT
-aWduZWQtb2ZmLWJ5OiBMdWthcyBXdW5uZXIgPGx1a2FzQHd1bm5lci5kZT4KQ2M6IERhbmllbCBE
-cmFrZSA8ZGFuQHJlYWN0aXZhdGVkLm5ldD4KQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcgIyB2
-NS4zKwotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIHwgMiArKwogMSBmaWxlIGNoYW5n
-ZWQsIDIgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRt
-aS5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKaW5kZXggYmNhNWRlNy4uNzk1Y2JkYSAx
-MDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKKysrIGIvc291bmQvcGNpL2hk
-YS9wYXRjaF9oZG1pLmMKQEAgLTM0NzQsNiArMzQ3NCw4IEBAIHN0YXRpYyBpbnQgcGF0Y2hfbnZo
-ZG1pKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCQludmhkbWlfY2htYXBfY2VhX2FsbG9jX3Zh
-bGlkYXRlX2dldF90eXBlOwogCXNwZWMtPmNobWFwLm9wcy5jaG1hcF92YWxpZGF0ZSA9IG52aGRt
-aV9jaG1hcF92YWxpZGF0ZTsKIAorCWNvZGVjLT5saW5rX2Rvd25fYXRfc3VzcGVuZCA9IDE7CisK
-IAlnZW5lcmljX2Fjb21wX2luaXQoY29kZWMsICZudmhkbWlfYXVkaW9fb3BzLCBudmhkbWlfcG9y
-dDJwaW4pOwogCiAJcmV0dXJuIDA7Ci0tIAoyLjIwLjEKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 10/16/19 9:26 PM, Stephen Rothwell wrote:
+> Hi all,
+> =
+
+> Changes since 20191016:
+> =
+
+
+on x86_64:
+
+# CONFIG_BLOCK is not set
+
+  CC [M]  drivers/soundwire/intel_init.o
+In file included from ../drivers/soundwire/intel_init.c:12:0:
+../include/linux/iomap.h: In function =91iomap_sector=92:
+../include/linux/iomap.h:76:48: error: =91SECTOR_SHIFT=92 undeclared (first=
+ use in this function); did you mean =91SECTIONS_SHIFT=92?
+  return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
+                                                ^~~~~~~~~~~~
+                                                SECTIONS_SHIFT
+
+
+-- =
+
+~Randy
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
