@@ -1,71 +1,101 @@
-Return-Path: <SRS0=FfYG=YJ=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=vl9c=YK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.4 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10B82ECE599
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 23:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ADC6ECE599
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 02:26:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1256021848
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Oct 2019 23:51:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6039F21925
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Oct 2019 02:26:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F4j3cG47"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1256021848
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iSgr7UYH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="T2rGOkQ+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6039F21925
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D630B823;
-	Thu, 17 Oct 2019 01:51:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D630B823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B94D84F;
+	Thu, 17 Oct 2019 04:25:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B94D84F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571269916;
-	bh=O5+0lujfMkdBtBSJg318VVGBKo6VVmjW1FPan6UPMcE=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1571279182;
+	bh=dV314u5xMK5eVJ9pPvUcWSaSF1JHhZK5bBDERPO4QsU=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F4j3cG4789ZFgHOQUlQlUWsPdZ2Z9kLy8SpbxplEpcSx4H2aU6tcoLsUtlxVwg4Ux
-	 16J0xg+JMxkqs6M7U2jN08Q7CraSOoOSxEVz7nyYk8Q1kySq0kklB326SqdbzICKwZ
-	 iTZPXP6F+SPU26zjC8IMfuIhVfPMc5FhWz/kliDs=
+	b=iSgr7UYHwSqpAgTQHF1lbQ1GjDwbMDxUwYwx9EEJaS1oaxekRldr5Nh1ocaJY2Boi
+	 LaPOH+DlVBp5PWsfmkApres02w7PcxqDpz40fD5A0sCEWZGZ8mECYy+JDifxGBOBWR
+	 KjSZz9v1VH0ydHz3MyrvXdkIxs5VKFKHrhCq9k6M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 562C3F80323;
-	Thu, 17 Oct 2019 01:51:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62F56F80322;
+	Thu, 17 Oct 2019 04:25:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 407A3F80362; Thu, 17 Oct 2019 01:51:04 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9D4E7F80322
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 01:50:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D4E7F80322
-Date: 17 Oct 2019 08:50:54 +0900
-X-IronPort-AV: E=Sophos;i="5.67,305,1566831600"; d="scan'208";a="29271370"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 17 Oct 2019 08:50:54 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 067A44008C75;
- Thu, 17 Oct 2019 08:50:43 +0900 (JST)
-Message-ID: <878spkuu5o.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Eugeniu Rosca <erosca@de.adit-jv.com>
-In-Reply-To: <20191016124255.7442-1-erosca@de.adit-jv.com>
-References: <20191016124255.7442-1-erosca@de.adit-jv.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>, Junya Monden <jmonden@jp.adit-jv.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rsnd: Reinitialize bit clock
-	inversion flag for every format setting
+ id C365CF804AA; Thu, 17 Oct 2019 04:25:28 +0200 (CEST)
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
+ [IPv6:2607:f8b0:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1633F80322
+ for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 04:25:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1633F80322
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="T2rGOkQ+"
+Received: by mail-pf1-x441.google.com with SMTP id v4so592744pff.6
+ for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2019 19:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=STJjBhLE/m01ejeTMTB4LbJYMiaVitAPLxfsmldrX+w=;
+ b=T2rGOkQ+VUFpK/WVOfmLr8Mh2huxuf6moXfqKu86NtPV3dpGQTIlm4yCPBUE5PwYWD
+ hca+W7gYNsvl8M/ZeU98q0+B3yFGS/L7EUF/9KsomtmSaX+GhaR1D4dtSDmcIf8KQfzi
+ ybkoXQ+K5AbRTJu2equUDWhzY7qXgW27w+fOTMTS15zCXSOFe5WUH42pPZf7v3WgFeFj
+ VOsy6Z3ngBlx15Ao9qAmGYuXDaKVGlDwlcurS3+PvQcJ7KYAaqbXqk6rfoXuyjQ94ULG
+ OqZRPXfKeyvGVrJJQ9DgmDFWUXZaY7TlfiPlpQlrRm38dRhBgBTzznMPFsJyeXSzTYRu
+ aVaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=STJjBhLE/m01ejeTMTB4LbJYMiaVitAPLxfsmldrX+w=;
+ b=mocHUZJiHRi4NExLk+qYSS4gV3BoCAI15rF2CJvbHFsIs26Oj36ykzWqsjZa4Swwth
+ ODxUourZVKPetN7QdpKdgLxzymphL7aolZsa89DwHupAq3jrCbuPft7thWVVSV5BLLvE
+ S/br/J0pPdqUWcrwh81IG89j5uTL1EPW4e053nTVC9RNDCYlEfFpwRK94aCAYAV1pM1W
+ UCN+pApVrocdo+pAPNcWVWZO35DZG11undZrFy6xaZiHdbm9uy55QiCP4FrS5h3i3yaG
+ g2HAwbqjHjz7mxS8kDU4lIgpavmH1w6lqVAfsGHun9lJyTS/0GHDtqAzhw5/6abEoFoZ
+ Yhjw==
+X-Gm-Message-State: APjAAAU5nkBaJ3lQwHzKyKcay9KrP8vQr+UzqYus2MTHkP7p7oyJABro
+ QIrcyOL4k/1JOFM6DsWn7vDDKA==
+X-Google-Smtp-Source: APXvYqyvS2ZY7GaiHnRo9+9V5MBhCVFCjVMj2z2fV6My8g6R8J1Y2WkKdysTUlHk8e2d4Zd6ofBpRA==
+X-Received: by 2002:a62:1953:: with SMTP id 80mr954802pfz.173.1571279122230;
+ Wed, 16 Oct 2019 19:25:22 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:bc61:d85d:eb16:9036])
+ by smtp.gmail.com with ESMTPSA id y10sm435680pfe.148.2019.10.16.19.25.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 16 Oct 2019 19:25:21 -0700 (PDT)
+Date: Wed, 16 Oct 2019 19:25:16 -0700
+From: Benson Leung <bleung@google.com>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Message-ID: <20191017022516.GA60797@google.com>
+References: <20191014102022.236013-1-tzungbi@google.com>
+ <20191014180059.01.I374c311eaca0d47944a37b07acbe48fdb74f734d@changeid>
+MIME-Version: 1.0
+In-Reply-To: <20191014180059.01.I374c311eaca0d47944a37b07acbe48fdb74f734d@changeid>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ cychiang@google.com, drinkcat@google.com, robh+dt@kernel.org,
+ broonie@kernel.org, enric.balletbo@collabora.com, dgreid@google.com
+Subject: Re: [alsa-devel] [PATCH v3 01/10] platform/chrome: cros_ec: remove
+ unused EC feature
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,33 +108,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7574681078389042247=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+--===============7574681078389042247==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
+Content-Disposition: inline
 
-> Unlike other format-related DAI parameters, rdai->bit_clk_inv flag
-> is not properly re-initialized when setting format for new stream
-> processing. The inversion, if requested, is then applied not to default,
-> but to a previous value, which leads to SCKP bit in SSICR register being
-> set incorrectly.
-> Fix this by re-setting the flag to its initial value, determined by format.
-> 
-> Fixes: 1a7889ca8aba3 ("ASoC: rsnd: fixup SND_SOC_DAIFMT_xB_xF behavior")
-> Cc: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> Cc: Jiada Wang <jiada_wang@mentor.com>
-> Cc: Timo Wischer <twischer@de.adit-jv.com>
-> Cc: stable@vger.kernel.org # v3.17+
-> Signed-off-by: Junya Monden <jmonden@jp.adit-jv.com>
-> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Tzung-Bi,
+
+On Mon, Oct 14, 2019 at 06:20:13PM +0800, Tzung-Bi Shih wrote:
+> Remove unused EC_FEATURE_AUDIO_CODEC.
+>=20
+> Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+
+Acked-By: Benson Leung <bleung@chromium.org>
+
+Thanks,
+Benson
+
 > ---
+>  include/linux/platform_data/cros_ec_commands.h | 2 --
+>  1 file changed, 2 deletions(-)
+>=20
+> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/lin=
+ux/platform_data/cros_ec_commands.h
+> index 98415686cbfa..43b8f7dae4cc 100644
+> --- a/include/linux/platform_data/cros_ec_commands.h
+> +++ b/include/linux/platform_data/cros_ec_commands.h
+> @@ -1277,8 +1277,6 @@ enum ec_feature_code {
+>  	 * MOTIONSENSE_CMD_TABLET_MODE_LID_ANGLE.
+>  	 */
+>  	EC_FEATURE_REFINED_TABLET_MODE_HYSTERESIS =3D 37,
+> -	/* EC supports audio codec. */
+> -	EC_FEATURE_AUDIO_CODEC =3D 38,
+>  	/* The MCU is a System Companion Processor (SCP). */
+>  	EC_FEATURE_SCP =3D 39,
+>  	/* The MCU is an Integrated Sensor Hub */
+> --=20
+> 2.23.0.700.g56cf767bdb-goog
+>=20
 
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
+
+--G4iJoqBmSsgzjUCe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCXafRDAAKCRBzbaomhzOw
+woOiAQCH3Gf3aTm2PrJBGeHQ5DpoqTKLs7JbIZM9UJV32p34mAD/eZrQnbHqDjDb
+Z8tl7YvqZ3afE1nuEWCuA1W3gxUipAg=
+=f/vt
+-----END PGP SIGNATURE-----
+
+--G4iJoqBmSsgzjUCe--
+
+--===============7574681078389042247==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============7574681078389042247==--
