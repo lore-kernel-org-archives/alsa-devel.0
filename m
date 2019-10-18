@@ -2,84 +2,84 @@ Return-Path: <SRS0=bEgE=YL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05CF3CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:46:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F8C6CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:46:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 830752064B
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:46:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C5DD222C6
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:46:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tKRC8H6m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 830752064B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DrP34KSh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C5DD222C6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B24B115E0;
-	Fri, 18 Oct 2019 17:45:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B24B115E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 498991684;
+	Fri, 18 Oct 2019 17:46:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 498991684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571413571;
-	bh=F9yGoLrsPsiruH8qySHFLsG+5hm4HHHLK9QnXx4pDeQ=;
+	s=default; t=1571413610;
+	bh=qj8izpsQopXDdBshTYcGMASCMCkOuSFx4g8+AApDL4w=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tKRC8H6mdEdEksSUT2YJEQhNfSzUGPqNY7ut3sJwBUEw7OFl/GhAZO76biJIvMUtA
-	 MRTXz5mh0OkbShgb4wYv1Opf1+YZQRbMxvtZFYbgbc3lUTnm2cs2rMS3NkXF43joPV
-	 iljiVmvC4OEWGACYTRnjZPgWQij5N7QxzBovQPZ4=
+	b=DrP34KShCn+NEzwa88/XNTs26KpxHJk0yvbtYd8D648G8x7XZPH8VX4CpLu89J/W/
+	 Wo6L+1u3NZe21iQ7dISJP+g8JGyv2PmtnmIdGXyTYkI9ghtxp266P0E/kyE0PYbJ++
+	 YB1M6RnJsQSJ4lPYJcq4fIYZY+Q2M36RdnphwSwo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 324EFF80638;
-	Fri, 18 Oct 2019 17:42:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2C5AF8063E;
+	Fri, 18 Oct 2019 17:42:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39626F80611; Fri, 18 Oct 2019 17:42:37 +0200 (CEST)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ id 2EB74F80636; Fri, 18 Oct 2019 17:42:38 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE045F80322
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 17:42:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE045F80322
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8379F80377
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 17:42:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8379F80377
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
  (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MEFrX-1iDXlf06Gj-00ABwm; Fri, 18 Oct 2019 17:42:26 +0200
+ 1N4i7l-1hwI681tGp-011kPC; Fri, 18 Oct 2019 17:42:27 +0200
 From: Arnd Bergmann <arnd@arndb.de>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Fri, 18 Oct 2019 17:41:33 +0200
-Message-Id: <20191018154201.1276638-18-arnd@arndb.de>
+Date: Fri, 18 Oct 2019 17:41:37 +0200
+Message-Id: <20191018154201.1276638-22-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20191018154052.1276506-1-arnd@arndb.de>
 References: <20191018154052.1276506-1-arnd@arndb.de>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:TqURoHHVJJmB+BNcKhSOQIg0v6FOc3XqbZHPLBmLP4R4qV3sYnw
- Wj8jrIMhPIgJIiCbUcoB6dtFG7A6LCSnqqQyt8ataw+kTic0BPNHvJ+47PKruXnXFDSu85e
- +wOLnjABrp7TC9aqYKM1HcEW4uw9eFPgLPQr6fFAFymJdN2/X0iFDQk9+eSKJMk0BNbWhg5
- gneq88ZVmC0Ae440lGuSQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yDgI6IIkP4I=:Dwre/9Q/lAAK7XEGRGDeHA
- 5wQ6CrppVUlAv7ty6RB6U4TBJnmLvFvR8V84o1QCpxtBwBLLng+q13n+ZNnjV4WCmFLHnrhz2
- aIVBdeoyRsygP0zDhjf/0ayvL08OsLQX18RtCKfPl9YjhrleOo+DWFSa4bMjhvsTwnzszgSIy
- QbbTnOTlZvYpclGokzepVa3WJyEt4I+hQzA6EI6fvFbwgyw1AYYoQI2g6bqsNMNvtJFRL6VLF
- x41JRYATNYsDilIRtAfCALbYPL9p66j2XjKWfqMlkOTIvq4bhHx1o8AqWJ3fmlbmf2SiAyqE9
- gi/tgII5JKupWpyww8JQcXQcgdBz4juLPcLIgOd2bwaP6sx71tycLcYzzXxS3FazV76GNkLBc
- 8V+DfrFmAraFdB1459OpAKlw26XS1Nj5PTdZ4tUds0AYctoNL7aCS5UNj8tFOSdJsj3+lmYnr
- kAkpwMbVPbSrTn6M2XMutCbjjMqqyI9cZa/7PKWKUmhwUrmQedOE/SYeNnA5t8Yy/EN2Gtaz7
- 3/DLM1TUOoeCMxKepkGBkBUFX8MhDzq3KWZympkfVyz8TMkYCs/Dix/m/sWJ5DN8YFNnvtc+K
- 3AtZpCPdNx81OCQSF/Ru8V3f8gtL+Eo0qT2jHN1gyrJpFWABbAAluBrC+g+2s6etL9K9JJn4t
- UmG7zLDViZpWsc9RXv/ahVsfVvF7QGTpEGBowj6ZLtlWC2HaVEbxzCP/7/kXz5qtU978M9POI
- K4kcxA1iPGYq4NV/V90WmPpCWMSBF5BaO5zh3e5g/kc7dAmJytHL0xFbQOhsPIZkHYJTSZ/5y
- gofshTfkjZrwPiMBm9pptriZ7EWNbW6WHEy/semSfAUGW4GQqXsupl6K4v9x3c9b64c+2wyLr
- g9Ax+n5CcCDM0fOLODuA==
+X-Provags-ID: V03:K1:CBcymaRS0Tk88pjlgZFlVH3qNWbEbuDVF8a1b0EpQ/ufN479pdc
+ WxFmWIlqotX3JQXT1UAKIf1sTu64lmAPRbAdvtGuVVyNIp/b1FBfzpc38avAXbnmvVWSxB+
+ THaBpbtDkyxI+IuDBkaedReH04nEZoxLa1P0P3R2h3lrYJAy5YIQRScepXWmBKeD8hEG96c
+ 9hNT8Ux7/BXibSUbTSM2w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:taDEs8Sqbxw=:6tf02R9ujNhRlrPOWMgX5M
+ 4NJrSoZ4kukKw3v6dsAkqsUHJZ3EYRhppr/joEDDcltHnCT6Wu1jNP20Z1x6yB+EYP6Cp901O
+ /4SF2XBUSU7OJWlzDhCFb5HvOlWDV4K/++Uk3RGsofv5mB7fehtDmdYceMvyKQ7iXtnryjSg5
+ BcmgGsVjA5HvBzm7HI8+l2EWmC8ZjzeZCvm7gJcqGZsyEnYMTdWpbiflwdIC/WMWdcWXaYYOg
+ wCthjJBoHnyaRcKNGHSPdXnHrD1LeUz/QXKaut4BDRnHe1qb8qOCukK+kCvYfuBY7fmU95Tjm
+ fcOzXx4M5OGj+JeVyjHkz3EENRP8s0Qtgj3J5gWhO1WN4slu387pjRreP5hz9L4eNXnOqisH4
+ 5fk9jdOEnoFiw//R7isRZ6Xy4cTTH6m6hZJoofa7SBfUx2QG2awqU2q6OpOAEUqXtjfObf3GL
+ chBXSFBb918kuH8ucKrWhVOVeJwQcPubIC5WXHgBZKUotyhYejQVVah76vFWVoY5K71BeUzgA
+ MHzLSjtj4rm6z9aLykxp54+pu2pAyEiFkBGwqp8OPN5q0vmuD1iXogaOeYP3yUr+GV+ckRHn3
+ mDvFLEU5OQsLksZ/FJA08pacmcmeICKeetZfJ6QFYmBHZVBrd+4JQNiGKUHs9jPbP6PRZOsrX
+ tWHoabJj4Fa0cKwimfwZKxePXyPUaknxGYCFQN9V141zOvNApDmUEKyxqVGlYW5gGDzKzS6s6
+ rHpXtRc/SCJ07eyBNJ8Y71YNvS4+lBYz9vnkS0Fp1PpgQI3Rgi3R4fc1TVm0dYPgaOhdmOEaP
+ h4PVUuJBtOh+8AfWczbBT9zD+imhrJceTz3Rsf9rFgchfYvrEPS0u6BQFS/STC/iegBeGM9zg
+ 2+2fHfghINeIdxqAA6iA==
 Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
  Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
  Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH 18/46] ARM: pxa: corgi: use gpio descriptors
-	for audio
+Subject: [alsa-devel] [PATCH 22/46] ARM: pxa: eseries: use gpio lookup for
+	audio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,207 +97,374 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The audio driver should not use a hardwired gpio number
-from the header. Change it to use a lookup table.
+The three eseries machines have very similar drivers for audio, all
+using the mach/eseries-gpio.h header for finding the gpio numbers.
+
+Change these to use gpio descriptors to avoid the header file
+dependency.
+
+I convert the _OFF gpio numbers into GPIO_ACTIVE_LOW ones for
+consistency here.
 
 Cc: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/corgi.c                    | 22 ++++++++++-
- arch/arm/mach-pxa/{include/mach => }/corgi.h |  2 +-
- arch/arm/mach-pxa/corgi_pm.c                 |  2 +-
- sound/soc/pxa/corgi.c                        | 40 +++++++++++++-------
- 4 files changed, 50 insertions(+), 16 deletions(-)
- rename arch/arm/mach-pxa/{include/mach => }/corgi.h (98%)
+ arch/arm/mach-pxa/eseries.c | 32 ++++++++++++++++++++++++++++++++
+ sound/soc/pxa/e740_wm9705.c | 35 ++++++++++++++++++-----------------
+ sound/soc/pxa/e750_wm9705.c | 31 ++++++++++++++-----------------
+ sound/soc/pxa/e800_wm9712.c | 31 ++++++++++++++-----------------
+ 4 files changed, 78 insertions(+), 51 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
-index e9743ebbee86..0ff8e8140513 100644
---- a/arch/arm/mach-pxa/corgi.c
-+++ b/arch/arm/mach-pxa/corgi.c
-@@ -49,7 +49,7 @@
- #include <linux/platform_data/irda-pxaficp.h>
- #include <linux/platform_data/mmc-pxamci.h>
- #include "udc.h"
--#include <mach/corgi.h>
-+#include "corgi.h"
- #include "sharpsl_pm.h"
+diff --git a/arch/arm/mach-pxa/eseries.c b/arch/arm/mach-pxa/eseries.c
+index d8a87ff66675..8399ce405093 100644
+--- a/arch/arm/mach-pxa/eseries.c
++++ b/arch/arm/mach-pxa/eseries.c
+@@ -24,6 +24,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/usb/gpio_vbus.h>
+ #include <linux/memblock.h>
++#include <linux/gpio/machine.h>
  
- #include <asm/mach/sharpsl_param.h>
-@@ -472,6 +472,25 @@ static struct platform_device corgiled_device = {
- 	},
+ #include <video/w100fb.h>
+ 
+@@ -515,6 +516,16 @@ static struct platform_device e740_audio_device = {
+ 	.id		= -1,
  };
  
-+static struct gpiod_lookup_table corgi_audio_gpio_table = {
-+	.dev_id = "corgi-audio",
++static struct gpiod_lookup_table e740_audio_gpio_table = {
++	.dev_id = "e740-audio",
 +	.table = {
-+		GPIO_LOOKUP("sharp-scoop",
-+			    CORGI_GPIO_MUTE_L - CORGI_SCOOP_GPIO_BASE,
-+			    "mute-l", GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP("sharp-scoop",
-+			    CORGI_GPIO_MUTE_R - CORGI_SCOOP_GPIO_BASE,
-+			    "mute-r", GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP("sharp-scoop",
-+			    CORGI_GPIO_APM_ON - CORGI_SCOOP_GPIO_BASE,
-+			    "apm-on", GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP("sharp-scoop",
-+			    CORGI_GPIO_MIC_BIAS - CORGI_SCOOP_GPIO_BASE,
-+			    "mic-bias", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("gpio-pxa",  GPIO_E740_WM9705_nAVDD2, "Audio power",  GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("gpio-pxa",  GPIO_E740_AMP_ON, "Output amp",  GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("gpio-pxa",  GPIO_E740_MIC_ON, "Mic amp", GPIO_ACTIVE_HIGH),
 +		{ },
 +	},
 +};
 +
- /*
-  * Corgi Audio
-  */
-@@ -740,6 +759,7 @@ static void __init corgi_init(void)
+ /* ----------------------------------------------------------------------- */
  
-  	pxa_set_udc_info(&udc_info);
- 	gpiod_add_lookup_table(&corgi_mci_gpio_table);
-+	gpiod_add_lookup_table(&corgi_audio_gpio_table);
- 	pxa_set_mci_info(&corgi_mci_platform_data);
- 	pxa_set_ficp_info(&corgi_ficp_platform_data);
- 	pxa_set_i2c_info(NULL);
-diff --git a/arch/arm/mach-pxa/include/mach/corgi.h b/arch/arm/mach-pxa/corgi.h
-similarity index 98%
-rename from arch/arm/mach-pxa/include/mach/corgi.h
-rename to arch/arm/mach-pxa/corgi.h
-index b565ca7b8cda..fe2fcf6532b9 100644
---- a/arch/arm/mach-pxa/include/mach/corgi.h
-+++ b/arch/arm/mach-pxa/corgi.h
-@@ -9,7 +9,7 @@
- #ifndef __ASM_ARCH_CORGI_H
- #define __ASM_ARCH_CORGI_H  1
+ static struct platform_device *e740_devices[] __initdata = {
+@@ -534,6 +545,7 @@ static void __init e740_init(void)
+ 	clk_add_alias("CLK_CK48M", e740_t7l66xb_device.name,
+ 			"UDCCLK", &pxa25x_device_udc.dev),
+ 	eseries_get_tmio_gpios();
++	gpiod_add_lookup_table(&e740_audio_gpio_table);
+ 	platform_add_devices(ARRAY_AND_SIZE(e740_devices));
+ 	pxa_set_ac97_info(NULL);
+ 	pxa_set_ficp_info(&e7xx_ficp_platform_data);
+@@ -710,6 +722,15 @@ static struct platform_device e750_tc6393xb_device = {
+ 	.resource      = eseries_tmio_resources,
+ };
  
--#include "irqs.h" /* PXA_NR_BUILTIN_GPIO */
-+#include <mach/irqs.h> /* PXA_NR_BUILTIN_GPIO */
++static struct gpiod_lookup_table e750_audio_gpio_table = {
++	.dev_id = "e750-audio",
++	.table = {
++		GPIO_LOOKUP("gpio-pxa",  GPIO_E750_HP_AMP_OFF, "Output amp",  GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("gpio-pxa",  GPIO_E750_SPK_AMP_OFF, "Mic amp", GPIO_ACTIVE_LOW),
++		{ },
++	},
++};
++
+ static struct platform_device e750_audio_device = {
+ 	.name		= "e750-audio",
+ 	.id		= -1,
+@@ -733,6 +754,7 @@ static void __init e750_init(void)
+ 	clk_add_alias("CLK_CK3P6MI", e750_tc6393xb_device.name,
+ 			"GPIO11_CLK", NULL),
+ 	eseries_get_tmio_gpios();
++	gpiod_add_lookup_table(&e750_audio_gpio_table);
+ 	platform_add_devices(ARRAY_AND_SIZE(e750_devices));
+ 	pxa_set_ac97_info(NULL);
+ 	pxa_set_ficp_info(&e7xx_ficp_platform_data);
+@@ -926,6 +948,15 @@ static struct platform_device e800_tc6393xb_device = {
+ 	.resource      = eseries_tmio_resources,
+ };
  
- /*
-  * Corgi (Non Standard) GPIO Definitions
-diff --git a/arch/arm/mach-pxa/corgi_pm.c b/arch/arm/mach-pxa/corgi_pm.c
-index ff1ac9bf37cb..c6ddfc737644 100644
---- a/arch/arm/mach-pxa/corgi_pm.c
-+++ b/arch/arm/mach-pxa/corgi_pm.c
-@@ -20,7 +20,7 @@
- #include <asm/irq.h>
- #include <asm/mach-types.h>
++static struct gpiod_lookup_table e800_audio_gpio_table = {
++	.dev_id = "e800-audio",
++	.table = {
++		GPIO_LOOKUP("gpio-pxa",  GPIO_E800_HP_AMP_OFF, "Output amp",  GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("gpio-pxa",  GPIO_E800_SPK_AMP_ON, "Mic amp", GPIO_ACTIVE_HIGH),
++		{ },
++	},
++};
++
+ static struct platform_device e800_audio_device = {
+ 	.name		= "e800-audio",
+ 	.id		= -1,
+@@ -949,6 +980,7 @@ static void __init e800_init(void)
+ 	clk_add_alias("CLK_CK3P6MI", e800_tc6393xb_device.name,
+ 			"GPIO11_CLK", NULL),
+ 	eseries_get_tmio_gpios();
++	gpiod_add_lookup_table(&e800_audio_gpio_table);
+ 	platform_add_devices(ARRAY_AND_SIZE(e800_devices));
+ 	pxa_set_ac97_info(NULL);
+ }
+diff --git a/sound/soc/pxa/e740_wm9705.c b/sound/soc/pxa/e740_wm9705.c
+index f922be7e0016..4e0e9b778d4c 100644
+--- a/sound/soc/pxa/e740_wm9705.c
++++ b/sound/soc/pxa/e740_wm9705.c
+@@ -7,17 +7,19 @@
  
--#include <mach/corgi.h>
-+#include "corgi.h"
- #include <mach/pxa2xx-regs.h>
- #include "sharpsl_pm.h"
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
  
-diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
-index 47647a1c3124..9db5a3d3606e 100644
---- a/sound/soc/pxa/corgi.c
-+++ b/sound/soc/pxa/corgi.c
-@@ -21,7 +21,6 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
  #include <sound/soc.h>
  
- #include <asm/mach-types.h>
--#include <mach/corgi.h>
  #include <linux/platform_data/asoc-pxa.h>
+-#include <mach/eseries-gpio.h>
  
- #include "../codecs/wm8731.h"
-@@ -41,6 +40,8 @@
- static int corgi_jack_func;
- static int corgi_spk_func;
+ #include <asm/mach-types.h>
  
-+struct gpio_desc *gpiod_mute_l, *gpiod_mute_r, *gpiod_apm_on, *gpiod_mic_bias;
++static struct gpio_desc *gpiod_output_amp, *gpiod_input_amp;
++static struct gpio_desc *gpiod_audio_power;
 +
- static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
+ #define E740_AUDIO_OUT 1
+ #define E740_AUDIO_IN  2
+ 
+@@ -25,9 +27,9 @@ static int e740_audio_power;
+ 
+ static void e740_sync_audio_power(int status)
  {
- 	snd_soc_dapm_mutex_lock(dapm);
-@@ -49,8 +50,8 @@ static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
- 	switch (corgi_jack_func) {
- 	case CORGI_HP:
- 		/* set = unmute headphone */
--		gpio_set_value(CORGI_GPIO_MUTE_L, 1);
--		gpio_set_value(CORGI_GPIO_MUTE_R, 1);
-+		gpiod_set_value(gpiod_mute_l, 1);
-+		gpiod_set_value(gpiod_mute_r, 1);
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphone Jack");
-@@ -58,24 +59,24 @@ static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
- 		break;
- 	case CORGI_MIC:
- 		/* reset = mute headphone */
--		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
--		gpio_set_value(CORGI_GPIO_MUTE_R, 0);
-+		gpiod_set_value(gpiod_mute_l, 0);
-+		gpiod_set_value(gpiod_mute_r, 0);
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		break;
- 	case CORGI_LINE:
--		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
--		gpio_set_value(CORGI_GPIO_MUTE_R, 0);
-+		gpiod_set_value(gpiod_mute_l, 0);
-+		gpiod_set_value(gpiod_mute_r, 0);
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Line Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		break;
- 	case CORGI_HEADSET:
--		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
--		gpio_set_value(CORGI_GPIO_MUTE_R, 1);
-+		gpiod_set_value(gpiod_mute_l, 0);
-+		gpiod_set_value(gpiod_mute_r, 1);
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
-@@ -108,8 +109,8 @@ static int corgi_startup(struct snd_pcm_substream *substream)
- static void corgi_shutdown(struct snd_pcm_substream *substream)
- {
- 	/* set = unmute headphone */
--	gpio_set_value(CORGI_GPIO_MUTE_L, 1);
--	gpio_set_value(CORGI_GPIO_MUTE_R, 1);
-+	gpiod_set_value(gpiod_mute_l, 1);
-+	gpiod_set_value(gpiod_mute_r, 1);
+-	gpio_set_value(GPIO_E740_WM9705_nAVDD2, !status);
+-	gpio_set_value(GPIO_E740_AMP_ON, (status & E740_AUDIO_OUT) ? 1 : 0);
+-	gpio_set_value(GPIO_E740_MIC_ON, (status & E740_AUDIO_IN) ? 1 : 0);
++	gpiod_set_value(gpiod_audio_power, !status);
++	gpiod_set_value(gpiod_output_amp, (status & E740_AUDIO_OUT) ? 1 : 0);
++	gpiod_set_value(gpiod_input_amp, (status & E740_AUDIO_IN) ? 1 : 0);
  }
  
- static int corgi_hw_params(struct snd_pcm_substream *substream,
-@@ -199,14 +200,14 @@ static int corgi_set_spk(struct snd_kcontrol *kcontrol,
- static int corgi_amp_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *k, int event)
- {
--	gpio_set_value(CORGI_GPIO_APM_ON, SND_SOC_DAPM_EVENT_ON(event));
-+	gpiod_set_value(gpiod_apm_on, SND_SOC_DAPM_EVENT_ON(event));
- 	return 0;
- }
+ static int e740_mic_amp_event(struct snd_soc_dapm_widget *w,
+@@ -116,36 +118,35 @@ static struct snd_soc_card e740 = {
+ 	.fully_routed = true,
+ };
  
- static int corgi_mic_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *k, int event)
+-static struct gpio e740_audio_gpios[] = {
+-	{ GPIO_E740_MIC_ON, GPIOF_OUT_INIT_LOW, "Mic amp" },
+-	{ GPIO_E740_AMP_ON, GPIOF_OUT_INIT_LOW, "Output amp" },
+-	{ GPIO_E740_WM9705_nAVDD2, GPIOF_OUT_INIT_HIGH, "Audio power" },
+-};
+-
+ static int e740_probe(struct platform_device *pdev)
  {
--	gpio_set_value(CORGI_GPIO_MIC_BIAS, SND_SOC_DAPM_EVENT_ON(event));
-+	gpiod_set_value(gpiod_mic_bias, SND_SOC_DAPM_EVENT_ON(event));
- 	return 0;
- }
+ 	struct snd_soc_card *card = &e740;
+ 	int ret;
  
-@@ -293,6 +294,19 @@ static int corgi_probe(struct platform_device *pdev)
+-	ret = gpio_request_array(e740_audio_gpios,
+-				 ARRAY_SIZE(e740_audio_gpios));
++	gpiod_input_amp  = devm_gpiod_get(&pdev->dev, "Mic amp", GPIOD_OUT_LOW);
++	ret = PTR_ERR_OR_ZERO(gpiod_input_amp);
++	if (ret)
++		return ret;
++	gpiod_output_amp  = devm_gpiod_get(&pdev->dev, "Output amp", GPIOD_OUT_LOW);
++	ret = PTR_ERR_OR_ZERO(gpiod_output_amp);
++	if (ret)
++		return ret;
++	gpiod_audio_power = devm_gpiod_get(&pdev->dev, "Audio power", GPIOD_OUT_HIGH);
++	ret = PTR_ERR_OR_ZERO(gpiod_audio_power);
+ 	if (ret)
+ 		return ret;
  
  	card->dev = &pdev->dev;
  
-+	gpiod_mute_l = devm_gpiod_get(&pdev->dev, "mute-l", GPIOD_OUT_HIGH);
-+	if (IS_ERR(gpiod_mute_l))
-+		return PTR_ERR(gpiod_mute_l);
-+	gpiod_mute_r = devm_gpiod_get(&pdev->dev, "mute-r", GPIOD_OUT_HIGH);
-+	if (IS_ERR(gpiod_mute_r))
-+		return PTR_ERR(gpiod_mute_r);
-+	gpiod_apm_on = devm_gpiod_get(&pdev->dev, "apm-on", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpiod_apm_on))
-+		return PTR_ERR(gpiod_apm_on);
-+	gpiod_mic_bias = devm_gpiod_get(&pdev->dev, "mic-bias", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpiod_mic_bias))
-+		return PTR_ERR(gpiod_mic_bias);
-+
  	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
+-	if (ret) {
++	if (ret)
  		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		gpio_free_array(e740_audio_gpios, ARRAY_SIZE(e740_audio_gpios));
+-	}
+ 	return ret;
+ }
+ 
+ static int e740_remove(struct platform_device *pdev)
+ {
+-	gpio_free_array(e740_audio_gpios, ARRAY_SIZE(e740_audio_gpios));
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
+index 308828cd736b..7a1e0d8bfd11 100644
+--- a/sound/soc/pxa/e750_wm9705.c
++++ b/sound/soc/pxa/e750_wm9705.c
+@@ -7,24 +7,25 @@
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
+ #include <linux/platform_data/asoc-pxa.h>
+-#include <mach/eseries-gpio.h>
+ 
+ #include <asm/mach-types.h>
+ 
++static struct gpio_desc *gpiod_spk_amp, *gpiod_hp_amp;
++
+ static int e750_spk_amp_event(struct snd_soc_dapm_widget *w,
+ 				struct snd_kcontrol *kcontrol, int event)
+ {
+ 	if (event & SND_SOC_DAPM_PRE_PMU)
+-		gpio_set_value(GPIO_E750_SPK_AMP_OFF, 0);
++		gpiod_set_value(gpiod_spk_amp, 1);
+ 	else if (event & SND_SOC_DAPM_POST_PMD)
+-		gpio_set_value(GPIO_E750_SPK_AMP_OFF, 1);
++		gpiod_set_value(gpiod_spk_amp, 0);
+ 
+ 	return 0;
+ }
+@@ -33,9 +34,9 @@ static int e750_hp_amp_event(struct snd_soc_dapm_widget *w,
+ 				struct snd_kcontrol *kcontrol, int event)
+ {
+ 	if (event & SND_SOC_DAPM_PRE_PMU)
+-		gpio_set_value(GPIO_E750_HP_AMP_OFF, 0);
++		gpiod_set_value(gpiod_hp_amp, 1);
+ 	else if (event & SND_SOC_DAPM_POST_PMD)
+-		gpio_set_value(GPIO_E750_HP_AMP_OFF, 1);
++		gpiod_set_value(gpiod_hp_amp, 0);
+ 
+ 	return 0;
+ }
+@@ -100,35 +101,31 @@ static struct snd_soc_card e750 = {
+ 	.fully_routed = true,
+ };
+ 
+-static struct gpio e750_audio_gpios[] = {
+-	{ GPIO_E750_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Headphone amp" },
+-	{ GPIO_E750_SPK_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Speaker amp" },
+-};
+-
+ static int e750_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &e750;
+ 	int ret;
+ 
+-	ret = gpio_request_array(e750_audio_gpios,
+-				 ARRAY_SIZE(e750_audio_gpios));
++	gpiod_hp_amp  = devm_gpiod_get(&pdev->dev, "Headphone amp", GPIOD_OUT_LOW);
++	ret = PTR_ERR_OR_ZERO(gpiod_hp_amp);
++	if (ret)
++		return ret;
++	gpiod_spk_amp  = devm_gpiod_get(&pdev->dev, "Speaker amp", GPIOD_OUT_LOW);
++	ret = PTR_ERR_OR_ZERO(gpiod_spk_amp);
+ 	if (ret)
+ 		return ret;
+ 
+ 	card->dev = &pdev->dev;
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+-	if (ret) {
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		gpio_free_array(e750_audio_gpios, ARRAY_SIZE(e750_audio_gpios));
+-	}
+ 	return ret;
+ }
+ 
+ static int e750_remove(struct platform_device *pdev)
+ {
+-	gpio_free_array(e750_audio_gpios, ARRAY_SIZE(e750_audio_gpios));
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/pxa/e800_wm9712.c b/sound/soc/pxa/e800_wm9712.c
+index d74fcceef687..a39c494127cf 100644
+--- a/sound/soc/pxa/e800_wm9712.c
++++ b/sound/soc/pxa/e800_wm9712.c
+@@ -7,7 +7,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -15,15 +15,16 @@
+ 
+ #include <asm/mach-types.h>
+ #include <linux/platform_data/asoc-pxa.h>
+-#include <mach/eseries-gpio.h>
++
++static struct gpio_desc *gpiod_spk_amp, *gpiod_hp_amp;
+ 
+ static int e800_spk_amp_event(struct snd_soc_dapm_widget *w,
+ 				struct snd_kcontrol *kcontrol, int event)
+ {
+ 	if (event & SND_SOC_DAPM_PRE_PMU)
+-		gpio_set_value(GPIO_E800_SPK_AMP_ON, 1);
++		gpiod_set_value(gpiod_spk_amp, 1);
+ 	else if (event & SND_SOC_DAPM_POST_PMD)
+-		gpio_set_value(GPIO_E800_SPK_AMP_ON, 0);
++		gpiod_set_value(gpiod_spk_amp, 0);
+ 
+ 	return 0;
+ }
+@@ -32,9 +33,9 @@ static int e800_hp_amp_event(struct snd_soc_dapm_widget *w,
+ 				struct snd_kcontrol *kcontrol, int event)
+ {
+ 	if (event & SND_SOC_DAPM_PRE_PMU)
+-		gpio_set_value(GPIO_E800_HP_AMP_OFF, 0);
++		gpiod_set_value(gpiod_hp_amp, 1);
+ 	else if (event & SND_SOC_DAPM_POST_PMD)
+-		gpio_set_value(GPIO_E800_HP_AMP_OFF, 1);
++		gpiod_set_value(gpiod_hp_amp, 0);
+ 
+ 	return 0;
+ }
+@@ -100,35 +101,31 @@ static struct snd_soc_card e800 = {
+ 	.num_dapm_routes = ARRAY_SIZE(audio_map),
+ };
+ 
+-static struct gpio e800_audio_gpios[] = {
+-	{ GPIO_E800_SPK_AMP_ON, GPIOF_OUT_INIT_HIGH, "Headphone amp" },
+-	{ GPIO_E800_HP_AMP_OFF, GPIOF_OUT_INIT_HIGH, "Speaker amp" },
+-};
+-
+ static int e800_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &e800;
+ 	int ret;
+ 
+-	ret = gpio_request_array(e800_audio_gpios,
+-				 ARRAY_SIZE(e800_audio_gpios));
++	gpiod_hp_amp  = devm_gpiod_get(&pdev->dev, "Headphone amp", GPIOD_OUT_LOW);
++	ret = PTR_ERR_OR_ZERO(gpiod_hp_amp);
++	if (ret)
++		return ret;
++	gpiod_spk_amp  = devm_gpiod_get(&pdev->dev, "Speaker amp", GPIOD_OUT_LOW);
++	ret = PTR_ERR_OR_ZERO(gpiod_spk_amp);
+ 	if (ret)
+ 		return ret;
+ 
+ 	card->dev = &pdev->dev;
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+-	if (ret) {
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		gpio_free_array(e800_audio_gpios, ARRAY_SIZE(e800_audio_gpios));
+-	}
+ 	return ret;
+ }
+ 
+ static int e800_remove(struct platform_device *pdev)
+ {
+-	gpio_free_array(e800_audio_gpios, ARRAY_SIZE(e800_audio_gpios));
+ 	return 0;
+ }
+ 
 -- 
 2.20.0
 
