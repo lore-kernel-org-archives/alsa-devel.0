@@ -4,81 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF8C9CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC568CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:14:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D2B420640
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:14:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5A953222C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:14:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g6klSW+v";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="gItQEqFt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D2B420640
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ErCLdJw/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="J4DQxjy7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A953222C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A3D1167F;
-	Fri, 18 Oct 2019 20:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A3D1167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ACF81677;
+	Fri, 18 Oct 2019 20:13:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ACF81677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571422445;
-	bh=Py8Vqy3GOpvljLNigRouluc9tO3Oy9c+EWsDfUzx2/8=;
+	s=default; t=1571422487;
+	bh=iYqziDK2XEprw+0Pna2CQ1egTAUFdabhw7/Revlmci4=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=g6klSW+v2xiwdISBk7nHxxge/1wgFCAZrljxih4F/7Oi8Bn/kNlFinYJBulvbpNR5
-	 VlhD0TfITTbvxdftvmgSuEjY5pEShHXz1Ag20DDKmpCCJnwmvNOMFTr8qmZ5ibnKSG
-	 ACuny23Cl2wgVEM58KvO8lg/W80Nr6lC99t379mI=
+	b=ErCLdJw/EDXeY8utACir0m5i9Xq7y4vOYDV944K2t9p/fLXr7pej0HOC9BbNCdbdY
+	 jE7eW82vzjqXBljiQe7vl2HF/y3wCgYEYvrR86M0nPgB9aUvdv9XW8D5+iaJQUEBc7
+	 cKXXmTITS0oDSUBJ9Jk3y3+Rz7hT+h31W7BCBZv8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6627CF80674;
-	Fri, 18 Oct 2019 20:07:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A800F80679;
+	Fri, 18 Oct 2019 20:07:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 173CBF80633; Fri, 18 Oct 2019 20:07:14 +0200 (CEST)
+ id 97752F80611; Fri, 18 Oct 2019 20:07:15 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7E99F80377
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2004FF805FA
  for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:07:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7E99F80377
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2004FF805FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="gItQEqFt"
+ header.b="J4DQxjy7"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=1S8tDuMuPjqUoFL3iu4C/a5WiNaRO/6B/T/YGTCnPC4=; b=gItQEqFtk9yG
- pDFs7smRuGF2uVEKTaID+XAoysKWK6gNm7X4dOI9nE2BGYXkMGABoPAI74TV5UIUY7RQcn+pZB7Y5
- z37LmLJXLRDLUMILrx0k4CifV4WpFlBIN4m8kOJr7BdXAVl4pjgh0IVkhR+7mOvrxI5B+WlMYqgyr
- UlCpc=;
+ List-Archive; bh=lCHGkcA5JrwM2qbr9v3SAkjr/Lxp8j5zYwsCVgBYT6Y=; b=J4DQxjy7heGY
+ BgCw33vUcNx/3/WUq51kk4/4QB2Didk6Q++bszeQRumcgExAlBIfprmhUTqXoROaLgyF7KT9GG9Ql
+ UwopbTO5fPe9hB6Dqh1L/GKHCZ6oKTr3VhQdQbQYD2YUA0Ulzn7IJ8/7N1o1gpIe9ou6r6oh1pYOW
+ 5JwnY=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iLWeR-0004FA-Ks; Fri, 18 Oct 2019 18:06:59 +0000
+ id 1iLWeQ-0004En-Oo; Fri, 18 Oct 2019 18:06:58 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 185BD2741DEA; Fri, 18 Oct 2019 19:06:59 +0100 (BST)
+ id 3C2B12743277; Fri, 18 Oct 2019 19:06:58 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20191014180059.03.I93d9c65964f3c30f85a36d228e31150ff1917706@changeid>
+To: Maciej Falkowski <m.falkowski@samsung.com>
+In-Reply-To: <20191017100529.4183-1-m.szyprowski@samsung.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191018180659.185BD2741DEA@ypsilon.sirena.org.uk>
-Date: Fri, 18 Oct 2019 19:06:59 +0100 (BST)
-Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- cychiang@google.com, drinkcat@google.com, robh+dt@kernel.org,
- tzungbi@google.com, Mark Brown <broonie@kernel.org>,
- enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com
-Subject: [alsa-devel] Applied "ASoC: cros_ec_codec: extract DMIC EC command
-	from I2S RX" to the asoc tree
+Message-Id: <20191018180658.3C2B12743277@ypsilon.sirena.org.uk>
+Date: Fri, 18 Oct 2019 19:06:58 +0100 (BST)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-samsung-soc@vger.kernel.org,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, Rob Herring <robh@kernel.org>,
+ Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [alsa-devel] Applied "dt-bindings: sound: Convert Samsung Exynos
+	Odroid XU3/XU4 audio complex to dt-schema" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +102,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: cros_ec_codec: extract DMIC EC command from I2S RX
+   dt-bindings: sound: Convert Samsung Exynos Odroid XU3/XU4 audio complex to dt-schema
 
 has been applied to the asoc tree at
 
@@ -124,215 +127,190 @@ to this mail.
 Thanks,
 Mark
 
-From 8f731d4c92c2ef9434d4d7f84882c6429754164b Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 14 Oct 2019 18:20:15 +0800
-Subject: [PATCH] ASoC: cros_ec_codec: extract DMIC EC command from I2S RX
+From 9ac47908f35ba885eb3b4736c83185f63eef2ed2 Mon Sep 17 00:00:00 2001
+From: Maciej Falkowski <m.falkowski@samsung.com>
+Date: Thu, 17 Oct 2019 12:05:29 +0200
+Subject: [PATCH] dt-bindings: sound: Convert Samsung Exynos Odroid XU3/XU4
+ audio complex to dt-schema
 
-Extract DMIC EC command from I2S RX.  Setting and getting
-microphone gains is common features.
+Convert Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
+to newer dt-schema format.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Acked-By: Benson Leung <bleung@chromium.org>
-Link: https://lore.kernel.org/r/20191014180059.03.I93d9c65964f3c30f85a36d228e31150ff1917706@changeid
+'clocks' property is unneeded in the bindings and is left undefined in 'properties'.
+
+'samsung,audio-widgets' and 'samsung,audio-routing' are optional from driver
+perspective and they are set as unrequired.
+
+Signed-off-by: Maciej Falkowski <m.falkowski@samsung.com>
+[mszyprow: reordered non-standard properties]
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20191017100529.4183-1-m.szyprowski@samsung.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/platform/chrome/cros_ec_trace.c       |  1 +
- .../linux/platform_data/cros_ec_commands.h    | 49 +++++++++++-----
- sound/soc/codecs/cros_ec_codec.c              | 57 ++++++++++---------
- 3 files changed, 68 insertions(+), 39 deletions(-)
+ .../bindings/sound/samsung,odroid.txt         | 54 -----------
+ .../bindings/sound/samsung,odroid.yaml        | 91 +++++++++++++++++++
+ 2 files changed, 91 insertions(+), 54 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/samsung,odroid.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/samsung,odroid.yaml
 
-diff --git a/drivers/platform/chrome/cros_ec_trace.c b/drivers/platform/chrome/cros_ec_trace.c
-index 901850004b2b..e73bb6a8b00e 100644
---- a/drivers/platform/chrome/cros_ec_trace.c
-+++ b/drivers/platform/chrome/cros_ec_trace.c
-@@ -98,6 +98,7 @@
- 	TRACE_SYMBOL(EC_CMD_SB_READ_BLOCK), \
- 	TRACE_SYMBOL(EC_CMD_SB_WRITE_BLOCK), \
- 	TRACE_SYMBOL(EC_CMD_BATTERY_VENDOR_PARAM), \
-+	TRACE_SYMBOL(EC_CMD_EC_CODEC_DMIC), \
- 	TRACE_SYMBOL(EC_CMD_EC_CODEC_I2S_RX), \
- 	TRACE_SYMBOL(EC_CMD_REBOOT_EC), \
- 	TRACE_SYMBOL(EC_CMD_GET_PANIC_INFO), \
-diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-index 261ac83bd007..58e460c015ef 100644
---- a/include/linux/platform_data/cros_ec_commands.h
-+++ b/include/linux/platform_data/cros_ec_commands.h
-@@ -4466,18 +4466,48 @@ enum mkbp_cec_event {
- 
- /*****************************************************************************/
- 
-+/* Commands for DMIC on audio codec. */
-+#define EC_CMD_EC_CODEC_DMIC 0x00BC
-+
-+enum ec_codec_dmic_subcmd {
-+	EC_CODEC_DMIC_SET_GAIN = 0x0,
-+	EC_CODEC_DMIC_GET_GAIN = 0x1,
-+	EC_CODEC_DMIC_SUBCMD_COUNT,
-+};
-+
-+struct __ec_align1 ec_param_ec_codec_dmic_set_gain {
-+	uint8_t left;
-+	uint8_t right;
-+	uint8_t reserved[2];
-+};
-+
-+struct __ec_align4 ec_param_ec_codec_dmic {
-+	uint8_t cmd; /* enum ec_codec_dmic_subcmd */
-+	uint8_t reserved[3];
-+
-+	union {
-+		struct ec_param_ec_codec_dmic_set_gain
-+				set_gain_param;
-+	};
-+};
-+
-+struct __ec_align1 ec_response_ec_codec_dmic_get_gain {
-+	uint8_t left;
-+	uint8_t right;
-+};
-+
-+/*****************************************************************************/
-+
- /* Commands for I2S RX on audio codec. */
- 
--#define EC_CMD_EC_CODEC_I2S_RX 0x00BC
-+#define EC_CMD_EC_CODEC_I2S_RX 0x00BD
- 
- enum ec_codec_i2s_rx_subcmd {
- 	EC_CODEC_I2S_RX_ENABLE = 0x0,
- 	EC_CODEC_I2S_RX_DISABLE = 0x1,
--	EC_CODEC_I2S_RX_SET_GAIN = 0x2,
--	EC_CODEC_I2S_RX_GET_GAIN = 0x3,
--	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x4,
--	EC_CODEC_I2S_RX_SET_DAIFMT = 0x5,
--	EC_CODEC_I2S_RX_SET_BCLK = 0x6,
-+	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
-+	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
-+	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
- 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
- };
- 
-@@ -4521,8 +4551,6 @@ struct __ec_align4 ec_param_ec_codec_i2s_rx {
- 	union {
- 		struct ec_param_ec_codec_i2s_rx_set_sample_depth
- 				set_sample_depth_param;
--		struct ec_param_ec_codec_i2s_rx_set_gain
--				set_gain_param;
- 		struct ec_param_ec_codec_i2s_rx_set_daifmt
- 				set_daifmt_param;
- 		struct ec_param_ec_codec_i2s_rx_set_bclk
-@@ -4530,11 +4558,6 @@ struct __ec_align4 ec_param_ec_codec_i2s_rx {
- 	};
- };
- 
--struct __ec_align1 ec_response_ec_codec_i2s_rx_get_gain {
--	uint8_t left;
--	uint8_t right;
+diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+deleted file mode 100644
+index e9da2200e173..000000000000
+--- a/Documentation/devicetree/bindings/sound/samsung,odroid.txt
++++ /dev/null
+@@ -1,54 +0,0 @@
+-Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
+-
+-Required properties:
+-
+- - compatible - "hardkernel,odroid-xu3-audio" - for Odroid XU3 board,
+-		"hardkernel,odroid-xu4-audio" - for Odroid XU4 board (deprecated),
+-		"samsung,odroid-xu3-audio" - for Odroid XU3 board (deprecated),
+-		"samsung,odroid-xu4-audio" - for Odroid XU4 board (deprecated)
+- - model - the user-visible name of this sound complex
+- - clocks - should contain entries matching clock names in the clock-names
+-    property
+- - samsung,audio-widgets - this property specifies off-codec audio elements
+-   like headphones or speakers, for details see widgets.txt
+- - samsung,audio-routing - a list of the connections between audio
+-   components;  each entry is a pair of strings, the first being the
+-   connection's sink, the second being the connection's source;
+-   valid names for sources and sinks are the MAX98090's pins (as
+-   documented in its binding), and the jacks on the board
+-
+-   For Odroid X2:
+-     "Headphone Jack", "Mic Jack", "DMIC"
+-
+-   For Odroid U3, XU3:
+-     "Headphone Jack", "Speakers"
+-
+-   For Odroid XU4:
+-     no entries
+-
+-Required sub-nodes:
+-
+- - 'cpu' subnode with a 'sound-dai' property containing the phandle of the I2S
+-    controller
+- - 'codec' subnode with a 'sound-dai' property containing list of phandles
+-    to the CODEC nodes, first entry must be corresponding to the MAX98090
+-    CODEC and the second entry must be the phandle of the HDMI IP block node
+-
+-Example:
+-
+-sound {
+-	compatible = "hardkernel,odroid-xu3-audio";
+-	model = "Odroid-XU3";
+-	samsung,audio-routing =
+-		"Headphone Jack", "HPL",
+-		"Headphone Jack", "HPR",
+-		"IN1", "Mic Jack",
+-		"Mic Jack", "MICBIAS";
+-
+-	cpu {
+-		sound-dai = <&i2s0 0>;
+-	};
+-	codec {
+-		sound-dai = <&hdmi>, <&max98090>;
+-	};
 -};
--
- /*****************************************************************************/
- /* System commands */
- 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index 179fa77291cd..c19c7fe42e2e 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -64,12 +64,12 @@ static int dmic_get_gain(struct snd_kcontrol *kcontrol,
- 		snd_soc_kcontrol_component(kcontrol);
- 	struct cros_ec_codec_priv *priv =
- 		snd_soc_component_get_drvdata(component);
--	struct ec_param_ec_codec_i2s_rx p;
--	struct ec_response_ec_codec_i2s_rx_get_gain r;
-+	struct ec_param_ec_codec_dmic p;
-+	struct ec_response_ec_codec_dmic_get_gain r;
- 	int ret;
- 
--	p.cmd = EC_CODEC_I2S_RX_GET_GAIN;
--	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-+	p.cmd = EC_CODEC_DMIC_GET_GAIN;
-+	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
- 				   (uint8_t *)&p, sizeof(p),
- 				   (uint8_t *)&r, sizeof(r));
- 	if (ret < 0)
-@@ -93,17 +93,17 @@ static int dmic_put_gain(struct snd_kcontrol *kcontrol,
- 	int max_dmic_gain = control->max;
- 	int left = ucontrol->value.integer.value[0];
- 	int right = ucontrol->value.integer.value[1];
--	struct ec_param_ec_codec_i2s_rx p;
-+	struct ec_param_ec_codec_dmic p;
- 
- 	if (left > max_dmic_gain || right > max_dmic_gain)
- 		return -EINVAL;
- 
- 	dev_dbg(component->dev, "set mic gain to %u, %u\n", left, right);
- 
--	p.cmd = EC_CODEC_I2S_RX_SET_GAIN;
-+	p.cmd = EC_CODEC_DMIC_SET_GAIN;
- 	p.set_gain_param.left = left;
- 	p.set_gain_param.right = right;
--	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-+	return send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_DMIC,
- 				    (uint8_t *)&p, sizeof(p), NULL, 0);
- }
- 
-@@ -120,6 +120,29 @@ static struct snd_kcontrol_new dmic_controls[] = {
- 				   dmic_gain_tlv),
- };
- 
-+static int dmic_probe(struct snd_soc_component *component)
-+{
-+	struct cros_ec_codec_priv *priv =
-+		snd_soc_component_get_drvdata(component);
-+	struct device *dev = priv->dev;
-+	int ret, val;
-+	struct soc_mixer_control *control;
+diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.yaml b/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
+new file mode 100644
+index 000000000000..c6b244352d05
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
+@@ -0,0 +1,91 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/samsung,odroid.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	ret = device_property_read_u32(dev, "max-dmic-gain", &val);
-+	if (ret) {
-+		dev_err(dev, "Failed to read 'max-dmic-gain'\n");
-+		return ret;
-+	}
++title: Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
 +
-+	control = (struct soc_mixer_control *)
-+		dmic_controls[DMIC_CTL_GAIN].private_value;
-+	control->max = val;
-+	control->platform_max = val;
++maintainers:
++  - Krzysztof Kozlowski <krzk@kernel.org>
++  - Sylwester Nawrocki <s.nawrocki@samsung.com>
 +
-+	return snd_soc_add_component_controls(component,
-+			&dmic_controls[DMIC_CTL_GAIN], 1);
-+}
++properties:
++  compatible:
++    oneOf:
++      - const: hardkernel,odroid-xu3-audio
 +
- static int i2s_rx_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
-@@ -265,25 +288,7 @@ static struct snd_soc_dai_driver i2s_rx_dai_driver = {
- 
- static int i2s_rx_probe(struct snd_soc_component *component)
- {
--	struct cros_ec_codec_priv *priv =
--		snd_soc_component_get_drvdata(component);
--	struct device *dev = priv->dev;
--	int ret, val;
--	struct soc_mixer_control *control;
--
--	ret = device_property_read_u32(dev, "max-dmic-gain", &val);
--	if (ret) {
--		dev_err(dev, "Failed to read 'max-dmic-gain'\n");
--		return ret;
--	}
--
--	control = (struct soc_mixer_control *)
--			dmic_controls[DMIC_CTL_GAIN].private_value;
--	control->max = val;
--	control->platform_max = val;
--
--	return snd_soc_add_component_controls(component,
--			&dmic_controls[DMIC_CTL_GAIN], 1);
-+	return dmic_probe(component);
- }
- 
- static const struct snd_soc_component_driver i2s_rx_component_driver = {
++      - const: hardkernel,odroid-xu4-audio
++        deprecated: true
++
++      - const: samsung,odroid-xu3-audio
++        deprecated: true
++
++      - const: samsung,odroid-xu4-audio
++        deprecated: true
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: The user-visible name of this sound complex.
++
++  cpu:
++    type: object
++    properties:
++      sound-dai:
++        $ref: /schemas/types.yaml#/definitions/phandle-array
++        description: phandles to the I2S controllers
++
++  codec:
++    type: object
++    properties:
++      sound-dai:
++        $ref: /schemas/types.yaml#/definitions/phandle-array
++        description: |
++          List of phandles to the CODEC nodes,
++          first entry must be corresponding to the MAX98090 CODEC and
++          the second entry must be the phandle of the HDMI IP block node.
++
++  samsung,audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: |
++      List of the connections between audio
++      components;  each entry is a pair of strings, the first being the
++      connection's sink, the second being the connection's source;
++      valid names for sources and sinks are the MAX98090's pins (as
++      documented in its binding), and the jacks on the board.
++      For Odroid X2: "Headphone Jack", "Mic Jack", "DMIC"
++      For Odroid U3, XU3: "Headphone Jack", "Speakers"
++      For Odroid XU4: no entries
++
++  samsung,audio-widgets:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: |
++      This property specifies off-codec audio elements
++      like headphones or speakers, for details see widgets.txt
++
++required:
++  - compatible
++  - model
++  - cpu
++  - codec
++
++examples:
++  - |
++    sound {
++        compatible = "hardkernel,odroid-xu3-audio";
++        model = "Odroid-XU3";
++        samsung,audio-routing =
++                "Headphone Jack", "HPL",
++                "Headphone Jack", "HPR",
++                "IN1", "Mic Jack",
++                "Mic Jack", "MICBIAS";
++
++        cpu {
++            sound-dai = <&i2s0 0>;
++        };
++
++        codec {
++            sound-dai = <&hdmi>, <&max98090>;
++        };
++    };
++
 -- 
 2.20.1
 
