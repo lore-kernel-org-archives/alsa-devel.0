@@ -4,83 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0780CA9EAB
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5AB4CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:17:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DCDA20820
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:16:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6515D222C5
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:17:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o4T32Ma2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="jyusJVGa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DCDA20820
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e8dDEdM/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="dkkcAhwf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6515D222C5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA187166C;
-	Fri, 18 Oct 2019 20:15:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA187166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F7851688;
+	Fri, 18 Oct 2019 20:16:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F7851688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571422606;
-	bh=P6BkdK5ArbDjRDYOTOD+y6mOP5j7sX3wR0LW91CP8hs=;
+	s=default; t=1571422642;
+	bh=Bob7avUwn47X/DPSfXCBk51fRKEbIleiG3QSE0m/hfs=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=o4T32Ma2liGuRKvOGzaJ2disusmX/GKow7VrxDNYnT7aY67PodaGXO5wDzgRnQPXR
-	 mjjQS/QoozcNBL+WxT9T4b5NLiELv5S4tCHje38z8FViHFHSwlCN/DtCBW/AHiwW4G
-	 AESoKYgqYHynWbgSCVlILGyUUVJNP+vPVMriS60Y=
+	b=e8dDEdM/x4hrJIVUNe3IHdQavCjerebovDM529ANVthkkH2fEM/GluKg0f3agfo+5
+	 KivY/IZj7ybLvZ4tY4T5O5VbfGQbPJnmQnDdvDRds0XIETc7fZE22L2O7IEAm3Npy/
+	 LtYbFTULHUVF4K4Sbfq6/C+7uMmPhmB1IWn/HMMg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D75DF806F5;
-	Fri, 18 Oct 2019 20:07:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0AA1F8070C;
+	Fri, 18 Oct 2019 20:07:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6CA7F80534; Fri, 18 Oct 2019 20:07:18 +0200 (CEST)
+ id 46A73F80534; Fri, 18 Oct 2019 20:07:19 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12FDFF800D0
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:07:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12FDFF800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27BBDF805FC
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:07:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27BBDF805FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="jyusJVGa"
+ header.b="dkkcAhwf"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=3hcMcor/FN+8Ad96YbO9u/6CZToK6CJA7ZrtqwtS/rc=; b=jyusJVGaSS2W
- TsynWLOOKgiRRyo961YezP6/4Q0uwa7yA2HkIiCqH/NzO1NasX4a/bbr6lgOkjyG6JSnrPRXuok5J
- y4TWUJMfwDFRf5dPlrLmKMjI289EsVP+nfIAXv1TrIzNKZJLDlq+uEQ5cFRDmvBvJ/mKXepSP1Sl+
- qTtX8=;
+ List-Archive; bh=5MBDvLGyyFnqSYZu0bSGNB/KEFy3UbuGL6RCdAC3rJs=; b=dkkcAhwfqq+w
+ 11dFG4fsuOW+YYFA7blGcS0zR7/gw1wnRFtbB0r7IsRS9/x6DRvRjEG0Fz28HwNHwEeLIP21Wl0G3
+ vX2mEPimkKirlBxQq+f7hzSIfCD611dyhK4PpnlpxKE82r4pbHEwma3f3MSze12f4RzvWEBnGA2yL
+ 7azKQ=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iLWeS-0004Fh-QU; Fri, 18 Oct 2019 18:07:00 +0000
+ id 1iLWeS-0004FV-FG; Fri, 18 Oct 2019 18:07:00 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 4E8672743273; Fri, 18 Oct 2019 19:07:00 +0100 (BST)
+ id E2B032741DEA; Fri, 18 Oct 2019 19:06:59 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Chuhong Yuan <hslester96@gmail.com>
-In-Reply-To: <20191017025044.31474-1-hslester96@gmail.com>
+To: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+In-Reply-To: <20191018123806.18063-1-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191018180700.4E8672743273@ypsilon.sirena.org.uk>
-Date: Fri, 18 Oct 2019 19:07:00 +0100 (BST)
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, "Cc:"@sirena.co.uk
-Subject: [alsa-devel] Applied "ASoC: Intel: sof-rt5682: add a check for
-	devm_clk_get" to the asoc tree
+Message-Id: <20191018180659.E2B032741DEA@ypsilon.sirena.org.uk>
+Date: Fri, 18 Oct 2019 19:06:59 +0100 (BST)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: control: return true when kcontrol
+	values change" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: sof-rt5682: add a check for devm_clk_get
+   ASoC: SOF: control: return true when kcontrol values change
 
 has been applied to the asoc tree at
 
@@ -126,42 +122,111 @@ to this mail.
 Thanks,
 Mark
 
-From e5f0d490fb718254a884453e47fcd48493cd67ea Mon Sep 17 00:00:00 2001
-From: Chuhong Yuan <hslester96@gmail.com>
-Date: Thu, 17 Oct 2019 10:50:44 +0800
-Subject: [PATCH] ASoC: Intel: sof-rt5682: add a check for devm_clk_get
+From 95a32c98055f664f9b3f34c41e153d4dcedd0eff Mon Sep 17 00:00:00 2001
+From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+Date: Fri, 18 Oct 2019 07:38:06 -0500
+Subject: [PATCH] ASoC: SOF: control: return true when kcontrol values change
 
-sof_audio_probe misses a check for devm_clk_get and may cause problems.
-Add a check for it to fix the bug.
+All the kcontrol put() functions are currently returning 0 when
+successful. This does not go well with alsamixer as it does
+not seem to get notified on SND_CTL_EVENT_MASK_VALUE callbacks
+when values change for (some of) the sof kcontrols.
+This patch fixes that by returning true for volume, switch
+and enum type kcontrols when values do change in put().
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191017025044.31474-1-hslester96@gmail.com
+Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191018123806.18063-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/sof/control.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 5ce643d62faf..4f6e58c3954a 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -603,6 +603,15 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	/* need to get main clock from pmc */
- 	if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
- 		ctx->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+		if (IS_ERR(ctx->mclk)) {
-+			ret = PTR_ERR(ctx->mclk);
-+
-+			dev_err(&pdev->dev,
-+				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
-+				ret);
-+			return ret;
-+		}
-+
- 		ret = clk_prepare_enable(ctx->mclk);
- 		if (ret < 0) {
- 			dev_err(&pdev->dev,
+diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+index a4983f90ff5b..2b8711eda362 100644
+--- a/sound/soc/sof/control.c
++++ b/sound/soc/sof/control.c
+@@ -60,13 +60,16 @@ int snd_sof_volume_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_sof_dev *sdev = scontrol->sdev;
+ 	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
++	bool change = false;
++	u32 value;
+ 
+ 	/* update each channel */
+ 	for (i = 0; i < channels; i++) {
+-		cdata->chanv[i].value =
+-			mixer_to_ipc(ucontrol->value.integer.value[i],
++		value = mixer_to_ipc(ucontrol->value.integer.value[i],
+ 				     scontrol->volume_table, sm->max + 1);
++		change = change || (value != cdata->chanv[i].value);
+ 		cdata->chanv[i].channel = i;
++		cdata->chanv[i].value = value;
+ 	}
+ 
+ 	/* notify DSP of mixer updates */
+@@ -76,8 +79,7 @@ int snd_sof_volume_put(struct snd_kcontrol *kcontrol,
+ 					      SOF_CTRL_TYPE_VALUE_CHAN_GET,
+ 					      SOF_CTRL_CMD_VOLUME,
+ 					      true);
+-
+-	return 0;
++	return change;
+ }
+ 
+ int snd_sof_switch_get(struct snd_kcontrol *kcontrol,
+@@ -105,11 +107,15 @@ int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_sof_dev *sdev = scontrol->sdev;
+ 	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
++	bool change = false;
++	u32 value;
+ 
+ 	/* update each channel */
+ 	for (i = 0; i < channels; i++) {
+-		cdata->chanv[i].value = ucontrol->value.integer.value[i];
++		value = ucontrol->value.integer.value[i];
++		change = change || (value != cdata->chanv[i].value);
+ 		cdata->chanv[i].channel = i;
++		cdata->chanv[i].value = value;
+ 	}
+ 
+ 	/* notify DSP of mixer updates */
+@@ -120,7 +126,7 @@ int snd_sof_switch_put(struct snd_kcontrol *kcontrol,
+ 					      SOF_CTRL_CMD_SWITCH,
+ 					      true);
+ 
+-	return 0;
++	return change;
+ }
+ 
+ int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
+@@ -148,11 +154,15 @@ int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_sof_dev *sdev = scontrol->sdev;
+ 	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
+ 	unsigned int i, channels = scontrol->num_channels;
++	bool change = false;
++	u32 value;
+ 
+ 	/* update each channel */
+ 	for (i = 0; i < channels; i++) {
+-		cdata->chanv[i].value = ucontrol->value.enumerated.item[i];
++		value = ucontrol->value.enumerated.item[i];
++		change = change || (value != cdata->chanv[i].value);
+ 		cdata->chanv[i].channel = i;
++		cdata->chanv[i].value = value;
+ 	}
+ 
+ 	/* notify DSP of enum updates */
+@@ -163,7 +173,7 @@ int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
+ 					      SOF_CTRL_CMD_ENUM,
+ 					      true);
+ 
+-	return 0;
++	return change;
+ }
+ 
+ int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
 -- 
 2.20.1
 
