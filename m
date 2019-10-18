@@ -7,79 +7,79 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43592CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05CF3CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:46:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF0EF21897
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:45:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 830752064B
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 15:46:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nCymGg/V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF0EF21897
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tKRC8H6m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 830752064B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8B90166C;
-	Fri, 18 Oct 2019 17:45:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8B90166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B24B115E0;
+	Fri, 18 Oct 2019 17:45:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B24B115E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571413552;
-	bh=moUuperM+/epkEVmYJHH2m+aTPr3CgC1jr8hTXXTOnc=;
+	s=default; t=1571413571;
+	bh=F9yGoLrsPsiruH8qySHFLsG+5hm4HHHLK9QnXx4pDeQ=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nCymGg/VzPJwco1ib+9BauYLmnMm+ye5n3+ol9+/+SPE8G8fo+X/SVTSZvY2ged2l
-	 vhzzr6AJTxhUw5ZZwpxj18Sgu+3MrmQZcgpbGaklzU1w9O2Bq0v7zmnpJwu1A2WIzk
-	 RwjId3QK6iUrk/AMaF3PoAFhEw+9LlUjp3M1/XM0=
+	b=tKRC8H6mdEdEksSUT2YJEQhNfSzUGPqNY7ut3sJwBUEw7OFl/GhAZO76biJIvMUtA
+	 MRTXz5mh0OkbShgb4wYv1Opf1+YZQRbMxvtZFYbgbc3lUTnm2cs2rMS3NkXF43joPV
+	 iljiVmvC4OEWGACYTRnjZPgWQij5N7QxzBovQPZ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D7CAF80635;
-	Fri, 18 Oct 2019 17:42:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 324EFF80638;
+	Fri, 18 Oct 2019 17:42:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 213B3F8060F; Fri, 18 Oct 2019 17:42:35 +0200 (CEST)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+ id 39626F80611; Fri, 18 Oct 2019 17:42:37 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 003EDF805FB
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 17:42:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 003EDF805FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE045F80322
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 17:42:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE045F80322
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
  (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1M3DFj-1iK6Hu39zx-003dRY; Fri, 18 Oct 2019 17:42:27 +0200
+ 1MEFrX-1iDXlf06Gj-00ABwm; Fri, 18 Oct 2019 17:42:26 +0200
 From: Arnd Bergmann <arnd@arndb.de>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Fri, 18 Oct 2019 17:41:38 +0200
-Message-Id: <20191018154201.1276638-23-arnd@arndb.de>
+Date: Fri, 18 Oct 2019 17:41:33 +0200
+Message-Id: <20191018154201.1276638-18-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20191018154052.1276506-1-arnd@arndb.de>
 References: <20191018154052.1276506-1-arnd@arndb.de>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:cjdBav0l0UpRWDnSxUWkeDULSGZ8131Ss2R6vA9ICOozyyA8AhI
- J5Ms+VvXLMgtLTNHoEmTdyk5htB1jeqWROYYFpYKK92TY0sCB8KDTXPAfSCu4TbSNDVy0Dj
- pytBDXhGT4cEPIQR7K0nFk70ecqjXtCh1vFO13koPRhe4AEigqyQUR+Mxh8qQbBcYBVmR2d
- tc22pWqr8BrPuhAyHqu8A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8XXhRh5ZtT4=:pyBU5Wnn9fBZIQssW2sBRM
- LQKG1YHO95Ch5/RxCLc4I2/v4WNemH1r5UOwxDPTfP5kH9YdiSRsebMm6QknjTzAEmaT95mZY
- 4gso8AtuwYMoEhA46FLqN59kzOjCemQ/+rhJMPyzYI3HjTv1qMD06IeMGyCRfjStJi4EDe9bc
- 4XSmwehrv6tUidpUuAmqHwjPEb9PD+x/MmNejMy0BUoOqwAa4XLxVXLzOl8Dl6io7c66NXBHf
- 9s33QoXoYAMNLqEYPQ2DqD0/nVH6rKbfcj7O7sM+4vbiPm5wLGPkNjAPqIXc1zkIshzhl5hJo
- hsPCCX0Y9qBCBOPt4lX3h5/eo/SLRY4M04Gzhh0GlCyXlTsaSyCmbXEK51gZY+PbDctQAgWgA
- kC6qJPi0qwb4ZWYqh/U7ZWsrr7LH05EgvwQp8Lmi4cDnPN+rBSA9r1FSS7sLb3h7Q/mXb0fqF
- 4i8ZC+KSy17rZVO06Mpxko0Uqm2gc8D4nEJT3Wfdkx9VKqnZAsrJuycZA1t5SVSm0Wto70GXm
- Bd7YwJC8MD2nuR93nmKsZF0EK1VsKtDXcuq93YmFLm6n+yua+BDkEABgRmOmITDaqbD7lJsiD
- yXBG6iRDstwTb33S2GnQOQLXiYpaTzEqYfZEdXKAMm5Qe4KC7aTMa/c5U2xRNJabnJr7ksuca
- UwuNUg2q4KutVNub5Yxw2OFNUuokjAVheS/FkwR3JpJcDCzp//Hx72P0p6X4HockU6asBBh4Q
- oQxmyb2MpMwcazyB9u6msoUa1hlIpGY5LednMwHVeNmfbh+evEqo0QeSM0ZJGMrI3U5ZJW0T+
- vIvsYzj+VN1mzMlk31z84peCwOKo50NkTMj/k/vpEW/a6j49MsRhjcDIxIK0s099VokJaFNUo
- Uj7PuFz1pjsU4yoNmG4Q==
+X-Provags-ID: V03:K1:TqURoHHVJJmB+BNcKhSOQIg0v6FOc3XqbZHPLBmLP4R4qV3sYnw
+ Wj8jrIMhPIgJIiCbUcoB6dtFG7A6LCSnqqQyt8ataw+kTic0BPNHvJ+47PKruXnXFDSu85e
+ +wOLnjABrp7TC9aqYKM1HcEW4uw9eFPgLPQr6fFAFymJdN2/X0iFDQk9+eSKJMk0BNbWhg5
+ gneq88ZVmC0Ae440lGuSQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yDgI6IIkP4I=:Dwre/9Q/lAAK7XEGRGDeHA
+ 5wQ6CrppVUlAv7ty6RB6U4TBJnmLvFvR8V84o1QCpxtBwBLLng+q13n+ZNnjV4WCmFLHnrhz2
+ aIVBdeoyRsygP0zDhjf/0ayvL08OsLQX18RtCKfPl9YjhrleOo+DWFSa4bMjhvsTwnzszgSIy
+ QbbTnOTlZvYpclGokzepVa3WJyEt4I+hQzA6EI6fvFbwgyw1AYYoQI2g6bqsNMNvtJFRL6VLF
+ x41JRYATNYsDilIRtAfCALbYPL9p66j2XjKWfqMlkOTIvq4bhHx1o8AqWJ3fmlbmf2SiAyqE9
+ gi/tgII5JKupWpyww8JQcXQcgdBz4juLPcLIgOd2bwaP6sx71tycLcYzzXxS3FazV76GNkLBc
+ 8V+DfrFmAraFdB1459OpAKlw26XS1Nj5PTdZ4tUds0AYctoNL7aCS5UNj8tFOSdJsj3+lmYnr
+ kAkpwMbVPbSrTn6M2XMutCbjjMqqyI9cZa/7PKWKUmhwUrmQedOE/SYeNnA5t8Yy/EN2Gtaz7
+ 3/DLM1TUOoeCMxKepkGBkBUFX8MhDzq3KWZympkfVyz8TMkYCs/Dix/m/sWJ5DN8YFNnvtc+K
+ 3AtZpCPdNx81OCQSF/Ru8V3f8gtL+Eo0qT2jHN1gyrJpFWABbAAluBrC+g+2s6etL9K9JJn4t
+ UmG7zLDViZpWsc9RXv/ahVsfVvF7QGTpEGBowj6ZLtlWC2HaVEbxzCP/7/kXz5qtU978M9POI
+ K4kcxA1iPGYq4NV/V90WmPpCWMSBF5BaO5zh3e5g/kc7dAmJytHL0xFbQOhsPIZkHYJTSZ/5y
+ gofshTfkjZrwPiMBm9pptriZ7EWNbW6WHEy/semSfAUGW4GQqXsupl6K4v9x3c9b64c+2wyLr
+ g9Ax+n5CcCDM0fOLODuA==
 Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
  Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
  Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH 23/46] ARM: pxa: z2: use gpio lookup for audio
-	device
+Subject: [alsa-devel] [PATCH 18/46] ARM: pxa: corgi: use gpio descriptors
+	for audio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,86 +97,207 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The audio device is allocated by the audio driver, and it uses a gpio
-number from the mach/z2.h header file.
-
-Change it to use a gpio lookup table for the device allocated by the
-driver to keep the header file local to the machine.
+The audio driver should not use a hardwired gpio number
+from the header. Change it to use a lookup table.
 
 Cc: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/z2.c | 11 +++++++++++
- sound/soc/pxa/z2.c     |  5 ++---
- 2 files changed, 13 insertions(+), 3 deletions(-)
+ arch/arm/mach-pxa/corgi.c                    | 22 ++++++++++-
+ arch/arm/mach-pxa/{include/mach => }/corgi.h |  2 +-
+ arch/arm/mach-pxa/corgi_pm.c                 |  2 +-
+ sound/soc/pxa/corgi.c                        | 40 +++++++++++++-------
+ 4 files changed, 50 insertions(+), 16 deletions(-)
+ rename arch/arm/mach-pxa/{include/mach => }/corgi.h (98%)
 
-diff --git a/arch/arm/mach-pxa/z2.c b/arch/arm/mach-pxa/z2.c
-index 900cefc4c5ea..874bdd49ad43 100644
---- a/arch/arm/mach-pxa/z2.c
-+++ b/arch/arm/mach-pxa/z2.c
-@@ -623,6 +623,15 @@ static void __init z2_spi_init(void)
- static inline void z2_spi_init(void) {}
- #endif
+diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
+index e9743ebbee86..0ff8e8140513 100644
+--- a/arch/arm/mach-pxa/corgi.c
++++ b/arch/arm/mach-pxa/corgi.c
+@@ -49,7 +49,7 @@
+ #include <linux/platform_data/irda-pxaficp.h>
+ #include <linux/platform_data/mmc-pxamci.h>
+ #include "udc.h"
+-#include <mach/corgi.h>
++#include "corgi.h"
+ #include "sharpsl_pm.h"
  
-+static struct gpiod_lookup_table z2_audio_gpio_table = {
-+	.dev_id = "soc-audio",
+ #include <asm/mach/sharpsl_param.h>
+@@ -472,6 +472,25 @@ static struct platform_device corgiled_device = {
+ 	},
+ };
+ 
++static struct gpiod_lookup_table corgi_audio_gpio_table = {
++	.dev_id = "corgi-audio",
 +	.table = {
-+		GPIO_LOOKUP("gpio-pxa", GPIO37_ZIPITZ2_HEADSET_DETECT,
-+			    "hsdet-gpio", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("sharp-scoop",
++			    CORGI_GPIO_MUTE_L - CORGI_SCOOP_GPIO_BASE,
++			    "mute-l", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("sharp-scoop",
++			    CORGI_GPIO_MUTE_R - CORGI_SCOOP_GPIO_BASE,
++			    "mute-r", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("sharp-scoop",
++			    CORGI_GPIO_APM_ON - CORGI_SCOOP_GPIO_BASE,
++			    "apm-on", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("sharp-scoop",
++			    CORGI_GPIO_MIC_BIAS - CORGI_SCOOP_GPIO_BASE,
++			    "mic-bias", GPIO_ACTIVE_HIGH),
 +		{ },
 +	},
 +};
 +
- /******************************************************************************
-  * Core power regulator
-  ******************************************************************************/
-@@ -727,6 +736,8 @@ static void __init z2_init(void)
- 	z2_keys_init();
- 	z2_pmic_init();
+ /*
+  * Corgi Audio
+  */
+@@ -740,6 +759,7 @@ static void __init corgi_init(void)
  
-+	gpiod_add_lookup_table(&z2_audio_gpio_table);
-+
- 	pm_power_off = z2_power_off;
- }
+  	pxa_set_udc_info(&udc_info);
+ 	gpiod_add_lookup_table(&corgi_mci_gpio_table);
++	gpiod_add_lookup_table(&corgi_audio_gpio_table);
+ 	pxa_set_mci_info(&corgi_mci_platform_data);
+ 	pxa_set_ficp_info(&corgi_ficp_platform_data);
+ 	pxa_set_i2c_info(NULL);
+diff --git a/arch/arm/mach-pxa/include/mach/corgi.h b/arch/arm/mach-pxa/corgi.h
+similarity index 98%
+rename from arch/arm/mach-pxa/include/mach/corgi.h
+rename to arch/arm/mach-pxa/corgi.h
+index b565ca7b8cda..fe2fcf6532b9 100644
+--- a/arch/arm/mach-pxa/include/mach/corgi.h
++++ b/arch/arm/mach-pxa/corgi.h
+@@ -9,7 +9,7 @@
+ #ifndef __ASM_ARCH_CORGI_H
+ #define __ASM_ARCH_CORGI_H  1
  
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index 1fb3e7ac42fa..5147ed60fcd0 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -13,7 +13,7 @@
- #include <linux/timer.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
+-#include "irqs.h" /* PXA_NR_BUILTIN_GPIO */
++#include <mach/irqs.h> /* PXA_NR_BUILTIN_GPIO */
  
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -22,7 +22,6 @@
+ /*
+  * Corgi (Non Standard) GPIO Definitions
+diff --git a/arch/arm/mach-pxa/corgi_pm.c b/arch/arm/mach-pxa/corgi_pm.c
+index ff1ac9bf37cb..c6ddfc737644 100644
+--- a/arch/arm/mach-pxa/corgi_pm.c
++++ b/arch/arm/mach-pxa/corgi_pm.c
+@@ -20,7 +20,7 @@
+ #include <asm/irq.h>
+ #include <asm/mach-types.h>
+ 
+-#include <mach/corgi.h>
++#include "corgi.h"
+ #include <mach/pxa2xx-regs.h>
+ #include "sharpsl_pm.h"
+ 
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 47647a1c3124..9db5a3d3606e 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -21,7 +21,6 @@
+ #include <sound/soc.h>
  
  #include <asm/mach-types.h>
+-#include <mach/corgi.h>
  #include <linux/platform_data/asoc-pxa.h>
--#include <mach/z2.h>
  
- #include "../codecs/wm8750.h"
- #include "pxa2xx-i2s.h"
-@@ -89,7 +88,6 @@ static struct snd_soc_jack_pin hs_jack_pins[] = {
- /* Headset jack detection gpios */
- static struct snd_soc_jack_gpio hs_jack_gpios[] = {
- 	{
--		.gpio		= GPIO37_ZIPITZ2_HEADSET_DETECT,
- 		.name		= "hsdet-gpio",
- 		.report		= SND_JACK_HEADSET,
- 		.debounce_time	= 200,
-@@ -195,6 +193,7 @@ static int __init z2_init(void)
- 	if (!z2_snd_device)
- 		return -ENOMEM;
+ #include "../codecs/wm8731.h"
+@@ -41,6 +40,8 @@
+ static int corgi_jack_func;
+ static int corgi_spk_func;
  
-+	hs_jack_gpios[0].gpiod_dev = &z2_snd_device->dev;
- 	platform_set_drvdata(z2_snd_device, &snd_soc_z2);
- 	ret = platform_device_add(z2_snd_device);
++struct gpio_desc *gpiod_mute_l, *gpiod_mute_r, *gpiod_apm_on, *gpiod_mic_bias;
++
+ static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
+ {
+ 	snd_soc_dapm_mutex_lock(dapm);
+@@ -49,8 +50,8 @@ static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
+ 	switch (corgi_jack_func) {
+ 	case CORGI_HP:
+ 		/* set = unmute headphone */
+-		gpio_set_value(CORGI_GPIO_MUTE_L, 1);
+-		gpio_set_value(CORGI_GPIO_MUTE_R, 1);
++		gpiod_set_value(gpiod_mute_l, 1);
++		gpiod_set_value(gpiod_mute_r, 1);
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphone Jack");
+@@ -58,24 +59,24 @@ static void corgi_ext_control(struct snd_soc_dapm_context *dapm)
+ 		break;
+ 	case CORGI_MIC:
+ 		/* reset = mute headphone */
+-		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
+-		gpio_set_value(CORGI_GPIO_MUTE_R, 0);
++		gpiod_set_value(gpiod_mute_l, 0);
++		gpiod_set_value(gpiod_mute_r, 0);
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
+ 		break;
+ 	case CORGI_LINE:
+-		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
+-		gpio_set_value(CORGI_GPIO_MUTE_R, 0);
++		gpiod_set_value(gpiod_mute_l, 0);
++		gpiod_set_value(gpiod_mute_r, 0);
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Line Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
+ 		break;
+ 	case CORGI_HEADSET:
+-		gpio_set_value(CORGI_GPIO_MUTE_L, 0);
+-		gpio_set_value(CORGI_GPIO_MUTE_R, 1);
++		gpiod_set_value(gpiod_mute_l, 0);
++		gpiod_set_value(gpiod_mute_r, 1);
+ 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
+ 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headphone Jack");
+@@ -108,8 +109,8 @@ static int corgi_startup(struct snd_pcm_substream *substream)
+ static void corgi_shutdown(struct snd_pcm_substream *substream)
+ {
+ 	/* set = unmute headphone */
+-	gpio_set_value(CORGI_GPIO_MUTE_L, 1);
+-	gpio_set_value(CORGI_GPIO_MUTE_R, 1);
++	gpiod_set_value(gpiod_mute_l, 1);
++	gpiod_set_value(gpiod_mute_r, 1);
+ }
  
+ static int corgi_hw_params(struct snd_pcm_substream *substream,
+@@ -199,14 +200,14 @@ static int corgi_set_spk(struct snd_kcontrol *kcontrol,
+ static int corgi_amp_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *k, int event)
+ {
+-	gpio_set_value(CORGI_GPIO_APM_ON, SND_SOC_DAPM_EVENT_ON(event));
++	gpiod_set_value(gpiod_apm_on, SND_SOC_DAPM_EVENT_ON(event));
+ 	return 0;
+ }
+ 
+ static int corgi_mic_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *k, int event)
+ {
+-	gpio_set_value(CORGI_GPIO_MIC_BIAS, SND_SOC_DAPM_EVENT_ON(event));
++	gpiod_set_value(gpiod_mic_bias, SND_SOC_DAPM_EVENT_ON(event));
+ 	return 0;
+ }
+ 
+@@ -293,6 +294,19 @@ static int corgi_probe(struct platform_device *pdev)
+ 
+ 	card->dev = &pdev->dev;
+ 
++	gpiod_mute_l = devm_gpiod_get(&pdev->dev, "mute-l", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiod_mute_l))
++		return PTR_ERR(gpiod_mute_l);
++	gpiod_mute_r = devm_gpiod_get(&pdev->dev, "mute-r", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiod_mute_r))
++		return PTR_ERR(gpiod_mute_r);
++	gpiod_apm_on = devm_gpiod_get(&pdev->dev, "apm-on", GPIOD_OUT_LOW);
++	if (IS_ERR(gpiod_apm_on))
++		return PTR_ERR(gpiod_apm_on);
++	gpiod_mic_bias = devm_gpiod_get(&pdev->dev, "mic-bias", GPIOD_OUT_LOW);
++	if (IS_ERR(gpiod_mic_bias))
++		return PTR_ERR(gpiod_mic_bias);
++
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
 -- 
 2.20.0
 
