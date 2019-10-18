@@ -7,91 +7,92 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCDE6CA9EAC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3ABFCA9EAE
 	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 20:19:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4788F22459
+	by mail.kernel.org (Postfix) with ESMTPS id 4A2AA2245A
 	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 20:19:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g0U0BhRZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L98082bS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4788F22459
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kkp9gjyH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Vk3XU5X3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A2AA2245A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A279F1671;
-	Fri, 18 Oct 2019 22:11:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A279F1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5BD31684;
+	Fri, 18 Oct 2019 22:09:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5BD31684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571429546;
-	bh=/B2Umet/sA3OQiqmrcPRG6Tts7y/90vVMNr3N7ZnHs0=;
+	s=default; t=1571429415;
+	bh=r3PY1T7oor1QDIah8EaeW2LTfK9DxhZS8GfzHiB3AAc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g0U0BhRZsosjV7VjuDNz0b25SA+gnE3Nnt68FvbLAJxk7eoBAZgrz+iOo4sOs79dk
-	 TuImjrYWQ7V7HFSYaObPKygvMpmfHJi/o0u8LyoNHWsZ1swYQTzw6Zit1n9W8QLCiY
-	 g5P4HlIoPKGh55tC8DeUVUGfOm32FVpuvDwUxQT4=
+	b=Kkp9gjyHZC57gPEfTUhZSYTRIkOIML6dSUwcY5xMsjCv/7WUGmWHcniEAcyQfGOMt
+	 AG4Qusf/yfvoklUODrQUuLxd1Sy67HLQn8gMUSQd+nQJzRxD94H2RcbdjI5wxswrdh
+	 S+pqYxkrgSUjzopJXotX2IH6dRTl4VpXlJQfK1H8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F8F7F80709;
-	Fri, 18 Oct 2019 22:05:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53E59F8065D;
+	Fri, 18 Oct 2019 22:05:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4294F8063B; Fri, 18 Oct 2019 22:05:23 +0200 (CEST)
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
+ id EEA0BF80649; Fri, 18 Oct 2019 22:05:20 +0200 (CEST)
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
+ [IPv6:2607:f8b0:4864:20::542])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 643D4F8063B
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 22:05:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 643D4F8063B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67B4DF80635
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 22:05:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67B4DF80635
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="L98082bS"
-Received: by mail-pf1-x444.google.com with SMTP id y5so4514805pfo.4
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 13:05:18 -0700 (PDT)
+ header.b="Vk3XU5X3"
+Received: by mail-pg1-x542.google.com with SMTP id p12so3934957pgn.6
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 13:05:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=xCDEIYeVL0ViWUqtSb2mx1G78rAZ+hJgFnePlVqEzxU=;
- b=L98082bS/r/rfmjwfQe+0dfHd7BDY7gVaA/O9WUb2flhUuvBU4u0vMx+UCR7CgTK9Q
- hp6/TqjZfxDT9H8LpVx9gWWMYCpQTCN9nOjnaPlihOZ7YNkeEIEVwLsQkQzJdhpHKMSM
- DBFdYjlSeK49nsYgrOLvJ5yrNIIg4FzJID35E=
+ bh=aD+M4i5vP3wawO11rqq4jX4oqnbSNUf/P52hQ4zNkkE=;
+ b=Vk3XU5X3JrH606B5k9R7che422KKOm4GGXRKshzpkcyDkPrS1iHZ7q/hE5Z7qkPvuE
+ 43V6xfLbsFhHUGJx1rAlSfVqX0b7FX9GktIHHgVYsJ7hzhWtPQUVcPBxkqDOjGUx5LT6
+ Pej16datVEdFQ9VaIO5LF0YpG5hhHTTdHmspo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=xCDEIYeVL0ViWUqtSb2mx1G78rAZ+hJgFnePlVqEzxU=;
- b=kBhSF38XLaJzU47PsqRjpbyjrVFosPMhSR4GwNxkUBtlttkiHuOoeyLxZRaQmuSvr/
- zd5XSsjicC3zRiHqjI7zpRuAp76XSGORdnYFGoI64OAW655qh0WPqTJN7SRiO+MYt0NP
- KJ45oSCWjHmSwEm8fAAJiOWzxPXO6HcwVmPk2Y5mE4gJl/6eWz+eD5VKfJhspJpYdptg
- CkjAyJLAviv3NnGfNHBiPhSPI+BtZrqKLj1gi3KlsouQbn4RW/i3JAPS+TGONf+1kboD
- Y2LT+OJUdLfUJxJcYgD5aw2fcEhECp1Af2IEhMh8MyaC7EO5cvk7eavX8u2olUbkUidu
- Hi1A==
-X-Gm-Message-State: APjAAAVER3bXwmEMJe6Mr2dlqlN+yMtMlP4nm82uzOiiaRWqQkSV/BgK
- NjT7R6n6OsBBB/tWNMUcvPuwFcv4wj5P
-X-Google-Smtp-Source: APXvYqw6h/15EHvcLY+zcx48MMlTD0ywdEYQrwo2e5j+oYUGWvXDDSTX62/CXli7iMKovBMH4E2eKQ==
-X-Received: by 2002:a65:5cc8:: with SMTP id b8mr11589262pgt.38.1571429116712; 
- Fri, 18 Oct 2019 13:05:16 -0700 (PDT)
+ bh=aD+M4i5vP3wawO11rqq4jX4oqnbSNUf/P52hQ4zNkkE=;
+ b=IMGhX6iWzHMjtJwNzbPNrAi47e2k1iAkzdync/c25N+od2QquSfdqI9WpnwE9+VnK1
+ oSGv/WUa49/f8ZfBnL+1o3wdh77sMibKwcWC2R47TBguN5rZOkty78k83JcrVn/lQuD2
+ o3hOKcTrb0+qBDMm9voiKH3SCq5FUFhxtZALiFkyET2s94KKelseywce8PcnWWgUfnyS
+ Rn7yM9Oe7DD4YvVUtp3asOvwb+WyWv3mWjyfvED1M4Thdq540ebfqsQAmY4W+WNSu2AH
+ a+n88EV/mlHYg/Wp6r8vNSolrCg3dUXEeI8VRcRdowOA9MUSpGXB0zbdb0sD5BaseVp6
+ axCQ==
+X-Gm-Message-State: APjAAAUR6x0hUSZwx3ZKI1rERSWCi505TR/ffS+fZ2RWW7DA42kDM+DD
+ JxBRXdhwRtSoM++K2pN+xG4V3MAWrXgx
+X-Google-Smtp-Source: APXvYqyh2hgSv54xbiKgDEWjr15LFmJHYqWxjzANY12YkCisozQCtV33tTo2dN4w81KrPquVF5Duog==
+X-Received: by 2002:a63:ee48:: with SMTP id n8mr12457385pgk.374.1571429112192; 
+ Fri, 18 Oct 2019 13:05:12 -0700 (PDT)
 Received: from localhost ([2620:15c:202:201:c87a:31ae:9107:f63d])
- by smtp.gmail.com with ESMTPSA id y22sm5968309pjn.12.2019.10.18.13.05.15
+ by smtp.gmail.com with ESMTPSA id a8sm7937952pfa.182.2019.10.18.13.05.11
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 18 Oct 2019 13:05:16 -0700 (PDT)
+ Fri, 18 Oct 2019 13:05:11 -0700 (PDT)
 From: Curtis Malainey <cujomalainey@chromium.org>
 To: alsa-devel@alsa-project.org
-Date: Fri, 18 Oct 2019 13:04:46 -0700
-Message-Id: <20191018200449.141123-10-cujomalainey@chromium.org>
+Date: Fri, 18 Oct 2019 13:04:43 -0700
+Message-Id: <20191018200449.141123-7-cujomalainey@chromium.org>
 X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
 In-Reply-To: <20191018200449.141123-1-cujomalainey@chromium.org>
 References: <20191018200449.141123-1-cujomalainey@chromium.org>
 MIME-Version: 1.0
 Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
-Subject: [alsa-devel] [PATCH v2 09/12] ASoC: rt5677: Allow VAD to be shut
-	on/off at all times
+ Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>,
+ Curtis Malainey <cujomalainey@chromium.org>
+Subject: [alsa-devel] [PATCH v2 06/12] ASoC: rt5677: Mark reg
+	RT5677_PWR_ANLG2 as volatile
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,36 +110,36 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Due to limitations of the clocking configuration, we have no way of
-scheduling our hibernation before the bdw dsp hibernates. This causes
-issues when the system suspends with an open stream. We need userspace
-to toggle the kcontrol before we are suspended so that any writes on
-suspend are not lost and we don't corrupt the regmap.
+From: Ben Zhang <benzh@chromium.org>
 
+The codec dies when RT5677_PWR_ANLG2(MX-64h) is set to 0xACE1
+while it's streaming audio over SPI. The DSP firmware turns
+on PLL2 (MX-64 bit 8) when SPI streaming starts.  However regmap
+does not believe that register can change by itself. When
+BST1 (bit 15) is turned on with regmap_update_bits(), it doesn't
+read the register first before write, so PLL2 power bit is
+cleared by accident.
+
+Marking MX-64h as volatile in regmap solved the issue.
+
+Signed-off-by: Ben Zhang <benzh@chromium.org>
 Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 ---
- sound/soc/codecs/rt5677.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ sound/soc/codecs/rt5677.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 712d3cbba9035..6e8d11060bbab 100644
+index abb83f2e9974f..7bf8d9fb88a5f 100644
 --- a/sound/soc/codecs/rt5677.c
 +++ b/sound/soc/codecs/rt5677.c
-@@ -981,13 +981,8 @@ static int rt5677_dsp_vad_put(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
--	struct rt5677_priv *rt5677 = snd_soc_component_get_drvdata(component);
--
--	rt5677->dsp_vad_en = !!ucontrol->value.integer.value[0];
- 
--	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
--		rt5677_set_dsp_vad(component,
--				!!ucontrol->value.integer.value[0]);
-+	rt5677_set_dsp_vad(component, !!ucontrol->value.integer.value[0]);
- 
- 	return 0;
- }
+@@ -302,6 +302,7 @@ static bool rt5677_volatile_register(struct device *dev, unsigned int reg)
+ 	case RT5677_I2C_MASTER_CTRL7:
+ 	case RT5677_I2C_MASTER_CTRL8:
+ 	case RT5677_HAP_GENE_CTRL2:
++	case RT5677_PWR_ANLG2: /* Modified by DSP firmware */
+ 	case RT5677_PWR_DSP_ST:
+ 	case RT5677_PRIV_DATA:
+ 	case RT5677_ASRC_22:
 -- 
 2.23.0.866.gb869b98d4c-goog
 
