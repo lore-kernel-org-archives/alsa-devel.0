@@ -2,106 +2,110 @@ Return-Path: <SRS0=bEgE=YL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DE42CA9EA2
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64CA3CA9EA2
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:22:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17406222BD
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:21:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DE436222BD
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:22:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iPhqiDIC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="pDV6S+tY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IBoZu/zL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17406222BD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ttX9jMYV";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="hMqJJ2dM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QEr6qvad"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE436222BD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86CEE167E;
-	Fri, 18 Oct 2019 08:20:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86CEE167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36F751686;
+	Fri, 18 Oct 2019 08:21:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36F751686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571379671;
-	bh=+Vps6oXKxNigPWLzE42W15aQ4lNpvWOYXmlCx9BafZk=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=iPhqiDICzUTiQWnxKaBxRsZ47NA698I2wOtwJunWMyeFfD+4ksjUiyHCFCRZqZK4O
-	 ADbH4VbwgGWcCUF4Gk8l9NEu+ZI1gljtXHnpX9e6UuBV/rgX8f9Rr97F79RCPlI7+g
-	 KVJaYy3n334Dr718HcnZ7LBvZcK3Qxe9U8YZZMPs=
+	s=default; t=1571379718;
+	bh=LgLyFV+DikQuYq+RogH7S04GNw8xn20pAHXajBnQA1U=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ttX9jMYVXuR3joQj9o/vFJnrr86T6/oBcBNmDI3SrPhRgpbwww7qWlFu1iXsQg3Ey
+	 +yQKCp2a8Tlmzep9kfv0T1iX2mE8WndGMh8qtHu8GUbQXJUHKCcrMywrKw5OXWxvO2
+	 XBjWcHo/vod4s1G2SW2ATXqomrXii3TG09zewJMY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2C7FF80323;
-	Fri, 18 Oct 2019 08:19:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54CFBF805FB;
+	Fri, 18 Oct 2019 08:19:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7C3BF8036C; Fri, 18 Oct 2019 08:19:24 +0200 (CEST)
+ id D6BE1F80323; Fri, 18 Oct 2019 08:19:27 +0200 (CEST)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
  [64.147.123.19])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B9DFF800D0
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 08:19:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B9DFF800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1B27F80323
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 08:19:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1B27F80323
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="pDV6S+tY"; 
+ header.b="hMqJJ2dM"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="IBoZu/zL"
+ header.i=@messagingengine.com header.b="QEr6qvad"
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.west.internal (Postfix) with ESMTP id 0CF533F9;
- Fri, 18 Oct 2019 02:19:16 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id 9B87342F;
+ Fri, 18 Oct 2019 02:19:19 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute1.internal (MEProxy); Fri, 18 Oct 2019 02:19:17 -0400
+ by compute1.internal (MEProxy); Fri, 18 Oct 2019 02:19:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding; s=fm2; bh=KaxVZr7S8PiHiaQyEWQ6ZUrofv
- ricreKCVphsaphGF0=; b=pDV6S+tYC4NDaYMwffXtYPkZCt9dk9R06svAXS70wd
- CDsuoZh9TkFzq9fmhZ+Kj0Mn7y6DjvF90mY9LdTBP1OAbnkJlqyCHWNkhOCy9w/W
- kSC/RWJDJQ45KCHNzMxObP4bdtWIjVgivzVa+mhBuSBPColVP8kK2L2OMs+dthUQ
- cBQzwUtVEoF6L2fSisk0l0/ebcKjVfZkPSQ++w1Sg2p/f4gUwgdsuCtvWOA0SpAO
- 6QX0JF4g9pRB1JBnLnB/s807mDFqiWXeBkJbLYsAIjC2GMpU6sCsXMU++n+Xtx6G
- Nyhj4d8ds1Eg+PaMX0TjO2koTiQLy8NMlnHpU6OHrmtg==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm2; bh=I+KYC7Dm/FgVZ
+ /pe/Nx+LB/1mPZ2mbkDMDN3pB2aIr8=; b=hMqJJ2dMQXOmdCgWEpC3CUikvlR7F
+ T6xOjWwURTK5eA7K9ayNqu8g/TAFWGykKAzjSx1MuWXBMvJPtNlC++SduSuqScAQ
+ 7WN31q0Z0brFVgV85uvvaf9x5mi3sKRF5+H9RDA3nv9B9xK/7wrG9nTfTglgmdh3
+ vcGc5nL97Hz4FO6rtGYJqJwMjsGYU3geYokO68eeT65Zlnwn1KQ3nb2dRqZbnD9+
+ kDyQu4aw3wgOhAaxsds2A1Dn64umQ7JaVWNU8fL0jGYHbScRN3Q0vgdStoK9YfuB
+ lNMhIioQ4E2+kHHY8Wf7bw79vDy0KheG5YaMyK3+nDWfW5twcJSi0J1iQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KaxVZr7S8PiHiaQyE
- WQ6ZUrofvricreKCVphsaphGF0=; b=IBoZu/zLyvJbzFNVs0qGPIkNOyUVvtKcd
- 1DYiRQUiW4PvTJzji7uRkUMl5haVfUF3Bq3XjpYqyVOSPxnysjuLR/sMO8eP4YZl
- ivSpksVsUlHjX3z8Fhw+xucB6Q+Arzlq5QlA4suqbk8yh2ZsZ0yfE00yf0A2sDX+
- rhe1935+KY321VMIcSmGWoZFcwsMHxJvW+oIAMA/4bQuuwU5MjfWnVOvV1/pec1c
- GBdgaIGbyY7qp6PsjX8SbejRnPjSKgjs68n68jJc1GiP6DU1gFpmM1j2+Yc+IXjo
- abqavy9YM8oW5HR9hD9x9ADvk21Z3Yn9ykDajTOab/v9doEXbRlQQ==
-X-ME-Sender: <xms:Y1mpXUfLnqFrY1fo9Hy-i2mC8_VQrYwCaYQi3ryav0CYaIG7Jqluow>
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm1; bh=I+KYC7Dm/FgVZ/pe/Nx+LB/1mPZ2mbkDMDN3pB2aIr8=; b=QEr6qvad
+ 0OF10Ngc39i+nuxjYLmX2/QTTN4LUeDXK0ueXv8s1IP+BYormO25xFwVHtvJLL+L
+ jS3p9thxdOFL1DakdUF0ydtIPDSd+K0FVtmxFVfEsAz/qK4jgQKw4bsEgNAGu2VB
+ V45xLqu407D+PGsTfYXUQPut4CVNwPO7PsWr9lgsIDTJEHqR5dWeqOnM5iPcs716
+ O5brIhFQC+5uJ/jUGHQsn6n4Y5LdWXWp+Be9QgqfrXL/gccA8/cb+P4ak1QStlVd
+ rJF46UmHYmveAzEnLaGTbE5jHozYu8Mfw23Eh1lPcBmsi4BvOo5FkFUR8lhG+ifZ
+ Jc71ub7J2bmnNA==
+X-ME-Sender: <xms:Z1mpXSLHlui_irhiHLwsiA1aWTGwNi5VFhzBr07P0T_q2khU-QdTww>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrjeekgddutdegucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
- dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuffhomhgrihhnpegrlhhsrgdqphhrohhjvg
- gtthdrohhrghenucfkphepudegrdefrdejhedrudekudenucfrrghrrghmpehmrghilhhf
- rhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjphenucevlhhushhtvg
- hrufhiiigvpedt
-X-ME-Proxy: <xmx:Y1mpXR6ltQfOj4xcH2f5D9_tWmJoxdbWOnol-KWah9RA66waMIZqoA>
- <xmx:Y1mpXZLfk3BM3JfwWetD1w00yilG9_EZImQiXkm2S2Cu4Z1loqR3Qw>
- <xmx:Y1mpXaMrbW3vCGdXk0zTwn6A2S7Sh-1gNvL2uk1rDZcjWaVIErWKOQ>
- <xmx:ZFmpXXcjS2UA0eOq0f43Tp5D58I7WSUFpna7JoQtGA5pIg5xbkjHcQ>
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecukfhppedugedrfedrjeehrddukedune
+ curfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghh
+ ihdrjhhpnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:Z1mpXeT3aEilm4SF3kI1a53tRVgmV4gQaS48wLrWODp5E1yIZn8DGg>
+ <xmx:Z1mpXfsi3ao63KtVfYRsQdZo_t2K1TM696OELXqrti5NSA4Su1mXkg>
+ <xmx:Z1mpXR8D2xn81yMJ8dC4wmuygacJwDA0r3Ru1P0hXuMamNB36MAKYw>
+ <xmx:Z1mpXYtq7qCO0jLD83GTzflGV3UC5f-qft1gX5nyMWbA1NssfHoxvQ>
 Received: from workstation.flets-east.jp (ae075181.dynamic.ppp.asahi-net.or.jp
  [14.3.75.181])
- by mail.messagingengine.com (Postfix) with ESMTPA id 9A12580062;
- Fri, 18 Oct 2019 02:19:14 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 9B91880062;
+ Fri, 18 Oct 2019 02:19:17 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
-Date: Fri, 18 Oct 2019 15:19:05 +0900
-Message-Id: <20191018061911.24909-1-o-takashi@sakamocchi.jp>
+Date: Fri, 18 Oct 2019 15:19:07 +0900
+Message-Id: <20191018061911.24909-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191018061911.24909-1-o-takashi@sakamocchi.jp>
+References: <20191018061911.24909-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 0/6] ALSA: firewire: handle several IR/IT
-	context in callback of the IT context
+Subject: [alsa-devel] [PATCH 2/6] ALSA: firewire-lib: replace pointer
+	callback to flush isoc contexts in AMDTP domain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,58 +123,288 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+An isoc context for AMDTP stream is flushed to queue packet
+by a call of pcm.pointer. This commit extends this for AMDTP
+domain.
 
-This patchset is a part of my continuous work to improve ALSA IEC
-61883-1/6 packet streaming engine for clock-recovery, addressed in
-my previous message:
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-August/153388.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c            | 51 ++++++++++++++----------
+ sound/firewire/amdtp-stream.h            |  3 +-
+ sound/firewire/bebob/bebob_pcm.c         | 14 ++++---
+ sound/firewire/dice/dice-pcm.c           |  4 +-
+ sound/firewire/digi00x/digi00x-pcm.c     |  4 +-
+ sound/firewire/fireface/ff-pcm.c         |  4 +-
+ sound/firewire/fireworks/fireworks_pcm.c |  6 ++-
+ sound/firewire/motu/motu-pcm.c           |  4 +-
+ sound/firewire/oxfw/oxfw-pcm.c           |  4 +-
+ sound/firewire/tascam/tascam-pcm.c       |  4 +-
+ 10 files changed, 56 insertions(+), 42 deletions(-)
 
-For the clock-recovery, information in the sequence of tx packet from
-device should be used to generate the sequence of rx packet to the
-device. In current implementation of the engine, the packets are
-processed in different tasklet contexts for each IR/IT context.
-This is inconvenient to bypass information between these IR/IT contexts.
-
-In this patchset, the engine is improved to process all of IR/IT
-contexts in the same domain by a tasklet context for one of IT context.
-For convenience, the IT context is called as 'IRQ target'. As a result,
-1394 OHCI controller is managed to generate hardware IRQ just for the
-IRQ target. All of rx/tx packets are processed in tasklet for the
-hardware IRQ.
-
-Takashi Sakamoto (6):
-  ALSA: firewire-lib: add irq_target member into amdtp_domain struct
-  ALSA: firewire-lib: replace pointer callback to flush isoc contexts in
-    AMDTP domain
-  ALSA: firewire-lib: replace ack callback to flush isoc contexts in
-    AMDTP domain
-  ALSA: firewire-lib: cancel flushing isoc context in the laste step to
-    process context callback
-  ALSA: firewire-lib: handle several AMDTP streams in callback handler
-    of IRQ target
-  ALSA: firewire-lib: postpone to start IR context
-
- sound/firewire/amdtp-stream.c               | 329 +++++++++++++++-----
- sound/firewire/amdtp-stream.h               |  17 +-
- sound/firewire/bebob/bebob_pcm.c            |  18 +-
- sound/firewire/bebob/bebob_stream.c         |  10 +-
- sound/firewire/dice/dice-pcm.c              |   8 +-
- sound/firewire/dice/dice-stream.c           |   2 +-
- sound/firewire/digi00x/digi00x-pcm.c        |   8 +-
- sound/firewire/digi00x/digi00x-stream.c     |   2 +-
- sound/firewire/fireface/ff-pcm.c            |   8 +-
- sound/firewire/fireface/ff-stream.c         |  10 +-
- sound/firewire/fireworks/fireworks_pcm.c    |  10 +-
- sound/firewire/fireworks/fireworks_stream.c |   2 +-
- sound/firewire/motu/motu-pcm.c              |   8 +-
- sound/firewire/motu/motu-stream.c           |   2 +-
- sound/firewire/oxfw/oxfw-pcm.c              |   8 +-
- sound/firewire/oxfw/oxfw-stream.c           |   2 +-
- sound/firewire/tascam/tascam-pcm.c          |   8 +-
- sound/firewire/tascam/tascam-stream.c       |   2 +-
- 18 files changed, 325 insertions(+), 129 deletions(-)
-
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 7486eec4d958..23677b805b05 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -1099,35 +1099,44 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ }
+ 
+ /**
+- * amdtp_stream_pcm_pointer - get the PCM buffer position
++ * amdtp_domain_stream_pcm_pointer - get the PCM buffer position
++ * @d: the AMDTP domain.
+  * @s: the AMDTP stream that transports the PCM data
+  *
+  * Returns the current buffer position, in frames.
+  */
+-unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
++unsigned long amdtp_domain_stream_pcm_pointer(struct amdtp_domain *d,
++					      struct amdtp_stream *s)
+ {
+-	/*
+-	 * This function is called in software IRQ context of period_tasklet or
+-	 * process context.
+-	 *
+-	 * When the software IRQ context was scheduled by software IRQ context
+-	 * of IR/IT contexts, queued packets were already handled. Therefore,
+-	 * no need to flush the queue in buffer anymore.
+-	 *
+-	 * When the process context reach here, some packets will be already
+-	 * queued in the buffer. These packets should be handled immediately
+-	 * to keep better granularity of PCM pointer.
+-	 *
+-	 * Later, the process context will sometimes schedules software IRQ
+-	 * context of the period_tasklet. Then, no need to flush the queue by
+-	 * the same reason as described for IR/IT contexts.
+-	 */
+-	if (!in_interrupt() && amdtp_stream_running(s))
+-		fw_iso_context_flush_completions(s->context);
++	struct amdtp_stream *irq_target = d->irq_target;
++
++	if (irq_target && amdtp_stream_running(irq_target)) {
++		// This function is called in software IRQ context of
++		// period_tasklet or process context.
++		//
++		// When the software IRQ context was scheduled by software IRQ
++		// context of IT contexts, queued packets were already handled.
++		// Therefore, no need to flush the queue in buffer furthermore.
++		//
++		// When the process context reach here, some packets will be
++		// already queued in the buffer. These packets should be handled
++		// immediately to keep better granularity of PCM pointer.
++		//
++		// Later, the process context will sometimes schedules software
++		// IRQ context of the period_tasklet. Then, no need to flush the
++		// queue by the same reason as described in the above
++		if (!in_interrupt()) {
++			// Queued packet should be processed without any kernel
++			// preemption to keep latency against bus cycle.
++			preempt_disable();
++			fw_iso_context_flush_completions(irq_target->context);
++			preempt_enable();
++		}
++	}
+ 
+ 	return READ_ONCE(s->pcm_buffer_pointer);
+ }
+-EXPORT_SYMBOL(amdtp_stream_pcm_pointer);
++EXPORT_SYMBOL_GPL(amdtp_domain_stream_pcm_pointer);
+ 
+ /**
+  * amdtp_stream_pcm_ack - acknowledge queued PCM frames
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index f92397a2f35f..ba0bbeddfdcb 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -198,7 +198,6 @@ int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
+ 					struct snd_pcm_runtime *runtime);
+ 
+ void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
+-unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
+ int amdtp_stream_pcm_ack(struct amdtp_stream *s);
+ void amdtp_stream_pcm_abort(struct amdtp_stream *s);
+ 
+@@ -302,4 +301,6 @@ static inline int amdtp_domain_set_events_per_period(struct amdtp_domain *d,
+ 	return 0;
+ }
+ 
++unsigned long amdtp_domain_stream_pcm_pointer(struct amdtp_domain *d,
++					      struct amdtp_stream *s);
+ #endif
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index 8b2e0ceffe82..dc15ea8d0dc5 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -313,17 +313,19 @@ pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return 0;
+ }
+ 
+-static snd_pcm_uframes_t
+-pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_bebob *bebob = sbstrm->private_data;
+-	return amdtp_stream_pcm_pointer(&bebob->tx_stream);
++
++	return amdtp_domain_stream_pcm_pointer(&bebob->domain,
++					       &bebob->tx_stream);
+ }
+-static snd_pcm_uframes_t
+-pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_bebob *bebob = sbstrm->private_data;
+-	return amdtp_stream_pcm_pointer(&bebob->rx_stream);
++
++	return amdtp_domain_stream_pcm_pointer(&bebob->domain,
++					       &bebob->rx_stream);
+ }
+ 
+ static int pcm_capture_ack(struct snd_pcm_substream *substream)
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index 7c0c34c5bd47..81b78e7d181d 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -379,14 +379,14 @@ static snd_pcm_uframes_t capture_pointer(struct snd_pcm_substream *substream)
+ 	struct snd_dice *dice = substream->private_data;
+ 	struct amdtp_stream *stream = &dice->tx_stream[substream->pcm->device];
+ 
+-	return amdtp_stream_pcm_pointer(stream);
++	return amdtp_domain_stream_pcm_pointer(&dice->domain, stream);
+ }
+ static snd_pcm_uframes_t playback_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dice *dice = substream->private_data;
+ 	struct amdtp_stream *stream = &dice->rx_stream[substream->pcm->device];
+ 
+-	return amdtp_stream_pcm_pointer(stream);
++	return amdtp_domain_stream_pcm_pointer(&dice->domain, stream);
+ }
+ 
+ static int capture_ack(struct snd_pcm_substream *substream)
+diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
+index c9a833dff20d..f6a2053d5f10 100644
+--- a/sound/firewire/digi00x/digi00x-pcm.c
++++ b/sound/firewire/digi00x/digi00x-pcm.c
+@@ -301,14 +301,14 @@ static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_dg00x *dg00x = sbstrm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&dg00x->tx_stream);
++	return amdtp_domain_stream_pcm_pointer(&dg00x->domain, &dg00x->tx_stream);
+ }
+ 
+ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_dg00x *dg00x = sbstrm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
++	return amdtp_domain_stream_pcm_pointer(&dg00x->domain, &dg00x->rx_stream);
+ }
+ 
+ static int pcm_capture_ack(struct snd_pcm_substream *substream)
+diff --git a/sound/firewire/fireface/ff-pcm.c b/sound/firewire/fireface/ff-pcm.c
+index 005d959f8651..5af1dce90921 100644
+--- a/sound/firewire/fireface/ff-pcm.c
++++ b/sound/firewire/fireface/ff-pcm.c
+@@ -341,14 +341,14 @@ static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_ff *ff = sbstrm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&ff->tx_stream);
++	return amdtp_domain_stream_pcm_pointer(&ff->domain, &ff->tx_stream);
+ }
+ 
+ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_ff *ff = sbstrm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&ff->rx_stream);
++	return amdtp_domain_stream_pcm_pointer(&ff->domain, &ff->rx_stream);
+ }
+ 
+ static int pcm_capture_ack(struct snd_pcm_substream *substream)
+diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
+index abcc53dac8a5..71f5057caa0d 100644
+--- a/sound/firewire/fireworks/fireworks_pcm.c
++++ b/sound/firewire/fireworks/fireworks_pcm.c
+@@ -348,12 +348,14 @@ static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
+ static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_efw *efw = sbstrm->private_data;
+-	return amdtp_stream_pcm_pointer(&efw->tx_stream);
++
++	return amdtp_domain_stream_pcm_pointer(&efw->domain, &efw->tx_stream);
+ }
+ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_efw *efw = sbstrm->private_data;
+-	return amdtp_stream_pcm_pointer(&efw->rx_stream);
++
++	return amdtp_domain_stream_pcm_pointer(&efw->domain, &efw->rx_stream);
+ }
+ 
+ static int pcm_capture_ack(struct snd_pcm_substream *substream)
+diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
+index 00e693da0cad..13e2577c2a07 100644
+--- a/sound/firewire/motu/motu-pcm.c
++++ b/sound/firewire/motu/motu-pcm.c
+@@ -320,13 +320,13 @@ static snd_pcm_uframes_t capture_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_motu *motu = substream->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&motu->tx_stream);
++	return amdtp_domain_stream_pcm_pointer(&motu->domain, &motu->tx_stream);
+ }
+ static snd_pcm_uframes_t playback_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_motu *motu = substream->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&motu->rx_stream);
++	return amdtp_domain_stream_pcm_pointer(&motu->domain, &motu->rx_stream);
+ }
+ 
+ static int capture_ack(struct snd_pcm_substream *substream)
+diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
+index ba586d1ac91d..3be35dfcf270 100644
+--- a/sound/firewire/oxfw/oxfw-pcm.c
++++ b/sound/firewire/oxfw/oxfw-pcm.c
+@@ -393,13 +393,13 @@ static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstm)
+ {
+ 	struct snd_oxfw *oxfw = sbstm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&oxfw->tx_stream);
++	return amdtp_domain_stream_pcm_pointer(&oxfw->domain, &oxfw->tx_stream);
+ }
+ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstm)
+ {
+ 	struct snd_oxfw *oxfw = sbstm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
++	return amdtp_domain_stream_pcm_pointer(&oxfw->domain, &oxfw->rx_stream);
+ }
+ 
+ static int pcm_capture_ack(struct snd_pcm_substream *substream)
+diff --git a/sound/firewire/tascam/tascam-pcm.c b/sound/firewire/tascam/tascam-pcm.c
+index b18664fdf955..1f66c8be7528 100644
+--- a/sound/firewire/tascam/tascam-pcm.c
++++ b/sound/firewire/tascam/tascam-pcm.c
+@@ -230,14 +230,14 @@ static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_tscm *tscm = sbstrm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&tscm->tx_stream);
++	return amdtp_domain_stream_pcm_pointer(&tscm->domain, &tscm->tx_stream);
+ }
+ 
+ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
+ {
+ 	struct snd_tscm *tscm = sbstrm->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&tscm->rx_stream);
++	return amdtp_domain_stream_pcm_pointer(&tscm->domain, &tscm->rx_stream);
+ }
+ 
+ static int pcm_capture_ack(struct snd_pcm_substream *substream)
 -- 
 2.20.1
 
