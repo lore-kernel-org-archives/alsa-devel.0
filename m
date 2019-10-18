@@ -2,90 +2,82 @@ Return-Path: <SRS0=bEgE=YL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CAC8CA9EA9
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:40:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AB13CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:43:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9272821835
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:40:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB5AA222C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:43:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TDJL6FJz";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="o/AVbTpu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9272821835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WSm4V/Hq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Tnve+d6c"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB5AA222C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A15284C;
-	Fri, 18 Oct 2019 20:39:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A15284C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7DA582B;
+	Fri, 18 Oct 2019 20:42:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7DA582B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571424028;
-	bh=0M8yrAB1TypbvXOS4XVUhuQyqnPsdj+4u3+4vJjpCL8=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1571424214;
+	bh=Xj21xOHfx4dxkvCd1Nyd2lMO/qrJ5yDSn4ANc9rkRXE=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TDJL6FJzGdfRmrJlyZL21cuXH0/LIHXk5DSKVBArwq/OK35w/G85/lEmJtOaQn+i0
-	 7DlD0wopSrHmkYt42X0svAnPPJjlnRA0kSlLpL3dW+wVXKo0ofCRq3yTo0UGqJHYlZ
-	 RVRyZJZtV5+YKUAXDdvRgR0lVz9yqyDXI4+6Qong=
+	b=WSm4V/HqRREdnbM61cPt8Z+bbvqepslnURCDKl8kP+lrl5+V92ZAsgB9G5zcjD/5Z
+	 cVgvmgUuOOcJsnGeSwArIrX5PN22VExnnGGwyHDOnvCxyJ48eKTwUUDSQeWZwyIpjc
+	 avwI8GHDh/F50unBbeKHKEjy2Y8dNkLB6lk5b8CI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA7BBF80322;
-	Fri, 18 Oct 2019 20:39:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63B8AF80323;
+	Fri, 18 Oct 2019 20:42:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E6E7F80362; Fri, 18 Oct 2019 20:39:36 +0200 (CEST)
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com
- [IPv6:2607:f8b0:4864:20::244])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 43B7DF80362; Fri, 18 Oct 2019 20:42:42 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE942F800D0
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:39:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE942F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBAC3F800D0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:42:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBAC3F800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="o/AVbTpu"
-Received: by mail-oi1-x244.google.com with SMTP id w6so6020049oie.11
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 11:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=ehXsduEufI5Z+LBu/3xJfIT3IHAbo4RBsjs4lfnOsVk=;
- b=o/AVbTpufUwVlLw2IH/kyrPmX5xyRp44PPCK3+dvQqhbPzdxFfvfgvRB824YVwCV0b
- mHqfyg6EpZaITHapp0pRDP2YbEiJYwY0ogseEBdeB508tsHikcI+3IU9/gwOyYLdFeZJ
- ZbUxVMHy/OfJqH5PJ5xLmgv1zZXoykz9Po7XmLQb38fzB/GL5hehWemXS9xrd6SDM7CQ
- Q6PjTvwvLbbIl3HV57RNVYg7yCrIN6cLFa3oI4z8jEAZrX9JkRhkeU1Nyckec2RDdohC
- oTcePShT2dSO6AZn7lKOwlXD/Hxbl63zjBDfrabfW33D13eqDuR+PLGHRlyL5s4xbSe6
- kFLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=ehXsduEufI5Z+LBu/3xJfIT3IHAbo4RBsjs4lfnOsVk=;
- b=ed1uGTQBWp3DxqYKSXfr3o0gLDmf4QqbYlA7to5630iqbdK5cdr6TPSqb8TLqniHxM
- TbAoa4KcUp1WEriMwAN9vs/79i2sOPkl0atGDCYzbJv3DlTb0L9A6uYVNOW1ZDZ/GGpf
- m5rUMPkuToXSMOqh1WNXjXwVB65z9y8/D+0V4QzaU4XmSz/R7Aa7Er1aeKCjzKxjM0+T
- eQ/f1DTehPzYJsAxkFwAQlmRDojxIHJDdIA4sClqukhRN00CDoxjOFEMcpXw1tnx3JFc
- i/hBvlV1Ii+/2QtiBbLKdvmsLdnrxeJhVm1+tyikol7Y2W+UJo4jnXrM9R/jkDV8DrZ8
- 7b0w==
-X-Gm-Message-State: APjAAAX9uKaDy5gUveKYJxgHnSyuW19Z/6KJNcbjMl4iA76g368UNZ90
- MN9qwxL8SFeDbO4D4D475fgh2JdAp/ZrgBGs6RsCPg==
-X-Google-Smtp-Source: APXvYqxcAVv4IVYlFSWySPq8REWSKrEYBWbH7O/dQ1RvjD6j98hFsYaeP0zxpJA7Pbnh2oTn4bFCnA5uGkjCuSXZ2nQ=
-X-Received: by 2002:aca:1a18:: with SMTP id a24mr9341535oia.145.1571423971400; 
- Fri, 18 Oct 2019 11:39:31 -0700 (PDT)
-MIME-Version: 1.0
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="Tnve+d6c"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=vL9H+9/RLGnQWWp4nUhHSA5PaWdyyUffShvgM8LDMQw=; b=Tnve+d6cDI8Zt/OhjcmA2pC2B
+ tDtWgw88wNUXyjYVd3LYnu0U71Y3EnSrRuF/UzSDHC3Mkz15H34vWrDv0I1dRWhPNKQTJyVvs6d5L
+ DtrIdEn68Ti7JG5oSfiFIH38nY42D5by6mMstgXo44qp2u3FrqLVFyhq0rNoPJxMmDN4A=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iLXCx-0004NN-21; Fri, 18 Oct 2019 18:42:39 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 4A2D42741DEA; Fri, 18 Oct 2019 19:42:38 +0100 (BST)
+Date: Fri, 18 Oct 2019 19:42:38 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+Message-ID: <20191018184238.GD4828@sirena.co.uk>
 References: <20191017213539.00-tzungbi@google.com>
  <20191017213539.07.I5388b69a7a9c551078fed216a77440cee6dedf49@changeid>
  <20191018172220.GC4828@sirena.co.uk>
-In-Reply-To: <20191018172220.GC4828@sirena.co.uk>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Sat, 19 Oct 2019 02:39:20 +0800
-Message-ID: <CA+Px+wXCjaP1uktHLffRCe2C1P_D21f2+A=HDdhutoGv-BVzZQ@mail.gmail.com>
-To: Mark Brown <broonie@kernel.org>
+ <CA+Px+wXCjaP1uktHLffRCe2C1P_D21f2+A=HDdhutoGv-BVzZQ@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CA+Px+wXCjaP1uktHLffRCe2C1P_D21f2+A=HDdhutoGv-BVzZQ@mail.gmail.com>
+X-Cookie: Smear the road with a runner!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Gwendal Grignou <gwendal@google.com>, devicetree@vger.kernel.org,
  ALSA development <alsa-devel@alsa-project.org>,
  Jimmy Cheng-Yi Chiang <cychiang@google.com>,
@@ -105,38 +97,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0167169865725762606=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Oct 19, 2019 at 1:22 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Oct 17, 2019 at 10:00:12PM +0800, Tzung-Bi Shih wrote:
-> > 1. Get EC codec's capabilities.
-> > 2. Get and set SHM address if any.
-> > 3. Transmit language model to EC codec if needed.
-> > 4. Start to read audio data from EC codec if receives host event.
->
-> This breaks the build:
->
-> ld: sound/soc/codecs/cros_ec_codec.o: in function `calculate_sha256.isra.15':
-> cros_ec_codec.c:(.text+0x119d): undefined reference to `crypto_alloc_shash'
-> ld: cros_ec_codec.c:(.text+0x11c1): undefined reference to `crypto_shash_digest'
-> ld: cros_ec_codec.c:(.text+0x11df): undefined reference to `crypto_destroy_tfm'
-> make: *** [Makefile:1094: vmlinux] Error 1
 
-Thanks so much for pointing this out.  Yeah, I forgot to select
-CRYPTO_SHA256 in Kconfig.
+--===============0167169865725762606==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="PHCdUe6m4AxPMzOu"
+Content-Disposition: inline
 
-Looks like there is a blind point in my local build tests
-(allyesconfig, allnoconfig, allmodconfig).  The config in the build
-fail case could be "CROS_EC_CODEC=y" and "CRYPTO_*=n".
 
-Could you tell me how you get the .config (to enhance my local build
-tests next time)?  I tried randconfig several times but it seems not
-easy to hit the case (i.e. CROS_EC_CODEC=y but CRYPTO_*=n).
+--PHCdUe6m4AxPMzOu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sat, Oct 19, 2019 at 02:39:20AM +0800, Tzung-Bi Shih wrote:
+
+> Could you tell me how you get the .config (to enhance my local build
+> tests next time)?  I tried randconfig several times but it seems not
+> easy to hit the case (i.e. CROS_EC_CODEC=y but CRYPTO_*=n).
+
+That one was caught using merge_config.sh to merge in the config below
+then have a script that turns on all options in my subsystems and MFD.
+
+CONFIG_COMPILE_TEST=y
+CONFIG_OF=y
+CONFIG_I2C=y
+CONFIG_SPI=y
+CONFIG_REGULATOR=y
+CONFIG_SOUND=y
+CONFIG_SND=y
+CONFIG_SND_SOC=y
+CONFIG_SND_SOC_ALL_CODECS=y
+CONFIG_SPMI=y
+CONFIG_NLS=y
+CONFIG_SLIMBUS=y
+CONFIG_CLK=y
+CONFIG_DMADEVICES=y
+CONFIG_PCI=y
+CONFIG_ACPI=y
+
+--PHCdUe6m4AxPMzOu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2qB50ACgkQJNaLcl1U
+h9CgCAf+PKAGMjGbyNjrM3ul2W9lHj8LB2sFoTtX/ynPK4k9veA707e4TUD9jhK4
+H/W7IVj6OgtizWbeQPgFvW2bHyZoc8KBqnrbvyWRf17KEwnuErupBw75uCRlP/S9
+n/eh/YzFhgHNvUNfzwWAjmgCA4iw5pVf6lBWooDbbeDx2KVPl38Z//+1PgWP+cNy
+1ZEdHTidjKewTdQoy8cqrRX0oQXzs2V05oYdvZssWklyTywANvANzsDS+/aapKCj
+LbXwhygk2xImXq9XVHIPGmQmRCbLimEwWzhcMkykfmMF0NcJFUXmLMtr0lF3+PBa
+WHyuO3Z/gbo293M87rP57al0ZXxkCQ==
+=GT10
+-----END PGP SIGNATURE-----
+
+--PHCdUe6m4AxPMzOu--
+
+--===============0167169865725762606==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0167169865725762606==--
