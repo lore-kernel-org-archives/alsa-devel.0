@@ -2,74 +2,110 @@ Return-Path: <SRS0=bEgE=YL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 081FDCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:18:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50225CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:20:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECC3421D80
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:18:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AEA32222C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 06:20:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DJ/7BnQt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECC3421D80
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XsrI9nkg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="EHmT9c/k";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vktOw2Be"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEA32222C3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6B659F6;
-	Fri, 18 Oct 2019 08:17:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6B659F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C992E15E0;
+	Fri, 18 Oct 2019 08:19:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C992E15E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571379507;
-	bh=5t5rBnyQ1XIJs1lV+PY2/S0BVLFJM5JiKDH92qSS2ZQ=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1571379616;
+	bh=ymiipiXee2nZiGhCFlgfyKg3JlrgJE8uWPaWF8uCiBA=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DJ/7BnQtcj57ep4eLuKEqzrwU33wOvhqxd04DYUIik7xptlv1vcOhSJ+oUA3Ox+H1
-	 wYlzI2hPiVmpMB097VT6YHWu5UXEZmkwx7aYKl2pgV7C4bvMr46AGoaTDbpT4GXhBX
-	 c9fZERKIn10T8cm4xlMydf45RuhvOB/czVcS1K9U=
+	b=XsrI9nkgrui+wPXonswfQqfjfJlxF9PS8DijaicJKSbzS3cMDcnLMnOsPOjkPOV9e
+	 sFE/awoR9Svq0vluBRCaPiMXBaF1tSKcG5NXCQ294mPhhJS6eU3oYomRg+MmnCLzmK
+	 fJQ8pBxz0pjX8FZSxI1TDzt5SnHug4MPDB+G2O90=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FFC9F800D0;
-	Fri, 18 Oct 2019 08:17:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A4B6F800D0;
+	Fri, 18 Oct 2019 08:19:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D65EF80362; Fri, 18 Oct 2019 08:17:35 +0200 (CEST)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ id 97180F80376; Fri, 18 Oct 2019 08:19:24 +0200 (CEST)
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
+ [64.147.123.19])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6623BF800D0
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 08:17:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6623BF800D0
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 25363ABC6;
- Fri, 18 Oct 2019 06:17:31 +0000 (UTC)
-Date: Fri, 18 Oct 2019 08:17:30 +0200
-Message-ID: <s5hblueh91h.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: frederik@ofb.net
-In-Reply-To: <20191015155202.bqcqzvvpeesfvuwg@localhost>
-References: <20190904164706.gwjbcywbj7emnwvr@localhost>
- <s5hv9u19x2f.wl-tiwai@suse.de>
- <20190910173345.63bv2xa4vlkxicxj@localhost>
- <365e4bcc033c151076140471225db51c80808b7f.camel@iki.fi>
- <s5himprulnt.wl-tiwai@suse.de>
- <e294e2985eda906be3c3625235cc28643208dab2.camel@iki.fi>
- <s5hblvjukn6.wl-tiwai@suse.de>
- <20190919211244.buu3d6ey4k2dxyul@localhost>
- <7c81ae80233efb25b25f2d1f941e9c11acb3967b.camel@iki.fi>
- <s5hh857o1ik.wl-tiwai@suse.de>
- <20191015155202.bqcqzvvpeesfvuwg@localhost>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Tanu Kaskinen <tanuk@iki.fi>, alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] parameter for pulse device?
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90DACF80362
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 08:19:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90DACF80362
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="EHmT9c/k"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="vktOw2Be"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id D708C3FF;
+ Fri, 18 Oct 2019 02:19:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Fri, 18 Oct 2019 02:19:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm2; bh=AOwIwA67BrgER
+ d4EbiUQBjnrhQxxzzsimC8IoRl+S0Y=; b=EHmT9c/kDzu0eOm6S4HqpwbUy2zoK
+ rof+49Cm63JkXAnf/Ms0Ce5QY4n7gZxJizbtWodl4QClEoQ0LimZ7JgrKijMUs9m
+ lM6tnA5W5T9j9WLIlotclvOjnar2E8cksKbbJuZRwcKmUYfKh7QphdWwYwRMNRXB
+ vfHbzCFM9XvaVdXEfNSsCWyvFW3zJcDI8c+bg83lbNY6R1Kh8RDB3hzF62axfyFf
+ x5RBcFU4ah3lSpz1mU1dmfUCmeP1q1Ph5qI+Qai+84fibXdK/qF1UyDozOKjS9bf
+ BIydLkcVWNsjLqJOYpPDh78hAL1pCcC0U1lweCxDWtWFmcecf0d2in+wA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm1; bh=AOwIwA67BrgERd4EbiUQBjnrhQxxzzsimC8IoRl+S0Y=; b=vktOw2Be
+ S1Yv9XG8C6GinqRFwoTSQKBhV5lQ5LxM1XBgm77u1/BbPovM855DvyYqDhtTeoId
+ 8v3IuruEmRgIxBdsAg6tdJ5D3+7h2s8Jv/a361Bu+I5zqEXvqYp90Cgk2hh+zNyv
+ 07C1q/TzKq2wo+A4L1DBiKTgw5R8onbM/Rrhlw2BBi3a3662GSRW4/wX7RXIjreB
+ bymKP82Lt7UyBWXnaTdYuVAvfI2G2QJ5pA4ldvnLmzs6LzOPBAdHIicxyoCRnRYc
+ AQkpyXh0szQwHefGEmcc+HPCcfQWpU3TuMQKvG6A+YswwIxzLYCerssB1fONtjPH
+ bgd8Thx407me3w==
+X-ME-Sender: <xms:ZVmpXTnsQwjHv_rHMk5WxiDsykMBzl3sH4IpubSwDr0sh6D_vT9r8Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrjeekgddutdegucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecukfhppedugedrfedrjeehrddukedune
+ curfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghh
+ ihdrjhhpnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:ZVmpXWDlfY2EWFjLqRWZBfZQlhJWc_I7NMUwCBE4QXyEafftj_VsRw>
+ <xmx:ZVmpXcVUYMyMcwe7jcY8xwlvthXf9YWWLRgq-M4tdeG6xikDH-hE2w>
+ <xmx:ZVmpXU9PGlWAcEz3odqXi5HYGFeI3nm6BhrsXIyTuIRiEixweUDAYw>
+ <xmx:ZVmpXepAv_l50jfdWf7dByBDLOEleTjkjCHjZsCnn6XJ4HyYZ-2zeQ>
+Received: from workstation.flets-east.jp (ae075181.dynamic.ppp.asahi-net.or.jp
+ [14.3.75.181])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 1F8DE80059;
+ Fri, 18 Oct 2019 02:19:15 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: clemens@ladisch.de,
+	tiwai@suse.de
+Date: Fri, 18 Oct 2019 15:19:06 +0900
+Message-Id: <20191018061911.24909-2-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191018061911.24909-1-o-takashi@sakamocchi.jp>
+References: <20191018061911.24909-1-o-takashi@sakamocchi.jp>
+MIME-Version: 1.0
+Cc: alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH 1/6] ALSA: firewire-lib: add irq_target member
+	into amdtp_domain struct
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,32 +123,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Oct 2019 17:52:02 +0200,
-frederik@ofb.net wrote:
-> 
-> Dear Takashi,
-> 
-> I tested your patch, after commenting some lines in my ~/.asoundrc, and I can confirm that it works. I can now specify a pulse device to 'ecasound':
-> 
->    ecasound -o alsa,pulse:music -i song.wav
-> 
-> and when I do it with no "DEVICE" argument, then it outputs to the sink defined by "pacmd set-default-sink":
-> 
->    ecasound -o alsa,pulse -i song.wav
-> 
-> I guess this only exercises one of the cases in your patch where the empty string is recognized as NULL:
-> 
-> +			} else if (!*device) {
-> +				device = NULL;
-> 
-> Let me know if you want me to do more testing, and apologies for the long delay in my reply.
+This commit is a preparation to handle several IR/IT contexts in the same
+domain by tasklet context for one of the IT context. Such IT context is
+stored to AMDTP domain structure as 'irq_target'.
 
-OK, good to hear.  Now I applied the patch to git repo.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 344818e936df..f92397a2f35f 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -279,6 +279,8 @@ struct amdtp_domain {
+ 
+ 	unsigned int events_per_period;
+ 	unsigned int events_per_buffer;
++
++	struct amdtp_stream *irq_target;
+ };
+ 
+ int amdtp_domain_init(struct amdtp_domain *d);
+-- 
+2.20.1
 
-thanks,
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
