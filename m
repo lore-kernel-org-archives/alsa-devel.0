@@ -2,72 +2,97 @@ Return-Path: <SRS0=bEgE=YL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B80BCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 19:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92926CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 19:40:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A11D20820
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 19:36:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24F4A2082C
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 19:40:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bvByGsD2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A11D20820
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IPW9G3n5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24F4A2082C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA8384E;
-	Fri, 18 Oct 2019 21:35:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA8384E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61D91850;
+	Fri, 18 Oct 2019 21:39:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61D91850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571427364;
-	bh=+o4+G2ImVPgUqp41amrVhREkfonS+6Y0qCagCiwwT14=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1571427645;
+	bh=omMEFf7sXj+92rTD4TDJFZVR/r3KmiuXcVrblZvseS0=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bvByGsD2/u6udn45bnUWIBb4vkM0BSNV7b4k5XW12lomqGOZQw8MYokCRgqAdIaH7
-	 Q3LJ4YN+s22Gdldb8egVPAhKwY5Opzl4lYJgLzDTiQ4Nr8eccp4JuaK5MkgfcELyMy
-	 fnwY/wTo3v1jJyMtfSJB2gGS3wLa0ob9L2/38GOw=
+	b=IPW9G3n5aOIA9cUO/zL0vcfxejuHyVFjnI/2VL3s2p3ETTqvz0A3Z7x8RbHET4Bhn
+	 D38+Gy9ok7i+qVj5wSeTCcSP/XHlRRteuIOVulek2i9jFXSL57i1qXqQodIXXDiRsQ
+	 K/fd+tO3Cbexxqvjy5FbMA2CrF25athuz+ABFnvA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 099D8F80323;
-	Fri, 18 Oct 2019 21:35:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 695BCF800D0;
+	Fri, 18 Oct 2019 21:39:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1878AF80362; Fri, 18 Oct 2019 21:35:11 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 43BB8F80362; Fri, 18 Oct 2019 21:39:52 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B39DF800D0
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 21:35:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B39DF800D0
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2019 12:35:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,312,1566889200"; d="scan'208";a="396726571"
-Received: from linux.intel.com ([10.54.29.200])
- by fmsmga005.fm.intel.com with ESMTP; 18 Oct 2019 12:35:01 -0700
-Received: from pbossart-mac01.local (unknown [10.251.14.235])
- by linux.intel.com (Postfix) with ESMTP id EA4BF580107;
- Fri, 18 Oct 2019 12:35:00 -0700 (PDT)
-To: sathya.prakash.m.r@intel.com, alsa-devel@alsa-project.org
-References: <1569430624-30505-1-git-send-email-sathya.prakash.m.r@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <42d2eda2-b87d-ada5-122e-cf39c9d22f03@linux.intel.com>
-Date: Fri, 18 Oct 2019 14:35:00 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEC0DF800D0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 21:39:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEC0DF800D0
+Received: from mail-qt1-f182.google.com ([209.85.160.182]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mr9Jw-1hieeo3F2M-00oBid for <alsa-devel@alsa-project.org>; Fri, 18 Oct
+ 2019 21:39:48 +0200
+Received: by mail-qt1-f182.google.com with SMTP id n17so10776893qtr.4
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 12:39:48 -0700 (PDT)
+X-Gm-Message-State: APjAAAV7EeX766+9o59wZlYoPGoddqY+gHmVbPEjYayIJ2NRQ/tswSxM
+ Sjb3Zz49II9zzIGW4Ag0pzOwSa29TMTI0x2o744=
+X-Google-Smtp-Source: APXvYqymx9pRQIUe2GYLUGRMu9h+M26SuGVUoD8rv9IlkdyulST9oDUMU0vWJ1+HJSdIkbSMY8qPMr5o0NKJV3kBq/8=
+X-Received: by 2002:ac8:6956:: with SMTP id n22mr11586436qtr.7.1571427587664; 
+ Fri, 18 Oct 2019 12:39:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1569430624-30505-1-git-send-email-sathya.prakash.m.r@intel.com>
-Content-Language: en-US
-Cc: tiwai@suse.de, naveen.m@intel.com, broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH v4 0/2] Add CML M/C for RT5682 and RT1011
+References: <20191018154052.1276506-1-arnd@arndb.de>
+ <20191018154201.1276638-29-arnd@arndb.de>
+ <20191018184815.GP35946@dtor-ws>
+ <CAK8P3a27==9TeS-RWEvrpnxh+6McqRF-xeb8WPj9pHOn+0zbOQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a27==9TeS-RWEvrpnxh+6McqRF-xeb8WPj9pHOn+0zbOQ@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 18 Oct 2019 21:39:31 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0AP8q9Hk1DB+E=xFGV5RqXnkjkcZRobgU1NRDFMH00AA@mail.gmail.com>
+Message-ID: <CAK8P3a0AP8q9Hk1DB+E=xFGV5RqXnkjkcZRobgU1NRDFMH00AA@mail.gmail.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+X-Provags-ID: V03:K1:y4JF0JUnVBWcCKF0LKonRR/hIUE6gtQJfbCKFnVnyWu1C1m9B1F
+ VuF0i1drTurCFi0uTPNXv4MHVdGs5Pm2mzKWEOCoPgshg2otE3/wKkOV1kG2Tme1Ew8qPsO
+ GZk2TWuVILJD4eFaIx1y4zSC9brHRn8O38zihz4mr/vd+0NzgsNxauWkTMHCndy8+ZUXBpI
+ x6+54Q6VU0ZSARIA/wqvA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jTlio4asvP0=:DYcMc6NIun/kwtFxNx+NIP
+ 29vWWhkUk//va1gYxsX4a8bZ5ewTXSmChhkCPLDlw8VD2diKDKXlBbWga0lVP3fkq9yN2zdsO
+ m/3IKs1bzqIafL4CLVeKbjlj0Z+obtvA+jNUFNnxfygmsZ5oJtJ7eqRz07IyxyNSQ4dgOK3+i
+ EIic7g1dqUq/2E/07QhSXxCBuz12Gqdm6J8QO5yeovrukIj17QirMy60Bh7YkjkWPJhRfQfOf
+ LqXiwb2zoTSFEMlPOICA9ZrWQaIdusgDwwdM6VKZjXdHrqSFjL3rxbBqhuzOPSh8G2FFgyoPJ
+ sUlxemGJHRTo5J6k2lvJRF1MjfMaXXcRRHV6gvcMQCYiKiBO4njRuO+/2Hw2rUyMZ3jxnBomG
+ kxlKDJerVSOoRUUdyg6OIhgfiXXtkfP2yiEwT8ySLnj85ItZLqQj03SB7oq7KJn3qbWcxIwCw
+ 2jFGbDfI9gJUiKaUcCykktxcwxbqW0abh/B23BL1OQVhM6ulAagu2jHJHyXiqHU4tad9Rdks6
+ +bjORb7FAQKKnD4/xCNRC7931MtqA4AZGoRZBpj2UfVsXrlkqq2ns7iMhUwqlHAwyovyCJzgB
+ 9Ch7m+SMqIPE/FXu5Au8r8xw0E8I3kksYuQB1S0JvW9EgBjHEyeXQtHSTG2cuF6rq9V3jwvkO
+ LR9t9MRlvqBjSllt5lNKEt1WOtDMVD1I0sC4+BUGZz/yV7FhnsNHBaMGG8WtgJMavg+5b9Uxw
+ SrMSogTotFdwB3mW2AuTFjIjk7/SGt6CLKyWGCRGOtxt84bvbIAJs9sULrhdD8/VJYw6F31qt
+ BdX5WpcGesYkYCfbbMIwQYQLND1P+qa8hsB12HnE+bWh8VfwrpfOZgPKtKBzaYHW/zqWPIIXy
+ UqOoQMKQYdQG92Erf4Qg==
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: [alsa-devel] Fwd: [PATCH 29/46] Input: touchscreen: use wrapper for
+	pxa2xx ac97 registers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,59 +105,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 9/25/19 11:57 AM, sathya.prakash.m.r@intel.com wrote:
-> From: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-> 
-> The series adds CML m/c driver with RT5682 on SSP0 and
-> RT1011 on SSP1.
-> The RT1011 is smart AMP which supports 2 Whoofers and
-> 2 tweeter support.
-> RT5682 is headset codec supporting playback and record.
-> The m/c supports HDMI playback and DMIC record.
-> 
-> Naveen Manohar (2):
->    ASoC: Intel: boards: Add CML m/c using RT1011 and RT5682
->    ASoC: Intel: Add acpi match for rt1011 based m/c driver
-> 
->   sound/soc/intel/boards/Kconfig                    |  18 +
->   sound/soc/intel/boards/Makefile                   |   2 +
->   sound/soc/intel/boards/cml_rt1011_rt5682.c        | 473 ++++++++++++++++++++++
->   sound/soc/intel/common/soc-acpi-intel-cnl-match.c |   7 +
->   4 files changed, 500 insertions(+)
->   create mode 100644 sound/soc/intel/boards/cml_rt1011_rt5682.c
-> 
-> --
-> V3 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Fri, Oct 18, 2019 at 8:48 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> On Fri, Oct 18, 2019 at 05:41:44PM +0200, Arnd Bergmann wrote:
+> > To avoid a dependency on the pxa platform header files with
+> > hardcoded registers, change the driver to call a wrapper
+> > in the pxa2xx-ac97-lib that encapsulates all the other
+> > ac97 stuff.
+>
+> Not supper happy about adding module dependencies. Can we include
+> mach/regs-ac97.h from include/sound/pxa2xx-lib.h and use static inlines?
+> Someone needs to include mach/regs-ac97.h in the end...
+>
+> Or there is something later in the series that needs it?
 
-Mark, I noticed this morning while rebasing SOF on your tree that those 
-two patches have not been merged.
-Not sure if they were missed (the 4 versions were confusing), if you 
-didn't see my Acked-by tag or if there was an objection?
-No real urgency except for likely conflicts with Kai's work on the HDMI 
-side if we delay, and I think Morimoto-san is also preparing additional 
-nice simplifications for codec-dais.
-Thanks and have a nice weekend.
+One of the goals of the series is to completely remove all mach/*.h headers
+and place them somewhere else, ideally inaccessible to device drivers.
 
+In case of mach/regs-ac97.h, the later patch "ASoC: pxa: ac97: use normal
+MMIO accessors" passes the physical register base address as a platform
+device resource that gets ioremapped in the ac97 driver, rather than
+hardcoding the virtual address in a global header.
 
-> Changes from V3: repost with more recipients and edits to commit messages
-> Changes from V2: re ordered match table
-> to ensure non i2c device matches are at the end
-> Changes from V1:
-> Addressed comments on
-> ASoC: Intel: boards: Add CML m/c using RT1011 and RT5682
-> 1.9.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+I agree that the exported function is still ugly, but I hope it's enough of
+an improvement over the previous state that we can do it anyway.
 
+If you have any better ideas though, I can give that a try, too.
+One possibility would be a higher-level interface exported on top
+of 'struct snd_ac97', but I could not figure out how to do this.
+
+     Arnd
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
