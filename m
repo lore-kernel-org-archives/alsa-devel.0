@@ -2,103 +2,65 @@ Return-Path: <SRS0=bEgE=YL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8613DCA9ECC
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 00:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E92DDCA9EB3
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 02:38:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1471221D80
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 00:28:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA4C621D7D
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 02:38:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GzrekBGW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mXrPH9Wd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1471221D80
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M0cigsb0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA4C621D7D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5534E168E;
-	Fri, 18 Oct 2019 02:28:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5534E168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E9DC84F;
+	Fri, 18 Oct 2019 04:37:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E9DC84F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571358531;
-	bh=U6bYtHYADopphzARCrzX/2UPPaUxNqSREdzSO83RjA4=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1571366309;
+	bh=BZAFOXkiZoNHlD2GJJXdHIukoM2kW208PHrr9EAioOs=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GzrekBGWHFZ4aop3CKOmohiO8gF8WHUZVHBvMGLzucfEdZMZ0hEOmG+dJsgM3jIR+
-	 l1pr4AXGIsTgQtF1Po246y+i7Kfcz37TiLO56jlPT1KG+DlXA41w0PD7XY5ePbPcNW
-	 AHGkG/APjBtu6MGq2AVhWYMZMZ4IxZeDQD70yFwI=
+	b=M0cigsb0oUAY7sar+9mN2PsgW99Ngqe13Hv4NFGo4Rpq47sdbtDqIH7ExHfZhka54
+	 xc5yL8pdp4O/x/oDuNIzDVQpobkx63Z609vuxbTms9n3DOmMCM3Aj8zDRgb2selIPD
+	 q+rzuwANpE1tWbkxWOP8gCBT+d7tPkF2dHeHYRus=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFA65F80715;
-	Fri, 18 Oct 2019 02:20:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23D14F800F3;
+	Fri, 18 Oct 2019 04:37:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16F76F805FE; Fri, 18 Oct 2019 02:20:26 +0200 (CEST)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A105EF80362; Fri, 18 Oct 2019 04:37:36 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 348BDF805FE
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 02:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 348BDF805FE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mXrPH9Wd"
-Received: by mail-wr1-x441.google.com with SMTP id p4so4259934wrm.8
- for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2019 17:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=NFhJ0Ish0UcipllWIdsD8WX5howJ70tuJMN0799CtbQ=;
- b=mXrPH9WdiLYexh2aFZIBmMo+VBUpmnvFu67nbIYZkiXxpkKXrfP9CDVmUsFWkPlD90
- ENTkcNStSwhqA/cr8cSRgJUt3B2S/xAi/KeOcyLLf3eCJTTnn4u2DrCN8u6f/9dd40oW
- 98e8YBYB6jSglGiZliD6t+pY49NMvErUXfDd6+opJiGw7Lu86qNAA38cveFMGjgoJwnX
- iTjtIGclsPdRnVK2wyY8w9gTDoRiBWo1owNTCw+0Td4Fk5L3BAw/KZvXNPGPla/qECtg
- mxsF1vzNyxcL7wSMfHc1L82DnGcV1yrLeltQtKoRTwtcwcPniXF27vrMQMA/+wJMZLL/
- Fcqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=NFhJ0Ish0UcipllWIdsD8WX5howJ70tuJMN0799CtbQ=;
- b=M3Yk1tdCFEQpHxDPXy+pub2K7Q2ODvHB4qJ83S1srzsB6FgTNvUf/4kHFid26vkN8B
- DuJ0WYT1lc679GcrBwIRb5sISUPSCuThgclBsRt2Rp6+aNg7QF92EAbeikISIXCQW/hH
- v7y/Dg0BlOZ4+H+bph/JaKh3SBZSb07f72RDAtAqNPs04k2hrnVhvyPXXmoXxCpVkwL3
- Q7xXB+mqIl1Clrl8rBddimOXzcE2rKgm6RRVAQYATUX0JLbLXUTh+RmjGAZZwILM/cXr
- F+UaaYMMVaYit7PBZik9AEsyvOlYrr/GOpo20fnv9AJhWuN5cT/aCV1zNtzH7lCxjSy9
- lbog==
-X-Gm-Message-State: APjAAAUFHaY0giy6wX1dsNJggH9cpf7o4z3AkMsGSOWuOAhGH6XFP7+m
- sYB9jFdB0khInaxs8/LUDZ17+qic9ww=
-X-Google-Smtp-Source: APXvYqwij7hrP3gERpA/4mEFvTiOe8rsmfjT4dHYBYN+EGZcfJ8LmqMDRu/QG0y/jD8r0ETvVYUobQ==
-X-Received: by 2002:adf:f343:: with SMTP id e3mr5153138wrp.315.1571358008368; 
- Thu, 17 Oct 2019 17:20:08 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id z189sm4851248wmc.25.2019.10.17.17.20.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 17 Oct 2019 17:20:07 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: robh@kernel.org, broonie@kernel.org, linus.walleij@linaro.org,
- lee.jones@linaro.org
-Date: Fri, 18 Oct 2019 01:18:47 +0100
-Message-Id: <20191018001849.27205-10-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191018001849.27205-1-srinivas.kandagatla@linaro.org>
-References: <20191018001849.27205-1-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, vinod.koul@linaro.org, spapothi@codeaurora.org,
- linux-kernel@vger.kernel.org,
- Yeleswarapu Nagaradhesh <nagaradh@codeaurora.org>, linux-gpio@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] [PATCH v2 09/11] pinctrl: qcom-wcd934x: Add support to
-	wcd934x pinctrl driver.
+ by alsa1.perex.cz (Postfix) with ESMTPS id C493DF800D0
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 04:37:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C493DF800D0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 7CDEBB464;
+ Fri, 18 Oct 2019 02:37:32 +0000 (UTC)
+Date: Fri, 18 Oct 2019 04:37:32 +0200
+Message-ID: <s5hwod2hj83.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+In-Reply-To: <20191017155424.885-1-o-takashi@sakamocchi.jp>
+References: <20191017155424.885-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Subject: Re: [alsa-devel] [PATCH 00/12] ALSA: firewire: configure interval
+	of hw IRQ via ALSA PCM interface
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,420 +78,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yeleswarapu Nagaradhesh <nagaradh@codeaurora.org>
+On Thu, 17 Oct 2019 17:54:12 +0200,
+Takashi Sakamoto wrote:
+> 
+> Hi,
+> 
+> ALSA IEC 61883-1/6 packet streaming engine controls OHCI 1394 controller
+> to generate hardware IRQ for fixed number (=16) of isoc packets.
+> Additionally, the size of packet buffer is fixed for triple of interval
+> of hardware IRQ (=48).
+> 
+> This commit allows ALSA PCM applications to configure these parameters
+> by ALSA PCM interface. As a result, the size of PCM period is available
+> in the range between 125 usec and 64 msec (or 32 msec). The hardware
+> IRQ is scheduled for isoc packet which includes event across PCM period
+> boundary.
+> 
+> Takashi Sakamoto (12):
+>   ALSA: firewire-lib: use variable size of queue for isoc packets
+>     instead of fixed size
+>   ALSA: bebob: share PCM buffer size for both direction
+>   ALSA: fireworks: share PCM buffer size for both direction
+>   ALSA: oxfw: share PCM buffer size for both direction
+>   ALSA: dice: share PCM buffer size for both direction
+>   ALSA: firewire-digi00x: share PCM buffer size for both direction
+>   ALSA: firewire-tascam: share PCM buffer size for both direction
+>   ALSA: firewire-motu: share PCM buffer size for both direction
+>   ALSA: fireface: share PCM buffer size for both direction
+>   ALSA: firewire-lib: schedule hardware IRQ according to the size of PCM
+>     period
+>   ALSA: firewire-lib: tune the maximum available size of PCM period
+>   ALSA: firewire-lib: tune the minimum available size of PCM period
 
-This patch adds support to wcd934x pinctrl block found in
-WCD9340/WC9341 Audio codecs.
+Applied all 12 patches now.  Thanks.
 
-[Srini: multiple cleanups to the code]
-Signed-off-by: Yeleswarapu Nagaradhesh <nagaradh@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/pinctrl/qcom/Kconfig                |   7 +
- drivers/pinctrl/qcom/Makefile               |   1 +
- drivers/pinctrl/qcom/pinctrl-wcd934x-gpio.c | 365 ++++++++++++++++++++
- 3 files changed, 373 insertions(+)
- create mode 100644 drivers/pinctrl/qcom/pinctrl-wcd934x-gpio.c
 
-diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-index 32fc2458b8eb..7406df5fb89a 100644
---- a/drivers/pinctrl/qcom/Kconfig
-+++ b/drivers/pinctrl/qcom/Kconfig
-@@ -195,4 +195,11 @@ config PINCTRL_SM8150
-          Qualcomm Technologies Inc TLMM block found on the Qualcomm
-          Technologies Inc SM8150 platform.
- 
-+config PINCTRL_WCD934X
-+	tristate "Qualcomm Technologies Inc WCD9340/WCD9341 pin controller driver"
-+	depends on GPIOLIB && OF
-+	help
-+         This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-+         Qualcomm Technologies Inc Pinctrl block found on the Qualcomm
-+         Technologies Inc WCD9340/WCD9341 Audio Codec.
- endif
-diff --git a/drivers/pinctrl/qcom/Makefile b/drivers/pinctrl/qcom/Makefile
-index f8bb0c265381..8c42ba1bdd69 100644
---- a/drivers/pinctrl/qcom/Makefile
-+++ b/drivers/pinctrl/qcom/Makefile
-@@ -24,3 +24,4 @@ obj-$(CONFIG_PINCTRL_SC7180)	+= pinctrl-sc7180.o
- obj-$(CONFIG_PINCTRL_SDM660)   += pinctrl-sdm660.o
- obj-$(CONFIG_PINCTRL_SDM845) += pinctrl-sdm845.o
- obj-$(CONFIG_PINCTRL_SM8150) += pinctrl-sm8150.o
-+obj-$(CONFIG_PINCTRL_WCD934X) += pinctrl-wcd934x-gpio.o
-diff --git a/drivers/pinctrl/qcom/pinctrl-wcd934x-gpio.c b/drivers/pinctrl/qcom/pinctrl-wcd934x-gpio.c
-new file mode 100644
-index 000000000000..1aff88d0bcb3
---- /dev/null
-+++ b/drivers/pinctrl/qcom/pinctrl-wcd934x-gpio.c
-@@ -0,0 +1,365 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2016-2017, The Linux Foundation. All rights reserved.
-+// Copyright (c) 2019, Linaro Limited
-+
-+#include <linux/module.h>
-+#include <linux/gpio.h>
-+#include <linux/interrupt.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_gpio.h>
-+
-+#include "../core.h"
-+#include "../pinctrl-utils.h"
-+
-+#define WCD_REG_DIR_CTL_OFFSET 0x42
-+#define WCD_REG_VAL_CTL_OFFSET 0x43
-+#define WCD_GPIO_PULL_UP       1
-+#define WCD_GPIO_PULL_DOWN     2
-+#define WCD_GPIO_BIAS_DISABLE  3
-+#define WCD_GPIO_STRING_LEN    20
-+#define WCD934X_NPINS		5
-+
-+/**
-+ * struct wcd_gpio_pad - keep current GPIO settings
-+ * @offset: offset of gpio.
-+ * @is_valid: Set to false, when GPIO in high Z state.
-+ * @value: value of a pin
-+ * @output_enabled: Set to true if GPIO is output and false if it is input
-+ * @pullup: Constant current which flow through GPIO output buffer.
-+ * @strength: Drive strength of a pin
-+ */
-+struct wcd_gpio_pad {
-+	u16  offset;
-+	bool is_valid;
-+	bool value;
-+	bool output_enabled;
-+	unsigned int pullup;
-+	unsigned int strength;
-+};
-+
-+struct wcd_gpio_priv {
-+	struct device *dev;
-+	struct regmap *map;
-+	struct pinctrl_dev *ctrl;
-+	struct gpio_chip chip;
-+};
-+
-+static int wcd_gpio_read(struct wcd_gpio_priv *priv_data,
-+			 struct wcd_gpio_pad *pad, unsigned int addr)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(priv_data->map, addr, &val);
-+	if (ret < 0)
-+		dev_err(priv_data->dev, "%s: read 0x%x failed\n",
-+			__func__, addr);
-+	else
-+		ret = (val >> pad->offset);
-+
-+	return ret;
-+}
-+
-+static int wcd_gpio_write(struct wcd_gpio_priv *priv_data,
-+			  struct wcd_gpio_pad *pad, unsigned int addr,
-+			  unsigned int val)
-+{
-+	int ret;
-+
-+	ret = regmap_update_bits(priv_data->map, addr, (1 << pad->offset),
-+				 val << pad->offset);
-+	if (ret < 0)
-+		dev_err(priv_data->dev, "write 0x%x failed\n", addr);
-+
-+	return ret;
-+}
-+
-+static int wcd_get_groups_count(struct pinctrl_dev *pctldev)
-+{
-+	return pctldev->desc->npins;
-+}
-+
-+static const char *wcd_get_group_name(struct pinctrl_dev *pctldev,
-+				      unsigned int pin)
-+{
-+	return pctldev->desc->pins[pin].name;
-+}
-+
-+static int wcd_get_group_pins(struct pinctrl_dev *pctldev, unsigned int pin,
-+			      const unsigned int **pins, unsigned int *num_pins)
-+{
-+	*pins = &pctldev->desc->pins[pin].number;
-+	*num_pins = 1;
-+
-+	return 0;
-+}
-+
-+static const struct pinctrl_ops wcd_pinctrl_ops = {
-+	.get_groups_count       = wcd_get_groups_count,
-+	.get_group_name         = wcd_get_group_name,
-+	.get_group_pins         = wcd_get_group_pins,
-+	.dt_node_to_map         = pinconf_generic_dt_node_to_map_group,
-+	.dt_free_map            = pinctrl_utils_free_map,
-+};
-+
-+static int wcd_config_get(struct pinctrl_dev *pctldev,
-+			  unsigned int pin, unsigned long *config)
-+{
-+	unsigned int param = pinconf_to_config_param(*config);
-+	struct wcd_gpio_pad *pad;
-+	unsigned int arg;
-+
-+	pad = pctldev->desc->pins[pin].drv_data;
-+
-+	switch (param) {
-+	case PIN_CONFIG_BIAS_PULL_DOWN:
-+		arg = pad->pullup == WCD_GPIO_PULL_DOWN;
-+		break;
-+	case PIN_CONFIG_BIAS_DISABLE:
-+		arg = pad->pullup = WCD_GPIO_BIAS_DISABLE;
-+		break;
-+	case PIN_CONFIG_BIAS_PULL_UP:
-+		arg = pad->pullup == WCD_GPIO_PULL_UP;
-+		break;
-+	case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
-+		arg = !pad->is_valid;
-+		break;
-+	case PIN_CONFIG_INPUT_ENABLE:
-+		arg = pad->output_enabled;
-+		break;
-+	case PIN_CONFIG_OUTPUT:
-+		arg = pad->value;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	*config = pinconf_to_config_packed(param, arg);
-+	return 0;
-+}
-+
-+static int wcd_config_set(struct pinctrl_dev *pctldev, unsigned int pin,
-+			  unsigned long *configs, unsigned int nconfs)
-+{
-+	struct wcd_gpio_priv *priv_data = pinctrl_dev_get_drvdata(pctldev);
-+	struct wcd_gpio_pad *pad;
-+	unsigned int param, arg;
-+	int i, ret;
-+
-+	pad = pctldev->desc->pins[pin].drv_data;
-+
-+	for (i = 0; i < nconfs; i++) {
-+		param = pinconf_to_config_param(configs[i]);
-+		arg = pinconf_to_config_argument(configs[i]);
-+
-+		switch (param) {
-+		case PIN_CONFIG_BIAS_DISABLE:
-+			pad->pullup = WCD_GPIO_BIAS_DISABLE;
-+			break;
-+		case PIN_CONFIG_BIAS_PULL_UP:
-+			pad->pullup = WCD_GPIO_PULL_UP;
-+			break;
-+		case PIN_CONFIG_BIAS_PULL_DOWN:
-+			pad->pullup = WCD_GPIO_PULL_DOWN;
-+			break;
-+		case PIN_CONFIG_BIAS_HIGH_IMPEDANCE:
-+			pad->is_valid = false;
-+			break;
-+		case PIN_CONFIG_INPUT_ENABLE:
-+			pad->output_enabled = false;
-+			break;
-+		case PIN_CONFIG_OUTPUT:
-+			pad->output_enabled = true;
-+			pad->value = arg;
-+			break;
-+		case PIN_CONFIG_DRIVE_STRENGTH:
-+			pad->strength = arg;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	ret = wcd_gpio_write(priv_data, pad, WCD_REG_DIR_CTL_OFFSET,
-+			     pad->output_enabled);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (pad->output_enabled)
-+		ret = wcd_gpio_write(priv_data, pad, WCD_REG_VAL_CTL_OFFSET,
-+				     pad->value);
-+
-+	return ret;
-+}
-+
-+static const struct pinconf_ops wcd_pinconf_ops = {
-+	.is_generic  = true,
-+	.pin_config_group_get = wcd_config_get,
-+	.pin_config_group_set = wcd_config_set,
-+};
-+
-+static int wcd_gpio_direction_input(struct gpio_chip *chip, unsigned int pin)
-+{
-+	struct wcd_gpio_priv *priv_data = gpiochip_get_data(chip);
-+	unsigned long config;
-+
-+	config = pinconf_to_config_packed(PIN_CONFIG_INPUT_ENABLE, 1);
-+
-+	return wcd_config_set(priv_data->ctrl, pin, &config, 1);
-+}
-+
-+static int wcd_gpio_direction_output(struct gpio_chip *chip,
-+				      unsigned int pin, int val)
-+{
-+	struct wcd_gpio_priv *priv_data = gpiochip_get_data(chip);
-+	unsigned long config;
-+
-+	config = pinconf_to_config_packed(PIN_CONFIG_OUTPUT, val);
-+
-+	return wcd_config_set(priv_data->ctrl, pin, &config, 1);
-+}
-+
-+static int wcd_gpio_get(struct gpio_chip *chip, unsigned int pin)
-+{
-+	struct wcd_gpio_priv *priv_data = gpiochip_get_data(chip);
-+	struct wcd_gpio_pad *pad;
-+	int value;
-+
-+	pad = priv_data->ctrl->desc->pins[pin].drv_data;
-+
-+	if (!pad->is_valid)
-+		return -EINVAL;
-+
-+	value = wcd_gpio_read(priv_data, pad, WCD_REG_VAL_CTL_OFFSET);
-+
-+	return value;
-+}
-+
-+static void wcd_gpio_set(struct gpio_chip *chip, unsigned int pin, int value)
-+{
-+	struct wcd_gpio_priv *priv_data = gpiochip_get_data(chip);
-+	unsigned long config;
-+
-+	config = pinconf_to_config_packed(PIN_CONFIG_OUTPUT, value);
-+
-+	wcd_config_set(priv_data->ctrl, pin, &config, 1);
-+}
-+
-+static const struct gpio_chip wcd_gpio_chip = {
-+	.direction_input  = wcd_gpio_direction_input,
-+	.direction_output = wcd_gpio_direction_output,
-+	.get = wcd_gpio_get,
-+	.set = wcd_gpio_set,
-+};
-+
-+static int wcd_pinctrl_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct pinctrl_pin_desc *pindesc;
-+	struct pinctrl_desc *pctrldesc;
-+	struct wcd_gpio_pad *pad, *pads;
-+	struct wcd_gpio_priv *priv_data;
-+	u32 npins = WCD934X_NPINS;
-+	char **name;
-+	int i;
-+
-+	priv_data = devm_kzalloc(dev, sizeof(*priv_data), GFP_KERNEL);
-+	if (!priv_data)
-+		return -ENOMEM;
-+
-+	priv_data->dev = dev;
-+	priv_data->map = dev_get_regmap(dev->parent, NULL);
-+	if (!priv_data->map) {
-+		dev_err(dev, "%s: failed to get regmap\n", __func__);
-+		return  -EINVAL;
-+	}
-+
-+	pindesc = devm_kcalloc(dev, npins, sizeof(*pindesc), GFP_KERNEL);
-+	if (!pindesc)
-+		return -ENOMEM;
-+
-+	pads = devm_kcalloc(dev, npins, sizeof(*pads), GFP_KERNEL);
-+	if (!pads)
-+		return -ENOMEM;
-+
-+	pctrldesc = devm_kzalloc(dev, sizeof(*pctrldesc), GFP_KERNEL);
-+	if (!pctrldesc)
-+		return -ENOMEM;
-+
-+	pctrldesc->pctlops = &wcd_pinctrl_ops;
-+	pctrldesc->confops = &wcd_pinconf_ops;
-+	pctrldesc->owner = THIS_MODULE;
-+	pctrldesc->name = dev_name(dev);
-+	pctrldesc->pins = pindesc;
-+	pctrldesc->npins = npins;
-+
-+	name = devm_kcalloc(dev, npins, sizeof(char *), GFP_KERNEL);
-+	if (!name)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < npins; i++, pindesc++) {
-+		name[i] = devm_kzalloc(dev, sizeof(char) * WCD_GPIO_STRING_LEN,
-+				       GFP_KERNEL);
-+		if (!name[i])
-+			return -ENOMEM;
-+
-+		pad = &pads[i];
-+		pindesc->drv_data = pad;
-+		pindesc->number = i;
-+		snprintf(name[i], (WCD_GPIO_STRING_LEN - 1), "gpio%d", (i+1));
-+		pindesc->name = name[i];
-+		pad->offset = i;
-+		pad->is_valid  = true;
-+	}
-+
-+	priv_data->chip = wcd_gpio_chip;
-+	priv_data->chip.parent = dev;
-+	priv_data->chip.base = -1;
-+	priv_data->chip.ngpio = npins;
-+	priv_data->chip.label = dev_name(dev);
-+	priv_data->chip.of_gpio_n_cells = 2;
-+	priv_data->chip.can_sleep = false;
-+	platform_set_drvdata(pdev, priv_data);
-+
-+	priv_data->ctrl = devm_pinctrl_register(dev, pctrldesc, priv_data);
-+	if (IS_ERR(priv_data->ctrl)) {
-+		dev_err(dev, "%s: failed to register to pinctrl\n", __func__);
-+		return PTR_ERR(priv_data->ctrl);
-+	}
-+
-+	return gpiochip_add_data(&priv_data->chip, priv_data);
-+}
-+
-+static int wcd_pinctrl_remove(struct platform_device *pdev)
-+{
-+	struct wcd_gpio_priv *priv_data = platform_get_drvdata(pdev);
-+
-+	gpiochip_remove(&priv_data->chip);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id wcd_pinctrl_of_match[] = {
-+	{ .compatible = "qcom,wcd9340-pinctrl" },
-+	{ .compatible = "qcom,wcd9341-pinctrl" },
-+	{ },
-+};
-+
-+MODULE_DEVICE_TABLE(of, wcd_pinctrl_of_match);
-+
-+static struct platform_driver wcd_pinctrl_driver = {
-+	.driver = {
-+		   .name = "wcd934x-pinctrl",
-+		   .of_match_table = wcd_pinctrl_of_match,
-+	},
-+	.probe = wcd_pinctrl_probe,
-+	.remove = wcd_pinctrl_remove,
-+};
-+
-+module_platform_driver(wcd_pinctrl_driver);
-+
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc WCD GPIO pin control driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.21.0
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
