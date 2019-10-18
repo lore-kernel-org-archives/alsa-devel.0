@@ -7,78 +7,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 208D7CA9EA9
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:10:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F439CA9EA9
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:11:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2339222C5
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:10:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1ED17222C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:11:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V/5+6Gyg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="N8rKqzZe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2339222C5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XJRT3wX4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="WsrEodvR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ED17222C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5B57166C;
-	Fri, 18 Oct 2019 20:09:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5B57166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A73F1681;
+	Fri, 18 Oct 2019 20:10:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A73F1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571422249;
-	bh=dBFILuix9AcnTrcnOZDrKTQ0hgxfN8pbR7KhM3E50Lc=;
+	s=default; t=1571422285;
+	bh=NtTqsF0wcJjoQ6oEfIoHgNFNiBwNMYJgL5z89sO/XRI=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=V/5+6GygkUODLbkyBwMU6QUcA3fnk+OrKVRXjuI3veqPPALDXv7j5uSbi8zXaRufn
-	 oUzVugZRJruj36x0nNyijzojvJqd3QFi/IceRejLHKGFEgDjYzswaWdkgOJ65OJlwX
-	 qEydHYVejGfAEQAl77lTcZF+1Kw+v5HXvYw8MO6s=
+	b=XJRT3wX4g3nvFzo6wSY0JBTeXGJfxbYsaKfjK4faLsFpNgWUU5SuuAd7YM1SDfdHR
+	 oQ0wOoUhBKons0mLn5GueMDJEX+/WC5oTPKHZ+sMBjrxwcfdzeGtG0ZjWgvxRC8hRD
+	 asNwXJbjttqENq8K5NkwhNemMPH0W809xW2BwS0c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2362FF80611;
-	Fri, 18 Oct 2019 20:07:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAB87F800D0;
+	Fri, 18 Oct 2019 20:07:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13EF0F80323; Fri, 18 Oct 2019 20:07:07 +0200 (CEST)
+ id 30CDCF80362; Fri, 18 Oct 2019 20:07:07 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81C0DF80376
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:07:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81C0DF80376
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71310F80369
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:06:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71310F80369
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="N8rKqzZe"
+ header.b="WsrEodvR"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=TjduQZHmMFPqnaiyU+fIix0mGSXwe95rJLTjDFZctHU=; b=N8rKqzZeS83w
- sdLJwTTUD9KWKrAY2mi0w9ua9dugUBdtJmzvvbvW87Ko+7b/kqcTID47oet/014rfu+PWZs4lSCoE
- WIdzlvrtrm2TduqQW5v6bbFg5zJLu5DFcDcN7fS39FXUrtrC/pa1X3hgfBEsPMBGR9lLK0CXWKvdM
- M2gfA=;
+ List-Archive; bh=bmhg+/17g88lQSaN0+48g3/Zis9k7Udg88qlSS1o+MA=; b=WsrEodvRhBXE
+ HYpwMKN35mSEhssW9zftk8eief4ZLz+Rs53Ri8erePRh6FWXNXHsQCcombxSTejhJS2mmMtOvVN4w
+ P+7W+5KalXA5f0D6NEZDUlI8ECSQrg5WiXOVP26k3sHGxXDK3W7i/hRe7WIgwjammdTLJt0MLivsp
+ KByxo=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iLWeS-0004FH-26; Fri, 18 Oct 2019 18:07:00 +0000
+ id 1iLWeR-0004Es-0T; Fri, 18 Oct 2019 18:06:59 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 8289B2743273; Fri, 18 Oct 2019 19:06:59 +0100 (BST)
+ id 691AA2741DEA; Fri, 18 Oct 2019 19:06:58 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20191014180059.01.I374c311eaca0d47944a37b07acbe48fdb74f734d@changeid>
+To: Chuhong Yuan <hslester96@gmail.com>
+In-Reply-To: <20191018081448.8486-1-hslester96@gmail.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191018180659.8289B2743273@ypsilon.sirena.org.uk>
-Date: Fri, 18 Oct 2019 19:06:59 +0100 (BST)
-Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- cychiang@google.com, drinkcat@google.com, robh+dt@kernel.org,
- tzungbi@google.com, Mark Brown <broonie@kernel.org>,
- enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com
-Subject: [alsa-devel] Applied "platform/chrome: cros_ec: remove unused EC
-	feature" to the asoc tree
+Message-Id: <20191018180658.691AA2741DEA@ypsilon.sirena.org.uk>
+Date: Fri, 18 Oct 2019 19:06:58 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, "Cc:"@sirena.co.uk
+Subject: [alsa-devel] Applied "ASoC: tlv320aic32x4: add a check for
+	devm_clk_get" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   platform/chrome: cros_ec: remove unused EC feature
+   ASoC: tlv320aic32x4: add a check for devm_clk_get
 
 has been applied to the asoc tree at
 
@@ -124,34 +123,36 @@ to this mail.
 Thanks,
 Mark
 
-From 036beb0e85f8772acb635c30df573876103b0c21 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Mon, 14 Oct 2019 18:20:13 +0800
-Subject: [PATCH] platform/chrome: cros_ec: remove unused EC feature
+From 1092b09708882e3c216f0b9c02e606b3c0942c5b Mon Sep 17 00:00:00 2001
+From: Chuhong Yuan <hslester96@gmail.com>
+Date: Fri, 18 Oct 2019 16:14:49 +0800
+Subject: [PATCH] ASoC: tlv320aic32x4: add a check for devm_clk_get
 
-Remove unused EC_FEATURE_AUDIO_CODEC.
+aic32x4_set_dai_sysclk misses a check for devm_clk_get and may miss the
+failure.
+Add a check to fix it.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Acked-By: Benson Leung <bleung@chromium.org>
-Link: https://lore.kernel.org/r/20191014180059.01.I374c311eaca0d47944a37b07acbe48fdb74f734d@changeid
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Link: https://lore.kernel.org/r/20191018081448.8486-1-hslester96@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/linux/platform_data/cros_ec_commands.h | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-index 98415686cbfa..43b8f7dae4cc 100644
---- a/include/linux/platform_data/cros_ec_commands.h
-+++ b/include/linux/platform_data/cros_ec_commands.h
-@@ -1277,8 +1277,6 @@ enum ec_feature_code {
- 	 * MOTIONSENSE_CMD_TABLET_MODE_LID_ANGLE.
- 	 */
- 	EC_FEATURE_REFINED_TABLET_MODE_HYSTERESIS = 37,
--	/* EC supports audio codec. */
--	EC_FEATURE_AUDIO_CODEC = 38,
- 	/* The MCU is a System Companion Processor (SCP). */
- 	EC_FEATURE_SCP = 39,
- 	/* The MCU is an Integrated Sensor Hub */
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 68165de1c8de..b4e9a6c73f90 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -573,6 +573,9 @@ static int aic32x4_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	struct clk *pll;
+ 
+ 	pll = devm_clk_get(component->dev, "pll");
++	if (IS_ERR(pll))
++		return PTR_ERR(pll);
++
+ 	mclk = clk_get_parent(pll);
+ 
+ 	return clk_set_rate(mclk, freq);
 -- 
 2.20.1
 
