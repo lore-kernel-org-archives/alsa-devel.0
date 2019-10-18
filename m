@@ -7,78 +7,79 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6339ACA9EA9
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 727D5CA9EA9
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:13:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E536E20640
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:12:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 02D0920640
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Oct 2019 18:13:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i98mtvMg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="s3bnqBwh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E536E20640
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P2J11eS4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="WjwNhdAg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02D0920640
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46EA6166F;
-	Fri, 18 Oct 2019 20:11:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46EA6166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CB66166C;
+	Fri, 18 Oct 2019 20:12:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CB66166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571422332;
-	bh=yfvQWX2lSlIV4Llk0QgSkAJDRSIG33iiwB+Nzg2pHQU=;
+	s=default; t=1571422378;
+	bh=D5oSojA0YVjRJlVd9t7sU17uImDBpWf4/rWPi5lu7p0=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=i98mtvMgP4QetHia+/kHpvTKH+rq8/T4llKiEss08lufAN6HsvNC21Vwf29xrXcms
-	 R6bhGR2XnZA3KiJ9D7go50QwYZ/YNZf4MXJnNnCMeDedZaU+utyU0ZmT+eLY0/GZ6z
-	 h0ctXLA4xLJV6lrmTjNnp8tHeLML9yk+ocLCEb7E=
+	b=P2J11eS4wpn4o699ZA1bbDPcqskHMuvM0meZMyZE4IXJgO+kw9eXKqmPKe0YBqoou
+	 HcVJw6iZV1ZRNUeIsq+kKnV94YhnZIyrHPdez+jKKth5u5vLBfH8NmETkmTCRU4kV8
+	 nktTcomzyp7adpgHODhKByn9N8jNWMOvCiOQBx28=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3F6AF80639;
-	Fri, 18 Oct 2019 20:07:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A18EF80642;
+	Fri, 18 Oct 2019 20:07:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F4AFF80369; Fri, 18 Oct 2019 20:07:08 +0200 (CEST)
+ id 43E12F80611; Fri, 18 Oct 2019 20:07:12 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FE67F8036C
- for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:07:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FE67F8036C
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCE8EF80322
+ for <alsa-devel@alsa-project.org>; Fri, 18 Oct 2019 20:07:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCE8EF80322
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="s3bnqBwh"
+ header.b="WjwNhdAg"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=yZ5ihh+JlZp10ClOg05PmwAuVkRD1OdpzVwW9zBqAmM=; b=s3bnqBwhK7O0
- HJcbkXuG0VHf4/PUJPylcJro5WEwFskA95EHWzdgREHmbnbcccuH2+0TeKhzEScFhOMzXxVEyKzLV
- LqkIJJ2oADEB/jK2mdsjj1Wv0w9AdSvecR+/UGKdC9kKcP3lV8n0g3I0vDfq4qkBzwGSd0Lu/qYko
- KSrjY=;
+ List-Archive; bh=kIdn4VulEh9KHSu4X43j6W5Pl8dnzX5CpSEuHNMmqZg=; b=WjwNhdAgMXyf
+ f/FpHLUkv9G0+RYaluq+UfZ74TKDku8p3GcVgmeDSuHf+HaJTuXfnFgJHPx9fLV5vwYYdOA0mDbXC
+ An0OrN8jGzCDLrpDYYQiHfZgoMOeRPov+MKLyAN4SwFfRe2vbPKQOhxCXCIzXgyv8NSADueQtIhib
+ PbwmU=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iLWeR-0004Ev-5Z; Fri, 18 Oct 2019 18:06:59 +0000
+ id 1iLWeS-0004FY-Lf; Fri, 18 Oct 2019 18:07:00 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id A66102743259; Fri, 18 Oct 2019 19:06:58 +0100 (BST)
+ id 1F8F92743259; Fri, 18 Oct 2019 19:07:00 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Colin Ian King <colin.king@canonical.com>
-In-Reply-To: <20191018082317.11971-1-colin.king@canonical.com>
+To: Olivier Moysan <olivier.moysan@st.com>
+In-Reply-To: <20191018082040.31022-1-olivier.moysan@st.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191018180658.A66102743259@ypsilon.sirena.org.uk>
-Date: Fri, 18 Oct 2019 19:06:58 +0100 (BST)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
-Subject: [alsa-devel] Applied "ASoC: rt1011: fix spelling mistake
-	"temperture" -> "temperature"" to the asoc tree
+Message-Id: <20191018180700.1F8F92743259@ypsilon.sirena.org.uk>
+Date: Fri, 18 Oct 2019 19:07:00 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
+ tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ mcoquelin.stm32@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
+Subject: [alsa-devel] Applied "ASoC: stm32: sai: fix sysclk management on
+	shutdown" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,11 +100,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt1011: fix spelling mistake "temperture" -> "temperature"
+   ASoC: stm32: sai: fix sysclk management on shutdown
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -124,34 +125,68 @@ to this mail.
 Thanks,
 Mark
 
-From 349959a9c767cee04b7362fda230cc2433246fd9 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 18 Oct 2019 09:23:17 +0100
-Subject: [PATCH] ASoC: rt1011: fix spelling mistake "temperture" ->
- "temperature"
+From 9b7a7f921689d6c254e5acd670be631ebd82d54d Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Fri, 18 Oct 2019 10:20:40 +0200
+Subject: [PATCH] ASoC: stm32: sai: fix sysclk management on shutdown
 
-There is a spelling mistake in a dev_dbg message. Fix it.
+The commit below, adds a call to sysclk callback on shutdown.
+This introduces a regression in stm32 SAI driver, as some clock
+services are called twice, leading to unbalanced calls.
+Move processing related to mclk from shutdown to sysclk callback.
+When requested frequency is 0, assume shutdown and release mclk.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20191018082317.11971-1-colin.king@canonical.com
+Fixes: 2458adb8f92a ("SoC: simple-card-utils: set 0Hz to sysclk when shutdown")
+
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20191018082040.31022-1-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1011.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/stm/stm32_sai_sub.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index ad049cfddcb0..dcd397a83cb4 100644
---- a/sound/soc/codecs/rt1011.c
-+++ b/sound/soc/codecs/rt1011.c
-@@ -2373,7 +2373,7 @@ static int rt1011_parse_dp(struct rt1011_priv *rt1011, struct device *dev)
- 	device_property_read_u32(dev, "realtek,r0_calib",
- 		&rt1011->r0_calib);
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index d7501f88aaa6..a4060813bc74 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -505,10 +505,20 @@ static int stm32_sai_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 	if (dir == SND_SOC_CLOCK_OUT && sai->sai_mclk) {
+ 		ret = regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
+ 					 SAI_XCR1_NODIV,
+-					 (unsigned int)~SAI_XCR1_NODIV);
++					 freq ? 0 : SAI_XCR1_NODIV);
+ 		if (ret < 0)
+ 			return ret;
  
--	dev_dbg(dev, "%s: r0_calib: 0x%x, temperture_calib: 0x%x",
-+	dev_dbg(dev, "%s: r0_calib: 0x%x, temperature_calib: 0x%x",
- 		__func__, rt1011->r0_calib, rt1011->temperature_calib);
++		/* Assume shutdown if requested frequency is 0Hz */
++		if (!freq) {
++			/* Release mclk rate only if rate was actually set */
++			if (sai->mclk_rate) {
++				clk_rate_exclusive_put(sai->sai_mclk);
++				sai->mclk_rate = 0;
++			}
++			return 0;
++		}
++
+ 		/* If master clock is used, set parent clock now */
+ 		ret = stm32_sai_set_parent_clock(sai, freq);
+ 		if (ret)
+@@ -1093,15 +1103,6 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
  
- 	return 0;
+ 	regmap_update_bits(sai->regmap, STM_SAI_IMR_REGX, SAI_XIMR_MASK, 0);
+ 
+-	regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX, SAI_XCR1_NODIV,
+-			   SAI_XCR1_NODIV);
+-
+-	/* Release mclk rate only if rate was actually set */
+-	if (sai->mclk_rate) {
+-		clk_rate_exclusive_put(sai->sai_mclk);
+-		sai->mclk_rate = 0;
+-	}
+-
+ 	clk_disable_unprepare(sai->sai_ck);
+ 
+ 	spin_lock_irqsave(&sai->irq_lock, flags);
 -- 
 2.20.1
 
