@@ -2,85 +2,88 @@ Return-Path: <SRS0=QaQ6=YN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE6FCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Oct 2019 15:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDDD1CA9EAE
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Oct 2019 15:34:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E5C221928
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Oct 2019 15:33:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5592621928
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Oct 2019 15:34:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZR1nDMnS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="QocdKwiH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E5C221928
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TTKMiL5Z";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="n9i3MniQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5592621928
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFD3E84C;
-	Sun, 20 Oct 2019 17:32:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFD3E84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9E041614;
+	Sun, 20 Oct 2019 17:33:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9E041614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571585618;
-	bh=4bmKz5lqGIW3bdPnIBsFSf1/3uhO/wXlhAnEyp0h8Z4=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ZR1nDMnS+DS4LHiu6FS7ovkHyHpymRxnQU73fo1ebDvtKHp0vI3vq7929DXnpkx93
-	 +GvXPPBWA7XyoS1JKWgq2MbyZxN8dzJB7mDOSj+KqFAWyofktc1wTkNFyDtud9AEsU
-	 F9TouV4YrsKvapV4y75kwhWBokepStqJmarMqLr4=
+	s=default; t=1571585672;
+	bh=hVrRpn+t73PPb3QTi9bqmgKcDVXNu7+Eog8AQk3E8U4=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TTKMiL5ZEOc4eTVpYA2SYz/wU4J8BL5DAm14ph1XEiySk1KIfI/f5TilN0SXULHW3
+	 6CuTNfNLb5RHhFRFzAk9WfMpLbi8w640fGHSaQa+ToI0Fiu5kvOypPRpxY4sK39qI2
+	 eetNaMAetBBtJJGOgWREgFgUG8UfUAjko2sBb+Pw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59D8AF802DF;
-	Sun, 20 Oct 2019 17:32:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 593D3F80390;
+	Sun, 20 Oct 2019 17:32:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50ABDF80322; Sun, 20 Oct 2019 17:32:45 +0200 (CEST)
+ id 78B32F802FB; Sun, 20 Oct 2019 17:32:46 +0200 (CEST)
 Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5301::6])
+ [IPv6:2a01:238:20a:202:5301::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D531EF800C0
- for <alsa-devel@alsa-project.org>; Sun, 20 Oct 2019 17:32:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D531EF800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BF52F802BE
+ for <alsa-devel@alsa-project.org>; Sun, 20 Oct 2019 17:32:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BF52F802BE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="QocdKwiH"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1571585558;
+ header.b="n9i3MniQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1571585559;
  s=strato-dkim-0002; d=gerhold.net;
- h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
- Subject:Sender;
- bh=e/fpoIgjF5iBN328o9VuYHPqVfdp6jIVztdhvMe5KCY=;
- b=QocdKwiHkJ4b3s/9bHfJK33p23r+Lp3J/DdIT6T98F8mGy693SPYlGHzrDFnV0E0j5
- 4MA3bxJ/5f1HJ5ytjQfdNHVSdhlL2dMJTFjp/6629F0arrnSUQIUkDPdp7CMYzkPFsEz
- DueWuSKvzW7UKrCw+fOmZS3S6YCTeEZq8xtbIzfrMQAXoAV0CAh3TCcyuGICgJXXedDW
- 09MK9iGR+JGvRmnVd58yFnsssXl55HXaXURJuYi8dEAPjVTCtTgeEmW6Gbx2zUDB0OPf
- eNy6IeZRm9+QAbDzdR7QPrPdZ5NHCGCJfXUox7GX2rePCTUbLUBqJCMv6OPP2FJQnn/x
- 6HrA==
+ h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=W+TWmeg1wsk/oAGTCOiJVndVJYDY5b8/wkGA5hgWhjA=;
+ b=n9i3MniQaQJ4K0LWLQjSw2kczbjxOyVXe4KQlQEQX1jCh7qmwVdjptHhsljnSy2ixE
+ WfdjPJGQ5WXrbN0ytNIYXQGD5jFFN8OelYYJYfKIT7NIwvD8d9b0DFD6Zyjt6ct1D68j
+ VuIM1H9FqRBU9OXHu4r2gwr53edpPGuYriGX5HNPQ8N72zHf7COf2EUkMkYusN6iXXWy
+ 14om3Hb6OVlB1byIbrOf/Pj7vAc2v1hNeUMlgdkmO6jqg+Y5k+jz9iQWYu7hdRdokvHQ
+ X8XLywglRDc3KWcXOGinUYuINNyaYvL6OMIpBeEl/nUpF5uOIgs1gUUUcDs/UZK3TICE
+ QQjA==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQr4OGUPX+1NiWA3IrA=="
 X-RZG-CLASS-ID: mo00
 Received: from localhost.localdomain
  by smtp.strato.de (RZmta 44.28.1 DYNA|AUTH)
- with ESMTPSA id 409989v9KFWXK6b
+ with ESMTPSA id 409989v9KFWXK6c
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve secp521r1 with
  521 ECDH bits, eq. 15360 bits RSA))
  (Client did not present a certificate);
  Sun, 20 Oct 2019 17:32:33 +0200 (CEST)
 From: Stephan Gerhold <stephan@gerhold.net>
 To: Mark Brown <broonie@kernel.org>
-Date: Sun, 20 Oct 2019 17:30:06 +0200
-Message-Id: <20191020153007.206070-1-stephan@gerhold.net>
+Date: Sun, 20 Oct 2019 17:30:07 +0200
+Message-Id: <20191020153007.206070-2-stephan@gerhold.net>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191020153007.206070-1-stephan@gerhold.net>
+References: <20191020153007.206070-1-stephan@gerhold.net>
 MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
  Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] [PATCH 1/2] ASoC: msm8916-wcd-analog: Fix RX1
-	selection in RDAC2 MUX
+Subject: [alsa-devel] [PATCH 2/2] ASoC: msm8916-wcd-analog: Add earpiece
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,46 +101,126 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-According to the PM8916 Hardware Register Description,
-CDC_D_CDC_CONN_HPHR_DAC_CTL has only a single bit (RX_SEL)
-to switch between RX1 (0) and RX2 (1). It is not possible to
-disable it entirely to achieve the "ZERO" state.
+PM8916 supports an earpiece as another (small) speaker.
+The earpiece is routed through RX MIX1 similarly to
+the headphones, except that RDAC2 MUX is set to RX1.
 
-However, at the moment the "RDAC2 MUX" mixer defines three possible
-values ("ZERO", "RX2" and "RX1"). Setting the mixer to "ZERO"
-actually configures it to RX1. Setting the mixer to "RX1" has
-(seemingly) no effect.
-
-Remove "ZERO" and replace it with "RX1" to fix this.
-
-Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This patch is based on code from the downstream driver
+(msm8x16-wcd.c, [1]) with some cleanup.
+
+This enables the earpiece on the Samsung Galaxy A5 (2015),
+which has recently gained mainline support in [2].
+
+[1]: https://source.codeaurora.org/quic/la/kernel/msm-3.10/tree/sound/soc/codecs/msm8x16-wcd.c?h=LA.BR.1.2.9.1-02310-8x16.0
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1329c1ab0730b521e6cd3051c56a2ff3d55f21e6
+---
+ sound/soc/codecs/msm8916-wcd-analog.c | 54 ++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 667e9f73aba3..e3d311fb510e 100644
+index e3d311fb510e..f53235be77d9 100644
 --- a/sound/soc/codecs/msm8916-wcd-analog.c
 +++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -306,7 +306,7 @@ struct pm8916_wcd_analog_priv {
- };
+@@ -228,6 +228,10 @@
+ #define CDC_A_RX_EAR_CTL			(0xf19E)
+ #define RX_EAR_CTL_SPK_VBAT_LDO_EN_MASK		BIT(0)
+ #define RX_EAR_CTL_SPK_VBAT_LDO_EN_ENABLE	BIT(0)
++#define RX_EAR_CTL_PA_EAR_PA_EN_MASK		BIT(6)
++#define RX_EAR_CTL_PA_EAR_PA_EN_ENABLE		BIT(6)
++#define RX_EAR_CTL_PA_SEL_MASK			BIT(7)
++#define RX_EAR_CTL_PA_SEL			BIT(7)
  
- static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
--static const char *const rdac2_mux_text[] = { "ZERO", "RX2", "RX1" };
-+static const char *const rdac2_mux_text[] = { "RX1", "RX2" };
- static const char *const hph_text[] = { "ZERO", "Switch", };
- 
+ #define CDC_A_SPKR_DAC_CTL		(0xf1B0)
+ #define SPKR_DAC_CTL_DAC_RESET_MASK	BIT(4)
+@@ -312,6 +316,7 @@ static const char *const hph_text[] = { "ZERO", "Switch", };
  static const struct soc_enum hph_enum = SOC_ENUM_SINGLE_VIRT(
-@@ -321,7 +321,7 @@ static const struct soc_enum adc2_enum = SOC_ENUM_SINGLE_VIRT(
+ 					ARRAY_SIZE(hph_text), hph_text);
  
- /* RDAC2 MUX */
- static const struct soc_enum rdac2_mux_enum = SOC_ENUM_SINGLE(
--			CDC_D_CDC_CONN_HPHR_DAC_CTL, 0, 3, rdac2_mux_text);
-+			CDC_D_CDC_CONN_HPHR_DAC_CTL, 0, 2, rdac2_mux_text);
++static const struct snd_kcontrol_new ear_mux = SOC_DAPM_ENUM("EAR_S", hph_enum);
+ static const struct snd_kcontrol_new hphl_mux = SOC_DAPM_ENUM("HPHL", hph_enum);
+ static const struct snd_kcontrol_new hphr_mux = SOC_DAPM_ENUM("HPHR", hph_enum);
  
- static const struct snd_kcontrol_new spkr_switch[] = {
- 	SOC_DAPM_SINGLE("Switch", CDC_A_SPKR_DAC_CTL, 7, 1, 0)
+@@ -685,6 +690,34 @@ static int pm8916_wcd_analog_enable_spk_pa(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int pm8916_wcd_analog_enable_ear_pa(struct snd_soc_dapm_widget *w,
++					    struct snd_kcontrol *kcontrol,
++					    int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_SEL_MASK, RX_EAR_CTL_PA_SEL);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_EAR_PA_EN_MASK,
++				    RX_EAR_CTL_PA_EAR_PA_EN_ENABLE);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_EAR_PA_EN_MASK, 0);
++		/* Delay to reduce ear turn off pop */
++		usleep_range(7000, 7100);
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_SEL_MASK, 0);
++		break;
++	}
++	return 0;
++}
++
+ static const struct reg_default wcd_reg_defaults_2_0[] = {
+ 	{CDC_A_RX_COM_OCP_CTL, 0xD1},
+ 	{CDC_A_RX_COM_OCP_COUNT, 0xFF},
+@@ -801,12 +834,20 @@ static const struct snd_soc_dapm_route pm8916_wcd_analog_audio_map[] = {
+ 	{"PDM_TX", NULL, "A_MCLK2"},
+ 	{"A_MCLK2", NULL, "A_MCLK"},
+ 
++	/* Earpiece (RX MIX1) */
++	{"EAR", NULL, "EAR_S"},
++	{"EAR_S", "Switch", "EAR PA"},
++	{"EAR PA", NULL, "RX_BIAS"},
++	{"EAR PA", NULL, "HPHL DAC"},
++	{"EAR PA", NULL, "HPHR DAC"},
++	{"EAR PA", NULL, "EAR CP"},
++
+ 	/* Headset (RX MIX1 and RX MIX2) */
+ 	{"HEADPHONE", NULL, "HPHL PA"},
+ 	{"HEADPHONE", NULL, "HPHR PA"},
+ 
+-	{"HPHL PA", NULL, "EAR_HPHL_CLK"},
+-	{"HPHR PA", NULL, "EAR_HPHR_CLK"},
++	{"HPHL DAC", NULL, "EAR_HPHL_CLK"},
++	{"HPHR DAC", NULL, "EAR_HPHR_CLK"},
+ 
+ 	{"CP", NULL, "NCP_CLK"},
+ 
+@@ -847,11 +888,20 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("AMIC1"),
+ 	SND_SOC_DAPM_INPUT("AMIC3"),
+ 	SND_SOC_DAPM_INPUT("AMIC2"),
++	SND_SOC_DAPM_OUTPUT("EAR"),
+ 	SND_SOC_DAPM_OUTPUT("HEADPHONE"),
+ 
+ 	/* RX stuff */
+ 	SND_SOC_DAPM_SUPPLY("INT_LDO_H", SND_SOC_NOPM, 1, 0, NULL, 0),
+ 
++	SND_SOC_DAPM_PGA_E("EAR PA", SND_SOC_NOPM,
++			   0, 0, NULL, 0,
++			   pm8916_wcd_analog_enable_ear_pa,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MUX("EAR_S", SND_SOC_NOPM, 0, 0, &ear_mux),
++	SND_SOC_DAPM_SUPPLY("EAR CP", CDC_A_NCP_EN, 4, 0, NULL, 0),
++
+ 	SND_SOC_DAPM_PGA("HPHL PA", CDC_A_RX_HPH_CNP_EN, 5, 0, NULL, 0),
+ 	SND_SOC_DAPM_MUX("HPHL", SND_SOC_NOPM, 0, 0, &hphl_mux),
+ 	SND_SOC_DAPM_MIXER("HPHL DAC", CDC_A_RX_HPH_L_PA_DAC_CTL, 3, 0, NULL,
 -- 
 2.23.0
 
