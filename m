@@ -6,79 +6,76 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D72BCA9EA5
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 04:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 994D0CA9EB5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 04:28:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 945C1222D0
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 04:06:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D83AE21721
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 04:28:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ig5+xsV9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="n82N5AjI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 945C1222D0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IEvI5QPZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="c71OQiO+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D83AE21721
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7718E9F6;
-	Mon, 21 Oct 2019 06:05:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7718E9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDE951612;
+	Mon, 21 Oct 2019 06:27:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDE951612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571630761;
-	bh=i3zYbQ3WNRlbCL1HPdtkqogoyWB548PgnoN++vumvZU=;
+	s=default; t=1571632088;
+	bh=ELX+oxLxgFEXgZzxmbubx68hSZ1klOkUu3uVnqWiCAM=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ig5+xsV9GNB3tdXmN689knesaydhtBV7cwPn1lSTc1UUNLs1CyOZp5Q0suB9jEv9h
-	 qr93emziy7xsICq0Q1eEUCUh0z6cCpJngmcirxYUrXahKxgaAh51+Knripb5hBmmg7
-	 S8JOUAtlxNXZ1ddnn92wyhNDU4MkO5YvCX0DbyA8=
+	b=IEvI5QPZjpCkD5QJoJn/yHnaO8vqatV9TGSYucTYrYoGDxfSgTUJFMCxqWM7vGHEH
+	 EMbemQZrCa/2CAL0YlG6z/K7jhnqwRncT8aKRXpgq8y4gIdRDG7bVaAmsI2vYuSAPg
+	 VTFLyiy8vDk8Sp5k/g3W+YG7qihnGXd/B+28jASs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBDA3F80321;
-	Mon, 21 Oct 2019 06:05:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6599AF80112;
+	Mon, 21 Oct 2019 06:27:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D499F80368; Mon, 21 Oct 2019 06:05:08 +0200 (CEST)
+ id C7E00F80368; Mon, 21 Oct 2019 06:27:16 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 124F4F80112
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 06:05:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 124F4F80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC5A5F80112
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 06:27:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC5A5F80112
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="n82N5AjI"
+ header.b="c71OQiO+"
 Received: from localhost (unknown [122.167.89.206])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 26CFC21928;
- Mon, 21 Oct 2019 04:05:00 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 10E6D2089C;
+ Mon, 21 Oct 2019 04:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1571630701;
- bh=tAIvrEShK24iwCrT+7TENtkPwG+TsS24xTixtOiBwJ0=;
+ s=default; t=1571632031;
+ bh=BznKn2M5fb/b64b1A0f57cJkw+MKF62qhcz0rLjG/sk=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=n82N5AjIN7M14aT1MT9wAewEDfYsDFIS42VTa4mqQ5Uj0P9qTO8cziJA3yyv73PYN
- cGVk2p6jv3Fi3+T2t2wEuf1+vnRXqsLycfsKk3L3oAG2a04sfhBcQtQIVZuccgOK+M
- JasGPnFLxUlMC8wC3XgOaNlcXT5n2PC9uhDnA+Ic=
-Date: Mon, 21 Oct 2019 09:34:58 +0530
+ b=c71OQiO+CbGZk2N0q3XcnQOtQs0N3xFEzMe+cTJzy6eU3iEmu0sqEYP8S96aGFMT+
+ cGo1xVT4IdVHObp/O+76tteZqYVEa5JcdnGvI8Hz7TRjBFXEjYZU14/0sE/Gy+HiD0
+ 2mjaZIjBoWHmFjcNHT0PcUiQe6koiJvl1Crn58yo=
+Date: Mon, 21 Oct 2019 09:57:06 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191021040458.GX2654@vkoul-mobl>
-References: <20190916190952.32388-1-pierre-louis.bossart@linux.intel.com>
- <20190916190952.32388-3-pierre-louis.bossart@linux.intel.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <20191021042706.GA2654@vkoul-mobl>
+References: <20191011154423.2506-1-srinivas.kandagatla@linaro.org>
+ <20191011154423.2506-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20190916190952.32388-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191011154423.2506-2-srinivas.kandagatla@linaro.org>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 2/5] soundwire: cadence_master: add
- hw_reset capability in debugfs
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ spapothi@codeaurora.org, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, broonie@kernel.org
+Subject: Re: [alsa-devel] [PATCH v3 1/2] dt-bindings: soundwire: add
+ bindings for Qcom controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,67 +93,151 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 16-09-19, 14:09, Pierre-Louis Bossart wrote:
-> Provide debugfs capability to kick link and devices into hard-reset
-> (as defined by MIPI). This capability is really useful when some
-> devices are no longer responsive and/or to check the software handling
-> of resynchronization.
+On 11-10-19, 16:44, Srinivas Kandagatla wrote:
+> This patch adds bindings for Qualcomm soundwire controller.
 > 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
+> either integrated as part of WCD audio codecs via slimbus or
+> as part of SOC I/O.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->  drivers/soundwire/cadence_master.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+>  .../bindings/soundwire/qcom,sdw.txt           | 167 ++++++++++++++++++
+>  1 file changed, 167 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
 > 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index e3d06330d125..5f900cf2acb9 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -340,6 +340,23 @@ static int cdns_reg_show(struct seq_file *s, void *data)
->  }
->  DEFINE_SHOW_ATTRIBUTE(cdns_reg);
->  
-> +static int cdns_hw_reset(void *data, u64 value)
-> +{
-> +	struct sdw_cdns *cdns = data;
-> +	int ret;
+> diff --git a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+> new file mode 100644
+> index 000000000000..436547f3b155
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+> @@ -0,0 +1,167 @@
+> +Qualcomm SoundWire Controller Bindings
 > +
-> +	if (value != 1)
-> +		return -EINVAL;
 > +
-> +	ret = sdw_cdns_exit_reset(cdns);
+> +This binding describes the Qualcomm SoundWire Controller along with its
+> +board specific bus parameters.
+> +
+> +- compatible:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: must be "qcom,soundwire-v<MAJOR>.<MINOR>.<STEP>",
+> +		    Example:
+> +			"qcom,soundwire-v1.3.0"
+> +			"qcom,soundwire-v1.5.0"
+> +			"qcom,soundwire-v1.6.0"
+> +- reg:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: the base address and size of SoundWire controller
+> +		    address space.
+> +
+> +- interrupts:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: should specify the SoundWire Controller IRQ
+> +
+> +- clock-names:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: should be "iface" for SoundWire Controller interface clock
+> +
+> +- clocks:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: should specify the SoundWire Controller interface clock
+> +
+> +- #sound-dai-cells:
+> +	Usage: required
+> +	Value type: <u32>
+> +	Definition: must be 1 for digital audio interfaces on the controller.
+> +
+> +- qcom,dout-ports:
+> +	Usage: required
+> +	Value type: <u32>
+> +	Definition: must be count of data out ports
+> +
+> +- qcom,din-ports:
+> +	Usage: required
+> +	Value type: <u32>
+> +	Definition: must be count of data in ports
+> +
+> +- qcom,ports-offset1:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: should specify payload transport window offset1 of each
+> +		    data port. Out ports followed by In ports.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
+> +
+> +- qcom,ports-offset2:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: should specify payload transport window offset2 of each
+> +		    data port. Out ports followed by In ports.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
 
-So we are performing reset of the device behind the kernel, so I think
-it makes sense to mark the kernel as tainted.
+Do we need to define these two in DT? Would this not be allocated in
+Software and programmed?
 
 > +
-> +	dev_dbg(cdns->dev, "link hw_reset done: %d\n", ret);
+> +- qcom,ports-sinterval-low:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: should be sample interval low of each data port.
+> +		    Out ports followed by In ports. Used for Sample Interval
+> +		    calculation.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
 > +
-> +	return ret;
-
-We may want to get rid of the debug and do:
-        return sdw_cdns_exit_reset();
-
-
-> +}
+> +- qcom,ports-word-length:
+> +	Usage: optional
+> +	Value type: <prop-encoded-array>
+> +	Definition: should be size of payload channel sample.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
 > +
-> +DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
+> +- qcom,ports-block-pack-mode:
+> +	Usage: optional
+> +	Value type: <prop-encoded-array>
+> +	Definition: should be 0 or 1 to indicate the block packing mode.
+> +		    0 to indicate Blocks are per Channel
+> +		    1 to indicate Blocks are per Port.
+> +		    Out ports followed by In ports.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
 > +
->  /**
->   * sdw_cdns_debugfs_init() - Cadence debugfs init
->   * @cdns: Cadence instance
-> @@ -348,6 +365,9 @@ DEFINE_SHOW_ATTRIBUTE(cdns_reg);
->  void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
->  {
->  	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
+> +- qcom,ports-block-group-count:
+> +	Usage: optional
+> +	Value type: <prop-encoded-array>
+> +	Definition: should be in range 1 to 4 to indicate how many sample
+> +		    intervals are combined into a payload.
+> +		    Out ports followed by In ports.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
 > +
-> +	debugfs_create_file("cdns-hw-reset", 0200, root, cdns,
-> +			    &cdns_hw_reset_fops);
->  }
->  EXPORT_SYMBOL_GPL(sdw_cdns_debugfs_init);
->  
-> -- 
-> 2.20.1
+> +- qcom,ports-lane-control:
+> +	Usage: optional
+> +	Value type: <prop-encoded-array>
+> +	Definition: should be in range 0 to 7 to identify which	data lane
+> +		    the data port uses.
+> +		    Out ports followed by In ports.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
+> +
+> +- qcom,ports-hstart:
+> +	Usage: optional
+> +	Value type: <prop-encoded-array>
+> +	Definition: should be number identifying lowerst numbered coloum in
+> +		    SoundWire Frame, i.e. left edge of the Transport sub-frame
+> +		    for each port. Values between 0 and 15 are valid.
+> +		    Out ports followed by In ports.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
+> +
+> +- qcom,ports-hstop:
+> +	Usage: optional
+> +	Value type: <prop-encoded-array>
+> +	Definition: should be number identifying highest numbered coloum in
+> +		    SoundWire Frame, i.e. the right edge of the Transport
+> +		    sub-frame for each port. Values between 0 and 15 are valid.
+> +		    Out ports followed by In ports.
+> +		    More info in MIPI Alliance SoundWire 1.0 Specifications.
 
+Ditto with these two as well
 -- 
 ~Vinod
 _______________________________________________
