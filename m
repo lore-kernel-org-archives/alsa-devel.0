@@ -2,89 +2,83 @@ Return-Path: <SRS0=cpJH=YO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC560CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 02:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E48F0CA9EA5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 04:15:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5A5F21897
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 02:48:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 58A0A2246E
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 04:15:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AIGKq4BF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5A5F21897
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FMqaEAZg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kv4QVhyw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58A0A2246E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F6E49F6;
-	Mon, 21 Oct 2019 04:47:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F6E49F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 907C89F6;
+	Mon, 21 Oct 2019 06:14:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 907C89F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571626120;
-	bh=yoouIB56W0Rv+B78VtcntCaSt4u2TCNXnGdW0Ku1Mps=;
-	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1571631306;
+	bh=yZQSEnqx/XqpgGLuaW9w+2P0Pn7yXP7eE1a/HP7hGg4=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AIGKq4BFEWy2nl7QWYjzrIIa+gtt0XSb5xGGQ0EAnMaJugij2Y8895FSM6eKsfO5a
-	 LefwDy6CaVjyRfrQx4jGcVUXBxVk+Xi8zND2OQbJqmtOvB5VaS63GwQlydf67LpfK2
-	 +blq0OW79UqyQYbNP6hhOH50z8JPFlfOS9A7q1g0=
+	b=FMqaEAZgBSLhsV/6CZ3sHjqEmDaIt227cCywpEy9EZdk+2XZYpBWYa6IXkiAc2RxR
+	 DutuI+wqFC5Kaysuky5BA8zHG4SmqKwrAcpGmcbuTnjV/X+LEf0nnuvZu9bj84+qsB
+	 1AZSz+Ka9SqkpFCWckVANdS48w7Y7ThpY6oBNYo4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7B10F80321;
-	Mon, 21 Oct 2019 04:47:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E400F80321;
+	Mon, 21 Oct 2019 06:14:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CE9FF80368; Mon, 21 Oct 2019 04:47:45 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 1D78BF80368; Mon, 21 Oct 2019 06:14:15 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C5A7F801EB
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 06:14:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C5A7F801EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Kv4QVhyw"
+Received: from localhost (unknown [122.167.89.206])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86DD5F801EB
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 04:47:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86DD5F801EB
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2019 19:47:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,321,1566889200"; d="scan'208";a="203221302"
-Received: from pgsmsx105.gar.corp.intel.com ([10.221.44.96])
- by FMSMGA003.fm.intel.com with ESMTP; 20 Oct 2019 19:47:35 -0700
-Received: from pgsmsx108.gar.corp.intel.com ([169.254.8.51]) by
- PGSMSX105.gar.corp.intel.com ([169.254.4.226]) with mapi id 14.03.0439.000;
- Mon, 21 Oct 2019 10:47:34 +0800
-From: "Lu, Brent" <brent.lu@intel.com>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Thread-Topic: [PATCH] ASoC: bdw-rt5677: enable runtime channel merge
-Thread-Index: AQHVeQDQJxSKmeHo60W0FoozADL3CqdkfMRQ
-Date: Mon, 21 Oct 2019 02:47:34 +0000
-Message-ID: <CF33C36214C39B4496568E5578BE70C74031B9FD@PGSMSX108.gar.corp.intel.com>
-References: <1570007072-23049-1-git-send-email-brent.lu@intel.com>
-In-Reply-To: <1570007072-23049-1-git-send-email-brent.lu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMGUyMDI2MTItNzU0Zi00ZjMzLWE0NWUtZjVjZjhmNDU2MGQ0IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiT1VkQ1ByNGlteHBlOXBhU2l6SU13dnVLSzlFMTNJTGZ6R1ExNWlVbWhXT3ZCUXNoSEFrVHpqQVU5UUE0WUpYZiJ9
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [172.30.20.206]
+ by mail.kernel.org (Postfix) with ESMTPSA id 00D3722466;
+ Mon, 21 Oct 2019 04:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1571631250;
+ bh=oAJWQkb7MV1r6HoF3G5xg9smm71+/TpMQrUOwUHVAz4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Kv4QVhywrNXj/X7MB/sFHTwmoAYAaxd3FBJZz8PjMgSNgrTsDMTrop8ocf36JUpjE
+ iFeRR8kefULnHjt1/zdcUM4YvcswBSGbIEcxxPQogDimFi1q5hSd+RWecdILRp+HDi
+ PbstyO9hefmm/JNPqmv8rbl/Jr5OepZwYU8yGjy8=
+Date: Mon, 21 Oct 2019 09:44:04 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20191021041404.GY2654@vkoul-mobl>
+References: <20190916190952.32388-1-pierre-louis.bossart@linux.intel.com>
+ <20190916190952.32388-5-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Zavras,
- Alexios" <alexios.zavras@intel.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: bdw-rt5677: enable runtime channel
-	merge
+Content-Disposition: inline
+In-Reply-To: <20190916190952.32388-5-pierre-louis.bossart@linux.intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 4/5] soundwire: intel/cadence: add flag
+ for interrupt enable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,27 +96,142 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> Subject: [PATCH] ASoC: bdw-rt5677: enable runtime channel merge
+On 16-09-19, 14:09, Pierre-Louis Bossart wrote:
+> Prepare for future PM support and fix error handling by disabling
+> interrupts as needed.
 > 
-> In the DAI link "Capture PCM", the FE DAI "Capture Pin" supports 4-channel
-> capture but the BE DAI supports only 2-channel capture. To fix the channel
-> mismatch, we need to enable the runtime channel merge for this DAI link.
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/cadence_master.c | 18 ++++++++++++------
+>  drivers/soundwire/cadence_master.h |  2 +-
+>  drivers/soundwire/intel.c          | 12 +++++++-----
+>  3 files changed, 20 insertions(+), 12 deletions(-)
 > 
+> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+> index 5f900cf2acb9..a71df99ca18f 100644
+> --- a/drivers/soundwire/cadence_master.c
+> +++ b/drivers/soundwire/cadence_master.c
+> @@ -819,14 +819,17 @@ EXPORT_SYMBOL(sdw_cdns_exit_reset);
+>   * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
+>   * @cdns: Cadence instance
+>   */
+> -int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+> +int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
+>  {
+> -	u32 mask;
+> +	u32 slave_intmask0 = 0;
+> +	u32 slave_intmask1 = 0;
+> +	u32 mask = 0;
+> +
+> +	if (!state)
+> +		goto update_masks;
+>  
+> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0,
+> -		    CDNS_MCP_SLAVE_INTMASK0_MASK);
+> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
+> -		    CDNS_MCP_SLAVE_INTMASK1_MASK);
+> +	slave_intmask0 = CDNS_MCP_SLAVE_INTMASK0_MASK;
+> +	slave_intmask1 = CDNS_MCP_SLAVE_INTMASK1_MASK;
+>  
+>  	/* enable detection of all slave state changes */
+>  	mask = CDNS_MCP_INT_SLAVE_MASK;
+> @@ -849,6 +852,9 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+>  	if (interrupt_mask) /* parameter override */
+>  		mask = interrupt_mask;
+>  
+> +update_masks:
+> +	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0, slave_intmask0);
+> +	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1, slave_intmask1);
+>  	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
+>  
+>  	/* commit changes */
+> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+> index 1a67728c5000..302351808098 100644
+> --- a/drivers/soundwire/cadence_master.h
+> +++ b/drivers/soundwire/cadence_master.h
+> @@ -162,7 +162,7 @@ int sdw_cdns_init(struct sdw_cdns *cdns);
+>  int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+>  		      struct sdw_cdns_stream_config config);
+>  int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
+> -int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
+> +int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state);
+>  
+>  #ifdef CONFIG_DEBUG_FS
+>  void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root);
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index cdb3243e8823..08530c136c5f 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -1036,7 +1036,7 @@ static int intel_probe(struct platform_device *pdev)
+>  	ret = sdw_add_bus_master(&sdw->cdns.bus);
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
+> -		goto err_master_reg;
+> +		return ret;
 
-Hi Pierre,
+I am not sure I like this line change, before this IIRC the function and
+single place of return, so changing this doesn't seem to improve
+anything here..?
 
-This patch is for the same issue discussed in the following thread:
-https://patchwork.kernel.org/patch/11134167/
+>  	}
+>  
+>  	if (sdw->cdns.bus.prop.hw_disabled) {
+> @@ -1067,7 +1067,7 @@ static int intel_probe(struct platform_device *pdev)
+>  		goto err_init;
+>  	}
+>  
+> -	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
+> +	ret = sdw_cdns_enable_interrupt(&sdw->cdns, true);
+>  	if (ret < 0) {
+>  		dev_err(sdw->cdns.dev, "cannot enable interrupts\n");
+>  		goto err_init;
+> @@ -1076,7 +1076,7 @@ static int intel_probe(struct platform_device *pdev)
+>  	ret = sdw_cdns_exit_reset(&sdw->cdns);
+>  	if (ret < 0) {
+>  		dev_err(sdw->cdns.dev, "unable to exit bus reset sequence\n");
+> -		goto err_init;
+> +		goto err_interrupt;
+>  	}
+>  
+>  	/* Register DAIs */
+> @@ -1084,18 +1084,19 @@ static int intel_probe(struct platform_device *pdev)
+>  	if (ret) {
+>  		dev_err(sdw->cdns.dev, "DAI registration failed: %d\n", ret);
+>  		snd_soc_unregister_component(sdw->cdns.dev);
+> -		goto err_dai;
+> +		goto err_interrupt;
+>  	}
+>  
+>  	intel_debugfs_init(sdw);
+>  
+>  	return 0;
+>  
+> +err_interrupt:
+> +	sdw_cdns_enable_interrupt(&sdw->cdns, false);
+>  err_dai:
 
-We enable the runtime channel merge for the DMIC DAI instead of adding a
-machine driver constraint. It's working good on chrome's 3.14 branch (which
-requires some backport for the runtime channel merge feature). Please let
-me know if this implementation is correct for the FE/BE mismatch problem.
-Thanks.
+Isn't this unused now?
 
+>  	free_irq(sdw->res->irq, sdw);
+>  err_init:
+>  	sdw_delete_bus_master(&sdw->cdns.bus);
+> -err_master_reg:
+>  	return ret;
+>  }
+>  
+> @@ -1107,6 +1108,7 @@ static int intel_remove(struct platform_device *pdev)
+>  
+>  	if (!sdw->cdns.bus.prop.hw_disabled) {
+>  		intel_debugfs_exit(sdw);
+> +		sdw_cdns_enable_interrupt(&sdw->cdns, false);
+>  		free_irq(sdw->res->irq, sdw);
+>  		snd_soc_unregister_component(sdw->cdns.dev);
+>  	}
+> -- 
+> 2.20.1
 
-Regards,
-Brent
+-- 
+~Vinod
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
