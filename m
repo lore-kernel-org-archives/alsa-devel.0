@@ -7,78 +7,79 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B861ACA9EAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94FEACA9EAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:02:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B46A9214AE
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:01:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1864220B7C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:02:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fi64lpot";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="AwInmsLe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B46A9214AE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jAY8to9X";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="YdI6okyC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1864220B7C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4584D9F6;
-	Mon, 21 Oct 2019 20:00:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4584D9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E2371662;
+	Mon, 21 Oct 2019 20:01:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E2371662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571680903;
-	bh=5bdbS9H4Yg0PoY9Gknrm6U9d8v4KqoDPh28EQlyKfQA=;
+	s=default; t=1571680958;
+	bh=wR6HYFx2XX1Qi/1dUZtkGGiFkIzDosuhcwd+v6LZvr8=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=fi64lpotnbe9NL3y/hyVzvxB1z85e3MLXuA1bqM9uucemR3aDEUhqux1Ox8nq6TZg
-	 jy6lptCVMQRRTbm9AWZBlutrQQNeQdCHC/8uy3KEeTA1T6jAHCfeSP2s+gGqrOP6O/
-	 gUkV66whlYDrTp6j/681gqjH5AtWKWwplEniXLW0=
+	b=jAY8to9XeN4f6ylP4kbJtaTsjNRQHWxfi7lCl99l/xYGlGUdgtknogfDHpOAofoKd
+	 cKGrAhY1jbevTvZJvMaYJ/aoidZ0hhrS1ox6sTSYGeTnxI28QoeiCYY4CKkAx8JLHG
+	 Ivyssf0s2AjIJqc02scB+5qAa4lXdvtdQYjxnNFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2E42F80444;
-	Mon, 21 Oct 2019 20:00:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81AACF805FB;
+	Mon, 21 Oct 2019 20:00:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8C36F805FA; Mon, 21 Oct 2019 20:00:49 +0200 (CEST)
+ id 1628EF80321; Mon, 21 Oct 2019 20:00:49 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1951CF80321
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16E37F801EB
  for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 20:00:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1951CF80321
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16E37F801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="AwInmsLe"
+ header.b="YdI6okyC"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=R1wNsuJ7ESRTQUjTXu6r49W11fxuXeN68GOMgzcvdKA=; b=AwInmsLea4Ij
- IO0+hVvTOWkoISFEwPApXDQw+NygZ8dAjLy+TdKboGwHHKT3PbJiOgvYPcgVYrm6ztiUmLBsjTCzL
- YnVYc7satHbM5juStbDYnJP/vkMhUQVzm1kRM+qpdFGFss6aCplP6t6FZlcxZJdbuZx6+jNdRBjA3
- SRL2Q=;
+ List-Archive; bh=wlDa9VryuUJQhYEG0o9q9nJ687FaGpsHWqMMgoNvQE4=; b=YdI6okyC/vHf
+ PpjIeDIOJte8zpvAEl3MdQ+5qD+xJIUG8lfYtGZ63vesMtqzCvi/o9Ekgk6B/gU9DeZlTv/HB+H5g
+ zt9IrADpM1pg+wPNvh402ILmzyfoyGVrIkm1q3GxTAIxc8hyTnjXiQAgebXE5G0q0JnMgEqY8yjTc
+ 47b6g=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iMbz3-0004bJ-Tq; Mon, 21 Oct 2019 18:00:46 +0000
+ id 1iMbz4-0004bM-24; Mon, 21 Oct 2019 18:00:46 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 4536D2743021; Mon, 21 Oct 2019 19:00:45 +0100 (BST)
+ id 7E7892743267; Mon, 21 Oct 2019 19:00:45 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20191019143504.4.Ibf012d0cd8679d846213606dc5f426aea1ff590a@changeid>
+In-Reply-To: <20191019143504.3.Iec97a3f137148cdf316056612590b3e0b302f5f3@changeid>
 X-Patchwork-Hint: ignore
-Message-Id: <20191021180045.4536D2743021@ypsilon.sirena.org.uk>
+Message-Id: <20191021180045.7E7892743267@ypsilon.sirena.org.uk>
 Date: Mon, 21 Oct 2019 19:00:45 +0100 (BST)
 Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  cychiang@google.com, drinkcat@google.com, robh+dt@kernel.org,
  tzungbi@google.com, Mark Brown <broonie@kernel.org>,
- enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com
-Subject: [alsa-devel] Applied "ASoC: mediatek: mt8183: support WoV" to the
-	asoc tree
+ enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com,
+ Rob Herring <robh@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: dt-bindings: mt8183: add ec-codec" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: mediatek: mt8183: support WoV
+   ASoC: dt-bindings: mt8183: add ec-codec
 
 has been applied to the asoc tree at
 
@@ -124,156 +125,42 @@ to this mail.
 Thanks,
 Mark
 
-From 2cc3cd5fdc8ba07ba590204a3a6f6d16289d25e5 Mon Sep 17 00:00:00 2001
+From 0cce736d389cbeae6a7d0a72bafb4408d21eb44a Mon Sep 17 00:00:00 2001
 From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Sat, 19 Oct 2019 15:02:54 +0800
-Subject: [PATCH] ASoC: mediatek: mt8183: support WoV
+Date: Sat, 19 Oct 2019 15:02:53 +0800
+Subject: [PATCH] ASoC: dt-bindings: mt8183: add ec-codec
 
-Add DAI link and pin muxing for wake on voice.
+Add an optional property "ec-codec".  If specified, mt8183 could use the
+"wake on voice" feature offered by EC codec.
 
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20191019143504.4.Ibf012d0cd8679d846213606dc5f426aea1ff590a@changeid
+Link: https://lore.kernel.org/r/20191019143504.3.Iec97a3f137148cdf316056612590b3e0b302f5f3@changeid
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/Kconfig                    |  1 +
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 70 ++++++++++++++++++-
- 2 files changed, 68 insertions(+), 3 deletions(-)
+ .../bindings/sound/mt8183-mt6358-ts3a227-max98357.txt          | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 111e44b64b38..8b29f3979899 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -125,6 +125,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_BT_SCO
- 	select SND_SOC_TS3A227E
-+	select SND_SOC_CROS_EC_CODEC
- 	help
- 	  This adds ASoC driver for Mediatek MT8183 boards
- 	  with the MT6358 TS3A227E MAX98357A audio codec.
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index bb9cdc0d6552..0555f7d73d05 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -19,11 +19,12 @@ enum PINCTRL_PIN_STATE {
- 	PIN_STATE_DEFAULT = 0,
- 	PIN_TDM_OUT_ON,
- 	PIN_TDM_OUT_OFF,
-+	PIN_WOV,
- 	PIN_STATE_MAX
- };
+diff --git a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
+index 17ff3892f439..decaa013a07e 100644
+--- a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
++++ b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
+@@ -6,12 +6,15 @@ Required properties:
  
- static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
--	"default", "aud_tdm_out_on", "aud_tdm_out_off",
-+	"default", "aud_tdm_out_on", "aud_tdm_out_off", "wov",
- };
+ Optional properties:
+ - mediatek,headset-codec: the phandles of ts3a227 codecs
++- mediatek,ec-codec: the phandle of EC codecs.
++                     See google,cros-ec-codec.txt for more details.
  
- struct mt8183_mt6358_ts3a227_max98357_priv {
-@@ -142,6 +143,11 @@ SND_SOC_DAILINK_DEFS(playback_hdmi,
- 	DAILINK_COMP_ARRAY(COMP_DUMMY()),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ Example:
  
-+SND_SOC_DAILINK_DEFS(wake_on_voice,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
- /* BE */
- SND_SOC_DAILINK_DEFS(primary_codec,
- 	DAILINK_COMP_ARRAY(COMP_CPU("ADDA")),
-@@ -229,6 +235,41 @@ static struct snd_soc_ops mt8183_mt6358_tdm_ops = {
- 	.shutdown = mt8183_mt6358_tdm_shutdown,
- };
+ 	sound {
+ 		compatible = "mediatek,mt8183_mt6358_ts3a227_max98357";
+ 		mediatek,headset-codec = <&ts3a227>;
++		mediatek,ec-codec = <&ec_codec>;
+ 		mediatek,platform = <&afe>;
+ 	};
  
-+static int
-+mt8183_mt6358_ts3a227_max98357_wov_startup(
-+	struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
-+			snd_soc_card_get_drvdata(card);
-+
-+	return pinctrl_select_state(priv->pinctrl,
-+				    priv->pin_states[PIN_WOV]);
-+}
-+
-+static void
-+mt8183_mt6358_ts3a227_max98357_wov_shutdown(
-+	struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct mt8183_mt6358_ts3a227_max98357_priv *priv =
-+			snd_soc_card_get_drvdata(card);
-+	int ret;
-+
-+	ret = pinctrl_select_state(priv->pinctrl,
-+				   priv->pin_states[PIN_STATE_DEFAULT]);
-+	if (ret)
-+		dev_err(card->dev, "%s failed to select state %d\n",
-+			__func__, ret);
-+}
-+
-+static const struct snd_soc_ops mt8183_mt6358_ts3a227_max98357_wov_ops = {
-+	.startup = mt8183_mt6358_ts3a227_max98357_wov_startup,
-+	.shutdown = mt8183_mt6358_ts3a227_max98357_wov_shutdown,
-+};
-+
- static struct snd_soc_dai_link
- mt8183_mt6358_ts3a227_max98357_dai_links[] = {
- 	/* FE */
-@@ -306,6 +347,15 @@ mt8183_mt6358_ts3a227_max98357_dai_links[] = {
- 		.dpcm_playback = 1,
- 		SND_SOC_DAILINK_REG(playback_hdmi),
- 	},
-+	{
-+		.name = "Wake on Voice",
-+		.stream_name = "Wake on Voice",
-+		.ignore_suspend = 1,
-+		.ignore = 1,
-+		SND_SOC_DAILINK_REG(wake_on_voice),
-+		.ops = &mt8183_mt6358_ts3a227_max98357_wov_ops,
-+	},
-+
- 	/* BE */
- 	{
- 		.name = "Primary Codec",
-@@ -429,7 +479,7 @@ static int
- mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &mt8183_mt6358_ts3a227_max98357_card;
--	struct device_node *platform_node;
-+	struct device_node *platform_node, *ec_codec;
- 	struct snd_soc_dai_link *dai_link;
- 	struct mt8183_mt6358_ts3a227_max98357_priv *priv;
- 	int ret;
-@@ -444,10 +494,24 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
-+	ec_codec = of_parse_phandle(pdev->dev.of_node, "mediatek,ec-codec", 0);
-+
- 	for_each_card_prelinks(card, i, dai_link) {
- 		if (dai_link->platforms->name)
- 			continue;
--		dai_link->platforms->of_node = platform_node;
-+
-+		if (ec_codec && strcmp(dai_link->name, "Wake on Voice") == 0) {
-+			dai_link->cpus[0].name = NULL;
-+			dai_link->cpus[0].of_node = ec_codec;
-+			dai_link->cpus[0].dai_name = NULL;
-+			dai_link->codecs[0].name = NULL;
-+			dai_link->codecs[0].of_node = ec_codec;
-+			dai_link->codecs[0].dai_name = "Wake on Voice";
-+			dai_link->platforms[0].of_node = ec_codec;
-+			dai_link->ignore = 0;
-+		} else {
-+			dai_link->platforms->of_node = platform_node;
-+		}
- 	}
- 
- 	mt8183_mt6358_ts3a227_max98357_headset_dev.dlc.of_node =
 -- 
 2.20.1
 
