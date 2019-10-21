@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5692DCA9EAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:04:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78908CA9EAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:04:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D46E020B7C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:04:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E5B3A20B7C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:04:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AUFdKYiH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="QyljPhLY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D46E020B7C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FcuJVD0W";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="EUgOYGF+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5B3A20B7C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11A741662;
-	Mon, 21 Oct 2019 20:03:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11A741662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 291521666;
+	Mon, 21 Oct 2019 20:03:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 291521666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571681053;
-	bh=Q23X7ILypoHK8Kc3hN5kOQSGIrJi8WGBn0kwNsu21fw=;
+	s=default; t=1571681078;
+	bh=hQwlSWSBgWeXH8Zt2oD+Rup9s8fTceWdt+8EYvfo7I0=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=AUFdKYiHjFw2Ko3eEIZ2WjV4ASGnwFOAH5cxZBFf6q1hKdyH8Opo8IFz33aUPqK86
-	 9Kblkt+jyFDMs1lmFfzbKsUzUQL+3ZRl78Nw0rm+3JQgs07Bo5F422vFmV0nhk6loH
-	 WAOFNzFq5/5pA977S1DDNYF8dZHAKy/Ml/VFMEfs=
+	b=FcuJVD0WiGpBatHO5DHWY+DwDJbyS++6k5PCuCSuowF5aj0R70EIJoo2XSBooC234
+	 oD+ry1qNQ/EYXA9NDIAQ4bzbruM9uGQvugoxZsUrKXz3gz1OHEAXorrXSzIGMTa6Yf
+	 R2FekDB76pVEHt39Oq8jH6ACeErlBId7NGnedprQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01744F80600;
-	Mon, 21 Oct 2019 20:01:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 529A7F80612;
+	Mon, 21 Oct 2019 20:01:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC7F7F805FC; Mon, 21 Oct 2019 20:00:54 +0200 (CEST)
+ id 62326F8036F; Mon, 21 Oct 2019 20:00:55 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74F6FF80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEEE8F80393
  for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 20:00:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74F6FF80112
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEEE8F80393
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="QyljPhLY"
+ header.b="EUgOYGF+"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=xMWoIJdZy/ZyyfYXw7AoTxf+0fkApz8RfT37Qdj1H9Q=; b=QyljPhLY6uvF
- VTGSuJ6YbBA/L7LvYh9AidCqFA1UMX2e6H3CY8KTWlHzCTiA0t93wXhwSzC3Vl+lHMZsVcfT53rFe
- 1agTLWIXAUnv8m8OQBn+QNBax+FAP3LJV7TQY98tAlNevhfkY78CvtBwfmFCchGCS+Q17UuCFh5gU
- tlfJ0=;
+ List-Archive; bh=xPyRRoetFVp+xgqkSIDKATLWjAboLeoEpl+LnasuBUc=; b=EUgOYGF+Beig
+ LtjRDnYCg+5Mfa7q7ooruOuORlo7LS+SnHXol54R3dVvuuZ44lcqy9B1H3r8MPEJldRZI2hmgN05N
+ Bj1wjoQsGkTWVd2672CJRkZlrPyq2+WW7Vzs5AD/e6xok1BqG85JmZ3bSf3z3uqntrsglxhwV07gh
+ SzE1o=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iMbz4-0004bN-BS; Mon, 21 Oct 2019 18:00:46 +0000
+ id 1iMbz4-0004bb-UV; Mon, 21 Oct 2019 18:00:47 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id B97EE2743297; Mon, 21 Oct 2019 19:00:45 +0100 (BST)
+ id 3D5772743267; Mon, 21 Oct 2019 19:00:46 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20191019143504.2.I57266d36564f393e9d701c9db648cc2efb0346fc@changeid>
+To: Stephan Gerhold <stephan@gerhold.net>
+In-Reply-To: <20191020153007.206070-2-stephan@gerhold.net>
 X-Patchwork-Hint: ignore
-Message-Id: <20191021180045.B97EE2743297@ypsilon.sirena.org.uk>
-Date: Mon, 21 Oct 2019 19:00:45 +0100 (BST)
-Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- cychiang@google.com, drinkcat@google.com, robh+dt@kernel.org,
- tzungbi@google.com, Mark Brown <broonie@kernel.org>,
- enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com
-Subject: [alsa-devel] Applied "ASoC: mediatek: mt6358: support WoV" to the
-	asoc tree
+Message-Id: <20191021180046.3D5772743267@ypsilon.sirena.org.uk>
+Date: Mon, 21 Oct 2019 19:00:46 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [alsa-devel] Applied "ASoC: msm8916-wcd-analog: Add earpiece" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: mediatek: mt6358: support WoV
+   ASoC: msm8916-wcd-analog: Add earpiece
 
 has been applied to the asoc tree at
 
@@ -124,150 +124,125 @@ to this mail.
 Thanks,
 Mark
 
-From 8e8c533b132ad0ce9c99a50ff4c910a8dd7efb8e Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Sat, 19 Oct 2019 15:02:52 +0800
-Subject: [PATCH] ASoC: mediatek: mt6358: support WoV
+From 7d2f70f248ab0e4251591cf7b36cc43281941f56 Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Sun, 20 Oct 2019 17:30:07 +0200
+Subject: [PATCH] ASoC: msm8916-wcd-analog: Add earpiece
 
-Switch mono DMIC on to support wake-on-voice.
+PM8916 supports an earpiece as another (small) speaker.
+The earpiece is routed through RX MIX1 similarly to
+the headphones, except that RDAC2 MUX is set to RX1.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20191019143504.2.I57266d36564f393e9d701c9db648cc2efb0346fc@changeid
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20191020153007.206070-2-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/mt6358.c | 105 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 105 insertions(+)
+ sound/soc/codecs/msm8916-wcd-analog.c | 54 ++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/mt6358.c b/sound/soc/codecs/mt6358.c
-index bb737fd678cc..1b830ea4f6ed 100644
---- a/sound/soc/codecs/mt6358.c
-+++ b/sound/soc/codecs/mt6358.c
-@@ -93,6 +93,8 @@ struct mt6358_priv {
- 	int mtkaif_protocol;
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 667e9f73aba3..4168b0a0aafb 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -228,6 +228,10 @@
+ #define CDC_A_RX_EAR_CTL			(0xf19E)
+ #define RX_EAR_CTL_SPK_VBAT_LDO_EN_MASK		BIT(0)
+ #define RX_EAR_CTL_SPK_VBAT_LDO_EN_ENABLE	BIT(0)
++#define RX_EAR_CTL_PA_EAR_PA_EN_MASK		BIT(6)
++#define RX_EAR_CTL_PA_EAR_PA_EN_ENABLE		BIT(6)
++#define RX_EAR_CTL_PA_SEL_MASK			BIT(7)
++#define RX_EAR_CTL_PA_SEL			BIT(7)
  
- 	struct regulator *avdd_reg;
-+
-+	int wov_enabled;
- };
+ #define CDC_A_SPKR_DAC_CTL		(0xf1B0)
+ #define SPKR_DAC_CTL_DAC_RESET_MASK	BIT(4)
+@@ -312,6 +316,7 @@ static const char *const hph_text[] = { "ZERO", "Switch", };
+ static const struct soc_enum hph_enum = SOC_ENUM_SINGLE_VIRT(
+ 					ARRAY_SIZE(hph_text), hph_text);
  
- int mt6358_set_mtkaif_protocol(struct snd_soc_component *cmpnt,
-@@ -464,6 +466,106 @@ static int mt6358_put_volsw(struct snd_kcontrol *kcontrol,
- 	return ret;
++static const struct snd_kcontrol_new ear_mux = SOC_DAPM_ENUM("EAR_S", hph_enum);
+ static const struct snd_kcontrol_new hphl_mux = SOC_DAPM_ENUM("HPHL", hph_enum);
+ static const struct snd_kcontrol_new hphr_mux = SOC_DAPM_ENUM("HPHR", hph_enum);
+ 
+@@ -685,6 +690,34 @@ static int pm8916_wcd_analog_enable_spk_pa(struct snd_soc_dapm_widget *w,
+ 	return 0;
  }
  
-+static void mt6358_restore_pga(struct mt6358_priv *priv);
-+
-+static int mt6358_enable_wov_phase2(struct mt6358_priv *priv)
++static int pm8916_wcd_analog_enable_ear_pa(struct snd_soc_dapm_widget *w,
++					    struct snd_kcontrol *kcontrol,
++					    int event)
 +{
-+	/* analog */
-+	regmap_update_bits(priv->regmap, MT6358_AUDDEC_ANA_CON13,
-+			   0xffff, 0x0000);
-+	regmap_update_bits(priv->regmap, MT6358_DCXO_CW14, 0xffff, 0xa2b5);
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON1,
-+			   0xffff, 0x0800);
-+	mt6358_restore_pga(priv);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
 +
-+	regmap_update_bits(priv->regmap, MT6358_DCXO_CW13, 0xffff, 0x9929);
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON9,
-+			   0xffff, 0x0025);
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON8,
-+			   0xffff, 0x0005);
-+
-+	/* digital */
-+	regmap_update_bits(priv->regmap, MT6358_AUD_TOP_CKPDN_CON0,
-+			   0xffff, 0x0000);
-+	regmap_update_bits(priv->regmap, MT6358_GPIO_MODE3, 0xffff, 0x0120);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG0, 0xffff, 0xffff);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG1, 0xffff, 0x0200);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG2, 0xffff, 0x2424);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG3, 0xffff, 0xdbac);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG4, 0xffff, 0x029e);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG5, 0xffff, 0x0000);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_POSDIV_CFG0,
-+			   0xffff, 0x0000);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_HPF_CFG0,
-+			   0xffff, 0x0451);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_TOP, 0xffff, 0x68d1);
-+
-+	return 0;
-+}
-+
-+static int mt6358_disable_wov_phase2(struct mt6358_priv *priv)
-+{
-+	/* digital */
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_TOP, 0xffff, 0xc000);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_HPF_CFG0,
-+			   0xffff, 0x0450);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_POSDIV_CFG0,
-+			   0xffff, 0x0c00);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG5, 0xffff, 0x0100);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG4, 0xffff, 0x006c);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG3, 0xffff, 0xa879);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG2, 0xffff, 0x2323);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG1, 0xffff, 0x0400);
-+	regmap_update_bits(priv->regmap, MT6358_AFE_VOW_CFG0, 0xffff, 0x0000);
-+	regmap_update_bits(priv->regmap, MT6358_GPIO_MODE3, 0xffff, 0x02d8);
-+	regmap_update_bits(priv->regmap, MT6358_AUD_TOP_CKPDN_CON0,
-+			   0xffff, 0x0000);
-+
-+	/* analog */
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON8,
-+			   0xffff, 0x0004);
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON9,
-+			   0xffff, 0x0000);
-+	regmap_update_bits(priv->regmap, MT6358_DCXO_CW13, 0xffff, 0x9829);
-+	regmap_update_bits(priv->regmap, MT6358_AUDENC_ANA_CON1,
-+			   0xffff, 0x0000);
-+	mt6358_restore_pga(priv);
-+	regmap_update_bits(priv->regmap, MT6358_DCXO_CW14, 0xffff, 0xa2b5);
-+	regmap_update_bits(priv->regmap, MT6358_AUDDEC_ANA_CON13,
-+			   0xffff, 0x0010);
-+
-+	return 0;
-+}
-+
-+static int mt6358_get_wov(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *c = snd_soc_kcontrol_component(kcontrol);
-+	struct mt6358_priv *priv = snd_soc_component_get_drvdata(c);
-+
-+	ucontrol->value.integer.value[0] = priv->wov_enabled;
-+	return 0;
-+}
-+
-+static int mt6358_put_wov(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *c = snd_soc_kcontrol_component(kcontrol);
-+	struct mt6358_priv *priv = snd_soc_component_get_drvdata(c);
-+	int enabled = ucontrol->value.integer.value[0];
-+
-+	if (priv->wov_enabled != enabled) {
-+		if (enabled)
-+			mt6358_enable_wov_phase2(priv);
-+		else
-+			mt6358_disable_wov_phase2(priv);
-+
-+		priv->wov_enabled = enabled;
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_SEL_MASK, RX_EAR_CTL_PA_SEL);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_EAR_PA_EN_MASK,
++				    RX_EAR_CTL_PA_EAR_PA_EN_ENABLE);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_EAR_PA_EN_MASK, 0);
++		/* Delay to reduce ear turn off pop */
++		usleep_range(7000, 7100);
++		snd_soc_component_update_bits(component, CDC_A_RX_EAR_CTL,
++				    RX_EAR_CTL_PA_SEL_MASK, 0);
++		break;
 +	}
-+
 +	return 0;
 +}
 +
- static const DECLARE_TLV_DB_SCALE(playback_tlv, -1000, 100, 0);
- static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 600, 0);
+ static const struct reg_default wcd_reg_defaults_2_0[] = {
+ 	{CDC_A_RX_COM_OCP_CTL, 0xD1},
+ 	{CDC_A_RX_COM_OCP_COUNT, 0xFF},
+@@ -801,12 +834,20 @@ static const struct snd_soc_dapm_route pm8916_wcd_analog_audio_map[] = {
+ 	{"PDM_TX", NULL, "A_MCLK2"},
+ 	{"A_MCLK2", NULL, "A_MCLK"},
  
-@@ -483,6 +585,9 @@ static const struct snd_kcontrol_new mt6358_snd_controls[] = {
- 			     MT6358_AUDENC_ANA_CON0, MT6358_AUDENC_ANA_CON1,
- 			     8, 4, 0,
- 			     snd_soc_get_volsw, mt6358_put_volsw, pga_tlv),
++	/* Earpiece (RX MIX1) */
++	{"EAR", NULL, "EAR_S"},
++	{"EAR_S", "Switch", "EAR PA"},
++	{"EAR PA", NULL, "RX_BIAS"},
++	{"EAR PA", NULL, "HPHL DAC"},
++	{"EAR PA", NULL, "HPHR DAC"},
++	{"EAR PA", NULL, "EAR CP"},
 +
-+	SOC_SINGLE_BOOL_EXT("Wake-on-Voice Phase2 Switch", 0,
-+			    mt6358_get_wov, mt6358_put_wov),
- };
+ 	/* Headset (RX MIX1 and RX MIX2) */
+ 	{"HEADPHONE", NULL, "HPHL PA"},
+ 	{"HEADPHONE", NULL, "HPHR PA"},
  
- /* MUX */
+-	{"HPHL PA", NULL, "EAR_HPHL_CLK"},
+-	{"HPHR PA", NULL, "EAR_HPHR_CLK"},
++	{"HPHL DAC", NULL, "EAR_HPHL_CLK"},
++	{"HPHR DAC", NULL, "EAR_HPHR_CLK"},
+ 
+ 	{"CP", NULL, "NCP_CLK"},
+ 
+@@ -847,11 +888,20 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("AMIC1"),
+ 	SND_SOC_DAPM_INPUT("AMIC3"),
+ 	SND_SOC_DAPM_INPUT("AMIC2"),
++	SND_SOC_DAPM_OUTPUT("EAR"),
+ 	SND_SOC_DAPM_OUTPUT("HEADPHONE"),
+ 
+ 	/* RX stuff */
+ 	SND_SOC_DAPM_SUPPLY("INT_LDO_H", SND_SOC_NOPM, 1, 0, NULL, 0),
+ 
++	SND_SOC_DAPM_PGA_E("EAR PA", SND_SOC_NOPM,
++			   0, 0, NULL, 0,
++			   pm8916_wcd_analog_enable_ear_pa,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_MUX("EAR_S", SND_SOC_NOPM, 0, 0, &ear_mux),
++	SND_SOC_DAPM_SUPPLY("EAR CP", CDC_A_NCP_EN, 4, 0, NULL, 0),
++
+ 	SND_SOC_DAPM_PGA("HPHL PA", CDC_A_RX_HPH_CNP_EN, 5, 0, NULL, 0),
+ 	SND_SOC_DAPM_MUX("HPHL", SND_SOC_NOPM, 0, 0, &hphl_mux),
+ 	SND_SOC_DAPM_MIXER("HPHL DAC", CDC_A_RX_HPH_L_PA_DAC_CTL, 3, 0, NULL,
 -- 
 2.20.1
 
