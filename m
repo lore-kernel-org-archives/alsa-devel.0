@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94FEACA9EAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F560CA9EAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:03:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1864220B7C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:02:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 291C220B7C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Oct 2019 18:03:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jAY8to9X";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="YdI6okyC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1864220B7C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RXTfWyD3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="V7gI5yvw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 291C220B7C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E2371662;
-	Mon, 21 Oct 2019 20:01:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E2371662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97FDC1674;
+	Mon, 21 Oct 2019 20:02:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97FDC1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571680958;
-	bh=wR6HYFx2XX1Qi/1dUZtkGGiFkIzDosuhcwd+v6LZvr8=;
+	s=default; t=1571681004;
+	bh=/PrbPI1nxwpQAHVTW6Xro8qMWGnBdlhprbo25W77rrM=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jAY8to9XeN4f6ylP4kbJtaTsjNRQHWxfi7lCl99l/xYGlGUdgtknogfDHpOAofoKd
-	 cKGrAhY1jbevTvZJvMaYJ/aoidZ0hhrS1ox6sTSYGeTnxI28QoeiCYY4CKkAx8JLHG
-	 Ivyssf0s2AjIJqc02scB+5qAa4lXdvtdQYjxnNFU=
+	b=RXTfWyD3MEo2c2kzF28HA7JmBd+ShuN8DNc102jh99iXoAKbIRPX/It4ygQTZcOlM
+	 wEwzLzbBPm0z5+kdQmyMWSSjyIG5zTfPLNf0Qz8DPjiVArFoMPkOoGFl6NXMHZz2vw
+	 xTdQGPCRA3KBcqf1oK8ztBF4IY9yFyGwBjq2VdHk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81AACF805FB;
-	Mon, 21 Oct 2019 20:00:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C884F803D7;
+	Mon, 21 Oct 2019 20:00:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1628EF80321; Mon, 21 Oct 2019 20:00:49 +0200 (CEST)
+ id 2CED0F805FC; Mon, 21 Oct 2019 20:00:54 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16E37F801EB
- for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 20:00:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16E37F801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31010F8036F
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 20:00:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31010F8036F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="YdI6okyC"
+ header.b="V7gI5yvw"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=wlDa9VryuUJQhYEG0o9q9nJ687FaGpsHWqMMgoNvQE4=; b=YdI6okyC/vHf
- PpjIeDIOJte8zpvAEl3MdQ+5qD+xJIUG8lfYtGZ63vesMtqzCvi/o9Ekgk6B/gU9DeZlTv/HB+H5g
- zt9IrADpM1pg+wPNvh402ILmzyfoyGVrIkm1q3GxTAIxc8hyTnjXiQAgebXE5G0q0JnMgEqY8yjTc
- 47b6g=;
+ List-Archive; bh=b9z1pQ9mAvur/PgoNbDLn3mafTIDh3+vOexkqZCw3Pk=; b=V7gI5yvwfWPK
+ ev+AIZPUPowyVb68gJVUr5k1/A2qthQ5ur7XAVLAbXxbfJ/wj6oGRD9Tk2DXEfrlH9/2MQAMl5oeO
+ PqAKDrpBRzWsYpmb9W7o1V5AkJd0puMtvhFDQAdc7lslsXgwuXRNSN9O0Irvtm7CjIeEmi/rtllK9
+ 1DGeA=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iMbz4-0004bM-24; Mon, 21 Oct 2019 18:00:46 +0000
+ id 1iMbz5-0004bn-FO; Mon, 21 Oct 2019 18:00:47 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 7E7892743267; Mon, 21 Oct 2019 19:00:45 +0100 (BST)
+ id B95582743297; Mon, 21 Oct 2019 19:00:46 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20191019143504.3.Iec97a3f137148cdf316056612590b3e0b302f5f3@changeid>
+To: Xiaojun Sang <xsang@codeaurora.org>
+In-Reply-To: <20191021095432.5639-1-srinivas.kandagatla@linaro.org>
 X-Patchwork-Hint: ignore
-Message-Id: <20191021180045.7E7892743267@ypsilon.sirena.org.uk>
-Date: Mon, 21 Oct 2019 19:00:45 +0100 (BST)
-Cc: gwendal@google.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- cychiang@google.com, drinkcat@google.com, robh+dt@kernel.org,
- tzungbi@google.com, Mark Brown <broonie@kernel.org>,
- enric.balletbo@collabora.com, bleung@google.com, dgreid@google.com,
- Rob Herring <robh@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: mt8183: add ec-codec" to
-	the asoc tree
+Message-Id: <20191021180046.B95582743297@ypsilon.sirena.org.uk>
+Date: Mon, 21 Oct 2019 19:00:46 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ spapothi@codeaurora.org, tiwai@suse.com, vkoul@kernel.org,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [alsa-devel] Applied "ASoC: compress: fix unsigned integer overflow
+	check" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,11 +99,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dt-bindings: mt8183: add ec-codec
+   ASoC: compress: fix unsigned integer overflow check
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -125,41 +124,35 @@ to this mail.
 Thanks,
 Mark
 
-From 0cce736d389cbeae6a7d0a72bafb4408d21eb44a Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Sat, 19 Oct 2019 15:02:53 +0800
-Subject: [PATCH] ASoC: dt-bindings: mt8183: add ec-codec
+From d3645b055399538415586ebaacaedebc1e5899b0 Mon Sep 17 00:00:00 2001
+From: Xiaojun Sang <xsang@codeaurora.org>
+Date: Mon, 21 Oct 2019 10:54:32 +0100
+Subject: [PATCH] ASoC: compress: fix unsigned integer overflow check
 
-Add an optional property "ec-codec".  If specified, mt8183 could use the
-"wake on voice" feature offered by EC codec.
+Parameter fragments and fragment_size are type of u32. U32_MAX is
+the correct check.
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20191019143504.3.Iec97a3f137148cdf316056612590b3e0b302f5f3@changeid
+Signed-off-by: Xiaojun Sang <xsang@codeaurora.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20191021095432.5639-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/mt8183-mt6358-ts3a227-max98357.txt          | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/core/compress_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
-index 17ff3892f439..decaa013a07e 100644
---- a/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
-+++ b/Documentation/devicetree/bindings/sound/mt8183-mt6358-ts3a227-max98357.txt
-@@ -6,12 +6,15 @@ Required properties:
- 
- Optional properties:
- - mediatek,headset-codec: the phandles of ts3a227 codecs
-+- mediatek,ec-codec: the phandle of EC codecs.
-+                     See google,cros-ec-codec.txt for more details.
- 
- Example:
- 
- 	sound {
- 		compatible = "mediatek,mt8183_mt6358_ts3a227_max98357";
- 		mediatek,headset-codec = <&ts3a227>;
-+		mediatek,ec-codec = <&ec_codec>;
- 		mediatek,platform = <&afe>;
- 	};
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index 99b882158705..942af8c29b79 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -528,7 +528,7 @@ static int snd_compress_check_input(struct snd_compr_params *params)
+ {
+ 	/* first let's check the buffer parameter's */
+ 	if (params->buffer.fragment_size == 0 ||
+-	    params->buffer.fragments > INT_MAX / params->buffer.fragment_size ||
++	    params->buffer.fragments > U32_MAX / params->buffer.fragment_size ||
+ 	    params->buffer.fragments == 0)
+ 		return -EINVAL;
  
 -- 
 2.20.1
