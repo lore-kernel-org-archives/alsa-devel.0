@@ -2,94 +2,112 @@ Return-Path: <SRS0=fLcx=YP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC6E3CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:15:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7714BCA9EA0
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:16:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31BF621783
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:15:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0114D20700
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:16:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BzvAIMzX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QDKDwh7R"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31BF621783
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gdDsECFc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A+lOYOm+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0114D20700
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 547481660;
-	Tue, 22 Oct 2019 18:14:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 547481660
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDC75167D;
+	Tue, 22 Oct 2019 18:15:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDC75167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571760934;
-	bh=xMVoX7SWDMMFrh0oC+YpasBTWA/hPzcKPraBrBwClWs=;
+	s=default; t=1571760981;
+	bh=Gp0r7jLHOyjjGCUdaKBA4h144OOqdSJHYUI+M7cESHw=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BzvAIMzXaYjgjvsOvXNdSSEgWzjpgRVe2QISbpdBnoVGZSQMCcC2jr3gQuUV3Ys0z
-	 VseZgjHjtv0IqvzX8/ugMGWBkdg9QueRpi1FL0mEPF1j/FQEDB9v70weipO2W0qvBF
-	 ggjsVcKwOM08sn4HxPapX5Th3E+B4Pcgx4MRGhR0=
+	b=gdDsECFc1fBcUrHnlb7vlwrTb6izj0KO0tLr6AVStn9s6EamCXpxAEMJuI5iP59HZ
+	 sdSSTbIo6rKH301UVoqp3GJzhSMUsUU0FDCiYe8HqgWSy8fCGIZbWJcBkPVII9tg/C
+	 G6DZeV4lBmYT3WXHhO2tJz8fqjhlXUmhYqFRdjYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37664F80377;
-	Tue, 22 Oct 2019 18:14:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44C13F805FB;
+	Tue, 22 Oct 2019 18:14:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74C7AF80390; Tue, 22 Oct 2019 18:14:12 +0200 (CEST)
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
- [IPv6:2a00:1450:4864:20::334])
+ id 41D59F80368; Mon, 21 Oct 2019 11:59:21 +0200 (CEST)
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com
+ [IPv6:2607:f8b0:4864:20::942])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFAF8F80367
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 18:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFAF8F80367
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEC47F80112
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 11:59:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEC47F80112
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="QDKDwh7R"
-Received: by mail-wm1-x334.google.com with SMTP id 3so16747245wmi.3
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 09:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="A+lOYOm+"
+Received: by mail-ua1-x942.google.com with SMTP id b14so3619291uap.6
+ for <alsa-devel@alsa-project.org>; Mon, 21 Oct 2019 02:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=J5ZbBR+CoEfy9i66VMnsOWE4R6SgXAww+/Mqq26bf1E=;
- b=QDKDwh7RdGvxnnNk6yOxWTySKbSLtrfbHIf2uMpTW0ObDGD80NtGnfmzk/rYwE2cO7
- +DpI2RFGU9hvxVKQH8vr9ISKfax6KfALzQPGbC9ONvaG7wQd5oqslY2u+0883eF8ya2H
- f/oi3ZoJI4ngw12oClJ/SFQxIoM/rZAdUkQY4=
+ :cc; bh=pdHS5iTjhH216W3OQmstavgIx2TJJX3EShTQ+j4ScZ4=;
+ b=A+lOYOm+Xr9/QoAPbGmRqhJkdtF0Lqe8WUL4ACj5RU0nNNF8swHXxJ1znB4G8Os5Ny
+ GFNaGZ/ejdu+ewHfdHOPCmruyouYE59ddCzoE/xVdTrwx+9jDUvHxy7BDp9wIDVdNxfI
+ /6ZVUUwI4YOYuKQGiiojp4zvyT6amzLfph0exWZKznf04jiM3DxdRAExfvqYeyeqcqdD
+ +jHYiIvYbVFtFjJ+6C1ZbvLjFHV0Oba7w+6LuMl93+fW5xmlBomtFj1iieYNFONPPx+n
+ GuW5fPipC9llariB4WKqkEzYSA5LiCXyADKzbRoQItF2MbOokfHyNH6+nW64EQTg2+/Q
+ SDPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=J5ZbBR+CoEfy9i66VMnsOWE4R6SgXAww+/Mqq26bf1E=;
- b=sgOIgi8xUl0STGhhsLvfhXj/caeP/4iZlP08FuTKElpZk5fCSnBT/oW/bZXTe0GqxY
- QAhxlaRDYukTM02ClGlD9sPI1l7/XIpuCS+3Np8hcW90jBY84dHeRKjxweucdpkQk9aN
- umnRUIw+0zOk3T67Q9TIl1LNQzoaqqOtCC5wJqQJnBlPlv5NE3uLwWhX2J8VGfR4VP5f
- JLaYMjwxnMR1hd89gsd+xthzG1HOCAfIO6UFinhfequsWWXYp5geUaw4QaiYNMQxdafY
- S+o/hyE2fKJBjFenZ8gvX6A11n0DO4zwS+tcSKFq6QX6R0U9oSZvCV+GJTLFiMief7AO
- GPVQ==
-X-Gm-Message-State: APjAAAXivzvRZPZ66Zz2nLCiIPR2oD0kieWmh/iBT3zYiazMXj0zlKkD
- XDxcRpv1FDAowbgZbmrL3FVSh9oq7yaHhh1hRfxUgrwbT9c=
-X-Google-Smtp-Source: APXvYqxQaZ3foy2JkQdUpXrCAN8j+Fi7bNsH2ho1O0/ttzy+uNR7XtofV+V3uXfl3lua72m9rMMW9OmbzcIoxT18HL4=
-X-Received: by 2002:a1c:dd06:: with SMTP id u6mr3882439wmg.109.1571760849064; 
- Tue, 22 Oct 2019 09:14:09 -0700 (PDT)
+ :message-id:subject:to:cc;
+ bh=pdHS5iTjhH216W3OQmstavgIx2TJJX3EShTQ+j4ScZ4=;
+ b=MWZYCuahmBKZ9SDqB9dFmMQJYrMqs3/PD/TuMvKh4jY7pDKNi+7XusKKdIB5TBN/Wq
+ JWdjeaYYATLNMeORF+lnq9ovqiACaarPcjhBthJ4RayUxAq2i2Amz4uAf2I9aE4nJg0K
+ D8iQq6HN+xK8lQSMdr9ciE7iMCIBptZ63nCn1rw6GzCfiET9+5kdMdB4s+MwweB6U2B6
+ cy/+4YPHIC/jTEqF/N93CSNDNLAQV0wrLVUZe0vuc0GY5oAcj8VFI30h/0spvZhBjKqK
+ 2jexLpIxv5BztHHRVZZ5GvQeM1oO/fq3Q5SZCrDudVtyBTnzpRaWskgbmGMGYyFm5TAP
+ 71LQ==
+X-Gm-Message-State: APjAAAUlJ6qgvFOXSuqHq0MEkxmPoDuNLlYWDu23yGd52rLNSfpxyyKC
+ yl4cgbdt5GCsBS3t98icS68vkmaBY9oWhqCC+baPSg==
+X-Google-Smtp-Source: APXvYqyX35z25w9uC+afBeqWkMX+7aKojU6riMDxod1s9TtFAaRTKL1Dky4gIujxC0cprlM32BbtJAeRhAkOs/Lhxl0=
+X-Received: by 2002:ab0:5a97:: with SMTP id w23mr2075364uae.129.1571651953620; 
+ Mon, 21 Oct 2019 02:59:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <2146461867.4835752.1571321696465@mail.yahoo.com>
- <CAEy1m_CXrhr15RZz_Q+TiMGj4DMBbUV8sCobmmkhguYJWCw03Q@mail.gmail.com>
- <572375501.5493214.1571396197926@mail.yahoo.com>
- <CAGvk5PrZ65wEp7y7UbtEN2CCf6c-wvoknMKyTmuqXY9EPg7jiw@mail.gmail.com>
- <43747502.7351282.1571666231987@mail.yahoo.com>
- <CAGvk5PoYYikRL90Vn2GxGWngwaaYzZwe6UX_hcjfAnLeBwvy=w@mail.gmail.com>
- <925340775.7968852.1571737181376@mail.yahoo.com>
-In-Reply-To: <925340775.7968852.1571737181376@mail.yahoo.com>
-From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Date: Wed, 23 Oct 2019 00:13:56 +0800
-Message-ID: <CAGvk5PpUjn0r_sCD-1mpbaKQs_BmvjXnZV--bpRLCbdHRVDShw@mail.gmail.com>
-To: htl10@users.sourceforge.net
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] alsa conformance test fails to run for playback
-	(and works for capture)
+References: <20191018154052.1276506-1-arnd@arndb.de>
+ <20191018154201.1276638-5-arnd@arndb.de>
+In-Reply-To: <20191018154201.1276638-5-arnd@arndb.de>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Mon, 21 Oct 2019 11:58:37 +0200
+Message-ID: <CAPDyKFqHoPOPAA_0WpxQUjBTXJ-5BfMbcNXhFNr7rv3RObsgow@mail.gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+X-Mailman-Approved-At: Tue, 22 Oct 2019 18:14:15 +0200
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Linux USB List <linux-usb@vger.kernel.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-clk <linux-clk@vger.kernel.org>, linux-leds@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-input@vger.kernel.org,
+ Michael Turquette <mturquette@baylibre.com>,
+ Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
+ alsa-devel@alsa-project.org, Linux PM <linux-pm@vger.kernel.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Daniel Mack <daniel@zonque.org>
+Subject: Re: [alsa-devel] [PATCH 05/46] ARM: pxa: split up mach/hardware.h
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,43 +120,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGkgSGluLVRhaywKCkdvb2QgY2F0Y2ggYWdhaW4uIEkgaGF2ZSBmaXhlZCBpdCBpbiB0aGUgc2Ft
-ZSBDTC4gVGhhbmtzIQoKQmVzdCwKWXUtSHN1YW4KCkhpbi1UYWsgTGV1bmcgPGh0bDEwQHVzZXJz
-LnNvdXJjZWZvcmdlLm5ldD4g5pa8IDIwMTnlubQxMOaciDIy5pelIOmAseS6jCDkuIvljYg1OjM5
-5a+r6YGT77yaCj4KPgo+Cj4gT24gVHVlc2RheSwgMjIgT2N0b2JlciAyMDE5LCAwNDoxMjoxMiBC
-U1QsIFl1LUhzdWFuIEhzdSA8eXVoc3VhbkBjaHJvbWl1bS5vcmc+IHdyb3RlOgo+Cj4KPiA+IEhp
-IEhpbi1UYWssCj4KPiA+IEkgZmluYWxseSBmb3VuZCBvdXQgdGhlIHJlYXNvbiEgSXQgaXMgYmVj
-YXVzZSB0aGVyZSBpcyBhIGxlbmd0aCBsaW1pdAo+ID4gb2YgUENNIG5hbWUgaW4gQUxTQSBjb25m
-b3JtYW5jZSB0ZXN0Lgo+ID4gSSBoYXZlIGluY3JlYXNlZCBpdCBvbgo+ID4gaHR0cHM6Ly9jaHJv
-bWl1bS1yZXZpZXcuZ29vZ2xlc291cmNlLmNvbS9jL2Nocm9taXVtb3MvcGxhdGZvcm0vYXVkaW90
-ZXN0LysvMTg3MTc5Mi4KPiA+IFdhaXRpbmcgZm9yIHRoZSByZXZpZXcgYW5kIG1lcmdlLgo+ID4g
-VGhhbmtzIGEgbG90IGZvciB5b3VyIGNhdGNoIQo+Cj4gPiBCZXN0LAo+ID4gWXUtSHN1YW4KPgo+
-IERlYXIgWXUtSHN1YW4sCj4KPiBZZXMsIEkgaGFuZC1hcHBsaWVkIHRoZSBvbmUtbGluZSBjaGFu
-Z2UsIGFuZCBpdCBub3cgd29ya3MuIEkgZG8gd29uZGVyIGlmIHlvdSBzaG91bGQgY2hhbmdlIHRo
-ZSBhcmdzX3NldF9jYXB0dXJlX2Rldl9uYW1lKCkgYWxzbz8KPiBBdCB0aGUgbW9tZW50LCBNQVhf
-REVWSUNFX05BTUVfTEVOR1RIIGlzIG9ubHkgdXNlZCBpbiBleGFjdGx5IG9uZSBwbGFjZSwgZm9y
-IHRoZSBwbGF5YmFjayBkZXZpY2UgbmFtZS4gSGVuY2UgdGhlIHN1cnByaXNlIHRoYXQKPiBjYXB0
-dXJlIHdvcmtzIGJ1dCBwbGF5YmFjayBkb2VzIG5vdDoKPgo+IHNyYy9hbHNhX2NvbmZvcm1hbmNl
-X2FyZ3MuYy0xMTktdm9pZCBhcmdzX3NldF9wbGF5YmFja19kZXZfbmFtZShzdHJ1Y3QgYWxzYV9j
-b25mb3JtYW5jZV9hcmdzICphcmdzLAo+IHNyYy9hbHNhX2NvbmZvcm1hbmNlX2FyZ3MuYy0xMjAt
-IGNvbnN0IGNoYXIgKm5hbWUpCj4gc3JjL2Fsc2FfY29uZm9ybWFuY2VfYXJncy5jLTEyMS17Cj4g
-c3JjL2Fsc2FfY29uZm9ybWFuY2VfYXJncy5jLTEyMi0gZnJlZShhcmdzLT5wbGF5YmFja19kZXZf
-bmFtZSk7Cj4gc3JjL2Fsc2FfY29uZm9ybWFuY2VfYXJncy5jOjEyMzogYXJncy0+cGxheWJhY2tf
-ZGV2X25hbWUgPSBzdHJuZHVwKG5hbWUsIE1BWF9ERVZJQ0VfTkFNRV9MRU5HVEgpOwo+IHNyYy9h
-bHNhX2NvbmZvcm1hbmNlX2FyZ3MuYy0xMjQtfQo+IHNyYy9hbHNhX2NvbmZvcm1hbmNlX2FyZ3Mu
-Yy0xMjUtCj4gc3JjL2Fsc2FfY29uZm9ybWFuY2VfYXJncy5jLTEyNi12b2lkIGFyZ3Nfc2V0X2Nh
-cHR1cmVfZGV2X25hbWUoc3RydWN0IGFsc2FfY29uZm9ybWFuY2VfYXJncyAqYXJncywKPiBzcmMv
-YWxzYV9jb25mb3JtYW5jZV9hcmdzLmMtMTI3LSBjb25zdCBjaGFyICpuYW1lKQo+IHNyYy9hbHNh
-X2NvbmZvcm1hbmNlX2FyZ3MuYy0xMjgtewo+IHNyYy9hbHNhX2NvbmZvcm1hbmNlX2FyZ3MuYy0x
-MjktIGZyZWUoYXJncy0+Y2FwdHVyZV9kZXZfbmFtZSk7Cj4gc3JjL2Fsc2FfY29uZm9ybWFuY2Vf
-YXJncy5jLTEzMC0gYXJncy0+Y2FwdHVyZV9kZXZfbmFtZSA9IHN0cmR1cChuYW1lKTsKPiBzcmMv
-YWxzYV9jb25mb3JtYW5jZV9hcmdzLmMtMTMxLX0KPiBzcmMvYWxzYV9jb25mb3JtYW5jZV9hcmdz
-LmMtMTMyLQo+Cj4gUmVnYXJkcywKPiBIaW4tVGFrCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, 18 Oct 2019 at 17:43, Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> The mach/hardware.h is included in lots of places, and it provides
+> three different things on pxa:
+>
+> - the cpu_is_pxa* macros
+> - an indirect inclusion of mach/addr-map.h
+> - the __REG() and io_pv2() helper macros
+>
+> Split it up into separate <linux/soc/pxa/cpu.h> and mach/pxa-regs.h
+> headers, then change all the files that use mach/hardware.h to
+> include the exact set of those three headers that they actually
+> need, allowing for further more targeted cleanup.
+>
+> linux/soc/pxa/cpu.h can remain permanently exported and is now in
+> a global location along with similar headers. pxa-regs.h and
+> addr-map.h are only used in a very small number of drivers now
+> and can be moved to arch/arm/mach-pxa/ directly when those drivers
+> are to pass the necessary data as resources.
+>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-leds@vger.kernel.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-rtc@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-watchdog@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+[...]
+
+For the mmc part:
+
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
