@@ -2,100 +2,82 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.4 required=3.0 tests=DATE_IN_PAST_12_24,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A374CA9EB6
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:54:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8B4FCA9EB7
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:58:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 044FC2173B
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:54:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66A3B21929
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:58:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F/zmXygy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="B4JsPq0L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 044FC2173B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="goMEf+uy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66A3B21929
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A642284C;
-	Wed, 23 Oct 2019 19:53:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A642284C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56C2B1615;
+	Wed, 23 Oct 2019 19:58:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56C2B1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571853268;
-	bh=VMjImAL9C2DOqOMD/hBxjr8sQYUVOp7AXlLBaVWO+l8=;
-	h=References:From:To:In-reply-to:Date:Cc:Subject:List-Id:
+	s=default; t=1571853533;
+	bh=DA1hqzMVWNksRoCkcITe/TJlcYfdw4x0jyKToKmxWoI=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F/zmXygyB3wV3KFRihTTqYNGBBpPASXL1B6w++ZGlAv6ckHdrxpAh2I+mvJrkwtaT
-	 C7Fiw0daGxvps9HHSST0sSC3BD46j6RKp+N2BzuHMEJ/VNlPvB6BsDyB7XKVHTe0HS
-	 VZQyfj7i/XkTHwUIUrJyFO9oAtY+65HChHeVSe7E=
+	b=goMEf+uyv6T5xjXE9tJduuKU0kAt0gE7GjpHd/kemNyHuYaYLoviruyD+7H6m2UtZ
+	 r29OI3tl8m3u/r5bp+7QzH+XooQuOpwIvQ2syc5WrnqoyU/JkBUNyXfpEfXStSW8um
+	 DG61rGciVEgR5P4015nf8pZB4kPLh4RxmpsDlDI4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 296BAF80321;
-	Wed, 23 Oct 2019 19:53:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C12BAF80321;
+	Wed, 23 Oct 2019 19:58:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9B82F80368; Wed, 23 Oct 2019 19:53:36 +0200 (CEST)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C3AF5F80368; Wed, 23 Oct 2019 19:58:00 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34749F80112
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 19:53:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34749F80112
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="B4JsPq0L"
-Received: by mail-wr1-x444.google.com with SMTP id p4so23082879wrm.8
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 10:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=references:user-agent:from:to:cc:subject:in-reply-to:date
- :message-id:mime-version;
- bh=Pd1hXIbyhKvoq4Ce5+sJpjUPNTW4sF25HitKZRQWVXw=;
- b=B4JsPq0LniaQyv7ddF8xlzipH8jpJjEDYGD/tK+Xo/3m1MT59+5PrNAWgDYT1tn0aG
- U0Rg0fgVroScAIzNCEbfrCAA3lMCE+u9rK1IhABFJX29n1lWNsw9JhLZygsvDShiTak+
- DiwcUt3XsAcTGcNS2i1QqozEN/v/MI791M7AiIOvHsZPoPNPEPYqYPpMYE35iGZ24N9l
- lSLOcdXUxBq+aptYNUfjawsJcSBo6V9FP8NTEApy0szgfq1XL+GbgcnDwvkBre76ecsC
- S4LKqNNqFKjl/7ieLyQpMcCZN7EtGwBgIw1E/JrVq4QxMMEyTM1MRiWf+3mTeBgnYD5Q
- P1yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject
- :in-reply-to:date:message-id:mime-version;
- bh=Pd1hXIbyhKvoq4Ce5+sJpjUPNTW4sF25HitKZRQWVXw=;
- b=fwg/gfxI3lpKpC5C8me04KWTXS2jW+/w/K3WQl4hMrVfuBKQKhRp+WhHHQpFC71jQE
- pTBTMQlG3SF+Ea8SU0cRZuXb7RMAwYLpNyEG/lHNQORM9jbQCUG3nblZjkfbO1WzgFzU
- v88qqPf++SmPjH//rWXgnFnesfyX24OOeUfroxyHEc6SOy3MCPUUrZ5U2/qZKtKb2x8U
- UEFTJuK1AjxLadIfayunUDqKwgpw3EkKIij2A7K2WFy0FLYQdW2KsF9xvpvP7pog4ioa
- xW9w7PzjrjbpaJ9jlGVTJHOyq0XyEFijHByNstZ92Rr8XlaK51KUQujwExnya13KETCa
- gHuw==
-X-Gm-Message-State: APjAAAWLEF7ivMP3YrW/JyzuDYXuIniSfY0zwKqABr+gf9tmeAjMGA6k
- 84DC8PnslozeHlRi+xEhdkoy6A==
-X-Google-Smtp-Source: APXvYqyV3FVHmPnXhN7309BG4pPr+cmN8g3UWW39XvABLAOl0v0PrEKVunEVe6dkZuTaCi3CQve2fQ==
-X-Received: by 2002:adf:ee10:: with SMTP id y16mr9507135wrn.67.1571853213196; 
- Wed, 23 Oct 2019 10:53:33 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net.
- [82.243.161.21])
- by smtp.gmail.com with ESMTPSA id f143sm39085313wme.40.2019.10.23.10.53.32
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Oct 2019 10:53:32 -0700 (PDT)
-References: <20191023161203.28955-1-jbrunet@baylibre.com>
- <s5ha79rph1j.wl-tiwai@suse.de>
-User-agent: mu4e 1.3.3; emacs 26.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Takashi Iwai <tiwai@suse.de>
-In-reply-to: <s5ha79rph1j.wl-tiwai@suse.de>
-Date: Wed, 23 Oct 2019 19:53:31 +0200
-Message-ID: <1jv9sfcpr8.fsf@starbuckisacylon.baylibre.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1456F80112
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 19:57:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1456F80112
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 23 Oct 2019 10:57:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,221,1569308400"; d="scan'208";a="196854544"
+Received: from kmaklai-mobl2.amr.corp.intel.com (HELO [10.252.137.221])
+ ([10.252.137.221])
+ by fmsmga008.fm.intel.com with ESMTP; 23 Oct 2019 10:57:52 -0700
+To: Vinod Koul <vkoul@kernel.org>
+References: <20190916190952.32388-1-pierre-louis.bossart@linux.intel.com>
+ <20190916190952.32388-5-pierre-louis.bossart@linux.intel.com>
+ <20191021041404.GY2654@vkoul-mobl>
+ <8ba388e7-e344-068b-b233-8d96903abf6b@linux.intel.com>
+ <20191022045518.GJ2654@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <c6aeb19f-8646-6396-10a7-47acac540106@linux.intel.com>
+Date: Tue, 22 Oct 2019 15:41:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Russell King <rmk+kernel@armlinux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH 0/2] ASoC: hdmi-codec: fix locking issue
+In-Reply-To: <20191022045518.GJ2654@vkoul-mobl>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 4/5] soundwire: intel/cadence: add flag
+ for interrupt enable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,82 +90,154 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On Wed 23 Oct 2019 at 18:23, Takashi Iwai <tiwai@suse.de> wrote:
 
-> On Wed, 23 Oct 2019 18:12:01 +0200,
-> Jerome Brunet wrote:
->> 
->> This patchset fixes the locking issue reported by Russell.
->> 
->> As explained a mutex was used as flag and held while returning to
->> userspace.
->> 
->> Patch 2 is entirely optional and switches from bit atomic operation
->> to mutex again. I tend to prefer bit atomic operation in this
->> particular case but either way should be fine.
->
-> I fail to see why the mutex is needed there.  Could you elaborate
-> about the background?
+On 10/21/19 11:55 PM, Vinod Koul wrote:
+> On 21-10-19, 05:26, Pierre-Louis Bossart wrote:
+>> On 10/20/19 11:14 PM, Vinod Koul wrote:
+>>> On 16-09-19, 14:09, Pierre-Louis Bossart wrote:
+>>>> Prepare for future PM support and fix error handling by disabling
+>>>> interrupts as needed.
+>>>>
+>>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>> ---
+>>>>    drivers/soundwire/cadence_master.c | 18 ++++++++++++------
+>>>>    drivers/soundwire/cadence_master.h |  2 +-
+>>>>    drivers/soundwire/intel.c          | 12 +++++++-----
+>>>>    3 files changed, 20 insertions(+), 12 deletions(-)
+>>>>
+>>>> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+>>>> index 5f900cf2acb9..a71df99ca18f 100644
+>>>> --- a/drivers/soundwire/cadence_master.c
+>>>> +++ b/drivers/soundwire/cadence_master.c
+>>>> @@ -819,14 +819,17 @@ EXPORT_SYMBOL(sdw_cdns_exit_reset);
+>>>>     * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
+>>>>     * @cdns: Cadence instance
+>>>>     */
+>>>> -int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+>>>> +int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
+>>>>    {
+>>>> -	u32 mask;
+>>>> +	u32 slave_intmask0 = 0;
+>>>> +	u32 slave_intmask1 = 0;
+>>>> +	u32 mask = 0;
+>>>> +
+>>>> +	if (!state)
+>>>> +		goto update_masks;
+>>>> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0,
+>>>> -		    CDNS_MCP_SLAVE_INTMASK0_MASK);
+>>>> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
+>>>> -		    CDNS_MCP_SLAVE_INTMASK1_MASK);
+>>>> +	slave_intmask0 = CDNS_MCP_SLAVE_INTMASK0_MASK;
+>>>> +	slave_intmask1 = CDNS_MCP_SLAVE_INTMASK1_MASK;
+>>>>    	/* enable detection of all slave state changes */
+>>>>    	mask = CDNS_MCP_INT_SLAVE_MASK;
+>>>> @@ -849,6 +852,9 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
+>>>>    	if (interrupt_mask) /* parameter override */
+>>>>    		mask = interrupt_mask;
+>>>> +update_masks:
+>>>> +	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0, slave_intmask0);
+>>>> +	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1, slave_intmask1);
+>>>>    	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
+>>>>    	/* commit changes */
+>>>> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+>>>> index 1a67728c5000..302351808098 100644
+>>>> --- a/drivers/soundwire/cadence_master.h
+>>>> +++ b/drivers/soundwire/cadence_master.h
+>>>> @@ -162,7 +162,7 @@ int sdw_cdns_init(struct sdw_cdns *cdns);
+>>>>    int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
+>>>>    		      struct sdw_cdns_stream_config config);
+>>>>    int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
+>>>> -int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
+>>>> +int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state);
+>>>>    #ifdef CONFIG_DEBUG_FS
+>>>>    void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root);
+>>>> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+>>>> index cdb3243e8823..08530c136c5f 100644
+>>>> --- a/drivers/soundwire/intel.c
+>>>> +++ b/drivers/soundwire/intel.c
+>>>> @@ -1036,7 +1036,7 @@ static int intel_probe(struct platform_device *pdev)
+>>>>    	ret = sdw_add_bus_master(&sdw->cdns.bus);
+>>>>    	if (ret) {
+>>>>    		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
+>>>> -		goto err_master_reg;
+>>>> +		return ret;
+>>>
+>>> I am not sure I like this line change, before this IIRC the function and
+>>> single place of return, so changing this doesn't seem to improve
+>>> anything here..?
+>>
+>> Doing a goto to do a return is not very nice either.
+> 
+> Hrmm, isn't that what you are doing few lines below. The point here is
+> that this line of change here doesnt change anything, doesnt improve
+> anything so why change :)
 
-You are right, It is not required.
+I knew there was a reason.. the existing code on your soundwire/next 
+branch mixes goto and return, so I chose to use a return for the first 
+case as well.
 
-Just a bit of history:
+	ret = sdw_add_bus_master(&sdw->cdns.bus);
+	if (ret) {
+		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
+		goto err_master_reg; >>> changed to return ret;
+	}
 
-A while ago the hdmi-codec was keeping track of the substream pointer.
-It was not used for anything useful, other than knowing if device was
-busy or not, and it was causing problem with codec-to-codec links
+	if (sdw->cdns.bus.prop.hw_disabled) {
+		dev_info(&pdev->dev, "SoundWire master %d is disabled, ignoring\n",
+			 sdw->cdns.bus.link_id);
+		return 0;
+	}
 
-I removed the saved substream pointer and replaced with a simple bit to
-track the busy state. Protecting a single bit with a mutex seemed a bit
-overkill to me, so I thought it was a good idea to replace the whole
-thing with atomic bit ops. [0]
 
-Mark told me he preferred the mutex method as it simpler to understand.
-As long as as it works it's fine for me :)
 
-I proposed something that uses the mutex as a busy flag but it turned
-out to be a bad idea.
+> 
+>> I can change this, but it doesn't really matter: this entire code will be
+>> removed anyways to get rid of platform_devices and the probe itself will be
+>> split in two.
+>>
+>>>
+>>>>    	}
+>>>>    	if (sdw->cdns.bus.prop.hw_disabled) {
+>>>> @@ -1067,7 +1067,7 @@ static int intel_probe(struct platform_device *pdev)
+>>>>    		goto err_init;
+>>>>    	}
+>>>> -	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
+>>>> +	ret = sdw_cdns_enable_interrupt(&sdw->cdns, true);
+>>>>    	if (ret < 0) {
+>>>>    		dev_err(sdw->cdns.dev, "cannot enable interrupts\n");
+>>>>    		goto err_init;
+>>>> @@ -1076,7 +1076,7 @@ static int intel_probe(struct platform_device *pdev)
+>>>>    	ret = sdw_cdns_exit_reset(&sdw->cdns);
+>>>>    	if (ret < 0) {
+>>>>    		dev_err(sdw->cdns.dev, "unable to exit bus reset sequence\n");
+>>>> -		goto err_init;
+>>>> +		goto err_interrupt;
+>>>>    	}
+>>>>    	/* Register DAIs */
+>>>> @@ -1084,18 +1084,19 @@ static int intel_probe(struct platform_device *pdev)
+>>>>    	if (ret) {
+>>>>    		dev_err(sdw->cdns.dev, "DAI registration failed: %d\n", ret);
+>>>>    		snd_soc_unregister_component(sdw->cdns.dev);
+>>>> -		goto err_dai;
+>>>> +		goto err_interrupt;
+>>>>    	}
+>>>>    	intel_debugfs_init(sdw);
+>>>>    	return 0;
+>>>> +err_interrupt:
+>>>> +	sdw_cdns_enable_interrupt(&sdw->cdns, false);
+>>>>    err_dai:
+>>>
+>>> Isn't this unused now?
+> 
+> ??? you missed this.
 
-With the revert, we are back to the bit ops. Even if it works, Mark's
-original comment on the bit ops still stands I think. This is why I'm
-proposing patch 2 but I don't really mind if it is applied or not.
-
-[0] https://lkml.kernel.org/r/20190506095815.24578-3-jbrunet@baylibre.com
-
->
-> IIUC, the protection with the atomic bitmap should guarantee the
-> exclusive access.  The mutex would allow the possible concurrent calls
-> of multiple startup of a single instance, but is this the thing to be
-> solved?
->
->
-> thanks,
->
-> Takashi
->
->> 
->> Jerome Brunet (2):
->>   Revert "ASoC: hdmi-codec: re-introduce mutex locking"
->>   ASoC: hdmi-codec: re-introduce mutex locking again
->> 
->>  sound/soc/codecs/hdmi-codec.c | 15 +++++++++++----
->>  1 file changed, 11 insertions(+), 4 deletions(-)
->> 
->> -- 
->> 2.21.0
->> 
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> 
-
+fixed.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
