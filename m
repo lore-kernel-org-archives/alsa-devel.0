@@ -2,76 +2,90 @@ Return-Path: <SRS0=fLcx=YP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D267CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 11:20:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 764C2CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 11:47:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0174321906
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 11:20:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6BC2721872
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 11:47:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eBusj/JD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0174321906
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FzYHC3DK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="spSSgg67"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BC2721872
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD7091607;
-	Tue, 22 Oct 2019 13:19:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD7091607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12E1C1607;
+	Tue, 22 Oct 2019 13:46:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12E1C1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571743207;
-	bh=aiarSu8ypgytjluTsQA7+jNoU5s4hf2ccZXmhola0js=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eBusj/JD7QX0fQ0VcB+xHFFWTF/393SnntUcSwMhoXnUGBwnPc67J5k3707AHtLQm
-	 uFTC5TNbcfKH0RV/WLk7UtGLFm15FIcoVgEusKb4Gz7FPva4GfeJ5bPuE8Ck1u+nRK
-	 MngDv+jOrqkci/FYqczMRva6VnpbM41alorcQMpw=
+	s=default; t=1571744863;
+	bh=l2GNF7HcfjPf15BFbA9kxz/zSspUd5VECHwwg/8zFLE=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FzYHC3DKZNoyFdUzNOjUcCeDBU3/nXiq+kW0LRkrulmXkv5vbfaAq8owRkZ22WGa6
+	 XXZ2vm1buwDzWCGKflMxuRlP2IPHrXrJYEaPB4DBVNEjU34meHiUdT6dWL9GBC/bHD
+	 SAeBKk0bxL9K6RqXEXz8LZBiRYt9J0W4fWKW3+/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75B4DF802FB;
-	Tue, 22 Oct 2019 13:19:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D317F802FB;
+	Tue, 22 Oct 2019 13:46:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24A9DF8031A; Tue, 22 Oct 2019 13:19:14 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E77E9F8031A; Tue, 22 Oct 2019 13:46:50 +0200 (CEST)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com
+ [IPv6:2607:f8b0:4864:20::54a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A65FF8026A
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 13:19:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A65FF8026A
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Oct 2019 04:19:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,326,1566889200"; d="scan'208";a="201638671"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga006.jf.intel.com with ESMTP; 22 Oct 2019 04:19:06 -0700
-Date: Tue, 22 Oct 2019 14:19:06 +0300 (EEST)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@zeliteleevi
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <2b172a1b-04d3-624f-f10b-6ff15bdc6c9d@linux.intel.com>
-Message-ID: <alpine.DEB.2.21.1910221416430.16459@zeliteleevi>
-References: <20191011112745.25800-1-kai.vehmanen@linux.intel.com>
- <20191011112745.25800-6-kai.vehmanen@linux.intel.com>
- <cf6a8edb-689d-e068-a9c4-d728b7741fec@linux.intel.com>
- <alpine.DEB.2.21.1910111705060.16459@zeliteleevi>
- <s5hmudziz13.wl-tiwai@suse.de>
- <2b172a1b-04d3-624f-f10b-6ff15bdc6c9d@linux.intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
-MIME-Version: 1.0
-Cc: Takashi Iwai <tiwai@suse.de>, libin.yang@intel.com,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v6 5/9] ASoC: SOF: Intel: add support for
- snd-hda-codec-hdmi
+ by alsa1.perex.cz (Postfix) with ESMTPS id 608F4F8026A
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 13:46:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 608F4F8026A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="spSSgg67"
+Received: by mail-pg1-x54a.google.com with SMTP id 186so12346920pgd.14
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 04:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=+WgkN+jFywmJXVgKU05Ya5YyFfdneuxiMlHIArCBK5c=;
+ b=spSSgg67SiV5zrSWNM7crPZfxyUeNONQ5ZefWzhiBj0HxsRoKAiVIj19ZUUeQ6gfsT
+ p+4Vx3dMtOzHcYor+2y11h4PSstY+dErlPoSK4VwkFChu2pMI6IlE4ajoQs/dHLWdMNI
+ KqExQndtAmV3SvQUgvYYsUgqjBIpMHH7N1SWBPaU3e4ZX2knnBIgyjUmmn3mU88wGa/7
+ UNLtAgnl6E1XT8FDLbZOvvXCXoLG5Rm389sBg1+HX3AmafYXJ8qcPdbZm8yQ2dAhQ0xB
+ 5f16NXoRuTKjugNcj1Gi8Mo7mKo8ikqrtIeHvhyoy6DMBBkzaDYvBgqKqWkFBU0jE/hl
+ JskQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=+WgkN+jFywmJXVgKU05Ya5YyFfdneuxiMlHIArCBK5c=;
+ b=mK6Q2sx2RGoWrPOznidPBCFLEr0ZXwl4j7xMdqGC9Xyl8EPx3qJJ91GWHASiq2X0PD
+ kO3Ge86ht/t04PiTZUhaQmDwdRpSrnWaO/9ms5YvD6n9yPTdS4+7J7ZC9zrFrDf7g0q8
+ gB8M3w1jBFcsNmhSNrJDhxq0P0imzm9XY1yzvz3rqeXIDLOstAR3yZPDcpuoXuVhv+4f
+ ypgPeDokPlFpa000VJvdNXlXuHewZj+CItm3Njeb/3y2xcEcqSNJ6oRYwfguSpyTpkxl
+ D7E5SjzDR9rL5UDDU3wk4GZxitqG1aLKd5LmZXG/nDonE2PqX4bCkgnye72HOeU6nRbD
+ ysYQ==
+X-Gm-Message-State: APjAAAWDaU83bAlWn1402Mv8+qiOWBpCeN/esc7gKBv4mQ7JMP+uPKdb
+ lq2JH5HBbVMepkgeezHeTfJdXdV92Lj9
+X-Google-Smtp-Source: APXvYqy/ziqoEer4WzV0Nf0anG6/SXW8LGXGMhUoQ0nDrgt9a/HYV7SzXWbn1s5tu4qK4rUZHL44Bfeti+4c
+X-Received: by 2002:a63:9751:: with SMTP id d17mr3414778pgo.427.1571744804770; 
+ Tue, 22 Oct 2019 04:46:44 -0700 (PDT)
+Date: Tue, 22 Oct 2019 19:44:59 +0800
+Message-Id: <20191022114505.196852-1-tzungbi@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: broonie@kernel.org, robh+dt@kernel.org, narmstrong@baylibre.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ cychiang@google.com, jonas@kwiboo.se, allen.chen@ite.com.tw,
+ jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org, a.hajda@samsung.com,
+ Laurent.pinchart@ideasonboard.com, tzungbi@google.com, dgreid@google.com
+Subject: [alsa-devel] [PATCH 0/6] ASoC: mediatek: mt8183: support DP audio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,26 +103,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hey,
+(This series depends on https://lore.kernel.org/patchwork/patch/1126819/
+ which has not applied to the maintainer's tree yet.)
 
-On Thu, 17 Oct 2019, Pierre-Louis Bossart wrote:
-> On 10/17/19 2:58 AM, Takashi Iwai wrote:
-> > A trivial conflict can be resolved by either Mark or my side, so don't
-> > worry too much about it.
-> > 
-> > But if the patches don't rely on the new stuff that are found only in
-> > my tree, maybe it's better to rebase on Mark's tree, so that you can
-> > follow the whole other SOF development.
-> 
-> I'll let Kai comment, but this change will have ripple effects on machine
-> drivers we need to upstream, so it might be better to use Mark's tree?
+This series makes mt8183-mt6358-ts3a227-max98357 support DP (display port)
+audio output.
 
-ack on both, now that we agree on the few change to generic hda part,
-the rest is SOF specific and easier to merge via Mark's tree. I'll 
-work with Pierre to submit v7 (either directly, or even as part of 
-Pierre's next SOF series).
+ASoC: hdmi-codec: add PCM trigger operator
+- add a PCM trigger callback if codec driver is interested in PCM events.
 
-Br, Kai
+drm: bridge: it6505: bridge to hdmi-codec
+- add audio feature support of it6505.
+- bridge to hdmi-codec so that ASoC can use the audio feature. 
+- defer the "enabling" after receiving PCM START or RESUME event.
+
+ASoC: dt-bindings: mt8183: add a property "mediatek,hdmi-codec"
+ASoC: mediatek: mt8183: use hdmi-codec
+- bind to hdmi-codec in mt8183-mt6358-ts3a227-max98357.
+
+drm: bridge: it6505: report connector status
+ASoC: mediatek: mt8183: support HDMI jack reporting
+- use the mechanism from the following patch
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-September/155302.html
+  to report jack status (from DRM to ASoC).
+
+Allen Chen (1):
+  drm: bridge: it6505: bridge to hdmi-codec
+
+Tzung-Bi Shih (5):
+  ASoC: hdmi-codec: add PCM trigger operator
+  ASoC: dt-bindings: mt8183: add a property "mediatek,hdmi-codec"
+  ASoC: mediatek: mt8183: use hdmi-codec
+  drm: bridge: it6505: report connector status
+  ASoC: mediatek: mt8183: support HDMI jack reporting
+
+ .../sound/mt8183-mt6358-ts3a227-max98357.txt  |   2 +
+ drivers/gpu/drm/bridge/ite-it6505.c           | 191 +++++++++++++++++-
+ include/sound/hdmi-codec.h                    |  13 ++
+ sound/soc/codecs/hdmi-codec.c                 |  31 +++
+ sound/soc/mediatek/Kconfig                    |   3 +-
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   |  36 +++-
+ 6 files changed, 266 insertions(+), 10 deletions(-)
+
+-- 
+2.23.0.866.gb869b98d4c-goog
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
