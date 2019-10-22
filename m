@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1A03CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D329FCA9EA0
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:51:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 280A420700
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:50:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C55220700
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:51:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Etw9DcbW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 280A420700
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TJZps0Z1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C55220700
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37C2C166E;
-	Wed, 23 Oct 2019 01:49:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37C2C166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1930B167D;
+	Wed, 23 Oct 2019 01:50:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1930B167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571788236;
-	bh=ibudfzoq7VzlGPTZiPwTVyzypryZhou6pCVksNiY6Ys=;
+	s=default; t=1571788283;
+	bh=pml8udqROIUikaUG5nPMVRfV+CKkekEMsWJ8AAKfnCc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Etw9DcbWeaSvnC1ZIhjbdQLZnt7x7LW3/8G3OIOQ3tjV+R2dO957XvZycxvxGmbEa
-	 2ey869nBf1c/w1aoEnUGdma0Xl8S3OjLCq0jIhUs7/ezlSbUd6WEFH4eVOyZhod6Sv
-	 B8ucJp0pVwI8FteFg46ECZue6KzaiKAgCE9v2KVA=
+	b=TJZps0Z1QmuwI+nuDGFmQV81KB8VnTlYAm0+8k71Cvh0rUYAAaifCF+O2VwdHpZil
+	 Ts74Qu0VK16v7MSmYgJ+LLBNEeAIgoPfytdHktWVAUf9w+eTx4wTD3WveCiKag4T9X
+	 p7ySXTppjTtfUWnBq0n4CoMe21GdgJKnVR00rhek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63B8FF8058C;
-	Wed, 23 Oct 2019 01:48:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50A89F80322;
+	Wed, 23 Oct 2019 01:48:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 993CDF80367; Wed, 23 Oct 2019 01:48:50 +0200 (CEST)
+ id 1C63CF805FD; Wed, 23 Oct 2019 01:48:53 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C100BF802FB
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 01:48:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C100BF802FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id F05DDF800C0
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 01:48:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F05DDF800C0
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Oct 2019 16:48:46 -0700
+ 22 Oct 2019 16:48:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,218,1569308400"; d="scan'208";a="399211295"
+X-IronPort-AV: E=Sophos;i="5.68,218,1569308400"; d="scan'208";a="399211306"
 Received: from srajamoh-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.20.203])
- by fmsmga006.fm.intel.com with ESMTP; 22 Oct 2019 16:48:43 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 22 Oct 2019 16:48:46 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 22 Oct 2019 18:48:06 -0500
-Message-Id: <20191022234808.17432-2-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 22 Oct 2019 18:48:07 -0500
+Message-Id: <20191022234808.17432-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191022234808.17432-1-pierre-louis.bossart@linux.intel.com>
 References: <20191022234808.17432-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH 1/3] soundwire: remove bitfield for unique_id,
-	use u8
+Subject: [alsa-devel] [PATCH 2/3] soundwire: slave: add helper to extract
+	slave ID
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,41 +89,88 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is no good reason why the unique_id needs to be stored as 4
-bits. The code will work without changes with a u8 since all values
-are already filtered while parsing the ACPI tables and Slave devID
-registers.
+Simplify the loop with a helper. The only functionality change is that
+we continue the loop even with an ACPI error.
 
-Use u8 representation. This will allow us to encode a
-"IGNORE_UNIQUE_ID" value to account for firmware/BIOS creativity.
+Follow-up patches will build on this change.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/linux/soundwire/sdw.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/soundwire/slave.c | 50 ++++++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 688b40e65c89..28745b9ba279 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -403,6 +403,8 @@ int sdw_slave_read_prop(struct sdw_slave *slave);
-  * SDW Slave Structures and APIs
-  */
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index 6473fa602f82..5dbc76772d21 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -64,6 +64,36 @@ static int sdw_slave_add(struct sdw_bus *bus,
+ }
  
-+#define SDW_IGNORED_UNIQUE_ID 0xFF
+ #if IS_ENABLED(CONFIG_ACPI)
 +
- /**
-  * struct sdw_slave_id - Slave ID
-  * @mfg_id: MIPI Manufacturer ID
-@@ -418,7 +420,7 @@ struct sdw_slave_id {
- 	__u16 mfg_id;
- 	__u16 part_id;
- 	__u8 class_id;
--	__u8 unique_id:4;
-+	__u8 unique_id;
- 	__u8 sdw_version:4;
- };
++static bool find_slave(struct sdw_bus *bus,
++		       struct acpi_device *adev,
++		       struct sdw_slave_id *id)
++{
++	unsigned long long addr;
++	unsigned int link_id;
++	acpi_status status;
++
++	status = acpi_evaluate_integer(adev->handle,
++				       METHOD_NAME__ADR, NULL, &addr);
++
++	if (ACPI_FAILURE(status)) {
++		dev_err(bus->dev, "_ADR resolution failed: %x\n",
++			status);
++		return false;
++	}
++
++	/* Extract link id from ADR, Bit 51 to 48 (included) */
++	link_id = (addr >> 48) & GENMASK(3, 0);
++
++	/* Check for link_id match */
++	if (link_id != bus->link_id)
++		return false;
++
++	sdw_extract_slave_id(bus, addr, id);
++
++	return true;
++}
++
+ /*
+  * sdw_acpi_find_slaves() - Find Slave devices in Master ACPI node
+  * @bus: SDW bus instance
+@@ -81,29 +111,11 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ 	}
  
+ 	list_for_each_entry(adev, &parent->children, node) {
+-		unsigned long long addr;
+ 		struct sdw_slave_id id;
+-		unsigned int link_id;
+-		acpi_status status;
+-
+-		status = acpi_evaluate_integer(adev->handle,
+-					       METHOD_NAME__ADR, NULL, &addr);
+-
+-		if (ACPI_FAILURE(status)) {
+-			dev_err(bus->dev, "_ADR resolution failed: %x\n",
+-				status);
+-			return status;
+-		}
+ 
+-		/* Extract link id from ADR, Bit 51 to 48 (included) */
+-		link_id = (addr >> 48) & GENMASK(3, 0);
+-
+-		/* Check for link_id match */
+-		if (link_id != bus->link_id)
++		if (!find_slave(bus, adev, &id))
+ 			continue;
+ 
+-		sdw_extract_slave_id(bus, addr, &id);
+-
+ 		/*
+ 		 * don't error check for sdw_slave_add as we want to continue
+ 		 * adding Slaves
 -- 
 2.20.1
 
