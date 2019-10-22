@@ -2,64 +2,112 @@ Return-Path: <SRS0=fLcx=YP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A523CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52400C47E49
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:21:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EEBA2184C
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:17:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D12792084B
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 16:21:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s3LI5jrX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EEBA2184C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aikKbkQT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D12792084B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F0D91614;
-	Tue, 22 Oct 2019 18:16:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F0D91614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37A071607;
+	Tue, 22 Oct 2019 18:21:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37A071607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571761053;
-	bh=EwW3F9/LBjykTjIpAG9LoepZ3y0DZBVvmWDyZVBhvC0=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=s3LI5jrXkrq5jh4HmbBeD5218IznO60HurP3g3AFYmiUO6b0rwu+Em8CR6RW8qaX1
-	 +Wbkniig8YBjxFQV30GyPWJQEQJom+xwxlZ3DMx2SNgf1XM9UnuF/8NVDh+GSPdsL2
-	 7q9vcDnCYZHGCuVLktMUKbUARJkKylvFlggSEAqw=
+	s=default; t=1571761315;
+	bh=GZ9vjVyl8yyIl6l+opVmemuKPfMnL8sDS7V0fnVHNw8=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aikKbkQT+jq6RxuwtjhON1b4iNzUEBhWyFLq9o36qtDSF4ZmdZ07Td3xV+yzfT+T5
+	 75A0EHVqDpZ/6S1koiF0ySsSQrhTf2qfxkOepIKM/CWKAIBy7qBnNtwx1a23lK8YIi
+	 u0W3522P+i4OJTQvqiFRFbndE7A4EjUmC8Csoulo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DB75F80612;
-	Tue, 22 Oct 2019 18:14:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2CAAF802FB;
+	Tue, 22 Oct 2019 18:21:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F8A2F8031A; Tue, 22 Oct 2019 17:39:50 +0200 (CEST)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 0AD67F8031A; Tue, 22 Oct 2019 18:21:03 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53CFEF800C0
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 17:39:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53CFEF800C0
-Received: from [114.245.47.48] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <aaron.ma@canonical.com>)
- id 1iMwFV-0000Ty-BI; Tue, 22 Oct 2019 15:39:05 +0000
-From: Aaron Ma <aaron.ma@canonical.com>
-To: perex@perex.cz, tiwai@suse.com, kailang@realtek.com,
- hui.wang@canonical.com, alsa-devel@alsa-project.org,
- aaron.ma@canonical.com, linux-kernel@vger.kernel.org
-Date: Tue, 22 Oct 2019 23:38:55 +0800
-Message-Id: <20191022153855.14368-1-aaron.ma@canonical.com>
-X-Mailer: git-send-email 2.17.1
-X-Mailman-Approved-At: Tue, 22 Oct 2019 18:14:15 +0200
-Subject: [alsa-devel] [PATCH] ALSA: hda/realtek - Fix 2 front mics of codec
-	0x623
+ by alsa1.perex.cz (Postfix) with ESMTPS id 620E0F800C0
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 18:20:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 620E0F800C0
+Received: from mail-qt1-f173.google.com ([209.85.160.173]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M1HmG-1iKC0n0Aeo-002pHc for <alsa-devel@alsa-project.org>; Tue, 22 Oct
+ 2019 18:20:59 +0200
+Received: by mail-qt1-f173.google.com with SMTP id w14so27592502qto.9
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 09:20:58 -0700 (PDT)
+X-Gm-Message-State: APjAAAV7JniUzDlvgD5Kucu5EK8zUvMl4cReX9yw/z6zwDPvwcr9RhJX
+ qRBz2Ndo+yP5pYq++L3WjooPhlMV4X9oieceyVE=
+X-Google-Smtp-Source: APXvYqyoLKHktNxYMbHgU6oEzWDucDHxX3DzLUXc70BjhpXFB5K+Mcs4VGMIh8ghBPfcQzJ4zkTEBWIuMQ3o+13CFPs=
+X-Received: by 2002:ac8:33d4:: with SMTP id d20mr4201539qtb.204.1571761258010; 
+ Tue, 22 Oct 2019 09:20:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191010202802.1132272-1-arnd@arndb.de>
+ <20191010203043.1241612-1-arnd@arndb.de>
+ <20191010203043.1241612-11-arnd@arndb.de>
+ <20191011055149.4dudr4tk2znpt65u@pengutronix.de>
+ <CAK8P3a1st8gR7u+8-oyP6HrzZdmrzhq7PRonYuz0a5O8rfKaSA@mail.gmail.com>
+ <20191022155307.izh4ryorm7thw7tq@pengutronix.de>
+In-Reply-To: <20191022155307.izh4ryorm7thw7tq@pengutronix.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 22 Oct 2019 18:20:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1mvbss6Q-CQBYRAf7ozYgyOu3WFGkoaSaoJriUbuRACA@mail.gmail.com>
+Message-ID: <CAK8P3a1mvbss6Q-CQBYRAf7ozYgyOu3WFGkoaSaoJriUbuRACA@mail.gmail.com>
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+X-Provags-ID: V03:K1:XRmaTAvEUlbg09c7dSw0mCW8LzGvL+fxDcc74wdQkSkRXr810vP
+ GpkOi5r25w2Dm4DO6OsyYrOJ8a3AJxDORGy/zbbYX1D6VA2Q5JfgiekXHMmuN0bLfSI+0pO
+ zhLhWjmp7BiDgaHdH51DF8N7dwbTjqLq78249LoT5FN17/hKDIKoBzk+YYxSkW+Va2hDZEA
+ DYN9QFFp+z6TpIkbcHpWw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3zk/ENLgG6k=:fiO3wXqmAqgsXjX7LXkmk1
+ AkHXvAJuJFGIW8/RogvLgnpr5gkKCJWzKYSKAvkTrIbM0w3hM/JBbqplxY+VFSWMft7hGX4x6
+ iZ5s38/fprmztsxnjVUqu2cb6N9QG8oQzQ5wglhLKvy/nc9ee7++FxOuKvPT+FaaDR0eby/Bc
+ /1/YWL9Px/78qBgGPg7kHnKGfS09+osnE7t4p5c/rw1Rv2oE6SVkcir3H0E+fCCKfKGjb83qM
+ RRivu2G6XwEfwrtqPY5dlZUnhnRTbLbPyRwVwJ+xahygsMczYbEjaDYJcUk6sjqk3qIkN4KuT
+ UfJ5kF5mfOdSjL0ZPvatBQ5bwCVski9fW8x4g8Zn+5ErtGVVnyq/LhOvwy+ANJsgwU/RV+xXy
+ IZqdtU5PGUZCdQO7BWWoeVdGmD/nK0ugK/fhTER09LzMkpv03g7+OiqkFlke7NwaVyLtQ5hx6
+ SPgCr9RyoAkzJDu0VWUD9xH01S2drOR2v43SmOrtqgg3sMG5IbGZucff8XD6abmeQkzwEIcgn
+ ypSVLTOxdBB9Y6Sw5ydFCb7FRErjoB1LXo/+W7dDELowHDcbmdrTcOfOgbFz7+248zjFw4EdN
+ Nxx4JbVsPtzwGIRBzkbuBtwJxge6w/xjmk9hGKTCzmK7pGcIgXQDQ2SajuGmnnwyIyOUh4Leb
+ g/a+rZQLdtvhFhy6WJr3uSSBYFvujmYU+EIN1ZZr8KLKVIvReE7mqjQXPOfKsSMHuKR1Hnmac
+ qR9H1bLWvAbiM/fIv+r2Rbte5YT/Iwux9x8HK7E4y698RJ4IvvfvWlATBXdh6hX9EA2Q7kIrg
+ SP/nD17GnmClD4we+ICNJPY4b+ckH2fhhwQYZJAc8e6X4kFQG1J2//a/oz0R0tCw0eqLdSVU4
+ gQsH/7e9owmq1ZARmDUQ==
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES"
+ <linux-samsung-soc@vger.kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Kukjin Kim <kgene@kernel.org>,
+ =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+ linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
+ Linux PWM List <linux-pwm@vger.kernel.org>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Sangbeom Kim <sbkim73@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ linux-spi <linux-spi@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
+ Olof Johansson <olof@lixom.net>
+Subject: Re: [alsa-devel] [PATCH 11/36] ARM: s5pv210: split from plat-samsung
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,50 +120,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-These 2 ThinkCentres installed a new realtek codec ID 0x623,
-it has 2 front mics with the same location on pin 0x18 and 0x19.
-
-Apply fixup ALC283_FIXUP_HEADSET_MIC to change 1 front mic
-location to right, then pulseaudio can handle them.
-One "Front Mic" and one "Mic" will be shown, and audio output works
-fine.
-
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b000b36ac3c6..c34d8b435f58 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7186,6 +7186,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x312f, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x313c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x3151, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x17aa, 0x3178, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x17aa, 0x3176, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
-@@ -9187,6 +9189,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
- 	HDA_CODEC_ENTRY(0x10ec0298, "ALC298", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0299, "ALC299", patch_alc269),
- 	HDA_CODEC_ENTRY(0x10ec0300, "ALC300", patch_alc269),
-+	HDA_CODEC_ENTRY(0x10ec0623, "ALC623", patch_alc269),
- 	HDA_CODEC_REV_ENTRY(0x10ec0861, 0x100340, "ALC660", patch_alc861),
- 	HDA_CODEC_ENTRY(0x10ec0660, "ALC660-VD", patch_alc861vd),
- 	HDA_CODEC_ENTRY(0x10ec0861, "ALC861", patch_alc861),
--- 
-2.17.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVHVlLCBPY3QgMjIsIDIwMTkgYXQgNTo1MyBQTSBVd2UgS2xlaW5lLUvDtm5pZwo8dS5rbGVp
+bmUta29lbmlnQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKPiBUaGUgYmFja2dyb3VuZCBvZiBteSBx
+dWVzdGlvbiB3YXMgbWUgd29uZGVyaW5nIGlmIGJ1aWxkcwo+IGZvciBQTEFUX1MzQzI0WFg9eSAo
+YmVmb3JlIHlvdXIgcGF0Y2ggc2VyaWVzKSBkb24ndCBuZWVkIHBsYXQtc2Ftc3VuZy4KCldoYXQg
+SSBmb3VuZCBpcyB0aGF0IHRoZSBEVC1iYXNlZCBwbGF0Zm9ybXMgKGV4eW5vcyBhbmQgczVwKSBu
+ZWVkIGFsbW9zdCBub3RoaW5nCmZyb20gcGxhdC1zYW1zdW5nLCB3aGlsZSB0aGUgYm9hcmQgZmls
+ZXMgYW5kIHRoZSBzM2MyNHh4L3MzYzY0eHggcG93ZXIKbWFuYWdlbWVudApuZWVkcyBhbG1vc3Qg
+YWxsIG9mIGl0LgoKICAgICAgQXJuZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
