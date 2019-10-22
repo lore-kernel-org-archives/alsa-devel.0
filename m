@@ -2,66 +2,95 @@ Return-Path: <SRS0=fLcx=YP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD38DCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 19:49:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F9CECA9EA0
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 20:14:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5905521872
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 19:49:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 55E472184C
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 20:14:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="njvvtU57"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5905521872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cJTm1l1t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55E472184C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 737E31678;
-	Tue, 22 Oct 2019 21:48:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 737E31678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E8EF1615;
+	Tue, 22 Oct 2019 22:13:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E8EF1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571773787;
-	bh=3Fy6j4L2CExECEmIuLuj9MSzh9Igf4fB0l2iYZkuyC8=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=njvvtU57BLjnDJ0x478oxuZ6nxXQcEydGBNEapjGe3RkCKiutW+Rd0ZI7ZwhFuDEP
-	 rYLbxUnP0Xq17G/RgJIDSZoeZU6qi5SgSRcz82G+ZWAzuH44M1kwtWXWqgYe4ZWV0S
-	 NNU7m7fCkiEHk1vJb34QrZ1CgVS2iYKT8t5nWadU=
+	s=default; t=1571775266;
+	bh=OpoVVHOFIloFwdUu0ZzznNt2K2JBfmqSYECkMKSlMsM=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cJTm1l1tV08lPJU/zTD6qhWdhxPRbqeowxvqdRNNTzYD02FkpH3xA5528LZQlYDg6
+	 DLi+mPUeaAuk+LS17GTJkAb/HOZxLPhDSJhPjRjLeLPZuasdQkNE+Lgkr6dY41W3GB
+	 PdhsOJqdWMkMadJjv0T7DALWzqLc9eYAMB37Uplo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AE0BF805FB;
-	Tue, 22 Oct 2019 21:47:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BE30F802FB;
+	Tue, 22 Oct 2019 22:13:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 407D9F80367; Tue, 22 Oct 2019 21:47:13 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 306CAF8031A; Tue, 22 Oct 2019 22:13:34 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39C37F8026A
- for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 21:47:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39C37F8026A
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Oct 2019 12:47:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,217,1569308400"; d="scan'208";a="201780639"
-Received: from mssikder-mobl.amr.corp.intel.com (HELO localhost.localdomain)
- ([10.254.68.44])
- by orsmga006.jf.intel.com with ESMTP; 22 Oct 2019 12:47:06 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Tue, 22 Oct 2019 14:47:03 -0500
-Message-Id: <20191022194705.23347-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00868F800C0
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 22:13:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00868F800C0
+Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MEmAX-1iFZbd0fAh-00GLuq for <alsa-devel@alsa-project.org>; Tue, 22 Oct
+ 2019 22:13:30 +0200
+Received: by mail-qt1-f181.google.com with SMTP id o49so20927193qta.7
+ for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2019 13:13:29 -0700 (PDT)
+X-Gm-Message-State: APjAAAVFFvC46iuZf6sgYordqBzZmf/xCKCwlCVIMEAvcAXJ1feX+s/Q
+ 537kIybdMw2j3UbUbHh+JbAnPIIHLof1tp8LMjQ=
+X-Google-Smtp-Source: APXvYqwHws2+wdbd8O8mZBRDAI3f/vMQUkU/DX6M5bMx+/92TDs7sn5fYNiZg1DtZYJeC8Fy8qgIRm0PfsfvEwlnrmU=
+X-Received: by 2002:a0c:fde8:: with SMTP id m8mr3823785qvu.4.1571775208879;
+ Tue, 22 Oct 2019 13:13:28 -0700 (PDT)
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 0/2] ASoC: SOF: initial support for JasperLake
+References: <20191018154052.1276506-1-arnd@arndb.de>
+ <20191018154201.1276638-30-arnd@arndb.de>
+ <20191022163913.GV5554@sirena.co.uk>
+In-Reply-To: <20191022163913.GV5554@sirena.co.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 22 Oct 2019 22:13:12 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0a2EU8mKNGLNoh+fnpNU6X=qgpAv3kOGN5uXv+f63KwA@mail.gmail.com>
+Message-ID: <CAK8P3a0a2EU8mKNGLNoh+fnpNU6X=qgpAv3kOGN5uXv+f63KwA@mail.gmail.com>
+To: Mark Brown <broonie@kernel.org>
+X-Provags-ID: V03:K1:zmSArxz6rQRv6xcPqrwqYBElQ4Y4jesLbAlwQrpmCUkgoYnFDbO
+ CMD43iAaX2Rl9mGv6ChH2xJX400LlHlHJ5caTDr+dj8zIENcOGjBhFS+OM8I/9E0ndEG1hF
+ P1ACEPWfzw0LcYkhBG3IK7OVJLgUncOH9hmVHz78NmBiQeoYnT5bIDKnI//YhMPXgiqPhf0
+ wQHMUYE8y1h4eTXepCMNQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9RUIrxqEpkI=:hgD0/YD0H6DlT52RtWkvL8
+ 0ayDKSFKUsa4WRxAkBjXDg/HGc11dzFgtNH6jy/Zok7+rOP5juDkfI1hSIWIL93GUdkWFnm2Q
+ 5zH1+3MzZTeTeX6Sa3mfAuPI5zKjBbLqdhLPc364s3BOYuIz7ebyYwXFsmK6WmEKTSXhr1LKX
+ EVU804S48BLZAAcnWE5D5EQmOdnHwkQ7EapsskhEK8zEEDeayL8tTawoWXPdZeabQGHmwu+iD
+ CVczxRkKRzAs/tWHCHHk1RjZSWjtq365X/1vvBF6j1ACXUTzpDEf9ziE8mZMPu3QGUxhFX5qV
+ 4vcfFf5fBfPyq2WQkRQJT6pY6+ZisVQccF2rgGuaHs6vaU7tplStf86y/S5JK5K0ll2279smt
+ CWAUW2qd8/z582OMbCdgvUrD6I87VEngxQeVghv7F8OU9CYoKI8L2ubN7R4S56ltrVcip7Z6/
+ yjmqzdEkL098Gwf27wpFYa3/7a1fyJkwd579YM8QjM74s9MAdiNsWe7KOz9P/rdiHZI47dYPE
+ /ZTKxeo+vqL3NC5m6sXwYafG1PCpRkdEv1V1eVA0dTGVt0P9616ilrjV8VOhDIuPyrDUQZ+I4
+ EfkrpRt/sk/tprO1P/ybvlSyo79OaXWIRwGLonwzXOtX1pXyQCFZLgMlHNpl5SjEHf+X61G2T
+ CRsEhCU3saL+HAN2JRB7thysoDA/vVtkaZpxKKVx9Neh/31VRWD8PyiuvYd1X8F/KKOg44co1
+ eC7yhzy1cW2S8QQ2Ej7H4zdwwhbza5kJr2EMcPgDjFffPnx1SoqCY5RUg/dnYJ4zVTNP7n0mP
+ 18bfLB5mKqM7kzZPYVrJhaTbnE2iLePf7TJRpm9QavS05krp338XHAMf6uF2OhHsey8GBmPNs
+ xP7RVh6e8bfFtX0AgUhw==
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [alsa-devel] [PATCH 30/46] SoC: pxa: use pdev resource for FIFO
+	regs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,26 +108,21 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add PCI IDs and dummy tables for ACPI matching (to be populated when
-machine drivers are provided, used for nocodec mode for now).
+On Tue, Oct 22, 2019 at 6:39 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Oct 18, 2019 at 05:41:45PM +0200, Arnd Bergmann wrote:
+> > The driver currently takes the hardwired FIFO address from
+> > a header file that we want to eliminate. Change it to use
+> > the mmio resource instead and stop including the heare.
+>
+> Acked-by: Mark Brown <broonie@kernel.org>
+>
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
 
-Pan Xiuli (2):
-  ASoC: Intel: common: add ACPI matching tables for JSL
-  ASoC: SOF: Intel: initial support to JasperLake.
+Fixed, I guess I lost an 'A' somewhere.
 
- include/sound/soc-acpi-intel-match.h          |  1 +
- sound/soc/intel/common/Makefile               |  1 +
- .../intel/common/soc-acpi-intel-jsl-match.c   | 18 +++++++++++++++
- sound/soc/sof/intel/Kconfig                   | 16 ++++++++++++++
- sound/soc/sof/intel/cnl.c                     | 17 ++++++++++++++
- sound/soc/sof/intel/hda.h                     |  1 +
- sound/soc/sof/sof-pci-dev.c                   | 22 +++++++++++++++++++
- 7 files changed, 76 insertions(+)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-
--- 
-2.20.1
-
+      Arnd
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
