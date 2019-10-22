@@ -2,71 +2,76 @@ Return-Path: <SRS0=fLcx=YP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F0B9CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:55:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5682CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:56:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B74B12086D
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:55:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AB84205C9
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:56:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WTfElhNY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B74B12086D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QqgNuVj8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AB84205C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B8FC1660;
-	Wed, 23 Oct 2019 01:55:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B8FC1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62A281673;
+	Wed, 23 Oct 2019 01:55:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62A281673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571788552;
-	bh=kSiS8sgSN4AHYGX5zTxF5zG/KypWp6VQ/eoF82U34VI=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WTfElhNYsl8kcUgC4UzqTnODdO/XszI05JCLlogcwaZMUlHKulRIN/u7vbIVfNObt
-	 Ugndf/m/7FvCJiG+QYBHauDciBPxH1xQQK1xsUZPSgernS6nWAXIp17eGzB03HuMM3
-	 IOSYPhEnXJdluqMVpTDbK/KUKi4r9sJts2CqUK6U=
+	s=default; t=1571788607;
+	bh=xFSMBH9+xIN4vwKSwMkgqmPtqDrHjq1V2AyPGp81a9U=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=QqgNuVj8byV1qfWL3+dBpVtzQjOHkSO6OmEo3fiKkW2icIeBgYvmrlq8l+KGRA+jF
+	 AOtkoZZzfw9ikfj2MQ12RUet95RPLuBN6Rq6rRZMVjObUMBYMJ/MrMHNvdPVZC8CxQ
+	 6DcAkJqjX7NF7laO4Z/JGCH9qfuOI9tCYSYjjKxA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA836F802FB;
-	Wed, 23 Oct 2019 01:55:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C117F80539;
+	Wed, 23 Oct 2019 01:55:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5747FF800C0; Wed, 23 Oct 2019 01:55:00 +0200 (CEST)
+ id A07A4F80112; Wed, 23 Oct 2019 01:55:02 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99554F800C0
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 01:54:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99554F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71699F80112
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 01:54:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71699F80112
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Oct 2019 16:54:55 -0700
+ 22 Oct 2019 16:54:59 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,218,1569308400"; d="scan'208";a="196612834"
+X-IronPort-AV: E=Sophos;i="5.68,218,1569308400"; d="scan'208";a="196612842"
 Received: from srajamoh-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.20.203])
- by fmsmga008.fm.intel.com with ESMTP; 22 Oct 2019 16:54:54 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 22 Oct 2019 16:54:57 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 22 Oct 2019 18:54:43 -0500
-Message-Id: <20191022235448.17586-1-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 22 Oct 2019 18:54:45 -0500
+Message-Id: <20191022235448.17586-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191022235448.17586-1-pierre-louis.bossart@linux.intel.com>
+References: <20191022235448.17586-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>,
+ slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 0/5] soundwire: intel/cadence: better
-	initialization
+Subject: [alsa-devel] [PATCH v3 2/5] soundwire: cadence_master: add hw_reset
+	capability in debugfs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,28 +89,57 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Changes since v2: addressed feedback from Vinod Koul on patch 2&4
-Add kernel taint when using debugfs hw_reset (similar to regmap)
-Remove useless goto label
+Provide debugfs capability to kick link and devices into hard-reset
+(as defined by MIPI). This capability is really useful when some
+devices are no longer responsive and/or to check the software handling
+of resynchronization.
 
-Changes since v1: addressed feedback from Vinod Koul
-clarified init changes impact Intel and Cadence sides
-remove unnecessary intermediate variable
-disable interrupts when exit_reset fails, updated error handling
-returned -EINVAL on debugfs invalid parameter
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/soundwire/cadence_master.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-Pierre-Louis Bossart (5):
-  soundwire: intel/cadence: fix startup sequence
-  soundwire: cadence_master: add hw_reset capability in debugfs
-  soundwire: intel: add helper for initialization
-  soundwire: intel/cadence: add flag for interrupt enable
-  soundwire: cadence_master: make clock stop exit configurable on init
-
- drivers/soundwire/cadence_master.c | 134 +++++++++++++++++++++--------
- drivers/soundwire/cadence_master.h |   5 +-
- drivers/soundwire/intel.c          |  39 ++++++---
- 3 files changed, 129 insertions(+), 49 deletions(-)
-
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 5337ccacccd1..7476e867468d 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -333,6 +333,26 @@ static int cdns_reg_show(struct seq_file *s, void *data)
+ }
+ DEFINE_SHOW_ATTRIBUTE(cdns_reg);
+ 
++static int cdns_hw_reset(void *data, u64 value)
++{
++	struct sdw_cdns *cdns = data;
++	int ret;
++
++	if (value != 1)
++		return -EINVAL;
++
++	/* Userspace changed the hardware state behind the kernel's back */
++	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
++
++	ret = sdw_cdns_exit_reset(cdns);
++
++	dev_dbg(cdns->dev, "link hw_reset done: %d\n", ret);
++
++	return ret;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(cdns_hw_reset_fops, NULL, cdns_hw_reset, "%llu\n");
++
+ /**
+  * sdw_cdns_debugfs_init() - Cadence debugfs init
+  * @cdns: Cadence instance
+@@ -341,6 +361,9 @@ DEFINE_SHOW_ATTRIBUTE(cdns_reg);
+ void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root)
+ {
+ 	debugfs_create_file("cdns-registers", 0400, root, cdns, &cdns_reg_fops);
++
++	debugfs_create_file("cdns-hw-reset", 0200, root, cdns,
++			    &cdns_hw_reset_fops);
+ }
+ EXPORT_SYMBOL_GPL(sdw_cdns_debugfs_init);
+ 
 -- 
 2.20.1
 
