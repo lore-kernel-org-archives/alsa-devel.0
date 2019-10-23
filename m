@@ -2,101 +2,82 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3400CA9EB6
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 09:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F273CA9EB6
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 09:56:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFD1B2084C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 09:21:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D66E2064B
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 09:56:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jzstGW6z";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="xYs5P/Ol"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFD1B2084C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NOfsdACf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D66E2064B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B55A1607;
-	Wed, 23 Oct 2019 11:20:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B55A1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1739582B;
+	Wed, 23 Oct 2019 11:56:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1739582B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571822497;
-	bh=AYgSJdbQJCEwuqZEj1UWVv1XiCB6gYBrfaieuWFq6/w=;
-	h=References:From:To:In-reply-to:Date:Cc:Subject:List-Id:
+	s=default; t=1571824615;
+	bh=7DTfhSuhQq/ko3fsJRQHak+4yjAIfMYoHHcaVcF9x6A=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jzstGW6z3UeMQGcsX5I52TlDjsBhx0BD7fFClklU7/+PxlhDFyzbVDl6r5h1DvYvN
-	 x0vARrzkvBMdshfz87iXDZ5wEOlSjT57xdTpXUtTt/WYYbksVKtTatJPpMiIRFzHfi
-	 5nxGIgNg+YhzBRhb7KDxfPW4QdhjvGDAaZ2/KP4Q=
+	b=NOfsdACfaexwhIdt/MSRWvm+Z6IEcMZ+kKzoF2q+Dg7jqsH/wkyRrMw2HXPK5Ggqu
+	 G2BP04A0Xfs5q+BicaQVNrMfg6Nn45Q2SvZUxFEXxk1j30oQbNI9O5mpFEEI4rVYpS
+	 EGfg/dYnTph8bPZJxJqL0mFN0xd+6imBr4TCh9CY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5996F80321;
-	Wed, 23 Oct 2019 11:20:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C2FDF80321;
+	Wed, 23 Oct 2019 11:56:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C82D8F80368; Wed, 23 Oct 2019 11:20:45 +0200 (CEST)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B6F7DF80112; Wed, 23 Oct 2019 11:56:02 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25499F80112
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 11:20:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25499F80112
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="xYs5P/Ol"
-Received: by mail-wr1-x429.google.com with SMTP id a11so5135644wra.6
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 02:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=references:user-agent:from:to:cc:subject:in-reply-to:date
- :message-id:mime-version;
- bh=t7h9nEuq78jbasHWLHLtJfedWF7bqZzKfMRnZjNhmFQ=;
- b=xYs5P/Olp2KdBjpPg6Ifb2ABROnqdyB3H/iRKDD06RBqzt8onFQbwVMCf/WDJ4IhVP
- Enl5B0Tcr/Ob4XwlNHKWsOZ91Kf8Iv+QKvTihMPobVrElHFdOr2Md7XW2bz/GwvYnvy1
- NboJMBvQQnZOo1JNHSIE5f3O3gnBq5EsQsrwymRsAWgg/gmmMCrcAjFrrtVP9e8P4DpH
- LilJXlwt3yOwtGxjG6FlNg2hCh5YM3STzFSsdldLRS4l1Chm3r2H427oMU75VV3sipsq
- KqWoHzGlvGJ5s2auOZxtRGI8J17f6X/kv/Ed6P6u3sHeKF0yxTTmZS1bCJ2mPFXIniA4
- B9Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject
- :in-reply-to:date:message-id:mime-version;
- bh=t7h9nEuq78jbasHWLHLtJfedWF7bqZzKfMRnZjNhmFQ=;
- b=KQLn4UVtYac6UnvTyJsF+RzRCqOU4XlJ5A5qCP1rm5srKAEi+uVjhjIANctOHwTd12
- WB2fXXrvTqTp2tDbwrQOBa0A8mtMZvrIrvO4BH5A0L6uEsVtY1JF7lwA/xy1CnuviU6g
- 8aieMk2lLHxjB8Ca6w0f/OeGBHyfOguueKsWPzX5HrtIHtykSO6LDob2AzhCGjnWU9ho
- JBiPGxi4iNDKV+Qs2cu5w4dnws2WpmzH3vKRxuY2IlpqI/BgDwiIqGjzP2jP96hC+7mJ
- 2+SGqXR2pFmxc/PC0GurRrS7RUkl223NBV7jnSXtpJnoBSg7l5/PavROR6cVtuW7BdiI
- hb9A==
-X-Gm-Message-State: APjAAAVtIKW4pzYFiqOPDe5GiqB+/ChXyDeVmiMxszi9mYX5iB7dhyWM
- PFJVjCOmmA05E6OHFZs5PJj6fQ==
-X-Google-Smtp-Source: APXvYqwqw6U6kacrQa5HOQgek5LD/cHqVI9VvDNTbn7IPY+QxugPr8x649VRd7eICn+cb7FvwXjwlg==
-X-Received: by 2002:a5d:498e:: with SMTP id r14mr7070234wrq.36.1571822441815; 
- Wed, 23 Oct 2019 02:20:41 -0700 (PDT)
-Received: from localhost (lmontsouris-657-1-212-31.w90-63.abo.wanadoo.fr.
- [90.63.244.31])
- by smtp.gmail.com with ESMTPSA id p21sm11326410wmc.25.2019.10.23.02.20.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Oct 2019 02:20:41 -0700 (PDT)
-References: <20191009181356.GO2036@sirena.org.uk>
- <20191022185906.GZ5554@sirena.co.uk>
-User-agent: mu4e 1.3.3; emacs 26.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-In-reply-to: <20191022185906.GZ5554@sirena.co.uk>
-Date: Wed, 23 Oct 2019 11:20:40 +0200
-Message-ID: <1j36fjvmvr.fsf@starbuckisacylon.baylibre.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAC1EF80112
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 11:55:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAC1EF80112
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+ by smtp1.de.adit-jv.com (Postfix) with ESMTP id 811B73C04C1;
+ Wed, 23 Oct 2019 11:55:55 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+ by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id gK48FXrscP2K; Wed, 23 Oct 2019 11:55:48 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtp1.de.adit-jv.com (Postfix) with ESMTPS id EA0613C009D;
+ Wed, 23 Oct 2019 11:55:48 +0200 (CEST)
+Received: from vmlxhi-102.adit-jv.com (10.72.93.184) by HI2EXCH01.adit-jv.com
+ (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.468.0;
+ Wed, 23 Oct 2019 11:55:48 +0200
+Date: Wed, 23 Oct 2019 11:55:45 +0200
+From: Eugeniu Rosca <erosca@de.adit-jv.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Message-ID: <20191023095545.GA20748@vmlxhi-102.adit-jv.com>
+References: <20191022185429.12769-1-erosca@de.adit-jv.com>
+ <87h840z3l3.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Cc: Takashi Iwai <tiwai@suse.de>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Daniel Baluta <daniel.baluta@gmail.com>,
- Curtis Malainey <cujomalainey@google.com>
-Subject: Re: [alsa-devel] [ANNOUNCE] 2019 Linux Audio miniconference
+Content-Disposition: inline
+In-Reply-To: <87h840z3l3.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Mutt/1.12.1+40 (7f8642d4ee82) (2019-06-28)
+X-Originating-IP: [10.72.93.184]
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org,
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+ Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ stable@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: Re: [alsa-devel] [RESEND PATCH] ASoC: rsnd: dma: fix SSI9 4/5/6/7
+ busif dma address
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,56 +95,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Morimoto-san,
 
-On Tue 22 Oct 2019 at 20:59, Mark Brown <broonie@kernel.org> wrote:
+On Wed, Oct 23, 2019 at 09:51:36AM +0900, Kuninori Morimoto wrote:
+> 
+> Hi
+> 
+> > From: Jiada Wang <jiada_wang@mentor.com>
+> > 
+> > Currently each SSI unit's busif dma address is calculated by
+> > following calculation formula:
+> > 0xec540000 + 0x1000 * id + busif / 4 * 0xA000 + busif % 4 * 0x400
+> > 
+> > But according to R-Car3 HW manual 41.1.4 Register Configuration,
+> > ssi9 4/5/6/7 busif data register address
+> > (SSI9_4_BUSIF/SSI9_5_BUSIF/SSI9_6_BUSIF/SSI9_7_BUSIF)
+> > are out of this rule.
+> > 
+> > This patch updates the calculation formula to correct
+> > ssi9 4/5/6/7 busif data register address.
+> > 
+> > Fixes: 5e45a6fab3b9 ("ASoc: rsnd: dma: Calculate dma address with consider of BUSIF")
+> > Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> > Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+> > [erosca: minor improvements in commit description]
+> > Cc: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+> > Cc: stable@vger.kernel.org # v4.20+
+> > Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> > ---
+> 
+> Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> Hi,
->
-> As in previous years we're going to have an audio miniconference so we can
-> get together and talk through issues, especially design decisions, face to
-> face.  This year's event will be held on October 31st in Lyon, France,
-> the day after ELC-E.  This will be held at the Lyon Convention Center (the
-> ELC-E venue) and will be free of charge to attend, generously
-> sponsored by Intel.
->
-> Thus far for the agenda we have is:
->
->  - Use case management enhancements (Curtis)
->  - DSP framework integration (Liam)
->   - SOF integration with ACPI and DT (Daniel)
->   - SOF support for non-modular drivers (Daniel)
->  - Soundwire status (Liam?)
->   - Multi-CPU support
->   - Mixing with HDA/I2S in a single system
->  - Virtualization (Liam)
->  - Componentisation status/plans (Me)
+Many thanks for the prompt responses.
 
-I don't have a lot of experience with ASoC but I'd be happy to present
-some of use cases I struggled with while adding support for the Amlogic
-SoCs. Maybe this could serve as quick introduction to your part on
-componentisation ?
-
->
-> As with previous years let's pull together an agenda through a mailing
-> list discussion - if people could reply to this mail with any topics
-> they'd like to discuss we can take it from there.  Of course if we can
-> sort things out more quickly via the mailing list that's even better!
->
-> If you're planning to attend please fill out the form here:
->
->     https://docs.google.com/forms/d/e/1FAIpQLSd6FV-tWYZ1fHlCmyzQhG98OtYH9W9GX-1dQ88mnLxVRGyPww/viewform?usp=sf_link
->
-> This event will be covered by the same code of conduct as ELC-E.
->
-> Thanks again to Intel for supporting this event.
->
-> Thanks,
-> Mark
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
+-- 
+Best Regards,
+Eugeniu
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
