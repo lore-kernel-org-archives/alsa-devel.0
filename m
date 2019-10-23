@@ -2,72 +2,80 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 939E4CA9EB6
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29781CA9EB6
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:54:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B5E221872
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:53:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DE18205C9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:54:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b616/5uA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B5E221872
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rjHjLCJM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DE18205C9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2899B1616;
-	Wed, 23 Oct 2019 10:52:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2899B1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id EADEB15E2;
+	Wed, 23 Oct 2019 10:53:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EADEB15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571820798;
-	bh=VM9kqrAeZ5te0VSWNmsh2WWyibQbH2HczyPCflU8rAA=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=b616/5uA8Nmk/j0/AkMWrwzLtoo7DmQvUNScvCFd511ta3COGY8v0Mz0k0LuPoWys
-	 awJsXSqfKlUO8eutMPdgszdBi065Wtk47Xd3ZCe3qCzmovGGLC6q0EoWCnqt4/q9zD
-	 OcJFflMwKpim6PmoFEfpwlnjJAKojFjONiG71v9U=
+	s=default; t=1571820853;
+	bh=8zi/bmfUgcLvjXS+jroHx4W0zTAjbHt3TITgVNjnWDs=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rjHjLCJMpOXMVM2MO5KWSvny+i2GJZn2Ki+1cqyB3X1I/NFF3YOi9D//M9Ci5ZOLE
+	 T2S/3q9uUWjlQTZDW/YmiDIFiJx6JAI/Rn38vYtvUipTE48e8XZj0u9OMdwFqOI7OB
+	 ITbYsVQ/p8I5PmRqHLxYGGc8bdpYK4uJek7KvgtA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABEEAF80321;
-	Wed, 23 Oct 2019 10:52:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6B60F80393;
+	Wed, 23 Oct 2019 10:52:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A500CF80368; Wed, 23 Oct 2019 08:31:26 +0200 (CEST)
-Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
+ id 3C0AEF80368; Wed, 23 Oct 2019 10:38:50 +0200 (CEST)
+Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 837C6F80274
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 08:31:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 837C6F80274
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id C4C05786AA4159FF57FC;
- Wed, 23 Oct 2019 14:31:18 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.439.0; Wed, 23 Oct 2019 14:31:08 +0800
-From: Mao Wenan <maowenan@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <matthias.bgg@gmail.com>, <tzungbi@google.com>,
- <shunli.wang@mediatek.com>, <yuehaibing@huawei.com>,
- <gregkh@linuxfoundation.org>, <tglx@linutronix.de>,
- <kaichieh.chuang@mediatek.com>
-Date: Wed, 23 Oct 2019 14:31:03 +0800
-Message-ID: <20191023063103.44941-1-maowenan@huawei.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57642F80274
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 10:38:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57642F80274
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id DB97AD32800C05640DB2;
+ Wed, 23 Oct 2019 16:38:41 +0800 (CST)
+Received: from [127.0.0.1] (10.177.96.96) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Wed, 23 Oct 2019
+ 16:38:33 +0800
+To: Tzung-Bi Shih <tzungbi@google.com>
+References: <20191023063103.44941-1-maowenan@huawei.com>
+ <CA+Px+wX7-tn-rXeKqnPtp74tU5cLxhJwF6XZ_jeQX-tnAfvO5g@mail.gmail.com>
+From: maowenan <maowenan@huawei.com>
+Message-ID: <1d948ec1-69e4-735f-c369-80d2b28e0eaa@huawei.com>
+Date: Wed, 23 Oct 2019 16:38:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <CA+Px+wX7-tn-rXeKqnPtp74tU5cLxhJwF6XZ_jeQX-tnAfvO5g@mail.gmail.com>
+Content-Language: en-US
+X-Originating-IP: [10.177.96.96]
 X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Wed, 23 Oct 2019 10:52:26 +0200
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mao Wenan <maowenan@huawei.com>,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH] ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC
-	dependency
+Cc: linux-arm-kernel@lists.infradead.org, ALSA
+ development <alsa-devel@alsa-project.org>, kernel-janitors@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, yuehaibing@huawei.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ =?UTF-8?B?U2h1bmxpIFdhbmcgKOeOi+mhuuWIqSk=?= <shunli.wang@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, tglx@linutronix.de,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: mediatek: Check
+	SND_SOC_CROS_EC_CODEC dependency
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,37 +93,69 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A=y,
-below errors can be seen:
-sound/soc/codecs/cros_ec_codec.o: In function `send_ec_host_command':
-cros_ec_codec.c:(.text+0x534): undefined reference to `cros_ec_cmd_xfer_status'
-cros_ec_codec.c:(.text+0x101c): undefined reference to `cros_ec_get_host_event'
 
-This is because it will select SND_SOC_CROS_EC_CODEC
-after commit 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV"),
-but SND_SOC_CROS_EC_CODEC depends on CROS_EC.
 
-Fixes: 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV")
-Signed-off-by: Mao Wenan <maowenan@huawei.com>
----
- sound/soc/mediatek/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2019/10/23 16:32, Tzung-Bi Shih wrote:
+> On Wed, Oct 23, 2019 at 2:31 PM Mao Wenan <maowenan@huawei.com> wrote:
+>>
+>> If SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A=y,
+>> below errors can be seen:
+>> sound/soc/codecs/cros_ec_codec.o: In function `send_ec_host_command':
+>> cros_ec_codec.c:(.text+0x534): undefined reference to `cros_ec_cmd_xfer_status'
+>> cros_ec_codec.c:(.text+0x101c): undefined reference to `cros_ec_get_host_event'
+>>
+>> This is because it will select SND_SOC_CROS_EC_CODEC
+>> after commit 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV"),
+>> but SND_SOC_CROS_EC_CODEC depends on CROS_EC.
+>>
+>> Fixes: 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV")
+>> Signed-off-by: Mao Wenan <maowenan@huawei.com>
+>> ---
+>>  sound/soc/mediatek/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+>> index 8b29f39..a656d20 100644
+>> --- a/sound/soc/mediatek/Kconfig
+>> +++ b/sound/soc/mediatek/Kconfig
+>> @@ -125,7 +125,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
+>>         select SND_SOC_MAX98357A
+>>         select SND_SOC_BT_SCO
+>>         select SND_SOC_TS3A227E
+>> -       select SND_SOC_CROS_EC_CODEC
+>> +       select SND_SOC_CROS_EC_CODEC if CROS_EC
+>>         help
+>>           This adds ASoC driver for Mediatek MT8183 boards
+>>           with the MT6358 TS3A227E MAX98357A audio codec.
+>> --
+>> 2.7.4
+>>
+> 
+> Just realized your patch seems not showing in the list
+> (https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/thread.html).
+> I have no idea why.
+> 
+I receive below message after I post, do you know why?
+'''
+Your mail to 'Alsa-devel' with the subject
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 8b29f39..a656d20 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -125,7 +125,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_BT_SCO
- 	select SND_SOC_TS3A227E
--	select SND_SOC_CROS_EC_CODEC
-+	select SND_SOC_CROS_EC_CODEC if CROS_EC
- 	help
- 	  This adds ASoC driver for Mediatek MT8183 boards
- 	  with the MT6358 TS3A227E MAX98357A audio codec.
--- 
-2.7.4
+    [PATCH] ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC dependency
+
+Is being held until the list moderator can review it for approval.
+
+The reason it is being held:
+
+    Post by non-member to a members-only list
+
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
+
+    https://mailman.alsa-project.org/mailman/confirm/alsa-devel/574c24ad00f4d1aefc802a8a4b2c5fbda710e4e9
+'''
+
+> .
+> 
 
 _______________________________________________
 Alsa-devel mailing list
