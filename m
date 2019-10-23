@@ -4,76 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAEEBCA9EB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 21:57:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BC21CA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 21:58:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3363120679
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 21:57:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B19E121906
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 21:58:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CWaP+GxY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3363120679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FrUPAI3O"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B19E121906
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85B1A16A1;
-	Wed, 23 Oct 2019 23:56:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85B1A16A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE4011699;
+	Wed, 23 Oct 2019 23:57:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE4011699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571867851;
-	bh=by3qFqoPlwIqRkiAKXtHzO4fCw5A8jKn8cmGvmKn620=;
+	s=default; t=1571867891;
+	bh=ChgWpQgS78mcxhhEtQuNEWlA5/aUFSTLpcMEcXmOQaM=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CWaP+GxYjI8BSFqoK51nUEActRvgdO266Fmvtmoyk/AjCJCrHIydRscz0DP8PvnzO
-	 stXhiQjCLy4BHaMzvLTMT0HN6PThW3J0aKquspnbhBeGdMOFuEgaJCg7Z4+CKWYAZs
-	 /9OTzysIAvJeiLay5JG/eK4D/KiRAzDreeAnoBEA=
+	b=FrUPAI3OCqS+vKWWJhwc+/EvfGn3zqvSNptPY3H/zDefF13HWjt/qHGNvix+UO4kO
+	 P/pgYFXAnJeuFfjyYOrwap0G9hgRs24yXS0T3J8QlaQvY5rOuiVWaKAr/of36DTWEM
+	 v/JCznMuTUQdwT4R2WJVo4/7nQFq6uP5tj9iW8z0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47DE5F80735;
-	Wed, 23 Oct 2019 23:46:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 511C7F8074D;
+	Wed, 23 Oct 2019 23:46:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 201B7F8071D; Wed, 23 Oct 2019 23:46:48 +0200 (CEST)
+ id 8C6E1F80736; Wed, 23 Oct 2019 23:46:50 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BD48F8070C
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 23:46:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BD48F8070C
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5DB4F8071F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 23:46:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5DB4F8071F
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 23 Oct 2019 14:46:44 -0700
+ 23 Oct 2019 14:46:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,222,1569308400"; d="scan'208";a="196908273"
+X-IronPort-AV: E=Sophos;i="5.68,222,1569308400"; d="scan'208";a="196908285"
 Received: from ayamada-mobl1.gar.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.254.95.208])
- by fmsmga008.fm.intel.com with ESMTP; 23 Oct 2019 14:46:42 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 23 Oct 2019 14:46:44 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed, 23 Oct 2019 16:45:58 -0500
-Message-Id: <20191023214601.883-16-pierre-louis.bossart@linux.intel.com>
+Date: Wed, 23 Oct 2019 16:45:59 -0500
+Message-Id: <20191023214601.883-17-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191023214601.883-1-pierre-louis.bossart@linux.intel.com>
 References: <20191023214601.883-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Jonathan Corbet <corbet@lwn.net>, tiwai@suse.de, gregkh@linuxfoundation.org,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- linux-kernel@vger.kernel.org,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH 15/18] soundwire: stream: update state machine
-	and add state checks
+Subject: [alsa-devel] [PATCH 16/18] soundwire: stream: only prepare stream
+	when it is configured.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,219 +89,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The state machine and notes don't accurately explain or allow
-transitions from STREAM_DEPREPARED and STREAM_DISABLED.
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Add more explanations and allow for more transitions as a result of a
-trigger_stop(), trigger_suspend() and prepare(), depending on the
-ALSA/ASoC layer behavior defined by the INFO_RESUME and INFO_PAUSE
-flags.
+We don't need to prepare the stream again if the stream is already
+prepared.
 
-Also add basic checks to help debug inconsistent states and illegal
-state machine transitions.
+sdw_prepare_stream() could be called multiple times without calling
+sdw_deprepare_stream(). We call sdw_prepare_stream() in the prepare
+dai ops and sdw_deprepare_stream() in the hw_free dai ops. If an xrun
+happens, sdw_prepare_stream() will be called but
+sdw_deprepare_stream() will not, which results in an imbalance and an
+invalid total bandwidth.
 
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- Documentation/driver-api/soundwire/stream.rst | 63 +++++++++++++------
- drivers/soundwire/stream.c                    | 38 +++++++++++
- 2 files changed, 83 insertions(+), 18 deletions(-)
+ drivers/soundwire/stream.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
-index 5351bd2f34a8..9b7418ff8d59 100644
---- a/Documentation/driver-api/soundwire/stream.rst
-+++ b/Documentation/driver-api/soundwire/stream.rst
-@@ -156,22 +156,27 @@ Below shows the SoundWire stream states and state transition diagram. ::
- 	+-----------+     +------------+     +----------+     +----------+
- 	| ALLOCATED +---->| CONFIGURED +---->| PREPARED +---->| ENABLED  |
- 	|   STATE   |     |    STATE   |     |  STATE   |     |  STATE   |
--	+-----------+     +------------+     +----------+     +----+-----+
--	                                                           ^
--	                                                           |
--	                                                           |
--	                                                           v
--	         +----------+           +------------+        +----+-----+
-+	+-----------+     +------------+     +---+--+---+     +----+-----+
-+	                                         ^  ^              ^
-+				                 |  |              |
-+				               __|  |___________   |
-+				              |                 |  |
-+	                                      v                 |  v
-+	         +----------+           +-----+------+        +-+--+-----+
- 	         | RELEASED |<----------+ DEPREPARED |<-------+ DISABLED |
- 	         |  STATE   |           |   STATE    |        |  STATE   |
- 	         +----------+           +------------+        +----------+
- 
--NOTE: State transition between prepare and deprepare is supported in Spec
--but not in the software (subsystem)
-+NOTE: State transitions between ``SDW_STREAM_ENABLED`` and
-+``SDW_STREAM_DISABLED`` are only relevant when then INFO_PAUSE flag is
-+supported at the ALSA/ASoC level. Likewise the transition between
-+``SDW_DISABLED_STATE`` and ``SDW_PREPARED_STATE`` depends on the
-+INFO_RESUME flag.
- 
--NOTE2: Stream state transition checks need to be handled by caller
--framework, for example ALSA/ASoC. No checks for stream transition exist in
--SoundWire subsystem.
-+NOTE2: The framework implements basic state transition checks, but
-+does not e.g. check if a transition from DISABLED to ENABLED is valid
-+on a specific platform. Such tests need to be added at the ALSA/ASoC
-+level.
- 
- Stream State Operations
- -----------------------
-@@ -246,6 +251,9 @@ SDW_STREAM_PREPARED
- 
- Prepare state of stream. Operations performed before entering in this state:
- 
-+  (0) Steps 1 and 2 are omitted in the case of a resume operation,
-+      where the bus bandwidth is known.
-+
-   (1) Bus parameters such as bandwidth, frame shape, clock frequency,
-       are computed based on current stream as well as already active
-       stream(s) on Bus. Re-computation is required to accommodate current
-@@ -270,13 +278,15 @@ Prepare state of stream. Operations performed before entering in this state:
- After all above operations are successful, stream state is set to
- ``SDW_STREAM_PREPARED``.
- 
--Bus implements below API for PREPARE state which needs to be called once per
--stream. From ASoC DPCM framework, this stream state is linked to
--.prepare() operation.
-+Bus implements below API for PREPARE state which needs to be called
-+once per stream. From ASoC DPCM framework, this stream state is linked
-+to .prepare() operation. Since the .trigger() operations may not
-+follow the .prepare(), a direct transitions from
-+``SDW_STREAM_PREPARED`` to ``SDW_STREAM_DEPREPARED`` is allowed.
- 
- .. code-block:: c
- 
--  int sdw_prepare_stream(struct sdw_stream_runtime * stream);
-+  int sdw_prepare_stream(struct sdw_stream_runtime * stream, bool resume);
- 
- 
- SDW_STREAM_ENABLED
-@@ -332,6 +342,14 @@ Bus implements below API for DISABLED state which needs to be called once
- per stream. From ASoC DPCM framework, this stream state is linked to
- .trigger() stop operation.
- 
-+When the INFO_PAUSE flag is supported, a direct transition to
-+``SDW_STREAM_ENABLED`` is allowed.
-+
-+For resume operations where ASoC will use the .prepare() callback, the
-+stream can transition from ``SDW_STREAM_DISABLED`` to
-+``SDW_STREAM_PREPARED``, with all required settings restored but
-+without updating the bandwidth and bit allocation.
-+
- .. code-block:: c
- 
-   int sdw_disable_stream(struct sdw_stream_runtime * stream);
-@@ -353,9 +371,18 @@ state:
- After all above operations are successful, stream state is set to
- ``SDW_STREAM_DEPREPARED``.
- 
--Bus implements below API for DEPREPARED state which needs to be called once
--per stream. From ASoC DPCM framework, this stream state is linked to
--.trigger() stop operation.
-+Bus implements below API for DEPREPARED state which needs to be called
-+once per stream. ALSA/ASoC do not have a concept of 'deprepare', and
-+the mapping from this stream state to ALSA/ASoC operation may be
-+implementation specific.
-+
-+When the INFO_PAUSE flag is supported, the stream state is linked to
-+the .hw_free() operation - the stream is not deprepared on a
-+TRIGGER_STOP.
-+
-+Other implementations may transition to the ``SDW_STREAM_DEPREPARED``
-+state on TRIGGER_STOP, should they require a transition through the
-+``SDW_STREAM_PREPARED`` state.
- 
- .. code-block:: c
- 
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index e69f94a8c3a8..0a074d445b8d 100644
+index 0a074d445b8d..38375c9124e4 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -1553,10 +1553,21 @@ int sdw_prepare_stream(struct sdw_stream_runtime *stream)
+@@ -1544,7 +1544,7 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
+  */
+ int sdw_prepare_stream(struct sdw_stream_runtime *stream)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	if (!stream) {
+ 		pr_err("SoundWire: Handle not found for stream\n");
+@@ -1553,6 +1553,11 @@ int sdw_prepare_stream(struct sdw_stream_runtime *stream)
  
  	sdw_acquire_bus_lock(stream);
  
-+	if (stream->state != SDW_STREAM_CONFIGURED &&
-+	    stream->state != SDW_STREAM_DEPREPARED &&
-+	    stream->state != SDW_STREAM_DISABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
++	if (stream->state == SDW_STREAM_PREPARED) {
++		ret = 0;
 +		goto state_err;
 +	}
 +
- 	ret = _sdw_prepare_stream(stream);
-+
- 	if (ret < 0)
- 		pr_err("Prepare for stream:%s failed: %d\n", stream->name, ret);
- 
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
-@@ -1621,10 +1632,19 @@ int sdw_enable_stream(struct sdw_stream_runtime *stream)
- 
- 	sdw_acquire_bus_lock(stream);
- 
-+	if (stream->state != SDW_STREAM_PREPARED &&
-+	    stream->state != SDW_STREAM_DISABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
-+		goto state_err;
-+	}
-+
- 	ret = _sdw_enable_stream(stream);
- 	if (ret < 0)
- 		pr_err("Enable for stream:%s failed: %d\n", stream->name, ret);
- 
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
-@@ -1697,10 +1717,18 @@ int sdw_disable_stream(struct sdw_stream_runtime *stream)
- 
- 	sdw_acquire_bus_lock(stream);
- 
-+	if (stream->state != SDW_STREAM_ENABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
-+		goto state_err;
-+	}
-+
- 	ret = _sdw_disable_stream(stream);
- 	if (ret < 0)
- 		pr_err("Disable for stream:%s failed: %d\n", stream->name, ret);
- 
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
-@@ -1755,10 +1783,20 @@ int sdw_deprepare_stream(struct sdw_stream_runtime *stream)
- 	}
- 
- 	sdw_acquire_bus_lock(stream);
-+
-+	if (stream->state != SDW_STREAM_PREPARED &&
-+	    stream->state != SDW_STREAM_DISABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
-+		goto state_err;
-+	}
-+
- 	ret = _sdw_deprepare_stream(stream);
- 	if (ret < 0)
- 		pr_err("De-prepare for stream:%d failed: %d\n", ret, ret);
- 
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
+ 	if (stream->state != SDW_STREAM_CONFIGURED &&
+ 	    stream->state != SDW_STREAM_DEPREPARED &&
+ 	    stream->state != SDW_STREAM_DISABLED) {
 -- 
 2.20.1
 
