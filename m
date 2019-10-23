@@ -7,75 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2209CA9EB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:58:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E17CACA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:59:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DD9B2084C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:58:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 696532084C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:59:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZabLCHwG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="xwt1CAtX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DD9B2084C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tgHy/S/9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="S2916Ly/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 696532084C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4A24167F;
-	Wed, 23 Oct 2019 20:57:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4A24167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C4EF1671;
+	Wed, 23 Oct 2019 20:58:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C4EF1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571857124;
-	bh=uwuFtWkLAh8cK4UBUJWH9eu+lrjR4TeRMXGOEqyXKxA=;
+	s=default; t=1571857172;
+	bh=gcE3k5YvA0nzoeUtX4DuvVScxlXwi1mpXjyBGDOf4/Y=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ZabLCHwGQ5D2J5eVNEq+hh4YAJzdp1mPn/zGIOkp+MzxGeW5c8rKyFaW8hL8HUe1W
-	 X2NGD79K+SSUwk4bMtN8vfWHeSiyf1z4WGFYA5B26Z0+kZrmuxVKjMm0jtEBAntXq9
-	 NZRqp8SdYjlKIWYIhXDeaf1V2e2SaHhrsOwHNhZ8=
+	b=tgHy/S/9fEUhCVcGpwDOTfAtpS7Xbd79lH8DCvamoT/SFVXUcE6AUWdh+h4ARKeJp
+	 Tn12eriuZ7opngT67MhDIiXXhcCdoKZGHy7YdQoBon6Tj2Mv1zCMde+FSzPX0UlW0I
+	 VkrqDcwTACqIpDwAWqle+e8jzA0ad1opJqHxqtyM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF377F80600;
-	Wed, 23 Oct 2019 20:56:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D40CAF80393;
+	Wed, 23 Oct 2019 20:56:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEEE9F8060F; Wed, 23 Oct 2019 20:56:14 +0200 (CEST)
+ id 2BB87F8060D; Wed, 23 Oct 2019 20:56:15 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63663F80321
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63663F80321
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2AA4EF803D7
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AA4EF803D7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="xwt1CAtX"
+ header.b="S2916Ly/"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=WQGDAKr45MEulB+E7PCsiloXFNDl2mCDaRGOB2sHXXw=; b=xwt1CAtXQcc6
- lMqSOcxYVemjDgTSupU1WeBLodGDLTjwav2qc2QVF6tfPUT/PgjEXNe7wzXEW3Pp3yv+twuBcRdEe
- 71340WXdg2NWgibDrgf5Kp2vrIpMXzWxIuxcWmJe3EBLFNuLLrRclPcaFXP+QVzcRWZddALzkeqIB
- H1xk4=;
+ List-Archive; bh=GE2osdEkB+rRYka4kibi6qZR1kieaPp02+7FgD1hFAo=; b=S2916Ly/yjop
+ TCrZK/UbtiaGYFEUgAArvwQLdIceH2gjuN79DgFbs++AB2saS/5htUcRfrN9FGNh2yWev2WuskBQ6
+ tfFDaHS1KZNNAK+KVey3dwucCOgCwNzozcojH56LT1SzVC+uGJfm3+PBwCxF8PsJJ/doClB1v5Xjv
+ JulIc=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNLni-0001As-Ii; Wed, 23 Oct 2019 18:56:06 +0000
+ id 1iNLni-0001B0-Vk; Wed, 23 Oct 2019 18:56:07 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id F3323274329D; Wed, 23 Oct 2019 19:56:05 +0100 (BST)
+ id 693462743021; Wed, 23 Oct 2019 19:56:06 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191022192844.21022-2-pierre-louis.bossart@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8736fkyzx8.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191023185605.F3323274329D@ypsilon.sirena.org.uk>
-Date: Wed, 23 Oct 2019 19:56:05 +0100 (BST)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda-loader: improve error
-	handling" to the asoc tree
+Message-Id: <20191023185606.693462743021@ypsilon.sirena.org.uk>
+Date: Wed, 23 Oct 2019 19:56:06 +0100 (BST)
+Cc: Pavel Machek <pavel@denx.de>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: rsnd: add missing of_node_put()" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda-loader: improve error handling
+   ASoC: rsnd: add missing of_node_put()
 
 has been applied to the asoc tree at
 
@@ -121,63 +122,62 @@ to this mail.
 Thanks,
 Mark
 
-From 76dc6a2b312d15c91ff4b4d171e98cdc73ba3745 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 22 Oct 2019 14:28:43 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda-loader: improve error handling
+From ef2c695151df54817f92128f96a920ff888c6920 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 23 Oct 2019 11:10:43 +0900
+Subject: [PATCH] ASoC: rsnd: add missing of_node_put()
 
-If a ROM timeout is detected, we still stop the DMA but will return
-the initial error should the DMA stop also fail.
+This patch adds missing of_node_put() for
+rsnd_parse_tdm_split_mode()
+rsnd_parse_connect_graph()
 
-Likewise the cleanup is handled regardless of the status, but we
-return the initial error.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191022192844.21022-2-pierre-louis.bossart@linux.intel.com
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/8736fkyzx8.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-loader.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 65c2af3fcaab..7956dbf5be88 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -253,10 +253,16 @@ static int cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *stream)
- 					HDA_DSP_REG_POLL_INTERVAL_US,
- 					HDA_DSP_BASEFW_TIMEOUT_US);
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 4bed26842095..72924c8b0696 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1075,7 +1075,10 @@ static void rsnd_parse_tdm_split_mode(struct rsnd_priv *priv,
+ 			j++;
+ 		}
  
-+	/*
-+	 * even in case of errors we still need to stop the DMAs,
-+	 * but we return the initial error should the DMA stop also fail
-+	 */
++		of_node_put(node);
+ 	}
 +
- 	ret = cl_trigger(sdev, stream, SNDRV_PCM_TRIGGER_STOP);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: DMA trigger stop failed\n");
--		return ret;
-+		if (!status)
-+			status = ret;
++	of_node_put(ssiu_np);
+ }
+ 
+ static void rsnd_parse_connect_simple(struct rsnd_priv *priv,
+@@ -1093,11 +1096,13 @@ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
+ 				     struct device_node *endpoint)
+ {
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+-	struct device_node *remote_node = of_graph_get_remote_port_parent(endpoint);
++	struct device_node *remote_node;
+ 
+ 	if (!rsnd_io_to_mod_ssi(io))
+ 		return;
+ 
++	remote_node = of_graph_get_remote_port_parent(endpoint);
++
+ 	/* HDMI0 */
+ 	if (strstr(remote_node->full_name, "hdmi@fead0000")) {
+ 		rsnd_flags_set(io, RSND_STREAM_HDMI0);
+@@ -1111,6 +1116,8 @@ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
  	}
  
- 	return status;
-@@ -341,13 +347,15 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 	/*
- 	 * Perform codeloader stream cleanup.
- 	 * This should be done even if firmware loading fails.
-+	 * If the cleanup also fails, we return the initial error
- 	 */
- 	ret1 = cl_cleanup(sdev, &sdev->dmab, stream);
- 	if (ret1 < 0) {
- 		dev_err(sdev->dev, "error: Code loader DSP cleanup failed\n");
+ 	rsnd_parse_tdm_split_mode(priv, io, endpoint);
++
++	of_node_put(remote_node);
+ }
  
- 		/* set return value to indicate cleanup failure */
--		ret = ret1;
-+		if (!ret)
-+			ret = ret1;
- 	}
- 
- 	/*
+ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
 -- 
 2.20.1
 
