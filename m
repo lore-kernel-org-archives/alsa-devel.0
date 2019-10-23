@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CB7CA9EB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 722FECA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:04:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A9E62086D
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:04:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE90F2086D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:04:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VoH9LJiV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="f+LP7blZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A9E62086D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lumi+Bvu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Ccg5MJ8M"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE90F2086D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5200D1687;
-	Wed, 23 Oct 2019 21:03:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5200D1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 295F3166B;
+	Wed, 23 Oct 2019 21:03:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 295F3166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571857443;
-	bh=/S8XA1kCzJASOYG/bQhzbn1FcbuZXihQJ7qOrHcwew0=;
+	s=default; t=1571857488;
+	bh=3itrSEzUGv/9q34guTZM/EyKMWVqhMHGVeEgfIDFJaA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=VoH9LJiVn/jYel7Y3FWpGpS69JRJ4TV9w+C9bv8KMMvgIHJWHkfLOM4XzuLVr2t7I
-	 zvYNosxKTHycfupA6bR5SHwQQibkadRgi47YePnJe7PDTet9fnfxjRp5FJ2HPnpYY4
-	 M161EvKLUG94OrjpQe3E3lBg+3P+K+JClbPDVyaM=
+	b=Lumi+BvuMfT6vY9BqOqXfd9ZCGWL7dkUMiyF2f+JztYv/6LZxBdokYcSWnx0ps7yJ
+	 nIF6OiHUutUb0xLvH87G3UucKUYLpHHRgZwyU8WaOW/eCybfzAjBMJUY33GKvhpXG8
+	 BeUEUrBg0NddFi2yrNSAwjkiK3zNlW6PLAvvgN2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E89EF806E7;
-	Wed, 23 Oct 2019 20:56:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AE2EF806E9;
+	Wed, 23 Oct 2019 20:56:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0408CF80633; Wed, 23 Oct 2019 20:56:22 +0200 (CEST)
+ id 34853F8060D; Wed, 23 Oct 2019 20:56:22 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D185AF805FA
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D185AF805FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7646F805FE
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7646F805FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="f+LP7blZ"
+ header.b="Ccg5MJ8M"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=ne7aPXNEX5k/8fn0BauyA/A+J87iFI+fypVrthTODdI=; b=f+LP7blZIEQi
- ICrFv07A20I3MwsQL/F4F4LKz8IT9bgaAKQyMAwRgHFqLdq9qj3FlwrpuOEOyAcMp31zqONFO2ixx
- M060e8QC1uP0zcqPMBC40scFI8UEaL9hQKjuRNx5McatmHDVIWvxKKyc5R49COJC0C/U/wqCHf9rf
- +vyz0=;
+ List-Archive; bh=XewD+cgGD+Vko+ZwXgZG0GnLV0wNFTeuBrvS1yT8LR8=; b=Ccg5MJ8M/1s3
+ oy1b1N9s4ATy7V2fbVqtZAq/1Putk3A9AMytpyVH9Er7CzA92bxB+gOA036vHzC5YIpe6o82eDL4V
+ ApG89Z65tzTqaBKW1ooeswo1LRAckRmXKNz1zyGO1TCfYio9FBSsAsS7wjELhRfxU2OJIeRzJorI6
+ jAR3M=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNLnh-0001Ah-Fb; Wed, 23 Oct 2019 18:56:05 +0000
+ id 1iNLnk-0001Be-Vb; Wed, 23 Oct 2019 18:56:09 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 8793F2743021; Wed, 23 Oct 2019 19:56:04 +0100 (BST)
+ id 2CF862743273; Wed, 23 Oct 2019 19:56:05 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
 To: Russell King <rmk+kernel@armlinux.org.uk>
-In-Reply-To: <E1iNGyP-0004oN-BA@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk>
 X-Patchwork-Hint: ignore
-Message-Id: <20191023185604.8793F2743021@ypsilon.sirena.org.uk>
-Date: Wed, 23 Oct 2019 19:56:04 +0100 (BST)
+Message-Id: <20191023185605.2CF862743273@ypsilon.sirena.org.uk>
+Date: Wed, 23 Oct 2019 19:56:05 +0100 (BST)
 Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.armlinux.org.uk,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: kirkwood: fix device remove ordering"
-	to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: kirkwood: fix IRQ error handling" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,11 +98,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: kirkwood: fix device remove ordering
+   ASoC: kirkwood: fix IRQ error handling
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -123,59 +123,34 @@ to this mail.
 Thanks,
 Mark
 
-From dc39596a906d5b604f4e64597b6e904fc14625e8 Mon Sep 17 00:00:00 2001
+From 175fc928198236037174e5c5c066fe3c4691903e Mon Sep 17 00:00:00 2001
 From: Russell King <rmk+kernel@armlinux.org.uk>
-Date: Wed, 23 Oct 2019 14:46:49 +0100
-Subject: [PATCH] ASoC: kirkwood: fix device remove ordering
+Date: Wed, 23 Oct 2019 16:46:59 +0100
+Subject: [PATCH] ASoC: kirkwood: fix IRQ error handling
 
-The devm conversion of kirkwood was incorrect; on removal, devm takes
-effect after the "remove" function has returned.  So, the effect of
-the conversion was to change the order during remove from:
+Propagate the error code from request_irq(), rather than returning
+-EBUSY.
 
-  - snd_soc_unregister_component() (unpublishes interfaces)
-  - clk_disable_unprepare()
-  - cleanup resources
-
-After the conversion, this became:
-
-  - clk_disable_unprepare() - while the device may still be active
-  - snd_soc_unregister_component()
-  - cleanup resources
-
-Hence, it introduces a bug, where the internal clock for the device
-may be shut down before the device itself has been shut down.  It is
-known that Marvell SoCs, including Dove, locks up if registers for a
-peripheral that has its clocks disabled are accessed.
-
-Fixes: f98fc0f8154e ("ASoC: kirkwood: replace platform to component")
 Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/E1iNGyP-0004oN-BA@rmk-PC.armlinux.org.uk
+Link: https://lore.kernel.org/r/E1iNIqh-0000tW-EZ@rmk-PC.armlinux.org.uk
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-i2s.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/kirkwood/kirkwood-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 9575a636d016..2a4ffe945177 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -587,7 +587,7 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 		priv->ctl_rec |= KIRKWOOD_RECCTL_BURST_128;
- 	}
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index 42bbb7ea20b5..e28fb3449f1d 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -133,7 +133,7 @@ static int kirkwood_dma_open(struct snd_soc_component *component,
+ 		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+ 				  "kirkwood-i2s", priv);
+ 		if (err)
+-			return -EBUSY;
++			return err;
  
--	err = devm_snd_soc_register_component(&pdev->dev, &kirkwood_soc_component,
-+	err = snd_soc_register_component(&pdev->dev, &kirkwood_soc_component,
- 					 soc_dai, 2);
- 	if (err) {
- 		dev_err(&pdev->dev, "snd_soc_register_component failed\n");
-@@ -610,6 +610,7 @@ static int kirkwood_i2s_dev_remove(struct platform_device *pdev)
- {
- 	struct kirkwood_dma_data *priv = dev_get_drvdata(&pdev->dev);
- 
-+	snd_soc_unregister_component(&pdev->dev);
- 	if (!IS_ERR(priv->extclk))
- 		clk_disable_unprepare(priv->extclk);
- 	clk_disable_unprepare(priv->clk);
+ 		/*
+ 		 * Enable Error interrupts. We're only ack'ing them but
 -- 
 2.20.1
 
