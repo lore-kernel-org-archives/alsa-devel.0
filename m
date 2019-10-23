@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BAB9CA9EB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:00:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 012CBCA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:00:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E84192084C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:00:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 80AAE2086D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:00:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u9JzpiQM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="vdjMfePF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E84192084C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YDkwoxcw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="nlaCd52J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80AAE2086D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 391FD15E2;
-	Wed, 23 Oct 2019 20:59:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 391FD15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C77591615;
+	Wed, 23 Oct 2019 20:59:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C77591615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571857223;
-	bh=TN+XhsSZfyPf/IMB5BynYfEQ62ZRJC0KSHdanAybSJA=;
+	s=default; t=1571857239;
+	bh=sdfYGJGsEqlMt1WsmLVJszsZAl7qnPZ0SLABg70tyqA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=u9JzpiQMq/ZPCQK/snjLY5UaITAsZwfDlShZ9Z6m5AQ8HAk9o2rKygAVJgCV/3enS
-	 bybvNPfuuYaJ4/OZfAGCv79DhsQ5Gm7bt4Os2cn/W6Wd8wPZisOtZkqqLepSDsr090
-	 KULwf7bJpYvkcWEhAD1iKdAd+hPEHcweMk/gGw8s=
+	b=YDkwoxcwLfghObws0MhcP56WL1RI0KohdQ1qryoTtbvqHKdDH0OkDR7G8Iq12BxJ+
+	 1NdtbsveFSXuWklnZXYzBfGPFHXJNXfxTrdA3qiObOBuuA5XPfqZGKKoaSHCnfY1g+
+	 /0OJbfNhyFD86GfNZiDkByD3HvDlsBCRHKvq5Ua4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3718AF80639;
-	Wed, 23 Oct 2019 20:56:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50650F8063C;
+	Wed, 23 Oct 2019 20:56:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BE00F80600; Wed, 23 Oct 2019 20:56:15 +0200 (CEST)
+ id 870DEF80321; Wed, 23 Oct 2019 20:56:15 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85BE7F8036F
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85BE7F8036F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51AD6F80368
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51AD6F80368
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="vdjMfePF"
+ header.b="nlaCd52J"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=gCwyToe9Rl+HNMtsjx/c2qm+W0ADP83igmn2x+zDsgI=; b=vdjMfePFTit1
- B6xMOuKRkKHcgdo4Jht8n0ScwXrY/fcSmUXFr6vGJNjG9XVzEnK+lZNTW+GAXBTfJEl7BtMsEtI/G
- 0LJbemUsIOusBY8DqLLQFHvbwijDMirXW6n3k6UyMxT44I80Edz30zd0GL95vTxj1S4FLHLSVXOem
- T0l3w=;
+ List-Archive; bh=52hnjhXNVROi4hAmQzIOnp9s1z1iJebZL+D1ztfofgY=; b=nlaCd52J51mg
+ dQFzGc1CmiKVM8hLd5It0hvULjbIXUwun28h9fd9+tKeOUI9JGFrTXsMKqV/auLgB2SlwLanXwtd4
+ NEOQA5WNa95NTI4peluTXNg+WNd0/CyWdTh5lGRpw/oZHfaRPOmzkKiZeGzm2ve2APvHuEQINHmPt
+ 9yoq8=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNLni-0001An-4d; Wed, 23 Oct 2019 18:56:06 +0000
+ id 1iNLni-0001Ar-HS; Wed, 23 Oct 2019 18:56:06 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 912432743021; Wed, 23 Oct 2019 19:56:05 +0100 (BST)
+ id F01A9274326E; Wed, 23 Oct 2019 19:56:04 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Pan Xiuli <xiuli.pan@linux.intel.com>
-In-Reply-To: <20191022194705.23347-2-pierre-louis.bossart@linux.intel.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20191023161203.28955-2-jbrunet@baylibre.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191023185605.912432743021@ypsilon.sirena.org.uk>
-Date: Wed, 23 Oct 2019 19:56:05 +0100 (BST)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: Intel: common: add ACPI matching tables
-	for JSL" to the asoc tree
+Message-Id: <20191023185604.F01A9274326E@ypsilon.sirena.org.uk>
+Date: Wed, 23 Oct 2019 19:56:04 +0100 (BST)
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Russell King <rmk+kernel@armlinux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] Applied "ASoC: hdmi-codec: drop mutex locking again"
+	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,11 +98,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: common: add ACPI matching tables for JSL
+   ASoC: hdmi-codec: drop mutex locking again
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -121,72 +123,97 @@ to this mail.
 Thanks,
 Mark
 
-From 4f0637eae56f02ef648de5ed839d572259d396e9 Mon Sep 17 00:00:00 2001
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
-Date: Tue, 22 Oct 2019 14:47:04 -0500
-Subject: [PATCH] ASoC: Intel: common: add ACPI matching tables for JSL
+From 901af18b6baade6a327e532427cbb233f4945f5d Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 23 Oct 2019 18:12:02 +0200
+Subject: [PATCH] ASoC: hdmi-codec: drop mutex locking again
 
-There are no upstream machine drivers just yet so just add dummy table
-for compilation in nocodec-mode.
+This reverts commit eb1ecadb7f67dde94ef0efd3ddaed5cb6c9a65ed.
 
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
-Link: https://lore.kernel.org/r/20191022194705.23347-2-pierre-louis.bossart@linux.intel.com
+This fixes the following warning reported by lockdep and a potential
+issue with hibernation
+
+====================================
+WARNING: pulseaudio/1297 still has locks held!
+5.3.0+ #1826 Not tainted
+------------------------------------
+1 lock held by pulseaudio/1297:
+ #0: ee815308 (&hcp->lock){....}, at: hdmi_codec_startup+0x20/0x130
+
+stack backtrace:
+CPU: 0 PID: 1297 Comm: pulseaudio Not tainted 5.3.0+ #1826
+Hardware name: Marvell Dove (Cubox)
+[<c0017b4c>] (unwind_backtrace) from [<c0014d10>] (show_stack+0x10/0x14)
+[<c0014d10>] (show_stack) from [<c00a2d18>] (futex_wait_queue_me+0x13c/0x19c)
+[<c00a2d18>] (futex_wait_queue_me) from [<c00a3630>] (futex_wait+0x184/0x24c)
+[<c00a3630>] (futex_wait) from [<c00a5e1c>] (do_futex+0x334/0x598)
+[<c00a5e1c>] (do_futex) from [<c00a62e8>] (sys_futex_time32+0x118/0x180)
+[<c00a62e8>] (sys_futex_time32) from [<c0009000>] (ret_fast_syscall+0x0/0x54)
+Exception stack(0xebd31fa8 to 0xebd31ff0)
+1fa0:                   00000000 ffffffff 000c8748 00000189 00000001 00000000
+1fc0: 00000000 ffffffff 00000000 000000f0 00000000 00000000 00000000 00056200
+1fe0: 000000f0 beac03a8 b6d6c835 b6d6f456
+
+Fixes: eb1ecadb7f67 ("ASoC: hdmi-codec: re-introduce mutex locking")
+Reported-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20191023161203.28955-2-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-acpi-intel-match.h           |  1 +
- sound/soc/intel/common/Makefile                |  1 +
- .../intel/common/soc-acpi-intel-jsl-match.c    | 18 ++++++++++++++++++
- 3 files changed, 20 insertions(+)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+ sound/soc/codecs/hdmi-codec.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index 6c9929abd90b..4e44782862df 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -27,6 +27,7 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_ehl_machines[];
-+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[];
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index b5fd8f08726e..f8b5b960e597 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -274,7 +274,7 @@ struct hdmi_codec_priv {
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
+-	struct mutex lock;
++	unsigned long busy;
+ 	struct snd_soc_jack *jack;
+ 	unsigned int jack_status;
+ };
+@@ -390,8 +390,8 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
  
- /*
-  * generic table used for HDA codec-based platforms, possibly with
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index 18d9630ae9a2..eafe95ead49b 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -9,6 +9,7 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
- 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
- 	soc-acpi-intel-cnl-match.o soc-acpi-intel-icl-match.o \
- 	soc-acpi-intel-tgl-match.o soc-acpi-intel-ehl-match.o \
-+	soc-acpi-intel-jsl-match.o \
- 	soc-acpi-intel-hda-match.o
+-	ret = mutex_trylock(&hcp->lock);
+-	if (!ret) {
++	ret = test_and_set_bit(0, &hcp->busy);
++	if (ret) {
+ 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
+ 		return -EINVAL;
+ 	}
+@@ -419,7 +419,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
  
- obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
-diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-new file mode 100644
-index 000000000000..1c68a04f0c6e
---- /dev/null
-+++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * soc-apci-intel-jsl-match.c - tables and support for JSL ACPI enumeration.
-+ *
-+ * Copyright (c) 2019, Intel Corporation.
-+ *
-+ */
-+
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Intel Common ACPI Match module");
+ err:
+ 	/* Release the exclusive lock on error */
+-	mutex_unlock(&hcp->lock);
++	clear_bit(0, &hcp->busy);
+ 	return ret;
+ }
+ 
+@@ -431,7 +431,7 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+ 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+ 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
+ 
+-	mutex_unlock(&hcp->lock);
++	clear_bit(0, &hcp->busy);
+ }
+ 
+ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+@@ -811,8 +811,6 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	hcp->hcd = *hcd;
+-	mutex_init(&hcp->lock);
+-
+ 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
+ 	if (!daidrv)
+ 		return -ENOMEM;
 -- 
 2.20.1
 
