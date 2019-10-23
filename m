@@ -1,77 +1,70 @@
-Return-Path: <SRS0=fLcx=YP=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 405A1CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:59:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DED55CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 00:52:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAEDB206C2
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Oct 2019 23:59:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DDCEB208C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 00:52:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h2GF9vsk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAEDB206C2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H3PqDqjp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDCEB208C0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DF43166E;
-	Wed, 23 Oct 2019 01:58:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DF43166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9308E1607;
+	Wed, 23 Oct 2019 02:51:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9308E1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571788767;
-	bh=F/4EjD803mtLLQRwmZOQJGums5G7Ro+CUDklXR7Yzf4=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1571791957;
+	bh=awSVVi/V1LkdksPSjeqPE0E8yrojvvXu0xL86gKTid8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h2GF9vskiRKu0qNd0eH6J3p0G6auq4dvnj/lrQuECPwGeb11EL2xOum1RuKumkNCW
-	 KMJ7xdL596THiAT5ZUQfSHbnBJXTqqkhrRC9An1rstQfytHyDI43nJQ7ny9TZPhgmJ
-	 PCAZGAC8mN8wIIGuey63ZdDIoOOibdt1fxQJCQ7o=
+	b=H3PqDqjphi8YDwHkJw/1dHUKRrqsCph+XmekCeiFELj0KJpMlZKVxuUySWF4MmXEe
+	 47tm/KMNYd5dmAjt36cyEwLL39eczjxVMPKe68yjht3/b4POSu4PJ1/30WZMsYOfki
+	 76MK1KSmH3illJX4tvDwLm1uvOy/LpSL7jIEIei8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36E73F8063A;
-	Wed, 23 Oct 2019 01:55:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D1ECF802FB;
+	Wed, 23 Oct 2019 02:51:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2344BF805FD; Wed, 23 Oct 2019 01:55:08 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 989BCF80377
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 01:55:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 989BCF80377
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Oct 2019 16:55:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,218,1569308400"; d="scan'208";a="196612886"
-Received: from srajamoh-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.251.20.203])
- by fmsmga008.fm.intel.com with ESMTP; 22 Oct 2019 16:55:02 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Tue, 22 Oct 2019 18:54:48 -0500
-Message-Id: <20191022235448.17586-6-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191022235448.17586-1-pierre-louis.bossart@linux.intel.com>
-References: <20191022235448.17586-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 5/5] soundwire: cadence_master: make clock
-	stop exit configurable on init
+ id A74F6F8026A; Wed, 23 Oct 2019 02:51:45 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 98FE8F8026A
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 02:51:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98FE8F8026A
+Date: 23 Oct 2019 09:51:36 +0900
+X-IronPort-AV: E=Sophos;i="5.68,218,1569250800"; d="scan'208";a="29521596"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 23 Oct 2019 09:51:36 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9D9A3410DB7F;
+ Wed, 23 Oct 2019 09:51:36 +0900 (JST)
+Message-ID: <87h840z3l3.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Eugeniu Rosca <erosca@de.adit-jv.com>
+In-Reply-To: <20191022185429.12769-1-erosca@de.adit-jv.com>
+References: <20191022185429.12769-1-erosca@de.adit-jv.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org,
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
+ Eugeniu Rosca <roscaeugeniu@gmail.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [RESEND PATCH] ASoC: rsnd: dma: fix SSI9 4/5/6/7
+	busif dma address
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,81 +82,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The use of clock stop is not a requirement, the IP can e.g. be
-completely power gated and not detect any wakes while in s2idle/deep
-sleep.
 
-For now clock-stop is not supported anyways so the control parameter
-is always false. This will be revisited when we add clock stop.
+Hi
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- drivers/soundwire/cadence_master.c | 15 ++++++++-------
- drivers/soundwire/cadence_master.h |  2 +-
- drivers/soundwire/intel.c          |  2 +-
- 3 files changed, 10 insertions(+), 9 deletions(-)
+> From: Jiada Wang <jiada_wang@mentor.com>
+> 
+> Currently each SSI unit's busif dma address is calculated by
+> following calculation formula:
+> 0xec540000 + 0x1000 * id + busif / 4 * 0xA000 + busif % 4 * 0x400
+> 
+> But according to R-Car3 HW manual 41.1.4 Register Configuration,
+> ssi9 4/5/6/7 busif data register address
+> (SSI9_4_BUSIF/SSI9_5_BUSIF/SSI9_6_BUSIF/SSI9_7_BUSIF)
+> are out of this rule.
+> 
+> This patch updates the calculation formula to correct
+> ssi9 4/5/6/7 busif data register address.
+> 
+> Fixes: 5e45a6fab3b9 ("ASoc: rsnd: dma: Calculate dma address with consider of BUSIF")
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+> [erosca: minor improvements in commit description]
+> Cc: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+> Cc: stable@vger.kernel.org # v4.20+
+> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> ---
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index d2c44bfff53a..fed21e2b2277 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -979,7 +979,7 @@ static u32 cdns_set_initial_frame_shape(int n_rows, int n_cols)
-  * sdw_cdns_init() - Cadence initialization
-  * @cdns: Cadence instance
-  */
--int sdw_cdns_init(struct sdw_cdns *cdns)
-+int sdw_cdns_init(struct sdw_cdns *cdns, bool clock_stop_exit)
- {
- 	struct sdw_bus *bus = &cdns->bus;
- 	struct sdw_master_prop *prop = &bus->prop;
-@@ -987,12 +987,13 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- 	int divider;
- 	int ret;
- 
--	/* Exit clock stop */
--	ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
--			     CDNS_MCP_CONTROL_CLK_STOP_CLR);
--	if (ret < 0) {
--		dev_err(cdns->dev, "Couldn't exit from clock stop\n");
--		return ret;
-+	if (clock_stop_exit) {
-+		ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
-+				     CDNS_MCP_CONTROL_CLK_STOP_CLR);
-+		if (ret < 0) {
-+			dev_err(cdns->dev, "Couldn't exit from clock stop\n");
-+			return ret;
-+		}
- 	}
- 
- 	/* Set clock divider */
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index a106aea6fe53..001457cbe5ad 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -138,7 +138,7 @@ extern struct sdw_master_ops sdw_cdns_master_ops;
- irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
- irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
- 
--int sdw_cdns_init(struct sdw_cdns *cdns);
-+int sdw_cdns_init(struct sdw_cdns *cdns, bool clock_stop_exit);
- int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
- 		      struct sdw_cdns_stream_config config);
- int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index d2fd8bdca55d..99dc61021211 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -909,7 +909,7 @@ static int intel_init(struct sdw_intel *sdw)
- 	intel_link_power_up(sdw);
- 	intel_shim_init(sdw);
- 
--	return sdw_cdns_init(&sdw->cdns);
-+	return sdw_cdns_init(&sdw->cdns, false);
- }
- 
- /*
--- 
-2.20.1
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 _______________________________________________
 Alsa-devel mailing list
