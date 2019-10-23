@@ -2,87 +2,87 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05E9CCA9EB6
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAC5ACA9EB6
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:33:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0472B21920
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:04:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E89332084C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 08:33:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nr6pMtXy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="gHIg3gQn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0472B21920
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cEJFhnZ4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="viCUfLzz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E89332084C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC09115E0;
-	Wed, 23 Oct 2019 10:03:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC09115E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7372B84C;
+	Wed, 23 Oct 2019 10:33:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7372B84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571817856;
-	bh=TGhO7Lg1bhjRNnkMNV97TbL7QN9KRlYT27B3exJdouk=;
+	s=default; t=1571819634;
+	bh=nvVlcfMl1QR/2fjD+NqlcdGQGFFheEcMrvH7QVsqbWs=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nr6pMtXyEeG+sXFncBOg9FDDy8Igb9JexmeVtW79UU9qFIaaht6De2ax5An3hnn/4
-	 7t7UVoB7iZgEm8AGmXEfDSascIcgKYV9FED4hJuLOmZbuR1afzzVdYdMXSohUaloVZ
-	 FRL+scgPOSw8xhtQ872gI0mMc5iT9Lfodw7JqSh4=
+	b=cEJFhnZ4ZEgaLPizVf0kF/4pqqaYVr1JdQyfF5buXRq5cYRzYL/zfw/vnC9XkUVqd
+	 qi8bNgN/QmeJjurWXVvfsXLsrw5Iid4Cr4T92SdbazzqVRu6KuzP/14yLMp7Uv38X5
+	 xT1Gtae9TSCmeQ2kOqyrmkRj/RjNpRZWv/Dch5pI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B4CCF80112;
-	Wed, 23 Oct 2019 10:03:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9EF2F80321;
+	Wed, 23 Oct 2019 10:33:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66A75F80368; Wed, 23 Oct 2019 10:03:25 +0200 (CEST)
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com
- [IPv6:2607:f8b0:4864:20::344])
+ id 2EB8FF80368; Wed, 23 Oct 2019 10:33:02 +0200 (CEST)
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com
+ [IPv6:2607:f8b0:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 935CAF80112
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 10:03:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 935CAF80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47AC8F80274
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 10:32:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47AC8F80274
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="gHIg3gQn"
-Received: by mail-ot1-x344.google.com with SMTP id n48so1685453ota.11
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 01:03:22 -0700 (PDT)
+ header.b="viCUfLzz"
+Received: by mail-ot1-x341.google.com with SMTP id z6so16708334otb.2
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 01:32:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6uunPk4FRGMVRF/7mka4EzN9Nm4HV/2M2f5HwcfgzDg=;
- b=gHIg3gQn71VKU1Zb5o/Bjl3AtqVaiUFOBs/9yFdHsyR5Cp3O9qFur0Z7Yp6eGhpSJP
- zwARXUjs2v0bUpgfQNpyh3eSjlOfqyeklONDjphVP78YlJqbsj6txItzZMqz4fLMkXjE
- ujdJRD/EJ6Dn4eD61vueYzyHTWA2nMju0JbBrdnWyHj3k0z5rIMg6SaSDLL/aGtcsJyz
- mM79AoUbEry+9j1JIloGvt49aoCGf7Gc5GT1Lt07h+2w635KjXjOVVq/P8OhlKbEhx/9
- sb6SUs2Kmy//iuqTRXE9jU1OwV+XtPfM1lxotMBnnPjKkStTZ/JgbvF6bo4zsjRaxsII
- 7J3w==
+ :cc; bh=L8bkA9mtw+vWpI8oRxFifBMw8ummqV2rsVRmeQUbBco=;
+ b=viCUfLzzS1NUVQ5Tnwemu4lRHQh7rs8CcijmjomS/9Miv9Fu+1airI68eF8A8nJSyM
+ 546inlstZ+rsV3j10IwzBsycIFGDPHrgXpTekkK2mvUwZ8G3lCLjyeEM7EQy/lZHZhaB
+ E5ZzJt4Q/pPYmawXeV71ABnjju8sA8DJIMrKRYDgXJbiwCuKZsPLIjF+dRKIDvkcbLbB
+ PqQsxIkRG98Hk2GjN6zHwsA4r1gwOzIDXX1ehjEkdS0m14uNImJD2Ybj2n3J9f6LxhoR
+ vIFuKY91tEAHwK1Lh0VLR3AqD94qvyZtf73j7lbvTR4BDSKOqQihceTRTuyCyrprb6I3
+ jZlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=6uunPk4FRGMVRF/7mka4EzN9Nm4HV/2M2f5HwcfgzDg=;
- b=GVEJXIf6Zn5eIOs8IvcXm8O7XXWrbEmhI28yCNSKo/1m3IzlHn4EGpHoXrhLozZzaC
- /cejvtqvyMmq29g8q0BX3QFNqpVZozpwyWYCip1kvwXBWV68UdJiXgUcUXgRjJtQAUPJ
- TVwFCpOHl8Ln/EHCAf08rdLi5DAkkWqjWlSiAa80/TYqcn+EQCZkXUbYHy5wgpUN4Ib6
- z+MevaGwKQKWLeQnOQpL8zbUUym6LxbobT9aNjiT+0vn+bsJyR5wEFSNszEMJrOOPxP/
- vEeO68VKul7CwaS+byQxWS9DYsPcRJYiVr+BaBzrobL3YeK+/8M8RDsVlskQqXI5cA+F
- T1ZQ==
-X-Gm-Message-State: APjAAAUQbQbe/oF/mjCxKeMos0VJBcTt7fn/XLwVc6cNKRegqL4vEAwb
- LaA38A6wmwkgBTP00euBseNaprmre+pVcqBGv1TiJw==
-X-Google-Smtp-Source: APXvYqyfHE/ivBJeAMwtq+xDy7lllkwK/zu3sWWZGYeVM4ARAomhLhU7HXNGvp44TV8sDYdi8DuU8C7CCvatK56LIEM=
-X-Received: by 2002:a9d:7d12:: with SMTP id v18mr4015609otn.103.1571817800353; 
- Wed, 23 Oct 2019 01:03:20 -0700 (PDT)
+ bh=L8bkA9mtw+vWpI8oRxFifBMw8ummqV2rsVRmeQUbBco=;
+ b=MGrqEL1su3QelaENwOpqoqW1pySBK5gOFPcEj8gPp2NHEDpDAV4RwJ19oW2z2GfM6M
+ tTqCoW3Vw+x9u04Y+ME1FT0usMNDTEqZ3PSj7f+BLUcl1nIYiIkAkqz5iIJDf9QDYNLH
+ ZNh3uZZ64jPgRVOF4AnG0SU2ecqtklI2J/fHjh6CXhXgbE0klLRcTLQA6ZF9A658lUtC
+ CbQIslnDU7Ffeuh1kugqbFEONVQyPKci0CaIzfp0uvkErTevZvYB4zWubd/oBabPJS5e
+ WfmrGU3IZ6S4vPfnpg58Ik1OKtYJbFJxpushft0/Y8jE1eFAeoJxPztutgryVB6F3Uzn
+ EjpQ==
+X-Gm-Message-State: APjAAAU/uqsEWV0eHmIZSOJTLsylX/QLDnHyXJ9K9YFPJ6To2YcR/O+i
+ XQWe7PUCGnxkctPOdjYNmnu8yuEpVLztjPGpCphA4A==
+X-Google-Smtp-Source: APXvYqx9C835htw9b+vjF88aUM7e4S/FRS+3eHUvwsbpuC8bReEl39lomHdHjZsPRkBvLfkVQLrdUBNmVyoQXSiyMP0=
+X-Received: by 2002:a9d:7d12:: with SMTP id v18mr4103680otn.103.1571819576961; 
+ Wed, 23 Oct 2019 01:32:56 -0700 (PDT)
 MIME-Version: 1.0
 References: <20191023063103.44941-1-maowenan@huawei.com>
 In-Reply-To: <20191023063103.44941-1-maowenan@huawei.com>
 From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Wed, 23 Oct 2019 16:03:07 +0800
-Message-ID: <CA+Px+wU5UrVC0pk5pbfGTdVsh7OHcBx_MhbC3Bjmj_+zgn54PQ@mail.gmail.com>
+Date: Wed, 23 Oct 2019 16:32:46 +0800
+Message-ID: <CA+Px+wX7-tn-rXeKqnPtp74tU5cLxhJwF6XZ_jeQX-tnAfvO5g@mail.gmail.com>
 To: Mao Wenan <maowenan@huawei.com>
 Cc: linux-arm-kernel@lists.infradead.org,
  ALSA development <alsa-devel@alsa-project.org>,
@@ -127,10 +127,30 @@ On Wed, Oct 23, 2019 at 2:31 PM Mao Wenan <maowenan@huawei.com> wrote:
 >
 > Fixes: 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV")
 > Signed-off-by: Mao Wenan <maowenan@huawei.com>
+> ---
+>  sound/soc/mediatek/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+> index 8b29f39..a656d20 100644
+> --- a/sound/soc/mediatek/Kconfig
+> +++ b/sound/soc/mediatek/Kconfig
+> @@ -125,7 +125,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
+>         select SND_SOC_MAX98357A
+>         select SND_SOC_BT_SCO
+>         select SND_SOC_TS3A227E
+> -       select SND_SOC_CROS_EC_CODEC
+> +       select SND_SOC_CROS_EC_CODEC if CROS_EC
+>         help
+>           This adds ASoC driver for Mediatek MT8183 boards
+>           with the MT6358 TS3A227E MAX98357A audio codec.
+> --
+> 2.7.4
+>
 
-Acked-by: Tzung-Bi Shih <tzungbi@google.com>
-
-Thanks for the catching.
+Just realized your patch seems not showing in the list
+(https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/thread.html).
+I have no idea why.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
