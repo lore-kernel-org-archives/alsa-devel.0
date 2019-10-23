@@ -2,68 +2,61 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 385A0CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 00:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41CEFCA9EA0
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 02:11:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A82662084B
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 00:57:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E7622086D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 02:11:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A5i2O//J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A82662084B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RUdURjKx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E7622086D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05F6D1607;
-	Wed, 23 Oct 2019 02:56:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05F6D1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCCA21607;
+	Wed, 23 Oct 2019 04:10:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCCA21607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571792228;
-	bh=mOlYo8g/4jo/j+q0okG9WSvE5p6Pa7XQl0dY010sWg0=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=A5i2O//JlIplWhjzDJCFr7gCggN7xSmSfhBkA80xieQsJsdPWcibZlecBK0kh2Huq
-	 4OEuU94DHvQqUaGTI3ei/Q/tClXBiUnWrQh5zpuUblqP6+xs2uYZ/e996+ElNlXpp6
-	 B0ZcQovdyg/WoU4pgm8Sym+X6iMLyvCDbU9xyZJo=
+	s=default; t=1571796691;
+	bh=05crL00NoeNAJOnoXYacW6cw0CwWs5Uvh4g88n5u+QA=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RUdURjKxINsJKQniodKPZZN9kjBV5GFNamkvRs2mWVQKZ790ah0KdJ/xsSjGbusPh
+	 kjp/9bRk9qt+q8u+/aE/43skk80PzVCXtiVWbDK3GzcsvlKTZVdoLdSKXh3bCzYkpw
+	 HK5MdiIZ1nELf76Xmyj+BjK3c5z0VTWlvKFyz8Ec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80744F802FB;
-	Wed, 23 Oct 2019 02:56:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5151FF80321;
+	Wed, 23 Oct 2019 04:10:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7991AF8031A; Wed, 23 Oct 2019 02:56:16 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id AE12FF8026A
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 02:56:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE12FF8026A
-Date: 23 Oct 2019 09:56:09 +0900
-X-IronPort-AV: E=Sophos;i="5.68,218,1569250800"; d="scan'208";a="29737860"
+ id 9DDB6F80368; Wed, 23 Oct 2019 04:10:38 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B5BCAF80274
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 04:10:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5BCAF80274
+Date: 23 Oct 2019 11:10:29 +0900
+X-IronPort-AV: E=Sophos;i="5.68,218,1569250800"; d="scan'208";a="29533365"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 23 Oct 2019 09:56:09 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 23 Oct 2019 11:10:29 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3CD8F400A11D;
- Wed, 23 Oct 2019 09:56:09 +0900 (JST)
-Message-ID: <87ftjkz3di.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C74FB400A8BB;
+ Wed, 23 Oct 2019 11:10:29 +0900 (JST)
+Message-ID: <874l00yzxm.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Eugeniu Rosca <erosca@de.adit-jv.com>
-In-Reply-To: <20191022185518.12838-1-erosca@de.adit-jv.com>
-References: <20191022185518.12838-1-erosca@de.adit-jv.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@denx.de>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
- Eugeniu Rosca <roscaeugeniu@gmail.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rsnd: dma: set bus width to data
-	width for monaural data
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH] ASoC: soc-dpcm: tidyup for_each_dpcm_xx() macro
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,31 +75,54 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> According to R-Car3 HW manual 40.3.3 (Data Format on Audio Local Bus),
-> in case of monaural data writing or reading through Audio-DMAC,
-> it's always in Left Justified format, so both src and dst
-> DMA Bus width should be equal to physical data width.
-> 
-> Therefore set src and dst's DMA bus width to:
->  - [monaural case] data width
->  - [non-monaural case] 32bits (as prior applying the patch)
-> 
-> Cc: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-> Cc: Timo Wischer <twischer@de.adit-jv.com>
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-> ---
+for_each_dpcm_xx() macro is using "dpcm" as parameter (1),
+but, it is also struct member (2).
 
-I don't know how Monaural works, but I know you are using it.
-Thus don't say Acked-by and/or Reviewed-by,
-but I have no objection about this patch.
+	#define for_each_dpcm_fe(be, stream, dpcm) \
+	list_for_each_entry(dpcm, &(be)->dpcm[stream]...)
+	                    ^^^^(1)      ^^^^(2)
 
-Thank you for your help !!
-Best regards
+Thus, it will be compile error if user not used "dpcm" as parameter
+
+	for_each_dpcm_fe(be, stream, dp)
+	                             ^^
+This patch fixup it.
+
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+ include/sound/soc-dpcm.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index ff53037..fbe9e3d 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -103,13 +103,13 @@ struct snd_soc_dpcm_runtime {
+ 	int trigger_pending; /* trigger cmd + 1 if pending, 0 if not */
+ };
+ 
+-#define for_each_dpcm_fe(be, stream, dpcm)				\
+-	list_for_each_entry(dpcm, &(be)->dpcm[stream].fe_clients, list_fe)
++#define for_each_dpcm_fe(be, stream, _dpcm)				\
++	list_for_each_entry(_dpcm, &(be)->dpcm[stream].fe_clients, list_fe)
+ 
+-#define for_each_dpcm_be(fe, stream, dpcm)				\
+-	list_for_each_entry(dpcm, &(fe)->dpcm[stream].be_clients, list_be)
+-#define for_each_dpcm_be_safe(fe, stream, dpcm, _dpcm)			\
+-	list_for_each_entry_safe(dpcm, _dpcm, &(fe)->dpcm[stream].be_clients, list_be)
++#define for_each_dpcm_be(fe, stream, _dpcm)				\
++	list_for_each_entry(_dpcm, &(fe)->dpcm[stream].be_clients, list_be)
++#define for_each_dpcm_be_safe(fe, stream, _dpcm, __dpcm)			\
++	list_for_each_entry_safe(_dpcm, __dpcm, &(fe)->dpcm[stream].be_clients, list_be)
+ 
+ /* can this BE stop and free */
+ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
