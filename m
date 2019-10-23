@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E6EECA9EB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:02:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60DD4CA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:02:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05E372086D
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:02:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 57FC621872
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:02:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="erjUM4gv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="iv00GsxY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05E372086D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gp6C1I69";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="rmUuRnN1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57FC621872
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E3931680;
-	Wed, 23 Oct 2019 21:01:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E3931680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CAD01615;
+	Wed, 23 Oct 2019 21:02:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CAD01615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571857336;
-	bh=PoMlp/qjMP+IVY1YZSdHmEqlNRWTrBSVgwcgW7cesWs=;
+	s=default; t=1571857375;
+	bh=GAxETVwsYVwwWLrkOk9ORTgRBBrflsk36YdKEuQeuxA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=erjUM4gvd/8Wzl2TQNJJ8sE6TBq7Xnd6t9L+kv7tCJHuGDWgZogHout4vOWDUovnZ
-	 46tSnDOYlvCaOI8MxdTKps/FkhSw05oNZ4wMFwm6p9EY+71RR6tyhCJjAV6Q3jFeOz
-	 xId1cIzLcuC2baUY24a7GMr/YJHkLg5Hi3pWPaIQ=
+	b=gp6C1I69ajx/goEnlCLnONkBaJwLsI1hBozIOrMIfvaS1dkQ+uLH2zJHBlV0WLfXl
+	 HMhA0jnVmsMLSBWd5oKd+h/TsMrXTquYVymsieOQisOv0xrCGqzRLpLRtBe1Z8PYWW
+	 RawOzq1RNyIEn6Vkg0gXlqlDNcFSSkE1h4/Jn1DQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6533F80671;
-	Wed, 23 Oct 2019 20:56:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B3D5F80612;
+	Wed, 23 Oct 2019 20:56:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8F83F8060F; Wed, 23 Oct 2019 20:56:19 +0200 (CEST)
+ id 30AEBF80611; Wed, 23 Oct 2019 20:56:21 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E812F805E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04066F805FB
  for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E812F805E2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04066F805FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="iv00GsxY"
+ header.b="rmUuRnN1"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=bNZX7T8W8ZWiWMxnaEM8Q77UWl6mlZDIiuqRRJ9VYNw=; b=iv00GsxY2fM0
- tojT0Z/wgxw47lJyecMNUooXEPghX609vVBBwv2VP9wbIWJ/2mRE5fFNtENUrnecA6ChEdQVjrOk4
- LUgc33rkZYQO0a0MIdcj6rluedBLaYrtyxVtMUTjNhFVrKl5EWpiaQV4I08XwsyjD/t7wPeUflRx9
- mpu8g=;
+ List-Archive; bh=k/lGzSE95qaQc9LVPN5qXwbt/UcIqtdwXTpshhYt58w=; b=rmUuRnN1eEog
+ /IbKf5Uzgyosjs0QBqetAmV5uIX+mWYy6Y238FHhDe2cIEeBASvQXVB/9cXbEBvmVx484sVjOufpb
+ wGOuttvp2WFb3qqQpQZGBM/yw8VH0WGJynKmdREz5nRIqjJmYN98KjQWdKJAwe/3R4TPAXcAKared
+ 9UijM=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNLnj-0001BL-K5; Wed, 23 Oct 2019 18:56:07 +0000
+ id 1iNLni-0001Ax-PV; Wed, 23 Oct 2019 18:56:06 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 188AB2743021; Wed, 23 Oct 2019 19:56:06 +0100 (BST)
+ id 3A39E2743293; Wed, 23 Oct 2019 19:56:06 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Russell King <rmk+kernel@armlinux.org.uk>
-In-Reply-To: <E1iNGyK-0004oF-6A@rmk-PC.armlinux.org.uk>
+To: Mao Wenan <maowenan@huawei.com>
+In-Reply-To: <20191023063103.44941-1-maowenan@huawei.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191023185607.188AB2743021@ypsilon.sirena.org.uk>
+Message-Id: <20191023185606.3A39E2743293@ypsilon.sirena.org.uk>
 Date: Wed, 23 Oct 2019 19:56:06 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.armlinux.org.uk,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: kirkwood: fix external clock probe
-	defer" to the asoc tree
+Cc: alsa-devel@alsa-project.org, yuehaibing@huawei.com,
+ gregkh@linuxfoundation.org, tiwai@suse.com, kernel-janitors@vger.kernel.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tzungbi@google.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ shunli.wang@mediatek.com, matthias.bgg@gmail.com, tglx@linutronix.de,
+ linux-arm-kernel@lists.infradead.org, kaichieh.chuang@mediatek.com
+Subject: [alsa-devel] Applied "ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC
+	dependency" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,11 +101,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: kirkwood: fix external clock probe defer
+   ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC dependency
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -123,49 +126,42 @@ to this mail.
 Thanks,
 Mark
 
-From 4523817d51bc3b2ef38da768d004fda2c8bc41de Mon Sep 17 00:00:00 2001
-From: Russell King <rmk+kernel@armlinux.org.uk>
-Date: Wed, 23 Oct 2019 14:46:44 +0100
-Subject: [PATCH] ASoC: kirkwood: fix external clock probe defer
+From ef5dee551e3e6568fb203ea57fa24f55cb64d451 Mon Sep 17 00:00:00 2001
+From: Mao Wenan <maowenan@huawei.com>
+Date: Wed, 23 Oct 2019 14:31:03 +0800
+Subject: [PATCH] ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC dependency
 
-When our call to get the external clock fails, we forget to clean up
-the enabled internal clock correctly.  Enable the clock after we have
-obtained all our resources.
+If SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A=y,
+below errors can be seen:
+sound/soc/codecs/cros_ec_codec.o: In function `send_ec_host_command':
+cros_ec_codec.c:(.text+0x534): undefined reference to `cros_ec_cmd_xfer_status'
+cros_ec_codec.c:(.text+0x101c): undefined reference to `cros_ec_get_host_event'
 
-Fixes: 84aac6c79bfd ("ASoC: kirkwood: fix loss of external clock at probe time")
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/E1iNGyK-0004oF-6A@rmk-PC.armlinux.org.uk
+This is because it will select SND_SOC_CROS_EC_CODEC
+after commit 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV"),
+but SND_SOC_CROS_EC_CODEC depends on CROS_EC.
+
+Fixes: 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV")
+Signed-off-by: Mao Wenan <maowenan@huawei.com>
+Link: https://lore.kernel.org/r/20191023063103.44941-1-maowenan@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-i2s.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/mediatek/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 61226fefe1c4..9575a636d016 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -555,10 +555,6 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->clk);
- 	}
- 
--	err = clk_prepare_enable(priv->clk);
--	if (err < 0)
--		return err;
--
- 	priv->extclk = devm_clk_get(&pdev->dev, "extclk");
- 	if (IS_ERR(priv->extclk)) {
- 		if (PTR_ERR(priv->extclk) == -EPROBE_DEFER)
-@@ -574,6 +570,10 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	err = clk_prepare_enable(priv->clk);
-+	if (err < 0)
-+		return err;
-+
- 	/* Some sensible defaults - this reflects the powerup values */
- 	priv->ctl_play = KIRKWOOD_PLAYCTL_SIZE_24;
- 	priv->ctl_rec = KIRKWOOD_RECCTL_SIZE_24;
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 8b29f3979899..a656d2014127 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -125,7 +125,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_BT_SCO
+ 	select SND_SOC_TS3A227E
+-	select SND_SOC_CROS_EC_CODEC
++	select SND_SOC_CROS_EC_CODEC if CROS_EC
+ 	help
+ 	  This adds ASoC driver for Mediatek MT8183 boards
+ 	  with the MT6358 TS3A227E MAX98357A audio codec.
 -- 
 2.20.1
 
