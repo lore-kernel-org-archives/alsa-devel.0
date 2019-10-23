@@ -2,71 +2,55 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE0CBCA9EB6
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9BAECA9EB6
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:31:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 486AD21929
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:05:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA5DA21A4A
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:31:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NzeG1IVh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 486AD21929
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m1rfyX/t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA5DA21A4A
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 690111614;
-	Wed, 23 Oct 2019 19:04:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 690111614
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFFB915E2;
+	Wed, 23 Oct 2019 19:30:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFFB915E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571850337;
-	bh=rdb7ISiWa2UKTiBvw+6kJGyrQKtdpDsh2JfUeJhpdvE=;
-	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1571851892;
+	bh=wWxI0xwO4MaCwQUeXmATFYM+z4chyKBYpWQD9YUY7g8=;
+	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NzeG1IVh97sa1Kq1f8HMjGvyR0fsikVb5JWpJZSD3LPwlBBkzkqeuVX+bUqGy84mT
-	 Ohmcj1ceGiz7nMqsIoDNcSOLCpbqAps9YRQmsqdm8KrI+bO4v+MJHzhGX3R2w4rTA0
-	 oXXKG0kc849UxTGILYsaDl2cP1U5ubudfENE2/cA=
+	b=m1rfyX/ttutlItQS2fbSyLKXQWSYJA3kmghwwUsgE1Nczoo5SWx+mfLIHslaZjruE
+	 RB4BEIeXT3Q78yf9qEtaBsavxDO2mTMI985DF0T8PcNFNbuFzwcZNgn35BnBpK2V5u
+	 vV3juCzgDfBHVmOAQ+PFkgRmW50cZ4C1dp4XuP0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1964F80112;
-	Wed, 23 Oct 2019 19:04:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 267D8F80321;
+	Wed, 23 Oct 2019 19:30:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6E8AF802DF; Wed, 23 Oct 2019 19:04:44 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1402F80112
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 19:04:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1402F80112
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 23 Oct 2019 10:04:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,221,1569308400"; d="scan'208";a="281680755"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga001.jf.intel.com with ESMTP; 23 Oct 2019 10:04:39 -0700
-Date: Wed, 23 Oct 2019 20:04:38 +0300 (EEST)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@zeliteleevi
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20191023160829.99B28F80368@alsa1.perex.cz>
-Message-ID: <alpine.DEB.2.21.1910231952480.16459@zeliteleevi>
-References: <1571846903163125992-webhooks-bot@alsa-project.org>
- <20191023160829.99B28F80368@alsa1.perex.cz>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ id 38B8BF80368; Wed, 23 Oct 2019 19:30:41 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3E46DF802DF
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 19:30:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E46DF802DF
 MIME-Version: 1.0
-Subject: Re: [alsa-devel] [RFC] sof-skl_hda: change to use common HDMI codec
- driver
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1571851836428162098-webhooks-bot@alsa-project.org>
+References: <1571851836428162098-webhooks-bot@alsa-project.org>
+Message-Id: <20191023173041.38B8BF80368@alsa1.perex.cz>
+Date: Wed, 23 Oct 2019 19:30:41 +0200 (CEST)
+Subject: [alsa-devel] alsa-info: lots of mostly syntactic changes
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,36 +68,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+alsa-project/alsa-utils pull request #29 was opened from E5ten:
 
-On Wed, 23 Oct 2019, GitHub pull_request - opened wrote:
+- remove all bashisms and change shebang to #!/bin/sh
+- replace use of which with command -v for portability
+- remove awk dependency
+- general cosmetic consistency:
+    - indentation
+    - always put then or done on the same line as if, for, or while
+- quote much more, especially when the variable refers to a file
+- replace many uses of >> $FILE with command grouping and single
+  redirects of the command groups
+- simplify text processing pipelines, mostly by turning them into
+  a single sed command
 
-> alsa-project/alsa-ucm-conf pull request #4 was opened from kv2019i:
-[...]
-> Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/4
-> Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/4.patch
-> Repository URL: https://github.com/alsa-project/alsa-ucm-conf
-
-Jaroslav, here's an interesting case for the UCM file lookup problem 
-(related
-to your post in thread in May about the UCM selection:
-https://mailman.alsa-project.org/pipermail/alsa-devel/2019-May/150043.html 
-)
-
-This is essentially a case where same codec hw can be driven by two
-different drivers. Depending on how user has compiled the kernel (and/or 
-set module parameters), a different set of UCM rules should be used.
-
-Now in the RFC UCM patch, I simply replace the UCM rules to match common 
-HDMI codec driver interface. I.e. once merged, the ALSA UCM files only 
-support one codec driver.
-
-In this specific case, this might be the best solution (as the two 
-drivers exist purely to support the transition time), but I'm wondering 
-whether we have other similar needs, and UCM lookup logic should cover 
-also this type of cases. Any thoughts?
-
-Br, Kai
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/29
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/29.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
