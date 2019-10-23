@@ -2,66 +2,68 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	TVD_SPACE_RATIO,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 287DFCA9EAE
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 05:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C104CA9EAE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 05:08:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DE09214B2
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 05:05:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0DDA214B2
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 05:08:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mb4DT0MG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DE09214B2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KL0dvkHZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0DDA214B2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00B8684C;
-	Wed, 23 Oct 2019 07:04:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00B8684C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 064E315E0;
+	Wed, 23 Oct 2019 07:07:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 064E315E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571807137;
-	bh=mjd2tQpaeFvT+f/kI+mrOsXYmuZfaf35kK70Gb25l+c=;
+	s=default; t=1571807319;
+	bh=F4OugrB+5uZQcecJRBgqTE7W8G0JuzFcN1d8cQmOjRc=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mb4DT0MGTrDwDGQXHg3RrfafLvit2BL5yw6l7Ipeae2H0ADPk8RBi8iC9343D5jbd
-	 PyPprceHAXwjfrfjL1I7KgqJcaxUohnEBBfad5fYX0Q6wN8t9b5cUJQyBUP9MsdMmK
-	 pyd7Qg/ppYH4Mve4rYJUyXT9aGKMCdHLzap3wWVw=
+	b=KL0dvkHZpAVd/BSJLORF5yxsIVl3W3CeqDLfUErR+b87OrfB9B5G9rSbwFHAj3ID3
+	 qVVxw4rLJSnSHU1JM6n6FG0lYTz7DNlV1MIsgUV86Ibeqb9EpdMAGjM4J3/5lWRyAk
+	 0ZJ8LoQRzmzS+eQh4+AwONvpzcSROIbzpKfemCx4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 226E8F80321;
-	Wed, 23 Oct 2019 07:04:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90EB9F80274;
+	Wed, 23 Oct 2019 07:07:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B10C6F80368; Wed, 23 Oct 2019 07:04:43 +0200 (CEST)
+ id C29C5F80368; Wed, 23 Oct 2019 07:07:45 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD975F802DF
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 07:04:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD975F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95E7EF802DF
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 07:07:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95E7EF802DF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 6CE06B2AE;
- Wed, 23 Oct 2019 05:04:39 +0000 (UTC)
-Date: Wed, 23 Oct 2019 07:04:38 +0200
-Message-ID: <s5hd0eocas9.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id B432FAFCE;
+ Wed, 23 Oct 2019 05:07:42 +0000 (UTC)
+Date: Wed, 23 Oct 2019 07:07:41 +0200
+Message-ID: <s5hblu8can6.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Fly Pig <flyingecar@gmail.com>
-In-Reply-To: <CA+9XP1jeMVuzj0gz_-H6zV=cmjWQwvBLi08AED1KBie+kugmcg@mail.gmail.com>
-References: <CA+9XP1jeMVuzj0gz_-H6zV=cmjWQwvBLi08AED1KBie+kugmcg@mail.gmail.com>
+To: syzbot <syzbot+f586a582f79122007598@syzkaller.appspotmail.com>
+In-Reply-To: <0000000000005f6416059588cff9@google.com>
+References: <0000000000005f6416059588cff9@google.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Add Gustard U16/X26
-	device family to quirks for native DSD support
+Cc: alsa-devel@alsa-project.org, g@b4.vu, yuehaibing@huawei.com,
+ andreyknvl@google.com, linux-usb@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ tglx@linutronix.de, benquike@gmail.com, dan.carpenter@oracle.com
+Subject: Re: [alsa-devel] KASAN: slab-out-of-bounds Read in
+	parse_term_proc_unit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,32 +76,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gV2VkLCAyMyBPY3QgMjAxOSAwNjowNTowOCArMDIwMCwKRmx5IFBpZyB3cm90ZToKPiAKPiBI
-aSBUaGVyZQo+IAo+IFRoaXMgcGF0Y2ggYWRkIG5hdGl2ZSBEU0Qgc3VwcG9ydCBmb3IgR3VzdGFy
-ZCBVMTYvWDI2IFVTQiBJbnRlcmZhY2UuIFRlc3RlZCBvbgo+IG15IHVuaXQsIHdvcmtpbmcgcHJv
-cGVybHkuIEhlbmNlIHN1Ym1pdCB0aGUgcGF0Y2guwqAKPiAKPiBDaGVlcnMuwqAKPiAKPiBUaGFu
-ayB5b3UgdmVyeSBtdWNoLgo+IAo+IFBpZwoKVGhlIHVwc3RyZWFtIGNvZGUgY2hhbmdlZCB0aGUg
-RFNEIGRldGVjdGlvbiByZWNlbnRseSwgc28geW91ciBwYXRjaApkb2Vzbid0IGFwcGx5LiAgSW4g
-c2hvcnQsIGNoZWNrIHdoZXRoZXIgeW91IGdldCBmcC0+ZHNkX3JhdyBzZXQuICBJZgp5ZXMsIHdl
-IGNhbiBhcHBseSB0aGUgdmVuZG9yIGNoZWNrIGluc3RlYWQgb2YgdmVuZG9yOmRldmljZSBwYWly
-CmNoZWNrLgoKUGxlYXNlIHJlc3VibWl0IHRoZSBwYXRjaCB3aXRoIHRoZSBjb3JyZWN0aW9uLCBh
-bmQgZG9uJ3QgZm9yZ2V0IHRvIGFkZAp5b3VyIHNpZ24tb2ZmIGxpbmUgKHNlZSBEb2N1bWVudGF0
-aW9uL3Byb2Nlc3Mvc3VibWl0dGluZy1wYXRjaGVzLnJzdCkuCkl0J3MgYSBsZWdhbCByZXF1aXJl
-bWVudCBmb3IgdGFraW5nIHRoZSBwYXRjaCB0byB1cHN0cmVhbS4KCgp0aGFua3MsCgpUYWthc2hp
-Cgo+IAo+IC0tLSBhL3NvdW5kL3VzYi9xdWlya3MuYyAyMDE5LTA5LTIyIDIxOjI4OjA5Ljc1Nzg5
-NzAwMCArMDAwMAo+ICsrKyBiL3NvdW5kL3VzYi9xdWlya3MuYyAyMDE5LTA5LTIyIDIxOjMzOjM2
-Ljg5MjI3NDgwMCArMDAwMAo+IEBAIC0xMzY5LDYgKzEzNjksNyBAQAo+IMKgIGNhc2UgVVNCX0lE
-KDB4MjJkOSwgMHgwNDYxKTogLyogT1BQTyBVRFAtMjA1ICovCj4gwqAgY2FzZSBVU0JfSUQoMHgy
-NTIyLCAweDAwMTIpOiAvKiBMSCBMYWJzIFZJIERBQyBJbmZpbml0eSAqLwo+IMKgIGNhc2UgVVNC
-X0lEKDB4Mjc3MiwgMHgwMjMwKTogLyogUHJvLUplY3QgUHJlIEJveCBTMiBEaWdpdGFsICovCj4g
-KyDCoCDCoCDCoCDCoGNhc2UgVVNCX0lEKDB4MjkyYiwgMHhjNGIzKTogLyogR3VzdGFyZCBVMTYg
-Ki8KPiDCoCBpZiAoZnAtPmFsdHNldHRpbmcgPT0gMikKPiDCoCByZXR1cm4gU05EUlZfUENNX0ZN
-VEJJVF9EU0RfVTMyX0JFOwo+IMKgIGJyZWFrOwo+IAo+IApfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+#syz dup: KASAN: slab-out-of-bounds Read in build_audio_procunit
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
