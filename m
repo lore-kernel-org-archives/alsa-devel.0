@@ -2,82 +2,84 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=DATE_IN_PAST_12_24,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8B4FCA9EB7
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:58:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F8C2CA9EB6
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:24:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66A3B21929
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 17:58:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D4EF21928
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:24:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="goMEf+uy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66A3B21929
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WmXK5ciR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="X+JGUuel"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D4EF21928
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56C2B1615;
-	Wed, 23 Oct 2019 19:58:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56C2B1615
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF1BD1607;
+	Wed, 23 Oct 2019 20:23:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF1BD1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571853533;
-	bh=DA1hqzMVWNksRoCkcITe/TJlcYfdw4x0jyKToKmxWoI=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1571855054;
+	bh=lSUKVkRZka6mjKM44GwYvdguw5alkK1OH9Fc0DwoIsI=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=goMEf+uyv6T5xjXE9tJduuKU0kAt0gE7GjpHd/kemNyHuYaYLoviruyD+7H6m2UtZ
-	 r29OI3tl8m3u/r5bp+7QzH+XooQuOpwIvQ2syc5WrnqoyU/JkBUNyXfpEfXStSW8um
-	 DG61rGciVEgR5P4015nf8pZB4kPLh4RxmpsDlDI4=
+	b=WmXK5ciR751vzJj7zeanrs4Ra6ltJUpUjkmp1sK6tw/5sSQTNUKAy5gUcCY9f7jjT
+	 NMVEMnFcbJHkJAoQP1EKHbmLx8TJTqd01+av02jgv1+66S6A6wCW66RDnB+GVN3/oQ
+	 GAxga1wGCOdtvWCjkp2yVBhB577iC9ZrWzbokyPQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C12BAF80321;
-	Wed, 23 Oct 2019 19:58:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEDD6F80112;
+	Wed, 23 Oct 2019 20:23:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3AF5F80368; Wed, 23 Oct 2019 19:58:00 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 2C84FF80368; Wed, 23 Oct 2019 20:23:22 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1456F80112
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 19:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1456F80112
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 23 Oct 2019 10:57:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,221,1569308400"; d="scan'208";a="196854544"
-Received: from kmaklai-mobl2.amr.corp.intel.com (HELO [10.252.137.221])
- ([10.252.137.221])
- by fmsmga008.fm.intel.com with ESMTP; 23 Oct 2019 10:57:52 -0700
-To: Vinod Koul <vkoul@kernel.org>
-References: <20190916190952.32388-1-pierre-louis.bossart@linux.intel.com>
- <20190916190952.32388-5-pierre-louis.bossart@linux.intel.com>
- <20191021041404.GY2654@vkoul-mobl>
- <8ba388e7-e344-068b-b233-8d96903abf6b@linux.intel.com>
- <20191022045518.GJ2654@vkoul-mobl>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c6aeb19f-8646-6396-10a7-47acac540106@linux.intel.com>
-Date: Tue, 22 Oct 2019 15:41:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8824F80112
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:23:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8824F80112
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="X+JGUuel"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=u5hRKF+h8Gy91CW+b9a74EtsoCFozZV84a3mQliXVHc=; b=X+JGUuelWB0Kn4R0TIKBD3tQm
+ M7thRbLfdNryNZkVJJ5CQHWAdVvu2rvVC7XpB2tGFSES4OT7djX+CrFInYQfknrl3eCCSqJDSzs3H
+ aJU8HepFCdb/lHa1agIeY0+fwxW6BtYNsHoGGj9xoQxD0/gXyYALQ9v8SZxxyN5xOPQLM=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iNLHx-00015H-Tq; Wed, 23 Oct 2019 18:23:17 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 0EBB12743021; Wed, 23 Oct 2019 19:23:16 +0100 (BST)
+Date: Wed, 23 Oct 2019 19:23:16 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "S.j. Wang" <shengjiu.wang@nxp.com>
+Message-ID: <20191023182316.GM5723@sirena.co.uk>
+References: <VE1PR04MB64794B718CAA0CBAB38C3918E3680@VE1PR04MB6479.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20191022045518.GJ2654@vkoul-mobl>
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 4/5] soundwire: intel/cadence: add flag
- for interrupt enable
+In-Reply-To: <VE1PR04MB64794B718CAA0CBAB38C3918E3680@VE1PR04MB6479.eurprd04.prod.outlook.com>
+X-Cookie: MMM-MM!!  So THIS is BIO-NEBULATION!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: "jiada_wang@mentor.com" <jiada_wang@mentor.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Russell King <rmk+kernel@armlinux.org.uk>
+Subject: Re: [alsa-devel] Question about "957ce0c6b8a1 ASoC: soc-pcm: check
+ symmetry after hw_params"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,155 +92,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============8259960660637020064=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-On 10/21/19 11:55 PM, Vinod Koul wrote:
-> On 21-10-19, 05:26, Pierre-Louis Bossart wrote:
->> On 10/20/19 11:14 PM, Vinod Koul wrote:
->>> On 16-09-19, 14:09, Pierre-Louis Bossart wrote:
->>>> Prepare for future PM support and fix error handling by disabling
->>>> interrupts as needed.
->>>>
->>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>>> ---
->>>>    drivers/soundwire/cadence_master.c | 18 ++++++++++++------
->>>>    drivers/soundwire/cadence_master.h |  2 +-
->>>>    drivers/soundwire/intel.c          | 12 +++++++-----
->>>>    3 files changed, 20 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
->>>> index 5f900cf2acb9..a71df99ca18f 100644
->>>> --- a/drivers/soundwire/cadence_master.c
->>>> +++ b/drivers/soundwire/cadence_master.c
->>>> @@ -819,14 +819,17 @@ EXPORT_SYMBOL(sdw_cdns_exit_reset);
->>>>     * sdw_cdns_enable_interrupt() - Enable SDW interrupts and update config
->>>>     * @cdns: Cadence instance
->>>>     */
->>>> -int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
->>>> +int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state)
->>>>    {
->>>> -	u32 mask;
->>>> +	u32 slave_intmask0 = 0;
->>>> +	u32 slave_intmask1 = 0;
->>>> +	u32 mask = 0;
->>>> +
->>>> +	if (!state)
->>>> +		goto update_masks;
->>>> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0,
->>>> -		    CDNS_MCP_SLAVE_INTMASK0_MASK);
->>>> -	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
->>>> -		    CDNS_MCP_SLAVE_INTMASK1_MASK);
->>>> +	slave_intmask0 = CDNS_MCP_SLAVE_INTMASK0_MASK;
->>>> +	slave_intmask1 = CDNS_MCP_SLAVE_INTMASK1_MASK;
->>>>    	/* enable detection of all slave state changes */
->>>>    	mask = CDNS_MCP_INT_SLAVE_MASK;
->>>> @@ -849,6 +852,9 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
->>>>    	if (interrupt_mask) /* parameter override */
->>>>    		mask = interrupt_mask;
->>>> +update_masks:
->>>> +	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0, slave_intmask0);
->>>> +	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1, slave_intmask1);
->>>>    	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
->>>>    	/* commit changes */
->>>> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
->>>> index 1a67728c5000..302351808098 100644
->>>> --- a/drivers/soundwire/cadence_master.h
->>>> +++ b/drivers/soundwire/cadence_master.h
->>>> @@ -162,7 +162,7 @@ int sdw_cdns_init(struct sdw_cdns *cdns);
->>>>    int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
->>>>    		      struct sdw_cdns_stream_config config);
->>>>    int sdw_cdns_exit_reset(struct sdw_cdns *cdns);
->>>> -int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
->>>> +int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns, bool state);
->>>>    #ifdef CONFIG_DEBUG_FS
->>>>    void sdw_cdns_debugfs_init(struct sdw_cdns *cdns, struct dentry *root);
->>>> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
->>>> index cdb3243e8823..08530c136c5f 100644
->>>> --- a/drivers/soundwire/intel.c
->>>> +++ b/drivers/soundwire/intel.c
->>>> @@ -1036,7 +1036,7 @@ static int intel_probe(struct platform_device *pdev)
->>>>    	ret = sdw_add_bus_master(&sdw->cdns.bus);
->>>>    	if (ret) {
->>>>    		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
->>>> -		goto err_master_reg;
->>>> +		return ret;
->>>
->>> I am not sure I like this line change, before this IIRC the function and
->>> single place of return, so changing this doesn't seem to improve
->>> anything here..?
->>
->> Doing a goto to do a return is not very nice either.
-> 
-> Hrmm, isn't that what you are doing few lines below. The point here is
-> that this line of change here doesnt change anything, doesnt improve
-> anything so why change :)
-
-I knew there was a reason.. the existing code on your soundwire/next 
-branch mixes goto and return, so I chose to use a return for the first 
-case as well.
-
-	ret = sdw_add_bus_master(&sdw->cdns.bus);
-	if (ret) {
-		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
-		goto err_master_reg; >>> changed to return ret;
-	}
-
-	if (sdw->cdns.bus.prop.hw_disabled) {
-		dev_info(&pdev->dev, "SoundWire master %d is disabled, ignoring\n",
-			 sdw->cdns.bus.link_id);
-		return 0;
-	}
+--===============8259960660637020064==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vdqwC0msT4ilQ2it"
+Content-Disposition: inline
 
 
+--vdqwC0msT4ilQ2it
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
->> I can change this, but it doesn't really matter: this entire code will be
->> removed anyways to get rid of platform_devices and the probe itself will be
->> split in two.
->>
->>>
->>>>    	}
->>>>    	if (sdw->cdns.bus.prop.hw_disabled) {
->>>> @@ -1067,7 +1067,7 @@ static int intel_probe(struct platform_device *pdev)
->>>>    		goto err_init;
->>>>    	}
->>>> -	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
->>>> +	ret = sdw_cdns_enable_interrupt(&sdw->cdns, true);
->>>>    	if (ret < 0) {
->>>>    		dev_err(sdw->cdns.dev, "cannot enable interrupts\n");
->>>>    		goto err_init;
->>>> @@ -1076,7 +1076,7 @@ static int intel_probe(struct platform_device *pdev)
->>>>    	ret = sdw_cdns_exit_reset(&sdw->cdns);
->>>>    	if (ret < 0) {
->>>>    		dev_err(sdw->cdns.dev, "unable to exit bus reset sequence\n");
->>>> -		goto err_init;
->>>> +		goto err_interrupt;
->>>>    	}
->>>>    	/* Register DAIs */
->>>> @@ -1084,18 +1084,19 @@ static int intel_probe(struct platform_device *pdev)
->>>>    	if (ret) {
->>>>    		dev_err(sdw->cdns.dev, "DAI registration failed: %d\n", ret);
->>>>    		snd_soc_unregister_component(sdw->cdns.dev);
->>>> -		goto err_dai;
->>>> +		goto err_interrupt;
->>>>    	}
->>>>    	intel_debugfs_init(sdw);
->>>>    	return 0;
->>>> +err_interrupt:
->>>> +	sdw_cdns_enable_interrupt(&sdw->cdns, false);
->>>>    err_dai:
->>>
->>> Isn't this unused now?
-> 
-> ??? you missed this.
+On Tue, Oct 22, 2019 at 09:28:38AM +0000, S.j. Wang wrote:
 
-fixed.
+Copying in Russell who noticed what sounded like the same issue today.
+
+> > On Wed, Oct 16, 2019 at 03:05:16AM +0000, S.j. Wang wrote:
+
+> > >      The soc_pcm_params_symmetry can't take effect, because its
+> > > position is after the change of cpu_dai->rate.
+
+> > >    Is this an issue?
+
+> > I think so, yes.
+
+> Thanks, but how to fix it?  because I don't really understand this
+> commit want to do, it is hard for me to send a fixed patch.
+
+> Or shall we revert it?
+
+Right, so that was attempting to fix a nasty DPCM case with fixups but
+it does that with a lot of collateral damage which is causing more harm
+than good.  I think we need to revert and change things so that we don't
+attempt to enforce symmetry on anything that has fixups, anything that
+has fixups probably needs to open code some constraints but the chances
+are that they will be able to rewrite anything the front end does so
+most probably don't need anything.
+
+Can you code something up here and test it on a DPCM system?
+
+--vdqwC0msT4ilQ2it
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2wmpQACgkQJNaLcl1U
+h9Ds+ggAg/l2m/tJrU5aWhP3TLc+hYArhpEfEsxcoOw8LQ1JCIgWkAa4X1CBeZMe
+wEqb6YmrCi2JuC5IM32eGbO4M9TVEqQmI+HZMv2CVC/TKmb4Xn+TxeqwOMpumNnU
+BeBEb4Br1rPQGMhxvCKSQFLRXqRqndkhT3Osp8Kf+WnSY/7qa9jmXvNn82Po52V6
+fn7lbtGgdtLySN4h0n04XXwV5Aar6bjyympmPA22IEP7G2V5/xHFGNU7Xcat9IZB
+OlksQz0DfODIQTobhhBFaXXA/xPAuHq4yqij0h+AW3l5RojodoI6qJ4GGQZ+ewm1
+3OQ340IgfLdrRNasR3DTigNhS5baZw==
+=o/VT
+-----END PGP SIGNATURE-----
+
+--vdqwC0msT4ilQ2it--
+
+--===============8259960660637020064==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8259960660637020064==--
