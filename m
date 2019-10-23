@@ -7,80 +7,80 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60DD4CA9EB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4B16CA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:03:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57FC621872
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:02:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AD1D21928
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:03:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gp6C1I69";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="rmUuRnN1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57FC621872
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VGZRoyFI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="L4TmW74B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AD1D21928
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CAD01615;
-	Wed, 23 Oct 2019 21:02:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CAD01615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 786FD1682;
+	Wed, 23 Oct 2019 21:02:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 786FD1682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571857375;
-	bh=GAxETVwsYVwwWLrkOk9ORTgRBBrflsk36YdKEuQeuxA=;
+	s=default; t=1571857403;
+	bh=Tv6/fYCUdsEwd6838u6T+UYti2NZML/kvOcpQKcD9d0=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=gp6C1I69ajx/goEnlCLnONkBaJwLsI1hBozIOrMIfvaS1dkQ+uLH2zJHBlV0WLfXl
-	 HMhA0jnVmsMLSBWd5oKd+h/TsMrXTquYVymsieOQisOv0xrCGqzRLpLRtBe1Z8PYWW
-	 RawOzq1RNyIEn6Vkg0gXlqlDNcFSSkE1h4/Jn1DQ=
+	b=VGZRoyFIOwqHTPdIUc5YYEOKhBbsqwvS5jAzq5N0W9fvL26MWyv0x2ZohmKfXJKhO
+	 Esbb5j3mk/U9SjhGwLkYFApGoPVGgNlM9FX4QOk7HGC0OUAjE1vgkMbbx9BsotZ8hO
+	 Dc7sqs+EsOocUtKBKvMhA5zv6YfhhBiT8BfKuuK4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B3D5F80612;
-	Wed, 23 Oct 2019 20:56:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B717F8067A;
+	Wed, 23 Oct 2019 20:56:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30AEBF80611; Wed, 23 Oct 2019 20:56:21 +0200 (CEST)
+ id D0730F80612; Wed, 23 Oct 2019 20:56:21 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04066F805FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9C56F80393
  for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04066F805FB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9C56F80393
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="rmUuRnN1"
+ header.b="L4TmW74B"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=k/lGzSE95qaQc9LVPN5qXwbt/UcIqtdwXTpshhYt58w=; b=rmUuRnN1eEog
- /IbKf5Uzgyosjs0QBqetAmV5uIX+mWYy6Y238FHhDe2cIEeBASvQXVB/9cXbEBvmVx484sVjOufpb
- wGOuttvp2WFb3qqQpQZGBM/yw8VH0WGJynKmdREz5nRIqjJmYN98KjQWdKJAwe/3R4TPAXcAKared
- 9UijM=;
+ List-Archive; bh=j/8yayfqMY0ZyCUC8zjVt9apU8LafgXQ0fDRwU+6/iQ=; b=L4TmW74BoYDt
+ J9IEPYU9uFs7yHt4LFK7+xRfFBHFlm30/Dqz3JDPHWDoFirnv5GUmrMP8cnCqU3fwSQliUlAkblVe
+ vjwQWzrLXRB4mpsqp7cTWweAYNZGRwalCZ7X11Ni7TT5+AXPjxSqpvCv6opPFOfYI8byw5k1/bQta
+ A6A9I=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNLni-0001Ax-PV; Wed, 23 Oct 2019 18:56:06 +0000
+ id 1iNLnj-0001B9-4v; Wed, 23 Oct 2019 18:56:07 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 3A39E2743293; Wed, 23 Oct 2019 19:56:06 +0100 (BST)
+ id 98437274326D; Wed, 23 Oct 2019 19:56:06 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Mao Wenan <maowenan@huawei.com>
-In-Reply-To: <20191023063103.44941-1-maowenan@huawei.com>
+To: Jiada Wang <jiada_wang@mentor.com>
+In-Reply-To: <20191022185518.12838-1-erosca@de.adit-jv.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191023185606.3A39E2743293@ypsilon.sirena.org.uk>
+Message-Id: <20191023185606.98437274326D@ypsilon.sirena.org.uk>
 Date: Wed, 23 Oct 2019 19:56:06 +0100 (BST)
-Cc: alsa-devel@alsa-project.org, yuehaibing@huawei.com,
- gregkh@linuxfoundation.org, tiwai@suse.com, kernel-janitors@vger.kernel.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tzungbi@google.com,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- shunli.wang@mediatek.com, matthias.bgg@gmail.com, tglx@linutronix.de,
- linux-arm-kernel@lists.infradead.org, kaichieh.chuang@mediatek.com
-Subject: [alsa-devel] Applied "ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC
-	dependency" to the asoc tree
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org,
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Eugeniu Rosca <roscaeugeniu@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: [alsa-devel] Applied "ASoC: rsnd: dma: set bus width to data width
+	for monaural data" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,7 +101,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC dependency
+   ASoC: rsnd: dma: set bus width to data width for monaural data
 
 has been applied to the asoc tree at
 
@@ -126,42 +126,78 @@ to this mail.
 Thanks,
 Mark
 
-From ef5dee551e3e6568fb203ea57fa24f55cb64d451 Mon Sep 17 00:00:00 2001
-From: Mao Wenan <maowenan@huawei.com>
-Date: Wed, 23 Oct 2019 14:31:03 +0800
-Subject: [PATCH] ASoC: mediatek: Check SND_SOC_CROS_EC_CODEC dependency
+From d4d9360bf702890b5d3b1b62d8619a2690dd3278 Mon Sep 17 00:00:00 2001
+From: Jiada Wang <jiada_wang@mentor.com>
+Date: Tue, 22 Oct 2019 20:55:18 +0200
+Subject: [PATCH] ASoC: rsnd: dma: set bus width to data width for monaural
+ data
 
-If SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A=y,
-below errors can be seen:
-sound/soc/codecs/cros_ec_codec.o: In function `send_ec_host_command':
-cros_ec_codec.c:(.text+0x534): undefined reference to `cros_ec_cmd_xfer_status'
-cros_ec_codec.c:(.text+0x101c): undefined reference to `cros_ec_get_host_event'
+According to R-Car3 HW manual 40.3.3 (Data Format on Audio Local Bus),
+in case of monaural data writing or reading through Audio-DMAC,
+it's always in Left Justified format, so both src and dst
+DMA Bus width should be equal to physical data width.
 
-This is because it will select SND_SOC_CROS_EC_CODEC
-after commit 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV"),
-but SND_SOC_CROS_EC_CODEC depends on CROS_EC.
+Therefore set src and dst's DMA bus width to:
+ - [monaural case] data width
+ - [non-monaural case] 32bits (as prior applying the patch)
 
-Fixes: 2cc3cd5fdc8b ("ASoC: mediatek: mt8183: support WoV")
-Signed-off-by: Mao Wenan <maowenan@huawei.com>
-Link: https://lore.kernel.org/r/20191023063103.44941-1-maowenan@huawei.com
+Cc: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Cc: Timo Wischer <twischer@de.adit-jv.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+Link: https://lore.kernel.org/r/20191022185518.12838-1-erosca@de.adit-jv.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/dma.c | 30 ++++++++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 8b29f3979899..a656d2014127 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -125,7 +125,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_BT_SCO
- 	select SND_SOC_TS3A227E
--	select SND_SOC_CROS_EC_CODEC
-+	select SND_SOC_CROS_EC_CODEC if CROS_EC
- 	help
- 	  This adds ASoC driver for Mediatek MT8183 boards
- 	  with the MT6358 TS3A227E MAX98357A audio codec.
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index 0324a5c39619..bcb6d5960661 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -165,14 +165,40 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct dma_async_tx_descriptor *desc;
+ 	struct dma_slave_config cfg = {};
++	enum dma_slave_buswidth buswidth = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	int is_play = rsnd_io_is_play(io);
+ 	int ret;
+ 
++	/*
++	 * in case of monaural data writing or reading through Audio-DMAC
++	 * data is always in Left Justified format, so both src and dst
++	 * DMA Bus width need to be set equal to physical data width.
++	 */
++	if (rsnd_runtime_channel_original(io) == 1) {
++		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++		int bits = snd_pcm_format_physical_width(runtime->format);
++
++		switch (bits) {
++		case 8:
++			buswidth = DMA_SLAVE_BUSWIDTH_1_BYTE;
++			break;
++		case 16:
++			buswidth = DMA_SLAVE_BUSWIDTH_2_BYTES;
++			break;
++		case 32:
++			buswidth = DMA_SLAVE_BUSWIDTH_4_BYTES;
++			break;
++		default:
++			dev_err(dev, "invalid format width %d\n", bits);
++			return -EINVAL;
++		}
++	}
++
+ 	cfg.direction	= is_play ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
+ 	cfg.src_addr	= dma->src_addr;
+ 	cfg.dst_addr	= dma->dst_addr;
+-	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	cfg.src_addr_width = buswidth;
++	cfg.dst_addr_width = buswidth;
+ 
+ 	dev_dbg(dev, "%s %pad -> %pad\n",
+ 		rsnd_mod_name(mod),
 -- 
 2.20.1
 
