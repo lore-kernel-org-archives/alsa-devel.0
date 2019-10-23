@@ -2,89 +2,102 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A89E4CA9EB6
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:27:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A458ECA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:32:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30B8721928
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:27:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A548A2173B
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:32:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vSiBvnnR";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="0JmadXmX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30B8721928
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=armlinux.org.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hqiu2bdN";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0V7U6xd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A548A2173B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EF6841;
-	Wed, 23 Oct 2019 20:26:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EF6841
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86F971615;
+	Wed, 23 Oct 2019 20:31:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86F971615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571855249;
-	bh=VJEKvD8KHCtwXpjfr8JYAHRk5hlMGfREQcHjUtj8bJY=;
+	s=default; t=1571855545;
+	bh=vIxPwswX5VSZ6nXTw9x/wD+7zsFkXpskMNqjWfq5QAE=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vSiBvnnRHvMzLbrdCK3EDMuVpcgqh+nWRORbNWXdoe+0evu/m/WLlp99Wtayt4ton
-	 oWzyBBrwMPi6iNfiZt+HY3ryd4SLtYJU83TENeSjzUEvQpqoO7D28UwljVoIvU4zB9
-	 0HhMQ9/29AqpceORVxXsu3ieAGCyrXE33lxDIFGU=
+	b=Hqiu2bdNqwdpmKM+XIailc61wXciA/ABJ63cjdv/xQW/0/1oY6BTU2XMiW9JOnxwN
+	 giaJQ4kDJwj0vcgHu9VY2pgAXdK072Rq15ir2QB4io55VnnaBe5MJ0EOKJIykpZUGN
+	 gcW0yv02ewrc+EmflK0NS+h+z+3mn2VSzNUpNvkA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 862B6F80112;
-	Wed, 23 Oct 2019 20:26:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0567AF80321;
+	Wed, 23 Oct 2019 20:31:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0CE3F80368; Wed, 23 Oct 2019 20:26:37 +0200 (CEST)
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
- [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+ id DB13DF80368; Wed, 23 Oct 2019 20:31:33 +0200 (CEST)
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com
+ [IPv6:2607:f8b0:4864:20::543])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A31FEF80112
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:26:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A31FEF80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B30CF80274
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:31:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B30CF80274
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk
- header.b="0JmadXmX"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=ilfsvkQZhflxpwApssuF0SxtHAiqATDZH9AtW7X4oPs=; b=0JmadXmXYKwJL2c+ZhpX92FTQ
- mhe5+ZtixqNGmRC6SrFXmSvi05PSDLOESRYUhXWzvZluFGISA0LCgG6vM3ELBuUo2rKkg//DkRJhO
- gweIiJdxFnwhr/rntlzGxs5ZZ1e6RYo06In0ahN4mL3ZWMX0ZwHEL+5BaJdB2enbSn2mfi/OKVET+
- TaXy1f7tO6jsQvwXhSIv2sClqlP6fZsgVRPVOFVY0SZuaSh7ZB4/41v+ZmPxjkBWpsXVbgiSJPdck
- n77nBTt+E14t7DvtTxmLiJVRFAK6kEXG6FFBKcGQKiRNqATik5H9BgMm61Gfnu02946w6ZcHsK7TQ
- hzbF6bOlA==;
-Received: from shell.armlinux.org.uk
- ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:46520)
- by pandora.armlinux.org.uk with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256) (Exim 4.90_1)
- (envelope-from <linux@armlinux.org.uk>)
- id 1iNLKu-0006h6-Jl; Wed, 23 Oct 2019 19:26:20 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
- (envelope-from <linux@shell.armlinux.org.uk>)
- id 1iNLKs-0005ki-FT; Wed, 23 Oct 2019 19:26:18 +0100
-Date: Wed, 23 Oct 2019 19:26:18 +0100
-From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To: Mark Brown <broonie@kernel.org>
-Message-ID: <20191023182618.GC25745@shell.armlinux.org.uk>
-References: <20191023161203.28955-1-jbrunet@baylibre.com>
- <20191023161203.28955-2-jbrunet@baylibre.com>
- <20191023163716.GI5723@sirena.co.uk>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="O0V7U6xd"
+Received: by mail-pg1-x543.google.com with SMTP id p1so12641356pgi.4
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 11:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=QhucI9QNtNBjoT1eOT78ESBAn4mEJQ0ycZgAHsd53Fc=;
+ b=O0V7U6xdxg3UJAoCsFL181e1vuQig/OWqm5AcucL89tYd3b9qkjvMM9lP+EMxIsd/D
+ nULS8++93595dJ/MuPxdOiWNwPro4vx1uibpDaTFOBc/mbbfnZWArkgAkdi/1Sj4/3pn
+ CnpHhKkutuirpbGJ15oFkWcPeKybaQuwdY/Oazfd9/NO6HOUG/4hvUOU/gPflhn79F4c
+ jtn03qKJHmp9p9aXWAi6MaSW2jHtLl2JfuzxfmqRrM5JSt3BefvV2/wNb5KsF+eiNmTo
+ 9HFMS5Pxk97txKDYDYBY6kMTP4UH0oyklI+Gu8j1EQSiUodwRt97MzOGork+gaeFtCPn
+ 6VZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=QhucI9QNtNBjoT1eOT78ESBAn4mEJQ0ycZgAHsd53Fc=;
+ b=V+Cdu0k0D5cjEP2WSDiiRSU64JvZLJMu5Uej0/9do9uOen1QehNOIttyUt2JSiHN5l
+ ZF8JieAnxESH5F27X+Bi3e9UQ9m51Cf5z7r6kYJTQCe1qVcGh+B2et9BuXAmIhME1mfM
+ nKhvCt8fHXZvRcz/R8JrkrOL6bz6SDWN+4D2H/wpOmhSP/voMfL9OSwOd8du18/m9jbG
+ mMU+kbqyd2Tl8evu3eGYDo41rWRQc754Mb9/Si3xyHXulgDZ5EqiLq+CGTnDf8+q5IE0
+ mX9+aEociKFzSbw5MLMsNhwmubVghXZB8FYSwhDfJO8ID1RxMIpnLyXbQjcQ8EgT6ra5
+ ELwg==
+X-Gm-Message-State: APjAAAUUCs8ex3I9nvOQ11ggmQvsRiQcU1Y6vy9rU3brd++ZvfPG6/23
+ mwcomzH7JGJm2/pxCgb0Uc4=
+X-Google-Smtp-Source: APXvYqxzu1oD36VJIGp854tNQIRLLmtcz4McKHR96Hyw1WByLg+NWOb5VOZ+kJaLQ35nHQjMgw5vEw==
+X-Received: by 2002:aa7:8ac5:: with SMTP id b5mr12396158pfd.66.1571855488547; 
+ Wed, 23 Oct 2019 11:31:28 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com.
+ [216.228.112.22])
+ by smtp.gmail.com with ESMTPSA id z4sm30137417pfn.45.2019.10.23.11.31.27
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Wed, 23 Oct 2019 11:31:28 -0700 (PDT)
+Date: Wed, 23 Oct 2019 11:31:03 -0700
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Message-ID: <20191023183102.GA16043@Asurada-Nvidia.nvidia.com>
+References: <1571815789-15656-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191023163716.GI5723@sirena.co.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] Revert "ASoC: hdmi-codec: re-introduce
-	mutex locking"
+In-Reply-To: <1571815789-15656-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
+ broonie@kernel.org, festevam@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_esai: Add spin lock to protect
+	reset and stop
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,36 +115,103 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Oct 23, 2019 at 05:37:16PM +0100, Mark Brown wrote:
-> On Wed, Oct 23, 2019 at 06:12:02PM +0200, Jerome Brunet wrote:
-> > This reverts commit eb1ecadb7f67dde94ef0efd3ddaed5cb6c9a65ed.
-> > 
-> > This fixes the following warning reported by lockdep and a potential
-> > issue with hibernation
+On Wed, Oct 23, 2019 at 03:29:49PM +0800, Shengjiu Wang wrote:
+> xrun may happen at the end of stream, the
+> trigger->fsl_esai_trigger_stop maybe called in the middle of
+> fsl_esai_hw_reset, this may cause esai in wrong state
+> after stop, and there may be endless xrun interrupt.
+
+What about fsl_esai_trigger_start? It touches ESAI_xFCR_xFEN bit
+that is being checked in the beginning of fsl_esai_hw_reset.
+
+Could the scenario below be possible also?
+
+1) ESAI TX starts
+2) Xrun happens to TX
+3) Starting fsl_esai_hw_reset (enabled[TX] = true; enabled[RX] = false)
+4) ESAI RX starts
+5) Finishing fsl_esai_hw_reset (enabled[RX] is still false)
+
+Thanks
+Nicolin
+
+> So Add spin lock to lock these two function.
 > 
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
-
-Hi Mark,
-
-If you look at the git log for reverted commits, the vast majority
-of them follow _this_ style.  From 5.3 back to the start of current
-git history, there are 3665 commits with "Revert" in their subject
-line, 3050 of those start with "Revert" with no subsystem prefix.
-
-It seems that there are a small number of subsystems that want
-something different, ASoC included.  That will be an ongoing problem,
-people won't remember which want it when the majority don't.
-
-Maybe the revert format should be standardised in some manner?
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-According to speedtest.net: 11.9Mbps down 500kbps up
+> Fixes: 7ccafa2b3879 ("ASoC: fsl_esai: recover the channel swap after xrun")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  sound/soc/fsl/fsl_esai.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+> index 37b14c48b537..6a797648b66d 100644
+> --- a/sound/soc/fsl/fsl_esai.c
+> +++ b/sound/soc/fsl/fsl_esai.c
+> @@ -33,6 +33,7 @@
+>   * @fsysclk: system clock source to derive HCK, SCK and FS
+>   * @spbaclk: SPBA clock (optional, depending on SoC design)
+>   * @task: tasklet to handle the reset operation
+> + * @lock: spin lock to handle reset and stop behavior
+>   * @fifo_depth: depth of tx/rx FIFO
+>   * @slot_width: width of each DAI slot
+>   * @slots: number of slots
+> @@ -56,6 +57,7 @@ struct fsl_esai {
+>  	struct clk *fsysclk;
+>  	struct clk *spbaclk;
+>  	struct tasklet_struct task;
+> +	spinlock_t lock; /* Protect reset and stop */
+>  	u32 fifo_depth;
+>  	u32 slot_width;
+>  	u32 slots;
+> @@ -676,8 +678,10 @@ static void fsl_esai_hw_reset(unsigned long arg)
+>  {
+>  	struct fsl_esai *esai_priv = (struct fsl_esai *)arg;
+>  	bool tx = true, rx = false, enabled[2];
+> +	unsigned long lock_flags;
+>  	u32 tfcr, rfcr;
+>  
+> +	spin_lock_irqsave(&esai_priv->lock, lock_flags);
+>  	/* Save the registers */
+>  	regmap_read(esai_priv->regmap, REG_ESAI_TFCR, &tfcr);
+>  	regmap_read(esai_priv->regmap, REG_ESAI_RFCR, &rfcr);
+> @@ -715,6 +719,8 @@ static void fsl_esai_hw_reset(unsigned long arg)
+>  		fsl_esai_trigger_start(esai_priv, tx);
+>  	if (enabled[rx])
+>  		fsl_esai_trigger_start(esai_priv, rx);
+> +
+> +	spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
+>  }
+>  
+>  static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+> @@ -722,6 +728,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+>  {
+>  	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+>  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+> +	unsigned long lock_flags;
+>  
+>  	esai_priv->channels[tx] = substream->runtime->channels;
+>  
+> @@ -734,7 +741,9 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+>  	case SNDRV_PCM_TRIGGER_SUSPEND:
+>  	case SNDRV_PCM_TRIGGER_STOP:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		spin_lock_irqsave(&esai_priv->lock, lock_flags);
+>  		fsl_esai_trigger_stop(esai_priv, tx);
+> +		spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> @@ -1002,6 +1011,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+>  
+>  	dev_set_drvdata(&pdev->dev, esai_priv);
+>  
+> +	spin_lock_init(&esai_priv->lock);
+>  	ret = fsl_esai_hw_init(esai_priv);
+>  	if (ret)
+>  		return ret;
+> -- 
+> 2.21.0
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
