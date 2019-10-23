@@ -2,67 +2,67 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 695E4CA9EAE
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 04:36:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A05DCA9EAE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 04:39:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E49622086D
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 04:36:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D03B32086D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 04:39:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IMZiE7G7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E49622086D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n7Og1t8I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D03B32086D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36D631657;
-	Wed, 23 Oct 2019 06:35:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36D631657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BD8015E0;
+	Wed, 23 Oct 2019 06:39:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BD8015E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571805390;
-	bh=iz9oFwxb26eCl5wcz0lXy22YuIJ8Gx/HK4erkBRAnRE=;
+	s=default; t=1571805593;
+	bh=KOQKI/UhQbpS7qQXDDNZAJU8f02r3b2nzW4Mi+HYpsM=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IMZiE7G7BgZ5rR3Bzw299bpA9A1L3gsg9bVePEYdXRZWlTCVczhSsBebslTGVbjew
-	 98EVzfV2yRjFMIuJnHyFx4gTvy02TdsrHzVspzgw4VBGEe3cB8Bl077zWrbCBjQoyV
-	 DsKEYty27y46lEmN18tlXdfGpK0EPpDAYBhABJkc=
+	b=n7Og1t8Ilr5EjuigSS08mUJNG+MrUgSS3FLP177+4xqTZDl580WJEWufNI3krNeGY
+	 ej6kWfMKPZduYDhQn/16/dviHS2IIMj+3oW6+oKik6z4wwGisPlek3MPNMGadoXFSm
+	 zZwv4W22X1x8bekQPWM4kTcqnZg47x9MYVQ3N5k4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC029F803D7;
-	Wed, 23 Oct 2019 06:34:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F14A6F80321;
+	Wed, 23 Oct 2019 06:39:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1E33F80321; Wed, 23 Oct 2019 06:34:42 +0200 (CEST)
+ id CC99AF80368; Wed, 23 Oct 2019 06:39:00 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E747F80112
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 06:34:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E747F80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6037F80274
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 06:38:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6037F80274
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 509B3AC67;
- Wed, 23 Oct 2019 04:34:39 +0000 (UTC)
-Date: Wed, 23 Oct 2019 06:34:28 +0200
-Message-ID: <s5hlftccc6j.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id D4654B37A;
+ Wed, 23 Oct 2019 04:38:57 +0000 (UTC)
+Date: Wed, 23 Oct 2019 06:38:55 +0200
+Message-ID: <s5himogcbz4.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20191022174313.29087-1-perex@perex.cz>
-References: <20191022174313.29087-1-perex@perex.cz>
+To: syzbot <syzbot+85f45d8bd343473faf15@syzkaller.appspotmail.com>
+In-Reply-To: <000000000000ff32e605958789e2@google.com>
+References: <000000000000ff32e605958789e2@google.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 1/2] ALSA: hda: add Intel DSP
-	configuration / probe code
+Cc: alsa-devel@alsa-project.org, g@b4.vu, wang6495@umn.edu, tiwai@suse.com,
+ syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
+ glider@google.com, allison@lohutok.net, tglx@linutronix.de, benquike@gmail.com,
+ dan.carpenter@oracle.com
+Subject: Re: [alsa-devel] KMSAN: uninit-value in build_audio_procunit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,41 +80,9 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 22 Oct 2019 19:43:12 +0200,
-Jaroslav Kysela wrote:
-> 
-> For distributions, we need one place where we can decide
-> which driver will be activated for the auto-configation of the
-> Intel's HDA hardware with DSP. Actually, we cover three drivers:
-> 
-> * Legacy HDA
-> * Intel SST
-> * Intel Sound Open Firmware (SOF)
-> 
-> All those drivers registers similar PCI IDs, so the first
-> driver probed from the PCI stack can win. But... it is not
-> guaranteed that the correct driver wins.
-> 
-> This commit changes Intel's NHLT ACPI module to a common
-> DSP probe module for the Intel's hardware. All above sound
-> drivers calls this code. The user can force another behaviour
-> using the module parameter 'dsp_driver' located in
-> the 'snd-intel-dspcfg' module.
-> 
-> This change allows to add specific dmi checks for the specific
-> systems. The examples are taken from the pull request:
-> 
->   https://github.com/thesofproject/linux/pull/927
-> 
-> Tested on Lenovo Carbon X1 7th gen.
-> 
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+#syz dup: KASAN: slab-out-of-bounds Read in build_audio_procunit
 
-Applied now.  Thanks.
-
-
-Takashi
+The fix is on the way...
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
