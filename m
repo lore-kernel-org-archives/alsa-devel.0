@@ -7,76 +7,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E17CACA9EB9
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:59:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BAB9CA9EB9
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:00:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 696532084C
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 18:59:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E84192084C
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 19:00:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tgHy/S/9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="S2916Ly/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 696532084C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u9JzpiQM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="vdjMfePF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E84192084C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C4EF1671;
-	Wed, 23 Oct 2019 20:58:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C4EF1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 391FD15E2;
+	Wed, 23 Oct 2019 20:59:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 391FD15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571857172;
-	bh=gcE3k5YvA0nzoeUtX4DuvVScxlXwi1mpXjyBGDOf4/Y=;
+	s=default; t=1571857223;
+	bh=TN+XhsSZfyPf/IMB5BynYfEQ62ZRJC0KSHdanAybSJA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=tgHy/S/9fEUhCVcGpwDOTfAtpS7Xbd79lH8DCvamoT/SFVXUcE6AUWdh+h4ARKeJp
-	 Tn12eriuZ7opngT67MhDIiXXhcCdoKZGHy7YdQoBon6Tj2Mv1zCMde+FSzPX0UlW0I
-	 VkrqDcwTACqIpDwAWqle+e8jzA0ad1opJqHxqtyM=
+	b=u9JzpiQMq/ZPCQK/snjLY5UaITAsZwfDlShZ9Z6m5AQ8HAk9o2rKygAVJgCV/3enS
+	 bybvNPfuuYaJ4/OZfAGCv79DhsQ5Gm7bt4Os2cn/W6Wd8wPZisOtZkqqLepSDsr090
+	 KULwf7bJpYvkcWEhAD1iKdAd+hPEHcweMk/gGw8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D40CAF80393;
-	Wed, 23 Oct 2019 20:56:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3718AF80639;
+	Wed, 23 Oct 2019 20:56:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BB87F8060D; Wed, 23 Oct 2019 20:56:15 +0200 (CEST)
+ id 5BE00F80600; Wed, 23 Oct 2019 20:56:15 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AA4EF803D7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85BE7F8036F
  for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 20:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AA4EF803D7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85BE7F8036F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="S2916Ly/"
+ header.b="vdjMfePF"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=GE2osdEkB+rRYka4kibi6qZR1kieaPp02+7FgD1hFAo=; b=S2916Ly/yjop
- TCrZK/UbtiaGYFEUgAArvwQLdIceH2gjuN79DgFbs++AB2saS/5htUcRfrN9FGNh2yWev2WuskBQ6
- tfFDaHS1KZNNAK+KVey3dwucCOgCwNzozcojH56LT1SzVC+uGJfm3+PBwCxF8PsJJ/doClB1v5Xjv
- JulIc=;
+ List-Archive; bh=gCwyToe9Rl+HNMtsjx/c2qm+W0ADP83igmn2x+zDsgI=; b=vdjMfePFTit1
+ B6xMOuKRkKHcgdo4Jht8n0ScwXrY/fcSmUXFr6vGJNjG9XVzEnK+lZNTW+GAXBTfJEl7BtMsEtI/G
+ 0LJbemUsIOusBY8DqLLQFHvbwijDMirXW6n3k6UyMxT44I80Edz30zd0GL95vTxj1S4FLHLSVXOem
+ T0l3w=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNLni-0001B0-Vk; Wed, 23 Oct 2019 18:56:07 +0000
+ id 1iNLni-0001An-4d; Wed, 23 Oct 2019 18:56:06 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 693462743021; Wed, 23 Oct 2019 19:56:06 +0100 (BST)
+ id 912432743021; Wed, 23 Oct 2019 19:56:05 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <8736fkyzx8.wl-kuninori.morimoto.gx@renesas.com>
+To: Pan Xiuli <xiuli.pan@linux.intel.com>
+In-Reply-To: <20191022194705.23347-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191023185606.693462743021@ypsilon.sirena.org.uk>
-Date: Wed, 23 Oct 2019 19:56:06 +0100 (BST)
-Cc: Pavel Machek <pavel@denx.de>, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: rsnd: add missing of_node_put()" to the
-	asoc tree
+Message-Id: <20191023185605.912432743021@ypsilon.sirena.org.uk>
+Date: Wed, 23 Oct 2019 19:56:05 +0100 (BST)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: Intel: common: add ACPI matching tables
+	for JSL" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +96,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rsnd: add missing of_node_put()
+   ASoC: Intel: common: add ACPI matching tables for JSL
 
 has been applied to the asoc tree at
 
@@ -122,62 +121,72 @@ to this mail.
 Thanks,
 Mark
 
-From ef2c695151df54817f92128f96a920ff888c6920 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 23 Oct 2019 11:10:43 +0900
-Subject: [PATCH] ASoC: rsnd: add missing of_node_put()
+From 4f0637eae56f02ef648de5ed839d572259d396e9 Mon Sep 17 00:00:00 2001
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
+Date: Tue, 22 Oct 2019 14:47:04 -0500
+Subject: [PATCH] ASoC: Intel: common: add ACPI matching tables for JSL
 
-This patch adds missing of_node_put() for
-rsnd_parse_tdm_split_mode()
-rsnd_parse_connect_graph()
+There are no upstream machine drivers just yet so just add dummy table
+for compilation in nocodec-mode.
 
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/8736fkyzx8.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Link: https://lore.kernel.org/r/20191022194705.23347-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ include/sound/soc-acpi-intel-match.h           |  1 +
+ sound/soc/intel/common/Makefile                |  1 +
+ .../intel/common/soc-acpi-intel-jsl-match.c    | 18 ++++++++++++++++++
+ 3 files changed, 20 insertions(+)
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-jsl-match.c
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 4bed26842095..72924c8b0696 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1075,7 +1075,10 @@ static void rsnd_parse_tdm_split_mode(struct rsnd_priv *priv,
- 			j++;
- 		}
+diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+index 6c9929abd90b..4e44782862df 100644
+--- a/include/sound/soc-acpi-intel-match.h
++++ b/include/sound/soc-acpi-intel-match.h
+@@ -27,6 +27,7 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_ehl_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[];
  
-+		of_node_put(node);
- 	}
+ /*
+  * generic table used for HDA codec-based platforms, possibly with
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index 18d9630ae9a2..eafe95ead49b 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -9,6 +9,7 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
+ 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
+ 	soc-acpi-intel-cnl-match.o soc-acpi-intel-icl-match.o \
+ 	soc-acpi-intel-tgl-match.o soc-acpi-intel-ehl-match.o \
++	soc-acpi-intel-jsl-match.o \
+ 	soc-acpi-intel-hda-match.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+new file mode 100644
+index 000000000000..1c68a04f0c6e
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * soc-apci-intel-jsl-match.c - tables and support for JSL ACPI enumeration.
++ *
++ * Copyright (c) 2019, Intel Corporation.
++ *
++ */
 +
-+	of_node_put(ssiu_np);
- }
- 
- static void rsnd_parse_connect_simple(struct rsnd_priv *priv,
-@@ -1093,11 +1096,13 @@ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
- 				     struct device_node *endpoint)
- {
- 	struct device *dev = rsnd_priv_to_dev(priv);
--	struct device_node *remote_node = of_graph_get_remote_port_parent(endpoint);
-+	struct device_node *remote_node;
- 
- 	if (!rsnd_io_to_mod_ssi(io))
- 		return;
- 
-+	remote_node = of_graph_get_remote_port_parent(endpoint);
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
 +
- 	/* HDMI0 */
- 	if (strstr(remote_node->full_name, "hdmi@fead0000")) {
- 		rsnd_flags_set(io, RSND_STREAM_HDMI0);
-@@ -1111,6 +1116,8 @@ static void rsnd_parse_connect_graph(struct rsnd_priv *priv,
- 	}
- 
- 	rsnd_parse_tdm_split_mode(priv, io, endpoint);
++struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
 +
-+	of_node_put(remote_node);
- }
- 
- void rsnd_parse_connect_common(struct rsnd_dai *rdai,
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
 -- 
 2.20.1
 
