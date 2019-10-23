@@ -2,98 +2,103 @@ Return-Path: <SRS0=bexm=YQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DD4ECA9EB7
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4230BCA9EB6
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:16:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4EFC62064A
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:03:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BD7372086D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Oct 2019 12:15:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CVf8LycL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CCgJ5cz3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EFC62064A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NQ4RDB+u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD7372086D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0752015E0;
-	Wed, 23 Oct 2019 14:02:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0752015E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 082C215E2;
+	Wed, 23 Oct 2019 14:15:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 082C215E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571832203;
-	bh=WsB5yjc563dHnQ9NaFqlEfMm1S4WlbXvy5Qzi6AFKbs=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CVf8LycL9pxq7oelsEyVjPE5p1aODK1OWobnSNj1xN50PvJKbtYGZm5u0f3PdrXtm
-	 v7IcdGd/kQCt7oIRWjhDAps0AqO0B6F6BI5eq5O7SORipakBGIYuytGkCp13BzADvc
-	 rO2DcruWhTQK2GU9BVjEOLnu5gCLGqqAaQITSvm0=
+	s=default; t=1571832958;
+	bh=Vgh4Q5YrZl3eYQRqZ6R6xVPABRyBKjTsBMBl3WeysZ8=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NQ4RDB+uMk9+oc5S9TSywTRvPYnWu2qDuDvZkY8P50NYf6KhCEhfdApm+Sk3LuSR+
+	 Q7+zQGyN5oD23MbfIcKyke9KYC9Vk+fsMCU/vIkV5v/Pcj6wYU9zPcA+3Hrhf5REjo
+	 L2f4BNV+4jBZL7Z8QkVXBywZeOZYR6EGscDXDFNs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 744A8F80321;
-	Wed, 23 Oct 2019 14:02:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89799F80321;
+	Wed, 23 Oct 2019 14:15:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2105F80368; Wed, 23 Oct 2019 14:02:31 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id 38EDDF80368; Wed, 23 Oct 2019 14:15:06 +0200 (CEST)
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
+ [209.85.208.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DFA3F802DF
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 14:02:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DFA3F802DF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="CCgJ5cz3"
-Received: by mail-wr1-x443.google.com with SMTP id l10so21370647wrb.2
- for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 05:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=30tJodiBlFlqrdUgqt8VJ1gRlSuA5Ts2Gd1sRfzuhro=;
- b=CCgJ5cz3aGjXJ062xtGkOluRzpQO8y5PZhK9U4RqOsimV/h4mWaIeKYu3nyMUp+k2L
- dn4TxqpSHqCRcE5TOVdeyByiuVte+pAVIHlAJuemHSrX6MxiRfnu5jjXyoTxMH5d+N5X
- BNc7hbchEUuKVoAP4W056wvNCWGSM3uyMpskXaot78uy7Lc4V+G7nkHJl9Y5OFN9TY4e
- lhsgFvT4c6SJotzEbAZ+2GC1vNsmamlAM1GBkhK4bwTYmloQomXeAnBpMdx5hjUIB3Mn
- hAFQ49/xmVhM5VJKEVNXzd8++AstZTXjjX9AG6e+xsPwrb9ll47c3sBP3cYzggZs9k6Z
- 2ieQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9383F80112
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 14:15:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9383F80112
+Received: by mail-ed1-f65.google.com with SMTP id c4so15583362edl.0
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 05:15:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=30tJodiBlFlqrdUgqt8VJ1gRlSuA5Ts2Gd1sRfzuhro=;
- b=iRMJkFNg7v7MN/oWyrhUcgqSX/2+MlRo8a6UIwM+KfoPtHUKlXYZ8CzldhytvdwZcO
- 8yQRTiQz1+KJkaYnh7oUvMRtbmsyCN6GzcjjPlvp2YHX1HhrHw2Eg24d0nTVdS+0tZf1
- V07vC6fPNHuXM5dG8LKlk+yFw9ju6n2MG4/N4VuDPEL5VeYDMSIk6kbCsrnCwXBhGA0e
- DCGlpQbYMoDgBdB4LaYEspN+2sJeKDqezgSn7dE2LCVlefwCXckOAUGE1lwJtp/xoOFu
- UAbbDNykXl89GNRYVXU2v5LAbkYaLd17b1fNF4jFSeEXdvHTXcXr1u7uqhuJZiFnhAYL
- WMAA==
-X-Gm-Message-State: APjAAAUAQeCynZiDQm5LKHU5/ci2y0ORHT8fCWtjkMMhF4AoeZniARFw
- nIias6UEHrM2EqZW0iAATz5g9w==
-X-Google-Smtp-Source: APXvYqzPsMP2QG6vJW6K+4h5AmhA93qLL58ElFcc8XXaJGlsHRV0O5jlls3TB+sjTbRNmr2PkUP6Yg==
-X-Received: by 2002:adf:e30a:: with SMTP id b10mr7740711wrj.44.1571832148114; 
- Wed, 23 Oct 2019 05:02:28 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id b196sm15247148wmd.24.2019.10.23.05.02.26
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=EM2bqpofr7QfnOYg3+B2AOXvOUUZQ5S8Y8TJAmAFfq0=;
+ b=C+ZkP7y+G2E1I3d4L569X0qTvwMbo2+aJHnOMLZAYKk4BunkolsUQdWxxQ0O6gLmbv
+ aX10kM1DmLXNr2lygtU8CCBzKWTl4npjLdj3REFFmEUdzS/iK9SbRq8Skf6ge+nKyAwE
+ hcGFioMGkkm+0axu5H2Td2CwpeUm+QaFj8pdDeA0XyD+71jAGmwd8wl3RaTkwvfU21y1
+ n6EsYHpWHPCOfB/9jpDZoCQPfbFQYefxJkAs8EtLCWqBR4/6eMFttEV6eHy/ibo5b2y2
+ msHNJB0jmudCHraBRV4c7QYaXTVe5ddtaGKJZj9DcIGA7dSgmhBp1qAHEx7Ukj49jFR0
+ KOlw==
+X-Gm-Message-State: APjAAAUCO2d0oTreYjp6ykZPScoEH4ZaCdVIrttm53kd+KL4JRE3GDUx
+ JAkaaSq2L7f1hvP3e1g3atM=
+X-Google-Smtp-Source: APXvYqzMHg39Wi2a6r4kf+i1HiG2eaoZDJ9aezTMqReWB2uYi5hp2/274lnrfoQNk4EHNQ+xelbuwA==
+X-Received: by 2002:a17:906:a0f:: with SMTP id
+ w15mr12009761ejf.321.1571832902425; 
+ Wed, 23 Oct 2019 05:15:02 -0700 (PDT)
+Received: from pi3 ([194.230.155.217])
+ by smtp.googlemail.com with ESMTPSA id r16sm760759eds.72.2019.10.23.05.15.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Oct 2019 05:02:27 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org,
-	tiwai@suse.com
-Date: Wed, 23 Oct 2019 13:01:14 +0100
-Message-Id: <20191023120114.17445-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+ Wed, 23 Oct 2019 05:15:01 -0700 (PDT)
+Date: Wed, 23 Oct 2019 14:14:58 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20191023121458.GB11048@pi3>
+References: <20191010202802.1132272-1-arnd@arndb.de>
+ <20191010203043.1241612-1-arnd@arndb.de>
+ <20191010203043.1241612-11-arnd@arndb.de>
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- spapothi@codeaurora.org, Preetam Singh Ranawat <apranawat@codeaurora.org>,
- vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] [RFC PATCH] ALSA: pcm: fix blocking while loop in
-	snd_pcm_update_hw_ptr0()
+Content-Disposition: inline
+In-Reply-To: <20191010203043.1241612-11-arnd@arndb.de>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, linus.walleij@linaro.org,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ linux-samsung-soc@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Kukjin Kim <kgene@kernel.org>,
+ =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+ linux-serial@vger.kernel.org,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-pwm@vger.kernel.org,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Jiri Slaby <jslaby@suse.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Sangbeom Kim <sbkim73@samsung.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ Faiz Abbas <faiz_abbas@ti.com>, Olof Johansson <olof@lixom.net>
+Subject: Re: [alsa-devel] [PATCH 11/36] ARM: s5pv210: split from plat-samsung
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,40 +116,153 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Preetam Singh Ranawat <apranawat@codeaurora.org>
+On Thu, Oct 10, 2019 at 10:29:55PM +0200, Arnd Bergmann wrote:
+> These can be build completely independently, so split
+> the two Kconfig symbols.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arm/Kconfig.debug        | 6 +++---
+>  arch/arm/Makefile             | 1 -
+>  arch/arm/plat-samsung/Kconfig | 2 +-
+>  drivers/mmc/host/Kconfig      | 2 +-
+>  drivers/pwm/Kconfig           | 2 +-
+>  drivers/spi/Kconfig           | 2 +-
+>  drivers/tty/serial/Kconfig    | 2 +-
+>  sound/soc/samsung/Kconfig     | 2 +-
+>  8 files changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
+> index 9c4f2d6deb06..4c4e97ae4fcb 100644
+> --- a/arch/arm/Kconfig.debug
+> +++ b/arch/arm/Kconfig.debug
+> @@ -998,7 +998,7 @@ choice
+>  		  via SCIFA4 on Renesas SH-Mobile AG5 (SH73A0).
+>  
+>  	config DEBUG_S3C_UART0
+> -		depends on PLAT_SAMSUNG || ARCH_EXYNOS
+> +		depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
 
-When period interrupts are disabled, while loop in snd_pcm_update_hw_ptr0()
-results in the machine locking up if runtime->hw_ptr_buffer_jiffies is 0.
+How are you going to select DEBUG_S5PV210_UART now?
 
-Validate runtime->hw_ptr_buffer_jiffies value before while loop to avoid
-delta check.
+Best regards,
+Krzysztof
 
-Signed-off-by: Preetam Singh Ranawat <apranawat@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
 
-This issue was noticed in Android setup from fastcapture path.
-
- sound/core/pcm_lib.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index d80041ea4e01..f407f6895f8a 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -341,7 +341,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
- 		 * the elapsed time to detect xruns.
- 		 */
- 		jdelta = curr_jiffies - runtime->hw_ptr_jiffies;
--		if (jdelta < runtime->hw_ptr_buffer_jiffies / 2)
-+		if ((jdelta < runtime->hw_ptr_buffer_jiffies / 2) ||
-+		    !runtime->hw_ptr_buffer_jiffies)
- 			goto no_delta_check;
- 		hdelta = jdelta - delta * HZ / runtime->rate;
- 		xrun_threshold = runtime->hw_ptr_buffer_jiffies / 2 + 1;
--- 
-2.21.0
-
+>  		select DEBUG_EXYNOS_UART if ARCH_EXYNOS
+>  		select DEBUG_S3C24XX_UART if ARCH_S3C24XX
+>  		select DEBUG_S3C64XX_UART if ARCH_S3C64XX
+> @@ -1010,7 +1010,7 @@ choice
+>  		  by the boot-loader before use.
+>  
+>  	config DEBUG_S3C_UART1
+> -		depends on PLAT_SAMSUNG || ARCH_EXYNOS
+> +		depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
+>  		select DEBUG_EXYNOS_UART if ARCH_EXYNOS
+>  		select DEBUG_S3C24XX_UART if ARCH_S3C24XX
+>  		select DEBUG_S3C64XX_UART if ARCH_S3C64XX
+> @@ -1022,7 +1022,7 @@ choice
+>  		  by the boot-loader before use.
+>  
+>  	config DEBUG_S3C_UART2
+> -		depends on PLAT_SAMSUNG || ARCH_EXYNOS
+> +		depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
+>  		select DEBUG_EXYNOS_UART if ARCH_EXYNOS
+>  		select DEBUG_S3C24XX_UART if ARCH_S3C24XX
+>  		select DEBUG_S3C64XX_UART if ARCH_S3C64XX
+> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+> index f492d7c338fe..a1bc15cda751 100644
+> --- a/arch/arm/Makefile
+> +++ b/arch/arm/Makefile
+> @@ -235,7 +235,6 @@ machine-$(CONFIG_PLAT_SPEAR)		+= spear
+>  # by CONFIG_* macro name.
+>  plat-$(CONFIG_ARCH_OMAP)	+= omap
+>  plat-$(CONFIG_ARCH_S3C64XX)	+= samsung
+> -plat-$(CONFIG_ARCH_S5PV210)	+= samsung
+>  plat-$(CONFIG_PLAT_ORION)	+= orion
+>  plat-$(CONFIG_PLAT_PXA)		+= pxa
+>  plat-$(CONFIG_PLAT_S3C24XX)	+= samsung
+> diff --git a/arch/arm/plat-samsung/Kconfig b/arch/arm/plat-samsung/Kconfig
+> index 740bdb23f38a..1530946cc672 100644
+> --- a/arch/arm/plat-samsung/Kconfig
+> +++ b/arch/arm/plat-samsung/Kconfig
+> @@ -4,7 +4,7 @@
+>  
+>  config PLAT_SAMSUNG
+>  	bool
+> -	depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
+> +	depends on PLAT_S3C24XX || ARCH_S3C64XX
+>  	default y
+>  	select GENERIC_IRQ_CHIP
+>  	select NO_IOPORT_MAP
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 400a581c918c..16a0e5430b44 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -275,7 +275,7 @@ config MMC_SDHCI_TEGRA
+>  
+>  config MMC_SDHCI_S3C
+>  	tristate "SDHCI support on Samsung S3C SoC"
+> -	depends on MMC_SDHCI && (PLAT_SAMSUNG || ARCH_EXYNOS)
+> +	depends on MMC_SDHCI && (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS)
+>  	help
+>  	  This selects the Secure Digital Host Controller Interface (SDHCI)
+>  	  often referrered to as the HSMMC block in some of the Samsung S3C
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index e3a2518503ed..8eb738cac0c7 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -394,7 +394,7 @@ config PWM_ROCKCHIP
+>  
+>  config PWM_SAMSUNG
+>  	tristate "Samsung PWM support"
+> -	depends on PLAT_SAMSUNG || ARCH_EXYNOS
+> +	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
+>  	help
+>  	  Generic PWM framework driver for Samsung.
+>  
+> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+> index 6f7fdcbb9151..355391ee643d 100644
+> --- a/drivers/spi/Kconfig
+> +++ b/drivers/spi/Kconfig
+> @@ -625,7 +625,7 @@ config SPI_S3C24XX_FIQ
+>  
+>  config SPI_S3C64XX
+>  	tristate "Samsung S3C64XX series type SPI"
+> -	depends on (PLAT_SAMSUNG || ARCH_EXYNOS || COMPILE_TEST)
+> +	depends on (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST)
+>  	help
+>  	  SPI driver for Samsung S3C64XX and newer SoCs.
+>  
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 4789b5d62f63..17f01cf3009c 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -237,7 +237,7 @@ config SERIAL_CLPS711X_CONSOLE
+>  
+>  config SERIAL_SAMSUNG
+>  	tristate "Samsung SoC serial support"
+> -	depends on PLAT_SAMSUNG || ARCH_EXYNOS
+> +	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS
+>  	select SERIAL_CORE
+>  	help
+>  	  Support for the on-chip UARTs on the Samsung S3C24XX series CPUs,
+> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+> index 638983123d8f..7a0035dd9995 100644
+> --- a/sound/soc/samsung/Kconfig
+> +++ b/sound/soc/samsung/Kconfig
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  menuconfig SND_SOC_SAMSUNG
+>  	tristate "ASoC support for Samsung"
+> -	depends on PLAT_SAMSUNG || ARCH_EXYNOS || COMPILE_TEST
+> +	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
+>  	depends on COMMON_CLK
+>  	select SND_SOC_GENERIC_DMAENGINE_PCM
+>  	---help---
+> -- 
+> 2.20.0
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
