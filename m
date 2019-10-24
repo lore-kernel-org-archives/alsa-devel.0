@@ -2,72 +2,72 @@ Return-Path: <SRS0=DG6G=YR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FADDCA9EAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:25:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 773FBCA9EAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:27:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 970D82084C
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:25:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E311720856
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:27:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YVAJPNVS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="v/diBaZc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 970D82084C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B1WC8VnZ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qbw0P9jL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E311720856
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D302E167F;
-	Thu, 24 Oct 2019 13:24:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D302E167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 183461683;
+	Thu, 24 Oct 2019 13:26:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 183461683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571916298;
-	bh=BUdNSVGYj/1Ok7jZdSiPk+/bIDEpSbUIjehfWDQo3u4=;
+	s=default; t=1571916426;
+	bh=fxtVfh29fxVpg3p2bkY22WztVeRL1vrCIFXZshd0tJU=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YVAJPNVS359mjSalbpBLyFUpt3F5GxUG9eWkrRbqZMXKBuY5aOd3Hx1jf9vKrknb2
-	 1Bcn5VBmmdPoGR7/IpmTIciODGAywsIu6Cmmjw5LssqEFijiLbRbpsgrc08+GpUOoU
-	 t5G2IhqWFGnfJOt47rkBL4HoMUucaVpXcUqk1BZo=
+	b=B1WC8VnZoYZuQWM2L7G4sYCzxn/TslJEUO7d9Ph9yJuj26iat4gwZsBkoGPVgbelW
+	 Lbk3wAek3/XZP9IzzG75YAJvqTpKirpQP8rYMjzPgxtD3dwTAGZ0liD2fscRbO3p6W
+	 lLfXMIOw1jhKPqzebX2Y367mC11nr3Js2XsJ6kNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64321F80367;
-	Thu, 24 Oct 2019 13:24:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC5FFF80367;
+	Thu, 24 Oct 2019 13:26:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1B94F8036B; Thu, 24 Oct 2019 13:24:06 +0200 (CEST)
+ id D087AF80112; Thu, 24 Oct 2019 13:26:14 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00F56F80137
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 13:24:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00F56F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 868EBF80112
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 13:26:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 868EBF80112
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="v/diBaZc"
+ header.b="Qbw0P9jL"
 Received: from localhost (unknown [122.181.210.10])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CE2152084C;
- Thu, 24 Oct 2019 11:24:00 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A3BA020856;
+ Thu, 24 Oct 2019 11:26:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1571916241;
- bh=g+R7dOXwcKElWRvz7nfCK0CoS/QqY5FvmWjQtXYXq/A=;
+ s=default; t=1571916370;
+ bh=NDsl/4tXkq4rM0GucLThcaVbN8qZgwhPUuL+6WnfcRQ=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=v/diBaZcHhDWIo+d+S3cwC1M/W56n2/OKrdFxsOE29WIddOrDJOiJE939fYB6f+wr
- ODZud7Q8KKyseuJi4mAQmDp58BR7ZJLemuOE7wiIq5XXXpa78RfGKwxczTO//LyzZ0
- JJwSN3501O/+N/dCEA6sXvX2WxPHxRLcNGf5NhfM=
-Date: Thu, 24 Oct 2019 16:53:56 +0530
+ b=Qbw0P9jLSv32Z8eS2uhpkB59VU+U+Zdgd93jznEQr8o1ofW/RrGg0s5xxSO2guwjL
+ QD6e1XUmUAIrZn4YOjG8/n20ywxnVTRwgVAv5Utd6YdywroQngMY60Yh3aRB0lXPmD
+ j5T+ubKEEs2gw5+byuDpUvtQgJXKh88T/6oq8HKU=
+Date: Thu, 24 Oct 2019 16:56:04 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191024112356.GA2620@vkoul-mobl>
-References: <20191022232948.17156-1-pierre-louis.bossart@linux.intel.com>
+Message-ID: <20191024112604.GB2620@vkoul-mobl>
+References: <20191022233147.17268-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191022232948.17156-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191022233147.17268-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
@@ -76,8 +76,7 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: intel: fix PDI/stream mapping
-	for Bulk
+Subject: Re: [alsa-devel] [PATCH] soundwire: slave: fix scanf format
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,53 +94,13 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 22-10-19, 18:29, Pierre-Louis Bossart wrote:
-> The previous formula is incorrect for PDI0/1, the mapping is not
-> linear but has a discontinuity between PDI1 and PDI2.
+On 22-10-19, 18:31, Pierre-Louis Bossart wrote:
+> fix cppcheck warning:
 > 
-> This change has no effect on PCM PDIs (same mapping).
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/soundwire/intel.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index b403ccc832b6..c984261fcc33 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -480,7 +480,10 @@ intel_pdi_shim_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
->  	unsigned int link_id = sdw->instance;
->  	int pdi_conf = 0;
->  
-> -	pdi->intel_alh_id = (link_id * 16) + pdi->num + 5;
-> +	/* the Bulk and PCM streams are not contiguous */
-> +	pdi->intel_alh_id = (link_id * 16) + pdi->num + 3;
-> +	if (pdi->num >= 2)
-> +		pdi->intel_alh_id += 2;
->  
->  	/*
->  	 * Program stream parameters to stream SHIM register
-> @@ -509,7 +512,10 @@ intel_pdi_alh_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
->  	unsigned int link_id = sdw->instance;
->  	unsigned int conf;
->  
-> -	pdi->intel_alh_id = (link_id * 16) + pdi->num + 5;
-> +	/* the Bulk and PCM streams are not contiguous */
-> +	pdi->intel_alh_id = (link_id * 16) + pdi->num + 3;
-> +	if (pdi->num >= 2)
-> +		pdi->intel_alh_id += 2;
+> [drivers/soundwire/slave.c:145]: (warning) %x in format string (no. 1)
+> requires 'unsigned int *' but the argument type is 'signed int *'.
 
-The change is repeated so how about:
-
-        intel_pdi_update_alh() or similar which does this rather than
-repeat the pattern
-
->  
->  	/* Program Stream config ALH register */
->  	conf = intel_readl(alh, SDW_ALH_STRMZCFG(pdi->intel_alh_id));
-> -- 
-> 2.20.1
+Applied, thanks
 
 -- 
 ~Vinod
