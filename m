@@ -2,74 +2,94 @@ Return-Path: <SRS0=DG6G=YR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D583CA9EB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 01:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43601CA9EB9
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 02:48:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F05120856
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 01:09:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E5F62084B
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 02:48:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qyxWrDSl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F05120856
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fcsupXfg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aLsFQsA9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E5F62084B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF878950;
-	Thu, 24 Oct 2019 03:08:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF878950
+	by alsa0.perex.cz (Postfix) with ESMTPS id D07D315E2;
+	Thu, 24 Oct 2019 04:48:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D07D315E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571879373;
-	bh=PptuIT/bPAT+I4k6yWeqn1+aCSjWHL5/tQ2Kbd9TmH4=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qyxWrDSlMjJccM6nMuvVTpc55CCJOdYBFO+EbJ+/h2xbiAK4y31RdEgAzTfY+OU8z
-	 MZKWaMKeSCO4zlnmBnGTy/rBafdN2CyjVls/uTpkWgjEBmFDhyQKVKRNeI6n8G3Dwz
-	 Z+7dtic5Of84YYlEwutNj7VEmGSlX5XbU2OuO+8c=
+	s=default; t=1571885330;
+	bh=iccjQvAaE92+mpULRv816ksL2fAFks+r3++BTTVS2RA=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fcsupXfg8Ygnx1R470jILO/pmdeaDnf9IG1R9ruJVYKXWncTolKvJMUbnQ08Tp6/I
+	 X6hBnlMbZ0fpDr5ysfCKIVMOwRLTlW016SA+2cPxk87ect1/fEXFyHB+MVaSiZP0ew
+	 qZIlXMbF/J2qR2m2udKK+cW/x3Ifdeu0YcqVvqkE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B026F80321;
-	Thu, 24 Oct 2019 03:08:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47488F80367;
+	Thu, 24 Oct 2019 04:48:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1054F80368; Thu, 24 Oct 2019 03:08:40 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9A14CF8036B; Thu, 24 Oct 2019 04:47:58 +0200 (CEST)
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com
+ [IPv6:2607:f8b0:4864:20::a43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 333C2F80112
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 03:08:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 333C2F80112
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 23 Oct 2019 18:08:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,222,1569308400"; d="scan'208";a="210212306"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
- by orsmga002.jf.intel.com with ESMTP; 23 Oct 2019 18:08:30 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
- (envelope-from <lkp@intel.com>)
- id 1iNRc6-0007qF-BD; Thu, 24 Oct 2019 09:08:30 +0800
-Date: Thu, 24 Oct 2019 09:07:33 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Ben Zhang <benzh@chromium.org>
-Message-ID: <201910240927.cIw8uUAi%lkp@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C1A7F80137
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 04:47:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C1A7F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="aLsFQsA9"
+Received: by mail-vk1-xa43.google.com with SMTP id n81so3338225vke.13
+ for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2019 19:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=nrlKHjqh679RSd+IakII5jolEcDIhr/F0OAuUImlbDQ=;
+ b=aLsFQsA9VcucDe2LwFAzBAVRDgrnqQwIcuFI7FO7WCuF1laJ2uJ2sQdYlp8hdIHmNW
+ tk4hycrQiiwPcJadeG6lQvdej197qpMBW4YNNlT7KnMBKJQz2cll0a9Oabgpn8n4CaFh
+ 2A33nLDT/031XsZK1u9FGp1gKYGoXLxe5P4UuRo9y2EHNVY02OOwf2zLOG7kTW5lC30z
+ vy6IbHVR0Us0EYoDsBUAx+g3n6+1fhNmd8WA2y4ZSztE61qiCeNv84OuZCJwoEEggHMd
+ D+Kl/5YZqRtSV+hk84K3DCuJ7ATRfsr69Gue31MbZQUGzoyIp9OUrI/VKwPkamgr85d+
+ lNOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=nrlKHjqh679RSd+IakII5jolEcDIhr/F0OAuUImlbDQ=;
+ b=OcCiMZ4hu59J3nfDXNjrlwy3yNULIeT4Ekb6OcBWbutpCJX/1ahmZExVKJKv4oVKNK
+ 2r4e7DjL2pFGXXzT4uSJU2EA02EkB69UrdFej1eGsCtNdNMP/2+UEjVo8cpc3s/bfxTV
+ Hl2fpo9YTn6Sv0aOlQRky6YfjHFu3Ar0/Rf83R9HMtyJ5Gvxcor5mbLDHBES36gqXJQw
+ ccg4u+4vihEo+C9pV460jnDi5rfAzl8bbj3o421cf6fO7KeCcKxQ+ZKiOqiZIVLP0kEl
+ mkjoWh5AO1sdmIcxo/oUe6FIjD6CNM/NzxRwFfP7g1FhR8zu66a7ZjLs0erMfaRwP/Jo
+ +KUQ==
+X-Gm-Message-State: APjAAAUo/K+c25LNrJB5FJPtzqxwp0fpitcNO9RwOULwANPPLmDhTDxb
+ qN/9Ae9WlcD/YXF9zdAR5vj8mpN0O/hv9pc0wYk=
+X-Google-Smtp-Source: APXvYqw0ZLNL5Ev8CCHeW9EnWJvc0ASgsQ4z7/y870SRvj96VHmRc3zIBLkB0P6Wt0CDuwFAar27UgV98joSRrfXvnk=
+X-Received: by 2002:a1f:9712:: with SMTP id z18mr1073989vkd.22.1571885272485; 
+ Wed, 23 Oct 2019 19:47:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Patchwork-Hint: ignore
-User-Agent: NeoMutt/20170113 (1.7.2)
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- kbuild-all@lists.01.org, Curtis Malainey <cujomalainey@chromium.org>
-Subject: [alsa-devel] [asoc:for-5.5 160/172]
- sound/soc/codecs/rt5677-spi.c:148:33: sparse: sparse: Using plain integer
- as NULL pointer
+References: <CA+9XP1jeMVuzj0gz_-H6zV=cmjWQwvBLi08AED1KBie+kugmcg@mail.gmail.com>
+ <s5hd0eocas9.wl-tiwai@suse.de>
+In-Reply-To: <s5hd0eocas9.wl-tiwai@suse.de>
+From: Fly Pig <flyingecar@gmail.com>
+Date: Wed, 23 Oct 2019 19:47:44 -0700
+Message-ID: <CA+9XP1ipsFn+r3bCBKRinQv-JrJ+EHOGBdZWZoMwxFv0R8Y1MQ@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Add Gustard U16/X26
+ device family to quirks for native DSD support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,46 +107,100 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
-head:   175fc928198236037174e5c5c066fe3c4691903e
-commit: a0e0d135427cf699fe2dee77da0924e0b47f3170 [160/172] ASoC: rt5677: Add a PCM device for streaming hotword via SPI
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-dirty
-        git checkout a0e0d135427cf699fe2dee77da0924e0b47f3170
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+Got it,
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
+Tested using VID and fp->dsd_raw method. Works as well, patch updated
+below. Sign off line attached.
 
 
-sparse warnings: (new ones prefixed by >>)
 
->> sound/soc/codecs/rt5677-spi.c:148:33: sparse: sparse: Using plain integer as NULL pointer
->> sound/soc/codecs/rt5677-spi.c:365:13: sparse: sparse: symbol 'rt5677_spi_pcm_page' was not declared. Should it be static?
 
-vim +148 sound/soc/codecs/rt5677-spi.c
 
-   139	
-   140	static int rt5677_spi_hw_free(
-   141			struct snd_soc_component *component,
-   142			struct snd_pcm_substream *substream)
-   143	{
-   144		struct rt5677_dsp *rt5677_dsp =
-   145				snd_soc_component_get_drvdata(component);
-   146	
-   147		mutex_lock(&rt5677_dsp->dma_lock);
- > 148		rt5677_dsp->substream = 0;
-   149		mutex_unlock(&rt5677_dsp->dma_lock);
-   150	
-   151		return snd_pcm_lib_free_vmalloc_buffer(substream);
-   152	}
-   153	
+--- a/sound/usb/quirks.c 2019-10-23 05:38:05.664262661 +0000
++++ b/sound/usb/quirks.c 2019-10-23 05:41:15.907336660 +0000
+@@ -1452,6 +1452,7 @@
+  case 0x2ab6:  /* T+A devices */
+  case 0x3842:  /* EVGA */
+  case 0xc502:  /* HiBy devices */
++ case 0x292b:  /* Gustard/Ess based devices */
+  if (fp->dsd_raw)
+  return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+  break;
 
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+
+
+
+By making a contribution to this project, I certify that:
+
+
+   1. The contribution was created in whole or in part by me and I have the
+   right to submit it under the open source license indicated in the file; or
+   2. The contribution is based upon previous work that, to the best of my
+   knowledge, is covered under an appropriate open source license and I have
+   the right under that license to submit that work with modifications,
+   whether created in whole or in part by me, under the same open source
+   license (unless I am permitted to submit under a different license), as
+   indicated in the file; or
+   3. The contribution was provided directly to me by some other person who
+   certified (a), (b) or (c) and I have not modified it.
+   4. I understand and agree that this project and the contribution are
+   public and that a record of the contribution (including all personal
+   information I submit with it, including my sign-off) is maintained
+   indefinitely and may be redistributed consistent with this project or the
+   open source license(s) involved.
+
+Signed-off-by: Justin Song<flyingecar@gmail.com>
+
+
+
+
+
+On Tue, Oct 22, 2019 at 10:04 PM Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Wed, 23 Oct 2019 06:05:08 +0200,
+> Fly Pig wrote:
+> >
+> > Hi There
+> >
+> > This patch add native DSD support for Gustard U16/X26 USB Interface.
+> Tested on
+> > my unit, working properly. Hence submit the patch.
+> >
+> > Cheers.
+> >
+> > Thank you very much.
+> >
+> > Pig
+>
+> The upstream code changed the DSD detection recently, so your patch
+> doesn't apply.  In short, check whether you get fp->dsd_raw set.  If
+> yes, we can apply the vendor check instead of vendor:device pair
+> check.
+>
+> Please resubmit the patch with the correction, and don't forget to add
+> your sign-off line (see Documentation/process/submitting-patches.rst).
+> It's a legal requirement for taking the patch to upstream.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> >
+> > --- a/sound/usb/quirks.c 2019-09-22 21:28:09.757897000 +0000
+> > +++ b/sound/usb/quirks.c 2019-09-22 21:33:36.892274800 +0000
+> > @@ -1369,6 +1369,7 @@
+> >   case USB_ID(0x22d9, 0x0461): /* OPPO UDP-205 */
+> >   case USB_ID(0x2522, 0x0012): /* LH Labs VI DAC Infinity */
+> >   case USB_ID(0x2772, 0x0230): /* Pro-Ject Pre Box S2 Digital */
+> > +        case USB_ID(0x292b, 0xc4b3): /* Gustard U16 */
+> >   if (fp->altsetting == 2)
+> >   return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+> >   break;
+> >
+> >
+>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
