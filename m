@@ -2,85 +2,84 @@ Return-Path: <SRS0=DG6G=YR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF3D7CA9EAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:35:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12D7BCA9EAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:40:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB9E720679
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:35:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9046C20679
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 11:40:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QZPbB5e2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LhvNFFdz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB9E720679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H6zB3iNQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nD7zqHML"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9046C20679
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADB6C1695;
-	Thu, 24 Oct 2019 13:34:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADB6C1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id D825B1695;
+	Thu, 24 Oct 2019 13:39:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D825B1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571916943;
-	bh=7yrpvMs7gzaKwEWL9UoqgOyMNCfOVaFyKsgOGIhnUtc=;
+	s=default; t=1571917215;
+	bh=kWObeEArXZLtu5oLzublBY8kkXtJb0HXltq7cmeJtaI=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QZPbB5e25ASXauoNyK7hSNd5jJSz2QEg0ZIAXb27YfgfYuVGW2pJ8JqIinXjrYFrF
-	 gQxiqPxxHYPJueXHIGzshjAeaEX9TzdsWZS5esrMdTDfDt+sN0md6/iCy2NXUuo9Oo
-	 F2Nja7R91TEqr56uNsXCJcGQovNj2iRkR3iTCfaU=
+	b=H6zB3iNQ43broZnyaiaePxrUNDmQ1QFzQfZd0rn5p5Sxv9S7/DOEWiTchTgT1uMCu
+	 BCLQ1W5buC4xAfYS9og83EJaJjRGnpU3C8K68jAISVZ0KDmFtE2R37VSGXSmm6nc0O
+	 4z1F9Eq+2pX9/n2oOwugUQOLRq9CsUbQXgRssZQ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A332F80112;
-	Thu, 24 Oct 2019 13:34:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56C57F80367;
+	Thu, 24 Oct 2019 13:39:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01FBAF8036B; Thu, 24 Oct 2019 13:34:51 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id 1BECFF8036B; Thu, 24 Oct 2019 13:39:23 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3CFC7F80112
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 13:39:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CFC7F80112
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="nD7zqHML"
+Received: from localhost (unknown [122.181.210.10])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94DC9F80112
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 13:34:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94DC9F80112
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="LhvNFFdz"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=zYu/dXer5u/VUFfPBAUTgmknjpEgfPNLcXJ/0E1S8L0=; b=LhvNFFdzJvXOUO83h2NEw4uon
- 6DEMRCSXJ02rM36UaeXAGpyCQgllHBpDF0+Qv5g4s+0+oIF4EODOkW5G8drbc3DtjDpS2yP1n6Ict
- LUQL2UC/K5C4mcJgpgt71w+F8ZSFewDissDmSN2M+5xYxQdF979KfvRZrPUoGWDn16Mws=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iNbO9-0003P6-Lm; Thu, 24 Oct 2019 11:34:45 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id DD08E274293C; Thu, 24 Oct 2019 12:34:44 +0100 (BST)
-Date: Thu, 24 Oct 2019 12:34:44 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Message-ID: <20191024113444.GF5207@sirena.co.uk>
-References: <20191023161203.28955-1-jbrunet@baylibre.com>
- <s5ha79rph1j.wl-tiwai@suse.de>
- <1jv9sfcpr8.fsf@starbuckisacylon.baylibre.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id 0D37B20679;
+ Thu, 24 Oct 2019 11:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1571917158;
+ bh=btv1T62kZlTa2GqfHH4BS6VB02TuYQ5KdYGyc08+TRM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=nD7zqHMLHLaS0MspoOdBs9SSyekBu/RzDoBVMLHUJ3u+4Zfsm+4J+wNsw3RA0fdqI
+ I/ZnVPtccAexpTnhp3QdlFjKmHU61l7ZkdcU/tJJmM6wcZ0bfvIwNEjUS7c4UYEvpT
+ faUnHCgEUchMSyvTtKSOL0wIv+r1i+DlUJBcYIgY=
+Date: Thu, 24 Oct 2019 17:09:11 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20191024113911.GD2620@vkoul-mobl>
+References: <20191022234808.17432-1-pierre-louis.bossart@linux.intel.com>
+ <20191022234808.17432-4-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1jv9sfcpr8.fsf@starbuckisacylon.baylibre.com>
-X-Cookie: What foods these morsels be!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Russell King <rmk+kernel@armlinux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH 0/2] ASoC: hdmi-codec: fix locking issue
+Content-Disposition: inline
+In-Reply-To: <20191022234808.17432-4-pierre-louis.bossart@linux.intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 3/3] soundwire: ignore uniqueID when
+	irrelevant
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,57 +92,149 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0391174282640790632=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 22-10-19, 18:48, Pierre-Louis Bossart wrote:
+> The uniqueID is useful when there are two or more devices of the same
+> type (identical manufacturer ID, part ID) on the same link.
 
---===============0391174282640790632==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3yNHWXBV/QO9xKNm"
-Content-Disposition: inline
+Right!
 
+> When there is a single device of a given type on a link, its uniqueID
+> is irrelevant. It's not uncommon on actual platforms to see variations
+> of the uniqueID, or differences between devID registers and ACPI _ADR
+> fields.
 
---3yNHWXBV/QO9xKNm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ideally this should be fixed in firmware, I do not like the fact the we are
+poking in core for firmware issues!
 
-On Wed, Oct 23, 2019 at 07:53:31PM +0200, Jerome Brunet wrote:
+> This patch suggests a filter on startup to identify 'single' devices
+> and tag them accordingly. 
 
-> With the revert, we are back to the bit ops. Even if it works, Mark's
-> original comment on the bit ops still stands I think. This is why I'm
-> proposing patch 2 but I don't really mind if it is applied or not.
+So you try to see if the board has a single device and mark them so that
+you can skip the unique id, did I get that right?
 
-Yeah, it's not *required* but the atomic operations have lots of spiky
-edges so a simpler locking construct would have less chance of running
-into trouble later when someone's updating the code.
+What about the boards which have multiple devices? How doing solve
+these?
 
---3yNHWXBV/QO9xKNm
-Content-Type: application/pgp-signature; name="signature.asc"
+> The uniqueID is then not used for the probe,
+> and the device name omits the uniqueID as well.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/bus.c   |  7 +++---
+>  drivers/soundwire/slave.c | 52 ++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 52 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index fc53dbe57f85..be5d437058ed 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -422,10 +422,11 @@ static struct sdw_slave *sdw_get_slave(struct sdw_bus *bus, int i)
+>  
+>  static int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id)
+>  {
+> -	if (slave->id.unique_id != id.unique_id ||
+> -	    slave->id.mfg_id != id.mfg_id ||
+> +	if (slave->id.mfg_id != id.mfg_id ||
+>  	    slave->id.part_id != id.part_id ||
+> -	    slave->id.class_id != id.class_id)
+> +	    slave->id.class_id != id.class_id ||
+> +	    (slave->id.unique_id != SDW_IGNORED_UNIQUE_ID &&
+> +	     slave->id.unique_id != id.unique_id))
+>  		return -ENODEV;
+>  
+>  	return 0;
+> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+> index 5dbc76772d21..19919975bb6d 100644
+> --- a/drivers/soundwire/slave.c
+> +++ b/drivers/soundwire/slave.c
+> @@ -29,10 +29,17 @@ static int sdw_slave_add(struct sdw_bus *bus,
+>  	slave->dev.parent = bus->dev;
+>  	slave->dev.fwnode = fwnode;
+>  
+> -	/* name shall be sdw:link:mfg:part:class:unique */
+> -	dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x:%x",
+> -		     bus->link_id, id->mfg_id, id->part_id,
+> -		     id->class_id, id->unique_id);
+> +	if (id->unique_id == SDW_IGNORED_UNIQUE_ID) {
+> +		/* name shall be sdw:link:mfg:part:class */
+> +		dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x",
+> +			     bus->link_id, id->mfg_id, id->part_id,
+> +			     id->class_id);
+> +	} else {
+> +		/* name shall be sdw:link:mfg:part:class:unique */
+> +		dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x:%x",
+> +			     bus->link_id, id->mfg_id, id->part_id,
+> +			     id->class_id, id->unique_id);
+> +	}
+>  
+>  	slave->dev.release = sdw_slave_release;
+>  	slave->dev.bus = &sdw_bus_type;
+> @@ -103,6 +110,7 @@ static bool find_slave(struct sdw_bus *bus,
+>  int sdw_acpi_find_slaves(struct sdw_bus *bus)
+>  {
+>  	struct acpi_device *adev, *parent;
+> +	struct acpi_device *adev2, *parent2;
+>  
+>  	parent = ACPI_COMPANION(bus->dev);
+>  	if (!parent) {
+> @@ -112,10 +120,46 @@ int sdw_acpi_find_slaves(struct sdw_bus *bus)
+>  
+>  	list_for_each_entry(adev, &parent->children, node) {
+>  		struct sdw_slave_id id;
+> +		struct sdw_slave_id id2;
+> +		bool ignore_unique_id = true;
+>  
+>  		if (!find_slave(bus, adev, &id))
+>  			continue;
+>  
+> +		/* brute-force O(N^2) search for duplicates */
+> +		parent2 = parent;
+> +		list_for_each_entry(adev2, &parent2->children, node) {
+> +
+> +			if (adev == adev2)
+> +				continue;
+> +
+> +			if (!find_slave(bus, adev2, &id2))
+> +				continue;
+> +
+> +			if (id.sdw_version != id2.sdw_version ||
+> +			    id.mfg_id != id2.mfg_id ||
+> +			    id.part_id != id2.part_id ||
+> +			    id.class_id != id2.class_id)
+> +				continue;
+> +
+> +			if (id.unique_id != id2.unique_id) {
+> +				dev_dbg(bus->dev,
+> +					"Valid unique IDs %x %x for Slave mfg %x part %d\n",
+> +					id.unique_id, id2.unique_id,
+> +					id.mfg_id, id.part_id);
+> +				ignore_unique_id = false;
+> +			} else {
+> +				dev_err(bus->dev,
+> +					"Invalid unique IDs %x %x for Slave mfg %x part %d\n",
+> +					id.unique_id, id2.unique_id,
+> +					id.mfg_id, id.part_id);
+> +				return -ENODEV;
+> +			}
+> +		}
+> +
+> +		if (ignore_unique_id)
+> +			id.unique_id = SDW_IGNORED_UNIQUE_ID;
+> +
+>  		/*
+>  		 * don't error check for sdw_slave_add as we want to continue
+>  		 * adding Slaves
+> -- 
+> 2.20.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2xjFQACgkQJNaLcl1U
-h9B8Kwf+Jg2QiKBt6TLiix2B5dhQZdYmJEpilzMEzc5b+2MXGLi68PkPqJGiLBF3
-Y3sqkh/oeZxKDlBeFLpvpTVKszZjaYKe/pBAstw5HHYCI5TTrXD0zEGxQ1x4/FTr
-+24kfJQqxxdL/vyi5uWSobaSGpgD/gd9T0u2e2nsmFKehOK7aTJCt6sD+Sh3mQCn
-wo6X1ZqLZmLdDt3cQFJoJ4TDE5tlnETgu4KoCFW7gMG/TSdjF0cfThHV7SCmWsIa
-6ucoDHEi8YXEC2I6c10QEmxf5Vc/QJfyblfbibYUqjfDeNFA7i2Zh62ZvuduePk+
-n1M+ixOpZpLiFk1DgTdJgIDimtwyqw==
-=/3nu
------END PGP SIGNATURE-----
-
---3yNHWXBV/QO9xKNm--
-
---===============0391174282640790632==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+-- 
+~Vinod
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0391174282640790632==--
