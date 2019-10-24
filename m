@@ -2,69 +2,67 @@ Return-Path: <SRS0=DG6G=YR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BB6ACA9EAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 12:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF403CA9EAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 12:24:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6821920679
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 12:16:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5905720679
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 12:24:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MT8QE/HA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6821920679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kno17Cy/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5905720679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E0991692;
-	Thu, 24 Oct 2019 14:15:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E0991692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 977AF16AC;
+	Thu, 24 Oct 2019 14:23:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 977AF16AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571919364;
-	bh=ECcwdjnbPJjvzkcTO1CIlcAGdqW10KULiEKlqq1Cz3Y=;
+	s=default; t=1571919881;
+	bh=L+Ru+r0qQ/Acv4vOMGU13iNmfx4lHbntJfj/L0Y1xlo=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MT8QE/HA0ImHiKQZbaCrCKDPBVeQivNWUVK1hU+9w70D3KAq5T846cAfRVUzlwZNk
-	 QTooxv61Mu2qUIPlS4uIgo8vSHhnxy/XSbKF8Be/A/M3UKuy/wF5Dygrv622EmVf1T
-	 K3dX8BEB1u/KDXYGrXRPIR9XrwsiJu84hcPtpVq4=
+	b=Kno17Cy/k2fmm2hIvx66aiXC1TZ3IHBTJrYG6PkzGp0BSWfUJS6IVhnDkXPhIYLTo
+	 o/gJ0CFPIaxFwdY2dgw8zDKrjak9Rt2pfiXtyPdoCIqig8MG/t5aM0MW+s5EjKVhiF
+	 cQGc563s4pCl9bN5qTzRExsEEstZfl8APKXNF15M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8740EF80367;
-	Thu, 24 Oct 2019 14:15:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19D78F80367;
+	Thu, 24 Oct 2019 14:23:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31E6BF8036B; Thu, 24 Oct 2019 14:15:11 +0200 (CEST)
+ id B1383F8036B; Thu, 24 Oct 2019 14:23:49 +0200 (CEST)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA1F5F80137
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 14:15:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA1F5F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8086CF80137
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 14:23:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8086CF80137
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id CC540AD79;
- Thu, 24 Oct 2019 12:15:07 +0000 (UTC)
-Date: Thu, 24 Oct 2019 14:15:07 +0200
-Message-ID: <s5hzhhqwd9w.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id A9007B20D;
+ Thu, 24 Oct 2019 12:23:46 +0000 (UTC)
+Date: Thu, 24 Oct 2019 14:23:45 +0200
+Message-ID: <s5hwocuwcvi.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191024113444.GF5207@sirena.co.uk>
-References: <20191023161203.28955-1-jbrunet@baylibre.com>
- <s5ha79rph1j.wl-tiwai@suse.de>
- <1jv9sfcpr8.fsf@starbuckisacylon.baylibre.com>
- <20191024113444.GF5207@sirena.co.uk>
+To: Aaron Ma <aaron.ma@canonical.com>
+In-Reply-To: <20191024114439.31522-1-aaron.ma@canonical.com>
+References: <20191022153855.14368-1-aaron.ma@canonical.com>
+ <20191024114439.31522-1-aaron.ma@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
- Russell King <rmk+kernel@armlinux.org.uk>, linux-kernel@vger.kernel.org,
- Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [alsa-devel] [PATCH 0/2] ASoC: hdmi-codec: fix locking issue
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, hui.wang@canonical.com
+Subject: Re: [alsa-devel] [PATCH v3] ALSA: hda/realtek - Fix 2 front mics of
+	codec 0x623
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,25 +80,21 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 24 Oct 2019 13:34:44 +0200,
-Mark Brown wrote:
+On Thu, 24 Oct 2019 13:44:39 +0200,
+Aaron Ma wrote:
 > 
-> On Wed, Oct 23, 2019 at 07:53:31PM +0200, Jerome Brunet wrote:
+> These 2 ThinkCentres installed a new realtek codec ID 0x623,
+> it has 2 front mics with the same location on pin 0x18 and 0x19.
 > 
-> > With the revert, we are back to the bit ops. Even if it works, Mark's
-> > original comment on the bit ops still stands I think. This is why I'm
-> > proposing patch 2 but I don't really mind if it is applied or not.
+> Apply fixup ALC283_FIXUP_HEADSET_MIC to change 1 front mic
+> location to right, then pulseaudio can handle them.
+> One "Front Mic" and one "Mic" will be shown, and audio output works
+> fine.
 > 
-> Yeah, it's not *required* but the atomic operations have lots of spiky
-> edges so a simpler locking construct would have less chance of running
-> into trouble later when someone's updating the code.
+> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
 
-If that's the reason, it should be mentioned specifically in the
-commit.  That is, it's not about functionality or efficiency but just
-about the code readability.
+Applied, thanks.
 
-
-thanks,
 
 Takashi
 _______________________________________________
