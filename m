@@ -2,73 +2,71 @@ Return-Path: <SRS0=DG6G=YR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08B22CA9EAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 20:34:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CDA3CA9EAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 21:04:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CF7AA21928
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 20:34:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 435C821BE5
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Oct 2019 21:04:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b4i27hlF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF7AA21928
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TCylb8rG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 435C821BE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75457171C;
-	Thu, 24 Oct 2019 22:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75457171C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBB651723;
+	Thu, 24 Oct 2019 23:03:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBB651723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571949257;
-	bh=6L746HudezCZI21ECooCf9YH5mYaFUKFv1jX2ORnf8k=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1571951063;
+	bh=PWBVb+2jrhG6li0/aqG1y+R8QSHuJYk0b+pCqacm/bs=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b4i27hlFquATLnEGrrxoPoeiIrZln1IF0hBs2slc24Hf/vUZWO6p6gAd0MZNYvIoQ
-	 U+/zqNB6+p5TgrYKWbX6S+f2WZk1m07FmdUq5SvSTJGP2XE3WcvHy6Y6TAfMl48zpY
-	 CIygJxo9de4vaLvHRuJEg6CBX9JOwUPWSNfrL1gg=
+	b=TCylb8rGu8BUZdwKCIa952XV+/EKMpovGPf5ijuv7qd4cnUzvBlKFAdq+iEMO6q/j
+	 bMqe8+wFFXxeFARtRJCuBz4xCVP6YmTsvMG/JpaDYUNFAEfA+UJk/Xoe3Js4FvwZCW
+	 m4TjfaZldzr3zWXJvfLasD+qfaGh/cx0APn5dzt4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDDEDF80367;
-	Thu, 24 Oct 2019 22:33:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C2BCF8036B;
+	Thu, 24 Oct 2019 23:03:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A3EEF8036B; Thu, 24 Oct 2019 22:33:24 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id E2E73F80377; Thu, 24 Oct 2019 23:03:30 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50AF7F80112
- for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 22:33:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50AF7F80112
+ by alsa1.perex.cz (Postfix) with ESMTPS id 440C7F80112
+ for <alsa-devel@alsa-project.org>; Thu, 24 Oct 2019 23:03:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 440C7F80112
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2019 13:33:17 -0700
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 24 Oct 2019 14:03:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,226,1569308400"; d="scan'208";a="228650093"
-Received: from prakash3-mobl.amr.corp.intel.com (HELO [10.254.100.1])
- ([10.254.100.1])
- by fmsmga002.fm.intel.com with ESMTP; 24 Oct 2019 13:33:15 -0700
-To: Jaroslav Kysela <perex@perex.cz>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20191022174313.29087-1-perex@perex.cz>
+X-IronPort-AV: E=Sophos;i="5.68,226,1569308400"; d="scan'208";a="398553502"
+Received: from ksengupt-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.251.138.183])
+ by fmsmga005.fm.intel.com with ESMTP; 24 Oct 2019 14:03:21 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <6d4e41fe-ba1e-3c89-582c-f8dc0964cf18@linux.intel.com>
-Date: Thu, 24 Oct 2019 15:33:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+To: alsa-devel@alsa-project.org
+Date: Thu, 24 Oct 2019 16:03:17 -0500
+Message-Id: <20191024210318.30068-2-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191024210318.30068-1-pierre-louis.bossart@linux.intel.com>
+References: <20191024210318.30068-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20191022174313.29087-1-perex@perex.cz>
-Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [alsa-devel] [PATCH v5 1/2] ALSA: hda: add Intel DSP
- configuration / probe code
+Cc: tiwai@suse.de, Jaska Uimonen <jaska.uimonen@intel.com>, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [alsa-devel] [PATCH v2 1/2] ASoC: SOF: define INFO_ flags in dsp_ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,664 +79,194 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Currently the INFO_ flags such as PAUSE/NO_PERIOD_WAKEUP are defined
+in the SOF PCM core, which doesn't scale. To account for platform
+variations, these flags need to be set in DSP ops.
 
+This patch only moves the definitions and does not change any
+functionality.
 
-On 10/22/19 12:43 PM, Jaroslav Kysela wrote:
-> For distributions, we need one place where we can decide
-> which driver will be activated for the auto-configation of the
-> Intel's HDA hardware with DSP. Actually, we cover three drivers:
-> 
-> * Legacy HDA
-> * Intel SST
-> * Intel Sound Open Firmware (SOF)
-> 
-> All those drivers registers similar PCI IDs, so the first
-> driver probed from the PCI stack can win. But... it is not
-> guaranteed that the correct driver wins.
-> 
-> This commit changes Intel's NHLT ACPI module to a common
-> DSP probe module for the Intel's hardware. All above sound
-> drivers calls this code. The user can force another behaviour
-> using the module parameter 'dsp_driver' located in
-> the 'snd-intel-dspcfg' module.
-> 
-> This change allows to add specific dmi checks for the specific
-> systems. The examples are taken from the pull request:
-> 
->    https://github.com/thesofproject/linux/pull/927
-> 
-> Tested on Lenovo Carbon X1 7th gen.
+Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/imx/imx8.c  |  7 +++++++
+ sound/soc/sof/intel/apl.c |  7 +++++++
+ sound/soc/sof/intel/bdw.c |  9 ++++++++-
+ sound/soc/sof/intel/byt.c | 21 +++++++++++++++++++++
+ sound/soc/sof/intel/cnl.c |  7 +++++++
+ sound/soc/sof/pcm.c       |  8 +++-----
+ sound/soc/sof/sof-priv.h  |  3 +++
+ 7 files changed, 56 insertions(+), 6 deletions(-)
 
-Jaroslav, I found a case where the logic doesn't seem to work as intended.
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index 2a22b18e5ec0..cfefcfd92798 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -388,6 +388,13 @@ struct snd_sof_dsp_ops sof_imx8_ops = {
+ 	/* DAI drivers */
+ 	.drv = imx8_dai,
+ 	.num_drv = 1, /* we have only 1 ESAI interface on i.MX8 */
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP
+ };
+ EXPORT_SYMBOL(sof_imx8_ops);
+ 
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index 8dc7a5558da4..15d26e8d90a9 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -97,6 +97,13 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
+ 	.runtime_resume		= hda_dsp_runtime_resume,
+ 	.runtime_idle		= hda_dsp_runtime_idle,
+ 	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ };
+ EXPORT_SYMBOL(sof_apl_ops);
+ 
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index bf961a8798a7..7b4cd1f456bf 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -591,7 +591,14 @@ const struct snd_sof_dsp_ops sof_bdw_ops = {
+ 
+ 	/* DAI drivers */
+ 	.drv = bdw_dai,
+-	.num_drv = ARRAY_SIZE(bdw_dai)
++	.num_drv = ARRAY_SIZE(bdw_dai),
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ };
+ EXPORT_SYMBOL(sof_bdw_ops);
+ 
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 07e5efe4945c..62edb959f1fc 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -532,6 +532,13 @@ const struct snd_sof_dsp_ops sof_tng_ops = {
+ 	/* DAI drivers */
+ 	.drv = byt_dai,
+ 	.num_drv = 3, /* we have only 3 SSPs on byt*/
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ };
+ EXPORT_SYMBOL(sof_tng_ops);
+ 
+@@ -693,6 +700,13 @@ const struct snd_sof_dsp_ops sof_byt_ops = {
+ 	/* DAI drivers */
+ 	.drv = byt_dai,
+ 	.num_drv = 3, /* we have only 3 SSPs on byt*/
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ };
+ EXPORT_SYMBOL(sof_byt_ops);
+ 
+@@ -753,6 +767,13 @@ const struct snd_sof_dsp_ops sof_cht_ops = {
+ 	.drv = byt_dai,
+ 	/* all 6 SSPs may be available for cherrytrail */
+ 	.num_drv = ARRAY_SIZE(byt_dai),
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ };
+ EXPORT_SYMBOL(sof_cht_ops);
+ 
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 5b97bdfba823..e9cdcc040fb5 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -255,6 +255,13 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
+ 	.runtime_resume		= hda_dsp_runtime_resume,
+ 	.runtime_idle		= hda_dsp_runtime_idle,
+ 	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ };
+ EXPORT_SYMBOL(sof_cnl_ops);
+ 
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index d72798d2b302..9ba505cf5966 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -440,6 +440,7 @@ static int sof_pcm_open(struct snd_soc_component *component,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	const struct snd_sof_dsp_ops *ops = sof_ops(sdev);
+ 	struct snd_sof_pcm *spcm;
+ 	struct snd_soc_tplg_stream_caps *caps;
+ 	int ret;
+@@ -469,11 +470,8 @@ static int sof_pcm_open(struct snd_soc_component *component,
+ 				   le32_to_cpu(caps->period_size_min));
+ 
+ 	/* set runtime config */
+-	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
+-			  SNDRV_PCM_INFO_MMAP_VALID |
+-			  SNDRV_PCM_INFO_INTERLEAVED |
+-			  SNDRV_PCM_INFO_PAUSE |
+-			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
++	runtime->hw.info = ops->hw_info; /* platform-specific */
++
+ 	runtime->hw.formats = le64_to_cpu(caps->formats);
+ 	runtime->hw.period_bytes_min = le32_to_cpu(caps->period_size_min);
+ 	runtime->hw.period_bytes_max = le32_to_cpu(caps->period_size_max);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 5a11a8517fa5..2d40de5ee285 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -211,6 +211,9 @@ struct snd_sof_dsp_ops {
+ 	/* DAI ops */
+ 	struct snd_soc_dai_driver *drv;
+ 	int num_drv;
++
++	/* ALSA HW info flags, will be stored in snd_pcm_runtime.hw.info */
++	u32 hw_info;
+ };
+ 
+ /* DSP architecture specific callbacks for oops and stack dumps */
+-- 
+2.20.1
 
-the code currently scans through the table looking for a PCI ID match, 
-and a DMI match for quirks.
-
-On a KBL NUC device with the DSP enabled, we go through the entire list 
-without finding a match, which means we return the _ANY flag. so if we 
-try to probe the snd-soc-skl driver, the checks will allow the driver to 
-continue, despite this configuration not being supported.
-
-It was my understanding that we would always load the legacy driver 
-*unless* there is a match in the table? If yes, there we can change the 
-default this way:
-
-@@ -333,7 +355,7 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
-         /* find the configuration for the specific device */
-         cfg = snd_intel_dsp_find_config(pci, config_table, 
-ARRAY_SIZE(config_table));
-         if (!cfg)
--               return SND_INTEL_DSP_DRIVER_ANY;
-+               return SND_INTEL_DSP_DRIVER_LEGACY;
-
-Or we need to add a case where we force the legacy in the table for each 
-platform.
-
-
-
-trace for KBL:
-[   36.531664] snd_soc_skl 0000:00:1f.3: DSP detected with PCI 
-class/subclass/prog-if info 0x040100
-[   36.531664] plb: table 119a device 9d71
-[   36.531666] plb: table 1a98 device 9d71
-[   36.531666] plb: table 5a98 device 9d71
-[   36.531667] plb: table 5a98 device 9d71
-[   36.531667] plb: table 9d70 device 9d71
-[   36.531668] plb: table 9d71 device 9d71
-[   36.531668] plb: dmi table found
-<< google chromebook quirk not applied
-[   36.531669] plb: table 3198 device 9d71
-[   36.531669] plb: table 9dc8 device 9d71
-[   36.531670] plb: table 9dc8 device 9d71
-[   36.531670] plb: table a348 device 9d71
-[   36.531671] plb: table a348 device 9d71
-[   36.531671] plb: table 2c8 device 9d71
-[   36.531672] plb: table 2c8 device 9d71
-[   36.531672] plb: table 6c8 device 9d71
-[   36.531672] plb: table 34c8 device 9d71
-[   36.531673] plb: table 34c8 device 9d71
-[   36.531673] plb: table a0c8 device 9d71
-[   36.531674] plb: table a0c8 device 9d71
-[   36.531674] plb: table 4b55 device 9d71
-<<< no config detected, so we return _ANY
-[   36.535791] snd_soc_skl 0000:00:1f.3: codec_mask = 0x5
-
-> 
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->   include/sound/intel-dsp-config.h |  34 +++++
->   sound/hda/Kconfig                |  10 +-
->   sound/hda/Makefile               |   5 +-
->   sound/hda/intel-dsp-config.c     | 249 +++++++++++++++++++++++++++++++
->   sound/hda/intel-nhlt.c           |   3 -
->   sound/pci/hda/Kconfig            |  11 +-
->   sound/pci/hda/hda_intel.c        |  49 ++----
->   sound/soc/intel/Kconfig          |   2 +-
->   sound/soc/intel/skylake/skl.c    |  19 +--
->   sound/soc/sof/intel/Kconfig      |   2 +-
->   sound/soc/sof/sof-pci-dev.c      |   6 +
->   11 files changed, 322 insertions(+), 68 deletions(-)
->   create mode 100644 include/sound/intel-dsp-config.h
->   create mode 100644 sound/hda/intel-dsp-config.c
-> 
-> diff --git a/include/sound/intel-dsp-config.h b/include/sound/intel-dsp-config.h
-> new file mode 100644
-> index 000000000000..c36622bee3f8
-> --- /dev/null
-> +++ b/include/sound/intel-dsp-config.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + *  intel-dsp-config.h - Intel DSP config
-> + *
-> + *  Copyright (c) 2019 Jaroslav Kysela <perex@perex.cz>
-> + */
-> +
-> +#ifndef __INTEL_DSP_CONFIG_H__
-> +#define __INTEL_DSP_CONFIG_H__
-> +
-> +struct pci_dev;
-> +
-> +enum {
-> +	SND_INTEL_DSP_DRIVER_ANY = 0,
-> +	SND_INTEL_DSP_DRIVER_LEGACY,
-> +	SND_INTEL_DSP_DRIVER_SST,
-> +	SND_INTEL_DSP_DRIVER_SOF,
-> +	SND_INTEL_DSP_DRIVER_LAST = SND_INTEL_DSP_DRIVER_SOF
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_SND_INTEL_DSP_CONFIG)
-> +
-> +int snd_intel_dsp_driver_probe(struct pci_dev *pci);
-> +
-> +#else
-> +
-> +static inline int snd_intel_dsp_driver_probe(struct pci_dev *pci)
-> +{
-> +	return SND_INTEL_DSP_DRIVER_ANY;
-> +}
-> +
-> +#endif
-> +
-> +#endif
-> diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
-> index 3d33fc1757ba..b0c88fe040ee 100644
-> --- a/sound/hda/Kconfig
-> +++ b/sound/hda/Kconfig
-> @@ -34,6 +34,12 @@ config SND_HDA_PREALLOC_SIZE
->   	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
->   
->   config SND_INTEL_NHLT
-> -	tristate
-> +	bool
->   	# this config should be selected only for Intel ACPI platforms.
-> -	# A fallback is provided so that the code compiles in all cases.
-> \ No newline at end of file
-> +	# A fallback is provided so that the code compiles in all cases.
-> +
-> +config SND_INTEL_DSP_CONFIG
-> +	tristate
-> +	select SND_INTEL_NHLT if ACPI
-> +	# this config should be selected only for Intel DSP platforms.
-> +	# A fallback is provided so that the code compiles in all cases.
-> diff --git a/sound/hda/Makefile b/sound/hda/Makefile
-> index 8560f6ef1b19..601e617918b8 100644
-> --- a/sound/hda/Makefile
-> +++ b/sound/hda/Makefile
-> @@ -14,5 +14,6 @@ obj-$(CONFIG_SND_HDA_CORE) += snd-hda-core.o
->   #extended hda
->   obj-$(CONFIG_SND_HDA_EXT_CORE) += ext/
->   
-> -snd-intel-nhlt-objs := intel-nhlt.o
-> -obj-$(CONFIG_SND_INTEL_NHLT) += snd-intel-nhlt.o
-> +snd-intel-dspcfg-objs := intel-dsp-config.o
-> +snd-intel-dspcfg-$(CONFIG_SND_INTEL_NHLT) += intel-nhlt.o
-> +obj-$(CONFIG_SND_INTEL_DSP_CONFIG) += snd-intel-dspcfg.o
-> diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-> new file mode 100644
-> index 000000000000..d9f6d9e872b4
-> --- /dev/null
-> +++ b/sound/hda/intel-dsp-config.c
-> @@ -0,0 +1,249 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2019 Jaroslav Kysela <perex@perex.cz>
-> +
-> +#include <linux/bits.h>
-> +#include <linux/dmi.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <sound/core.h>
-> +#include <sound/intel-dsp-config.h>
-> +#include <sound/intel-nhlt.h>
-> +
-> +static int dsp_driver;
-> +
-> +module_param(dsp_driver, int, 0444);
-> +MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF)");
-> +
-> +#define FLAG_SST		BIT(0)
-> +#define FLAG_SOF		BIT(1)
-> +#define FLAG_SOF_ONLY_IF_DMIC	BIT(16)
-> +
-> +struct config_entry {
-> +	u32 flags;
-> +	u16 device;
-> +	const struct dmi_system_id *dmi_table;
-> +};
-> +
-> +/*
-> + * configuration table
-> + * - the order of similar PCI ID entries is important!
-> + * - the first successful match will win
-> + */
-> +static const struct config_entry config_table[] = {
-> +/* Cometlake-LP */
-> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_LP)
-> +	{
-> +		/* prefer SST */
-> +		.flags = FLAG_SST,
-> +		.device = 0x02c8,
-> +	},
-> +#elif IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP)
-> +	{
-> +		.flags = FLAG_SOF,
-> +		.device = 0x02c8,
-> +	},
-> +#endif
-> +/* Cometlake-H */
-> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_CML_H)
-> +	{
-> +		.flags = FLAG_SST,
-> +		.device = 0x06c8,
-> +	},
-> +#elif IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
-> +	{
-> +		.flags = FLAG_SOF,
-> +		.device = 0x06c8,
-> +	},
-> +#endif
-> +/* Merrifield */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
-> +	{
-> +		.flags = FLAG_SOF,
-> +		.device = 0x119a,
-> +	},
-> +#endif
-> +/* Broxton-T */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0x1a98,
-> +	},
-> +#endif
-> +/* Geminilake */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
-> +	{
-> +		.flags = FLAG_SOF,
-> +		.device = 0x3198,
-> +		.dmi_table = (const struct dmi_system_id []) {
-> +			{
-> +				.ident = "Google Chromebooks",
-> +				.matches = {
-> +					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
-> +				}
-> +			},
-> +			{}
-> +		}
-> +	},
-> +#endif
-> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_GLK)
-> +	{
-> +		.flags = FLAG_SST,
-> +		.device = 0x3198,
-> +	},
-> +#endif
-> +/* Icelake */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0x34c8,
-> +	},
-> +#endif
-> +/* Elkhart Lake */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0x4b55,
-> +	},
-> +#endif
-> +/* Appololake (Broxton-P) */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
-> +	{
-> +		.flags = FLAG_SOF,
-> +		.device = 0x5a98,
-> +		.dmi_table = (const struct dmi_system_id []) {
-> +			{
-> +				.ident = "Up Squared",
-> +				.matches = {
-> +					DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
-> +					DMI_MATCH(DMI_BOARD_NAME, "UP-APL01"),
-> +				}
-> +			},
-> +			{}
-> +		}
-> +	},
-> +#endif
-> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
-> +	{
-> +		.flags = FLAG_SST,
-> +		.device = 0x5a98,
-> +	},
-> +#endif
-> +/* Cannonlake */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_CANNONLAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0x9dc8,
-> +	},
-> +#endif
-> +/* Sunrise Point-LP */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_SKYLAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0x9d70,
-> +	},
-> +#endif
-> +/* Kabylake-LP */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_KABYLAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0x9d71,
-> +	},
-> +#endif
-> +/* Tigerlake */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0xa0c8,
-> +	},
-> +#endif
-> +/* Coffelake */
-> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
-> +	{
-> +		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-> +		.device = 0xa348,
-> +	},
-> +#endif
-> +};
-> +
-> +static const struct config_entry *snd_intel_dsp_find_config
-> +		(struct pci_dev *pci, const struct config_entry *table, u32 len)
-> +{
-> +	u16 device;
-> +
-> +	device = pci->device;
-> +	for (; len > 0; len--, table++) {
-> +		if (table->device != device)
-> +			continue;
-> +		if (table->dmi_table && !dmi_check_system(table->dmi_table))
-> +			continue;
-> +		return table;
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static int snd_intel_dsp_check_dmic(struct pci_dev *pci)
-> +{
-> +	struct nhlt_acpi_table *nhlt;
-> +	int ret = 0;
-> +
-> +	nhlt = intel_nhlt_init(&pci->dev);
-> +	if (nhlt) {
-> +		if (intel_nhlt_get_dmic_geo(&pci->dev, nhlt))
-> +			ret = 1;
-> +		intel_nhlt_free(nhlt);
-> +	}
-> +	return ret;
-> +}
-> +
-> +int snd_intel_dsp_driver_probe(struct pci_dev *pci)
-> +{
-> +	const struct config_entry *cfg;
-> +
-> +	if (dsp_driver > 0 && dsp_driver <= SND_INTEL_DSP_DRIVER_LAST)
-> +		return dsp_driver;
-> +
-> +	/* Intel vendor only */
-> +	if (snd_BUG_ON(pci->vendor != 0x8086))
-> +		return SND_INTEL_DSP_DRIVER_ANY;
-> +
-> +	/*
-> +	 * detect DSP by checking class/subclass/prog-id information
-> +	 * class=04 subclass 03 prog-if 00: no DSP, use legacy driver
-> +	 * class=04 subclass 01 prog-if 00: DSP is present
-> +	 *  (and may be required e.g. for DMIC or SSP support)
-> +	 * class=04 subclass 03 prog-if 80: use DSP or legacy mode
-> +	 */
-> +	if (pci->class == 0x040300)
-> +		return SND_INTEL_DSP_DRIVER_LEGACY;
-> +	if (pci->class != 0x040100 && pci->class != 0x040380) {
-> +		dev_err(&pci->dev, "Unknown PCI class/subclass/prog-if information (0x%06x) found, selecting HDA legacy driver\n", pci->class);
-> +		return SND_INTEL_DSP_DRIVER_LEGACY;
-> +	}
-> +
-> +	dev_info(&pci->dev, "DSP detected with PCI class/subclass/prog-if info 0x%06x\n", pci->class);
-> +
-> +	/* find the configuration for the specific device */
-> +	cfg = snd_intel_dsp_find_config(pci, config_table, ARRAY_SIZE(config_table));
-> +	if (!cfg)
-> +		return SND_INTEL_DSP_DRIVER_ANY;
-> +
-> +	if (cfg->flags & FLAG_SOF) {
-> +		if (cfg->flags & FLAG_SOF_ONLY_IF_DMIC) {
-> +			if (snd_intel_dsp_check_dmic(pci)) {
-> +				dev_info(&pci->dev, "Digital mics found on Skylake+ platform, using SOF driver\n");
-> +				return SND_INTEL_DSP_DRIVER_SOF;
-> +			}
-> +		} else {
-> +			return SND_INTEL_DSP_DRIVER_SOF;
-> +		}
-> +	}
-> +
-> +	if (cfg->flags & FLAG_SST)
-> +		return SND_INTEL_DSP_DRIVER_SST;
-> +
-> +	return SND_INTEL_DSP_DRIVER_LEGACY;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("Intel DSP config driver");
-> diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-> index daede96f28ee..097ff6c10099 100644
-> --- a/sound/hda/intel-nhlt.c
-> +++ b/sound/hda/intel-nhlt.c
-> @@ -102,6 +102,3 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
->   	return dmic_geo;
->   }
->   EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
-> -
-> -MODULE_LICENSE("GPL v2");
-> -MODULE_DESCRIPTION("Intel NHLT driver");
-> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-> index dae47a45b2b8..bd48335d09d7 100644
-> --- a/sound/pci/hda/Kconfig
-> +++ b/sound/pci/hda/Kconfig
-> @@ -12,7 +12,7 @@ config SND_HDA_INTEL
->   	tristate "HD Audio PCI"
->   	depends on SND_PCI
->   	select SND_HDA
-> -	select SND_INTEL_NHLT if ACPI
-> +	select SND_INTEL_DSP_CONFIG
->   	help
->   	  Say Y here to include support for Intel "High Definition
->   	  Audio" (Azalia) and its compatible devices.
-> @@ -23,15 +23,6 @@ config SND_HDA_INTEL
->   	  To compile this driver as a module, choose M here: the module
->   	  will be called snd-hda-intel.
->   
-> -config SND_HDA_INTEL_DETECT_DMIC
-> -	bool "DMIC detection and probe abort"
-> -	depends on SND_HDA_INTEL
-> -	help
-> -	  Say Y to detect digital microphones on SKL+ devices. DMICs
-> -	  cannot be handled by the HDaudio legacy driver and are
-> -	  currently only supported by the SOF driver.
-> -	  If unsure say N.
-> -
->   config SND_HDA_TEGRA
->   	tristate "NVIDIA Tegra HD Audio"
->   	depends on ARCH_TEGRA
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 240f4ca76391..a916963822e0 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -46,7 +46,7 @@
->   #include <sound/initval.h>
->   #include <sound/hdaudio.h>
->   #include <sound/hda_i915.h>
-> -#include <sound/intel-nhlt.h>
-> +#include <sound/intel-dsp-config.h>
->   #include <linux/vgaarb.h>
->   #include <linux/vga_switcheroo.h>
->   #include <linux/firmware.h>
-> @@ -124,7 +124,7 @@ static char *patch[SNDRV_CARDS];
->   static bool beep_mode[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] =
->   					CONFIG_SND_HDA_INPUT_BEEP_MODE};
->   #endif
-> -static bool dmic_detect = IS_ENABLED(CONFIG_SND_HDA_INTEL_DETECT_DMIC);
-> +static bool dsp_driver = 1;
->   
->   module_param_array(index, int, NULL, 0444);
->   MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
-> @@ -159,8 +159,9 @@ module_param_array(beep_mode, bool, NULL, 0444);
->   MODULE_PARM_DESC(beep_mode, "Select HDA Beep registration mode "
->   			    "(0=off, 1=on) (default=1).");
->   #endif
-> -module_param(dmic_detect, bool, 0444);
-> -MODULE_PARM_DESC(dmic_detect, "DMIC detect on SKL+ platforms");
-> +module_param(dsp_driver, bool, 0444);
-> +MODULE_PARM_DESC(dsp_driver, "Allow DSP driver selection (bypass this driver) "
-> +			     "(0=off, 1=on) (default=1)");
->   
->   #ifdef CONFIG_PM
->   static int param_set_xint(const char *val, const struct kernel_param *kp);
-> @@ -2020,25 +2021,6 @@ static const struct hda_controller_ops pci_hda_ops = {
->   	.position_check = azx_position_check,
->   };
->   
-> -static int azx_check_dmic(struct pci_dev *pci, struct azx *chip)
-> -{
-> -	struct nhlt_acpi_table *nhlt;
-> -	int ret = 0;
-> -
-> -	if (chip->driver_type == AZX_DRIVER_SKL &&
-> -	    pci->class != 0x040300) {
-> -		nhlt = intel_nhlt_init(&pci->dev);
-> -		if (nhlt) {
-> -			if (intel_nhlt_get_dmic_geo(&pci->dev, nhlt)) {
-> -				ret = -ENODEV;
-> -				dev_info(&pci->dev, "Digital mics found on Skylake+ platform, aborting probe\n");
-> -			}
-> -			intel_nhlt_free(nhlt);
-> -		}
-> -	}
-> -	return ret;
-> -}
-> -
->   static int azx_probe(struct pci_dev *pci,
->   		     const struct pci_device_id *pci_id)
->   {
-> @@ -2056,6 +2038,16 @@ static int azx_probe(struct pci_dev *pci,
->   		return -ENOENT;
->   	}
->   
-> +	/*
-> +	 * stop probe if another Intel's DSP driver should be activated
-> +	 */
-> +	if (dsp_driver) {
-> +		err = snd_intel_dsp_driver_probe(pci);
-> +		if (err != SND_INTEL_DSP_DRIVER_ANY &&
-> +		    err != SND_INTEL_DSP_DRIVER_LEGACY)
-> +			return -ENODEV;
-> +	}
-> +
->   	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
->   			   0, &card);
->   	if (err < 0) {
-> @@ -2069,17 +2061,6 @@ static int azx_probe(struct pci_dev *pci,
->   	card->private_data = chip;
->   	hda = container_of(chip, struct hda_intel, chip);
->   
-> -	/*
-> -	 * stop probe if digital microphones detected on Skylake+ platform
-> -	 * with the DSP enabled. This is an opt-in behavior defined at build
-> -	 * time or at run-time with a module parameter
-> -	 */
-> -	if (dmic_detect) {
-> -		err = azx_check_dmic(pci, chip);
-> -		if (err < 0)
-> -			goto out_free;
-> -	}
-> -
->   	pci_set_drvdata(pci, card);
->   
->   	err = register_vga_switcheroo(chip);
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index 01c99750212a..9ad89d56092b 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -215,7 +215,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
->   	select SND_SOC_INTEL_SST
->   	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
->   	select SND_SOC_ACPI_INTEL_MATCH
-> -	select SND_INTEL_NHLT if ACPI
-> +	select SND_INTEL_DSP_CONFIG
->   	help
->   	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
->   	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-> index 141dbbf975ac..58ba3e9469ba 100644
-> --- a/sound/soc/intel/skylake/skl.c
-> +++ b/sound/soc/intel/skylake/skl.c
-> @@ -27,6 +27,7 @@
->   #include <sound/hda_i915.h>
->   #include <sound/hda_codec.h>
->   #include <sound/intel-nhlt.h>
-> +#include <sound/intel-dsp-config.h>
->   #include "skl.h"
->   #include "skl-sst-dsp.h"
->   #include "skl-sst-ipc.h"
-> @@ -987,22 +988,10 @@ static int skl_probe(struct pci_dev *pci,
->   
->   	switch (skl_pci_binding) {
->   	case SND_SKL_PCI_BIND_AUTO:
-> -		/*
-> -		 * detect DSP by checking class/subclass/prog-id information
-> -		 * class=04 subclass 03 prog-if 00: no DSP, use legacy driver
-> -		 * class=04 subclass 01 prog-if 00: DSP is present
-> -		 *   (and may be required e.g. for DMIC or SSP support)
-> -		 * class=04 subclass 03 prog-if 80: use DSP or legacy mode
-> -		 */
-> -		if (pci->class == 0x040300) {
-> -			dev_info(&pci->dev, "The DSP is not enabled on this platform, aborting probe\n");
-> +		err = snd_intel_dsp_driver_probe(pci);
-> +		if (err != SND_INTEL_DSP_DRIVER_ANY &&
-> +		    err != SND_INTEL_DSP_DRIVER_SST)
->   			return -ENODEV;
-> -		}
-> -		if (pci->class != 0x040100 && pci->class != 0x040380) {
-> -			dev_err(&pci->dev, "Unknown PCI class/subclass/prog-if information (0x%06x) found, aborting probe\n", pci->class);
-> -			return -ENODEV;
-> -		}
-> -		dev_info(&pci->dev, "DSP detected with PCI class/subclass/prog-if info 0x%06x\n", pci->class);
->   		break;
->   	case SND_SKL_PCI_BIND_LEGACY:
->   		dev_info(&pci->dev, "Module parameter forced binding with HDaudio legacy, aborting probe\n");
-> diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-> index 479ba249e219..8a5d5c0f95f2 100644
-> --- a/sound/soc/sof/intel/Kconfig
-> +++ b/sound/soc/sof/intel/Kconfig
-> @@ -286,7 +286,7 @@ config SND_SOC_SOF_HDA
->   	tristate
->   	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
->   	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
-> -	select SND_INTEL_NHLT if ACPI
-> +	select SND_INTEL_DSP_CONFIG
->   	help
->   	  This option is not user-selectable but automagically handled by
->   	  'select' statements at a higher level
-> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> index d66412a77873..3a9e0e2a150d 100644
-> --- a/sound/soc/sof/sof-pci-dev.c
-> +++ b/sound/soc/sof/sof-pci-dev.c
-> @@ -12,6 +12,7 @@
->   #include <linux/module.h>
->   #include <linux/pci.h>
->   #include <linux/pm_runtime.h>
-> +#include <sound/intel-dsp-config.h>
->   #include <sound/soc-acpi.h>
->   #include <sound/soc-acpi-intel-match.h>
->   #include <sound/sof.h>
-> @@ -277,6 +278,11 @@ static int sof_pci_probe(struct pci_dev *pci,
->   	const struct snd_sof_dsp_ops *ops;
->   	int ret;
->   
-> +	ret = snd_intel_dsp_driver_probe(pci);
-> +	if (ret != SND_INTEL_DSP_DRIVER_ANY &&
-> +	    ret != SND_INTEL_DSP_DRIVER_SOF)
-> +		return -ENODEV;
-> +
->   	dev_dbg(&pci->dev, "PCI DSP detected");
->   
->   	/* get ops for platform */
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
