@@ -2,88 +2,89 @@ Return-Path: <SRS0=ik9t=YS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8367ECA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 21:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8171CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 21:02:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B9FC21D7B
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 21:01:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6E82F21D7B
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 21:02:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q3XoTfK3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B9FC21D7B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B9SJ9HzV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E82F21D7B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CF1A189B;
-	Fri, 25 Oct 2019 23:00:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CF1A189B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4A9618AC;
+	Fri, 25 Oct 2019 23:01:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4A9618AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572037279;
-	bh=47eYZ8fiA0/ljo0URikT3QjZpOX9DGUIgDwtJZAf224=;
+	s=default; t=1572037346;
+	bh=tqsy1cAeYpsxTeKHC09FUqX6Uoj4ZhWyPBZCu4mLPzE=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q3XoTfK3sejeHK572fuHY+Lg8VGtmpFGskjPuZDR5Kh0vuyD5LupTdD8p8dF9pQE7
-	 BNuXmqGm7nbiQu5ZeNMihBSogoIIjmejzxITOy8/yQVdRNuYku1cnzZamJ5/u19+cg
-	 AA4gIJeb5vM+C1m+obXXHHTYoARjlwxIDKyyONQI=
+	b=B9SJ9HzVnWSunFluozZ1pL7WMRy9iI99nWmRVbVP10KE7pV6UE8E23rYubmK3ZDvy
+	 y6u0qSFL8vJjg2/atdQTnRdLKFlE/NVI2pC0mCPdRbZ6WVjQUEC8H8fWFqSXR1PxHG
+	 vCWGnGAmJ6sm9PrrWgCPArfwYRFgI6epo+cwF2Gw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8283F80368;
-	Fri, 25 Oct 2019 23:00:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E105F8036F;
+	Fri, 25 Oct 2019 23:01:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18358F8036F; Fri, 25 Oct 2019 23:00:28 +0200 (CEST)
-Received: from mail-ot1-f68.google.com (mail-ot1-f68.google.com
- [209.85.210.68])
+ id 1559AF80393; Fri, 25 Oct 2019 23:01:35 +0200 (CEST)
+Received: from mail-oi1-f196.google.com (mail-oi1-f196.google.com
+ [209.85.167.196])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56BE8F80112
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 23:00:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56BE8F80112
-Received: by mail-ot1-f68.google.com with SMTP id s22so2978167otr.6
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 14:00:24 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5EE46F80368
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 23:01:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EE46F80368
+Received: by mail-oi1-f196.google.com with SMTP id i185so2496917oif.9
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 14:01:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=PIdw2OR1Wc5vcgtc2S6a52CrxT11Bed11+whBzjKQXQ=;
- b=YXUllJSS8j9gcuLQgDs+CPh9bPhmYk0d58yXWz3ZruBfkcVcXhbd7+KDHkaw8vhifb
- 939nJ/U8TQxECLkEDkgrvueXfTegJiu4bwYVX1qTIKzdUu4HC/RP2WblegMKGi0zxhVH
- 6IqZRk/X6oAnm2WfTldQKeI27UA6q2K6Krpub+BZ3qAhOSNNCvJOU3aVDR2bC3h6GQFC
- Sbuqmqjp0j07OBvPzQBkUQ0bce7TnCNSKZJzc6TXWvzXm89fUfQWYexuR2LcEz/jC5oz
- Mv3RIBzv1DSehTDgamP373yVHj64IYE6vBewoHY4jTLnGT+NhBbLEZf12RybBozIKC+c
- FQug==
-X-Gm-Message-State: APjAAAVoOu+RAXmUr7X0MB9I8+ixaGscXnOJ7U+aDy/bSmdiYNJyOrXd
- QMO2q2L9D8sLcaZzX1mmtg==
-X-Google-Smtp-Source: APXvYqwgx8LVN5ZVNBUTcYENC8p5D3he0cebxVqtC+8b/u08CP9bM4qBdYUNb5YGdUAkXXj3FWf51A==
-X-Received: by 2002:a9d:5e12:: with SMTP id d18mr4451844oti.220.1572037223231; 
- Fri, 25 Oct 2019 14:00:23 -0700 (PDT)
+ bh=3GZj/07wyh3a92hj1bd5hj3RDEpvatv0XrhY5uaQn7g=;
+ b=LBDV2eXaDFSmAJeF8FSq3DZhkYY3rESdJNQNcwV/cF6MDB+L+snLJ9ksBnIdQd9bM3
+ VOUF8MTZ2KxmzTOXCgK0XZpBgkC2P+EoKB4ZcwL2p5mrkmZz4zMWECV1bNyxb0xQ/we/
+ sA3tnsyAcYB5X691dIexv8jS28OunjqnuEue5GcwqMoexhEharf8oMqugrorVPbNYz0J
+ QKSBK39bGonYBdrRjGOGk/1/cIw57jN3MRM1tqoQZDbcs8UHeeQaui+zqvdXa3rGIckj
+ 212FV1Jt/oemGHlFrO+W8/LKnRUQyemOpRNwbYSiGexOiY6NN/H9/Ov3E8txLfGmLaT3
+ Iwew==
+X-Gm-Message-State: APjAAAWcpnYT+dHdL29rGko5Ll0TIwdyKCXoeyFNkKHxRIibUhpJhVLW
+ DB4D0nJLxw0wyOPiysUkVg==
+X-Google-Smtp-Source: APXvYqyweattnE1/2tTLytH55gaAaW+EA9Y+8YXDzO7mVMdzeeqlnIriXwq3vJ1VvxxICllZfVpAUQ==
+X-Received: by 2002:aca:e0d5:: with SMTP id x204mr4880654oig.112.1572037290729; 
+ Fri, 25 Oct 2019 14:01:30 -0700 (PDT)
 Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
  [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id l19sm863516oie.22.2019.10.25.14.00.21
+ by smtp.gmail.com with ESMTPSA id q9sm1077094otc.53.2019.10.25.14.01.29
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 25 Oct 2019 14:00:22 -0700 (PDT)
-Date: Fri, 25 Oct 2019 16:00:21 -0500
+ Fri, 25 Oct 2019 14:01:29 -0700 (PDT)
+Date: Fri, 25 Oct 2019 16:01:28 -0500
 From: Rob Herring <robh@kernel.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <20191025210021.GA12751@bogus>
+Message-ID: <20191025210128.GA7212@bogus>
 References: <20191018001849.27205-1-srinivas.kandagatla@linaro.org>
- <20191018001849.27205-9-srinivas.kandagatla@linaro.org>
+ <20191018001849.27205-11-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191018001849.27205-9-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20191018001849.27205-11-srinivas.kandagatla@linaro.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, vinod.koul@linaro.org, linus.walleij@linaro.org,
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ vinod.koul@linaro.org, devicetree@vger.kernel.org, linus.walleij@linaro.org,
  linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org,
- lee.jones@linaro.org, spapothi@codeaurora.org
-Subject: Re: [alsa-devel] [PATCH v2 08/11] dt-bindings: pinctrl:
- qcom-wcd934x: Add bindings for gpio
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, lee.jones@linaro.org,
+ spapothi@codeaurora.org
+Subject: Re: [alsa-devel] [PATCH v2 10/11] ASoC: dt-bindings: Add compatible
+ for DB845c and Lenovo Yoga
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,83 +102,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Oct 18, 2019 at 01:18:46AM +0100, Srinivas Kandagatla wrote:
-> Qualcomm Technologies Inc WCD9340/WCD9341 Audio Codec has integrated
-> gpio controller to control 5 gpios on the chip. This patch adds
-> required device tree bindings for it.
+On Fri, 18 Oct 2019 01:18:48 +0100, Srinivas Kandagatla wrote:
+> This patch adds compatible strings for DB845c and Lenovo Yoga C630
+> soundcard. Based on this compatible strings common machine driver
+> will be in better position to setup board specific configuration.
 > 
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->  .../pinctrl/qcom,wcd934x-pinctrl.yaml         | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml
+>  Documentation/devicetree/bindings/sound/qcom,sdm845.txt | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..c8a36cbc4935
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/qcom,wcd934x-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: WCD9340/WCD9341 GPIO Pin controller
-> +
-> +maintainers:
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +description: |
-> +  Qualcomm Technologies Inc WCD9340/WCD9341 Audio Codec has integrated
-> +  gpio controller to control 5 gpios on the chip.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,wcd9340-pinctrl
-> +      - qcom,wcd9341-pinctrl
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  gpio-controller: true
-> +
-> +  gpio-ranges:
-> +    maxItems: 1
-> +
-> +  '#gpio-cells':
-> +    const: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - gpio-controller
-> +  - gpio-ranges
-> +  - "#gpio-cells"
 
-additionalProperties: false
-
-> +
-> +
-> +examples:
-> +  - |
-> +    wcdpinctrl: wcdpinctrl@42 {
-
-pinctrl@42
-
-> +        compatible = "qcom,wcd9340-pinctrl";
-> +        reg = <0x042 0x2>;
-> +        gpio-controller;
-> +        gpio-ranges = <&wcdpinctrl 0 0 5>;
-> +        #gpio-cells = <2>;
-> +    };
-> +
-> +...
-> -- 
-> 2.21.0
-> 
+Acked-by: Rob Herring <robh@kernel.org>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
