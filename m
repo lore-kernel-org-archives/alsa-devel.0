@@ -2,67 +2,62 @@ Return-Path: <SRS0=ik9t=YS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 068EBCA9EAF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:56:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AFA4CA9EAF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:57:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7322D21D7E
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:56:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 12E2621928
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:57:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="us7psG8z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7322D21D7E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AHFXHQJs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12E2621928
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 685AE1732;
-	Fri, 25 Oct 2019 02:55:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 685AE1732
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4884E174B;
+	Fri, 25 Oct 2019 02:56:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4884E174B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571964989;
-	bh=A2XeyTx6/E73b0TDCZaJdhpyFGHTimZDO2qS3gx7BV4=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=us7psG8z4lkkY4vc79XsaXFNWgJxXAkOGiI59R259KNAE9asuO6zC7PNhrOQeeVWp
-	 anV59Rd6nHgyifeKzFXg7+PNDuQyhxknYpEzHXkGSYvYk7UBI6VfNSLeZ+CQGK8L1g
-	 Kl4BYLu12c0fwMcIg98JgrCo7rjVuBQ+7f7ELMTw=
+	s=default; t=1571965044;
+	bh=8MhDh0N+1VVzpIMEB8HGtZ5yACABxdvFcDTRHa0bfVE=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AHFXHQJs0tUubf+k2uzs/HjcEcRfilCPA+0EajeohEf9hczpt0t83xQFLawLfzcqD
+	 ifCtlvWIBTpqKPsVVyeyuLsuUoH6nvzJ2Ge5+J7P3F5OP3CbF/I3G0KrV6nLpSwe+v
+	 FnOGU8z8irup8EhsdeLjYDmYlcwETyFclyrs2kbE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2B6EF80367;
-	Fri, 25 Oct 2019 02:55:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D2B8F80390;
+	Fri, 25 Oct 2019 02:56:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6F82F8036B; Fri, 25 Oct 2019 02:55:36 +0200 (CEST)
+ id 6144DF803D1; Fri, 25 Oct 2019 02:56:16 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A7683F80137
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 02:55:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7683F80137
-Date: 25 Oct 2019 09:55:30 +0900
-X-IronPort-AV: E=Sophos;i="5.68,226,1569250800"; d="scan'208";a="29950669"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 Oct 2019 09:55:30 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id F0974F80112
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 02:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0974F80112
+Date: 25 Oct 2019 09:56:10 +0900
+X-IronPort-AV: E=Sophos;i="5.68,226,1569250800"; d="scan'208";a="29950733"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 25 Oct 2019 09:56:10 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2FAE1400D0F0;
- Fri, 25 Oct 2019 09:55:30 +0900 (JST)
-Message-ID: <87v9sd7if1.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 768D1413F205;
+ Fri, 25 Oct 2019 09:56:10 +0900 (JST)
+Message-ID: <87tv7x7idx.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191024114821.GA46373@sirena.co.uk>
-References: <87d0ey64n5.wl-kuninori.morimoto.gx@renesas.com>
- <8736fu64lm.wl-kuninori.morimoto.gx@renesas.com>
- <20191024114821.GA46373@sirena.co.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 07/22] ASoC: soc-core: tidyup
-	soc_init_dai_link()
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH v2] ASoC: soc-dpcm: tidyup for_each_dpcm_xx()
+	macro
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,22 +76,63 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > soc_init_dai_link() is needed to be called before soc_bind_dai_link().
-> 
-> This doesn't apply against current code, please check and resend.
+for_each_dpcm_xx() macro is using "dpcm" as parameter (1),
+but, it is also struct member (2).
 
-I could apply it.
-I guess this is because you are tring to apply different order ?
-[05/22] and [06/22] are needed first I guess.
+	#define for_each_dpcm_fe(be, stream, dpcm) \
+	list_for_each_entry(dpcm, &(be)->dpcm[stream]...)
+	                    ^^^^(1)      ^^^^(2)
 
-Thank you for your help !!
-Best regards
+Thus, it will be compile error if user not used "dpcm" as parameter
+
+	for_each_dpcm_fe(be, stream, dp)
+	                             ^^
+This patch fixup it.
+
+Reported-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+v1 -> v2
+
+	- based on mark/for-5.5 branch
+
+ include/sound/soc-dpcm.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index e55aeb0..b654ebf 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -103,15 +103,15 @@ struct snd_soc_dpcm_runtime {
+ 	int trigger_pending; /* trigger cmd + 1 if pending, 0 if not */
+ };
+ 
+-#define for_each_dpcm_fe(be, stream, dpcm)				\
+-	list_for_each_entry(dpcm, &(be)->dpcm[stream].fe_clients, list_fe)
+-
+-#define for_each_dpcm_be(fe, stream, dpcm)				\
+-	list_for_each_entry(dpcm, &(fe)->dpcm[stream].be_clients, list_be)
+-#define for_each_dpcm_be_safe(fe, stream, dpcm, _dpcm)			\
+-	list_for_each_entry_safe(dpcm, _dpcm, &(fe)->dpcm[stream].be_clients, list_be)
+-#define for_each_dpcm_be_rollback(fe, stream, dpcm)			\
+-	list_for_each_entry_continue_reverse(dpcm, &(fe)->dpcm[stream].be_clients, list_be)
++#define for_each_dpcm_fe(be, stream, _dpcm)				\
++	list_for_each_entry(_dpcm, &(be)->dpcm[stream].fe_clients, list_fe)
++
++#define for_each_dpcm_be(fe, stream, _dpcm)				\
++	list_for_each_entry(_dpcm, &(fe)->dpcm[stream].be_clients, list_be)
++#define for_each_dpcm_be_safe(fe, stream, _dpcm, __dpcm)			\
++	list_for_each_entry_safe(_dpcm, __dpcm, &(fe)->dpcm[stream].be_clients, list_be)
++#define for_each_dpcm_be_rollback(fe, stream, _dpcm)			\
++	list_for_each_entry_continue_reverse(_dpcm, &(fe)->dpcm[stream].be_clients, list_be)
+ 
+ /* can this BE stop and free */
+ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
