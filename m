@@ -2,82 +2,73 @@ Return-Path: <SRS0=ik9t=YS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A15F5CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8D73CA9EBC
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 11:50:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C11420663
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:19:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF9AC21D7B
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 11:50:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cx4yVcbM";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="cl7vOEIt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C11420663
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="THEo5n+/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF9AC21D7B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06FD317C6;
-	Fri, 25 Oct 2019 12:18:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06FD317C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D9FF17B9;
+	Fri, 25 Oct 2019 13:49:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D9FF17B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571998766;
-	bh=/vaniB24IUTQVOQJzGi/3LNn0CnIJs3kPhDfT7qqYPI=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Cx4yVcbMVnGjla29LmJlKU2q0kva/ASmIDz9Z+Qb1JVsbbmdgd7I/vYocg6GvghBs
-	 u41IoojBEjiDiofRlRt4f1/lrqtJUiICKomThUnIXXRZS98LwFOeXhEUSwcaYAP4E4
-	 WkcpSoDrSIGy4xjml7wtqpIqFqh10gpcK9Ck1Igo=
+	s=default; t=1572004240;
+	bh=0jD+Zzsj0Lh8HxPee/QGYxHqzQp4KcT0Unopxe0K6is=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=THEo5n+/J7eGsuGocYeDbgVGk+CXogUdBfEzprLq2AAedNAr42s6CYsmjKbfPV4El
+	 TUH4jd0PY8KUCrUxkbQXrtdh8icZQzeh8R0MdsYtdIlwpBidhkj6/9VUsZqK55184k
+	 sPbvh9HgVu8HbVQ30QjZN5bo1AWQ+dMZuT8/RVEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 072D7F8067A;
-	Fri, 25 Oct 2019 12:12:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9496F80368;
+	Fri, 25 Oct 2019 13:49:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CCBBF8060D; Fri, 25 Oct 2019 12:12:26 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id 7485EF8036F; Fri, 25 Oct 2019 13:49:48 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08515F803A6
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 12:12:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08515F803A6
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="cl7vOEIt"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=2hzQdKTPCGo4lz5y2FJzsabHY9/f7A7Mmu6ykwVLubc=; b=cl7vOEItGG9J
- ZciEqdv1q+NYoCbsls0gE7G7MkjFfc6ASoyqb6YURyAL0c4OQxFpu8kbfURNy7vx00iRntq//8+oo
- CHsy9Kv7PpdIsTFqwJTYUMO16LJDPmQCZxmk9I9GBeTzevFNK2juCDjubpx2cGGWqICPBcTK1vcg+
- rBBTA=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iNwZo-0006dq-2s; Fri, 25 Oct 2019 10:12:12 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 7E126274326E; Fri, 25 Oct 2019 11:12:11 +0100 (BST)
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191024210318.30068-2-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20191025101211.7E126274326E@ypsilon.sirena.org.uk>
-Date: Fri, 25 Oct 2019 11:12:11 +0100 (BST)
-Cc: tiwai@suse.de, Jaska Uimonen <jaska.uimonen@intel.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: define INFO_ flags in dsp_ops" to
-	the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABCA6F802A0
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 13:49:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABCA6F802A0
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 25 Oct 2019 04:49:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,228,1569308400"; d="scan'208";a="373535405"
+Received: from mylly.fi.intel.com (HELO [10.237.72.180]) ([10.237.72.180])
+ by orsmga005.jf.intel.com with ESMTP; 25 Oct 2019 04:49:38 -0700
+To: Tzung-Bi Shih <tzungbi@google.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <CA+Px+wUAzwf1kYD8eMogE9Y6Euw4_-itc5EPWU19c_Sg6+ypQA@mail.gmail.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <226b1567-08bc-28f1-92e4-42ca04e42c9c@linux.intel.com>
+Date: Fri, 25 Oct 2019 14:49:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CA+Px+wUAzwf1kYD8eMogE9Y6Euw4_-itc5EPWU19c_Sg6+ypQA@mail.gmail.com>
+Content-Language: en-US
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>,
+ Benson Leung <bleung@google.com>, Hsin-yu Chao <hychao@google.com>
+Subject: Re: [alsa-devel] Questions about max98090 codec driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,229 +81,100 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Hi
 
-   ASoC: SOF: define INFO_ flags in dsp_ops
+On 10/24/19 9:23 PM, Tzung-Bi Shih wrote:
+> Hi,
+> 
+> I am studying an odd issue of max98090 codec on Baytrail-based
+> chromebook.  The issue is: when user playback and capture
+> simultaneously, it seems the PLL never get locked if msleep(10)
+> between the SHDN off and on
+> (https://elixir.bootlin.com/linux/v5.4-rc2/source/sound/soc/codecs/max98090.c#L2120).
+> The playback stream becomes silent and the console keeps printing "PLL
+> unlocked".  But, if comment out the msleep(10) between the SHDN off
+> and on, the issue fixed.  I am trying to find the reason but facing
+> further more questions and may need your inputs.
+> 
+My memory is vague but one thing came to my mind - is codec I2S master 
+or slave in your setup? I think we were using codec in slave mode only. 
+However don't know does PLL unlock issue occurs when codec is master.
 
-has been applied to the asoc tree at
+> 1. The commit b8a3ee820f7b ("ASoC: max98090: Add recovery for PLL lock
+> failure") enables ULK interrupts
+> (https://elixir.bootlin.com/linux/v5.4-rc2/source/sound/soc/codecs/max98090.c#L2088)
+> when PCM stream starting.  If max98090 claims its PLL is unlocked,
+> max98090_pll_work() get scheduled to workaround it by SHDN off and on
+> (https://elixir.bootlin.com/linux/v5.4-rc2/source/sound/soc/codecs/max98090.c#L2106).
+> 
+> I feel it is weird to sleep in max98090_pll_work().  Especially, at
+> this line https://elixir.bootlin.com/linux/v5.4-rc2/source/sound/soc/codecs/max98090.c#L2125
+> (it makes less sense to "wait" in another thread).  Note that, the
+> threaded IRQF_ONESHOT handler and max98090_pll_work() are in 2
+> different threads.
+> 
+> I guess the original intention is:
+> - disable ULK interrupt in IRQ handler
+> (https://elixir.bootlin.com/linux/v5.4-rc2/source/sound/soc/codecs/max98090.c#L2260)
+> - schedule max98090_pll_work() to workaround it
+> - wait 10ms to give PLL chance to lock
+> - enable ULK interrupt again
+> If max98090 claims its PLL is unlocked again, repeat the above by
+> receiving another ULK interrupt.
+> 
+No ULK interrupt is disabled until max98090_pll_det_enable_work() 
+enables it 10 ms after stream start.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+If I remember correctly we were getting quite often or always PLL unlock 
+interrupts shortly after stream start even PLL locked itself 
+successfully. On those cases workaround was kind of needless and 
+probably caused pop noise or similar.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+So idea was to activate PLL unlock detection after 10 ms and do the 
+workaround only if interrupt happens after that 10 ms "do not detect" 
+period. Liam please correct if I remember wrong.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Unfortunately, the odd issue seems not be fixed by my rough
+> implementation of these.
+> 
+> 2. According to the datasheet page 164 table 90
+> (https://datasheets.maximintegrated.com/en/ds/MAX98090.pdf), there are
+> some registers should only be adjusted when SHDN==0.  But I fail to
+> find max98090.c tries to set SHDN to 0 and restore it afterwards when
+> writing to these registers.  For example,
+> https://elixir.bootlin.com/linux/v5.4-rc2/source/sound/soc/codecs/max98090.c#L1897.
+> I am wondering if it would bring any side effects because the
+> datasheet states "Changing these settings during normal operation
+> (SHDN=1) can compromise device stability and performance
+> specifications."
+> 
+> 3. By searching some history data, I found a previous version did not
+> have the msleep(10) between the SHDN off and on
+> (https://crrev.com/c/191740, click the file name in the middle of the
+> window to see the diff.  Pardon me, I do not find another public
+> repository for this).  I am curious if anyone of you still remember
+> why the upstream version contains the msleep(10).  I am also curious
+> if anyone of your environment works well with the upstream version
+> max98090.c.
+> 
+Yeah, that's looks like the one of the Liam's original workarounds for 
+the issue. In that case looping 10 times. We were experimenting a lot 
+around the issue and the commit b8a3ee820f7b ("ASoC: max98090: Add 
+recovery for PLL lock failure") is the one combining our efforts 
+together in the single commit.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Don't remember what incarnation brought these 10 ms sleeps between 
+shutdown toggling and after. I'm guessing one for making sure codec 
+reaches the shutdown and another perhaps for limiting that workaround is 
+not run too soon again.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 27e322fabd508ba73ced625fc41f0b7ceee26416 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 24 Oct 2019 16:03:17 -0500
-Subject: [PATCH] ASoC: SOF: define INFO_ flags in dsp_ops
-
-Currently the INFO_ flags such as PAUSE/NO_PERIOD_WAKEUP are defined
-in the SOF PCM core, which doesn't scale. To account for platform
-variations, these flags need to be set in DSP ops.
-
-This patch only moves the definitions and does not change any
-functionality.
-
-Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191024210318.30068-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/imx/imx8.c  |  7 +++++++
- sound/soc/sof/intel/apl.c |  7 +++++++
- sound/soc/sof/intel/bdw.c |  9 ++++++++-
- sound/soc/sof/intel/byt.c | 21 +++++++++++++++++++++
- sound/soc/sof/intel/cnl.c |  7 +++++++
- sound/soc/sof/pcm.c       |  8 +++-----
- sound/soc/sof/sof-priv.h  |  3 +++
- 7 files changed, 56 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index 2a22b18e5ec0..cfefcfd92798 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -388,6 +388,13 @@ struct snd_sof_dsp_ops sof_imx8_ops = {
- 	/* DAI drivers */
- 	.drv = imx8_dai,
- 	.num_drv = 1, /* we have only 1 ESAI interface on i.MX8 */
-+
-+	/* ALSA HW info flags */
-+	.hw_info =	SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP
- };
- EXPORT_SYMBOL(sof_imx8_ops);
- 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 8dc7a5558da4..15d26e8d90a9 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -97,6 +97,13 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	.runtime_resume		= hda_dsp_runtime_resume,
- 	.runtime_idle		= hda_dsp_runtime_idle,
- 	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
-+
-+	/* ALSA HW info flags */
-+	.hw_info =	SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
- };
- EXPORT_SYMBOL(sof_apl_ops);
- 
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index bf961a8798a7..7b4cd1f456bf 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -591,7 +591,14 @@ const struct snd_sof_dsp_ops sof_bdw_ops = {
- 
- 	/* DAI drivers */
- 	.drv = bdw_dai,
--	.num_drv = ARRAY_SIZE(bdw_dai)
-+	.num_drv = ARRAY_SIZE(bdw_dai),
-+
-+	/* ALSA HW info flags */
-+	.hw_info =	SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
- };
- EXPORT_SYMBOL(sof_bdw_ops);
- 
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 07e5efe4945c..62edb959f1fc 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -532,6 +532,13 @@ const struct snd_sof_dsp_ops sof_tng_ops = {
- 	/* DAI drivers */
- 	.drv = byt_dai,
- 	.num_drv = 3, /* we have only 3 SSPs on byt*/
-+
-+	/* ALSA HW info flags */
-+	.hw_info =	SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
- };
- EXPORT_SYMBOL(sof_tng_ops);
- 
-@@ -693,6 +700,13 @@ const struct snd_sof_dsp_ops sof_byt_ops = {
- 	/* DAI drivers */
- 	.drv = byt_dai,
- 	.num_drv = 3, /* we have only 3 SSPs on byt*/
-+
-+	/* ALSA HW info flags */
-+	.hw_info =	SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
- };
- EXPORT_SYMBOL(sof_byt_ops);
- 
-@@ -753,6 +767,13 @@ const struct snd_sof_dsp_ops sof_cht_ops = {
- 	.drv = byt_dai,
- 	/* all 6 SSPs may be available for cherrytrail */
- 	.num_drv = ARRAY_SIZE(byt_dai),
-+
-+	/* ALSA HW info flags */
-+	.hw_info =	SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
- };
- EXPORT_SYMBOL(sof_cht_ops);
- 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 5b97bdfba823..e9cdcc040fb5 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -255,6 +255,13 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	.runtime_resume		= hda_dsp_runtime_resume,
- 	.runtime_idle		= hda_dsp_runtime_idle,
- 	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
-+
-+	/* ALSA HW info flags */
-+	.hw_info =	SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
- };
- EXPORT_SYMBOL(sof_cnl_ops);
- 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index d72798d2b302..9ba505cf5966 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -440,6 +440,7 @@ static int sof_pcm_open(struct snd_soc_component *component,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	const struct snd_sof_dsp_ops *ops = sof_ops(sdev);
- 	struct snd_sof_pcm *spcm;
- 	struct snd_soc_tplg_stream_caps *caps;
- 	int ret;
-@@ -469,11 +470,8 @@ static int sof_pcm_open(struct snd_soc_component *component,
- 				   le32_to_cpu(caps->period_size_min));
- 
- 	/* set runtime config */
--	runtime->hw.info = SNDRV_PCM_INFO_MMAP |
--			  SNDRV_PCM_INFO_MMAP_VALID |
--			  SNDRV_PCM_INFO_INTERLEAVED |
--			  SNDRV_PCM_INFO_PAUSE |
--			  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
-+	runtime->hw.info = ops->hw_info; /* platform-specific */
-+
- 	runtime->hw.formats = le64_to_cpu(caps->formats);
- 	runtime->hw.period_bytes_min = le32_to_cpu(caps->period_size_min);
- 	runtime->hw.period_bytes_max = le32_to_cpu(caps->period_size_max);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 5a11a8517fa5..2d40de5ee285 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -211,6 +211,9 @@ struct snd_sof_dsp_ops {
- 	/* DAI ops */
- 	struct snd_soc_dai_driver *drv;
- 	int num_drv;
-+
-+	/* ALSA HW info flags, will be stored in snd_pcm_runtime.hw.info */
-+	u32 hw_info;
- };
- 
- /* DSP architecture specific callbacks for oops and stack dumps */
 -- 
-2.20.1
-
+Jarkko
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
