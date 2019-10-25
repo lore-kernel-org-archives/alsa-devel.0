@@ -7,79 +7,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39EC3CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EFD6CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:14:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8C8F20578
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:14:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9CABC20663
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:14:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pk0OwtlC";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="g9hOXz0J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8C8F20578
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vnP2BYrG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="DTDXevpG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CABC20663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54B7A17BF;
-	Fri, 25 Oct 2019 12:13:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54B7A17BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E13717CB;
+	Fri, 25 Oct 2019 12:13:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E13717CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571998443;
-	bh=A9EGhUJptAYcz9z+m93UATGgLKsYURGHislt2gHj0d0=;
+	s=default; t=1571998489;
+	bh=5rEG1frObeBme5sjrZ84vVsg/7J0Htd5nnsJYAnyhFU=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Pk0OwtlChTatCu2llB1Ksx4HdRGT1U+CiEJUgMk1VW2WWqpOqgVec7KUA0qXByBCI
-	 8Igb8HKEnHJDmRNFSdFdFbQLUCrTb79zBhWQsbwzwm58fuaWeXW6oGXnE0luSzviMw
-	 aGl1pHRWkGn7h3ZIbP1ve6eSTS1790M96fTdJyM4=
+	b=vnP2BYrGVqGUw86SELAdUWLr2DgAOagvGKCV25qLb+7iw/2kRKWPdM/7RSNmGHaT9
+	 6kSKpCX7K7szqDQxCTPmjFcmjpcjmAcuR2ghoQFKGdGCD8hRUYy21aFjxM1Bno7hIB
+	 42TaCfThtts+CiarHPOwLdxM8sbB3/dNZwtXIcJc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A5DDF80600;
-	Fri, 25 Oct 2019 12:12:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B46A0F803D7;
+	Fri, 25 Oct 2019 12:12:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BD9EF805FC; Fri, 25 Oct 2019 12:12:17 +0200 (CEST)
+ id F36B5F8060F; Fri, 25 Oct 2019 12:12:21 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05FD0F802A0
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 12:12:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05FD0F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id C729AF803D7
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 12:12:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C729AF803D7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="g9hOXz0J"
+ header.b="DTDXevpG"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=nPstqSGlbrqx9rYBxlCzkyHpfiX9qsJrrzCx1t+x+fQ=; b=g9hOXz0JaZXi
- R7Se6725Vm54BB16CFopqpneImGrV5To2pAHWXRkhj0ZzEHJKpkn436dd+bWX2V3RWz3oHyQ7JRJA
- GzAfi6Akr4R3QwcnEle3aCjXqaVDcbcWB3cJaokq14A6Pk0s2ufy62ZmOQynR/grtHfa89GHIeW5o
- evBq8=;
+ List-Archive; bh=geDf6fJSaqePc7OBQy1ybM9MJ4Sdby/4gJf8lE2hTMk=; b=DTDXevpGdEkb
+ 6PmbdJncJYtj+IQAtnlYKKCxHKGHcX22GKHF0kLi0Yym82upSGSGePayuVGjOywYyjg0q2RsgwqAN
+ HcRomfljQtwHu0uSJ4jnXIlX0jv9fDgtqrFOgttNOXWW1icg8UQZnFD1WZPKM0QtdWJOY5w9r945N
+ rZAeU=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNwZo-0006du-Ez; Fri, 25 Oct 2019 10:12:12 +0000
+ id 1iNwZn-0006dp-UN; Fri, 25 Oct 2019 10:12:12 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E42082743293; Fri, 25 Oct 2019 11:12:11 +0100 (BST)
+ id 508C12743267; Fri, 25 Oct 2019 11:12:11 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Edward Cragg <edward.cragg@codethink.co.uk>
-In-Reply-To: <20191018154833.7560-2-ben.dooks@codethink.co.uk>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191024210318.30068-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191025101211.E42082743293@ypsilon.sirena.org.uk>
+Message-Id: <20191025101211.508C12743267@ypsilon.sirena.org.uk>
 Date: Fri, 25 Oct 2019 11:12:11 +0100 (BST)
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
- Ben Dooks <ben.dooks@codethink.co.uk>,
- Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org
-Subject: [alsa-devel] Applied "ASoC: tegra: add a TDM configuration
-	callback" to the asoc tree
+Cc: tiwai@suse.de, Jaska Uimonen <jaska.uimonen@intel.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: only support INFO_BATCH for
+	legacy platforms" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: tegra: add a TDM configuration callback
+   ASoC: SOF: Intel: only support INFO_BATCH for legacy platforms
 
 has been applied to the asoc tree at
 
@@ -125,72 +123,77 @@ to this mail.
 Thanks,
 Mark
 
-From 07932563686a6c51b26266c8572901c46fd1cd55 Mon Sep 17 00:00:00 2001
-From: Edward Cragg <edward.cragg@codethink.co.uk>
-Date: Fri, 18 Oct 2019 16:48:27 +0100
-Subject: [PATCH] ASoC: tegra: add a TDM configuration callback
+From 4c02a7bd43e22f4de53ad55b94d24e4388f712f0 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 24 Oct 2019 16:03:18 -0500
+Subject: [PATCH] ASoC: SOF: Intel: only support INFO_BATCH for legacy
+ platforms
 
-Add a callback to configure TDM settings for the Tegra30 I2S ASoC 'platform'
-driver.
+The current position update is not precise enough for PulseAudio to
+work reliably with the timer-based scheduling on Baytrail,
+Cherrytrail, Broadwell.
 
-Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
-[ben.dooks@codethink.co.uk: merge fix for power management]
-[ben.dooks@codethink.co.uk: add review change for fsync of 1 clock]
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20191018154833.7560-2-ben.dooks@codethink.co.uk
+Disable the NO_PERIOD_WAKEUP capability and use BATCH to signal that
+the position is only reliable and updated during period_elapsed
+events.
+
+This will be reverted when the firmware provides a more accurate
+position for those platforms.
+
+Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191024210318.30068-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra30_i2s.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/soc/sof/intel/bdw.c | 2 +-
+ sound/soc/sof/intel/byt.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 48a09c9d60be..8f8924060d9d 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -265,6 +265,34 @@ static int tegra30_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return 0;
- }
- 
-+static int tegra30_i2s_set_tdm(struct snd_soc_dai *dai,
-+			       unsigned int tx_mask, unsigned int rx_mask,
-+			       int slots, int slot_width)
-+{
-+	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	unsigned int mask, val;
-+
-+	dev_dbg(dai->dev, "%s: txmask=0x%08x rxmask=0x%08x slots=%d width=%d\n",
-+		 __func__, tx_mask, rx_mask, slots, slot_width);
-+
-+	mask = TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK |
-+	       TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_MASK |
-+	       TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_MASK;
-+
-+	val = (tx_mask << TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_SHIFT) |
-+	      (rx_mask << TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_SHIFT) |
-+	      ((slots - 1) << TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_SHIFT);
-+
-+	pm_runtime_get_sync(dai->dev);
-+	regmap_update_bits(i2s->regmap, TEGRA30_I2S_SLOT_CTRL, mask, val);
-+	/* set the fsync width to minimum of 1 clock width */
-+	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL,
-+			   TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_MASK, 0x0);
-+	pm_runtime_put(dai->dev);
-+
-+	return 0;
-+}
-+
- static int tegra30_i2s_probe(struct snd_soc_dai *dai)
- {
- 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-@@ -279,6 +307,7 @@ static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
- 	.set_fmt	= tegra30_i2s_set_fmt,
- 	.hw_params	= tegra30_i2s_hw_params,
- 	.trigger	= tegra30_i2s_trigger,
-+	.set_tdm_slot	= tegra30_i2s_set_tdm,
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index 7b4cd1f456bf..141dad554764 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -598,7 +598,7 @@ const struct snd_sof_dsp_ops sof_bdw_ops = {
+ 			SNDRV_PCM_INFO_MMAP_VALID |
+ 			SNDRV_PCM_INFO_INTERLEAVED |
+ 			SNDRV_PCM_INFO_PAUSE |
+-			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++			SNDRV_PCM_INFO_BATCH,
  };
+ EXPORT_SYMBOL(sof_bdw_ops);
  
- static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 62edb959f1fc..2abf80b3eb52 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -538,7 +538,7 @@ const struct snd_sof_dsp_ops sof_tng_ops = {
+ 			SNDRV_PCM_INFO_MMAP_VALID |
+ 			SNDRV_PCM_INFO_INTERLEAVED |
+ 			SNDRV_PCM_INFO_PAUSE |
+-			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++			SNDRV_PCM_INFO_BATCH,
+ };
+ EXPORT_SYMBOL(sof_tng_ops);
+ 
+@@ -706,7 +706,7 @@ const struct snd_sof_dsp_ops sof_byt_ops = {
+ 			SNDRV_PCM_INFO_MMAP_VALID |
+ 			SNDRV_PCM_INFO_INTERLEAVED |
+ 			SNDRV_PCM_INFO_PAUSE |
+-			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++			SNDRV_PCM_INFO_BATCH,
+ };
+ EXPORT_SYMBOL(sof_byt_ops);
+ 
+@@ -773,7 +773,7 @@ const struct snd_sof_dsp_ops sof_cht_ops = {
+ 			SNDRV_PCM_INFO_MMAP_VALID |
+ 			SNDRV_PCM_INFO_INTERLEAVED |
+ 			SNDRV_PCM_INFO_PAUSE |
+-			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++			SNDRV_PCM_INFO_BATCH,
+ };
+ EXPORT_SYMBOL(sof_cht_ops);
+ 
 -- 
 2.20.1
 
