@@ -2,88 +2,73 @@ Return-Path: <SRS0=ik9t=YS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD2DBCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 14:50:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44CA2CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 16:12:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F24421929
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 14:50:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DDA8D21872
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 16:12:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ABKQ1TKx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="itqpOatC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F24421929
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lh1nZS8D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDA8D21872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 875771848;
-	Fri, 25 Oct 2019 16:49:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 875771848
+	by alsa0.perex.cz (Postfix) with ESMTPS id B57961841;
+	Fri, 25 Oct 2019 18:11:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B57961841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572015048;
-	bh=S6SvH3MtvxEV+RXWZmnie6/gUFhlmTcW8jIud2u9zFo=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1572019933;
+	bh=Z3rqAFTbejTR/05Nn1fdcogcY8ctFEH9P9zq7t0PYhA=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ABKQ1TKxgZ9l13r3ug+fdAPi6Xy2jvMf4f+ebY1wZKt5Ndpf4zh5uuZqJnk/GPNxs
-	 JNEO/v6huSMPbn7H209OCU5elUkVAyqxI7eEBPbULH1AQukHtp7S1wx6DTbjbgpyMq
-	 mW/2JgfQRYhUizJhUACo5FIM+QJ/6uXLrnddpH9s=
+	b=Lh1nZS8DTur1J5+6zEWQrCNM8/R6wT1lk63qwMncGiVnCK+aYLrpRWlMkCQEYeyr/
+	 EH/LVKqUJPsCKL2OhKRARs+VbzAG9d6F2ff4EYNilE8o0F2UFMht40m/rNbCN6Pve1
+	 xWpNb/P9/evhkeWoi1qUf7tGWwxQYf6fH08PtKao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 176B1F8036F;
-	Fri, 25 Oct 2019 16:49:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 275FCF80112;
+	Fri, 25 Oct 2019 18:11:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2767F803D7; Fri, 25 Oct 2019 16:49:56 +0200 (CEST)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 03D61F8036F; Fri, 25 Oct 2019 18:11:22 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87BA4F80112
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 16:49:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87BA4F80112
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="itqpOatC"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=tG8UDzhUqNZ1pZMlQf7wholnXAxkucrMRQfr2IEHAFo=; b=itqpOatC52Ahj8T/B5my2EPre
- 5OnOHVbkXcQfL11TAT1gJCY7wJ9zv3YLz85XgJYOg5jeSOnHbCxYKjon3M3mVnrjUQHGEkzIm4L5v
- 0qbXVu+EjUEybYtG4UMWG7mQCCV6z+pruSU3a2KEm/ud/knyyU0f/nzq4uI78AbArGW3g=;
-Received: from host86-174-61-171.range86-174.btcentralplus.com
- ([86.174.61.171] helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1iO0uX-00074h-4U; Fri, 25 Oct 2019 14:49:53 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 59296D020AD; Fri, 25 Oct 2019 15:49:52 +0100 (BST)
-Date: Fri, 25 Oct 2019 15:49:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20191025144952.GF4568@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47138F802A0
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 18:11:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47138F802A0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 55EBEB692;
+ Fri, 25 Oct 2019 16:11:18 +0000 (UTC)
+Date: Fri, 25 Oct 2019 18:11:18 +0200
+Message-ID: <s5heez0oleh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <83e4dc16-07e7-aafb-db43-01a89e31270b@perex.cz>
 References: <20191025123038.19728-1-perex@perex.cz>
  <s5hk18tuhio.wl-tiwai@suse.de>
  <bce57a56-99d0-62d7-1d53-099a75349341@perex.cz>
  <s5h36fgvs0m.wl-tiwai@suse.de>
  <9403a6a7-9b7e-c2a4-5acf-50d6cbaea7c7@perex.cz>
  <s5hwocsucfp.wl-tiwai@suse.de>
-MIME-Version: 1.0
-In-Reply-To: <s5hwocsucfp.wl-tiwai@suse.de>
-X-Cookie: Keep out of the sunlight.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ <83e4dc16-07e7-aafb-db43-01a89e31270b@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [alsa-devel] [PATCH] ASoC: change 'HDMI/DP, pcm=' to 'HDMI/DP,
- pcm=' Jack control names
+	pcm=' Jack control names
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,72 +81,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8432224023795865618=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 25 Oct 2019 16:39:44 +0200,
+Jaroslav Kysela wrote:
+> 
+> Dne 25. 10. 19 v 16:28 Takashi Iwai napsal(a):
+> > On Fri, 25 Oct 2019 16:18:20 +0200,
+> > Jaroslav Kysela wrote:
+> >>
+> >> Dne 25. 10. 19 v 16:06 Takashi Iwai napsal(a):
+> >>> On Fri, 25 Oct 2019 15:57:50 +0200,
+> >>> Jaroslav Kysela wrote:
+> >>>>
+> >>>> Dne 25. 10. 19 v 14:38 Takashi Iwai napsal(a):
+> >>>>> On Fri, 25 Oct 2019 14:30:38 +0200,
+> >>>>> Jaroslav Kysela wrote:
+> >>>>>>
+> >>>>>> There is an inconsistency in the names for the HDMI/DP Jack control
+> >>>>>> names between some ASoC drivers and the HDA HDMI driver which
+> >>>>>> introduced this naming in 2011.
+> >>>>>>
+> >>>>>> There might be an impact for the user space (UCM). I will fix
+> >>>>>> the UCM configurations when this patch is applied.
+> >>>>>>
+> >>>>>> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> >>>>>> Cc: Mark Brown <broonie@kernel.org>
+> >>>>>> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> >>>>>
+> >>>>> Yes, that's a known problem, and I left them so far just for keeping
+> >>>>> the already existing stuff working.
+> >>>>>
+> >>>>> Won't this break the current Chromebooks user-space?
+> >>>>
+> >>>> I would really expect to upgrade UCM configs for the recent kernels in
+> >>>> this case. I believe, those sort of issues are better to fix early
+> >>>> than lately. I know, the transition might cause a little issues, but
+> >>>> usually "do upgrade answer" will help. I don't think that we speak
+> >>>> about a large group of users here.
+> >>>
+> >>> Well, that's obviously against our dont-breaking-user-space rule.
+> >>> The UCM profiles have been widely used on Chromebooks, and they can't
+> >>> upgrade easily.
+> >>>
+> >>> So, I believe this is a case where we have to live with messes.
+> >>
+> >> If we speak about Google's kernels, they can apply a revert (depends
+> >> on their upgrade/maintenance policy). If users use the standard Linux
+> >> distributions, then we are fine, don't we?
+> >
+> > No, we can't break the already existing user-space.  That's what Linus
+> > suggested repeatedly over years, too.
+> >
+> >> I would make an exception for the dont-breaking-user-space policy in
+> >> this case. I am sure that the UCM configs will stabilize quickly. And
+> >> this bad jack name is against our control name policy. It's just a
+> >> bug.
+> >
+> > There is no exception for that, it's a so simple rule.  If something
+> > gets *practically* broken by the kernel, it's no-go.  User-space is
+> > user-space, and it doesn't matter whether it's upstream or not.
+> >
+> > And, even if everything is upstream, imagine that user installs two
+> > different kernels, and switches with each other occasionally for
+> > whatever reason.  The UCM upgrade solution won't work, either.
+> 
+> It's the corner case with the really low impact. Users do not do this
+> usually. Ok, I will be silent again. It seems that we cannot get an
+> agreement on this simple thing. I just prefer the fix rather than
+> nothing.
 
---===============8432224023795865618==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="IU5/I01NYhRvwH70"
-Content-Disposition: inline
+I'd love to fix things, too, of course.  But we need changing our
+mindset: what we - the kernel devs - can control is only inside the
+kernel.  Even the upstream alsa-lib and UCM profiles are merely
+reference implementations.
 
 
---IU5/I01NYhRvwH70
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thanks,
 
-On Fri, Oct 25, 2019 at 04:28:26PM +0200, Takashi Iwai wrote:
-> Jaroslav Kysela wrote:
-> > Dne 25. 10. 19 v 16:06 Takashi Iwai napsal(a):
-
-> > > Well, that's obviously against our dont-breaking-user-space rule.
-> > > The UCM profiles have been widely used on Chromebooks, and they can't
-> > > upgrade easily.
-
-> > > So, I believe this is a case where we have to live with messes.
-
-> > If we speak about Google's kernels, they can apply a revert (depends
-> > on their upgrade/maintenance policy). If users use the standard Linux
-> > distributions, then we are fine, don't we?
-
-> No, we can't break the already existing user-space.  That's what Linus
-> suggested repeatedly over years, too.
-
-I agree.  There's some systems where we can get away with
-incompatible changes as realistically the users are doing full
-system upgrades and don't care but the Chromebooks definitely
-aren't one of them, we've had issues reported with breakages on
-them due to changes with the x86 DSP firmwares.  It's mainly
-people sideloading a regular Linux userspace along with the
-ChromeOS kernel AIUI.
-
---IU5/I01NYhRvwH70
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl2zC48ACgkQJNaLcl1U
-h9BArAgAhvXKnyq0vXR1K0u8AHcWiagbmmBGL4N1jFVMX2muswj9cxQ8mSiT77WS
-nlWeONJhEx2aG0X06Nbwslu4yaxQwxB7ynTZMQNwdON1cEzOFmkVi4Kw25kHwrsV
-3DscyJVHPHqJ8Acyx+zduh8uS1RF+h6jJ78OuOSj/llKmX//csSVX4vc+Ag5bITT
-X/dD8ERCsfr9C6ifX+kOn7rNCMsNN5sQ0zKKtyR/b0g5WKVQ8eZPs2A6hLjb5HRH
-BenSNccYYCyo0XbN/nIjEiOI6lcHNYqLDkDXpcZ+D+r8PWl3R1vDxhmQbaysthEb
-GLdvRD44+A46QKDJ4e8+N4XzeIDMfw==
-=/bbk
------END PGP SIGNATURE-----
-
---IU5/I01NYhRvwH70--
-
---===============8432224023795865618==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8432224023795865618==--
