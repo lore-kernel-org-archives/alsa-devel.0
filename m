@@ -2,74 +2,82 @@ Return-Path: <SRS0=ik9t=YS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F869CA9EBD
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 14:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 243A4CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 14:40:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C95121D71
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 14:36:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A0F4421D7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 14:40:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M/WF5OcG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C95121D71
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iU204PVU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="mTwPutmy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0F4421D7F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AF001822;
-	Fri, 25 Oct 2019 16:35:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AF001822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B9F11826;
+	Fri, 25 Oct 2019 16:39:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B9F11826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572014206;
-	bh=4Ps/e8TsEy5DshJiaOb0fLf/LrLApHFkBWDta/YgUC8=;
+	s=default; t=1572014444;
+	bh=Zx9qsr9FsrArv7azAucsYy6Pdrjn+UC43T1CJHnfrNw=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M/WF5OcGv6ITAA8/nqlbhFzqsq/gXRVQdhUV1vvj1OBBYJTt8N3EKE+pNkiIpqoun
-	 /e6TIT4fkP+anSarER0GDwRnyajdRQ2W8vm0dgAxi3K1CAEDQq4udHcS86BkJr4uHT
-	 xW8fBF4qMfx6MN8hvKeDM2KiCWQ8tUkb2PO+TdaA=
+	b=iU204PVUvsYpYNi4WPt8RzY72cx3vgxVjFN8VZYlbIVqwPsP2ikZ/IXl5ZSf3QEBu
+	 k+Ttyh/5JxuPyj5BcIOmRU5h7kixzz6BWSWgEQV/i7f50myFpa4tuVbQNqTPis2zL9
+	 uY0Ii9ox5hqT5/leD5N3mcY0HXJEIihu4r+6vTfM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F62FF80112;
-	Fri, 25 Oct 2019 16:35:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A46CF8036F;
+	Fri, 25 Oct 2019 16:39:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6AD2AF80393; Fri, 25 Oct 2019 16:35:54 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 03447F80393; Fri, 25 Oct 2019 16:39:52 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06337F80112
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 16:35:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06337F80112
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 25 Oct 2019 07:35:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,228,1569308400"; d="scan'208";a="223938126"
-Received: from bnail-mobl.amr.corp.intel.com (HELO [10.252.140.167])
- ([10.252.140.167])
- by fmsmga004.fm.intel.com with ESMTP; 25 Oct 2019 07:35:48 -0700
-To: Jaroslav Kysela <perex@perex.cz>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AF07F80368
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 16:39:49 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A3462A0040;
+ Fri, 25 Oct 2019 16:39:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A3462A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1572014388; bh=0xqJjy2+Z5BtAnsxOcjJEkg/0GLq+RLvM7oz1MK76dI=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=mTwPutmy7O38nyUSQ0bC2OaO20mI9weDUI2oLE9umE4EN7r14Q0hfICvQ6yreWfDV
+ 3xDtG4TEBInseMbPDzWLGFkyRTxjAek8J5aK7CcNo76Vqtlw5ROnH0KqnqInAhKX/Z
+ +ZmChzQ1LYIEvOvPxVRAdu8I4NydeTtGpV200v40=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Fri, 25 Oct 2019 16:39:44 +0200 (CEST)
+To: Takashi Iwai <tiwai@suse.de>
 References: <20191025123038.19728-1-perex@perex.cz>
- <alpine.DEB.2.21.1910251542360.16459@zeliteleevi>
- <6b59a565-faf7-2b70-4e04-546a5ba507c3@perex.cz>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <432032a3-26f1-bd58-278b-54f4f6ebe3e4@linux.intel.com>
-Date: Fri, 25 Oct 2019 09:35:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ <s5hk18tuhio.wl-tiwai@suse.de>
+ <bce57a56-99d0-62d7-1d53-099a75349341@perex.cz>
+ <s5h36fgvs0m.wl-tiwai@suse.de>
+ <9403a6a7-9b7e-c2a4-5acf-50d6cbaea7c7@perex.cz>
+ <s5hwocsucfp.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <83e4dc16-07e7-aafb-db43-01a89e31270b@perex.cz>
+Date: Fri, 25 Oct 2019 16:39:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <6b59a565-faf7-2b70-4e04-546a5ba507c3@perex.cz>
+In-Reply-To: <s5hwocsucfp.wl-tiwai@suse.de>
 Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [alsa-devel] [PATCH] ASoC: change 'HDMI/DP, pcm=' to 'HDMI/DP,
  pcm=' Jack control names
 X-BeenThere: alsa-devel@alsa-project.org
@@ -89,27 +97,83 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 10/25/19 9:04 AM, Jaroslav Kysela wrote:
-> Dne 25. 10. 19 v 14:44 Kai Vehmanen napsal(a):
->> Hi,
+Dne 25. 10. 19 v 16:28 Takashi Iwai napsal(a):
+> On Fri, 25 Oct 2019 16:18:20 +0200,
+> Jaroslav Kysela wrote:
 >>
->> On Fri, 25 Oct 2019, Jaroslav Kysela wrote:
+>> Dne 25. 10. 19 v 16:06 Takashi Iwai napsal(a):
+>>> On Fri, 25 Oct 2019 15:57:50 +0200,
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> Dne 25. 10. 19 v 14:38 Takashi Iwai napsal(a):
+>>>>> On Fri, 25 Oct 2019 14:30:38 +0200,
+>>>>> Jaroslav Kysela wrote:
+>>>>>>
+>>>>>> There is an inconsistency in the names for the HDMI/DP Jack control
+>>>>>> names between some ASoC drivers and the HDA HDMI driver which
+>>>>>> introduced this naming in 2011.
+>>>>>>
+>>>>>> There might be an impact for the user space (UCM). I will fix
+>>>>>> the UCM configurations when this patch is applied.
+>>>>>>
+>>>>>> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+>>>>>> Cc: Mark Brown <broonie@kernel.org>
+>>>>>> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>>>
+>>>>> Yes, that's a known problem, and I left them so far just for keeping
+>>>>> the already existing stuff working.
+>>>>>
+>>>>> Won't this break the current Chromebooks user-space?
+>>>>
+>>>> I would really expect to upgrade UCM configs for the recent kernels in
+>>>> this case. I believe, those sort of issues are better to fix early
+>>>> than lately. I know, the transition might cause a little issues, but
+>>>> usually "do upgrade answer" will help. I don't think that we speak
+>>>> about a large group of users here.
+>>>
+>>> Well, that's obviously against our dont-breaking-user-space rule.
+>>> The UCM profiles have been widely used on Chromebooks, and they can't
+>>> upgrade easily.
+>>>
+>>> So, I believe this is a case where we have to live with messes.
 >>
->>> There is an inconsistency in the names for the HDMI/DP Jack control
->>> names between some ASoC drivers and the HDA HDMI driver which
->>> introduced this naming in 2011.
->>
->> this will break a lot of existing devices that are using out-of-tree UCM
->> files, so I'm not sure this is worth the effort.
+>> If we speak about Google's kernels, they can apply a revert (depends
+>> on their upgrade/maintenance policy). If users use the standard Linux
+>> distributions, then we are fine, don't we?
 > 
-> I don't agree. The out-of-tree UCMs should go to upstream anyway, except 
-> that they are unusable for the standard users.
+> No, we can't break the already existing user-space.  That's what Linus
+> suggested repeatedly over years, too.
+> 
+>> I would make an exception for the dont-breaking-user-space policy in
+>> this case. I am sure that the UCM configs will stabilize quickly. And
+>> this bad jack name is against our control name policy. It's just a
+>> bug.
+> 
+> There is no exception for that, it's a so simple rule.  If something
+> gets *practically* broken by the kernel, it's no-go.  User-space is
+> user-space, and it doesn't matter whether it's upstream or not.
+> 
+> And, even if everything is upstream, imagine that user installs two
+> different kernels, and switches with each other occasionally for
+> whatever reason.  The UCM upgrade solution won't work, either.
 
-Isn't there a problem due to UCM extensions as well? I vaguely recall 
-having to modify the Cherrytrail UCMs I took from the Chrome adhd 
-repository since the parsing wouldn't work with the standard alsa-lib.
+It's the corner case with the really low impact. Users do not do this usually. 
+Ok, I will be silent again. It seems that we cannot get an agreement on this 
+simple thing. I just prefer the fix rather than nothing.
+
+				Jaroslav
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
