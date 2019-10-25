@@ -2,70 +2,73 @@ Return-Path: <SRS0=ik9t=YS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC291CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 12:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1603ACA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 12:31:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6DE821D71
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 12:13:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 145D021D7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 12:31:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K7Ad65ai"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6DE821D71
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JMvSyADJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="dNUlP+Pv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 145D021D7F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6450E17BB;
-	Fri, 25 Oct 2019 14:12:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6450E17BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED2D117C6;
+	Fri, 25 Oct 2019 14:30:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED2D117C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572005578;
-	bh=xIqXJP/SOYeKGp8wgrrcuSfUHWc2WFnxQG66BXT+92E=;
+	s=default; t=1572006703;
+	bh=6BeiI1CvBYAfUOkkX258Z8FV6LP4PUKA9d3t3tfhp2o=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=K7Ad65ai+gHtnvI0Sa6kTfzjIzq3voh3zS12vR/bbVnONTwsYPce5zIgsAhBZ5ot9
-	 +eO63F/v18uziMtGVHxVOu4hAUBPXkcFjUxjaUY/Bt28GgGmEtDUFc/3u2nWjB6C4Q
-	 jM1FJ1NDW4fsBfMlVVsguZv9j7AZCCuOY+C7Q2dw=
+	b=JMvSyADJKYzMCecz8tYEd0s3o01dg+n2zqMJlWIGMG8Oqyk9uQwwZ5UZHm4ZQbxzN
+	 gPzJADx9W2riA1smLF4//gKTGUfDHN6W6SmWIkHV5T8OhiNK9TM5oIx+1Chn1ginYy
+	 L+FXVlSDZ6O5+DlvD7dyZks6jJESr1T+RfWNZxQ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E64BFF80368;
-	Fri, 25 Oct 2019 14:12:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B6CBF80368;
+	Fri, 25 Oct 2019 14:30:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0F09F8036F; Fri, 25 Oct 2019 14:12:06 +0200 (CEST)
-Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E1FC6F8036F; Fri, 25 Oct 2019 14:30:50 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 000CDF80112
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 14:12:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 000CDF80112
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
- by Forcepoint Email with ESMTP id 738D24CAAFE8FB8B20EE;
- Fri, 25 Oct 2019 20:11:59 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Fri, 25 Oct 2019
- 20:11:49 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <mripard@kernel.org>, <wens@csie.org>,
- <dannym@scratchpost.org>, <kuninori.morimoto.gx@renesas.com>,
- <tglx@linutronix.de>, <yuehaibing@huawei.com>,
- <georgii.staroselskii@emlid.com>
-Date: Fri, 25 Oct 2019 20:08:01 +0800
-Message-ID: <20191025120801.16236-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46A39F802A0
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 14:30:47 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4915EA003F;
+ Fri, 25 Oct 2019 14:30:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 4915EA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1572006647; bh=hJvcVBTOr7T5IdXIuSj+KkffZ617card5ofYFudctqY=;
+ h=From:To:Cc:Subject:Date:From;
+ b=dNUlP+PvyMB4g/jtX0aoQRLpAQI5HHBjdTmU1+Qm3M1Hnu0RJT4N5FihSO6reOsg9
+ Trd+uB+2ktMgcMOAPuNzk3K6Mq5bPxuUipNq3veM7Dl/2+97S9ISoWh+JuBx6YMzXW
+ 4JGWySqvI0vTHr4LpZbJ8IrKH5nwCTwJKNbrcEK8=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Fri, 25 Oct 2019 14:30:42 +0200 (CEST)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Date: Fri, 25 Oct 2019 14:30:38 +0200
+Message-Id: <20191025123038.19728-1-perex@perex.cz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH -next] ASoC: sunxi: sun4i-codec: remove
-	unneeded semicolon
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH] ASoC: change 'HDMI/DP, pcm=' to 'HDMI/DP,
+	pcm=' Jack control names
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,48 +86,213 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-remove unneeded semicolon.
+There is an inconsistency in the names for the HDMI/DP Jack control
+names between some ASoC drivers and the HDA HDMI driver which
+introduced this naming in 2011.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+There might be an impact for the user space (UCM). I will fix
+the UCM configurations when this patch is applied.
+
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sunxi/sun4i-codec.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/sound/designs/control-names.rst   | 5 +++--
+ sound/soc/intel/boards/bxt_da7219_max98357a.c   | 2 +-
+ sound/soc/intel/boards/bxt_rt298.c              | 2 +-
+ sound/soc/intel/boards/glk_rt5682_max98357a.c   | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98357a.c   | 2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c    | 2 +-
+ sound/soc/intel/boards/kbl_rt5660.c             | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_max98927.c    | 2 +-
+ sound/soc/intel/boards/skl_hda_dsp_common.c     | 2 +-
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 2 +-
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c   | 2 +-
+ sound/soc/intel/boards/skl_rt286.c              | 2 +-
+ sound/soc/intel/boards/sof_rt5682.c             | 2 +-
+ 13 files changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index ee448d5..34f3e0b 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1442,7 +1442,7 @@ static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
- 	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
--	};
-+	}
+diff --git a/Documentation/sound/designs/control-names.rst b/Documentation/sound/designs/control-names.rst
+index 7fedd0f33cd9..a5f6e3842df8 100644
+--- a/Documentation/sound/designs/control-names.rst
++++ b/Documentation/sound/designs/control-names.rst
+@@ -50,7 +50,7 @@ Internal	internal
  
- 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
- 	if (!card->dai_link)
-@@ -1480,7 +1480,7 @@ static struct snd_soc_card *sun8i_h3_codec_create_card(struct device *dev)
- 	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
--	};
-+	}
+ SOURCE
+ ~~~~~~
+-===================	=================================================
++===================	===================================================
+ Master
+ Master Mono
+ Hardware Master
+@@ -92,7 +92,8 @@ SPDIF			output only
+ SPDIF In
+ Digital In
+ HDMI/DP			either HDMI or DisplayPort
+-===================	=================================================
++HDMI/DP,pcm=<num>       either HDMI or DisplayPort with the PCM device link
++===================	===================================================
  
- 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
- 	if (!card->dai_link)
-@@ -1518,7 +1518,7 @@ static struct snd_soc_card *sun8i_v3s_codec_create_card(struct device *dev)
- 	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
--	};
-+	}
- 
- 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
- 	if (!card->dai_link)
+ Exceptions (deprecated)
+ -----------------------
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index ac1dea5f9d11..b49028c6fd10 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -618,7 +618,7 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &broxton_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index adf416a49b48..caaf2f2af287 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -530,7 +530,7 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &broxton_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index bd2d371f2acd..5474f28e0c31 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -548,7 +548,7 @@ static int glk_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &geminilake_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index 537a88932bb6..367415efed9b 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -548,7 +548,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &skylake_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 829f95fc4179..b30c2148d1f4 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -977,7 +977,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &kabylake_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
+index 74fe1f3a5479..0965d1f02b2c 100644
+--- a/sound/soc/intel/boards/kbl_rt5660.c
++++ b/sound/soc/intel/boards/kbl_rt5660.c
+@@ -470,7 +470,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &skylake_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 7cefda341fbf..9f420e978459 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -888,7 +888,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &skylake_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
+index 58409b6e476e..f717b1d179bd 100644
+--- a/sound/soc/intel/boards/skl_hda_dsp_common.c
++++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
+@@ -139,7 +139,7 @@ int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			 "HDMI/DP, pcm=%d Jack", pcm->device);
++			 "HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					    SND_JACK_AVOUT, &pcm->hdmi_jack,
+ 					    NULL, 0);
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 3ce8efbeed12..b009e2df25d3 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -607,7 +607,7 @@ static int skylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT,
+ 					&skylake_hdmi[i],
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 1a7ac8bdf543..0a6e650dc698 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -648,7 +648,7 @@ static int skylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT,
+ 					&skylake_hdmi[i],
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 231349a47cc9..56ee4b55dce9 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -489,7 +489,7 @@ static int skylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					SND_JACK_AVOUT, &skylake_hdmi[i],
+ 					NULL, 0);
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 4f6e58c3954a..862a7e35cb5c 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -277,7 +277,7 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		component = pcm->codec_dai->component;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			 "HDMI/DP, pcm=%d Jack", pcm->device);
++			 "HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 					    SND_JACK_AVOUT, &sof_hdmi[i],
+ 					    NULL, 0);
 -- 
-2.7.4
-
-
+2.20.1
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
