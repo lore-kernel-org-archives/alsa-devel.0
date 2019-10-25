@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B86BCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 22:56:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 734E3CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:05:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5987205F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 22:56:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C9A821D7B
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:04:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZHNvqmQa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5987205F4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b1RM+cJd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C9A821D7B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 067EA18FE;
-	Sat, 26 Oct 2019 00:56:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 067EA18FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EDA21ABF;
+	Sat, 26 Oct 2019 00:58:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EDA21ABF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572044216;
-	bh=fjr1JiMAafx1HyMbhCFiLIs3V8aeilgFRAYMRoHfeGw=;
+	s=default; t=1572044333;
+	bh=rXXky56/vRlOm9lCL1UZt0sKs5V6a9n1HVuKjozn10o=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZHNvqmQaa6iOUeJIq33d+mBMYdkwHezkaMbbkCU7dMMkkgoTdBI72gelIPcn8NgWB
-	 np8adGQQLSFgyWmujXBEdp9778nXLvLTPxWMLGacJ11MCt8icYDN5ddO+tzia1ra6w
-	 YRgkiK16hUe/XbgDcMy33hxln2cfm8fHEUDg0MY8=
+	b=b1RM+cJdAlFRjFiKjoKMiwTu2sQ0KJair6/s+GzZxsGQCHNt4o3oPBlKdD+YumqDQ
+	 Zc1ZZqjjjhV71qJcAM5m7O2PyJSZY+K5kipE7jbSwZr5vgH5FTlI5ZG+bBBp2McEvW
+	 8lg1fK9jsMsC3o3wZJZftvLo1gjHSqI6RL0D9rAc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 219C0F80771;
-	Sat, 26 Oct 2019 00:42:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29E2AF807C3;
+	Sat, 26 Oct 2019 00:42:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0ED78F8065D; Sat, 26 Oct 2019 00:42:10 +0200 (CEST)
+ id 26097F80675; Sat, 26 Oct 2019 00:42:14 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74E5EF80611
- for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2019 00:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74E5EF80611
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C71FF80635
+ for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2019 00:41:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C71FF80635
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 25 Oct 2019 15:41:51 -0700
+ 25 Oct 2019 15:41:53 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,230,1569308400"; d="scan'208";a="210458226"
+X-IronPort-AV: E=Sophos;i="5.68,230,1569308400"; d="scan'208";a="210458234"
 Received: from archagam-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.252.139.180])
- by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2019 15:41:50 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2019 15:41:53 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri, 25 Oct 2019 17:41:17 -0500
-Message-Id: <20191025224122.7718-22-pierre-louis.bossart@linux.intel.com>
+Date: Fri, 25 Oct 2019 17:41:20 -0500
+Message-Id: <20191025224122.7718-25-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191025224122.7718-1-pierre-louis.bossart@linux.intel.com>
 References: <20191025224122.7718-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 21/26] ASoC: SOF: PM: implement
-	prepare/complete callbacks
+Subject: [alsa-devel] [PATCH 24/26] ASoC: SOF: return -ENOTSUPP if D0I3 is
+	not supported
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,60 +86,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Keyon Jie <yang.jie@linux.intel.com>
 
-Implement the prepare() and complete() callbacks for power management,
-initialize s0_suspend flag at prepare(), and reset it at complete().
+No set_power_state ops means that the platform doesn't support D0i3,
+return -ENOTSUPP for the case.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pm.c       | 23 +++++++++++++++++++++++
- sound/soc/sof/sof-priv.h |  2 ++
- 2 files changed, 25 insertions(+)
+ sound/soc/sof/ops.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 584241e9734a..99e4e6ffff74 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -439,3 +439,26 @@ int snd_sof_suspend(struct device *dev)
- 	return sof_suspend(dev, false);
- }
- EXPORT_SYMBOL(snd_sof_suspend);
-+
-+int snd_sof_prepare(struct device *dev)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+
-+#if defined(CONFIG_ACPI)
-+	sdev->s0_suspend = acpi_target_system_state() == ACPI_STATE_S0;
-+#else
-+	/* will suspend to S3 by default */
-+	sdev->s0_suspend = false;
-+#endif
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_prepare);
-+
-+void snd_sof_complete(struct device *dev)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+
-+	sdev->s0_suspend = false;
-+}
-+EXPORT_SYMBOL(snd_sof_complete);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index c2541d020bde..6408ac88a3e5 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -492,6 +492,8 @@ int snd_sof_runtime_resume(struct device *dev);
- int snd_sof_runtime_idle(struct device *dev);
- int snd_sof_resume(struct device *dev);
- int snd_sof_suspend(struct device *dev);
-+int snd_sof_prepare(struct device *dev);
-+void snd_sof_complete(struct device *dev);
- int snd_sof_set_d0_substate(struct snd_sof_dev *sdev,
- 			    enum sof_d0_substate d0_substate);
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index d7c8fc06f961..93512dcbaacd 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -199,7 +199,8 @@ static inline int snd_sof_dsp_set_power_state(struct snd_sof_dev *sdev,
+ 	if (sof_ops(sdev)->set_power_state)
+ 		return sof_ops(sdev)->set_power_state(sdev, substate);
  
+-	return 0;
++	/* D0 substate is not supported */
++	return -ENOTSUPP;
+ }
+ 
+ /* debug */
 -- 
 2.20.1
 
