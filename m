@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6BF6CA9EBC
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 512B5CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:09:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F38421D81
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:05:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C7D3D21D82
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:09:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GJQM9cAX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F38421D81
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e01h9pYS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7D3D21D82
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DBCC1AB5;
-	Sat, 26 Oct 2019 00:57:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DBCC1AB5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58E141AD6;
+	Sat, 26 Oct 2019 00:59:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58E141AD6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572044294;
-	bh=xk7/hD0AT8ix/zfKiNCkFlbF2gn6XCin3qD365/vTUI=;
+	s=default; t=1572044413;
+	bh=y9dXLx6+rlVPIi4MGaSv1YdGnYLPHsLIDVrEuXAvmEw=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GJQM9cAX+DjloaVLVQmdVMU2r3AAOAyEBZqzUs3mMAB8xRNPClBpBMVxhl9inZ/Wj
-	 ZfyABb6LtVxJJiWf6ueLo9i/KHPwFsb+yF2nLkEQ+XO8AhrtR+FoCqckfEfhpHxRWs
-	 CR1dUHq/r0L4ySETrgjF0VtRujfmHEYaOcab24yU=
+	b=e01h9pYS7gryx1k/I2HqTw55Fwn+6X3vLZV9GcYc1eUv7DWg+Oo5GjrU2yDrzCeG3
+	 BaC/nmcGbE6S3QLfP4H43DsqTlr1gZTru8Z/lv+tj11TamAhTxNbjD+X0ucppEjglW
+	 xQnSbUWq3+1rp8/nzzJhBjwYE9DHpSB+J4r/6GEU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6BA0F80797;
-	Sat, 26 Oct 2019 00:42:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62A35F8085D;
+	Sat, 26 Oct 2019 00:42:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33D32F8065E; Sat, 26 Oct 2019 00:42:13 +0200 (CEST)
+ id 5E6F1F8063A; Sat, 26 Oct 2019 00:42:15 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0378AF802A0
- for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2019 00:41:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0378AF802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14999F80637
+ for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2019 00:41:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14999F80637
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 25 Oct 2019 15:41:52 -0700
+ 25 Oct 2019 15:41:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,230,1569308400"; d="scan'208";a="210458229"
+X-IronPort-AV: E=Sophos;i="5.68,230,1569308400"; d="scan'208";a="210458236"
 Received: from archagam-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.252.139.180])
- by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2019 15:41:51 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2019 15:41:53 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri, 25 Oct 2019 17:41:18 -0500
-Message-Id: <20191025224122.7718-23-pierre-louis.bossart@linux.intel.com>
+Date: Fri, 25 Oct 2019 17:41:21 -0500
+Message-Id: <20191025224122.7718-26-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191025224122.7718-1-pierre-louis.bossart@linux.intel.com>
 References: <20191025224122.7718-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 22/26] ASoC: SOF: ignore suspend/resume for
-	D0ix compatible streams
+Subject: [alsa-devel] [PATCH 25/26] ASoC: SOF: PM: Add support for DSP D0i3
+	state when entering S0ix
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,125 +86,81 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Keyon Jie <yang.jie@linux.intel.com>
 
-During system suspend, the PM framework will freeze all applications and
-the ALSA/ASoC core will suspend all RUNNING PCM streams.
-
-However, D0ix-compatible PCM streams should keep the related pipelines
-active in the DSP when the system is entering S0ix. The TRIGGER_SUSPEND
-event is trapped in such cases to prevent the pipelines from being
-stopped. Likewise, the TRIGGER_RESUME/START events should not affect the
-pipeline state.
-
-The SOF driver also triggers some DSP Firmware pipelines based on the
-DAPM widgets power events. In such cases, we also ignore PRE_PMU and
-POST_PMD events to keep the pipelines active.
+When system is entering into S0ix, the PCI device may transition to the
+D0i3 substate instead of D3. In D0i3, some always-on functionality can
+be enabled, such as acoustic event detection, voice activity detection
+or hotwording. When an event is detected, the DSP firmware can wake-up
+the device for a transition to D0 with an interrupt.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pcm.c      | 31 +++++++++++++++++++++++++++++++
- sound/soc/sof/topology.c | 17 ++++++++++++++++-
- 2 files changed, 47 insertions(+), 1 deletion(-)
+ sound/soc/sof/pm.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 9ba505cf5966..3d5cd1b445ba 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -346,6 +346,16 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_RELEASE;
- 		break;
- 	case SNDRV_PCM_TRIGGER_RESUME:
-+		if (spcm->stream[substream->stream].suspend_ignored) {
-+			/*
-+			 * this case will be triggered when INFO_RESUME is
-+			 * supported, no need to resume streams that remained
-+			 * enabled in D0ix.
-+			 */
-+			spcm->stream[substream->stream].suspend_ignored = false;
-+			return 0;
-+		}
-+
- 		/* set up hw_params */
- 		ret = sof_pcm_prepare(component, substream);
- 		if (ret < 0) {
-@@ -356,9 +366,30 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index 99e4e6ffff74..560a937e0484 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -430,12 +430,58 @@ EXPORT_SYMBOL(snd_sof_set_d0_substate);
  
- 		/* fallthrough */
- 	case SNDRV_PCM_TRIGGER_START:
-+		if (spcm->stream[substream->stream].suspend_ignored) {
-+			/*
-+			 * This case will be triggered when INFO_RESUME is
-+			 * not supported, no need to re-start streams that
-+			 * remained enabled in D0ix.
-+			 */
-+			spcm->stream[substream->stream].suspend_ignored = false;
-+			return 0;
-+		}
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_START;
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		if (sdev->s0_suspend &&
-+		    spcm->stream[substream->stream].d0i3_compatible) {
-+			/*
-+			 * trap the event, not sending trigger stop to
-+			 * prevent the FW pipelines from being stopped,
-+			 * and mark the flag to ignore the upcoming DAPM
-+			 * PM events.
-+			 */
-+			spcm->stream[substream->stream].suspend_ignored = true;
-+			return 0;
-+		}
-+		/* fallthrough */
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		stream.hdr.cmd |= SOF_IPC_STREAM_TRIG_STOP;
- 		ipc_first = true;
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index cc138ac6a8eb..e0e2ae734632 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -135,7 +135,9 @@ static int sof_keyword_dapm_event(struct snd_soc_dapm_widget *w,
- 				  struct snd_kcontrol *k, int event)
+ int snd_sof_resume(struct device *dev)
  {
- 	struct snd_sof_widget *swidget = w->dobj.private;
-+	int stream = SNDRV_PCM_STREAM_CAPTURE;
- 	struct snd_sof_dev *sdev;
-+	struct snd_sof_pcm *spcm;
- 	int ret = 0;
- 
- 	if (!swidget)
-@@ -146,11 +148,19 @@ static int sof_keyword_dapm_event(struct snd_soc_dapm_widget *w,
- 	dev_dbg(sdev->dev, "received event %d for widget %s\n",
- 		event, w->name);
- 
-+	/* get runtime PCM params using widget's stream name */
-+	spcm = snd_sof_find_spcm_name(sdev, swidget->widget->sname);
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	int ret;
 +
- 	/* process events */
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-+		if (spcm->stream[stream].suspend_ignored) {
-+			dev_dbg(sdev->dev, "PRE_PMU event ignored, KWD pipeline is already RUNNING\n");
-+			return 0;
++	if (sdev->s0_suspend) {
++		/* resume from D0I3 */
++		dev_dbg(sdev->dev, "DSP will exit from D0i3...\n");
++		ret = snd_sof_set_d0_substate(sdev, SOF_DSP_D0I0);
++		if (ret == -ENOTSUPP) {
++			/* fallback to resume from D3 */
++			dev_dbg(sdev->dev, "D0i3 not supported, fall back to resume from D3...\n");
++			goto d3_resume;
++		} else if (ret < 0) {
++			dev_err(sdev->dev, "error: failed to exit from D0I3 %d\n",
++				ret);
++			return ret;
 +		}
 +
- 		/* set pcm params */
--		ret = ipc_pcm_params(swidget, SOF_IPC_STREAM_CAPTURE);
-+		ret = ipc_pcm_params(swidget, stream);
- 		if (ret < 0) {
- 			dev_err(sdev->dev,
- 				"error: failed to set pcm params for widget %s\n",
-@@ -166,6 +176,11 @@ static int sof_keyword_dapm_event(struct snd_soc_dapm_widget *w,
- 				swidget->widget->name);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
-+		if (spcm->stream[stream].suspend_ignored) {
-+			dev_dbg(sdev->dev, "POST_PMD even ignored, KWD pipeline will remain RUNNING\n");
-+			return 0;
++		/* platform-specific resume from D0i3 */
++		return snd_sof_dsp_resume(sdev);
++	}
++
++d3_resume:
++	/* resume from D3 */
+ 	return sof_resume(dev, false);
+ }
+ EXPORT_SYMBOL(snd_sof_resume);
+ 
+ int snd_sof_suspend(struct device *dev)
+ {
++	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
++	int ret;
++
++	if (sdev->s0_suspend) {
++		/* suspend to D0i3 */
++		dev_dbg(sdev->dev, "DSP is trying to enter D0i3...\n");
++		ret = snd_sof_set_d0_substate(sdev, SOF_DSP_D0I3);
++		if (ret == -ENOTSUPP) {
++			/* fallback to D3 suspend */
++			dev_dbg(sdev->dev, "D0i3 not supported, fall back to D3...\n");
++			goto d3_suspend;
++		} else if (ret < 0) {
++			dev_err(sdev->dev, "error: failed to enter D0I3, %d\n",
++				ret);
++			return ret;
 +		}
 +
- 		/* stop trigger */
- 		ret = ipc_trigger(swidget, SOF_IPC_STREAM_TRIG_STOP);
- 		if (ret < 0)
++		/* platform-specific suspend to D0i3 */
++		return snd_sof_dsp_suspend(sdev);
++	}
++
++d3_suspend:
++	/* suspend to D3 */
+ 	return sof_suspend(dev, false);
+ }
+ EXPORT_SYMBOL(snd_sof_suspend);
 -- 
 2.20.1
 
