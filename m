@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF9B5CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:16:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5266CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:17:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 672FB20663
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:16:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5DC0520578
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 10:17:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eK6UQoPH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="VOaLj/m8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 672FB20663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G3v/9wiw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="PejzMVlZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DC0520578
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BBE117CD;
-	Fri, 25 Oct 2019 12:15:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BBE117CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2DC117D7;
+	Fri, 25 Oct 2019 12:16:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2DC117D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571998599;
-	bh=2EVDWpPvnDfH+ZbYonZMz6UfrP/ygUy+f33on1xbZEo=;
+	s=default; t=1571998645;
+	bh=gS55ysD7exOiKc0AI9jMbUs5WkKnUec0rdPu5fAFXFY=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=eK6UQoPHs1BhCca6wgM7BDd51rsTQjVgi1rxljNq9Pm/7vm19smjE1LbKdZcDwqcF
-	 FHmxIZTVmrOnG4xuwHkVpIR6gVjLVSTOaEECNrULQqod5YMHHVhVHbWuFA3trlRLyg
-	 PJwjXQYtR6BjDSZAC+jvlaqVKTifIJP4N3zIKgtc=
+	b=G3v/9wiwlI96oHTpdXPg5ukdj/5SlkzlHgpV5fkk0IO3ZolGsjxzwmoFTTOkpo4zf
+	 z3lp4X6jSt4DOdkxZ1sG3dSmMtitYDVlPmZaAXrAw+2KX7K1KRqfKYEs1EZkqf+ykG
+	 HATg7kgujK5n6OBIXbn/DxxkvhiI8Fx2AJu1n7Fc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66AE4F80637;
-	Fri, 25 Oct 2019 12:12:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83F99F8063C;
+	Fri, 25 Oct 2019 12:12:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB09CF8060E; Fri, 25 Oct 2019 12:12:22 +0200 (CEST)
+ id 88CF2F80393; Fri, 25 Oct 2019 12:12:23 +0200 (CEST)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 400C1F8036F
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 12:12:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 400C1F8036F
+ by alsa1.perex.cz (Postfix) with ESMTPS id E714FF8045D
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 12:12:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E714FF8045D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="VOaLj/m8"
+ header.b="PejzMVlZ"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=7NwsnqzTmlpXTMNzpJuhJXGYZrRLtMwZ9G4NwDJVgKg=; b=VOaLj/m8JzMU
- He6hxhaxX7ufTxZF0MrIYn8Dw4SSeg37g9GMobbbg4iUG2Jl5ph+tq4gUK8JbsrM+mRjx+S8WMOZ9
- 2V0IoG2JfLJObxL+OEw3diaPfQAuw0AQHoqBYixA5MYMaVx1mlw4HE/F4C5jONfe9g359aspOxOoZ
- qCWUA=;
+ List-Archive; bh=Mfwi8AbI+njv6OXBWSEU3ESst6lzCiQazpD9WrFtGOs=; b=PejzMVlZbUqx
+ fSWESryCFXJJPU17sFwlk8S7+h3cO3184RFLTHRDblukpGYd9k6aH+GZ92FC7DUHc/FverGf3dyhE
+ 11xAB+QcwD6u3+XkSgQ+ZsuE7z8ez8yPINS6cItdVxMHrr29OdjzG9Ncm+6mzIx6ULE8NaXmNJWy9
+ 2yxTc=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iNwZp-0006e8-C9; Fri, 25 Oct 2019 10:12:13 +0000
+ id 1iNwZo-0006dx-NU; Fri, 25 Oct 2019 10:12:12 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id C8B002743267; Fri, 25 Oct 2019 11:12:12 +0100 (BST)
+ id 251942743267; Fri, 25 Oct 2019 11:12:12 +0100 (BST)
 From: Mark Brown <broonie@kernel.org>
-To: Edward Cragg <edward.cragg@codethink.co.uk>
-In-Reply-To: <20191018154833.7560-3-ben.dooks@codethink.co.uk>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+In-Reply-To: <20191024153130.31082-1-geert+renesas@glider.be>
 X-Patchwork-Hint: ignore
-Message-Id: <20191025101212.C8B002743267@ypsilon.sirena.org.uk>
+Message-Id: <20191025101212.251942743267@ypsilon.sirena.org.uk>
 Date: Fri, 25 Oct 2019 11:12:12 +0100 (BST)
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
- Ben Dooks <ben.dooks@codethink.co.uk>,
- Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org
-Subject: [alsa-devel] Applied "ASoC: tegra: Allow 24bit and 32bit samples"
-	to the asoc tree
+Cc: alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Subject: [alsa-devel] Applied "ASoC: pxa: poodle: Spelling
+	s/enpoints/endpoints/, s/connetion/connection/" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: tegra: Allow 24bit and 32bit samples
+   ASoC: pxa: poodle: Spelling s/enpoints/endpoints/, s/connetion/connection/
 
 has been applied to the asoc tree at
 
@@ -125,92 +125,34 @@ to this mail.
 Thanks,
 Mark
 
-From f3ee99087c8ca0ecfdd549ef5a94f557c42d5428 Mon Sep 17 00:00:00 2001
-From: Edward Cragg <edward.cragg@codethink.co.uk>
-Date: Fri, 18 Oct 2019 16:48:28 +0100
-Subject: [PATCH] ASoC: tegra: Allow 24bit and 32bit samples
+From 16c33235321d5ce3463ebefc205d7cf11929d59f Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Thu, 24 Oct 2019 17:31:30 +0200
+Subject: [PATCH] ASoC: pxa: poodle: Spelling s/enpoints/endpoints/,
+ s/connetion/connection/
 
-The tegra3 audio can support 24 and 32 bit sample sizes so add the
-option to the tegra30_i2s_hw_params to configure the S24_LE or S32_LE
-formats when requested.
+Fix misspelling of "endpoints" and "connection".
 
-Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
-[ben.dooks@codethink.co.uk: fixup merge of 24 and 32bit]
-[ben.dooks@codethink.co.uk: add pm calls around ytdm config]
-[ben.dooks@codethink.co.uk: drop debug printing to dev_dbg]
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20191018154833.7560-3-ben.dooks@codethink.co.uk
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20191024153130.31082-1-geert+renesas@glider.be
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra30_i2s.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
+ sound/soc/pxa/poodle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index e6d548fa980b..48a09c9d60be 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -127,7 +127,7 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct device *dev = dai->dev;
- 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	unsigned int mask, val, reg;
--	int ret, sample_size, srate, i2sclock, bitcnt;
-+	int ret, sample_size, srate, i2sclock, bitcnt, audio_bits;
- 	struct tegra30_ahub_cif_conf cif_conf;
- 
- 	if (params_channels(params) != 2)
-@@ -137,8 +137,19 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		val = TEGRA30_I2S_CTRL_BIT_SIZE_16;
-+		audio_bits = TEGRA30_AUDIOCIF_BITS_16;
- 		sample_size = 16;
- 		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		val = TEGRA30_I2S_CTRL_BIT_SIZE_24;
-+		audio_bits = TEGRA30_AUDIOCIF_BITS_24;
-+		sample_size = 24;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		val = TEGRA30_I2S_CTRL_BIT_SIZE_32;
-+		audio_bits = TEGRA30_AUDIOCIF_BITS_32;
-+		sample_size = 32;
-+		break;
- 	default:
- 		return -EINVAL;
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index 48d5c2252b10..59ef04d0467a 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -56,7 +56,7 @@ static void poodle_ext_control(struct snd_soc_dapm_context *dapm)
+ 		snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
  	}
-@@ -170,8 +181,8 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 	cif_conf.threshold = 0;
- 	cif_conf.audio_channels = 2;
- 	cif_conf.client_channels = 2;
--	cif_conf.audio_bits = TEGRA30_AUDIOCIF_BITS_16;
--	cif_conf.client_bits = TEGRA30_AUDIOCIF_BITS_16;
-+	cif_conf.audio_bits = audio_bits;
-+	cif_conf.client_bits = audio_bits;
- 	cif_conf.expand = 0;
- 	cif_conf.stereo_conv = 0;
- 	cif_conf.replicate = 0;
-@@ -277,14 +288,18 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.ops = &tegra30_i2s_dai_ops,
- 	.symmetric_rates = 1,
+ 
+-	/* set the enpoints to their new connetion states */
++	/* set the endpoints to their new connection states */
+ 	if (poodle_spk_func == POODLE_SPK_ON)
+ 		snd_soc_dapm_enable_pin(dapm, "Ext Spk");
+ 	else
 -- 
 2.20.1
 
