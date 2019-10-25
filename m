@@ -6,61 +6,63 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70998CA9EAF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 068EBCA9EAF
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:56:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96CAC21D7B
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:53:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7322D21D7E
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 00:56:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qe2bGyNu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96CAC21D7B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="us7psG8z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7322D21D7E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 441931730;
-	Fri, 25 Oct 2019 02:52:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 441931730
+	by alsa0.perex.cz (Postfix) with ESMTPS id 685AE1732;
+	Fri, 25 Oct 2019 02:55:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 685AE1732
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1571964813;
-	bh=mu5Ns2loV/zbcI7klK3RYBr72dhSbyY2wueY2YBm/Pc=;
+	s=default; t=1571964989;
+	bh=A2XeyTx6/E73b0TDCZaJdhpyFGHTimZDO2qS3gx7BV4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qe2bGyNuiljdXIgnlj7P5vQiDBNsvOTeuHCz715G7FDNS5CqvBM5bXAPKe3KI/TfR
-	 nRr3mGTqv+xX7lY8zE4xCE+N32puMNw6Nx2RRuOMIc5SbjX76l7UH6A/Wl5/qrvKtT
-	 GXINRSo/Jb9Rp+Xyvx80f8WiuYwkZwsFGfSlGj1M=
+	b=us7psG8z4lkkY4vc79XsaXFNWgJxXAkOGiI59R259KNAE9asuO6zC7PNhrOQeeVWp
+	 anV59Rd6nHgyifeKzFXg7+PNDuQyhxknYpEzHXkGSYvYk7UBI6VfNSLeZ+CQGK8L1g
+	 Kl4BYLu12c0fwMcIg98JgrCo7rjVuBQ+7f7ELMTw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8B43F80367;
-	Fri, 25 Oct 2019 02:52:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2B6EF80367;
+	Fri, 25 Oct 2019 02:55:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BED6DF8036B; Fri, 25 Oct 2019 02:52:40 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A4CDFF80112
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 02:52:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4CDFF80112
-Date: 25 Oct 2019 09:52:30 +0900
-X-IronPort-AV: E=Sophos;i="5.68,226,1569250800"; d="scan'208";a="29734280"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 25 Oct 2019 09:52:30 +0900
+ id E6F82F8036B; Fri, 25 Oct 2019 02:55:36 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A7683F80137
+ for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 02:55:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7683F80137
+Date: 25 Oct 2019 09:55:30 +0900
+X-IronPort-AV: E=Sophos;i="5.68,226,1569250800"; d="scan'208";a="29950669"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 25 Oct 2019 09:55:30 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A2C8A413DACA;
- Fri, 25 Oct 2019 09:52:30 +0900 (JST)
-Message-ID: <87woct7ik1.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2FAE1400D0F0;
+ Fri, 25 Oct 2019 09:55:30 +0900 (JST)
+Message-ID: <87v9sd7if1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191024114836.GB46373@sirena.co.uk>
-References: <874l00yzxm.wl-kuninori.morimoto.gx@renesas.com>
- <20191024114836.GB46373@sirena.co.uk>
+In-Reply-To: <20191024114821.GA46373@sirena.co.uk>
+References: <87d0ey64n5.wl-kuninori.morimoto.gx@renesas.com>
+ <8736fu64lm.wl-kuninori.morimoto.gx@renesas.com>
+ <20191024114821.GA46373@sirena.co.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Pavel Machek <pavel@denx.de>, Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: soc-dpcm: tidyup for_each_dpcm_xx()
-	macro
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 07/22] ASoC: soc-core: tidyup
+	soc_init_dai_link()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,12 +85,13 @@ Hi Mark
 
 > > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > > 
-> > for_each_dpcm_xx() macro is using "dpcm" as parameter (1),
-> > but, it is also struct member (2).
+> > soc_init_dai_link() is needed to be called before soc_bind_dai_link().
 > 
 > This doesn't apply against current code, please check and resend.
 
-Oops. OK, I will post v2 patch soon.
+I could apply it.
+I guess this is because you are tring to apply different order ?
+[05/22] and [06/22] are needed first I guess.
 
 Thank you for your help !!
 Best regards
