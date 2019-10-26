@@ -1,99 +1,107 @@
-Return-Path: <SRS0=ik9t=YS=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=LJxm=YT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86FABCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2890CCA9EA0
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Oct 2019 03:07:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09F7021872
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Oct 2019 23:35:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2846F21655
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Oct 2019 03:07:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yj2ezYgd";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="T/ZeJde1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09F7021872
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bFrLsYbN";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="XJaP0p6X";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DdciPCal"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2846F21655
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 337EB18F3;
-	Sat, 26 Oct 2019 01:34:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 337EB18F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E27D1A99;
+	Sat, 26 Oct 2019 05:06:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E27D1A99
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572046509;
-	bh=1ZSh1t31hAVpLDHv6mShG4n0aXHwDiqxT4xmgZDDGQc=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Yj2ezYgdQwVW86E77KsV7VNiQn8duWBjtvZxFTen/m7XYegddbbspQH/+ofUX1XOD
-	 oe94U+LXCP6UNn/uMhPFs1agW6iLCfDi0z5l0NgSw3hYK8Hy/x8jI5zm5DWtjoepZK
-	 IJ2FzQZBW8B9nZn9mSMPNgYhGjR9sUJKpdSczd5s=
+	s=default; t=1572059248;
+	bh=FHnRFE28yh7+wawvWA9SEIwf8njNHgQ/DMNmO/Shbz8=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bFrLsYbNoh8+Ww1CF39SOGePxJlcx6rbs9ICDZBnh/rLKYKWWpQmGqBwVfW8rzuGi
+	 3K9ob8eRO/E0Q7QgXn8GdZkQnYm3SoMsAbohneoqtrQSqZdV35PWL96cP5gl3YI4uu
+	 zVKihwJkw8a3kcB6gjEBxVuXzQ6LcUg/JYJdElgQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6BE1F80368;
-	Sat, 26 Oct 2019 01:34:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6529BF80274;
+	Sat, 26 Oct 2019 05:06:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47B9BF8036F; Sat, 26 Oct 2019 01:34:17 +0200 (CEST)
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com
- [IPv6:2607:f8b0:4864:20::841])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 04653F8036B; Sat, 26 Oct 2019 05:06:34 +0200 (CEST)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3DB54F802A0
- for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2019 01:34:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DB54F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E380F80228
+ for <alsa-devel@alsa-project.org>; Sat, 26 Oct 2019 05:06:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E380F80228
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="T/ZeJde1"
-Received: by mail-qt1-x841.google.com with SMTP id g50so5817013qtb.4
- for <alsa-devel@alsa-project.org>; Fri, 25 Oct 2019 16:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=zlPOQs6zM8VQu1dw9v+snKORjpgChv09a9rwUDSw9so=;
- b=T/ZeJde1K0W1trc92Ui1n3fiXvwBWeIVtMqHhq6pQkeH3Cbga7GUTxvdB5q3F77DHU
- w3iDygTok+VapabUBOz1FbV5etWXc/pds9epZV23WDA30u5lYk0iGlLAfnplC9ojAuCx
- lDigSPK5ZL4lrgv+DiO28JbpPy9Ftne6aoGqcz0XG8KtV61UUqowXwAk+hqwvjdeExMg
- 9bT5W2yB0TOr6WHIvql0DGQdyHSKybixmiQwLIz4YmDZnsypAILTeMCa8Z5JnBmF9FFK
- cl/87HO0Hcca+aovgEbbC0Hl2PqYomDoJXsflUvhh3Av0oVm4IMmrbMobe7GsxdUvK/I
- ehJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=zlPOQs6zM8VQu1dw9v+snKORjpgChv09a9rwUDSw9so=;
- b=FJB+/e3crCdPw3RD6anv3Nr8NzVEhAi76AWrfZ8wJEJFqnP7Vp7AjX9q2nsOqq6XcV
- WWSzoMYndzV++FgapNax9ayQMixga4QBPBKylhUaBwfwi51lEv25LZLixHBx04JjrEc5
- Ly4mHGpSmyRzaODJ1gLlB/pIO/dBFrdm+hZyNRJ80m6Q2d39Wv8NtwaZ2bg0+z0MI3nh
- MmEYDAsKQkwQLu4VQ1p7f+0LrPz2QEtPXNE+QouBpYx/XS4E0eVRSTy3697XhLO0q9/H
- zHDF6M5pvYHf/KNbg26PDDdvxAZfFsHNWrx5Dsq92fjrraNnrfPZU28QT5BSqGYAkxuo
- vx/g==
-X-Gm-Message-State: APjAAAX25C+xPftZo5kc9wlMcUZqtsOKimAABHtv13L4RPV1vMIrR75u
- aG7f+1Xb6X6w2JzYUHCDlLaWc2/fbt3ddc5+eTBPQw==
-X-Google-Smtp-Source: APXvYqxl7kFW5TJxiJ9i14P33R6UVpgE/2ruprbG5uTPXFCCm7q7tnbjYA/YujaU5aEjO3TsukutynUmRRqjY1KdN0U=
-X-Received: by 2002:ac8:7052:: with SMTP id y18mr6179265qtm.24.1572046451828; 
- Fri, 25 Oct 2019 16:34:11 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="XJaP0p6X"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="DdciPCal"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 67154220C3;
+ Fri, 25 Oct 2019 23:06:26 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Fri, 25 Oct 2019 23:06:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm2; bh=SK9/MZvBzdwfqRazEGxrhgw470
+ rhFjm/4Hzyje9ROUQ=; b=XJaP0p6X3hIRL+HOXhjUDpue9GeZmJzxaxR7bRknIx
+ 7y/dU70kvIIMFB10wyXC6Lsukly8EQwYNaIfIUd0iwEkz3kBCmnAmp6iR8m4Bu3L
+ gbhBk3WWEo42gJUnXG0/AFbBokzL9DxpfDiD46/fUlfKa3bhttcFEMCX2HN0HsXE
+ jBTqQ8fbPSMu+HAoN9RgtMxqWbXaz/pGm3dzY7jK3gCnC537NaQcnocIYnz4+z8O
+ uoWOZUOlnGCq0EzKCZYssGm7+VmfsmX4+0q2lJx5PRFRwULTy1rn6rNGO3+EsBzI
+ BfzNjuCdu7W3BgVpEHouCDAY82uMGPHAOAIi9HXJnBtA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=SK9/MZvBzdwfqRazE
+ Gxrhgw470rhFjm/4Hzyje9ROUQ=; b=DdciPCal1Vfp1vYMLbNnz1XeTHeOOUpy7
+ N/PwFiHLKCj4KWfqnzUPNk3AVSnAsploP+TyEx5+jYq4DkJXKrvhoMsQZRuB0tgf
+ /sTokulr8EfJ75cRUjeYwpeX0BdlyutrS2cCuEEBOgFPB+9MIr5Kn+lUWcJcV8yt
+ nS47CXrgBRtJlqLwLZ80ApS0AshZmXQA+MMLpn8bg5BaIHYeuh1BMHtTpNZF/fxr
+ PSY2OzP9lq8cao4JUF7fXH2U6mh7EGaCi6fNRS4ESM7EExyw7wDd/+NtnjBvlodZ
+ w94Rlfq662SXxgVrGmTVN2vbw1aD15+/JSZCNk9kmSxl2nfOck+0g==
+X-ME-Sender: <xms:MbizXfNQq_L2L9XnN-2TeEIdBXiPappPT_OtWuWXGL65crX45CAXUA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrleeggdeilecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+ dtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhi
+ sehsrghkrghmohgttghhihdrjhhpqeenucfkphepudegrdefrdejhedrudekudenucfrrg
+ hrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhj
+ phenucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:MbizXc5fPXWquIdNjyd7WyraHeALgM7ikV9WxvAFqta5enqytKHYJw>
+ <xmx:MbizXSeqHh3aQmgpZ7tyA1mPIE7-j1vCi-ZII3iAl1A76YgDhsd17Q>
+ <xmx:MbizXQ4AksAC3qoJfIJtZ3wN8BH6o9fqGG4xqf5qnpkDWV0sOXdBBA>
+ <xmx:MrizXcJH2RbE0NoreUyUM7jkk7muvsKfYwhkgXm_UNZ7jbzh6JDdKA>
+Received: from workstation.flets-east.jp (ae075181.dynamic.ppp.asahi-net.or.jp
+ [14.3.75.181])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 0C3818005C;
+ Fri, 25 Oct 2019 23:06:23 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: clemens@ladisch.de,
+	tiwai@suse.de
+Date: Sat, 26 Oct 2019 12:06:20 +0900
+Message-Id: <20191026030620.12077-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20191018200449.141123-1-cujomalainey@chromium.org>
- <20191018200449.141123-3-cujomalainey@chromium.org>
- <20191022161342.GI5554@sirena.co.uk>
- <CAOReqxiMMWjCnTS=bVBs-tvtfz1GSaHsoBf3PFFvpv000aPyOQ@mail.gmail.com>
- <20191022190122.GA5554@sirena.co.uk>
-In-Reply-To: <20191022190122.GA5554@sirena.co.uk>
-From: Curtis Malainey <cujomalainey@google.com>
-Date: Fri, 25 Oct 2019 16:34:00 -0700
-Message-ID: <CAOReqxg==6MS1kQSJhjqZe9wOj+db1ssTWLONSLDK78=pxaJWg@mail.gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>,
- Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>
-Subject: Re: [alsa-devel] [PATCH v2 02/12] ASoC: rt5677: Load firmware via
- SPI using delayed work
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ALSA: bebob: Fix prototype of helper function
+	to return negative value
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,37 +119,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 22, 2019 at 12:01 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Oct 22, 2019 at 11:28:53AM -0700, Curtis Malainey wrote:
->
-> > You are right, I forgot to add that to the dapm paths, got distracted
-> > by the race conditions I was fixing. I am thinking the best route is a
-> > mux object that the driver turns on but has its route selected by
-> > userspace to the various DMICs. Would that suffice?
->
-> I *think* so - basically anything that just describes the DSP part of it
-> and leaves it up to userspace how to route the audio into the DSP.
+A helper function of ALSA bebob driver returns negative value in a
+function which has a prototype to return unsigned value.
 
-Turns out all the routing is available already, I was just forcing
-DMIC L1 on unnecessarily. I was able to use DMIC L2 to get the hotword
-working, but for some reason I can sound activation levels fluctuate
-when I use the right channels but the hotword is never detected.
+This commit fixes it by changing the prototype.
 
-Example userspace settings to setup for recording form DMIC L1.
+Fixes: eb7b3a056cd8 ("ALSA: bebob: Add commands and connections/streams management"
+Cc: <stable@vger.kernel.org> # v3.16+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob_stream.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-amixer -c 1 cset name='Mono DMIC L Mux' DMIC1
-amixer -c 1 cset name='Mono ADC2 L Mux' DMIC
-amixer -c 1 cset name='Mono ADC Capture Switch' on
-amixer -c 1 cset name='Mono ADC Boost Volume' 2,2
-amixer -c 1 cset name='Mono ADC MIXL ADC1 Switch' off
-amixer -c 1 cset name='Mono ADC MIXL ADC2 Switch' on
-amixer -c 1 cset name='IB01 Mux' 'VAD ADC/DAC1 FS'
-amixer -c 1 cset name='VAD ADC Mux' 'MONO ADC MIX L'
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 7ac0d9f495c4..f7f0db5aa811 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -252,8 +252,7 @@ int snd_bebob_stream_get_clock_src(struct snd_bebob *bebob,
+ 	return err;
+ }
+ 
+-static unsigned int
+-map_data_channels(struct snd_bebob *bebob, struct amdtp_stream *s)
++static int map_data_channels(struct snd_bebob *bebob, struct amdtp_stream *s)
+ {
+ 	unsigned int sec, sections, ch, channels;
+ 	unsigned int pcm, midi, location;
+-- 
+2.20.1
 
-I will send another patchset with the removal of the DMIC forced on
-(the sync has to stay due to race conditions between dapm and the DSP
-changing  write modes) and that return fix Cezary requested.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
