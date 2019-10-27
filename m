@@ -8,94 +8,96 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25CDDCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 07:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40734CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 07:37:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0661214E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 07:37:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BC52C214AF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 07:37:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F3FqUxV2";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G+PBpQRQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0661214E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gp8DeZzM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hYmllqNN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC52C214AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7C861799;
-	Mon, 28 Oct 2019 08:36:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7C861799
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F7241AEA;
+	Mon, 28 Oct 2019 08:36:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F7241AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572248224;
-	bh=Wu1tM0qZVMdQag4917IMjzBVFRfpRnCm76CHZIrUB2k=;
+	s=default; t=1572248260;
+	bh=9gzrKbW0YCcQwB1yukBbIjKl8fpGUGXtpTGpuruxe8U=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=F3FqUxV2lOVIVk2Efc1qVfUeE7KrrO1FD6lPNVTStDfozisOHufRzBGCgvbfN9Cx6
-	 IZAoz5FndKpr/72zUfbgykzxcutQC4QslKACBE2K82w73UHisA4DjUfdLJR0sFTk+K
-	 Brjm50BpO7q9D9dReeDi59EwrKy1dvSxHb/DUXvY=
+	b=Gp8DeZzMQZ8kNtQ9zmYzKvjLCs4KqQG7L1rzT0J2iGWEmBYFz36OmbSeMPwzMdXQE
+	 9LJmKnn1HQZHMy6B0cHXUkgwNh6tODJ8jbM8VZGLW3t/FQQPtdvO/i7az8rBoEPm/a
+	 1cKVxgvtMYEoMlArziIN8wh+g1emh+yA/gT7mfx4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84A8CF80612;
-	Mon, 28 Oct 2019 08:33:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70FCFF80634;
+	Mon, 28 Oct 2019 08:33:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADE22F80392; Sun, 27 Oct 2019 20:49:18 +0100 (CET)
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com
- [IPv6:2607:f8b0:4864:20::144])
+ id 168C5F80392; Sun, 27 Oct 2019 22:53:45 +0100 (CET)
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
+ [IPv6:2607:f8b0:4864:20::d41])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E97C5F80228
- for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2019 20:49:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E97C5F80228
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F7D6F80145
+ for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2019 22:53:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F7D6F80145
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="G+PBpQRQ"
-Received: by mail-il1-x144.google.com with SMTP id s75so6190283ilc.3
- for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2019 12:49:15 -0700 (PDT)
+ header.b="hYmllqNN"
+Received: by mail-io1-xd41.google.com with SMTP id q1so8497138ion.1
+ for <alsa-devel@alsa-project.org>; Sun, 27 Oct 2019 14:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id;
- bh=Fp8qbpwsPU5t44meEzV5unnuVBGj/STbs393t2jsMas=;
- b=G+PBpQRQbVt6Enherj5lZsb71SRxc4snjY5IQwTWS+e+Ft/hoAXpwjeKfYEGo83gVW
- Rsuu0XwD/5Chxlu65jRX13j0lZf0BThZnk8m/rz3A8ka4rE6A8NywUSzV6t8iNq4pjAC
- eUrMQnGFuVwgvHogudXxzbfoBnRc+9HEeU1VqO/Kxg0q33LSUt/8yMwBbcVr+gB8dlc7
- J2pWjuk/CYsBthAyl4QJjvOsccUypq3YMiu4amifZK1hmTHjhBfkw5mw9Aq8pnJ+kfOw
- 3hlPyueJG17CIIdcV0gXqt0mCOiGJWtBxIZXQZkYStIO/Q2PTDNNCVUnFeL+cEv8oBvz
- R6ww==
+ bh=CCZl0j1P1FyTjIpTDRJfaJQYXzqQniNrCSsMSJER5FE=;
+ b=hYmllqNNLIaHWyfzEhzbgV41fN6DR4+U1k3TUA8UD/BT4nz/7KR0ZyVtq8sUS9T5wk
+ bLFsQMrd5ii67uAp22grpEvPHmldksyk9foPhnfAZsSDBRm5CCsZDcSgoCh3E3fU1kg1
+ nvpMNxIL7IRDaNHOVsXf03TRrAQ/L3larGXZLsnb/3U8PTR732e1dUia+ImSqrDjKRz0
+ yMKXpkv7a0ocLAumQDPFlx2JGwJ0hy966ZusA/a2/LGUzs0kh8ggiG55BLesTCumL2rT
+ PHU4X6WjyZsE90RRq4RdP1CHL/Bp5WF1RY3VR3gSN1KeqJvklgOOIyBM4ZfCxJQdlNNq
+ lr2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=Fp8qbpwsPU5t44meEzV5unnuVBGj/STbs393t2jsMas=;
- b=YBcvvWuEGkiNpCXjPH08tTCJMFoisacHFgNd+06TZqGldM5UobkdrJEJFmrsT7c9BV
- MvB4oVg4HkXh0cvXWUKx+pKkNFDPETy82R9YSV6w0vD5vq8KJtXNx4zxm+l66PVirA3u
- AOvfqf3fvnNygyArUjuMxEGlxYABHD6MY8kWCRuILW+gNEs392KeDeshKpJS7TvT7nyd
- 65U54v9sCyhNVtWZkx5x/Xu1i11mtRUKle2WSGGTkdwiDmWmlgRmxxJG9yrv2gycVNpj
- ox3+NfoBYXHG7sPvh5BJC37omgH99ZcygT81UYPMNywEAX8kqcw51VxIIQ80yLTB5dpP
- vTDw==
-X-Gm-Message-State: APjAAAWeaBieGkgV5zmiRy3lpDTNdSXIl6roTC1KpVRtpMt3nzsprnIk
- 74Ktux/LuvQiGv+LwEz6iFo=
-X-Google-Smtp-Source: APXvYqxB3deYkss+3cgHUIMyjARd3DX6Lwwi0mH+0eSz3n+olqnlOUOFQUkSUqZ+8nvlyYXil2QLLw==
-X-Received: by 2002:a92:46c2:: with SMTP id d63mr16888139ilk.43.1572205753618; 
- Sun, 27 Oct 2019 12:49:13 -0700 (PDT)
+ bh=CCZl0j1P1FyTjIpTDRJfaJQYXzqQniNrCSsMSJER5FE=;
+ b=MeRxvcSYDMCSViDNkj8AbI0NuAkVRuZuodGuimkeoN23WIdjnqI1lcy5Azwecqsov5
+ VY9aNOkkVxtCgI181EkvMU5o0pi56MN2KpBtgJe5xZhjHJHUVUNZh93FFH6M4XXwnnAA
+ Q2PxGYQTMKiVDneyCHGTIbDnYd6Inr8uh4Orl+xo3qjqEloJX0Ct33hPU4sq4rwjDhEN
+ S1VyMXOEfRAgRgMLYJb1ZXZ5Icea7Tv8qriEA83YYtna6L6Fr0aK2TO2JnO39OgOGAUG
+ 0e8bE3LwEbfiSp61OkLfseKf6I2Te4QMJDzo9fkRHZW+cs5bDozIwDxDGCIOTW4NdBNs
+ XTew==
+X-Gm-Message-State: APjAAAVFWcNzQV47veCkX3zl8w3nOrEfpR4RV9uNJOGduLWoyAMtHsmL
+ pDmuMZotxy6h+6x0wUcawMI=
+X-Google-Smtp-Source: APXvYqx0XI3ng3sOrKsNNVRkOoLbKi3BQ92jxGPmPUezDvyxLx62hpOCJ8W8vjpQY4WRYfopUQUaYA==
+X-Received: by 2002:a02:19c1:: with SMTP id b184mr14699631jab.54.1572213219249; 
+ Sun, 27 Oct 2019 14:53:39 -0700 (PDT)
 Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [128.101.35.54])
- by smtp.googlemail.com with ESMTPSA id k4sm634726iof.61.2019.10.27.12.49.12
+ by smtp.googlemail.com with ESMTPSA id d17sm948686ioe.31.2019.10.27.14.53.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 27 Oct 2019 12:49:12 -0700 (PDT)
+ Sun, 27 Oct 2019 14:53:38 -0700 (PDT)
 From: Navid Emamdoost <navid.emamdoost@gmail.com>
 To: 
-Date: Sun, 27 Oct 2019 14:48:47 -0500
-Message-Id: <20191027194856.4056-1-navid.emamdoost@gmail.com>
+Date: Sun, 27 Oct 2019 16:53:24 -0500
+Message-Id: <20191027215330.12729-1-navid.emamdoost@gmail.com>
 X-Mailer: git-send-email 2.17.1
 X-Mailman-Approved-At: Mon, 28 Oct 2019 08:33:18 +0100
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Takashi Iwai <tiwai@suse.com>, kjlu@umn.edu,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Wei Yongjun <weiyongjun1@huawei.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Pan Xiuli <xiuli.pan@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ kjlu@umn.edu, Liam Girdwood <lgirdwood@gmail.com>,
+ Slawomir Blauciak <slawomir.blauciak@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, smccaman@umn.edu,
  Navid Emamdoost <navid.emamdoost@gmail.com>, linux-kernel@vger.kernel.org,
  emamd001@umn.edu
-Subject: [alsa-devel] [PATCH] ASoC: SOF: Fix memory leak in
-	sof_dfsentry_write
+Subject: [alsa-devel] [PATCH] ASoC: SOF: ipc: Fix memory leak in
+	sof_set_get_large_ctrl_data
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,33 +116,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the implementation of sof_dfsentry_write() memory allocated for
-string is leaked in case of an error. Go to error handling path if the
-d_name.name is not valid.
+In the implementation of sof_set_get_large_ctrl_data() there is a memory
+leak in case an error. Release partdata if sof_get_ctrl_copy_params()
+fails.
 
-Fixes: 091c12e1f50c ("ASoC: SOF: debug: add new debugfs entries for IPC flood test")
+Fixes: 54d198d5019d ("ASoC: SOF: Propagate sof_get_ctrl_copy_params() error properly")
 Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 ---
- sound/soc/sof/debug.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/sof/ipc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 54cd431faab7..5529e8eeca46 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -152,8 +152,10 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	 */
- 	dentry = file->f_path.dentry;
- 	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
--	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
--		return -EINVAL;
-+	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) {
-+		ret = -EINVAL;
-+		goto out;
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index b2f359d2f7e5..086eeeab8679 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -572,8 +572,10 @@ static int sof_set_get_large_ctrl_data(struct snd_sof_dev *sdev,
+ 	else
+ 		err = sof_get_ctrl_copy_params(cdata->type, partdata, cdata,
+ 					       sparams);
+-	if (err < 0)
++	if (err < 0) {
++		kfree(partdata);
+ 		return err;
 +	}
  
- 	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
- 		flood_duration_test = true;
+ 	msg_bytes = sparams->msg_bytes;
+ 	pl_size = sparams->pl_size;
 -- 
 2.17.1
 
