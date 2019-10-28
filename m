@@ -4,78 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50D2ACA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:19:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 050DACA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:19:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCFE421744
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:19:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B29421721
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:19:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iTtyMcGS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="FS5HV8Ls"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCFE421744
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PgCLlRZv";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BlTZDNuc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B29421721
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F3052042;
-	Mon, 28 Oct 2019 16:18:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F3052042
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB2BE206F;
+	Mon, 28 Oct 2019 16:19:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB2BE206F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572275951;
-	bh=6rHdRmHKLTX481PgQT3ljVef9YiE9nqaQd0bcA0c3rg=;
+	s=default; t=1572275990;
+	bh=cTXpT5lHbmMGmOlmXmIYkrY3zuAwiK3/zK2bI0pSIvQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=iTtyMcGScOPkRlDu6gCi5863BwzvMfrewW051QeB8o6U5ICrC3Y67u9fwVxrZThhZ
-	 x9QMJxi2za+mS17lLbA1l1swXA3XgT8EtAbY+nh87CPyqvwahebq26ouv7xcW+6H2B
-	 57lAqIf3HHl+cmrV2Gjjaz3B6zP6kAGaIRn7+92s=
+	b=PgCLlRZvdgymXMQnC+my4G5omIJJr/tsMbu+bV59PnHauHKmamLu20NERorBADToz
+	 Me3R8pbuwD626W2o8bWcSXTTp5pKJiFoxeqOAq85jjlbEjLXR1aI5BXp5FmfSRUn9B
+	 Ib4hVdrpmZ1+ttQ9/gODDBbFSFd32YdLKKLTAuuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71476F80CB9;
-	Mon, 28 Oct 2019 15:57:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 822FEF80CBB;
+	Mon, 28 Oct 2019 15:57:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A42FCF80722; Mon, 28 Oct 2019 15:57:18 +0100 (CET)
+ id 57E3CF8071F; Mon, 28 Oct 2019 15:57:19 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFCC4F8064C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03188F80612
  for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFCC4F8064C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03188F80612
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="FS5HV8Ls"
+ header.b="BlTZDNuc"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=wI3JhvXhfp+cmxuj8CkxoVVRI7G/mcy7GCO0pC7XcS8=; b=FS5HV8LsPJOA
- qPSK//VFigVP6deMA3heAR4Ddkx8IdSpBFIplad5ngVG6EMzv7DB7p0/rtBjxqW92lt8thrE4MxYO
- sJb4yLq8oML9pCzifx28RCJL1nEp6wtqiT49gXC6hx4Lx1/1cFWviYBmir4RZsZUgoeze39BLYNU6
- LnUdw=;
+ List-Archive; bh=tN8epsZEkS31NtdlX45cDOmGF5PCzR59bS9MnzLxSmg=; b=BlTZDNucaG1B
+ kxm0DU1bGKzsOQw96Q+YQqdQrdJSBmRSPt3YiBXWZYnVqeOZwTh5ybIKq65Ybktnp1pZSbLBHnPeb
+ YFvUMyj0QqiJJI+DP8LQsNT1jquBZ4kK3//kxlYFxXMe3j5ACViX2bRNToEsbRiDliprT/JOrLKaA
+ VsgpA=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Rj-0008Rq-Lv; Mon, 28 Oct 2019 14:56:39 +0000
+ id 1iP6Rj-0008Rp-Hj; Mon, 28 Oct 2019 14:56:39 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id EB3CC27403EE; Mon, 28 Oct 2019 14:56:37 +0000 (GMT)
+ id 3045F27414F2; Mon, 28 Oct 2019 14:56:38 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-In-Reply-To: <20191028115207.5142-1-peter.ujfalusi@ti.com>
+To: Navid Emamdoost <navid.emamdoost@gmail.com>
+In-Reply-To: <20191027215330.12729-1-navid.emamdoost@gmail.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145637.EB3CC27403EE@ypsilon.sirena.org.uk>
-Date: Mon, 28 Oct 2019 14:56:37 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de, tony@atomide.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, jarkko.nikula@bitmer.com
-Subject: [alsa-devel] Applied "ASoC: ti: sdma-pcm: Add back the flags
-	parameter for non standard dma names" to the asoc tree
+Message-Id: <20191028145638.3045F27414F2@ypsilon.sirena.org.uk>
+Date: Mon, 28 Oct 2019 14:56:38 +0000 (GMT)
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Pan Xiuli <xiuli.pan@linux.intel.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kjlu@umn.edu,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Slawomir Blauciak <slawomir.blauciak@linux.intel.com>, emamd001@umn.edu,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, smccaman@umn.edu,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "Cc:"@sirena.co.uk
+Subject: [alsa-devel] Applied "ASoC: SOF: ipc: Fix memory leak in
+	sof_set_get_large_ctrl_data" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +104,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: ti: sdma-pcm: Add back the flags parameter for non standard dma names
+   ASoC: SOF: ipc: Fix memory leak in sof_set_get_large_ctrl_data
 
 has been applied to the asoc tree at
 
@@ -121,37 +129,40 @@ to this mail.
 Thanks,
 Mark
 
-From dd7e8d903e1eef5a9234a2d69663dcbfeab79571 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 28 Oct 2019 13:52:07 +0200
-Subject: [PATCH] ASoC: ti: sdma-pcm: Add back the flags parameter for non
- standard dma names
+From 45c1380358b12bf2d1db20a5874e9544f56b34ab Mon Sep 17 00:00:00 2001
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
+Date: Sun, 27 Oct 2019 16:53:24 -0500
+Subject: [PATCH] ASoC: SOF: ipc: Fix memory leak in
+ sof_set_get_large_ctrl_data
 
-When non standard names are used it is possible that one of the directions
-are not provided, thus the flags needs to be present to tell the core that
-we have half duplex setup.
+In the implementation of sof_set_get_large_ctrl_data() there is a memory
+leak in case an error. Release partdata if sof_get_ctrl_copy_params()
+fails.
 
-Fixes: 642aafea8889 ("ASoC: ti: remove compat dma probing")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20191028115207.5142-1-peter.ujfalusi@ti.com
+Fixes: 54d198d5019d ("ASoC: SOF: Propagate sof_get_ctrl_copy_params() error properly")
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Link: https://lore.kernel.org/r/20191027215330.12729-1-navid.emamdoost@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/sdma-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/ipc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/sdma-pcm.c b/sound/soc/ti/sdma-pcm.c
-index a236350beb10..2b0bc234e1b6 100644
---- a/sound/soc/ti/sdma-pcm.c
-+++ b/sound/soc/ti/sdma-pcm.c
-@@ -62,7 +62,7 @@ int sdma_pcm_platform_register(struct device *dev,
- 	config->chan_names[0] = txdmachan;
- 	config->chan_names[1] = rxdmachan;
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index b2f359d2f7e5..086eeeab8679 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -572,8 +572,10 @@ static int sof_set_get_large_ctrl_data(struct snd_sof_dev *sdev,
+ 	else
+ 		err = sof_get_ctrl_copy_params(cdata->type, partdata, cdata,
+ 					       sparams);
+-	if (err < 0)
++	if (err < 0) {
++		kfree(partdata);
+ 		return err;
++	}
  
--	return devm_snd_dmaengine_pcm_register(dev, config, 0);
-+	return devm_snd_dmaengine_pcm_register(dev, config, flags);
- }
- EXPORT_SYMBOL_GPL(sdma_pcm_platform_register);
- 
+ 	msg_bytes = sparams->msg_bytes;
+ 	pl_size = sparams->pl_size;
 -- 
 2.20.1
 
