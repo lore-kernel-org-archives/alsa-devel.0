@@ -2,93 +2,96 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B2EFCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 09:30:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AAA4CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 09:53:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1236721D80
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 09:30:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 466A520B7C
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 09:53:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s0P1oQ+0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RgzxngTn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1236721D80
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RfI/XSut";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z2BgNGzJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 466A520B7C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1A3A1F0B;
-	Mon, 28 Oct 2019 10:29:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1A3A1F0B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96D761F14;
+	Mon, 28 Oct 2019 10:52:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96D761F14
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572255013;
-	bh=6diLuHYRZF0beRMZ9roPRxlx8O2n5wL6VUTFjQophZo=;
-	h=In-Reply-To:References:From:To:Date:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=s0P1oQ+0DRSOib327N7EiERXnkPJYf5F4PPbCxEIauxZVgIQ3afIXsYAALvS2+B4i
-	 pU5/NjFconPS5pAooU1i3fMhycsfziGnTbnDtByXxi0Grdw0HBFQiDRZd9K4aCxV9s
-	 mUoDzI6RUhztBMiTp7/1AE58K78I6nOT+tWCX5kE=
+	s=default; t=1572256417;
+	bh=GknEs/qzttR8iPEkIjs37/crucsE2fBuciEzsB//DPk=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RfI/XSutUsCqt0gAxMie0qnFkX7SZiAK0m2OuoXiDEq7kMwCDWEeome/wOabxAvhS
+	 4BNINja781KNwoBAusc86yNrHimu90MeNQoC70rK/E4RMuxZFs9j1jxFC2VamUh6vO
+	 zgm7cElam/F3p5Is3HiFbQMsu6JN/vGdmvWpmGIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44005F802BD;
-	Mon, 28 Oct 2019 10:29:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26D9BF800E7;
+	Mon, 28 Oct 2019 10:52:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB3C6F80361; Mon, 28 Oct 2019 10:26:48 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C4D95F80361; Mon, 28 Oct 2019 10:52:45 +0100 (CET)
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com
+ [IPv6:2607:f8b0:4864:20::442])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03FFEF8011D
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 10:26:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03FFEF8011D
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE4EAF800E7
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 10:52:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE4EAF800E7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RgzxngTn"
-Received: from kernel.org (unknown [104.132.0.74])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A1F3B20717;
- Mon, 28 Oct 2019 09:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1572254305;
- bh=Y0pjFTnEi7fofZFVzScrzdhMzlM8KuUwtUfFJMd6jEM=;
- h=In-Reply-To:References:Cc:From:Subject:To:Date:From;
- b=RgzxngTnQ5mhx9Hl2fC158gkHbjFpCK1xE9h+M1GjeCZxXb6MUInbliEaxAObjuqL
- wSQcKENaW7bda+XlQFMQ4kSrY/CYQhZIb7yuVvXU8ecOVokkeGpi3FpJqjni84Zghu
- HHQWsB9WCGlUQTC7Hz+Y655Ladb2jywc3qV2avTY=
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="Z2BgNGzJ"
+Received: by mail-pf1-x442.google.com with SMTP id c7so5390048pfo.12
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 02:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=00GH+7MY7gv6VeGZTXVYIreq96BqJ0QE/x20tMZ+6ks=;
+ b=Z2BgNGzJ7q4FPtJU4fW2x3DMrNZlTDM5dHyQ8Hf5kSrB3beK/s9ztKON5ojRLhAuMU
+ Nyza/b0Moh08dmhqk8Sbj4HZo5KxZBPDr9IKjplFa2wWNOjsepMPXWzF68Gq1+GogWj3
+ F5uKtCRH9q/B9Y/z0A5OS6pkzkgTaPndd1a/g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=00GH+7MY7gv6VeGZTXVYIreq96BqJ0QE/x20tMZ+6ks=;
+ b=TAD6vv0m5g9cbmSVZg2dkGaNrsjj3QRyAH3HQpqVm1CExDbCsDpuEvxIPvC454GgKp
+ /+PXcfYwzcgm4H17B9UAIh43GZlWlQMfZZcwCqxuvRazjPs6fMccT6/VzbIDQhXJKqQL
+ VtoKwaBO5Bj+fLLBaHosBmjgQlAsI47SaRHlni+jOk9A1oukzaaxzeN9V4aPxw7IPnHp
+ gQ3gfpqqK+dYSiuGyTkzRxtLEUNeDLihoaP+9Owdn5CTwZO3NClYRuIY73R+JynP5o+C
+ YklWovkLY66TjCepxODJtImKsksyNekmZKubHB6fnotENH4bC9kjyfRqJdWvZL0IULdK
+ JyOw==
+X-Gm-Message-State: APjAAAUXm4wpZ1iepySYjNstz5JZTg/+5ibx+bE0CIfTCajqkhyH+dh7
+ 3Ot9Ohe0P/VUtrhtWd+oEgZQrA==
+X-Google-Smtp-Source: APXvYqzdMK0gStf/HLg07oXhPJn5lFdaQhPuDeCWUTAcDq3Av+TyeUSuRXkSsM7OLCc3qJH164huew==
+X-Received: by 2002:a63:6901:: with SMTP id e1mr19755671pgc.373.1572256360802; 
+ Mon, 28 Oct 2019 02:52:40 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:79b4:bd83:e4a5:a720])
+ by smtp.gmail.com with ESMTPSA id p3sm9897517pgp.41.2019.10.28.02.52.37
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 28 Oct 2019 02:52:40 -0700 (PDT)
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+To: linux-kernel@vger.kernel.org
+Date: Mon, 28 Oct 2019 17:52:29 +0800
+Message-Id: <20191028095229.99438-1-cychiang@chromium.org>
+X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
 MIME-Version: 1.0
-In-Reply-To: <20191018154201.1276638-5-arnd@arndb.de>
-References: <20191018154052.1276506-1-arnd@arndb.de>
- <20191018154201.1276638-5-arnd@arndb.de>
-From: Stephen Boyd <sboyd@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>
-User-Agent: alot/0.8.1
-Date: Mon, 28 Oct 2019 02:18:24 -0700
-Message-Id: <20191028091825.A1F3B20717@mail.kernel.org>
-X-Mailman-Approved-At: Mon, 28 Oct 2019 10:29:22 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-input@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Jacek Anaszewski <jacek.anaszewski@gmail.com>,
- linux-fbdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- dri-devel@lists.freedesktop.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH 05/46] ARM: pxa: split up mach/hardware.h
+Cc: alsa-devel@alsa-project.org, dianders@chromium.org,
+ Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>,
+ tzungbi@chromium.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ enric.balletbo@collabora.com, dgreid@chromium.org,
+ linux-arm-kernel@lists.infradead.org, Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [alsa-devel] [PATCH] ASoC: rockchip: rockchip_max98090: Enable SHDN
+	to fix headset detection
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,53 +109,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Arnd Bergmann (2019-10-18 08:41:20)
-> The mach/hardware.h is included in lots of places, and it provides
-> three different things on pxa:
-> 
-> - the cpu_is_pxa* macros
-> - an indirect inclusion of mach/addr-map.h
-> - the __REG() and io_pv2() helper macros
-> 
-> Split it up into separate <linux/soc/pxa/cpu.h> and mach/pxa-regs.h
-> headers, then change all the files that use mach/hardware.h to
-> include the exact set of those three headers that they actually
-> need, allowing for further more targeted cleanup.
-> 
-> linux/soc/pxa/cpu.h can remain permanently exported and is now in
-> a global location along with similar headers. pxa-regs.h and
-> addr-map.h are only used in a very small number of drivers now
-> and can be moved to arch/arm/mach-pxa/ directly when those drivers
-> are to pass the necessary data as resources.
-> 
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-rtc@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: linux-watchdog@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
+max98090 spec states that chip needs to be in turned-on state to supply
+mic bias. Enable SHDN dapm widget along with MICBIAS widget to
+actually turn on mic bias for proper headset button detection.
+This is similar to cht_ti_jack_event in
+sound/soc/intel/boards/cht_bsw_max98090_ti.c.
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Note that due to ts3a227e reports the jack event right away before the
+notifier is registered, if headset is plugged on boot, headset button
+will not get detected until headset is unplugged and plugged. This is
+still an issue to be fixed.
+
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+---
+ sound/soc/rockchip/rockchip_max98090.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 0097df1fae66..e80b09143b63 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -66,10 +66,13 @@ static int rk_jack_event(struct notifier_block *nb, unsigned long event,
+ 	struct snd_soc_jack *jack = (struct snd_soc_jack *)data;
+ 	struct snd_soc_dapm_context *dapm = &jack->card->dapm;
+ 
+-	if (event & SND_JACK_MICROPHONE)
++	if (event & SND_JACK_MICROPHONE) {
+ 		snd_soc_dapm_force_enable_pin(dapm, "MICBIAS");
+-	else
++		snd_soc_dapm_force_enable_pin(dapm, "SHDN");
++	} else {
+ 		snd_soc_dapm_disable_pin(dapm, "MICBIAS");
++		snd_soc_dapm_disable_pin(dapm, "SHDN");
++	}
+ 
+ 	snd_soc_dapm_sync(dapm);
+ 
+-- 
+2.24.0.rc0.303.g954a862665-goog
 
 _______________________________________________
 Alsa-devel mailing list
