@@ -2,69 +2,83 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DA6ACA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 18:05:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29005CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 18:52:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E28FF21744
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 18:05:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 32BC8214B2
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 18:52:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qcS+DxOS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E28FF21744
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="unpIxuvd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="B9Ch+rhX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32BC8214B2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBD6D20AA;
-	Mon, 28 Oct 2019 19:04:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBD6D20AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC5C520BA;
+	Mon, 28 Oct 2019 19:51:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC5C520BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572285938;
-	bh=VrbUdUBNImXJBppSbfMvrURsd/GvzT+BDWpHZ7BqieY=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qcS+DxOSwg11hya8z8AzfvM4HpB/p4S8RjJcJnfG/vERWQIduVhWj9ub3WTjP71CA
-	 YX42NHat0a4om3r+fir8WHJ/vHT1RXqVlk3Ie2DVxadwkcv3FMW1VJr1SMj3mSI1l/
-	 Jnl1g6OPsRfL53jUK35hU0GQcF/NtjC15bM2ehn4=
+	s=default; t=1572288733;
+	bh=TTICG4bXBxhKTtbAsmykC45hEo7z6ghUN3NOuIuKwrw=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=unpIxuvdpys5KyxmtyyZOaEFuQbdYOr0p5p9s9mdmiC+KvDyjIhU2nS/ff6PwFZMq
+	 W0F61vm7p4UAWE9Jm/Vokc7ZgAbsb4Z5LvQECa0q7MZOJccNS9b7Md8t8K0weQ2RAL
+	 sVDYUMwbREZixAWZcSgPm2J6c9tjdgjiYHDKUltw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36140F802BD;
-	Mon, 28 Oct 2019 19:04:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44553F80145;
+	Mon, 28 Oct 2019 19:51:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30BF8F80361; Mon, 28 Oct 2019 19:04:42 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 488ABF80361; Mon, 28 Oct 2019 19:51:20 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84917F8011D
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 19:04:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84917F8011D
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id E3103AB91;
- Mon, 28 Oct 2019 18:04:34 +0000 (UTC)
-Date: Mon, 28 Oct 2019 19:04:34 +0100
-Message-ID: <s5hmudku4p9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <alpine.DEB.2.21.1910281931040.16459@zeliteleevi>
-References: <20191023090331.10531-1-kai.vehmanen@linux.intel.com>
- <20191023090331.10531-7-kai.vehmanen@linux.intel.com>
- <s5hpnigu7rs.wl-tiwai@suse.de>
- <alpine.DEB.2.21.1910281931040.16459@zeliteleevi>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: libin.yang@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH v7 6/9] ASoC: Intel: bxt-da7219-max98357a:
-	common hdmi codec support
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4ADBAF80145
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 19:51:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ADBAF80145
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="B9Ch+rhX"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Content-Type:MIME-Version:
+ Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=Uvlr1YBGaWlMxUPE+pps1Gq8AArAoEsvJG3X9s5ZoDQ=; b=B9Ch+rhXUTmUc4kmshSD8B0yg
+ TIO+ay4bW5v8taT+kVCACYmfGNkp2dc0vgcNvzB4exMdUTX/XiPUd71YtVRvyK/AjO6xka94oeWgp
+ cs62AdnKi273JNsXr6JZlTxcsITRUvM5SC64p/vQRKzlK/zLallyWx/okLNGMY4V7SuoM=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iPA6l-0000Qf-Bj; Mon, 28 Oct 2019 18:51:15 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id AF69727403EE; Mon, 28 Oct 2019 18:51:12 +0000 (GMT)
+Date: Mon, 28 Oct 2019 18:51:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Message-ID: <20191028185112.GA22457@sirena.co.uk>
+MIME-Version: 1.0
+X-Cookie: 1 + 1 = 3, for large values of 1.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+ Patrick Lai <plai@codeaurora.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Curtis Malainey <cujomalainey@google.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
+Subject: [alsa-devel] [ANNOUNCE] Draft schedule for 2019 Linux Audio
+	miniconference
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,50 +91,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2759508554424645924=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Oct 2019 18:33:44 +0100,
-Kai Vehmanen wrote:
-> 
-> Hi,
-> 
-> thanks for the review!
-> 
-> On Mon, 28 Oct 2019, Takashi Iwai wrote:
-> 
-> > On Wed, 23 Oct 2019 11:03:28 +0200,
-> > Kai Vehmanen wrote:
-> > > -snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o
-> > > +snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o hda_dsp_common.o
-> > 
-> > Hrm, this can be a problem.  I see there are multiple drivers that are
-> > built with this object.  When they are built as modules and more than
-> > one module get loaded on a system, it'll lead to a conflict because
-> > both modules try to put the same stuff.
-> [...]
-> > But I'm not entirely sure whether this is true on the recent kernel
-> > build.  At least it *was* a problem in the past.
-> > 
-> > In anyway, please try to load the two modules on your system and check
-> > whether the module loading works.
-> 
-> hmm, did a quick test and no problems seen, all modules load fine.
-> 
-> Another option is to go back to solution in v6 of the series and
-> have the helper functions inlines. But it seems v7 works as well, so maybe 
-> we'll stick with this.
 
-Hrm, then it might be built-in + module mixed case.  If that works, it
-implies that my concern can be ignored.  Let's see.
+--===============2759508554424645924==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
 
 
-thanks,
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Takashi
+Hi,
+
+As in previous years we're going to have an audio miniconference so we can
+get together and talk through issues, especially design decisions, face to
+face.  This year's event will be held on October 31st in Lyon, France,
+the day after ELC-E.  This will be held at the Lyon Convention Center (the
+ELC-E venue) and will be free of charge to attend, generously
+sponsored by Intel.
+
+The agenda is looking pretty full now, what we've got so far is:
+
+ - Use case management enhancements (Curtis)
+ - DSP framework integration (Liam)
+  - SOF integration with ACPI and DT (Daniel)
+  - SOF support for non-modular drivers (Daniel)
+  - Gapless compressed playback (Patrick)
+ - Soundwire status (Liam?)
+  - Multi-CPU support
+  - Mixing with HDA/I2S in a single system
+ - PCM issues (Patrick)
+  - PCM device volume control
+  - Attaching timestamps to buffers
+ - Virtualization (Liam)
+ - User experiences (Jerome)
+ - Unified graph (Patrick)
+ - Componentisation status/plans (Me)
+=20
+If you're planning to attend please fill out the form here:
+
+    https://docs.google.com/forms/d/e/1FAIpQLSd6FV-tWYZ1fHlCmyzQhG98OtYH9W9=
+GX-1dQ88mnLxVRGyPww/viewform?usp=3Dsf_link
+
+This event will be covered by the same code of conduct as ELC-E.
+
+Thanks again to Intel for supporting this event.
+
+Thanks,
+Mark
+
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl23OJ8ACgkQJNaLcl1U
+h9BLegf/a/NKQxIX2g3duoA1ID3qPKU4/tQ3YyRTCzRy2chNk9y70JfwzTfOLmnO
+yWZGV0m53Z4tWZxQ/kTH3npGCX/NMymRCh4TT6ydUrt0l+55bR9+ZA4lKYKxLJiS
+4/P4mTgSi2wviwk+xXksznXRz1cE6Xk75F0mVkFO+wbtxI3U33fTkN1mS3aJsUPW
+DCz32xMDG3vspwOtatdxBAPw/6lzNYuaW4MRz2YwFwXLQtNOAiCI9WyQGCmutuOZ
+PEbIA/+VyUkOBC5cNFLZlq1DbFtqpbeBv93HqDZIQzn9GSSo3WaVIuKZOy/z6D4Y
+zj0nAf0cVioMN1j5Bm50nAoUYHZlXA==
+=Lmu/
+-----END PGP SIGNATURE-----
+
+--k1lZvvs/B4yU6o8G--
+
+--===============2759508554424645924==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2759508554424645924==--
