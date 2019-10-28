@@ -2,100 +2,101 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0586CA9EC2
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:57:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43472CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:58:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 360A9218AC
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:57:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9AF421479
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:58:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lqbAa6YY";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sI9/2fLj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 360A9218AC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nWtxg6eG";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nbdVwfZD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9AF421479
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 847B8218D;
-	Mon, 28 Oct 2019 22:56:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 847B8218D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AE512172;
+	Mon, 28 Oct 2019 22:57:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AE512172
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572299865;
-	bh=rgLI1iv994ks3W3tFI+kjQWSrzGm4xgKhqsIl7WmYxo=;
+	s=default; t=1572299900;
+	bh=cxI4KU8pVkf7bDMMgMLCOJWJD2f9nkAwRVxfGON54XE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lqbAa6YYCRWNXGbSpPaQKK29suQPMkIDnIMVuPm4uiNRgS3YpdVc6IWWWKO1i8bNw
-	 mvOqok6Jrxg1oU+YV2QY9Z7VxThMPmCbPXXT7vXG9uqIZI46eBmh2KEsfJ+DLJMIsI
-	 U31B60xXRVJCC0KFQx+70pg/O+eJNdAp37qyJirw=
+	b=nWtxg6eGslaB09iv0SrtRagM9kCJncOpf2zSpMh/qJU/PBnHXr4nvgnLfjGH5TIU9
+	 Ws5AbP5h9Hxzogh6J/V8HbJVnDef6TAv9OjCjFqK3ad6qs1bMW8jS9nX5DPBM3mOEz
+	 8xBd2+lo2wq4V06Yx1PkJ7Myi/mezQAnjKwhbMXM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC260F80792;
-	Mon, 28 Oct 2019 22:44:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0698F80799;
+	Mon, 28 Oct 2019 22:44:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 422CCF80793; Mon, 28 Oct 2019 22:44:07 +0100 (CET)
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com
- [IPv6:2607:f8b0:4864:20::b44])
+ id 5577CF8079B; Mon, 28 Oct 2019 22:44:14 +0100 (CET)
+Received: from mail-yw1-xc43.google.com (mail-yw1-xc43.google.com
+ [IPv6:2607:f8b0:4864:20::c43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7341FF80791
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 22:44:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7341FF80791
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44BCAF80797
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 22:44:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44BCAF80797
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="sI9/2fLj"
-Received: by mail-yb1-xb44.google.com with SMTP id e9so4632618ybp.6
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 14:44:04 -0700 (PDT)
+ header.b="nbdVwfZD"
+Received: by mail-yw1-xc43.google.com with SMTP id p187so4370041ywg.3
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 14:44:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=AomRc+7JSXWolrt89ocEx2b52OuqFBoGAWXzR8KU8dE=;
- b=sI9/2fLjbbGXFIRnFJ46LXMuTkv5ltCHDD3AuL7y7o3djW3sp/kq3DPXx3ab9uXz+v
- b2tOTgPT98pK6JkZPLTKvfyahnHMnSSgqcsH3HK5rHrGbu0241RNvFXY9ocvELFjNuf+
- PjpbS6rn3b3eBejoB+QIHCAKZz0U8ZAvi/R5dCxcGcQjhRNR3nKV/v+dAhl5PIKq49y/
- dhGyar1QjdBUJS89QyQXrOLPT57/MOsN/8Oq+H/O457CDUU2nrvd+ryxke8lGuoFTNrt
- BdbltoCLXb7DCghvGor9oOrbqYgJweV41yVjIb71PQvVEGuJqCUks5FEciHNfF6KGW0d
- s4kQ==
+ bh=/i/0HlGKA9pW8fyicPfA2pdugAJIJiOP9Q1QrtgaENE=;
+ b=nbdVwfZDFPHykkNFSt2WZ5wQLGbZ6iM+RG/vCRRBVkRbAn5BuBSA2/sSJvYm+YWzZS
+ hfzQYZMGWAkwVf19lmJITXiFh0wJeaOyXMMNPVikkb94JZWzNhbN3Mu5QKGqkVj20Um9
+ iEx5xLfbOIwVeBpVs+k1nOP3uiGKZmmpX8wUv8bNBk1NWnlbGboYjQqW7s8Fys6yxnwV
+ Qsl7TEqDJlLdnzn2rOTZFx+E+ZeFLe7JYhJTy4vcbHa8XL6699qcagV36cJCj4Qmblfq
+ fHEZ8gOqvnC5mhrg4XYctZ5zpB9Psibi/mWZ6Il58pHRuLFS5gjlQO6rGkQOP0PCWAw5
+ 8JUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=AomRc+7JSXWolrt89ocEx2b52OuqFBoGAWXzR8KU8dE=;
- b=hncerdmAXSKmLa5ve4Blo4FfLjbrc7j86fpN59/R+vDGtICqeKU5+x6CM+yVhLPnUv
- KTRNWlGDrQ+WsPvZg3jAbVVCdm7xmnWxnPd0MSVcwHiR+D0pxBPUwMjQ4hVV61kNz60J
- PyJdmHxYpJTe+5aIXfwir5PY41H75P4+w0rYz+GFX/K47/QF63BEnfgy6OdqSP0bEI0D
- 6oMIy6/x+hgHYVG0WkMwN1lmuB3/MsYa/UoAWuSDp5bvALVlPqJsfB+8faft1VPxD/+3
- zd159gXgUWBA4c2W+lU6eKZDD/C039RhOlVlDUK+NR01X/WFzw2XWZhjeaHu65/1/7AK
- 6bkw==
-X-Gm-Message-State: APjAAAUz/AYJjXd1HxUnzadHk/PS1+TAjMyJ5otiP34D6eDUThK6YgiS
- cn7bTnjDsKtYGEfE2lqV8kc=
-X-Google-Smtp-Source: APXvYqy5j/Au7c1Su9KNfE4N4upKHXPTa+nOArMcCcQXK+P8vJjH6Ou/56KIw0B1gAxESG+RG4p0lA==
-X-Received: by 2002:a25:80c1:: with SMTP id c1mr16078356ybm.195.1572299043159; 
- Mon, 28 Oct 2019 14:44:03 -0700 (PDT)
+ bh=/i/0HlGKA9pW8fyicPfA2pdugAJIJiOP9Q1QrtgaENE=;
+ b=n9q4OxE7ZPVCY3EesDbXty9a4kvigEtZQWMlFOSWNOVZbcrt0H4YDYqib3O+Lkj7ov
+ otZyvMB4wu1Flip7ipuTKMCr0OcQn7/8pquVWIUNyUF2bp7Uwr6s71Y/dTwvl9b9F4ZS
+ u22PXZLAe8h2YTcrypt59cS9JzOJ8AZ2BCbJWB6H+2UDNi271qrTepaJifu+8LyHMhol
+ y8+Oikb7AZcBbcPmh7a+eF4eNxC0n3lU1+qNSRkaqDJ8tBMXvfvdmL7Pb8/9acA/nXfr
+ lauY8kav1P8pa66OCpzZvZETxhhngTA+NL+4xLdXdTjHae/f9DNVR63alRvBLSvcCbBw
+ XP7g==
+X-Gm-Message-State: APjAAAVJ5ogdMmNinBBR7wtgV6/jDlIX8UJ/7Bp7LbUtGWOiTa44xqGN
+ GxZcn3H+YloNigJDa98cIRs=
+X-Google-Smtp-Source: APXvYqxAoGwunIMqA+SPqNDdF3oLZEdsPsqNY7nnbibhFUwRdkaEG9KikiHvIkySGq9ly2xzHIU3Hg==
+X-Received: by 2002:a81:8282:: with SMTP id
+ s124mr14629255ywf.498.1572299047051; 
+ Mon, 28 Oct 2019 14:44:07 -0700 (PDT)
 Received: from tr4.amd.com (atlvpn.amd.com. [165.204.84.11])
- by smtp.gmail.com with ESMTPSA id l68sm3421090ywf.95.2019.10.28.14.43.57
+ by smtp.gmail.com with ESMTPSA id l68sm3421090ywf.95.2019.10.28.14.44.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Oct 2019 14:44:02 -0700 (PDT)
+ Mon, 28 Oct 2019 14:44:06 -0700 (PDT)
 From: Alex Deucher <alexdeucher@gmail.com>
 X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
 To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, tiwai@suse.de,
  lukas@wunner.de
-Date: Mon, 28 Oct 2019 17:42:15 -0400
-Message-Id: <20191028214216.1508370-21-alexander.deucher@amd.com>
+Date: Mon, 28 Oct 2019 17:42:16 -0400
+Message-Id: <20191028214216.1508370-22-alexander.deucher@amd.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191028214216.1508370-1-alexander.deucher@amd.com>
 References: <20191028214216.1508370-1-alexander.deucher@amd.com>
 MIME-Version: 1.0
 Cc: Alex Deucher <alexander.deucher@amd.com>, Evan Quan <evan.quan@amd.com>
-Subject: [alsa-devel] [PATCH 20/21] ALSA: hda/hdmi - enable runtime pm for
-	newer AMD display audio
+Subject: [alsa-devel] [PATCH 21/21] ALSA: hda/hdmi - enable automatic
+	runtime pm for AMD HDMI codecs by default
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,74 +114,26 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are able to power down the GPU and audio via the GPU driver
-so flag these asics as supporting runtime pm.
+So that we can power down the GPU and audio to save power.
 
 Acked-by: Evan Quan <evan.quan@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
+ sound/pci/hda/patch_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-v2:
-- split out adding the new pci ids
-
- sound/pci/hda/hda_intel.c | 35 +++++++++++++++++++++++------------
- 1 file changed, 23 insertions(+), 12 deletions(-)
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index a07cc8dca7de..134c7e285d7c 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2572,27 +2572,38 @@ static const struct pci_device_id azx_ids[] = {
- 	{ PCI_DEVICE(0x1002, 0xaac8),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
- 	{ PCI_DEVICE(0x1002, 0xaad8),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0xaae8),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xaae0),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
-+	{ PCI_DEVICE(0x1002, 0xaae8),
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xaaf0),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xaaf8),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab00),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab08),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab10),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab18),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab20),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab38),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	/* VIA VT8251/VT8237A */
- 	{ PCI_DEVICE(0x1106, 0x3288), .driver_data = AZX_DRIVER_VIA },
- 	/* VIA GFX VT7122/VX900 */
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index bea7b0961080..26613733f109 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3779,6 +3779,7 @@ static int atihdmi_init(struct hda_codec *codec)
+ 					    ATI_VERB_SET_MULTICHANNEL_MODE,
+ 					    ATI_MULTICHANNEL_MODE_SINGLE);
+ 	}
++	codec->auto_runtime_pm = 1;
+ 
+ 	return 0;
+ }
 -- 
 2.23.0
 
