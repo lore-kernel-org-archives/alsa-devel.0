@@ -2,71 +2,75 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44173CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65189CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:45:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B804121783
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:43:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D7B5A21783
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:45:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mv67Sa0+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B804121783
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GuC0borb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7B5A21783
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E64F11F4B;
-	Mon, 28 Oct 2019 15:42:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E64F11F4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id F32891F5A;
+	Mon, 28 Oct 2019 15:44:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F32891F5A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572273820;
-	bh=bHTDvGa/y9XcJTcHz+UCaQjPgzEV7BUVn1ZuqfSXE4c=;
+	s=default; t=1572273920;
+	bh=4/n0DB6czWyxZKG+UFZ0aFviJtjoPa1cL40ulhwz9c4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mv67Sa0+ZekjKstogn/ekihXKv/IT/tmwQANUN7Qvb8iWgE17f70dn5/7DwomCIjn
-	 O8m8xC4nqElz+uFVc3N9qOpEEvFvVZOXyYkjR3tplaOLmnqpDaKnF5ZJFm3p+BX7rC
-	 QpZ54pT90YgljbE+5zKkuuvFWWzvJJc3+ZD8qbbo=
+	b=GuC0borby4RP20fxRCm1IH/gPPoA+ezNxCAj/esB5/SpfGW+KhXshvzHUzlFiC85e
+	 pyrqyvW0gSj2SA7LNJMi1BueW5j1EMGXrpgsG41H1QbAAiovb3eRzXg1484G9wnFoL
+	 hnz29VyDME/756iSwIuX8kUz+Xll80C8j9m6U4Nc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EDC6F802BD;
-	Mon, 28 Oct 2019 15:42:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98E98F800E7;
+	Mon, 28 Oct 2019 15:44:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94993F80361; Mon, 28 Oct 2019 15:42:48 +0100 (CET)
+ id 5BC9AF80361; Mon, 28 Oct 2019 15:44:22 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 654B8F80145
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:42:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 654B8F80145
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A453F80145
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:44:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A453F80145
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 4F486B521;
- Mon, 28 Oct 2019 14:42:45 +0000 (UTC)
-Date: Mon, 28 Oct 2019 15:42:44 +0100
-Message-ID: <s5hwocp9biz.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 3C01CAC2D;
+ Mon, 28 Oct 2019 14:44:19 +0000 (UTC)
+Date: Mon, 28 Oct 2019 15:44:19 +0100
+Message-ID: <s5hv9s99bgc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-In-Reply-To: <20191028143406.GE1922@kadam>
-References: <000000000000df5189059580f8e9@google.com>
- <s5hsgnkdbsl.wl-tiwai@suse.de> <20191028143406.GE1922@kadam>
+To: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <0daa3e27-3d1f-3040-f8e7-92ce91a97687@web.de>
+References: <s5hmudlmldk.wl-tiwai@suse.de>
+ <ec3647df-0e54-4aaa-7ec7-b3dec0fa1965@web.de>
+ <s5ho8y1au4h.wl-tiwai@suse.de>
+ <0daa3e27-3d1f-3040-f8e7-92ce91a97687@web.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, g@b4.vu, yuehaibing@huawei.com,
- andreyknvl@google.com, linux-usb@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
- rfontana@redhat.com, tiwai@suse.com,
- syzbot <syzbot+0620f79a1978b1133fd7@syzkaller.appspotmail.com>,
- benquike@gmail.com
-Subject: Re: [alsa-devel] KASAN: slab-out-of-bounds Read in
-	build_audio_procunit
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+ kernel-janitors@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kangjie Lu <kjlu@umn.edu>,
+ LKML <linux-kernel@vger.kernel.org>, Richard Fontana <rfontana@redhat.com>,
+ Navid Emamdoost <emamd001@umn.edu>, Stephen McCamant <smccaman@umn.edu>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Navid Emamdoost <navid.emamdoost@gmail.com>
+Subject: Re: [alsa-devel] ALSA: korg1212: Checking exception handling in
+	snd_korg1212_create()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,44 +88,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Oct 2019 15:34:06 +0100,
-Dan Carpenter wrote:
+On Mon, 28 Oct 2019 15:40:09 +0100,
+Markus Elfring wrote:
 > 
-> I wish that this could have been detected with static analysis...
+> >> Can the properties of this programming interface be documented also together
+> >> with the function declaration for the safer handling of ALSA components?
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/sound/kernel-api/writing-an-alsa-driver.rst?id=d6d5df1db6e9d7f8f76d2911707f7d5877251b02#n567
+> >
+> > I can think of only adding some comment at each point mentioning that
+> > the resource will be managed by the device destructor.
 > 
-> On Tue, Oct 22, 2019 at 05:45:14PM +0200, Takashi Iwai wrote:
-> > diff --git a/sound/usb/validate.c b/sound/usb/validate.c
-> > index 3c8f73a0eb12..a5e584b60dcd 100644
-> > --- a/sound/usb/validate.c
-> > +++ b/sound/usb/validate.c
-> > @@ -75,7 +75,7 @@ static bool validate_processing_unit(const void *p,
-> >  
-> >  	if (d->bLength < sizeof(*d))
->             ^^^^^^^^^^^^^^^^^^^^^^^
-> So we know that d->bLength is >= 10.
-> 
-> >  		return false;
-> > -	len = d->bLength < sizeof(*d) + d->bNrInPins;
->         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Len is 1 or 0.
-> 
-> > +	len = sizeof(*d) + d->bNrInPins;
-> >  	if (d->bLength < len)
->             ^^^^^^^^^^^^^^^^
-> 
-> So this condition can't be false.
-> 
-> >  		return false;
-> 
-> But it just makes this return into dead code and we have a lot of dead
-> code paths in the kernel so it doesn't make sense to generate a warning.
-> ...  I don't know if I have a solution.
-> 
-> Maybe some day we will have a vim pluggin which will highlight all the
-> dead paths and someone would notice that it that way.
+> * Which places will be corresponding update candidates?
 
-That'd be awesome :)  Of even a simple checker code that can run in
-the git commit hook should suffice for careless maintainers like me.
+At each place where this kind of code is seen.
+
+> * Would you like to choose the wording?
+
+I myself don't mind as long as it's clearly understandable for human
+being.
+
+> >> Can any more API information help to improve automatic source code analysis
+> >> around similar functions?
+> >
+> > If anything we can add, let me know.
+> 
+> Will any tags become more helpful also for the software documentation?
+
+It's my question.
 
 
 thanks,
