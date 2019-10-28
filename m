@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 212A1CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:07:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44DEACA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:07:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A093F20873
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:07:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C57C6214E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:07:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AWnh8mA4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="B2Y4N3ip"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A093F20873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="keD0X5mH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="xextc1Aj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C57C6214E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED3951FD6;
-	Mon, 28 Oct 2019 16:06:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED3951FD6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 084F51FDC;
+	Mon, 28 Oct 2019 16:06:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 084F51FDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572275223;
-	bh=h+so+3rF61oknDHnQST6d8oJPykJyVgVgPoobZjfGX0=;
+	s=default; t=1572275263;
+	bh=malyRnaG6lIBe6h9XPy+Z7MU6fD0eRmRdXBRmjXHkoQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=AWnh8mA4WSrcvA1wzYkwQUXOiOOI9SCBHBTuCSEddjtBYM94CGc4lb+tGbAYkFPwe
-	 AA2zqCzMa6d4RcNk5Gm+bQzJU+KpkT+hylPU8PoYtXnV3Ks3yYT+JniIaLVhFjSaX3
-	 WZpsQuh2H3dB+T0BpmFOeiX516jSgE2m2BnI7mwQ=
+	b=keD0X5mHOBcCXFqP2xcrH/z4NKs3yyXMuUXOXAimZIKWKHZ60TRUGiOig82v9uphc
+	 SmPbQk6KqRyPs8MKz68HInOy34zaD88/20Hj/j5Se60hCW6AOK0YKvuIl20BJvtvVS
+	 27udr1VkYvaakKcMr0T/Os4HyKydU8T8YhpioZrI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E802DF80722;
-	Mon, 28 Oct 2019 15:57:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1ADB9F8071F;
+	Mon, 28 Oct 2019 15:57:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38992F8067C; Mon, 28 Oct 2019 15:56:51 +0100 (CET)
+ id E17FDF806E8; Mon, 28 Oct 2019 15:56:51 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1BB3F802BD
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1BB3F802BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A8EDF805FF
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A8EDF805FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="B2Y4N3ip"
+ header.b="xextc1Aj"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=gOcOEJt2q/D+fwIXs54Af+3qLEpeDDeV9dlFYIVsJHc=; b=B2Y4N3ipbhYV
- uxRkKiQlC5PhIAo3M6FbnwBDtmHOTvsS65xXjhvfhuNvtAsFdfWx+vBbUxJlcv+mJYbHS4HiGIUNo
- kralZKPoAhyVCwNmb+7WaiZghlc/EmHc1RYIzEDO9Ehu7eGp05SvkPaX+y16lH7j6w+Xw8rnxj77Y
- 3eQiE=;
+ List-Archive; bh=MDS0je5XOJ7z7RrLq55motxLfIF0T4nalGt4i+e3NEM=; b=xextc1AjNYLn
+ h02tPUxhMB+ENaNk74XO2fj34G1JYVR0Xrb1sN5MnUJXYOGMkbdSCStyN/wcQNgN+EgTgc3Bpwmbr
+ dAM/nrcXAjfPmU8e1QEnMl77bJse2LdviKUDOOdBi2ZjCHGK5rVXmFb3fepwXPSRImID5vq9BmHZp
+ gzCNc=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Rd-0008PZ-Fs; Mon, 28 Oct 2019 14:56:33 +0000
+ id 1iP6Rd-0008Pl-JW; Mon, 28 Oct 2019 14:56:33 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id AD02F274168E; Mon, 28 Oct 2019 14:56:31 +0000 (GMT)
+ id 7C075274162C; Mon, 28 Oct 2019 14:56:31 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <20191025224122.7718-10-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191025224122.7718-11-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145631.AD02F274168E@ypsilon.sirena.org.uk>
+Message-Id: <20191028145631.7C075274162C@ypsilon.sirena.org.uk>
 Date: Mon, 28 Oct 2019 14:56:31 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: topology: parse and store
-	d0i3_compatible flag" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda-dsp: align the comments
+	for D0I3C update" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: topology: parse and store d0i3_compatible flag
+   ASoC: SOF: Intel: hda-dsp: align the comments for D0I3C update
 
 has been applied to the asoc tree at
 
@@ -122,68 +122,44 @@ to this mail.
 Thanks,
 Mark
 
-From c5232c0171428f005a3204e1c264231fb5999b28 Mon Sep 17 00:00:00 2001
+From aae7c82d01219bf568a7b12f5839d7ca52b17d59 Mon Sep 17 00:00:00 2001
 From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Fri, 25 Oct 2019 17:41:05 -0500
-Subject: [PATCH] ASoC: SOF: topology: parse and store d0i3_compatible flag
+Date: Fri, 25 Oct 2019 17:41:06 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda-dsp: align the comments for D0I3C
+ update
 
-Parses the token from tplg file and store it to snd_sof_pcm_stream
-d0i3_compatible flag, which can be used later for d0ix transition
-management.
+Align the logs for CIP timeout at D0I3C.I3 updating.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191025224122.7718-10-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191025224122.7718-11-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/topology.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/sof/intel/hda-dsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 121e5d6f8477..cc138ac6a8eb 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2307,6 +2307,7 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_stream_caps *caps;
-+	struct snd_soc_tplg_private *private = &pcm->priv;
- 	struct snd_sof_pcm *spcm;
- 	int stream = SNDRV_PCM_STREAM_PLAYBACK;
- 	int ret = 0;
-@@ -2329,10 +2330,22 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- 	dai_drv->dobj.private = spcm;
- 	list_add(&spcm->list, &sdev->pcm_list);
- 
-+	ret = sof_parse_tokens(scomp, spcm, stream_tokens,
-+			       ARRAY_SIZE(stream_tokens), private->array,
-+			       le32_to_cpu(private->size));
-+	if (ret) {
-+		dev_err(sdev->dev, "error: parse stream tokens failed %d\n",
-+			le32_to_cpu(private->size));
-+		return ret;
-+	}
-+
- 	/* do we need to allocate playback PCM DMA pages */
- 	if (!spcm->pcm.playback)
- 		goto capture;
- 
-+	dev_vdbg(sdev->dev, "tplg: pcm %s stream tokens: playback d0i3:%d\n",
-+		 spcm->pcm.pcm_name, spcm->stream[0].d0i3_compatible);
-+
- 	caps = &spcm->pcm.caps[stream];
- 
- 	/* allocate playback page table buffer */
-@@ -2360,6 +2373,9 @@ static int sof_dai_load(struct snd_soc_component *scomp, int index,
- 	if (!spcm->pcm.capture)
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index fa2f1f66c72c..74805a066183 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -330,7 +330,7 @@ int hda_dsp_set_power_state(struct snd_sof_dev *sdev,
+ 	/* Write to D0I3C after Command-In-Progress bit is cleared */
+ 	ret = hda_dsp_wait_d0i3c_done(sdev, retry);
+ 	if (ret < 0) {
+-		dev_err(bus->dev, "CIP timeout before update D0I3C!\n");
++		dev_err(bus->dev, "CIP timeout before D0I3C update!\n");
  		return ret;
+ 	}
  
-+	dev_vdbg(sdev->dev, "tplg: pcm %s stream tokens: capture d0i3:%d\n",
-+		 spcm->pcm.pcm_name, spcm->stream[1].d0i3_compatible);
-+
- 	caps = &spcm->pcm.caps[stream];
+@@ -342,7 +342,7 @@ int hda_dsp_set_power_state(struct snd_sof_dev *sdev,
+ 	retry = 50;
+ 	ret = hda_dsp_wait_d0i3c_done(sdev, retry);
+ 	if (ret < 0) {
+-		dev_err(bus->dev, "CIP timeout after D0I3C updated!\n");
++		dev_err(bus->dev, "CIP timeout after D0I3C update!\n");
+ 		return ret;
+ 	}
  
- 	/* allocate capture page table buffer */
 -- 
 2.20.1
 
