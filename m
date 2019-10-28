@@ -7,79 +7,81 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD7FCA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6845FCA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:21:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C871421721
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:20:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6A1321744
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:21:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="II4UM7g6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ji8GRUak"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C871421721
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m8g4q/tb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="G0w0eKog"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6A1321744
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 133E12071;
-	Mon, 28 Oct 2019 16:19:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 133E12071
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D1DE203F;
+	Mon, 28 Oct 2019 16:20:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D1DE203F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572276031;
-	bh=mg0ipZHxzoO8ofPzV9FMgKYHw1oySwUZTc6Z8OGyIiU=;
+	s=default; t=1572276068;
+	bh=virbjzUQ5N4IM6Wn1/GygfVtf3bnVYgblgU4iZhbaqg=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=II4UM7g6k9M8Wk10GmbrWeDIOOFk+MDNT5UFkmMNUZvCv3kbuCRSkvnshwaLwLHqs
-	 oVaVrGjWaOxEMh5IYZc6ixh/okx664siWmRshCmABE4JjUwmxn2vo5yA4S3oqGranF
-	 pQMeq11af4kAComl3o/pErWENR/jirSmbWQLwoqI=
+	b=m8g4q/tbsJa0Kpi0DFffart7h92dsT4yVGjwDYjkD61+SgIlTVsHeJWAn2AFDuZJ4
+	 OmanVVorftEzB61mut1f6croadZbw1LF8wf6QZT5MPECE98sN/ZOR5vHrNK7GaoqaF
+	 wwsherKEgvhKA3Hf3y2fupaYCRv7UdYJFw7aerZY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 925B8F80CC3;
-	Mon, 28 Oct 2019 15:57:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D79AF89615;
+	Mon, 28 Oct 2019 15:57:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68357F8071F; Mon, 28 Oct 2019 15:57:20 +0100 (CET)
+ id EB873F80724; Mon, 28 Oct 2019 15:57:20 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 387BFF803D6
+ by alsa1.perex.cz (Postfix) with ESMTPS id D83DFF8065A
  for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 387BFF803D6
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D83DFF8065A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ji8GRUak"
+ header.b="G0w0eKog"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=pRAnZ2eosKV/53G9bqUjly+zJvMmzCGpbgurzDJUuFc=; b=ji8GRUakC0x3
- My3BXG8nqht1NWURYP4Hl6TLrXwU+YQJQtG1BZ97HpUaz0DgR5UWjv9SY44Yy/KwuFpDAejKo3hHh
- 2130boS1xvfTbbKSPf/G1NXAijvKgw2nBNq0W+VUokakasfTmtqnI6lDnbLH6PMpRjyuNcgU3nNcv
- rz4rM=;
+ List-Archive; bh=AFCr3rynD8V4Xu0si+l9pX7hWrr9yeLzz/mOG9Iw2wc=; b=G0w0eKogHrhP
+ q8K6V3DrJgZC7vPrVoys+O16CN+nQi6vYsFPu8CvMZEwCu5kkSS4vSxjP3s7vUiAjyT4NK3LXZEyV
+ jL/XjtfWFgEw2xMIxEP60y7Y8B3QdjH5BHZfNy8tuaf8+JJbATHxKGqcJUUP1mlVNnb1QD2L2Btzj
+ J8NKk=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Ri-0008Rf-UG; Mon, 28 Oct 2019 14:56:39 +0000
+ id 1iP6Rk-0008Rv-0Q; Mon, 28 Oct 2019 14:56:40 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 5632E2740B7F; Mon, 28 Oct 2019 14:56:37 +0000 (GMT)
+ id 6969827403EF; Mon, 28 Oct 2019 14:56:38 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20191025120801.16236-1-yuehaibing@huawei.com>
+To: Navid Emamdoost <navid.emamdoost@gmail.com>
+In-Reply-To: <20191027194856.4056-1-navid.emamdoost@gmail.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145637.5632E2740B7F@ypsilon.sirena.org.uk>
-Date: Mon, 28 Oct 2019 14:56:37 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- dannym@scratchpost.org, tiwai@suse.com, yuehaibing@huawei.com,
- lgirdwood@gmail.com, mripard@kernel.org, linux-kernel@vger.kernel.org,
- georgii.staroselskii@emlid.com, wens@csie.org, Mark Brown <broonie@kernel.org>,
- tglx@linutronix.de, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: sunxi: sun4i-codec: remove unneeded
-	semicolon" to the asoc tree
+Message-Id: <20191028145638.6969827403EF@ypsilon.sirena.org.uk>
+Date: Mon, 28 Oct 2019 14:56:38 +0000 (GMT)
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kjlu@umn.edu,
+ Liam Girdwood <lgirdwood@gmail.com>, emamd001@umn.edu,
+ Wei Yongjun <weiyongjun1@huawei.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, smccaman@umn.edu,
+ "Cc:"@sirena.co.uk, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] Applied "ASoC: SOF: Fix memory leak in
+	sof_dfsentry_write" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,11 +102,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: sunxi: sun4i-codec: remove unneeded semicolon
+   ASoC: SOF: Fix memory leak in sof_dfsentry_write
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -125,51 +127,40 @@ to this mail.
 Thanks,
 Mark
 
-From 24d05966b560b88d37d90e64f018af2fed888104 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 25 Oct 2019 20:08:01 +0800
-Subject: [PATCH] ASoC: sunxi: sun4i-codec: remove unneeded semicolon
+From c0a333d842ef67ac04adc72ff79dc1ccc3dca4ed Mon Sep 17 00:00:00 2001
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
+Date: Sun, 27 Oct 2019 14:48:47 -0500
+Subject: [PATCH] ASoC: SOF: Fix memory leak in sof_dfsentry_write
 
-remove unneeded semicolon.
+In the implementation of sof_dfsentry_write() memory allocated for
+string is leaked in case of an error. Go to error handling path if the
+d_name.name is not valid.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20191025120801.16236-1-yuehaibing@huawei.com
+Fixes: 091c12e1f50c ("ASoC: SOF: debug: add new debugfs entries for IPC flood test")
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Link: https://lore.kernel.org/r/20191027194856.4056-1-navid.emamdoost@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sof/debug.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index ee448d5e07a6..34f3e0be3058 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1442,7 +1442,7 @@ static struct snd_soc_card *sun8i_a23_codec_create_card(struct device *dev)
- 	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
--	};
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index 54cd431faab7..5529e8eeca46 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -152,8 +152,10 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 	 */
+ 	dentry = file->f_path.dentry;
+ 	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
+-	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
+-		return -EINVAL;
++	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) {
++		ret = -EINVAL;
++		goto out;
 +	}
  
- 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
- 	if (!card->dai_link)
-@@ -1480,7 +1480,7 @@ static struct snd_soc_card *sun8i_h3_codec_create_card(struct device *dev)
- 	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
--	};
-+	}
- 
- 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
- 	if (!card->dai_link)
-@@ -1518,7 +1518,7 @@ static struct snd_soc_card *sun8i_v3s_codec_create_card(struct device *dev)
- 	if (!aux_dev.dlc.of_node) {
- 		dev_err(dev, "Can't find analog controls for codec.\n");
- 		return ERR_PTR(-EINVAL);
--	};
-+	}
- 
- 	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
- 	if (!card->dai_link)
+ 	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
+ 		flood_duration_test = true;
 -- 
 2.20.1
 
