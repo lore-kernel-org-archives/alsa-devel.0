@@ -2,106 +2,60 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41661CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 12:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A34ACCA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 13:07:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCC0B214E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 12:46:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9A53B214D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 13:07:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FK4SPO8l";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZoLU5m9G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCC0B214E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jf3R/soJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A53B214D9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D85941EF4;
-	Mon, 28 Oct 2019 13:45:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D85941EF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A3761F00;
+	Mon, 28 Oct 2019 14:06:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A3761F00
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572266798;
-	bh=NFePAc5ignw/bvqW+hv5oi2/+mquvOU7Qel/TJuqNxM=;
-	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FK4SPO8lJga4TKfFD2jqR+FPy2sCAS2/xqHbix6VdXVLf1QrIFrMlfYO/SVZoyWjG
-	 QElv3qCE7E8NLmhmHDh4a9Ap7ZzhDSm5mx1mWfCgSnw5XMVIvjfzjb0LXCUUQ4sJ2t
-	 7byFu0Cd/OsxnL5FSshASFzZfrOay6lrU5TyjDQ8=
+	s=default; t=1572268058;
+	bh=ismRquiffIWbp8WRPno7AR11DWEnEJseE1uexRJSuk8=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Jf3R/soJ/AzTw6UESJN/ZkJD90VydL1PaT2JI+DrYaZM17w13IubSeBEr2KR3fT0n
+	 nBS9lsgsFWBiheVg5RDKUSNIgizLhh5M/97jBlk063of0XYeuwzGgt2rbkE+Hx4XlT
+	 cueoWBBmPI52NqTQotk0T38YtGdex02PoWU5cGTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B2B9F802BD;
-	Mon, 28 Oct 2019 13:45:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF3ECF802BD;
+	Mon, 28 Oct 2019 14:06:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23002F80361; Mon, 28 Oct 2019 13:45:47 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D98E5F80361; Mon, 28 Oct 2019 14:06:46 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C5A7F800E7
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 13:45:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C5A7F800E7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="ZoLU5m9G"
-Received: by mail-wr1-x443.google.com with SMTP id r1so9719980wrs.9
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 05:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:from:to:cc:references:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=EjO3nRtZRcHpq4gF9qTCncUdsLaN7JBougyYjcKY6iQ=;
- b=ZoLU5m9GxdnwffSu0EW6y0pGEJD2St4BW1Or90pLKllhPiB4f1Di9B3e3e2mqGJjsq
- jsFx8WAxwcc9s/0IgrizLkXgBV5lcpT33SA8sFf2vGjv3kjC/qpC305pVj/XYl/YtpcI
- D6nlH9i0hwED/+2q7/04OYEVNE5pBpqM8rAZrlokoBQb1PeN69+gkewQ756V439YAp8r
- u37qbi4DkpziBHivr9HsgQ1VD9bcuK/oBIqFaia7N/bgibq5DGJDdqU/Tai48T7XcTVr
- OG7fyw4BHSSwOa1jfqymyccf2xA1Vq8/e+ECfuMMcK5s9tDdJjwk3JnJqopKM5cFSC4E
- VltQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:from:to:cc:references:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=EjO3nRtZRcHpq4gF9qTCncUdsLaN7JBougyYjcKY6iQ=;
- b=HmrzJxB6L1lb/zLeu95gy27bTSB3AmpwnKn64Dcxw16b5enq206SDS5qrFT9h4dH/i
- 5e6eDLbK5PD8V2aLfAJoW0UjejTPp5Km7kG5zqGSukbRreRAhVYxchtcV2af6M4chovR
- B5QxJlhB5Qj8U01HIvrr7PCFzAIh7DCRAf9sAi0/zXgCC343amfhrMfd8beNIVH0BdBz
- mnLqkPCa8LRvZXOkfMZa7RCC+Q6T9jtjIdDjCNf217jcaPgvzTKghkrDi1l+dPefiEfb
- LNDbzsNK9tvTQA5O5L8gH9heUq6VEhcIgEyX1bzbS2qYi1LwLIoJHYXYmNNcVqEqfEkS
- HkjQ==
-X-Gm-Message-State: APjAAAWOFLHYdrQgfilFmT7ta0toFrDG4CsKnzlFTzl8BKnMm6WrDtWE
- IqPY03z7UJTYxGDzPq5u3drw/xNOmHo=
-X-Google-Smtp-Source: APXvYqx5GBghFKmvy0FXn9fEAyKJ8U0QQT5f2YmoThu0wU+QHGSds58+7CTsU7u+9MwQhikla46hCQ==
-X-Received: by 2002:adf:8011:: with SMTP id 17mr15418613wrk.367.1572266743355; 
- Mon, 28 Oct 2019 05:45:43 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id d2sm16183996wmd.2.2019.10.28.05.45.42
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 28 Oct 2019 05:45:42 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: Rob Herring <robh@kernel.org>
-References: <20191018001849.27205-1-srinivas.kandagatla@linaro.org>
- <20191018001849.27205-2-srinivas.kandagatla@linaro.org>
- <20191025204338.GA25892@bogus>
- <90b2d83b-f2b2-3a5d-4deb-589f4b48b208@linaro.org>
-Message-ID: <371955d9-ad2d-5ddc-31b4-710729feae42@linaro.org>
-Date: Mon, 28 Oct 2019 12:45:41 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <90b2d83b-f2b2-3a5d-4deb-589f4b48b208@linaro.org>
-Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, vinod.koul@linaro.org, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org,
- lee.jones@linaro.org, spapothi@codeaurora.org
-Subject: Re: [alsa-devel] [PATCH v2 01/11] ASoC: dt-bindings: add dt
- bindings for WCD9340/WCD9341 audio codec
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8231CF8011D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 14:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8231CF8011D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 68746B23A;
+ Mon, 28 Oct 2019 13:06:43 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Mon, 28 Oct 2019 14:06:34 +0100
+Message-Id: <20191028130634.3501-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH] ALSA: hda: Allow non-Intel device probe
+	gracefully
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,19 +68,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CgpPbiAyOC8xMC8yMDE5IDEyOjQwLCBTcmluaXZhcyBLYW5kYWdhdGxhIHdyb3RlOgo+IEl0cyBQ
-aGFuZGxlLgo+IAo+IHNvbWV0aGluZyBsaWtlIHRoaXMgaXMgb2theT8KPiAKPiBzbGltLWlmYy1k
-ZXY6Cj4gIMKgICRyZWY6ICcvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9waGFuZGxl
-LWFycmF5JwoKU29ycnkgdGhpcyBzaG91bGQgbm90IGJlIGFuIGFycmF5LCBzbyBzb21ldGhpbmcg
-bGlrZSB0aGlzOgoKICAgc2xpbS1pZmMtZGV2OgogICAgIGRlc2NyaXB0aW9uOiBTTElNQnVzIElu
-dGVyZmFjZSBkZXZpY2UgcGhhbmRsZQogICAgICRyZWY6ICcvc2NoZW1hcy90eXBlcy55YW1sIy9k
-ZWZpbml0aW9ucy9waGFuZGxlJwoKCj4gIMKgIGRlc2NyaXB0aW9uOiBTTElNQnVzIEludGVyZmFj
-ZSBkZXZpY2UgcGhhbmRsZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+The recent addition of snd_intel_dsp_driver_probe() check caused a
+spurious kernel warning when the driver is loaded for a non-Intel
+hardware due to snd_BUG_ON().  Moreover, for such a hardware, we
+should always return SND_INTEL_DSP_DRIVER_ANY, not check the
+dsp_driver option at all.
+
+This patch fixes these issues for non-Intel devices.
+
+Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/hda/intel-dsp-config.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 0b2a7201a46a..be1df80ed013 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -307,13 +307,13 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
+ {
+ 	const struct config_entry *cfg;
+ 
+-	if (dsp_driver > 0 && dsp_driver <= SND_INTEL_DSP_DRIVER_LAST)
+-		return dsp_driver;
+-
+ 	/* Intel vendor only */
+-	if (snd_BUG_ON(pci->vendor != 0x8086))
++	if (pci->vendor != 0x8086)
+ 		return SND_INTEL_DSP_DRIVER_ANY;
+ 
++	if (dsp_driver > 0 && dsp_driver <= SND_INTEL_DSP_DRIVER_LAST)
++		return dsp_driver;
++
+ 	/*
+ 	 * detect DSP by checking class/subclass/prog-id information
+ 	 * class=04 subclass 03 prog-if 00: no DSP, use legacy driver
+-- 
+2.16.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
