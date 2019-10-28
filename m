@@ -8,94 +8,94 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E92D4CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:49:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2081BCA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:50:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CC3121479
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:49:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9346221479
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 21:50:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DXxLHXj8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XK5fSFBf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CC3121479
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LbRzvR2z";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rWasITr/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9346221479
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD5932145;
-	Mon, 28 Oct 2019 22:48:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD5932145
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCB62213E;
+	Mon, 28 Oct 2019 22:49:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCB62213E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572299377;
-	bh=4bOpKsDunx6gRMRya0TNpJXfbotI3cVR7OIxSV0UHWo=;
+	s=default; t=1572299405;
+	bh=zBdNbKyptyD4EF9V4k8S6gBE8mMbKSBj+Q1WZZX/zMY=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DXxLHXj87B4P1WW+2Mpmjl3nvuiwP7sNBWMHQO6A1C5SJt2uhzQIMox7hLGHmKcjB
-	 hCN9Pr6+c1W4vllbdTsJrplAenbc9UgrKAe4MToIl4Wr2IuVmBWQbyQMPgLLs7mdd9
-	 TfH3ssdGsKwnIdfrb8bJdQii6yG8O1NA7FwngMBY=
+	b=LbRzvR2zHShsnRgp6rjuIXwbpi6JsBiaVRcqGA5VkTSv2IlF2mSLAkGd6qfvAkP7b
+	 wYk+aHPEBb0it3Gei3FDugAX/Ss7+qpCZdoHZTrwWto9K8j8CtiduV7kLrq/RBs8c0
+	 HPlT0nR3vJBIKNXxV13gZANA4iVGor38A6Gx89Fc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8035EF80676;
-	Mon, 28 Oct 2019 22:43:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C4E7F8067C;
+	Mon, 28 Oct 2019 22:43:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E10AF80677; Mon, 28 Oct 2019 22:43:22 +0100 (CET)
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com
- [IPv6:2607:f8b0:4864:20::b42])
+ id 80DA2F8067C; Mon, 28 Oct 2019 22:43:28 +0100 (CET)
+Received: from mail-yw1-xc42.google.com (mail-yw1-xc42.google.com
+ [IPv6:2607:f8b0:4864:20::c42])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC180F8064C
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 22:43:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC180F8064C
+ by alsa1.perex.cz (Postfix) with ESMTPS id D19D9F80677
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 22:43:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D19D9F80677
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XK5fSFBf"
-Received: by mail-yb1-xb42.google.com with SMTP id w5so4393131ybs.11
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 14:43:16 -0700 (PDT)
+ header.b="rWasITr/"
+Received: by mail-yw1-xc42.google.com with SMTP id d192so4377701ywa.1
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 14:43:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=eXNIgNyIpKliPo5bixSq8PM86XlU7yVh3tY4R/mkD0Y=;
- b=XK5fSFBfdmb8SL5KSu2rHXfGvpYnW2a8k1+P6yi0MLg27S0AZ8BqUg+o3nUjjRmCvq
- oAQXpImnvXAbetX09xtK6xYpI2sT5UWfCYvMyxHYLwMX83f3GfIqcRBS8CcTCp4e0LCw
- ecHt/KpUDGH018DRYRRfo8iiL2OuzQjlPDK1mlFeHlKeWYueAMCJVxrkGlbwrX1HdGCm
- KTVtJx+3Fr9qziE53Mu3FgOYIhxq6BNWi8n3/C6NMDtlwKJ75WoVGLb1cYgi54uMDlbW
- ZwcbGPdHmuq/KL94utBTap6El9H4BEBI2jOhc3MVez2AzA4NnRzxhIuN47RK6f6nZMIn
- u9aA==
+ bh=tbg+nGZs28cfdi4lLSwu0wN/GLAMpH0syoOpZnLkTNQ=;
+ b=rWasITr/0jsEy1mN+Ka/9Le/gpZ4XdPbp/N/QbpcqXBC4lSu4+Ql3nC1c95KrHUgNo
+ 1MTazFeg7AdbkGnsqnFvqR+XUMcsl6sMlSFkJZLSr/nud9SveDP5OFgRgwlmrn5Mo6j5
+ Ynj3w0BYjX7xpcv//ClKU95pmAVwbwdg/AIEcYFsBtMgBd3FghI5XislekLHbLf4pPwl
+ x50h/pD5vJ7bzy31acswM9eMKGRd26mP50pbaZbpJuzsnWCABjKg7gIO3/psfny4dJ4K
+ Hituo+ofKPH4qvFFYzGzxsaBfgcig/sNqtkUFwgtsKLSFHF6HsqvEeia6GyHK4snYL+Z
+ HooQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=eXNIgNyIpKliPo5bixSq8PM86XlU7yVh3tY4R/mkD0Y=;
- b=EUL40BL05bt2dso5hFnP7f1KOwqyffZhPBakKY8+KIWOKvGcJ/cz69s99rh3tbb1kn
- 9WXsBPw6FoKBM/0fyM05ibZVAAdTKhtY4Z7VQ1H8flthF7PAioU2ayTKeX8EOwta2P2B
- Jl8p5JtDJfZ0nw+SkDE/QZxp7EQPL6vyArlAcqeyDxRpZz6+B1GJgEVfKse/mMQ9tpvZ
- 0nzSrmowno3CzOq2OAcq8sDKgdlo+NkD0JKboHL4SzhDBlF8ldReRRK7TaCEU6x6F9kY
- 2ejP3Nt7ebXwKuEWNO2NAZOnp1Hlqde4607IzV4jJEwKUnuFGgaP7807Huu0zzsm3f4x
- XTng==
-X-Gm-Message-State: APjAAAUGK+WXay51mOcDhZ0s2FNsW4K5NrLsLP0ODi8a/D3eROZIBTi1
- o3lv5K+0WHuP9X1uS5O/Fb4=
-X-Google-Smtp-Source: APXvYqzNT7GEIPMtaSo6h4t8I/mdhjZDjJNV67RaEbCP5CY5SYQfPt9+Q7xGW8BazMPUyayh6R3RKg==
-X-Received: by 2002:a25:ef07:: with SMTP id g7mr15226083ybd.393.1572298994763; 
- Mon, 28 Oct 2019 14:43:14 -0700 (PDT)
+ bh=tbg+nGZs28cfdi4lLSwu0wN/GLAMpH0syoOpZnLkTNQ=;
+ b=nlTODvq9JbKfPud1W8MQiPs5ECX3NF13pIA9zda4llVrdROUQTZ1R2JYKBnDo6WsqC
+ SnKSDbOQzDDF+hxZ0YTgiMUjfOwIpH0/l2v2bYgUw+y8mt0D7GTHiyN0SKA3HJ6js18I
+ 2LGe1Yo5ynpffsO34SQoSeqIzzQAMclkUxROjOTYngFWJGyeHNk2+pR2iVwubr/p6wED
+ vo6x/aqSGcVu4+6y/IxVk7IiKGfqI5J203cz6DVqHce2GUye+uhLyYE5HfYXD7EgodaL
+ Hw9itAaYyTNSzt6gWvtXmi9DKQDKM2gy6VlCmWmVbc807wPo0YiCs6W50UWJKwURKQHX
+ /sXg==
+X-Gm-Message-State: APjAAAWCNihJWob6Yn8yqX+kzWbe6rQ87gDjRmjHqhfoIGi/jPoQ7wAI
+ w+Yw0f2Y4bX82X4BcUejy7U=
+X-Google-Smtp-Source: APXvYqzP2Ti26LoW6HupwE2mT1DU+9HALPRm9lRVVWgKkJGI8mB3ybkldJmxWVpKaRp8kMoZAa9JwQ==
+X-Received: by 2002:a0d:c985:: with SMTP id l127mr14915831ywd.68.1572299003959; 
+ Mon, 28 Oct 2019 14:43:23 -0700 (PDT)
 Received: from tr4.amd.com (atlvpn.amd.com. [165.204.84.11])
- by smtp.gmail.com with ESMTPSA id l68sm3421090ywf.95.2019.10.28.14.43.12
+ by smtp.gmail.com with ESMTPSA id l68sm3421090ywf.95.2019.10.28.14.43.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Oct 2019 14:43:14 -0700 (PDT)
+ Mon, 28 Oct 2019 14:43:23 -0700 (PDT)
 From: Alex Deucher <alexdeucher@gmail.com>
 X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
 To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, tiwai@suse.de,
  lukas@wunner.de
-Date: Mon, 28 Oct 2019 17:42:03 -0400
-Message-Id: <20191028214216.1508370-9-alexander.deucher@amd.com>
+Date: Mon, 28 Oct 2019 17:42:05 -0400
+Message-Id: <20191028214216.1508370-11-alexander.deucher@amd.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191028214216.1508370-1-alexander.deucher@amd.com>
 References: <20191028214216.1508370-1-alexander.deucher@amd.com>
 MIME-Version: 1.0
 Cc: Alex Deucher <alexander.deucher@amd.com>, Evan Quan <evan.quan@amd.com>
-Subject: [alsa-devel] [PATCH 08/21] drm/amdgpu: add a
-	amdgpu_device_supports_baco helper
+Subject: [alsa-devel] [PATCH 10/21] drm/amdgpu: add additional boco checks
+	to runtime suspend/resume (v2)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,55 +114,88 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 BACO - Bus Active, Chip Off
+BOCO - Bus Off, Chip Off
 
-To check if a device supports BACO or not.  This will be
-used in determining when to enable runtime pm.
+We will take slightly different paths for boco and baco.
 
-Reviewed-by: Evan Quan <evan.quan@amd.com>
+v2: fold together two consecutive if clauses
+
+Reviewed-by: Evan Quan <evan.quan@amd.com> (v1)
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu.h        |  1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 15 +++++++++++++++
- 2 files changed, 16 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 47 ++++++++++++++-----------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index 00cc43f74be1..8bdaf1c784e5 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1139,6 +1139,7 @@ void amdgpu_device_program_register_sequence(struct amdgpu_device *adev,
- 					     const u32 array_size);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index 310182bf1db5..7b8478d08b2b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1217,18 +1217,21 @@ static int amdgpu_pmops_runtime_suspend(struct device *dev)
+ 		return -EBUSY;
+ 	}
  
- bool amdgpu_device_is_px(struct drm_device *dev);
-+bool amdgpu_device_supports_baco(struct drm_device *dev);
- bool amdgpu_device_is_peer_accessible(struct amdgpu_device *adev,
- 				      struct amdgpu_device *peer_adev);
+-	drm_dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
++	if (amdgpu_device_supports_boco(drm_dev))
++		drm_dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
+ 	drm_kms_helper_poll_disable(drm_dev);
  
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 4eee40b9d0b0..85357bd2863e 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -154,6 +154,21 @@ bool amdgpu_device_is_px(struct drm_device *dev)
- 	return false;
+ 	ret = amdgpu_device_suspend(drm_dev, false, false);
+-	pci_save_state(pdev);
+-	pci_disable_device(pdev);
+-	pci_ignore_hotplug(pdev);
+-	if (amdgpu_is_atpx_hybrid())
+-		pci_set_power_state(pdev, PCI_D3cold);
+-	else if (!amdgpu_has_atpx_dgpu_power_cntl())
+-		pci_set_power_state(pdev, PCI_D3hot);
+-	drm_dev->switch_power_state = DRM_SWITCH_POWER_DYNAMIC_OFF;
++	if (amdgpu_device_supports_boco(drm_dev)) {
++		pci_save_state(pdev);
++		pci_disable_device(pdev);
++		pci_ignore_hotplug(pdev);
++		if (amdgpu_is_atpx_hybrid())
++			pci_set_power_state(pdev, PCI_D3cold);
++		else if (!amdgpu_has_atpx_dgpu_power_cntl())
++			pci_set_power_state(pdev, PCI_D3hot);
++		drm_dev->switch_power_state = DRM_SWITCH_POWER_DYNAMIC_OFF;
++	}
+ 
+ 	return 0;
+ }
+@@ -1242,20 +1245,22 @@ static int amdgpu_pmops_runtime_resume(struct device *dev)
+ 	if (!amdgpu_device_supports_boco(drm_dev))
+ 		return -EINVAL;
+ 
+-	drm_dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
+-
+-	if (amdgpu_is_atpx_hybrid() ||
+-	    !amdgpu_has_atpx_dgpu_power_cntl())
+-		pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-	ret = pci_enable_device(pdev);
+-	if (ret)
+-		return ret;
+-	pci_set_master(pdev);
+-
++	if (amdgpu_device_supports_boco(drm_dev)) {
++		drm_dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
++
++		if (amdgpu_is_atpx_hybrid() ||
++		    !amdgpu_has_atpx_dgpu_power_cntl())
++			pci_set_power_state(pdev, PCI_D0);
++		pci_restore_state(pdev);
++		ret = pci_enable_device(pdev);
++		if (ret)
++			return ret;
++		pci_set_master(pdev);
++	}
+ 	ret = amdgpu_device_resume(drm_dev, false, false);
+ 	drm_kms_helper_poll_enable(drm_dev);
+-	drm_dev->switch_power_state = DRM_SWITCH_POWER_ON;
++	if (amdgpu_device_supports_boco(drm_dev))
++		drm_dev->switch_power_state = DRM_SWITCH_POWER_ON;
+ 	return 0;
  }
  
-+/**
-+ * amdgpu_device_supports_baco - Does the device support BACO
-+ *
-+ * @dev: drm_device pointer
-+ *
-+ * Returns true if the device supporte BACO,
-+ * otherwise return false.
-+ */
-+bool amdgpu_device_supports_baco(struct drm_device *dev)
-+{
-+	struct amdgpu_device *adev = dev->dev_private;
-+
-+	return amdgpu_asic_supports_baco(adev);
-+}
-+
- /**
-  * VRAM access helper functions.
-  *
 -- 
 2.23.0
 
