@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44DEACA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:07:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6909CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:08:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C57C6214E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:07:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5B571214E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:08:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="keD0X5mH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="xextc1Aj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C57C6214E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SEi5zHqL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LtLYaAgv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B571214E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 084F51FDC;
-	Mon, 28 Oct 2019 16:06:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 084F51FDC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EBCE1F7C;
+	Mon, 28 Oct 2019 16:07:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EBCE1F7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572275263;
-	bh=malyRnaG6lIBe6h9XPy+Z7MU6fD0eRmRdXBRmjXHkoQ=;
+	s=default; t=1572275322;
+	bh=JjPqbqvvzsxvdTA5UGwU/P/rwjJP+XRbBrIR7FqKLq8=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=keD0X5mHOBcCXFqP2xcrH/z4NKs3yyXMuUXOXAimZIKWKHZ60TRUGiOig82v9uphc
-	 SmPbQk6KqRyPs8MKz68HInOy34zaD88/20Hj/j5Se60hCW6AOK0YKvuIl20BJvtvVS
-	 27udr1VkYvaakKcMr0T/Os4HyKydU8T8YhpioZrI=
+	b=SEi5zHqL1eMPKbvbuJMNyRAGbY8KvLKb8z7xBZXjP0iVPLHFQ7aXIU5HNgqJPbATl
+	 8P+AfZp2NvfFqT9aYUWretv3Tddl83TUboxBg4cZAudE74l39duSLtSjzwick5W1ms
+	 2NCAY7nFFAiDWLQ0BFwRep8EC/qKfPeSgxnAsxUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1ADB9F8071F;
-	Mon, 28 Oct 2019 15:57:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B706EF80750;
+	Mon, 28 Oct 2019 15:57:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E17FDF806E8; Mon, 28 Oct 2019 15:56:51 +0100 (CET)
+ id C767DF806ED; Mon, 28 Oct 2019 15:56:54 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A8EDF805FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26E53F8060E
  for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A8EDF805FF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26E53F8060E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="xextc1Aj"
+ header.b="LtLYaAgv"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=MDS0je5XOJ7z7RrLq55motxLfIF0T4nalGt4i+e3NEM=; b=xextc1AjNYLn
- h02tPUxhMB+ENaNk74XO2fj34G1JYVR0Xrb1sN5MnUJXYOGMkbdSCStyN/wcQNgN+EgTgc3Bpwmbr
- dAM/nrcXAjfPmU8e1QEnMl77bJse2LdviKUDOOdBi2ZjCHGK5rVXmFb3fepwXPSRImID5vq9BmHZp
- gzCNc=;
+ List-Archive; bh=1WQwKVTKhgb6TXLZ72rWeNuaegbFvQjNo2SI2wsCpSM=; b=LtLYaAgvsp4A
+ hV5IA6gXKPHf0626mV1VHygvuUwSsC8pybfNbeZHEYCWdeQ6q4+erWdC8W67M3IcaaDhPI4jEnMAG
+ o0FY8oIbUElRfpaqZlW4Qh7cBE7oCqW9FgBCkzWI6O0HX9TQeredLO/Kc366Qut/wVx7/5oFfg5um
+ RZSTI=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Rd-0008Pl-JW; Mon, 28 Oct 2019 14:56:33 +0000
+ id 1iP6Rd-0008Ps-MA; Mon, 28 Oct 2019 14:56:33 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 7C075274162C; Mon, 28 Oct 2019 14:56:31 +0000 (GMT)
+ id DBFF72741792; Mon, 28 Oct 2019 14:56:31 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <20191025224122.7718-11-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191025224122.7718-9-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145631.7C075274162C@ypsilon.sirena.org.uk>
+Message-Id: <20191028145631.DBFF72741792@ypsilon.sirena.org.uk>
 Date: Mon, 28 Oct 2019 14:56:31 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda-dsp: align the comments
-	for D0I3C update" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: token: add tokens for PCM
+	compatible with D0i3 substate" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda-dsp: align the comments for D0I3C update
+   ASoC: SOF: token: add tokens for PCM compatible with D0i3 substate
 
 has been applied to the asoc tree at
 
@@ -122,44 +122,61 @@ to this mail.
 Thanks,
 Mark
 
-From aae7c82d01219bf568a7b12f5839d7ca52b17d59 Mon Sep 17 00:00:00 2001
+From 4a94940988cc44adeb383401dea0beeac4abbe63 Mon Sep 17 00:00:00 2001
 From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Fri, 25 Oct 2019 17:41:06 -0500
-Subject: [PATCH] ASoC: SOF: Intel: hda-dsp: align the comments for D0I3C
- update
+Date: Fri, 25 Oct 2019 17:41:04 -0500
+Subject: [PATCH] ASoC: SOF: token: add tokens for PCM compatible with D0i3
+ substate
 
-Align the logs for CIP timeout at D0I3C.I3 updating.
+Add stream token SOF_TKN_STREAM_PLAYBACK_COMPATIBLE_D0I3 and
+SOF_TKN_STREAM_CAPTURE_COMPATIBLE_D0I3 to denote if the stream can be
+opened at low power d0i3 status or not.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191025224122.7718-11-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191025224122.7718-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-dsp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/uapi/sound/sof/tokens.h |  4 ++++
+ sound/soc/sof/topology.c        | 10 ++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index fa2f1f66c72c..74805a066183 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -330,7 +330,7 @@ int hda_dsp_set_power_state(struct snd_sof_dev *sdev,
- 	/* Write to D0I3C after Command-In-Progress bit is cleared */
- 	ret = hda_dsp_wait_d0i3c_done(sdev, retry);
- 	if (ret < 0) {
--		dev_err(bus->dev, "CIP timeout before update D0I3C!\n");
-+		dev_err(bus->dev, "CIP timeout before D0I3C update!\n");
- 		return ret;
- 	}
+diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
+index d65406f34361..76883e6fb750 100644
+--- a/include/uapi/sound/sof/tokens.h
++++ b/include/uapi/sound/sof/tokens.h
+@@ -113,6 +113,10 @@
+ /* ESAI */
+ #define SOF_TKN_IMX_ESAI_MCLK_ID		1100
  
-@@ -342,7 +342,7 @@ int hda_dsp_set_power_state(struct snd_sof_dev *sdev,
- 	retry = 50;
- 	ret = hda_dsp_wait_d0i3c_done(sdev, retry);
- 	if (ret < 0) {
--		dev_err(bus->dev, "CIP timeout after D0I3C updated!\n");
-+		dev_err(bus->dev, "CIP timeout after D0I3C update!\n");
- 		return ret;
- 	}
++/* Stream */
++#define SOF_TKN_STREAM_PLAYBACK_COMPATIBLE_D0I3	1200
++#define SOF_TKN_STREAM_CAPTURE_COMPATIBLE_D0I3	1201
++
+ /* Led control for mute switches */
+ #define SOF_TKN_MUTE_LED_USE			1300
+ #define SOF_TKN_MUTE_LED_DIRECTION		1301
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index b3ab6f23fc93..121e5d6f8477 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -567,6 +567,16 @@ static const struct sof_topology_token pcm_tokens[] = {
+ 		offsetof(struct sof_ipc_comp_host, dmac_config), 0},
+ };
  
++/* PCM */
++static const struct sof_topology_token stream_tokens[] = {
++	{SOF_TKN_STREAM_PLAYBACK_COMPATIBLE_D0I3,
++		SND_SOC_TPLG_TUPLE_TYPE_BOOL, get_token_u16,
++		offsetof(struct snd_sof_pcm, stream[0].d0i3_compatible), 0},
++	{SOF_TKN_STREAM_CAPTURE_COMPATIBLE_D0I3,
++		SND_SOC_TPLG_TUPLE_TYPE_BOOL, get_token_u16,
++		offsetof(struct snd_sof_pcm, stream[1].d0i3_compatible), 0},
++};
++
+ /* Generic components */
+ static const struct sof_topology_token comp_tokens[] = {
+ 	{SOF_TKN_COMP_PERIOD_SINK_COUNT,
 -- 
 2.20.1
 
