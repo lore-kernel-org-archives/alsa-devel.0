@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A1BCA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF72BCA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:11:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3171820873
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:11:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 58C8A20663
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:11:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f69ezLAK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="X0bjjlSg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3171820873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bm/7ICLw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Op2h14B2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58C8A20663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70C422003;
-	Mon, 28 Oct 2019 16:10:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70C422003
+	by alsa0.perex.cz (Postfix) with ESMTPS id 945AB2016;
+	Mon, 28 Oct 2019 16:11:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 945AB2016
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572275477;
-	bh=i8xh2uF4Kt6QYu2NEzHboTA3p7h0nMLDNDgslFJrvgU=;
+	s=default; t=1572275515;
+	bh=72J/Aq4oPoSozschtfyhvHVDOvZyh7CplK7CGvTuDrA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=f69ezLAK5EPC7Fz5NOYdkLdIIrDJYVwuhqWENEeyiaujWf0x1jh2HR9gAv6q68aYK
-	 IK7cjFsyOV9TKbSBkow6CQvLJVjqzI0gqihbZKT2rxLEpWFKf1ocyUHSHZncC6YE6T
-	 5zuvkTVH06yn0KjFYrfVsdGcgnxnLRUmeRjxYK7s=
+	b=bm/7ICLw6SQ3WOv2TF302Pf0AKDYzjnslIBwub/9gyrpkF+5++B084/QBC1j9h3oT
+	 NWmh5mCFFIuRRiEb7z9ojyWy2kYgJVU1naGyGhMgrglQu0Id6+6lQoEaMcJzs74dLo
+	 q5ZzHe8YMdvDWKkZND7OszekOiPGobW6eQZXlLj0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72FC5F8076F;
-	Mon, 28 Oct 2019 15:57:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF8D2F80792;
+	Mon, 28 Oct 2019 15:57:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 692A6F80610; Mon, 28 Oct 2019 15:56:56 +0100 (CET)
+ id 3287EF80713; Mon, 28 Oct 2019 15:57:04 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 263DEF8060D
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 263DEF8060D
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1D40F80638
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1D40F80638
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="X0bjjlSg"
+ header.b="Op2h14B2"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=RWV+gEKwoqTH5enpBK0Lw5IxQ+6+W8k93JJ4//Y+HJM=; b=X0bjjlSggj25
- 5guYnVzkMy+tu+gsWvgp5Muad0Pa6KkM2ICOhlAAzLj5VdBG/ace+tyORC054IzoDLmEsSZm/IL+m
- KLFpDIi9Q3y4mWEMCqrLdVIZzDSgQJlwik3Yv0XQyzc/XZvtVV6dvmEcTlsLq3asNYE0k2+gkvznJ
- RcHOM=;
+ List-Archive; bh=7RpxeqCZmG7jTvEnrtlha9Q0UvkoFSGbl7EXlpP0IDE=; b=Op2h14B2g6G8
+ PT6+Jngyl9/BCgg0w485UhLh/tISHxpTuUuhLSxTac4yMMzzQdDo6i8cFEHeHPd73ACXcc42ZF2ag
+ mfQZnjfZMvZyas2T+DhWo94RLJE6zQSXzLHYisknefWwjCYurb2HSlGyuOEDpzbBygRYhft2WyIee
+ XR8D8=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Rc-0008P9-3X; Mon, 28 Oct 2019 14:56:32 +0000
+ id 1iP6Rh-0008RR-Fa; Mon, 28 Oct 2019 14:56:37 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 7F0A427403F6; Mon, 28 Oct 2019 14:56:30 +0000 (GMT)
+ id EB94527403E4; Mon, 28 Oct 2019 14:56:35 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <20191025224122.7718-16-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191025224122.7718-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145630.7F0A427403F6@ypsilon.sirena.org.uk>
-Date: Mon, 28 Oct 2019 14:56:30 +0000 (GMT)
+Message-Id: <20191028145635.EB94527403E4@ypsilon.sirena.org.uk>
+Date: Mon, 28 Oct 2019 14:56:35 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: HDA: add cAVS specific
-	compact IPC header file" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: reset default d0_substate at
+	probe() and resume()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,11 +97,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: HDA: add cAVS specific compact IPC header file
+   ASoC: SOF: reset default d0_substate at probe() and resume()
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -122,82 +122,51 @@ to this mail.
 Thanks,
 Mark
 
-From 5056193d4d1a8b73087145add21141c46027d6a2 Mon Sep 17 00:00:00 2001
+From 09fe6b528886c0d07ce539b837749edcc46618d0 Mon Sep 17 00:00:00 2001
 From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Fri, 25 Oct 2019 17:41:11 -0500
-Subject: [PATCH] ASoC: SOF: Intel: HDA: add cAVS specific compact IPC header
- file
+Date: Fri, 25 Oct 2019 17:40:58 -0500
+Subject: [PATCH] ASoC: SOF: reset default d0_substate at probe() and resume()
 
-On cAVS platforms, some IPCs are required to be sent via IPC registers
-only(e.g. when in D0i3, mailbox is unaccessible), add hda-ipc.h to hold
-definition of those compact IPCs.
+We initialize/reset d0_substate to default d0i0 value when doing
+transition D3-->D0, e.g. at success of probing and resuming.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191025224122.7718-16-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191025224122.7718-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-ipc.h | 51 +++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-ipc.h
+ sound/soc/sof/core.c | 3 +++
+ sound/soc/sof/pm.c   | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-ipc.h b/sound/soc/sof/intel/hda-ipc.h
-new file mode 100644
-index 000000000000..aef0ceac9803
---- /dev/null
-+++ b/sound/soc/sof/intel/hda-ipc.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2019 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Keyon Jie <yang.jie@linux.intel.com>
-+ */
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 5998861a9002..8661c2cca76b 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -458,6 +458,9 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+ 	/* initialize sof device */
+ 	sdev->dev = dev;
+ 
++	/* initialize default D0 sub-state */
++	sdev->d0_substate = SOF_DSP_D0I0;
 +
-+#ifndef __SOF_INTEL_HDA_IPC_H
-+#define __SOF_INTEL_HDA_IPC_H
+ 	sdev->pdata = plat_data;
+ 	sdev->first_boot = true;
+ 	dev_set_drvdata(dev, sdev);
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index e23beaeefe00..81e623dfc7e5 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -326,6 +326,9 @@ static int sof_resume(struct device *dev, bool runtime_resume)
+ 			"error: ctx_restore ipc error during resume %d\n",
+ 			ret);
+ 
++	/* initialize default D0 sub-state */
++	sdev->d0_substate = SOF_DSP_D0I0;
 +
-+/*
-+ * Primary register, mapped to
-+ * - DIPCTDR (HIPCIDR) in sideband IPC (cAVS 1.8+)
-+ * - DIPCT in cAVS 1.5 IPC
-+ *
-+ * Secondary register, mapped to:
-+ * - DIPCTDD (HIPCIDD) in sideband IPC (cAVS 1.8+)
-+ * - DIPCTE in cAVS 1.5 IPC
-+ */
-+
-+/* Common bits in primary register */
-+
-+/* Reserved for doorbell */
-+#define HDA_IPC_RSVD_31		BIT(31)
-+/* Target, 0 - normal message, 1 - compact message(cAVS compatible) */
-+#define HDA_IPC_MSG_COMPACT	BIT(30)
-+/* Direction, 0 - request, 1 - response */
-+#define HDA_IPC_RSP		BIT(29)
-+
-+#define HDA_IPC_TYPE_SHIFT	24
-+#define HDA_IPC_TYPE_MASK	GENMASK(28, 24)
-+#define HDA_IPC_TYPE(x)		((x) << HDA_IPC_TYPE_SHIFT)
-+
-+#define HDA_IPC_PM_GATE		HDA_IPC_TYPE(0x8U)
-+
-+/* Command specific payload bits in secondary register */
-+
-+/* Disable DMA tracing (0 - keep tracing, 1 - to disable DMA trace) */
-+#define HDA_PM_NO_DMA_TRACE	BIT(4)
-+/* Prevent clock gating (0 - cg allowed, 1 - DSP clock always on) */
-+#define HDA_PM_PCG		BIT(3)
-+/* Prevent power gating (0 - deep power state transitions allowed) */
-+#define HDA_PM_PPG		BIT(2)
-+/* Indicates whether streaming is active */
-+#define HDA_PM_PG_STREAMING	BIT(1)
-+#define HDA_PM_PG_RSVD		BIT(0)
-+
-+#endif
+ 	return ret;
+ }
+ 
 -- 
 2.20.1
 
