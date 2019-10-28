@@ -2,89 +2,95 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 534D1CA9EC2
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D42ACA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:26:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C48D421783
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:21:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0729421744
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:26:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="og7fOOaP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="FvTMo9Uv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C48D421783
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ehym6PZ5";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BiJaA4se"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0729421744
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 156C0207D;
-	Mon, 28 Oct 2019 16:20:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 156C0207D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD0981FFF;
+	Mon, 28 Oct 2019 17:25:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD0981FFF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572276107;
-	bh=Qq7MPWVq7rdPGcUZs7oYUIoiuwKolwIVRTPKkuAmQZc=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=og7fOOaPy4i3L9cHMP2Gw2kIKO2d11AShCkSPqzv04JeYKGzjDuhmtwHTDgCDpPZ3
-	 mf5ysI/DwXBthujRRBVaVvqlsCDX+ugGwg598p6HNaOJ4xjezGQcEII/24Z0RTG64B
-	 plFrDQ+sTXcSHhhA5tkyG38ffPqXEhhXpXklYeUc=
+	s=default; t=1572280009;
+	bh=MoQWQOn46znK9GUNnGQBlFxNDHmRDhaJdoipArvfZeY=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ehym6PZ5+b17Po6+2QFapzISKVP16x9oVeOIpsh1MR1ll7jxzfcbYc+drIC/sLp7G
+	 YCa5EeXi/SGhlKM583Wa4ViQY5B9xcLLzOpZK5iGa6fMLUBsTaJSqsQ+4qtegEXGse
+	 0OGWe8wsbgA5IUfd3oKbz62K1yYPTqY5V/Nr5mC0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF11FF8961C;
-	Mon, 28 Oct 2019 15:57:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40BDAF8011D;
+	Mon, 28 Oct 2019 17:25:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B551F8071F; Mon, 28 Oct 2019 15:57:21 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AAFE0F80361; Mon, 28 Oct 2019 17:25:57 +0100 (CET)
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
+ [IPv6:2607:f8b0:4864:20::d43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55391F8065C
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55391F8065C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB7C7F8011D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 17:25:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB7C7F8011D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="FvTMo9Uv"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=98Wb18Z1bfDrggU/frWLJljlHC7bBA1FwQu15wzNfsM=; b=FvTMo9UvCNm1
- kRODwfl8BAGCnM1dE27xnXnJ+0Lkm0cVGnwnxx640GA/VaWeAWyoeZmHNA5S1MOs59kFNmk6uweHk
- rD997CIut7eJXQIJ0PAxlfJSrPnJ7WE4a/5c+3h3fTTmNEzRtN2hwxJfr6uVy2abx6AOcqgFylOeY
- ycDuk=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Rj-0008Rk-3j; Mon, 28 Oct 2019 14:56:39 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 1D0F62740409; Mon, 28 Oct 2019 14:56:37 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Brent Lu <brent.lu@intel.com>
-In-Reply-To: <1571994691-20199-1-git-send-email-brent.lu@intel.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20191028145637.1D0F62740409@ypsilon.sirena.org.uk>
-Date: Mon, 28 Oct 2019 14:56:37 +0000 (GMT)
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Tzung-Bi Shih <tzungbi@google.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Richard Fontana <rfontana@redhat.com>, Mark Brown <broonie@kernel.org>,
- Naveen M <naveen.m@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
- "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
-Subject: [alsa-devel] Applied "ASoC: eve: implement set_bias_level function
-	for rt5514" to the asoc tree
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="BiJaA4se"
+Received: by mail-io1-xd43.google.com with SMTP id p6so11383670iod.7
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 09:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=62aOCZujaPjLMXmFPiRB6XzKNfXNdqecHfS0A2Hu8ko=;
+ b=BiJaA4seBZsQTPq9zw4g+A57lDEvtNeQoxuyhvCo9FUNmQt567u2xluFLm8yVUzwSO
+ 6JEuOH2ywUCSy8dF3elfmXyQW5ot8j4Hn+6ochXaNSLdWo41jgWxs/zdVbzR3cbNLn/n
+ fJ4etMLzxmTHiqRfLDwJP2Yr2YkCxC/A3qpmPQjhSpnRLaK7BY7seX/ymv6oZLYJqtb3
+ kDgCSl5H7SSeiz9Kd+AIDyMsWD58VLxPUIsyZ7fIaWr5gzomnLEQXtWCsDBVH0Ak6DB2
+ I4aMXOZ/0Vi8m8tXpwmJSCTf0xk1E2yyjjZwSgtL7xGeAzyD7y/5Bodz5xHaFFONnDZD
+ x1WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=62aOCZujaPjLMXmFPiRB6XzKNfXNdqecHfS0A2Hu8ko=;
+ b=UU/MovvJu1ggSH5HN7QNAzNlmIlLNjyuOob/oFlcElyeIVrAl9WzQXppnqVjjn/hSp
+ Nw4sjNXJPdv6iv1rHxOE4/iKAlD6V5TcVv2uSzONBqQEwdqZHNsPJdnfXNV0+02maXru
+ jKR56rm6edPmXciZ7Z/luAmfKONLKMNZfNuIVAKqtSVbOzPFCNpxOlg1nAm3pqBAIvBa
+ CqFSoq0+1xGzurVGI7kAKaPSKWLidmMtQlzPbLPLGNTk3QrHU8ldGKoejkBF+flVUQUX
+ l6NzkMiRSmktH9X/V/xQEcNMScN0+bJKxBJuFGkMnj6p+MHYsdS++IsunMR+TpyiUo2Z
+ Ejow==
+X-Gm-Message-State: APjAAAVmeiUdVqTP9V04W2UCl3Z7NdrWu95BpLE0MM5Z+YdVfR2nhMKv
+ Z2uOHenwu5ddhUnQhCmzQmlwtEFlqH7VNNk5Y6Q=
+X-Google-Smtp-Source: APXvYqxS+8kiAL+Wcxn+fmYc+Yioqr8WfBBuzznOXGTcdWpC3bS3vjFRwgW6Rto0lmGXcotfSYpCifNGe71zuO2R4lw=
+X-Received: by 2002:a5e:9706:: with SMTP id w6mr18017287ioj.252.1572279952857; 
+ Mon, 28 Oct 2019 09:25:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191027221007.14317-1-navid.emamdoost@gmail.com>
+ <s5hpnihmlk3.wl-tiwai@suse.de>
+In-Reply-To: <s5hpnihmlk3.wl-tiwai@suse.de>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
+Date: Mon, 28 Oct 2019 11:25:41 -0500
+Message-ID: <CAEkB2ESwKEQYQx75BnaHf4aUQHObx4jf0hreQx_KTeZ+QCjL4g@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Kangjie Lu <kjlu@umn.edu>,
+ Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>,
+ Navid Emamdoost <emamd001@umn.edu>, Stephen McCamant <smccaman@umn.edu>,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Fix memory leak in
+	__snd_usbmidi_create
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,130 +103,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Thanks for the explanation,
 
-   ASoC: eve: implement set_bias_level function for rt5514
+On Mon, Oct 28, 2019 at 1:27 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Sun, 27 Oct 2019 23:10:06 +0100,
+> Navid Emamdoost wrote:
+> >
+> > In the implementation of __snd_usbmidi_create() there is a memory leak
+> > caused by incorrect goto destination. Go to free_midi if
+> > snd_usbmidi_create_endpoints_midiman() or snd_usbmidi_create_endpoints()
+> > fail.
+>
+> No, this will lead to double-free.  After registering the rawmidi
+> interface at snd_usbmidi_create_rawmidi(), the common destructor will
+> be called via rawmidi private_free callback, and this will release the
+> all resources already.
+Now I can see how rawmidi private_free is set up to release the
+resources, but what concerns me is that at the moment of endpoint/port
+creation umidi is not yet added to the midi_list.
+In other words, what I see is that we still have just one local
+pointer to umidi if any of snd_usbmidi_create_endpoint* fail.
+Am I missing something?
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+>
+>
+> thanks,
+>
+> Takashi
+>
+> >
+> > Fixes: 731209cc0417 ("ALSA: usb-midi: Use common error handling code in __snd_usbmidi_create()")
+> > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> > ---
+> >  sound/usb/midi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+> > index b737f0ec77d0..22db37fbfbbd 100644
+> > --- a/sound/usb/midi.c
+> > +++ b/sound/usb/midi.c
+> > @@ -2476,7 +2476,7 @@ int __snd_usbmidi_create(struct snd_card *card,
+> >       else
+> >               err = snd_usbmidi_create_endpoints(umidi, endpoints);
+> >       if (err < 0)
+> > -             goto exit;
+> > +             goto free_midi;
+> >
+> >       usb_autopm_get_interface_no_resume(umidi->iface);
+> >
+> > --
+> > 2.17.1
+> >
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 15747a80207585fe942416025540c0ff34e2aef8 Mon Sep 17 00:00:00 2001
-From: Brent Lu <brent.lu@intel.com>
-Date: Fri, 25 Oct 2019 17:11:31 +0800
-Subject: [PATCH] ASoC: eve: implement set_bias_level function for rt5514
-
-The first DMIC capture always fail (zero sequence data from PCM port)
-after using DSP hotwording function (i.e. Google assistant).
-
-This rt5514 codec requires to control mclk directly in the set_bias_level
-function. Implement this function in machine driver to control the
-ssp1_mclk clock explicitly could fix this issue.
-
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/1571994691-20199-1-git-send-email-brent.lu@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../intel/boards/kbl_rt5663_rt5514_max98927.c | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
-
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index dc09a85e4c74..b546de8ba1e3 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -653,6 +653,55 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 	},
- };
- 
-+static int kabylake_set_bias_level(struct snd_soc_card *card,
-+	struct snd_soc_dapm_context *dapm, enum snd_soc_bias_level level)
-+{
-+	struct snd_soc_component *component = dapm->component;
-+	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(card);
-+	int ret = 0;
-+
-+	if (!component || strcmp(component->name, RT5514_DEV_NAME))
-+		return 0;
-+
-+	if (IS_ERR(priv->mclk))
-+		return 0;
-+
-+	/*
-+	 * It's required to control mclk directly in the set_bias_level
-+	 * function for rt5514 codec or the recording function could
-+	 * break.
-+	 */
-+	switch (level) {
-+	case SND_SOC_BIAS_PREPARE:
-+		if (dapm->bias_level == SND_SOC_BIAS_ON) {
-+			dev_dbg(card->dev, "Disable mclk");
-+			clk_disable_unprepare(priv->mclk);
-+		} else {
-+			dev_dbg(card->dev, "Enable mclk");
-+			ret = clk_set_rate(priv->mclk, 24000000);
-+			if (ret) {
-+				dev_err(card->dev, "Can't set rate for mclk, err: %d\n",
-+					ret);
-+				return ret;
-+			}
-+
-+			ret = clk_prepare_enable(priv->mclk);
-+			if (ret) {
-+				dev_err(card->dev, "Can't enable mclk, err: %d\n",
-+					ret);
-+
-+				/* mclk is already enabled in FW */
-+				ret = 0;
-+			}
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- static int kabylake_card_late_probe(struct snd_soc_card *card)
- {
- 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
-@@ -692,6 +741,7 @@ static struct snd_soc_card kabylake_audio_card = {
- 	.owner = THIS_MODULE,
- 	.dai_link = kabylake_dais,
- 	.num_links = ARRAY_SIZE(kabylake_dais),
-+	.set_bias_level = kabylake_set_bias_level,
- 	.controls = kabylake_controls,
- 	.num_controls = ARRAY_SIZE(kabylake_controls),
- 	.dapm_widgets = kabylake_widgets,
 -- 
-2.20.1
-
+Navid.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
