@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF72BCA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:11:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05F5FCA9EC3
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:12:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58C8A20663
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:11:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 08BD02196F
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:12:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bm/7ICLw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Op2h14B2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58C8A20663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dv8raDv9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="i23L3mAa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08BD02196F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 945AB2016;
-	Mon, 28 Oct 2019 16:11:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 945AB2016
+	by alsa0.perex.cz (Postfix) with ESMTPS id 249872024;
+	Mon, 28 Oct 2019 16:11:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 249872024
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572275515;
-	bh=72J/Aq4oPoSozschtfyhvHVDOvZyh7CplK7CGvTuDrA=;
+	s=default; t=1572275566;
+	bh=rea1nUPNLX2q/pmLrMVcQfP83ziV/J2Do/EwvcUQzZM=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=bm/7ICLw6SQ3WOv2TF302Pf0AKDYzjnslIBwub/9gyrpkF+5++B084/QBC1j9h3oT
-	 NWmh5mCFFIuRRiEb7z9ojyWy2kYgJVU1naGyGhMgrglQu0Id6+6lQoEaMcJzs74dLo
-	 q5ZzHe8YMdvDWKkZND7OszekOiPGobW6eQZXlLj0=
+	b=dv8raDv9zbFt6vbvDVeyhL82vWDt5CVRwPjqTeBWqb96x2QBSfZD3JzD4UxfdqTfy
+	 XZi6n5k/Lbr5mgCnYxz3O8YEVcmz9bOb0POQaClFBmkbsj/vZfk30efdSO204Me8Yk
+	 Jp7hKY75YFbSA6Nf2+cOCoSPoXEmrVHp30prVJYg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF8D2F80792;
-	Mon, 28 Oct 2019 15:57:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57C03F807D0;
+	Mon, 28 Oct 2019 15:57:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3287EF80713; Mon, 28 Oct 2019 15:57:04 +0100 (CET)
+ id 627F4F8070E; Mon, 28 Oct 2019 15:57:04 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1D40F80638
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1D40F80638
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BE91F80637
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BE91F80637
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="Op2h14B2"
+ header.b="i23L3mAa"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=7RpxeqCZmG7jTvEnrtlha9Q0UvkoFSGbl7EXlpP0IDE=; b=Op2h14B2g6G8
- PT6+Jngyl9/BCgg0w485UhLh/tISHxpTuUuhLSxTac4yMMzzQdDo6i8cFEHeHPd73ACXcc42ZF2ag
- mfQZnjfZMvZyas2T+DhWo94RLJE6zQSXzLHYisknefWwjCYurb2HSlGyuOEDpzbBygRYhft2WyIee
- XR8D8=;
+ List-Archive; bh=NEEcXI+hIPr9PSexyTOsm7bw3WmvhXrsEHaC6YRqyyo=; b=i23L3mAaEP22
+ pzrGBgDq6SAcm7y4w/E8hXnL+RYX5QkputKk4mjkA6JQLMIavqO8MPS5nQvASboOOqaYqNtDeZENx
+ Q8np9WUOFAamH0EepkgR8XeyY5zmlhvZFbgYU2sIwnmSWYYbue9+ODOo0327NPPw49Hb/I0yG9xB+
+ 7O5co=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Rh-0008RR-Fa; Mon, 28 Oct 2019 14:56:37 +0000
+ id 1iP6Rd-0008Pt-O5; Mon, 28 Oct 2019 14:56:33 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id EB94527403E4; Mon, 28 Oct 2019 14:56:35 +0000 (GMT)
+ id 4BF3C2740409; Mon, 28 Oct 2019 14:56:32 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <20191025224122.7718-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191025224122.7718-7-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145635.EB94527403E4@ypsilon.sirena.org.uk>
-Date: Mon, 28 Oct 2019 14:56:35 +0000 (GMT)
+Message-Id: <20191028145632.4BF3C2740409@ypsilon.sirena.org.uk>
+Date: Mon, 28 Oct 2019 14:56:32 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: reset default d0_substate at
-	probe() and resume()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: APL: add set_power_state()
+	ops" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,11 +97,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: reset default d0_substate at probe() and resume()
+   ASoC: SOF: Intel: APL: add set_power_state() ops
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -122,51 +122,34 @@ to this mail.
 Thanks,
 Mark
 
-From 09fe6b528886c0d07ce539b837749edcc46618d0 Mon Sep 17 00:00:00 2001
+From 35c930ba6025964ac71f041065ae212a0fcc7cca Mon Sep 17 00:00:00 2001
 From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Fri, 25 Oct 2019 17:40:58 -0500
-Subject: [PATCH] ASoC: SOF: reset default d0_substate at probe() and resume()
+Date: Fri, 25 Oct 2019 17:41:02 -0500
+Subject: [PATCH] ASoC: SOF: Intel: APL: add set_power_state() ops
 
-We initialize/reset d0_substate to default d0i0 value when doing
-transition D3-->D0, e.g. at success of probing and resuming.
+Using hda_dsp_set_power_state() as set_power_state() ops for apl to do
+d0ix platform configuration updates.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191025224122.7718-3-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191025224122.7718-7-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/core.c | 3 +++
- sound/soc/sof/pm.c   | 3 +++
- 2 files changed, 6 insertions(+)
+ sound/soc/sof/intel/apl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 5998861a9002..8661c2cca76b 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -458,6 +458,9 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
- 	/* initialize sof device */
- 	sdev->dev = dev;
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index 15d26e8d90a9..7daa8eb456c8 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -97,6 +97,7 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
+ 	.runtime_resume		= hda_dsp_runtime_resume,
+ 	.runtime_idle		= hda_dsp_runtime_idle,
+ 	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
++	.set_power_state	= hda_dsp_set_power_state,
  
-+	/* initialize default D0 sub-state */
-+	sdev->d0_substate = SOF_DSP_D0I0;
-+
- 	sdev->pdata = plat_data;
- 	sdev->first_boot = true;
- 	dev_set_drvdata(dev, sdev);
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index e23beaeefe00..81e623dfc7e5 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -326,6 +326,9 @@ static int sof_resume(struct device *dev, bool runtime_resume)
- 			"error: ctx_restore ipc error during resume %d\n",
- 			ret);
- 
-+	/* initialize default D0 sub-state */
-+	sdev->d0_substate = SOF_DSP_D0I0;
-+
- 	return ret;
- }
- 
+ 	/* ALSA HW info flags */
+ 	.hw_info =	SNDRV_PCM_INFO_MMAP |
 -- 
 2.20.1
 
