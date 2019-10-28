@@ -2,67 +2,89 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6591ECA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:59:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 213B2CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 17:04:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A474F21835
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:59:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B8D5214E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 17:04:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A23hf37I"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A474F21835
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eGT+vt/L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B8D5214E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87E2F1FDF;
-	Mon, 28 Oct 2019 17:58:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87E2F1FDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB4F22062;
+	Mon, 28 Oct 2019 18:03:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4F22062
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572281949;
-	bh=BUe0Y0Y1gFQEW3V+XlevwpIdzMH/vC7B8jGwOQdHtXg=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1572282242;
+	bh=D6d/TkvpwAcVolFKRT3tdxbsjp1HmihSv0/nxO2qOXI=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A23hf37I9nS55Ny3woqmvFzTqc6Ayc2hY6KwCWu6rxY50jcRac8UMfwDxomWLy+oV
-	 l9D0wNqmIufLXPpCo21H6Hqh0d02KOkw8L4EMhXJv9VkrixsS3Ft+br9Rurevk8nib
-	 UOKxxC1MwsewXO/5a8FefdFHZ3Rs0cSySOYp6djk=
+	b=eGT+vt/LwGIAg7dHsuX9uWqF9kfUYmsrxROgydxFrcmM0Uf2ZYxQZxbXD9hDRJWSN
+	 3lYoBqkX2vV3npzYgHM7c9wScU4frYZy+GRBtXP8pHjsBinhQhR8CWVg2b9cBcKh36
+	 r+HRLYwLuRx06KtX7O74qnvN0RYYWmShU91+LVI0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D911CF802BD;
-	Mon, 28 Oct 2019 17:58:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7289AF80361;
+	Mon, 28 Oct 2019 18:03:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0049F80361; Mon, 28 Oct 2019 17:58:17 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CE1B2F803D6; Mon, 28 Oct 2019 18:03:09 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBFF7F800E7
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 17:58:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBFF7F800E7
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 54399B6FF;
- Mon, 28 Oct 2019 16:58:15 +0000 (UTC)
-Date: Mon, 28 Oct 2019 17:58:15 +0100
-Message-ID: <s5hpnigu7rs.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191023090331.10531-7-kai.vehmanen@linux.intel.com>
-References: <20191023090331.10531-1-kai.vehmanen@linux.intel.com>
- <20191023090331.10531-7-kai.vehmanen@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: libin.yang@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH v7 6/9] ASoC: Intel: bxt-da7219-max98357a:
-	common hdmi codec support
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64A71F80145
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 18:03:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64A71F80145
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 28 Oct 2019 10:03:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,240,1569308400"; d="scan'208";a="210917617"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+ by fmsmga001.fm.intel.com with ESMTP; 28 Oct 2019 10:02:57 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+ (envelope-from <lkp@intel.com>)
+ id 1iP8Pw-00099G-J0; Tue, 29 Oct 2019 01:02:56 +0800
+Date: Tue, 29 Oct 2019 01:02:45 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Message-ID: <201910290006.S8dvoBpK%lkp@intel.com>
+References: <20191025133007.11190-4-cychiang@chromium.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191025133007.11190-4-cychiang@chromium.org>
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org,
+ Heiko Stuebner <heiko@sntech.de>, Neil Armstrong <narmstrong@baylibre.com>,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+ Andrzej Hajda <a.hajda@samsung.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jerome Brunet <jbrunet@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-rockchip@lists.infradead.org, dgreid@chromium.org,
+ Cheng-Yi Chiang <cychiang@chromium.org>, devicetree@vger.kernel.org,
+ tzungbi@chromium.org, Jonas Karlman <jonas@kwiboo.se>,
+ Liam Girdwood <lgirdwood@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>,
+ Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Jernej Skrabec <jernej.skrabec@siol.net>, kbuild-all@lists.01.org,
+ dianders@chromium.org, Mark Brown <broonie@kernel.org>,
+ Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [alsa-devel] [PATCH v8 3/6] ASoC: rockchip_max98090: Optionally
+ support HDMI use case
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,34 +102,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 23 Oct 2019 11:03:28 +0200,
-Kai Vehmanen wrote:
-> 
-> @@ -4,7 +4,7 @@ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
->  snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
->  snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
->  snd-soc-sst-broadwell-objs := broadwell.o
-> -snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o
-> +snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o hda_dsp_common.o
+Hi Cheng-Yi,
 
-Hrm, this can be a problem.  I see there are multiple drivers that are
-built with this object.  When they are built as modules and more than
-one module get loaded on a system, it'll lead to a conflict because
-both modules try to put the same stuff.
+I love your patch! Perhaps something to improve:
 
-So, hda_dsp_common.o should be in the common helper module that is
-used by both drivers, or we need other trick.
+[auto build test WARNING on rockchip/for-next]
+[also build test WARNING on v5.4-rc5 next-20191028]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
 
-But I'm not entirely sure whether this is true on the recent kernel
-build.  At least it *was* a problem in the past.
+url:    https://github.com/0day-ci/linux/commits/Cheng-Yi-Chiang/Add-HDMI-jack-support-on-RK3288/20191028-212502
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git for-next
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-In anyway, please try to load the two modules on your system and check
-whether the module loading works.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
 
-thanks,
+sparse warnings: (new ones prefixed by >>)
 
-Takashi
+>> sound/soc/rockchip/rockchip_max98090.c:475:23: sparse: sparse: symbol 'rk_card_configs' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
