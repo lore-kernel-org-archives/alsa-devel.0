@@ -6,58 +6,60 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DA4CCA9EA0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 08:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 424B8CA9EA0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 08:24:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C96C20B7C
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 08:22:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B5A5F208C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 08:24:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PnQvitTg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C96C20B7C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=chris-wilson.co.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ohwfJ5VP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5A5F208C0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA15C1EE2;
-	Mon, 28 Oct 2019 09:21:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA15C1EE2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 138281EFA;
+	Mon, 28 Oct 2019 09:24:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 138281EFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572250927;
-	bh=/VqOqynsgUn0VF2Lxl/YxRaS9nX8JCndVMcNahbrSmI=;
-	h=To:From:In-Reply-To:References:Date:Cc:Subject:List-Id:
+	s=default; t=1572251096;
+	bh=euLzNOx3hKzx8oJOGFX9iDMp7SA3NmuAFabCoc6aCNw=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PnQvitTgrvbm8i4orrqiXYvfZc6ILJ9zG60yVUT5krB2RyEcIYmY6OgsiYAzp9f6h
-	 etBViQULd8janyab1f/Qbg0vZgOSwOXmW8P3/ZKHXjysWQq0p93JTg2URxx11r6bAM
-	 MkswuFIY43sKCxJbPHnzbkfRPQDamzgX7pFqT8ZI=
+	b=ohwfJ5VPiVwmsMYMPfisBuil14k21OoN8Qp/AR/3Ij7RnZ1O3iWOVYFBdgJ6VXefE
+	 pYgP27ReeHSOcUWHV5i4b+S+wggPbQIwzHrI8Hs6ZbEj7SgrKkOUhH9pbcVWHf7CZy
+	 xXTtIwn3PufQHoDUzua2+IbZlUezAwqhalKcXIvs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41C45F80361;
-	Mon, 28 Oct 2019 09:21:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 986EAF80145;
+	Mon, 28 Oct 2019 09:24:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 619C6F803D6; Mon, 28 Oct 2019 09:21:15 +0100 (CET)
-Received: from fireflyinternet.com (mail.fireflyinternet.com [109.228.58.192])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6975F8011D
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 09:21:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6975F8011D
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS))
- x-ip-name=78.156.65.138; 
-Received: from localhost (unverified [78.156.65.138]) 
- by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id
- 18989422-1500050 for multiple; Mon, 28 Oct 2019 08:21:09 +0000
-MIME-Version: 1.0
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-From: Chris Wilson <chris@chris-wilson.co.uk>
-In-Reply-To: <20191028081056.22010-1-tiwai@suse.de>
+ id E3462F803D6; Mon, 28 Oct 2019 09:24:03 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD1EBF80145
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 09:24:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD1EBF80145
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 9C4FAB121;
+ Mon, 28 Oct 2019 08:24:00 +0000 (UTC)
+Date: Mon, 28 Oct 2019 09:24:00 +0100
+Message-ID: <s5h8sp5mg67.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Chris Wilson <chris@chris-wilson.co.uk>
+In-Reply-To: <157225086749.26808.5121664839140883561@skylake-alporthouse-com>
 References: <20191028081056.22010-1-tiwai@suse.de>
-Message-ID: <157225086749.26808.5121664839140883561@skylake-alporthouse-com>
-User-Agent: alot/0.6
-Date: Mon, 28 Oct 2019 08:21:07 +0000
-Cc: Jonas Witschel <diabonas@gmx.de>
+ <157225086749.26808.5121664839140883561@skylake-alporthouse-com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: Jonas Witschel <diabonas@gmx.de>, alsa-devel@alsa-project.org
 Subject: Re: [alsa-devel] [PATCH] Revert "ALSA: hda: Flush interrupts on
 	disabling"
 X-BeenThere: alsa-devel@alsa-project.org
@@ -77,24 +79,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Takashi Iwai (2019-10-28 08:10:56)
-> This reverts commit caa8422d01e983782548648e125fd617cadcec3f.
+On Mon, 28 Oct 2019 09:21:07 +0100,
+Chris Wilson wrote:
 > 
-> It turned out that this commit caused a regression at shutdown /
-> reboot, as the synchronize_irq() calls seems blocking the whole
-> shutdown.  Also another part of the change about shuffling the call
-> order looks suspicious; the azx_stop_chip() call disables the CORB /
-> RIRB while the others may still need the CORB/RIRB update.
+> Quoting Takashi Iwai (2019-10-28 08:10:56)
+> > This reverts commit caa8422d01e983782548648e125fd617cadcec3f.
+> > 
+> > It turned out that this commit caused a regression at shutdown /
+> > reboot, as the synchronize_irq() calls seems blocking the whole
+> > shutdown.  Also another part of the change about shuffling the call
+> > order looks suspicious; the azx_stop_chip() call disables the CORB /
+> > RIRB while the others may still need the CORB/RIRB update.
+> > 
+> > Since the original commit itself was a cargo-fix, let's revert the
+> > whole patch.
 > 
-> Since the original commit itself was a cargo-fix, let's revert the
-> whole patch.
+> You will want to include a link to the bug you may be reintroducing so
+> you have that information for easy reference later.
 
-You will want to include a link to the bug you may be reintroducing so
-you have that information for easy reference later.
+Actually I forgot to put the Fixes tag where usually you can track the
+original issue from there.  Will fix it.  I don't mind to put yet
+another bug link tag, though.
 
-Also do you know if you fixed the bug in any other way, because our CI
-hasn't reported that GPF since the patch landed.
--Chris
+> Also do you know if you fixed the bug in any other way, because our CI
+> hasn't reported that GPF since the patch landed.
+
+Well, let's see whether the GPF reappears with the revert at first.
+It might be another fix that covered.
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
