@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B05CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB396CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:16:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B470217D6
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:15:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51A9220873
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:16:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NxckqQts";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="tUqOqnfn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B470217D6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jIWEK/sN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="CWm/IXmI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51A9220873
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E48481FA6;
-	Mon, 28 Oct 2019 16:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E48481FA6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9450D204C;
+	Mon, 28 Oct 2019 16:15:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9450D204C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572275754;
-	bh=1VLVHZ+wjUKf0nA4bKVfyhIFZysNx8at1rtABXOdp+0=;
+	s=default; t=1572275791;
+	bh=kjD/ncy705FDgdn0J9YproNvFMWALHkYlfLMC+iFHK8=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NxckqQts6a/LvGxFV3EGtbcxdn4CVD10gbf1RjkVTEgD+JVUSfOzFipwbz1lpP37t
-	 zwHMMS2ijYwojVprk8izlb06ymSopKaecxnRKHzt0aFLEe8NwGLhfOJeZXK69pCYWg
-	 nI1AX4iblzvrY4shVWWqNGhWtM2/7psVJabPg0xI=
+	b=jIWEK/sNLcDv93fVMHVJW6rDDAAt4UMFNvt+qhL0LBq/FHnEkMtLL7kED/RgqFV2z
+	 wS+0h5zF1JTHlYAvBwl3p4SMIo9SRKfan7rJdV+U80unlnutMyPhDQWmHNv2O9sWgi
+	 eZHClPxUvkZ4EA+rDwFAXGIwlNvZw6iUR/0AOmbY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2896F80C07;
-	Mon, 28 Oct 2019 15:57:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5F30F80C16;
+	Mon, 28 Oct 2019 15:57:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECD54F80717; Mon, 28 Oct 2019 15:57:12 +0100 (CET)
+ id F2490F80714; Mon, 28 Oct 2019 15:57:12 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2ED24F80642
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D423F8063C
  for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2ED24F80642
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D423F8063C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="tUqOqnfn"
+ header.b="CWm/IXmI"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=lLXTCpICWi659xs2yPkSm7HYK750Tj1NUn0NyJCUbx4=; b=tUqOqnfn92Yu
- E2xQO9YXBZx1AKlOdAdfx9pMdxD0yByLumn5KM9rhoRntlwnPOv/ay8ZmPSf/TyEG72Kf5cAdb5V1
- vU7EW+oNTsO+Nw2Axk2g60e8JzenuLIn6YzGYqrkvgyE8OkeReRxYhSFM3XKYgXne8EPun3A1+aur
- zod0c=;
+ List-Archive; bh=x2dhPKkjICNRAo5195SCmNYSzw31Hm7SfRI2gVEfL0k=; b=CWm/IXmIypJq
+ fBbcSGmPD5XKf6Kh6WUekoRpA/xXAEeBOPaioTlB8ao117Na+W9RTiVzYaWxBtdvMVkwMWtQ4wZ0P
+ n+we0zXK2kbl7mV0dXOXy3q/TfSlll7JhQ2JxUfD/YkRYsSb4H5nTtyKmZJaWF3FCDEmJjho6Ks8/
+ SYSss=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Ri-0008RZ-BZ; Mon, 28 Oct 2019 14:56:38 +0000
+ id 1iP6Ri-0008Ra-Hy; Mon, 28 Oct 2019 14:56:38 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 9EEAF27403F6; Mon, 28 Oct 2019 14:56:36 +0000 (GMT)
+ id D3FAA27403FD; Mon, 28 Oct 2019 14:56:36 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <52e92c4221a83e39a84a6cd92fc3d5479b44894c.1572252321.git.shengjiu.wang@nxp.com>
+In-Reply-To: <23c634e4bf58afce5b3ae67f5f42e8d1cae2639a.1572252307.git.shengjiu.wang@nxp.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145636.9EEAF27403F6@ypsilon.sirena.org.uk>
+Message-Id: <20191028145636.D3FAA27403FD@ypsilon.sirena.org.uk>
 Date: Mon, 28 Oct 2019 14:56:36 +0000 (GMT)
 Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
  festevam@gmail.com, tiwai@suse.com, lgirdwood@gmail.com,
  linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
  Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [alsa-devel] Applied "ASoC: fsl_esai: Add spin lock to protect
-	reset, stop and start" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: fsl_asrc: refine the setting of
+	internal clock divider" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: fsl_esai: Add spin lock to protect reset, stop and start
+   ASoC: fsl_asrc: refine the setting of internal clock divider
 
 has been applied to the asoc tree at
 
@@ -124,102 +124,120 @@ to this mail.
 Thanks,
 Mark
 
-From 35dac627471938eda89fa39ee4ead1f7667e0f57 Mon Sep 17 00:00:00 2001
+From b39eb1e250c32c695a780f1814086f2bfa0fb593 Mon Sep 17 00:00:00 2001
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Mon, 28 Oct 2019 17:11:05 +0800
-Subject: [PATCH] ASoC: fsl_esai: Add spin lock to protect reset, stop and
- start
+Date: Mon, 28 Oct 2019 17:10:29 +0800
+Subject: [PATCH] ASoC: fsl_asrc: refine the setting of internal clock divider
 
-xrun may happen at the end of stream, the
-trigger->fsl_esai_trigger_stop maybe called in the middle of
-fsl_esai_hw_reset, this may cause esai in wrong state
-after stop, and there may be endless xrun interrupt.
+The output divider should align with the output sample
+rate, if use ideal sample rate, there will be a lot of overload,
+which would cause underrun.
 
-This issue may also happen with trigger->fsl_esai_trigger_start.
+The maximum divider of asrc clock is 1024, but there is no
+judgement for this limitation in driver, which may cause the divider
+setting not correct.
 
-So Add spin lock to lock those functions.
+For non-ideal ratio mode, the clock rate should divide the sample
+rate with no remainder, and the quotient should be less than 1024.
 
-Fixes: 7ccafa2b3879 ("ASoC: fsl_esai: recover the channel swap after xrun")
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/52e92c4221a83e39a84a6cd92fc3d5479b44894c.1572252321.git.shengjiu.wang@nxp.com
+Link: https://lore.kernel.org/r/23c634e4bf58afce5b3ae67f5f42e8d1cae2639a.1572252307.git.shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/fsl/fsl_asrc.c | 45 ++++++++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index a78e4ab478df..c7a49d03463a 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -33,6 +33,7 @@
-  * @fsysclk: system clock source to derive HCK, SCK and FS
-  * @spbaclk: SPBA clock (optional, depending on SoC design)
-  * @task: tasklet to handle the reset operation
-+ * @lock: spin lock between hw_reset() and trigger()
-  * @fifo_depth: depth of tx/rx FIFO
-  * @slot_width: width of each DAI slot
-  * @slots: number of slots
-@@ -56,6 +57,7 @@ struct fsl_esai {
- 	struct clk *fsysclk;
- 	struct clk *spbaclk;
- 	struct tasklet_struct task;
-+	spinlock_t lock; /* Protect hw_reset and trigger */
- 	u32 fifo_depth;
- 	u32 slot_width;
- 	u32 slots;
-@@ -676,8 +678,10 @@ static void fsl_esai_hw_reset(unsigned long arg)
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 0bf91a6f54b9..a3cfceea7d2f 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -259,8 +259,15 @@ static int fsl_asrc_set_ideal_ratio(struct fsl_asrc_pair *pair,
+  * It configures those ASRC registers according to a configuration instance
+  * of struct asrc_config which includes in/output sample rate, width, channel
+  * and clock settings.
++ *
++ * Note:
++ * The ideal ratio configuration can work with a flexible clock rate setting.
++ * Using IDEAL_RATIO_RATE gives a faster converting speed but overloads ASRC.
++ * For a regular audio playback, the clock rate should not be slower than an
++ * clock rate aligning with the output sample rate; For a use case requiring
++ * faster conversion, set use_ideal_rate to have the faster speed.
+  */
+-static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
++static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
  {
- 	struct fsl_esai *esai_priv = (struct fsl_esai *)arg;
- 	bool tx = true, rx = false, enabled[2];
-+	unsigned long lock_flags;
- 	u32 tfcr, rfcr;
+ 	struct asrc_config *config = pair->config;
+ 	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+@@ -268,7 +275,8 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	enum asrc_word_width input_word_width;
+ 	enum asrc_word_width output_word_width;
+ 	u32 inrate, outrate, indiv, outdiv;
+-	u32 clk_index[2], div[2];
++	u32 clk_index[2], div[2], rem[2];
++	u64 clk_rate;
+ 	int in, out, channels;
+ 	int pre_proc, post_proc;
+ 	struct clk *clk;
+@@ -351,27 +359,42 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair)
+ 	/* We only have output clock for ideal ratio mode */
+ 	clk = asrc_priv->asrck_clk[clk_index[ideal ? OUT : IN]];
  
-+	spin_lock_irqsave(&esai_priv->lock, lock_flags);
- 	/* Save the registers */
- 	regmap_read(esai_priv->regmap, REG_ESAI_TFCR, &tfcr);
- 	regmap_read(esai_priv->regmap, REG_ESAI_RFCR, &rfcr);
-@@ -715,6 +719,8 @@ static void fsl_esai_hw_reset(unsigned long arg)
- 		fsl_esai_trigger_start(esai_priv, tx);
- 	if (enabled[rx])
- 		fsl_esai_trigger_start(esai_priv, rx);
+-	div[IN] = clk_get_rate(clk) / inrate;
+-	if (div[IN] == 0) {
++	clk_rate = clk_get_rate(clk);
++	rem[IN] = do_div(clk_rate, inrate);
++	div[IN] = (u32)clk_rate;
 +
-+	spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
- }
- 
- static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
-@@ -722,6 +728,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+	unsigned long lock_flags;
- 
- 	esai_priv->channels[tx] = substream->runtime->channels;
- 
-@@ -729,12 +736,16 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		spin_lock_irqsave(&esai_priv->lock, lock_flags);
- 		fsl_esai_trigger_start(esai_priv, tx);
-+		spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		spin_lock_irqsave(&esai_priv->lock, lock_flags);
- 		fsl_esai_trigger_stop(esai_priv, tx);
-+		spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
- 		break;
- 	default:
++	/*
++	 * The divider range is [1, 1024], defined by the hardware. For non-
++	 * ideal ratio configuration, clock rate has to be strictly aligned
++	 * with the sample rate. For ideal ratio configuration, clock rates
++	 * only result in different converting speeds. So remainder does not
++	 * matter, as long as we keep the divider within its valid range.
++	 */
++	if (div[IN] == 0 || (!ideal && (div[IN] > 1024 || rem[IN] != 0))) {
+ 		pair_err("failed to support input sample rate %dHz by asrck_%x\n",
+ 				inrate, clk_index[ideal ? OUT : IN]);
  		return -EINVAL;
-@@ -1002,6 +1013,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	}
  
- 	dev_set_drvdata(&pdev->dev, esai_priv);
+-	clk = asrc_priv->asrck_clk[clk_index[OUT]];
++	div[IN] = min_t(u32, 1024, div[IN]);
  
-+	spin_lock_init(&esai_priv->lock);
- 	ret = fsl_esai_hw_init(esai_priv);
- 	if (ret)
+-	/* Use fixed output rate for Ideal Ratio mode (INCLK_NONE) */
+-	if (ideal)
+-		div[OUT] = clk_get_rate(clk) / IDEAL_RATIO_RATE;
++	clk = asrc_priv->asrck_clk[clk_index[OUT]];
++	clk_rate = clk_get_rate(clk);
++	if (ideal && use_ideal_rate)
++		rem[OUT] = do_div(clk_rate, IDEAL_RATIO_RATE);
+ 	else
+-		div[OUT] = clk_get_rate(clk) / outrate;
++		rem[OUT] = do_div(clk_rate, outrate);
++	div[OUT] = clk_rate;
+ 
+-	if (div[OUT] == 0) {
++	/* Output divider has the same limitation as the input one */
++	if (div[OUT] == 0 || (!ideal && (div[OUT] > 1024 || rem[OUT] != 0))) {
+ 		pair_err("failed to support output sample rate %dHz by asrck_%x\n",
+ 				outrate, clk_index[OUT]);
+ 		return -EINVAL;
+ 	}
+ 
++	div[OUT] = min_t(u32, 1024, div[OUT]);
++
+ 	/* Set the channel number */
+ 	channels = config->channel_num;
+ 
+@@ -560,7 +583,7 @@ static int fsl_asrc_dai_hw_params(struct snd_pcm_substream *substream,
+ 		config.output_sample_rate = rate;
+ 	}
+ 
+-	ret = fsl_asrc_config_pair(pair);
++	ret = fsl_asrc_config_pair(pair, false);
+ 	if (ret) {
+ 		dev_err(dai->dev, "fail to config asrc pair\n");
  		return ret;
 -- 
 2.20.1
