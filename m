@@ -2,60 +2,67 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A34ACCA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 13:07:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BBC9CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 13:14:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A53B214D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 13:07:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E00BF214D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 13:14:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jf3R/soJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A53B214D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZUFN5laL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E00BF214D9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A3761F00;
-	Mon, 28 Oct 2019 14:06:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A3761F00
+	by alsa0.perex.cz (Postfix) with ESMTPS id E78B81F15;
+	Mon, 28 Oct 2019 14:13:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E78B81F15
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572268058;
-	bh=ismRquiffIWbp8WRPno7AR11DWEnEJseE1uexRJSuk8=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Jf3R/soJ/AzTw6UESJN/ZkJD90VydL1PaT2JI+DrYaZM17w13IubSeBEr2KR3fT0n
-	 nBS9lsgsFWBiheVg5RDKUSNIgizLhh5M/97jBlk063of0XYeuwzGgt2rbkE+Hx4XlT
-	 cueoWBBmPI52NqTQotk0T38YtGdex02PoWU5cGTU=
+	s=default; t=1572268461;
+	bh=NSAgkntiJGlu7pDuFjWhzeWOp9Mk5aPk1lHyTc6+8ks=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZUFN5laLdzU4piSs3Zl7Z0YDNJlAQe7TUkqSsH1PZBwJxRvBIR3FXXWndbcC1rqfY
+	 UvyqbrGy/2X47Ezrsy3JqPyulmctss/O1EwK5hF2DPDmPU4rESQswW0KHDzzuy/b/W
+	 v3vtECBZwHucqpLp/qLEo686l78KypuoVgmg2gaI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF3ECF802BD;
-	Mon, 28 Oct 2019 14:06:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75FF8F802BD;
+	Mon, 28 Oct 2019 14:13:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D98E5F80361; Mon, 28 Oct 2019 14:06:46 +0100 (CET)
+ id 40B29F80361; Mon, 28 Oct 2019 14:13:29 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8231CF8011D
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 14:06:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8231CF8011D
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE099F8011D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 14:13:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE099F8011D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 68746B23A;
- Mon, 28 Oct 2019 13:06:43 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 8A71FB384;
+ Mon, 28 Oct 2019 13:13:21 +0000 (UTC)
+Date: Mon, 28 Oct 2019 14:13:20 +0100
+Message-ID: <s5hr22xau8f.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Mon, 28 Oct 2019 14:06:34 +0100
-Message-Id: <20191028130634.3501-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH] ALSA: hda: Allow non-Intel device probe
-	gracefully
+To: syzbot <syzbot+8f2612936028bfd28f28@syzkaller.appspotmail.com>
+In-Reply-To: <000000000000f838060595f602a7@google.com>
+References: <000000000000f838060595f602a7@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, wang6495@umn.edu, yuehaibing@huawei.com,
+ gregkh@linuxfoundation.org, tiwai@suse.com, syzkaller-bugs@googlegroups.com,
+ linux-kernel@vger.kernel.org, glider@google.com, allison@lohutok.net,
+ tglx@linutronix.de, benquike@gmail.com, dan.carpenter@oracle.com
+Subject: Re: [alsa-devel] KMSAN: uninit-value in get_term_name
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,51 +75,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent addition of snd_intel_dsp_driver_probe() check caused a
-spurious kernel warning when the driver is loaded for a non-Intel
-hardware due to snd_BUG_ON().  Moreover, for such a hardware, we
-should always return SND_INTEL_DSP_DRIVER_ANY, not check the
-dsp_driver option at all.
+On Mon, 28 Oct 2019 11:32:07 +0100,
+syzbot wrote:
+> 
+> Uninit was stored to memory at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:151 [inline]
+>  kmsan_internal_chain_origin+0xbd/0x180 mm/kmsan/kmsan.c:319
+>  __msan_chain_origin+0x6b/0xd0 mm/kmsan/kmsan_instr.c:179
+>  parse_term_proc_unit+0x73d/0x7e0 sound/usb/mixer.c:896
+>  __check_input_term+0x13ef/0x2360 sound/usb/mixer.c:989
 
-This patch fixes these issues for non-Intel devices.
+So this comes from the invalid descriptor for a processing unit, and
+it's very likely the same issue as already spotted -- the validator up
+to 5.3-rc4 had a bug that passed the invalid descriptor falsely.
+This should have been covered by 5.3-rc5, commit ba8bf0967a15 ("ALSA:
+usb-audio: Fix copy&paste error in the validator").
 
-Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/hda/intel-dsp-config.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 0b2a7201a46a..be1df80ed013 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -307,13 +307,13 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
- {
- 	const struct config_entry *cfg;
- 
--	if (dsp_driver > 0 && dsp_driver <= SND_INTEL_DSP_DRIVER_LAST)
--		return dsp_driver;
--
- 	/* Intel vendor only */
--	if (snd_BUG_ON(pci->vendor != 0x8086))
-+	if (pci->vendor != 0x8086)
- 		return SND_INTEL_DSP_DRIVER_ANY;
- 
-+	if (dsp_driver > 0 && dsp_driver <= SND_INTEL_DSP_DRIVER_LAST)
-+		return dsp_driver;
-+
- 	/*
- 	 * detect DSP by checking class/subclass/prog-id information
- 	 * class=04 subclass 03 prog-if 00: no DSP, use legacy driver
--- 
-2.16.4
+thanks,
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
