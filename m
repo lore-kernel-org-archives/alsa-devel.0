@@ -2,69 +2,102 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50BB5CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 06:40:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC98ECA9EA0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 07:20:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C839120862
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 06:40:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA396214AF
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 07:20:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="szjOtrZ4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C839120862
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MxCVC1In";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P4SRp8hs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA396214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 906C51A9B;
-	Mon, 28 Oct 2019 07:31:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 906C51A9B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B01D1A9B;
+	Mon, 28 Oct 2019 08:19:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B01D1A9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572244350;
-	bh=2+PL+Oq123ivgk4j1cjLsDmfktZ7G2VY0t2+2vIfRww=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=szjOtrZ4byyInjcTyPtZv1HSh8gwpzDIWuvtW+6D7AHpaeSgk8TDSjTIehF3bNvj6
-	 +LHf4LWAkoFyFpOm0lc10uNPtEtsLeFg2MFFtS2/dh5vmvbPxpjezt5+rRmikiiM73
-	 3SkNwxhRw85/RrsKgEZfw4cd+mg4chFjVBGwT7z4=
+	s=default; t=1572247236;
+	bh=L3P3/xhep9D60wAi5GZC5OqIY6to+bhJVZq9Ub9vOPA=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MxCVC1InjVValL/L5pok8Bu+keHefwMrLTkYgS8iwup2D8FNPbkWTZYlzL4WI9sT2
+	 hEOl9W0P/812dB6UAGq91wKiPdvn/Bidpn43HXsmLPRO6IQPJorbonx7aHb37XnTQ6
+	 slg3nHVMPR4IFOB91aJA4zA2RoGS6uOJv9jJEJhQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10146F80361;
-	Mon, 28 Oct 2019 07:31:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05FA8F802BD;
+	Mon, 28 Oct 2019 08:19:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A80F8F803D6; Mon, 28 Oct 2019 07:31:38 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 84816F80361; Mon, 28 Oct 2019 08:19:44 +0100 (CET)
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
+ [IPv6:2607:f8b0:4864:20::542])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60902F80145
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 07:31:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60902F80145
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id CA756B3C7;
- Mon, 28 Oct 2019 06:31:35 +0000 (UTC)
-Date: Mon, 28 Oct 2019 07:31:35 +0100
-Message-ID: <s5hmudlmldk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Navid Emamdoost <navid.emamdoost@gmail.com>
-In-Reply-To: <20191027191206.30820-1-navid.emamdoost@gmail.com>
-References: <20191027191206.30820-1-navid.emamdoost@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kjlu@umn.edu,
- Takashi Iwai <tiwai@suse.com>, Richard Fontana <rfontana@redhat.com>,
- emamd001@umn.edu, smccaman@umn.edu, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: pci: Fix memory leak in
-	snd_korg1212_create
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0CACF8011D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 08:19:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0CACF8011D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="P4SRp8hs"
+Received: by mail-pg1-x542.google.com with SMTP id p1so6295062pgi.4
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 00:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1kARxN4zXqzFWFi9Hzge3EGrR8GY2GeJ7Yqz9IBjLtM=;
+ b=P4SRp8hsDD5IeFRKKfwF24MUFSYWQUG8Pifned/ZXWMMwEDxyNi2fo2IBqSZemeTIr
+ YXzLkF57dbipVFhFy74e+kfK6A+vvnGLJ9qcYvXjfL/f0CZKSBWPERoIjFznbevPjcKy
+ 2Yr0AWo8FKDfZP5ZaXkh/LIexFunlbxZ+g2ns=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1kARxN4zXqzFWFi9Hzge3EGrR8GY2GeJ7Yqz9IBjLtM=;
+ b=IlDrF8AKXiyeeTHMFnNOr2g651x7nhp92VGii4LoD8w7DjOlAn0ewRtbQNvV5eWtvK
+ L+fin91Wt23n8IBacded06H0dX63Mb3JhFRxOcS7Yav/cj6MS9b9CTg+81oLkrnMNZYv
+ K9rJCnk1OKsQdFLPjh+bSQP+LDOIahLgxI+vBQwn+XJxbfdgLEBr+UWLyeZE+c7jsZn0
+ bK7vLZpn0jQbbRmlheqMgEB/BDlur21gSIgDCfR53y7fJ3vqx8yzFCMhj7wCXFvRyrAR
+ PyAZsuQOk254zY2OmjOTcHDulYKqksO9UyEj9OKGKDMDD7KmL1HmvmqSVxsJtdoOmQcN
+ K3yQ==
+X-Gm-Message-State: APjAAAV/jZqmQgB6XW8ez+3J/5902IGJBYGKScZTS/AULxutm6Ymbtdw
+ 9q1tC9OqvA/qt9Xhj0zANXEaYw==
+X-Google-Smtp-Source: APXvYqyQ6aIEt1WbaZMUGlnrW1jFW16UZAwHLIo+j1unzlK77i3d3XcL512n21QVNwPfdFP+R7kEQQ==
+X-Received: by 2002:a63:ff56:: with SMTP id s22mr19089316pgk.44.1572247179560; 
+ Mon, 28 Oct 2019 00:19:39 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:79b4:bd83:e4a5:a720])
+ by smtp.gmail.com with ESMTPSA id h28sm12513742pgn.14.2019.10.28.00.19.34
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 28 Oct 2019 00:19:38 -0700 (PDT)
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+To: linux-kernel@vger.kernel.org
+Date: Mon, 28 Oct 2019 15:19:24 +0800
+Message-Id: <20191028071930.145899-1-cychiang@chromium.org>
+X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
+MIME-Version: 1.0
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org,
+ Heiko Stuebner <heiko@sntech.de>, Neil Armstrong <narmstrong@baylibre.com>,
+ David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>,
+ Andrzej Hajda <a.hajda@samsung.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jerome Brunet <jbrunet@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-rockchip@lists.infradead.org, dgreid@chromium.org,
+ Cheng-Yi Chiang <cychiang@chromium.org>, devicetree@vger.kernel.org,
+ tzungbi@chromium.org, Jonas Karlman <jonas@kwiboo.se>,
+ Russell King <rmk+kernel@armlinux.org.uk>, Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ dianders@chromium.org, Mark Brown <broonie@kernel.org>,
+ Daniel Vetter <daniel@ffwll.ch>
+Subject: [alsa-devel] [PATCH v9 0/6] Add HDMI jack support on RK3288
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,72 +115,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 27 Oct 2019 20:12:04 +0100,
-Navid Emamdoost wrote:
-> 
-> In the implementation of snd_korg1212_create() the allocated memory for
-> korg1212 is leaked in cases of error. Release korg1212 via
-> snd_korg1212_free() if either of these calls fail:
-> snd_korg1212_downloadDSPCode(), snd_pcm_new(), or snd_ctl_add().
+This patch series supports HDMI jack reporting on RK3288, which uses
+DRM dw-hdmi driver and hdmi-codec codec driver.
 
-This also leads to the double-free.  The code path is after
-snd_device_new() which has its own destructor callback.
+The previous discussion about reporting jack status using hdmi-notifier
+and drm_audio_component is at
 
+https://lore.kernel.org/patchwork/patch/1083027/
 
-thanks,
+The new approach is to use a callback mechanism that is
+specific to hdmi-codec.
 
-Takashi
+The dependent change on hdmi-codec.c
 
-> 
-> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> ---
->  sound/pci/korg1212/korg1212.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
-> index 0d81eac0a478..e976e857d915 100644
-> --- a/sound/pci/korg1212/korg1212.c
-> +++ b/sound/pci/korg1212/korg1212.c
-> @@ -2367,8 +2367,10 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
->  
->  	mdelay(CARD_BOOT_DELAY_IN_MS);
->  
-> -        if (snd_korg1212_downloadDSPCode(korg1212))
-> +	if (snd_korg1212_downloadDSPCode(korg1212)) {
-> +		snd_korg1212_free(korg1212);
->          	return -EBUSY;
-> +	}
->  
->          K1212_DEBUG_PRINTK("korg1212: dspMemPhy = %08x U[%08x], "
->                 "PlayDataPhy = %08x L[%08x]\n"
-> @@ -2383,8 +2385,11 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
->                 korg1212->RoutingTablePhy, LowerWordSwap(korg1212->RoutingTablePhy),
->                 korg1212->AdatTimeCodePhy, LowerWordSwap(korg1212->AdatTimeCodePhy));
->  
-> -        if ((err = snd_pcm_new(korg1212->card, "korg1212", 0, 1, 1, &korg1212->pcm)) < 0)
-> +	err = snd_pcm_new(korg1212->card, "korg1212", 0, 1, 1, &korg1212->pcm);
-> +	if (err < 0) {
-> +		snd_korg1212_free(korg1212);
->                  return err;
-> +	}
->  
->  	korg1212->pcm->private_data = korg1212;
->          korg1212->pcm->private_free = snd_korg1212_free_pcm;
-> @@ -2398,8 +2403,10 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
->  
->          for (i = 0; i < ARRAY_SIZE(snd_korg1212_controls); i++) {
->                  err = snd_ctl_add(korg1212->card, snd_ctl_new1(&snd_korg1212_controls[i], korg1212));
-> -                if (err < 0)
-> +		if (err < 0) {
-> +			snd_korg1212_free(korg1212);
->                          return err;
-> +		}
->          }
->  
->          snd_korg1212_proc_init(korg1212);
-> -- 
-> 2.17.1
-> 
+commit 6fa5963c37a2 ("ASoC: hdmi-codec: Add an op to set callback function for plug event")
+
+has been merged to upstream.
+
+Changes from v8 to v9:
+
+1. rockchip_max98090:
+   Use the presence of rockchip,audio-codec to determine the presense of max98090
+   in sound card.
+   Use the presence of rockchip,hdmi-codec to determine the presence of HDMI in
+   sound card.
+   Remove the compatible strings added in v8.
+
+2. #include <sound/hdmi-codec.h> should be in the patch of adding HDMI jack support.
+
+Cheng-Yi Chiang (6):
+  drm: bridge: dw-hdmi: Report connector status using callback
+  ASoC: rockchip-max98090: Support usage with and without HDMI
+  ASoC: rockchip_max98090: Optionally support HDMI use case
+  ASoC: rockchip_max98090: Add HDMI jack support
+  ARM: dts: rockchip: Add HDMI support to rk3288-veyron-analog-audio
+  ARM: dts: rockchip: Add HDMI audio support to rk3288-veyron-mickey.dts
+
+ .../bindings/sound/rockchip-max98090.txt      |  27 +-
+ .../boot/dts/rk3288-veyron-analog-audio.dtsi  |   1 +
+ arch/arm/boot/dts/rk3288-veyron-mickey.dts    |   7 +
+ .../drm/bridge/synopsys/dw-hdmi-i2s-audio.c   |  11 +
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |  41 ++-
+ include/drm/bridge/dw_hdmi.h                  |   4 +
+ sound/soc/rockchip/Kconfig                    |   3 +-
+ sound/soc/rockchip/rockchip_max98090.c        | 313 ++++++++++++++----
+ 8 files changed, 338 insertions(+), 69 deletions(-)
+
+-- 
+2.24.0.rc0.303.g954a862665-goog
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
