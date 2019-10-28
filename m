@@ -2,69 +2,96 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3E73CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:41:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B435FCA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:43:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B05D20717
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:41:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3D08920717
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 16:43:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZsOx3igL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B05D20717
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ladisch.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m8wz7XLF";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="klGwHRTL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D08920717
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49065203D;
-	Mon, 28 Oct 2019 17:40:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49065203D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A9832043;
+	Mon, 28 Oct 2019 17:43:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A9832043
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572280889;
-	bh=iY5gjzO7g7CgZqLJYV1Y/ikyWbJt8YhPhEvTD9E41gM=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1572281037;
+	bh=gI7eRnJbZiSZwJVuYAXTNuLLF7BxAEY8coX77zyJMEk=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZsOx3igLGPwP9q5xPmNvndFxWB3IaQhB+dZE2HLkXP9OIylR753siL7YaZG0B5uTp
-	 KYWB3eiXjj0OSZNQMkOMEwXS0q5xbLMvAFZyU8R/f/5lgkajEXQ1sRyiiPKmAqThQC
-	 sIdLTQEfn5wBaaRkLcYBlJeoqfclPHvCGIzRRxGo=
+	b=m8wz7XLFjt7wWSGFCXiJ8J542+pL8n4848pHAmlWWx6aGpS8o5jOuQ+5UabZd7u1n
+	 n/+yAFnDTzJwwZzBP1uVdEM8kcC48Lj/nmYk7AUlauGwcB6Ss/ysWZMptZ/NaGW4FQ
+	 Iq+wivBbirY9iYvkIDfNqWQx2ku0zyp6Z9WOalaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5ADDF80145;
-	Mon, 28 Oct 2019 17:40:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27DC7F802BD;
+	Mon, 28 Oct 2019 17:43:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34883F802BD; Mon, 28 Oct 2019 17:40:37 +0100 (CET)
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 92F91F80361; Mon, 28 Oct 2019 17:43:06 +0100 (CET)
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
+ [IPv6:2607:f8b0:4864:20::d41])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F32FF80145
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 17:40:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F32FF80145
-Received: from olorin.ladisch.de (x2f7f95e.dyn.telefonica.de [2.247.249.94])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 7F6BC5583F65;
- Mon, 28 Oct 2019 17:40:32 +0100 (CET)
-To: Navid Emamdoost <navid.emamdoost@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBAD1F80145
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 17:43:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBAD1F80145
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="klGwHRTL"
+Received: by mail-io1-xd41.google.com with SMTP id s17so4323188iol.12
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 09:43:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=T7hboFEeFKyd5NAixP5xiZOuYFeH/C9fhpLKgwRHkUs=;
+ b=klGwHRTL5mrKIVtDuSfO99e4sh4sykQEmk1xCfQjQO93WTHqN2jd09J2wI82K7XZv3
+ lHFxONAggH6yEFrVcPrsdNnmX+845szwZcXqLaUQd/60yJfww2rxSNhCwyQGDk5hOjO2
+ AhktlWElZ7n1NVCMhAxkfoYXhr+doOi0WuQK7WxnWDLl8NVhfxDJR/GJLcY6A7zRF0Es
+ 8wLHwk+CXeET308GS896cr6zifsPfRJFF6onjNS6w617znys6hy2yZ3LpfmcIk4Zs/g6
+ n86RLtYt6t5jcIKe53pGUGqR0Yg91ymfUJ6wAOUtWjftFAWuv7DYdM0UWKIC/YIp7wNc
+ QMwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=T7hboFEeFKyd5NAixP5xiZOuYFeH/C9fhpLKgwRHkUs=;
+ b=KN9WCeGEEa36cDYqTY+oFXh5nLMcSXqmH2dPwQOLByS6HMy5mKfwIl808QuBju7hVE
+ lDwEcgRuhfAt6+6yYRvB8ve1IHJVNM2P62IKVHCxE4FbdcJqr51M/xdBvcuCSTNXisdC
+ GJS8YkGExtVzEHE8KRmpn6Se1iMqGipfGXlSe1flIIrg15mtJImCaO6N9VRLUFuHIRjX
+ hDWeN0Cz8Sra81xeiv4ZNwU8UOXi0L/0RJqEfUIf6wU9vcW99kn2IfCUehglnIO/aemd
+ m05I+B+TscE2hUmtJa2bsv5+959vfQd8kMh+xzVx/VwwWBRR5g34iEFeyvn4jPSuPE1h
+ ITCw==
+X-Gm-Message-State: APjAAAWG34QmRtlWLcP5qCGsMxINvSWrfSi0aCuuTQf2wCM7HQyH4Rg1
+ pc08TdUzWXPQfBIT6R9MNu2aShjU6uEjwuxdTz8=
+X-Google-Smtp-Source: APXvYqxI39T88uTzfIWo1E/+l15lDn1rBKzV5Mm1lUMuD5oaP5IrRMkeMKreID8HOeG0AEElnlLbCSwIpd0X2zWWJ3A=
+X-Received: by 2002:a6b:ba44:: with SMTP id k65mr86633iof.190.1572280982021;
+ Mon, 28 Oct 2019 09:43:02 -0700 (PDT)
+MIME-Version: 1.0
 References: <20191027221007.14317-1-navid.emamdoost@gmail.com>
  <s5hpnihmlk3.wl-tiwai@suse.de>
  <CAEkB2ESwKEQYQx75BnaHf4aUQHObx4jf0hreQx_KTeZ+QCjL4g@mail.gmail.com>
-From: Clemens Ladisch <clemens@ladisch.de>
-Message-ID: <d623a621-c62a-7ae9-958c-8709fb0c8c7d@ladisch.de>
-Date: Mon, 28 Oct 2019 17:38:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
-MIME-Version: 1.0
-In-Reply-To: <CAEkB2ESwKEQYQx75BnaHf4aUQHObx4jf0hreQx_KTeZ+QCjL4g@mail.gmail.com>
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.99.4 at webclient5
-X-Virus-Status: Clean
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
- Kangjie Lu <kjlu@umn.edu>, LKML <linux-kernel@vger.kernel.org>,
- Navid Emamdoost <emamd001@umn.edu>, Stephen McCamant <smccaman@umn.edu>
+ <s5hy2x4u8oi.wl-tiwai@suse.de>
+In-Reply-To: <s5hy2x4u8oi.wl-tiwai@suse.de>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
+Date: Mon, 28 Oct 2019 11:42:50 -0500
+Message-ID: <CAEkB2ERL9GPXWvkPViMp4k1MrZn08v-kTNv8B495hqi4e-TJog@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Kangjie Lu <kjlu@umn.edu>,
+ Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>,
+ Navid Emamdoost <emamd001@umn.edu>, Stephen McCamant <smccaman@umn.edu>,
+ LKML <linux-kernel@vger.kernel.org>
 Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Fix memory leak in
 	__snd_usbmidi_create
 X-BeenThere: alsa-devel@alsa-project.org
@@ -84,33 +111,89 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Navid Emamdoost wrote:
-> On Mon, Oct 28, 2019 at 1:27 AM Takashi Iwai <tiwai@suse.de> wrote:
->> On Sun, 27 Oct 2019 23:10:06 +0100,
->> Navid Emamdoost wrote:
->>> In the implementation of __snd_usbmidi_create() there is a memory leak
->>> caused by incorrect goto destination. Go to free_midi if
->>> snd_usbmidi_create_endpoints_midiman() or snd_usbmidi_create_endpoints()
->>> fail.
->>
->> No, this will lead to double-free.  After registering the rawmidi
->> interface at snd_usbmidi_create_rawmidi(), the common destructor will
->> be called via rawmidi private_free callback, and this will release the
->> all resources already.
+On Mon, Oct 28, 2019 at 11:38 AM Takashi Iwai <tiwai@suse.de> wrote:
 >
-> Now I can see how rawmidi private_free is set up to release the
-> resources, but what concerns me is that at the moment of endpoint/port
-> creation umidi is not yet added to the midi_list.
-> In other words, what I see is that we still have just one local
-> pointer to umidi if any of snd_usbmidi_create_endpoint* fail.
+> On Mon, 28 Oct 2019 17:25:41 +0100,
+> Navid Emamdoost wrote:
+> >
+> > Thanks for the explanation,
+> >
+> > On Mon, Oct 28, 2019 at 1:27 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Sun, 27 Oct 2019 23:10:06 +0100,
+> > > Navid Emamdoost wrote:
+> > > >
+> > > > In the implementation of __snd_usbmidi_create() there is a memory leak
+> > > > caused by incorrect goto destination. Go to free_midi if
+> > > > snd_usbmidi_create_endpoints_midiman() or snd_usbmidi_create_endpoints()
+> > > > fail.
+> > >
+> > > No, this will lead to double-free.  After registering the rawmidi
+> > > interface at snd_usbmidi_create_rawmidi(), the common destructor will
+> > > be called via rawmidi private_free callback, and this will release the
+> > > all resources already.
+> > Now I can see how rawmidi private_free is set up to release the
+> > resources, but what concerns me is that at the moment of endpoint/port
+> > creation umidi is not yet added to the midi_list.
+> > In other words, what I see is that we still have just one local
+> > pointer to umidi if any of snd_usbmidi_create_endpoint* fail.
+> > Am I missing something?
+>
+> The rawmidi object that is created via snd_rawmidi_new() is managed
+> via snd_device list, and it's traversed at snd_card_disconnect() and
+> snd_card_free() calls.  It's something like devm-stuff (but
+> implemented in a different way).  The midi_list is an explicit list
+> for the USB MIDI driver, and it's an individual one from the device
+> list.
 
-The snd_rawmidi device is automatically registered with the card, so the
-line "rmidi->private_free = snd_usbmidi_rawmidi_free;" is the exact point
-where the ownership of umidi changes.  midi_list does not matter.
+Thanks for the clarification.
+
+>
+>
+> Takashi
+>
+> >
+> >
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Takashi
+> > >
+> > > >
+> > > > Fixes: 731209cc0417 ("ALSA: usb-midi: Use common error handling code in __snd_usbmidi_create()")
+> > > > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> > > > ---
+> > > >  sound/usb/midi.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+> > > > index b737f0ec77d0..22db37fbfbbd 100644
+> > > > --- a/sound/usb/midi.c
+> > > > +++ b/sound/usb/midi.c
+> > > > @@ -2476,7 +2476,7 @@ int __snd_usbmidi_create(struct snd_card *card,
+> > > >       else
+> > > >               err = snd_usbmidi_create_endpoints(umidi, endpoints);
+> > > >       if (err < 0)
+> > > > -             goto exit;
+> > > > +             goto free_midi;
+> > > >
+> > > >       usb_autopm_get_interface_no_resume(umidi->iface);
+> > > >
+> > > > --
+> > > > 2.17.1
+> > > >
+> >
+> >
+> >
+> > --
+> > Navid.
+> >
 
 
-Regards,
-Clemens
+
+-- 
+Navid.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
