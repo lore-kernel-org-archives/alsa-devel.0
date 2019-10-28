@@ -2,75 +2,81 @@ Return-Path: <SRS0=lYxt=YV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65189CA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD168CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:57:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7B5A21783
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:45:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5508320873
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 14:57:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GuC0borb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7B5A21783
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KXwCA060";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="u13zMTRS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5508320873
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F32891F5A;
-	Mon, 28 Oct 2019 15:44:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F32891F5A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 884061F4E;
+	Mon, 28 Oct 2019 15:56:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 884061F4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572273920;
-	bh=4/n0DB6czWyxZKG+UFZ0aFviJtjoPa1cL40ulhwz9c4=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GuC0borby4RP20fxRCm1IH/gPPoA+ezNxCAj/esB5/SpfGW+KhXshvzHUzlFiC85e
-	 pyrqyvW0gSj2SA7LNJMi1BueW5j1EMGXrpgsG41H1QbAAiovb3eRzXg1484G9wnFoL
-	 hnz29VyDME/756iSwIuX8kUz+Xll80C8j9m6U4Nc=
+	s=default; t=1572274646;
+	bh=KCV5mE+FNozn4PPG2aCKAdLa27hi44366jGhRHD86gQ=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=KXwCA060vQGexDnQhstX8fFxfAeeC8REofGjABfz4GMWYvx/e745+bHBC8d5GDbIA
+	 ExgMFvqseKacAG4C72RLaV1FtBCS+fB4Ijt9eT4jWOEVovyHXNB6V9fNOdNnUFaHXv
+	 S1cJbEC3KTihNrjh+nq/R9tynD+i9rkGoJ8Epf0k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98E98F800E7;
-	Mon, 28 Oct 2019 15:44:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E716EF80633;
+	Mon, 28 Oct 2019 15:56:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BC9AF80361; Mon, 28 Oct 2019 15:44:22 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AA9DEF805FF; Mon, 28 Oct 2019 15:56:34 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A453F80145
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:44:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A453F80145
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3C01CAC2D;
- Mon, 28 Oct 2019 14:44:19 +0000 (UTC)
-Date: Mon, 28 Oct 2019 15:44:19 +0100
-Message-ID: <s5hv9s99bgc.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <0daa3e27-3d1f-3040-f8e7-92ce91a97687@web.de>
-References: <s5hmudlmldk.wl-tiwai@suse.de>
- <ec3647df-0e54-4aaa-7ec7-b3dec0fa1965@web.de>
- <s5ho8y1au4h.wl-tiwai@suse.de>
- <0daa3e27-3d1f-3040-f8e7-92ce91a97687@web.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
- kernel-janitors@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kangjie Lu <kjlu@umn.edu>,
- LKML <linux-kernel@vger.kernel.org>, Richard Fontana <rfontana@redhat.com>,
- Navid Emamdoost <emamd001@umn.edu>, Stephen McCamant <smccaman@umn.edu>,
- Thomas Gleixner <tglx@linutronix.de>,
- Navid Emamdoost <navid.emamdoost@gmail.com>
-Subject: Re: [alsa-devel] ALSA: korg1212: Checking exception handling in
-	snd_korg1212_create()
+ by alsa1.perex.cz (Postfix) with ESMTPS id F40C8F802BD
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F40C8F802BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="u13zMTRS"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=lkg8N6JGFE8LckLi9zpUUrn3uvJc7H9/C88LSXCnsIs=; b=u13zMTRSsHm9
+ crUhMewqQ6nls1c5A6iXSX4Wb6/hpEOLdSEuWXokuMIBq277FcNUWDWrPrzMqjaBLEhEI485pjcQH
+ kbO8iaqvvRFD1msO8vmjvnvjUH6oB7tpMO8XVuV4FVCWQOO2qjAD8grELudAevMjaj8Aykeogzoaf
+ asaM0=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iP6Ra-0008Or-D0; Mon, 28 Oct 2019 14:56:30 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 35B4527403E4; Mon, 28 Oct 2019 14:56:28 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Keyon Jie <yang.jie@linux.intel.com>
+In-Reply-To: <20191025224122.7718-27-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Message-Id: <20191028145628.35B4527403E4@ypsilon.sirena.org.uk>
+Date: Mon, 28 Oct 2019 14:56:28 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: pci: Add prepare/complete PM
+	callbacks" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,43 +89,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Oct 2019 15:40:09 +0100,
-Markus Elfring wrote:
-> 
-> >> Can the properties of this programming interface be documented also together
-> >> with the function declaration for the safer handling of ALSA components?
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/sound/kernel-api/writing-an-alsa-driver.rst?id=d6d5df1db6e9d7f8f76d2911707f7d5877251b02#n567
-> >
-> > I can think of only adding some comment at each point mentioning that
-> > the resource will be managed by the device destructor.
-> 
-> * Which places will be corresponding update candidates?
+The patch
 
-At each place where this kind of code is seen.
+   ASoC: SOF: pci: Add prepare/complete PM callbacks
 
-> * Would you like to choose the wording?
+has been applied to the asoc tree at
 
-I myself don't mind as long as it's clearly understandable for human
-being.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
-> >> Can any more API information help to improve automatic source code analysis
-> >> around similar functions?
-> >
-> > If anything we can add, let me know.
-> 
-> Will any tags become more helpful also for the software documentation?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-It's my question.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-thanks,
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Takashi
+Thanks,
+Mark
+
+From 6d407a39cc9619d0088b44333c6526924be00f8d Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Fri, 25 Oct 2019 17:41:22 -0500
+Subject: [PATCH] ASoC: SOF: pci: Add prepare/complete PM callbacks
+
+Use the new implemented snd_sof_prepare() and snd_sof_complete() as the
+power management callbacks for pci probing platforms.
+
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191025224122.7718-27-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sof/sof-pci-dev.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 4adbb27c76c5..487b1f29f84d 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -264,6 +264,8 @@ static const struct sof_dev_desc jsl_desc = {
+ #endif
+ 
+ static const struct dev_pm_ops sof_pci_pm = {
++	.prepare = snd_sof_prepare,
++	.complete = snd_sof_complete,
+ 	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
+ 	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
+ 			   snd_sof_runtime_idle)
+-- 
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
