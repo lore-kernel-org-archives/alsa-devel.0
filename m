@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44F8ECA9EC0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85BE0CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:01:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C119220873
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:00:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0ECC320873
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Oct 2019 15:01:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a73KjinG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ONfev3wv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C119220873
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pwvTBY8z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="P2J9RAeS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ECC320873
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E744B1F7F;
-	Mon, 28 Oct 2019 15:59:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E744B1F7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54DF41F98;
+	Mon, 28 Oct 2019 16:00:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54DF41F98
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572274844;
-	bh=DBy64jGdC377jsbfBssbrJ0YPgsMvZwKwCeLqGOQXoQ=;
+	s=default; t=1572274868;
+	bh=AMBHzXkIF1njBK0doswXOaa5yM9j1HwYgDS0uGfTggQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=a73KjinGsbpZvYVt0akI4oXWsdJ5NRKqNYjzx+CZnNhktIl3g/91gDLOlTao9KFjb
-	 OvV3KWi0ch/7AF/IiXnNFboSzAWtSqcuE2v3GOoHFNclKRIdor60UQb8peuewDAhHr
-	 RwzgbsOR/293CUl6/U9MvPQcTJfwYS/xNEJhQ4d0=
+	b=pwvTBY8zxuSdkqZ5vf1KJb/aNJeC/kp9wLnGoE+7CCnRXfvChbqA1OS6JdVi+i5QM
+	 V/WJWz8y18doul4oxg9SI6LVL2P75vQfNWiStUBby2fNpDvJ8Opx65A7bd0g2sPpqS
+	 8gK/R4tuhfL8Zt3bhz/WtCWwXgxbhpGEhN6if9pU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 371F5F8068A;
-	Mon, 28 Oct 2019 15:56:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 640CBF8067A;
+	Mon, 28 Oct 2019 15:56:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BF65F8048F; Mon, 28 Oct 2019 15:56:40 +0100 (CET)
+ id C4100F8065A; Mon, 28 Oct 2019 15:56:41 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B947CF8048F
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B947CF8048F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E530F803D6
+ for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 15:56:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E530F803D6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ONfev3wv"
+ header.b="P2J9RAeS"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=coTvt0m8DwW3lU6vCTRtq0KOWQqMujuWuKEl3udRygk=; b=ONfev3wvfP2h
- DKDPimJW7rzHcmnY9n+tIzqLYcm8KsYpoMLXY5LghRbxYfSGcuqsfD64Q/FL1GJvUB2wQ94TT3Ly3
- qmAb37oReCXrXSN5lNnfqzXqBtlgggsiwfHiNlusLn7os6N1sT5r7NNb86aYIjrbzrVRLOdRf0L03
- ZEuaE=;
+ List-Archive; bh=iBWlw68IevrAoqc26cOG39WRjF8dxJJZXNnTZLubOjw=; b=P2J9RAeSMltX
+ 0s905dAHwS0Us/0VsU8OiMjeRKzXrpdeGDa9j8rWRJ7NdVOAEszlA/aVgPBr88zMeqe4MfpzSlqIe
+ mjXdc+eBZ/ibL9k4xRP92KmRuiutN+MoDwFglXAYXwPrxIIxT3X73Ufbl8/u40JhM8qjvQQSbxj4/
+ wLoYg=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iP6Rb-0008P6-VI; Mon, 28 Oct 2019 14:56:32 +0000
+ id 1iP6Ra-0008Oo-9G; Mon, 28 Oct 2019 14:56:30 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 40F3C2740409; Mon, 28 Oct 2019 14:56:29 +0000 (GMT)
+ id D51EB27403F6; Mon, 28 Oct 2019 14:56:28 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <20191025224122.7718-22-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191025224122.7718-24-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191028145629.40F3C2740409@ypsilon.sirena.org.uk>
-Date: Mon, 28 Oct 2019 14:56:29 +0000 (GMT)
+Message-Id: <20191028145628.D51EB27403F6@ypsilon.sirena.org.uk>
+Date: Mon, 28 Oct 2019 14:56:28 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: PM: implement prepare/complete
-	callbacks" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda-dsp: implement
+	suspend/resume for S0ix<->S0 transition" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: PM: implement prepare/complete callbacks
+   ASoC: SOF: Intel: hda-dsp: implement suspend/resume for S0ix<->S0 transition
 
 has been applied to the asoc tree at
 
@@ -121,67 +122,61 @@ to this mail.
 Thanks,
 Mark
 
-From 0b50b3b1c3bc2a2c9eeab418b3de3e60e0530cf4 Mon Sep 17 00:00:00 2001
+From 66e40876ddc325d892c493a6d83574bbba5770ce Mon Sep 17 00:00:00 2001
 From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Fri, 25 Oct 2019 17:41:17 -0500
-Subject: [PATCH] ASoC: SOF: PM: implement prepare/complete callbacks
+Date: Fri, 25 Oct 2019 17:41:19 -0500
+Subject: [PATCH] ASoC: SOF: Intel: hda-dsp: implement suspend/resume for
+ S0ix<->S0 transition
 
-Implement the prepare() and complete() callbacks for power management,
-initialize s0_suspend flag at prepare(), and reset it at complete().
+Enable system wake up via IPC interrupt from DSP when the system is
+suspending to the S0ix state, and disable it in the corresponding
+resuming.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191025224122.7718-22-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191025224122.7718-24-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pm.c       | 23 +++++++++++++++++++++++
- sound/soc/sof/sof-priv.h |  2 ++
- 2 files changed, 25 insertions(+)
+ sound/soc/sof/intel/hda-dsp.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 584241e9734a..99e4e6ffff74 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -439,3 +439,26 @@ int snd_sof_suspend(struct device *dev)
- 	return sof_suspend(dev, false);
- }
- EXPORT_SYMBOL(snd_sof_suspend);
-+
-+int snd_sof_prepare(struct device *dev)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+
-+#if defined(CONFIG_ACPI)
-+	sdev->s0_suspend = acpi_target_system_state() == ACPI_STATE_S0;
-+#else
-+	/* will suspend to S3 by default */
-+	sdev->s0_suspend = false;
-+#endif
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_prepare);
-+
-+void snd_sof_complete(struct device *dev)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+
-+	sdev->s0_suspend = false;
-+}
-+EXPORT_SYMBOL(snd_sof_complete);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index c2541d020bde..6408ac88a3e5 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -492,6 +492,8 @@ int snd_sof_runtime_resume(struct device *dev);
- int snd_sof_runtime_idle(struct device *dev);
- int snd_sof_resume(struct device *dev);
- int snd_sof_suspend(struct device *dev);
-+int snd_sof_prepare(struct device *dev);
-+void snd_sof_complete(struct device *dev);
- int snd_sof_set_d0_substate(struct snd_sof_dev *sdev,
- 			    enum sof_d0_substate d0_substate);
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index b5070409a5e3..d23573d9e9c4 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -477,6 +477,15 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
  
+ int hda_dsp_resume(struct snd_sof_dev *sdev)
+ {
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
++
++	if (sdev->s0_suspend) {
++		/* restore and disable the system wakeup */
++		pci_restore_state(pci);
++		disable_irq_wake(pci->irq);
++		return 0;
++	}
++
+ 	/* init hda controller. DSP cores will be powered up during fw boot */
+ 	return hda_resume(sdev, false);
+ }
+@@ -509,8 +518,16 @@ int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev)
+ int hda_dsp_suspend(struct snd_sof_dev *sdev)
+ {
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	int ret;
+ 
++	if (sdev->s0_suspend) {
++		/* enable the system waking up via IPC IRQ */
++		enable_irq_wake(pci->irq);
++		pci_save_state(pci);
++		return 0;
++	}
++
+ 	/* stop hda controller and power dsp off */
+ 	ret = hda_suspend(sdev, false);
+ 	if (ret < 0) {
 -- 
 2.20.1
 
