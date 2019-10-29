@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D82CDCA9EC3
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:35:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65A57CA9EAE
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:36:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62F6720679
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:35:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E0BA720679
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:36:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PuY54K3a";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="A6gRn4UQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62F6720679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="orwmhp7T";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BbrtT2j0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0BA720679
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 231292235;
-	Tue, 29 Oct 2019 18:34:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 231292235
+	by alsa0.perex.cz (Postfix) with ESMTPS id B20C520AB;
+	Tue, 29 Oct 2019 18:35:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B20C520AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572370519;
-	bh=ryY0nOOHRqb8bCREWoVilnw5QuBDWGEA4pO7vMxtWok=;
+	s=default; t=1572370573;
+	bh=0ql1dxGB2j/qpd27SwcTuyIiTgZ4bM420wg+gQgve28=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=PuY54K3an2UTf9psEFCl83HSu7e8Jl5TYnqZTxMlphPa9h2V0PcaxFnDIHKUm4ESU
-	 rqCHQwz1QpKXOkVFBkUju6GzPOxTdlNxPIXLMGa1QsASaD8D6G6O+DC7calqERa1AF
-	 JbJc9E+doielRw76dajHc14wZQzwIxLZrsVgv7H4=
+	b=orwmhp7TZbbRbzyEmbjipcuNEUK/F8gMvzF7THdvQJa93zLC5lLLAd6vbDVp6DSLX
+	 XohI2VcuLh1UJiuAQv0wZ3FA4wnSQqQd+lrFJAgle9ewVOE9YtPYV1lA83MNBKLKV2
+	 +/KAjt64Bt1kJ/JpCS3HZrfPPz75jzqIdP2kc9GE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A3F2F8044B;
-	Tue, 29 Oct 2019 18:34:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D42CFF803CF;
+	Tue, 29 Oct 2019 18:34:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C429EF8044B; Tue, 29 Oct 2019 18:34:25 +0100 (CET)
+ id AD190F805FD; Tue, 29 Oct 2019 18:34:25 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEFC4F8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id B18EAF8036C
  for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 18:34:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEFC4F8015A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B18EAF8036C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="A6gRn4UQ"
+ header.b="BbrtT2j0"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=2zL97C5QnmhxHQveobdDFc9XgZcjmVtdKuMA4SSlq8I=; b=A6gRn4UQowBt
- ElJrUJCPHhykpCg8rzz+mOvaW0XEC1i3O7T0Lv6kepj+T7e3YtdaH6Y+do7FGzYhU38c0JY+kUI0E
- Zqn6g2mzar7O432pbuqAPTKVhStluQW7VqxVuC2Bd6XwykPN6fbiC6OWBCZb4P/JM9AzNGGCovbTK
- OjT1o=;
+ List-Archive; bh=5a5ZyNrWu/Y3wpzLXPAarsYOelCqTd7udgMdIo7J6Dk=; b=BbrtT2j0AO7b
+ U682J1Gw4/dnpMLwRZjRndzcjH2ryYEvsA57bz7UR3crwGrmAut0f2c7BWmxts8HU2jdAhqmjatda
+ R1vlaOgB/g95GH40O7+JktgZ+UVn7nA29a3jPeUbsAQPtGAn+gH72SV0GEnzfdY2U1/bdJ2TDQ2am
+ YFD/I=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iPVNs-0002kQ-9u; Tue, 29 Oct 2019 17:34:20 +0000
+ id 1iPVNt-0002kk-JF; Tue, 29 Oct 2019 17:34:21 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 862DF27428D8; Tue, 29 Oct 2019 17:34:19 +0000 (GMT)
+ id 0D65B2742157; Tue, 29 Oct 2019 17:34:20 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191029134017.18901-9-kai.vehmanen@linux.intel.com>
+In-Reply-To: <20191029134017.18901-2-kai.vehmanen@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191029173419.862DF27428D8@ypsilon.sirena.org.uk>
-Date: Tue, 29 Oct 2019 17:34:19 +0000 (GMT)
+Message-Id: <20191029173421.0D65B2742157@ypsilon.sirena.org.uk>
+Date: Tue, 29 Oct 2019 17:34:20 +0000 (GMT)
 Cc: libin.yang@intel.com, alsa-devel@alsa-project.org,
  kai.vehmanen@linux.intel.com, tiwai@suse.de,
  pierre-louis.bossart@linux.intel.com, julia.lawall@lip6.fr,
  Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: intel: sof_rt5682: common hdmi codec
-	support" to the asoc tree
+Subject: [alsa-devel] Applied "ALSA: hda/hdmi - implement mst_no_extra_pcms
+	flag" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: sof_rt5682: common hdmi codec support
+   ALSA: hda/hdmi - implement mst_no_extra_pcms flag
 
 has been applied to the asoc tree at
 
@@ -124,81 +124,90 @@ to this mail.
 Thanks,
 Mark
 
-From 59bbd703ea2eae7c2766713135e4742c07fbbad7 Mon Sep 17 00:00:00 2001
+From 2a2edfbbfee47947dd05f5860c66c0e80ee5e09d Mon Sep 17 00:00:00 2001
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Tue, 29 Oct 2019 15:40:16 +0200
-Subject: [PATCH] ASoC: intel: sof_rt5682: common hdmi codec support
+Date: Tue, 29 Oct 2019 15:40:09 +0200
+Subject: [PATCH] ALSA: hda/hdmi - implement mst_no_extra_pcms flag
 
-Add support for using snd-hda-codec-hdmi driver for HDMI/DP
-instead of ASoC hdac-hdmi. This is aligned with how other
-HDA codecs are already handled.
+To support the DP-MST multiple streams via single connector feature,
+the HDMI driver was extended with the concept of backup PCMs. See
+commit 9152085defb6 ("ALSA: hda - add DP MST audio support").
+
+This implementation works fine with snd_hda_intel.c as PCM topology
+is fully managed within the single driver.
+
+When the HDA codec driver is used from ASoC components, the concept
+of backup PCMs no longer fits. For ASoC topologies, the physical
+HDMI converters are presented as backend DAIs and these should match
+with hardware capabilities. The ASoC topology may define arbitrary
+PCMs (i.e. frontend DAIs) and have processing elements before eventual
+routing to the HDMI BE DAIs. With backup PCMs, the link between
+FE and BE DAIs would become dynamic and change when monitors are
+(un)plugged. This would lead to modifying the topology every time
+hotplug events happen, which is not currently possible in ASoC and
+there does not seem to be any obvious benefits from this design.
+
+To overcome above problems and enable the HDMI driver to be used
+from ASoC, this patch adds a new mode (mst_no_extra_pcms flags) to
+patch_hdmi.c. In this mode, the codec driver does not assume
+the backup PCMs to be created.
 
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191029134017.18901-9-kai.vehmanen@linux.intel.com
+Link: https://lore.kernel.org/r/20191029134017.18901-2-kai.vehmanen@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Makefile     |  2 +-
- sound/soc/intel/boards/sof_rt5682.c | 11 +++++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ include/sound/hda_codec.h  |  1 +
+ sound/pci/hda/patch_hdmi.c | 19 ++++++++++++++-----
+ 2 files changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index b36f44906c91..255cee8c7906 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -17,7 +17,7 @@ snd-soc-sst-byt-cht-cx2072x-objs := bytcht_cx2072x.o
- snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
- snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
- snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
--snd-soc-sof_rt5682-objs := sof_rt5682.o
-+snd-soc-sof_rt5682-objs := sof_rt5682.o hda_dsp_common.o
- snd-soc-kbl_da7219_max98357a-objs := kbl_da7219_max98357a.o
- snd-soc-kbl_da7219_max98927-objs := kbl_da7219_max98927.o
- snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 2caebc77fdb5..6164d54fc992 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -21,6 +21,7 @@
- #include "../../codecs/rt5682.h"
- #include "../../codecs/hdac_hdmi.h"
- #include "../common/soc-intel-quirks.h"
-+#include "hda_dsp_common.h"
+diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+index 9a0393cf024c..ac18f428eda6 100644
+--- a/include/sound/hda_codec.h
++++ b/include/sound/hda_codec.h
+@@ -254,6 +254,7 @@ struct hda_codec {
+ 	unsigned int force_pin_prefix:1; /* Add location prefix */
+ 	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
+ 	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
++	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
  
- #define NAME_SIZE 32
+ #ifdef CONFIG_PM
+ 	unsigned long power_on_acct;
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index bca5de78e9ad..59aaee4a40fd 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2072,15 +2072,24 @@ static bool is_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
+ static int generic_hdmi_build_pcms(struct hda_codec *codec)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+-	int idx;
++	int idx, pcm_num;
  
-@@ -53,6 +54,7 @@ struct sof_card_private {
- 	struct clk *mclk;
- 	struct snd_soc_jack sof_headset;
- 	struct list_head hdmi_pcm_list;
-+	bool common_hdmi_codec_drv;
- };
- 
- static int sof_rt5682_quirk_cb(const struct dmi_system_id *id)
-@@ -274,6 +276,13 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 	if (is_legacy_cpu)
- 		return 0;
- 
-+	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm,
-+			       head);
-+	component = pcm->codec_dai->component;
+ 	/*
+ 	 * for non-mst mode, pcm number is the same as before
+-	 * for DP MST mode, pcm number is (nid number + dev_num - 1)
+-	 *  dev_num is the device entry number in a pin
+-	 *
++	 * for DP MST mode without extra PCM, pcm number is same
++	 * for DP MST mode with extra PCMs, pcm number is
++	 *  (nid number + dev_num - 1)
++	 * dev_num is the device entry number in a pin
+ 	 */
+-	for (idx = 0; idx < spec->num_nids + spec->dev_num - 1; idx++) {
 +
-+	if (ctx->common_hdmi_codec_drv)
-+		return hda_dsp_hdmi_build_controls(card, component);
++	if (codec->mst_no_extra_pcms)
++		pcm_num = spec->num_nids;
++	else
++		pcm_num = spec->num_nids + spec->dev_num - 1;
 +
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
- 		component = pcm->codec_dai->component;
- 		snprintf(jack_name, sizeof(jack_name),
-@@ -642,6 +651,8 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	ctx->common_hdmi_codec_drv = mach->mach_params.common_hdmi_codec_drv;
++	codec_dbg(codec, "hdmi: pcm_num set to %d\n", pcm_num);
 +
- 	snd_soc_card_set_drvdata(&sof_audio_card_rt5682, ctx);
++	for (idx = 0; idx < pcm_num; idx++) {
+ 		struct hda_pcm *info;
+ 		struct hda_pcm_stream *pstr;
  
- 	return devm_snd_soc_register_card(&pdev->dev,
 -- 
 2.20.1
 
