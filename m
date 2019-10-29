@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FB15C47E49
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:37:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C6ACCA9EAE
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:38:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A11820679
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:37:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C7F8920856
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 17:38:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jJM8g/Dm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="fS3cA3T9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A11820679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JcgWte5f";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="W7HcB19V"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7F8920856
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F7A52278;
-	Tue, 29 Oct 2019 18:36:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F7A52278
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2360D2276;
+	Tue, 29 Oct 2019 18:37:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2360D2276
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572370667;
-	bh=g/9OagnynPiRVCnOyZc9/vy8LisYNSQgMPbgyXDugLk=;
+	s=default; t=1572370693;
+	bh=psHPYF/1uEMnm3IN1QxcIviBzSMRXkFKay9qSr8wxNc=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jJM8g/DmLG1kF1GR9XEaQ9GWmQugbZka9NvlwIr4GRPTG6YcOV0XsPkxLDLI9K3E+
-	 kMOig7iHhuHdA7cErRUMttZQvwDM3cDNgXonTUeFVcZ3ctE1zDS/NYy9GCxPkB30lC
-	 kAQSB5PMeXnoLp7tgcC0rg2GJlHVK5wGaIVoGT+Y=
+	b=JcgWte5fEVzrNbIRO+eKzr+f07GG8FVvIeDof5V1qUqePTFx2qOHDg3Yr6PdbhsGO
+	 Y/6ug3+m9nH5C8oVBoubDut+9ydV2iz5MvGS55X2/KBvxTz8dG6R2NDoaaXrut+y+k
+	 X8cuEZpmn215raoYZcxNXxh11YzaF5g7OXXjNszo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00A58F8060D;
-	Tue, 29 Oct 2019 18:34:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65073F80612;
+	Tue, 29 Oct 2019 18:34:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84DC9F805FB; Tue, 29 Oct 2019 18:34:28 +0100 (CET)
+ id 7F0D8F805FC; Tue, 29 Oct 2019 18:34:29 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E586BF8045D
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2789F803CF
  for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 18:34:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E586BF8045D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2789F803CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="fS3cA3T9"
+ header.b="W7HcB19V"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=GFylTWBuq3yIFEn70YCokNZ/r87wcobSC5O8OyTxP08=; b=fS3cA3T9/wCY
- OL2E/l9/Z7ihp0FnLz9CyHbfo8p2DLT7T1IK5ib01Xj92OXK+pWcWtmryM97JOuCIJC8uFE6/1h3g
- YGIWbnLUUR4WbwX2DIW7W+/qr7sMrVM2gn3Fsu2w536FBW8gVk8mO4yqmlsuaF+19mBf5sDx3i1KE
- r+P9Q=;
+ List-Archive; bh=9ThZEXzMwWR8s1oAci22YnfRikEM6XKtEu+y7YIDTR0=; b=W7HcB19V5JIp
+ CNEc5VFK00ByJMY+ozuWazdvD15ehmPhdWOZQG60d+hWnv/ynQfJLYGU5g5KKuybYTMeJP5knYM37
+ zFXdj5LPV0Kjw6WFCX1qflEEyY0r3/2+HIu3BGEXzahx1k9uE4lTwSDqDzvd+cb5GuCQ8UllD8Il1
+ 5hMVs=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iPVNs-0002kS-GR; Tue, 29 Oct 2019 17:34:20 +0000
+ id 1iPVNs-0002kP-7U; Tue, 29 Oct 2019 17:34:20 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id EC4582742998; Tue, 29 Oct 2019 17:34:19 +0000 (GMT)
+ id 4C71D2742157; Tue, 29 Oct 2019 17:34:19 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191029134017.18901-7-kai.vehmanen@linux.intel.com>
+In-Reply-To: <20191029134017.18901-10-kai.vehmanen@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191029173419.EC4582742998@ypsilon.sirena.org.uk>
+Message-Id: <20191029173419.4C71D2742157@ypsilon.sirena.org.uk>
 Date: Tue, 29 Oct 2019 17:34:19 +0000 (GMT)
 Cc: libin.yang@intel.com, alsa-devel@alsa-project.org,
  kai.vehmanen@linux.intel.com, tiwai@suse.de,
  pierre-louis.bossart@linux.intel.com, julia.lawall@lip6.fr,
  Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: Intel: bxt-da7219-max98357a: common
-	hdmi codec support" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: Intel: bxt_rt298: common hdmi codec
+	support" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: bxt-da7219-max98357a: common hdmi codec support
+   ASoC: Intel: bxt_rt298: common hdmi codec support
 
 has been applied to the asoc tree at
 
@@ -124,10 +124,10 @@ to this mail.
 Thanks,
 Mark
 
-From 57ad18906f24278893b128967551fe7fa0996129 Mon Sep 17 00:00:00 2001
+From 7d2ae58376658a3ca0d8f9a53f6f065df126c432 Mon Sep 17 00:00:00 2001
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Tue, 29 Oct 2019 15:40:14 +0200
-Subject: [PATCH] ASoC: Intel: bxt-da7219-max98357a: common hdmi codec support
+Date: Tue, 29 Oct 2019 15:40:17 +0200
+Subject: [PATCH] ASoC: Intel: bxt_rt298: common hdmi codec support
 
 Add support for using snd-hda-codec-hdmi driver for HDMI/DP
 instead of ASoC hdac-hdmi. This is aligned with how other
@@ -136,49 +136,49 @@ HDA codecs are already handled.
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191029134017.18901-7-kai.vehmanen@linux.intel.com
+Link: https://lore.kernel.org/r/20191029134017.18901-10-kai.vehmanen@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Makefile               |  2 +-
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 11 +++++++++++
+ sound/soc/intel/boards/Makefile    |  2 +-
+ sound/soc/intel/boards/bxt_rt298.c | 11 +++++++++++
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 52e990b16b0d..0cf4a984f083 100644
+index 255cee8c7906..8bddf379cef1 100644
 --- a/sound/soc/intel/boards/Makefile
 +++ b/sound/soc/intel/boards/Makefile
-@@ -4,7 +4,7 @@ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
- snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
+@@ -5,7 +5,7 @@ snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
  snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
  snd-soc-sst-broadwell-objs := broadwell.o
--snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o
-+snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o hda_dsp_common.o
- snd-soc-sst-bxt-rt298-objs := bxt_rt298.o
- snd-soc-sst-glk-rt5682_max98357a-objs := glk_rt5682_max98357a.o
+ snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o hda_dsp_common.o
+-snd-soc-sst-bxt-rt298-objs := bxt_rt298.o
++snd-soc-sst-bxt-rt298-objs := bxt_rt298.o hda_dsp_common.o
+ snd-soc-sst-glk-rt5682_max98357a-objs := glk_rt5682_max98357a.o hda_dsp_common.o
  snd-soc-sst-bytcr-rt5640-objs := bytcr_rt5640.o
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index ac1dea5f9d11..5873abb46441 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -21,6 +21,7 @@
- #include "../../codecs/da7219.h"
- #include "../../codecs/da7219-aad.h"
- #include "../common/soc-intel-quirks.h"
+ snd-soc-sst-bytcr-rt5651-objs := bytcr_rt5651.o
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index adf416a49b48..eabf9d8468ae 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -18,6 +18,7 @@
+ #include <sound/pcm_params.h>
+ #include "../../codecs/hdac_hdmi.h"
+ #include "../../codecs/rt298.h"
 +#include "hda_dsp_common.h"
  
- #define BXT_DIALOG_CODEC_DAI	"da7219-hifi"
- #define BXT_MAXIM_CODEC_DAI	"HiFi"
-@@ -38,6 +39,7 @@ struct bxt_hdmi_pcm {
+ /* Headset jack detection DAPM pins */
+ static struct snd_soc_jack broxton_headset;
+@@ -31,6 +32,7 @@ struct bxt_hdmi_pcm {
  
- struct bxt_card_private {
+ struct bxt_rt286_private {
  	struct list_head hdmi_pcm_list;
 +	bool common_hdmi_codec_drv;
  };
  
  enum {
-@@ -615,6 +617,13 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
- 		snd_soc_dapm_add_routes(&card->dapm, broxton_map,
- 					ARRAY_SIZE(broxton_map));
+@@ -527,6 +529,13 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
  
 +	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
 +			       head);
@@ -190,13 +190,13 @@ index ac1dea5f9d11..5873abb46441 100644
  	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
  		component = pcm->codec_dai->component;
  		snprintf(jack_name, sizeof(jack_name),
-@@ -720,6 +729,8 @@ static int broxton_audio_probe(struct platform_device *pdev)
+@@ -626,6 +635,8 @@ static int broxton_audio_probe(struct platform_device *pdev)
  	if (ret)
  		return ret;
  
 +	ctx->common_hdmi_codec_drv = mach->mach_params.common_hdmi_codec_drv;
 +
- 	return devm_snd_soc_register_card(&pdev->dev, &broxton_audio_card);
+ 	return devm_snd_soc_register_card(&pdev->dev, card);
  }
  
 -- 
