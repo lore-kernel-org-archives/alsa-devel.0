@@ -2,86 +2,99 @@ Return-Path: <SRS0=9b6r=YW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85109CA9EC2
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 08:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F69ECA9EAE
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 08:38:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67E7820663
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 08:10:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 41AB72086A
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 08:38:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="p3g8QkgK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67E7820663
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=free.fr
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AD8Qa9GS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N478fBlO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41AB72086A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3087B21C9;
-	Tue, 29 Oct 2019 09:09:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3087B21C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26E5621E2;
+	Tue, 29 Oct 2019 09:37:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26E5621E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572336606;
-	bh=CUvjfMqTLBJ6ukBjrsurVyNz8Rp6C1mj38T6Jd/cJpY=;
-	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=p3g8QkgK6p+jMvzAO6l4gN9ZRmcrx+6ooCa4DJpH4vbrWtT+ak9zumLgJe66Tw/O3
-	 QlArRg2jdmS9ckGn9tVPwjZS3d7yKw3fzCatHQX/UNiDTWyHojF9BFlE+CV7AjSl1E
-	 BOHjwOvbgJsF8+4UDQZysj/FTkZ+APhilHZ1GtYk=
+	s=default; t=1572338298;
+	bh=fGzwk6m4oyWhl09BsAo7uq46ql+TNPhYyIwhW3dEe3U=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AD8Qa9GSfD/nCjJDcW0tt/95ux6GKH+kWZxE48DrBl7vms6STtoPKgXp7bpMD5Nk3
+	 rQ2GwtU4rxKD0sNfDJa4pHD/RZ6I/B7KfWzaaYF5mIByjpqMnDIXVZg6bq7aPGBNbb
+	 wAVKmQVlxC5dpmzDQbLFuSSWtbtDPKg4JE8LspmQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C27DFF8015A;
-	Tue, 29 Oct 2019 09:09:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A353FF8036C;
+	Tue, 29 Oct 2019 09:37:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FA8EF80361; Mon, 28 Oct 2019 20:14:28 +0100 (CET)
-Received: from smtp.smtpout.orange.fr (smtp09.smtpout.orange.fr
- [80.12.242.131])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ id 93C21F80392; Tue, 29 Oct 2019 09:35:23 +0100 (CET)
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
+ [IPv6:2607:f8b0:4864:20::542])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1FECF8011D
- for <alsa-devel@alsa-project.org>; Mon, 28 Oct 2019 20:14:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1FECF8011D
-Received: from belgarion ([90.55.204.252]) by mwinf5d17 with ME
- id K7EJ2100B5TFNlm037EJ4o; Mon, 28 Oct 2019 20:14:24 +0100
-X-ME-Helo: belgarion
-X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
-X-ME-Date: Mon, 28 Oct 2019 20:14:24 +0100
-X-ME-IP: 90.55.204.252
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@arm.linux.org.uk>
-References: <20191018154052.1276506-1-arnd@arndb.de>
- <20191018154201.1276638-5-arnd@arndb.de>
-X-URL: http://belgarath.falguerolles.org/
-Date: Mon, 28 Oct 2019 20:14:18 +0100
-In-Reply-To: <20191018154201.1276638-5-arnd@arndb.de> (Arnd Bergmann's message
- of "Fri, 18 Oct 2019 17:41:20 +0200")
-Message-ID: <87d0egof79.fsf@belgarion.home>
-User-Agent: Gnus/5.130008 (Ma Gnus v0.8) Emacs/26 (gnu/linux)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3617F8015A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 09:35:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3617F8015A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="N478fBlO"
+Received: by mail-pg1-x542.google.com with SMTP id j22so3003289pgh.3
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 01:35:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+ :user-agent; bh=lf5s6Fz7leqrQMKj0V75R9m9lTLSurFPPz+2KwV5ePI=;
+ b=N478fBlO32UC62rsQLpqYQg4ISJscCpnddi7FsAoBSPy9+yzNYdJrPT7MIUkMBikZN
+ jrRS23f1wxXWb4MlnpX0rfF6wRl5UtCkmMK7O2afrn9esHONx7RaSn5GiaLYrFoCj0Zf
+ b3ZqgIoJcFsu4Fm45xrGvPC/qlQTH3hgOI+I+/FsmNhndFingDZPDSDLSQqpfTTKwoRD
+ QoJLpwdwLtj/7/nA+7XzHEp8+W3Rzl0byPBmiCmoW25t5RtxxoIwUd6LTadK4Uflbbmh
+ kdqEwvfSyYrnscOPd3dcssaCW/SoQrkRrtKb9673BtUfsGM9c1c2cnjBU85TsdpqVSov
+ BcfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+ :content-disposition:user-agent;
+ bh=lf5s6Fz7leqrQMKj0V75R9m9lTLSurFPPz+2KwV5ePI=;
+ b=tq/FoCxECn3/2nmSOcpsRFzY3nEQqKNztnn20GKVZbH8F4fS1f9orH9v3jJcECtxP2
+ M0ZKEsVoAptbn6uVW0442rVkAPHU3/oionV3CfUBeFUvF70l6J1Bz/ZlBeFu72bFwJ0i
+ AT1ApbdmZWqQl9gQWcRA9YY8miWAq3qBJwMpQ1e/RUIjzd8JQ6hAjLtgh6bSd2IG4tz1
+ cHDtk6veh8sn/xN87YxNgfmtrqOVmdzZ5JOL8VFAgUkBoOYNei6D1DmsmqaUKvZG2s21
+ v5P8I7/7GPiiXRmF38HHHKY5NWM2r+yg21pB58Jlak9FYewAwnzdnVtE/C4JApqwJltU
+ d6iA==
+X-Gm-Message-State: APjAAAWO9DVHOSmQvDwbezxgtbGODImWQ1vyueRVmxP6edKANDgWjWgT
+ QfIdxp/fAWkjhAZY90Ggfk4=
+X-Google-Smtp-Source: APXvYqxHvyzfdMzTQ+OctWZ3zxXIPKkxBy6EqVnmpCrpy6kXaaZ/n0qKELoChdao34GKE6IFxkMnIA==
+X-Received: by 2002:a62:3896:: with SMTP id f144mr2610163pfa.254.1572338118506; 
+ Tue, 29 Oct 2019 01:35:18 -0700 (PDT)
+Received: from saurav ([27.62.167.137])
+ by smtp.gmail.com with ESMTPSA id c6sm11830289pfj.59.2019.10.29.01.35.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 29 Oct 2019 01:35:17 -0700 (PDT)
+Date: Tue, 29 Oct 2019 14:05:11 +0530
+From: Saurav Girepunje <saurav.girepunje@gmail.com>
+To: perex@perex.cz, tiwai@suse.com, rfontana@redhat.com,
+ saurav.girepunje@gmail.com, gregkh@linuxfoundation.org,
+ allison@lohutok.net, tglx@linutronix.de,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Message-ID: <20191029083509.GA8293@saurav>
 MIME-Version: 1.0
-X-Mailman-Approved-At: Tue, 29 Oct 2019 09:09:14 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-input@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jacek Anaszewski <jacek.anaszewski@gmail.com>, linux-fbdev@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Stephen Boyd <sboyd@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- dri-devel@lists.freedesktop.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Daniel Mack <daniel@zonque.org>
-Subject: Re: [alsa-devel] [PATCH 05/46] ARM: pxa: split up mach/hardware.h
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailman-Approved-At: Tue, 29 Oct 2019 09:37:26 +0100
+Cc: saurav.girepunje@hotmail.com
+Subject: [alsa-devel] [PATCH] usb: clock.c : usb true/false for bool return
+	type
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,69 +112,58 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Arnd Bergmann <arnd@arndb.de> writes:
+Use true/false for bool type return in uac_clock_source_is_valid().
 
-> The mach/hardware.h is included in lots of places, and it provides
-> three different things on pxa:
->
-> - the cpu_is_pxa* macros
-> - an indirect inclusion of mach/addr-map.h
-> - the __REG() and io_pv2() helper macros
->
-> Split it up into separate <linux/soc/pxa/cpu.h> and mach/pxa-regs.h
-> headers, then change all the files that use mach/hardware.h to
-> include the exact set of those three headers that they actually
-> need, allowing for further more targeted cleanup.
->
-> linux/soc/pxa/cpu.h can remain permanently exported and is now in
-> a global location along with similar headers. pxa-regs.h and
-> addr-map.h are only used in a very small number of drivers now
-> and can be moved to arch/arm/mach-pxa/ directly when those drivers
-> are to pass the necessary data as resources.
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ sound/usb/clock.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-For the pxa part, that looks fine to me.
-I'd like to focus a bit of Russell's attention to the sa11xx part (reminder in
-[1]), and more specifically :
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 6b8c14f9b5d4..8b8ab83fac0d 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -165,21 +165,21 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip,
+ 			snd_usb_find_clock_source_v3(chip->ctrl_intf, source_id);
+ 
+ 		if (!cs_desc)
+-			return 0;
++			return false;
+ 		bmControls = le32_to_cpu(cs_desc->bmControls);
+ 	} else { /* UAC_VERSION_1/2 */
+ 		struct uac_clock_source_descriptor *cs_desc =
+ 			snd_usb_find_clock_source(chip->ctrl_intf, source_id);
+ 
+ 		if (!cs_desc)
+-			return 0;
++			return false;
+ 		bmControls = cs_desc->bmControls;
+ 	}
+ 
+ 	/* If a clock source can't tell us whether it's valid, we assume it is */
+ 	if (!uac_v2v3_control_is_readable(bmControls,
+ 				      UAC2_CS_CONTROL_CLOCK_VALID))
+-		return 1;
++		return true;
+ 
+ 	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
+ 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
+@@ -191,10 +191,10 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip,
+ 		dev_warn(&dev->dev,
+ 			 "%s(): cannot get clock validity for id %d\n",
+ 			   __func__, source_id);
+-		return 0;
++		return false;
+ 	}
+ 
+-	return !!data;
++	return !!data ? true :  false;
+ }
+ 
+ static int __uac_clock_find_source(struct snd_usb_audio *chip, int entity_id,
+-- 
+2.20.1
 
- - the change to drivers/pcmcia/soc_common.c
- - the change to drivers/pcmcia/sa1111_generic.c
-
-I must admit my knowledge of PCMCIA is relatively poor, and even if the patch
-looks harmless, one never knows if Assebet will ever by same after ...
-
-Cheers.
-
---
-Robert
-
-[1] Extract of the patch for Russell's scrutiny
-> diff --git a/drivers/pcmcia/sa1111_generic.c b/drivers/pcmcia/sa1111_generic.c
-> index 11783410223b..2f556fa37c43 100644
-> --- a/drivers/pcmcia/sa1111_generic.c
-> +++ b/drivers/pcmcia/sa1111_generic.c
-> @@ -17,7 +17,6 @@
->  
->  #include <pcmcia/ss.h>
->  
-> -#include <mach/hardware.h>
->  #include <asm/hardware/sa1111.h>
->  #include <asm/mach-types.h>
->  #include <asm/irq.h>
-... zip ...
-
-> diff --git a/drivers/pcmcia/soc_common.c b/drivers/pcmcia/soc_common.c
-> index 3a8c84bb174d..9276a628473d 100644
-> --- a/drivers/pcmcia/soc_common.c
-> +++ b/drivers/pcmcia/soc_common.c
-> @@ -47,8 +47,6 @@
->  #include <linux/spinlock.h>
->  #include <linux/timer.h>
->  
-> -#include <mach/hardware.h>
-> -
->  #include "soc_common.h"
->  
->  static irqreturn_t soc_common_pcmcia_interrupt(int irq, void *dev);
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
