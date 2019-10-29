@@ -2,67 +2,67 @@ Return-Path: <SRS0=9b6r=YW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DB47CA9EB9
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 05:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69F75CA9EB9
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 05:51:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BB9920862
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 05:50:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 18E2220659
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 05:51:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mElJf3oJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BB9920862
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DuzRHdxk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18E2220659
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4614421AD;
-	Tue, 29 Oct 2019 06:49:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4614421AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A2AC20EE;
+	Tue, 29 Oct 2019 06:50:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A2AC20EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572328206;
-	bh=vxLwlyG9e8tbOBwlRKe00gKQHC9d17jz/cjtNRzZBdQ=;
+	s=default; t=1572328261;
+	bh=6n+FuQ3FjMGhBZSXVKLWz4zSOiIxh+4O8iFKRd0nzoE=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mElJf3oJdoi3bHvwhbBQKhlhLqKEAwOZ6g63z/QSeqNp7uYWtxp2PDe7/1qzqhpZt
-	 iXb0cuIZmFZVauaVTD2tVPFQmNmfka2LLOLnxlNWHBoHE7KdGh+nwvPdBCV5j1s8ni
-	 S8iLsd07IzWj5zpDDh00d+3C8M1Rysq6w6iM1pEg=
+	b=DuzRHdxktngOwZbe4K0qg4NEw2/ys+778fQFFK/Lq9YKcC4zFPluUtAVXi7hjypnw
+	 /I958ibdXh0BxKE+7xPWa4eDAP7DoBaHz886J97ipAGTdSdXb5fpa+S1qd9sxCxb0N
+	 YlyA3BvEqFQaHr4PO+bdKVhWeWYGSv4wrm5pSmLM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95D63F8036C;
-	Tue, 29 Oct 2019 06:49:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D494F8044B;
+	Tue, 29 Oct 2019 06:49:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64566F80392; Tue, 29 Oct 2019 06:49:13 +0100 (CET)
+ id C093CF8045D; Tue, 29 Oct 2019 06:49:56 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99EE7F800E7
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 06:49:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99EE7F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13688F8015A
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 06:49:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13688F8015A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 1FC7FB178;
- Tue, 29 Oct 2019 05:49:09 +0000 (UTC)
-Date: Tue, 29 Oct 2019 06:49:08 +0100
-Message-ID: <s5hftjct82z.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id B4CF6B1E0;
+ Tue, 29 Oct 2019 05:49:53 +0000 (UTC)
+Date: Tue, 29 Oct 2019 06:49:53 +0100
+Message-ID: <s5heeywt81q.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Alex Deucher <alexdeucher@gmail.com>
-In-Reply-To: <20191028214216.1508370-19-alexander.deucher@amd.com>
+In-Reply-To: <20191028214216.1508370-20-alexander.deucher@amd.com>
 References: <20191028214216.1508370-1-alexander.deucher@amd.com>
- <20191028214216.1508370-19-alexander.deucher@amd.com>
+ <20191028214216.1508370-20-alexander.deucher@amd.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org,
- lukas@wunner.de, Evan Quan <evan.quan@amd.com>, amd-gfx@lists.freedesktop.org
-Subject: Re: [alsa-devel] [PATCH 18/21] ALSA: hda/hdmi - fix vgaswitcheroo
-	detection for AMD
+ lukas@wunner.de, amd-gfx@lists.freedesktop.org
+Subject: Re: [alsa-devel] [PATCH 19/21] ALSA: hda/hdmi - Add new pci ids for
+	AMD GPU display audio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,22 +80,15 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Oct 2019 22:42:13 +0100,
+On Mon, 28 Oct 2019 22:42:14 +0100,
 Alex Deucher wrote:
 > 
-> @@ -35,6 +35,11 @@
->  #include <linux/clocksource.h>
->  #include <linux/time.h>
->  #include <linux/completion.h>
-> +#ifdef SUPPORT_VGA_SWITCHEROO
-> +#ifdef CONFIG_ACPI
-> +#include <linux/acpi.h>
-> +#endif
-> +#endif
+> These are needed so we can enable runtime pm in a subsequent
+> patch.
+> 
+> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 
-I don't think we need ifdefs here.
-Other than that,
-  Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
 
 thanks,
