@@ -2,66 +2,56 @@ Return-Path: <SRS0=9b6r=YW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 655BCCA9EC0
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 03:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10E6CCA9EB9
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 04:14:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63607208C0
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 03:36:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E23C921835
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 04:14:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="humWind3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63607208C0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Zl85Xwmj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E23C921835
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 185B3219C;
-	Tue, 29 Oct 2019 04:35:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 185B3219C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D899219E;
+	Tue, 29 Oct 2019 05:13:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D899219E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572320186;
-	bh=J9jYXTKN6+OpOK9DpezZOaW5nj2voUslk1OPKKAe4a4=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=humWind3WBxEqSr/mKxKtux5iYVe5kAM2AzsKnnj/sjfC18Bd1iM6ZbBP0r7sYV4/
-	 My+O/Xt1aI6egGq1n0MHdksnAODdznYQMYRhJhmrXYTlAnm2P5MYZIdDRSMez7ki+T
-	 EY2rbnM8A0SwQWkN3n8vZ1Z3ckM4K88xuniEALD0=
+	s=default; t=1572322471;
+	bh=0Ynam4wvpEMqHCpTGvmjkRVMGZt3s9pxUhJn2YnPryo=;
+	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Zl85Xwmj92hpTHcIQMgEIgl2tngqIK7bY+UeMi9mEJ6uddBvP/zhqBotQBxeiIJ1E
+	 Qi7DkoEg1Dv34CQ1Npt/OwjUPg8S46Z1oCyoscvEo6UuqSUgIDwj4Gfa375ApDr/Ep
+	 qhryjSN4RQg6Ddm0h2XiBIo897n7i2VQsDau9qzU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9897DF8015A;
-	Tue, 29 Oct 2019 04:35:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13AFEF8036C;
+	Tue, 29 Oct 2019 05:13:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3E5DF80392; Tue, 29 Oct 2019 04:35:32 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE6ACF8015A
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 04:35:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE6ACF8015A
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 28 Oct 2019 20:35:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,242,1569308400"; d="scan'208";a="229916864"
-Received: from macchian.itwn.intel.com ([10.5.230.13])
- by fmsmga002.fm.intel.com with ESMTP; 28 Oct 2019 20:35:25 -0700
-From: mac.chiang@intel.com
+ id A364DF80392; Tue, 29 Oct 2019 05:13:38 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2DA7BF80269
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 05:13:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DA7BF80269
+MIME-Version: 1.0
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-Date: Tue, 29 Oct 2019 11:35:24 +0800
-Message-Id: <1572320124-13250-1-git-send-email-mac.chiang@intel.com>
-X-Mailer: git-send-email 2.7.4
-Cc: sathya.prakash.m.r@intel.com, naveen.m@intel.com, mac.chiang@intel.com,
- broonie@kernel.org, pierre-louis.bossart@linux.intel.com
-Subject: [alsa-devel] [PATCH] ASoC: Intel: bxt_da7219_max98357a: update
-	dai_link platform name
+In-Reply-To: <1572322414179287910-webhooks-bot@alsa-project.org>
+References: <1572322414179287910-webhooks-bot@alsa-project.org>
+Message-Id: <20191029041338.A364DF80392@alsa1.perex.cz>
+Date: Tue, 29 Oct 2019 05:13:38 +0100 (CET)
+Subject: [alsa-devel] axfer: call of polling system call never return when
+ driver fails to queue any events due to the lack of hw IRQ context
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,51 +64,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mac Chiang <mac.chiang@intel.com>
+alsa-project/alsa-utils issue #30 was opened from takaswie:
 
-redefine soc platform name "0000:00:1f.3" if cml core
+Axfer calls polling system call(i.e. poll(2), epoll(7), select(7)) without explicit timeout when running for IRQ-based scheduling model. In a case that driver achieves to control sound hardware for periodical hardware IRQ, the call can return due to any event queued by the driver in hardware IRQ context. However, in a case that driver fails to control it, the call cannot return.
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
----
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Especially, this situation easily occurs when developers work to support hardware newly. It's better to care for the situation.
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index ac1dea5..38b7dbe 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -40,6 +40,13 @@ struct bxt_card_private {
- 	struct list_head hdmi_pcm_list;
- };
- 
-+static struct snd_soc_dai_link_component platform_component[] = {
-+	{
-+		/* name might be overridden during probe */
-+		.name = "0000:00:1f.3"
-+	}
-+};
-+
- enum {
- 	BXT_DPCM_AUDIO_PB = 0,
- 	BXT_DPCM_AUDIO_CP,
-@@ -708,6 +715,7 @@ static int broxton_audio_probe(struct platform_device *pdev)
- 				broxton_dais[i].name = "SSP0-Codec";
- 				broxton_dais[i].cpus->dai_name = "SSP0 Pin";
- 			}
-+			broxton_dais[i].platforms = platform_component;
- 		}
- 	}
- 
--- 
-2.7.4
+How to reproduce:
+1. prepare sound hardware which driver fail to control for periodical hardware IRQ.
+2. execute axfer for the driver/hardware with options to:
+  * use IRQ-based scheduling model: `--sched-model=irq`
+  * use polling system call: without `--test-nowait`
+3. the running process blocks as a call of polling system call (defaultly poll(2) by snd_pcm_wait())
 
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/30
+Repository URL: https://github.com/alsa-project/alsa-utils
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
