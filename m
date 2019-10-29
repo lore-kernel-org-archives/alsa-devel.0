@@ -4,81 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEC11CA9EAE
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 12:58:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DCBBCA9EAE
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 12:59:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65ED3218AC
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 12:58:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C71F8208E3
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 12:59:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kFAc8txn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="WaAYrYZ0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65ED3218AC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mjpnBZPL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Enb9SgsK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C71F8208E3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 101E921CC;
-	Tue, 29 Oct 2019 13:58:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 101E921CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20DAC2222;
+	Tue, 29 Oct 2019 13:58:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20DAC2222
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572353931;
-	bh=86Go57l+FdPPkHd6y2Oi7b5xLiuor/T1Jg6pN42aONA=;
+	s=default; t=1572353983;
+	bh=cV+sKrJ6RN9jKbvqAZr/1uFn4YcJzAJvr4BVnaoYqKQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=kFAc8txnrHbCApUMVmbMz/sWEg03EFtgX0ktXgz3Yh9TgOfyG7sLG5hvdltnlMqgh
-	 US62C6YFLhaERWman1VsrDzawU+tRN6fEZO2yf8EyvhYMH0nrFPUhHDrGE/t+WCRxk
-	 t7PA4Sw4QI7MdXUpf0bNCVx5+iIea2x/4Qsf43wI=
+	b=mjpnBZPLp4zlcINn0ye9cLePqSRHhdt1SK8JZPgZ1zTn59ty6q9PEiCJXn/GDx+EA
+	 t5R6m8oH5NOj7IVT4DtcADZgxsrVjxATDbPJmK/CMBNuYNMtIZ3ENSiygFbDH0VbTB
+	 fcsOwIcIz2V3O/yQ9/qsgjYrrTotWBj2H8+D7LSU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35C3DF805FC;
-	Tue, 29 Oct 2019 13:57:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2899F80600;
+	Tue, 29 Oct 2019 13:57:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71B6FF8044B; Tue, 29 Oct 2019 13:57:04 +0100 (CET)
+ id 605BCF805FB; Tue, 29 Oct 2019 13:57:08 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D61A4F80269
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 13:57:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D61A4F80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94B41F8036C
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 13:57:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94B41F8036C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="WaAYrYZ0"
+ header.b="Enb9SgsK"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Qdy27gZDbjup2hjmsULyToGjIV3KhtcZPWOxlsuPOpc=; b=WaAYrYZ04cdT
- 5KZLZis/mqi8rhjUrocDoefWPHknyzOu4PvorbSy3mLuH6dNRzP2ZnIIcl/xS7izHqCWzyjMsyPk+
- cecINy5XScQTLMqtCTBGSj8bTk0DICNMsXEYluYephw5SpqZxCyzzJNvW22OFAiXg1JpeafMDXklK
- 28/aE=;
+ List-Archive; bh=Wl+5/Qj/XhSNlZehVwD9qVk1hUUvfQ5iMLqz0DQGd0E=; b=Enb9SgsKSwwH
+ 4l7KNx3nuvInMfXC5o/09C023lh/1CtRMwg8irjeb2vSpFbbOqYD+Ag/wrCyTSljba7Rlv2UapKx+
+ Mflf4De6z8aXfQL+mtEKqFpezAkzVPeLjL215UXSJYv03IcuePxdc9GTQImZKgbRi+oDJtic8qNUk
+ BL3pY=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iPR3U-0002DO-Ja; Tue, 29 Oct 2019 12:57:00 +0000
+ id 1iPR3U-0002DI-3j; Tue, 29 Oct 2019 12:57:00 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 1AEEB2742157; Tue, 29 Oct 2019 12:57:00 +0000 (GMT)
+ id 98B622742990; Tue, 29 Oct 2019 12:56:59 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20191028173329.29538-1-perex@perex.cz>
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+In-Reply-To: <20191028071930.145899-3-cychiang@chromium.org>
 X-Patchwork-Hint: ignore
-Message-Id: <20191029125700.1AEEB2742157@ypsilon.sirena.org.uk>
-Date: Tue, 29 Oct 2019 12:57:00 +0000 (GMT)
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF - remove the dead code
-	(skylake/kabylake)" to the asoc tree
+Message-Id: <20191029125659.98B622742990@ypsilon.sirena.org.uk>
+Date: Tue, 29 Oct 2019 12:56:59 +0000 (GMT)
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org,
+ dianders@chromium.org, Heiko Stuebner <heiko@sntech.de>,
+ Neil Armstrong <narmstrong@baylibre.com>, David Airlie <airlied@linux.ie>,
+ dri-devel@lists.freedesktop.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>, Andrzej Hajda <a.hajda@samsung.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jerome Brunet <jbrunet@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-rockchip@lists.infradead.org, dgreid@chromium.org,
+ devicetree@vger.kernel.org, tzungbi@chromium.org,
+ Jonas Karlman <jonas@kwiboo.se>, Russell King <rmk+kernel@armlinux.org.uk>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ Jernej Skrabec <jernej.skrabec@siol.net>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>
+Subject: [alsa-devel] Applied "ASoC: rockchip-max98090: Support usage with
+	and without HDMI" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +108,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF - remove the dead code (skylake/kabylake)
+   ASoC: rockchip-max98090: Support usage with and without HDMI
 
 has been applied to the asoc tree at
 
@@ -124,99 +133,80 @@ to this mail.
 Thanks,
 Mark
 
-From c3ad1092e1069f27d0ca110dcaada8a5435ea3e0 Mon Sep 17 00:00:00 2001
-From: Jaroslav Kysela <perex@perex.cz>
-Date: Mon, 28 Oct 2019 18:33:29 +0100
-Subject: [PATCH] ASoC: SOF - remove the dead code (skylake/kabylake)
+From f03412b78a947857bbd20899e1423482fba55761 Mon Sep 17 00:00:00 2001
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Date: Mon, 28 Oct 2019 15:19:26 +0800
+Subject: [PATCH] ASoC: rockchip-max98090: Support usage with and without HDMI
 
-Appearently the CONFIG_SND_SOC_SOF_KABYLAKE and CONFIG_SND_SOC_SOF_SKYLAKE
-options are not present in Kconfig and 'struct snd_sof_dsp_ops sof_skl_ops'
-is not declared in the code, too.
+Add one optional property "rockchip,hdmi-codec" to let user specify HDMI
+device node in DTS so machine driver can find hdmi-codec device node for
+HDMI codec DAI.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20191028173329.29538-1-perex@perex.cz
+Use the presence of rockchip,audio-codec and rockchip,hdmi-codec to
+specify the use case.
+
+Use max98090 only : specify rockchip,audio-codec.
+Use HDMI only: specify rockchip,hdmi-codec.
+Use both max98090 and HDMI: specify rockchip,audio-codec and
+rockchip,hdmi-codec.
+
+Move these properties to optional because they are not needed for
+HDMI-only use case.
+"rockchip,audio-codec": The phandle of the MAX98090 audio codec
+"rockchip,headset-codec": The phandle of Ext chip for jack detection
+
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Link: https://lore.kernel.org/r/20191028071930.145899-3-cychiang@chromium.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda.h   |  1 -
- sound/soc/sof/sof-pci-dev.c | 44 -------------------------------------
- 2 files changed, 45 deletions(-)
+ .../bindings/sound/rockchip-max98090.txt      | 27 +++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 52a87a47029d..16376f55e420 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -608,7 +608,6 @@ extern struct snd_soc_dai_driver skl_dai[];
-  */
- extern const struct snd_sof_dsp_ops sof_apl_ops;
- extern const struct snd_sof_dsp_ops sof_cnl_ops;
--extern const struct snd_sof_dsp_ops sof_skl_ops;
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-max98090.txt b/Documentation/devicetree/bindings/sound/rockchip-max98090.txt
+index a805aa99ad75..e9c58b204399 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-max98090.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-max98090.txt
+@@ -5,15 +5,38 @@ Required properties:
+ - rockchip,model: The user-visible name of this sound complex
+ - rockchip,i2s-controller: The phandle of the Rockchip I2S controller that's
+   connected to the CODEC
+-- rockchip,audio-codec: The phandle of the MAX98090 audio codec
+-- rockchip,headset-codec: The phandle of Ext chip for jack detection
++
++Optional properties:
++- rockchip,audio-codec: The phandle of the MAX98090 audio codec.
++- rockchip,headset-codec: The phandle of Ext chip for jack detection. This is
++                          required if there is rockchip,audio-codec.
++- rockchip,hdmi-codec: The phandle of HDMI device for HDMI codec.
  
- extern const struct sof_intel_dsp_desc apl_chip_info;
- extern const struct sof_intel_dsp_desc cnl_chip_info;
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 487b1f29f84d..4de90d04a91b 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -173,42 +173,6 @@ static const struct sof_dev_desc icl_desc = {
+ Example:
+ 
++/* For max98090-only board. */
++sound {
++	compatible = "rockchip,rockchip-audio-max98090";
++	rockchip,model = "ROCKCHIP-I2S";
++	rockchip,i2s-controller = <&i2s>;
++	rockchip,audio-codec = <&max98090>;
++	rockchip,headset-codec = <&headsetcodec>;
++};
++
++/* For HDMI-only board. */
++sound {
++	compatible = "rockchip,rockchip-audio-max98090";
++	rockchip,model = "ROCKCHIP-I2S";
++	rockchip,i2s-controller = <&i2s>;
++	rockchip,hdmi-codec = <&hdmi>;
++};
++
++/* For max98090 plus HDMI board. */
+ sound {
+ 	compatible = "rockchip,rockchip-audio-max98090";
+ 	rockchip,model = "ROCKCHIP-I2S";
+ 	rockchip,i2s-controller = <&i2s>;
+ 	rockchip,audio-codec = <&max98090>;
+ 	rockchip,headset-codec = <&headsetcodec>;
++	rockchip,hdmi-codec = <&hdmi>;
  };
- #endif
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_SKYLAKE)
--static const struct sof_dev_desc skl_desc = {
--	.machines		= snd_soc_acpi_intel_skl_machines,
--	.resindex_lpe_base	= 0,
--	.resindex_pcicfg_base	= -1,
--	.resindex_imr_base	= -1,
--	.irqindex_host_ipc	= -1,
--	.resindex_dma_base	= -1,
--	.chip_info = &skl_chip_info,
--	.default_fw_path = "intel/sof",
--	.default_tplg_path = "intel/sof-tplg",
--	.nocodec_fw_filename = "sof-skl.ri",
--	.nocodec_tplg_filename = "sof-skl-nocodec.tplg",
--	.ops = &sof_skl_ops,
--	.arch_ops = &sof_xtensa_arch_ops
--};
--#endif
--
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_KABYLAKE)
--static const struct sof_dev_desc kbl_desc = {
--	.machines		= snd_soc_acpi_intel_kbl_machines,
--	.resindex_lpe_base	= 0,
--	.resindex_pcicfg_base	= -1,
--	.resindex_imr_base	= -1,
--	.irqindex_host_ipc	= -1,
--	.resindex_dma_base	= -1,
--	.chip_info = &skl_chip_info,
--	.default_fw_path = "intel/sof",
--	.default_tplg_path = "intel/sof-tplg",
--	.nocodec_fw_filename = "sof-kbl.ri",
--	.nocodec_tplg_filename = "sof-kbl-nocodec.tplg",
--	.ops = &sof_skl_ops,
--	.arch_ops = &sof_xtensa_arch_ops
--};
--#endif
--
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
- static const struct sof_dev_desc tgl_desc = {
- 	.machines               = snd_soc_acpi_intel_tgl_machines,
-@@ -431,14 +395,6 @@ static const struct pci_device_id sof_pci_ids[] = {
- 	{ PCI_DEVICE(0x8086, 0xa348),
- 		.driver_data = (unsigned long)&cfl_desc},
- #endif
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_KABYLAKE)
--	{ PCI_DEVICE(0x8086, 0x9d71),
--		.driver_data = (unsigned long)&kbl_desc},
--#endif
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_SKYLAKE)
--	{ PCI_DEVICE(0x8086, 0x9d70),
--		.driver_data = (unsigned long)&skl_desc},
--#endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
- 	{ PCI_DEVICE(0x8086, 0x34C8),
- 		.driver_data = (unsigned long)&icl_desc},
 -- 
 2.20.1
 
