@@ -7,88 +7,87 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0A91CA9EAE
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 11:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6B92CA9EAE
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 11:35:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34B8220830
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 11:35:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 311C220830
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Oct 2019 11:35:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rMPQ9/VD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EA1r3HXJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34B8220830
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TRfkehRw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a7btE6bN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 311C220830
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 823DF2244;
-	Tue, 29 Oct 2019 12:34:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 823DF2244
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E1251F93;
+	Tue, 29 Oct 2019 12:35:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E1251F93
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572348920;
-	bh=niKM3nm3XAUFQvy2GwTq2R3JIRpSGdmXNLluZ8pF+/s=;
+	s=default; t=1572348955;
+	bh=Yco2H4Wz/2GZY+uz1xLsCAeKvY60o0BeTAtCvGUlr2U=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rMPQ9/VD9qC5jrHlR/Kzik44XBawj8Q0Kl0jE27NAyUoskcNNKhFNDBbrZCv/gxSY
-	 S6WVH3zeUSw/jfCZ87QjhAJLaQ0a0RvzugdYBd3rdRW41efopaJIXWvhjOePtzGHkj
-	 rJM1lvEFt9ldK8R2vxyIE+yD7coS/iqqsnNqRjVU=
+	b=TRfkehRwobYiNZsc9+W9NY166jWaRJdiQ7ikEBHyYZMlEDWfv90Wv/wIeEQ3MhnPX
+	 e2iA0abVWT++sLRAzTuDj9pxF9JQIkxxDeKOvLLpKUw6otndqKVujHbonj7Kg6SN1T
+	 6cc5V+sfT2rX8cib8O+S5QNS+psfQyGJ66qX4PcU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05D5FF806ED;
-	Tue, 29 Oct 2019 12:29:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0962BF806F8;
+	Tue, 29 Oct 2019 12:29:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E8A1F80642; Tue, 29 Oct 2019 12:29:14 +0100 (CET)
+ id 372B9F80649; Tue, 29 Oct 2019 12:29:15 +0100 (CET)
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
  [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EBF7F8060D
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 12:29:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EBF7F8060D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AF94F80635
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 12:29:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AF94F80635
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="EA1r3HXJ"
-Received: by mail-wm1-x341.google.com with SMTP id w9so1981647wmm.5
- for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 04:29:04 -0700 (PDT)
+ header.b="a7btE6bN"
+Received: by mail-wm1-x341.google.com with SMTP id x5so2007803wmi.0
+ for <alsa-devel@alsa-project.org>; Tue, 29 Oct 2019 04:29:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=6RliGfxjeZRZKsvz7+xFZDSC6zQkkXVAUlzYsp0mzbo=;
- b=EA1r3HXJQSw1Wc/1K8+BmJ1oGZOA1scoI+iD/EvM0ZkSCrsgix7EYZSzLH2+yOOnlf
- a4dr691lyhUVb2AJqJGeTnZIRr/uHkmK2/OEeg0t1ZmsdjTKL8Mrv2hB2J2v6jOdi8dz
- 1Z+l31KZH+2xwp1PxWzyEzwE9k8YkdzjH3wSA5LS5yBJ5J2L1fa8U5FfzUX8Neb12QYW
- 69YuJnS2iwDWfK4aGK4UreoTdwZIGz8C96LDNOcgBV7KLCQSU/d8oLlv78/vw8WLd9O4
- LNeibi8s4HtNlabgpVgSjlIPfUZrm9EGUQ4xGfMmFm0eFeC2KxSs/I05KusodbUCPh6P
- 9RNQ==
+ bh=YC1onaWGjgTiGrUp75mNaoNmZWZWn8ozsG+Lz8zEBxg=;
+ b=a7btE6bNZTalO6uJ2Q3J3SGFmmVteAIhrL2W5H4pHkfPFeWdizziBlnvYU1k1l7H1z
+ VdrT98Yc2YK24o81kwrEhi25dlcKpAucXw20r5kJuGqR0fzFvFUw8IyUa3TgkZ2+N/t0
+ kalOcSQm4sdNPsAmabcWb0eXbbr+cuZ9EAttgV9ScQoeY44mDD7Z2p8rOaFugm7ina25
+ mWzB9+MTesKrQxHw6b6ECD69xcpwkkFvtIJszfhMRF/Ixrj+yHOnxxXqXgGK4gF1kTLt
+ 3V1IwLIrJdwy4tglpaWjmrMYZFXtJAcIj1zPGzAeDvXzO4ghDIJGPkCuTuwW2LyBmXRv
+ xIiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=6RliGfxjeZRZKsvz7+xFZDSC6zQkkXVAUlzYsp0mzbo=;
- b=L+1qsSFcqMu+j0sJtPSIASqdhJTpWvl6rcVkj7i0MhgKBUToB2wtR/fkIuVG4dsVO9
- OwBUllKrz4elwx1VtKZJUz7u4S69RZHdRMnz7f+V7kMRd3UiMM1T9KWzTdA7/3Y1P18U
- Ih0xSw6TgFGKPUHF+pvkySa2nJGkTPecBNVshrYtrSTr5jPDXZjs5lFg2bjCw+WNK48m
- igHq8n4FuusgYfWgDe3z5apJ9jcOO4M1juQcoBfEpvfk3SKjr6f1xlgSXNwdfa3308Wk
- wHGsfKJc8f4gGG2HOaZMrT0M8MGZcDCrQcTRebavscU+zWG8tqyM8ArNq6ZVUjRyzOyI
- L7Dg==
-X-Gm-Message-State: APjAAAUSz0pZ+7MXn3yjpwlyq/i97vojtbzIaT29UJBdrHnaUsu6mw0Y
- WrgwVNqUIJrRGw9h9CSJTohcf0t/gL0=
-X-Google-Smtp-Source: APXvYqyyXUH29YzkT8TrafrF9AotGHHKFEQ4zZ8CQ4t/MCXVculHlP/PhSsj+O6ynB5w7Sp8f+IgAg==
-X-Received: by 2002:a05:600c:1009:: with SMTP id
- c9mr3586096wmc.6.1572348544385; 
- Tue, 29 Oct 2019 04:29:04 -0700 (PDT)
+ bh=YC1onaWGjgTiGrUp75mNaoNmZWZWn8ozsG+Lz8zEBxg=;
+ b=BLGTZHvqDmX5pKpEFZyPl7QzPin8CITGeIZaDN5Z1M7EVcz5V0ZJkTXQqyGrgIIxmj
+ ZBh7Pu22YyPbsTqzeVvAHFJ4vioH5JwmxHlo4DID0cYt61d4bdnc1LIHmpVqRC01uvhP
+ nD0vglzyYykzTLhwBSURjjeW/ShF17iBDXPWE1N8c0T9x70+tTlH5zCz4L/Ryf3bq9qi
+ xNPaFHr1JOCKKHcb9corLVUWaFdk11ogQvJIIMcyFL8xD+A/2eV1zNefXZnrVCIRZuO4
+ HPNU4Z0T3+kGzSPjJ0SY5KqgjUoDREoz2ixb+IKdf9NqvQ9f9lz7XQpfMeiZMScZ4u+9
+ k79Q==
+X-Gm-Message-State: APjAAAUVDW+O/vZ7KHplP8gEZwxU4Cx1CVI0wVUUaBG7BO8oSrTKqrPu
+ weckdNAfB/faK6XpImbKbrQGiw==
+X-Google-Smtp-Source: APXvYqy1tl4LyuCywYWNRuqXZdWjtRzeYlP86wtCjCStz54zWcC6oJciXhUYQAJM9je4iY3Kq745ww==
+X-Received: by 2002:a1c:d8:: with SMTP id 207mr3548367wma.65.1572348547207;
+ Tue, 29 Oct 2019 04:29:07 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id f20sm2373247wmb.6.2019.10.29.04.29.03
+ by smtp.gmail.com with ESMTPSA id f20sm2373247wmb.6.2019.10.29.04.29.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 29 Oct 2019 04:29:03 -0700 (PDT)
+ Tue, 29 Oct 2019 04:29:06 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: robh@kernel.org, broonie@kernel.org, lee.jones@linaro.org,
  linus.walleij@linaro.org
-Date: Tue, 29 Oct 2019 11:26:57 +0000
-Message-Id: <20191029112700.14548-9-srinivas.kandagatla@linaro.org>
+Date: Tue, 29 Oct 2019 11:26:59 +0000
+Message-Id: <20191029112700.14548-11-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191029112700.14548-1-srinivas.kandagatla@linaro.org>
 References: <20191029112700.14548-1-srinivas.kandagatla@linaro.org>
@@ -97,8 +96,8 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  bgoswami@codeaurora.org, vinod.koul@linaro.org, spapothi@codeaurora.org,
  linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] [PATCH v3 08/11] dt-bindings: pinctrl: qcom-wcd934x:
-	Add bindings for gpio
+Subject: [alsa-devel] [PATCH v3 10/11] ASoC: qcom: dt-bindings: Add
+	compatible for DB845c and Lenovo Yoga
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,74 +115,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Qualcomm Technologies Inc WCD9340/WCD9341 Audio Codec has integrated
-gpio controller to control 5 gpios on the chip. This patch adds
-required device tree bindings for it.
+This patch adds compatible strings for DB845c and Lenovo Yoga C630
+soundcard. Based on this compatible strings common machine driver
+will be in better position to setup board specific configuration.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../pinctrl/qcom,wcd934x-pinctrl.yaml         | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml
+ Documentation/devicetree/bindings/sound/qcom,sdm845.txt | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml
-new file mode 100644
-index 000000000000..432486d753b3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,wcd934x-pinctrl.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/qcom,wcd934x-pinctrl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: WCD9340/WCD9341 GPIO Pin controller
-+
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+
-+description: |
-+  Qualcomm Technologies Inc WCD9340/WCD9341 Audio Codec has integrated
-+  gpio controller to control 5 gpios on the chip.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,wcd9340-pinctrl
-+      - qcom,wcd9341-pinctrl
-+
-+  reg:
-+    maxItems: 1
-+
-+  gpio-controller: true
-+
-+  gpio-ranges:
-+    maxItems: 1
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - gpio-controller
-+  - gpio-ranges
-+  - "#gpio-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    wcdpinctrl: pinctrl@42 {
-+        compatible = "qcom,wcd9340-pinctrl";
-+        reg = <0x042 0x2>;
-+        gpio-controller;
-+        gpio-ranges = <&wcdpinctrl 0 0 5>;
-+        #gpio-cells = <2>;
-+    };
-+
-+...
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+index 408c4837e6d5..ca8c89e88bfa 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+@@ -5,7 +5,10 @@ This binding describes the SDM845 sound card, which uses qdsp for audio.
+ - compatible:
+ 	Usage: required
+ 	Value type: <stringlist>
+-	Definition: must be "qcom,sdm845-sndcard"
++	Definition: must be one of this
++			"qcom,sdm845-sndcard"
++			"qcom,db845c-sndcard"
++			"lenovo,yoga-c630-sndcard"
+ 
+ - audio-routing:
+ 	Usage: Optional
 -- 
 2.21.0
 
