@@ -2,114 +2,82 @@ Return-Path: <SRS0=P70v=YX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8263CA9EC5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 11:51:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BD5ACA9EC5
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 12:22:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E877420874
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 11:51:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AB422083E
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 12:22:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cON2rQbT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="qDCwJLU3";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="V0K18gC8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E877420874
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EDDpFwYu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="usqaic5L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AB422083E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 972CE22BC;
-	Wed, 30 Oct 2019 12:50:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 972CE22BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1296722BE;
+	Wed, 30 Oct 2019 13:21:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1296722BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572436264;
-	bh=92Mf/QyVNYYQddQl4VgqE/s+qblldsBq/taa05XuVKs=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cON2rQbTDYQea0HiqiLHDcjh/LBmuRumH7JAxq7sAZ8p2eIxw+eE4q9zJDPo5UyHp
-	 Zi2LCW98aT64QUajQI0JobVzGzwoOQaDlKqlRjYFdecTxV+mr2zKhg5p1TSAkDcBnS
-	 +qlGaujm5DBtOAgFObabyEC2a3kVUBlbz6i6G1x0=
+	s=default; t=1572438145;
+	bh=sAqroiQgd3nda1a20v2r9UhgWL663N61RU9x5GWBs3E=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EDDpFwYulAiqKfy8oufKLTFjh2xVXAB1fWUXV6s5s3bqt456x/DJmlzFcvKDWyyuJ
+	 PVsHZII7g0vx9oBxxr858hhEmdz3/vyBklMSsOPfFloz/xgTayIzAqgUqJOEjZuJOk
+	 WPaxWOf4aexVif9ePb8CyxjBlbJQ7YNTocVa/z0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 261BEF802A1;
-	Wed, 30 Oct 2019 12:50:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8607AF802A1;
+	Wed, 30 Oct 2019 13:21:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A704BF80361; Wed, 30 Oct 2019 12:50:12 +0100 (CET)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 53469F80361; Wed, 30 Oct 2019 13:21:32 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18B65F802A1
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 12:50:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18B65F802A1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 374A0F802A0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 13:21:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 374A0F802A0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="qDCwJLU3"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="V0K18gC8"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 4642321E6A;
- Wed, 30 Oct 2019 07:50:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute1.internal (MEProxy); Wed, 30 Oct 2019 07:50:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=HMFfDDceu4KUPGn7J++VuNhscGA
- lz6Rm4rvKSvxRu7s=; b=qDCwJLU3goBmXP/tCS3WMIoFcYAALJbe0qwWkV84AZF
- +/o4s0hL2JENAb63lhP/HcSnBRu0PjufIEtsROqOmO+DwoftNXTj6l1JLYBtapdj
- VUOQ2a8hEhDDn+o3guq4G8LU+fXSL6c4+T4HTRc+tXty9Qot/f05OTiXQXHPWp1w
- ARSg7yIDdXzmgYF3TxMWEooBUcaxHa6hEFQB9QmZVusxjM0wpr1jH/8vtSPsdQiY
- MvEimEQdfhAGg7TsukkrrJ/IfZvYeeTX88SyS3yHWl10PpPY/EBeWCOF8rwDZvg/
- rX6IfoeWniWUCJnm4YWAQQPAw+L7Z++FxANQCTd0ecw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=HMFfDD
- ceu4KUPGn7J++VuNhscGAlz6Rm4rvKSvxRu7s=; b=V0K18gC8a9zSvBZoQqlxqs
- et7jAthPWnts5tFEsdV4XRm87GPhd5L68uapzV/ZlUpBHyxNSnr82eRyy1rsLvNt
- Xx8l6TB33x4lelibJQ8ZbAovthqBdXV7ml6H0dZ+r00lOjuu1DVUP1LK1r5i1POy
- 641Ar1moNmV8BK7ghkVbAbIiqopMylDjUOhdpQ7dykockqOKUXT7tNUPr2RMBZp0
- +lGKZYGs+A7cmb+np6gTjESTBjOHzSJSg0wRRg9EDNtS31Nwbn8bFYyDydvIQ5Py
- 3kXLJkjJH40+fZzY01dCaxG1mwoQzG+QsZUvTfLREOPGVKD3lso7lwsggem5wAGw
- ==
-X-ME-Sender: <xms:7ni5XUpCuXJfMHMKQok854Z6rgRRY4Fx_ZOcYfFJvVr4vXrqwBiKww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedruddtfedgfeefucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepvfgrkhgr
- shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
- hjpheqnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepudegrdefrdejhedr
- udekudenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmh
- hotggthhhirdhjphenucevlhhushhtvghrufhiiigvpedt
-X-ME-Proxy: <xmx:7ni5Xe6qzDMDwHeD_m73qGLLDLrtmsxtFC3dVlTNLniQeUKIdbs5nw>
- <xmx:7ni5XUOIyajoNzoyoa5QD6RiuzQi8OXUOJjLpSMB8JHb7lJHtyeGyA>
- <xmx:7ni5XQNA_rRWphQGHT-qSjpZy3KxNpVRPxEJxPX6G4Z4c5xRSTRlmw>
- <xmx:73i5XV2fZEbeeh_54EhMb0XDrAjjJW3iiCQlM7Z1U6zzwXlvZVU55g>
-Received: from workstation (ae075181.dynamic.ppp.asahi-net.or.jp [14.3.75.181])
- by mail.messagingengine.com (Postfix) with ESMTPA id 7DF3C8005A;
- Wed, 30 Oct 2019 07:50:05 -0400 (EDT)
-Date: Wed, 30 Oct 2019 20:50:02 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Jean-Paul Argudo <jpa@argudo.org>
-Message-ID: <20191030115001.GB6313@workstation>
-Mail-Followup-To: Jean-Paul Argudo <jpa@argudo.org>,
- alsa-devel@alsa-project.org
-References: <769b9f5dae864cf1eb433ab84eed385a161931c8.camel@argudo.org>
- <20191030091540.GA1856@workstation>
- <ad6f8c036538aa755017efe976ac223bb7c90be3.camel@argudo.org>
- <c4b792255de178094fd53d80a25fc75b795e3acb.camel@argudo.org>
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="usqaic5L"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Content-Type:MIME-Version:
+ Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=48voixcHnRdFxNC3czopNEeKps1EW3SSA2ugEojtyEY=; b=usqaic5Lktt1REEhklUHrTpgq
+ UVH8bez+u5tlEMfB96K5klVZ2ncCtsi4DN8zYEu8jqRyjXEiaEhhTMizjL9X2DSTJfh8gji7pslS/
+ ZvauJ5KtuFx6Czmy3OvLCEQELrqDO1J0CrPBwnmAFAeRLZ2jkmoNSpVrHYYwY0vHP/vH8=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iPmyb-0004ui-LW; Wed, 30 Oct 2019 12:21:25 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id D8E4327420F4; Wed, 30 Oct 2019 12:21:24 +0000 (GMT)
+Date: Wed, 30 Oct 2019 12:21:24 +0000
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Message-ID: <20191030122124.GA7218@sirena.co.uk>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c4b792255de178094fd53d80a25fc75b795e3acb.camel@argudo.org>
+X-Cookie: Celebrity voices impersonated.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] snd-bebob : from kernel 4.13 to 5.3.19 and .20
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+ Patrick Lai <plai@codeaurora.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Curtis Malainey <cujomalainey@google.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
+Subject: [alsa-devel] [ANNOUNCE] Schedule for 2019 Linux Audio miniconference
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,102 +90,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3392840563375146194=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
+--===============3392840563375146194==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Content-Disposition: inline
+
+
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
 
-On Wed, Oct 30, 2019 at 10:40:18AM +0100, Jean-Paul Argudo wrote:
-> > I'll install Eoan kernel and test my devices.
-> > (but I don't have Saffire and Saffire LE...) I'd like you to wait
-> > for my test report.
-> 
-> What I can say is that with kernel 4.13 under Ubunto Disco everything
-> was fine :-(
+As in previous years we're going to have an audio miniconference so we can
+get together and talk through issues, especially design decisions, face to
+face.  This year's event will be held on October 31st in Lyon, France,
+the day after ELC-E.  This will be held at the Lyon Convention Center (the
+ELC-E venue) and will be free of charge to attend, generously
+sponsored by Intel.
 
-I install Eoan (linux-image-5.3.0-19-generic:5.3.0-19.20) and test ALSA
-bebob driver with my test devices:
- - Yamaha GO46 (DM1000 ASIC)
- - M-Audio FireWire Solo (DM1000 ASIC)
- - Behringer FCA610 (DM1500 ASIC)
- - Focusrite SaffirePro 26 I/O (DM1000E)
+The plan is to gather at 9am and start once enough people are there and
+ready.  I look forward to seeing you all tomorrow!
+=20
+The agenda is looking pretty full now, what we've got so far is:
 
-However I don't find similar discontinuities. This means that you
-encounter model-specific issue as regression I didn't realized.
+ - Introductions (me)
+ - Use case management enhancements (Curtis)
+ - DSP framework integration (Liam)
+  - SOF integration with ACPI and DT (Daniel)
+  - SOF support for non-modular drivers (Daniel)
+   - Gapless compressed playback (Patrick)
+  - Soundwire status (Liam?)
+   - Multi-CPU support
+   - Mixing with HDA/I2S in a single system
+  - PCM issues (Patrick)
+   - PCM device volume control
+   - Attaching timestamps to buffers
+  - kcontrol issues (Takashi)
+   - Standardization
+   - Confirmance testing
+  - Virtualization (Liam)
+  - User experiences (Jerome)
+  - Unified graph (Patrick)
+  - Componentisation status/plans (Me)
 
-For my information, would you please get output from nodes on procfs?
- * /proc/asound/cardX/firewire/clock
- * /proc/asound/cardX/firewire/firmware
- * /proc/asound/cardX/firewire/formation
+Thanks again to Intel for supporting this event.
 
-Additionally, please install 'gir1.2-hinawa-2.0' package, then clone
-below remote repository:
- * https://github.com/takaswie/hinawa-utils
+Thanks,
+Mark
 
-This repository includes two scripts to get information from the device:
- * hinawa-bebob-parser
- * hinawa-bebob-connection-cui
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
 
-When your device is detected as sound card '2' and your device is also
-detected as '/dev/fw1', execute below:
+-----BEGIN PGP SIGNATURE-----
 
-$ ./hinawa-bebob-connection-cui 2 graph-connections
-$ ./hinawa-bebob-parser 1 2
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl25gEQACgkQJNaLcl1U
+h9DExgf+OeXwqc+vBgQk8ZqU2cipuYsUMvDu3ChkfGIy+u24lSV6aDNhfJ00csVM
+RqT9esLZ15zaS6GM18mOA86/XxaYh+0F0QP/HIgpT1NeKIu+8rLP3/D72LnHHugW
+0Ktdv4q5kQVGyF3iuPvNTHp8zC5WHkuoS4xmluWuSkSLScXLLgbAoRQLBDt5RH1c
+PbKyL0B/2uyC8flU1Fe1FupsWQcHPZSgOHjYGYazZMvYlV1zm6HcnpnmS5FwxXLs
+9SJ8NeLFIA22WeDN/55pLgetD0xkCmB5t6WvmhF6fgtsXt79aNodC7Sz3cINkmkp
+cZ4cKqE+E/xn2hS92Z5V0Vh1yiqtvg==
+=TbPv
+-----END PGP SIGNATURE-----
 
-> At startup it lights green ok, but no sound is playable, then the
-> lights turn orange (like it is when it's not working), I hear a
-> "relay sound" (a electric clic of a relay), then, the Saffire LE
-> disapears from the sound menu in Ubuntu sound menu.
+--LZvS9be/3tNcYl/X--
 
-Once your device is detected and ALSA bebob driver bound to it,
-pulseaudio detects it and start PCM substream to get capabilities
-of the device.
+--===============3392840563375146194==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-In your case, the PCM substream is corrupted by the discontinuity.
-Then pulseaudio give up to use the device. As a result, sound menu
-drops entry of the device.
-
-I guess that the color of LED corresponds to the packet streaming.
-
-On Wed, Oct 30, 2019 at 11:12:01AM +0100, Jean-Paul Argudo wrote:
-> But something new and maybe interesting for you : 
-> 
-> Oct 30 09:25:25 deiphobe pulseaudio[2589]: E: [alsa-sink-BeBoB] alsa-sink.c: ALSA woke us up to write new data to the device, but there was actually nothing to write.
-> Oct 30 09:25:25 deiphobe pulseaudio[2589]: E: [alsa-sink-BeBoB] alsa- sink.c: Most likely this is a bug in the ALSA driver 'snd_bebob'.  Please report this issue to the ALSA developers.
-> Oct 30 09:25:25 deiphobe pulseaudio[2589]: E: [alsa-sink-BeBoB] alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another value < min_avail.
- 
-Practically these logs can be ignored. (I work to suppress the above
-lines in development period for Linux kernel v5.5.)
- 
-> **And in kern.log** : at the beggining in the boot sequence (?),
-> between FS-cache lines and usb ones: 
-> 
-> Oct 27 21:54:36 deiphobe kernel: [    8.742105] FS-Cache: N-key=[8] '020001bdc0a800fe'
-> 
-> Oct 27 21:54:40 deiphobe kernel: [   12.768168] usb 3-4.1: reset high- speed USB device number 5 using xhci_hcd
-> Oct 27 21:54:45 deiphobe kernel: [   18.294126] snd-bebob fw1.0: transaction failed: no ack
-> Oct 27 21:54:45 deiphobe kernel: [   18.294167] snd-bebob fw1.0: fail to get section type for isoc out plug 0: -5
-> Oct 27 21:54:45 deiphobe kernel: [   18.294172] snd-bebob fw1.0: fail to run AMDTP slave stream:-5
-> Oct 27 21:54:45 deiphobe kernel: [   18.306399] firewire_ohci 0000:05:01.0: DMA context still active (0x00000411)
-> Oct 27 21:54:45 deiphobe kernel: [   18.318425] firewire_ohci 0000:05:01.0: DMA context still active (0x00000411)
-> Oct 27 21:54:47 deiphobe kernel: [   20.311440] irq_handler: 20 callbacks suppressed
-> Oct 27 21:54:47 deiphobe kernel: [   20.311441] firewire_ohci 0000:05:01.0: isochronous cycle inconsistent
-> Oct 27 21:54:48 deiphobe kernel: [   21.322730] firewire_core 0000:05:01.0: phy config: new root=ffc1, gap_count=5
-> 
-> Oct 27 21:54:50 deiphobe kernel: [   22.970251] rfkill: input handler disabled
-> Oct 27 20:55:10 deiphobe kernel: [   42.697284] usb 3-4.1: reset high- speed USB device number 5 using xhci_hcd
-
-IEEE 1394 bus 'bus-reset' state. Just before/after the bus-reset, any
-functionality easily fails. It's better to plug-in the device enough
-after bootup.
-
-
-Regards
-
-Takashi Sakamoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3392840563375146194==--
