@@ -2,110 +2,60 @@ Return-Path: <SRS0=P70v=YX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACA7CA9EAF
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 08:12:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E94AFCA9EC0
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 08:13:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 96ABE208E3
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 08:12:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C1DE20717
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 08:13:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VEcxAIl/";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="hBtxU07d";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e91Va252"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96ABE208E3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pmGPQhtv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C1DE20717
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=argudo.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E08DC2311;
-	Wed, 30 Oct 2019 09:11:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E08DC2311
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93207231D;
+	Wed, 30 Oct 2019 09:12:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93207231D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572423128;
-	bh=akHk8tK4sfiAFfmIjIXvLtm0/NjH8R3hcvfgNjIoQ0w=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VEcxAIl/4L1szqQPI2ewpx+F9HnWtAJW7UHYEiKtdtLavqhRNqdQgHlTZHOIerR6L
-	 ieEh8OVK2V7LIntSPWhFf6UzQHulfvFOeGNkMdpbOW+8WtkJrHYHBc8Wd2YNGow1tu
-	 kREktrdA/rznDFakANJShKXZ1sWsl8WJnFy1mC4E=
+	s=default; t=1572423179;
+	bh=pdO1PuWcCZva+CSXl6ZmhAfVfhYhTtIT9goHtO/QVpE=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pmGPQhtvofWS01yY7arKvXegjHwoeJDv+/BDcZUjOQaSAGhioEBKlUcqzw4XdYu7V
+	 ghRAfF+7Db3rQ6vWKt98e+XxX7koKFdxcuCQszj0wrQqrmn17ARaedDhLXXrIZ4Msr
+	 S3y3mWTmrWG18R1O5HvJqaapf3BLm6NMoZLvBxfQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E787F80659;
-	Wed, 30 Oct 2019 09:07:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 777DEF802A1;
+	Wed, 30 Oct 2019 09:10:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 765F4F805FD; Wed, 30 Oct 2019 09:07:02 +0100 (CET)
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29])
+ id DEDA6F80361; Wed, 30 Oct 2019 09:10:43 +0100 (CET)
+Received: from heaven.argudo.org (heaven.argudo.org [195.154.250.235])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B36AF805FC
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 09:06:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B36AF805FC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="hBtxU07d"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="e91Va252"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 9F4BD21ED6;
- Wed, 30 Oct 2019 04:06:57 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Wed, 30 Oct 2019 04:06:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=qJnMDdNv4bY2B
- Vkz9I15A4xcPhhF6I3MF66TJk7A6Oc=; b=hBtxU07dkFNG66EG2N3s/bbdpBTlr
- QhMNxyvshCVolP4NZj61a/dAHnnlNFSoK5pfAtpNLI2VEqKYVYYUoIB7kZ8e7EXi
- FrnGuPFNsJvl4Ap28W/uEDKs/6oc/LVfzaj5eLBgM2hu6zdaezIKOBihVH2KxCCY
- VkIZr1bBFh+qxBa570J2tNMWnCHghpec5DxFqqdAPxDiHqvO6jYRqEy8fe54ZpSm
- c1RAKDIjLMxGBzorjN6Ac352ilJkURqeNygqDulc+2sk0exSssEqOq0QFTia73BX
- SNrbcYgcqKENfaKf/MvCGIC/XNmMP/s8E80WaJ1sCVIAQ2luGFxhwIUEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm1; bh=qJnMDdNv4bY2BVkz9I15A4xcPhhF6I3MF66TJk7A6Oc=; b=e91Va252
- 6XqzygsmA7hhm/s7kFURBps7YiHcOCkXX48Nt29W1zA2qeQcqJVamDKv4dIVPiMN
- ZJaKAai/4mOg7mhb5ypTREMgxekKnP0HWjIlGCs2bUiuvhmeJPpUCqmGCmP2CN5t
- +ocKe6Bei62t1ssJjdBxKpb4GPVZhsXixPmpLYZm+qx2GMVYKLVWHZFw5A5iEy3L
- 4F7pkhX7blZxKYUmgeUsXZpabACnEK3cIyfk2GtM7bj5O2TmoVQSmwCVhq7dBFIZ
- OuiRKbcLvix0UJYh4pNVOKcSDXJ21vB+0LGMdSsvQDTMX1RZvzxx6q4qbcH4SLRb
- KX5bCfLntyobeQ==
-X-ME-Sender: <xms:oUS5Xcke8hsq7aIe5rr15o5-QfmNRyynqfHYP-Utic7pD_TD7E9itg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedruddtvddguddujecutefuodetggdotefrod
- ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
- necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
- ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
- rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucfkphepudegrdefrdejhedrudekud
- enucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggt
- hhhirdhjphenucevlhhushhtvghrufhiiigvpeef
-X-ME-Proxy: <xmx:oUS5XcR4eDj3GUFyS6_AnIuEJN85WARIMfm_KFVVBdnVjzYI0BnRxw>
- <xmx:oUS5XQHHOWkirPA5EqHi0lN_GOah-CDB2myjX3cIUrtBh06nSKGL7w>
- <xmx:oUS5XWj4iB9Ec-f6EQSRBQkO7w_6IlFnPBBvFPi9HGoL8kd4MJAthQ>
- <xmx:oUS5Xb8ryfxop1vhYJhIuzcuUZxLtwUpdTB6hinPFiSkvDuSvlq9hg>
-Received: from workstation.flets-east.jp (ae075181.dynamic.ppp.asahi-net.or.jp
- [14.3.75.181])
- by mail.messagingengine.com (Postfix) with ESMTPA id 4F6473060057;
- Wed, 30 Oct 2019 04:06:56 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: clemens@ladisch.de,
-	tiwai@suse.de
-Date: Wed, 30 Oct 2019 17:06:44 +0900
-Message-Id: <20191030080644.1704-7-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191030080644.1704-1-o-takashi@sakamocchi.jp>
-References: <20191030080644.1704-1-o-takashi@sakamocchi.jp>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43F9BF802A1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 09:10:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43F9BF802A1
+Received: by heaven.argudo.org (Postfix, from userid 1008)
+ id 6B6551502247; Wed, 30 Oct 2019 09:10:40 +0100 (CET)
+Received: from deiphobe (maison [78.229.44.71]) (Authenticated sender: jpa)
+ by heaven.argudo.org (Postfix) with ESMTPSA id 3224E1500724
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 09:10:39 +0100 (CET)
+Message-ID: <769b9f5dae864cf1eb433ab84eed385a161931c8.camel@argudo.org>
+From: Jean-Paul Argudo <jpa@argudo.org>
+To: alsa-devel@alsa-project.org
+Date: Wed, 30 Oct 2019 09:10:38 +0100
+Organization: PostgreSQL Fr
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 6/6] ALSA: firewire-motu: add support for MOTU
-	UltraLite
+Subject: [alsa-devel] snd-bebob : from kernel 4.13 to 5.3.19 and .20
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,86 +73,92 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-UltraLite was shipped in 2005 by MOTU, and already discontinued. This
-model consists of below ICs:
+Hi there,
 
-- Texus Instruments TSB41AB2 for physical layer of IEEE 1394 bus
-- Xilinx Spartan XC35S200 for link layer of IEEE 1394 bus, protocol layer
-  and signal processing
+I wrote 1st this here: 
+https://github.com/takaswie/snd-firewire-improve/issues/25
 
-This commit adds support for this model. Like the other MOTU models,
-ALSA firewire MOTU driver fails to drive the device for stable sampling
-clock and generate noisy sound.
+But I think it was the bad place, sorry for that.
 
-$ python2 crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  04107574  bus_info_length 4, crc_length 16, crc 30068
-404  31333934  bus_name "1394"
-408  20001000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 0, max_rec 1 (4)
-40c  0001f200  company_id 0001f2     |
-410  0007b82d  device_id 000007b82d  | EUI-64 0001f2000007b82d
+I think this ML is better?
 
-               root directory
-               -----------------------------------------------------------------
-414  0004c65c  directory_length 4, crc 50780
-418  030001f2  vendor
-41c  0c0083c0  node capabilities per IEEE 1394
-420  8d000006  --> eui-64 leaf at 438
-424  d1000001  --> unit directory at 428
+My problem in one line:
 
-               unit directory at 428
-               -----------------------------------------------------------------
-428  0003d80a  directory_length 3, crc 55306
-42c  120001f2  specifier id
-430  1300000d  version
-434  17100800  model
+I upgraded my Ubuntu Disco (kernel 4.13) to Ubuntu Eoan (kernel 5.3.19)
+and I can report my SaffireLE / Firewire doesnt work anymore, snd-bebob reports "discontinuity of CIP" on dmesg...
 
-               eui-64 leaf at 438
-               -----------------------------------------------------------------
-438  00024566  leaf_length 2, crc 17766
-43c  0001f200  company_id 0001f2     |
-440  0007b82d  device_id 000007b82d  | EUI-64 0001f2000007b82d
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/motu/motu.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+At startup it lights green ok, but no sound is playable, then the
+lights turn orange (like it is when it's not working), I hear a "relay
+sound" (a electric clic of a relay), then, the Saffire LE disapears from the sound menu in Ubuntu sound menu.
 
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index f249ad39d8a8..f2080d720aa9 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -202,6 +202,19 @@ static const struct snd_motu_spec motu_traveler = {
- 	.analog_out_ports = 8,
- };
- 
-+static const struct snd_motu_spec motu_ultralite = {
-+	.name = "UltraLite",
-+	.protocol = &snd_motu_protocol_v2,
-+	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-+		 SND_MOTU_SPEC_TX_MICINST_CHUNK | // padding.
-+		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
-+		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
-+		 SND_MOTU_SPEC_TX_MIDI_2ND_Q |
-+		 SND_MOTU_SPEC_RX_SEPARATED_MAIN,
-+	.analog_in_ports = 8,
-+	.analog_out_ports = 8,
-+};
-+
- static const struct snd_motu_spec motu_8pre = {
- 	.name = "8pre",
- 	.protocol = &snd_motu_protocol_v2,
-@@ -272,6 +285,7 @@ static const struct snd_motu_spec motu_4pre = {
- static const struct ieee1394_device_id motu_id_table[] = {
- 	SND_MOTU_DEV_ENTRY(0x000003, &snd_motu_spec_828mk2),
- 	SND_MOTU_DEV_ENTRY(0x000009, &motu_traveler),
-+	SND_MOTU_DEV_ENTRY(0x00000d, &motu_ultralite),
- 	SND_MOTU_DEV_ENTRY(0x00000f, &motu_8pre),
- 	SND_MOTU_DEV_ENTRY(0x000015, &motu_828mk3),	/* FireWire only. */
- 	SND_MOTU_DEV_ENTRY(0x000035, &motu_828mk3),	/* Hybrid. */
+I can see this in dmesg:
+
+[   19.083583] snd-bebob fw1.0: Detect discontinuity of CIP: 10 50
+[   19.746665] snd-bebob fw1.0: Detect discontinuity of CIP: A0 A8
+[   19.846775] snd-bebob fw1.0: Detect discontinuity of CIP: 70 B0
+[   20.335861] snd-bebob fw1.0: Detect discontinuity of CIP: 90 D0
+[   20.856301] snd-bebob fw1.0: Detect discontinuity of CIP: 78 B8
+[   21.312770] snd-bebob fw1.0: Detect discontinuity of CIP: 30 70
+[   21.796716] snd-bebob fw1.0: Detect discontinuity of CIP: 00 40
+[   22.347664] snd-bebob fw1.0: Detect discontinuity of CIP: 00 40
+[   22.818247] snd-bebob fw1.0: Detect discontinuity of CIP: A8 E8
+[   23.306079] snd-bebob fw1.0: Detect discontinuity of CIP: 98 D8
+[   29.544652] snd-bebob fw1.0: Detect discontinuity of CIP: 10 50
+[   30.272090] snd-bebob fw1.0: Detect discontinuity of CIP: A8 E8
+[   30.776168] snd-bebob fw1.0: Detect discontinuity of CIP: 00 40
+[   31.268123] snd-bebob fw1.0: Detect discontinuity of CIP: E0 20
+[   31.766085] snd-bebob fw1.0: Detect discontinuity of CIP: E0 20
+[   32.267903] snd-bebob fw1.0: Detect discontinuity of CIP: 88 C8
+[   32.767989] snd-bebob fw1.0: Detect discontinuity of CIP: F8 38
+[   33.263808] snd-bebob fw1.0: Detect discontinuity of CIP: 78 B8
+[   33.757156] snd-bebob fw1.0: Detect discontinuity of CIP: 08 48
+[   34.258860] snd-bebob fw1.0: Detect discontinuity of CIP: 80 C0
+[   34.755571] snd-bebob fw1.0: Detect discontinuity of CIP: 40 80
+[   35.261252] snd-bebob fw1.0: Detect discontinuity of CIP: 60 A0
+[   35.753980] snd-bebob fw1.0: Detect discontinuity of CIP: 78 B8
+[   36.253547] snd-bebob fw1.0: Detect discontinuity of CIP: C0 00
+[   36.752500] snd-bebob fw1.0: Detect discontinuity of CIP: 08 48
+[   37.255203] snd-bebob fw1.0: Detect discontinuity of CIP: B0 F0
+[  277.760550] snd-bebob fw1.0: Detect discontinuity of CIP: 40 80
+[  278.488972] snd-bebob fw1.0: Detect discontinuity of CIP: C0 00
+[  278.986290] snd-bebob fw1.0: Detect discontinuity of CIP: E0 20
+[  279.485998] snd-bebob fw1.0: Detect discontinuity of CIP: 18 58
+[  279.983838] snd-bebob fw1.0: Detect discontinuity of CIP: D0 10
+[  280.486776] snd-bebob fw1.0: Detect discontinuity of CIP: C0 00
+[  280.979487] snd-bebob fw1.0: Detect discontinuity of CIP: 30 70
+[  281.480952] snd-bebob fw1.0: Detect discontinuity of CIP: 78 B8
+[  281.975413] snd-bebob fw1.0: Detect discontinuity of CIP: 38 78
+[  282.475487] snd-bebob fw1.0: Detect discontinuity of CIP: 60 A0
+[  282.979446] snd-bebob fw1.0: Detect discontinuity of CIP: 88 C8
+[  283.472403] snd-bebob fw1.0: Detect discontinuity of CIP: 88 C8
+[  283.968484] snd-bebob fw1.0: Detect discontinuity of CIP: 68 A8
+[  284.471585] snd-bebob fw1.0: Detect discontinuity of CIP: 30 70
+[  284.562886] usb 3-4.1: reset high-speed USB device number 5 using
+xhci_hcd
+[  284.965508] snd-bebob fw1.0: Detect discontinuity of CIP: D0 10
+[  285.469348] snd-bebob fw1.0: Detect discontinuity of CIP: 68 A8
+[  285.965174] snd-bebob fw1.0: Detect discontinuity of CIP: 20 60
+[  285.981618] firewire_core 0000:05:01.0: phy config: new root=ffc1,
+gap_count=5
+[  290.103982] firewire_core 0000:05:01.0: phy config: new root=ffc1,
+gap_count=5
+I tried update the kernel with eoan-proposed I know run 5.3.20 and I
+have the same problem (the trace above is made with 5.3.20.
+
+First, I hope I report this the best way, really not sure here.
+
+If not, please tell me what to bring (files? logs?) and where (on this
+list? elsewhere?).
+
+I have spare time to investigate anything that could help here.
+
+
+Thanks!
+
 -- 
-2.20.1
+Jean-Paul Argudo
+
 
 _______________________________________________
 Alsa-devel mailing list
