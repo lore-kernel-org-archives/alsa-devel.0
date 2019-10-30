@@ -2,60 +2,112 @@ Return-Path: <SRS0=P70v=YX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B28CA9EC5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 10:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6300CA9EC5
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 10:51:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 624DA20862
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 10:10:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A26082087F
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 10:51:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Fo63ups0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 624DA20862
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DxlgVyfL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="Dz+JJHKf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YVXnjnbt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A26082087F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 940F2229F;
-	Wed, 30 Oct 2019 11:09:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 940F2229F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E9B7201E;
+	Wed, 30 Oct 2019 11:50:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E9B7201E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572430217;
-	bh=7bWXpWaKCYxMXBY9PPUExxdUoH58/yC7kZa81IsHyT4=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Fo63ups0r26fgLbznWXYAtdAoX5Kw2FXelxmXZiDnfC7n01o4+1/+5Q6vigFqIq4q
-	 NP1zocOZs0paeZ7sSSHFNLt0QMb6pUA3Rm8IVEgd9tLYh2vdV/J01EP2TVRrN7eD2v
-	 djFnUh86pGe1r/TiE0kggRQ+ZC4kqGIYD79edE0o=
+	s=default; t=1572432665;
+	bh=v9TyFp6cr81bmVz/ZEjfN+uN5TsgYFmwiPwS4g2/2wQ=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DxlgVyfLfkJbVnLMii5qj5P6U+d/GslHJsdYyjwHP1QUEZy/WIBPYEWDLzo2FPeXK
+	 Q0qHklsBPwujLcBLH5IXDzNVIyMXj98m56hv1tuM+d5vyPVLmzITP7T9qL8LK3w+q+
+	 A5Wug86ER2kAZZh5JloTmBX89xcZT9d79+5A8bhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18E1BF802BD;
-	Wed, 30 Oct 2019 11:09:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A583CF802A1;
+	Wed, 30 Oct 2019 11:50:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62BD6F80361; Wed, 30 Oct 2019 11:09:26 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ id 7D572F80361; Wed, 30 Oct 2019 11:50:12 +0100 (CET)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5942F802A1
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 11:09:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5942F802A1
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 039D6B323;
- Wed, 30 Oct 2019 10:09:23 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Wed, 30 Oct 2019 11:09:21 +0100
-Message-Id: <20191030100921.3826-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1120CF802A1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 11:50:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1120CF802A1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="Dz+JJHKf"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="YVXnjnbt"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 2AB9B21857;
+ Wed, 30 Oct 2019 06:50:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Wed, 30 Oct 2019 06:50:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm2; bh=CCPsVNDGGwm0FSgvGD/QsDzdTaT
+ m0U4wKUVI64Rle5c=; b=Dz+JJHKfyczo7tqVVG/F5Jdu2x0LC7p+P7p3o/V9y1f
+ I/nH+er7/HRF+R84rzExCAv5aoJe99FU8Tx84ntdTxRWmoTc2DKZtHHaXJ3LAw0M
+ aXMkhiA/UpPokZGAY013cnXZQEdcx8nUbKAIfB8IOfhVosRw6ScuBxQ52eBG0Cr4
+ CmTJNARhKMfUdUQvYEgwtCbpSLsNFwTL/EwVuwF2onVc5dKje6C3e5zCp7cvOROm
+ DqijtsS5DwQyQk4gE/n2E822YXIMxEB0QEByVm/1MeByLqAPO05OJQ1J92py4LFR
+ NjCB1VZmnPAE3SPQsRBXdvLRznH2mxjBG6Ni3DBAahA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=CCPsVN
+ DGGwm0FSgvGD/QsDzdTaTm0U4wKUVI64Rle5c=; b=YVXnjnbtiI4TG4V4RqY0/L
+ jN5A6/lSja/4SHg7W5bQgCxFBRND+QRwGRNXxyWoNwgDn4VYGbz8onaVwX7/NtpK
+ tJqt45zVOaf/7eK06Ihddj6pyFg0x1uP1cYZK3FMeV1+k82sj4qBD06NqclfEQjn
+ 6/AZxlpBKLtsAQClkV3+Y4P8Bbfb05on97/THa8AfPqImJgF7HT2wxfS3pdvcDRC
+ yTHd0M58RFKcmaxUZkNC8VpyO+VrKbYjjb4G8vMtNJlK9VFGBRxERM9wAmQJjnkv
+ P6aABtruuZAfszI3IQmw+WqFV3jYzpRp5/xMR8dbxsRIU1DWanlZ9A9V6ScnMATA
+ ==
+X-ME-Sender: <xms:3mq5XZUDs2k2H_nn4u66-nqmTq4494eNrydKK7vFeVJ-idZrLuJcjQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedruddtfedgvddtucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepvfgrkhgr
+ shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+ hjpheqnecukfhppedugedrfedrjeehrddukedunecurfgrrhgrmhepmhgrihhlfhhrohhm
+ pehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhpnecuvehluhhsthgvrhfuih
+ iivgeptd
+X-ME-Proxy: <xmx:3mq5XRsVGRZLEW6-SJ0ZliXlWAfBs4hF9-5MWImhymwUmbzqAOgKoQ>
+ <xmx:3mq5XYTy3AQuySjXOMlhMyEj7uXFTq1WUkG1ieowJOaR8hPHwDnC3w>
+ <xmx:3mq5XSnaN5lwn0D3aM892u3asfCxwNBrqz0_nh9HcIpteInJiVShjQ>
+ <xmx:32q5XXbCuqAR8BpyMkr0tzSI5f-63ZSOwoFQJAaIUJ_Q97jC0z3fug>
+Received: from workstation (ae075181.dynamic.ppp.asahi-net.or.jp [14.3.75.181])
+ by mail.messagingengine.com (Postfix) with ESMTPA id D779C80070;
+ Wed, 30 Oct 2019 06:50:04 -0400 (EDT)
+Date: Wed, 30 Oct 2019 19:50:02 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20191030105001.GA6313@workstation>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
+ Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+References: <20191030100921.3826-1-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191030100921.3826-1-tiwai@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
-Subject: [alsa-devel] [PATCH] ALSA: firewire-motu: Correct a typo in the
-	clock proc string
+Subject: Re: [alsa-devel] [PATCH] ALSA: firewire-motu: Correct a typo in the
+ clock proc string
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,36 +120,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Just fix a typo of "S/PDIF" in the clock name string.
+Hi,
 
-Fixes: 4638ec6ede08 ("ALSA: firewire-motu: add proc node to show current statuc of clock and packet formats")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/firewire/motu/motu-proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Oct 30, 2019 at 11:09:21AM +0100, Takashi Iwai wrote:
+> Just fix a typo of "S/PDIF" in the clock name string.
+> 
+> Fixes: 4638ec6ede08 ("ALSA: firewire-motu: add proc node to show current statuc of clock and packet formats")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/firewire/motu/motu-proc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/firewire/motu/motu-proc.c b/sound/firewire/motu/motu-proc.c
+> index b47ba818343f..187f6abd878c 100644
+> --- a/sound/firewire/motu/motu-proc.c
+> +++ b/sound/firewire/motu/motu-proc.c
+> @@ -16,7 +16,7 @@ static const char *const clock_names[] = {
+>  	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT] = "S/PDIF on optical interface",
+>  	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_A] = "S/PDIF on optical interface A",
+>  	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_B] = "S/PDIF on optical interface B",
+> -	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX] = "S/PCIF on coaxial interface",
+> +	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX] = "S/PDIF on coaxial interface",
+>  	[SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR] = "AESEBU on XLR interface",
+>  	[SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC] = "Word clock on BNC interface",
+>  	[SND_MOTU_CLOCK_SOURCE_SPH] = "Source packet header",
+> -- 
+> 2.16.4
 
-diff --git a/sound/firewire/motu/motu-proc.c b/sound/firewire/motu/motu-proc.c
-index b47ba818343f..187f6abd878c 100644
---- a/sound/firewire/motu/motu-proc.c
-+++ b/sound/firewire/motu/motu-proc.c
-@@ -16,7 +16,7 @@ static const char *const clock_names[] = {
- 	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT] = "S/PDIF on optical interface",
- 	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_A] = "S/PDIF on optical interface A",
- 	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_B] = "S/PDIF on optical interface B",
--	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX] = "S/PCIF on coaxial interface",
-+	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX] = "S/PDIF on coaxial interface",
- 	[SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR] = "AESEBU on XLR interface",
- 	[SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC] = "Word clock on BNC interface",
- 	[SND_MOTU_CLOCK_SOURCE_SPH] = "Source packet header",
--- 
-2.16.4
+Oops, indeed.
 
+Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+
+Thanks
+
+Takashi Sakamoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
