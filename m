@@ -2,56 +2,61 @@ Return-Path: <SRS0=P70v=YX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD6BACA9EAF
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 03:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75812CA9EC0
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 06:16:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D4942087E
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 03:33:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 669A02067D
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 06:16:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M++5nTdD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D4942087E
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ibDcyK25"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 669A02067D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06DE522EA;
-	Wed, 30 Oct 2019 04:32:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06DE522EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D9592104;
+	Wed, 30 Oct 2019 07:15:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D9592104
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572406411;
-	bh=GPgQmPwVbc5jyC22hS3xrJcN4qt9qEfZV2qvkYroZKU=;
-	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=M++5nTdDTx7jvtAa5m4o9j/PmLotNbPp9DUOsZBLFI65GSItVtcUOcYmS8Rqk/FUw
-	 RFYeD5w17pAKssFcD60TUj1F5G0i5Ia/bg3ARevuvvfTlCxsAtmtKnz3F5yBBgB1KJ
-	 LZMSrL+q92rh2dVkr8iRMkIAlvC+2aUxjK6y0/Bk=
+	s=default; t=1572416160;
+	bh=YNvgBe7zoBv7X38lXbiHha/Nwb7vZNDGX+h3rNnrl7g=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ibDcyK25IgrrAF3/TdyEwdPaeJ8ZDxJfMI6gP1bFGnTeYo3yKYWW3hTARfst1hWp3
+	 7kG2h6MW+oc9KluCFqKFuZfO962Kih94ErvIP31Pei/3CUHhnpJTNjRByTsWhsqcZd
+	 UFjl5V5jNHeWM51M3gFpgqBBPMQMhV83NEijnk/0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60E6EF802BD;
-	Wed, 30 Oct 2019 04:32:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F2C2F802BD;
+	Wed, 30 Oct 2019 07:15:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 807D3F80361; Wed, 30 Oct 2019 04:32:38 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 9AF0DF802A0
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 04:32:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AF0DF802A0
-MIME-Version: 1.0
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1572406354427948952-webhooks-bot@alsa-project.org>
-References: <1572406354427948952-webhooks-bot@alsa-project.org>
-Message-Id: <20191030033238.807D3F80361@alsa1.perex.cz>
-Date: Wed, 30 Oct 2019 04:32:38 +0100 (CET)
-Subject: [alsa-devel] axfer: break transmission of audio data frame when
- transmission backend queues no PCM event within timeout
+ id AB8EAF80361; Wed, 30 Oct 2019 07:15:07 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id E24C4F802A1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 07:15:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E24C4F802A1
+Date: 30 Oct 2019 15:14:58 +0900
+X-IronPort-AV: E=Sophos;i="5.68,246,1569250800"; d="scan'208";a="30384852"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 30 Oct 2019 15:14:58 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id AB765400265B;
+ Wed, 30 Oct 2019 15:14:58 +0900 (JST)
+Message-ID: <87a79idajh.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH] ASoC: rt5677-spi: fixup compile warning
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -64,37 +69,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso8859-7"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #31 was opened from takaswie:
-
-Axfer internally has the waiter abstraction for polling system call. This is used without explicit timeout for IRQ-based scheduling model. As a result, axfer process is corrupted to be blocked due to a call of polling system call when transmission backend has a bug to queue PCM event in I/O thread or hardware IRQ context.
-
-This patchset implements error reporting for such buggy backend. When call of polling system call returns with timeout, axfer reports it as a bug. The timeout is equivalent to the size of buffer. Precisely it should be the size of period, however the larger size is used to stabilize runtime for existent PCM plugins.
-
-```
-Takashi Sakamoto (6):
-  axfer: return the number of file descriptors for I/O events from select(2) waiter
-  axfer: fix to return error code when a call of select(2) fails
-  axfer: return ETIMEDOUT when no event occurs after waiter expiration
-  axfer: handle -ETIMEDOUT before handle mmap I/O operation
-  axfer: code refactoring for a helper function to wait for avail buffer space
-  axfer: handle -ETIMEDOUT before non-block I/O operation
-
- axfer/waiter-select.c           |  4 +--
- axfer/xfer-libasound-irq-mmap.c | 19 +++++++++-
- axfer/xfer-libasound-irq-rw.c   | 62 +++++++++++++++++++--------------
- axfer/xfer-libasound.c          | 21 +++++++----
- 4 files changed, 70 insertions(+), 36 deletions(-)
-```
-
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/31
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/31.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CkZyb206IEt1bmlub3JpIE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNv
+bT4KClRoaXMgcGF0Y2ggZml4dXAgdGhpcyB3YXJuaW5nCgpMSU5VWC9zb3VuZC9zb2MvY29kZWNz
+L3J0NTY3Ny1zcGkuYzogSW4gZnVuY3Rpb24goXJ0NTY3N19zcGlfcGNtX2Nsb3NlojoKTElOVVgv
+c291bmQvc29jL2NvZGVjcy9ydDU2Nzctc3BpLmM6MTE0OjMwOiB3YXJuaW5nOiB1bnVzZWQgdmFy
+aWFibGUgoXJ0ZKIgWy1XdW51c2VkLXZhcmlhYmxlXQogIHN0cnVjdCBzbmRfc29jX3BjbV9ydW50
+aW1lICpydGQgPSBzdWJzdHJlYW0tPnByaXZhdGVfZGF0YTsKICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgXn5+CgpGaXhlczogYTBlMGQxMzU0MjdjICgiQVNvQzogcnQ1Njc3OiBBZGQgYSBQ
+Q00gZGV2aWNlIGZvciBzdHJlYW1pbmcgaG90d29yZCB2aWEgU1BJIikKU2lnbmVkLW9mZi1ieTog
+S3VuaW5vcmkgTW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgotLS0K
+IHNvdW5kL3NvYy9jb2RlY3MvcnQ1Njc3LXNwaS5jIHwgMSAtCiAxIGZpbGUgY2hhbmdlZCwgMSBk
+ZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvcnQ1Njc3LXNwaS5jIGIv
+c291bmQvc29jL2NvZGVjcy9ydDU2Nzctc3BpLmMKaW5kZXggZGFjMTA5Ny4uM2FhM2VhNyAxMDA2
+NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9ydDU2Nzctc3BpLmMKKysrIGIvc291bmQvc29jL2Nv
+ZGVjcy9ydDU2Nzctc3BpLmMKQEAgLTExMSw3ICsxMTEsNiBAQCBzdGF0aWMgaW50IHJ0NTY3N19z
+cGlfcGNtX2Nsb3NlKAogCQlzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCwKIAkJ
+c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiB7Ci0Jc3RydWN0IHNuZF9zb2Nf
+cGNtX3J1bnRpbWUgKnJ0ZCA9IHN1YnN0cmVhbS0+cHJpdmF0ZV9kYXRhOwogCXN0cnVjdCBydDU2
+NzdfZHNwICpydDU2NzdfZHNwID0KIAkJCXNuZF9zb2NfY29tcG9uZW50X2dldF9kcnZkYXRhKGNv
+bXBvbmVudCk7CiAKLS0gCjIuNy40CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
