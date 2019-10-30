@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D77BCA9EAE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 01:34:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A584CA9EAE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 01:34:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9D762086A
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 01:34:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3A5B20862
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 01:34:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XiUsjAso"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9D762086A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cpH4HiVZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3A5B20862
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B75D2292;
-	Wed, 30 Oct 2019 02:33:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B75D2292
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F97A22E4;
+	Wed, 30 Oct 2019 02:34:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F97A22E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572399255;
-	bh=IsPZrD19MpMnB+eqLaihHtRjQx0ZXotn5p72NRzt6A4=;
+	s=default; t=1572399292;
+	bh=7oE1ge2QAZPV8M5LsxNUdx3kjnEEB7MANBcKXlHb5j4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XiUsjAsoQYrboJqePq+mwK2o6Y2+sLlDd7fEeZUpzU1ZK9HLs0M2VIqlNLGaxwL1M
-	 6pFz1l3vC52PaTN3ijspXCxsKHxMKyj9bT8vqnbXfFSmrFMTYzWJVGLFpPPxhIa4T8
-	 jcnZaupOKWULlQACGncyrSCsPYa1bL4ZPYtG00+M=
+	b=cpH4HiVZ25D2Do+FlmBLKOJqknddtIBrhUfqRzOMazEfH/OKlGtC6mVr8xLVNhUku
+	 s429rG5TkEJEf2ya+Y1O1skXmOfIx4h9ZY1fwcGY/vHbcobhspdRHjRQ5jl7wCGeox
+	 4BI5Qje2qTdjIlHI12Rer86n/inipgbyNOsOO5To=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FAD8F806F0;
-	Wed, 30 Oct 2019 02:27:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF70FF806FA;
+	Wed, 30 Oct 2019 02:27:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70D39F806F0; Wed, 30 Oct 2019 02:27:10 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2F5E2F806E9
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 02:27:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F5E2F806E9
-Date: 30 Oct 2019 10:27:04 +0900
-X-IronPort-AV: E=Sophos;i="5.68,245,1569250800"; d="scan'208";a="30138752"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 30 Oct 2019 10:27:04 +0900
+ id C9CA4F806FA; Wed, 30 Oct 2019 02:27:12 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7A697F800E7
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 02:27:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A697F800E7
+Date: 30 Oct 2019 10:27:08 +0900
+X-IronPort-AV: E=Sophos;i="5.68,245,1569250800"; d="scan'208";a="30353593"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 30 Oct 2019 10:27:08 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 147EE4136A86;
- Wed, 30 Oct 2019 10:27:04 +0900 (JST)
-Message-ID: <87o8xzc9av.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3EBCD400A0F7;
+ Wed, 30 Oct 2019 10:27:08 +0900 (JST)
+Message-ID: <87mudjc9ar.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +58,8 @@ In-Reply-To: <874kzrdo1x.wl-kuninori.morimoto.gx@renesas.com>
 References: <874kzrdo1x.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 resend 11/18] ASoC: soc-core: move
-	snd_soc_register_dai()
+Subject: [alsa-devel] [PATCH v2 resend 12/18] ASoC: soc-core: move
+	snd_soc_unregister_dais()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,108 +77,67 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch moves snd_soc_register_dai() next to
+This patch moves snd_soc_unregister_dais() next to
 snd_soc_register_dais().
-This is prepare for snd_soc_register_dais() cleanup.
+This is prepare for snd_soc_register_dais() cleanup
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 72 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 36 insertions(+), 36 deletions(-)
+ sound/soc/soc-core.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d05d95c..2de9848 100644
+index 2de9848..9595406 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2601,42 +2601,6 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
+@@ -2535,22 +2535,6 @@ static inline char *fmt_multiple_name(struct device *dev,
+ 	return devm_kstrdup(dev, dai_drv->name, GFP_KERNEL);
  }
  
- /**
-- * snd_soc_register_dais - Register a DAI with the ASoC core
+-/**
+- * snd_soc_unregister_dai - Unregister DAIs from the ASoC core
 - *
-- * @component: The component the DAIs are registered for
-- * @dai_drv: DAI driver to use for the DAIs
-- * @count: Number of DAIs
+- * @component: The component for which the DAIs should be unregistered
 - */
--static int snd_soc_register_dais(struct snd_soc_component *component,
--				 struct snd_soc_dai_driver *dai_drv,
--				 size_t count)
+-static void snd_soc_unregister_dais(struct snd_soc_component *component)
 -{
--	struct device *dev = component->dev;
--	struct snd_soc_dai *dai;
--	unsigned int i;
--	int ret;
+-	struct snd_soc_dai *dai, *_dai;
 -
--	dev_dbg(dev, "ASoC: dai register %s #%zu\n", dev_name(dev), count);
--
--	for (i = 0; i < count; i++) {
--
--		dai = soc_add_dai(component, dai_drv + i, count == 1 &&
--				  !component->driver->non_legacy_dai_naming);
--		if (dai == NULL) {
--			ret = -ENOMEM;
--			goto err;
--		}
+-	for_each_component_dais_safe(component, dai, _dai) {
+-		dev_dbg(component->dev, "ASoC: Unregistered DAI '%s'\n",
+-			dai->name);
+-		list_del(&dai->list);
 -	}
--
--	return 0;
--
--err:
--	snd_soc_unregister_dais(component);
--
--	return ret;
 -}
 -
--/**
-  * snd_soc_register_dai - Register a DAI dynamically & create its widgets
-  *
-  * @component: The component the DAIs are registered for
-@@ -2679,6 +2643,42 @@ int snd_soc_register_dai(struct snd_soc_component *component,
- }
+ /* Create a DAI and add it to the component's DAI list */
+ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
+ 	struct snd_soc_dai_driver *dai_drv,
+@@ -2644,6 +2628,22 @@ int snd_soc_register_dai(struct snd_soc_component *component,
  EXPORT_SYMBOL_GPL(snd_soc_register_dai);
  
-+/**
-+ * snd_soc_register_dais - Register a DAI with the ASoC core
+ /**
++ * snd_soc_unregister_dai - Unregister DAIs from the ASoC core
 + *
-+ * @component: The component the DAIs are registered for
-+ * @dai_drv: DAI driver to use for the DAIs
-+ * @count: Number of DAIs
++ * @component: The component for which the DAIs should be unregistered
 + */
-+static int snd_soc_register_dais(struct snd_soc_component *component,
-+				 struct snd_soc_dai_driver *dai_drv,
-+				 size_t count)
++static void snd_soc_unregister_dais(struct snd_soc_component *component)
 +{
-+	struct device *dev = component->dev;
-+	struct snd_soc_dai *dai;
-+	unsigned int i;
-+	int ret;
++	struct snd_soc_dai *dai, *_dai;
 +
-+	dev_dbg(dev, "ASoC: dai register %s #%zu\n", dev_name(dev), count);
-+
-+	for (i = 0; i < count; i++) {
-+
-+		dai = soc_add_dai(component, dai_drv + i, count == 1 &&
-+				  !component->driver->non_legacy_dai_naming);
-+		if (dai == NULL) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
++	for_each_component_dais_safe(component, dai, _dai) {
++		dev_dbg(component->dev, "ASoC: Unregistered DAI '%s'\n",
++			dai->name);
++		list_del(&dai->list);
 +	}
-+
-+	return 0;
-+
-+err:
-+	snd_soc_unregister_dais(component);
-+
-+	return ret;
 +}
 +
- static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	const struct snd_soc_component_driver *driver, struct device *dev)
- {
++/**
+  * snd_soc_register_dais - Register a DAI with the ASoC core
+  *
+  * @component: The component the DAIs are registered for
 -- 
 2.7.4
 
