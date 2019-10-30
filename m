@@ -2,81 +2,66 @@ Return-Path: <SRS0=P70v=YX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2BEDCA9EC5
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 14:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DABCCA9EC5
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 14:40:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79C5220578
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 14:21:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 27F2020679
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Oct 2019 14:40:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qx594LlR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="EC5kaQpu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79C5220578
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nsnv/3KU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27F2020679
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B06222C8;
-	Wed, 30 Oct 2019 15:20:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B06222C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EF0821F8;
+	Wed, 30 Oct 2019 15:39:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EF0821F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572445271;
-	bh=fCxfDfdL82Mez5n5l5VIuZLo4OD9Eu1e+ocSd3QV/80=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=qx594LlRCEIhB79fVBCXZiz7jT+z1pphFtxqtM2zRKw3GFQinQsbtGV/l0VnmGB2E
-	 u+1m1kAu/hULsPck9MigC47f7zNsT3ZLSeZnfujDP1FqFmldOZ8T2/e9l53hyHbIjH
-	 RV8W1yzpYLC3r7en1dhKnSKFtAfcZwBwJqmw02yw=
+	s=default; t=1572446400;
+	bh=YtRP7JUugsrna70n1iCsWO8LXujhBZgcZ+jK7p8viz4=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nsnv/3KUfYEOTZIUGW10h5JKiWY4fEXtdhrA3acFvQH7KkcFyVIxHzEiK1q6xiK18
+	 ULBG0mBZPFDbUKEQxG5Ihco6I3xe9ZYySNK5bZ0uFrYkrXpC+9T3QJFX44vqEM0mhR
+	 9bFPkAPPUt0VA/p+R9AJ5Sszf/AZ60iusQpvZh+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B7AFF8048E;
-	Wed, 30 Oct 2019 15:19:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D4FFF802BD;
+	Wed, 30 Oct 2019 15:39:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E7ACF8015A; Wed, 30 Oct 2019 15:16:40 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 37050F80361; Wed, 30 Oct 2019 15:36:59 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 110B3F802A1
- for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 15:16:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 110B3F802A1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="EC5kaQpu"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=RrLCG2xyQki8m8qtxkI6aM6uYjfEvxOhe+gidiqj6lw=; b=EC5kaQpuQ61t
- m/Q6CpMKWy1bjs/gLb9I88xxAAR9Ij/2hQV5+U2ifRsuyLHG+dOG84SHCKAScEbNc8ZfGWtTySOlS
- 2n1UH+HoNzp4OE/V5UM2clVDJ7EAZ9h6PbrfHcV0ZVp5WVE/x+5WeYmYmw2IYxZcuPZsPiK++UhF2
- Chp7g=;
-Received: from [195.11.164.221] (helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1iPolz-0005Cf-3i; Wed, 30 Oct 2019 14:16:31 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id A477BD020A6; Wed, 30 Oct 2019 14:16:30 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Shuming Fan <shumingf@realtek.com>
-In-Reply-To: <20191030085556.14351-1-shumingf@realtek.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20191030141630.A477BD020A6@fitzroy.sirena.org.uk>
-Date: Wed, 30 Oct 2019 14:16:30 +0000 (GMT)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- derek.fang@realtek.com, sathya.prakash.m.r@intel.com, flove@realtek.com
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: rt5682: add button delay
-	device property" to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15771F802A0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Oct 2019 15:36:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15771F802A0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id B433FB6B2;
+ Wed, 30 Oct 2019 14:36:40 +0000 (UTC)
+Date: Wed, 30 Oct 2019 15:36:40 +0100
+Message-ID: <s5h4kzqgv0n.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+In-Reply-To: <20191030135009.GJ1208@intel.com>
+References: <20191029191050.GF1208@intel.com> <s5himo7i89i.wl-tiwai@suse.de>
+ <20191030135009.GJ1208@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [alsa-devel] pcm_lock deadlock
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,80 +74,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
-
-   ASoC: dt-bindings: rt5682: add button delay device property
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 059c67f11c897a10e447d9802ace1a2069ae1b83 Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Wed, 30 Oct 2019 16:55:56 +0800
-Subject: [PATCH] ASoC: dt-bindings: rt5682: add button delay device property
-
-The btndet-delay device property could control the HW debounce time.
-It is easy to adjust the sensitivity of push button.
-
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20191030085556.14351-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/sound/rt5682.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/rt5682.txt b/Documentation/devicetree/bindings/sound/rt5682.txt
-index 312e9a129530..30e927a28369 100644
---- a/Documentation/devicetree/bindings/sound/rt5682.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5682.txt
-@@ -27,6 +27,11 @@ Optional properties:
- 
- - realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
- 
-+- realtek,btndet-delay
-+  The debounce delay for push button.
-+  The delay time is realtek,btndet-delay value multiple of 8.192 ms.
-+  If absent, the default is 16.
-+
- Pins on the device (for linking into audio routes) for RT5682:
- 
-   * DMIC L1
-@@ -47,4 +52,5 @@ rt5682 {
- 	realtek,dmic1-data-pin = <1>;
- 	realtek,dmic1-clk-pin = <1>;
- 	realtek,jd-src = <1>;
-+	realtek,btndet-delay = <16>;
- };
--- 
-2.20.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gV2VkLCAzMCBPY3QgMjAxOSAxNDo1MDowOSArMDEwMCwKVmlsbGUgU3lyasOkbMOkIHdyb3Rl
+Ogo+IAo+IE9uIFR1ZSwgT2N0IDI5LCAyMDE5IGF0IDA5OjUyOjU3UE0gKzAxMDAsIFRha2FzaGkg
+SXdhaSB3cm90ZToKPiA+IE9uIFR1ZSwgMjkgT2N0IDIwMTkgMjA6MTA6NTAgKzAxMDAsCj4gPiBG
+cm9tOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4gPiBTdWJqZWN0OiBbUEFUQ0hdIEFM
+U0E6IGhkYSAtIEZpeCBtdXRleCBkZWFkbG9jayBpbiBIRE1JIGNvZGVjIGRyaXZlcgo+ID4gCj4g
+PiBUaGUgY29tbWl0IGFkZTQ5ZGIzMzdhOSAoIkFMU0E6IGhkYS9oZG1pIC0gQWxsb3cgYXVkaW8g
+Y29tcG9uZW50IGZvcgo+ID4gQU1EL0FUSSBhbmQgTnZpZGlhIEhETUkiKSBpbnRyb2R1Y2VkIHRo
+ZSBzcGVjLT5wY21fbG9jayBtdXRleCBsb2NrIHRvCj4gPiB0aGUgd2hvbGUgZ2VuZXJpY19oZG1p
+X2luaXQoKSBmdW5jdGlvbiBmb3IgYXZvaWRpbmcgdGhlIHJhY2Ugd2l0aCB0aGUKPiA+IGF1ZGlv
+IGNvbXBvbmVudCByZWdpc3RyYXRpb24uICBIb3dldmVyLCB0aGlzIGNhdXNlZCBhIGRlYWQgbG9j
+ayB3aGVuCj4gPiB0aGUgdW5zb2xpY2l0ZWQgZXZlbnQgaXMgaGFuZGxlZCB3aXRob3V0IHRoZSBh
+dWRpbyBjb21wb25lbnQsIGFzIHRoZQo+ID4gY29kZWMgZ2V0cyBydW50aW1lLXJlc3VtZWQgaW4g
+aGRtaV9wcmVzZW50X3NlbnNlKCkgd2hpY2ggaXMgYWxyZWFkeQo+ID4gaW5zaWRlIHRoZSBzcGVj
+LT5wY21fbG9jayBpbiBpdHMgY2FsbGVyLgo+ID4gCj4gPiBGb3IgYXZvaWRpbmcgdGhpcyBkZWFk
+bG9jaywgYWRkIGEgbmV3IG11dGV4IG9ubHkgZm9yIHRoZSBhdWRpbwo+ID4gY29tcG9uZW50IGJp
+bmRpbmcgdGhhdCBpcyB1c2VkIGluIGJvdGggZ2VuZXJpY19oZG1pX2luaXQoKSBhbmQgdGhlCj4g
+PiBhdWRpbyBub3RpZmllciByZWdpc3RyYXRpb24gd2hlcmUgdGhlIGphY2sgY2FsbGJhY2tzIGFy
+ZSBoYW5kbGVkIC8KPiA+IHJlLXJlZ2lzdGVyZWQuCj4gPiAKPiA+IEZpeGVzOiBhZGU0OWRiMzM3
+YTkgKCJBTFNBOiBoZGEvaGRtaSAtIEFsbG93IGF1ZGlvIGNvbXBvbmVudCBmb3IgQU1EL0FUSSBh
+bmQgTnZpZGlhIEhETUkiKQo+ID4gUmVwb3J0ZWQtYnk6IFZpbGxlIFN5cmrDpGzDpCA8dmlsbGUu
+c3lyamFsYUBsaW51eC5pbnRlbC5jb20+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkg
+PHRpd2FpQHN1c2UuZGU+Cj4gPiAtLS0KPiA+ICBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyB8
+IDkgKysrKystLS0tCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgNCBkZWxl
+dGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5j
+IGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPiA+IGluZGV4IDc5NWNiZGEzMmNiYi4uZDli
+NWJhMzYxNDA5IDEwMDY0NAo+ID4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKPiA+
+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jCj4gPiBAQCAtMTQ1LDYgKzE0NSw3IEBA
+IHN0cnVjdCBoZG1pX3NwZWMgewo+ID4gIAlzdHJ1Y3Qgc25kX2FycmF5IHBpbnM7IC8qIHN0cnVj
+dCBoZG1pX3NwZWNfcGVyX3BpbiAqLwo+ID4gIAlzdHJ1Y3QgaGRtaV9wY20gcGNtX3JlY1sxNl07
+Cj4gPiAgCXN0cnVjdCBtdXRleCBwY21fbG9jazsKPiA+ICsJc3RydWN0IG11dGV4IGJpbmRfbG9j
+azsgLyogZm9yIGF1ZGlvIGNvbXBvbmVudCBiaW5kaW5nICovCj4gCj4gTWlzc2luZyBtdXRleF9p
+bml0KCkgZm9yIHRoaXMgZ3V5LgoKT3VjaCwgZml4ZWQgbm93LgoKPiBUZXN0ZWQtYnk6IFZpbGxl
+IFN5cmrDpGzDpCA8dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20+CgpUaGFua3MgZm9yIHF1
+aWNrIHRlc3RpbmcuICBOb3cgcHVzaGVkIG91dCB0aGUgcmlnaHQgdmVyc2lvbi4KSSdsbCBpbmNs
+dWRlIHRoaXMgdG8gdGhlIG5leHQgcHVsbCByZXF1ZXN0IHRvIDUuNC1yYy4KCgpUYWthc2hpCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
