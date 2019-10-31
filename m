@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C313CA9EC3
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 12:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA92DCA9EC3
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 12:13:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A19CC2080F
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 12:10:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FEB72080F
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 12:13:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u4/sUxsz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A19CC2080F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LhUfLsK5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FEB72080F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D01A520D5;
-	Thu, 31 Oct 2019 13:09:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D01A520D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 919EF2098;
+	Thu, 31 Oct 2019 13:12:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 919EF2098
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572523804;
-	bh=RkswG6uL0Qqpp5UXidwXoQ7oDSmsjgxQ4EMoK/0qGeE=;
+	s=default; t=1572524025;
+	bh=VbLj43p+fpL8jFd/uQrjkjsG++z0cw1xEUS3fytXD98=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=u4/sUxszdJ63bQhiOga2zuuu2DxxoL4jKJQBuEO3FjskqkP9yKfblh9zQ5nUPiqJR
-	 vMBN8Pwa9r9kaVR16NUgHUMT7fbvkBfHJKaUxsNiuC7MuQ/+F5TopOmBDnqz3kFSgE
-	 wG0QFPoSfvEoJHgWwSOtL+w1zMbEGsHNR0x3UpkQ=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32FEAF80633;
-	Thu, 31 Oct 2019 13:07:23 +0100 (CET)
+	b=LhUfLsK5QkAPLXHFCknU9hNwF7psllhPCloknIQGu96O9wudm7UwSEJ4xo7LjDhHM
+	 ESr1ZHmTUXNOsPqDmkcqJMMTgtScEj+BWf0Pm4d+giUDafWJ1g8DB/lejqB77bNoaf
+	 jeQz4GjOgAH8kDyDZDH819MFPIfbXW2pwQDI5v5o=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EFFEF805FD;
+	Thu, 31 Oct 2019 13:12:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8126EF802A0; Thu, 31 Oct 2019 13:04:48 +0100 (CET)
+ id 2804FF8015A; Thu, 31 Oct 2019 13:05:02 +0100 (CET)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BC2EF803D7
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 12:54:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BC2EF803D7
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8FC9F8044B
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 12:54:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8FC9F8044B
 Authenticated-By: 
-X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID x9VBsf16002000,
+X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID x9VBspv3002015,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (RTITCAS11.realtek.com.tw[172.21.6.12])
- by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id x9VBsf16002000
+ by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id x9VBspv3002015
  (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 31 Oct 2019 19:54:41 +0800
+ Thu, 31 Oct 2019 19:54:51 +0800
 Received: from localhost.localdomain (172.22.102.1) by
  RTITCAS11.realtek.com.tw (172.21.6.12) with Microsoft SMTP Server id
- 14.3.468.0; Thu, 31 Oct 2019 19:54:40 +0800
+ 14.3.468.0; Thu, 31 Oct 2019 19:54:50 +0800
 From: <shumingf@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Date: Thu, 31 Oct 2019 19:54:36 +0800
-Message-ID: <20191031115436.21055-1-shumingf@realtek.com>
+Date: Thu, 31 Oct 2019 19:54:46 +0800
+Message-ID: <20191031115446.21108-1-shumingf@realtek.com>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 X-Originating-IP: [172.22.102.1]
 Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
  lars@metafoo.de, tzungbi@google.com, derek.fang@realtek.com,
  Shuming Fan <shumingf@realtek.com>, flove@realtek.com
-Subject: [alsa-devel] [PATCH 4/5] ASoC: rt1011: add the range check for
-	temperature_calib from device property
+Subject: [alsa-devel] [PATCH 5/5] ASoC: rt1011: some minor changes to
+	improve readability
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,28 +85,56 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Shuming Fan <shumingf@realtek.com>
 
-The driver will check the range for temperature_calib.
-It should be from 1 to 255.
+There is no other code use the RT1011_INIT_REG_LEN definition,
+except rt1011_reg_init().
+Hence, we remove it and fix the typo.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
- sound/soc/codecs/rt1011.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt1011.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 2f1de933f3ac..f2c581b66d32 100644
+index f2c581b66d32..2552073e54ce 100644
 --- a/sound/soc/codecs/rt1011.c
 +++ b/sound/soc/codecs/rt1011.c
-@@ -2341,7 +2341,8 @@ static void rt1011_calibration_work(struct work_struct *work)
- 	rt1011_reg_init(component);
+@@ -61,7 +61,6 @@ static const struct reg_sequence init_list[] = {
+ 	{ RT1011_DAC_SET_1, 0xe702 },
+ 	{ RT1011_DAC_SET_3, 0x2004 },
+ };
+-#define RT1011_INIT_REG_LEN ARRAY_SIZE(init_list)
  
- 	/* Apply temperature and calibration data from device property */
--	if (rt1011->temperature_calib) {
-+	if (rt1011->temperature_calib <= 0xff &&
-+		rt1011->temperature_calib > 0) {
- 		snd_soc_component_update_bits(component,
- 			RT1011_STP_INITIAL_RESISTANCE_TEMP, 0x3ff,
- 			(rt1011->temperature_calib << 2));
+ static const struct reg_default rt1011_reg[] = {
+ 	{0x0000, 0x0000},
+@@ -684,7 +683,8 @@ static int rt1011_reg_init(struct snd_soc_component *component)
+ {
+ 	struct rt1011_priv *rt1011 = snd_soc_component_get_drvdata(component);
+ 
+-	regmap_multi_reg_write(rt1011->regmap, init_list, RT1011_INIT_REG_LEN);
++	regmap_multi_reg_write(rt1011->regmap,
++		init_list, ARRAY_SIZE(init_list));
+ 	return 0;
+ }
+ 
+@@ -1773,7 +1773,8 @@ static int rt1011_set_component_pll(struct snd_soc_component *component,
+ 
+ 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
+ 	if (ret < 0) {
+-		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
++		dev_err(component->dev, "Unsupported input clock %d\n",
++			freq_in);
+ 		return ret;
+ 	}
+ 
+@@ -2384,7 +2385,7 @@ static int rt1011_i2c_probe(struct i2c_client *i2c,
+ 
+ 	rt1011 = devm_kzalloc(&i2c->dev, sizeof(struct rt1011_priv),
+ 				GFP_KERNEL);
+-	if (rt1011 == NULL)
++	if (!rt1011)
+ 		return -ENOMEM;
+ 
+ 	i2c_set_clientdata(i2c, rt1011);
 -- 
 2.23.0
 
