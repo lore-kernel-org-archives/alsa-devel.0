@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C7A3CA9ECB
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF205CA9ECB
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:36:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B583A217F9
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:35:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6696D20862
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:36:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lIS8c7cw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="AJBAWICG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B583A217F9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ohdwQZsx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="KsXd+39J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6696D20862
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 777A420BC;
-	Thu, 31 Oct 2019 14:34:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 777A420BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39CD62071;
+	Thu, 31 Oct 2019 14:35:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39CD62071
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572528927;
-	bh=a1k2Qy11v7OIfs0xPqtZTrXuQSnpF8TwQwFzXQKjhds=;
+	s=default; t=1572528974;
+	bh=dwPHE7Dx26l/rWLfaTr8n8eJHeadsvuYnYZi9hZ0+8w=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=lIS8c7cwcZBGDFQ6E4w3DzaeDq0qnEXpwRordbmRnBpWTOE62Y434GAh9gMzg+3Zg
-	 2DeZFY1Ae15aRyJeOSnE+YwuJ8f3dW4fftlNb5auJvhyJXP8PAFWHjRMsGAfSaC1cP
-	 9jujIkkor2DRloZJYdQRCgka0BChvomPt+ttaGi8=
+	b=ohdwQZsxaJeOHdWiM4krn7RIqjEtdk39bO2O6Xpa49LuWC7xUFg7d/GeU8XPM0CNE
+	 UenNTKK6GdtpT30wbFhR/p8Cy4kwpW8xGlulek78EsuDvA70BPmaZr/D9+8TeQK/F7
+	 zSPzJ0pbAD3pa0eJccr0FmolYIGkb4mFsiveBMfk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 657EFF8045D;
-	Thu, 31 Oct 2019 14:33:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FF91F805FB;
+	Thu, 31 Oct 2019 14:33:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F4E3F8015A; Thu, 31 Oct 2019 14:33:39 +0100 (CET)
+ id 3C213F805FC; Thu, 31 Oct 2019 14:33:44 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A618F8036C
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 14:23:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A618F8036C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01E4DF80394
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 14:23:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01E4DF80394
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="AJBAWICG"
+ header.b="KsXd+39J"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=EZPBHIwFt6RWqzzzibj/rKupl1br5ijmO9r5jrR9awQ=; b=AJBAWICG2W1b
- Uu7HUZ1hNEVxnW2OGGxCjbd7LWdT+QbyTUQvh5TQFctYLqb+3cqujGmDzQb7prAaqwhhuYg+pHlRY
- oO+QXspH9ivCCuIDeHUKDQue7r/O6ENkRX/n4Cx/00a7eqDaPkZMqJ039JN7gT5UfYL0N8/GDbVam
- J2U/Y=;
+ List-Archive; bh=+33TbxMHFj5pAl/K9V+w7oGZgPDx7JmyBow3N/qBMjc=; b=KsXd+39J3PE7
+ cTXwX2aQf53nCWtJ+Sql9VwhtzZ8Fe9mFSapqWnBdVPXKfd7BVdMHGfr5OCXa+h/sYQoHJV1Lrcv2
+ CFJhrz/CN/qgPV5lMhGAHS+pWjBJkMOEdnghuKOLQxC8Z71x0rttVuKW337ihvKYrH8gEaoFsKb3u
+ I8Wwg=;
 Received: from [91.217.168.176] (helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1iQAQK-0007oS-D6; Thu, 31 Oct 2019 13:23:36 +0000
+ id 1iQAQK-0007oX-Ok; Thu, 31 Oct 2019 13:23:36 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 14521D020AA; Thu, 31 Oct 2019 13:23:36 +0000 (GMT)
+ id 61936D020AF; Thu, 31 Oct 2019 13:23:36 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Shuming Fan <shumingf@realtek.com>
-In-Reply-To: <20191031115446.21108-1-shumingf@realtek.com>
+In-Reply-To: <20191031115414.20951-1-shumingf@realtek.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191031132336.14521D020AA@fitzroy.sirena.org.uk>
+Message-Id: <20191031132336.61936D020AF@fitzroy.sirena.org.uk>
 Date: Thu, 31 Oct 2019 13:23:36 +0000 (GMT)
 Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
  lars@metafoo.de, lgirdwood@gmail.com, tzungbi@google.com,
  Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, flove@realtek.com
-Subject: [alsa-devel] Applied "ASoC: rt1011: some minor changes to improve
-	readability" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: rt1011: improve the
+	rt1011_set_dai_fmt() function" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt1011: some minor changes to improve readability
+   ASoC: rt1011: improve the rt1011_set_dai_fmt() function
 
 has been applied to the asoc tree at
 
@@ -122,63 +122,57 @@ to this mail.
 Thanks,
 Mark
 
-From 683b85152e3606f4d3145b99e2df4d6eaeb758d0 Mon Sep 17 00:00:00 2001
+From 5cf93491ff98cff0d2f9725e7c44e0bd38325697 Mon Sep 17 00:00:00 2001
 From: Shuming Fan <shumingf@realtek.com>
-Date: Thu, 31 Oct 2019 19:54:46 +0800
-Subject: [PATCH] ASoC: rt1011: some minor changes to improve readability
+Date: Thu, 31 Oct 2019 19:54:14 +0800
+Subject: [PATCH] ASoC: rt1011: improve the rt1011_set_dai_fmt() function
 
-There is no other code use the RT1011_INIT_REG_LEN definition,
-except rt1011_reg_init().
-Hence, we remove it and fix the typo.
+If there is a wrong format setting,
+the driver will goto the end of the function directly.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20191031115446.21108-1-shumingf@realtek.com
+Link: https://lore.kernel.org/r/20191031115414.20951-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1011.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt1011.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index f2c581b66d32..2552073e54ce 100644
+index 8a74f374d779..57a3a34b5f18 100644
 --- a/sound/soc/codecs/rt1011.c
 +++ b/sound/soc/codecs/rt1011.c
-@@ -61,7 +61,6 @@ static const struct reg_sequence init_list[] = {
- 	{ RT1011_DAC_SET_1, 0xe702 },
- 	{ RT1011_DAC_SET_3, 0x2004 },
- };
--#define RT1011_INIT_REG_LEN ARRAY_SIZE(init_list)
- 
- static const struct reg_default rt1011_reg[] = {
- 	{0x0000, 0x0000},
-@@ -684,7 +683,8 @@ static int rt1011_reg_init(struct snd_soc_component *component)
- {
- 	struct rt1011_priv *rt1011 = snd_soc_component_get_drvdata(component);
- 
--	regmap_multi_reg_write(rt1011->regmap, init_list, RT1011_INIT_REG_LEN);
-+	regmap_multi_reg_write(rt1011->regmap,
-+		init_list, ARRAY_SIZE(init_list));
- 	return 0;
- }
- 
-@@ -1773,7 +1773,8 @@ static int rt1011_set_component_pll(struct snd_soc_component *component,
- 
- 	ret = rl6231_pll_calc(freq_in, freq_out, &pll_code);
- 	if (ret < 0) {
--		dev_err(component->dev, "Unsupport input clock %d\n", freq_in);
-+		dev_err(component->dev, "Unsupported input clock %d\n",
-+			freq_in);
- 		return ret;
+@@ -1631,6 +1631,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
++		goto _set_fmt_err_;
  	}
  
-@@ -2384,7 +2385,7 @@ static int rt1011_i2c_probe(struct i2c_client *i2c,
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+@@ -1641,6 +1642,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
++		goto _set_fmt_err_;
+ 	}
  
- 	rt1011 = devm_kzalloc(&i2c->dev, sizeof(struct rt1011_priv),
- 				GFP_KERNEL);
--	if (rt1011 == NULL)
-+	if (!rt1011)
- 		return -ENOMEM;
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -1657,6 +1659,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
++		goto _set_fmt_err_;
+ 	}
  
- 	i2c_set_clientdata(i2c, rt1011);
+ 	switch (dai->id) {
+@@ -1674,6 +1677,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		ret = -EINVAL;
+ 	}
+ 
++_set_fmt_err_:
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ 	return ret;
+ }
 -- 
 2.20.1
 
