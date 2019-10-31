@@ -7,54 +7,106 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA626CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 10:12:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E970CCA9EA0
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 10:18:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AF282184C
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 10:12:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A420222C2
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 10:18:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XJcjha0j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AF282184C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q57WLboS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cerno.tech header.i=@cerno.tech header.b="kqiwf0p2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C+ziwgP4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A420222C2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A4B5176C;
-	Mon,  4 Nov 2019 11:11:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A4B5176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E214176C;
+	Mon,  4 Nov 2019 11:17:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E214176C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572862332;
-	bh=l16DC9oLR0srj/MW7hglrzRLCTWvFTCoCU9dmfQV8CY=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1572862710;
+	bh=pV+tsBAUILT6q3yFCKMYBC2KWeb9P5Kg4QTmqFP2q20=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=XJcjha0jvKuYsdmZmV4eaezvZZ0MsEuLcWs307SLTOnMp9uU4NrPw9qAQVMIrrE9S
-	 c/9kJ8CDVTZsIORQbzNBcY2X5yy65G48PVtahfHwUJMoXMJ/KWYlqevNC0kRi+kQoG
-	 k5HlUgulBN7CsGnY3VsqqdP95tybE70yfxhJhi50=
+	b=Q57WLboSd12aUNtEK95zAzhf/aAoQx/eYS2kMurFikyA4O0IwvLrz+34VgGEe+cFT
+	 +aDnIR3YkR1XyNOAu9oDcJKJ2XS2mYskac7E5DQNoal6KG4XHjC0Hy8ENfvBLEvfuz
+	 3ooeVlunE0u6uAaBRzbi/rLMZKrCO5DjYeF2qoGM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C58AF80321;
-	Mon,  4 Nov 2019 11:11:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 456A8F80321;
+	Mon,  4 Nov 2019 11:17:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97F95F803F4; Mon,  4 Nov 2019 11:11:20 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ id 35515F8036C; Thu, 31 Oct 2019 14:57:27 +0100 (CET)
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com
+ [66.111.4.224])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1227DF8015B
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 11:11:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1227DF8015B
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 09329B3EF
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 10:11:16 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Mon,  4 Nov 2019 11:11:15 +0100
-Message-Id: <20191104101115.27311-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: pcm: Fix missing check of the new
-	non-cached buffer type
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63B4CF8015A
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 14:47:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63B4CF8015A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="kqiwf0p2"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="C+ziwgP4"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailnew.nyi.internal (Postfix) with ESMTP id DFFD8537E;
+ Thu, 31 Oct 2019 09:47:17 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute3.internal (MEProxy); Thu, 31 Oct 2019 09:47:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ from:to:cc:subject:date:message-id:mime-version:content-type
+ :content-transfer-encoding; s=fm1; bh=mxOfBSFmMtNDkPSOJie/vgVchS
+ SSrW9932xKMGBkwl4=; b=kqiwf0p2+WFRFjYSGqu+RWMGsO6fuvkeG4l6AOf2hH
+ OmBGK9yrr6PzHVze2juELULcdBZKNE6ppkVMpjVzUf8Zfoy+vY4/5FQ0SFfCToZT
+ G0poaGByzujt3yA+JN/NtOgTpGalF4Ihcb2jCKziKqILdrzeMCDByYrRZThm/aD7
+ Qr87hNHdk95MBJ1sCWm32Yfpg21QiqPCIS5A+JkJc08tLZF4bhW2XtLGqlsleFQ3
+ oImk3TgEhDipO5AGiE+7EbOmqLkYQywJai1injDvNsFEAXhaZTZivmX8vhjfBi+8
+ i+7FnBQyqLdvbLXBbdv+EFZ1Jscbnt6VzqGwJfan90qA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:content-type
+ :date:from:message-id:mime-version:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=mxOfBS
+ FmMtNDkPSOJie/vgVchSSSrW9932xKMGBkwl4=; b=C+ziwgP4Lq6S/b2UlYclsf
+ cuQbCIPXiREKnSeouyyA3A1XQPJ/QR6pw7welKc4QwKwFCgvWeE6UbbuN4HvThsN
+ cflRjsLtfN8pFsvQDqNpVC5pTJrhJZ//A0qmPYGzzKxbzC7PbSmrRli5cU8rVr1o
+ Mx8UbWcCSKlw75PxnYQaGdfHVAHhHvKp5SYbsLeiP0LM4poZmczk89Gs/gb9bT0V
+ aS2mlm51A7AICQQSGkOKvlIWHHwk4OVq8PX0MJWVKPrR3jO/JuhC1924OQm4yqqe
+ +VTZI7I2pDcttJdktxnpe7S9lfVhxyJma0NBFq77JX2SZyv88axtuzIhpSGoa6AA
+ ==
+X-ME-Sender: <xms:5OW6XXsjKac-cLE5jiB5Gs6KEGi32dXpWIY5NfBWZcKEzC1f9mghQA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedruddthedgheegucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhephffvufffkffogggtgfesthekredtredtjeenucfhrhhomhepofgrgihimhgv
+ ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepkedvrd
+ dvheegrdegrddufeeknecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggv
+ rhhnohdrthgvtghhnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:5OW6XWJ9JCshUvBTeglksUS7tvVeTJb8YJ9DgWWGgrtEgodaA7PZZQ>
+ <xmx:5OW6XS1WFigLB_FaKpA_heus3FTGuteKmv2H7_LDuxMpkZKNutnlOQ>
+ <xmx:5OW6XekB3NUWGy1mc_3LIMg-beiVCqYpgOoFF6Fuz95srIDgSFRl_w>
+ <xmx:5eW6XQG10NOZThzujco-9w-20MKWRf05yDNh3SsBIuZ5nGpUwR9IYg>
+Received: from localhost (lns-bzn-32-82-254-4-138.adsl.proxad.net
+ [82.254.4.138])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 7B85A3060065;
+ Thu, 31 Oct 2019 09:47:16 -0400 (EDT)
+From: Maxime Ripard <maxime@cerno.tech>
+To: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, broonie@kernel.org,
+ lgirdwood@gmail.com
+Date: Thu, 31 Oct 2019 14:47:13 +0100
+Message-Id: <20191031134713.241157-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+X-Mailman-Approved-At: Mon, 04 Nov 2019 11:17:36 +0100
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Maxime Ripard <maxime@cerno.tech>,
+ =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>
+Subject: [alsa-devel] [PATCH] dt-bindings: sound: adau7118: Fix example
+	warning
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,49 +119,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The check for the mmap support via hw_support_mmap() function misses
-the case where the device is with SNDRV_DMA_TYPE_DEV_UC, which should
-have been treated equally as SNDRV_DMA_TYPE_DEV.  Let's fix it.
-
-Note that this bug doesn't hit any practical problem, because
-SNDRV_DMA_TYPE_DEV_UC is used only for x86-specific drivers
-(snd-hda-intel and snd-intel8x0) for the specific platforms that need
-the non-cached buffers.  And, on such platforms, hw_support_mmap()
-already returns true in anyway.  That's the reason I didn't put
-Cc-to-stable mark here.  This is only for any theoretical future
-extension.
-
-Fixes: 425da159707b ("ALSA: pcm: use dma_can_mmap() to check if a device supports dma_mmap_*")
-Fixes: 42e748a0b325 ("ALSA: memalloc: Add non-cached buffer type")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 91c6ad58729f..c3a139436ac2 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -222,7 +222,8 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
- 		return false;
- 
- 	if (substream->ops->mmap ||
--	    substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV)
-+	    (substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV &&
-+	     substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV_UC))
- 		return true;
- 
- 	return dma_can_mmap(substream->dma_buffer.dev.dev);
--- 
-2.16.4
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+VGhlIEFEQVU3MTE4IGhhcyBhbiBleGFtcGxlIHdoZXJlIHRoZSBjb2RlYyBoYXMgYW4gaTJjIGFk
+ZHJlc3Mgb2YgMTQsIGFuZAp0aGUgdW5pdCBhZGRyZXNzIHNldCB0byAxNCBhcyB3ZWxsLgoKSG93
+ZXZlciwgd2hpbGUgdGhlIGFkZHJlc3MgaXMgZXhwcmVzc2VkIGluIGRlY2ltYWwsIHRoZSB1bml0
+LWFkZHJlc3MgaXMKc3VwcG9zZWQgdG8gYmUgaW4gaGV4YWRlY2ltYWwsIHdoaWNoIGVuZHMgdXAg
+d2l0aCB0d28gZGlmZmVyZW50IGFkZHJlc3Nlcwp0aGF0IHRyaWdnZXIgYSBEVEMgd2FybmluZy4g
+Rml4IHRoaXMgYnkgc2V0dGluZyB0aGUgdW5pdCBhZGRyZXNzIHRvICgweCllLgoKQ2M6IE51bm8g
+U8OhIDxudW5vLnNhQGFuYWxvZy5jb20+CkZpeGVzOiA5NjlkNDliMmNkYzggKCJkdC1iaW5kaW5n
+czogYXNvYzogQWRkIEFEQVU3MTE4IGRvY3VtZW50YXRpb24iKQpTaWduZWQtb2ZmLWJ5OiBNYXhp
+bWUgUmlwYXJkIDxtYXhpbWVAY2Vybm8udGVjaD4KLS0tCiBEb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3Mvc291bmQvYWRpLGFkYXU3MTE4LnlhbWwgfCAyICstCiAxIGZpbGUgY2hhbmdl
+ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvYWRpLGFkYXU3MTE4LnlhbWwgYi9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvYWRpLGFkYXU3MTE4LnlhbWwKaW5kZXgg
+YzNmMTBhZmJkZDZmLi42NWY2ODQ0YTBjNmQgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hZGksYWRhdTcxMTgueWFtbAorKysgYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvYWRpLGFkYXU3MTE4LnlhbWwKQEAgLTY1LDcg
+KzY1LDcgQEAgZXhhbXBsZXM6CiAgICAgICAgIC8qIGV4YW1wbGUgd2l0aCBpMmMgc3VwcG9ydCAq
+LwogICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsKICAgICAgICAgI3NpemUtY2VsbHMgPSA8
+MD47Ci0gICAgICAgIGFkYXU3MTE4X2NvZGVjOiBhdWRpby1jb2RlY0AxNCB7CisgICAgICAgIGFk
+YXU3MTE4X2NvZGVjOiBhdWRpby1jb2RlY0BlIHsKICAgICAgICAgICAgICAgICBjb21wYXRpYmxl
+ID0gImFkaSxhZGF1NzExOCI7CiAgICAgICAgICAgICAgICAgcmVnID0gPDE0PjsKICAgICAgICAg
+ICAgICAgICAjc291bmQtZGFpLWNlbGxzID0gPDA+OwotLSAKMi4yMy4wCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
