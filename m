@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF205CA9ECB
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:36:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A8CBCA9ECB
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:37:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6696D20862
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:36:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0962520862
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 13:37:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ohdwQZsx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="KsXd+39J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6696D20862
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mmZL1E9o";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="KeematVd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0962520862
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39CD62071;
-	Thu, 31 Oct 2019 14:35:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39CD62071
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2463620CD;
+	Thu, 31 Oct 2019 14:36:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2463620CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572528974;
-	bh=dwPHE7Dx26l/rWLfaTr8n8eJHeadsvuYnYZi9hZ0+8w=;
+	s=default; t=1572529021;
+	bh=gWnTwFfjiD6O4oR5Wn2aCgZL97OikGzvKMqzZH9WqVs=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ohdwQZsxaJeOHdWiM4krn7RIqjEtdk39bO2O6Xpa49LuWC7xUFg7d/GeU8XPM0CNE
-	 UenNTKK6GdtpT30wbFhR/p8Cy4kwpW8xGlulek78EsuDvA70BPmaZr/D9+8TeQK/F7
-	 zSPzJ0pbAD3pa0eJccr0FmolYIGkb4mFsiveBMfk=
+	b=mmZL1E9oDSCogcrRWMart/eNoQtpgZukSlAFhTeRVa47H2K8xR2tUQnDHsMWd+fb/
+	 TKQ41x3YrIDAk9nnG/HJJ5C9Om9torYw1879Hnx2X6HgEjJFIRfCUI/BDw7bRx/Nlb
+	 LsonnPPWQMxJrJ1ojI+msdY+oOCoar7R1Uamor5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FF91F805FB;
-	Thu, 31 Oct 2019 14:33:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77EF4F8060F;
+	Thu, 31 Oct 2019 14:33:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C213F805FC; Thu, 31 Oct 2019 14:33:44 +0100 (CET)
+ id 92F61F805FC; Thu, 31 Oct 2019 14:33:44 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01E4DF80394
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 14:23:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01E4DF80394
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57AAEF803CF
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 14:23:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57AAEF803CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="KsXd+39J"
+ header.b="KeematVd"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=+33TbxMHFj5pAl/K9V+w7oGZgPDx7JmyBow3N/qBMjc=; b=KsXd+39J3PE7
- cTXwX2aQf53nCWtJ+Sql9VwhtzZ8Fe9mFSapqWnBdVPXKfd7BVdMHGfr5OCXa+h/sYQoHJV1Lrcv2
- CFJhrz/CN/qgPV5lMhGAHS+pWjBJkMOEdnghuKOLQxC8Z71x0rttVuKW337ihvKYrH8gEaoFsKb3u
- I8Wwg=;
+ List-Archive; bh=PqkpJDidtrs4MjSO1YgXlFn3w7gk52GWuWSM6KKKQrM=; b=KeematVdo2Lm
+ j7dM4P8dc0T2bW2TAfgM6x11z/yst4mfsh9VSVb/BPJrhljAf1LyMf468hxAHjKAfPF1F2xrkaZ4E
+ CSF0TTZcUsUcZNCknugRNC5bLOkkrg8gDv89V/pniUdY5VIUP4/JcwKblzRsu26jHBgO/7NvsBr6N
+ WDeFY=;
 Received: from [91.217.168.176] (helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1iQAQK-0007oX-Ok; Thu, 31 Oct 2019 13:23:36 +0000
+ id 1iQAQK-0007oZ-UD; Thu, 31 Oct 2019 13:23:36 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 61936D020AF; Thu, 31 Oct 2019 13:23:36 +0000 (GMT)
+ id 7C363D020AA; Thu, 31 Oct 2019 13:23:36 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Shuming Fan <shumingf@realtek.com>
-In-Reply-To: <20191031115414.20951-1-shumingf@realtek.com>
+In-Reply-To: <20191031115401.20898-1-shumingf@realtek.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191031132336.61936D020AF@fitzroy.sirena.org.uk>
+Message-Id: <20191031132336.7C363D020AA@fitzroy.sirena.org.uk>
 Date: Thu, 31 Oct 2019 13:23:36 +0000 (GMT)
 Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
  lars@metafoo.de, lgirdwood@gmail.com, tzungbi@google.com,
  Mark Brown <broonie@kernel.org>, derek.fang@realtek.com, flove@realtek.com
-Subject: [alsa-devel] Applied "ASoC: rt1011: improve the
-	rt1011_set_dai_fmt() function" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: rt1011: remove redundant code in
+	kcontrol" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt1011: improve the rt1011_set_dai_fmt() function
+   ASoC: rt1011: remove redundant code in kcontrol
 
 has been applied to the asoc tree at
 
@@ -122,57 +122,55 @@ to this mail.
 Thanks,
 Mark
 
-From 5cf93491ff98cff0d2f9725e7c44e0bd38325697 Mon Sep 17 00:00:00 2001
+From b9a3eea38b1eb8dd96fce64a8480e8ee38ee1451 Mon Sep 17 00:00:00 2001
 From: Shuming Fan <shumingf@realtek.com>
-Date: Thu, 31 Oct 2019 19:54:14 +0800
-Subject: [PATCH] ASoC: rt1011: improve the rt1011_set_dai_fmt() function
+Date: Thu, 31 Oct 2019 19:54:01 +0800
+Subject: [PATCH] ASoC: rt1011: remove redundant code in kcontrol
 
-If there is a wrong format setting,
-the driver will goto the end of the function directly.
+The !component->card->instantiated statement should remove in kcontrol.
+It is no need to check the card->instantiated in kcontrol.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20191031115414.20951-1-shumingf@realtek.com
+Link: https://lore.kernel.org/r/20191031115401.20898-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1011.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/rt1011.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
 diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 8a74f374d779..57a3a34b5f18 100644
+index dcd397a83cb4..8a74f374d779 100644
 --- a/sound/soc/codecs/rt1011.c
 +++ b/sound/soc/codecs/rt1011.c
-@@ -1631,6 +1631,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		break;
- 	default:
- 		ret = -EINVAL;
-+		goto _set_fmt_err_;
- 	}
+@@ -1163,9 +1163,6 @@ static int rt1011_bq_drc_coeff_put(struct snd_kcontrol *kcontrol,
+ 		(struct rt1011_bq_drc_params *)ucontrol->value.integer.value;
+ 	unsigned int i, mode_idx = 0;
  
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-@@ -1641,6 +1642,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		break;
- 	default:
- 		ret = -EINVAL;
-+		goto _set_fmt_err_;
- 	}
+-	if (!component->card->instantiated)
+-		return 0;
+-
+ 	if (strstr(ucontrol->id.name, "AdvanceMode Initial Set"))
+ 		mode_idx = RT1011_ADVMODE_INITIAL_SET;
+ 	else if (strstr(ucontrol->id.name, "AdvanceMode SEP BQ Coeff"))
+@@ -1236,9 +1233,6 @@ static int rt1011_r0_cali_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+ 	struct rt1011_priv *rt1011 = snd_soc_component_get_drvdata(component);
  
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-@@ -1657,6 +1659,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		break;
- 	default:
- 		ret = -EINVAL;
-+		goto _set_fmt_err_;
- 	}
+-	if (!component->card->instantiated)
+-		return 0;
+-
+ 	rt1011->cali_done = 0;
+ 	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF &&
+ 		ucontrol->value.integer.value[0])
+@@ -1284,9 +1278,6 @@ static int rt1011_r0_load_mode_put(struct snd_kcontrol *kcontrol,
+ 	if (ucontrol->value.integer.value[0] == rt1011->r0_reg)
+ 		return 0;
  
- 	switch (dai->id) {
-@@ -1674,6 +1677,7 @@ static int rt1011_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		ret = -EINVAL;
- 	}
+-	if (!component->card->instantiated)
+-		return 0;
+-
+ 	if (ucontrol->value.integer.value[0] == 0)
+ 		return -EINVAL;
  
-+_set_fmt_err_:
- 	snd_soc_dapm_mutex_unlock(dapm);
- 	return ret;
- }
 -- 
 2.20.1
 
