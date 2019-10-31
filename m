@@ -2,65 +2,71 @@ Return-Path: <SRS0=tVg1=YY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A993CA9EC7
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 00:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 141A1CA9EC3
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 09:54:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC4FB20873
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 00:47:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 99BE3208C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Oct 2019 09:54:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DHEM89Z+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC4FB20873
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l2awt3IU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JCar7aCf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99BE3208C0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABCFB1F9E;
-	Thu, 31 Oct 2019 01:46:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABCFB1F9E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 547E12012;
+	Thu, 31 Oct 2019 10:53:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 547E12012
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572482823;
-	bh=7p1Rg/FkkSB/7s+uAU58UcXKhUeMAxB3zMJUeZ9mv1s=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DHEM89Z+Bw9LdVN5WspkeFUfV+cNDJ4CrYjWSTWOHi86a1CUGgn6sNej7SBcErRDc
-	 pjP/GRldze25IBCrqDgYoOZXqA8TB5mKgrSVOLq0GTKDLaWvGMuWkMhgK/YiKaVfeg
-	 rvkcKDanPeZlWAzu2yACMjYplFqloR7mFcItZIU0=
+	s=default; t=1572515653;
+	bh=7jWINTGZb3xtACK1W/jpp18RlYW6MDLOuutsalMca5c=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=l2awt3IUZJvqlSxV9hyKE8sGTEA1odsFbvXjiv3Kxzlxl4D5zDF/oNJpkrV8V9bVn
+	 yr+1euFukc0UTPkGCLF6kU0K5t6ZiW88PPRcq2RGvRdYVTk0uMq2fqlyvNdMengJY0
+	 mLtF/vB6BCRgTyBLpgkCAmSWjDMU9bsI2EzfTuXA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27045F802BD;
-	Thu, 31 Oct 2019 01:46:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD607F8036C;
+	Thu, 31 Oct 2019 10:53:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D6A6F802A0; Thu, 31 Oct 2019 01:46:10 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D42E3F802A0
- for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 01:46:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D42E3F802A0
-Date: 31 Oct 2019 09:46:01 +0900
-X-IronPort-AV: E=Sophos;i="5.68,248,1569250800"; d="scan'208";a="30454905"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 31 Oct 2019 09:46:01 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id AA748400D0F2;
- Thu, 31 Oct 2019 09:46:01 +0900 (JST)
-Message-ID: <87tv7pg2t2.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191030113457.GB6693@sirena.co.uk>
-References: <874kzrdo1x.wl-kuninori.morimoto.gx@renesas.com>
- <20191030113457.GB6693@sirena.co.uk>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH v2 resend 00/18] ASoC: soc-core cleanup -
-	step 4
+ id 98A49F80392; Thu, 31 Oct 2019 10:53:19 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23D85F802A0
+ for <alsa-devel@alsa-project.org>; Thu, 31 Oct 2019 10:53:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23D85F802A0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="JCar7aCf"
+Received: from localhost (unknown [122.178.193.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2F4B42087F;
+ Thu, 31 Oct 2019 09:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1572515594;
+ bh=QW7rGRQ20lko7WgAp46i15PtwtIhjseDb6gvGuH4qBs=;
+ h=Date:From:To:Cc:Subject:From;
+ b=JCar7aCfQ/5RQy8KIyYfHp19KYbL7oPZf6kchKZZJwPwIIbekq5fDtd9r809dBzJ8
+ bRoGa3jqsMhBHk9P0+kS2o+s57xrTE269eQOYNiytTvAm/i9Ro15M5KjtKuSRIAplL
+ nDpBLVVUZMzN57KPozDl0mYUS3v7diwn6FtvQPYE=
+Date: Thu, 31 Oct 2019 15:23:07 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Message-ID: <20191031095307.GB2695@vkoul-mobl.Dlink>
+MIME-Version: 1.0
+User-Agent: Mutt/1.12.1 (2019-06-15)
+Cc: alsa-devel@alsa-project.org
+Subject: [alsa-devel] [GIT PULL] soundwire fixes for v5.4-rc6
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,36 +79,99 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5045408019779763131=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
-Cc: Pierre-Louis
+--===============5045408019779763131==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tsOsTdHNUZQcU9Ye"
+Content-Disposition: inline
 
-> > These are resend of soc-core cleanup step4.
-> > These are based on mark/for-5.5 branch.
-> > I already got report from Intel that these had no issue on Intel CI machine.
-> 
-> OK, that's not very visible :(  I'd been waiting for the review from
-> them that you said was needed.
 
-I think it is [05/18] this time.
+--tsOsTdHNUZQcU9Ye
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As I told before, the topology might get damage if this patch was wrong.
-But, Intel CI works correctly, thus, it has no issue, I guess.
+Hi Greg,
 
-Reviewing from Intel is for double check purpose.
-I have updated easier to read its log.
-So I guess reviewing became more easier (?).
+Please pull to receive couple of fixes for soundwire. All these changes
+have been sitting in linux-next as well
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+The following changes since commit 54ecb8f7028c5eb3d740bb82b0f1d90f2df63c5c:
+
+  Linux 5.4-rc1 (2019-09-30 10:35:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.4-rc6
+
+for you to fetch changes up to 7b47ad3322d114736e08cc244a84fe7af9b861f6:
+
+  soundwire: slave: fix scanf format (2019-10-24 16:55:45 +0530)
+
+----------------------------------------------------------------
+soundwire fixes for v5.4-rc6
+
+- Kconfig fixes to ensure soundwire is built only for ACPI and DT
+  platform
+- fix for intel PDI offsets and numbers
+- slave scanf format fix
+
+----------------------------------------------------------------
+Bard Liao (1):
+      soundwire: intel: fix intel_register_dai PDI offsets and numbers
+
+Michal Suchanek (2):
+      soundwire: depend on ACPI
+      soundwire: depend on ACPI || OF
+
+Pierre-Louis Bossart (1):
+      soundwire: slave: fix scanf format
+
+ drivers/soundwire/Kconfig | 1 +
+ drivers/soundwire/intel.c | 4 ++--
+ drivers/soundwire/slave.c | 3 ++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--tsOsTdHNUZQcU9Ye
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl26rwMACgkQfBQHDyUj
+g0f1ew/+OuStpx9k0acc5fIsgZY4bxqb2y57K327fISTBneEPCCDMpXDPYjML7ce
+AaeLyk1mi8cqa8CmNmcv/6K9vrOoESbxcEcflMpusthum0EzwtAjQrzG6uMxGiOY
+DBhMVqmLnnxcIkI/7wFXUUs087cZywj2uyPNHHk1CcDbO0yRAMxjEC7MifgW2DbH
+9/1ADf4Ze0zJdgTzrHdKlzKYvHAj+9dARihFqoDjmC0QahzAEAUSSeIgOlHuTF5s
+t8GTZ5bPEaR+9xNYH2viVk1QWw8PVIMN2j8gXve7XpML2fpmxXQQXz9q9v69+psc
+XsI+D/duULMw/cQI2Bp87Eiq/MyQ1udNHCiWC8NHa1OKEFM2xNsg0dJVaYZuBTVO
+7tINUHw2fjTtNMm0VfMwIR65l74oWbnaO+trcyXdqEwhDbCPuJWAr2Vxlt083QF9
+xChxEP4WnQeVKGcAq9S8ovHuduo6PsmQz2Ndt8ioGUlLjNM6gf6QBokIdaN6zqLI
+OxI6FLH/wN9DuspQl4tZ2ebKr+wkMdz9P0nyR2gP8zEFoFjnD421SIPI8GysTL/A
+0W96MZ0RcneussZEaiaFjytZweRrWrw1yirD1aFpOsHMnJhG6FG5M4xywn4oiUTB
+s//Jnaha53f3NxSQ6r2Drdy4rd850D+hVpRIZfmQN1zKTqLi7e8=
+=IbpA
+-----END PGP SIGNATURE-----
+
+--tsOsTdHNUZQcU9Ye--
+
+--===============5045408019779763131==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5045408019779763131==--
