@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4479C49EA8
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF5BDCA9ECF
 	for <alsa-devel@archiver.kernel.org>; Fri,  1 Nov 2019 17:45:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0995217D9
+	by mail.kernel.org (Postfix) with ESMTPS id CFE62218AC
 	for <alsa-devel@archiver.kernel.org>; Fri,  1 Nov 2019 17:45:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YAuPjkDQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0995217D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fbvKV1O5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFE62218AC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C549A2372;
-	Fri,  1 Nov 2019 18:35:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C549A2372
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B119238D;
+	Fri,  1 Nov 2019 18:36:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B119238D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572629750;
-	bh=UJjURg0yEhar0jzEg7JcfC3z1XSah3UJGMKBUjK3dPE=;
+	s=default; t=1572629827;
+	bh=VeO/9pQvWcrX+AOs9b+QiXQJZIAlbgN0ofESn/uT4cA=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YAuPjkDQuJ7Q/nofjdBTKpV9+uRBOW+dxgP3DaObFyAQpCzj67EcoOxdIh4cU9Z/v
-	 mbVQnvd8VysPBhqZ3A49AWtGmbxaEWBJanbhLm2c2tm1PWHxm5BKlpAO62lPwP5GW8
-	 kV+CccTYmfajsjVMZ1Fz/F29xtlleHz+BEeYCDwM=
+	b=fbvKV1O5wa0SapCjUAR2aIVI90NGPPx1bvg0Bs7pco51FSzzYzzzzlt/sXRVXNg3c
+	 Y4BLknmhKuA2KiM7ZfUGch09qZuWIejMqK5IqglD3Yrmt/OUbzp/UfINrMfWKI2Nad
+	 bDXYlOqRwzhq3lDqprvp96Z7bZ7ZAP7rFXpLQbbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 905B8F80642;
-	Fri,  1 Nov 2019 18:31:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76E48F80672;
+	Fri,  1 Nov 2019 18:31:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 767B0F80444; Fri,  1 Nov 2019 18:31:19 +0100 (CET)
+ id 8C95DF803D6; Fri,  1 Nov 2019 18:31:18 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04B75F805FD
- for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2019 18:31:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04B75F805FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FEA9F805AE
+ for <alsa-devel@alsa-project.org>; Fri,  1 Nov 2019 18:31:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FEA9F805AE
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 01 Nov 2019 10:30:59 -0700
+ 01 Nov 2019 10:30:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,256,1569308400"; d="scan'208";a="206457424"
+X-IronPort-AV: E=Sophos;i="5.68,256,1569308400"; d="scan'208";a="206457422"
 Received: from ggarreto-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.92.243])
- by FMSMGA003.fm.intel.com with ESMTP; 01 Nov 2019 10:30:58 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 01 Nov 2019 10:30:57 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri,  1 Nov 2019 12:30:42 -0500
-Message-Id: <20191101173045.27099-9-pierre-louis.bossart@linux.intel.com>
+Date: Fri,  1 Nov 2019 12:30:40 -0500
+Message-Id: <20191101173045.27099-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191101173045.27099-1-pierre-louis.bossart@linux.intel.com>
 References: <20191101173045.27099-1-pierre-louis.bossart@linux.intel.com>
@@ -66,8 +66,8 @@ MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>,
  Arnd Bergmann <arnd@arndb.de>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 08/11] ASoC: Intel: boards: remove select
-	SND_HDA_DSP_LOADER
+Subject: [alsa-devel] [PATCH 06/11] ASoC: SOF: Intel: use def_tristate,
+	avoid using select
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,43 +85,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This option is only required with the Skylake platform driver, there
-is no reason to have this option in machine drivers. This is
-e.g. useless for SOF-based solutions.
+So far we used select to use the relevant built-in/module options, but
+this led to blurring layers between core and Intel Kconfigs.
 
+Use def_tristate works just as well and removes Intel stuff from the code.
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/Kconfig | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/sof/Kconfig       | 2 --
+ sound/soc/sof/intel/Kconfig | 4 ++--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index ef40f83e0a3b..91952ffc0b67 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -270,7 +270,6 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
- 	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
--	select SND_HDA_DSP_LOADER
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index 6435eb531668..71a0fc075a63 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -14,7 +14,6 @@ config SND_SOC_SOF_PCI
+ 	depends on PCI
+ 	select SND_SOC_SOF
+ 	select SND_SOC_ACPI if ACPI
+-	select SND_SOC_SOF_INTEL_PCI if SND_SOC_SOF_INTEL_TOPLEVEL
  	help
- 	   This adds support for ASoC machine driver for Broxton-P platforms
- 	   with DA7219 + MAX98357A I2S audio codec.
-@@ -284,7 +283,6 @@ config SND_SOC_INTEL_BXT_RT298_MACH
- 	select SND_SOC_RT298
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
--	select SND_HDA_DSP_LOADER
+ 	  This adds support for PCI enumeration. This option is
+ 	  required to enable Intel Skylake+ devices
+@@ -26,7 +25,6 @@ config SND_SOC_SOF_ACPI
+ 	depends on ACPI || COMPILE_TEST
+ 	select SND_SOC_SOF
+ 	select SND_SOC_ACPI if ACPI
+-	select SND_SOC_SOF_INTEL_ACPI if SND_SOC_SOF_INTEL_TOPLEVEL
+ 	select IOSF_MBI if X86 && PCI
  	help
- 	   This adds support for ASoC machine driver for Broxton platforms
- 	   with RT286 I2S audio codec.
-@@ -375,7 +373,6 @@ config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
--	select SND_HDA_DSP_LOADER
+ 	  This adds support for ACPI enumeration. This option is required
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 0cc82325d9fe..b27fd3fdf335 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -10,7 +10,7 @@ config SND_SOC_SOF_INTEL_TOPLEVEL
+ if SND_SOC_SOF_INTEL_TOPLEVEL
+ 
+ config SND_SOC_SOF_INTEL_ACPI
+-	tristate
++	def_tristate SND_SOC_SOF_ACPI
+ 	select SND_SOC_SOF_BAYTRAIL  if SND_SOC_SOF_BAYTRAIL_SUPPORT
+ 	select SND_SOC_SOF_BROADWELL if SND_SOC_SOF_BROADWELL_SUPPORT
  	help
- 	   This adds support for ASoC machine driver for Geminilake platforms
- 	   with RT5682 + MAX98357A I2S audio codec.
+@@ -18,7 +18,7 @@ config SND_SOC_SOF_INTEL_ACPI
+ 	  'select' statements at a higher level
+ 
+ config SND_SOC_SOF_INTEL_PCI
+-	tristate
++	def_tristate SND_SOC_SOF_PCI
+ 	select SND_SOC_SOF_MERRIFIELD  if SND_SOC_SOF_MERRIFIELD_SUPPORT
+ 	select SND_SOC_SOF_APOLLOLAKE  if SND_SOC_SOF_APOLLOLAKE_SUPPORT
+ 	select SND_SOC_SOF_GEMINILAKE  if SND_SOC_SOF_GEMINILAKE_SUPPORT
 -- 
 2.20.1
 
