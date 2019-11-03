@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C407FCA9ED0
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Nov 2019 05:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED528CA9ED0
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Nov 2019 05:29:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 83AF1215EA
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Nov 2019 05:23:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6BA58214D8
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Nov 2019 05:29:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZeUkGPZg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qQW3uyCl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83AF1215EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S3YNC/nY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="OqyL7puL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BA58214D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A21518B6;
-	Sun,  3 Nov 2019 06:23:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A21518B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D57117A7;
+	Sun,  3 Nov 2019 06:28:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D57117A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572758637;
-	bh=ZkZTdVn8h6X4hAP8I2qiIuV4N88G6u+iGWoj/K/2E+o=;
+	s=default; t=1572758959;
+	bh=M5UXzu3ykf5PAaiIs7DgiRKaBIof5oC8p6zPsuIe8e8=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZeUkGPZgKbvadbhhZqlKui4p2VkbObt/aGAlPLGDbLg7Cdit+b9xsiwYCJaNJ3uFK
-	 e7Tt6n7izLqLnu6zgaWxvB9hJ8iCGkw5HWd5EIR0wUP9MWHnOCzkrYowgdWSO3fxHO
-	 pVmSUdMpsXAOJIZrk9XAtA16TPmfWX0FLbaE2jOw=
+	b=S3YNC/nYL4Hmkb5HP3CkiicpUUqccHE2BHHVBpvsWgpJqzqlXfWGmoZmChjbNOkHZ
+	 PIlfIoSS2Q2pG3SBulUbZZJZBYP0yOP9WHjpl5W3LEQmmygsb69MrjIECeeSm+/PBW
+	 avRtHIn7o/PfPy/5ry0a61pm2/25t9HnNIkZNuno=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1AE4F80446;
-	Sun,  3 Nov 2019 06:23:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BA21F80446;
+	Sun,  3 Nov 2019 06:28:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F07F0F80535; Sun,  3 Nov 2019 06:23:02 +0100 (CET)
+ id D9F8EF80535; Sun,  3 Nov 2019 06:28:18 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E221F8015B
- for <alsa-devel@alsa-project.org>; Sun,  3 Nov 2019 06:22:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E221F8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id C763CF80368
+ for <alsa-devel@alsa-project.org>; Sun,  3 Nov 2019 06:28:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C763CF80368
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qQW3uyCl"
+ header.b="OqyL7puL"
 Received: from localhost (unknown [106.206.115.146])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 031EE214D8;
- Sun,  3 Nov 2019 05:22:48 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 55933214D8;
+ Sun,  3 Nov 2019 05:28:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1572758570;
- bh=Oqzo9tv0916Zywny7m8yNkHyuqH/rVT0IioPzWiyk2A=;
+ s=default; t=1572758889;
+ bh=cvam81HvGg9ZQ0IrNks1c973+J7RmTVab91Ktr6klEs=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qQW3uyClIEkKDDRmnSOMh5Vy6tWu30EcjlSMXU7j+AXtC3ZLO96spvePoKnFVvNDq
- IP3RvtdtAu1ZIbtZCBBQ4lkz6bTPDAaqnSIZM6r84emnn5Ur5CMtJnPRMDB+4uKooL
- cHkJmH60CZEgTmXbCt1oBFEae7uWtAN89p/ArLfg=
-Date: Sun, 3 Nov 2019 10:52:43 +0530
+ b=OqyL7puLO99ghwhmde0V6PYs3nxFmw/iYYZH52LsG0pdDNPTdsvWzHBimZmtltQIj
+ urUoHfDHd+aqXlj66fWCujKcK/BpqA+FyF4IGvrQbmx0IQ/ZwpVDItlwu182K+2dd6
+ EWm1RmySk0b3/rSEpLFz6TTMwHkbKw59w6fAfpTI=
+Date: Sun, 3 Nov 2019 10:58:01 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191103052243.GF2695@vkoul-mobl.Dlink>
-References: <20191023210657.32440-1-pierre-louis.bossart@linux.intel.com>
- <20191023210657.32440-3-pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org
+Message-ID: <20191103052801.GG2695@vkoul-mobl.Dlink>
+References: <20191023212823.608-1-pierre-louis.bossart@linux.intel.com>
+ <20191023212823.608-3-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191023210657.32440-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191023212823.608-3-pierre-louis.bossart@linux.intel.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+Cc: alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+ tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
  Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 2/4] soundwire: add enumeration_complete
-	structure
+Subject: Re: [alsa-devel] [PATCH 02/14] soundwire: rename dev_to_sdw_dev
+	macro
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,33 +98,139 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 23-10-19, 16:06, Pierre-Louis Bossart wrote:
-> We need an async mechanism to prevent access to Slaves that are not
-> fully-enumerated.
-> 
-> init_completion() will be invoked when the Slave becomes UNATTACHED,
-> and complete() will be invoked when the state become ATTACHED. Any
-> read/write before this status change will be delayed with a
-> wait_for_completion().
+On 23-10-19, 16:28, Pierre-Louis Bossart wrote:
+> Since we want to introduce master devices, rename macro so that we
+> have consistency between slave and master device access, following the
+> Grey Bus example.
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  include/linux/soundwire/sdw.h | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/base/regmap/regmap-sdw.c |  4 ++--
+
+This needs Mark's ACK
+
+>  drivers/soundwire/bus.c          |  2 +-
+>  drivers/soundwire/bus_type.c     | 11 ++++++-----
+>  drivers/soundwire/slave.c        |  2 +-
+>  include/linux/soundwire/sdw.h    |  3 ++-
+>  5 files changed, 12 insertions(+), 10 deletions(-)
 > 
+> diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
+> index 50a66382d87d..d1fc0c22180a 100644
+> --- a/drivers/base/regmap/regmap-sdw.c
+> +++ b/drivers/base/regmap/regmap-sdw.c
+> @@ -10,7 +10,7 @@
+>  static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
+>  {
+>  	struct device *dev = context;
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  
+>  	return sdw_write(slave, reg, val);
+>  }
+> @@ -18,7 +18,7 @@ static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
+>  static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
+>  {
+>  	struct device *dev = context;
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  	int read;
+>  
+>  	read = sdw_read(slave, reg);
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index be5d437058ed..4b22ee996a65 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -110,7 +110,7 @@ EXPORT_SYMBOL(sdw_add_bus_master);
+>  
+>  static int sdw_delete_slave(struct device *dev, void *data)
+>  {
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  	struct sdw_bus *bus = slave->bus;
+>  
+>  	sdw_slave_debugfs_exit(slave);
+> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+> index 370b94752662..c0585bcc8a41 100644
+> --- a/drivers/soundwire/bus_type.c
+> +++ b/drivers/soundwire/bus_type.c
+> @@ -33,7 +33,7 @@ sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
+>  
+>  static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
+>  {
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  	struct sdw_driver *drv = drv_to_sdw_slave_driver(ddrv);
+>  
+>  	return !!sdw_get_device_id(slave, drv);
+> @@ -49,7 +49,7 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
+>  
+>  static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  {
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  	char modalias[32];
+>  
+>  	sdw_slave_modalias(slave, modalias, sizeof(modalias));
+> @@ -69,7 +69,7 @@ EXPORT_SYMBOL_GPL(sdw_bus_type);
+>  
+>  static int sdw_drv_probe(struct device *dev)
+>  {
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  	struct sdw_driver *drv = drv_to_sdw_slave_driver(dev->driver);
+>  	const struct sdw_device_id *id;
+>  	int ret;
+> @@ -115,8 +115,9 @@ static int sdw_drv_probe(struct device *dev)
+>  
+>  static int sdw_drv_remove(struct device *dev)
+>  {
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  	struct sdw_driver *drv = drv_to_sdw_slave_driver(dev->driver);
+> +
+>  	int ret = 0;
+>  
+>  	if (drv->remove)
+> @@ -129,7 +130,7 @@ static int sdw_drv_remove(struct device *dev)
+>  
+>  static void sdw_drv_shutdown(struct device *dev)
+>  {
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  	struct sdw_driver *drv = drv_to_sdw_slave_driver(dev->driver);
+>  
+>  	if (drv->shutdown)
+> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+> index 19919975bb6d..48a513680db6 100644
+> --- a/drivers/soundwire/slave.c
+> +++ b/drivers/soundwire/slave.c
+> @@ -9,7 +9,7 @@
+>  
+>  static void sdw_slave_release(struct device *dev)
+>  {
+> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_slave *slave = to_sdw_slave_device(dev);
+>  
+>  	kfree(slave);
+>  }
 > diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index a381a596212b..1381edfaa206 100644
+> index 0c4e59dfaca3..d6e5a0e42819 100644
 > --- a/include/linux/soundwire/sdw.h
 > +++ b/include/linux/soundwire/sdw.h
-> @@ -565,6 +565,7 @@ struct sdw_slave {
->  	u16 dev_num;
->  	bool probed;
->  	struct completion probe_complete;
-> +	struct completion enumeration_complete;
+> @@ -570,7 +570,8 @@ struct sdw_slave {
+>  	struct completion enumeration_complete;
+>  };
+>  
+> -#define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
+> +#define to_sdw_slave_device(d) \
+> +	container_of(d, struct sdw_slave, dev)
+>  
+>  struct sdw_driver {
+>  	const char *name;
+> -- 
+> 2.20.1
 
-Which series/patch uses this..?
-
-Thanks
 -- 
 ~Vinod
 _______________________________________________
