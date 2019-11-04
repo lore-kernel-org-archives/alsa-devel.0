@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB11ECA9EB5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:29:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04CB8CA9EB5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:30:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C8E6222C1
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:29:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7DA3E2184C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:30:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jrA+H76Z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="wyr4pCUX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C8E6222C1
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nJTIhPDQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="hNPD9D6Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DA3E2184C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13B291772;
-	Mon,  4 Nov 2019 14:29:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B291772
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0EAA177F;
+	Mon,  4 Nov 2019 14:29:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0EAA177F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572874190;
-	bh=YyyKwfyP7kqU98rFYmQBsWrx1nAn+Kmd0utb65A/00w=;
+	s=default; t=1572874240;
+	bh=BpgoW5a5tqRDT+vzIb8XUMsTND7L6dL0w7MfT9ty9uQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jrA+H76ZIkGlMuhJH8O1ffb6onnMpieTk/zrWjyHWeseUhVmDHSF2Z/wdU9rB3HW1
-	 OTcwGckErr7yDmWYxsXAAT223o7V0U0iCZuQp1YS3qtdNosa/H4ev3N5/2o53VvprM
-	 M6eRIRIaOEFVQ5ls+3pLlT1P926ckA+q8VNKtEfs=
+	b=nJTIhPDQ4CWg9ZokJJAzXeYBa8q6VtAxs2s5GroTNFLMjfTDaTiOJ1nY5+SNj1jFJ
+	 0UM2eLx1FnGmEsVVfLNIxb+DDPBR0YKVgcaFs/FkcQ1SOWTR/21ReNheX/aHoctWXx
+	 pSaNIVbSwCN9aUIzeXgJBPRZZZfoXBMAo96+uIBc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C451DF804FD;
-	Mon,  4 Nov 2019 14:27:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C473AF8063E;
+	Mon,  4 Nov 2019 14:27:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34A5BF80637; Mon,  4 Nov 2019 14:27:19 +0100 (CET)
+ id 2D480F80638; Mon,  4 Nov 2019 14:27:20 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66F26F8015B
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 14:27:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66F26F8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FF6CF804FD
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 14:27:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FF6CF804FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="wyr4pCUX"
+ header.b="hNPD9D6Y"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=LvMvHXynSMjUbhz6Nw4O5yAlpRJ7k9ioKpcx/rSow+E=; b=wyr4pCUX5Ldb
- FPOtGXqnVWnnq0HCZi8uFOXB1sqhatMAmfC6Vrf0WUUSo/PKcMy9kYnlfDPYKEOls1sB6iZFmkwwE
- NDRZl/oEHOlXPHi+rhHYL4kxB1EBqIwy9pzCq1E7ENjlLaTk3mMA1LYleYVkCte2jyaER6pIEcjW/
- T80o8=;
+ List-Archive; bh=/6GWbvw2CjA3+MZzeTRM7zHvwZWolwCPnVoffnJrdw4=; b=hNPD9D6Y176t
+ VwqUYyT9E9en3Dzf7TKZxhc+Hfhw2gZubFBz/Q1+hhd1cUK2n6qxVOXCaIqRERB4pHMYk84S2qVHs
+ JuFV8bsurMS8y+Gp3FpX4TU/r+4umK8kG283J99lXNP3aF+jMPXL3dsR6rAOU2lInJQ4D4pDQJ/+c
+ QSNvY=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iRcO0-0002du-8y; Mon, 04 Nov 2019 13:27:12 +0000
+ id 1iRcO1-0002eQ-Ik; Mon, 04 Nov 2019 13:27:13 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id B7C912743044; Mon,  4 Nov 2019 13:27:11 +0000 (GMT)
+ id 1212F274301E; Mon,  4 Nov 2019 13:27:13 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191101173045.27099-10-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191101173045.27099-4-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191104132711.B7C912743044@ypsilon.sirena.org.uk>
-Date: Mon,  4 Nov 2019 13:27:11 +0000 (GMT)
+Message-Id: <20191104132713.1212F274301E@ypsilon.sirena.org.uk>
+Date: Mon,  4 Nov 2019 13:27:13 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: [alsa-devel] Applied "ASoC: Intel: boards: fix configs for
-	bxt-da7219-max98057a" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: Intel: add mutual exclusion between SOF
+	and legacy Baytrail driver" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: boards: fix configs for bxt-da7219-max98057a
+   ASoC: Intel: add mutual exclusion between SOF and legacy Baytrail driver
 
 has been applied to the asoc tree at
 
@@ -122,93 +122,35 @@ to this mail.
 Thanks,
 Mark
 
-From c4a09f9a523e674ef9a046e05d99c90f2c9513b1 Mon Sep 17 00:00:00 2001
+From 280393b712b7e338addc2f7f60b4e4da787ba19b Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 1 Nov 2019 12:30:43 -0500
-Subject: [PATCH] ASoC: Intel: boards: fix configs for bxt-da7219-max98057a
+Date: Fri, 1 Nov 2019 12:30:37 -0500
+Subject: [PATCH] ASoC: Intel: add mutual exclusion between SOF and legacy
+ Baytrail driver
 
-The same driver is reused for 3 different configurations, but the
-driver will only be build if ApolloLake is selected.
-
-Fix and make sure each device can work without dependencies on others
-(useful for minimal configurations).
+This legacy driver is already deprecated, let's make sure there is no
+conflict with SOF.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191101173045.27099-10-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191101173045.27099-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig  | 24 ++++++++++++++++++++++--
- sound/soc/intel/boards/Makefile |  2 +-
- 2 files changed, 23 insertions(+), 3 deletions(-)
+ sound/soc/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index c63070c3a250..0b3101dc8286 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -263,13 +263,17 @@ config SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 93ebe1297e41..086fc60b2a14 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -65,7 +65,7 @@ config SND_SOC_INTEL_HASWELL
  
-+config SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
-+	tristate
-+	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-+
- if SND_SOC_INTEL_APL
- 
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
--	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-+	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
- 	help
- 	   This adds support for ASoC machine driver for Broxton-P platforms
- 	   with DA7219 + MAX98357A I2S audio codec.
-@@ -365,6 +369,17 @@ endif ## SND_SOC_INTEL_KBL
- 
- if SND_SOC_INTEL_GLK || (SND_SOC_SOF_GEMINILAKE  && SND_SOC_SOF_HDA_LINK)
- 
-+config SND_SOC_INTEL_GLK_DA7219_MAX98357A_MACH
-+	tristate "GLK with DA7219 and MAX98357A in I2S Mode"
-+	depends on I2C && ACPI
-+	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
-+	help
-+	   This adds support for ASoC machine driver for Geminilake platforms
-+	   with DA7219 + MAX98357A I2S audio codec.
-+	   Say Y or m if you have such a device. This is a recommended option.
-+	   If unsure select "N".
-+
- config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
- 	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
-@@ -418,7 +433,12 @@ config SND_SOC_INTEL_CML_LP_DA7219_MAX98357A_MACH
- 	tristate "CML_LP with DA7219 and MAX98357A in I2S Mode"
- 	depends on I2C && ACPI
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
--	select SND_SOC_INTEL_DA7219_MAX98357A_GENERIC
-+	select SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON
-+	help
-+	   This adds support for ASoC machine driver for Cometlake platforms
-+	   with DA7219 + MAX98357A I2S audio codec.
-+	   Say Y or m if you have such a device. This is a recommended option.
-+	   If unsure select "N".
- 
- config SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH
-         tristate "CML with RT1011 and RT5682 in I2S Mode"
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 9ae6544c6f3b..ba1aa89db09d 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -33,7 +33,7 @@ obj-$(CONFIG_SND_SOC_INTEL_SOF_RT5682_MACH) += snd-soc-sof_rt5682.o
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
--obj-$(CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH) += snd-soc-sst-bxt-da7219_max98357a.o
-+obj-$(CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON) += snd-soc-sst-bxt-da7219_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_BXT_RT298_MACH) += snd-soc-sst-bxt-rt298.o
- obj-$(CONFIG_SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH) += snd-soc-sst-glk-rt5682_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
+ config SND_SOC_INTEL_BAYTRAIL
+ 	tristate "Baytrail (legacy) Platforms"
+-	depends on DMADEVICES && ACPI && SND_SST_ATOM_HIFI2_PLATFORM=n
++	depends on DMADEVICES && ACPI && SND_SST_ATOM_HIFI2_PLATFORM=n && SND_SOC_SOF_BAYTRAIL=n
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_ACPI
+ 	select SND_SOC_INTEL_SST_FIRMWARE
 -- 
 2.20.1
 
