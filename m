@@ -2,71 +2,82 @@ Return-Path: <SRS0=j9WI=Y4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B73C3CA9EA0
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 10:28:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58611CA9EB5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 12:59:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B264A21D81
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 10:28:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5547421D7D
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 12:59:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LqNHkh4e"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B264A21D81
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fz1fzdoG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="su0BsExy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5547421D7D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2833177A;
-	Mon,  4 Nov 2019 11:27:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2833177A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC61D174C;
+	Mon,  4 Nov 2019 13:58:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC61D174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572863309;
-	bh=tEycDgiCAUKn7NyFpM2tQr7AVFf2Om9w62S1SxJBHZM=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1572872368;
+	bh=BXrc89fk5K7g19ibTEUykWI1Qo3sXR1p4iT2jlv7fW8=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LqNHkh4ejEnV6e+eXewqFV0GO9ddCOyNCuEsS8DEFULZmrf+G+INx2zMUIy7RCwNB
-	 7l7/hJKCZM1n4v9xED6TmGYuNy5NaFc0kEz3ULR50cZNck+xbcqc2ER/Ffk/LTXK5r
-	 2HB2AZshjaXRzthsOTnMdHF8BgZJifPCBavtQIP4=
+	b=fz1fzdoGbklrkg9n5PeUdnBkl/cbWHoeg3NIAemIUVxN+kEKp3Fl1k92mto4TOBBV
+	 1G2IZ57qXW36+tc1VAsu6YSc2rj/wKpKdljZGyXlcp1bD70b7qpKExbu1s8gmGdvcp
+	 qFkR/bUf/o42trVlWMGPmf8d/vxt1cSgeOYx1ziQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A62FF80321;
-	Mon,  4 Nov 2019 11:27:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27AC6F8015B;
+	Mon,  4 Nov 2019 13:58:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8674CF803F4; Mon,  4 Nov 2019 11:27:37 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 1C7F5F803F4; Mon,  4 Nov 2019 13:58:36 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A251AF800F3
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 11:27:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A251AF800F3
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Nov 2019 02:27:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,266,1569308400"; d="scan'208";a="232013087"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by fmsmga002.fm.intel.com with ESMTP; 04 Nov 2019 02:27:31 -0800
-Date: Mon, 4 Nov 2019 12:27:30 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@zeliteleevi
-To: Yong Zhi <yong.zhi@intel.com>
-In-Reply-To: <1572628130-16955-1-git-send-email-yong.zhi@intel.com>
-Message-ID: <alpine.DEB.2.21.1911041216550.16459@zeliteleevi>
-References: <1572628130-16955-1-git-send-email-yong.zhi@intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ by alsa1.perex.cz (Postfix) with ESMTPS id 996E4F8015B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 13:58:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 996E4F8015B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="su0BsExy"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=kICYd6BPK3MXbEBch+sze5Yv35JP+g8N2mZBwymytFM=; b=su0BsExyAmF9EXFQPVT02+TvZ
+ 3+nwpwx5awBhE67JFTfXtpBrTWSCJZHyblfRl9mhuJ31pI3o5dGRhA4A4Hg5K9z520P1tWOuEkzvp
+ CLAMwai5rJNlFsEftomLqR0/IMfkGbUbCJjBzpRr9N1AKGpc5tqsbUPVuL8nkjKz4tsqQ=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iRbwG-0002aN-G9; Mon, 04 Nov 2019 12:58:32 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id B65AF274301E; Mon,  4 Nov 2019 12:58:31 +0000 (GMT)
+Date: Mon, 4 Nov 2019 12:58:31 +0000
+From: Mark Brown <broonie@kernel.org>
+To: David Rhodes <david.rhodes@cirrus.com>
+Message-ID: <20191104125831.GD5238@sirena.co.uk>
+References: <1572550603-21560-1-git-send-email-david.rhodes@cirrus.com>
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com, ryans.lee@maximintegrated.com,
- sathyanarayana.nujella@intel.com
-Subject: Re: [alsa-devel] [PATCH] ASoC: max98373: Fix calls to free_gpio()
+In-Reply-To: <1572550603-21560-1-git-send-email-david.rhodes@cirrus.com>
+X-Cookie: This page intentionally left blank.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ ckeepax@opensource.cirrus.com, lgirdwood@gmail.com, Li Xu <li.xu@cirrus.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm_adsp: Expose mixer control API
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,25 +90,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1695607416764440023=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-On Fri, 1 Nov 2019, Yong Zhi wrote:
+--===============1695607416764440023==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="d9ADC0YsG2v16Js0"
+Content-Disposition: inline
 
-> Don't Call free_gpio() when request_gpio() fails, call it
-> at error paths to avoid resource leak.
 
-patch looks good to me:
+--d9ADC0YsG2v16Js0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+On Thu, Oct 31, 2019 at 02:36:43PM -0500, David Rhodes wrote:
 
-PS This is good as a clear bugfix. For future, use of
-   devm_gpiod_get_*() and friends is recommended.
+> From: Li Xu <li.xu@cirrus.com>
+
+> Expose mixer control API for reading and writing.
+> The exposed API can be used by codec driver for
+> interacting with mixer control in kernel space.
+> This allows codec driver to implement more involved
+> interactions with DSP firmware, such as Fast Use
+> Case Switching.
+
+It would be helpful if somewhere in the changelog you more explicitly
+said that this was an in-kernel API, it isn't very clear what the API
+you're adding is supposed to be.
+
+The formatting here is also a bit weird, the lines are very short.
+
+> +/*
+> + * Find wm_coeff_ctl with input name as its subname
+> + * If not found, return NULL
+> + */
+> +static struct wm_coeff_ctl *wm_adsp_get_ctl(struct wm_adsp *dsp,
+> +                                            const char *name)
+
+It is not clear why we only look things up by subname.  What's wrong
+with the rest of the name?
+
+> +int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, const void *buf,
+> +		      size_t len)
+> +{
+> +	struct wm_coeff_ctl *ctl;
+> +
+> +	ctl = wm_adsp_get_ctl(dsp, name);
+> +	if (!ctl)
+> +		return -EINVAL;
+> +
+> +	if (len > ctl->len)
+> +		return -EINVAL;
+> +
+> +	return wm_coeff_write_control(ctl, buf, len);
+> +}
+> +EXPORT_SYMBOL_GPL(wm_adsp_write_ctl);
+
+There should be a snd_ctl_notify() somewhere in the write path to tell
+userspace that the value changed.
+
+--d9ADC0YsG2v16Js0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3AIHYACgkQJNaLcl1U
+h9BtVQf8CxvyziJCzgxDiZfQYWAd2hzq54etmYsEPmIqpYUIuDJOPSxgxAJ5bE2N
+qDC2x5vCaBiGMEvDme4QJlVjLdeb09G4LRjVhSbLP7EOigfMlQClQyOVpcHl0wIX
+FLxIwJOTH7XGDJrGrkFdLayVh0wIJNLSbbku+YDg6eoUz0WioLkYcJLf6fpGOmiT
+jNZs6AliPYEGA6OtFJEMvdEwOPeOxEZ6N+Fj2tp+iFS+Q/+iWphjxweGnh9PZzAq
+hcRjyH+uSQojbEP3kHw2WZ6ZL39Z+ph2yoMynKgNd19EVhyI3fJye3ABTzNKWkbh
+jZJpPmSksq38w4K4YwgVv2o3ityzBg==
+=GAjD
+-----END PGP SIGNATURE-----
+
+--d9ADC0YsG2v16Js0--
+
+--===============1695607416764440023==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1695607416764440023==--
