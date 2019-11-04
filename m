@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3E09CA9EB5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:34:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29708CA9EB5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:35:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7871E20B7C
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:34:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E33220B7C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:35:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZGZ6N9TK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="RgzPoBIz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7871E20B7C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FTvo7lNw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="wBOs29wP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E33220B7C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD8C11615;
-	Mon,  4 Nov 2019 14:33:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD8C11615
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD559176F;
+	Mon,  4 Nov 2019 14:34:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD559176F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572874468;
-	bh=1DKsCnUuALURH9vC2eiOokLZ/7jn42iSUf3qqIUBfKw=;
+	s=default; t=1572874504;
+	bh=D4KvGGYKNWGnTrajQwRxDfIhfW8Vs7DHh0+RD+ml5a0=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ZGZ6N9TKD32g++oV7yL5kItG6KKPRiP97ZXiWi+iOn8CbEbC4vB88W7TdA2H2pizT
-	 FQp5lnthujq9/vkSl6S1S4W7gsukD3llV1eJUtVnzdTvVvTE4kxF7qcj9IWew8zMZn
-	 Dys4zf4GCaLKXYsVwzwqTs5B5gAxP4V99SmpUSNI=
+	b=FTvo7lNwj7Q0y/mUXJjsi+zaQK+tquIrjwC5mozQq0mz1D7ybivrsg1Ire+01X8/a
+	 KSZM2S6zWfRa7Mz4RuY2R0Tl8tu0t4y9xHj9xQd6oGNqtB3hvaxPBFey7S7OenmLgf
+	 OiiJFOavYU/8Yfn/WsnS3v+EJMnG5NtsMSEliGxE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCA89F806EF;
-	Mon,  4 Nov 2019 14:27:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE410F806F7;
+	Mon,  4 Nov 2019 14:27:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D8D4F8064C; Mon,  4 Nov 2019 14:27:27 +0100 (CET)
+ id CBDD5F8065A; Mon,  4 Nov 2019 14:27:28 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B4A5F805FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id D873BF80600
  for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 14:27:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B4A5F805FB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D873BF80600
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="RgzPoBIz"
+ header.b="wBOs29wP"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=sHCiVydzSZL8Z2DqsQLfaHSWNXdbmL0IfK9PqyBPMec=; b=RgzPoBIzDYWI
- LwQEfov8oF/5sYUBHEq13FWIL8GhCcvW+KiJlA7gXc7MN4e9ZOg8CKPj3kBH5l/6e0uVpdnl9zMwo
- C8BD/mLXERbJoOZ0PzK3BaOATsYxrikyjxCwrlIU+de9TF2IJM8tyfSjmCCr1mts3LWeTYBAA4/Fw
- sLPgc=;
+ List-Archive; bh=VFlUwta7raHERrz/5xlzluQlhhI3kpCewQdjfvTymq4=; b=wBOs29wPZO/3
+ x/4mScLn2o4Cv7vQA7QQxYwlbONxHzsRIWkvj+87Hk6i5tgvX/QVyJf7m1YaSyJrMCwWkA1SfKc7L
+ ANFX+5uhveWNFSEUQqqOoMbZb9WjI7TMqJ/zehziwnjrW8/k5mcp6YD4/Rn3VWKzI4aq5XHCtBj7I
+ INhpw=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iRcO2-0002eY-0i; Mon, 04 Nov 2019 13:27:14 +0000
+ id 1iRcO1-0002eU-QA; Mon, 04 Nov 2019 13:27:13 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 762682743193; Mon,  4 Nov 2019 13:27:13 +0000 (GMT)
+ id 473032743035; Mon,  4 Nov 2019 13:27:13 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191101173045.27099-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191101173045.27099-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191104132713.762682743193@ypsilon.sirena.org.uk>
+Message-Id: <20191104132713.473032743035@ypsilon.sirena.org.uk>
 Date: Mon,  4 Nov 2019 13:27:13 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: Baytrail: clarify mutual
-	exclusion with Atom/SST driver" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: Broadwell: clarify mutual
+	exclusion with legacy driver" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: Baytrail: clarify mutual exclusion with Atom/SST driver
+   ASoC: SOF: Intel: Broadwell: clarify mutual exclusion with legacy driver
 
 has been applied to the asoc tree at
 
@@ -122,20 +122,23 @@ to this mail.
 Thanks,
 Mark
 
-From df7257e544faf838c3e7ad6b4e89ffe59e87f5e1 Mon Sep 17 00:00:00 2001
+From a6955fe0e2309feeab5ec71e4b0dcbe498f4f497 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 1 Nov 2019 12:30:35 -0500
-Subject: [PATCH] ASoC: SOF: Intel: Baytrail: clarify mutual exclusion with
- Atom/SST driver
+Date: Fri, 1 Nov 2019 12:30:36 -0500
+Subject: [PATCH] ASoC: SOF: Intel: Broadwell: clarify mutual exclusion with
+ legacy driver
 
 Some distros select all options blindly, which leads to confusion and
-bug reports. Since SOF does not support Baytrail-CR for now, and
+bug reports. SOF does not fully support Broadwell due to firmware
+dependencies, the machine drivers can only support one option, and
 UCM/topology files are still being propagated to downstream distros,
-make SOF on Baytrail an opt-in option that first require distros to
-opt-out of existing defaults.
+so make SOF on Broadwell an opt-in option that first require distros
+to opt-out of existing defaults.
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204237
+Fixes: f35bf70f61d3 ('ASoC: Intel: Make sure BDW based machine drivers build for SOF')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191101173045.27099-2-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191101173045.27099-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/intel/Kconfig     |  3 +++
@@ -143,43 +146,43 @@ Signed-off-by: Mark Brown <broonie@kernel.org>
  2 files changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 01c99750212a..ba5b90e66e2f 100644
+index ba5b90e66e2f..93ebe1297e41 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -101,6 +101,9 @@ config SND_SST_ATOM_HIFI2_PLATFORM_ACPI
- 	  If you have a Intel Baytrail or Cherrytrail platform with an I2S
- 	  codec, then enable this option by saying Y or m. This is a
- 	  recommended option
+@@ -59,6 +59,9 @@ config SND_SOC_INTEL_HASWELL
+ 	  If you have a Intel Haswell or Broadwell platform connected to
+ 	  an I2S codec, then enable this option by saying Y or m. This is
+ 	  typically used for Chromebooks. This is a recommended option.
 +	  This option is mutually exclusive with the SOF support on
-+	  Baytrail/Cherrytrail. If you want to enable SOF on
-+	  Baytrail/Cherrytrail, you need to deselect this option first.
++	  Broadwell. If you want to enable SOF on Broadwell, you need to
++	  deselect this option first.
  
- config SND_SOC_INTEL_SKYLAKE
- 	tristate "All Skylake/SST Platforms"
+ config SND_SOC_INTEL_BAYTRAIL
+ 	tristate "Baytrail (legacy) Platforms"
 diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index d52298946c00..973c137a6c5a 100644
+index 973c137a6c5a..cd9954bfec0b 100644
 --- a/sound/soc/sof/intel/Kconfig
 +++ b/sound/soc/sof/intel/Kconfig
-@@ -62,10 +62,18 @@ if SND_SOC_SOF_INTEL_ACPI
+@@ -85,10 +85,18 @@ config SND_SOC_SOF_BAYTRAIL
  
- config SND_SOC_SOF_BAYTRAIL_SUPPORT
- 	bool "SOF support for Baytrail, Braswell and Cherrytrail"
-+	depends on SND_SST_ATOM_HIFI2_PLATFORM_ACPI=n
+ config SND_SOC_SOF_BROADWELL_SUPPORT
+ 	bool "SOF support for Broadwell"
++	depends on SND_SOC_INTEL_HASWELL=n
  	help
  	  This adds support for Sound Open Firmware for Intel(R) platforms
- 	  using the Baytrail, Braswell or Cherrytrail processors.
+ 	  using the Broadwell processors.
 -	  Say Y if you have such a device.
-+	  This option is mutually exclusive with the Atom/SST and Baytrail
-+	  legacy drivers. If you want to enable SOF on Baytrail/Cherrytrail,
-+	  you need to deselect those options first.
-+	  SOF does not support Baytrail-CR for now, so this option is not
++	  This option is mutually exclusive with the Haswell/Broadwell legacy
++	  driver. If you want to enable SOF on Broadwell you need to deselect
++	  the legacy driver first.
++	  SOF does fully support Broadwell yet, so this option is not
 +	  recommended for distros. At some point all legacy drivers will be
 +	  deprecated but not before all userspace firmware/topology/UCM files
 +	  are made available to downstream distros.
-+	  Say Y if you want to enable SOF on Baytrail/Cherrytrail
++	  Say Y if you want to enable SOF on Broadwell
  	  If unsure select "N".
  
- config SND_SOC_SOF_BAYTRAIL
+ config SND_SOC_SOF_BROADWELL
 -- 
 2.20.1
 
