@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC68BCA9EB5
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B23AFCA9EB5
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:33:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 702C721D7D
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:32:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 367D32184C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 13:33:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SxPetMwa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="oN6PWw+C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 702C721D7D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vkJgjgsd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="DCxstJ3+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 367D32184C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CE091769;
-	Mon,  4 Nov 2019 14:31:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CE091769
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BB9F1775;
+	Mon,  4 Nov 2019 14:32:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BB9F1775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572874348;
-	bh=WYa2htW3fO9FaO+KiDO9QpiCs++93wZO0QkuZ1BaNT8=;
+	s=default; t=1572874392;
+	bh=HxJt/UYV/7w7E2uAB5R2AxGMdextTpMpz0Xm6MW/dr8=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=SxPetMwafT/Gi4xJyZhzi+3H1/q8giB5bHUjeiEMSSbAdrjPX+5bXqGIF3b08aqng
-	 6pMX67iKUA4q6WREmanwCFLLgAsGEyhiqiLEuOgcDVCmVoCKo48PiyaVcjTdiB4SZ2
-	 jgBhJLvbbQ60HzlmpZoat71YG9pUsLUP8BrHB4Uw=
+	b=vkJgjgsdKe+OkDr3msNRyw9Zr1CLhBcSk9k9/EjJZl5pDsAyBKfBs2+v9rXup25EW
+	 uJc2IFalHhfHcUtMbJgqPlAT+49SKNdiC/3k7vM1F4gT6dq9OmJnOha9AI6OUQncjE
+	 57BLl58HwGRDYiEFpSxKOheyKg5lgGbQBGhXbyCQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12960F805FE;
-	Mon,  4 Nov 2019 14:27:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DB76F80673;
+	Mon,  4 Nov 2019 14:27:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EBD78F80637; Mon,  4 Nov 2019 14:27:21 +0100 (CET)
+ id 73689F804FD; Mon,  4 Nov 2019 14:27:22 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3ED86F8048D
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 14:27:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ED86F8048D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A010F804FE
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 14:27:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A010F804FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="oN6PWw+C"
+ header.b="DCxstJ3+"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=qqEnd6SRaJJ4olmq5sQpdBFGZk+mmIwHRFusovai2fw=; b=oN6PWw+CKc9V
- 9hBw/bvO4dvZbmQ3IqzHIYbNilT0PcPRgFumh48kN9CPwvH6EzI5LlfN+o6suBk5/EEsLGBmwbqx1
- FQSZR+2o4/C7qPmlV/8/YNxB11IpOn6QECv4YOy75R3zKHYgLcHns6rzb0DUPgjf2rIw3mc8/jHk3
- F6anM=;
+ List-Archive; bh=rZtKPbgQNJHvuYduAyJxhIhp4tGHE974FhzpqKmOGsM=; b=DCxstJ3+rjqd
+ Rm6UKXj7WWTOMo58cVKVsnMgrrHKIZM/Wr988+D1tAxopnSL1b6Kju+GR1d1EUE2nrQwuGSV0sgWJ
+ jUyah98+G7wo6uy19aRIFSSe5gSUru1pUMfUNxkYx/rDpbSjG8oUWOuGsS/wptSkWAIjRo5AxHs/G
+ 2uSOM=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iRcO1-0002eH-C6; Mon, 04 Nov 2019 13:27:13 +0000
+ id 1iRcO0-0002e3-TP; Mon, 04 Nov 2019 13:27:13 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id CD1472743044; Mon,  4 Nov 2019 13:27:12 +0000 (GMT)
+ id 60D99274301E; Mon,  4 Nov 2019 13:27:12 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191101173045.27099-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191101173045.27099-7-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191104132712.CD1472743044@ypsilon.sirena.org.uk>
+Message-Id: <20191104132712.60D99274301E@ypsilon.sirena.org.uk>
 Date: Mon,  4 Nov 2019 13:27:12 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: [alsa-devel] Applied "ASoC: SOF: Kconfig: add EXPERT dependency for
-	developer options, clarify help" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: use def_tristate,
+	avoid using select" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Kconfig: add EXPERT dependency for developer options, clarify help
+   ASoC: SOF: Intel: use def_tristate, avoid using select
 
 has been applied to the asoc tree at
 
@@ -122,99 +122,67 @@ to this mail.
 Thanks,
 Mark
 
-From 70ae4eb540af32ee6a6260143ccae6054ebd433f Mon Sep 17 00:00:00 2001
+From b000135e5f272118e576e9720590e5979f0abe49 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 1 Nov 2019 12:30:38 -0500
-Subject: [PATCH] ASoC: SOF: Kconfig: add EXPERT dependency for developer
- options, clarify help
+Date: Fri, 1 Nov 2019 12:30:40 -0500
+Subject: [PATCH] ASoC: SOF: Intel: use def_tristate, avoid using select
 
-Some distros select all possible options, despite existing warnings to
-be careful. This leads to e.g. user reports that the HDaudio codec and
-DMIC are not handled by SOF.
+So far we used select to use the relevant built-in/module options, but
+this led to blurring layers between core and Intel Kconfigs.
 
-Add an explicit menu item to unlock developer options, and make them
-dependent on CONFIG_EXPERT. Hopefully with this double-lock these
-options will only be selected by developers.
+Use def_tristate works just as well and removes Intel stuff from the code.
 
-GitHub issue: https://github.com/thesofproject/sof/issues/1885
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191101173045.27099-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191101173045.27099-7-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/Kconfig | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ sound/soc/sof/Kconfig       | 2 --
+ sound/soc/sof/intel/Kconfig | 4 ++--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 56a3ab66b46b..6435eb531668 100644
+index 6435eb531668..71a0fc075a63 100644
 --- a/sound/soc/sof/Kconfig
 +++ b/sound/soc/sof/Kconfig
 @@ -14,7 +14,6 @@ config SND_SOC_SOF_PCI
  	depends on PCI
  	select SND_SOC_SOF
  	select SND_SOC_ACPI if ACPI
--	select SND_SOC_SOF_OPTIONS
- 	select SND_SOC_SOF_INTEL_PCI if SND_SOC_SOF_INTEL_TOPLEVEL
+-	select SND_SOC_SOF_INTEL_PCI if SND_SOC_SOF_INTEL_TOPLEVEL
  	help
  	  This adds support for PCI enumeration. This option is
-@@ -27,7 +26,6 @@ config SND_SOC_SOF_ACPI
+ 	  required to enable Intel Skylake+ devices
+@@ -26,7 +25,6 @@ config SND_SOC_SOF_ACPI
  	depends on ACPI || COMPILE_TEST
  	select SND_SOC_SOF
  	select SND_SOC_ACPI if ACPI
--	select SND_SOC_SOF_OPTIONS
- 	select SND_SOC_SOF_INTEL_ACPI if SND_SOC_SOF_INTEL_TOPLEVEL
+-	select SND_SOC_SOF_INTEL_ACPI if SND_SOC_SOF_INTEL_TOPLEVEL
  	select IOSF_MBI if X86 && PCI
  	help
-@@ -40,19 +38,23 @@ config SND_SOC_SOF_OF
- 	tristate "SOF OF enumeration support"
- 	depends on OF || COMPILE_TEST
- 	select SND_SOC_SOF
--	select SND_SOC_SOF_OPTIONS
- 	help
- 	  This adds support for Device Tree enumeration. This option is
- 	  required to enable i.MX8 devices.
- 	  Say Y if you need this option. If unsure select "N".
+ 	  This adds support for ACPI enumeration. This option is required
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index cd9954bfec0b..04d4929cf91f 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -10,7 +10,7 @@ config SND_SOC_SOF_INTEL_TOPLEVEL
+ if SND_SOC_SOF_INTEL_TOPLEVEL
  
--config SND_SOC_SOF_OPTIONS
+ config SND_SOC_SOF_INTEL_ACPI
 -	tristate
-+config SND_SOC_SOF_DEVELOPER_SUPPORT
-+	bool "SOF developer options support"
-+	depends on EXPERT
++	def_tristate SND_SOC_SOF_ACPI
+ 	select SND_SOC_SOF_BAYTRAIL  if SND_SOC_SOF_BAYTRAIL_SUPPORT
+ 	select SND_SOC_SOF_BROADWELL if SND_SOC_SOF_BROADWELL_SUPPORT
  	help
--	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  This option unlock SOF developer options for debug/performance/
-+	  code hardening.
-+	  Distributions should not select this option, only SOF development
-+	  teams should select it.
-+	  Say Y if you are involved in SOF development and need this option
-+	  If not, select N
+@@ -18,7 +18,7 @@ config SND_SOC_SOF_INTEL_ACPI
+ 	  'select' statements at a higher level
  
--if SND_SOC_SOF_OPTIONS
-+if SND_SOC_SOF_DEVELOPER_SUPPORT
- 
- config SND_SOC_SOF_NOCODEC
- 	tristate
-@@ -64,6 +66,11 @@ config SND_SOC_SOF_NOCODEC_SUPPORT
- 	  option if no known codec is detected. This is typically only
- 	  enabled for developers or devices where the sound card is
- 	  controlled externally
-+	  This option is mutually exclusive with the Intel HDaudio support,
-+	  selecting it may have negative impacts and prevent e.g. microphone
-+	  functionality from being enabled on Intel CoffeeLake and later
-+	  platforms.
-+	  Distributions should not select this option!
- 	  Say Y if you need this nocodec fallback option
- 	  If unsure select "N".
- 
-@@ -168,7 +175,7 @@ config SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT
- 
- endif ## SND_SOC_SOF_DEBUG
- 
--endif ## SND_SOC_SOF_OPTIONS
-+endif ## SND_SOC_SOF_DEVELOPER_SUPPORT
- 
- config SND_SOC_SOF
- 	tristate
+ config SND_SOC_SOF_INTEL_PCI
+-	tristate
++	def_tristate SND_SOC_SOF_PCI
+ 	select SND_SOC_SOF_MERRIFIELD  if SND_SOC_SOF_MERRIFIELD_SUPPORT
+ 	select SND_SOC_SOF_APOLLOLAKE  if SND_SOC_SOF_APOLLOLAKE_SUPPORT
+ 	select SND_SOC_SOF_GEMINILAKE  if SND_SOC_SOF_GEMINILAKE_SUPPORT
 -- 
 2.20.1
 
