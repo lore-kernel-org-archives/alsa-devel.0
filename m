@@ -2,66 +2,69 @@ Return-Path: <SRS0=j9WI=Y4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB953CA9EC9
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 22:49:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 892D4CA9EC9
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 22:50:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D597D2080F
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 22:49:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03CE820663
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Nov 2019 22:50:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tpvX/XMg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D597D2080F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bef/FQGL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03CE820663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 248B91702;
-	Mon,  4 Nov 2019 23:48:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 248B91702
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27FBD1718;
+	Mon,  4 Nov 2019 23:49:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27FBD1718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572907750;
-	bh=rAH7uYsHNifCTfjz60Vs/MGfqX8PwJdsEhKx7VuVt1M=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tpvX/XMg5XMOGaRWxllxCvocXRK1K6PJffEHkx95wPCE33+fJbr+TnV9EdvgmJkfF
-	 h8uIM0hpQKVvs3aIqy5qpGaSVZJYagUlAnMi7y0Y4sfe0G4so37pwVqTYTBuRfVkbj
-	 3tD7Ed3SH7VtcLJeylfcc2+wbI/+aPWDS7QGgcQU=
+	s=default; t=1572907805;
+	bh=4abx5jf1eQ2Az9vfd381T5OENCloLdCSa0Sm6djz/vA=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bef/FQGLFfDs8SNHol2cOEvJtsLvIxO8kmq6rnUVvqCzi9ho2eXQMXzo71YEgpmQB
+	 2yDIfrE4/pufA6VFjDtutwppvj4QSNkIRakc1hOvpQ1TOQA5Ajngu/yKQdFcLGGCC/
+	 TNuopiSsLdVXBlOjHZhzg8i/rP4+O2kC3keH5dVc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91BAFF80321;
-	Mon,  4 Nov 2019 23:48:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A130CF805E2;
+	Mon,  4 Nov 2019 23:48:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC024F8045F; Mon,  4 Nov 2019 23:48:16 +0100 (CET)
+ id 2B962F8045F; Mon,  4 Nov 2019 23:48:19 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F2FCF8015B
- for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 23:48:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F2FCF8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EB91F80321
+ for <alsa-devel@alsa-project.org>; Mon,  4 Nov 2019 23:48:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EB91F80321
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
  04 Nov 2019 14:48:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,268,1569308400"; d="scan'208";a="195616733"
+X-IronPort-AV: E=Sophos;i="5.68,268,1569308400"; d="scan'208";a="195616734"
 Received: from njdenler-mobl1.amr.corp.intel.com (HELO localhost.localdomain)
  ([10.254.94.55])
  by orsmga008.jf.intel.com with ESMTP; 04 Nov 2019 14:48:08 -0800
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  4 Nov 2019 14:48:10 -0800
-Message-Id: <20191104224812.3393-1-ranjani.sridharan@linux.intel.com>
+Date: Mon,  4 Nov 2019 14:48:11 -0800
+Message-Id: <20191104224812.3393-2-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20191104224812.3393-1-ranjani.sridharan@linux.intel.com>
+References: <20191104224812.3393-1-ranjani.sridharan@linux.intel.com>
 Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
-Subject: [alsa-devel] [PATCH v2 0/2] Update FE/BE trigger order based on the
-	command
+Subject: [alsa-devel] [PATCH v2 1/2] ASoC: pcm: update FE/BE trigger order
+	based on the command
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,7 +90,7 @@ triggered before the BE DAI and in the case of
 SND_SOC_DPCM_TRIGGER_POST, the BE DAI is triggered before
 the FE DAI. And this order remains the same irrespective of the
 trigger command.
-  
+
 In the case of the SOF driver, during playback, the FW
 expects the BE DAI to be triggered before the FE DAI during
 the START trigger. The BE DAI trigger handles the starting of
@@ -99,7 +102,7 @@ the FW expects the FE DAI to be triggered before the BE DAI.
 Retaining the same order during the START and STOP commands,
 results in FW error as the DAI component in the FW is still
 active.
-    
+
 The issue can be fixed by mirroring the trigger order of
 FE and BE DAI's during the START and STOP trigger. So, with the
 trigger order set to SND_SOC_DPCM_TRIGGER_PRE, the FE DAI will be
@@ -111,27 +114,145 @@ first during the SNDRV_PCM_TRIGGER_START/STOP/RESUME commands
 and the FE DAI will be triggered first during the
 SNDRV_PCM_TRIGGER_STOP/SUSPEND/PAUSE commands.
 
-The above change has been tested with the Skylake driver
-on the Kabylake based chromebook and legacy HDA driver
-on Kabylake based Dell XPS13. It has also been tested
-on all platforms with SOF CI without any regressions
-for the past 3 weeks.
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/soc-pcm.c | 95 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 68 insertions(+), 27 deletions(-)
 
-More details on the issue can be found here:
-https://github.com/thesofproject/linux/issues/1160
-
-Changes in v2:
-Fixed comments on function name and consolidating the switch
-cases.
-
-Ranjani Sridharan (2):
-  ASoC: pcm: update FE/BE trigger order based on the command
-  ASoC: SOF: topology: set trigger order for FE DAI link
-
- sound/soc/soc-pcm.c      | 95 ++++++++++++++++++++++++++++------------
- sound/soc/sof/topology.c |  4 ++
- 2 files changed, 72 insertions(+), 27 deletions(-)
-
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index b890481cffcb..493a2e80e893 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2329,42 +2329,81 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ }
+ EXPORT_SYMBOL_GPL(dpcm_be_dai_trigger);
+ 
++static int dpcm_dai_trigger_fe_be(struct snd_pcm_substream *substream,
++				  int cmd, bool fe_first)
++{
++	struct snd_soc_pcm_runtime *fe = substream->private_data;
++	int ret;
++
++	/* call trigger on the frontend before the backend. */
++	if (fe_first) {
++		dev_dbg(fe->dev, "ASoC: pre trigger FE %s cmd %d\n",
++			fe->dai_link->name, cmd);
++
++		ret = soc_pcm_trigger(substream, cmd);
++		if (ret < 0)
++			return ret;
++
++		ret = dpcm_be_dai_trigger(fe, substream->stream, cmd);
++		return ret;
++	}
++
++	/* call trigger on the frontend after the backend. */
++	ret = dpcm_be_dai_trigger(fe, substream->stream, cmd);
++	if (ret < 0)
++		return ret;
++
++	dev_dbg(fe->dev, "ASoC: post trigger FE %s cmd %d\n",
++		fe->dai_link->name, cmd);
++
++	ret = soc_pcm_trigger(substream, cmd);
++
++	return ret;
++}
++
+ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *fe = substream->private_data;
+-	int stream = substream->stream, ret;
++	int stream = substream->stream;
++	int ret = 0;
+ 	enum snd_soc_dpcm_trigger trigger = fe->dai_link->trigger[stream];
+ 
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
+ 
+ 	switch (trigger) {
+ 	case SND_SOC_DPCM_TRIGGER_PRE:
+-		/* call trigger on the frontend before the backend. */
+-
+-		dev_dbg(fe->dev, "ASoC: pre trigger FE %s cmd %d\n",
+-				fe->dai_link->name, cmd);
+-
+-		ret = soc_pcm_trigger(substream, cmd);
+-		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", ret);
+-			goto out;
++		switch (cmd) {
++		case SNDRV_PCM_TRIGGER_START:
++		case SNDRV_PCM_TRIGGER_RESUME:
++		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++			ret = dpcm_dai_trigger_fe_be(substream, cmd, true);
++			break;
++		case SNDRV_PCM_TRIGGER_STOP:
++		case SNDRV_PCM_TRIGGER_SUSPEND:
++		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++			ret = dpcm_dai_trigger_fe_be(substream, cmd, false);
++			break;
++		default:
++			ret = -EINVAL;
++			break;
+ 		}
+-
+-		ret = dpcm_be_dai_trigger(fe, substream->stream, cmd);
+ 		break;
+ 	case SND_SOC_DPCM_TRIGGER_POST:
+-		/* call trigger on the frontend after the backend. */
+-
+-		ret = dpcm_be_dai_trigger(fe, substream->stream, cmd);
+-		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", ret);
+-			goto out;
++		switch (cmd) {
++		case SNDRV_PCM_TRIGGER_START:
++		case SNDRV_PCM_TRIGGER_RESUME:
++		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++			ret = dpcm_dai_trigger_fe_be(substream, cmd, false);
++			break;
++		case SNDRV_PCM_TRIGGER_STOP:
++		case SNDRV_PCM_TRIGGER_SUSPEND:
++		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++			ret = dpcm_dai_trigger_fe_be(substream, cmd, true);
++			break;
++		default:
++			ret = -EINVAL;
++			break;
+ 		}
+-
+-		dev_dbg(fe->dev, "ASoC: post trigger FE %s cmd %d\n",
+-				fe->dai_link->name, cmd);
+-
+-		ret = soc_pcm_trigger(substream, cmd);
+ 		break;
+ 	case SND_SOC_DPCM_TRIGGER_BESPOKE:
+ 		/* bespoke trigger() - handles both FE and BEs */
+@@ -2373,10 +2412,6 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 				fe->dai_link->name, cmd);
+ 
+ 		ret = soc_pcm_bespoke_trigger(substream, cmd);
+-		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", ret);
+-			goto out;
+-		}
+ 		break;
+ 	default:
+ 		dev_err(fe->dev, "ASoC: invalid trigger cmd %d for %s\n", cmd,
+@@ -2385,6 +2420,12 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		goto out;
+ 	}
+ 
++	if (ret < 0) {
++		dev_err(fe->dev, "ASoC: trigger FE cmd: %d failed: %d\n",
++			cmd, ret);
++		goto out;
++	}
++
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
 -- 
 2.17.1
 
