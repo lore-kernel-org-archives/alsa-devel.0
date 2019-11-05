@@ -6,108 +6,77 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A163AC17460
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:28:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 133C7C17461
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:38:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2994521D7F
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:28:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E8D221D6C
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:38:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iFm13nSN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VFsnwvZS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2994521D7F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Dv3HY74Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E8D221D6C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35C2516EF;
-	Tue,  5 Nov 2019 14:27:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35C2516EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4F5B16EC;
+	Tue,  5 Nov 2019 14:37:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4F5B16EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572960522;
-	bh=mSyiJdqPiH+T8fLRhxAuc9T1iP7DlGrm7oI6wz46gzg=;
+	s=default; t=1572961107;
+	bh=sqB3K8TJIzVfVGMLvEVDsT1u3iR13A33UfplRIIbC6Y=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iFm13nSN9fqyIyPix948uNPzBiStsYEtGwtNVQWadHcH8ocx0K9QkmcNNfIbvooDd
-	 ZMnsEfz+1yLDEB8lPPngsmhxoIvKgQzThh73DlVPJi6xkr89u5l3xnkxkgv4eDNYDL
-	 q+QJUrjFAJx7OKfrsO0rU0vKnQETow57I9Yq0BQs=
+	b=Dv3HY74Y2zLjd3UhtjCB/TI7glLgmscQgVMFDFC06FedzC7jSQGrQn0iCCJBL8F9R
+	 DD3KIoXIvNjN7FWeq15QxCojNGgiqbLH2HTSQtq38Qb2HnjL7NeCkSnaoP3THfFvbw
+	 rVTB4g0y4Sxu1DyAAJOP9j+UMpKoWh9bVZeEjmnc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B669DF80446;
-	Tue,  5 Nov 2019 14:27:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46D27F800F3;
+	Tue,  5 Nov 2019 14:37:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C84CF8049B; Tue,  5 Nov 2019 14:27:50 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5AC06F8049B; Tue,  5 Nov 2019 14:37:35 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BA3AF800F3
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 14:27:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BA3AF800F3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="VFsnwvZS"
-Received: by mail-wm1-x344.google.com with SMTP id 8so13113117wmo.0
- for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 05:27:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=hB3wQvRGrj1ZRhAhArvMifryRxQS5+RNbsqGlKhKgzk=;
- b=VFsnwvZSNKJMSeyhPMRpdB4ZkZ6AYmUUNRhN4Qn+9qfNHNcC6ktaTqN6hlQY8z30qG
- qlF43veqqmkNVZy9CfnyD0A8yBtPAxgvhX1uh+3IhiKA3TksGJ5bYEwJwqDUAyp6qd40
- yRDtgCQeFEhnOzGV3i/z3lUG99341c2z6YYWi7kYJ07qZt7eWSO2fWXgIlifnK0ZclNb
- mBi7qt4Tj1sUxRWtaFORfD2h4hQSbwxU+GQjWBt/F0ItPYmf3/n1RcS4QH+YKJIMMa0u
- WyWxnIrPBBJgV5MVCJsi74KqKHS/skjAwXoKuvF+MVMxXPjU7B9rzIHuFmjaw5OagwRA
- Aoeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=hB3wQvRGrj1ZRhAhArvMifryRxQS5+RNbsqGlKhKgzk=;
- b=dYpNYN7bZEf5nASTqYTqlXSGgTsD+YmVHPZGTe2WOqKXo39JcwOvJzEbTl5LxO5vSJ
- jlohTWDkvsrKElvQUCMdKbCbXDySN9DdFtU+ckp+Og27gp5T4ia1/QPG7I20cC8PbQZW
- J3Pyqjy6TOnQCLX2xxze0KDuBpb0tAdoyM2bY38RKGdjuxMByBqMGVhTCMgbIuAdaqqz
- sb5xEtckuI5qDyB2YwI2RPnAAHEMgqJynELoN+tdFT6iZCZTb83wbFUxtMhYYKzW41jt
- UEAtdosMROFKL2+dNuMFqvF9vSnnUxu/pgYiXF+2s8KmZ8dZunfC6WVo1pisN2oSI83Y
- yU5A==
-X-Gm-Message-State: APjAAAWlYTecVTqjM+NJZ9ekUXVTInjQqeizTX+5EIaKQVuw2kKZMDBM
- PTmW2dKAQM6kQIFVDSkjV2XjQQ==
-X-Google-Smtp-Source: APXvYqylIjqSxRwVDLHiilqgwmzoUpkTemPlTon9ahW0PhuOvXEZCINEZ4digiAahGcNH2/GlE6RAg==
-X-Received: by 2002:a1c:411:: with SMTP id 17mr3955910wme.122.1572960467354;
- Tue, 05 Nov 2019 05:27:47 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id m25sm995475wmi.46.2019.11.05.05.27.46
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 05 Nov 2019 05:27:46 -0800 (PST)
-To: Linus Walleij <linus.walleij@linaro.org>
-References: <20191029112700.14548-1-srinivas.kandagatla@linaro.org>
- <20191029112700.14548-9-srinivas.kandagatla@linaro.org>
- <CACRpkdYc-3Nk7VGj8mAjaM4C0dc_X7ZOK0cptW2Sr+kKwvyFVg@mail.gmail.com>
- <4f0e22ab-6aa1-2ed1-a85b-fb66531e0b2a@linaro.org>
- <CACRpkda2CdbPe7jsomZSxdJ1wE65OmNYDsZNj1OmfzdvG4kWng@mail.gmail.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <502c64dd-a249-bb2c-7bc5-8c66fa66be35@linaro.org>
-Date: Tue, 5 Nov 2019 13:27:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F895F800F3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 14:37:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F895F800F3
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 05 Nov 2019 05:37:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,271,1569308400"; d="scan'208";a="403353670"
+Received: from nvavanes-mobl.amr.corp.intel.com (HELO [10.254.182.110])
+ ([10.254.182.110])
+ by fmsmga006.fm.intel.com with ESMTP; 05 Nov 2019 05:37:28 -0800
+To: "Lu, Brent" <brent.lu@intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <1570007072-23049-1-git-send-email-brent.lu@intel.com>
+ <CF33C36214C39B4496568E5578BE70C74031B9FD@PGSMSX108.gar.corp.intel.com>
+ <63da3995-b807-f9e6-6f09-a90e6b8e8e53@linux.intel.com>
+ <CF33C36214C39B4496568E5578BE70C74032F8BA@PGSMSX108.gar.corp.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9abda4e6-7a85-50e3-ca09-7029fe5a0d7a@linux.intel.com>
+Date: Tue, 5 Nov 2019 06:48:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <CACRpkda2CdbPe7jsomZSxdJ1wE65OmNYDsZNj1OmfzdvG4kWng@mail.gmail.com>
+In-Reply-To: <CF33C36214C39B4496568E5578BE70C74032F8BA@PGSMSX108.gar.corp.intel.com>
 Content-Language: en-US
-Cc: Rob Herring <robh@kernel.org>,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, bgoswami@codeaurora.org,
- Vinod Koul <vinod.koul@linaro.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, spapothi@codeaurora.org,
+Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v3 08/11] dt-bindings: pinctrl:
- qcom-wcd934x: Add bindings for gpio
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ "Zavras, Alexios" <alexios.zavras@intel.com>, Mark Brown <broonie@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: bdw-rt5677: enable runtime channel
+ merge
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -127,21 +96,51 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 05/11/2019 13:25, Linus Walleij wrote:
-> On Mon, Nov 4, 2019 at 10:35 AM Srinivas Kandagatla
-> <srinivas.kandagatla@linaro.org>  wrote:
-> 
->> This controller just has Output enable bits, No pin control properties.
+On 11/5/19 12:03 AM, Lu, Brent wrote:
+>>>> In the DAI link "Capture PCM", the FE DAI "Capture Pin" supports
+>>>> 4-channel capture but the BE DAI supports only 2-channel capture. To
+>>>> fix the channel mismatch, we need to enable the runtime channel merge
+>> for this DAI link.
+>>>>
+>>>
+>>> Hi Pierre,
+>>>
+>>> This patch is for the same issue discussed in the following thread:
+>>> https://patchwork.kernel.org/patch/11134167/
+>>>
+>>> We enable the runtime channel merge for the DMIC DAI instead of adding
+>>> a machine driver constraint. It's working good on chrome's 3.14 branch
+>>> (which requires some backport for the runtime channel merge feature).
+>>> Please let me know if this implementation is correct for the FE/BE mismatch
+>> problem.
 >>
->> As you suggested I can move this to drivers/gpio in next version.
-> OK perfect, thanks!
+>> Sorry, I don't fully understand your points, and it's the first time I see anyone
+>> use this .dpcm_merged_chan field for an Intel platform.
+>>
+>> If I look at the code I see that the core would limit the number of channels to
+>> two. But that code needs the CPU_DAI to use 2 channels, which I don't see.
+>> So is this patch self-contained or do we need an additional constraint on the
+>> FE?
+>>
+>> Thanks
+>> -Pierre
 > 
-> NB: this probably also affects the compatible-string which contains
-> "pinctrl*" right?
-Yes, I will suffix it with "-gpio" instead.
+> Hi Pierre,
+> 
+> We don't need constraint on FE because dpcm_runtime_merge_chan() modifies
+> the channel number of snd_pcm_hardware structure directly. The structure will
+> be used to initialize the snd_pcm_hw_constraints structure later in the
+> snd_pcm_hw_constraints_complete() function. Since the channel number is already
+> modified, we don't need a constraint to install an extra rule for it.
+> 
+> The result of using dpcm_merged_chan flag and machine driver constraint should
+> be the same when user space programs calling HW_REFINE ioctl call but I think the
+> flag is more elegant for machine driver code.
 
-thanks,
-srini
+I could use the opposite argument: by using a capability that no one 
+else uses, you make the solution more obscure and less intuitive. All 
+other machine drivers use constraints, so if the two solutions are 
+equivalent let's follow the more common solution.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
