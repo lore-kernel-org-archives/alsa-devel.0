@@ -2,92 +2,62 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEE39CA9EC7
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE28CCA9EC7
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:46:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB0F02084D
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:04:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D6CDE206DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:46:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="duXCMpKn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB0F02084D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XZ7FGKwt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6CDE206DF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8782E170A;
-	Tue,  5 Nov 2019 07:03:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8782E170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92A811708;
+	Tue,  5 Nov 2019 07:45:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92A811708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572933862;
-	bh=aoEDgvmJGGTK4mUERPGFtAPV/w4MglHcSWvdmD6KyMo=;
-	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=duXCMpKnBFD4VteObtq9S+n1h9YERliUBhkvLGc9gKXLi+AUbRaUxEF5MIurVwccX
-	 ldj3h9F/9Jrf2vb85oUr2Ni6stst8C1X2WxQ2bje5LTcLCtf+W8FM+3ml+Ni9vinxj
-	 QnOwDkLw5TbWMmkFjN5RRV9xWbeagIdioS48IxQQ=
+	s=default; t=1572936376;
+	bh=pHQUumW/ZaSRmYJsHySJjMBMn0palr18LBbrgaqKzkM=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XZ7FGKwt8yiWyLLNtvIX83t+P7/FgqCJOPFvzb0DoCpb0Wwp3AZUVUVNQwLRapKQc
+	 fdeKCcVvlz0LjCwhY7c0peqhqwzqhY3SROXK4TR6q2Spb3xcXyxw7O1oCsk2M+etwU
+	 P2EsNipiY8pLl/YxP6Fkp/iT2pnyvlvZA3qmM7Z8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03238F80446;
-	Tue,  5 Nov 2019 07:03:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16BE8F80446;
+	Tue,  5 Nov 2019 07:45:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CCB5F8049B; Tue,  5 Nov 2019 07:03:30 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 773BAF800F3
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 07:03:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 773BAF800F3
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Nov 2019 22:03:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,270,1569308400"; d="scan'208";a="200702984"
-Received: from kmsmsx157.gar.corp.intel.com ([172.21.138.134])
- by fmsmga007.fm.intel.com with ESMTP; 04 Nov 2019 22:03:14 -0800
-Received: from pgsmsx108.gar.corp.intel.com ([169.254.8.51]) by
- kmsmsx157.gar.corp.intel.com ([169.254.5.204]) with mapi id 14.03.0439.000;
- Tue, 5 Nov 2019 14:03:08 +0800
-From: "Lu, Brent" <brent.lu@intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Thread-Topic: [alsa-devel] [PATCH] ASoC: bdw-rt5677: enable runtime channel
- merge
-Thread-Index: AQHVeQDQJxSKmeHo60W0FoozADL3CqdkfMRQgAADboCAF8XX4A==
-Date: Tue, 5 Nov 2019 06:03:07 +0000
-Message-ID: <CF33C36214C39B4496568E5578BE70C74032F8BA@PGSMSX108.gar.corp.intel.com>
-References: <1570007072-23049-1-git-send-email-brent.lu@intel.com>
- <CF33C36214C39B4496568E5578BE70C74031B9FD@PGSMSX108.gar.corp.intel.com>
- <63da3995-b807-f9e6-6f09-a90e6b8e8e53@linux.intel.com>
-In-Reply-To: <63da3995-b807-f9e6-6f09-a90e6b8e8e53@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNmEwZTU0MjEtYWI3NS00MTc3LWE1NGItMjA0M2RiZmRhZGZiIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiVXFLMjJZZFd4WURZVTJsS2daTHZvNUVtclwvRzZhekNtWVNrRmE2d2ozQlMyMWplMDA3UWtDa1JMSjFFazNcL0FiIn0=
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [172.30.20.206]
-MIME-Version: 1.0
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Zavras,
- Alexios" <alexios.zavras@intel.com>, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: bdw-rt5677: enable runtime channel
- merge
+ id D999DF8049B; Tue,  5 Nov 2019 07:45:23 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id D676AF80271
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 07:45:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D676AF80271
+Date: 05 Nov 2019 15:45:14 +0900
+X-IronPort-AV: E=Sophos;i="5.68,270,1569250800"; d="scan'208";a="30858083"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2019 15:45:14 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id C356C4001B75;
+ Tue,  5 Nov 2019 15:45:14 +0900 (JST)
+Message-ID: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [alsa-devel] [PATCH v3 00/19] ASoC: soc-core cleanup - step 4
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,49 +75,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> >> In the DAI link "Capture PCM", the FE DAI "Capture Pin" supports
-> >> 4-channel capture but the BE DAI supports only 2-channel capture. To
-> >> fix the channel mismatch, we need to enable the runtime channel merge
-> for this DAI link.
-> >>
-> >
-> > Hi Pierre,
-> >
-> > This patch is for the same issue discussed in the following thread:
-> > https://patchwork.kernel.org/patch/11134167/
-> >
-> > We enable the runtime channel merge for the DMIC DAI instead of adding
-> > a machine driver constraint. It's working good on chrome's 3.14 branch
-> > (which requires some backport for the runtime channel merge feature).
-> > Please let me know if this implementation is correct for the FE/BE mismatch
-> problem.
-> 
-> Sorry, I don't fully understand your points, and it's the first time I see anyone
-> use this .dpcm_merged_chan field for an Intel platform.
-> 
-> If I look at the code I see that the core would limit the number of channels to
-> two. But that code needs the CPU_DAI to use 2 channels, which I don't see.
-> So is this patch self-contained or do we need an additional constraint on the
-> FE?
-> 
-> Thanks
-> -Pierre
 
-Hi Pierre,
+Hi Mark
 
-We don't need constraint on FE because dpcm_runtime_merge_chan() modifies
-the channel number of snd_pcm_hardware structure directly. The structure will
-be used to initialize the snd_pcm_hw_constraints structure later in the
-snd_pcm_hw_constraints_complete() function. Since the channel number is already
-modified, we don't need a constraint to install an extra rule for it.
+These are v3 of soc-core cleanup step4.
+These are based on mark/for-5.5 branch.
+These had been tested on Intel CI, and had no issue.
+And are reviewed by Pierre-Louis, Ranjani.
 
-The result of using dpcm_merged_chan flag and machine driver constraint should
-be the same when user space programs calling HW_REFINE ioctl call but I think the
-flag is more elegant for machine driver code.
+Kuninori Morimoto (19):
+  ASoC: soc-core: move soc_init_dai_link()
+  ASoC: soc-core: tidyup soc_init_dai_link()
+  ASoC: soc-core: typo fix at soc_dai_link_sanity_check()
+  ASoC: soc-core: remove duplicated soc_is_dai_link_bound()
+  ASoC: soc-core: call soc_bind_dai_link() under snd_soc_add_dai_link()
+  ASoC: soc-core: add soc_unbind_dai_link()
+  ASoC: soc-core: move snd_soc_lookup_component()
+  ASoC: soc-core: tidyup snd_soc_lookup_component()
+  ASoC: soc-core: add snd_soc_del_component_unlocked()
+  ASoC: soc-core: remove snd_soc_component_add/del()
+  ASoC: soc-core: use snd_soc_lookup_component() at snd_soc_unregister_component()
+  ASoC: soc-core: move snd_soc_register_dai()
+  ASoC: soc-core: move snd_soc_unregister_dais()
+  ASoC: soc-core: add snd_soc_unregister_dai()
+  ASoC: soc-core: have legacy_dai_naming at snd_soc_register_dai()
+  ASoC: soc-core: don't call snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()
+  ASoC: soc-core: call snd_soc_register_dai() from snd_soc_register_dais()
+  ASoC: soc-core: remove topology specific operation
+  ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
 
+ include/sound/soc.h      |  15 +-
+ sound/soc/soc-core.c     | 526 ++++++++++++++++++++---------------------------
+ sound/soc/soc-topology.c |  17 +-
+ 3 files changed, 255 insertions(+), 303 deletions(-)
 
-Regards,
-Brent
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
