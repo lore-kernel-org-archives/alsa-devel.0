@@ -2,56 +2,55 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 326ACCA9EC7
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:58:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E723CA9EC7
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:58:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB6E4214B2
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:58:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0222C214B2
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:58:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fk21/YBy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB6E4214B2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="guttGQMJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0222C214B2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4786173C;
-	Tue,  5 Nov 2019 07:57:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4786173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40378172B;
+	Tue,  5 Nov 2019 07:58:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40378172B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572937094;
-	bh=Jh++QKGB+50E9C2odEvL/elvFMym63iq35kt5bll9+Q=;
+	s=default; t=1572937130;
+	bh=imwtuJRr6A0pwhbaS9GQxzT2oU1GDyb+lKpnr/l5RVU=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fk21/YBy3gZekay/XToq3FnMu2+psGC7ag/SN7rrWGN6BR9sYE+beEbAN9BgbXQ9k
-	 QL9RhmJpGBz2Bj5f1ZYI0Dc+jTaTKRi7eaSxYFuBvE20FWx/86+ELPavWjJ93MKujN
-	 5f4+t/oyfhk2DWlR0G8IOA4FNJZBNfJQN3yjgB78=
+	b=guttGQMJBa+2qf1GR+U2VhlSNUyPYFeVU9nrGm5pcYNXAt1nECgV/CIWahRVhX+mO
+	 5RDAD5br22NqZoUWlpSf0faMQHT5staF1KtpN86cf+nDvNkAoluFBXEiytBeMzHfsI
+	 f1xuPghDAE78795rpnvEzN3jpfQbCmi3uzhyF62g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1085F8075A;
-	Tue,  5 Nov 2019 07:47:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D764FF80760;
+	Tue,  5 Nov 2019 07:47:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A77AF8075B; Tue,  5 Nov 2019 07:47:25 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 437B3F80730
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 07:47:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 437B3F80730
-Date: 05 Nov 2019 15:47:18 +0900
-X-IronPort-AV: E=Sophos;i="5.68,270,1569250800"; d="scan'208";a="30645017"
+ id 277F2F80764; Tue,  5 Nov 2019 07:47:28 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 615E4F80750
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 07:47:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 615E4F80750
+Date: 05 Nov 2019 15:47:22 +0900
+X-IronPort-AV: E=Sophos;i="5.68,270,1569250800"; d="scan'208";a="30858280"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 05 Nov 2019 15:47:18 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2019 15:47:22 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E1A8B4009409;
- Tue,  5 Nov 2019 15:47:18 +0900 (JST)
-Message-ID: <87r22m251l.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id E1B53400940C;
+ Tue,  5 Nov 2019 15:47:22 +0900 (JST)
+Message-ID: <87pni6251h.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -61,8 +60,8 @@ MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 17/19] ASoC: soc-core: call
-	snd_soc_register_dai() from snd_soc_register_dais()
+Subject: [alsa-devel] [PATCH v3 18/19] ASoC: soc-core: remove topology
+	specific operation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,18 +79,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-ALSA SoC has 2 functions.
-snd_soc_register_dai()  is used from topology
-snd_soc_register_dais() is used from snd_soc_add_component()
+soc-core has some API which is used from topology, but it is doing
+topology specific operation at soc-core.
+soc-core should care about core things, and topology should care
+about topology things, otherwise, it is very confusable.
 
-In general, people think like _dai() is called from _dais()
-with for loop. But in reality, these are very similar
-but different implementation.
-We shouldn't have duplicated and confusing implementation.
+For example topology type is not related to soc-core,
+it is topology side issue.
 
-This patch calls snd_soc_register_dai() from snd_soc_register_dais()
+This patch removes meaningless check from soc-core.
+
+This patch keeps extra initialization/destruction at
+snd_soc_add_dai_link() / snd_soc_remove_dai_link()
+which were for topology.
+From this patch, non-topology card can use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -100,51 +104,70 @@ v2 -> v3
 	- no change
 	- add Reviewed-by
 
- sound/soc/soc-core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/soc-core.c | 28 ++++------------------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 55b13c0..86c45f7 100644
+index 86c45f7..cc59687 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2607,12 +2607,16 @@ struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
- 					 struct snd_soc_dai_driver *dai_drv,
- 					 bool legacy_dai_naming)
+@@ -1436,19 +1436,12 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
  {
--	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
--		dev_err(component->dev, "Invalid dai type %d\n",
--			dai_drv->dobj.type);
-+	struct device *dev = component->dev;
-+
-+	if (dai_drv->dobj.type &&
-+	    dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
-+		dev_err(dev, "Invalid dai type %d\n", dai_drv->dobj.type);
- 		return NULL;
- 	}
- 
-+	dev_dbg(dev, "ASoC: dai register %s\n", dai_drv->name);
-+
- 	lockdep_assert_held(&client_mutex);
- 	return soc_add_dai(component, dai_drv, legacy_dai_naming);
- }
-@@ -2642,16 +2646,12 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
- 				 struct snd_soc_dai_driver *dai_drv,
- 				 size_t count)
- {
--	struct device *dev = component->dev;
- 	struct snd_soc_dai *dai;
- 	unsigned int i;
  	int ret;
  
--	dev_dbg(dev, "ASoC: dai register %s #%zu\n", dev_name(dev), count);
+-	if (dai_link->dobj.type
+-	    && dai_link->dobj.type != SND_SOC_DOBJ_DAI_LINK) {
+-		dev_err(card->dev, "Invalid dai link type %d\n",
+-			dai_link->dobj.type);
+-		return -EINVAL;
+-	}
 -
- 	for (i = 0; i < count; i++) {
+ 	lockdep_assert_held(&client_mutex);
++
+ 	/*
+ 	 * Notify the machine driver for extra initialization
+-	 * on the link created by topology.
+ 	 */
+-	if (dai_link->dobj.type && card->add_dai_link)
++	if (card->add_dai_link)
+ 		card->add_dai_link(card, dai_link);
+ 
+ 	ret = soc_bind_dai_link(card, dai_link);
+@@ -1475,19 +1468,12 @@ EXPORT_SYMBOL_GPL(snd_soc_add_dai_link);
+ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 			     struct snd_soc_dai_link *dai_link)
+ {
+-	if (dai_link->dobj.type
+-	    && dai_link->dobj.type != SND_SOC_DOBJ_DAI_LINK) {
+-		dev_err(card->dev, "Invalid dai link type %d\n",
+-			dai_link->dobj.type);
+-		return;
+-	}
 -
--		dai = soc_add_dai(component, dai_drv + i, count == 1 &&
-+		dai = snd_soc_register_dai(component, dai_drv + i, count == 1 &&
- 				  !component->driver->non_legacy_dai_naming);
- 		if (dai == NULL) {
- 			ret = -ENOMEM;
+ 	lockdep_assert_held(&client_mutex);
++
+ 	/*
+ 	 * Notify the machine driver for extra destruction
+-	 * on the link created by topology.
+ 	 */
+-	if (dai_link->dobj.type && card->remove_dai_link)
++	if (card->remove_dai_link)
+ 		card->remove_dai_link(card, dai_link);
+ 
+ 	list_del(&dai_link->list);
+@@ -2609,12 +2595,6 @@ struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
+ {
+ 	struct device *dev = component->dev;
+ 
+-	if (dai_drv->dobj.type &&
+-	    dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
+-		dev_err(dev, "Invalid dai type %d\n", dai_drv->dobj.type);
+-		return NULL;
+-	}
+-
+ 	dev_dbg(dev, "ASoC: dai register %s\n", dai_drv->name);
+ 
+ 	lockdep_assert_held(&client_mutex);
 -- 
 2.7.4
 
