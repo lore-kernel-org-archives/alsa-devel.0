@@ -2,92 +2,97 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 368BFC5DF60
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 18:29:35 +0000 (UTC)
-Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24F0EC5DF63
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 19:00:15 +0000 (UTC)
+Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B07F21929
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 18:29:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE7E721882
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 19:00:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L+6JJjEe";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=asmblr.net header.i=@asmblr.net header.b="OimEghsr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B07F21929
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=asmblr.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mgGLgDMn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE7E721882
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D2B616DB;
-	Tue,  5 Nov 2019 19:28:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D2B616DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA40B16E2;
+	Tue,  5 Nov 2019 19:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA40B16E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572978572;
-	bh=tPIVT0q4a9DhWEdvyesW4f011dU6reURpSJA3CnJGqk=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1572979802;
+	bh=Wz0zHqgL3BpkKj+K8HR7g1cuDz2MRYtx364gWS1Yobs=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L+6JJjEev0qSHkuGtdD6LaloSIpo/YPsIkjUyXEkq2F8Mx2/muAmIXmAJqpkZsAyA
-	 Bh5shh2evWk6zYdis2OFwqYUhSTfwpQ8iHwjt52bwJ7k8dmYYKVGabZqqH2sswwmwB
-	 QMzztdSFJrOH+WcyT2/D9HVULAYiAcuT3b7T9Glk=
+	b=mgGLgDMnzQsyBngXydB2q5WKRsSITesogoCsFchnnmfJSZTTmKwsCjOUJDtqirOs4
+	 6OXHmIX6Ctb8Xfdsb2zFG4qMhI4LlHWtEHQYeJnky5hMzniG4jFo7JwxQky4Rm3BgG
+	 CWkGAMQOEAIP+CKDyiDHU7VcXxiZhd+lEXpHvlOw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAD83F80446;
-	Tue,  5 Nov 2019 19:28:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8230AF80446;
+	Tue,  5 Nov 2019 19:49:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A572AF8049B; Tue,  5 Nov 2019 19:28:39 +0100 (CET)
-Received: from srv2.anyservers.com (srv2.anyservers.com [77.79.239.202])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 41E62F8049B; Tue,  5 Nov 2019 19:49:10 +0100 (CET)
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
+ [209.85.167.193])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DF02F8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 19:28:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DF02F8015B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=asmblr.net header.i=@asmblr.net
- header.b="OimEghsr"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=asmblr.net; 
- s=default;
- h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
- In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
- List-Post:List-Owner:List-Archive;
- bh=dOxTsRxIAEId56Ksa5W7idoQ5THQHu02KUhHbwU6HOA=; b=OimEghsrf9CM8gJhQ2oLHeru50
- 8KZA8oQRp3MUde6GOZ05U5xfeRXq6jjcdMItwaANDyVZeNiVQIsxqjJ6VCEa7qoGokWQciXFacNPQ
- 3eoLeZ+bBsPIod6IJx5Ou5L6ah++MPgCRizyl8PeMqhZ9qboCQUpiOZJGfP1a7rbOBrZ+ANRK2ZaI
- uRKihNCpb5WMXfh7aZaKswU3cdlfIvbL5zXpbLGz1sFhOg6sCDU9ZBR1HyIYdos2NfJ+b81sCX3Hn
- zAVXFg+mx6ovQca/kJ93hAiZQwbgHOraRW7HdqZWDaECwhEqWNI6XX86vGXgfcut8x5EqLFuj/KBc
- HO7Eiwnw==;
-Received: from apn-95-40-136-91.dynamic.gprs.plus.pl ([95.40.136.91]:38616
- helo=milkyway.galaxy)
- by srv2.anyservers.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
- (Exim 4.91) (envelope-from <amade@asmblr.net>)
- id 1iS3ZD-00ACt8-Bw; Tue, 05 Nov 2019 19:28:35 +0100
-Date: Tue, 5 Nov 2019 19:28:44 +0100
-From: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?= <amade@asmblr.net>
-To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20191105192844.43473f66@milkyway.galaxy>
-In-Reply-To: <20191105080138.1260-2-tiwai@suse.de>
-References: <20191105080138.1260-1-tiwai@suse.de>
- <20191105080138.1260-2-tiwai@suse.de>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC33FF800F3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 19:49:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC33FF800F3
+Received: by mail-oi1-f193.google.com with SMTP id s71so18498403oih.11
+ for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 10:49:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=Qj5LiYO9Gp8VVa5aloZ7icPxyBMoZMvJD6YekkOcDko=;
+ b=g7L7gGLOF91+6E1W17zAH/0ZbnwvuMP8Zi3+OJ01ZwR/qYPSNYZ8lTXBi9Q+sME9w5
+ ANokuXEv1wfuSNiL6zmSZuO1m0rb8MGDXJ2dYIw01jhW8pxc/rT82erVqRP9C6/KT3QR
+ g+nmkt9PJew2IKUmJtXovdAyrl4J5Mb0b3C3G57icHptiZwJfiUHbQfNcRG6kkuDpb54
+ /w1Zbtx6eRnlCnXIbeklQIqn6B1NbOgmkib44olsnqnQZR+it5YdKPirsR+YGD8iVlPC
+ HMZxiImMraAM6uG1Asu8dBNGJDSev3KTrRMXfG3b3Xjj8II/am2tfXfHQXJsvye9jTyd
+ miGg==
+X-Gm-Message-State: APjAAAVP5Ts3D6efjZ5izpSrcNgaDDD3MQ4uR4ecwvu5gyypDvryrtWi
+ AQMMse5L4JMWbUAE1K205g==
+X-Google-Smtp-Source: APXvYqyrkBUlvV4cInkJ0w/GC7dlp4bZRcgeBsiVsjLD/Uy3nlwd90V6BQaJ97S30Z3HKKwFfh/7vw==
+X-Received: by 2002:aca:a842:: with SMTP id r63mr394336oie.118.1572979745545; 
+ Tue, 05 Nov 2019 10:49:05 -0800 (PST)
+Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id u18sm2530972otq.31.2019.11.05.10.49.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 05 Nov 2019 10:49:04 -0800 (PST)
+Date: Tue, 5 Nov 2019 12:49:03 -0600
+From: Rob Herring <robh@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <20191105184903.GA4709@bogus>
+References: <20191029112700.14548-1-srinivas.kandagatla@linaro.org>
+ <20191029112700.14548-9-srinivas.kandagatla@linaro.org>
+ <CACRpkdYc-3Nk7VGj8mAjaM4C0dc_X7ZOK0cptW2Sr+kKwvyFVg@mail.gmail.com>
+ <4f0e22ab-6aa1-2ed1-a85b-fb66531e0b2a@linaro.org>
+ <CACRpkda2CdbPe7jsomZSxdJ1wE65OmNYDsZNj1OmfzdvG4kWng@mail.gmail.com>
+ <502c64dd-a249-bb2c-7bc5-8c66fa66be35@linaro.org>
 MIME-Version: 1.0
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - srv2.anyservers.com
-X-AntiAbuse: Original Domain - alsa-project.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - asmblr.net
-X-Get-Message-Sender-Via: srv2.anyservers.com: authenticated_id:
- amade@asmblr.net
-X-Authenticated-Sender: srv2.anyservers.com: amade@asmblr.net
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH 1/4] ALSA: memalloc: Allow NULL device for
- SNDRV_DMA_TYPE_CONTINOUS type
+Content-Disposition: inline
+In-Reply-To: <502c64dd-a249-bb2c-7bc5-8c66fa66be35@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, bgoswami@codeaurora.org,
+ Vinod Koul <vinod.koul@linaro.org>, Linus Walleij <linus.walleij@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+ spapothi@codeaurora.org
+Subject: Re: [alsa-devel] [PATCH v3 08/11] dt-bindings: pinctrl:
+ qcom-wcd934x: Add bindings for gpio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,82 +110,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue,  5 Nov 2019 09:01:35 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> Currently we pass the artificial device pointer to the allocation
-> helper in the case of SNDRV_DMA_TYPE_CONTINUOUS for passing the GFP
-> flags.  But all common cases are the allocations with GFP_KERNEL, and
-> it's messy to put this in each place.
+On Tue, Nov 05, 2019 at 01:27:45PM +0000, Srinivas Kandagatla wrote:
 > 
-> In this patch, the memalloc core helper is changed to accept the NULL
-> device pointer and it treats as the default mode, GFP_KERNEL, so that
-> all callers can omit the complex argument but just leave NULL.
 > 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 14 ++++++++------
->  sound/core/memalloc.c                                     |  9 ++++++++-
->  2 files changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-> index 132f5eb9b530..5385618fd881 100644
-> --- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-> +++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-> @@ -3523,12 +3523,14 @@ The second argument (type) and the third argument (device pointer) are
->  dependent on the bus. For normal devices, pass the device pointer
->  (typically identical as ``card->dev``) to the third argument with
->  ``SNDRV_DMA_TYPE_DEV`` type. For the continuous buffer unrelated to the
-> -bus can be pre-allocated with ``SNDRV_DMA_TYPE_CONTINUOUS`` type and the
-> -``snd_dma_continuous_data(GFP_KERNEL)`` device pointer, where
-> -``GFP_KERNEL`` is the kernel allocation flag to use. For the
-> -scatter-gather buffers, use ``SNDRV_DMA_TYPE_DEV_SG`` with the device
-> -pointer (see the `Non-Contiguous Buffers`_
-> -section).
-> +bus can be pre-allocated with ``SNDRV_DMA_TYPE_CONTINUOUS`` type.
-> +You can pass NULL to the device pointer in that case, which is the
-> +default mode implying to allocate with ``GFP_KRENEL`` flag.
-> +If you need a different GFP flag, you can pass it by encoding the flag
-> +into the device pointer via a special macro
-> +:c:func:`snd_dma_continuous_data()`.
-> +For the scatter-gather buffers, use ``SNDRV_DMA_TYPE_DEV_SG`` with the
-> +device pointer (see the `Non-Contiguous Buffers`_ section).
->  
->  Once the buffer is pre-allocated, you can use the allocator in the
->  ``hw_params`` callback:
-> diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-> index 6850d13aa98c..e56f84fbd659 100644
-> --- a/sound/core/memalloc.c
-> +++ b/sound/core/memalloc.c
-> @@ -99,6 +99,13 @@ static void snd_free_dev_iram(struct snd_dma_buffer *dmab)
->   *
->   */
->  
-> +static inline gfp_t snd_mem_get_gfp_flags(const struct device *dev)
-> +{
-> +	if (!dev)
-> +		return GFP_KRENEL;
+> On 05/11/2019 13:25, Linus Walleij wrote:
+> > On Mon, Nov 4, 2019 at 10:35 AM Srinivas Kandagatla
+> > <srinivas.kandagatla@linaro.org>  wrote:
+> > 
+> > > This controller just has Output enable bits, No pin control properties.
+> > > 
+> > > As you suggested I can move this to drivers/gpio in next version.
+> > OK perfect, thanks!
+> > 
+> > NB: this probably also affects the compatible-string which contains
+> > "pinctrl*" right?
+> Yes, I will suffix it with "-gpio" instead.
 
-There is a typo, you remove it in next patch, but it may cause problem
-with bisects.
+Not a discussion we should be having because you should name this after 
+what's in the chip documentation not the OS subsystem it happens to land 
+in.
 
-
-> +	else
-> +		return (__force gfp_t)(unsigned long)dev;
-> +}
->  
->  /**
->   * snd_dma_alloc_pages - allocate the buffer area according to the given type
-> @@ -129,7 +136,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
->  	switch (type) {
->  	case SNDRV_DMA_TYPE_CONTINUOUS:
->  		dmab->area = alloc_pages_exact(size,
-> -					       (__force gfp_t)(unsigned long)device);
-> +					       snd_mem_get_gfp_flags(device));
->  		dmab->addr = 0;
->  		break;
->  #ifdef CONFIG_HAS_DMA
-
+Rob
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
