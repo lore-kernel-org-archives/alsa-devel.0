@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F0E7C5DF60
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B07E1C5DF60
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:33:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E93D2087E
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:33:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 333F52087E
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:33:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aegMDhGJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E93D2087E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NjnUTy1k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 333F52087E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD3A71701;
-	Tue,  5 Nov 2019 16:32:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD3A71701
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EAFC170B;
+	Tue,  5 Nov 2019 16:33:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EAFC170B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572967985;
-	bh=H3nZLvFTuLTi0DDlFJg0JIxdbzyrQdkocmlzxhtpj84=;
+	s=default; t=1572968037;
+	bh=hii5Q0tEuK0oh5QE/VgeA3s4dtWpXDKSxxJXBtAHS/M=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aegMDhGJuuflFKr23UKPaeva2cFhLwIJcuW8+32UyLHX6ziveytvO0DPapNLYaG16
-	 qeQQ4qSgED+yzy0cRyAPOLoOghvRukifLf2Ca+IU8xJ5NDexROGdSfHs+ctjugK6/j
-	 NQibZD1/p6oExRAVIzGsIx8+SpdURYe6smGIurgg=
+	b=NjnUTy1ktg6Fvp9zP7ijMNWZ9x55wc4RlXpcaaNmRPHhOKF6/2/NgHY+3w8hKtCjW
+	 z22qS3LveIZZq3WtaKYhDHy4Typ8Zer1xQOuWGimNEKnPwip091TBziVg2k4OgvgFR
+	 t5CkPJJUePhpKbPRcUDzAucmpsLvxAJLqKvhnNxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA478F80774;
-	Tue,  5 Nov 2019 16:19:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 229F4F80799;
+	Tue,  5 Nov 2019 16:19:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0356F80638; Tue,  5 Nov 2019 16:19:23 +0100 (CET)
+ id 980FFF8065A; Tue,  5 Nov 2019 16:19:26 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B43BDF80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24287F80634
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 16:19:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B43BDF80271
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24287F80634
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id A7610B435
+ by mx1.suse.de (Postfix) with ESMTP id 7B29AB340
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 15:18:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue,  5 Nov 2019 16:18:53 +0100
-Message-Id: <20191105151856.10785-22-tiwai@suse.de>
+Date: Tue,  5 Nov 2019 16:18:49 +0100
+Message-Id: <20191105151856.10785-18-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191105151856.10785-1-tiwai@suse.de>
 References: <20191105151856.10785-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 21/24] ALSA: es1968: Avoid non-standard macro
-	usage
+Subject: [alsa-devel] [PATCH 17/24] ALSA: mips: Convert to the common
+	vmalloc memalloc
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,33 +76,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Pass the device pointer from the PCI pointer directly, instead of a
-non-standard macro.  The macro didn't give any better readability.
-
-Along with it, the unneeded assignment before snd_dma_alloc_pages*()
-call is dropped.
+The recent change (*) in the ALSA memalloc core allows us to drop the
+special vmalloc-specific allocation and page handling.  This patch
+coverts to the common code.
+(*) df3fd6509421: ALSA: memalloc: Add vmalloc buffer allocation
+                  support
+    6ef6be988f98: ALSA: pcm: Handle special page mapping in the
+                  default mmap handler
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/es1968.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/mips/sgio2audio.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
-index 974142535a25..7017ca9dea4a 100644
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -1422,10 +1422,8 @@ snd_es1968_init_dmabuf(struct es1968 *chip)
- 	int err;
- 	struct esm_memory *chunk;
+diff --git a/sound/mips/sgio2audio.c b/sound/mips/sgio2audio.c
+index fadc1194b136..9d20ce6118a0 100644
+--- a/sound/mips/sgio2audio.c
++++ b/sound/mips/sgio2audio.c
+@@ -582,14 +582,13 @@ static int snd_sgio2audio_pcm_close(struct snd_pcm_substream *substream)
+ static int snd_sgio2audio_pcm_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *hw_params)
+ {
+-	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-						params_buffer_bytes(hw_params));
++	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+ }
  
--	chip->dma.dev.type = SNDRV_DMA_TYPE_DEV;
--	chip->dma.dev.dev = snd_dma_pci_data(chip->pci);
- 	err = snd_dma_alloc_pages_fallback(SNDRV_DMA_TYPE_DEV,
--					   snd_dma_pci_data(chip->pci),
-+					   &chip->pci->dev,
- 					   chip->total_bufsize, &chip->dma);
- 	if (err < 0 || ! chip->dma.area) {
- 		dev_err(chip->card->dev,
+ /* hw_free callback */
+ static int snd_sgio2audio_pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+-	return snd_pcm_lib_free_vmalloc_buffer(substream);
++	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+ /* prepare callback */
+@@ -670,7 +669,6 @@ static const struct snd_pcm_ops snd_sgio2audio_playback1_ops = {
+ 	.prepare =     snd_sgio2audio_pcm_prepare,
+ 	.trigger =     snd_sgio2audio_pcm_trigger,
+ 	.pointer =     snd_sgio2audio_pcm_pointer,
+-	.page =        snd_pcm_lib_get_vmalloc_page,
+ };
+ 
+ static const struct snd_pcm_ops snd_sgio2audio_playback2_ops = {
+@@ -682,7 +680,6 @@ static const struct snd_pcm_ops snd_sgio2audio_playback2_ops = {
+ 	.prepare =     snd_sgio2audio_pcm_prepare,
+ 	.trigger =     snd_sgio2audio_pcm_trigger,
+ 	.pointer =     snd_sgio2audio_pcm_pointer,
+-	.page =        snd_pcm_lib_get_vmalloc_page,
+ };
+ 
+ static const struct snd_pcm_ops snd_sgio2audio_capture_ops = {
+@@ -694,7 +691,6 @@ static const struct snd_pcm_ops snd_sgio2audio_capture_ops = {
+ 	.prepare =     snd_sgio2audio_pcm_prepare,
+ 	.trigger =     snd_sgio2audio_pcm_trigger,
+ 	.pointer =     snd_sgio2audio_pcm_pointer,
+-	.page =        snd_pcm_lib_get_vmalloc_page,
+ };
+ 
+ /*
+@@ -720,6 +716,8 @@ static int snd_sgio2audio_new_pcm(struct snd_sgio2audio *chip)
+ 			&snd_sgio2audio_playback1_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
+ 			&snd_sgio2audio_capture_ops);
++	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
++					      NULL, 0, 0);
+ 
+ 	/* create second  pcm device with one outputs and no input */
+ 	err = snd_pcm_new(chip->card, "SGI O2 Audio", 1, 1, 0, &pcm);
+@@ -732,6 +730,8 @@ static int snd_sgio2audio_new_pcm(struct snd_sgio2audio *chip)
+ 	/* set operators */
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+ 			&snd_sgio2audio_playback2_ops);
++	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
++					      NULL, 0, 0);
+ 
+ 	return 0;
+ }
 -- 
 2.16.4
 
