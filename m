@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B062CA9EC7
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:20:28 +0000 (UTC)
-Received: from alsa0.perex.cz (unknown [77.48.224.243])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D54BDCA9EC7
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:21:37 +0000 (UTC)
+Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F382020818
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:20:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5572A2190F
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:21:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hlCncfwu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F382020818
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iKyCq0nG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5572A2190F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 376D516E5;
-	Tue,  5 Nov 2019 05:19:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 376D516E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A9A9170C;
+	Tue,  5 Nov 2019 05:20:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A9A9170C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572927617;
-	bh=2gxqlHqpUOsKZ7z1D7x1G0z773tvJ1eWacUts8dJsiI=;
+	s=default; t=1572927695;
+	bh=DXBqtjm17PW+c3P+L5xZJTDfb1XX/41buH8KgJkPot0=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hlCncfwu5dH03Ne9174DKLyW3NlQiw7yxrfyoj2c4SqaSJ5dCEjP6k6nwc4l1QAgP
-	 KOYxLc5VRcoN2vDogpGRm4h8awAK5fzGKjZt6OZ01b1N3CpifHmAKak8CyIIw211um
-	 oflIWhfHmqtAzGn72tdo8mL9Eo9eOjdccm6U/1T8=
+	b=iKyCq0nGFPz9qb/Ft2kNl2F8Zwr+dJjSD+Ld2EobtGhTDPO4UHUq2grwq/tlYz4fE
+	 x9JTwcul54TFm+BKdCkAkar4BIBnkFxa8/G5NbC1v3gx8LiGUekDFDXM9bapyUJU0w
+	 5cbYlqRr1lks2PQt7XgzYDxbxhdoeLjgimzdu9F8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4F9FF800F3;
-	Tue,  5 Nov 2019 05:19:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEBDDF8049B;
+	Tue,  5 Nov 2019 05:20:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 589EFF8049B; Tue,  5 Nov 2019 05:19:22 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 3A601F800F3
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 05:19:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A601F800F3
-Date: 05 Nov 2019 13:19:15 +0900
-X-IronPort-AV: E=Sophos;i="5.68,269,1569250800"; d="scan'208";a="30629184"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 05 Nov 2019 13:19:15 +0900
+ id 11C24F8053B; Tue,  5 Nov 2019 05:20:43 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 17DD0F800F3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 05:20:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17DD0F800F3
+Date: 05 Nov 2019 13:20:37 +0900
+X-IronPort-AV: E=Sophos;i="5.68,269,1569250800"; d="scan'208";a="30842573"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2019 13:20:37 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id AF2B74003EC8;
- Tue,  5 Nov 2019 13:19:15 +0900 (JST)
-Message-ID: <87o8xr2bwc.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 003014177CB4;
+ Tue,  5 Nov 2019 13:20:36 +0900 (JST)
+Message-ID: <87mudb2bu3.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <9aacec2b81bbe51992da63ea33ab653019011371.camel@linux.intel.com>
+In-Reply-To: <3a6f27ed62f9cb0b97b9e7a6ae5b3399cd9c8e15.camel@linux.intel.com>
 References: <874kzrdo1x.wl-kuninori.morimoto.gx@renesas.com>
- <87zhhjc9bw.wl-kuninori.morimoto.gx@renesas.com>
- <9aacec2b81bbe51992da63ea33ab653019011371.camel@linux.intel.com>
+ <87imo7c9ae.wl-kuninori.morimoto.gx@renesas.com>
+ <3a6f27ed62f9cb0b97b9e7a6ae5b3399cd9c8e15.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 resend 03/18] ASoC: soc-core: tidyup
-	soc_init_dai_link()
+Subject: Re: [alsa-devel] [PATCH v2 resend 15/18] ASoC: soc-core: don't call
+	snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,33 +82,39 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Ranjani
 
-Thank you for your review.
+Thank you for your review
 
-> > +static int soc_dai_link_sanity_check(struct snd_soc_card *card,
-> > +				     struct snd_soc_dai_link *link)
-> >  {
-> >  	int i;
-> >  	struct snd_soc_dai_link_component *codec, *platform;
-> > @@ -1043,11 +1043,15 @@ static int soc_bind_dai_link(struct
-> > snd_soc_card *card,
-> >  	struct snd_soc_pcm_runtime *rtd;
-> >  	struct snd_soc_dai_link_component *codec, *platform;
-> >  	struct snd_soc_component *component;
-> > -	int i;
-> > +	int i, ret;
+> > +struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component
+> > *component,
+> > +					 struct snd_soc_dai_driver
+> > *dai_drv,
+> > +					 bool legacy_dai_naming)
+(snip)
+> >  	lockdep_assert_held(&client_mutex);
+> >  	dai = soc_add_dai(component, dai_drv, legacy_dai_naming);
+> >  	if (!dai)
+> > -		return -ENOMEM;
+> > -
+> > -	/*
+> > -	 * Create the DAI widgets here. After adding DAIs, topology may
+> > -	 * also add routes that need these widgets as source or sink.
+> > -	 */
+> > -	ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
+> > -	if (ret != 0) {
+> > -		dev_err(component->dev,
+> > -			"Failed to create DAI widgets %d\n", ret);
+> > -	}
+> > +		return NULL;
 > >  
-> >  	if (dai_link->ignore)
-> >  		return 0;
-> >  
-> > +	ret = soc_dai_link_sanity_check(card, dai_link);
-> > +	if (ret < 0)
-> > +		return ret;
-> Morimoto-san,
-> 
-> Should this be done after checking if soc_is_dai_link_bound() maybe?
+> > -	return ret;
+> > +	return dai;
+(snip)
+> Maybe you could just say "return soc_add_dai(component, dai_drv,
+> legacy_dai_naming);" here?
 
-Hmm... maybe
-Thanks. I will fixit in v3
+Yeah indeed :)
+Thank you for pointing it.
+Will fix in v3
 
 Thank you for your help !!
 Best regards
