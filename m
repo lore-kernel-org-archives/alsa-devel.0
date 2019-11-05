@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B347CC5DF60
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 23:52:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65982C5DF60
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 23:53:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80C76214B2
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 23:52:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B358E2077B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 23:53:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hv6gbRvs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Qfghz5gR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80C76214B2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XQKFa+78";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="J6GdDCXr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B358E2077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66B4816DB;
-	Wed,  6 Nov 2019 00:51:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66B4816DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78D2116DE;
+	Wed,  6 Nov 2019 00:52:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78D2116DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572997938;
-	bh=1NXz0F4wpBzp8qVPWaaxd9x1wOMEdPH0TUbfzZp8Gh0=;
+	s=default; t=1572997993;
+	bh=adfz8GsoAxArIAYbN8Y6plzBcOx8fxfY+GxZkpALPGg=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=hv6gbRvs17JrCaRA9D76CqZPjpsEQ6NxJkNNuY0JGhzWFH12IjWjCpqmEksM70m2n
-	 Gpn1tnZ8K8F30Sid6WfLSk495TsDD/nQKLx9me6Ygxygys7HVsuudi/1V91P7r5d6M
-	 eTmEi+yOT38f7Ixz8oxkJYsdP/JrYCz1GCdFzUzE=
+	b=XQKFa+788SUUrYzlKecSc638bLIKWZbstq9vt//33sRYCrbeZaLFZilt688EbBSpN
+	 ebExomKamm7dpcQXXfOzOQut08iihJwcx6bX86IZsNeuXaGS3L/RJbExdNGBt+ih97
+	 T35AwNFMYWUvl5Dmc+lvotuV7ke+dR+rwxwCfDF8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B70A0F80612;
-	Wed,  6 Nov 2019 00:51:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D02FFF80638;
+	Wed,  6 Nov 2019 00:51:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2D36F80635; Wed,  6 Nov 2019 00:51:25 +0100 (CET)
+ id 0D40FF80535; Wed,  6 Nov 2019 00:51:25 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C25CBF800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id C62ADF80535
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 00:51:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C25CBF800F3
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C62ADF80535
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="Qfghz5gR"
+ header.b="J6GdDCXr"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=ljo/VD1FnJ/8DMCjRzwDwSLRSLQ1vayLGtY9phVZTlU=; b=Qfghz5gRC+HV
- hBkNuR1RlyudsjFm2uBmMM0CWUdnIhl3va2f0ZRqurZN15Fvlp6UvcUQIf9C8V8zm75U+jx9JPFvi
- stkScleNGpAFKqbUhSie/3lVmJ81cWwkGuRTMETKMLCkg2U9gQIQ5XsqQrkdy1EoHSmwMHROgRsu5
- hxcGo=;
+ List-Archive; bh=MBjhhbwpwlryrgp3fDP80V1b0tDc5kmKeNa1W4Yk38U=; b=J6GdDCXr4rXg
+ 6F0a7Vec56fADEyQZaFg+CJSpQlYd+AgBDWaw74Et9ARac4F6+f6VCcEjR56Xc2GBsE1Q98bJ8FXe
+ T7i5tYxT5HugC9K6LS+ljQ5mOioiWwYxnGIeJUEwq0ap53Qg+2VXCDTkHvIOKJv396rL6R+q4s0mS
+ 5uDCk=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iS8bZ-00080y-4q; Tue, 05 Nov 2019 23:51:21 +0000
+ id 1iS8bZ-000811-BL; Tue, 05 Nov 2019 23:51:21 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 92C0E2743280; Tue,  5 Nov 2019 23:51:20 +0000 (GMT)
+ id C7D622743284; Tue,  5 Nov 2019 23:51:20 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87r22m251l.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sgn2251p.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191105235120.92C0E2743280@ypsilon.sirena.org.uk>
+Message-Id: <20191105235120.C7D622743284@ypsilon.sirena.org.uk>
 Date: Tue,  5 Nov 2019 23:51:20 +0000 (GMT)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: soc-core: call snd_soc_register_dai()
-	from snd_soc_register_dais()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: don't call
+	snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +99,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: call snd_soc_register_dai() from snd_soc_register_dais()
+   ASoC: soc-core: don't call snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()
 
 has been applied to the asoc tree at
 
@@ -123,11 +124,11 @@ to this mail.
 Thanks,
 Mark
 
-From 71cb85f5e9da4aa3ab62020389b513275121083d Mon Sep 17 00:00:00 2001
+From e443c20593de9f8efd9b2935ed40eb0bbacce30b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 5 Nov 2019 15:47:18 +0900
-Subject: [PATCH] ASoC: soc-core: call snd_soc_register_dai() from
- snd_soc_register_dais()
+Date: Tue, 5 Nov 2019 15:47:14 +0900
+Subject: [PATCH] ASoC: soc-core: don't call snd_soc_dapm_new_dai_widgets() at
+ snd_soc_register_dai()
 
 ALSA SoC has 2 functions.
 snd_soc_register_dai()  is used from topology
@@ -138,59 +139,127 @@ with for loop. But in reality, these are very similar
 but different implementation.
 We shouldn't have duplicated and confusing implementation.
 
-This patch calls snd_soc_register_dai() from snd_soc_register_dais()
+snd_soc_register_dai() is now used from topology.
+But to reduce duplicated code, it should be used from _dais(), too.
+
+Because of topology side specific reason,
+it is calling snd_soc_dapm_new_dai_widgets(),
+but it is not needed _dais() side.
+
+This patch factorizes snd_soc_register_dai() to
+topology / _dais() common part, and topology specific part.
+And do topology specific part at soc-topology.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/87r22m251l.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87sgn2251p.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/sound/soc.h      |  6 +++---
+ sound/soc/soc-core.c     | 29 +++++------------------------
+ sound/soc/soc-topology.c | 17 ++++++++++++++++-
+ 3 files changed, 24 insertions(+), 28 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 766fa81494c3..4e38ee656c4b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1326,9 +1326,9 @@ struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
+ 					       int id, const char *name,
+ 					       const char *stream_name);
+ 
+-int snd_soc_register_dai(struct snd_soc_component *component,
+-			 struct snd_soc_dai_driver *dai_drv,
+-			 bool legacy_dai_naming);
++struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
++					 struct snd_soc_dai_driver *dai_drv,
++					 bool legacy_dai_naming);
+ void snd_soc_unregister_dai(struct snd_soc_dai *dai);
+ 
+ struct snd_soc_dai *snd_soc_find_dai(
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 55b13c0037d2..86c45f751598 100644
+index 6f4933f13b08..55b13c0037d2 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2607,12 +2607,16 @@ struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
- 					 struct snd_soc_dai_driver *dai_drv,
- 					 bool legacy_dai_naming)
+@@ -2603,37 +2603,18 @@ EXPORT_SYMBOL_GPL(snd_soc_unregister_dai);
+  * These DAIs's widgets will be freed in the card cleanup and the DAIs
+  * will be freed in the component cleanup.
+  */
+-int snd_soc_register_dai(struct snd_soc_component *component,
+-			 struct snd_soc_dai_driver *dai_drv,
+-			 bool legacy_dai_naming)
++struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
++					 struct snd_soc_dai_driver *dai_drv,
++					 bool legacy_dai_naming)
  {
--	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
--		dev_err(component->dev, "Invalid dai type %d\n",
--			dai_drv->dobj.type);
-+	struct device *dev = component->dev;
-+
-+	if (dai_drv->dobj.type &&
-+	    dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
-+		dev_err(dev, "Invalid dai type %d\n", dai_drv->dobj.type);
- 		return NULL;
+-	struct snd_soc_dapm_context *dapm =
+-		snd_soc_component_get_dapm(component);
+-	struct snd_soc_dai *dai;
+-	int ret;
+-
+ 	if (dai_drv->dobj.type != SND_SOC_DOBJ_PCM) {
+ 		dev_err(component->dev, "Invalid dai type %d\n",
+ 			dai_drv->dobj.type);
+-		return -EINVAL;
++		return NULL;
  	}
  
-+	dev_dbg(dev, "ASoC: dai register %s\n", dai_drv->name);
-+
  	lockdep_assert_held(&client_mutex);
- 	return soc_add_dai(component, dai_drv, legacy_dai_naming);
+-	dai = soc_add_dai(component, dai_drv, legacy_dai_naming);
+-	if (!dai)
+-		return -ENOMEM;
+-
+-	/*
+-	 * Create the DAI widgets here. After adding DAIs, topology may
+-	 * also add routes that need these widgets as source or sink.
+-	 */
+-	ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
+-	if (ret != 0) {
+-		dev_err(component->dev,
+-			"Failed to create DAI widgets %d\n", ret);
+-	}
+-
+-	return ret;
++	return soc_add_dai(component, dai_drv, legacy_dai_naming);
  }
-@@ -2642,16 +2646,12 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
- 				 struct snd_soc_dai_driver *dai_drv,
- 				 size_t count)
- {
--	struct device *dev = component->dev;
- 	struct snd_soc_dai *dai;
- 	unsigned int i;
+ EXPORT_SYMBOL_GPL(snd_soc_register_dai);
+ 
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index b6e145627ab4..81d2af000a5c 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1800,6 +1800,9 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
+ 	struct snd_soc_dai_driver *dai_drv;
+ 	struct snd_soc_pcm_stream *stream;
+ 	struct snd_soc_tplg_stream_caps *caps;
++	struct snd_soc_dai *dai;
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(tplg->comp);
  	int ret;
  
--	dev_dbg(dev, "ASoC: dai register %s #%zu\n", dev_name(dev), count);
--
- 	for (i = 0; i < count; i++) {
--
--		dai = soc_add_dai(component, dai_drv + i, count == 1 &&
-+		dai = snd_soc_register_dai(component, dai_drv + i, count == 1 &&
- 				  !component->driver->non_legacy_dai_naming);
- 		if (dai == NULL) {
- 			ret = -ENOMEM;
+ 	dai_drv = kzalloc(sizeof(struct snd_soc_dai_driver), GFP_KERNEL);
+@@ -1842,7 +1845,19 @@ static int soc_tplg_dai_create(struct soc_tplg *tplg,
+ 	list_add(&dai_drv->dobj.list, &tplg->comp->dobj_list);
+ 
+ 	/* register the DAI to the component */
+-	return snd_soc_register_dai(tplg->comp, dai_drv, false);
++	dai = snd_soc_register_dai(tplg->comp, dai_drv, false);
++	if (!dai)
++		return -ENOMEM;
++
++	/* Create the DAI widgets here */
++	ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
++	if (ret != 0) {
++		dev_err(dai->dev, "Failed to create DAI widgets %d\n", ret);
++		snd_soc_unregister_dai(dai);
++		return ret;
++	}
++
++	return ret;
+ }
+ 
+ static void set_link_flags(struct snd_soc_dai_link *link,
 -- 
 2.20.1
 
