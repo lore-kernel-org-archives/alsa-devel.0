@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00C4FC5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:02:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA796C5DF62
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:03:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E43D214D8
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:02:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 22065214D8
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:03:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RHUZ8P1n";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="WtI6wBpq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E43D214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MZoNEGfi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="crHmDga8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22065214D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7E891713;
-	Wed,  6 Nov 2019 01:01:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7E891713
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D75216D8;
+	Wed,  6 Nov 2019 01:02:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D75216D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572998563;
-	bh=04sAT3NR3kyFAs14c2dkTlKacFYW9VTnQUufOm9Lx2g=;
+	s=default; t=1572998603;
+	bh=rTLmPMjdr24CXwnX4YIrqoA+6S9AYjGNOHdgCcYXvj0=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=RHUZ8P1nFVvqgMJMZ1rkmcekSah1NPp99ie5+HkVN3Zr1Y5RK5LqrM+/Ep77tIGQU
-	 3I3bpuOcW0usnmxER3EBdrDB8EhWD6rMPXiipvh1mnUeuV08xwIMVmKdEKFD7xgZZA
-	 Ma/n3+UPkJc8Ofpb3y5U5BYMOMLjch3XqqoBJe/g=
+	b=MZoNEGfiUALlKSplPH7F3ANwaJ8rVjSZZ8XrV4jCBw5dycLsGaGi/wtvrdl3FBKM8
+	 WkxTFjYge3jf5zFroxWb4kaaTLRgMElCGDFuQjGU8U/8+FMq75aI1EMM4zW5vbpUUS
+	 zgcgSuBytgS7ycD7xtssKhC7gWeR9aFc9YPFOyGQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5D60F8073C;
-	Wed,  6 Nov 2019 00:51:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE5C9F80752;
+	Wed,  6 Nov 2019 00:51:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5BA1F8065B; Wed,  6 Nov 2019 00:51:42 +0100 (CET)
+ id F0FDFF8065D; Wed,  6 Nov 2019 00:51:44 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B269BF80610
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAD95F80611
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 00:51:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B269BF80610
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAD95F80611
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="WtI6wBpq"
+ header.b="crHmDga8"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=BOwNIYGpjukVmvDC9P14j46sjOodrNUK1ekr3Wajt5Q=; b=WtI6wBpqIBPy
- nypC6FsaNBjBAf/Q7Z4DvpBL3VmgRbbz+TAR4flr4ly6CA/zSEBQrUthRasA5pQgb0zwlm/90oJsF
- 7LZhSd7kSdimWPTtyHJ9SVmNec5WkbFsd3B3xFJxzraiJ8Y998i3hNTXPc5AH1F9GtZUh1Z0dRhcE
- vKnwY=;
+ List-Archive; bh=mCozGsvGzo2jyYpani+YzZtffjam8mVOINJzTV3SV68=; b=crHmDga85fs6
+ wZI9g+OSmht5FDHiTbGpT7TZBOxZ1+S8YHYPSzD/Hu2w3ISLsS3I7s+9Ccxa3aO7QdDEsRgYwo/x+
+ z89Bxn1fStL+A28DLo5yVxGGSh+PP/zvxWTKKHWI8+90FlCjqdjO06wr0iF3Iad2Lcm6Fz5iH9/3I
+ K7WLg=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iS8bc-000824-Ab; Tue, 05 Nov 2019 23:51:24 +0000
+ id 1iS8bb-00081o-D2; Tue, 05 Nov 2019 23:51:23 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id BA3C32743284; Tue,  5 Nov 2019 23:51:23 +0000 (GMT)
+ id DC16F274301E; Tue,  5 Nov 2019 23:51:22 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87bltq3jo7.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875zjy3jnd.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191105235123.BA3C32743284@ypsilon.sirena.org.uk>
-Date: Tue,  5 Nov 2019 23:51:23 +0000 (GMT)
+Message-Id: <20191105235122.DC16F274301E@ypsilon.sirena.org.uk>
+Date: Tue,  5 Nov 2019 23:51:22 +0000 (GMT)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: soc-core: typo fix at
-	soc_dai_link_sanity_check()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: move
+	snd_soc_lookup_component()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: typo fix at soc_dai_link_sanity_check()
+   ASoC: soc-core: move snd_soc_lookup_component()
 
 has been applied to the asoc tree at
 
@@ -123,33 +122,93 @@ to this mail.
 Thanks,
 Mark
 
-From cd3c5ad7b2503f4fb4dfcc095b3fccc2b3603c36 Mon Sep 17 00:00:00 2001
+From b8132657990b5a09ad8e1c9e2c8efc20b5f9372a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 5 Nov 2019 15:46:00 +0900
-Subject: [PATCH] ASoC: soc-core: typo fix at soc_dai_link_sanity_check()
+Date: Tue, 5 Nov 2019 15:46:30 +0900
+Subject: [PATCH] ASoC: soc-core: move snd_soc_lookup_component()
 
-Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+This patch moves snd_soc_lookup_component() to upper side.
+This is prepare for snd_soc_unregister_component()
+
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/87bltq3jo7.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/875zjy3jnd.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-core.c | 52 ++++++++++++++++++++++----------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 827625bd35cd..e1b0d861807c 100644
+index 1e8dd19cba24..b71bddb30db1 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1015,7 +1015,7 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- 	}
+@@ -356,6 +356,32 @@ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_rtdcom_lookup);
  
- 	/*
--	 * Defer card registartion if cpu dai component is not added to
-+	 * Defer card registration if cpu dai component is not added to
- 	 * component list.
- 	 */
- 	if ((link->cpus->of_node || link->cpus->name) &&
++struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
++						   const char *driver_name)
++{
++	struct snd_soc_component *component;
++	struct snd_soc_component *ret;
++
++	ret = NULL;
++	mutex_lock(&client_mutex);
++	for_each_component(component) {
++		if (dev != component->dev)
++			continue;
++
++		if (driver_name &&
++		    (driver_name != component->driver->name) &&
++		    (strcmp(component->driver->name, driver_name) != 0))
++			continue;
++
++		ret = component;
++		break;
++	}
++	mutex_unlock(&client_mutex);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_lookup_component);
++
+ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
+ 		const char *dai_link, int stream)
+ {
+@@ -2889,32 +2915,6 @@ void snd_soc_unregister_component(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_unregister_component);
+ 
+-struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+-						   const char *driver_name)
+-{
+-	struct snd_soc_component *component;
+-	struct snd_soc_component *ret;
+-
+-	ret = NULL;
+-	mutex_lock(&client_mutex);
+-	for_each_component(component) {
+-		if (dev != component->dev)
+-			continue;
+-
+-		if (driver_name &&
+-		    (driver_name != component->driver->name) &&
+-		    (strcmp(component->driver->name, driver_name) != 0))
+-			continue;
+-
+-		ret = component;
+-		break;
+-	}
+-	mutex_unlock(&client_mutex);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_lookup_component);
+-
+ /* Retrieve a card's name from device tree */
+ int snd_soc_of_parse_card_name(struct snd_soc_card *card,
+ 			       const char *propname)
 -- 
 2.20.1
 
