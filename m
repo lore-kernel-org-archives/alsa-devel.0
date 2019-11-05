@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A23C5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:01:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1742FC5DF60
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:02:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CC1121A49
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:01:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63F14214D8
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:02:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cwFJqjX4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="aJGLWBjC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CC1121A49
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O/Lp1CSh";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="I4ShHdAd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63F14214D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F65C16F2;
-	Wed,  6 Nov 2019 01:00:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F65C16F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3D8F170D;
+	Wed,  6 Nov 2019 01:01:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D8F170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572998485;
-	bh=8hkihyd7ewfu5l5hZVRfKN/kkhRU17vN1CTZPIgujpw=;
+	s=default; t=1572998520;
+	bh=sCecSCIEXw+AZXKVgzsv7d4wexu/kiZAhE3DutGe4Qk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=cwFJqjX4caodzfjGJGiQfkA0T7Oi8d6KxWxHbHSc/ngMhEWrzEiMDY+Qfn1DdMKzr
-	 ICC1mGqVEvb+0UsV/qbWC4BDhanG+Fy3xfwM0OmkiOu4qtAVDd/eulEtLiXhHKrsWc
-	 V0apTp3W9V8gicnn7pE7kmJ/5S/J0GbL8MKv4LDM=
+	b=O/Lp1CShPPNecnTLaoU4oijCpptFNDVqI6vEiPU3206dO3rnyY+Qjc2gJ+PR3USSA
+	 p/jmbQtCaNrgS7eMaRPC2JkU7SSyI+0u+WDoS8hmMKbwghJvmqDa0JSf8BhTgRLjkS
+	 7ZiPcRAB5S88vYzbbx7jPlDeREU1iKI0AlbhMyrQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BAC8F80722;
+	by alsa1.perex.cz (Postfix) with ESMTP id E7BA9F8072A;
 	Wed,  6 Nov 2019 00:51:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4056AF8065A; Wed,  6 Nov 2019 00:51:42 +0100 (CET)
+ id 83736F80659; Wed,  6 Nov 2019 00:51:42 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F733F80600
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CB68F8060E
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 00:51:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F733F80600
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CB68F8060E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="aJGLWBjC"
+ header.b="I4ShHdAd"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=f/0Z2GXPEBFdgqHAlbSWqrhn29kVVj3SutcONxpaZPc=; b=aJGLWBjCLq0q
- PMocop1EcglND3py+kgLmcGeVc1U27ymFcmYt0mblpuG2BjZPkLKQX07Imj3FAUwHlpvOWj/3BH31
- 3MhwF7xUQr4DkgiT1582badhmLsUQqcPjZ3puN6WIP9OkMQlrOGS0P/I83SfdVrkwMKy4nAuQkH1J
- B+tF4=;
+ List-Archive; bh=Pmc7unf0AvzQTat7eZWWOMP+O/M+M4SPK/63rQzvM5M=; b=I4ShHdAdc7Oz
+ /QZdfeQT8cKmU8ZrigO2s0Yq0YdFTZbFpViQttbOyNPRDwy2EI//4OqJIkre9egHcqnBDnrCWnpMO
+ q563IXhMzVZK3Qi05iKciGNB45lgR7W90MDG1E7DMcc3OmN5CRYVRCxBNukNQ6VOz/COzIPgFf65z
+ lKjuA=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iS8bb-00081w-RM; Tue, 05 Nov 2019 23:51:23 +0000
+ id 1iS8bc-00081z-1G; Tue, 05 Nov 2019 23:51:24 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 562612741915; Tue,  5 Nov 2019 23:51:23 +0000 (GMT)
+ id 852B7274301E; Tue,  5 Nov 2019 23:51:23 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <878sou3jnn.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a79a3jns.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191105235123.562612741915@ypsilon.sirena.org.uk>
+Message-Id: <20191105235123.852B7274301E@ypsilon.sirena.org.uk>
 Date: Tue,  5 Nov 2019 23:51:23 +0000 (GMT)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: soc-core: call soc_bind_dai_link()
-	under snd_soc_add_dai_link()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: remove duplicated
+	soc_is_dai_link_bound()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: call soc_bind_dai_link() under snd_soc_add_dai_link()
+   ASoC: soc-core: remove duplicated soc_is_dai_link_bound()
 
 has been applied to the asoc tree at
 
@@ -123,179 +123,63 @@ to this mail.
 Thanks,
 Mark
 
-From 6b1dff0266a30df16846a20d1109ab25b985f0d7 Mon Sep 17 00:00:00 2001
+From 95b562e57f0b3a21a3945297862cb51bc2072c7b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 5 Nov 2019 15:46:20 +0900
-Subject: [PATCH] ASoC: soc-core: call soc_bind_dai_link() under
- snd_soc_add_dai_link()
+Date: Tue, 5 Nov 2019 15:46:15 +0900
+Subject: [PATCH] ASoC: soc-core: remove duplicated soc_is_dai_link_bound()
 
-If we focus to soc_bind_dai_link() at snd_soc_instantiate_card(),
-we will notice very complex operation.
+soc_is_dai_link_bound() check will be called both
+*before* soc_bind_dai_link() (A), and
+*under*  soc_bind_dai_link() (B).
+These are very verbose code. Let's remove one of them.
 
-static int snd_soc_instantiate_card(...)
-{
-	...
-	/*
-	 * (1) Bind dai_link via card pre-linked dai_link
-	 *
-	 * Bind dai_link via card pre-linked.
-	 * 1 dai_link will be 1 rtd, and connected to card.
-	 * for_each_card_prelinks() is for card pre-linked dai_link.
-	 *
-	 * Image
-	 *
-	 * card
-	 * - rtd(A)
-	 * - rtd(A)
-	 */
-	for_each_card_prelinks(card, i, dai_link) {
-		ret = soc_bind_dai_link(card, dai_link);
+*	static int soc_bind_dai_link(...)
+	{
+		...
+(B)		if (soc_is_dai_link_bound(...)) {
+			...
+			return 0;
+		}
 		...
 	}
-	...
-	/*
-	 * (2) Connect card pre-linked dai_link to card list
-	 *
-	 * Connect all card pre-linked dai_link to *card list*.
-	 * Here, (A) means from card pre-linked.
-	 *
-	 * Image
-	 *
-	 * card		card list
-	 *  - rtd(A)	 - dai_link(A)
-	 *  - rtd(A)	 - dai_link(A)
-	 *  - ...	 - ...
-	 */
-	for_each_card_prelinks(card, i, dai_link) {
-		ret = snd_soc_add_dai_link(card, dai_link);
+
+	static int snd_soc_instantiate_card(...)
+	{
+		...
+		for_each_card_links(...) {
+(A)			if (soc_is_dai_link_bound(...))
+				continue;
+
+*			ret = soc_bind_dai_link(...);
+			if (ret)
+				goto probe_end;
+		}
 		...
 	}
-	...
-	/*
-	 * (3) Probe binded component
-	 *
-	 * Each rtd has many components.
-	 * Here probes each rtd connected components.
-	 * rtd(A) in Image is the probe target.
-	 *
-	 * During this component probe, topology may add new dai_link to
-	 * *card list* by using snd_soc_add_dai_link() which is
-	 * used at (2).
-	 * Here, (B) means from topology
-	 *
-	 * Image
-	 *
-	 * card		card list
-	 *  - rtd(A)	 - dai_link(A)
-	 *  - rtd(A)	 - dai_link(A)
-	 *  - ...	 - ...
-	 *		 - dai_link(B)
-	 *		 - dai_link(B)
-	 */
-	ret = soc_probe_link_components(card);
-	...
-
-	/*
-	 * (4) Bind dai_link again
-	 *
-	 * Bind dai_link again for topology.
-	 * Note, (1) used for_each_card_prelinks(),
-	 * here is using  for_each_card_links()
-	 *
-	 * This means from card list.
-	 * As Image indicating, it has dai_link(A) (from card pre-link)
-	 * and dai_link(B) (from topology).
-	 * main target here is dai_link(B).
-	 * soc_bind_dai_link() ignores already used
-	 * dai_link (= dai_link(A))
-	 *
-	 * Image
-	 *
-	 * card		card list
-	 *  - rtd(A)	 - dai_link(A)
-	 *  - rtd(A)	 - dai_link(A)
-	 *  - ...	 - ...
-	 *  - rtd(B)	 - dai_link(B)
-	 *  - rtd(B)	 - dai_link(B)
-	 */
-	for_each_card_links(card, dai_link) {
-		ret = soc_bind_dai_link(card, dai_link);
-		...
-	}
-	...
-}
-
-As you see above, it is doing very complex method.
-The problem is binding dai_link via "card pre-linked" (= (1)) and
-"topology added dai_link" (= (3)) are separated.
-The code can be simple if we can bind dai_link when dai_link
-is connected to *card list*.
-This patch do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/878sou3jnn.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87a79a3jns.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 23 ++++++-----------------
- 1 file changed, 6 insertions(+), 17 deletions(-)
+ sound/soc/soc-core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3cc36c2d99da..e8ff6f2f58ba 100644
+index e1b0d861807c..3cc36c2d99da 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1409,6 +1409,8 @@ EXPORT_SYMBOL_GPL(snd_soc_disconnect_sync);
- int snd_soc_add_dai_link(struct snd_soc_card *card,
- 		struct snd_soc_dai_link *dai_link)
- {
-+	int ret;
-+
- 	if (dai_link->dobj.type
- 	    && dai_link->dobj.type != SND_SOC_DOBJ_DAI_LINK) {
- 		dev_err(card->dev, "Invalid dai link type %d\n",
-@@ -1424,6 +1426,10 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
- 	if (dai_link->dobj.type && card->add_dai_link)
- 		card->add_dai_link(card, dai_link);
- 
-+	ret = soc_bind_dai_link(card, dai_link);
-+	if (ret < 0)
-+		return ret;
-+
- 	/* see for_each_card_links */
- 	list_add_tail(&dai_link->list, &card->dai_link_list);
- 
-@@ -1996,13 +2002,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	/* check whether any platform is ignore machine FE and using topology */
- 	soc_check_tplg_fes(card);
- 
--	/* bind DAIs */
--	for_each_card_prelinks(card, i, dai_link) {
--		ret = soc_bind_dai_link(card, dai_link);
--		if (ret != 0)
--			goto probe_end;
--	}
+@@ -2065,9 +2065,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	 * Components with topology may bring new DAIs and DAI links.
+ 	 */
+ 	for_each_card_links(card, dai_link) {
+-		if (soc_is_dai_link_bound(card, dai_link))
+-			continue;
 -
- 	/* bind aux_devs too */
- 	ret = soc_bind_aux_dev(card);
- 	if (ret < 0)
-@@ -2060,16 +2059,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	if (ret < 0)
- 		goto probe_end;
- 
--	/*
--	 * Find new DAI links added during probing components and bind them.
--	 * Components with topology may bring new DAIs and DAI links.
--	 */
--	for_each_card_links(card, dai_link) {
--		ret = soc_bind_dai_link(card, dai_link);
--		if (ret)
--			goto probe_end;
--	}
--
- 	/* probe all DAI links on this card */
- 	ret = soc_probe_link_dais(card);
- 	if (ret < 0) {
+ 		ret = soc_bind_dai_link(card, dai_link);
+ 		if (ret)
+ 			goto probe_end;
 -- 
 2.20.1
 
