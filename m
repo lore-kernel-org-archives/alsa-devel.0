@@ -2,89 +2,73 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1BACCA9ED3
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 01:50:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77C85CA9ED3
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 02:48:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DBE4220848
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 01:50:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 731EE217F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 02:48:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L8/y2KTC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBE4220848
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IjsWk4lp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 731EE217F5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8381E1708;
-	Tue,  5 Nov 2019 02:49:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8381E1708
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFB81170A;
+	Tue,  5 Nov 2019 03:47:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFB81170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572918609;
-	bh=Pxg85zN88isEEWoFO8AQfNByKVE9RrCj12Aibh4IykM=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1572922072;
+	bh=T7jRrcsaJ8U9rI09VH2+ClVrR/c9NMLl0Jp8fDUvanY=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L8/y2KTCzZPJmUeE4RaPeo6AA24w/sRTki738n47foHyl250dsu3/2Lvs2Iu1dhuN
-	 0fTRMjEuIIH3S/YLZ4102wZ+/LMNG8uCxLbXaeG9aHbIg49NFWyXcM4pbDkeukQ5ml
-	 YFjusOcfa0ubtTmdrazovEM7jj5qXY9qdsh5Fbvo=
+	b=IjsWk4lpszLKRibP4MkV20WSX1putreRZQpFsxKJ/XxEk68Z1in2jZG9V3F6W0wvB
+	 LIehK7Br6g1v2quXV0te2EgDBmBzdI+/mEYnRHwhDx3piUzj4hE0v+J9j7be/a1UHH
+	 0+AeHewmyw6vLFYV5L9lgI3WjNVo5YlwMZ1eJm4s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00688F80321;
-	Tue,  5 Nov 2019 02:49:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E63F0F8049B;
+	Tue,  5 Nov 2019 03:47:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4484F803F4; Tue,  5 Nov 2019 02:49:16 +0100 (CET)
-Received: from mail-ot1-f66.google.com (mail-ot1-f66.google.com
- [209.85.210.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B8C49F80535; Tue,  5 Nov 2019 03:46:59 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 639DEF800F3
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 02:49:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 639DEF800F3
-Received: by mail-ot1-f66.google.com with SMTP id u13so16290577ote.0
- for <alsa-devel@alsa-project.org>; Mon, 04 Nov 2019 17:49:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=hlVzf6PgNkFlTYTpcjjgSLO975l5JkVV5k5/cMONFVk=;
- b=nDVBd8UtC2fnabUPt9OiUnZq7sRAxP9Gm5SNS6UPQR3pWfoI1K6SEjQLNG4Z6fP+BO
- Mgia4K99Uc8A5DPC6rTAi6VwF0KKBv2AjU90yUQl/lL4w96JenIy8xHBzCvUvp4TxAOi
- ElnNfJQ+p0wpjw6gDuR9WXJ8CT/avGAplecBkBlcLRiwKQQKXRDqcRtBQRl7MPt5s78t
- L8hHCbu72SOGygMUMYIFSxEMD4EEauVmIiXfe61MFCo3WS2Xce/GAdVefJiMgFWV+nc0
- uoJegIZvF/cjZFLfNoOr0wGi5Ngqt05M3RQt0+U2dAJuXJt+31IEB08w3Vs3GPM5mPCk
- n1yA==
-X-Gm-Message-State: APjAAAUTDLEXDOSTGZEFXYc1axPmRlKWSCCcfy71bzYELXG+Nn5oH24F
- Fu6gv7mpWJmVei3cNCx2nQ==
-X-Google-Smtp-Source: APXvYqxmSwLREneFxL2iChIptQVtsinbuf+3c/76RepT4oB0/BK9ayp+PNO4bYzLHlq06MWKq7ivrw==
-X-Received: by 2002:a9d:6b90:: with SMTP id b16mr4509521otq.37.1572918548251; 
- Mon, 04 Nov 2019 17:49:08 -0800 (PST)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id v26sm2040889oic.5.2019.11.04.17.49.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 04 Nov 2019 17:49:07 -0800 (PST)
-Date: Mon, 4 Nov 2019 19:49:06 -0600
-From: Rob Herring <robh@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <20191105014906.GA32550@bogus>
-References: <20191030153150.18303-1-srinivas.kandagatla@linaro.org>
- <20191030153150.18303-2-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70A2BF8015B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 03:46:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70A2BF8015B
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 04 Nov 2019 18:46:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,269,1569308400"; d="scan'208";a="226952318"
+Received: from demiho-mobl.amr.corp.intel.com (HELO [10.255.94.53])
+ ([10.255.94.53])
+ by fmsmga004.fm.intel.com with ESMTP; 04 Nov 2019 18:46:52 -0800
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
+References: <874kzrdo1x.wl-kuninori.morimoto.gx@renesas.com>
+ <871ruvdnwh.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d05f9f94-a36d-a87f-d461-e780ffbe23c7@linux.intel.com>
+Date: Mon, 4 Nov 2019 20:02:39 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191030153150.18303-2-srinivas.kandagatla@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- spapothi@codeaurora.org, pierre-louis.bossart@linux.intel.com,
- lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v4 1/2] dt-bindings: soundwire: add
- bindings for Qcom controller
+In-Reply-To: <871ruvdnwh.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] [PATCH v2 resend 02/18] ASoC: soc-core: move
+ soc_init_dai_link()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,26 +81,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 30 Oct 2019 15:31:49 +0000, Srinivas Kandagatla wrote:
-> This patch adds bindings for Qualcomm soundwire controller.
-> 
-> Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
-> either integrated as part of WCD audio codecs via slimbus or
-> as part of SOC I/O.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../bindings/soundwire/qcom,sdw.txt           | 179 ++++++++++++++++++
->  1 file changed, 179 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> +
+> +	/*
+> +	 * Defer card registartion if cpu dai component is not added to
+
+typo: registration.
+
+This was in the original code but we might as well make the code cleaner...
+
+> +	 * component list.
+> +	 */
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
