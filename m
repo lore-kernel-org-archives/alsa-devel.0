@@ -7,77 +7,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20920C5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A23C5DF60
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:01:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6ED61214D8
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:00:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2CC1121A49
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 00:01:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f7bl/1w9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="cqu2LarW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6ED61214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cwFJqjX4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="aJGLWBjC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CC1121A49
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C96FD16F6;
-	Wed,  6 Nov 2019 00:59:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C96FD16F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F65C16F2;
+	Wed,  6 Nov 2019 01:00:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F65C16F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572998446;
-	bh=TZmsvRwXqRtY/N0PQQ7YM+MiJ2MxRth+G3xbfvyqBHg=;
+	s=default; t=1572998485;
+	bh=8hkihyd7ewfu5l5hZVRfKN/kkhRU17vN1CTZPIgujpw=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=f7bl/1w9iNONs6U4VacXO9noYfqifDIyfbeV+VZq3UPL5p1pyEFiTuIZoSXGOCk9W
-	 hTiBuPj5XGe1ERnpq6tb/OzYyLLftzfuK0N023cn/y81Ht1Ro2kdMeCL4/P1kJm7XJ
-	 RW2F+WT7MWQrVV3nP7ZN7g8AMUQnM3Z7Z2tL5SAA=
+	b=cwFJqjX4caodzfjGJGiQfkA0T7Oi8d6KxWxHbHSc/ngMhEWrzEiMDY+Qfn1DdMKzr
+	 ICC1mGqVEvb+0UsV/qbWC4BDhanG+Fy3xfwM0OmkiOu4qtAVDd/eulEtLiXhHKrsWc
+	 V0apTp3W9V8gicnn7pE7kmJ/5S/J0GbL8MKv4LDM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3680DF80717;
-	Wed,  6 Nov 2019 00:51:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BAC8F80722;
+	Wed,  6 Nov 2019 00:51:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D612DF80659; Wed,  6 Nov 2019 00:51:41 +0100 (CET)
+ id 4056AF8065A; Wed,  6 Nov 2019 00:51:42 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79882F8060D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F733F80600
  for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 00:51:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79882F8060D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F733F80600
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="cqu2LarW"
+ header.b="aJGLWBjC"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=pgXL57elHnGZz+4zE/V1pXxWsA5qV5Jo7PnmWMB98Ew=; b=cqu2LarWfgvy
- gSiYy8D2sLwBrPNs9Xjss903HB2Eda6M4ATaZ1ffn7p7tZ6aQszp0cfiSGld4TTGQ5aBbYBIHZ278
- tAw8/n0k9qyi6VMAOMYCkcyniOcfeI/20Tl3ylEVCjrto4HAP+aXjNGunLrGRCVM9Lvm0kCsCY0af
- 2E4Qw=;
+ List-Archive; bh=f/0Z2GXPEBFdgqHAlbSWqrhn29kVVj3SutcONxpaZPc=; b=aJGLWBjCLq0q
+ PMocop1EcglND3py+kgLmcGeVc1U27ymFcmYt0mblpuG2BjZPkLKQX07Imj3FAUwHlpvOWj/3BH31
+ 3MhwF7xUQr4DkgiT1582badhmLsUQqcPjZ3puN6WIP9OkMQlrOGS0P/I83SfdVrkwMKy4nAuQkH1J
+ B+tF4=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iS8ba-00081a-Uy; Tue, 05 Nov 2019 23:51:23 +0000
+ id 1iS8bb-00081w-RM; Tue, 05 Nov 2019 23:51:23 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 6BC2D2743280; Tue,  5 Nov 2019 23:51:22 +0000 (GMT)
+ id 562612741915; Tue,  5 Nov 2019 23:51:23 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <8736f23jn4.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <878sou3jnn.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191105235122.6BC2D2743280@ypsilon.sirena.org.uk>
-Date: Tue,  5 Nov 2019 23:51:22 +0000 (GMT)
+Message-Id: <20191105235123.562612741915@ypsilon.sirena.org.uk>
+Date: Tue,  5 Nov 2019 23:51:23 +0000 (GMT)
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: soc-core: add
-	snd_soc_del_component_unlocked()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: call soc_bind_dai_link()
+	under snd_soc_add_dai_link()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: add snd_soc_del_component_unlocked()
+   ASoC: soc-core: call soc_bind_dai_link() under snd_soc_add_dai_link()
 
 has been applied to the asoc tree at
 
@@ -123,88 +123,179 @@ to this mail.
 Thanks,
 Mark
 
-From 486c7978ff665eb763f70cc9477e0de6326e1c41 Mon Sep 17 00:00:00 2001
+From 6b1dff0266a30df16846a20d1109ab25b985f0d7 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 5 Nov 2019 15:46:39 +0900
-Subject: [PATCH] ASoC: soc-core: add snd_soc_del_component_unlocked()
+Date: Tue, 5 Nov 2019 15:46:20 +0900
+Subject: [PATCH] ASoC: soc-core: call soc_bind_dai_link() under
+ snd_soc_add_dai_link()
 
-It is easy to read code if it is cleanly using paired function/naming,
-like start <-> stop, register <-> unregister, etc, etc.
-But, current ALSA SoC code is very random, unbalance, not paired, etc.
-It is easy to create bug at the such code, and is difficult to debug.
+If we focus to soc_bind_dai_link() at snd_soc_instantiate_card(),
+we will notice very complex operation.
 
-Now ALSA SoC has snd_soc_add_component(), but there is no paired
-snd_soc_del_component(). Thus, snd_soc_unregister_component() is
-calling cleanup function randomly. it is difficult to read.
-This patch adds missing snd_soc_del_component_unlocked() and
-balance up code.
+static int snd_soc_instantiate_card(...)
+{
+	...
+	/*
+	 * (1) Bind dai_link via card pre-linked dai_link
+	 *
+	 * Bind dai_link via card pre-linked.
+	 * 1 dai_link will be 1 rtd, and connected to card.
+	 * for_each_card_prelinks() is for card pre-linked dai_link.
+	 *
+	 * Image
+	 *
+	 * card
+	 * - rtd(A)
+	 * - rtd(A)
+	 */
+	for_each_card_prelinks(card, i, dai_link) {
+		ret = soc_bind_dai_link(card, dai_link);
+		...
+	}
+	...
+	/*
+	 * (2) Connect card pre-linked dai_link to card list
+	 *
+	 * Connect all card pre-linked dai_link to *card list*.
+	 * Here, (A) means from card pre-linked.
+	 *
+	 * Image
+	 *
+	 * card		card list
+	 *  - rtd(A)	 - dai_link(A)
+	 *  - rtd(A)	 - dai_link(A)
+	 *  - ...	 - ...
+	 */
+	for_each_card_prelinks(card, i, dai_link) {
+		ret = snd_soc_add_dai_link(card, dai_link);
+		...
+	}
+	...
+	/*
+	 * (3) Probe binded component
+	 *
+	 * Each rtd has many components.
+	 * Here probes each rtd connected components.
+	 * rtd(A) in Image is the probe target.
+	 *
+	 * During this component probe, topology may add new dai_link to
+	 * *card list* by using snd_soc_add_dai_link() which is
+	 * used at (2).
+	 * Here, (B) means from topology
+	 *
+	 * Image
+	 *
+	 * card		card list
+	 *  - rtd(A)	 - dai_link(A)
+	 *  - rtd(A)	 - dai_link(A)
+	 *  - ...	 - ...
+	 *		 - dai_link(B)
+	 *		 - dai_link(B)
+	 */
+	ret = soc_probe_link_components(card);
+	...
+
+	/*
+	 * (4) Bind dai_link again
+	 *
+	 * Bind dai_link again for topology.
+	 * Note, (1) used for_each_card_prelinks(),
+	 * here is using  for_each_card_links()
+	 *
+	 * This means from card list.
+	 * As Image indicating, it has dai_link(A) (from card pre-link)
+	 * and dai_link(B) (from topology).
+	 * main target here is dai_link(B).
+	 * soc_bind_dai_link() ignores already used
+	 * dai_link (= dai_link(A))
+	 *
+	 * Image
+	 *
+	 * card		card list
+	 *  - rtd(A)	 - dai_link(A)
+	 *  - rtd(A)	 - dai_link(A)
+	 *  - ...	 - ...
+	 *  - rtd(B)	 - dai_link(B)
+	 *  - rtd(B)	 - dai_link(B)
+	 */
+	for_each_card_links(card, dai_link) {
+		ret = soc_bind_dai_link(card, dai_link);
+		...
+	}
+	...
+}
+
+As you see above, it is doing very complex method.
+The problem is binding dai_link via "card pre-linked" (= (1)) and
+"topology added dai_link" (= (3)) are separated.
+The code can be simple if we can bind dai_link when dai_link
+is connected to *card list*.
+This patch do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/8736f23jn4.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/878sou3jnn.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ sound/soc/soc-core.c | 23 ++++++-----------------
+ 1 file changed, 6 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index acbaed4e4e9d..e91325b688f2 100644
+index 3cc36c2d99da..e8ff6f2f58ba 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2764,12 +2764,7 @@ static void snd_soc_component_add(struct snd_soc_component *component)
- 	mutex_unlock(&client_mutex);
- }
- 
--static void snd_soc_component_cleanup(struct snd_soc_component *component)
--{
--	snd_soc_unregister_dais(component);
--}
--
--static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
-+static void snd_soc_component_del(struct snd_soc_component *component)
+@@ -1409,6 +1409,8 @@ EXPORT_SYMBOL_GPL(snd_soc_disconnect_sync);
+ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 		struct snd_soc_dai_link *dai_link)
  {
- 	struct snd_soc_card *card = component->card;
- 
-@@ -2823,6 +2818,12 @@ static void snd_soc_try_rebind_card(void)
- 			list_del(&card->list);
- }
- 
-+static void snd_soc_del_component_unlocked(struct snd_soc_component *component)
-+{
-+	snd_soc_unregister_dais(component);
-+	snd_soc_component_del(component);
-+}
++	int ret;
 +
- int snd_soc_add_component(struct device *dev,
- 			struct snd_soc_component *component,
- 			const struct snd_soc_component_driver *component_driver,
-@@ -2855,7 +2856,7 @@ int snd_soc_add_component(struct device *dev,
- 	return 0;
+ 	if (dai_link->dobj.type
+ 	    && dai_link->dobj.type != SND_SOC_DOBJ_DAI_LINK) {
+ 		dev_err(card->dev, "Invalid dai link type %d\n",
+@@ -1424,6 +1426,10 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 	if (dai_link->dobj.type && card->add_dai_link)
+ 		card->add_dai_link(card, dai_link);
  
- err_cleanup:
--	snd_soc_component_cleanup(component);
-+	snd_soc_del_component_unlocked(component);
- err_free:
- 	return ret;
- }
-@@ -2893,15 +2894,12 @@ static int __snd_soc_unregister_component(struct device *dev)
- 		if (dev != component->dev)
- 			continue;
++	ret = soc_bind_dai_link(card, dai_link);
++	if (ret < 0)
++		return ret;
++
+ 	/* see for_each_card_links */
+ 	list_add_tail(&dai_link->list, &card->dai_link_list);
  
--		snd_soc_component_del_unlocked(component);
-+		snd_soc_del_component_unlocked(component);
- 		found = 1;
- 		break;
- 	}
- 	mutex_unlock(&client_mutex);
+@@ -1996,13 +2002,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	/* check whether any platform is ignore machine FE and using topology */
+ 	soc_check_tplg_fes(card);
  
--	if (found)
--		snd_soc_component_cleanup(component);
+-	/* bind DAIs */
+-	for_each_card_prelinks(card, i, dai_link) {
+-		ret = soc_bind_dai_link(card, dai_link);
+-		if (ret != 0)
+-			goto probe_end;
+-	}
 -
- 	return found;
- }
+ 	/* bind aux_devs too */
+ 	ret = soc_bind_aux_dev(card);
+ 	if (ret < 0)
+@@ -2060,16 +2059,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	if (ret < 0)
+ 		goto probe_end;
  
+-	/*
+-	 * Find new DAI links added during probing components and bind them.
+-	 * Components with topology may bring new DAIs and DAI links.
+-	 */
+-	for_each_card_links(card, dai_link) {
+-		ret = soc_bind_dai_link(card, dai_link);
+-		if (ret)
+-			goto probe_end;
+-	}
+-
+ 	/* probe all DAI links on this card */
+ 	ret = soc_probe_link_dais(card);
+ 	if (ret < 0) {
 -- 
 2.20.1
 
