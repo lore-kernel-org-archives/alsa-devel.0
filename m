@@ -7,84 +7,110 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D152CC010CC
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 11:52:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA10CC010A2
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 11:53:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59C8F21D6C
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 11:52:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6FF9B21D6C
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 11:53:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lI4VuDgV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59C8F21D6C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sJq9Ck51"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FF9B21D6C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=fi.rohmeurope.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CD391710;
-	Tue,  5 Nov 2019 12:51:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CD391710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B8D51719;
+	Tue,  5 Nov 2019 12:52:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B8D51719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572954753;
-	bh=SzqGndOIHW2yLediw3PeSmTtqdfU/yxiSwECnF4ssSM=;
+	s=default; t=1572954798;
+	bh=yVRGdkqBK922kkMdcNGwjOE3j7YI9JT5q0rmj2j+jl4=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lI4VuDgVu5TjxNoIfH1m5Kl4x3jkGCcyUiBQlipfRl17f04waMcGIVXULrfYo7lHu
-	 EefALVSVxNS76PDRCGwnGtwNNxHnjR0Hwp6/m/IVOS765pOSzayyJKR/r+SdPYUrdJ
-	 nlk6BZrqiG2oy2y7gyF0JQ6whjnq5NZfACWAleIU=
+	b=sJq9Ck51fXG+aT+42q13Wa/nDEMZPTle1Xj8p7Ye0P4pYOj6GPLO3QaNahS1TZSeV
+	 L6l21ZBMJFr0f8T8YnmXbufKwC+I4XkfWAZe9qCEN+qbFhPdKbB7b4jQHxXwTr6Tot
+	 zasT+jfeI+ekrsUHKod/Agg7XFqyXNjJP5GSpwbA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EA6BF805DF;
-	Tue,  5 Nov 2019 12:50:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C33FCF805FB;
+	Tue,  5 Nov 2019 12:50:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96CC6F8049B; Tue,  5 Nov 2019 11:19:19 +0100 (CET)
-Received: from mail-lf1-f65.google.com (mail-lf1-f65.google.com
- [209.85.167.65])
+ id ECCA8F8049B; Tue,  5 Nov 2019 11:42:31 +0100 (CET)
+Received: from mail-lj1-f193.google.com (mail-lj1-f193.google.com
+ [209.85.208.193])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11F2CF800F3
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 11:19:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11F2CF800F3
-Received: by mail-lf1-f65.google.com with SMTP id j14so14665201lfb.8
- for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 02:19:16 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 603D6F80271
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 11:42:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 603D6F80271
+Received: by mail-lj1-f193.google.com with SMTP id r7so12536323ljg.2
+ for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 02:42:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to:user-agent;
- bh=hmymdAmmLz7/1ts3Oc63nVM1gU1OUHbrPD3E1JaeYNM=;
- b=uUWDfTRWq0P6u+XPDrc1L0lzEFNts55caQlv5nNu7wmqBWln5mTg+7a9vDxYMSHpys
- NQ/j24FleydwgbnPKHg/IvoiZJueU2XHaR6zmfBIgJDuP9hBID4bRM0Xn1jAatNKkWjb
- frCxRR0r2S/l9f10uOyP+n+H4fP40eez0lp2g5EaACXZLlK6lcAJGaXnodD7WG5APRyF
- bOtjC6sSKMTlhdHvlAZd6S6bb4qxfBdIMISq6FWwySxmpQjp5gaQUwm6WwLYqf5/5DH2
- F2j969LNv8yM7m1JcHFt9u/H1O5vORlrqqOM//zZSuDhkyiMc3UsxhQlBstMM34vBRhG
- 8oZA==
-X-Gm-Message-State: APjAAAXowS8KFLwj3RNdzziT7hOf3VTsRA/y+NrzH4URECEer25iXNET
- ZwaLxkB06p3zKp9KAIL5aJY=
-X-Google-Smtp-Source: APXvYqwA3ByHsXKNFTqbUXeoIjiBwAvnWHc+B8RB60mVSLtRlUkTAzBu16JIPrIeS4QzEPOsnHHLbg==
-X-Received: by 2002:a19:4314:: with SMTP id q20mr19474289lfa.146.1572949155808; 
- Tue, 05 Nov 2019 02:19:15 -0800 (PST)
+ bh=zJQtw6WsLKIdVwDZMV0Pz6fU4JFtWwFkbgS9iv+/IOA=;
+ b=iPIXIKaIC9VXqexp1aCWwWlbteb7fcZPmVie2cv5FVY6vBfuHpqMTZPn+9fpYJnseM
+ bPmcBOTv1imBYeSUGAVUWBRPdrh8OoHoPTDoPdGpeR2TB06+pdTdDa/G+yRF65xP12I9
+ Oat005Y2QjHgw2r1V6K3s28zwdhgZ4CDo58C4sGNdHGyN6i5DrEo7wjalc/RcYhOIuMb
+ jTzoZ1+HdrDPgy0XwJXhJk81gNw5gKcBfvbFdBs4W3xolZkJczVq253fUJa4cT7p6Uo6
+ j6ckwAfaMlrB3jxA37dHNqr2B6tzNvYghLCyG3/SJcPEh1/CvN3F/iNRLK0Qd9SJuc0t
+ rbcw==
+X-Gm-Message-State: APjAAAUDG00fmkThq5ZhqCJdSOpcnvJfk0NJCnAk/NSVVDvumkDiGhHZ
+ 6+mbTgH0zQEjzrGykPOB9uU=
+X-Google-Smtp-Source: APXvYqwOFSWIOcTngdfrUrZTLUT1vT2lZ4x7hyEHAU08t2ea6kvg8p56NtVIkvH7brQqOjIrQEACtw==
+X-Received: by 2002:a2e:8e21:: with SMTP id r1mr22778902ljk.81.1572950548332; 
+ Tue, 05 Nov 2019 02:42:28 -0800 (PST)
 Received: from localhost.localdomain ([213.255.186.46])
- by smtp.gmail.com with ESMTPSA id h16sm8502164ljb.10.2019.11.05.02.19.14
+ by smtp.gmail.com with ESMTPSA id z22sm8386482ljm.92.2019.11.05.02.42.25
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Nov 2019 02:19:15 -0800 (PST)
-Date: Tue, 5 Nov 2019 12:19:06 +0200
+ Tue, 05 Nov 2019 02:42:27 -0800 (PST)
+Date: Tue, 5 Nov 2019 12:42:21 +0200
 From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To: matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Message-ID: <313330e496479b15f6dbc59d95bfa08c280415f1.1572945780.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1572945780.git.matti.vaittinen@fi.rohmeurope.com>
+Message-ID: <06aa0acec5797fc5711354d8ecad18bc6e947122.1572875541.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1572875541.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <cover.1572945780.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <cover.1572875541.git.matti.vaittinen@fi.rohmeurope.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 X-Mailman-Approved-At: Tue, 05 Nov 2019 12:50:45 +0100
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- linux-gpio@vger.kernel.org, patches@opensource.cirrus.com,
- Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
+Cc: Semi Malinen <semi.malinen@ge.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ linux-aspeed@lists.ozlabs.org, David Daney <david.daney@cavium.com>,
+ Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org,
+ Peter Tyser <ptyser@xes-inc.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Fabio Estevam <festevam@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com,
+ Marek Vasut <marek.vasut+renesas@gmail.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Kevin Hilman <khilman@kernel.org>,
+ Michal Simek <michal.simek@xilinx.com>, Marek Behun <marek.behun@nic.cz>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [alsa-devel] [PATCH 20/62] gpio: gpio-madera: Use new
-	GPIO_LINE_DIRECTION
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ bcm-kernel-feedback-list@broadcom.com, Joel Stanley <joel@jms.id.au>,
+ Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+ Bamvor Jian Zhang <bamv2005@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ linux-pwm@vger.kernel.org, Grygorii Strashko <grygorii.strashko@ti.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-omap@vger.kernel.org,
+ Alexandre Torgue <alexandre.torgue@st.com>, Ray Jui <rjui@broadcom.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Nandor Han <nandor.han@ge.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>, linux-gpio@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Santosh Shilimkar <ssantosh@kernel.org>, linux-tegra@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, Scott Branden <sbranden@broadcom.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Andrew Jeffery <andrew@aj.id.au>, "Enrico Weigelt,
+ metux IT consult" <info@metux.net>, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, Thorsten Scherer <t.scherer@eckelmann.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, patches@opensource.cirrus.com,
+ Shawn Guo <shawnguo@kernel.org>
+Subject: [alsa-devel] [PATCH 62/62] gpiolib: Nag for INPUT direction values
+ other than GPIO_LINE_DIRECTION_IN
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,31 +128,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It's hard for occasional GPIO code reader/writer to know if values 0/1
-equal to IN or OUT. Use defined GPIO_LINE_DIRECTION_IN and
-GPIO_LINE_DIRECTION_OUT to help them out.
+It seems that bunch of drivers put some effort (namely use !! or ! when
+converting GPIO direction register value to direction) to only return 1
+or 0 for direction INPUT/UOTPUT. Others do just return any positive value
+they happen to read from register for INPUT. Let's try iron out this habit
+by nagging if our cool new definitions GPIO_LINE_DIRECTION_IN and
+GPIO_LINE_DIRECTION_OUT are not used.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
- drivers/gpio/gpio-madera.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpio/gpiolib.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-madera.c b/drivers/gpio/gpio-madera.c
-index 7086f8b5388f..8f38303fcbc4 100644
---- a/drivers/gpio/gpio-madera.c
-+++ b/drivers/gpio/gpio-madera.c
-@@ -34,7 +34,10 @@ static int madera_gpio_get_direction(struct gpio_chip *chip,
- 	if (ret < 0)
- 		return ret;
- 
--	return !!(val & MADERA_GP1_DIR_MASK);
-+	if (val & MADERA_GP1_DIR_MASK)
-+		return GPIO_LINE_DIRECTION_IN;
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 104ed299d5ea..ed292498afb6 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -226,6 +226,12 @@ int gpiod_get_direction(struct gpio_desc *desc)
+ 	ret = chip->get_direction(chip, offset);
+ 	if (ret > 0) {
+ 		/* GPIOF_DIR_IN, or other positive */
++		if (ret != GPIO_LINE_DIRECTION_IN) {
++			struct gpio_device *gdev = chip->gpiodev;
 +
-+	return GPIO_LINE_DIRECTION_OUT;
- }
++			dev_warn(&gdev->dev,
++				 "drivers should use GPIO_LINE_DIRECTION_IN\n");
++		}
+ 		ret = 1;
+ 		clear_bit(FLAG_IS_OUT, &desc->flags);
+ 	}
+@@ -1389,12 +1395,18 @@ int gpiochip_add_data_with_key(struct gpio_chip *chip, void *data,
  
- static int madera_gpio_direction_in(struct gpio_chip *chip, unsigned int offset)
+ 	for (i = 0; i < chip->ngpio; i++) {
+ 		struct gpio_desc *desc = &gdev->descs[i];
++		int dir;
+ 
+ 		if (chip->get_direction && gpiochip_line_is_valid(chip, i)) {
+-			if (!chip->get_direction(chip, i))
++			dir = chip->get_direction(chip, i);
++			if (!dir) {
+ 				set_bit(FLAG_IS_OUT, &desc->flags);
+-			else
++			} else {
++				if (dir != GPIO_LINE_DIRECTION_IN)
++					dev_warn(&gdev->dev,
++						 "drivers should use GPIO_LINE_DIRECTION_IN\n");
+ 				clear_bit(FLAG_IS_OUT, &desc->flags);
++			}
+ 		} else {
+ 			if (!chip->direction_input)
+ 				set_bit(FLAG_IS_OUT, &desc->flags);
 -- 
 2.21.0
 
