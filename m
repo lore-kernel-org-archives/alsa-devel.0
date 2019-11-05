@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DB34CA9EC7
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:10:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33AEDCA9EC7
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:11:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BACA6214D8
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:10:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A33452067D
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:11:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hvUcPwMF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BACA6214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HcuoN1pb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A33452067D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A22741719;
-	Tue,  5 Nov 2019 05:10:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A22741719
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0920D1706;
+	Tue,  5 Nov 2019 05:10:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0920D1706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572927055;
-	bh=AcSSM1AoA2Nepz+xDPIFw9rae+htykQKoydJPzbZv7Q=;
+	s=default; t=1572927101;
+	bh=sSCeG6KB4VwQxodDz6l6dqZ0uHM+dX4hT8KuqNxLJ+4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hvUcPwMFBSVuLfgLiMjPMGTm54LGZP83f1xOhd/+jNE1dMuTwdYimv7a0E5zxvCkX
-	 /sYDTO6JMISY1YL9a2UzDwh7KEel+VUGEuma3w6oTQBq3t7fGT6i+i6ZzSIultygsi
-	 uEY/6k+mYG8fKwhRu01gsgquvAXXXDVsci7nj+kE=
+	b=HcuoN1pbLbEZftk1EpHLYSLt3Del3JTj1Ebifr8chyHBE+qGbEc1O/oyj7A5GLqoe
+	 FrS7cQfQYqKddvcVFdpHFGCx71ntRDmYSoZnedVzeQS9BZwWp39wJ9QEwLyEmdTyiv
+	 Oe/uCSQtZTJWH9qomGkCC4d9YuKSq1twKACvlD/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A566F80446;
-	Tue,  5 Nov 2019 05:09:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BDCCF805E0;
+	Tue,  5 Nov 2019 05:10:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63060F8053B; Tue,  5 Nov 2019 05:09:56 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B8E2CF8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 05:09:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8E2CF8015B
-Date: 05 Nov 2019 13:09:49 +0900
-X-IronPort-AV: E=Sophos;i="5.68,269,1569250800"; d="scan'208";a="30628222"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 05 Nov 2019 13:09:49 +0900
+ id EAB8CF805FB; Tue,  5 Nov 2019 05:10:41 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4F7E6F8053B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 05:10:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F7E6F8053B
+Date: 05 Nov 2019 13:10:34 +0900
+X-IronPort-AV: E=Sophos;i="5.68,269,1569250800"; d="scan'208";a="30841612"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2019 13:10:34 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 29B01417404C;
- Tue,  5 Nov 2019 13:09:49 +0900 (JST)
-Message-ID: <87r22n2cc2.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5F6B140078C3;
+ Tue,  5 Nov 2019 13:10:34 +0900 (JST)
+Message-ID: <87pni72cat.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <d05f9f94-a36d-a87f-d461-e780ffbe23c7@linux.intel.com>
+In-Reply-To: <16781745-5310-424a-3ad1-fae4a566bc1d@linux.intel.com>
 References: <874kzrdo1x.wl-kuninori.morimoto.gx@renesas.com>
- <871ruvdnwh.wl-kuninori.morimoto.gx@renesas.com>
- <d05f9f94-a36d-a87f-d461-e780ffbe23c7@linux.intel.com>
+ <87tv7rc9be.wl-kuninori.morimoto.gx@renesas.com>
+ <16781745-5310-424a-3ad1-fae4a566bc1d@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 resend 02/18] ASoC: soc-core: move
-	soc_init_dai_link()
+Subject: Re: [alsa-devel] [PATCH v2 resend 07/18] ASoC: soc-core: move
+	snd_soc_lookup_component()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,16 +82,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Pierre-Louis
 
+> > +struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+> > +						   const char *driver_name)
+> > +{
+> > +	struct snd_soc_component *component;
+> > +	struct snd_soc_component *ret;
 > > +
-> > +	/*
-> > +	 * Defer card registartion if cpu dai component is not added to
+> > +	ret = NULL;
+> > +	mutex_lock(&client_mutex);
+> > +	for_each_component(component) {
+> > +		if (dev != component->dev)
+> > +			continue;
+> > +
+> > +		if (driver_name &&
+> > +		    (driver_name != component->driver->name) &&
+> > +		    (strcmp(component->driver->name, driver_name) != 0))
+> > +			continue;
+> > +
+> > +		ret = component;
+> > +		break;
 > 
-> typo: registration.
+> The mix of continue and break in the same loop is odd.
 > 
-> This was in the original code but we might as well make the code cleaner...
+> can this be done with break only, e.g. (check the logic)
+> 
+> for_each_component(component) {
+> 	if (dev == component->dev &&
+> 	   (!driver_name ||
+> 	    (driver_name == component->driver->name) ||
+> 	    (strcmp(component->driver->name, driver_name) == 0))
+> 		ret = component;
+> 		break;
+> }
 
-Indeed :)
-I will post follow-up fixup patch
+Indeed !!
+Will post follow-up patch
+
+> > +	mutex_unlock(&client_mutex);
+> > +
+> > +	return ret;
+> 
+> usually 'return ret' is for an error code. It's odd to use it for a pointer.
+
+Will fix.
 
 Thank you for your help !!
 Best regards
