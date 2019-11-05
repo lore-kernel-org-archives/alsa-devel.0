@@ -2,104 +2,142 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA2FAC17460
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:39:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43C0CC17460
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:40:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 737C42190F
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:39:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDB9421D71
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 13:40:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ETLmXzuu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 737C42190F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BTrrlICh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDB9421D71
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=fi.rohmeurope.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6F191704;
-	Tue,  5 Nov 2019 14:38:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6F191704
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC43616FE;
+	Tue,  5 Nov 2019 14:39:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC43616FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572961162;
-	bh=CUOxaeIRDjvsWIh7ukSe3Y5hyP2pn80heSFOTDH2Z2U=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1572961209;
+	bh=qoiAr5i5u2zV209rhWSDWW6L5XL1GYXYwZYr+TagFI0=;
+	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ETLmXzuuUiHy7FrrqdVG6FkNsZvQCOAJ7mTH0F7TBVJq0ElGC6hFZ9QlC8xpLa8H3
-	 G+Mv4pM9xeW+joqWLLSMBjDuNv6SubkrTrZteJNicfQsk/6Yx2Z54gkTCbqAsyKbSo
-	 nvAGjMmjZHtmiUTHMKQT4OUvG8Ea5exIO9nbmLt0=
+	b=BTrrlIChtZAl+GlTs7H8ib9HZ4hCBIHVnLfveNC7ytbNjFya77ozdpW6njoOdCKYy
+	 EFpmh4jjAu4rZAVeh0arK3ZSawXJyOMPSWUtDOEvxS05TJnRWo1SnuRG2tUuQHbga6
+	 aKR6IF1a5fEiTURP9BzkPSxQ7wZ1MwUmEaES/dVU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95F6EF805AE;
-	Tue,  5 Nov 2019 14:38:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD577F805FF;
+	Tue,  5 Nov 2019 14:38:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C688CF8015B; Tue,  5 Nov 2019 13:21:03 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3684CF8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 13:20:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3684CF8015B
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 05 Nov 2019 04:20:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,271,1569308400"; d="scan'208";a="192084709"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
- by orsmga007.jf.intel.com with ESMTP; 05 Nov 2019 04:20:45 -0800
-Received: from andy by smile with local (Exim 4.93-RC1)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1iRxpC-0002Sh-HQ; Tue, 05 Nov 2019 14:20:42 +0200
-Date: Tue, 5 Nov 2019 14:20:42 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Message-ID: <20191105122042.GO32742@smile.fi.intel.com>
+ id 88873F8049B; Tue,  5 Nov 2019 13:55:05 +0100 (CET)
+Received: from mailgate1.rohmeurope.com (mailgate1.rohmeurope.com
+ [178.15.145.194])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1FFA8F8015B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 13:55:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FFA8F8015B
+X-AuditID: c0a8fbf4-183ff70000001fa6-d4-5dc171253a3c
+Received: from smtp.reu.rohmeu.com (will-cas001.reu.rohmeu.com
+ [192.168.251.177])
+ by mailgate1.rohmeurope.com (Symantec Messaging Gateway) with SMTP id
+ D5.26.08102.52171CD5; Tue,  5 Nov 2019 13:55:01 +0100 (CET)
+Received: from WILL-MAIL002.REu.RohmEu.com ([fe80::e0c3:e88c:5f22:d174]) by
+ WILL-CAS001.REu.RohmEu.com ([fe80::d57e:33d0:7a5d:f0a6%16]) with mapi id
+ 14.03.0439.000; Tue, 5 Nov 2019 13:54:56 +0100
+From: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
+Thread-Topic: [PATCH 00/62] Add definition for GPIO direction
+Thread-Index: AQHVk8EYmzhgkSAfS0Ot5MRDeZesqad8bpwAgAAJlQA=
+Date: Tue, 5 Nov 2019 12:54:55 +0000
+Message-ID: <4e6fa62d7022c7b1426477a150a93c899725f5b0.camel@fi.rohmeurope.com>
 References: <cover.1572875541.git.matti.vaittinen@fi.rohmeurope.com>
+ <20191105122042.GO32742@smile.fi.intel.com>
+In-Reply-To: <20191105122042.GO32742@smile.fi.intel.com>
+Accept-Language: en-US, de-DE
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [213.255.186.46]
+Content-ID: <420D690570F7144C83BFECFDF3CB5C7A@de.rohmeurope.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cover.1572875541.git.matti.vaittinen@fi.rohmeurope.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Tb0wTZxjfe/f2eoDdjgrjBTWL3cyGi4pmH54szLBPO//ESZYsyxLCDrlR
+ JrSsfxZc5oaic5R1owoBK+DWQChFttFiNisodMwhjgGDIgQYkpYpJBYXMAoI7o5O4dP97vn9
+ ez48L0uri9kENltnEg06IUfDROI252LTti0ft6clTZ9IhqbgDQQDfT4KvP0sWI+XU1B8r5yG
+ RutvGOaqujAMnHQjuGr9lYaFUIcSJvxvQ30phuFjlylY7Fmi4YTdgcFVdgnDpCdAQemjOgrc
+ gUEFFDb8SYPn/CMEloV6Gvq9lQycq/kWw9iYC8HFqRAFlsGgAorm7AzcabypgM6a+wgm6isx
+ VNZ2YqhealRAaOo9uOL5g4LZmasKaL99F0NfRQ8Nk2c9DCz97MZwqn5AkjUEEfTOD1NwpzkO
+ Rj0eBVRcuIxg3luNYcR2BoF1ppaB1r9nUcou3n/Kq+R/mj3O8DNDJ5W8fbyb4SsWHZj3tiXw
+ xbM+mr9kH1Pyff9eo3m3q4jhRwdbGL76eirvqfmC76n4HvEl9+5K44e16ODG96OSMwTTJ+9k
+ Z+l27P4gShtqmqTyQlvzH18IUgXoVqIFRbCEe43YBuuxBUWyas6PyHyjUxH++R2RsuUppQWx
+ LMMlE8uwUjbEcPvIQmgIyRqaC8SSQUchJRPrJc2NQicKi94gDeMeJoxfJ7YhPy1jzL1Eyrq7
+ VrCKO0BGrPYVjZozEud9/0pBBAfE9lfbSg7iNpGigtBKPs3FEfc/DxThrTlS09JDh3EsmQos
+ /z/XkNb5CSzvTHOJ5EfvjrA1hZT2luEw3kxKiyeU4RWiyfWzQVyCnrevabCvuu1r3PY1bvsa
+ 93dI4UIkV8jOyRJM4s7tBtG83aDX5kqfQ/pcNwof99wv6LFvjw9RLPKheJbSxKr2ZrenqZ/N
+ 0Gce0QpGbbrBnCMafYiwtCZG1VfRmqZWZQpHPhUN+ifUBhZr4lQvT9jS1JzcdVgU80TDE3Yj
+ y2qIKj1PCo02iFli/ofZOaZVmmIj5PDIhBijqMsUDYLZpE2X7yPdKB2ITK2Teh16ya4y5gm5
+ 0jRs7UKvsiVTVQ6a7aiqddBqrNPrxIQ4lTtHknKyVGvWPS2aRnEs0qxXjcpB66QX/jRnWqqg
+ pIr9gStyhUlYpRIKUNIsXjqQJu4rXLRRveabuP0F17hqcdq5u8lX9w377oOvut90ld+K//Lw
+ GPnoUFB7+3PjwyRzvt1/7tgPeY3bDuRWTqdGpXy9KbFoT8vI0eXPFOXzz9Utec7Hjy5svvjW
+ 6dQz0c7YjozT/T1mzYudrxzde63ZvWU44Oxt2N+y65nmDV6rBhu1ws6ttMEo/AcOj0GOngQA
+ AA==
 X-Mailman-Approved-At: Tue, 05 Nov 2019 14:38:15 +0100
-Cc: Semi Malinen <semi.malinen@ge.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- linux-aspeed@lists.ozlabs.org, David Daney <david.daney@cavium.com>,
- Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org,
- Peter Tyser <ptyser@xes-inc.com>, Thierry Reding <thierry.reding@gmail.com>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Fabio Estevam <festevam@gmail.com>,
- linux-stm32@st-md-mailman.stormreply.com,
- Marek Vasut <marek.vasut+renesas@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Kevin Hilman <khilman@kernel.org>,
- Michal Simek <michal.simek@xilinx.com>, Marek Behun <marek.behun@nic.cz>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- bcm-kernel-feedback-list@broadcom.com, Joel Stanley <joel@jms.id.au>,
- Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Bamvor Jian Zhang <bamv2005@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- linux-pwm@vger.kernel.org, Grygorii Strashko <grygorii.strashko@ti.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, mazziesaccount@gmail.com,
- Ray Jui <rjui@broadcom.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Nandor Han <nandor.han@ge.com>,
- William Breathitt Gray <vilhelm.gray@gmail.com>, linux-gpio@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Santosh Shilimkar <ssantosh@kernel.org>, linux-tegra@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Scott Branden <sbranden@broadcom.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Andrew Jeffery <andrew@aj.id.au>, "Enrico Weigelt,
- metux IT consult" <info@metux.net>, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, Thorsten Scherer <t.scherer@eckelmann.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, patches@opensource.cirrus.com,
- Shawn Guo <shawnguo@kernel.org>
+Cc: "semi.malinen@ge.com" <semi.malinen@ge.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+ "david.daney@cavium.com" <david.daney@cavium.com>,
+ "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+ "sathyanarayanan.kuppuswamy@linux.intel.com"
+ <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ "ptyser@xes-inc.com" <ptyser@xes-inc.com>,
+ "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+ "marek.behun@nic.cz" <marek.behun@nic.cz>,
+ "festevam@gmail.com" <festevam@gmail.com>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
+ "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+ "khilman@kernel.org" <khilman@kernel.org>,
+ "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+ "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+ "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+ "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
+ "bamv2005@gmail.com" <bamv2005@gmail.com>, "joel@jms.id.au" <joel@jms.id.au>,
+ "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+ "bcm-kernel-feedback-list@broadcom.com"
+ <bcm-kernel-feedback-list@broadcom.com>,
+ "linux-imx@nxp.com" <linux-imx@nxp.com>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
+ "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>,
+ "alexandre.torgue@st.com" <alexandre.torgue@st.com>,
+ "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+ "rjui@broadcom.com" <rjui@broadcom.com>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "nandor.han@ge.com" <nandor.han@ge.com>,
+ "vilhelm.gray@gmail.com" <vilhelm.gray@gmail.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+ "ssantosh@kernel.org" <ssantosh@kernel.org>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "sbranden@broadcom.com" <sbranden@broadcom.com>,
+ "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+ "andrew@aj.id.au" <andrew@aj.id.au>, "info@metux.net" <info@metux.net>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+ "t.scherer@eckelmann.de" <t.scherer@eckelmann.de>,
+ "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>
 Subject: Re: [alsa-devel] [PATCH 00/62] Add definition for GPIO direction
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -118,54 +156,122 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Nov 05, 2019 at 12:09:10PM +0200, Matti Vaittinen wrote:
-> The patch series adds definitions for GPIO line directions.
+Hello Andy,
+
+On Tue, 2019-11-05 at 14:20 +0200, Andy Shevchenko wrote:
+> On Tue, Nov 05, 2019 at 12:09:10PM +0200, Matti Vaittinen wrote:
+> > The patch series adds definitions for GPIO line directions.
+> > 
+> > For occasional GPIO contributor like me it is always a pain to
+> > remember
+> > whether 1 or 0 was used for GPIO direction INPUT/OUTPUT. Judging
+> > the
+> > fact that I removed few comments like:
+> > 
+> > /* Return 0 if output, 1 if input */
+> > /* This means "out" */
+> > return 1; /* input */
+> > return 0; /* output */
+> > 
+> > it seems at least some others may find it hard to remember too.
+> > Adding
+> > defines for these values helps us who really have good - but short
+> > duration - memory :]
+> > 
+> > Please also see the last patch. It adds warning prints to be
+> > emitted
+> > from gpiolib if other than defined values are used. This patch can
+> > be
+> > dropped out if there is a reason for that to still be allowed.
+> > 
+> > This idea comes from RFC series for ROHM BD71828 PMIC and was
+> > initially
+> > discussed with Linus Walleij here:
+> > https://lore.kernel.org/lkml/c06725c3dd34118a324907137758d8b85b3d4043.camel@fi.rohmeurope.com/
+> > but as this has no dependencies to BD71828 work (which probably
+> > takes a
+> > while) I decided to make it independent series.
+> > 
+> > Patches are compile-tested only. I have no HW to really test them.
+> > Thus I'd
+> > appreciate carefull review. This work is mainly about converting
+> > zeros
+> > and ones to the new defines but it wouldn't be first time I get it
+> > wrong
+> > in one of the patches :)
 > 
-> For occasional GPIO contributor like me it is always a pain to remember
-> whether 1 or 0 was used for GPIO direction INPUT/OUTPUT. Judging the
-> fact that I removed few comments like:
+> For all patches I have been Cc'ed to, NAK.
 > 
-> /* Return 0 if output, 1 if input */
-> /* This means "out" */
-> return 1; /* input */
-> return 0; /* output */
+> I don't see the advantages now since all known hardware uses the
+> single bit to
+> describe direction (even for Intel where we have separate gating for
+> in and out
+> buffers the direction we basically rely on the bit that enables out
+> buffer).
 > 
-> it seems at least some others may find it hard to remember too. Adding
-> defines for these values helps us who really have good - but short
-> duration - memory :]
-> 
-> Please also see the last patch. It adds warning prints to be emitted
-> from gpiolib if other than defined values are used. This patch can be
-> dropped out if there is a reason for that to still be allowed.
-> 
-> This idea comes from RFC series for ROHM BD71828 PMIC and was initially
-> discussed with Linus Walleij here:
-> https://lore.kernel.org/lkml/c06725c3dd34118a324907137758d8b85b3d4043.camel@fi.rohmeurope.com/
-> but as this has no dependencies to BD71828 work (which probably takes a
-> while) I decided to make it independent series.
-> 
-> Patches are compile-tested only. I have no HW to really test them. Thus I'd
-> appreciate carefull review. This work is mainly about converting zeros
-> and ones to the new defines but it wouldn't be first time I get it wrong
-> in one of the patches :)
+> So, that said the direction is always 1 bit and basically 0/1 value. 
 
-For all patches I have been Cc'ed to, NAK.
+Yes. At least for now. And this patch didn't change that although it
+makes it possible to do so if required.
 
-I don't see the advantages now since all known hardware uses the single bit to
-describe direction (even for Intel where we have separate gating for in and out
-buffers the direction we basically rely on the bit that enables out buffer).
+> Which one
+> is in and which one is out just a matter of an agreement we did.
 
-So, that said the direction is always 1 bit and basically 0/1 value. Which one
-is in and which one is out just a matter of an agreement we did.
+This one is exactly the problem patch series was created for. Which one
+is IN and which is OUT is indeed a matter of an agreement - but this
+agreement should be clearly visible, well defined and same for all.
 
-I would also like to see bloat-o-meter statistics before and after your patch.
-My guts tell me that the result will be not in the favour of yours solution.
+It's *annoying* to try finding out whether it was 1 or 0 one should
+return from get_direction callback for OUTPUT. This is probably the
+reason we have comments like
 
--- 
-With Best Regards,
-Andy Shevchenko
+return 1; /* input */
 
+there.
 
+As this is global agreement for all GPIO framework users - not
+something that can be agreed per driver basis - we should have GPIO
+framework wide definitions for this. We can just add definitions for
+new drivers to benefit - but I think adding them also for existing
+drivers improves readability significantly (see below).
+
+> I would also like to see bloat-o-meter statistics before and after
+> your patch.
+> My guts tell me that the result will be not in the favour of yours
+> solution.
+
+Can you please tell me what type of stats you hope to see? I can try
+generating what you are after. The cover letter contained typical +/-
+change stats from git and summary:
+
+62 files changed, 228 insertions(+), 104 deletions(-)
+
+It sure shows that amount of lines was increased (roughly 2 lines more
+/ changed file) - but I guess that was expected as I don't like
+ternary. So pretty much each
+
+return !!foo;
+
+was changed to
+
+if (foo)
+	return GPIO_LINE_DIRECTION_IN;
+
+return GPIO_LINE_DIRECTION_OUT;
+
+For me (and hopefully others who don't remember whether 1 is IN or OUT)
+this is improved readability while bloat-factor is still pretty low.
+
+From
+
+return !!foo;
+
+one does not know what the foo should be for IN or OUT without reading
+some spec or browsing through comments. From latter it is obvious that
+if foo is zero the direction is output.
+
+Br,
+	Matti
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
