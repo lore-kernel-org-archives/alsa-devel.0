@@ -2,84 +2,70 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61A4DC47E49
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AA83C5DF61
 	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 19:05:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D75AB21928
+	by mail.kernel.org (Postfix) with ESMTPS id E408121D7F
 	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 19:05:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dlu18c2n";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="YkXoDtn0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D75AB21928
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fIws0HSI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E408121D7F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A1E016E0;
-	Tue,  5 Nov 2019 19:55:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A1E016E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5815916DB;
+	Tue,  5 Nov 2019 19:46:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5815916DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572980172;
-	bh=6+CfuNC4gAG7RXKohnB7NP0G97xBgvegYwvsNBywqSA=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=dlu18c2nKjgbIFPa1BqJ1bTYHJW62FGY1tFGIBOxw5eOTCS7Bu8Zh6q2MvV4AZGn8
-	 +DjPa6z56TdBRX65xUEHjQehd6E3TavKu0KUpmLq4u7fPsN5cIHbgZwuKDeXdWFNMw
-	 Mp7lTqtoXmacjx/5quvtOmK/YxA+DJj+KkxT4t6I=
+	s=default; t=1572979642;
+	bh=XBGL05Zks+uZZfP4BPJ9KypJKACCyQNmSoaMoBB6VwU=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fIws0HSIij3ZkTaeWZ8QI2ozJBENLDkEXpIconzrzMp/CqOXjau0IRY1sbmR6Q+Zz
+	 7maKVL/TaJGozUsNbmBuefFffRpMrplo1eiYZb87maxwdiYhw5wch8xhdHR46zd7CA
+	 lv4yDwoC6D7xwf2Q47H2XqJH+sXAQF/qT+BN8JCg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D52F3F80446;
-	Tue,  5 Nov 2019 19:55:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE31DF80446;
+	Tue,  5 Nov 2019 19:46:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CD5FF805DF; Tue,  5 Nov 2019 19:55:19 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8A5BEF8049B; Tue,  5 Nov 2019 19:46:30 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1A5AF8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 19:55:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1A5AF8015B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="YkXoDtn0"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=dcXKl/0UqJ+dCjeE5w/EDI2rZhDXMA0VO2ph2g/2lKo=; b=YkXoDtn0mNp3
- jFthqMO+OvdjD02O8vSt6QOaYPW6A2o/HfrkS1KnXTTHqzmAJmr6M16eewkN96qkeu3oNTOX3O1ed
- hqBjH5+GIdql2zgffYYMjNS78o0IXbse7cvkL9co0/585HrS3ftkHrcJIsy1nelXT1wmAcZh3rnxx
- zf7Xw=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=ypsilon.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.co.uk>)
- id 1iS3z0-0007Pi-Ja; Tue, 05 Nov 2019 18:55:14 +0000
-Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 91F312743284; Tue,  5 Nov 2019 18:55:12 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Olivier Moysan <olivier.moysan@st.com>
-In-Reply-To: <20191104133654.28750-1-olivier.moysan@st.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20191105185512.91F312743284@ypsilon.sirena.org.uk>
-Date: Tue,  5 Nov 2019 18:55:12 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
- tiwai@suse.com, arnaud.pouliquen@st.com, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- mcoquelin.stm32@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
-Subject: [alsa-devel] Applied "ASoC: stm32: sai: add restriction on mmap
-	support" to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id 352B5F8015B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 19:46:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 352B5F8015B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 3C510B15F;
+ Tue,  5 Nov 2019 18:46:27 +0000 (UTC)
+Date: Tue, 05 Nov 2019 19:46:26 +0100
+Message-ID: <s5hpni69n5p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+In-Reply-To: <CAFQqKeWb9VtJa6cNuN82w6f83CWMr2ZPG9ethKBsxo5oyNfbpQ@mail.gmail.com>
+References: <20191105080138.1260-1-tiwai@suse.de>
+ <20191105080138.1260-2-tiwai@suse.de>
+ <5d05a1419c6acee8adc8184751e42616898ea28c.camel@linux.intel.com>
+ <s5hsgn29ost.wl-tiwai@suse.de>
+ <CAFQqKeWb9VtJa6cNuN82w6f83CWMr2ZPG9ethKBsxo5oyNfbpQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 1/4] ALSA: memalloc: Allow NULL device for
+	SNDRV_DMA_TYPE_CONTINOUS type
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,89 +78,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
-
-   ASoC: stm32: sai: add restriction on mmap support
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From eaf072e512d54c95b0977eda06cbca3151ace1e5 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Mon, 4 Nov 2019 14:36:54 +0100
-Subject: [PATCH] ASoC: stm32: sai: add restriction on mmap support
-
-Do not support mmap in S/PDIF mode. In S/PDIF mode
-the buffer has to be copied, to allow the channel status
-bits insertion.
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20191104133654.28750-1-olivier.moysan@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/stm/stm32_sai_sub.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index a4060813bc74..48e629ac2d88 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1218,6 +1218,16 @@ static int stm32_sai_pcm_process_spdif(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+/* No support of mmap in S/PDIF mode */
-+static const struct snd_pcm_hardware stm32_sai_pcm_hw_spdif = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED,
-+	.buffer_bytes_max = 8 * PAGE_SIZE,
-+	.period_bytes_min = 1024,
-+	.period_bytes_max = PAGE_SIZE,
-+	.periods_min = 2,
-+	.periods_max = 8,
-+};
-+
- static const struct snd_pcm_hardware stm32_sai_pcm_hw = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_MMAP,
- 	.buffer_bytes_max = 8 * PAGE_SIZE,
-@@ -1270,7 +1280,7 @@ static const struct snd_dmaengine_pcm_config stm32_sai_pcm_config = {
- };
- 
- static const struct snd_dmaengine_pcm_config stm32_sai_pcm_config_spdif = {
--	.pcm_hardware = &stm32_sai_pcm_hw,
-+	.pcm_hardware = &stm32_sai_pcm_hw_spdif,
- 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
- 	.process = stm32_sai_pcm_process_spdif,
- };
--- 
-2.20.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVHVlLCAwNSBOb3YgMjAxOSAxOToxNzo0MCArMDEwMCwKU3JpZGhhcmFuLCBSYW5qYW5pIHdy
+b3RlOgo+IAo+ICAgICA+ID4KPiAgICAgPiBIaSBUYWthc2hpLAo+ICAgICA+Cj4gICAgID4gSSBo
+YXZlIGEgcXVlc3Rpb24gYWJvdXQgdGhlIHVzYWdlIG9mIHNuZF9kbWFfYWxsb2NfcGFnZXMoKSB3
+aXRoIHRoZQo+ICAgICA+IFNORFJWX0RNQV9UWVBFX0RFViB0eXBlLiBJIGFtIHdvcmtpbmcgb24g
+YWRkaW5nIGEgcGxhdGZvcm0tZGV2aWNlIGZvcgo+ICAgICA+IGF1ZGlvIHdoaWNoIGlzIGEgY2hp
+bGQgZGV2aWNlIG9mIHRoZSB0b3AtbGV2ZWwgUENJIGRldmljZSBpbiBTT0YuCj4gICAgID4gV2hl
+biBJIHVzZSB0aGUgaGFuZGxlIGZvciB0aGUgcGxhdGZvcm0tZGV2aWNlIGFzIHRoZSAiZGV2IiBh
+cmd1bWVudCBmb3IKPiAgICAgPiBzbmRfZG1hX2FsbG9jX3BhZ2VzKCksIHRoZSBkbWEgYWxsb2Mg
+ZmFpbHMgb24gc29tZSBwbGF0Zm9ybXMgKGV4OiBJY2UKPiAgICAgPiBMYWtlKS4gQnV0IGl0IHdv
+cmtzIGZpbmUgaWYgSSB1c2UgdGhlIHRvcC1sZXZlbCBQQ0kgZGV2aWNlIGluc3RlYWQuCj4gICAg
+ID4gV2h5IHdvdWxkIHRoYXQgYmU/IEFyZSB0aGVyZSBhbnkgcmVzdHJpY3Rpb25zIHRvIHdoYXQg
+ZGV2aWNlcyBjYW4gYmUKPiAgICAgPiB1c2VkIGZvciBkbWEgYWxsb2M/Cj4gICAgCj4gICAgIFRo
+aXMgcHJldHR5IG11Y2ggZGVwZW5kcyBvbiB0aGUgZGV2aWNlLsKgIEJhc2ljYWxseSB0aGUgQUxT
+QSBtZW1hbGxvYwo+ICAgICBzdHVmZiBzaW1wbHkgY2FsbHMgZG1hX2FsbG9jX2NvaGVyZW50KCkg
+aWYgdGhlIGJ1ZmZlciB0eXBlIGlzCj4gICAgIFNORFJWX0RNQV9UWVBFX0RFViwgYW5kIHRoZSBy
+ZXN0IGdvZXMgZGVlcGx5IGludG8gdGhlIGNvZGUgaW4KPiAgICAga2VybmVsL2RtYS8qLgo+ICAg
+IAo+ICAgICBNeSB3aWxkIGd1ZXNzIGlzIHRoYXQgdGhlIHNpZ25pZmljYW50IGRpZmZlcmVuY2Ug
+aW4geW91ciBjYXNlIGlzIGFib3V0Cj4gICAgIHRoZSBETUEgY29oZXJlbmNlIG1hc2sgc2V0IG9u
+IHRoZSBkZXZpY2UuwqAgQXMgZGVmYXVsdCB0aGUgcGxhdGZvcm0KPiAgICAgZGV2aWNlIGtlZXBz
+IDMyYml0IERNQSB3aGlsZSB0aGUgbW9kZXJuIFBDSSBkcml2ZXJzIG9mdGVuIHNldHMgdXAKPiAg
+ICAgNjRiaXQgRE1BIG1hc2suCj4gCj4gVGhhbmtzLCBUYWthc2hpLiBTbywgaW4gdGhpcyBjYXNl
+LCB3b3VsZCB5b3UgcmVjb21tZW5kIHRvIGFsd2F5cyB1c2UgdGhlIFBDSQo+IGRldmljZSBmb3Ig
+ZG1hIGFsbG9jPwoKWWVzLCBpZiB0aGUgUENJIGJ1cyBpcyB1c2VkIGluIHRoZSBiYWNrZW5kLCB1
+c2luZyB0aGUgUENJIGRldmljZSBpcyBhCmJldHRlciBjaG9pY2UuCgoKVGFrYXNoaQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
