@@ -2,73 +2,71 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 154FDC5DF62
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 16:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7002C5DF60
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 16:34:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92D122087E
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 16:25:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE09921882
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 16:34:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WDyB5BTt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92D122087E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JMQe0+2y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE09921882
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD35616B3;
-	Tue,  5 Nov 2019 17:24:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD35616B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEB4C16CA;
+	Tue,  5 Nov 2019 17:33:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEB4C16CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572971137;
-	bh=ctBu3R3dVXAlR7P2x9hx8w/l8M40B8Jb9RXAQEdi1nY=;
+	s=default; t=1572971681;
+	bh=ogg02eBs9wTN8F1N0ESi73kwEZCLXweNPvc2kNOR33Q=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WDyB5BTtaadetc+e3HpT2sTABT2aqq4aPIeqJpC9DrOtsFUDo3koDGlsteXZgOsIi
-	 C1FsGI4v3YcZU8I2Lfidx1JP0QESMN8+vvHs87byugZ5kg2E6xJ8+2BvUpO4LdhAYF
-	 w/MybEVpAOwALhOFHuUQ3smncpN9CjqPtd0FvJfc=
+	b=JMQe0+2yVkarIJdD/RJh22taXjg9XuBmNFpEfBZbBEjHaXrQrU3SupwqWH2yvFoK/
+	 0i1LF9G9poTzsWi+z0/ANUVz29Us8V7pQTJ30t7Y4CMxHjxoI5ZL3U42lVW8UnKfcz
+	 gPbixOEXbbllQDJEKROet0JqlBg6GfaZgl4Do+5U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4359EF80446;
-	Tue,  5 Nov 2019 17:24:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5901FF80446;
+	Tue,  5 Nov 2019 17:33:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5ADBF8049B; Tue,  5 Nov 2019 17:24:46 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2E02CF8049B; Tue,  5 Nov 2019 17:33:49 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0FBD3F80271
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 17:24:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FBD3F80271
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 05 Nov 2019 08:24:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,271,1569308400"; d="scan'208";a="227153833"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by fmsmga004.fm.intel.com with ESMTP; 05 Nov 2019 08:24:37 -0800
-Date: Tue, 5 Nov 2019 18:24:37 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@zeliteleevi
-To: Chris Wilson <chris@chris-wilson.co.uk>
-In-Reply-To: <157297038783.18566.4452216868127032897@skylake-alporthouse-com>
-Message-ID: <alpine.DEB.2.21.1911051820400.16459@zeliteleevi>
-References: <20191105161053.22958-1-kai.vehmanen@linux.intel.com>
- <157297038783.18566.4452216868127032897@skylake-alporthouse-com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
-MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>,
- lakshminarayana.vudum@intel.com, jani.saarinen@intel.com
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda: hdmi - add Tigerlake support
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15AE7F8015B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 17:33:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15AE7F8015B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id B6203B440;
+ Tue,  5 Nov 2019 16:33:44 +0000 (UTC)
+Date: Tue, 05 Nov 2019 17:33:44 +0100
+Message-ID: <s5hh83ith93.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20191105160215.GQ25745@shell.armlinux.org.uk>
+References: <s5heeymbvva.wl-tiwai@suse.de>
+ <6ad19121-c0e3-d278-2943-ff93ef80353b@baylibre.com>
+ <20191105160215.GQ25745@shell.armlinux.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: Jernej Skrabec <jernej.skrabec@siol.net>, Jonas Karlman <jonas@kwiboo.se>,
+ Neil Armstrong <narmstrong@baylibre.com>, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, Andrzej Hajda <a.hajda@samsung.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [alsa-devel] Incorrect buffer handling in dw-hdmi bridge audio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,33 +84,155 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
-
-On Tue, 5 Nov 2019, Chris Wilson wrote:
-
-> Quoting Kai Vehmanen (2019-11-05 16:10:53)
-> > Add Tigerlake HDMI codec support.
-> > 
-> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205379
-> > BugLink: https://bugs.freedesktop.org/show_bug.cgi?id=112171
-> > Cc: Pan Xiuli <xiuli.pan@linux.intel.com>
-> > Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+On Tue, 05 Nov 2019 17:02:15 +0100,
+Russell King - ARM Linux admin wrote:
 > 
-> For thos watching,
-> https://patchwork.freedesktop.org/series/68972/#rev1
-> includes the revert so that this is tested. Not that the first run
-> through BAT tgl died too early to be conclusive.
+> On Tue, Nov 05, 2019 at 09:07:43AM +0100, Neil Armstrong wrote:
+> > Hi,
+> > 
+> > On 05/11/2019 08:55, Takashi Iwai wrote:
+> > > Hi,
+> > > 
+> > > while recently working on the ALSA memory allocator API cleanup, I
+> > > noticed that dw-hdmi bridge driver seems doing weird about the buffer
+> > > management.  It pre-allocates the usual device buffers fully at the
+> > > probe time, while each stream allocates the buffer via the vmalloc
+> > > helpers and replaces with it at each open.
+> > > 
+> > > I guess it's no expected behavior?  It's basically a full waste of
+> > > resources, and the vmalloc buffer isn't guaranteed to work well for
+> > > mmap on every architecture.
+> > > 
+> > > Below is the patch to address it.  Can anyone check whether this still
+> > > works?
+> > 
+> > I don't have the setup to check, but this has been pushed by Russell I Added in CC.
+> > 
+> > I also added the imx maintainer since it's (AFAIK) only used on iMX SoCs.
+> > 
+> > Neil
+> > 
+> > > 
+> > > Since I have a cleanup series and this is involved, I'd like to take
+> > > the fix through my tree once after it's confirmed (and get ACK if
+> > > possible).
+> > > 
+> > > 
+> > > Thanks!
+> > > 
+> > > Takashi
+> > > 
+> > > -- 8< --
+> > > From: Takashi Iwai <tiwai@suse.de>
+> > > Subject: [PATCH] drm/bridge: dw-hdmi: Fix the incorrect buffer allocations
+> > > 
+> > > The driver sets up the buffer preallocation with SNDRV_DMA_TYPE_DEV,
+> > > while it re-allocates and releases vmalloc pages.  This is not only a
+> > > lot of waste resources but also causes the mmap malfunction.
+> > > 
+> > > Change / drop the vmalloc-related code and use the standard buffer
+> > > allocation / release code instead.
+> 
+> I think getting rid of the vmalloc code here is a mistake - I seem to
+> remember using the standard buffer allocation causes failures, due to
+> memory fragmentation.  Since the hardware is limited to DMA from at
+> most one page, there is no reason for this driver to require contiguous
+> pages, hence why it's using - and should use - vmalloc pages.  vmalloc
+> is way kinder to the MM subsystem than trying to request large order
+> contiguous pages.
+> 
+> So, NAK on this patch.
 
-ack. The partial results do look good already. The boot log
-shows HDMI codec found and configured without errors:
-https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_5274/fi-tgl-u/boot0.txt
+OK, then we should do other way round, rather drop the buffer
+preallocation instead.  Currently vmalloc buffer is always allocated
+at each open and overrides the preallocated buffer, so the whole 64k
+and more are wasted for no use.
 
-And the S3 suspend test did pass:
-https://intel-gfx-ci.01.org/tree/drm-tip/Trybot_5274/fi-tgl-u/igt@gem_exec_suspend@basic-s3.html
+(BTW, the current code has this snippet:
 
-So so far so good.
+	/* Limit the buffer size to the size of the preallocated buffer */
+	ret = snd_pcm_hw_constraint_minmax(runtime,
+					   SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
+					   0, substream->dma_buffer.bytes);
 
-Br, Kai
+... and this would have to limit the buffer size only to the
+preallocated size -- which essentially makes the argument above
+invalid.  However, this check looks actually bogus, the constraint
+parameter should be SNDRV_PCM_HW_PARAM_BUFFER_BYTES, not _SIZE.  It
+might be the reason it worked somehow...)
+
+So below is the revised patch.  Could you guys check it again?
+
+There I copied the comment as is, although the 512k mentioned there
+looks inconsistent with the actual code.  Should it be 1M?
+
+
+Thanks!
+
+Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] drm/bridge: dw-hdmi: A couple of fixes wrt buffer allocation
+
+The driver sets up the buffer preallocation with SNDRV_DMA_TYPE_DEV,
+while it always re-allocates and releases vmalloc pages, hence the
+preallocated pages are never used.  Also, the current code contains
+the hw constraint to limit the buffer size to the preallocated size.
+It doesn't work as expected, however, because it's applying to an
+incorrect parameter (SNDRV_PCM_HW_PARAM_BUFFER_SIZE instead of
+_BUFFER_BYTES).
+
+This patch tries to address these issues: drop the unnecessary buffer
+preallocation and fix the hw constraint to the right parameter.  Since
+the buffer preallocation is dropped, the max buffer size that was
+passed to the preallocation is passed directly now to the hw
+constraint call.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
+index 2b7539701b42..3efbbc59994b 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
+@@ -337,10 +337,14 @@ static int dw_hdmi_open(struct snd_pcm_substream *substream)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* Limit the buffer size to the size of the preallocated buffer */
++	/*
++	 * Limit the buffer size:
++	 * to support 8-channel 96kHz audio reliably, we need 512k
++	 * to satisfy alsa with our restricted period (ERR004323).
++	 */
+ 	ret = snd_pcm_hw_constraint_minmax(runtime,
+-					   SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
+-					   0, substream->dma_buffer.bytes);
++					   SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++					   0, 1024 * 1024);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -560,13 +564,6 @@ static int snd_dw_hdmi_probe(struct platform_device *pdev)
+ 	strlcpy(pcm->name, DRIVER_NAME, sizeof(pcm->name));
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_dw_hdmi_ops);
+ 
+-	/*
+-	 * To support 8-channel 96kHz audio reliably, we need 512k
+-	 * to satisfy alsa with our restricted period (ERR004323).
+-	 */
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-			dev, 128 * 1024, 1024 * 1024);
+-
+ 	ret = snd_card_register(card);
+ 	if (ret < 0)
+ 		goto err;
+-- 
+2.16.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
