@@ -2,82 +2,78 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1573CC1747C
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 14:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC7EDC17460
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 14:38:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 944F721929
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 14:37:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F6F221A4A
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 14:38:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PAR/z4w5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 944F721929
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V8aEwLBd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F6F221A4A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1CFF16E8;
-	Tue,  5 Nov 2019 15:36:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1CFF16E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A9DE16E4;
+	Tue,  5 Nov 2019 15:37:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A9DE16E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572964648;
-	bh=5qtaS+RqEhFPDCNLyPm0lnDcpfMV7raz5PKWGoOcJ7M=;
+	s=default; t=1572964693;
+	bh=Ypwf0Dx12+4SwDM9r0KkURmtMTw/gvvkRjVpSFArrpc=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PAR/z4w5qUTreA8ruG4YuFk8qUECPAy7sXUx2CtN9x6p3f3jEYPcL39mqvn0mkaY8
-	 aTIiOeDtxPC9AkmjZLvN9UCZYHAFlZJ9ZSxvJCbWZXUC/D+kNtzebUe9GCHMyYzgR9
-	 /F8kwdne3A9cz+3YsLjNqeLuf4iTIeTXnujnKKaQ=
+	b=V8aEwLBddnbiHM2Zrb3d+/OT2S2WyF89MqOJ+tTycKeepSMAF5p2mQgyNRouVhLH/
+	 paVrGrxr5Jp0hjDuwWRArXDzClLlvfNB7ibpO6I232MP6GvXmF+4ONFBTRwgaSOhWk
+	 D2Cm7IacB+39NiZ33Tp5mEnftNb9cfzbE9jOaGWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C9D1F80638;
-	Tue,  5 Nov 2019 15:34:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14ADDF8063E;
+	Tue,  5 Nov 2019 15:34:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93FB1F80446; Tue,  5 Nov 2019 15:34:41 +0100 (CET)
-Received: from esa3.mentor.iphmx.com (esa3.mentor.iphmx.com [68.232.137.180])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABA2CF80446
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 15:34:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABA2CF80446
-IronPort-SDR: Pp5a2m71i0L9YrlAxC8qORBDbOGsjwAuXmY//QNL9CfsvlMBfoAhVKA6zYML/iOdz+7/wyDvOn
- SZjUoo07Zg/9sKM/tDXgjMCMHrok2Egj0hr2x+W49zA+0Cj/H3k7tQ08oiAnPm6shXqnoi9j48
- su7c473LGSYBNH9DuxEX9MKuvQKrMmtgT/YsoLU16JWINEDmnvT4ybvIPZs1eezoUlhm4Z7WLS
- 4T4uhuMmPzUCFSnZzsrH++K30m11GO0QF7jk9AP3XqehXmgMKO5AsCNxgmnwctXMHZDoffvaiG
- mkU=
-X-IronPort-AV: E=Sophos;i="5.68,271,1569312000"; d="scan'208";a="42878545"
+ id 7F8AAF80633; Tue,  5 Nov 2019 15:34:43 +0100 (CET)
+Received: from esa2.mentor.iphmx.com (esa2.mentor.iphmx.com [68.232.141.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 810CDF80633
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 15:34:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 810CDF80633
+IronPort-SDR: lA8e6SteEa0q/p3rBocxQ6wVWsEQuivBcXd4/idrxjMvmdhrR/+Rbx3soZWfJ/UyDCEkBwcRFR
+ v4J6DBrdYbJ8tNeB1Huh9KNMSTXu0IC25kZBDMq7V/lT5SVWST61LlNKN9f7gbXLbsJwBWKmFs
+ k8JhJP4EmKR/aJcp2XOHUiIXM48ZYf4fckEMzOAuWHGyxi/7R6dy/1hBmo8FOBkm6iUU6voLhM
+ 3LLgYipgrxqrNxkuKdbxN8bbS1IOAyWNJIEY/vef/yw/emjh8SA8yAo0ZkXbsy2Ya1b1JUbB5Z
+ Flc=
+X-IronPort-AV: E=Sophos;i="5.68,271,1569312000"; d="scan'208";a="42819841"
 Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
- by esa3.mentor.iphmx.com with ESMTP; 05 Nov 2019 06:34:35 -0800
-IronPort-SDR: 8egWQg81+5LreDHcOpMRCtMBtLfLF7C3VhqcTXg8LFfHs+8opw5R3oJoVoKs02F1ltrBDje42a
- WyR1E/Rm0VJvhFkIwvz0iveAfAsz/UQ81ttlwYvhKggKbavm8H5WqAdGYhiW1qm6VL5reNA6Gv
- AVs1dT61nwmqEno5qq9SCXC+qUfSLv2VZzJxTHyWkL9BVE8INzaL6Am5OqOixmTKyj5AZ1OZTK
- KwDFV7De1lmrMJhEfGPeqriYuCMLiVYpest6A3+lZI98d9ZUX0+iSDF/XheVdroIr3KYHr2mS4
- luI=
+ by esa2.mentor.iphmx.com with ESMTP; 05 Nov 2019 06:34:05 -0800
+IronPort-SDR: C+x4olymjgc2C+OpQIjlrJCdlRcsjL5Qltv+InIzFQSDaGcSotgp+iVYPcOBybqZL4SVUUohGU
+ sp9etVIgA2GjOchVZi4pNLZ0XAP2R6thP0bMa03hbxXuTdVrar3MFlnM3YjZmGhvN5TAjq7/YP
+ xd0Resb3aRxSy0fUeWF6XFRkxw7RhHNNqdqKlfPJOf5l+crB3yJ/pm2auDZUdakosmpAx3G1fr
+ hUvIJKtdH3kUJ1ZAThKUEko4W5fJMRrBUOjJeoFh5JjlSaJ3pooZ5BgxqwLiU7BGaSzkVPh50f
+ wag=
 From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>, Jaroslav
  Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timo Wischer
  <twischer@de.adit-jv.com>, Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Date: Tue, 5 Nov 2019 08:32:16 -0600
-Message-ID: <20191105143218.5948-7-andrew_gabbasov@mentor.com>
+Date: Tue, 5 Nov 2019 08:32:12 -0600
+Message-ID: <20191105143218.5948-3-andrew_gabbasov@mentor.com>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191105143218.5948-6-andrew_gabbasov@mentor.com>
+In-Reply-To: <20191105143218.5948-2-andrew_gabbasov@mentor.com>
 References: <20191105143218.5948-1-andrew_gabbasov@mentor.com>
  <20191105143218.5948-2-andrew_gabbasov@mentor.com>
- <20191105143218.5948-3-andrew_gabbasov@mentor.com>
- <20191105143218.5948-4-andrew_gabbasov@mentor.com>
- <20191105143218.5948-5-andrew_gabbasov@mentor.com>
- <20191105143218.5948-6-andrew_gabbasov@mentor.com>
 MIME-Version: 1.0
 X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: SVR-IES-MBX-07.mgc.mentorg.com (139.181.222.7) To
+X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
  svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
-Subject: [alsa-devel] [PATCH v2 6/8] ALSA: aloop: Move CABLE_VALID_BOTH to
-	the top of file
+Subject: [alsa-devel] [PATCH v2 2/8] ALSA: aloop: loopback_timer_start:
+	Support return of error code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,40 +93,73 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Timo Wischer <twischer@de.adit-jv.com>
 
-so all functions can use the same.
+This is required for additional timer implementations which could detect
+errors and want to throw them.
 
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 ---
- sound/drivers/aloop.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/drivers/aloop.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 178f7260a650..313d7ffe6c91 100644
+index 1f5982e09025..b9ee5b72a996 100644
 --- a/sound/drivers/aloop.c
 +++ b/sound/drivers/aloop.c
-@@ -55,6 +55,10 @@ MODULE_PARM_DESC(pcm_notify, "Break capture when PCM format/rate/channels change
- 
- #define NO_PITCH 100000
- 
-+#define CABLE_VALID_PLAYBACK	BIT(SNDRV_PCM_STREAM_PLAYBACK)
-+#define CABLE_VALID_CAPTURE	BIT(SNDRV_PCM_STREAM_CAPTURE)
-+#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK | CABLE_VALID_CAPTURE)
-+
- struct loopback_cable;
- struct loopback_pcm;
- 
-@@ -224,10 +228,6 @@ static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
- 	return 0;
+@@ -155,7 +155,7 @@ static inline unsigned int get_rate_shift(struct loopback_pcm *dpcm)
  }
  
--#define CABLE_VALID_PLAYBACK	(1 << SNDRV_PCM_STREAM_PLAYBACK)
--#define CABLE_VALID_CAPTURE	(1 << SNDRV_PCM_STREAM_CAPTURE)
--#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK|CABLE_VALID_CAPTURE)
--
- static int loopback_check_format(struct loopback_cable *cable, int stream)
+ /* call in cable->lock */
+-static void loopback_timer_start(struct loopback_pcm *dpcm)
++static int loopback_timer_start(struct loopback_pcm *dpcm)
  {
- 	struct snd_pcm_runtime *runtime, *cruntime;
+ 	unsigned long tick;
+ 	unsigned int rate_shift = get_rate_shift(dpcm);
+@@ -171,6 +171,8 @@ static void loopback_timer_start(struct loopback_pcm *dpcm)
+ 	tick = dpcm->period_size_frac - dpcm->irq_pos;
+ 	tick = (tick + dpcm->pcm_bps - 1) / dpcm->pcm_bps;
+ 	mod_timer(&dpcm->timer, jiffies + tick);
++
++	return 0;
+ }
+ 
+ /* call in cable->lock */
+@@ -251,7 +253,7 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct loopback_pcm *dpcm = runtime->private_data;
+ 	struct loopback_cable *cable = dpcm->cable;
+-	int err, stream = 1 << substream->stream;
++	int err = 0, stream = 1 << substream->stream;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -264,7 +266,7 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		spin_lock(&cable->lock);	
+ 		cable->running |= stream;
+ 		cable->pause &= ~stream;
+-		loopback_timer_start(dpcm);
++		err = loopback_timer_start(dpcm);
+ 		spin_unlock(&cable->lock);
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 			loopback_active_notify(dpcm);
+@@ -292,7 +294,7 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		spin_lock(&cable->lock);
+ 		dpcm->last_jiffies = jiffies;
+ 		cable->pause &= ~stream;
+-		loopback_timer_start(dpcm);
++		err = loopback_timer_start(dpcm);
+ 		spin_unlock(&cable->lock);
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 			loopback_active_notify(dpcm);
+@@ -300,7 +302,7 @@ static int loopback_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	return 0;
++	return err;
+ }
+ 
+ static void params_change(struct snd_pcm_substream *substream)
 -- 
 2.21.0
 
