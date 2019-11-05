@@ -2,57 +2,62 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58299C5DF60
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:23:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DC6AC5DF60
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:24:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2C2221928
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:23:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C262C21D6C
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:24:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kaSZQf6v"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2C2221928
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HOopc9c7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C262C21D6C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 249A016FC;
-	Tue,  5 Nov 2019 16:22:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 249A016FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB4D516EE;
+	Tue,  5 Nov 2019 16:23:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4D516EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572967414;
-	bh=K3mOWKo6w0PZa2m3nq/a9qhdkO2xytyiN8NUfN7hkak=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kaSZQf6vKpmNB+/dSS3phdJeqFMAMWXqPZQu+m+6B0PetJwfbZBhrubXJEw4d7vlS
-	 nQTMNToZO1aQK4apg7OaICOL6LUrLzL53ZnHMEECkW3QQx7rCmIJ7FWOR8728V63Op
-	 wG2JKhBYFJuLwfVPtcIOTAJdOatZmEobBtgWTKWs=
+	s=default; t=1572967460;
+	bh=AsEcg5UkTUpcGNrguk+3uXkjMKOmoDsgLE5FOO5C/aU=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HOopc9c78L8lpNFDBVRaqCTm/XWUOjot5GMPL6gR5xL82aDid2yXoWudJBzIQ/nKC
+	 IhJc1QuNVdMOMuiwgdbRia5Fu61zlzZGrA2lKPfY1JavlrbSgKaVYYKgRo3ZQ+Uzgp
+	 PjDBC/DerCvv378MRM085nsmnmShFNUn0PJnm4N4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B0D2F8065A;
-	Tue,  5 Nov 2019 16:19:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2555F8065D;
+	Tue,  5 Nov 2019 16:19:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19BD0F80635; Tue,  5 Nov 2019 16:19:07 +0100 (CET)
+ id 50B86F805DF; Tue,  5 Nov 2019 16:19:07 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9BBFF80446
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17CAAF80535
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 16:18:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9BBFF80446
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17CAAF80535
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id D4C43B25C
+ by mx1.suse.de (Postfix) with ESMTP id F3926B26D
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 15:18:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue,  5 Nov 2019 16:18:32 +0100
-Message-Id: <20191105151856.10785-1-tiwai@suse.de>
+Date: Tue,  5 Nov 2019 16:18:35 +0100
+Message-Id: <20191105151856.10785-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH 00/24] Clean up memalloc callers
+In-Reply-To: <20191105151856.10785-1-tiwai@suse.de>
+References: <20191105151856.10785-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 03/24] ALSA: rme32: Remove superfluous
+	snd_dma_continuous_data()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,143 +76,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The recent change (commit b8a7d422280c: "ALSA: memalloc: Allow NULL
+device for SNDRV_DMA_TYPE_CONTINOUS type") made the PCM preallocation
+helper accepting NULL as the device pointer for the default usage.
+Drop the snd_dma_continuous_data() usage that became superfluous from
+the callers.
 
-this is a trivial cleanup series corresponding to the recent ALSA
-memalloc API enhancement[1].
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/rme32.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Most of patches do simple and systematic changes: either convert to
-the new way of vmalloc buffer handling, replacing the superfluous
-snd_dma_continous_data() macro with NULL, or replacing the
-snd_dma_pci_data() with the direct device pointer assignment.  Some
-have a slightly more changes but they are straightforward enough.
-Also, a few document updates are provided.
-
-There are still a few reminders (noticeably ASoC), and I'll post the
-patches for them later.  Once after all conversions done, we can drop
-the superfluous API functions and macros.
-
-
-thanks,
-
-Takashi
-
-[1] https://lore.kernel.org/r/20191105080138.1260-1-tiwai@suse.de
-
-===
-
-Takashi Iwai (24):
-  ALSA: drivers: Remove superfluous snd_dma_continuous_data()
-  ALSA: mips: Remove superfluous snd_dma_continuous_data()
-  ALSA: rme32: Remove superfluous snd_dma_continuous_data()
-  ALSA: sh: Remove superfluous snd_dma_continuous_data()
-  ALSA: sparc: Remove superfluous snd_dma_continuous_data()
-  ALSA: usb: Remove superfluous snd_dma_continuous_data()
-  ALSA: 6fire: Drop the dead code
-  ALSA: usb-audio: Convert to the common vmalloc memalloc
-  ALSA: aloop: Convert to the common vmalloc memalloc
-  ALSA: firewire: Convert to the common vmalloc memalloc
-  ALSA: 6fire: Convert to the common vmalloc memalloc
-  ALSA: caiaq: Convert to the common vmalloc memalloc
-  ALSA: hiface: Convert to the common vmalloc memalloc
-  ALSA: ua101: Convert to the common vmalloc memalloc
-  ALSA: vx: Convert to the common vmalloc memalloc
-  ALSA: pdaudiocf: Convert to the common vmalloc memalloc
-  ALSA: mips: Convert to the common vmalloc memalloc
-  ALSA: pci: Drop superfluous snd_pcm_sgbuf_ops_page
-  ALSA: aoa: Avoid non-standard macro usage
-  ALSA: echoaudio: Avoid non-standard macro usage
-  ALSA: es1968: Avoid non-standard macro usage
-  ALSA: rme: Avoid non-standard macro usage
-  ALSA: pci: Avoid non-standard macro usage
-  ALSA: docs: Remove snd_dma_pci_data() usage in documentation
-
- .../sound/kernel-api/writing-an-alsa-driver.rst    |  8 ++--
- sound/aoa/soundbus/i2sbus/pcm.c                    |  2 +-
- sound/drivers/aloop.c                              |  8 ++--
- sound/drivers/dummy.c                              |  2 +-
- sound/drivers/ml403-ac97cr.c                       |  2 +-
- sound/drivers/pcsp/pcsp_lib.c                      |  4 +-
- sound/drivers/vx/vx_pcm.c                          | 10 ++---
- sound/firewire/bebob/bebob_pcm.c                   |  9 ++--
- sound/firewire/dice/dice-pcm.c                     | 11 ++---
- sound/firewire/digi00x/digi00x-pcm.c               |  9 ++--
- sound/firewire/fireface/ff-pcm.c                   |  9 ++--
- sound/firewire/fireworks/fireworks_pcm.c           |  9 ++--
- sound/firewire/isight.c                            |  8 ++--
- sound/firewire/motu/motu-pcm.c                     |  9 ++--
- sound/firewire/oxfw/oxfw-pcm.c                     | 14 +++---
- sound/firewire/tascam/tascam-pcm.c                 |  9 ++--
- sound/mips/hal2.c                                  |  3 +-
- sound/mips/sgio2audio.c                            | 12 +++---
- sound/pci/ad1889.c                                 |  6 +--
- sound/pci/ali5451/ali5451.c                        |  2 +-
- sound/pci/als300.c                                 |  3 +-
- sound/pci/als4000.c                                |  3 +-
- sound/pci/asihpi/asihpi.c                          |  4 +-
- sound/pci/atiixp.c                                 |  6 +--
- sound/pci/atiixp_modem.c                           |  4 +-
- sound/pci/au88x0/au88x0_pcm.c                      |  3 +-
- sound/pci/aw2/aw2-alsa.c                           |  6 +--
- sound/pci/azt3328.c                                |  8 ++--
- sound/pci/bt87x.c                                  |  5 +--
- sound/pci/ca0106/ca0106_main.c                     |  6 +--
- sound/pci/cmipci.c                                 |  6 +--
- sound/pci/cs4281.c                                 |  3 +-
- sound/pci/cs46xx/cs46xx_lib.c                      | 16 ++++---
- sound/pci/cs5535audio/cs5535audio_pcm.c            |  6 +--
- sound/pci/ctxfi/ctpcm.c                            |  5 +--
- sound/pci/ctxfi/ctvmem.c                           |  2 +-
- sound/pci/echoaudio/echoaudio.c                    | 24 +++--------
- sound/pci/emu10k1/emu10k1.c                        |  5 ++-
- sound/pci/emu10k1/emu10k1x.c                       |  6 +--
- sound/pci/emu10k1/emufx.c                          |  2 +-
- sound/pci/emu10k1/emupcm.c                         | 12 +++---
- sound/pci/emu10k1/memory.c                         |  4 +-
- sound/pci/emu10k1/p16v.c                           |  4 +-
- sound/pci/ens1370.c                                |  8 ++--
- sound/pci/es1938.c                                 |  3 +-
- sound/pci/es1968.c                                 |  4 +-
- sound/pci/fm801.c                                  |  2 +-
- sound/pci/hda/hda_controller.c                     |  1 -
- sound/pci/ice1712/ice1712.c                        |  9 ++--
- sound/pci/ice1712/ice1724.c                        |  6 +--
- sound/pci/intel8x0.c                               |  4 +-
- sound/pci/intel8x0m.c                              |  4 +-
- sound/pci/korg1212/korg1212.c                      |  8 ++--
- sound/pci/lola/lola.c                              |  2 +-
- sound/pci/lola/lola_pcm.c                          |  5 +--
- sound/pci/lx6464es/lx6464es.c                      |  2 +-
- sound/pci/maestro3.c                               |  3 +-
- sound/pci/mixart/mixart.c                          |  7 +--
- sound/pci/oxygen/oxygen_pcm.c                      | 10 ++---
- sound/pci/pcxhr/pcxhr.c                            |  4 +-
- sound/pci/riptide/riptide.c                        |  6 +--
- sound/pci/rme32.c                                  |  4 +-
- sound/pci/rme9652/hdsp.c                           |  7 +--
- sound/pci/rme9652/hdspm.c                          |  3 +-
- sound/pci/rme9652/rme9652.c                        |  7 +--
- sound/pci/sis7019.c                                |  3 +-
- sound/pci/sonicvibes.c                             |  3 +-
- sound/pci/trident/trident_main.c                   | 24 ++++++-----
- sound/pci/via82xx.c                                | 17 +++-----
- sound/pci/via82xx_modem.c                          |  6 +--
- sound/pci/ymfpci/ymfpci_main.c                     | 16 ++++---
- sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c             |  9 ++--
- sound/sh/aica.c                                    |  2 +-
- sound/sh/sh_dac_audio.c                            |  2 +-
- sound/sparc/amd7930.c                              |  2 +-
- sound/sparc/dbri.c                                 |  2 +-
- sound/usb/6fire/pcm.c                              | 16 +++----
- sound/usb/caiaq/audio.c                            |  8 ++--
- sound/usb/hiface/pcm.c                             |  9 ++--
- sound/usb/line6/pcm.c                              |  4 +-
- sound/usb/misc/ua101.c                             | 14 +++---
- sound/usb/pcm.c                                    | 50 ++++------------------
- sound/usb/usx2y/usbusx2yaudio.c                    |  4 +-
- sound/usb/usx2y/usx2yhwdeppcm.c                    |  4 +-
- 84 files changed, 266 insertions(+), 327 deletions(-)
-
+diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
+index 40cc6ca88f7b..58a4b8df25d4 100644
+--- a/sound/pci/rme32.c
++++ b/sound/pci/rme32.c
+@@ -1375,7 +1375,7 @@ static int snd_rme32_create(struct rme32 *rme32)
+ 		snd_pcm_set_ops(rme32->spdif_pcm, SNDRV_PCM_STREAM_CAPTURE,
+ 				&snd_rme32_capture_spdif_fd_ops);
+ 		snd_pcm_lib_preallocate_pages_for_all(rme32->spdif_pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+-						      snd_dma_continuous_data(GFP_KERNEL),
++						      NULL,
+ 						      0, RME32_MID_BUFFER_SIZE);
+ 		rme32->spdif_pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
+ 	} else {
+@@ -1407,7 +1407,7 @@ static int snd_rme32_create(struct rme32 *rme32)
+ 			snd_pcm_set_ops(rme32->adat_pcm, SNDRV_PCM_STREAM_CAPTURE, 
+ 					&snd_rme32_capture_adat_fd_ops);
+ 			snd_pcm_lib_preallocate_pages_for_all(rme32->adat_pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+-							      snd_dma_continuous_data(GFP_KERNEL),
++							      NULL,
+ 							      0, RME32_MID_BUFFER_SIZE);
+ 			rme32->adat_pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
+ 		} else {
 -- 
 2.16.4
 
