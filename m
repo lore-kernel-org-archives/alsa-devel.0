@@ -6,63 +6,62 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C307CA9EC7
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:09:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DB34CA9EC7
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:10:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5D842067D
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:09:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BACA6214D8
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 04:10:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cAZ24hq4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5D842067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hvUcPwMF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BACA6214D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07D571704;
-	Tue,  5 Nov 2019 05:09:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07D571704
+	by alsa0.perex.cz (Postfix) with ESMTPS id A22741719;
+	Tue,  5 Nov 2019 05:10:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A22741719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572926992;
-	bh=wLTwN0t0bgvhl5knWKL1vpPHi28OawNQFs9s4aF2I5s=;
+	s=default; t=1572927055;
+	bh=AcSSM1AoA2Nepz+xDPIFw9rae+htykQKoydJPzbZv7Q=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cAZ24hq4MvUYgX3wC8NLshpv8dnaAKDoUNhuI2J+P/fep57jAfS2OUlHE9ycYEAxU
-	 VQ91GzxbK6BcZm7G1e/r9/JlSyFHwS9moTE1CxxtcHFjbCU2xFLebmXMFs3toK/7v7
-	 sNs7VyuRRLebLzaviklnsdo0wcwQHkCdyxghI2F8=
+	b=hvUcPwMFBSVuLfgLiMjPMGTm54LGZP83f1xOhd/+jNE1dMuTwdYimv7a0E5zxvCkX
+	 /sYDTO6JMISY1YL9a2UzDwh7KEel+VUGEuma3w6oTQBq3t7fGT6i+i6ZzSIultygsi
+	 uEY/6k+mYG8fKwhRu01gsgquvAXXXDVsci7nj+kE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D29CF80446;
-	Tue,  5 Nov 2019 05:09:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A566F80446;
+	Tue,  5 Nov 2019 05:09:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6591FF8049B; Tue,  5 Nov 2019 05:08:59 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id AB7ACF8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 05:08:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB7ACF8015B
-Date: 05 Nov 2019 13:08:47 +0900
-X-IronPort-AV: E=Sophos;i="5.68,269,1569250800"; d="scan'208";a="30841413"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2019 13:08:47 +0900
+ id 63060F8053B; Tue,  5 Nov 2019 05:09:56 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B8E2CF8015B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 05:09:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8E2CF8015B
+Date: 05 Nov 2019 13:09:49 +0900
+X-IronPort-AV: E=Sophos;i="5.68,269,1569250800"; d="scan'208";a="30628222"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 05 Nov 2019 13:09:49 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id DF4664001DCF;
- Tue,  5 Nov 2019 13:08:47 +0900 (JST)
-Message-ID: <87sgn32cds.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 29B01417404C;
+ Tue,  5 Nov 2019 13:09:49 +0900 (JST)
+Message-ID: <87r22n2cc2.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <e47765e3-ad11-fe5b-bec9-ae8e6022a193@linux.intel.com>
+In-Reply-To: <d05f9f94-a36d-a87f-d461-e780ffbe23c7@linux.intel.com>
 References: <874kzrdo1x.wl-kuninori.morimoto.gx@renesas.com>
- <e47765e3-ad11-fe5b-bec9-ae8e6022a193@linux.intel.com>
+ <871ruvdnwh.wl-kuninori.morimoto.gx@renesas.com>
+ <d05f9f94-a36d-a87f-d461-e780ffbe23c7@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 resend 00/18] ASoC: soc-core cleanup -
-	step 4
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 resend 02/18] ASoC: soc-core: move
+	soc_init_dai_link()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,31 +81,17 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 Hi Pierre-Louis
-Cc Mark
 
-> > These are resend of soc-core cleanup step4.
-> > These are based on mark/for-5.5 branch.
-> > I already got report from Intel that these had no issue on Intel CI machine.
+> > +
+> > +	/*
+> > +	 * Defer card registartion if cpu dai component is not added to
 > 
-> In addition to the first pass of automatic testing on SOF-enabled
-> devices, I double-checked the v2 code once more and didn't see any
-> issues with the changes. Copying Ranjani and Kai in case they have
-> spare cycles to have additional eyes on this large change.
+> typo: registration.
 > 
-> The comments I have are on existing code that was moved, and the
-> improvements could be handled as a follow-up patch. So for the series
-> 
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> Thanks Morimoto-san, this is a major clean-up. Nice work!
+> This was in the original code but we might as well make the code cleaner...
 
-Great thanks for reviewing, Pierre-Louis.
-
-Indeed, your pointed code should be cleaned.
-As you said, I will post follow-up patch
-if Mark accepted these patch-set.
-
-Again, thank you for your reviewing !!
+Indeed :)
+I will post follow-up fixup patch
 
 Thank you for your help !!
 Best regards
