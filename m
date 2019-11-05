@@ -2,65 +2,62 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65FD7CA9ED9
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 07:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 937EECA9EDB
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 08:02:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65548214D8
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 07:56:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1CB5620869
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 08:02:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T3xJSi3O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65548214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qcr6iBbg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CB5620869
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2042816FD;
-	Tue,  5 Nov 2019 08:55:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2042816FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C2241707;
+	Tue,  5 Nov 2019 09:01:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C2241707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572940578;
-	bh=Kq89P5Q5wukqg1KDntuIaKk6j9in7lYPwc5gdwokTDA=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=T3xJSi3O+WdxeLkFfKgRDvtQ1rjsm5oe5T7aJUyUFjeDClSH4E83+Myavee9wWlHp
-	 XJQ7Xofvg70vwZeghmJyR0iYVwyBdesdxXfpu6uf5OAIWa0muJNDB0sM/SNww6WAk2
-	 wbzfjn5zNsl7KCzobVAC/ViktDdKEAP1ORU8+wzo=
+	s=default; t=1572940956;
+	bh=oame+hngOpbmbMk7YbH06YYDa+T1tF3eDNgaUa+UHAg=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qcr6iBbg6CeRS1MfyXCrsvqyE2k77cxxRpXDwasvPmDi9gpjHbfZa41II2kON4Tj/
+	 DohKcRu84MGdFTS2VrxsJLQA0z9rMWT5yYatxHScFkn4D5ahYrzZ8ovNTQUyiEPoYC
+	 Cp13hWCBkPUQ9SLiAB9L8O5o/5Du15Pw0oYspDAs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9CEDF80446;
-	Tue,  5 Nov 2019 08:55:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70B46F80446;
+	Tue,  5 Nov 2019 09:01:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35465F8049B; Tue,  5 Nov 2019 08:55:26 +0100 (CET)
+ id 6E7FAF805DF; Tue,  5 Nov 2019 09:01:43 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A179CF800F3
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 08:55:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A179CF800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8E2CF800F3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 09:01:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8E2CF800F3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 7555AABBD;
- Tue,  5 Nov 2019 07:55:22 +0000 (UTC)
-Date: Tue, 05 Nov 2019 08:55:21 +0100
-Message-ID: <s5heeymbvva.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 0FCBCB04F
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 08:01:40 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Andrzej Hajda <a.hajda@samsung.com>,
- Neil Armstrong <narmstrong@baylibre.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Jernej Skrabec <jernej.skrabec@siol.net>, alsa-devel@alsa-project.org,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- dri-devel@lists.freedesktop.org, Jonas Karlman <jonas@kwiboo.se>
-Subject: [alsa-devel] Incorrect buffer handling in dw-hdmi bridge audio
+To: alsa-devel@alsa-project.org
+Date: Tue,  5 Nov 2019 09:01:37 +0100
+Message-Id: <20191105080138.1260-4-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20191105080138.1260-1-tiwai@suse.de>
+References: <20191105080138.1260-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 3/4] ALSA: pcm: Handle special page mapping in
+	the default mmap handler
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,81 +70,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+When a driver needs to deal with a special buffer like a SG or a
+vmalloc buffer, it has to set up the PCM page ops explicitly for the
+corresponding helper function.  This is rather error-prone and many
+people forgot or incorrectly used it.
 
-while recently working on the ALSA memory allocator API cleanup, I
-noticed that dw-hdmi bridge driver seems doing weird about the buffer
-management.  It pre-allocates the usual device buffers fully at the
-probe time, while each stream allocates the buffer via the vmalloc
-helpers and replaces with it at each open.
-
-I guess it's no expected behavior?  It's basically a full waste of
-resources, and the vmalloc buffer isn't guaranteed to work well for
-mmap on every architecture.
-
-Below is the patch to address it.  Can anyone check whether this still
-works?
-
-Since I have a cleanup series and this is involved, I'd like to take
-the fix through my tree once after it's confirmed (and get ACK if
-possible).
-
-
-Thanks!
-
-Takashi
-
--- 8< --
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] drm/bridge: dw-hdmi: Fix the incorrect buffer allocations
-
-The driver sets up the buffer preallocation with SNDRV_DMA_TYPE_DEV,
-while it re-allocates and releases vmalloc pages.  This is not only a
-lot of waste resources but also causes the mmap malfunction.
-
-Change / drop the vmalloc-related code and use the standard buffer
-allocation / release code instead.
+For simplifying the call patterns and avoiding such a potential bug,
+this patch enhances the PCM default mmap handler to check the
+(pre-)allocated buffer type and handles the page gracefully depending
+on the buffer type.  If the PCM page ops is given, the ops is still
+used in a higher priority.  The new code path is only for the default
+(NULL page ops) case.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/core/pcm_native.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-index 2b7539701b42..8fe7a6e8ff94 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.c
-@@ -384,15 +384,14 @@ static int dw_hdmi_close(struct snd_pcm_substream *substream)
- 
- static int dw_hdmi_hw_free(struct snd_pcm_substream *substream)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index c3a139436ac2..998c63192ae4 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -13,6 +13,7 @@
+ #include <linux/pm_qos.h>
+ #include <linux/io.h>
+ #include <linux/dma-mapping.h>
++#include <linux/vmalloc.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/info.h>
+@@ -3335,7 +3336,18 @@ static inline struct page *
+ snd_pcm_default_page_ops(struct snd_pcm_substream *substream, unsigned long ofs)
  {
--	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+	return snd_pcm_lib_free_pages(substream);
+ 	void *vaddr = substream->runtime->dma_area + ofs;
+-	return virt_to_page(vaddr);
++
++	switch (substream->dma_buffer.dev.type) {
++#ifdef CONFIG_SND_DMA_SGBUF
++	case SNDRV_DMA_TYPE_DEV_SG:
++	case SNDRV_DMA_TYPE_DEV_UC_SG:
++		return snd_pcm_sgbuf_ops_page(substream, ofs);
++#endif /* CONFIG_SND_DMA_SGBUF */
++	case SNDRV_DMA_TYPE_VMALLOC:
++		return vmalloc_to_page(vaddr);
++	default:
++		return virt_to_page(vaddr);
++	}
  }
  
- static int dw_hdmi_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	/* Allocate the PCM runtime buffer, which is exposed to userspace. */
--	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
--						params_buffer_bytes(params));
-+	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
- }
- 
- static int dw_hdmi_prepare(struct snd_pcm_substream *substream)
-@@ -511,7 +510,6 @@ static const struct snd_pcm_ops snd_dw_hdmi_ops = {
- 	.prepare = dw_hdmi_prepare,
- 	.trigger = dw_hdmi_trigger,
- 	.pointer = dw_hdmi_pointer,
--	.page = snd_pcm_lib_get_vmalloc_page,
- };
- 
- static int snd_dw_hdmi_probe(struct platform_device *pdev)
+ /*
 -- 
 2.16.4
 
