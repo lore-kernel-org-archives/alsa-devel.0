@@ -2,62 +2,67 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE28CCA9EC7
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:46:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 068BECA9EC7
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:47:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6CDE206DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:46:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F7C320663
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 06:47:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XZ7FGKwt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6CDE206DF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RmoJKqtg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F7C320663
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92A811708;
-	Tue,  5 Nov 2019 07:45:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92A811708
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8F69171C;
+	Tue,  5 Nov 2019 07:46:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8F69171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572936376;
-	bh=pHQUumW/ZaSRmYJsHySJjMBMn0palr18LBbrgaqKzkM=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XZ7FGKwt8yiWyLLNtvIX83t+P7/FgqCJOPFvzb0DoCpb0Wwp3AZUVUVNQwLRapKQc
-	 fdeKCcVvlz0LjCwhY7c0peqhqwzqhY3SROXK4TR6q2Spb3xcXyxw7O1oCsk2M+etwU
-	 P2EsNipiY8pLl/YxP6Fkp/iT2pnyvlvZA3qmM7Z8=
+	s=default; t=1572936431;
+	bh=RadIaX4+X0cWnAjt+YnRgHKCTYtSq7Q9KhkxxIoB43g=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=RmoJKqtg4STJyW+9m0yMELX7Kp9Tpkq+LtqdVQvdY9KQasP26CLYJqNB+xeyJ9drB
+	 XgC7rKBZFtJsBmmPfZINIgHsVQg5IYafRzkb0L2KDNlu435vtGNLrMfSLREVPArjtL
+	 damewGmFotRoHba8naGZUDqG5fGcvT3SDzcECJHA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16BE8F80446;
-	Tue,  5 Nov 2019 07:45:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48718F805AE;
+	Tue,  5 Nov 2019 07:45:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D999DF8049B; Tue,  5 Nov 2019 07:45:23 +0100 (CET)
+ id B7FD4F805DF; Tue,  5 Nov 2019 07:45:47 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D676AF80271
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 07:45:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D676AF80271
-Date: 05 Nov 2019 15:45:14 +0900
-X-IronPort-AV: E=Sophos;i="5.68,270,1569250800"; d="scan'208";a="30858083"
+ by alsa1.perex.cz (Postfix) with ESMTP id BBD83F80535
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 07:45:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBD83F80535
+Date: 05 Nov 2019 15:45:41 +0900
+X-IronPort-AV: E=Sophos;i="5.68,270,1569250800"; d="scan'208";a="30858123"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2019 15:45:14 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 05 Nov 2019 15:45:41 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id C356C4001B75;
- Tue,  5 Nov 2019 15:45:14 +0900 (JST)
-Message-ID: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 44A684009409;
+ Tue,  5 Nov 2019 15:45:41 +0900 (JST)
+Message-ID: <87eeym3joq.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 00/19] ASoC: soc-core cleanup - step 4
+Subject: [alsa-devel] [PATCH v3 01/19] ASoC: soc-core: move
+	soc_init_dai_link()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,39 +81,231 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v3 of soc-core cleanup step4.
-These are based on mark/for-5.5 branch.
-These had been tested on Intel CI, and had no issue.
-And are reviewed by Pierre-Louis, Ranjani.
+This patch moves soc_init_dai_link() next to soc_bind_dai_link().
+This is prepare for soc_bind_dai_link() cleanup.
 
-Kuninori Morimoto (19):
-  ASoC: soc-core: move soc_init_dai_link()
-  ASoC: soc-core: tidyup soc_init_dai_link()
-  ASoC: soc-core: typo fix at soc_dai_link_sanity_check()
-  ASoC: soc-core: remove duplicated soc_is_dai_link_bound()
-  ASoC: soc-core: call soc_bind_dai_link() under snd_soc_add_dai_link()
-  ASoC: soc-core: add soc_unbind_dai_link()
-  ASoC: soc-core: move snd_soc_lookup_component()
-  ASoC: soc-core: tidyup snd_soc_lookup_component()
-  ASoC: soc-core: add snd_soc_del_component_unlocked()
-  ASoC: soc-core: remove snd_soc_component_add/del()
-  ASoC: soc-core: use snd_soc_lookup_component() at snd_soc_unregister_component()
-  ASoC: soc-core: move snd_soc_register_dai()
-  ASoC: soc-core: move snd_soc_unregister_dais()
-  ASoC: soc-core: add snd_soc_unregister_dai()
-  ASoC: soc-core: have legacy_dai_naming at snd_soc_register_dai()
-  ASoC: soc-core: don't call snd_soc_dapm_new_dai_widgets() at snd_soc_register_dai()
-  ASoC: soc-core: call snd_soc_register_dai() from snd_soc_register_dais()
-  ASoC: soc-core: remove topology specific operation
-  ASoC: soc.h: dobj is used only when SND_SOC_TOPOLOGY
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+v2 -> v3
+	- no change
+	- add Reviewed-by
 
- include/sound/soc.h      |  15 +-
- sound/soc/soc-core.c     | 526 ++++++++++++++++++++---------------------------
- sound/soc/soc-topology.c |  17 +-
- 3 files changed, 255 insertions(+), 303 deletions(-)
+ sound/soc/soc-core.c | 192 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 96 insertions(+), 96 deletions(-)
 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b07ecfa..a141828 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -941,6 +941,102 @@ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+ 	return false;
+ }
+ 
++static int soc_init_dai_link(struct snd_soc_card *card,
++			     struct snd_soc_dai_link *link)
++{
++	int i;
++	struct snd_soc_dai_link_component *codec, *platform;
++
++	for_each_link_codecs(link, i, codec) {
++		/*
++		 * Codec must be specified by 1 of name or OF node,
++		 * not both or neither.
++		 */
++		if (!!codec->name == !!codec->of_node) {
++			dev_err(card->dev, "ASoC: Neither/both codec name/of_node are set for %s\n",
++				link->name);
++			return -EINVAL;
++		}
++
++		/* Codec DAI name must be specified */
++		if (!codec->dai_name) {
++			dev_err(card->dev, "ASoC: codec_dai_name not set for %s\n",
++				link->name);
++			return -EINVAL;
++		}
++
++		/*
++		 * Defer card registration if codec component is not added to
++		 * component list.
++		 */
++		if (!soc_find_component(codec))
++			return -EPROBE_DEFER;
++	}
++
++	for_each_link_platforms(link, i, platform) {
++		/*
++		 * Platform may be specified by either name or OF node, but it
++		 * can be left unspecified, then no components will be inserted
++		 * in the rtdcom list
++		 */
++		if (!!platform->name == !!platform->of_node) {
++			dev_err(card->dev,
++				"ASoC: Neither/both platform name/of_node are set for %s\n",
++				link->name);
++			return -EINVAL;
++		}
++
++		/*
++		 * Defer card registration if platform component is not added to
++		 * component list.
++		 */
++		if (!soc_find_component(platform))
++			return -EPROBE_DEFER;
++	}
++
++	/* FIXME */
++	if (link->num_cpus > 1) {
++		dev_err(card->dev,
++			"ASoC: multi cpu is not yet supported %s\n",
++			link->name);
++		return -EINVAL;
++	}
++
++	/*
++	 * CPU device may be specified by either name or OF node, but
++	 * can be left unspecified, and will be matched based on DAI
++	 * name alone..
++	 */
++	if (link->cpus->name && link->cpus->of_node) {
++		dev_err(card->dev,
++			"ASoC: Neither/both cpu name/of_node are set for %s\n",
++			link->name);
++		return -EINVAL;
++	}
++
++	/*
++	 * Defer card registartion if cpu dai component is not added to
++	 * component list.
++	 */
++	if ((link->cpus->of_node || link->cpus->name) &&
++	    !soc_find_component(link->cpus))
++		return -EPROBE_DEFER;
++
++	/*
++	 * At least one of CPU DAI name or CPU device name/node must be
++	 * specified
++	 */
++	if (!link->cpus->dai_name &&
++	    !(link->cpus->name || link->cpus->of_node)) {
++		dev_err(card->dev,
++			"ASoC: Neither cpu_dai_name nor cpu_name/of_node are set for %s\n",
++			link->name);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	struct snd_soc_dai_link *dai_link)
+ {
+@@ -1283,102 +1379,6 @@ static int soc_probe_link_components(struct snd_soc_card *card)
+ 	return 0;
+ }
+ 
+-static int soc_init_dai_link(struct snd_soc_card *card,
+-			     struct snd_soc_dai_link *link)
+-{
+-	int i;
+-	struct snd_soc_dai_link_component *codec, *platform;
+-
+-	for_each_link_codecs(link, i, codec) {
+-		/*
+-		 * Codec must be specified by 1 of name or OF node,
+-		 * not both or neither.
+-		 */
+-		if (!!codec->name == !!codec->of_node) {
+-			dev_err(card->dev, "ASoC: Neither/both codec name/of_node are set for %s\n",
+-				link->name);
+-			return -EINVAL;
+-		}
+-
+-		/* Codec DAI name must be specified */
+-		if (!codec->dai_name) {
+-			dev_err(card->dev, "ASoC: codec_dai_name not set for %s\n",
+-				link->name);
+-			return -EINVAL;
+-		}
+-
+-		/*
+-		 * Defer card registration if codec component is not added to
+-		 * component list.
+-		 */
+-		if (!soc_find_component(codec))
+-			return -EPROBE_DEFER;
+-	}
+-
+-	for_each_link_platforms(link, i, platform) {
+-		/*
+-		 * Platform may be specified by either name or OF node, but it
+-		 * can be left unspecified, then no components will be inserted
+-		 * in the rtdcom list
+-		 */
+-		if (!!platform->name == !!platform->of_node) {
+-			dev_err(card->dev,
+-				"ASoC: Neither/both platform name/of_node are set for %s\n",
+-				link->name);
+-			return -EINVAL;
+-		}
+-
+-		/*
+-		 * Defer card registration if platform component is not added to
+-		 * component list.
+-		 */
+-		if (!soc_find_component(platform))
+-			return -EPROBE_DEFER;
+-	}
+-
+-	/* FIXME */
+-	if (link->num_cpus > 1) {
+-		dev_err(card->dev,
+-			"ASoC: multi cpu is not yet supported %s\n",
+-			link->name);
+-		return -EINVAL;
+-	}
+-
+-	/*
+-	 * CPU device may be specified by either name or OF node, but
+-	 * can be left unspecified, and will be matched based on DAI
+-	 * name alone..
+-	 */
+-	if (link->cpus->name && link->cpus->of_node) {
+-		dev_err(card->dev,
+-			"ASoC: Neither/both cpu name/of_node are set for %s\n",
+-			link->name);
+-		return -EINVAL;
+-	}
+-
+-	/*
+-	 * Defer card registartion if cpu dai component is not added to
+-	 * component list.
+-	 */
+-	if ((link->cpus->of_node || link->cpus->name) &&
+-	    !soc_find_component(link->cpus))
+-		return -EPROBE_DEFER;
+-
+-	/*
+-	 * At least one of CPU DAI name or CPU device name/node must be
+-	 * specified
+-	 */
+-	if (!link->cpus->dai_name &&
+-	    !(link->cpus->name || link->cpus->of_node)) {
+-		dev_err(card->dev,
+-			"ASoC: Neither cpu_dai_name nor cpu_name/of_node are set for %s\n",
+-			link->name);
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+ void snd_soc_disconnect_sync(struct device *dev)
+ {
+ 	struct snd_soc_component *component =
 -- 
 2.7.4
 
