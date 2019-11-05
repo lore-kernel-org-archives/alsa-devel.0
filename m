@@ -2,69 +2,68 @@ Return-Path: <SRS0=4Snk=Y5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDA6FC5DF60
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 17:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C632AC5DF60
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 18:11:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE80421882
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 17:59:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4838821882
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 18:11:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jD2iop/V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE80421882
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="USYWQVmb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4838821882
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6712816DA;
-	Tue,  5 Nov 2019 18:58:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6712816DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FDC516D9;
+	Tue,  5 Nov 2019 19:11:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FDC516D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572976788;
-	bh=WqKALuj7Atnm+wTkPvcdtXrtMxGiBpzYbaYE3rrh5+s=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1572977514;
+	bh=CtSoGti1dcEu09Um7jlGE83e+VnHBTzMum2oouUy2Gw=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jD2iop/VLMovfmk6BmPUmcLKVWg6DqcOCjIZpHJ8uEu9+oksC4+sfeOoQV9JNtBR+
-	 GqCUps8yFQ4x5Kc9IVV9YMFATVdLpDe4DD27XK+0sReQ5zEX7bOqBy+7wWa9jYrYgR
-	 ZBBiAqDuZ4Y3mU6QE/RquWPM4BfzHmZLLcosV1p4=
+	b=USYWQVmb+5uZxcGXLD5Z9ngfYAyBaEWptZwX40u5L0Qvc7uyPmAFK74ypA8YXjx0z
+	 zxuPYptlqXDc9QWJhUkK6MQnCFc5UZFYV+uUW2NVrwf7iCIbSUiSKjyzwtKXbDtEfm
+	 +IKQpF2H+39Qi0cAXdStDFibEI3R3H9iee+wr4i0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E004CF80271;
-	Tue,  5 Nov 2019 18:58:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7AE4F8015B;
+	Tue,  5 Nov 2019 19:11:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50E87F80446; Tue,  5 Nov 2019 18:58:56 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 86B2EF80446; Tue,  5 Nov 2019 19:11:02 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 332E0F800F3
- for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 18:58:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 332E0F800F3
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 05 Nov 2019 09:58:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,271,1569308400"; d="scan'208";a="192178727"
-Received: from njdenler-mobl1.amr.corp.intel.com ([10.254.94.55])
- by orsmga007.jf.intel.com with ESMTP; 05 Nov 2019 09:58:48 -0800
-Message-ID: <5d05a1419c6acee8adc8184751e42616898ea28c.camel@linux.intel.com>
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Date: Tue, 05 Nov 2019 09:58:53 -0800
-In-Reply-To: <20191105080138.1260-2-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7A50F8015B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 19:10:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7A50F8015B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id E78B2AE4B;
+ Tue,  5 Nov 2019 18:10:58 +0000 (UTC)
+Date: Tue, 05 Nov 2019 19:10:58 +0100
+Message-ID: <s5hsgn29ost.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <5d05a1419c6acee8adc8184751e42616898ea28c.camel@linux.intel.com>
 References: <20191105080138.1260-1-tiwai@suse.de>
  <20191105080138.1260-2-tiwai@suse.de>
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+ <5d05a1419c6acee8adc8184751e42616898ea28c.camel@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
 Subject: Re: [alsa-devel] [PATCH 1/4] ALSA: memalloc: Allow NULL device for
- SNDRV_DMA_TYPE_CONTINOUS type
+	SNDRV_DMA_TYPE_CONTINOUS type
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,50 +81,62 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 2019-11-05 at 09:01 +0100, Takashi Iwai wrote:
-> Currently we pass the artificial device pointer to the allocation
-> helper in the case of SNDRV_DMA_TYPE_CONTINUOUS for passing the GFP
-> flags.  But all common cases are the allocations with GFP_KERNEL, and
-> it's messy to put this in each place.
+On Tue, 05 Nov 2019 18:58:53 +0100,
+Ranjani Sridharan wrote:
 > 
-> In this patch, the memalloc core helper is changed to accept the NULL
-> device pointer and it treats as the default mode, GFP_KERNEL, so that
-> all callers can omit the complex argument but just leave NULL.
+> On Tue, 2019-11-05 at 09:01 +0100, Takashi Iwai wrote:
+> > Currently we pass the artificial device pointer to the allocation
+> > helper in the case of SNDRV_DMA_TYPE_CONTINUOUS for passing the GFP
+> > flags.  But all common cases are the allocations with GFP_KERNEL, and
+> > it's messy to put this in each place.
+> > 
+> > In this patch, the memalloc core helper is changed to accept the NULL
+> > device pointer and it treats as the default mode, GFP_KERNEL, so that
+> > all callers can omit the complex argument but just leave NULL.
+> > 
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >  Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 14
+> > ++++++++------
+> >  sound/core/memalloc.c                                     |  9
+> > ++++++++-
+> >  2 files changed, 16 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/Documentation/sound/kernel-api/writing-an-alsa-
+> > driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-
+> > driver.rst
+> > index 132f5eb9b530..5385618fd881 100644
+> > --- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> > +++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> > @@ -3523,12 +3523,14 @@ The second argument (type) and the third
+> > argument (device pointer) are
+> >  dependent on the bus. For normal devices, pass the device pointer
+> >  (typically identical as ``card->dev``) to the third argument with
+> >  ``SNDRV_DMA_TYPE_DEV`` type. For the continuous buffer unrelated to
+> > 
+> Hi Takashi,
 > 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 14
-> ++++++++------
->  sound/core/memalloc.c                                     |  9
-> ++++++++-
->  2 files changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/sound/kernel-api/writing-an-alsa-
-> driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-
-> driver.rst
-> index 132f5eb9b530..5385618fd881 100644
-> --- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-> +++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-> @@ -3523,12 +3523,14 @@ The second argument (type) and the third
-> argument (device pointer) are
->  dependent on the bus. For normal devices, pass the device pointer
->  (typically identical as ``card->dev``) to the third argument with
->  ``SNDRV_DMA_TYPE_DEV`` type. For the continuous buffer unrelated to
-> 
-Hi Takashi,
+> I have a question about the usage of snd_dma_alloc_pages() with the
+> SNDRV_DMA_TYPE_DEV type. I am working on adding a platform-device for
+> audio which is a child device of the top-level PCI device in SOF.
+> When I use the handle for the platform-device as the "dev" argument for
+> snd_dma_alloc_pages(), the dma alloc fails on some platforms (ex: Ice
+> Lake). But it works fine if I use the top-level PCI device instead.
+> Why would that be? Are there any restrictions to what devices can be
+> used for dma alloc?
 
-I have a question about the usage of snd_dma_alloc_pages() with the
-SNDRV_DMA_TYPE_DEV type. I am working on adding a platform-device for
-audio which is a child device of the top-level PCI device in SOF.
-When I use the handle for the platform-device as the "dev" argument for
-snd_dma_alloc_pages(), the dma alloc fails on some platforms (ex: Ice
-Lake). But it works fine if I use the top-level PCI device instead.
-Why would that be? Are there any restrictions to what devices can be
-used for dma alloc?
+This pretty much depends on the device.  Basically the ALSA memalloc
+stuff simply calls dma_alloc_coherent() if the buffer type is
+SNDRV_DMA_TYPE_DEV, and the rest goes deeply into the code in
+kernel/dma/*.
 
-Thanks,
-Ranjani
+My wild guess is that the significant difference in your case is about
+the DMA coherence mask set on the device.  As default the platform
+device keeps 32bit DMA while the modern PCI drivers often sets up
+64bit DMA mask.
 
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
