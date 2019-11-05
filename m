@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0A11C5DF60
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37024C5DF60
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:32:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 432CA20650
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:31:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD8BA2087E
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Nov 2019 15:32:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GahPf4bt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 432CA20650
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mKix7lft"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD8BA2087E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6ED2116F9;
-	Tue,  5 Nov 2019 16:31:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ED2116F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC37816D5;
+	Tue,  5 Nov 2019 16:31:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC37816D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1572967910;
-	bh=aIa+W6I/I8vsxvYFInZx5PYj8HDGO813S0SVYduGRik=;
+	s=default; t=1572967950;
+	bh=ey6RfUTYzgKiiUXd/J+YKFZFC6NyhjNVbpF8C1G/KG8=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GahPf4bt+f7vm8nLC8UMOwWxq0NPClUnxsP9uHfFirO4Nvr3yHfxsPFXbycx6ULgh
-	 h68c8GiZkXlFE6f4+/Ll3HGmZkuXsbzBZcB1Zc0qs/p1L4ULgFHjqgXTBwlouDpPlZ
-	 6fH5hzfTFQ44MMaml4ekOWBSTSPjUwiHB7L4rpVM=
+	b=mKix7lftTVBhicNLSMiAvAxY2Wnkuruu+AJs1vAmM0lAyTd5fe2Xc95sMj4dOLsRg
+	 8Yf+vlY8KR+pVtsNC7u9MkQP4Wp3Ug5+wpjRLgglar0OXDsO5pO17RBxKeXGpDo/SP
+	 SHMn8G5YsBAZ61pAyQocBdSO1NWCDyVAi2TTn7A0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7555F80766;
-	Tue,  5 Nov 2019 16:19:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC88FF8076C;
+	Tue,  5 Nov 2019 16:19:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB156F80638; Tue,  5 Nov 2019 16:19:21 +0100 (CET)
+ id 3179FF80638; Tue,  5 Nov 2019 16:19:23 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAFA2F80633
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDF98F80611
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 16:19:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAFA2F80633
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDF98F80611
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 6BC0FB2C2
+ by mx1.suse.de (Postfix) with ESMTP id D533AB4F3
  for <alsa-devel@alsa-project.org>; Tue,  5 Nov 2019 15:18:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue,  5 Nov 2019 16:18:48 +0100
-Message-Id: <20191105151856.10785-17-tiwai@suse.de>
+Date: Tue,  5 Nov 2019 16:18:56 +0100
+Message-Id: <20191105151856.10785-25-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191105151856.10785-1-tiwai@suse.de>
 References: <20191105151856.10785-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 16/24] ALSA: pdaudiocf: Convert to the common
-	vmalloc memalloc
+Subject: [alsa-devel] [PATCH 24/24] ALSA: docs: Remove snd_dma_pci_data()
+	usage in documentation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,63 +76,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent change (*) in the ALSA memalloc core allows us to drop the
-special vmalloc-specific allocation and page handling.  This patch
-coverts to the common code.
-(*) df3fd6509421: ALSA: memalloc: Add vmalloc buffer allocation
-                  support
-    6ef6be988f98: ALSA: pcm: Handle special page mapping in the
-                  default mmap handler
-
-Since the driver requires the DMA32 allocation, it passes the
-specially encoded device to snd_pcm_lib_preallocate_pages().
+The macro will be removed soon later, so update the documentation to
+reflect that as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c b/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c
-index c21fec60cd98..067b1c3a3e02 100644
---- a/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c
-+++ b/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c
-@@ -89,8 +89,7 @@ static int pdacf_pcm_trigger(struct snd_pcm_substream *subs, int cmd)
- static int pdacf_pcm_hw_params(struct snd_pcm_substream *subs,
- 				     struct snd_pcm_hw_params *hw_params)
- {
--	return snd_pcm_lib_alloc_vmalloc_32_buffer
--					(subs, params_buffer_bytes(hw_params));
-+	return snd_pcm_lib_malloc_pages(subs, params_buffer_bytes(hw_params));
- }
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index ba008ce28029..3a87311c125e 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -1383,7 +1383,7 @@ shows only the skeleton, how to build up the PCM interfaces.
+               /* pre-allocation of buffers */
+               /* NOTE: this may fail */
+               snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-                                                    snd_dma_pci_data(chip->pci),
++                                                    &chip->pci->dev,
+                                                     64*1024, 64*1024);
+               return 0;
+       }
+@@ -1470,7 +1470,7 @@ buffer. For the pre-allocation, simply call the following:
+ ::
  
- /*
-@@ -98,7 +97,7 @@ static int pdacf_pcm_hw_params(struct snd_pcm_substream *subs,
-  */
- static int pdacf_pcm_hw_free(struct snd_pcm_substream *subs)
- {
--	return snd_pcm_lib_free_vmalloc_buffer(subs);
-+	return snd_pcm_lib_free_pages(subs);
- }
+   snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-                                        snd_dma_pci_data(chip->pci),
++                                        &chip->pci->dev,
+                                         64*1024, 64*1024);
  
- /*
-@@ -262,7 +261,6 @@ static const struct snd_pcm_ops pdacf_pcm_capture_ops = {
- 	.prepare =	pdacf_pcm_prepare,
- 	.trigger =	pdacf_pcm_trigger,
- 	.pointer =	pdacf_pcm_capture_pointer,
--	.page =		snd_pcm_lib_get_vmalloc_page,
- };
+ It will allocate a buffer up to 64kB as default. Buffer management
+@@ -3514,7 +3514,7 @@ bus).
+ ::
  
+   snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-                                        snd_dma_pci_data(pci), size, max);
++                                        &pci->dev, size, max);
  
-@@ -279,6 +277,9 @@ int snd_pdacf_pcm_new(struct snd_pdacf *chip)
- 		return err;
- 		
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pdacf_pcm_capture_ops);
-+	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
-+					      snd_dma_continuous_data(GFP_KERNEL | GFP_DMA32),
-+					      0, 0);
+ where ``size`` is the byte size to be pre-allocated and the ``max`` is
+ the maximum size to be changed via the ``prealloc`` proc file. The
+@@ -3700,7 +3700,7 @@ For creating the SG-buffer handler, call
+ :c:func:`snd_pcm_lib_preallocate_pages()` or
+ :c:func:`snd_pcm_lib_preallocate_pages_for_all()` with
+ ``SNDRV_DMA_TYPE_DEV_SG`` in the PCM constructor like other PCI
+-pre-allocator. You need to pass ``snd_dma_pci_data(pci)``, where pci is
++pre-allocator. You need to pass ``&pci->dev``, where pci is
+ the :c:type:`struct pci_dev <pci_dev>` pointer of the chip as
+ well.
  
- 	pcm->private_data = chip;
- 	pcm->info_flags = 0;
 -- 
 2.16.4
 
