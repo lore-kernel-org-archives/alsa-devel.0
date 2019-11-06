@@ -2,65 +2,90 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9222EC5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:13:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01F45C5DF60
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:14:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFFFF21D7C
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:13:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 58D4A21D7F
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:14:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tlc6HLpo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFFFF21D7C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MM2DqrDo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iMmO/pxW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58D4A21D7F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E29C16E9;
-	Wed,  6 Nov 2019 02:12:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E29C16E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A803F16E4;
+	Wed,  6 Nov 2019 02:13:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A803F16E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573002820;
-	bh=hLBh18N9UGOMrInxnH+Z8T4ipJHOr73t0Sj6qC2k6L8=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tlc6HLpoLClyyBSAjeV24QNnJVTD60OfpmIYEkUVwcbDbElZpcRRY/bEi1Dih+Gj1
-	 DRKaMAVQo4juDogrpBQr4UB2lnYPIX8YI+5nwI0C0534DwVhGX8JXOX1NUsX9QWAHh
-	 A7KhNUifCbFY/Sle1DtyfU3DBTtqf2JMmDcF7jII=
+	s=default; t=1573002888;
+	bh=U9GRTqmIxyCkGRMaSXn68cvoMLrzE4biAt/rZSzSKGU=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MM2DqrDomUJH63bD+bSh4gUBoqhBVIzy9sOF98ah6GmLXLG9S7f8mpb5Gp0z/NxjI
+	 CDRiLCSt1GYWdJvgTTMMICTQvdFqFK8UE+UG9Cixhc+D5DOJ71ujKnZC5IAe4b8PHv
+	 pzZX5KtYnByjEJqdELI7lUW3yGPsYgWIBqDnakW8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE6C1F80446;
-	Wed,  6 Nov 2019 02:08:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 213B1F8049B;
+	Wed,  6 Nov 2019 02:13:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B380F80535; Wed,  6 Nov 2019 02:08:18 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5C596F80675
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:08:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C596F80675
-Date: 06 Nov 2019 10:08:13 +0900
-X-IronPort-AV: E=Sophos;i="5.68,271,1569250800"; d="scan'208";a="30712484"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 06 Nov 2019 10:08:13 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 484ED40A4D52;
- Wed,  6 Nov 2019 10:08:13 +0900 (JST)
-Message-ID: <87k18dhkw2.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <87wocdhkz6.wl-kuninori.morimoto.gx@renesas.com>
-References: <87wocdhkz6.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 9/9] ASoC: soc-core: call
-	snd_soc_dapm_shutdown() at soc_cleanup_card_resources()
+ id 07359F8049B; Wed,  6 Nov 2019 02:13:56 +0100 (CET)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A53EF8015B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:13:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A53EF8015B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="iMmO/pxW"
+Received: by mail-pf1-x444.google.com with SMTP id x28so14297030pfo.6
+ for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 17:13:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=RJWgLChV5dFhDjX6v3YZk5HcQ7kzB+BBUJKMApn2Ec4=;
+ b=iMmO/pxWdHbfc7SZu34+QsgbzKEDJTmZ3A6iryuVPDPCDtpW3LYsGPgPBEu87998+6
+ JixZkWSF4AgZtwe3McJEDxNtHt1Kbg9M51LoNMMC6CMEXgfV8vPV1TbT3bogXUyeIMM/
+ kjZmfFxDFONAiR2/bXQKhPvIBHUZ+JGJs59v0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=RJWgLChV5dFhDjX6v3YZk5HcQ7kzB+BBUJKMApn2Ec4=;
+ b=ehLcTaO2JVypsT0D04XCWfwYpFiH56MNABtERvFbd7ATVJ9pJaoE7t+zstB4ZJOBmJ
+ 6GMLEPzjW5zTaIwrGjqaDvJI16BhsqFDhQPNoryZ/P457zN81JmsEKe9QQSvcSQ9ussJ
+ 9uw5PhIWUabOyxPqSLNdOwooETG18ETR0rU/y9vDMPb0WI5hKAzcQaiHWgmkYCTWuSNy
+ /NhEFaAtcfzjAooWxGCRMsGhm0/UY3RMnfP+oFqg8IPJE+fkfJt+DzkTOkKJ3BYP+Bf2
+ ELJJmTwJVn165z+34XwhByG2Hj4Pqs0qghBFmrYWx8hFLvNnH7WH0jwwde6ZNB56azZq
+ zxsA==
+X-Gm-Message-State: APjAAAW0fFAggTHy7twAjYYDNRy5NExqjsXhkMAODsM213HeYiQU1hOQ
+ bem6qN+d9XaPdsa+KDvIpAWfpiuw65pX
+X-Google-Smtp-Source: APXvYqytkc/SYTBX2ZTT86xmZvJsN/rb7+ifmmEiTsQLbcjRAFyKinw4xvkULGEuDOsH1txBNvLXHA==
+X-Received: by 2002:a63:8f1b:: with SMTP id n27mr29557054pgd.104.1573002830897; 
+ Tue, 05 Nov 2019 17:13:50 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:c87a:31ae:9107:f63d])
+ by smtp.gmail.com with ESMTPSA id f8sm11008308pgd.64.2019.11.05.17.13.50
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 05 Nov 2019 17:13:50 -0800 (PST)
+From: Curtis Malainey <cujomalainey@chromium.org>
+To: alsa-devel@alsa-project.org
+Date: Tue,  5 Nov 2019 17:13:25 -0800
+Message-Id: <20191106011335.223061-1-cujomalainey@chromium.org>
+X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
+MIME-Version: 1.0
+Cc: Ben Zhang <benzh@chromium.org>, Curtis Malainey <cujomalainey@chromium.org>,
+ Dylan Reid <dgreid@chromium.org>
+Subject: [alsa-devel] [PATCH v3 00/11] Add Samus Hotwording for RT5677
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,47 +103,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This patch series adds the hotwording implementation used in the
+Pixelbook on the RT5677 driver.
 
-It is easy to read code if it is cleanly using paired function/naming,
-like start <-> stop, register <-> unregister, etc, etc.
-But, current ALSA SoC code is very random, unbalance, not paired, etc.
-It is easy to create bug at the such code, and it will be difficult to
-debug.
+Known Issues:
+There is a known issue where the system will fail to detect a hotword if
+suspended while the stream is open. This is due to the fact that the
+haswell-dsp suspends its I2S MCLK before the RT5677 suspends which
+causes the writes and reads to become corrupted as a result. Any
+recommendations to correct this behaviour would be appreciated.
 
-snd_soc_bind_card() is calling snd_soc_dapm_init() for both
-card and component.
-Let's call paired snd_soc_dapm_shutdown() at paired
-soc_cleanup_card_resources().
+Changes since v1:
+* Addressed Mark's and Kuninori's comments
+  * Adjusted DAI Links
+  * Squashed related patches
+  * Removed all kcontrol writes
+* Addressed race condition with dapm
+* Added firmware boot check
+* Moved all clocking to driver API
+* Moved DAPM routes that spanned drivers to machine driver
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/soc-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes since v2:
+* Updated and removed necessary dapm forced power on
+* Addressed Cexzary's comments
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 927b9c9..0bed63e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1940,6 +1940,8 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
- 		card->snd_card = NULL;
- 	}
- 
-+	snd_soc_dapm_shutdown(card);
-+
- 	/* remove and free each DAI */
- 	soc_remove_link_dais(card);
- 	soc_remove_link_components(card);
-@@ -2377,7 +2379,6 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- {
- 	if (card->instantiated) {
- 		card->instantiated = false;
--		snd_soc_dapm_shutdown(card);
- 		snd_soc_flush_all_delayed_work(card);
- 
- 		soc_cleanup_card_resources(card);
+Cc: Dylan Reid <dgreid@chromium.org>
+Cc: Ben Zhang <benzh@chromium.org>
+
+Ben Zhang (7):
+  ASoC: rt5677: Load firmware via SPI using delayed work
+  ASoC: bdw-rt5677: Add a DAI link for rt5677 SPI PCM device
+  ASoC: rt5677: Enable jack detect while DSP is running
+  ASoC: rt5677: Add DAPM audio path for hotword stream
+  ASoC: rt5677: Mark reg RT5677_PWR_ANLG2 as volatile
+  ASoC: rt5677: Stop and restart DSP over suspend/resume
+  ASoC: rt5677: Disable irq at suspend
+
+Curtis Malainey (4):
+  ASoC: rt5677: Allow VAD to be shut on/off at all times
+  ASoC: bdw-rt5677: Turn on MCLK1 for DSP via DAPM
+  ASoC: rt5677: Set ADC clock to use PLL and enable ASRC
+  ASoC: rt5677: Wait for DSP to boot before loading firmware
+
+ sound/soc/codecs/rt5677-spi.c       |  13 +
+ sound/soc/codecs/rt5677.c           | 445 +++++++++++++++++++++++-----
+ sound/soc/codecs/rt5677.h           |  11 +-
+ sound/soc/intel/boards/bdw-rt5677.c |  51 ++++
+ 4 files changed, 447 insertions(+), 73 deletions(-)
+
 -- 
-2.7.4
+2.24.0.rc1.363.gb1bccd3e3d-goog
 
 _______________________________________________
 Alsa-devel mailing list
