@@ -7,91 +7,98 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA0B8C5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:19:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D44E6C5DF60
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:20:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CD642245C
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:19:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 359AA2245C
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:20:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HtmnouRu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JoA/kwzv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CD642245C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PjK7phKG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="amwUqfMz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 359AA2245C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0F4F16F9;
-	Wed,  6 Nov 2019 02:18:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0F4F16F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 974D816EA;
+	Wed,  6 Nov 2019 02:19:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 974D816EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573003153;
-	bh=ytNoRGk7DttnSaqcWSr+z1AThvL+nZz4TcpfMsl1uVQ=;
+	s=default; t=1573003205;
+	bh=T+vyDZgry1+9ZGI3JmSRYB3QMxlFNLZl0N0RLhWW8P0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HtmnouRuUp9l0oc4vFxnUcZKxPNojMFB/kC4lY9sv1dZiTVTtre+PkcJLTxs/u8d6
-	 83+Q+04liL9qxMWDGKZ+UhGMwq93PVnT+faJpXQRCydHaCZE6pJ0iwGLl8x0mDQryx
-	 Uh2Maj/YhFD6diomF6SU+DXhHRkTrFLA9my7E6xk=
+	b=PjK7phKGCS9P4LElypBc3DMLf7AZV04ruxl5dERE1GhJA6gQ7XZk2h7RsZmy6o7jl
+	 iA07kiITosQyySFv0dt4I6+YH9KvawI8nfYeLqMe7A+DI3aVFGcZHOz+FSrzyV431c
+	 ch1ZHlA/ACaxnO8/YpKDPYLrjho8nvJoo8xrsmUI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4604CF8067C;
-	Wed,  6 Nov 2019 02:14:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A1F6F8068A;
+	Wed,  6 Nov 2019 02:14:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BA94F8065C; Wed,  6 Nov 2019 02:14:10 +0100 (CET)
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com
- [IPv6:2607:f8b0:4864:20::544])
+ id 78247F80709; Wed,  6 Nov 2019 02:14:14 +0100 (CET)
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
+ [IPv6:2607:f8b0:4864:20::541])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACBAAF8065C
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:14:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACBAAF8065C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05BC6F8068A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:14:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05BC6F8068A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="JoA/kwzv"
-Received: by mail-pg1-x544.google.com with SMTP id k13so4613944pgh.3
- for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 17:14:07 -0800 (PST)
+ header.b="amwUqfMz"
+Received: by mail-pg1-x541.google.com with SMTP id e4so15949908pgs.1
+ for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 17:14:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=U8t4AHHalgLM0nlaA0UIygDmVULi5h0uuv/sMgFcn9E=;
- b=JoA/kwzv52MK8tl7KvEB5zAkVNwKhMixeHMRuWypJw/UddOGRx90aB1S1hpefkqS2k
- B2ICL9N//aCqwRM3pYZCthStQPikWoHIHYM7V8hVD67jK0mdeiR2lSmNi9N2/jCqaYqa
- PNlU7XxnqMXLtR5qOVo6gQWl6uggJNK1sy40w=
+ bh=oENrn7iF5Tlx2jdPn2RudelHxpwsKuNEMM5KPm30ynM=;
+ b=amwUqfMz7EfzsDNN81sv+gQ/Ylg2UUp4BevyN7Z6fipb4fm2v42Q0wO/d5Tx8js3I3
+ 03hA5Y5pdEwMd21YK4/UD2yUm9NzjG9ol264zcAlsNtDX8KeeHFegHaOOUusm0viFD26
+ UqfOS3HIlqVzJVMSOTzB10OU1tDykxVESDkKc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=U8t4AHHalgLM0nlaA0UIygDmVULi5h0uuv/sMgFcn9E=;
- b=elyOR5U45Hnu/H4kgTpe88eTkAfNtacN5zFnW345FS3OKlfVic8a6rKT3hdtvMGxAl
- uuaJv1Ny9nhzT7rMDKQaY2Q8h5iAMZvfdbFW8/isyMFcQNA+bY/9eTMjdkTDC6Wcekmf
- vxh/e6b3bo2LIOie4yOukb2YGYtRCOQ6PZQaNrObCj8FP5mJoUMDkkueUb6PCnWuby0q
- znAiXmx5fTZJNs6Sjz5xDpCqxWEUgSTKmTLrgYsK2uoXXzZ+57lzzgbNx4OmeALPOZdY
- 4v47an6s3d+NCeXmh+/XVYnSRD3zGmJL0W9GNn3IXIzYa/xAgPYExNq021EJjlJ1cdAl
- v7nw==
-X-Gm-Message-State: APjAAAWSbdbCfUS3DgjaQK0ySONfEWGSSnsN+MbBKYeh2YKa3cVOG35Y
- LQCh4NI1BqQrhZYcWAof0rB1VCoRLo6b
-X-Google-Smtp-Source: APXvYqyGqKbRPo1hDvhyzTXIjH4ZW3VIOS5sqTrxgAH4DmdbLVeeb9bgLrcJqWZKf9zF7fujfJSBVg==
-X-Received: by 2002:a65:60c6:: with SMTP id r6mr16744678pgv.419.1573002845225; 
- Tue, 05 Nov 2019 17:14:05 -0800 (PST)
+ bh=oENrn7iF5Tlx2jdPn2RudelHxpwsKuNEMM5KPm30ynM=;
+ b=tkDtGUrTXypblSU94hbRhL/K7d0AaHe/HUONSYoa8OXZQl3GMrrQM6gIR3V2mPN5hM
+ k/HxCCAAsqafoWu56+8pRPC0EhZstTkbSimB4EK4G+G1c4R3DbsZfROLBDZ19xuYOwbX
+ sFlsEc2w7DxRXbCfujL8bfKa0thCLSuf8bUkO2NwKOXP0D7bDMI0yPKy0P4TYkfX2QIl
+ BLexE+MgSvBMutsveCy8N/87HhiqJ6RdNeCu3meqwBDEZOcuse+6f9xhxqvFNIwDBCeR
+ fWOZsKtLSQR0Vz4ols9YkO+14CuIfvV/CJLZIQINHkCrUDUbm09+hGXCeR5iTLJLH6aE
+ O0tA==
+X-Gm-Message-State: APjAAAWzByl981TAIHVdw1oXeRMl+AxaNmM0vokW8qIXs2G8IxVK4hpl
+ yhRPNcLtjAQlgKu9oFcEpLZAyz+SuYJF
+X-Google-Smtp-Source: APXvYqy7wCRF0DiNesrtpyLR+syRiVtrkKv7bYQCR9RWX0YPRTrEdnOU2UmPxoCCT4MZHFas1LV5gQ==
+X-Received: by 2002:a63:d0d:: with SMTP id c13mr39711839pgl.138.1573002849585; 
+ Tue, 05 Nov 2019 17:14:09 -0800 (PST)
 Received: from localhost ([2620:15c:202:201:c87a:31ae:9107:f63d])
- by smtp.gmail.com with ESMTPSA id s24sm21978999pfm.144.2019.11.05.17.14.03
+ by smtp.gmail.com with ESMTPSA id l3sm20116405pff.9.2019.11.05.17.14.08
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 05 Nov 2019 17:14:04 -0800 (PST)
+ Tue, 05 Nov 2019 17:14:09 -0800 (PST)
 From: Curtis Malainey <cujomalainey@chromium.org>
 To: alsa-devel@alsa-project.org
-Date: Tue,  5 Nov 2019 17:13:32 -0800
-Message-Id: <20191106011335.223061-8-cujomalainey@chromium.org>
+Date: Tue,  5 Nov 2019 17:13:34 -0800
+Message-Id: <20191106011335.223061-10-cujomalainey@chromium.org>
 X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
 In-Reply-To: <20191106011335.223061-1-cujomalainey@chromium.org>
 References: <20191106011335.223061-1-cujomalainey@chromium.org>
 MIME-Version: 1.0
-Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>,
- Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>,
- Curtis Malainey <cujomalainey@chromium.org>
-Subject: [alsa-devel] [PATCH v3 07/11] ASoC: rt5677: Disable irq at suspend
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Ben Zhang <benzh@chromium.org>, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Richard Fontana <rfontana@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Steve Winslow <swinslow@gmail.com>,
+ Curtis Malainey <cujomalainey@chromium.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+Subject: [alsa-devel] [PATCH v3 09/11] ASoC: bdw-rt5677: Turn on MCLK1 for
+	DSP via DAPM
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,127 +116,30 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ben Zhang <benzh@chromium.org>
+The RT5677 DSP needs the I2S MCLK1 to run its DSP. Add a dapm route to
+SSP0 CODEC IN so the clock is turned on automatically when the DSP is
+turned on.
 
-The irq is disabled at suspend to avoid running the threaded irq
-handler after the codec has been powered off. At resume, codec irq is
-re-enabled and the interrupt status register is checked to see if
-headphone has been pluggnd/unplugged while the device is suspended.
-
-There is still a chance that the headphone gets enabled or disabled
-after the codec is suspended. disable_irq syncs the threaded irq
-handler, but soc-jack's threaded irq handler schedules a delayed
-work to poll gpios (for debounce). This is still OK. The codec won't
-be powered back on again because all audio paths have been suspended,
-and there are no force enabled supply widgets (MICBIAS1 is disabled).
-The gpio status read after codec power off could be wrong, so the
-gpio values are checked again after resume.
-
-Signed-off-by: Ben Zhang <benzh@chromium.org>
 Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 ---
- sound/soc/codecs/rt5677.c | 46 +++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt5677.h |  2 ++
- 2 files changed, 48 insertions(+)
+ sound/soc/intel/boards/bdw-rt5677.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index eb55d6b9d0c1..14f04db8e5e7 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4949,6 +4949,11 @@ static int rt5677_suspend(struct snd_soc_component *component)
- {
- 	struct rt5677_priv *rt5677 = snd_soc_component_get_drvdata(component);
- 
-+	if (rt5677->irq) {
-+		cancel_delayed_work_sync(&rt5677->resume_irq_check);
-+		disable_irq(rt5677->irq);
-+	}
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index eeb9a11e4e14..b2475e3eff7b 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -75,6 +75,10 @@ static const struct snd_soc_dapm_route bdw_rt5677_map[] = {
+ 	{"SSP0 CODEC IN", NULL, "AIF1 Capture"},
+ 	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
+ 	{"DSP Capture", NULL, "DSP Buffer"},
 +
- 	if (!rt5677->dsp_vad_en) {
- 		regcache_cache_only(rt5677->regmap, true);
- 		regcache_mark_dirty(rt5677->regmap);
-@@ -4977,6 +4982,11 @@ static int rt5677_resume(struct snd_soc_component *component)
- 		regcache_sync(rt5677->regmap);
- 	}
- 
-+	if (rt5677->irq) {
-+		enable_irq(rt5677->irq);
-+		schedule_delayed_work(&rt5677->resume_irq_check, 0);
-+	}
-+
- 	return 0;
- }
- #else
-@@ -5375,6 +5385,39 @@ static irqreturn_t rt5677_irq(int unused, void *data)
- 		return IRQ_NONE;
- }
- 
-+static void rt5677_resume_irq_check(struct work_struct *work)
-+{
-+	int i, virq;
-+	struct rt5677_priv *rt5677 =
-+		container_of(work, struct rt5677_priv, resume_irq_check.work);
-+
-+	/* This is needed to check and clear the interrupt status register
-+	 * at resume. If the headset is plugged/unplugged when the device is
-+	 * fully suspended, there won't be a rising edge at resume to trigger
-+	 * the interrupt. Without this, we miss the next unplug/plug event.
-+	 */
-+	rt5677_irq(0, rt5677);
-+
-+	/* Call all enabled jack detect irq handlers again. This is needed in
-+	 * addition to the above check for a corner case caused by jack gpio
-+	 * debounce. After codec irq is disabled at suspend, the delayed work
-+	 * scheduled by soc-jack may run and read wrong jack gpio values, since
-+	 * the regmap is in cache only mode. At resume, there is no irq because
-+	 * rt5677_irq has already ran and cleared the irq status at suspend.
-+	 * Without this explicit check, unplug the headset right after suspend
-+	 * starts, then after resume the headset is still shown as plugged in.
-+	 */
-+	mutex_lock(&rt5677->irq_lock);
-+	for (i = 0; i < RT5677_IRQ_NUM; i++) {
-+		if (rt5677->irq_en & rt5677_irq_descs[i].enable_mask) {
-+			virq = irq_find_mapping(rt5677->domain, i);
-+			if (virq)
-+				handle_nested_irq(virq);
-+		}
-+	}
-+	mutex_unlock(&rt5677->irq_lock);
-+}
-+
- static void rt5677_irq_bus_lock(struct irq_data *data)
- {
- 	struct rt5677_priv *rt5677 = irq_data_get_irq_chip_data(data);
-@@ -5450,6 +5493,7 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 	}
- 
- 	mutex_init(&rt5677->irq_lock);
-+	INIT_DELAYED_WORK(&rt5677->resume_irq_check, rt5677_resume_irq_check);
- 
- 	/*
- 	 * Select RC as the debounce clock so that GPIO works even when
-@@ -5495,6 +5539,8 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 	if (ret)
- 		dev_err(&i2c->dev, "Failed to request IRQ: %d\n", ret);
- 
-+	rt5677->irq = i2c->irq;
-+
- 	return ret;
- }
- 
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 046ed2ee8e31..f8ada967fdbc 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1856,6 +1856,8 @@ struct rt5677_priv {
- 	struct irq_domain *domain;
- 	struct mutex irq_lock;
- 	unsigned int irq_en;
-+	struct delayed_work resume_irq_check;
-+	int irq;
- 
- 	int (*set_dsp_vad)(struct snd_soc_component *component, bool on);
++	/* DSP Clock Connections */
++	{ "DSP Buffer", NULL, "SSP0 CODEC IN" },
++	{ "SSP0 CODEC IN", NULL, "DSPTX" },
  };
+ 
+ static const struct snd_kcontrol_new bdw_rt5677_controls[] = {
 -- 
 2.24.0.rc1.363.gb1bccd3e3d-goog
 
