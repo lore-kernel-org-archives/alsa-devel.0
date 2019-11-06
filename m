@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E931C5DF63
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18E3DC49EA8
 	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 20:10:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DB04218AE
+	by mail.kernel.org (Postfix) with ESMTPS id 2DB6E21929
 	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 20:10:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c5vh276M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DB04218AE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GCuQ3nLK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DB6E21929
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA1E916AA;
-	Wed,  6 Nov 2019 20:33:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA1E916AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08F5C1699;
+	Wed,  6 Nov 2019 20:32:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08F5C1699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573068866;
-	bh=SA/nfC1Tg1lvZjyfGro0enzwnc78S87z8xBTO7vUc5c=;
+	s=default; t=1573068780;
+	bh=khjMBdJovERBuuEj7ZL6sK7b9cvxIj/RrSIkygMRNYY=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c5vh276MqvyUExeeweY3ccOnfdpAtfxzA7D0SLJKezJzpfomIkCUok+eAfrrMU+/X
-	 dr2cSpjA0uugArElZHsmkPoQibQ/thXOeADi++VxZiz4nc7ZSDuZbjLWISEbKT1UFk
-	 1YJ8p2yrneWHJZXdRcD77q1q950vdJZdlt85Kc1I=
+	b=GCuQ3nLKsmEJh38DjZSBDNaccSSx4IksevVTdqOXs3YZ2UOSHU3L409ZW5QYVnoas
+	 Qhb8kTJq+/Obj74Am7+0GpX3RhP3NVzEAza3crFH7Bud3I/akuMAIwCZiBidXjQ7YO
+	 sAcY3+ZQvQHWyhEwyqsUfq+ScWa9xArrUZONrIhs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD58EF8075E;
-	Wed,  6 Nov 2019 20:23:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A7F8F8070E;
+	Wed,  6 Nov 2019 20:23:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A297CF8068A; Wed,  6 Nov 2019 20:22:52 +0100 (CET)
+ id A0E9AF80678; Wed,  6 Nov 2019 20:22:50 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71068F80642
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71068F80642
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91F08F80611
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91F08F80611
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2019 11:22:47 -0800
+ 06 Nov 2019 11:22:45 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835144"
+X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835136"
 Received: from vidhipat-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.33.70])
- by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:45 -0800
+ by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:43 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed,  6 Nov 2019 13:22:16 -0600
-Message-Id: <20191106192223.6003-13-pierre-louis.bossart@linux.intel.com>
+Date: Wed,  6 Nov 2019 13:22:15 -0600
+Message-Id: <20191106192223.6003-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
 References: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 12/19] soundwire: add enumeration_complete
-	signaling
+Subject: [alsa-devel] [PATCH v2 11/19] soundwire: bus: check first if Slaves
+	become UNATTACHED
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,57 +89,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-First add the init_completion() and complete() calls to test their
-symmetry.
+Before checking for the presence of Device0, we first need to clean-up
+the internal state of Slaves that are no longer attached.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c   | 19 +++++++++++++++++++
- drivers/soundwire/slave.c |  1 +
- 2 files changed, 20 insertions(+)
+ drivers/soundwire/bus.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 65521c2ed2e1..b18110726273 100644
+index 17c744c0ff4c..65521c2ed2e1 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -637,6 +637,25 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
- 				    enum sdw_slave_status status)
- {
- 	mutex_lock(&slave->bus->bus_lock);
+@@ -1033,6 +1033,24 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+ 	struct sdw_slave *slave;
+ 	int i, ret = 0;
+ 
++	/* first check if any Slaves fell off the bus */
++	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
++		mutex_lock(&bus->bus_lock);
++		if (test_bit(i, bus->assigned) == false) {
++			mutex_unlock(&bus->bus_lock);
++			continue;
++		}
++		mutex_unlock(&bus->bus_lock);
 +
-+	dev_vdbg(&slave->dev,
-+		 "%s: changing status slave %d status %d new status %d\n",
-+		 __func__, slave->dev_num, slave->status, status);
++		slave = sdw_get_slave(bus, i);
++		if (!slave)
++			continue;
 +
-+	if (status == SDW_SLAVE_UNATTACHED) {
-+		dev_dbg(&slave->dev,
-+			"%s: initializing completion for Slave %d\n",
-+			__func__, slave->dev_num);
-+
-+		init_completion(&slave->enumeration_complete);
-+
-+	} else if (status == SDW_SLAVE_ATTACHED) {
-+		dev_dbg(&slave->dev,
-+			"%s: signaling completion for Slave %d\n",
-+			__func__, slave->dev_num);
-+
-+		complete(&slave->enumeration_complete);
++		if (status[i] == SDW_SLAVE_UNATTACHED &&
++		    slave->status != SDW_SLAVE_UNATTACHED)
++			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
 +	}
- 	slave->status = status;
- 	mutex_unlock(&slave->bus->bus_lock);
- }
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 81b94cd3985e..5c6c744e0713 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -51,6 +51,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 	slave->dev.type = &sdw_slave_type;
- 	slave->bus = bus;
- 	slave->status = SDW_SLAVE_UNATTACHED;
-+	init_completion(&slave->enumeration_complete);
- 	slave->dev_num = 0;
- 	init_completion(&slave->probe_complete);
- 	slave->probed = false;
++
+ 	if (status[0] == SDW_SLAVE_ATTACHED) {
+ 		dev_dbg(bus->dev, "Slave attached, programming device number\n");
+ 		ret = sdw_program_device_num(bus);
 -- 
 2.20.1
 
