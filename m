@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C75ECC5DF66
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:30:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5FF7C5DF63
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:31:00 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38961217F9
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:30:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4831E2178F
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:31:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bsaKns4i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38961217F9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R4aPXee9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4831E2178F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64EFA1682;
-	Wed,  6 Nov 2019 20:29:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64EFA1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8412C169A;
+	Wed,  6 Nov 2019 20:30:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8412C169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573068628;
-	bh=BHByN/MUKb590BFWBvNh51NaH8yOMALaYi17gBEqamg=;
+	s=default; t=1573068658;
+	bh=wvjrqhgNAqzcwUQvXuSzYvuigXrRrED2CWt7lpI+e1Y=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bsaKns4isA2e0bun0bpBIOZtnL3WAO0Va2h6xle+wSwnIyFV7jHwjmtO8RC57OWAS
-	 eizxi39LV7ubrRtTlkOQwl2LRK6A2K4+ZGmfQHDJxM/ICMXOIUv6PG9pG2O7Tl4ULe
-	 Z60oYO8de/njLifBMjdWH4h89aWnauAVxvacMqfs=
+	b=R4aPXee92SD8F4x3SRsb/t3rmemq0X4ZP7fGPCZolzWbU4tcypFMBnldP6nifjaip
+	 zxCyI/HZBTWT2pDSsiNkq+lvbkOWFalQfKWo/+fiMYy8Z/g3En85uKzmpY1qA3eapR
+	 pllwQBAj2nssj1LNYeMpcrw2v9QpWlTxj0h2kdis=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1EB3F80642;
-	Wed,  6 Nov 2019 20:22:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7CDEF806E8;
+	Wed,  6 Nov 2019 20:22:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B59DF8063E; Wed,  6 Nov 2019 20:22:43 +0100 (CET)
+ id C49CEF80659; Wed,  6 Nov 2019 20:22:44 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA90BF80637
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA90BF80637
+ by alsa1.perex.cz (Postfix) with ESMTPS id D23A0F80600
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D23A0F80600
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2019 11:22:38 -0800
+ 06 Nov 2019 11:22:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835103"
+X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835106"
 Received: from vidhipat-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.33.70])
- by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:36 -0800
+ by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:38 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed,  6 Nov 2019 13:22:10 -0600
-Message-Id: <20191106192223.6003-7-pierre-louis.bossart@linux.intel.com>
+Date: Wed,  6 Nov 2019 13:22:11 -0600
+Message-Id: <20191106192223.6003-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
 References: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 06/19] soundwire: intel: Add basic power
-	management support
+Subject: [alsa-devel] [PATCH v2 07/19] soundwire: intel: add pm_runtime
+	support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,32 +89,131 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Implement suspend/resume capabilities (not runtime_pm for now)
-The resume part is essentially a full-blown re-enumeration.
+Add basic hooks in DAI .startup and .shutdown callbacks.
 
-When S0ix is supported, we will select clock stop mode when the ACPI
-target state is S0, and tear down the link for S3.
+The SoundWire IP should be powered between those two calls. The power
+dependencies between SoundWire and DSP are handled with the
+parent/child relationship, before the SoundWire master device becomes
+active the parent device will become active and power-up the shared
+rails.
+
+For now the strategy is to rely on complete enumeration when the
+device becomes active, so the code is a copy/paste of the sequence for
+system suspend/resume. In future patches, the strategy will optionally
+be to rely on clock stop if the enumeration time is prohibitive or
+when the devices connected to a link can signal a wake.
+
+A module parameter is added to make integration of new Slave devices
+easier, to e.g. keep the device active or prevent clock-stop.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 75 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
+ drivers/soundwire/intel.c | 108 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 104 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index fe3a8b3b2c04..aeef0c0fc443 100644
+index aeef0c0fc443..650581348732 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1253,10 +1253,85 @@ static int intel_master_remove(struct sdw_master_device *md)
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/pm_runtime.h>
+ #include <linux/platform_device.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -21,6 +22,20 @@
+ #include "bus.h"
+ #include "intel.h"
+ 
++/*
++ * debug/config flags for the Intel SoundWire Master.
++ *
++ * Since we may have multiple masters active, we can have up to 8
++ * flags reused in each byte, with master0 using the ls-byte, etc.
++ */
++
++#define SDW_INTEL_MASTER_DISABLE_PM_RUNTIME BIT(0)
++#define SDW_INTEL_MASTER_DISABLE_CLOCK_STOP BIT(1)
++
++static int md_flags;
++module_param_named(sdw_md_flags, md_flags, int, 0444);
++MODULE_PARM_DESC(sdw_md_flags, "SoundWire Intel Master device flags (0x0 all off)");
++
+ /* Intel SHIM Registers Definition */
+ #define SDW_SHIM_LCAP			0x0
+ #define SDW_SHIM_LCTL			0x4
+@@ -742,10 +757,16 @@ static int sdw_stream_setup(struct snd_pcm_substream *substream,
+ static int intel_startup(struct snd_pcm_substream *substream,
+ 			 struct snd_soc_dai *dai)
+ {
+-	/*
+-	 * TODO: add pm_runtime support here, the startup callback
+-	 * will make sure the IP is 'active'
+-	 */
++	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	ret = pm_runtime_get_sync(cdns->dev);
++	if (ret < 0 && ret != -EACCES) {
++		dev_err_ratelimited(cdns->dev,
++				    "pm_runtime_get_sync failed in %s, ret %d\n",
++				    __func__, ret);
++		pm_runtime_put_noidle(cdns->dev);
++	}
+ 
+ 	return sdw_stream_setup(substream, dai);
+ }
+@@ -924,6 +945,7 @@ static void intel_shutdown(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+ 	struct sdw_cdns_dma_data *dma;
++	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
+ 
+ 	dma = snd_soc_dai_get_dma_data(dai, substream);
+ 	if (!dma)
+@@ -931,6 +953,9 @@ static void intel_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+ 	kfree(dma);
++
++	pm_runtime_mark_last_busy(cdns->dev);
++	pm_runtime_put_autosuspend(cdns->dev);
+ }
+ 
+ static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
+@@ -1180,6 +1205,7 @@ static int intel_master_startup(struct sdw_master_device *md)
+ {
+ 	struct sdw_cdns_stream_config config;
+ 	struct sdw_intel *sdw;
++	int link_flags;
+ 	int ret;
+ 
+ 	sdw = md->pdata;
+@@ -1225,6 +1251,17 @@ static int intel_master_startup(struct sdw_master_device *md)
+ 
+ 	intel_debugfs_init(sdw);
+ 
++	/* Enable runtime PM */
++	link_flags = md_flags >> (sdw->cdns.bus.link_id * 8);
++	if (!(link_flags & SDW_INTEL_MASTER_DISABLE_PM_RUNTIME)) {
++		pm_runtime_set_autosuspend_delay(&md->dev, 3000);
++		pm_runtime_use_autosuspend(&md->dev);
++		pm_runtime_mark_last_busy(&md->dev);
++
++		pm_runtime_set_active(&md->dev);
++		pm_runtime_enable(&md->dev);
++	}
++
+ 	return 0;
+ 
+ err_interrupt:
+@@ -1288,6 +1325,35 @@ static int intel_suspend(struct device *dev)
  	return 0;
  }
  
-+/*
-+ * PM calls
-+ */
-+
-+#ifdef CONFIG_PM
-+
-+static int intel_suspend(struct device *dev)
++static int intel_suspend_runtime(struct device *dev)
 +{
 +	struct sdw_cdns *cdns = dev_get_drvdata(dev);
 +	struct sdw_intel *sdw = cdns_to_intel(cdns);
@@ -143,7 +242,14 @@ index fe3a8b3b2c04..aeef0c0fc443 100644
 +	return 0;
 +}
 +
-+static int intel_resume(struct device *dev)
+ static int intel_resume(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+@@ -1321,10 +1387,44 @@ static int intel_resume(struct device *dev)
+ 	return ret;
+ }
+ 
++static int intel_resume_runtime(struct device *dev)
 +{
 +	struct sdw_cdns *cdns = dev_get_drvdata(dev);
 +	struct sdw_intel *sdw = cdns_to_intel(cdns);
@@ -176,20 +282,14 @@ index fe3a8b3b2c04..aeef0c0fc443 100644
 +	return ret;
 +}
 +
-+#endif
-+
-+static const struct dev_pm_ops intel_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
-+};
-+
+ #endif
+ 
+ static const struct dev_pm_ops intel_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
++	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
+ };
+ 
  struct sdw_md_driver intel_sdw_driver = {
- 	.driver = {
- 		.name = "intel-sdw",
- 		.owner = THIS_MODULE,
-+		.pm = &intel_pm,
- 	},
- 	.probe = intel_master_probe,
- 	.startup = intel_master_startup,
 -- 
 2.20.1
 
