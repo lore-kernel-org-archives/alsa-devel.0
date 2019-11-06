@@ -2,103 +2,97 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 435E7C5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31E68C5DF60
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:16:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9718921D7C
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:15:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8506E2053B
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:16:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iCg6R3Wr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="K/w05RpB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9718921D7C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cFw6yxDN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BBjSYW3n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8506E2053B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E23FA16F0;
-	Wed,  6 Nov 2019 02:15:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E23FA16F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4C5616FB;
+	Wed,  6 Nov 2019 02:15:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4C5616FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573002956;
-	bh=dw+1V5FwJ/4CbLfnplH1rMCuCDc6Z4uZtRkUebzEob8=;
+	s=default; t=1573002994;
+	bh=4nQ5RNlUScFJs8nc6vvhsiYa4DgMqeXSznqI2Q+3WGs=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iCg6R3Wr4VOj73xo4TKq+/WHOwYh9k2+ueXdAe0DemdcPYuak7PSO8+LXX4DHgWbf
-	 bLNkBfT04lo5N6nqpCUK2hNEdao6JmTf5ITzpc3NFdY3zqH/HTN+ujITRtUZrMqiC3
-	 cydljP/Uri1jTBO++zzB38x8+f5elLCMFBHBw+sA=
+	b=cFw6yxDNyrpXq+xzWHYQb1ut1ljaQjWBQh79SY6icewGrQAG1vdTm3HgqrhPlttNY
+	 2hSmBb/O80EY5QHCPWf2WsjjffKBy9LjoMfx/S0yvZxh7sNzVlN52eR5ExwrkiifCz
+	 RUchbnz1+niJr78lmiEsz+8qTHkNpb5MDNfyPaP8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 709D6F80636;
-	Wed,  6 Nov 2019 02:14:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F417F80639;
+	Wed,  6 Nov 2019 02:14:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90D6DF805FF; Wed,  6 Nov 2019 02:14:00 +0100 (CET)
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
- [IPv6:2607:f8b0:4864:20::441])
+ id 19A97F80639; Wed,  6 Nov 2019 02:14:03 +0100 (CET)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
+ [IPv6:2607:f8b0:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5014F80535
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:13:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5014F80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id C76A7F805FE
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:13:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C76A7F805FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="K/w05RpB"
-Received: by mail-pf1-x441.google.com with SMTP id c184so17530477pfb.0
- for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 17:13:57 -0800 (PST)
+ header.b="BBjSYW3n"
+Received: by mail-pf1-x443.google.com with SMTP id p26so17503083pfq.8
+ for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 17:13:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=ixe1xd6/IFXLwB1j1yCq5eWDbgA2Z38SjnHHpEfLceI=;
- b=K/w05RpBeWOOP8Sf1NEcym1VGDwAuRsMwGrzsm9FW7Xbw+cP6PMz5mgCpZ0tlOqGdD
- Nb4loxJs+Twop6UEHAPyyLYKhTU1MRaw85d/uqcmtxTLAs0rxRTVHl7pYRB0HyBNWgxu
- mzbFLNQ+AYdgRn5X+6j5GB+qgOOxchL9IvX34=
+ bh=suzykPZWHLuHg55uAlqcAUdQBIgbRcnWoF1QNByFTXM=;
+ b=BBjSYW3nlEC+2413ZgardQMWyP/69mBYfQ3JeDGbt3SMbc1ODuuNSCTx2sprJL0MB8
+ NrxN+kyuIz8gVXOCd0j9dht9LX24VeBBuEAQBFhwX12nvEMym7Kjawi8B+oP4OtDAzNp
+ bSOjNRrFuBsyJcx8EayffG5lWp7dqnTnTkSBU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=ixe1xd6/IFXLwB1j1yCq5eWDbgA2Z38SjnHHpEfLceI=;
- b=MZMZ/TrZGrb6sGAX6JHs2dMteeeOwunMUzXYwyA3YVEtbMdQK93velb2pumXqmH77/
- x44rMHlgwgGfIcD93YlnfrikodLIji+B6w2V/ytHGjORxQWwn2ne7m7TMjg1vsLLOYp4
- /hABKLakeBFG+XNxDuf+9j0uKwyDiMcTsrNYTSvu40d7pHHWLikz15m4f/KE+2ker/7n
- eBmgEVhLD29jTCUqetTuKi/bo4kRsAGSuwiypXrxXwkb4t9y9Evy8B3tqeVqHhAaPUEH
- n61aMzfmhfeOTB+68NfmAmHp0MiIYBwfkG+1rH7R5TmupRrsAC2Sy6LhgRlT67tzC9f7
- pjIA==
-X-Gm-Message-State: APjAAAX6VQBQJ3nE2zZP0RthDkVrJ6Rd85RwjPfz6H8LzXkhWOlvhWPX
- 4PJzHKu0hOnoqmkKiZKcp5WbbSd5cvpV
-X-Google-Smtp-Source: APXvYqwwdAN/Oxw1RrhP+PbgedpqIAliM8xeV5MLRlNPbO/jdC1sSGhGIdP8nOIIQJPZ3TnS43n43g==
-X-Received: by 2002:a17:90a:c306:: with SMTP id g6mr85240pjt.38.1573002835498; 
- Tue, 05 Nov 2019 17:13:55 -0800 (PST)
+ bh=suzykPZWHLuHg55uAlqcAUdQBIgbRcnWoF1QNByFTXM=;
+ b=RGJAsrjbDBSToMe9UJBgT6Lb9VDt4z2Keh3gTb8QGGAMu8yN9kQW/HUaEzvyPnFfAc
+ w/sJoGdH9g7YDAOZGWdAGXpEdNlFk4XC7kcNb99evx315DzNAbuwPfZ8FrNPuzozp1KU
+ XHdYyTtxELsJGCfaxr7tNnbLfTCgRMzAka4+o8OVgoObdCSD1UWdnu/B7J7nSt46ff6g
+ zuHqIPwDjHmZcM5UU4PYUon60Eqs1QyAJfEfHr3xcyN7/b8WjNG8aNwgGflqd62iR0Zh
+ cmTzDEnvOBkyRu1qtU6yZL5cUafjqp58DKtxcKRDjOXxPtINXBQTwRnI3t+re9jaov05
+ 7nbA==
+X-Gm-Message-State: APjAAAXu2MSrt34GuSfHMGNwG2t+PZTLooJbysQRcqCD2bBEDadSZbJx
+ gk50qirEPkkEv6VJ3bOIjRJHDYkZIQi9
+X-Google-Smtp-Source: APXvYqyrV6ZzQwpjpf16qRV4Hasa7J3Xf3tAyIPsEBJtOc5elcXuzgvHYjnkOWyRz0cg55XpVIOcSw==
+X-Received: by 2002:a63:3812:: with SMTP id f18mr39716493pga.320.1573002837580; 
+ Tue, 05 Nov 2019 17:13:57 -0800 (PST)
 Received: from localhost ([2620:15c:202:201:c87a:31ae:9107:f63d])
- by smtp.gmail.com with ESMTPSA id y14sm25084278pff.69.2019.11.05.17.13.54
+ by smtp.gmail.com with ESMTPSA id l22sm19601845pgj.4.2019.11.05.17.13.56
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 05 Nov 2019 17:13:54 -0800 (PST)
+ Tue, 05 Nov 2019 17:13:56 -0800 (PST)
 From: Curtis Malainey <cujomalainey@chromium.org>
 To: alsa-devel@alsa-project.org
-Date: Tue,  5 Nov 2019 17:13:27 -0800
-Message-Id: <20191106011335.223061-3-cujomalainey@chromium.org>
+Date: Tue,  5 Nov 2019 17:13:28 -0800
+Message-Id: <20191106011335.223061-4-cujomalainey@chromium.org>
 X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
 In-Reply-To: <20191106011335.223061-1-cujomalainey@chromium.org>
 References: <20191106011335.223061-1-cujomalainey@chromium.org>
 MIME-Version: 1.0
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Alexios Zavras <alexios.zavras@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Ben Zhang <benzh@chromium.org>, Mark Brown <broonie@kernel.org>,
- Curtis Malainey <cujomalainey@chromium.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Subject: [alsa-devel] [PATCH v3 02/11] ASoC: bdw-rt5677: Add a DAI link for
-	rt5677 SPI PCM device
+Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Ben Zhang <benzh@chromium.org>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>,
+ Curtis Malainey <cujomalainey@chromium.org>
+Subject: [alsa-devel] [PATCH v3 03/11] ASoC: rt5677: Enable jack detect
+	while DSP is running
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,53 +112,158 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ben Zhang <benzh@chromium.org>
 
-This link is needed for the RT5677 DSP to do hotwording
+Before a hotword is detected, GPIO1 pin is configured as IRQ
+output so that jack detect works. When a hotword is detected,
+the DSP firmware configures the GPIO1 pin as GPIO1 and
+drives a 1. rt5677_irq() is called after a rising edge on
+the GPIO1 pin, due to either jack detect event or hotword
+event, or both. All possible events are checked and handled
+in rt5677_irq() where GPIO1 pin is configured back to IRQ
+output if a hotword is detected.
 
 Signed-off-by: Ben Zhang <benzh@chromium.org>
 Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 ---
- sound/soc/intel/boards/bdw-rt5677.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/soc/codecs/rt5677.c | 64 +++++++++++++++++++++++++++++----------
+ 1 file changed, 48 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 4a4d3353e26d..eeb9a11e4e14 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -74,6 +74,7 @@ static const struct snd_soc_dapm_route bdw_rt5677_map[] = {
- 	/* CODEC BE connections */
- 	{"SSP0 CODEC IN", NULL, "AIF1 Capture"},
- 	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
-+	{"DSP Capture", NULL, "DSP Buffer"},
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 13f21bf4e04e..48955b22262f 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -312,6 +312,8 @@ static bool rt5677_volatile_register(struct device *dev, unsigned int reg)
+ 	case RT5677_IRQ_CTRL1:
+ 	case RT5677_IRQ_CTRL2:
+ 	case RT5677_GPIO_ST:
++	case RT5677_GPIO_CTRL1: /* Modified by DSP firmware */
++	case RT5677_GPIO_CTRL2: /* Modified by DSP firmware */
+ 	case RT5677_DSP_INB1_SRC_CTRL4:
+ 	case RT5677_DSP_INB2_SRC_CTRL4:
+ 	case RT5677_DSP_INB3_SRC_CTRL4:
+@@ -746,8 +748,11 @@ static unsigned int rt5677_set_vad_source(struct rt5677_priv *rt5677)
+ 		RT5677_VAD_BUF_OW | RT5677_VAD_FG2ENC |
+ 		RT5677_VAD_ADPCM_BYPASS | 1 << RT5677_VAD_MIN_DUR_SFT);
+ 
+-	/* IRQ Source of VAD Jack Detection = enable */
+-	regmap_write(rt5677->regmap, RT5677_IRQ_CTRL2, 0x4000);
++	/* VAD/SAD is not routed to the IRQ output (i.e. MX-BE[14] = 0), but it
++	 * is routed to DSP_IRQ_0, so DSP firmware may use it to sleep and save
++	 * power. See ALC5677 datasheet section 9.17 "GPIO, Interrupt and Jack
++	 * Detection" for more info.
++	 */
+ 
+ 	/* Private register, no doc */
+ 	regmap_update_bits(rt5677->regmap, RT5677_PR_BASE + RT5677_BIAS_CUR4,
+@@ -886,15 +891,15 @@ static void rt5677_dsp_work(struct work_struct *work)
+ 	if (enable && !activity) {
+ 		activity = true;
+ 
+-		/* Set GPIO1 as an output pin driving a 0. Firmware will
+-		 * raise GPIO1 upon hotword detect.
++		/* Before a hotword is detected, GPIO1 pin is configured as IRQ
++		 * output so that jack detect works. When a hotword is detected,
++		 * the DSP firmware configures the GPIO1 pin as GPIO1 and
++		 * drives a 1. rt5677_irq() is called after a rising edge on
++		 * the GPIO1 pin, due to either jack detect event or hotword
++		 * event, or both. All possible events are checked and handled
++		 * in rt5677_irq() where GPIO1 pin is configured back to IRQ
++		 * output if a hotword is detected.
+ 		 */
+-		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
+-			RT5677_GPIO1_DIR_MASK |	RT5677_GPIO1_OUT_MASK |
+-			RT5677_GPIO1_P_MASK, RT5677_GPIO1_DIR_OUT |
+-			RT5677_GPIO1_OUT_LO | RT5677_GPIO1_P_NOR);
+-		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL1,
+-			RT5677_GPIO1_PIN_MASK, RT5677_GPIO1_PIN_GPIO1);
+ 
+ 		rt5677_set_vad_source(rt5677);
+ 		rt5677_set_dsp_mode(rt5677, true);
+@@ -915,6 +920,8 @@ static void rt5677_dsp_work(struct work_struct *work)
+ 	} else if (!enable && activity) {
+ 		activity = false;
+ 
++		/* Don't turn off the DSP while handling irqs */
++		mutex_lock(&rt5677->irq_lock);
+ 		/* Set DSP CPU to Stop */
+ 		regmap_update_bits(rt5677->regmap, RT5677_PWR_DSP1,
+ 			RT5677_PWR_DSP_CPU, RT5677_PWR_DSP_CPU);
+@@ -923,13 +930,12 @@ static void rt5677_dsp_work(struct work_struct *work)
+ 
+ 		/* Disable and clear VAD interrupt */
+ 		regmap_write(rt5677->regmap, RT5677_VAD_CTRL1, 0x2184);
+-		regmap_update_bits(rt5677->regmap, RT5677_IRQ_CTRL2,
+-			0xF000, 0x0000);
+ 
+ 		/* Set GPIO1 pin back to be IRQ output for jack detect */
+ 		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL1,
+ 			RT5677_GPIO1_PIN_MASK, RT5677_GPIO1_PIN_IRQ);
+ 
++		mutex_unlock(&rt5677->irq_lock);
+ 	}
+ }
+ 
+@@ -5237,6 +5243,28 @@ static const struct rt5677_irq_desc rt5677_irq_descs[] = {
+ 	},
  };
  
- static const struct snd_kcontrol_new bdw_rt5677_controls[] = {
-@@ -258,6 +259,12 @@ SND_SOC_DAILINK_DEF(platform,
- SND_SOC_DAILINK_DEF(be,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RT5677CE:00", "rt5677-aif1")));
- 
-+/* Wake on voice interface */
-+SND_SOC_DAILINK_DEFS(dsp,
-+	DAILINK_COMP_ARRAY(COMP_CPU("spi-RT5677AA:00")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RT5677CE:00", "rt5677-dspbuffer")),
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("spi-RT5677AA:00")));
++bool rt5677_check_hotword(struct rt5677_priv *rt5677)
++{
++	int reg_gpio;
 +
- static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 	/* Front End DAI links */
- 	{
-@@ -276,6 +283,13 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 		SND_SOC_DAILINK_REG(fe, dummy, platform),
- 	},
- 
-+	/* Non-DPCM links */
-+	{
-+		.name = "Codec DSP",
-+		.stream_name = "Wake on Voice",
-+		SND_SOC_DAILINK_REG(dsp),
-+	},
++	if (!rt5677->is_dsp_mode)
++		return false;
 +
- 	/* Back End DAI links */
- 	{
- 		/* SSP0 - Codec */
++	if (regmap_read(rt5677->regmap, RT5677_GPIO_CTRL1, &reg_gpio))
++		return false;
++
++	/* Firmware sets GPIO1 pin to be GPIO1 after hotword is detected */
++	if ((reg_gpio & RT5677_GPIO1_PIN_MASK) == RT5677_GPIO1_PIN_IRQ)
++		return false;
++
++	/* Set GPIO1 pin back to be IRQ output for jack detect */
++	regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL1,
++			RT5677_GPIO1_PIN_MASK, RT5677_GPIO1_PIN_IRQ);
++
++	rt5677_spi_hotword_detected();
++	return true;
++}
++
+ static irqreturn_t rt5677_irq(int unused, void *data)
+ {
+ 	struct rt5677_priv *rt5677 = data;
+@@ -5245,9 +5273,6 @@ static irqreturn_t rt5677_irq(int unused, void *data)
+ 
+ 	mutex_lock(&rt5677->irq_lock);
+ 
+-	if (rt5677->dsp_vad_en)
+-		rt5677_spi_hotword_detected();
+-
+ 	/*
+ 	 * Loop to handle interrupts until the last i2c read shows no pending
+ 	 * irqs. The interrupt line is shared by multiple interrupt sources.
+@@ -5285,7 +5310,13 @@ static irqreturn_t rt5677_irq(int unused, void *data)
+ 				reg_irq ^= rt5677_irq_descs[i].polarity_mask;
+ 			}
+ 		}
+-		if (!irq_fired)
++
++		/* Exit the loop only when we know for sure that GPIO1 pin
++		 * was low at some point since irq_lock was acquired. Any event
++		 * after that point creates a rising edge that triggers another
++		 * call to rt5677_irq().
++		 */
++		if (!irq_fired && !rt5677_check_hotword(rt5677))
+ 			goto exit;
+ 
+ 		ret = regmap_write(rt5677->regmap, RT5677_IRQ_CTRL1, reg_irq);
+@@ -5296,6 +5327,7 @@ static irqreturn_t rt5677_irq(int unused, void *data)
+ 		}
+ 	}
+ exit:
++	WARN_ON_ONCE(loop == 20);
+ 	mutex_unlock(&rt5677->irq_lock);
+ 	if (irq_fired)
+ 		return IRQ_HANDLED;
 -- 
 2.24.0.rc1.363.gb1bccd3e3d-goog
 
