@@ -2,143 +2,69 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=3.0 tests=DATE_IN_FUTURE_12_24,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34A91C5DF63
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 14:43:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9245C5DF63
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 14:59:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8D942084D
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 14:43:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E2AB5217F4
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 14:59:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T8LL5sHV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="vqnF6Rji"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8D942084D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="phQTbQO9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2AB5217F4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B428716AA;
-	Wed,  6 Nov 2019 15:42:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B428716AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8F8D1689;
+	Wed,  6 Nov 2019 15:58:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8F8D1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573051384;
-	bh=pvw0dD4b/5ESHRtESYiSSSnOzkWrBFsLptLqzx+EGsE=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T8LL5sHVoc6tW/fQLk2unI79F4n0ynWqSHC5VhWkmDQqgjz26Qvu6on3dg/yhzekG
-	 h9vkb0GlQo2w6v0US73NwENJ9GCjlp3McxhpZhzPIYCiBv/DTFa4rmib5Vg5fn4j8C
-	 aXtdIYNdE7lCqBEv2j+4ZimQD8lmF9T4Vx/r0zDI=
+	s=default; t=1573052342;
+	bh=hIZ0Y+77Wbi0TU09xXXjCOxsmi/a34c4I442+mNvgts=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=phQTbQO9RNS1mHOUsbYyBJsYPLE2bfivSQCHF2seF3r1q/+GhxvgIL/5NBvZ91XI+
+	 SBhuX5NBL46M2htXeX1T5lc7uW07jUwQ0yfW1GYUjtgX4nL0HFXA6X2CVipmR8LL7p
+	 lHKnyjHT/pkOKez2XGCT+pP3dTCfL68tqaB/SPLk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D56CAF80677;
-	Wed,  6 Nov 2019 15:39:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E8F2F80321;
+	Wed,  6 Nov 2019 15:58:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1064CF80677; Wed,  6 Nov 2019 15:39:02 +0100 (CET)
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-eopbgr760081.outbound.protection.outlook.com [40.107.76.81])
+ id F3A6FF803D0; Wed,  6 Nov 2019 15:58:10 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4272F8045F
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 15:38:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4272F8045F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="vqnF6Rji"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RdRY872VFb+0RfmVD0r1HHzi/m0jT/woCgo+2pj7VpBgkfIDOcC0Q8T54+r/E6xml2vCJEi6JELlg24EvjUr7OpJlxm8HOQSmIn3BOzj89RgcxG0lIvKWKmSQ86AdrrL368QrdDW9Xksj1iikzM3MIWKmw5WR1my5g0i6Yzv1WEbv2ke10IOkNI8nhWo+mT6b+SW+HwrZIJDEs8KamAXF6FlP/vdDeOglEuOEY6vTuTAY89fy3pEsP7je2DFAzfzSCzynTA7nNw8wWNZDLo+u/ioksTavrTKQ0nevid+/dIoNhCywgp/ktRA5lpO01Gz1RBFis13T/Bi4JwfJpC1fw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0B/t1v2Z1NWhdEa0GLPIRGJsFm50+cqhiczf9o7Kvo4=;
- b=h2ydmLeuQFCs2b1AKLxxKV/5s9923MlXyTnC1MpJ5ivkk1ck5Yh0ZePyoCpbKjjDMdVgeu3L2GLHu2vnKs6nRdeenSRRRFpDMbsAnRImx1IWc4eJ6gZ/AkYLJn/B55uLYtNLQs+vT3SNTsGYFKkqZYr5+RfVKeyV2mnFVtixAmY7TaAArmd32KffN35NXI0vpUKkSN2gu76dXetK7f66kcoqxbph2mPDuZEsLkNmAwq3+ERvcV0S6q9T2NoEFFIKXe2C1pjG+VuF/gOYtEiKW6O+qwYKjhqRILf2B3WdFrMh0AOaTK5IaadADXY9oN+UI7vApgAuhObLamr0Sglceg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0B/t1v2Z1NWhdEa0GLPIRGJsFm50+cqhiczf9o7Kvo4=;
- b=vqnF6Rji/1UDDMvmV8qWffOieyTAvs/YY7kOcIUbtFiu+iz4xZr8/nNtQHo573WuXa0BGM75Jrd4Gt8Cdn/Iu8q7LEAZMhhNQvffNc73e8yRoekTW/3c3VBecWAtQi97as0xKvwsqUYYrvzbiFgo5Qg894Q19FFI2/DatmNJYbk=
-Received: from MWHPR12CA0047.namprd12.prod.outlook.com (2603:10b6:301:2::33)
- by CY4PR1201MB2486.namprd12.prod.outlook.com (2603:10b6:903:d6::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2430.20; Wed, 6 Nov
- 2019 14:38:52 +0000
-Received: from DM3NAM03FT024.eop-NAM03.prod.protection.outlook.com
- (2a01:111:f400:7e49::206) by MWHPR12CA0047.outlook.office365.com
- (2603:10b6:301:2::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2430.22 via Frontend
- Transport; Wed, 6 Nov 2019 14:38:52 +0000
-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=permerror action=none header.from=amd.com;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- DM3NAM03FT024.mail.protection.outlook.com (10.152.82.182) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.2430.20 via Frontend Transport; Wed, 6 Nov 2019 14:38:51 +0000
-Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Wed, 6 Nov 2019
- 08:38:51 -0600
-Received: from vishnu-All-Series.amd.com (10.180.168.240) by
- SATLEXMB02.amd.com (10.181.40.143) with Microsoft SMTP Server id 15.1.1713.5
- via Frontend Transport; Wed, 6 Nov 2019 08:38:40 -0600
-From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-To: 
-Date: Thu, 7 Nov 2019 20:06:04 +0530
-Message-ID: <1573137364-5592-8-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1573137364-5592-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-References: <1573137364-5592-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CD48F8015B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 15:58:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CD48F8015B
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 06 Nov 2019 06:58:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="228000657"
+Received: from pdblomfi-mobl.gar.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.254.107.145])
+ by FMSMGA003.fm.intel.com with ESMTP; 06 Nov 2019 06:58:04 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Date: Wed,  6 Nov 2019 08:58:01 -0600
+Message-Id: <20191106145801.9316-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17; IPV:NLI; CTRY:US; EFV:NLI;
- SFV:NSPM;
- SFS:(10009020)(4636009)(376002)(346002)(396003)(39860400002)(136003)(428003)(199004)(189003)(6666004)(4326008)(1671002)(76176011)(51416003)(7696005)(86362001)(14444005)(305945005)(26005)(48376002)(109986005)(356004)(50466002)(47776003)(186003)(36756003)(70586007)(70206006)(11346002)(446003)(8936002)(478600001)(316002)(126002)(476003)(2616005)(2906002)(50226002)(426003)(53416004)(81156014)(336012)(16586007)(81166006)(5660300002)(54906003)(486006)(8676002)(266003)(32563001);
- DIR:OUT; SFP:1101; SCL:1; SRVR:CY4PR1201MB2486; H:SATLEXMB01.amd.com; FPR:;
- SPF:None; LANG:en; PTR:InfoDomainNonexistent; A:1; MX:1; 
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6db894fe-0b41-4b1d-1ec8-08d762c70b16
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB2486:
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB2486C1688583DFC87AF4A6C5E7790@CY4PR1201MB2486.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-Forefront-PRVS: 02135EB356
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qq0udayBe7hoAj94WJYufJOSLp9cKtHQY9AhovbqUpf7Zua3xZ1ldtxw2TCJfdBI7UUzvsXJ+exJpNEdhkWTh0PvuAF4VrNeCRKeWdNSx6qjeXOFoorby5X0iOySB/IlKtqbRzr29FETpW2cejfuDHNUez9p9jm+T6Ul9Xrmzv2NpXIV2UVpEICgWRC1wyUGJZ8jHX7saSzbVt1ePkiKw0TuYNQV3B6v6MY2zKTzqbcE2E2fncUc1LBLB+r/CW6RRgevbd8WdrWuu5ket3fwcCvbqofFuNSfukUbs9k8kPSonqY9KBh66+0nYnUKh2Z747KjLGyCZbwC1HulwWtNgZjRNAMYRi3wFtyMCxjE/ydCR8p1hXqBrICrsZqp/owwmCSa6dDAcyoXkuFaGMty7WkpIizQQxi6Ue6/PGnAg56zkLjAkQkLFY7WkHLQznww
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2019 14:38:51.9366 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6db894fe-0b41-4b1d-1ec8-08d762c70b16
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2486
-Cc: "moderated list:SOUND - SOC LAYER /
- DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Maruthi
- Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>,
- open list <linux-kernel@vger.kernel.org>, Takashi
- Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Akshu.Agrawal@amd.com,
- Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
- Mark Brown <broonie@kernel.org>, djkurtz@google.com,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Colin Ian King <colin.king@canonical.com>, Dan
- Carpenter <dan.carpenter@oracle.com>
-Subject: [alsa-devel] [RESEND PATCH v2 7/7] ASoC: amd: Added ACP3x system
-	resume and runtime pm ops
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [alsa-devel] [PATCH] ASoC: soc-core: fix RIP warning on card removal
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -156,107 +82,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When system wide suspend happens, ACP will be powered off
-and when system resumes,for audio usecase to continue,
-all the runtime configuration data needs to be programmed again.
-Added resume pm call back to ACP pm ops and
-also Added runtime PM operations for ACP3x PCM platform device.
-Device will enter into D3 state when there is no activity
-on audio I2S lines.
+SOF module load/unload tests show nasty recurring warnings:
 
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+WARNING: CPU: 5 PID: 1339 at sound/core/control.c:466
+snd_ctl_remove+0xf0/0x100 [snd]
+RIP: 0010:snd_ctl_remove+0xf0/0x100 [snd]
+
+This regression was introduced by the removal of the call to
+soc_remove_link_components() before soc_card_free() is invoked.
+
+Go back to the initial order but only call
+soc_remove_link_components() once.
+
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Fixes: 5a4c9f054ceea ("ASoC: soc-core: snd_soc_unbind_card() cleanup")
+GitHub issue: https://github.com/thesofproject/linux/issues/1424
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/amd/raven/pci-acp3x.c | 47 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index 7727c9d..d567585 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -9,6 +9,9 @@
- #include <linux/io.h>
- #include <linux/platform_device.h>
- #include <linux/interrupt.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/delay.h>
-+#include <sound/pcm.h>
- 
- #include "acp3x.h"
- 
-@@ -247,6 +250,11 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 		}
- 		break;
- 	}
-+	pm_runtime_set_autosuspend_delay(&pci->dev, 10000);
-+	pm_runtime_use_autosuspend(&pci->dev);
-+	pm_runtime_set_active(&pci->dev);
-+	pm_runtime_put_noidle(&pci->dev);
-+	pm_runtime_enable(&pci->dev);
- 	return 0;
- 
- unmap_mmio:
-@@ -268,6 +276,39 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 	return ret;
- }
- 
-+static int  snd_acp3x_suspend(struct device *dev)
-+{
-+	int status;
-+	struct acp3x_dev_data *adata = dev_get_drvdata(dev);
-+
-+	status = acp3x_deinit(adata->acp3x_base);
-+	if (status)
-+		dev_err(dev, "ACP de-init failed\n");
-+	else
-+		dev_info(dev, "ACP de-initialized\n");
-+
-+	return 0;
-+}
-+static int  snd_acp3x_resume(struct device *dev)
-+{
-+	int status;
-+	struct acp3x_dev_data *adata = dev_get_drvdata(dev);
-+
-+	status = acp3x_init(adata->acp3x_base);
-+	if (status) {
-+		dev_err(dev, "ACP init failed\n");
-+		return status;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops acp3x_pm = {
-+	.runtime_suspend = snd_acp3x_suspend,
-+	.runtime_resume =  snd_acp3x_resume,
-+	.resume =       snd_acp3x_resume,
-+};
-+
- static void snd_acp3x_remove(struct pci_dev *pci)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b07ecfac39d7..1e08fb5da170 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1951,6 +1951,9 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
  {
- 	int i, ret;
-@@ -283,7 +324,8 @@ static void snd_acp3x_remove(struct pci_dev *pci)
- 	else
- 		dev_info(&pci->dev, "ACP de-initialized\n");
- 	iounmap(adata->acp3x_base);
--
-+	pm_runtime_disable(&pci->dev);
-+	pm_runtime_get_noresume(&pci->dev);
- 	pci_disable_msi(pci);
- 	pci_release_regions(pci);
- 	pci_disable_device(pci);
-@@ -302,6 +344,9 @@ static struct pci_driver acp3x_driver  = {
- 	.id_table = snd_acp3x_ids,
- 	.probe = snd_acp3x_probe,
- 	.remove = snd_acp3x_remove,
-+	.driver = {
-+		.pm = &acp3x_pm,
-+	}
- };
+ 	struct snd_soc_dai_link *link, *_link;
  
- module_pci_driver(acp3x_driver);
++	/* This should be called before snd_card_free() */
++	soc_remove_link_components(card);
++
+ 	/* free the ALSA card at first; this syncs with pending operations */
+ 	if (card->snd_card) {
+ 		snd_card_free(card->snd_card);
+@@ -1959,7 +1962,6 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
+ 
+ 	/* remove and free each DAI */
+ 	soc_remove_link_dais(card);
+-	soc_remove_link_components(card);
+ 
+ 	for_each_card_links_safe(card, link, _link)
+ 		snd_soc_remove_dai_link(card, link);
 -- 
-2.7.4
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
