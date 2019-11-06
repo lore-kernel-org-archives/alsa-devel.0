@@ -2,63 +2,63 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E70A5C5DF63
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:27:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CD1FC5DF63
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:28:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6BB262178F
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:27:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 927D12178F
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 19:28:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MGKKgBpA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BB262178F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PkgqVKeC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 927D12178F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA74A1677;
-	Wed,  6 Nov 2019 20:26:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA74A1677
+	by alsa0.perex.cz (Postfix) with ESMTPS id C25401683;
+	Wed,  6 Nov 2019 20:27:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C25401683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573068454;
-	bh=NHdCJlhpYCfGKD0QWyIP6WFULQgl+yVpaXrfavA8uXQ=;
+	s=default; t=1573068493;
+	bh=wk/O6FTcAxsh+9PEkVl0eRctnMJwPi9xDltLBLQSXOY=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MGKKgBpAI7hkFkG4RJVkk0F4I8BCA/IboAZDHv/a/np6J+Vm1yWdk5U/m3Ak2YA95
-	 btY2xeTOhrvhoTxcA+EdoY985gkc2c7LPi8psj3r+06hosy/K5Bd1/nfvwYMdU4scV
-	 2jZUIANBJH1BfNjl7Tf+akA6M38EII1Y/M2vtu7Y=
+	b=PkgqVKeCp3vIQEVyU5/3xwGKFqmz6W5/5KUMREyQdir0rNxr9GtQvdJ8DTBVallIo
+	 xpAOhUCNGRxNlnpCJn2o+IZ7a8qCTkBQ8IF+e00eU8Wv6/dHxcQCJvHPrpRCed1nlN
+	 kxqy1TIh+wQZDp3+604ST9fzaCjW2RhOaAnMQyRc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A2BCF8063A;
-	Wed,  6 Nov 2019 20:22:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D64BF805FF;
+	Wed,  6 Nov 2019 20:22:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08FB9F80633; Wed,  6 Nov 2019 20:22:38 +0100 (CET)
+ id C7143F8063A; Wed,  6 Nov 2019 20:22:39 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72594F805FF
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72594F805FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11D70F80600
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11D70F80600
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2019 11:22:31 -0800
+ 06 Nov 2019 11:22:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835068"
+X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835078"
 Received: from vidhipat-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.33.70])
- by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:29 -0800
+ by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:32 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed,  6 Nov 2019 13:22:05 -0600
-Message-Id: <20191106192223.6003-2-pierre-louis.bossart@linux.intel.com>
+Date: Wed,  6 Nov 2019 13:22:07 -0600
+Message-Id: <20191106192223.6003-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
 References: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 01/19] soundwire: intel/cadence: fix
-	timeouts in MSI mode
+Subject: [alsa-devel] [PATCH v2 03/19] soundwire: bus: add PM/no-PM versions
+	of read/write functions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,291 +89,121 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+Add support for pm_runtime with the appropriate error checks for
+sdw_write/read functions, e.g. when pm_runtime is not supported.
 
-The existing code uses one pair of interrupt handler/thread per link
-but at the hardware level the interrupt is shared. This works fine for
-legacy PCI interrupts, but leads to timeouts in MSI (Message-Signaled
-Interrupt) mode, likely due to edges being lost.
+Also expose internal functions without pm_runtime support, which are
+required to perform any sort of suspend/resume operation, as well as
+any enumeration tasks.
 
-This patch unifies interrupt handling for all links with a single
-threaded IRQ handler. The handler is simplified to the bare minimum of
-detecting a SoundWire interrupt, and the thread takes care of dealing
-with interrupt sources. This partition follows the model used for the
-SOF IPC on HDaudio platforms, where similar timeout issues were
-noticed and doing all the interrupt handling/clearing in the thread
-improved reliability/stability.
-
-Validation results with 4 links active in parallel show a night-and-day
-improvement with no timeouts noticed even during stress tests. Latency
-and quality of service are not affected by the change - mostly because
-events on a SoundWire link are throttled by the bus frame rate
-(typically 8..48kHz).
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c  | 17 ++++++-----
- drivers/soundwire/cadence_master.h  |  4 +++
- drivers/soundwire/intel.c           | 17 +----------
- drivers/soundwire/intel.h           |  2 ++
- drivers/soundwire/intel_init.c      | 45 ++++++++++++++++++++++++++++-
- include/linux/soundwire/sdw_intel.h |  2 ++
- 6 files changed, 62 insertions(+), 25 deletions(-)
+ drivers/soundwire/bus.c | 68 +++++++++++++++++++++++++++++++----------
+ 1 file changed, 52 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index fed21e2b2277..362fb6e49bfe 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -17,6 +17,7 @@
- #include <linux/soundwire/sdw.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <linux/workqueue.h>
- #include "bus.h"
- #include "cadence_master.h"
- 
-@@ -745,7 +746,7 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- 			     CDNS_MCP_INT_SLAVE_MASK, 0);
- 
- 		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
--		ret = IRQ_WAKE_THREAD;
-+		schedule_work(&cdns->work);
- 	}
- 
- 	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
-@@ -754,13 +755,14 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- EXPORT_SYMBOL(sdw_cdns_irq);
- 
- /**
-- * sdw_cdns_thread() - Cadence irq thread handler
-- * @irq: irq number
-- * @dev_id: irq context
-+ * To update slave status in a work since we will need to handle
-+ * other interrupts eg. CDNS_MCP_INT_RX_WL during the update slave
-+ * process.
-  */
--irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
-+static void cdns_update_slave_status_work(struct work_struct *work)
- {
--	struct sdw_cdns *cdns = dev_id;
-+	struct sdw_cdns *cdns =
-+		container_of(work, struct sdw_cdns, work);
- 	u32 slave0, slave1;
- 
- 	dev_dbg_ratelimited(cdns->dev, "Slave status change\n");
-@@ -777,9 +779,7 @@ irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
- 	cdns_updatel(cdns, CDNS_MCP_INTMASK,
- 		     CDNS_MCP_INT_SLAVE_MASK, CDNS_MCP_INT_SLAVE_MASK);
- 
--	return IRQ_HANDLED;
- }
--EXPORT_SYMBOL(sdw_cdns_thread);
- 
- /*
-  * init routines
-@@ -1187,6 +1187,7 @@ int sdw_cdns_probe(struct sdw_cdns *cdns)
- 	init_completion(&cdns->tx_complete);
- 	cdns->bus.port_ops = &cdns_port_ops;
- 
-+	INIT_WORK(&cdns->work, cdns_update_slave_status_work);
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 903aee258800..7f431677f152 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -317,6 +317,46 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
  	return 0;
  }
- EXPORT_SYMBOL(sdw_cdns_probe);
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index 001457cbe5ad..0f108fd31fd9 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -126,6 +126,10 @@ struct sdw_cdns {
  
- 	bool link_up;
- 	unsigned int msg_count;
++/*
++ * Read/Write IO functions.
++ * no_pm versions can only be called by the bus, e.g. while enumerating or
++ * handling suspend-resume sequences.
++ * all clients need to use the pm versions
++ */
 +
-+	struct work_struct work;
-+
-+	struct list_head list;
- };
- 
- #define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index cad1c0b64ee3..c918a26d0772 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1095,6 +1095,7 @@ static int intel_master_probe(struct sdw_master_device *md, void *link_ctx)
- 	sdw->cdns.msg_count = 0;
- 	sdw->cdns.bus.dev = &md->dev;
- 	sdw->cdns.bus.link_id = md->link_id;
-+	sdw->link_res->cdns = &sdw->cdns;
- 
- 	sdw_cdns_probe(&sdw->cdns);
- 
-@@ -1119,21 +1120,7 @@ static int intel_master_probe(struct sdw_master_device *md, void *link_ctx)
- 		return 0;
- 	}
- 
--	/* Acquire IRQ */
--	ret = request_threaded_irq(sdw->link_res->irq,
--				   sdw_cdns_irq, sdw_cdns_thread,
--				   IRQF_SHARED, KBUILD_MODNAME, &sdw->cdns);
--	if (ret < 0) {
--		dev_err(sdw->cdns.dev, "unable to grab IRQ %d, disabling device\n",
--			sdw->link_res->irq);
--		goto err_init;
--	}
--
- 	return 0;
--
--err_init:
--	sdw_delete_bus_master(&sdw->cdns.bus);
--	return ret;
- }
- 
- static int intel_master_startup(struct sdw_master_device *md)
-@@ -1190,7 +1177,6 @@ static int intel_master_startup(struct sdw_master_device *md)
- err_interrupt:
- 	sdw_cdns_enable_interrupt(&sdw->cdns, false);
- err_init:
--	free_irq(sdw->link_res->irq, sdw);
- 	sdw_delete_bus_master(&sdw->cdns.bus);
- 	return ret;
- }
-@@ -1204,7 +1190,6 @@ static int intel_master_remove(struct sdw_master_device *md)
- 	if (!sdw->cdns.bus.prop.hw_disabled) {
- 		intel_debugfs_exit(sdw);
- 		sdw_cdns_enable_interrupt(&sdw->cdns, false);
--		free_irq(sdw->link_res->irq, sdw);
- 		snd_soc_unregister_component(sdw->cdns.dev);
- 	}
- 	sdw_delete_bus_master(&sdw->cdns.bus);
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index cfab2f00214d..2ae4fa748686 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -25,6 +25,8 @@ struct sdw_intel_link_res {
- 	int irq;
- 	const struct sdw_intel_ops *ops;
- 	struct device *dev;
-+	struct sdw_cdns *cdns;
-+	struct list_head list;
- };
- 
- #define SDW_INTEL_QUIRK_MASK_BUS_DISABLE      BIT(1)
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 14ffe9ce2929..ed2a83989c72 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -11,8 +11,10 @@
- #include <linux/export.h>
- #include <linux/io.h>
- #include <linux/module.h>
-+#include <linux/interrupt.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_intel.h>
-+#include "cadence_master.h"
- #include "intel.h"
- 
- #define SDW_LINK_TYPE		4 /* from Intel ACPI documentation */
-@@ -161,6 +163,32 @@ void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
- }
- EXPORT_SYMBOL(sdw_intel_enable_irq);
- 
-+static irqreturn_t sdw_intel_irq(int irq, void *dev_id)
++static int
++sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
 +{
-+	struct sdw_intel_ctx *ctx = dev_id;
-+	u32 int_status;
-+
-+	int_status = readl(ctx->mmio_base + HDA_DSP_REG_ADSPIS2);
-+	if (int_status & HDA_DSP_REG_ADSPIC2_SNDW) {
-+		sdw_intel_enable_irq(ctx->mmio_base, false);
-+		return IRQ_WAKE_THREAD;
-+	}
-+
-+	return IRQ_NONE;
-+}
-+
-+static irqreturn_t sdw_intel_thread(int irq, void *dev_id)
-+{
-+	struct sdw_intel_ctx *ctx = dev_id;
-+	struct sdw_intel_link_res *link;
-+
-+	list_for_each_entry(link, &ctx->link_list, list)
-+		sdw_cdns_irq(irq, link->cdns);
-+
-+	sdw_intel_enable_irq(ctx->mmio_base, true);
-+	return IRQ_HANDLED;
-+}
-+
- static struct sdw_intel_ctx
- *sdw_intel_probe_controller(struct sdw_intel_res *res)
- {
-@@ -171,6 +199,7 @@ static struct sdw_intel_ctx
- 	u32 link_mask;
- 	int count;
- 	int i;
++	struct sdw_msg msg;
 +	int ret;
- 
- 	if (!res)
- 		return NULL;
-@@ -196,10 +225,13 @@ static struct sdw_intel_ctx
- 	ctx->mmio_base = res->mmio_base;
- 	ctx->link_mask = res->link_mask;
- 	ctx->handle = res->handle;
-+	ctx->irq = res->irq;
- 
- 	link = ctx->links;
- 	link_mask = ctx->link_mask;
- 
-+	INIT_LIST_HEAD(&ctx->link_list);
 +
- 	/* Create SDW Master devices */
- 	for (i = 0; i < count; i++, link++) {
- 		if (link_mask && !(link_mask & BIT(i)))
-@@ -220,12 +252,22 @@ static struct sdw_intel_ctx
- 			+ (SDW_LINK_SIZE * i);
- 		link->shim = res->mmio_base + SDW_SHIM_BASE;
- 		link->alh = res->mmio_base + SDW_ALH_BASE;
--		link->irq = res->irq;
- 		link->ops = res->ops;
- 		link->dev = res->dev;
- 
- 		/* let the SoundWire master driver to its probe */
- 		md->driver->probe(md, link);
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			   slave->dev_num, SDW_MSG_FLAG_READ, val);
++	if (ret < 0)
++		return ret;
 +
-+		list_add_tail(&link->list, &ctx->link_list);
++	return sdw_transfer(slave->bus, &msg);
++}
++
++static int
++sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++{
++	struct sdw_msg msg;
++	int ret;
++
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
++	if (ret < 0)
++		return ret;
++
++	return sdw_transfer(slave->bus, &msg);
++}
++
++int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
++{
++	return sdw_nwrite_no_pm(slave, addr, 1, &value);
++}
++
+ /**
+  * sdw_nread() - Read "n" contiguous SDW Slave registers
+  * @slave: SDW Slave
+@@ -326,19 +366,17 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+  */
+ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ {
+-	struct sdw_msg msg;
+ 	int ret;
+ 
+-	ret = sdw_fill_msg(&msg, slave, addr, count,
+-			   slave->dev_num, SDW_MSG_FLAG_READ, val);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = pm_runtime_get_sync(slave->bus->dev);
+-	if (ret < 0)
++	if (ret < 0 && ret != -EACCES) {
++		pm_runtime_put_noidle(slave->bus->dev);
+ 		return ret;
 +	}
 +
-+	ret = request_threaded_irq(ctx->irq,
-+				   sdw_intel_irq, sdw_intel_thread,
-+				   IRQF_SHARED, KBUILD_MODNAME, ctx);
-+	if (ret < 0) {
-+		dev_err(&adev->dev, "unable to grab IRQ %d, disabling device\n",
-+			res->irq);
-+		goto err;
- 	}
++	ret = sdw_nread_no_pm(slave, addr, count, val);
  
- 	return ctx;
-@@ -373,6 +415,7 @@ EXPORT_SYMBOL(sdw_intel_startup);
+-	ret = sdw_transfer(slave->bus, &msg);
++	pm_runtime_mark_last_busy(slave->bus->dev);
+ 	pm_runtime_put(slave->bus->dev);
+ 
+ 	return ret;
+@@ -354,19 +392,17 @@ EXPORT_SYMBOL(sdw_nread);
   */
- void sdw_intel_exit(struct sdw_intel_ctx *ctx)
+ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
  {
-+	free_irq(ctx->irq, ctx);
- 	sdw_intel_cleanup(ctx);
- 	kfree(ctx);
- }
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 36e2b522a749..373947003cea 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -94,7 +94,9 @@ struct sdw_intel_ctx {
- 	void __iomem *mmio_base;
- 	u32 link_mask;
- 	acpi_handle handle;
-+	int irq;
- 	struct sdw_intel_link_res *links;
-+	struct list_head link_list;
- };
+-	struct sdw_msg msg;
+ 	int ret;
  
- /*
+-	ret = sdw_fill_msg(&msg, slave, addr, count,
+-			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = pm_runtime_get_sync(slave->bus->dev);
+-	if (ret < 0)
++	if (ret < 0 && ret != -EACCES) {
++		pm_runtime_put_noidle(slave->bus->dev);
+ 		return ret;
++	}
++
++	ret = sdw_nwrite_no_pm(slave, addr, count, val);
+ 
+-	ret = sdw_transfer(slave->bus, &msg);
++	pm_runtime_mark_last_busy(slave->bus->dev);
+ 	pm_runtime_put(slave->bus->dev);
+ 
+ 	return ret;
 -- 
 2.20.1
 
