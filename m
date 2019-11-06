@@ -2,60 +2,65 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAEFBC5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:07:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43DE8C5DF60
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:08:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A860A2087E
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:07:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8F70121A49
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 01:08:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MJmwdDwt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A860A2087E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PczeNoYM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F70121A49
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CEB716D7;
-	Wed,  6 Nov 2019 02:06:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CEB716D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B35516E8;
+	Wed,  6 Nov 2019 02:07:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B35516E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573002441;
-	bh=tBY90JXO+ETm9uvi2QX+hu2fkjSghWowJBPNbmF+Z7M=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MJmwdDwt3MbAV+PlPjWhZyBxRZDe1FF+ndJ6vutIQ/Iprcv/o1zlZ4pNlif3zdtG1
-	 ryhcAwbEmJlvXSu5Ou7TgmM9q0ceZtTn1FuEor4CkZRIOJrHlSsxTaXjgshNhuGVn1
-	 EYN68n3Ygv1kmfmsAI1OP4V33UctI3q84AnQJJAU=
+	s=default; t=1573002496;
+	bh=qzZEdq1i+kMZc6wKRruxSfvjWnpGVtgwXZOh9anePI8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=PczeNoYMt3sp9cV695p3AOuJaZonFhp0qC/4XlktX+qIv+QwtOFC6c+FuZR9I05Gi
+	 TD9B8X8+qBKoeoWPq+4c270agOqf0WMVcyXpOcfHlt3koO2ZnrElYVk5clgGRIz+tJ
+	 gvBgU2NSq7aOpeGj+C3kRUuuxt1mFG1PyXkFOimY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10F7CF80446;
-	Wed,  6 Nov 2019 02:06:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 152BFF80271;
+	Wed,  6 Nov 2019 02:07:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3510F8049B; Wed,  6 Nov 2019 02:06:29 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 22DDFF8015B
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:06:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22DDFF8015B
-Date: 06 Nov 2019 10:06:21 +0900
-X-IronPort-AV: E=Sophos;i="5.68,271,1569250800"; d="scan'208";a="30925612"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 06 Nov 2019 10:06:21 +0900
+ id 9B718F805AE; Wed,  6 Nov 2019 02:07:14 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 26429F8053B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 02:07:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26429F8053B
+Date: 06 Nov 2019 10:07:07 +0900
+X-IronPort-AV: E=Sophos;i="5.68,271,1569250800"; d="scan'208";a="30712341"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 06 Nov 2019 10:07:07 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id B28BA4158025;
- Wed,  6 Nov 2019 10:06:21 +0900 (JST)
-Message-ID: <87wocdhkz6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 55E0740078CD;
+ Wed,  6 Nov 2019 10:07:07 +0900 (JST)
+Message-ID: <87v9rxhkxw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87wocdhkz6.wl-kuninori.morimoto.gx@renesas.com>
+References: <87wocdhkz6.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 0/9] ASoC: soc-core: cleanup step5
+Subject: [alsa-devel] [PATCH 1/9] ASoC: soc-core: remove
+	soc_is_dai_link_bound()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,25 +79,56 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are soc-core cleanup step5.
-My apology that it is randomly cleanupping.
+Because complex separeted "card pre-listed component" and
+"topology added component" duplicated operation is now
+becoming simple, we don't need to check already bound dai_link
+which is not exist anymore.
+This patch removes soc_is_dai_link_bound().
 
-Kuninori Morimoto (9):
-  ASoC: soc-core: remove soc_is_dai_link_bound()
-  ASoC: soc-core: merge snd_soc_register_dai() and soc_add_dai()
-  ASoC: soc-core: merge snd_soc_unregister_dai() and soc_del_dai()
-  ASoC: soc-core: merge snd_soc_add_dai_link() and soc_bind_dai_link()
-  ASoC: soc-core: merge snd_soc_remove_dai_link() and soc_unbind_dai_link()
-  ASoC: soc-core: merge soc_remove_component() and soc_cleanup_component()
-  ASoC: soc-core: merge snd_soc_bind_card() and snd_soc_instantiate_card()
-  ASoC: soc-core: tidyup soc_probe_aux_devices()
-  ASoC: soc-core: call snd_soc_dapm_shutdown() at soc_cleanup_card_resources()
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-core.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
- sound/soc/soc-core.c | 281 ++++++++++++++++++++-------------------------------
- 1 file changed, 107 insertions(+), 174 deletions(-)
-
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index cc59687..dff91db 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -943,19 +943,6 @@ struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_find_dai_link);
+ 
+-static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+-		struct snd_soc_dai_link *dai_link)
+-{
+-	struct snd_soc_pcm_runtime *rtd;
+-
+-	for_each_card_rtds(card, rtd) {
+-		if (rtd->dai_link == dai_link)
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
+ 				     struct snd_soc_dai_link *link)
+ {
+@@ -1075,12 +1062,6 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 
+ 	dev_dbg(card->dev, "ASoC: binding %s\n", dai_link->name);
+ 
+-	if (soc_is_dai_link_bound(card, dai_link)) {
+-		dev_dbg(card->dev, "ASoC: dai link %s already bound\n",
+-			dai_link->name);
+-		return 0;
+-	}
+-
+ 	ret = soc_dai_link_sanity_check(card, dai_link);
+ 	if (ret < 0)
+ 		return ret;
 -- 
 2.7.4
 
