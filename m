@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F1EC5DF66
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 20:15:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12EF5C5DF68
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 20:15:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA6E52187F
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 20:15:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8524D218AE
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 20:15:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q5gBOJbc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA6E52187F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X/FDfl2G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8524D218AE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB79F168F;
-	Wed,  6 Nov 2019 20:38:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB79F168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26549169B;
+	Wed,  6 Nov 2019 20:36:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26549169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573069146;
-	bh=hqsgckgmsHWsPbFMLkyWA7iTJafTNQsat8rJUmYVeTs=;
+	s=default; t=1573069059;
+	bh=ChgWpQgS78mcxhhEtQuNEWlA5/aUFSTLpcMEcXmOQaM=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q5gBOJbcPq8Mlf3kZLT5WneZqyncaSqXaIBT7TndhcegQJQeUZtf3sEvz3SX3HK/r
-	 EE4hVVY0NzN9WQZiQdPiIIe/dPYgN//iTF/BeVnKlOo2UNJg4IK9zuRpJJDGmb4+YG
-	 ad0NmXjyEpkuQSY+cexQhPKegRP66N5vH9GqoeNc=
+	b=X/FDfl2GJi7mcPjOwBsu2tB6brZMaPoPQ6c9SmCe6mD8Ew+jlmHJ+TbyfdpGzzM/6
+	 qKTpeHfD+0PbjuL8aPh9G4PAJNI9u5pM9jvSRAbdfMIP0rr4p0ExguOEhVOsMKYM2G
+	 C90Q+Ed2plI4dTFWnuODUqG5UH9IS8Sat89ODUj8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 823CCF80864;
-	Wed,  6 Nov 2019 20:23:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3002CF80799;
+	Wed,  6 Nov 2019 20:23:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F57BF80713; Wed,  6 Nov 2019 20:23:01 +0100 (CET)
+ id B0E95F8070C; Wed,  6 Nov 2019 20:22:58 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF0B5F80709
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF0B5F80709
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2FACF806ED
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 20:22:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2FACF806ED
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2019 11:22:57 -0800
+ 06 Nov 2019 11:22:54 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835200"
+X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="403835193"
 Received: from vidhipat-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.33.70])
- by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:56 -0800
+ by fmsmga006.fm.intel.com with ESMTP; 06 Nov 2019 11:22:53 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed,  6 Nov 2019 13:22:23 -0600
-Message-Id: <20191106192223.6003-20-pierre-louis.bossart@linux.intel.com>
+Date: Wed,  6 Nov 2019 13:22:21 -0600
+Message-Id: <20191106192223.6003-18-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
 References: <20191106192223.6003-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 19/19] soundwire: intel: reinitialize IP+DSP
-	in .prepare()
+Subject: [alsa-devel] [PATCH v2 17/19] soundwire: stream: only prepare
+	stream when it is configured.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,100 +91,47 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-The .prepare() callback is invoked for normal streaming, underflows or
-during the system resume transition. In the latter case, the context
-for the ALH PDIs is lost, and the DSP is not initialized properly
-either, but the bus parameters don't need to be recomputed.
+We don't need to prepare the stream again if the stream is already
+prepared.
 
-To avoid keeping track of state variables, it's simpler to just
-reinitialize the SHIM/ALH/Cadence/DSP settings in .prepare.
+sdw_prepare_stream() could be called multiple times without calling
+sdw_deprepare_stream(). We call sdw_prepare_stream() in the prepare
+dai ops and sdw_deprepare_stream() in the hw_free dai ops. If an xrun
+happens, sdw_prepare_stream() will be called but
+sdw_deprepare_stream() will not, which results in an imbalance and an
+invalid total bandwidth.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 40 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ drivers/soundwire/stream.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index f0f9a6252522..ec6c58635a99 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -117,6 +117,8 @@ struct sdw_intel {
- 	struct sdw_cdns cdns;
- 	int instance;
- 	struct sdw_intel_link_res *link_res;
-+	struct snd_pcm_hw_params *hw_params;
-+	struct sdw_cdns_pdi *pdi;
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs;
- #endif
-@@ -813,6 +815,8 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
- 	intel_pdi_alh_configure(sdw, pdi);
- 	sdw_cdns_config_stream(cdns, ch, dir, pdi);
- 
-+	sdw->pdi = pdi;
-+	sdw->hw_params = params;
- 
- 	/* Inform DSP about PDI stream number */
- 	ret = intel_params_stream(sdw, substream, dai, params,
-@@ -856,7 +860,11 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
- static int intel_prepare(struct snd_pcm_substream *substream,
- 			 struct snd_soc_dai *dai)
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 0a074d445b8d..38375c9124e4 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1544,7 +1544,7 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
+  */
+ int sdw_prepare_stream(struct sdw_stream_runtime *stream)
  {
-+	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_cdns_dma_data *dma;
-+	int ch, dir;
+-	int ret = 0;
 +	int ret;
  
- 	dma = snd_soc_dai_get_dma_data(dai, substream);
- 	if (!dma) {
-@@ -865,7 +873,35 @@ static int intel_prepare(struct snd_pcm_substream *substream,
- 		return -EIO;
- 	}
+ 	if (!stream) {
+ 		pr_err("SoundWire: Handle not found for stream\n");
+@@ -1553,6 +1553,11 @@ int sdw_prepare_stream(struct sdw_stream_runtime *stream)
  
--	return sdw_prepare_stream(dma->stream);
-+	/*
-+	 * .prepare() is called after system resume, where we need to
-+	 * reinitialize the SHIM/ALH/Cadence IP. To avoid dealing with
-+	 * complicated state machines, we just re-initialize in all
-+	 * cases since there are no side effects.
-+	 */
-+
-+	/* configure stream */
-+	ch = params_channels(sdw->hw_params);
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		dir = SDW_DATA_DIR_RX;
-+	else
-+		dir = SDW_DATA_DIR_TX;
-+
-+	intel_pdi_shim_configure(sdw, sdw->pdi);
-+	intel_pdi_alh_configure(sdw, sdw->pdi);
-+	sdw_cdns_config_stream(cdns, ch, dir, sdw->pdi);
-+
-+	/* Inform DSP about PDI stream number */
-+	ret = intel_params_stream(sdw, substream, dai, sdw->hw_params,
-+				  sdw->instance,
-+				  sdw->pdi->intel_alh_id);
-+	if (ret)
-+		goto err;
-+
-+	ret = sdw_prepare_stream(dma->stream);
-+
-+err:
-+	return ret;
- }
+ 	sdw_acquire_bus_lock(stream);
  
- static int intel_trigger(struct snd_pcm_substream *substream, int cmd,
-@@ -936,6 +972,8 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- 		return ret;
- 	}
- 
-+	sdw->hw_params = NULL;
-+	sdw->pdi = NULL;
- 	sdw_release_stream(dma->stream);
- 
- 	return 0;
++	if (stream->state == SDW_STREAM_PREPARED) {
++		ret = 0;
++		goto state_err;
++	}
++
+ 	if (stream->state != SDW_STREAM_CONFIGURED &&
+ 	    stream->state != SDW_STREAM_DEPREPARED &&
+ 	    stream->state != SDW_STREAM_DISABLED) {
 -- 
 2.20.1
 
