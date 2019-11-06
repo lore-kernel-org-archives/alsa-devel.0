@@ -2,71 +2,68 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93276C5DF62
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 07:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2425C5DF62
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 07:06:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D04821929
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 07:04:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 151BC206DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 07:06:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D3pljsoe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D04821929
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WnKzcmxB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 151BC206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38E5B1697;
-	Wed,  6 Nov 2019 08:03:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38E5B1697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53E321697;
+	Wed,  6 Nov 2019 08:05:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53E321697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573023887;
-	bh=fn/iWOhQojT1QuB+gWBo/PZ6YIVruqBY+QLAv9knIOo=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=D3pljsoeVyj51FEO+b/lzu7ZUBRmqCAHcQ65NQ0qvcdRfx9hyMu7S4bpQfreg7z3k
-	 upLtQkbT5duyeRku5mKmj7CZsVZauc/LQWMGH652LRQvDpgL8hx8k9s5jK3IOimXyM
-	 vw1m7NWGn9MbIxS7PBqsFZal1H10gQaiK+1NZBrs=
+	s=default; t=1573023963;
+	bh=5niYb+ssXFCw7438Yfo1A6TFnWH4XF0zdciHoO9xF4U=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WnKzcmxBVfc5yJ8ejtojw1VqRtZMKLk2bGzZA+6yXGU8YL9hqCnybmgMcVkPX7G7d
+	 PkdZH62eGDKICqkNaUcIFjWLjV1wsQgYG4R5Ogh6Rj9TjIpQ7iu8m4bTUMNFaKnGKj
+	 hYAZM7KusuMxAT4ckNarU46bdnG3+GGK4laEaZTg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4E44F80321;
-	Wed,  6 Nov 2019 08:03:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E51E7F803D0;
+	Wed,  6 Nov 2019 08:05:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FB82F803D0; Wed,  6 Nov 2019 08:03:56 +0100 (CET)
+ id BABBBF8045F; Wed,  6 Nov 2019 08:05:11 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 4557AF80291
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 08:03:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4557AF80291
-Date: 06 Nov 2019 16:03:47 +0900
-X-IronPort-AV: E=Sophos;i="5.68,272,1569250800"; d="scan'208";a="30965220"
+ by alsa1.perex.cz (Postfix) with ESMTP id 64AD4F800F3
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 08:05:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64AD4F800F3
+X-IronPort-AV: E=Sophos;i="5.68,272,1569250800"; d="scan'208";a="30965352"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 06 Nov 2019 16:03:47 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 06 Nov 2019 16:05:05 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3C21840031EA;
- Wed,  6 Nov 2019 16:03:47 +0900 (JST)
-Message-ID: <87d0e5h4fg.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 5D10140031EA;
+ Wed,  6 Nov 2019 16:05:05 +0900 (JST)
+Date: Wed, 06 Nov 2019 16:05:05 +0900
+Message-ID: <87bltph4da.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "kernelci.org bot" <bot@kernelci.org>
-In-Reply-To: <5dc267e7.1c69fb81.496da.9bf1@mx.google.com>
-References: <5dc267e7.1c69fb81.496da.9bf1@mx.google.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: alsa-devel@alsa-project.org, tomeu.vizoso@collabora.com,
- Liam Girdwood <lgirdwood@gmail.com>, guillaume.tucker@collabora.com,
- Takashi Iwai <tiwai@suse.com>,
+Cc: alsa-devel@alsa-project.org, "kernelci.org bot" <bot@kernelci.org>,
+ tomeu.vizoso@collabora.com, Liam Girdwood <lgirdwood@gmail.com>,
+ guillaume.tucker@collabora.com, Takashi Iwai <tiwai@suse.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, matthew.hart@linaro.org, mgalka@collabora.com,
- enric.balletbo@collabora.com, khilman@baylibre.com,
- linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] broonie-sound/for-next boot bisection:
-	v5.4-rc6-292-gc1efaea10be0 on sun8i-h3-libretech-all-h3-cc
+ matthew.hart@linaro.org, mgalka@collabora.com, enric.balletbo@collabora.com,
+ khilman@baylibre.com, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ASoC: soc-core: fixup dead-lock at
+	snd_soc_unregister_component()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,24 +81,78 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi
+snd_soc_unregister_component() is calling snd_soc_lookup_component()
+under mutex_lock(). But, snd_soc_lookup_component() itself is using
+mutex_lock(), thus it will be dead-lock.
+This patch adds _nolocked version of it, and avoid dead-lock issue.
 
-> Summary:
->   Start:      c1efaea10be0 Merge branch 'asoc-5.5' into asoc-next
->   Details:    https://kernelci.org/boot/id/5dc218e159b5142346138dff
->   Plain log:  https://storage.kernelci.org//broonie-sound/for-next/v5.4-rc6-292-gc1efaea10be0/arm/sunxi_defconfig/gcc-8/lab-baylibre/boot-sun8i-h3-libretech-all-h3-cc.txt
->   HTML log:   https://storage.kernelci.org//broonie-sound/for-next/v5.4-rc6-292-gc1efaea10be0/arm/sunxi_defconfig/gcc-8/lab-baylibre/boot-sun8i-h3-libretech-all-h3-cc.html
->   Result:     ac6a4dd3e9f0 ASoC: soc-core: use snd_soc_lookup_component() at snd_soc_unregister_component()
-
-Thank you for reporting !!
-I created fixup patch.
-I will post it at next mail.
-
-Thank you for your help !!
-Best regards
+Fixes: ac6a4dd3e9f0("ASoC: soc-core: use snd_soc_lookup_component() at snd_soc_unregister_component()")
+Reported-by: "kernelci.org bot" <bot@kernelci.org>"
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Kuninori Morimoto
+> Please double check/test it.
+
+ sound/soc/soc-core.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index cc59687..94f1078 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -356,14 +356,13 @@ struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_rtdcom_lookup);
+ 
+-struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+-						   const char *driver_name)
++static struct snd_soc_component
++*snd_soc_lookup_component_nolocked(struct device *dev, const char *driver_name)
+ {
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_component *found_component;
+ 
+ 	found_component = NULL;
+-	mutex_lock(&client_mutex);
+ 	for_each_component(component) {
+ 		if ((dev == component->dev) &&
+ 		    (!driver_name ||
+@@ -373,10 +372,21 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+ 			break;
+ 		}
+ 	}
+-	mutex_unlock(&client_mutex);
+ 
+ 	return found_component;
+ }
++
++struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
++						   const char *driver_name)
++{
++	struct snd_soc_component *component;
++
++	mutex_lock(&client_mutex);
++	component = snd_soc_lookup_component_nolocked(dev, driver_name);
++	mutex_unlock(&client_mutex);
++
++	return component;
++}
+ EXPORT_SYMBOL_GPL(snd_soc_lookup_component);
+ 
+ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
+@@ -2853,7 +2863,7 @@ void snd_soc_unregister_component(struct device *dev)
+ 
+ 	mutex_lock(&client_mutex);
+ 	while (1) {
+-		component = snd_soc_lookup_component(dev, NULL);
++		component = snd_soc_lookup_component_nolocked(dev, NULL);
+ 		if (!component)
+ 			break;
+ 
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
