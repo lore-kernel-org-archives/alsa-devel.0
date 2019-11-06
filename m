@@ -2,95 +2,68 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5ECFC5DF60
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 02:46:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4A99C5DF60
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 02:57:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0757820869
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 02:46:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7C9F421D81
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 02:57:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i6Jx0d/x";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="OqODg55s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0757820869
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dsB+rMGY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C9F421D81
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61FC516E0;
-	Wed,  6 Nov 2019 03:45:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61FC516E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6128B16E1;
+	Wed,  6 Nov 2019 03:56:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6128B16E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573008408;
-	bh=/HQUUUoFF00BSAQXHshk8QjI7ivRFt8yqKkxDWulYcg=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1573009025;
+	bh=P+lJpvfEEPCw74GT3JbcrrbnOh6mOX1XGcJuNOqryjY=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i6Jx0d/xKIg1HTd1c/MputqHj10N9ToavdakTKtWf0+Qe92mYzeTF4eIXclMo3iWq
-	 Z2MWivD2pJeOmkNLcvLIA8TugZZcnOqSE0w0BqQfuDgEMBZHIX71KdgUERGIj1OOO1
-	 RLvoMsQf6cKgzsyS4uAqW7s6Yz1Cp3jSsqn+y6Lc=
+	b=dsB+rMGYj4ifFSIecscWJOptCk7VS2WKFMgrJ89/F4KFN0WFHWQcAGDnp5T9NjlFw
+	 mJO6oHgJIJ2c0a5nBHfvdubeVs71udpSsehJB+mtZP9WDcP+ZIknnCar8LqcCZ6ELO
+	 eWoZt/GKQEkDHAEAvN7ZXKZ8vTvONVa6SMdPreEU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1BBCF80291;
-	Wed,  6 Nov 2019 03:45:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD8C4F80321;
+	Wed,  6 Nov 2019 03:56:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4173CF803D0; Wed,  6 Nov 2019 03:45:57 +0100 (CET)
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
- [IPv6:2607:f8b0:4864:20::d42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 357E3F80291
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 03:45:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 357E3F80291
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="OqODg55s"
-Received: by mail-io1-xd42.google.com with SMTP id p6so25279112iod.7
- for <alsa-devel@alsa-project.org>; Tue, 05 Nov 2019 18:45:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=dt+Ebp8PISSZ6NFI34hFJYqOSw/iBFdPQy5o45IXj14=;
- b=OqODg55sZ19lMaSO3Q4E66EQ0ATJ6qZVlrjdhfeOS7O7l29KgjanB2lkrnyNrXOZ8N
- 7lZ2AaIyrc/1R8irykmh0KWoAqxJ/WoNvGvPItnKRW1M2WGpsMMrIsruNlCCXo3knepW
- 350ma9FZ5+iQZLl+3agUI+iAGC4HrsFO97oT68mJ24C3yc5/T28q124b8N9UXRAQpxLY
- mVMo+ivC9pT8Q7sLdouLih+u48v366oDjw1CZySNRR8B9Pr5Lk4G0CLhAZB5uQtXpvws
- 8kLdFkMMQF0Rmjmv1WumPbxsBB1q/lSSt72BbS+qmV0OeawUeq4Ob1FlgRrpy0CwSBE1
- d93A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=dt+Ebp8PISSZ6NFI34hFJYqOSw/iBFdPQy5o45IXj14=;
- b=eHUi2b+0IKkv/2fcl3jiHSzMZdSxeDH23lCuKgHaNupE7zArZwIIwIrOSTW2Ncy9RD
- xcdsLglA3h1g5/qrkig+Pa9o+YYXtg7U/XtqpuRqd9/+CbmA00DI3mRytKbEKJUXh5W7
- T7dbhK493bk9sCxmx3p/SXOmvfy2JBtCDAw+Aq2FfvVb/lv1OeiEibu1ETKCdXHdxvYk
- hbVq0/JRLWPusVVkZTltpnJZ3R/F3v/ll2BJFoNM3FOws6JFinLT6yrxOpfOU5spn56Y
- ztqgp4Tie0oizGVWVCTGRg/c4RL+iGMtxeikAGzAYWT7CRsEhDSBJTDSiW6iwdaCO/rM
- qNtw==
-X-Gm-Message-State: APjAAAWi76OzhIFaIaNMew03hx+MBEKSpXU77ePPvOvPDTl04oX5nsCg
- 9EZIpFTAFXkbhiJq1hQbPZBZ6KjEEKukhgN3DhrvIg==
-X-Google-Smtp-Source: APXvYqyQAiXTPlFASPu06kCzjDEt1UCUpfroWVQwJGiSXEm5q5B+IsAY5H9Jfjm68Pa2vcTE4Zy5EveSWnwjxje5ALw=
-X-Received: by 2002:a6b:a0c:: with SMTP id z12mr29063886ioi.142.1573008352328; 
- Tue, 05 Nov 2019 18:45:52 -0800 (PST)
-MIME-Version: 1.0
+ id C8C4AF803D0; Wed,  6 Nov 2019 03:56:13 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 12E99F80291
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 03:56:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12E99F80291
+Date: 06 Nov 2019 11:56:06 +0900
+X-IronPort-AV: E=Sophos;i="5.68,272,1569250800"; d="scan'208";a="30939363"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 06 Nov 2019 11:56:06 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2EF3B400A0E5;
+ Wed,  6 Nov 2019 11:56:06 +0900 (JST)
+Message-ID: <87eeylhfw9.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+In-Reply-To: <CAFQqKeXx9rXj3b0monvJ6CrBj9B0YCzwcAUc2SH7ya9yb9mjnA@mail.gmail.com>
 References: <87wocdhkz6.wl-kuninori.morimoto.gx@renesas.com>
  <87k18dhkw2.wl-kuninori.morimoto.gx@renesas.com>
  <CAFQqKeW9ZuUcGFkjw30q-CuBfWtnDoBB_UsmjFCdBPPS78nZrg@mail.gmail.com>
  <87ftj1hgly.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87ftj1hgly.wl-kuninori.morimoto.gx@renesas.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Tue, 5 Nov 2019 18:45:46 -0800
-Message-ID: <CAFQqKeXx9rXj3b0monvJ6CrBj9B0YCzwcAUc2SH7ya9yb9mjnA@mail.gmail.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+ <CAFQqKeXx9rXj3b0monvJ6CrBj9B0YCzwcAUc2SH7ya9yb9mjnA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 Subject: Re: [alsa-devel] [PATCH 9/9] ASoC: soc-core: call
- snd_soc_dapm_shutdown() at soc_cleanup_card_resources()
+	snd_soc_dapm_shutdown() at soc_cleanup_card_resources()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,53 +81,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Nov 5, 2019 at 6:40 PM Kuninori Morimoto <
-kuninori.morimoto.gx@renesas.com> wrote:
 
->
-> Hi Ranjani
->
-> Thank you for your review
->
-> >     It is easy to read code if it is cleanly using paired
-> function/naming,
-> >     like start <-> stop, register <-> unregister, etc, etc.
-> >     But, current ALSA SoC code is very random, unbalance, not paired,
-> etc.
-> >     It is easy to create bug at the such code, and it will be difficult
-> to
-> >     debug.
-> >
-> >     snd_soc_bind_card() is calling snd_soc_dapm_init() for both
-> >     card and component.
-> >     Let's call paired snd_soc_dapm_shutdown() at paired
-> >     soc_cleanup_card_resources().
-> >
-> >     Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> >     ---
-> (snip)
-> > You removed snd_soc_bind_card in one of the patches but then leaving
-> snd_soc_unbind_card() will be unbalanced isnt it?
-> >
-> > Why not just have instantiate_card() and cleanup_card_resources()?
->
-> Do you mean [7/9] patch ?
-> It merges snd_soc_instantiate_card() and snd_soc_bind_card().
-> Thus, snd_soc_bind_card() is still exist.
-> Or am I misunderstanding ?
->
-Oh yes, sorry I misread that. So why not remove cleanup_card_resources and
-move everything to snd_soc_unbind_card()?
+Hi Ranjani
 
-Thanks,
-Ranjani
+Thank you for your feedback
 
->
-> Thank you for your help !!
-> Best regards
-> ---
-> Kuninori Morimoto
->
+>     Do you mean [7/9] patch ?
+>     It merges snd_soc_instantiate_card() and snd_soc_bind_card().
+>     Thus, snd_soc_bind_card() is still exist.
+>     Or am I misunderstanding ?
+> 
+> Oh yes, sorry I misread that. So why not remove cleanup_card_resources and move everything to snd_soc_unbind_card()?
+
+Good question :)
+
+Indeed snd_soc_bind_card() and snd_soc_unbind_card() are paired function.
+We want to merge cleanup_card_resources() and snd_soc_unbind_card().
+But, can you check snd_soc_unbind_card() ?
+unbind() is caring
+	- card->instantiated
+	- snd_soc_flush_all_delayed_work(card);
+	- unbind_card_list
+
+Actually I tried to merge cleanup() and unbind() into one,
+but then, the code became not simple.
+So I gave up this time.
+But, we might can do it in the future if soc-core is more cleanuped/simpled.
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
