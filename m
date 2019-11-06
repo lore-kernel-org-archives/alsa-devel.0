@@ -2,114 +2,77 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 041C3C5DF63
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 18:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC199C5DF63
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 18:16:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1E6F217F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 18:10:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68213217F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 18:16:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CJkcsu4I";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="deTo+90l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1E6F217F5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CeQ7s+fF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68213217F5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C351D846;
-	Wed,  6 Nov 2019 19:09:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C351D846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BDE515E2;
+	Wed,  6 Nov 2019 19:15:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BDE515E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573063843;
-	bh=O1ozRCRFTmK+0Gk+4JgpSDIkz84cxToQvN8AiFi61ho=;
+	s=default; t=1573064160;
+	bh=YbRi84MXHi/m93tc9iufIUY5H9A1QGLi5cP9JE2bg1s=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CJkcsu4IlPlM06P4u/8AbcF3KIbO93KAec2KAy1Cj95dJzZDpuaJ1pslFhL1GUAcw
-	 HMaX5O62T5Y6lhCQxEtW5IOP8d9y2fJa3NwoC0XqP42JTlIPVDW0IP7rYMCQ7hs8sJ
-	 eeQsVRB8DBWKh1DyEhqEiebREQ36DIbSG4Ua++QI=
+	b=CeQ7s+fF5r0jPoZtr/w3cyeUWuCP/cZqFONzvpg5ZIa5t9iIjVxJdgdEHPsXcw43O
+	 NEMsclyiMfPdt743dqVFVr2PupO6IJ33n9herCQyPqx59iF6JPkuCJn87/oeDx0OQp
+	 lE+bOahzEEW+7+QDkYBQqf206a8UgxJJDmdIqZ9o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59B78F80321;
-	Wed,  6 Nov 2019 19:09:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDB1DF800F3;
+	Wed,  6 Nov 2019 19:15:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3C0FF803D0; Wed,  6 Nov 2019 19:09:51 +0100 (CET)
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
- [IPv6:2a00:1450:4864:20::343])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EF610F8015B; Wed,  6 Nov 2019 19:15:07 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6E83F800F3
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 19:09:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6E83F800F3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="deTo+90l"
-Received: by mail-wm1-x343.google.com with SMTP id x4so4790242wmi.3
- for <alsa-devel@alsa-project.org>; Wed, 06 Nov 2019 10:09:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=rgJXsUBNZa/F0SLsO+it3k7f9qVrt3VaEEsEU5U0WF4=;
- b=deTo+90lJ6be7HHxTg00sHjXhZ3BCSqrIZB22Zr4Ih0eXfNoJ6Gwt/RbEw5gQSjgIg
- qidpwKs5uRX2/lu5DRzqXig8ftmUi03AhVaEYUpWJ0jjW9auDFhXL1SkjGYGBmto2pb8
- veFrOCGDVpD9USl2jXCi2MXpsVt0aBgUqTgiEF6etTbJSDsHDbDcWFVFy6vonpSHsMI7
- L2D0mmBoCGDPshPuZzY4p7VQhtH6IXIpaaGTfk6LPUmiJgvxFMYwzdxm8qdcFIcjlA9c
- b7kkPdCm7cyF1fB5SXXtiruwEQBPAIdGxrexuet+sitv4fmBS9v4vcbQa8fKE9swANAS
- tp6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=rgJXsUBNZa/F0SLsO+it3k7f9qVrt3VaEEsEU5U0WF4=;
- b=msMUP9/GIii7K+1Shj/ccum1Lg4neI7EMn+h6NMvOfTVEkp7RpJCDA66g93VydwVlF
- vwzNmO1N79voj/vPUb4RBo1bxl3d+Wq9wmkFwrXKnky50Q2m4RkIcoFjJQ0UD3oOHJrJ
- ndlegA57+YMg4J2WH42kZWHzhb4Dv5nfHPCTXidrbuKjXH0i/r+JDz8L/Qy7qi5e0I+p
- L+k0AuigyxSPcmaihjOP1AV1htgtXpsgKLuK4bhm7zOsUKt4RdLVbgqGN2zrj8RG1xoU
- C4SrnMWJ6k7OGvPbu10FDIOX0unkShmu8ueNA8DhSeNKv78BpS40px6pS1vv1TIB5Vw+
- 91Lg==
-X-Gm-Message-State: APjAAAWgDVxuqvbjB4bPLtxai7wJgWhFEaPbOVgnLrVVbp/YyMBKB97F
- l/TIKcwbstJBhuPYXWs6b6YQAA==
-X-Google-Smtp-Source: APXvYqwuEOoV5aCzLlGkVZlVwso0Ano0flwVy5rE6QbRo8vNmNb2jFk7drTtQSJedQIw1NCPZ+6geA==
-X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr3948924wmc.164.1573063784694; 
- Wed, 06 Nov 2019 10:09:44 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id r19sm29208269wrr.47.2019.11.06.10.09.43
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 06 Nov 2019 10:09:43 -0800 (PST)
-To: Rob Herring <robh@kernel.org>
-References: <20191018001849.27205-1-srinivas.kandagatla@linaro.org>
- <20191018001849.27205-2-srinivas.kandagatla@linaro.org>
- <20191025204338.GA25892@bogus>
- <90b2d83b-f2b2-3a5d-4deb-589f4b48b208@linaro.org>
- <371955d9-ad2d-5ddc-31b4-710729feae42@linaro.org>
- <CAL_JsqJmRReW2n0R_Sh4f7AFGYA+ZLxuFDokLTSBKoFTg6uRSg@mail.gmail.com>
- <7811be04-dfda-5953-110c-bca685fdcaa4@linaro.org>
- <CAL_JsqJNcXe7YSUjHWyFO_czncnR3y7w3NP8ofXfCiXpMrqzRw@mail.gmail.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <b3d078a1-f87d-c146-bdf7-7a6b30547bd5@linaro.org>
-Date: Wed, 6 Nov 2019 18:09:43 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E7B1F8015B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 19:15:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E7B1F8015B
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 06 Nov 2019 10:15:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,275,1569308400"; d="scan'208";a="228455340"
+Received: from ppaladu-mobl1.amr.corp.intel.com (HELO [10.255.230.49])
+ ([10.255.230.49])
+ by FMSMGA003.fm.intel.com with ESMTP; 06 Nov 2019 10:15:00 -0800
+To: Mark Brown <broonie@kernel.org>
+References: <20191106145816.9367-1-pierre-louis.bossart@linux.intel.com>
+ <20191106162146.292802743193@ypsilon.sirena.org.uk>
+ <20191106162927.GC11849@sirena.co.uk>
+ <14d026ab-a898-358e-34ea-4f73d6c0fc0a@linux.intel.com>
+ <20191106165432.GD11849@sirena.co.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ad2f2082-68da-5d36-5fd7-532012871419@linux.intel.com>
+Date: Wed, 6 Nov 2019 12:15:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJNcXe7YSUjHWyFO_czncnR3y7w3NP8ofXfCiXpMrqzRw@mail.gmail.com>
+In-Reply-To: <20191106165432.GD11849@sirena.co.uk>
 Content-Language: en-US
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, Vinod Koul <vinod.koul@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
- spapothi@codeaurora.org
-Subject: Re: [alsa-devel] [PATCH v2 01/11] ASoC: dt-bindings: add dt
- bindings for WCD9340/WCD9341 audio codec
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, tiwai@suse.de,
+ alsa-devel@alsa-project.org, Jaska Uimonen <jaska.uimonen@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] Applied "ASoC: SOF: topology: Fix bytes control
+ size checks" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,88 +92,25 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 05/11/2019 19:08, Rob Herring wrote:
-> On Wed, Oct 30, 2019 at 4:55 AM Srinivas Kandagatla
-> <srinivas.kandagatla@linaro.org> wrote:
->>
->>
->>
->> On 29/10/2019 20:47, Rob Herring wrote:
->>> On Mon, Oct 28, 2019 at 7:45 AM Srinivas Kandagatla
->>> <srinivas.kandagatla@linaro.org> wrote:
->>>>
->>>>
->>>>
->>>> On 28/10/2019 12:40, Srinivas Kandagatla wrote:
->>>>> Its Phandle.
->>>>>
->>>>> something like this is okay?
->>>>>
->>>>> slim-ifc-dev:
->>>>>      $ref: '/schemas/types.yaml#/definitions/phandle-array'
->>>>
->>>> Sorry this should not be an array, so something like this:
->>>>
->>>>      slim-ifc-dev:
->>>>        description: SLIMBus Interface device phandle
->>>
->>> You're just spelling out the abbreviated name. I can do that much.
->>> What is 'SLIMBus Interface device'?
->>
->> Each SLIMBus Component contains one Interface Device. Which is
->> responsible for Monitoring and reporting the status of component, Data
->> line to Data pin connection setup for SLIMBus streaming. Interface
->> device is enumerated just like any other slim device.
+On 11/6/19 10:54 AM, Mark Brown wrote:
+> On Wed, Nov 06, 2019 at 10:49:20AM -0600, Pierre-Louis Bossart wrote:
+>> On 11/6/19 10:29 AM, Mark Brown wrote:
+>>> On Wed, Nov 06, 2019 at 04:21:46PM +0000, Mark Brown wrote:
 > 
-> So a standard set of registers every slimbus device has? In hindsight,
-> I would have made reg have 2 entries with both addresses. I guess that
-> ship has sailed.
-
-That will break SLIMBus bindings, Which is expecting one device per 
-device node.
-
+>>> It's not immediately obvious if something similar is needed for -next,
+>>> the relevant code has been redone since v5.4 was branched off.  If
+>>> something is needed someone will have to send something.
 > 
-> It seems strange you would need both "devices" described as separate
-> nodes in DT.
-
-Because they are two different devices on the SLIMBus Component.
-
+>> I checked that the patch applies even before Jaska's October rework, where
+>> the same bug was present. so in theory picking this fix for 5.2..5.4 would
+>> work as usual.
 > 
->>
->> We already have exactly same bindings for WCD9335 in upstream at:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt?h=v5.4-rc5#n42
->>
->>>
->>> Is it a standard SLIMBus property? If so, document it in the right
->>> place. If not, then needs a vendor prefix.
->>
->> "SLIMBus Interface Device" itself is documented in SLIMBus Specification.
->>
->> If I remember it correctly You suggested me to move to "slim-ifc-dev"
->> as this is part of SLIMBus Specification.
-> 
-> Probably so. If it is common, then document it in bindings/slimbus/bus.txt.
->
-As we are dealing with audio codecs here, it might be that 
-"slim-ifc-dev" is common across wcd9335 and wcd934x but not all devices 
-on the SLIMBus Component would need handle to interface device. SLIMbus 
-can also be used for control buses as well which might not need this.
+> What I'm saying is that I did that and if the fix is still needed after
+> the rework someone will need to send a version that applies after the
+> rework.
 
-
-> Then here, 'slim-ifc-dev: true' is sufficient. You can just assume we
-> convert bus.txt to schema (or feel free to do that :) ).
-
-We need phandle to the interface device so that we can program the 
-streaming parameters for the SLIMBus Component.
-
-
---srini
-
-
-> 
-> Rob
-> 
+Sorry, the same patch will apply before and after the rework, so you can 
+apply it to for-next as well. You don't need a new version.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
