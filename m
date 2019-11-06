@@ -2,83 +2,86 @@ Return-Path: <SRS0=zQEr=Y6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A1D8C5DF63
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 16:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06173C5DF63
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 16:30:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF8E4217F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 16:24:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 810FF2178F
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Nov 2019 16:30:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FB4yGEax";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="APDEnw0l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF8E4217F5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HSCoTnc0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="AgUJ9MMh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 810FF2178F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B471616BB;
-	Wed,  6 Nov 2019 17:23:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B471616BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B574316A2;
+	Wed,  6 Nov 2019 17:29:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B574316A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573057464;
-	bh=k1uM62MlQ07x9qkI7wzqpO1kgD+MD1wMlnaZHHFW5rw=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=FB4yGEaxvZ09KHWx8ILpp5z9kbTlMfpOsr8WpeJWckMdzEEP21Sz3rlyzAZbhLLt4
-	 LGLIOq+Azh1qGv/pXRb26QjjU6aJTUDV7foLL2f8GBNLudEjTYD2zNaV/HgEj0RyY0
-	 8EkPuZjrDnEa+ey0NFXh5Y791jv6cyXxk0jUkY+g=
+	s=default; t=1573057829;
+	bh=M86JLVNYvTFDkd2sHqKduM8pFiK3c26ebM48DwYLvZY=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HSCoTnc0pYUAMldI8Hygbe876YfobslkE5xU7nG0NXxdy86CAzvrWMa7Kb0gIxT2e
+	 nGNsu7RvTDqnuRBaLchljEBP0Ye/CYTm0J9KXVW9H4p7VegaajP0tXvpD85scZk6FJ
+	 sGdb5scO+6SKlgatXZ4/HKu7DcDBFvmX3zrT++ls=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A88EFF805FF;
-	Wed,  6 Nov 2019 17:21:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E457F803D0;
+	Wed,  6 Nov 2019 17:29:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69C2DF803D0; Wed,  6 Nov 2019 17:21:52 +0100 (CET)
+ id AA068F803D0; Wed,  6 Nov 2019 17:29:34 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E3DFF80321
- for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 17:21:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E3DFF80321
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F62AF80291
+ for <alsa-devel@alsa-project.org>; Wed,  6 Nov 2019 17:29:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F62AF80291
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="APDEnw0l"
+ header.b="AgUJ9MMh"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=9rREpoZVbGDCP5L1TVBJpt4KDb/OpRNb5vjJi47HMuM=; b=APDEnw0lFOv6
- bxUyQiGx7V4jUlps0jgCUw8knU6+FffTaIQmRNjz+OLXbL3jR2W4IhlilmxZrX0LvYguJft/90rj/
- rHSkAf8mBnvjV/daKIlJ1uHT5d3WU+HepZ1tpdBDaMb1c3trLAa129whe65hoAIxoEC4Bc7X0TisK
- g58zc=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=w0A2Z9ic9NOch2we3Yklia3nDp3ukxX77gz1x+0PHxQ=; b=AgUJ9MMhLE3gOB+W+/C/lDHWU
+ 6dMPuThXH/Ds745PU7lCdEE8cwdo1/+64GJcYpYentIE7nGszFxtNy54536iybS+7WKErmWaMN4cK
+ SG1O9tj6j6agYANzgHY4JAFtstqGKOLMBdWzJmztlGsKk3qgX3aixoyb39fT3hRmZf5Rw=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iSO42-0001or-Mt; Wed, 06 Nov 2019 16:21:46 +0000
+ id 1iSOBU-0001q6-0z; Wed, 06 Nov 2019 16:29:28 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 292802743193; Wed,  6 Nov 2019 16:21:46 +0000 (GMT)
+ id 4024C2743035; Wed,  6 Nov 2019 16:29:27 +0000 (GMT)
+Date: Wed, 6 Nov 2019 16:29:27 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-In-Reply-To: <20191106145816.9367-1-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Message-Id: <20191106162146.292802743193@ypsilon.sirena.org.uk>
-Date: Wed,  6 Nov 2019 16:21:46 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Jaska Uimonen <jaska.uimonen@intel.com>,
- tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: topology: Fix bytes control size
-	checks" to the asoc tree
+Message-ID: <20191106162927.GC11849@sirena.co.uk>
+References: <20191106145816.9367-1-pierre-louis.bossart@linux.intel.com>
+ <20191106162146.292802743193@ypsilon.sirena.org.uk>
+MIME-Version: 1.0
+In-Reply-To: <20191106162146.292802743193@ypsilon.sirena.org.uk>
+X-Cookie: Shah, shah!  Ayatollah you so!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Jaska Uimonen <jaska.uimonen@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] Applied "ASoC: SOF: topology: Fix bytes control
+ size checks" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,95 +94,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6287171247908055939=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: SOF: topology: Fix bytes control size checks
+--===============6287171247908055939==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
+--WfZ7S8PLGjBY9Voh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Nov 06, 2019 at 04:21:46PM +0000, Mark Brown wrote:
+> The patch
+>=20
+>    ASoC: SOF: topology: Fix bytes control size checks
+>=20
+> has been applied to the asoc tree at
+>=20
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-=
+5.4
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+It's not immediately obvious if something similar is needed for -next,
+the relevant code has been redone since v5.4 was branched off.  If
+something is needed someone will have to send something.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--WfZ7S8PLGjBY9Voh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3C9OYACgkQJNaLcl1U
+h9DlVwf+MedmDnibo36sZLgPAL9R8fMxJkr4K7sMI+vFxKxggvFVksOLQZt443nl
+x6/oa60+AHaUBS+BUyJAJhekd0Q0SDd1dg2NOKXwG8rAUj44mcZe8SMpyWKWVaHA
+WMrg6JUnC/xlJE5s2ULaNtQvMIHfANeXjY67ffifgCK4v0h751Geh3N1SqQei5Es
+zUmQQLhHQRM720LHy9PnyVdP7xB22PTNNSkNWwKTfDRDX+dfuht0NWZmIlfTP3eU
+f2CREvdBmkEQu2KIbiy6OBivLTUX0SRnN0wdB8yHi5rbUpd3ALmyfxPfhuNn+MUI
+3NuoyLyjSq3hA30l19J1pIHjWBoUrQ==
+=/00N
+-----END PGP SIGNATURE-----
 
-From 9508ef5a980f5d847cad9b932b6ada8f2a3466c1 Mon Sep 17 00:00:00 2001
-From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-Date: Wed, 6 Nov 2019 08:58:16 -0600
-Subject: [PATCH] ASoC: SOF: topology: Fix bytes control size checks
+--WfZ7S8PLGjBY9Voh--
 
-When using the example SOF amp widget topology, KASAN dumps this
-when the AMP bytes kcontrol gets loaded:
-
-[ 9.579548] BUG: KASAN: slab-out-of-bounds in
-sof_control_load+0x8cc/0xac0 [snd_sof]
-[ 9.588194] Write of size 40 at addr ffff8882314559dc by task
-systemd-udevd/2411
-
-Fix that by rejecting the topology if the bytes data size > max_size
-
-Fixes: 311ce4fe7637d ("ASoC: SOF: Add support for loading topologies")
-Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191106145816.9367-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/topology.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 0aabb3190ddc..4452594c2e17 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -543,15 +543,16 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
- 	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
- 	int max_size = sbe->max;
- 
--	if (le32_to_cpu(control->priv.size) > max_size) {
-+	/* init the get/put bytes data */
-+	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
-+		le32_to_cpu(control->priv.size);
-+
-+	if (scontrol->size > max_size) {
- 		dev_err(sdev->dev, "err: bytes data size %d exceeds max %d.\n",
--			control->priv.size, max_size);
-+			scontrol->size, max_size);
- 		return -EINVAL;
- 	}
- 
--	/* init the get/put bytes data */
--	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
--		le32_to_cpu(control->priv.size);
- 	scontrol->control_data = kzalloc(max_size, GFP_KERNEL);
- 	cdata = scontrol->control_data;
- 	if (!scontrol->control_data)
--- 
-2.20.1
+--===============6287171247908055939==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6287171247908055939==--
