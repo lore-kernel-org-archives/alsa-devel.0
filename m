@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76332C5DF61
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 13:14:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22651C5DF61
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 13:15:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED11B21D6C
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 13:14:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A04942075C
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 13:15:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mpoalow0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="EC7Iv0wi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED11B21D6C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SHe7xQg1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="xW9btgUA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A04942075C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4D041674;
-	Thu,  7 Nov 2019 14:13:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4D041674
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3B1F168E;
+	Thu,  7 Nov 2019 14:14:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3B1F168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573132461;
-	bh=GyZr2kH499vmX3N4mRWAKKiersWUAm/RKVwL6apirK8=;
+	s=default; t=1573132516;
+	bh=vO3dZBWwCYDWrWid8vbr2oTfshzwMFT9znPGTnlelyk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Mpoalow0sXg13i+7tES6phOjcPvosKeEaOXpPrsTK+b/3GJdiEYJQPOq/CQOEVYgU
-	 Z7FqxSTJIehlORlK0+VnM9cJZQs4GGyBeM0aNVQbG12yaYrkcDjIX7EXBtkUrMO0+r
-	 05MBDcGjUQ7VOrdzJRmCDjRLpmcCO56bNtSBqx6c=
+	b=SHe7xQg1D0OuGyaWFpS0SUMQG+SMJltIb8Frv9pxTjWIPd9/k2OQTURpELaHLpNx8
+	 46dXlksslXQZV2KgUYLCvl1vXJno+ksu0eim086tBWgFrXx8aokIsLCKx1UkrOvUA1
+	 7sF4cwHT2zfTDttzQCZz81B0NRpRK5BREpBg3cU4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C110F800F3;
-	Thu,  7 Nov 2019 14:13:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 642EDF80535;
+	Thu,  7 Nov 2019 14:13:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A005F8049B; Thu,  7 Nov 2019 14:13:30 +0100 (CET)
+ id 230BAF8053B; Thu,  7 Nov 2019 14:13:36 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CF96F800F3
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 14:13:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CF96F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89B85F80508
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 14:13:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89B85F80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="EC7Iv0wi"
+ header.b="xW9btgUA"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=2ZXzsRWVNgVDHC1TW5lPvBuXZEozJzMVEssgd44PovQ=; b=EC7Iv0wio0P+
- q4IL4TBR8jSnnaxaDrqmud1pJmv3gO4+D6K/JksXOuai6DNQJeowLxBR+DNS75Jb4kPjqp4Z80Jwe
- mQGGAjFq3i97xc9rZzmpAgtTv7m/u4PsO6ygZGUO4p+l/NTWVd+SnS18BIJnzGvLcSO5bsAi/S4yN
- HRSf0=;
+ List-Archive; bh=kjSNwdwoXIEkIOovqwOXgverE52L7GoFK8udDLCQOd0=; b=xW9btgUACRW8
+ 21EM4EVLzsbAbVEKndUCon0TgVcljjLMm1fCQnAMgzlj91WhJiMLOKp4ioSzcDOCPSL24EMBilUXG
+ CPomwnaS/zmu18+dnFdRIZjYebAsNFgelv0OUuU43/xpiqkT0y6pRcngxqvfEi9EZfjSJt4/0AUEI
+ BrbYw=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iShbJ-0004ND-VR; Thu, 07 Nov 2019 13:13:26 +0000
+ id 1iShbL-0004NI-Sl; Thu, 07 Nov 2019 13:13:27 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 3895127431AF; Thu,  7 Nov 2019 13:13:25 +0000 (GMT)
+ id 5E1E527431AF; Thu,  7 Nov 2019 13:13:27 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <878sp4jaqy.wl-kuninori.morimoto.gx@renesas.com>
+To: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+In-Reply-To: <20191106145816.9367-1-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191107131325.3895127431AF@ypsilon.sirena.org.uk>
-Date: Thu,  7 Nov 2019 13:13:25 +0000 (GMT)
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: fsi: switch to yaml base Documentation"
-	to the asoc tree
+Message-Id: <20191107131327.5E1E527431AF@ypsilon.sirena.org.uk>
+Date: Thu,  7 Nov 2019 13:13:27 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Jaska Uimonen <jaska.uimonen@intel.com>,
+ tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: SOF: topology: Fix bytes control size
+	checks" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,11 +99,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: fsi: switch to yaml base Documentation
+   ASoC: SOF: topology: Fix bytes control size checks
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -122,143 +124,58 @@ to this mail.
 Thanks,
 Mark
 
-From 2f52475bac7e1572cdc1f045bbd69205f828ed68 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 29 Oct 2019 16:01:41 +0900
-Subject: [PATCH] ASoC: fsi: switch to yaml base Documentation
+From 2acdcabb8a4089476208a822050dd47a6557290d Mon Sep 17 00:00:00 2001
+From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+Date: Wed, 6 Nov 2019 08:58:16 -0600
+Subject: [PATCH] ASoC: SOF: topology: Fix bytes control size checks
 
-This patch switches from .txt base to .yaml base Document for FSI.
+When using the example SOF amp widget topology, KASAN dumps this
+when the AMP bytes kcontrol gets loaded:
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/878sp4jaqy.wl-kuninori.morimoto.gx@renesas.com
+[ 9.579548] BUG: KASAN: slab-out-of-bounds in
+sof_control_load+0x8cc/0xac0 [snd_sof]
+[ 9.588194] Write of size 40 at addr ffff8882314559dc by task
+systemd-udevd/2411
+
+Fix that by rejecting the topology if the bytes data size > max_size
+
+Fixes: 311ce4fe7637d ("ASoC: SOF: Add support for loading topologies")
+Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191106145816.9367-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/renesas,fsi.txt | 31 --------
- .../bindings/sound/renesas,fsi.yaml           | 76 +++++++++++++++++++
- 2 files changed, 76 insertions(+), 31 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/renesas,fsi.txt
- create mode 100644 Documentation/devicetree/bindings/sound/renesas,fsi.yaml
+ sound/soc/sof/topology.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,fsi.txt b/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-deleted file mode 100644
-index 0cf0f819b823..000000000000
---- a/Documentation/devicetree/bindings/sound/renesas,fsi.txt
-+++ /dev/null
-@@ -1,31 +0,0 @@
--Renesas FSI
--
--Required properties:
--- compatible			: "renesas,fsi2-<soctype>",
--				  "renesas,sh_fsi2" or "renesas,sh_fsi" as
--				  fallback.
--				  Examples with soctypes are:
--				    - "renesas,fsi2-r8a7740" (R-Mobile A1)
--				    - "renesas,fsi2-sh73a0" (SH-Mobile AG5)
--- reg				: Should contain the register physical address and length
--- interrupts			: Should contain FSI interrupt
--
--- fsia,spdif-connection		: FSI is connected by S/PDIF
--- fsia,stream-mode-support	: FSI supports 16bit stream mode.
--- fsia,use-internal-clock	: FSI uses internal clock when master mode.
--
--- fsib,spdif-connection		: same as fsia
--- fsib,stream-mode-support	: same as fsia
--- fsib,use-internal-clock	: same as fsia
--
--Example:
--
--sh_fsi2: sh_fsi2@ec230000 {
--	compatible = "renesas,sh_fsi2";
--	reg = <0xec230000 0x400>;
--	interrupts = <0 146 0x4>;
--
--	fsia,spdif-connection;
--	fsia,stream-mode-support;
--	fsia,use-internal-clock;
--};
-diff --git a/Documentation/devicetree/bindings/sound/renesas,fsi.yaml b/Documentation/devicetree/bindings/sound/renesas,fsi.yaml
-new file mode 100644
-index 000000000000..140a37fc3c0b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/renesas,fsi.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/renesas,fsi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index e7076692119b..143b8259a70a 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1043,15 +1043,16 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
+ 	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
+ 	int max_size = sbe->max;
+ 
+-	if (le32_to_cpu(control->priv.size) > max_size) {
++	/* init the get/put bytes data */
++	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
++		le32_to_cpu(control->priv.size);
 +
-+title: Renesas FSI Sound Driver Device Tree Bindings
-+
-+maintainers:
-+  - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+
-+properties:
-+  $nodename:
-+    pattern: "^sound@.*"
-+
-+  compatible:
-+    oneOf:
-+      # for FSI2 SoC
-+      - items:
-+        - enum:
-+          - renesas,fsi2-sh73a0
-+          - renesas,fsi2-r8a7740
-+        - enum:
-+          - renesas,sh_fsi2
-+      # for Generic
-+      - items:
-+        - enum:
-+          - renesas,sh_fsi
-+          - renesas,sh_fsi2
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  fsia,spdif-connection:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: FSI is connected by S/PDIF
-+
-+  fsia,stream-mode-support:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: FSI supports 16bit stream mode
-+
-+  fsia,use-internal-clock:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: FSI uses internal clock when master mode
-+
-+  fsib,spdif-connection:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: same as fsia
-+
-+  fsib,stream-mode-support:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: same as fsia
-+
-+  fsib,use-internal-clock:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: same as fsia
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    sh_fsi2: sound@ec230000 {
-+            compatible = "renesas,fsi2-r8a7740", "renesas,sh_fsi2";
-+            reg = <0xec230000 0x400>;
-+            interrupts = <0 146 0x4>;
-+
-+            fsia,spdif-connection;
-+            fsia,stream-mode-support;
-+            fsia,use-internal-clock;
-+    };
++	if (scontrol->size > max_size) {
+ 		dev_err(sdev->dev, "err: bytes data size %d exceeds max %d.\n",
+-			control->priv.size, max_size);
++			scontrol->size, max_size);
+ 		return -EINVAL;
+ 	}
+ 
+-	/* init the get/put bytes data */
+-	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
+-		le32_to_cpu(control->priv.size);
+ 	scontrol->control_data = kzalloc(max_size, GFP_KERNEL);
+ 	cdata = scontrol->control_data;
+ 	if (!scontrol->control_data)
 -- 
 2.20.1
 
