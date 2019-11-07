@@ -2,92 +2,66 @@ Return-Path: <SRS0=BIVw=Y7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24E56FA372C
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 02:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4359EC5DF60
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 06:49:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9594B217D7
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 02:07:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3D63621D79
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 06:49:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A0W3az6P";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rJn72CqM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9594B217D7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lz1OIMML"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D63621D79
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D62D416AA;
-	Thu,  7 Nov 2019 03:06:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D62D416AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id D345842;
+	Thu,  7 Nov 2019 07:49:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D345842
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573092439;
-	bh=5vKcQTxCXXy+evvC+U5Q61pPFnGJ6YJ3SCahb5EiCIw=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1573109392;
+	bh=iCsFS0roQ77794J1Qe+KIheGLnNA0XVukXtFyLEmKTY=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A0W3az6PKYuWkTqMU5yUkuiBQBFt3pZsIlsnxufO3hRxkuPYXEQNV8+M+N/zv/aLe
-	 6iOlQblCwMERW7rTVqG+a9hCHuSaHwKMCp5I4W30P+neQuITZHW9R8inoJBdWOJ0b0
-	 of7RplxDREARwDR211ZZ/Z9hvwTxixIyuAr2s4ik=
+	b=lz1OIMML4tXuz3nVCJJOFqrHdvfkDzAlF/AOu36iqEo6IKwRJXqsrUb6e+L7BptPl
+	 Hyb16jcqaDgrrS4ndtJ/QVpbx/ZxP919BbiWg95LbdeFO2WhBazcEg4qiJS3TFRLp8
+	 alkY5FYF85+P0+hvPdd/+TgdLxcJgGkWmdGU3k9o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1733F8015B;
-	Thu,  7 Nov 2019 03:02:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4728FF80446;
+	Thu,  7 Nov 2019 07:49:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2239F803F4; Thu,  7 Nov 2019 03:02:56 +0100 (CET)
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
- [IPv6:2607:f8b0:4864:20::741])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DBDD6F8049B; Thu,  7 Nov 2019 07:48:59 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 312D5F8015B
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 03:02:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 312D5F8015B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="rJn72CqM"
-Received: by mail-qk1-x741.google.com with SMTP id 15so612497qkh.6
- for <alsa-devel@alsa-project.org>; Wed, 06 Nov 2019 18:02:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=9zx40QsfDymTlETXrKFWvAV8aTJi2y5VL9gv3utQtmg=;
- b=rJn72CqMW5KuEfk4La1dQWM6iMqwbYM6/Z6/4avYU3RGJAmwivpy1a0mpDmH1Vk4rr
- QnkVLEZoW6zavNlJ97ZnloVErOpCvIkrhQQfi+hUPLEVkvK/udDoTFcaOChLq03dziQB
- BA9sl/WxY+bcIOyR/H2tksuxxoyP5niFB/bHFMd/0gDgAwDpxXIwo5mroVVlIrrJ1vfu
- goeR7rvlfY3NdVCDj/bOL5msMOjVfl4TFeZhvEcAdiknB9qBro7dKCTUGyzYwva4t8GO
- 3ptEoiw7XjyMdvMAEQ4I7jNuMckrqktoiWdxc8fPM7GvO7rZbUsOqxeRvTfA9wDgC1/D
- Hnww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=9zx40QsfDymTlETXrKFWvAV8aTJi2y5VL9gv3utQtmg=;
- b=YFixln8WGHDvtZEGXtim5JkUAr0wcu2dyyt10reQIIeD12ar/O5D161M02ZYZRQfg9
- NMrFl4NKtFpwkY6A8PqJQC4uHWYy93k533PF4sYzVQmT20+UGxHm5rZ+2nkOAjNUWij7
- XcKP4v1nNC6bsO4vLfAZKbdVQa6wWPAYCvLuJFD15vSxXANoR5clb0cyGPWgH8A/t0s/
- lsZOzxsA1G1eNvYF48SKZLGiSY9gg6HjKXxai1HmPTeHVs+N3qc4RHhvIO4NzYWalMbP
- tFlvI1W71K/pJXE72XMMiXuW2r1XfjJxReuyGhwUs1FB3GBzxX5q9NqwVznEBQxWNfHI
- so1g==
-X-Gm-Message-State: APjAAAU8j7TCkUNkExmO7u6BOy0XvS8eEmPMc2clF5DC4pE7gI31Xk0k
- 4ma4in+vOhdZJ5BiqM3rYs874mDXO5aDr2r7ZsZO6A==
-X-Google-Smtp-Source: APXvYqy7En89GJwOrPI/ITajWIKQD/PIA6REs7CQCM8YS6RIIO6xGpXDbT+Rtf4atbzF7OPlxhjKWU8iDsYk8xXKZ4M=
-X-Received: by 2002:a37:9a8a:: with SMTP id c132mr526145qke.92.1573092171775; 
- Wed, 06 Nov 2019 18:02:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20191107015808.26844-1-cujomalainey@chromium.org>
- <20191107015808.26844-8-cujomalainey@chromium.org>
-In-Reply-To: <20191107015808.26844-8-cujomalainey@chromium.org>
-From: Curtis Malainey <cujomalainey@google.com>
-Date: Wed, 6 Nov 2019 18:02:40 -0800
-Message-ID: <CAOReqxjL_yLhofQczBsjiE=i9K=y-9sqdOaih_g=yyS6_pEKbw@mail.gmail.com>
-To: Curtis Malainey <cujomalainey@chromium.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BC70F800F3
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 07:48:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BC70F800F3
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 5B03CAF6B;
+ Thu,  7 Nov 2019 06:48:55 +0000 (UTC)
+Date: Thu, 07 Nov 2019 07:48:54 +0100
+Message-ID: <s5ho8xo89m1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <6dcc3e0d-0df5-90cf-220f-59253d3b5c7c@perex.cz>
+References: <6dcc3e0d-0df5-90cf-220f-59253d3b5c7c@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: ALSA development <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 08/11] ucm: docs: Add CaptureChannelMap
+ Mark Brown <broonie@kernel.org>, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [alsa-devel] UCM extensions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,37 +79,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 6, 2019 at 5:58 PM Curtis Malainey
-<cujomalainey@chromium.org> wrote:
->
-> Explains to userspace how some channels may need to be rearranged. This
-> is useful for systems that may have DMIC pcms with dead channels that
-> will need remapping.
->
-Apologies this is the coupled mixer patch, this is an error.
-I will resend this with anything else that needs to be corrected
-> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-> ---
->  include/use-case.h | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/include/use-case.h b/include/use-case.h
-> index 31f9e4be..9a10f390 100644
-> --- a/include/use-case.h
-> +++ b/include/use-case.h
-> @@ -305,6 +305,9 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
->   *      - Remap channels using ALSA PCM channel mapping API notation
->   *        E.g. "2 3 0 1 -1 -1 -1 -1 -1 -1 -1" means, FL takes channel 2,
->   *        FR takes channel 3, RL takes channel 0, RL takes channel 1.
-> + *   - CoupledMixers
-> + *      - Mixer controls that should be changed together.
-> + *        E.g. "Left Master,Right Master".
->   *   - EDIDFile
->   *      - Path to EDID file for HDMI devices
->   *   - JackControl, JackDev, JackHWMute
-> --
-> 2.24.0.432.g9d3f5f5b63-goog
->
+On Tue, 05 Nov 2019 20:36:28 +0100,
+Jaroslav Kysela wrote:
+> 
+> Hi all,
+> 
+> 	I make some internal ucm code cleanups in alsa-lib and added
+> three major extensions to allow more complex configurations which we
+> require for the SOF kernel driver.
+> 
+> 	The first thing is the added substitution for the value strings:
+> 
+> https://github.com/alsa-project/alsa-lib/commit/f1e637b285e8e04e6761248a070f58f3a8fde6fc
+> 
+> 	The second thing is the If block:
+> 
+> https://github.com/alsa-project/alsa-lib/commit/985715ce8148dc7ef62c8e3d8ce5a0c2ac51f8df
+> 
+> 	The third thing is the card / hardware like specifier passed
+> as the ucm name to snd_use_case_mgr_open() to support multiple card
+> instances:
+> 
+> https://github.com/alsa-project/alsa-lib/commit/60164fc5886cdc6ca55eeed0c2e3f751a7d2b2c0
+> 
+> 	All those patches (with other cleanups) are in the ucm2 branch
+> on github for comments:
+> 
+> https://github.com/alsa-project/alsa-lib/commits/ucm2
+> 
+> 	The proposed SOF UCM config diff is here:
+> 
+> https://github.com/alsa-project/alsa-ucm-conf/commit/723b6da881721488229154e923ed36413955a051
+> https://github.com/alsa-project/alsa-ucm-conf/commits/ucm2
+> 
+> 	I added everything to keep the interface backward compatible,
+> so the current applications should not observe any different
+> behavior. The applications like pulseaudio should use the
+> 'hw:CARD_INDEX' specifier for the open call in the future and
+> snd_use_case_parse_ctl_elem_id() helper for the element control names.
+
+The only concern with these extensions so far is the compatibility.
+Imagine that people run the new profile on the old parser, it'd break
+easily.
+
+I think other scripts often installing on the versioned directory if
+incompatibilities are seen.  Can we do that for UCM as well?
+
+Or course, once after UCM parser is changed to be future-ready and
+allow some syntax for possible future extensions, we can keep that
+version directory in future, too.
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
