@@ -2,57 +2,62 @@ Return-Path: <SRS0=BIVw=Y7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25998C43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 19:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97FF8C43331
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 19:22:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4479B21882
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 19:21:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 20C862166E
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 19:22:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ai36sIVO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4479B21882
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HdO/slB1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20C862166E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06A9D166C;
-	Thu,  7 Nov 2019 20:20:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06A9D166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1993E167F;
+	Thu,  7 Nov 2019 20:21:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1993E167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573154467;
-	bh=1DW3bO9lTBvDgRBEBkk7ouT/lgM3qMWh+JXYtOErXws=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ai36sIVOD2Uz/8yx46aeysW//PLLB+a1/IFG6lIYbUKq3Y/Zzr+wu2B/nnPRIO/OU
-	 jI2nMt5D/GNwG1HTybWcpudKi5hID9uFnezcxxdbEN4oNdcpd1oup6RsXqwr1s5J4t
-	 Kn+uQh8PyqbNHwj1toUg9i7Gk3YU3HlBmUOcrTEQ=
+	s=default; t=1573154522;
+	bh=81EbMkJOy0a3a5r6uagZq5CWp2vooH36DiCVBo0KwJg=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HdO/slB1BHZBv9+T59y9o7IGTv6XlmcFrH9H+k1hBOnP9fJyDz+nrkBkILmf0dS/k
+	 tGzT7MFDKL1LuFbJCJGRB97MwJSIUqB9EgGRVOQ9YsHNqAqYczw1iRunMSnMBSytoe
+	 aTEIGatSc6BlCH5Xuir0+CELdhi+80MdRi6moguY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 081B9F80111;
-	Thu,  7 Nov 2019 20:20:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E231AF80535;
+	Thu,  7 Nov 2019 20:20:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF991F8049B; Thu,  7 Nov 2019 20:20:13 +0100 (CET)
+ id C8526F80508; Thu,  7 Nov 2019 20:20:15 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6989DF80111
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 20:20:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6989DF80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id EFF46F80111
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 20:20:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFF46F80111
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 01E7EB158
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 19:20:09 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 0E3CFB1C4
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 19:20:12 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Thu,  7 Nov 2019 20:20:05 +0100
-Message-Id: <20191107192008.32331-1-tiwai@suse.de>
+Date: Thu,  7 Nov 2019 20:20:06 +0100
+Message-Id: <20191107192008.32331-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH 0/3] ALSA: timer: A few more fixes
+In-Reply-To: <20191107192008.32331-1-tiwai@suse.de>
+References: <20191107192008.32331-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 1/3] ALSA: timer: Unify master/slave linking
+	code
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,26 +76,117 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The code in both snd_timer_check_master() and snd_timer_check_slave()
+are almost identical, both check whether the master/slave link and
+does linkage.  Factor out the common code and call it from both
+functions for readability.
 
-here is another small patch set for ALSA timer core to plug a slight
-race window and to clean up.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/timer.c | 66 +++++++++++++++++++++++++++---------------------------
+ 1 file changed, 33 insertions(+), 33 deletions(-)
 
-
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ALSA: timer: Unify master/slave linking code
-  ALSA: timer: Make snd_timer_close() returning void
-  ALSA: timer: Fix possible race at assigning a timer instance
-
- include/sound/timer.h      |   6 +-
- sound/core/seq/seq_timer.c |  18 +++--
- sound/core/timer.c         | 181 ++++++++++++++++++++++-----------------------
- 3 files changed, 104 insertions(+), 101 deletions(-)
-
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 013f0e69ff0f..21c2d25e4074 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -163,6 +163,28 @@ static void snd_timer_request(struct snd_timer_id *tid)
+ 
+ #endif
+ 
++/* move the slave if it belongs to the master; return 1 if match */
++static int check_matching_master_slave(struct snd_timer_instance *master,
++				       struct snd_timer_instance *slave)
++{
++	if (slave->slave_class != master->slave_class ||
++	    slave->slave_id != master->slave_id)
++		return 0;
++	if (master->timer->num_instances >= master->timer->max_instances)
++		return -EBUSY;
++	list_move_tail(&slave->open_list, &master->slave_list_head);
++	master->timer->num_instances++;
++	spin_lock_irq(&slave_active_lock);
++	spin_lock(&master->timer->lock);
++	slave->master = master;
++	slave->timer = master->timer;
++	if (slave->flags & SNDRV_TIMER_IFLG_RUNNING)
++		list_add_tail(&slave->active_list, &master->slave_active_head);
++	spin_unlock(&master->timer->lock);
++	spin_unlock_irq(&slave_active_lock);
++	return 1;
++}
++
+ /*
+  * look for a master instance matching with the slave id of the given slave.
+  * when found, relink the open_link of the slave.
+@@ -173,27 +195,18 @@ static int snd_timer_check_slave(struct snd_timer_instance *slave)
+ {
+ 	struct snd_timer *timer;
+ 	struct snd_timer_instance *master;
++	int err = 0;
+ 
+ 	/* FIXME: it's really dumb to look up all entries.. */
+ 	list_for_each_entry(timer, &snd_timer_list, device_list) {
+ 		list_for_each_entry(master, &timer->open_list_head, open_list) {
+-			if (slave->slave_class == master->slave_class &&
+-			    slave->slave_id == master->slave_id) {
+-				if (master->timer->num_instances >=
+-				    master->timer->max_instances)
+-					return -EBUSY;
+-				list_move_tail(&slave->open_list,
+-					       &master->slave_list_head);
+-				master->timer->num_instances++;
+-				spin_lock_irq(&slave_active_lock);
+-				slave->master = master;
+-				slave->timer = master->timer;
+-				spin_unlock_irq(&slave_active_lock);
+-				return 0;
+-			}
++			err = check_matching_master_slave(master, slave);
++			if (err != 0) /* match found or error */
++				goto out;
+ 		}
+ 	}
+-	return 0;
++ out:
++	return err < 0 ? err : 0;
+ }
+ 
+ /*
+@@ -205,28 +218,15 @@ static int snd_timer_check_slave(struct snd_timer_instance *slave)
+ static int snd_timer_check_master(struct snd_timer_instance *master)
+ {
+ 	struct snd_timer_instance *slave, *tmp;
++	int err = 0;
+ 
+ 	/* check all pending slaves */
+ 	list_for_each_entry_safe(slave, tmp, &snd_timer_slave_list, open_list) {
+-		if (slave->slave_class == master->slave_class &&
+-		    slave->slave_id == master->slave_id) {
+-			if (master->timer->num_instances >=
+-			    master->timer->max_instances)
+-				return -EBUSY;
+-			list_move_tail(&slave->open_list, &master->slave_list_head);
+-			master->timer->num_instances++;
+-			spin_lock_irq(&slave_active_lock);
+-			spin_lock(&master->timer->lock);
+-			slave->master = master;
+-			slave->timer = master->timer;
+-			if (slave->flags & SNDRV_TIMER_IFLG_RUNNING)
+-				list_add_tail(&slave->active_list,
+-					      &master->slave_active_head);
+-			spin_unlock(&master->timer->lock);
+-			spin_unlock_irq(&slave_active_lock);
+-		}
++		err = check_matching_master_slave(master, slave);
++		if (err < 0)
++			break;
+ 	}
+-	return 0;
++	return err < 0 ? err : 0;
+ }
+ 
+ static int snd_timer_close_locked(struct snd_timer_instance *timeri,
 -- 
 2.16.4
 
