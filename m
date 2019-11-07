@@ -2,80 +2,82 @@ Return-Path: <SRS0=BIVw=Y7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62801C43331
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 17:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19CECC5DF60
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 17:06:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65B93218AE
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 17:02:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8AFBF2077C
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Nov 2019 17:06:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LzirH0p1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65B93218AE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ieIMLnCp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AFBF2077C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BD5F829;
-	Thu,  7 Nov 2019 18:01:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BD5F829
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1E7B166F;
+	Thu,  7 Nov 2019 18:05:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1E7B166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573146123;
-	bh=yJ+wb0Ov9GQSTvyzcDTlRvvRaNU3Nqf+BLSViE18Yxo=;
-	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LzirH0p1PL5Arm0ftHE0MmI/yku3WQZdM7a1u+BdPi7wtQCUi+EdzVT8PqIc0otD2
-	 FFvUnaUXQqNi+7BRLNlZMDkB5YKUkIQWvOBBe88h+gBf/3dvHpgjnNWezekZUgXpYf
-	 x+sapADX78PS2Y+6Q8tWQHVQxwLD3MMOL7kSKaas=
+	s=default; t=1573146383;
+	bh=SW/PwrxNcETggR9M+sK8a5cXCJXPxazJ4thNRFg8mMo=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ieIMLnCpSZ5GwUZ+tNJ3l3rL2KQbK69qzAgNDTtwFt7NTHCPW5RFDLWRkDl8a7OdS
+	 CgY9pbY5xXbqu9xZCjNcrROP8D0jPx9k3DtU5+ftuyaB0HhFB+9LwnAmvDRAkR5XeR
+	 VKnBJL5wzL1KTGJVzupSNgZj0xmpYKdGax3h6ybg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 022FAF80446;
-	Thu,  7 Nov 2019 18:01:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1136F80508;
+	Thu,  7 Nov 2019 18:05:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 334AFF8049B; Thu,  7 Nov 2019 16:34:14 +0100 (CET)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1DB2AF80508; Thu,  7 Nov 2019 18:05:31 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 637DEF80111
- for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 16:34:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 637DEF80111
-Received: by mail-io1-f71.google.com with SMTP id r4so2114246ioo.13
- for <alsa-devel@alsa-project.org>; Thu, 07 Nov 2019 07:34:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=osDgrR7+lhnA50ozJ9XpSP5eOLnLOIc3AVbZc33gEAU=;
- b=Urx/rt9MGgoTyWbMDHNL1ytm0XU3PaYJrDOqch+lkOMiZjmjAQ47Wf3mVsV12lLhRM
- jJfNjqMJNeYIHuLCnlNwUMiuazdc6+1A2L8ayn2Dp6134gb16BUKYm7yagkfHVKTmyAH
- Ykcm3gKkL9hCSh72tCwmzR12SW0JwvnyOLilbNZcSBli/lsBPMSDgngkm21hFcdS/RlM
- jT+K8Yv1jFSHxmSEJi7NV64vgdlCHz1fR++wp0xcw0vWWbweUvr1u18lxOOcWReeHqUF
- 8tNVZxJkFwQuR/CWiKx6UJx4LgS57DNk82oxkP20gJP8L3w99Qtfd7hsb38K4Ajj7JVo
- 2i9g==
-X-Gm-Message-State: APjAAAWmJXyyDPqcZWUoWNzVRzHDFk5QPAdCG4bT9BGJ/71mTFbmWCJB
- eK6jY+2NfZNlco4pys1aWL7iqVQgtsFTwbs0K9O9E06xgJuA
-X-Google-Smtp-Source: APXvYqxuKrKOoebLn1vTcIFUPCuUSPVp9E0atQGaXraOKl+d8s9V7HDrPJCcKrN1GZYrnnQAAGkbtkYezQ7fGdeYdocRoz/f6OQE
+ by alsa1.perex.cz (Postfix) with ESMTPS id CEE4EF80291
+ for <alsa-devel@alsa-project.org>; Thu,  7 Nov 2019 18:05:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEE4EF80291
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 07 Nov 2019 09:05:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,278,1569308400"; d="scan'208";a="192880761"
+Received: from cjense2x-mobl1.amr.corp.intel.com (HELO [10.251.130.63])
+ ([10.251.130.63])
+ by orsmga007.jf.intel.com with ESMTP; 07 Nov 2019 09:05:21 -0800
+To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+References: <1573133093-28208-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+ <1573133093-28208-3-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <2547cf06-6f2f-78d8-d7c8-d0eb9c84f880@linux.intel.com>
+Date: Thu, 7 Nov 2019 09:13:21 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8219:: with SMTP id l25mr115557iom.292.1573140849022; 
- Thu, 07 Nov 2019 07:34:09 -0800 (PST)
-Date: Thu, 07 Nov 2019 07:34:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007ce1f40596c3651f@google.com>
-From: syzbot <syzbot+622d4ecb979f45c6a775@syzkaller.appspotmail.com>
-To: allison@lohutok.net, alsa-devel@alsa-project.org, andreyknvl@google.com, 
- benquike@gmail.com, dan.carpenter@oracle.com, gregkh@linuxfoundation.org, 
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, perex@perex.cz, 
- rfontana@redhat.com, syzkaller-bugs@googlegroups.com, tiwai@suse.com, 
- wang6495@umn.edu, yuehaibing@huawei.com
-X-Mailman-Approved-At: Thu, 07 Nov 2019 18:01:11 +0100
-Subject: [alsa-devel] KASAN: slab-out-of-bounds Read in build_audio_procunit
-	(2)
+In-Reply-To: <1573133093-28208-3-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+Content-Language: en-US
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Maruthi Bayyavarapu <maruthi.bayyavarapu@amd.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, YueHaibing <yuehaibing@huawei.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, djkurtz@google.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ Colin Ian King <colin.king@canonical.com>, Akshu.Agrawal@amd.com
+Subject: Re: [alsa-devel] [PATCH v3 2/6] ASoC: amd: Refactoring of DAI from
+ DMA driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,150 +91,97 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
 
-syzbot found the following crash on:
+> +static int acp3x_dai_probe(struct platform_device *pdev)
+> +{
+> +	int status;
+> +	struct resource *res;
+> +	struct i2s_dev_data *adata;
+> +
+> +	if (!pdev->dev.platform_data) {
+> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	adata = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dev_data),
+> +			GFP_KERNEL);
 
-HEAD commit:    d60bbfea usb: raw: add raw-gadget interface
-git tree:       https://github.com/google/kasan.git usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=132e5bcce00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=79de80330003b5f7
-dashboard link: https://syzkaller.appspot.com/bug?extid=622d4ecb979f45c6a775
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1478c6b4e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=117cbf8ae00000
+if (!adata)
+	return -ENOMEM;
+	> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	adata->acp3x_base = devm_ioremap(&pdev->dev, res->start,
+> +			resource_size(res));
+> +	if (IS_ERR(adata->acp3x_base))
+> +		return PTR_ERR(adata->acp3x_base);
+> +
+> +	adata->i2s_irq = res->start;
+> +	dev_set_drvdata(&pdev->dev, adata);
+> +	status = devm_snd_soc_register_component(&pdev->dev,
+> +			&acp3x_dai_component,
+> +			&acp3x_i2s_dai, 1);
+> +	if (status) {
+> +		dev_err(&pdev->dev, "Fail to register acp i2s dai\n");
+> +		return -ENODEV;
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+622d4ecb979f45c6a775@syzkaller.appspotmail.com
+if the probe fails for such errors, don't you have a memory leak?
 
-usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-usb 1-1: Product: syz
-usb 1-1: Manufacturer: syz
-usb 1-1: SerialNumber: syz
-usb 1-1: 0:2 : does not exist
-==================================================================
-BUG: KASAN: slab-out-of-bounds in uac_extension_unit_iExtension  
-include/uapi/linux/usb/audio.h:483 [inline]
-BUG: KASAN: slab-out-of-bounds in build_audio_procunit+0xeab/0x13f0  
-sound/usb/mixer.c:2434
-Read of size 1 at addr ffff8881d4aaa735 by task kworker/1:2/83
+> +	}
+> +
+> +	pm_runtime_set_autosuspend_delay(&pdev->dev, 10000);
+> +	pm_runtime_use_autosuspend(&pdev->dev);
+> +	pm_runtime_enable(&pdev->dev);
+> +	return 0;
 
-CPU: 1 PID: 83 Comm: kworker/1:2 Not tainted 5.4.0-rc6+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0xca/0x13e lib/dump_stack.c:113
-  print_address_description.constprop.0+0x36/0x50 mm/kasan/report.c:374
-  __kasan_report.cold+0x1a/0x33 mm/kasan/report.c:506
-  kasan_report+0xe/0x20 mm/kasan/common.c:634
-  uac_extension_unit_iExtension include/uapi/linux/usb/audio.h:483 [inline]
-  build_audio_procunit+0xeab/0x13f0 sound/usb/mixer.c:2434
-  parse_audio_extension_unit sound/usb/mixer.c:2483 [inline]
-  parse_audio_unit+0x1812/0x36f0 sound/usb/mixer.c:2761
-  snd_usb_mixer_controls+0x715/0xb90 sound/usb/mixer.c:3095
-  snd_usb_create_mixer+0x2b5/0x1890 sound/usb/mixer.c:3445
-  usb_audio_probe+0xc76/0x2010 sound/usb/card.c:653
-  usb_probe_interface+0x305/0x7a0 drivers/usb/core/driver.c:361
-  really_probe+0x281/0x6d0 drivers/base/dd.c:548
-  driver_probe_device+0x104/0x210 drivers/base/dd.c:721
-  __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:828
-  bus_for_each_drv+0x162/0x1e0 drivers/base/bus.c:430
-  __device_attach+0x217/0x360 drivers/base/dd.c:894
-  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:490
-  device_add+0xae6/0x16f0 drivers/base/core.c:2202
-  usb_set_configuration+0xdf6/0x1670 drivers/usb/core/message.c:2023
-  generic_probe+0x9d/0xd5 drivers/usb/core/generic.c:210
-  usb_probe_device+0x99/0x100 drivers/usb/core/driver.c:266
-  really_probe+0x281/0x6d0 drivers/base/dd.c:548
-  driver_probe_device+0x104/0x210 drivers/base/dd.c:721
-  __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:828
-  bus_for_each_drv+0x162/0x1e0 drivers/base/bus.c:430
-  __device_attach+0x217/0x360 drivers/base/dd.c:894
-  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:490
-  device_add+0xae6/0x16f0 drivers/base/core.c:2202
-  usb_new_device.cold+0x6a4/0xe79 drivers/usb/core/hub.c:2537
-  hub_port_connect drivers/usb/core/hub.c:5184 [inline]
-  hub_port_connect_change drivers/usb/core/hub.c:5324 [inline]
-  port_event drivers/usb/core/hub.c:5470 [inline]
-  hub_event+0x1df8/0x3800 drivers/usb/core/hub.c:5552
-  process_one_work+0x92b/0x1530 kernel/workqueue.c:2269
-  worker_thread+0x96/0xe20 kernel/workqueue.c:2415
-  kthread+0x318/0x420 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-Allocated by task 83:
-  save_stack+0x1b/0x80 mm/kasan/common.c:69
-  set_track mm/kasan/common.c:77 [inline]
-  __kasan_kmalloc mm/kasan/common.c:510 [inline]
-  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:483
-  kmalloc include/linux/slab.h:561 [inline]
-  usb_get_configuration+0x311/0x3100 drivers/usb/core/config.c:862
-  usb_enumerate_device drivers/usb/core/hub.c:2370 [inline]
-  usb_new_device+0xd3/0x160 drivers/usb/core/hub.c:2506
-  hub_port_connect drivers/usb/core/hub.c:5184 [inline]
-  hub_port_connect_change drivers/usb/core/hub.c:5324 [inline]
-  port_event drivers/usb/core/hub.c:5470 [inline]
-  hub_event+0x1df8/0x3800 drivers/usb/core/hub.c:5552
-  process_one_work+0x92b/0x1530 kernel/workqueue.c:2269
-  worker_thread+0x96/0xe20 kernel/workqueue.c:2415
-  kthread+0x318/0x420 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-Freed by task 211:
-  save_stack+0x1b/0x80 mm/kasan/common.c:69
-  set_track mm/kasan/common.c:77 [inline]
-  kasan_set_free_info mm/kasan/common.c:332 [inline]
-  __kasan_slab_free+0x130/0x180 mm/kasan/common.c:471
-  slab_free_hook mm/slub.c:1424 [inline]
-  slab_free_freelist_hook mm/slub.c:1475 [inline]
-  slab_free mm/slub.c:3025 [inline]
-  kfree+0xe4/0x320 mm/slub.c:3977
-  do_new_mount fs/namespace.c:2827 [inline]
-  do_mount+0x68a/0x1bf0 fs/namespace.c:3143
-  ksys_mount+0xd7/0x150 fs/namespace.c:3352
-  __do_sys_mount fs/namespace.c:3366 [inline]
-  __se_sys_mount fs/namespace.c:3363 [inline]
-  __x64_sys_mount+0xba/0x150 fs/namespace.c:3363
-  do_syscall_64+0xb7/0x580 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-The buggy address belongs to the object at ffff8881d4aaa600
-  which belongs to the cache kmalloc-256 of size 256
-The buggy address is located 53 bytes to the right of
-  256-byte region [ffff8881d4aaa600, ffff8881d4aaa700)
-The buggy address belongs to the page:
-page:ffffea000752aa80 refcount:1 mapcount:0 mapping:ffff8881da002780  
-index:0x0 compound_mapcount: 0
-flags: 0x200000000010200(slab|head)
-raw: 0200000000010200 ffffea000752c900 0000000a0000000a ffff8881da002780
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff8881d4aaa600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  ffff8881d4aaa680: 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc
-> ffff8881d4aaa700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                      ^
-  ffff8881d4aaa780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff8881d4aaa800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+err:
+	kree(adata)
+	return ret;
+?
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>   static const struct snd_pcm_hardware acp3x_pcm_hardware_playback = {
+>   	.info = SNDRV_PCM_INFO_INTERLEAVED |
+>   		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> @@ -279,7 +261,11 @@ static int acp3x_dma_open(struct snd_soc_component *component,
+>   			  struct snd_pcm_substream *substream)
+>   {
+>   	int ret = 0;
+> +
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+newline?
+
+> -
+>   static const struct snd_soc_component_driver acp3x_i2s_component = {
+>   	.name		= DRV_NAME,
+>   	.open		= acp3x_dma_open,
+> @@ -619,6 +415,9 @@ static int acp3x_audio_probe(struct platform_device *pdev)
+>   		return -ENODEV;
+>   	}
+>   	irqflags = *((unsigned int *)(pdev->dev.platform_data));
+> +	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
+> +	if (!adata)
+> +		return -ENOMEM;
+>   
+>   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>   	if (!res) {
+> @@ -626,10 +425,6 @@ static int acp3x_audio_probe(struct platform_device *pdev)
+>   		return -ENODEV;
+>   	}
+>   
+> -	adata = devm_kzalloc(&pdev->dev, sizeof(*adata), GFP_KERNEL);
+> -	if (!adata)
+> -		return -ENOMEM;
+> -
+
+that part is hard to review with diff, please double-check the changes.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
