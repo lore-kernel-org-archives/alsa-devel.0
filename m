@@ -2,102 +2,65 @@ Return-Path: <SRS0=kTGd=ZB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC7BC17440
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 02:48:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0DB3C43331
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 09:44:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9917D21019
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 02:48:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E7E1721882
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 09:44:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="G2USUEjE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BHLDbjp2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9917D21019
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UMwxMsGO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7E1721882
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 459E415E2;
-	Sat,  9 Nov 2019 03:47:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 459E415E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99F4A1607;
+	Sat,  9 Nov 2019 10:43:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99F4A1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573267701;
-	bh=a+ZEOa9/CHKTG9DXikLYusGq7HlSSVYELgftdsSrU0U=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=G2USUEjEQ+qY4x1M0KkBekMKatPxllsAzzTWR+pLrUEXd3XiP0dt+TbsKSh2/griV
-	 FnUXCxKfGssuFPXPv2RBwDVv6aJINgYSZM8pd2/zIE0cDa62k/eVJuQAxlerWYl79P
-	 /KjhNCyZjKt2yS0pHDoJvco22BiqyGEwh0FSLL/Y=
+	s=default; t=1573292675;
+	bh=KIIqb2KJ62GnziLbvkYLwx3WolQ5T5uaz6TXDjtBL3A=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UMwxMsGOuv9HrSBZYSk0bls5F4efpv57Z/JxWu3ZmBUVmYabOQp32bo8cc2uaUfc3
+	 0FnFKdrYWMyd1skosBpLMUk+CMbFdWK+DSEyz2rn/QAPwrANOl8556LtvivtuE6Ey4
+	 cNQ+Gjb1eDOw1eA6Fbal+AcL66xENNi1kuYGj24Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C292BF80446;
-	Sat,  9 Nov 2019 03:47:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20EA0F80446;
+	Sat,  9 Nov 2019 10:43:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CC29F8049B; Sat,  9 Nov 2019 03:47:15 +0100 (CET)
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
- [IPv6:2607:f8b0:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C204BF803D0; Fri,  8 Nov 2019 08:13:58 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5346FF800EA
- for <alsa-devel@alsa-project.org>; Sat,  9 Nov 2019 03:47:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5346FF800EA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BHLDbjp2"
-Received: by mail-pf1-x441.google.com with SMTP id s5so6357246pfh.9
- for <alsa-devel@alsa-project.org>; Fri, 08 Nov 2019 18:47:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=cq4ckbPSNxVgpRvUOo2jxu08YcSsyOPv7EiFLNFV+wY=;
- b=BHLDbjp2/rjicvCl9Y6Pk/ehYvuXqPBXedtlwLQJ6829OC8HZwQ967is0orJ2YDroL
- HldAwgVrojmuko3zckLESNvoKOwgmP/HsWZVX7T8/ZDhtHij+BgfUJXCM1gWHTjxToas
- f8Xsbu71sf7NSixiLXUTZ2/i/1NCF61PFr8DOI91U8Mri732IefQkVCYXJLhovCFTgvM
- XL+kC0wSm1LX0crJx6yNQNTUDsqh3Y4zycOSS5BVxpjzVPLyaxqztoc/U6kaoiv8upxP
- aGNVu4M6PMMFMA41rZKciCsvXqgN90bXWvHb7lUfm7xPfMGJJGNqdi/zhgqfhaFxN/v1
- GfRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=cq4ckbPSNxVgpRvUOo2jxu08YcSsyOPv7EiFLNFV+wY=;
- b=rTgmg8HwLhPxZPgmru3lcJxvanhQAf2s2D2WX+gUTa5WMxs3fMNuaM2wdYruOz1IrI
- 4MVIF1r3buGF4f2wh1yWVu0boOYTwHLkgRdOnC0tjgUgsmo/yOU2UBNpJZA9pFqDdGUd
- rZWWK8Xn5fGlUHqnC895zYllMtvfndKCOIpqjEL6ayyBY14nj9t2JdOHHvXAg8TUjQhP
- 1u4ahhD3Ctr/4JzJ5cuBWVWbBHj/nfa4mgxRZtEC/WmZstBHVVa7mxJY06U4DB/jMYt8
- s2gftvtsdvIgPbnwZfNOmTQyRqD5cpOhxPm8J5EvnL9+zpnkht/iyXXKSK80xqDxucHB
- foYw==
-X-Gm-Message-State: APjAAAUXroylkssNu7+eeRJKC+xpSGV6f40cus/Qr9M/wUdJNyfQSOIw
- 3jjZNEKWjofEwZaNmCbD73E=
-X-Google-Smtp-Source: APXvYqzOaurDRWYu9ke1kM+bB+a8DNEavcWgckpha8tyYpW7pnfmEP7gMnK3Q1hF+tuDBY5QVGIRDA==
-X-Received: by 2002:a63:644:: with SMTP id 65mr7421600pgg.306.1573267629257;
- Fri, 08 Nov 2019 18:47:09 -0800 (PST)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com.
- [216.228.112.22])
- by smtp.gmail.com with ESMTPSA id r184sm8643749pfc.106.2019.11.08.18.47.08
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 08 Nov 2019 18:47:09 -0800 (PST)
-Date: Fri, 8 Nov 2019 18:45:02 -0800
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Message-ID: <20191109024502.GA9187@Asurada-Nvidia.nvidia.com>
-References: <1573025265-31852-1-git-send-email-shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1573025265-31852-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, broonie@kernel.org,
- festevam@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_audmix: Add spin lock to protect
-	tdms
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88CC3F80111
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 08:13:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88CC3F80111
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 07 Nov 2019 23:13:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,280,1569308400"; d="scan'208";a="377690434"
+Received: from unknown (HELO cooperch-i9.itwn.intel.com) ([10.5.253.42])
+ by orsmga005.jf.intel.com with ESMTP; 07 Nov 2019 23:13:51 -0800
+From: "Chiou, Cooper" <cooper.chiou@intel.com>
+To: alsa-devel@alsa-project.org
+Date: Fri,  8 Nov 2019 15:13:49 +0800
+Message-Id: <20191108071349.12840-1-cooper.chiou@intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Mailman-Approved-At: Sat, 09 Nov 2019 10:43:38 +0100
+Cc: "Chiou, Cooper" <cooper.chiou@intel.com>, Chiou@alsa-project.org
+Subject: [alsa-devel] [PATCH] ALSA: hda: Add Cometlake-S PCI ID
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,86 +73,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 06, 2019 at 03:27:45PM +0800, Shengjiu Wang wrote:
-> Audmix support two substream, When two substream start
-> to run, the trigger function may be called by two substream
-> in same time, that the priv->tdms may be updated wrongly.
-> 
-> The expected priv->tdms is 0x3, but sometimes the
-> result is 0x2, or 0x1.
+Add HD Audio Device PCI ID for the Intel Cometlake-S platform
 
-Feels like a bug fix to me, so  might be better to have a "Fixes"
-line and CC stable tree?
+Signed-off-by: Chiou, Cooper <cooper.chiou@intel.com>
+---
+ sound/pci/hda/hda_intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Anyway, change looks good to me:
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index cf53fbd872ee..c52419376c74 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2396,6 +2396,9 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* CometLake-H */
+ 	{ PCI_DEVICE(0x8086, 0x06C8),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
++	/* CometLake-S */
++	{ PCI_DEVICE(0x8086, 0xa3f0),
++	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+ 	/* Icelake */
+ 	{ PCI_DEVICE(0x8086, 0x34c8),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+-- 
+2.17.1
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
-Thanks
-
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/fsl/fsl_audmix.c | 6 ++++++
->  sound/soc/fsl/fsl_audmix.h | 1 +
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-> index c7e4e9757dce..a1db1bce330f 100644
-> --- a/sound/soc/fsl/fsl_audmix.c
-> +++ b/sound/soc/fsl/fsl_audmix.c
-> @@ -286,6 +286,7 @@ static int fsl_audmix_dai_trigger(struct snd_pcm_substream *substream, int cmd,
->  				  struct snd_soc_dai *dai)
->  {
->  	struct fsl_audmix *priv = snd_soc_dai_get_drvdata(dai);
-> +	unsigned long lock_flags;
->  
->  	/* Capture stream shall not be handled */
->  	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-> @@ -295,12 +296,16 @@ static int fsl_audmix_dai_trigger(struct snd_pcm_substream *substream, int cmd,
->  	case SNDRV_PCM_TRIGGER_START:
->  	case SNDRV_PCM_TRIGGER_RESUME:
->  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		spin_lock_irqsave(&priv->lock, lock_flags);
->  		priv->tdms |= BIT(dai->driver->id);
-> +		spin_unlock_irqrestore(&priv->lock, lock_flags);
->  		break;
->  	case SNDRV_PCM_TRIGGER_STOP:
->  	case SNDRV_PCM_TRIGGER_SUSPEND:
->  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +		spin_lock_irqsave(&priv->lock, lock_flags);
->  		priv->tdms &= ~BIT(dai->driver->id);
-> +		spin_unlock_irqrestore(&priv->lock, lock_flags);
->  		break;
->  	default:
->  		return -EINVAL;
-> @@ -491,6 +496,7 @@ static int fsl_audmix_probe(struct platform_device *pdev)
->  		return PTR_ERR(priv->ipg_clk);
->  	}
->  
-> +	spin_lock_init(&priv->lock);
->  	platform_set_drvdata(pdev, priv);
->  	pm_runtime_enable(dev);
->  
-> diff --git a/sound/soc/fsl/fsl_audmix.h b/sound/soc/fsl/fsl_audmix.h
-> index 7812ffec45c5..479f05695d53 100644
-> --- a/sound/soc/fsl/fsl_audmix.h
-> +++ b/sound/soc/fsl/fsl_audmix.h
-> @@ -96,6 +96,7 @@ struct fsl_audmix {
->  	struct platform_device *pdev;
->  	struct regmap *regmap;
->  	struct clk *ipg_clk;
-> +	spinlock_t lock; /* Protect tdms */
->  	u8 tdms;
->  };
->  
-> -- 
-> 2.21.0
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
