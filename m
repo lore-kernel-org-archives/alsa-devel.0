@@ -6,77 +6,78 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 279FBFA372C
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 15:49:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F57DFA372C
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 15:50:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A480121D6C
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 15:49:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 897D5215EA
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 15:50:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AeLpqv4a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A480121D6C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d+E+zukS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 897D5215EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D34181681;
-	Fri,  8 Nov 2019 16:49:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D34181681
+	by alsa0.perex.cz (Postfix) with ESMTPS id C26C8168A;
+	Fri,  8 Nov 2019 16:49:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C26C8168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573228192;
-	bh=rDSCkkz9ihW+UrmI2nOasJ9MlF/P2EqKO64lfwJp5Uo=;
+	s=default; t=1573228237;
+	bh=QXgbSRFkbtoKnFg++a7W8ar6YUVkaWlhvz3d/O8sFwI=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AeLpqv4aHN0hi5A/2A7aDgluQ2o01tbIaWHXErSELUQC6GKK6ePvDSt3JT8wKdvtJ
-	 dLECsfbfUvhnPfddWk24htm6XqopAZ5pDsUThJCnqZsxb54opA8fzcNc0aQPXUIe4q
-	 7Llz8oxPXKN+lFjEeKJpPAAnNFfzuP9xdVSzaPT4=
+	b=d+E+zukS93kIxqlXwwh/6DHREWkg7vebUgU2MWwNLdqF3w5u77rMc7CPEGevCE5pw
+	 +ymS/ljexM+ic4IfCpK3VFWbD8uobmtmFP6/w/R6cr3mnT6487DrjnhUgTt1KgoVF3
+	 X0xbsdQvwImu0Ea/wvOyiiqkh8Ra45fC8/RRBF3U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5663DF8048D;
-	Fri,  8 Nov 2019 16:48:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF58BF805FE;
+	Fri,  8 Nov 2019 16:48:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CB05F803D0; Fri,  8 Nov 2019 16:48:05 +0100 (CET)
+ id AA36EF805A1; Fri,  8 Nov 2019 16:48:08 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68637F800F3
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 16:48:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68637F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9378CF800F3
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 16:48:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9378CF800F3
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 08 Nov 2019 07:47:53 -0800
+ 08 Nov 2019 07:47:54 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,281,1569308400"; d="scan'208";a="377794951"
+X-IronPort-AV: E=Sophos;i="5.68,281,1569308400"; d="scan'208";a="377794934"
 Received: from nupoorko-mobl1.amr.corp.intel.com (HELO [10.251.157.201])
  ([10.251.157.201])
- by orsmga005.jf.intel.com with ESMTP; 08 Nov 2019 07:47:47 -0800
+ by orsmga005.jf.intel.com with ESMTP; 08 Nov 2019 07:47:42 -0800
 To: Vinod Koul <vkoul@kernel.org>
-References: <20191023210657.32440-1-pierre-louis.bossart@linux.intel.com>
- <20191023210657.32440-2-pierre-louis.bossart@linux.intel.com>
- <20191103045604.GE2695@vkoul-mobl.Dlink>
- <f53b28bb-1ec7-a400-54ed-51fd55819ecd@linux.intel.com>
- <20191108042940.GW952516@vkoul-mobl>
+References: <20191023212823.608-1-pierre-louis.bossart@linux.intel.com>
+ <20191023212823.608-14-pierre-louis.bossart@linux.intel.com>
+ <42403ea0-e337-81b6-f11a-2a32c1473750@intel.com>
+ <0374d162-2cea-2fca-ec12-a0377130c711@linux.intel.com>
+ <20191108041435.GV952516@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e3e10c25-84dc-f4e7-e94b-d18493450021@linux.intel.com>
-Date: Fri, 8 Nov 2019 08:55:41 -0600
+Message-ID: <6daf0d90-a5f9-d510-f458-879528500134@linux.intel.com>
+Date: Fri, 8 Nov 2019 08:39:49 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20191108042940.GW952516@vkoul-mobl>
+In-Reply-To: <20191108041435.GV952516@vkoul-mobl>
 Content-Language: en-US
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, jank@cadence.com,
+ slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/4] soundwire: sdw_slave: add new fields
- to track probe status
+Subject: Re: [alsa-devel] [PATCH 13/14] soundwire: intel: free all resources
+ on hw_free()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,67 +90,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 11/7/19 10:29 PM, Vinod Koul wrote:
-> On 04-11-19, 08:32, Pierre-Louis Bossart wrote:
->>
->>
->> On 11/2/19 11:56 PM, Vinod Koul wrote:
->>> On 23-10-19, 16:06, Pierre-Louis Bossart wrote:
->>>> Changes to the sdw_slave structure needed to solve race conditions on
->>>> driver probe.
->>>
->>> Can you please explain the race you have observed, it would be a very
->>> useful to document it as well
->>
->> the races are explained in the [PATCH 00/18] soundwire: code hardening and
->> suspend-resume support series.
-> 
-> It would make sense to explain it here as well to give details to
-> reviewers, there is nothing wrong with too much detail!
-> 
->>>>
->>>> The functionality is added in the next patch.
->>>
->>> which one..?
->>
->> [PATCH 00/18] soundwire: code hardening and suspend-resume support
-> 
-> Yeah great! let me play detective with 18 patch series. I asked for a
-> patch and got a series!
-> 
-> Again, please help the maintainer to help you. We would love to see this
-> merged as well, but please step up and give more details in cover
-> letter and changelogs. I shouldn't need to do guesswork and scan through the
-> inbox to find the context!
-
-We are clearly not going anywhere.
-
-I partitioned the patches to make your maintainer life easier and help 
-the integration of SoundWire across two trees. All I get is negative 
-feedback, grand-standing, and zero comments on actual changes.
-
-For the record, I am mindful of reviewer/maintainer workload, and I did 
-contact you in September to check your availability and provided a 
-pointer to initial code changes. I did send a first version a week prior 
-to your travel/vacation, I resend another version when you were back and 
-waited yet another two weeks to resend a second version. I also 
-contacted Takashi, Mark and you to suggest this code partition, and did 
-not get any pushback. It's not like I am pushing stuff down your throat, 
-I have been patient and considerate.
-
-Please start with the patches "soundwire: code hardening and 
-suspend-resume support" and come back to this interface description when 
-you have reviewed these changes. It's not detective work, it's working 
-around the consequences of having separate trees for Audio and SoundWire.
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CgpPbiAxMS83LzE5IDEwOjE0IFBNLCBWaW5vZCBLb3VsIHdyb3RlOgo+IE9uIDA0LTExLTE5LCAx
+NTo0NiwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+IE9uIDExLzQvMTkgMjowOCBQTSwg
+Q2V6YXJ5IFJvamV3c2tpIHdyb3RlOgo+Pj4gT24gMjAxOS0xMC0yMyAyMzoyOCwgUGllcnJlLUxv
+dWlzIEJvc3NhcnQgd3JvdGU6Cj4+Pj4gQEAgLTgxNiw2ICs4MzUsNyBAQCBzdGF0aWMgaW50Cj4+
+Pj4gIMKgIGludGVsX2h3X2ZyZWUoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0s
+IHN0cnVjdAo+Pj4+IHNuZF9zb2NfZGFpICpkYWkpCj4+Pj4gIMKgIHsKPj4+PiAgwqDCoMKgwqDC
+oCBzdHJ1Y3Qgc2R3X2NkbnMgKmNkbnMgPSBzbmRfc29jX2RhaV9nZXRfZHJ2ZGF0YShkYWkpOwo+
+Pj4+ICvCoMKgwqAgc3RydWN0IHNkd19pbnRlbCAqc2R3ID0gY2Ruc190b19pbnRlbChjZG5zKTsK
+Pj4+PiAgwqDCoMKgwqDCoCBzdHJ1Y3Qgc2R3X2NkbnNfZG1hX2RhdGEgKmRtYTsKPj4+PiAgwqDC
+oMKgwqDCoCBpbnQgcmV0Owo+Pj4+IEBAIC04MjMsMTIgKzg0MywyOCBAQCBpbnRlbF9od19mcmVl
+KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbQo+Pj4+ICpzdWJzdHJlYW0sIHN0cnVjdCBzbmRfc29j
+X2RhaSAqZGFpKQo+Pj4+ICDCoMKgwqDCoMKgIGlmICghZG1hKQo+Pj4+ICDCoMKgwqDCoMKgwqDC
+oMKgwqAgcmV0dXJuIC1FSU87Cj4+Pj4gK8KgwqDCoCByZXQgPSBzZHdfZGVwcmVwYXJlX3N0cmVh
+bShkbWEtPnN0cmVhbSk7Cj4+Pj4gK8KgwqDCoCBpZiAocmV0KSB7Cj4+Pj4gK8KgwqDCoMKgwqDC
+oMKgIGRldl9lcnIoZGFpLT5kZXYsICJzZHdfZGVwcmVwYXJlX3N0cmVhbTogZmFpbGVkICVkIiwg
+cmV0KTsKPj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJldDsKPj4+PiArwqDCoMKgIH0KPj4+
+PiArCj4+Pgo+Pj4gSSB1bmRlcnN0YW5kIHRoYXQgeW91IHdhbnQgdG8gYmUgdHJhbnNwYXJlbnQg
+dG8gY2FsbGVyIHdpdGggZmFpbHVyZQo+Pj4gcmVhc29ucyB2aWEgZGV2X2Vyci9fd2Fybi4gSG93
+ZXZlciwgc2R3X2RlcHJlcGFyZV9zdHJlYW0gYWxyZWFkeSBkdW1wcwo+Pj4gYWxsIHRoZSBsb2dz
+IHdlIG5lZWQuIFRoZSBzYW1lIGFwcGxpZXMgZm9yIG1vc3Qgb2YgdGhlIG90aGVyIGNhbGxzIChh
+bmQKPj4+IG5vdCBqdXN0IGluIHRoaXMgcGF0Y2guLikuCj4gCj4gSSB0aGluayB0aGlzIGlzIGEg
+dmFsaWQgY29uY2VybiEgSW4gbGludXggd2UgZG8gbm90IGRvIHRoYXQsIGZvciBleGFtcGxlCj4g
+d2UgYXNrIHBlb3BsZSB0byBub3QgbG9nIGVycm9ycyBvbiBrbWFsbG9jIGFzIGl0IHdpbGwgYmUg
+bG9nZ2VkIG9uCj4gZmFpbHVyZXMgc28gZHJpdmVycyBkbyBub3QgbmVlZCB0byBkbyB0aGF0Lgo+
+IAo+Pj4gRG8gd2UgcmVhbGx5IG5lZWQgdG8gYmUgdGhhdCB2ZXJib3NlPyBNYXliZSBqdXN0IGFn
+cmVlIG9uIGNhbGxlciAtb3ItCj4+PiBzdWJqZWN0IGJlaW5nIHRoZSBzb3VyY2UgZm9yIHRoZSBt
+ZXNzYWdpbmcsIGFsaWduIGV4aXN0aW5nIHVzYWdlcyBhbmQKPj4+IHRodXMgcHJldmVudGluZyBm
+dXJ0aGVyIGR1cGxpY2F0aW9uPwo+Pj4KPj4+IE5vdCBmb3JjaW5nIGFueXRoaW5nLCBqdXN0IGFz
+a2luZyBmb3IgeW91ciBvcGluaW9uIG9uIHRoaXMuCj4+Cj4+IHRoZSBzZHdfcHJlcGFyZS9kZXBy
+ZXBhcmVfc3RyZWFtIGNhbGxzIHByb3ZpZGUgZXJyb3IgbG9ncywgYnV0IHRoZXkgYXJlIG5vdAo+
+PiBtYXBwZWQgdG8gc3BlY2lmaWMgZGV2aWNlcy9kYWlzIChwcl9lcnIgdnMuIGRldl9kYmcpLiBJ
+IGZvdW5kIGl0IHdhcyBlYXNpZXIKPj4gdG8gY2hlY2sgZm9yIHdoaWNoIGRhaSB0aGUgZXJyb3Ig
+d2FzIHJlcG9ydGVkLgo+IAo+IFdlbGwgaW4gdGhhdCBjYXNlIHdlIHNob3VsZCBmaXggcHJfZXJy
+LCB0aGVyZSBhcmUgb25seSAxNyBpbnN0YW5jZXMgb2YKPiB0aGVzZSBpbiBjb3JlLCBhbmQgZmV3
+IG9mIHRoZW0gYXJlIGp1c3RpZmllZCBpbiBjb3JlIChubyBkZXYgcG9pbnRlcikKPiBhbmQgMTEg
+aW4gc3RyZWFtIChmZXcgb2YgdGhlbSB2YWxpZCAobm8gc3RyZWFtIHBvaW50ZXIpIGJ1dCByZXN0
+IGNhbiBiZQo+IGNvbnZlcnRlZCB0byB1c2UgZGV2X2VyciEgRXZlbiB0aGVuIHRoZXkgcHJpbnQg
+c3RyZWFtIG5hbWUsIHNvIGNoZWNraW5nCj4gZXJyb3IgaXMgbm90IGp1c3RpZmllZCBhcmd1bWVu
+dCEKCnRoZSBzdHJlYW0gaGFzIG5vIG5vdGlvbiBvZiBkZXZpY2UsIGl0IGNhbiBiZSBtYWRlIG9m
+IG11bHRpcGxlIGRldmljZXMsIApzbyB3aGljaCBvbmUgd291bGQgeW91IGNob29zZT8KCj4gCj4+
+IFdlIGFyZSBhbHNvIGluIHRoZSBtaWRkbGUgb2YgaW50ZWdyYXRpb24gd2l0aCBuZXcgaGFyZHdh
+cmUvYm9hcmRzLCBhbmQKPj4gZXJyaW5nIG9uIHRoZSBzaWRlIG9mIG1vcmUgdHJhY2VzIHdpbGwg
+aGVscCBldmVyeW9uZSBpbnZvbHZlZC4gV2UgY2FuCj4+IHJldmlzaXQgbGF0ZXIgd2hpY2ggb25l
+cyBhcmUgc3RyaWN0bHkgbmVjZXNzYXJ5Lgo+IAo+IE5hYWggeW91IGFyZSBoYXZpbmcgZHVwbGlj
+YXRlIGxvZ3MsIGl0IGRvZXMgKm5vdCogaGVscCBpbiBkZWJ1ZyBzZWVtcwo+IDEwMDAgbGluZSBs
+b2dzIGFuZCBmZXcgbGluZXMgY29udmV5aW5nIGR1cGxpY2F0ZSBpbmZvLCBJIHdvdWxkIHJhdGhl
+cgo+IGhhdmUgZWFjaCBsaW5lIHVuaXF1ZSBzbyB0aGF0IEkgZG9udCBoYXZlIHRvIHNraXAgZHVw
+bGljYXRlIG9uZXMgd2hpbGUKPiBkZWJ1Z2dpbmchCgpUaGV5IGFyZSBub3QgYWxsIGR1cGxpY2F0
+ZXMuCgpBZ2FpbiwgaWYgSSByZW1vdmUgdGhlIGxvZ3MgaW4gc3RyZWFtLmMsIHRoZW4gSSBkbyBs
+b3NlIHZhbHVhYmxlIAppbmZvcm1hdGlvbiBvbiBiYWQgc3RhdGUgbWFjaGluZXMgdHJhbnNpdGlv
+bnMsIGV0Yy4gQW4gZXJyb3IgY29kZSBpcyBub3QgCmVub3VnaCB0byByZWNvbnN0cnVjdCB0aGUg
+aXNzdWVzIGZyb20gaW50ZWwuYwoKSWYgSSByZW1vdmUgdGhlIGxvZ3MgaW4gaW50ZWwuYywgSSBj
+YW4ndCBrbm93IHdoaWNoIGRhaSBoYWQgYW4gZXJyb3IgYW5kIAp3aGF0IGNhdXNlZCBpdC4KCnNl
+cmlvdXNseSwgdGhlc2UgYXJlIGFsbCBkZXRhaWxzLCB5b3UgaGF2ZSBvdmVyIDUwIHBhdGNoZXMg
+dG8gcmV2aWV3IAp3aXRoIGEgY29tcGxldGUgcmV3b3JrIG9mIHRoaXMgc3Vic3lzdGVtIGFuZCB3
+ZSBhcmd1ZSBhYm91dCBkZXZfZXJyIAp2ZXJib3NpdHk/Cl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
