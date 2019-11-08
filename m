@@ -2,85 +2,67 @@ Return-Path: <SRS0=0Fuw=ZA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52951FA372C
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 04:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E057C5DF60
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 09:49:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E017C2178F
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 04:30:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 78DD72087E
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 09:49:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ItVVlyg9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mUmLjVWF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E017C2178F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VjY6TSP8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78DD72087E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CD4C166E;
-	Fri,  8 Nov 2019 05:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CD4C166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 417BD1669;
+	Fri,  8 Nov 2019 10:48:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 417BD1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573187444;
-	bh=iSKI9JYgXiSKsUrj9ZqBLT+Ahzsufvk4/0V9c/ati3c=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1573206581;
+	bh=ZHcqq8wJ4PmdLXmkAoFjJYphkE9zdTvKqHXtDckzRx4=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ItVVlyg9rJX0TzCGuqkjjVc0+5fxhX56VHvcxyEeDc/Y03iJJfXzyONnbM/xE9ick
-	 QJIgPwvYmvFsejbTAb4s6w9saFBs/6tkjRCxjY9yCT+G+BM/5w7YEup5suZS43wydU
-	 EpD07SMiqUQ6WA3mtBzPeNb7rWAP3AU1b4CEzLjA=
+	b=VjY6TSP8TRVbhfKbr2cQGClzy6dhNuvodK1GF3SptKYJES9sYxY8mcZI+P9v7Yvhy
+	 JUPVs0UDbRlfx+SMYv5J1Q41M7+vZx6TxKb0VKfRaBmQwz20z2ySrgbAZmg0IyQEce
+	 DcPQc9HlzivNOCNDqpsEmMproOkXoGcCPxv5cKHY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 845BDF80321;
-	Fri,  8 Nov 2019 05:29:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B05C1F80321;
+	Fri,  8 Nov 2019 10:48:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC4D3F803D0; Fri,  8 Nov 2019 05:29:50 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 25B21F800F3; Fri,  8 Nov 2019 10:48:06 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1149F800D3
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 05:29:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1149F800D3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mUmLjVWF"
-Received: from localhost (unknown [106.200.194.165])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DC6EA2178F;
- Fri,  8 Nov 2019 04:29:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573187384;
- bh=tqpTzta+Se1TB7bsp9vwIxnbM/32x+fpr6Gz4NiCsUo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=mUmLjVWFgPkKpVnapidjks07A8JjQPo+B7cRJRcWJQA+U2UqTnSIPDI0awYh5TP3f
- UsyPIyx6v2OuKZkavu3mnXWCLUbKsTEkB0pNgXvMWMuJcpujNfWlE1H9q/D7AdouHC
- 0Z2h/h4D4IBXVXPI824hWB0qDQJDtmWs/pQkh6Co=
-Date: Fri, 8 Nov 2019 09:59:40 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191108042940.GW952516@vkoul-mobl>
-References: <20191023210657.32440-1-pierre-louis.bossart@linux.intel.com>
- <20191023210657.32440-2-pierre-louis.bossart@linux.intel.com>
- <20191103045604.GE2695@vkoul-mobl.Dlink>
- <f53b28bb-1ec7-a400-54ed-51fd55819ecd@linux.intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <f53b28bb-1ec7-a400-54ed-51fd55819ecd@linux.intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/4] soundwire: sdw_slave: add new fields
- to track probe status
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA6DCF80321
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 10:46:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA6DCF80321
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id B4541AEC4;
+ Fri,  8 Nov 2019 09:46:51 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Fri,  8 Nov 2019 10:46:35 +0100
+Message-Id: <20191108094641.20086-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20191108094641.20086-1-tiwai@suse.de>
+References: <20191108094641.20086-1-tiwai@suse.de>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@chromium.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [alsa-devel] [PATCH 2/8] ASoC: rt5514-spi: Convert to the common
+	vmalloc memalloc
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,45 +75,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 04-11-19, 08:32, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 11/2/19 11:56 PM, Vinod Koul wrote:
-> > On 23-10-19, 16:06, Pierre-Louis Bossart wrote:
-> > > Changes to the sdw_slave structure needed to solve race conditions on
-> > > driver probe.
-> > 
-> > Can you please explain the race you have observed, it would be a very
-> > useful to document it as well
-> 
-> the races are explained in the [PATCH 00/18] soundwire: code hardening and
-> suspend-resume support series.
+The recent change (*) in the ALSA memalloc core allows us to drop the
+special vmalloc-specific allocation and page handling.  This patch
+coverts to the common code.
+(*) 1fe7f397cfe2: ALSA: memalloc: Add vmalloc buffer allocation
+                  support
+    7e8edae39fd1: ALSA: pcm: Handle special page mapping in the
+                  default mmap handler
 
-It would make sense to explain it here as well to give details to
-reviewers, there is nothing wrong with too much detail!
+Since it requires the specific buffer type (SNDRV_DMA_TYPE_VMALLOC),
+it's set in the pcm_new ops now.
 
-> > > 
-> > > The functionality is added in the next patch.
-> > 
-> > which one..?
-> 
-> [PATCH 00/18] soundwire: code hardening and suspend-resume support
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/codecs/rt5514-spi.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-Yeah great! let me play detective with 18 patch series. I asked for a
-patch and got a series!
-
-Again, please help the maintainer to help you. We would love to see this
-merged as well, but please step up and give more details in cover
-letter and changelogs. I shouldn't need to do guesswork and scan through the
-inbox to find the context!
-
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 57ff5aee452d..f1b7b947ecbd 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -219,8 +219,7 @@ static int rt5514_spi_hw_params(struct snd_soc_component *component,
+ 	u8 buf[8];
+ 
+ 	mutex_lock(&rt5514_dsp->dma_lock);
+-	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-			params_buffer_bytes(hw_params));
++	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+ 	rt5514_dsp->substream = substream;
+ 	rt5514_dsp->dma_offset = 0;
+ 
+@@ -246,7 +245,7 @@ static int rt5514_spi_hw_free(struct snd_soc_component *component,
+ 
+ 	cancel_delayed_work_sync(&rt5514_dsp->copy_work);
+ 
+-	return snd_pcm_lib_free_vmalloc_buffer(substream);
++	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
+@@ -260,12 +259,6 @@ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
+ 	return bytes_to_frames(runtime, rt5514_dsp->dma_offset);
+ }
+ 
+-static struct page *rt5514_spi_pcm_page(struct snd_soc_component *component,
+-					struct snd_pcm_substream *substream,
+-					unsigned long offset)
+-{
+-	return snd_pcm_lib_get_vmalloc_page(substream, offset);
+-}
+ 
+ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ {
+@@ -298,6 +291,14 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
++static int rt5514_spi_pcm_new(struct snd_soc_component *component,
++			      struct snd_soc_pcm_runtime *rtd)
++{
++	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_VMALLOC,
++					      NULL, 0, 0);
++	return 0;
++}
++
+ static const struct snd_soc_component_driver rt5514_spi_component = {
+ 	.name		= DRV_NAME,
+ 	.probe		= rt5514_spi_pcm_probe,
+@@ -305,7 +306,7 @@ static const struct snd_soc_component_driver rt5514_spi_component = {
+ 	.hw_params	= rt5514_spi_hw_params,
+ 	.hw_free	= rt5514_spi_hw_free,
+ 	.pointer	= rt5514_spi_pcm_pointer,
+-	.page		= rt5514_spi_pcm_page,
++	.pcm_construct	= rt5514_spi_pcm_new,
+ };
+ 
+ /**
 -- 
-~Vinod
+2.16.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
