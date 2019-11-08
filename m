@@ -2,67 +2,79 @@ Return-Path: <SRS0=0Fuw=ZA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61B08C5DF60
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 09:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AB89FC6194
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 12:08:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD4CC21D6C
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 09:55:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6253F21924
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 12:08:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mfzl0k8a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD4CC21D6C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BNLmjP6W";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="FH3Cczza"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6253F21924
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C4EE1690;
-	Fri,  8 Nov 2019 10:54:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C4EE1690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 337C7166A;
+	Fri,  8 Nov 2019 13:08:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 337C7166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573206919;
-	bh=gJSlCNIY36BrQalqGw3w12TV4rtn6SyvIdmUtD82xko=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mfzl0k8a4lEayzu6MnrYnKzcNjER1zftuWwTbuERXC5+myZi1mwTUeLsA0+1/QOpx
-	 QUSHy+9eK4rqt9gT8pXpVThiA3nIEW7dafsOndhxg8HNo3EqKfD9YKWCtOfpwg3mu9
-	 nzwXR8nraZ8sardg6xKRyZdZXjXiBDyDCq94G8pM=
+	s=default; t=1573214932;
+	bh=QD8UUKjZRuGLC1atiW1BlFi7VwogzIJOyqwDbdQg1ZQ=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=BNLmjP6WhdODci0OVg9z/dT7hV65wbTQ7OreDP5LwoOGbrw1CTh7RZENyI3YOvRnV
+	 3Mo5MV4blb6FKRlyJpVeHzS4qLNM00dv42iMfxmCprDq7D74LF7qCKnYzWfYo+XlEa
+	 ji7CBMGE76fpVxknEgH29Yl0P2ZfFmu6MDbLu3W0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2183BF8065D;
-	Fri,  8 Nov 2019 10:49:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F2D9F80321;
+	Fri,  8 Nov 2019 13:08:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69FBBF803D0; Fri,  8 Nov 2019 10:48:19 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 09918F803D0; Fri,  8 Nov 2019 13:08:00 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E147EF805DF
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 10:46:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E147EF805DF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id F16CDB14F;
- Fri,  8 Nov 2019 09:46:51 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Fri,  8 Nov 2019 10:46:40 +0100
-Message-Id: <20191108094641.20086-8-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191108094641.20086-1-tiwai@suse.de>
-References: <20191108094641.20086-1-tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@chromium.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [alsa-devel] [PATCH 7/8] ASoC: cros_ec_codec: Convert to the common
-	vmalloc memalloc
+ by alsa1.perex.cz (Postfix) with ESMTPS id 827EEF80111
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 13:07:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 827EEF80111
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="FH3Cczza"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=fGrbvvV39ibxa3jmK9NOHnc2dKnH3m2isspiA81e3kc=; b=FH3CczzaUUqc
+ nHr5+xJTCtLh2j5XCIdjgjyTMKjbWa9MSp+wpP0e4g3YnykqpbtPCFbjQR74yyH8PYhEoCueq3B3O
+ mB7+Dm1P3WMWk+C2klTqYGJcMqUDmA9emyrSHxixSx8KPDD7N3RiGVJB0FAzsdh7gVJqH+iZeWe7O
+ ynAKw=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iT33T-0007DK-Ti; Fri, 08 Nov 2019 12:07:55 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id 5B3712740C6C; Fri,  8 Nov 2019 12:07:55 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <20191107134833.1502-1-tiwai@suse.de>
+X-Patchwork-Hint: ignore
+Message-Id: <20191108120755.5B3712740C6C@ypsilon.sirena.org.uk>
+Date: Fri,  8 Nov 2019 12:07:55 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: core: Fix compile warning with
+	CONFIG_DEBUG_FS=n" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,77 +88,86 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1583677950495635520=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent change (*) in the ALSA memalloc core allows us to drop the
-special vmalloc-specific allocation and page handling.  This patch
-coverts to the common code.
-(*) 1fe7f397cfe2: ALSA: memalloc: Add vmalloc buffer allocation
-                  support
-    7e8edae39fd1: ALSA: pcm: Handle special page mapping in the
-                  default mmap handler
+--===============1583677950495635520==
+Content-Type: text/plain
 
+The patch
+
+   ASoC: core: Fix compile warning with CONFIG_DEBUG_FS=n
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From bd0b609e0c3362cb167c51d4bd4330d79fc00987 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Thu, 7 Nov 2019 14:48:33 +0100
+Subject: [PATCH] ASoC: core: Fix compile warning with CONFIG_DEBUG_FS=n
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Paper over a compile warning:
+  sound/soc/soc-pcm.c:1185:8: warning: unused variable ‘name’
+
+Fixes: 0632fa042541 ("ASoC: core: Fix pcm code debugfs error")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20191107134833.1502-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cros_ec_codec.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/soc-pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index dd14caf9091a..7b17f39a6a10 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -918,8 +918,7 @@ static int wov_pcm_hw_params(struct snd_soc_component *component,
- 	priv->wov_burst_read = true;
- 	mutex_unlock(&priv->wov_dma_lock);
- 
--	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
--			params_buffer_bytes(hw_params));
-+	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
- }
- 
- static int wov_pcm_hw_free(struct snd_soc_component *component,
-@@ -935,7 +934,7 @@ static int wov_pcm_hw_free(struct snd_soc_component *component,
- 
- 	cancel_delayed_work_sync(&priv->wov_copy_work);
- 
--	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+	return snd_pcm_lib_free_pages(substream);
- }
- 
- static snd_pcm_uframes_t wov_pcm_pointer(struct snd_soc_component *component,
-@@ -948,11 +947,12 @@ static snd_pcm_uframes_t wov_pcm_pointer(struct snd_soc_component *component,
- 	return bytes_to_frames(runtime, priv->wov_dma_offset);
- }
- 
--static struct page *wov_pcm_page(struct snd_soc_component *component,
--				 struct snd_pcm_substream *substream,
--				 unsigned long offset)
-+static int wov_pcm_new(struct snd_soc_component *component,
-+		       struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 493a2e80e893..4bf71e3211d8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1182,7 +1182,9 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
  {
--	return snd_pcm_lib_get_vmalloc_page(substream, offset);
-+	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_VMALLOC,
-+					      NULL, 0, 0);
-+	return 0;
- }
+ 	struct snd_soc_dpcm *dpcm;
+ 	unsigned long flags;
++#ifdef CONFIG_DEBUG_FS
+ 	char *name;
++#endif
  
- static const struct snd_soc_component_driver wov_component_driver = {
-@@ -964,7 +964,7 @@ static const struct snd_soc_component_driver wov_component_driver = {
- 	.hw_params	= wov_pcm_hw_params,
- 	.hw_free	= wov_pcm_hw_free,
- 	.pointer	= wov_pcm_pointer,
--	.page		= wov_pcm_page,
-+	.pcm_construct	= wov_pcm_new,
- };
- 
- static int cros_ec_codec_platform_probe(struct platform_device *pdev)
+ 	/* only add new dpcms */
+ 	for_each_dpcm_be(fe, stream, dpcm) {
 -- 
-2.16.4
+2.20.1
+
+
+--===============1583677950495635520==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1583677950495635520==--
