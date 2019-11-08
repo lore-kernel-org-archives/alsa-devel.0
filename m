@@ -2,110 +2,82 @@ Return-Path: <SRS0=0Fuw=ZA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3F1AFC6195
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 13:17:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43BC2FA372C
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 15:36:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DB7B2178F
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 13:17:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3EA5121882
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Nov 2019 15:36:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OXeqlKG5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bX5eYgtn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DB7B2178F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="om1A2rlm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EA5121882
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48C321607;
-	Fri,  8 Nov 2019 14:16:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48C321607
+	by alsa0.perex.cz (Postfix) with ESMTPS id E912E1667;
+	Fri,  8 Nov 2019 16:35:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E912E1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573219062;
-	bh=5Lh/Zr5I/f+/KQFPpJ1/C2Ibb7WC5F4XwVLskDJ+++U=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=OXeqlKG56uUk7SkYcEIVZj8INq8YdHwNxY5gRiffseelPMkEOwerMlpfM2CveVzc6
-	 7mtdYlmqV3I42cGmjrMYJt9qnPDn1DNYajsE9i8EOaoVDYMwjVUj6msmGEb8TmoYqI
-	 S4UAzMhyu/CXwCUx5djMSqXezrqYbEXGdDOgDpuo=
+	s=default; t=1573227399;
+	bh=8XXyZ7Z4DqLHOnFvydz21YZF18Ue0erBCdCtG+TezCw=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=om1A2rlmaiZSPhr2fQQ/spHx0yfzes2WwAf9sbfoMJi4XJxAmWdbcHrq32nuLHLoU
+	 c8cmm9SEa7cjfYCF3mW/qkp5zpovyxebhjSSDiTU6B617dh2hMB/Hp7NSJ+LqAtkZc
+	 52jZ1OIs6CIJBDOgG2To2mUXLu3ETxIVGmUTbPLc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD4D2F80321;
-	Fri,  8 Nov 2019 14:16:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D8EAF80321;
+	Fri,  8 Nov 2019 16:35:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 578FFF803D0; Fri,  8 Nov 2019 14:16:49 +0100 (CET)
-Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com
- [207.211.31.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 4F970F803D0; Fri,  8 Nov 2019 16:35:46 +0100 (CET)
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com
+ [209.85.167.171])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAC19F800F3
- for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 14:16:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAC19F800F3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="bX5eYgtn"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1573219005;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=i/TbUweoV5/uy9Gy763L+o22Ekb02/9YtoJz4WXnTUk=;
- b=bX5eYgtnljqkTI279z8XcvAV25w+LI8oWeKxoENNS7Bppc5Rkqmz4i9te0loXsgBB86AP+
- qyN2dcvnHkP8Vrw4D2j/o3lqX2Sfd021M69+1SAmfyvLb6PJNX+5qdSta1peA9yB1I3Tp+
- EVqKqAkQMii03F4QuK1VaUwlIv2tgGU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-NsA5h5qmOUieIUZCqcrtlA-1; Fri, 08 Nov 2019 08:16:40 -0500
-Received: by mail-wm1-f72.google.com with SMTP id i23so2314399wmb.3
- for <alsa-devel@alsa-project.org>; Fri, 08 Nov 2019 05:16:40 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CB44F800D3
+ for <alsa-devel@alsa-project.org>; Fri,  8 Nov 2019 16:35:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CB44F800D3
+Received: by mail-oi1-f171.google.com with SMTP id e9so5566140oif.8
+ for <alsa-devel@alsa-project.org>; Fri, 08 Nov 2019 07:35:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=1w7nyntEOMmt0CqjadRMS0k5+0iX+jIntmBEuJO8+Lg=;
- b=HfVylrKO96m1lFITRlRse1I2O69CnL8jo+ZbEni1KTMcwNvJVsbvN27l5RgmPEl7Nl
- zsvnOya2jCy4c1gqyDsxeUD54dszH1VWSINGd33kzuwFZLa7txQwKYHQ8NGkJGxTACi7
- /oU1UPZJRMCuJgLINktnegcZj0nnbTsXEzWff/z9jwoJRpVJSG0G7Lb20vq5TqNqqFIw
- p8uTkkmYh0kuRxkRhEOW3FLjybz7ml6CWtxwDQwwvf5wLnBTPQ1qCdUCzcj7Qm+EJ7WK
- eLQxBA5Xd+0w4NEwxALeX2o6a83B5sQdJL81jrHFSDRxcRiqWG+yH8BEe6ceDaD17JWh
- J36w==
-X-Gm-Message-State: APjAAAU1bZIXSYfflgaq/K6G13s11++w5i474M07EUSsxePdpZFHr5Xs
- Lm7KyrzJOQVcG1VkSfg5ppf2wUXKMW38qKYHKlG2eJzz6hwYUAFkw0GZr/Kg82V+gJ0D4P0bCQ2
- LNTFnATFZjNtTkkWMzzcl2WE=
-X-Received: by 2002:a7b:c925:: with SMTP id h5mr8865196wml.115.1573218998658; 
- Fri, 08 Nov 2019 05:16:38 -0800 (PST)
-X-Google-Smtp-Source: APXvYqx1oYDSViJVQa1iUHqVH3zEYNV052/Mm9/4zhe3K7viwnu+xe9QxZyGoCBT0DbWyAVfenzEMQ==
-X-Received: by 2002:a7b:c925:: with SMTP id h5mr8865171wml.115.1573218998419; 
- Fri, 08 Nov 2019 05:16:38 -0800 (PST)
-Received: from dhcp-44-196.space.revspace.nl
- ([2a0e:5700:4:11:6eb:1143:b8be:2b8])
- by smtp.gmail.com with ESMTPSA id 19sm8604853wrc.47.2019.11.08.05.16.36
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 08 Nov 2019 05:16:37 -0800 (PST)
-To: Ross Zwisler <zwisler@google.com>, Bard Liao <bardliao@realtek.com>,
- Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-References: <CAGRrVHz0LZOXWprAqR+_e59k+NQwiax7je4dSHf85yeHepHV+g@mail.gmail.com>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <093f1caf-dbb7-2d6f-9a1f-af19f4bee53d@redhat.com>
-Date: Fri, 8 Nov 2019 14:16:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ bh=NfUR7AY48iGFIM63M9JPwQgnYKrGoOgxnaqbx8BPJk8=;
+ b=QT13xDUMay/SiGdryuTXGez6ASCkdnwXHdz8W/2cqzzfsxI9u1AY4fJziHyYqQ3TIq
+ 44+nDa99BlNYu3QrDTsgVTEN/4v6wU8ppDWLXoUE7b3SaUwQmCcS1hkpDcz5r6rCJ+tx
+ 7jdcCD7aUT9FoOr3UPBXzxJEav3PeGVKILR38ea5fTBkbqEgRCtihjiTkTF5UNTfYI+V
+ +Q3419OPbw1QQ/y/vaIl9c0AT2kjoOngraLP3pVqRScoEV1Fa1IjaxLt1/YtxYd07nGv
+ J+Ej2OZrvbpW0nRl3ZYg50zvTIhrH0u3o0m9G5DkZ5p6KXHgVKPU3+M927ZMhK4M/6EI
+ 1iqw==
+X-Gm-Message-State: APjAAAXh+oyWEnzF3Df3eN45sOBT+NwCJclyWLrPI7thUZ0qCYelGaZM
+ jVGOhmP/LQh+uRysYabWyg==
+X-Google-Smtp-Source: APXvYqx68DVoAj2vGw2SptgDRf5u6t42E0asrMtHMURk1fJLAHVzUY4jKd1c0hgskKtnqGcWkLyxMQ==
+X-Received: by 2002:a05:6808:6c5:: with SMTP id
+ m5mr10126783oih.16.1573227341487; 
+ Fri, 08 Nov 2019 07:35:41 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.googlemail.com with ESMTPSA id d205sm1861423oig.28.2019.11.08.07.35.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 08 Nov 2019 07:35:39 -0800 (PST)
+From: Rob Herring <robh@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Date: Fri,  8 Nov 2019 09:35:38 -0600
+Message-Id: <20191108153538.11970-1-robh@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAGRrVHz0LZOXWprAqR+_e59k+NQwiax7je4dSHf85yeHepHV+g@mail.gmail.com>
-Content-Language: en-US
-X-MC-Unique: NsA5h5qmOUieIUZCqcrtlA-1
-X-Mimecast-Spam-Score: 0
-Cc: Curtis Malainey <cujomalainey@google.com>, alsa-devel@alsa-project.org,
- Jacob Rasmussen <jacobraz@google.com>,
- Fletcher Woodruff <fletcherw@google.com>
-Subject: Re: [alsa-devel] issue with jack detect using rt5645
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [alsa-devel] [PATCH] dt-bindings: vendor-prefixes: Add 'fsi[ab]' to
+	the list of non-vendor prefixes
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,69 +90,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Ross,
+'fsia' and 'fsib' property prefixes were added as schema in commit
+2f52475bac7e ("ASoC: fsi: switch to yaml base Documentation").
+Unfortunately to do checks on actual vendor prefixes, we have to track
+the handful of prefixes which are not vendors like 'fsia' and 'fsib'.
 
-On 11/7/19 11:31 PM, Ross Zwisler wrote:
-> We are trying to get a piece of Google hardware which uses the rt5645
-> driver working correctly with newer kernels (currently one based on
-> the latest v4.14 stable), and noticed that the following commit:
-> 
-> commit 6b5da66322c5 ("ASoC: rt5645: read jd1_1 status for jd detection")
-> 
-> broke jack support for our device.  Basically with that patch we never
-> correctly see a jack insertion event, and audio is never routed to the
-> headphones.
-> 
-> With just that one patch reverted, things work correctly on our
-> system.  The revert applies cleanly to linus/master.
-> 
-> Here is the series where that patch was originally upstreamed:
-> 
-> https://www.spinics.net/lists/alsa-devel/msg64331.html
-> 
-> If we reverted that patch upstream, would it break other devices (the
-> "GDP Win" device?) that use the rt5645 driver?
+Fixes: 2f52475bac7e ASoC: fsi: switch to yaml base Documentation
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+Seems to be an old binding, but there aren't any upstream dts files 
+using these properties. If there's not backwards compatibility concerns, 
+another option would be to rename these properties.
 
-Yes likely it will, the commit in question was added to fix jd
-issue in the GDP win and other Cherry Trail devices using
-standard Intel reference designs.
+Mark, probably should go via your tree as that is where the error is 
+introduced.
 
-> If so, how would you
-> recommend proceeding?
-> 
-> Does anyone have one of the "GDP Win" devices so we can test that and
-> our device and make sure whatever solution we end up coming up with
-> works for everyone?
+Rob
 
-I have acccess to the following devices with a rt5645 codec:
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-rt5645:         Spk     Mic     JDmod   UCM
--Acer One S1003 stereo  ana     3       chtrt5645
--Asus T100HA    stereo  dmic1   3 inv   custom
--GPD Pocket     mono    diff    3 inv   chtrt5645-mono-speaker-analog-mic
--GPD win        mono    ana     3 inv   chtrt5645-mono-speaker-analog-mic
--Kazam Vision   stereo  ana     3       chtrt5645
--Lenovo Miix310 stereo  diff    3       chtrt5645
--Lenovo Miix320 stereo  dmic2   3       custom
--Teclast X80Pro mono    ana     3       chtrt5645-mono-speaker-analog-mic
-
-Which all work fine with the current code, have you tried all the
-different jdmode values through the quirk moodule param?
-
-If Playing with the quirk settings does not help, then I believe that
-the best approach to fix this is to figure out which bit of the
-pre 6b5da66322c5 behavior you need and to activate this behind a new
-quirk option and set that quirk for the system in question.
-
-Regards,
-
-Hans
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 967e78c5ec0a..67b89db54aa2 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -16,7 +16,7 @@ properties: {}
+ patternProperties:
+   # Prefixes which are not vendors, but followed the pattern
+   # DO NOT ADD NEW PROPERTIES TO THIS LIST
+-  "^(at25|devbus|dmacap|dsa|exynos|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*": true
++  "^(at25|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*": true
+   "^(keypad|m25p|max8952|max8997|max8998|mpmc),.*": true
+   "^(pinctrl-single|#pinctrl-single|PowerPC),.*": true
+   "^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*": true
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
