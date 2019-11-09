@@ -6,73 +6,68 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5356BC43331
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 11:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1E8DC43331
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 11:16:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8B28207FF
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 11:13:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9F252196F
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Nov 2019 11:16:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TdFaUrO4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="etj3+NvK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8B28207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GecvzB+D";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FRrJRW/2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9F252196F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04E18166C;
-	Sat,  9 Nov 2019 12:12:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04E18166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F39B1670;
+	Sat,  9 Nov 2019 12:15:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F39B1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573298002;
-	bh=vOBD1NKqFIXwHfngYTiAuODfauSxOrr/RP6M5Ljjbgo=;
+	s=default; t=1573298167;
+	bh=uqDyJHFxIFxhfC9mfdktnw/FB5bTx7HzutzY30W7gOo=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TdFaUrO4Da5rqChA8i+f3Iez/RIR4EK4Tn2SRvfTqn1xJoypeVtTDN1MJa/DQOCRV
-	 /OZt7T/vLmUAt6/KjFM/+upd3dAN/mV7sgjnXGF8t7YBIqbXR7BVEo3NrCxBmVzsDj
-	 2qgpm9Bxo892J7EmOQMYUMpNIQZdJEbmTnpMbQ80=
+	b=GecvzB+D6RB+GytyNDvoXhmXNxP/kYndJU/I86CbvQ1zlK2T5nPrApv/szipCBaQm
+	 aRs3EgNZAixXT55/AqHAw5y+AKHVcyktyxlIx5l21PZAivzrumjxrMcDuzxOSkx7uG
+	 7Tafg9GYLyhej279Ca+6DIs/1wpPtwVHCtq155f0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FB8EF80446;
-	Sat,  9 Nov 2019 12:12:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F86FF80446;
+	Sat,  9 Nov 2019 12:15:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74236F8049B; Sat,  9 Nov 2019 12:12:30 +0100 (CET)
+ id 995B2F8049B; Sat,  9 Nov 2019 12:15:15 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96062F80111
- for <alsa-devel@alsa-project.org>; Sat,  9 Nov 2019 12:12:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96062F80111
+ by alsa1.perex.cz (Postfix) with ESMTPS id C167FF800EA
+ for <alsa-devel@alsa-project.org>; Sat,  9 Nov 2019 12:15:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C167FF800EA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="etj3+NvK"
+ header.b="FRrJRW/2"
 Received: from localhost (unknown [122.167.114.135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id EF994207FF;
- Sat,  9 Nov 2019 11:12:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 58000207FF;
+ Sat,  9 Nov 2019 11:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1573297945;
- bh=Ih1gqL9K79deWWPJ7N5Ey9xumJfXVew2LQ3mdBECbIE=;
+ s=default; t=1573298110;
+ bh=+Uo6rk00iqR1/CTLP0DUqCBhv4xrbNgtArL3NrHybps=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=etj3+NvKNa8LXILht79CcBorNP6PJ2bHLaPUX5Zck4tY7qfiHUTgx79fR5su+gSP5
- WsHfDRsCNSXsRL3WtemLG+dfGqkUcdrb0dENFrc7YkaOOv6rL6CSh/MUbFHjSFY5Y/
- RuIOCxd0INBSI5kV68u67JrnqLlGn4LJH/ACx/yI=
-Date: Sat, 9 Nov 2019 16:42:11 +0530
+ b=FRrJRW/2zCVDQYmhWCzmTkMTd3htBODq/582NTvloiY4Pw82+dSLg8SV77rF/nJZF
+ FWodxwiC49XRxjoPwPZeVYgbl+8gxreUvFKMxWqw+Nnej/QJEMuoJmgt91A2Sd1hJ9
+ skL0gfo+QxIKNMfq4pYEBQfBi+7VwdCIkJuEh1+A=
+Date: Sat, 9 Nov 2019 16:45:00 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191109111211.GB952516@vkoul-mobl>
-References: <20191023210657.32440-1-pierre-louis.bossart@linux.intel.com>
- <20191023210657.32440-2-pierre-louis.bossart@linux.intel.com>
- <20191103045604.GE2695@vkoul-mobl.Dlink>
- <f53b28bb-1ec7-a400-54ed-51fd55819ecd@linux.intel.com>
- <20191108042940.GW952516@vkoul-mobl>
- <e3e10c25-84dc-f4e7-e94b-d18493450021@linux.intel.com>
+Message-ID: <20191109111500.GC952516@vkoul-mobl>
+References: <20191022232948.17156-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <e3e10c25-84dc-f4e7-e94b-d18493450021@linux.intel.com>
+In-Reply-To: <20191022232948.17156-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
@@ -81,8 +76,8 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/4] soundwire: sdw_slave: add new fields
- to track probe status
+Subject: Re: [alsa-devel] [PATCH] soundwire: intel: fix PDI/stream mapping
+	for Bulk
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,73 +95,13 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 08-11-19, 08:55, Pierre-Louis Bossart wrote:
+On 22-10-19, 18:29, Pierre-Louis Bossart wrote:
+> The previous formula is incorrect for PDI0/1, the mapping is not
+> linear but has a discontinuity between PDI1 and PDI2.
 > 
-> 
-> On 11/7/19 10:29 PM, Vinod Koul wrote:
-> > On 04-11-19, 08:32, Pierre-Louis Bossart wrote:
-> > > 
-> > > 
-> > > On 11/2/19 11:56 PM, Vinod Koul wrote:
-> > > > On 23-10-19, 16:06, Pierre-Louis Bossart wrote:
-> > > > > Changes to the sdw_slave structure needed to solve race conditions on
-> > > > > driver probe.
-> > > > 
-> > > > Can you please explain the race you have observed, it would be a very
-> > > > useful to document it as well
-> > > 
-> > > the races are explained in the [PATCH 00/18] soundwire: code hardening and
-> > > suspend-resume support series.
-> > 
-> > It would make sense to explain it here as well to give details to
-> > reviewers, there is nothing wrong with too much detail!
-> > 
-> > > > > 
-> > > > > The functionality is added in the next patch.
-> > > > 
-> > > > which one..?
-> > > 
-> > > [PATCH 00/18] soundwire: code hardening and suspend-resume support
-> > 
-> > Yeah great! let me play detective with 18 patch series. I asked for a
-> > patch and got a series!
-> > 
-> > Again, please help the maintainer to help you. We would love to see this
-> > merged as well, but please step up and give more details in cover
-> > letter and changelogs. I shouldn't need to do guesswork and scan through the
-> > inbox to find the context!
-> 
-> We are clearly not going anywhere.
+> This change has no effect on PCM PDIs (same mapping).
 
-Correct as you don't seem to provide clear answers, I am asking again
-which patch implements the new fields added here, how difficult is it to
-provide the *specific* patch which implements this so that I can compare
-the implementation and see why this is needed and apply if fine!
-
-But no you will not provide a clear answer and start ranting!
-
-> I partitioned the patches to make your maintainer life easier and help the
-> integration of SoundWire across two trees. All I get is negative feedback,
-> grand-standing, and zero comments on actual changes.
-
-No you get asked specific question which you do not like and start off
-on a tangent!
-
-> For the record, I am mindful of reviewer/maintainer workload, and I did
-> contact you in September to check your availability and provided a pointer
-> to initial code changes. I did send a first version a week prior to your
-> travel/vacation, I resend another version when you were back and waited yet
-> another two weeks to resend a second version. I also contacted Takashi, Mark
-> and you to suggest this code partition, and did not get any pushback. It's
-> not like I am pushing stuff down your throat, I have been patient and
-> considerate.
-> 
-> Please start with the patches "soundwire: code hardening and suspend-resume
-> support" and come back to this interface description when you have reviewed
-> these changes. It's not detective work, it's working around the consequences
-> of having separate trees for Audio and SoundWire.
-
-Again, which patch in the series does implement these new members!
+Applied now
 
 -- 
 ~Vinod
