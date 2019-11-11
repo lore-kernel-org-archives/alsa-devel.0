@@ -2,76 +2,59 @@ Return-Path: <SRS0=1ACS=ZD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68229C43331
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 17:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4786C43331
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 17:37:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE55D2184C
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 17:21:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E38B521655
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 17:37:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XkLvn21J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE55D2184C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g3tpvqoL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E38B521655
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFCCF166D;
-	Mon, 11 Nov 2019 18:20:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFCCF166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 460F2166D;
+	Mon, 11 Nov 2019 18:36:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 460F2166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573492874;
-	bh=zogVsltFDq0vfJ68bhi5MsbHM3xT/mYiQo4JrES9i50=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XkLvn21JxddeNiIpEN2+iTrOkbo+9UFAPFPQ8pcKYylc+HuVIVTS+uw6pDpkTTjZU
-	 5JGhNleUcnhPv098wnaWl/VXwY5SkiohofgDcsuXTJfHZQMysQCWHNCAObcYo3UEPt
-	 DMuIga6dmarQHnyEGV+8adKAJRElVlqvPXFispVk=
+	s=default; t=1573493860;
+	bh=XBP045R2t/nauJOTCxMr2sP13Y+i0h9HscyK6R4Wh90=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=g3tpvqoLSrr3A2dKqD8WxfoXuMWWVf/QbisWEoSZkt4AhKjIwubAAQ2sTjVYsX4Va
+	 PKj/hfw5uNLIiAWfxnR/YSOwKGeyRF9ATyjKpZMZjiOQn9KlYJ7EJ76aeZzV3/e9zd
+	 T7MjlmSCx8kiBolD2i93294dBFBcA4NoKljMfT/I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47F84F8045D;
-	Mon, 11 Nov 2019 18:20:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1B1EF8045D;
+	Mon, 11 Nov 2019 18:36:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 272E8F804FF; Mon, 11 Nov 2019 18:20:22 +0100 (CET)
+ id BBBE3F804FF; Mon, 11 Nov 2019 18:36:47 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEE07F80275
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 18:20:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEE07F80275
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD6EFF8015C
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 18:36:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD6EFF8015C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id F37BCAC2C;
- Mon, 11 Nov 2019 17:20:17 +0000 (UTC)
-Date: Mon, 11 Nov 2019 18:20:17 +0100
-Message-ID: <s5heeyeuy7i.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id A6963AC53
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 17:36:43 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: "RAVULAPATI, VISHNU VARDHAN RAO" <Vishnuvardhanrao.Ravulapati@amd.com>
-In-Reply-To: <DM6PR12MB3868D380B280936C902FF67BE7740@DM6PR12MB3868.namprd12.prod.outlook.com>
-References: <1573483794-8921-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
- <1573483794-8921-2-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Maruthi Srinivas Bayyavarapu <Maruthi.Bayyavarapu@amd.com>,
- open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- "djkurtz@google.com" <djkurtz@google.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>,
- Colin Ian King <colin.king@canonical.com>, "Agrawal,
- Akshu" <Akshu.Agrawal@amd.com>, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [alsa-devel] [RESEND PATCH v4 1/6] ASoC: amd:Create multiple
-	I2S platform device Endpoint
+To: alsa-devel@alsa-project.org
+Date: Mon, 11 Nov 2019 18:36:42 +0100
+Message-Id: <20191111173642.6093-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Subject: [alsa-devel] [PATCH] ALSA: timer: Fix the breakage of slave link
+	open
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,42 +67,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 11 Nov 2019 18:16:25 +0100,
-RAVULAPATI, VISHNU VARDHAN RAO wrote:
-> 
-> > +             pdevinfo[2].name = "acp3x_i2s_playcap";
-> > +             pdevinfo[2].id = 1;
-> > +             pdevinfo[2].parent = &pci->dev;
-> > +             pdevinfo[2].num_res = 1;
-> > +             pdevinfo[2].res = &adata->res[2];
-> > +             for (i = 0; i < ACP3x_DEVS ; i++) {
-> > +                     adata->pdev[i] =
-> > +                             platform_device_register_full(&pdevinfo[i]);
-> > +                     IS_ERR(adata->pdev[i]) {
-> 
-> how does this even compile?
-> 
-> I have not faced any issue of compilation.
-> Can I know what is wrong with it please so that it can be re checked.
+A silly mistake was made while applying the fix for potential races in
+commit 6a34367e52ca ("ALSA: timer: Fix possible race at assigning a
+timer instance"): when a slave PCM is opened and succeeds, it doesn't
+return but proceeds to the master timer open code instead.  Plug the
+hole and beautify a bit.
 
-The "if" is missing around IS_ERR() in the above line.
-It should have been
-			if (IS_ERR(adata->pdev[i])) {
-				.....
+Fixes: 6a34367e52ca ("ALSA: timer: Fix possible race at assigning a timer instance")
+Reported-by: syzbot+4476917c053f60112c99@syzkaller.appspotmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/timer.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 9091030f4a89..24fed5c78273 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -268,8 +268,7 @@ int snd_timer_open(struct snd_timer_instance *timeri,
+ 		list_add_tail(&timeri->open_list, &snd_timer_slave_list);
+ 		num_slaves++;
+ 		err = snd_timer_check_slave(timeri);
+-		if (err < 0)
+-			goto close;
++		goto list_added;
+ 	}
+ 
+ 	/* open a master instance */
+@@ -324,7 +323,7 @@ int snd_timer_open(struct snd_timer_instance *timeri,
+ 	list_add_tail(&timeri->open_list, &timer->open_list_head);
+ 	timer->num_instances++;
+ 	err = snd_timer_check_master(timeri);
+- close:
++list_added:
+ 	if (err < 0)
+ 		snd_timer_close_locked(timeri, &card_dev_to_put);
+ 
+-- 
+2.16.4
 
-It's interesting the code didn't give any compile warning or error,
-indeed.
-
-
-thanks,
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
