@@ -2,79 +2,95 @@ Return-Path: <SRS0=v73L=ZE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CEE0C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E1CC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:18:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F08C3206BB
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:17:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0EFAF21E6F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:18:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cIfuYZqB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F08C3206BB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="noXHMu9A";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="R/yJgmMr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EFAF21E6F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23421167B;
-	Tue, 12 Nov 2019 11:16:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23421167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F4D11672;
+	Tue, 12 Nov 2019 11:17:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F4D11672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573553865;
-	bh=DDVuVq3ikgucrcdm98mxpj06Ay81R5xoH+ptSAEgn8k=;
-	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1573553895;
+	bh=RxFxcpKENioP+GlsCNIfkKm1xNGi/jj2xp+y1YK7uRw=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cIfuYZqBTtq4hAf6JieSsPPvNV6hUtf2aVcTJtEhjs4fKOLW8PVNvEZnmTdRZ+j4p
-	 GHeS0YwvxX5jdUVgtQBY9QJLDUT2G6EAPwfkUM6ZqZl6UQCzShNra9rLCufhLZwfy8
-	 jMFT2UYcPoD70cEzYnykkdEfDntOav4ykla51iC4=
+	b=noXHMu9A0Ai++NqE22u0WIAX19UDTTDxEFY5bFwnq9Ypi0qQO2+Ly5QoO/66qRtg2
+	 3wE6YxAyuelNLDGsjAk3pctDNgRIXxxjEYt8AMYrYXDVuK5qC+uc4Fy3s6uC5woF8q
+	 w2Y6LT6244L6AS33jsEjjiuQbnzFXTlJJLaVrJzw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 855DAF8060D;
-	Tue, 12 Nov 2019 11:14:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D18C4F80634;
+	Tue, 12 Nov 2019 11:14:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9894FF802E0; Mon, 11 Nov 2019 17:39:14 +0100 (CET)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198])
+ id AA33DF804FF; Mon, 11 Nov 2019 20:00:07 +0100 (CET)
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
+ [IPv6:2607:f8b0:4864:20::d43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7141F802E0
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 17:39:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7141F802E0
-Received: by mail-il1-f198.google.com with SMTP id m12so14132402ilq.1
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 08:39:11 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DAD6F802E0
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 20:00:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DAD6F802E0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="R/yJgmMr"
+Received: by mail-io1-xd43.google.com with SMTP id k1so15768683ioj.6
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 11:00:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=QhEAgVLm+P8rhHN9pusEhxB3Gpt3621f2Po3YU/UUwo=;
+ b=R/yJgmMr/2S7qSD+K9pcSjScnfyRn6UWrOGejP5RiTxt/sNQOdTM9B7OWOhMcaVt3t
+ ibSB3lJvNB9oH7L1lQXQXctQaCpH8w2ezad/xezedla+04zMgzjaqnnoLjqQ5H4LZOAd
+ 1ZLJTdcQDIGD2vMlaigxFc7VKzsuHhhYBLkts=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=/zegXvvBfn/8NivNj035Ns8LaxibNFZ37GX89KDpfAE=;
- b=UgfKHCnVa/E1gyoO02skYlXKJj0s8NNQc1oux2CveJZuNA7MXDbah4la/VTC2Yd+29
- NBAqDPJ/mwDJsinEtiuowwpdTYeQDreYxKBu50daf7dF/OSMR3KtXLjngE5c6DBeDFxR
- Ktieddd5b3kGHZfLEp6fHPXsNYrrP09M+8QZC4dPkVkr0jTX4br4M21CIyGfaKn30n/I
- LbCvV6SrYXIF9TS9du6VUJOxiHg/PcMjSR9zPu6F2/aXM+0PBOBi1RXNr/+7jGhicnUa
- X9cP80k1gzP/IY2zpN2IzGsGVwJG+RzaNV+okr4/EIGu/Bv/CpFahbyf8fVtd1lbkS9E
- fADg==
-X-Gm-Message-State: APjAAAVHW8Yps3czFmC5wJ4MkUstxl81XaKlLYxX7QoYLIYPhMmFT7mg
- CVKIby06udiK8B0SVmuRnwzL4UoyNsGiWPiXvdVQWKeTpb3Z
-X-Google-Smtp-Source: APXvYqwS23U7Ms7ca8ZBxpyqTo6oDZ7pvYAwbX+k/Eyth9OjQOdRvrGIRum6xPhd68VpRe/eantNLetTzJSDEisBjiZqx9BOoDu9
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=QhEAgVLm+P8rhHN9pusEhxB3Gpt3621f2Po3YU/UUwo=;
+ b=D6QU1KnjAaSIvfOFTZ+pyt9FEpymvnpAnF4BVsuUuXweWxunkpQ3NlucAP9JUoN5CH
+ kTwKPecx7XVXMS5L+miUUnNtfi7jB7rf6Im+M0hy/EbN4kGzGUbXWg7bJliZzIXQHeqi
+ GHKqs9GrMwd2jckum1vtUigz7Ha94NfHwaQjW/0aThkckA4Y5mmADyaj3/y0lr046APj
+ JqDnmz8532YfaVByxjB3ZDcQbI20J6Jcd+nfuu1ypu4Vph7B5PP5GVj/RALxM7WGZEZ3
+ PNOEXHbTE5o2VvHLB7bim9PYmRrQ36tXxzCvVgsngYyeIYRDclUbODgQaG+GsuP82IcR
+ +whQ==
+X-Gm-Message-State: APjAAAVZh0djWrkzMc0eWFx+HXx6klYLq+cvez53I8+LqDBj08B9GqmM
+ znR1tHmuQh9hJcS6JO9F2+Y0qg==
+X-Google-Smtp-Source: APXvYqyo7Q8K6RUwlo+CnztZm/Qp3lpGAcUrFfmId6PKdeVpoM18mw46U6gGH8wpeQSUmLq+L20G1A==
+X-Received: by 2002:a5d:9c02:: with SMTP id 2mr25977293ioe.52.1573498802092;
+ Mon, 11 Nov 2019 11:00:02 -0800 (PST)
+Received: from localhost ([2620:15c:183:200:2bde:b0e1:a0d8:ffc6])
+ by smtp.gmail.com with ESMTPSA id f9sm1394497ioq.80.2019.11.11.11.00.01
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 11 Nov 2019 11:00:01 -0800 (PST)
+From: Jacob Rasmussen <jacobraz@chromium.org>
+X-Google-Original-From: Jacob Rasmussen <jacobraz@google.com>
+To: linux-kernel@vger.kernel.org
+Date: Mon, 11 Nov 2019 11:59:57 -0700
+Message-Id: <20191111185957.217244-1-jacobraz@google.com>
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:228e:: with SMTP id
- d14mr13854303iod.122.1573490349867; 
- Mon, 11 Nov 2019 08:39:09 -0800 (PST)
-Date: Mon, 11 Nov 2019 08:39:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005c8bdf059714c5a5@google.com>
-From: syzbot <syzbot+7a0ab45b9c1dc81c9e6b@syzkaller.appspotmail.com>
-To: alexandre.belloni@bootlin.com, allison@lohutok.net, 
- alsa-devel@alsa-project.org, enric.balletbo@collabora.com, 
- gregkh@linuxfoundation.org, kirr@nexedi.com, linux-kernel@vger.kernel.org, 
- perex@perex.cz, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
- tiwai@suse.com
 X-Mailman-Approved-At: Tue, 12 Nov 2019 11:14:25 +0100
-Subject: [alsa-devel] general protection fault in snd_timer_open
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Jacob Rasmussen <jacobraz@google.com>, Takashi Iwai <tiwai@suse.com>,
+ Ross Zwisler <zwisler@google.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] [PATCH] ASoC: rt5645: Fixed buddy jack support.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,102 +103,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+The headphone jack on buddy was broken with the following commit:
+commit 6b5da66322c5 ("ASoC: rt5645: read jd1_1 status for jd
+detection").
+This changes the jd_mode for buddy to 4 so buddy can read from the same
+register that was used in the working version of this driver without
+affecting any other devices that might use this, since no other device uses
+jd_mode = 4. To test this I plugged and uplugged the headphone jack, verifying
+audio works.
 
-syzbot found the following crash on:
-
-HEAD commit:    6980b7f6 Add linux-next specific files for 20191111
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=149fae72e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2af7db1972ec750e
-dashboard link: https://syzkaller.appspot.com/bug?extid=7a0ab45b9c1dc81c9e6b
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+7a0ab45b9c1dc81c9e6b@syzkaller.appspotmail.com
-
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 26749 Comm: syz-executor.4 Not tainted 5.4.0-rc6-next-20191111  
-#0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:snd_timer_check_master sound/core/timer.c:228 [inline]
-RIP: 0010:snd_timer_open+0x943/0x1150 sound/core/timer.c:326
-Code: 48 89 85 58 ff ff ff 4c 89 f0 48 c1 e8 03 4c 01 e8 48 89 85 50 ff ff  
-ff eb 36 e8 38 1e ee fb 48 8d 7b 78 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00  
-0f 85 f4 05 00 00 48 8b 43 78 49 89 dc 48 83 e8 78
-RSP: 0018:ffff888057d978f8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffffffffffffff88 RCX: ffffc9000e7ad000
-RDX: 0000000000007655 RSI: ffffffff85855cd8 RDI: 0000000000000000
-RBP: ffff888057d979c0 R08: ffff8880a180c240 R09: ffff8880a1b0f008
-R10: ffffed1014361e08 R11: ffff8880a1b0f047 R12: ffff8880a8f40000
-R13: dffffc0000000000 R14: ffff888097688600 R15: ffffffff00000002
-FS:  00007f1c13a0a700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000075c000 CR3: 000000009f897000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  snd_seq_timer_open+0x27f/0x590 sound/core/seq/seq_timer.c:281
-  queue_use+0xf1/0x270 sound/core/seq/seq_queue.c:489
-  snd_seq_queue_alloc+0x2c5/0x4d0 sound/core/seq/seq_queue.c:176
-  snd_seq_ioctl_create_queue+0xb0/0x330 sound/core/seq/seq_clientmgr.c:1548
-  snd_seq_ioctl+0x21e/0x3e0 sound/core/seq/seq_clientmgr.c:2157
-  vfs_ioctl fs/ioctl.c:47 [inline]
-  file_ioctl fs/ioctl.c:545 [inline]
-  do_vfs_ioctl+0x977/0x14e0 fs/ioctl.c:732
-  ksys_ioctl+0xab/0xd0 fs/ioctl.c:749
-  __do_sys_ioctl fs/ioctl.c:756 [inline]
-  __se_sys_ioctl fs/ioctl.c:754 [inline]
-  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:754
-  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45a219
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f1c13a09c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045a219
-RDX: 00000000200001c0 RSI: 00000000c08c5332 RDI: 0000000000000004
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f1c13a0a6d4
-R13: 00000000004ceed0 R14: 00000000004d93d0 R15: 00000000ffffffff
-Modules linked in:
----[ end trace fd34b5665372895c ]---
-RIP: 0010:snd_timer_check_master sound/core/timer.c:228 [inline]
-RIP: 0010:snd_timer_open+0x943/0x1150 sound/core/timer.c:326
-Code: 48 89 85 58 ff ff ff 4c 89 f0 48 c1 e8 03 4c 01 e8 48 89 85 50 ff ff  
-ff eb 36 e8 38 1e ee fb 48 8d 7b 78 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00  
-0f 85 f4 05 00 00 48 8b 43 78 49 89 dc 48 83 e8 78
-RSP: 0018:ffff888057d978f8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffffffffffffff88 RCX: ffffc9000e7ad000
-RDX: 0000000000007655 RSI: ffffffff85855cd8 RDI: 0000000000000000
-RBP: ffff888057d979c0 R08: ffff8880a180c240 R09: ffff8880a1b0f008
-R10: ffffed1014361e08 R11: ffff8880a1b0f047 R12: ffff8880a8f40000
-R13: dffffc0000000000 R14: ffff888097688600 R15: ffffffff00000002
-FS:  00007f1c13a0a700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f750abec110 CR3: 000000009f897000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Jacob Rasmussen <jacobraz@google.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ sound/soc/codecs/rt5645.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a15e4ecd2a24..046f339a9f00 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3270,6 +3270,9 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 		snd_soc_jack_report(rt5645->mic_jack,
+ 				    report, SND_JACK_MICROPHONE);
+ 		return;
++	case 4:
++		val = snd_soc_component_read32(rt5645->component, RT5645_A_JD_CTRL1) & 0x002;
++		break;
+ 	default: /* read rt5645 jd1_1 status */
+ 		val = snd_soc_component_read32(rt5645->component, RT5645_INT_IRQ_ST) & 0x1000;
+ 		break;
+@@ -3603,7 +3606,7 @@ static const struct rt5645_platform_data intel_braswell_platform_data = {
+ static const struct rt5645_platform_data buddy_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+-	.jd_mode = 3,
++	.jd_mode = 4,
+ 	.level_trigger_irq = true,
+ };
+ 
+@@ -4012,6 +4015,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 					   RT5645_JD1_MODE_1);
+ 			break;
+ 		case 3:
++		case 4:
+ 			regmap_update_bits(rt5645->regmap, RT5645_A_JD_CTRL1,
+ 					   RT5645_JD1_MODE_MASK,
+ 					   RT5645_JD1_MODE_2);
+-- 
+2.24.0.432.g9d3f5f5b63-goog
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
