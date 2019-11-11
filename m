@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1AB2C43331
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 22:32:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6073AC43331
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 22:34:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6931E20659
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 22:32:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC86F20659
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 22:34:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YYqwBIKB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6931E20659
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tUhLdJCr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC86F20659
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2606167F;
-	Mon, 11 Nov 2019 23:31:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2606167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EEBA166C;
+	Mon, 11 Nov 2019 23:33:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EEBA166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573511564;
-	bh=onaLbpYnmTxIgZy2QhvP9qRTkE/vOGF+bXgAPvzbOiQ=;
+	s=default; t=1573511689;
+	bh=xyqbUZrFgAq8XvZfREptXmJH7GREEYLpGwEjwszxmNE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YYqwBIKBdgIlhVwx5ph7dPDnthx8xuOtHf7gkM0xVz3JNg/fmYKARbbB3sj1WBxG4
-	 o4DvquFXpyST4QF7xRhnpO2JUwrPwPDyin0At+CTbeNEkq1x6L2Gj+4rc1QLl/xrT/
-	 2tWQLHb6hiuhPKQHc9wVpn6vcUmjxFpeA1yN4poU=
+	b=tUhLdJCrIWpvpN6JdRZLgFLZkpfKWw6LGrHWR9bWyn24E6QWCufnPQW0M7yyB4TVS
+	 yDR++Ms1WtghnxqGEIffvX8KCCNHTrY96H1NhWFgbr7OQtOk8BoEwNqJlZ1ZZ9kkcU
+	 VStuk+eccOvuh7zjHDemVNbEmB3LZfM7eyYonsFY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 454D1F80635;
-	Mon, 11 Nov 2019 23:29:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AAF9F80519;
+	Mon, 11 Nov 2019 23:33:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF61CF80612; Mon, 11 Nov 2019 23:29:25 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 66205F80518; Mon, 11 Nov 2019 23:33:57 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5E9CF804FF
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 23:29:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5E9CF804FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B3DDF804FF
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 23:33:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B3DDF804FF
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2019 14:29:10 -0800
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 11 Nov 2019 14:33:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,294,1569308400"; d="scan'208";a="354902156"
+X-IronPort-AV: E=Sophos;i="5.68,294,1569308400"; d="scan'208";a="354903230"
 Received: from kathyche-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.27.186])
- by orsmga004.jf.intel.com with ESMTP; 11 Nov 2019 14:29:09 -0800
+ by orsmga004.jf.intel.com with ESMTP; 11 Nov 2019 14:33:51 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon, 11 Nov 2019 16:29:01 -0600
-Message-Id: <20191111222901.19892-4-pierre-louis.bossart@linux.intel.com>
+Date: Mon, 11 Nov 2019 16:33:41 -0600
+Message-Id: <20191111223343.19986-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191111222901.19892-1-pierre-louis.bossart@linux.intel.com>
-References: <20191111222901.19892-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191111223343.19986-1-pierre-louis.bossart@linux.intel.com>
+References: <20191111223343.19986-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 3/3] ASoC: SOF: Intel: hda: use fallback for
-	firmware name
+Subject: [alsa-devel] [PATCH 2/4] ASoC: SOF: PM: add check before setting
+	d0_substate
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,38 +84,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We have platforms such as CFL with no known I2S codec being used, and
-the ACPI tables are currently empty, so fall-back to using the
-firmware filename used in nocodec mode
+From: Keyon Jie <yang.jie@linux.intel.com>
 
+Add check before seeting d0_substate and return success if Audio DSP is
+already in the target substate.
+
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sof/pm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 7dc0018dc4c3..91bd88fddac7 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -415,9 +415,16 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 			pdata->tplg_filename =
- 				hda_mach->sof_tplg_filename;
+diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
+index 3204c92f0e7d..b89810bf3230 100644
+--- a/sound/soc/sof/pm.c
++++ b/sound/soc/sof/pm.c
+@@ -416,6 +416,9 @@ int snd_sof_set_d0_substate(struct snd_sof_dev *sdev,
+ {
+ 	int ret;
  
--			/* firmware: pick the first in machine list */
-+			/*
-+			 * firmware: pick the first in machine list,
-+			 * or use nocodec firmware name if list is empty
-+			 */
- 			mach = pdata->desc->machines;
--			pdata->fw_filename = mach->sof_fw_filename;
-+			if (mach->id[0])
-+				pdata->fw_filename = mach->sof_fw_filename;
-+			else
-+				pdata->fw_filename =
-+					pdata->desc->nocodec_fw_filename;
- 
- 			dev_info(bus->dev, "using HDA machine driver %s now\n",
- 				 hda_mach->drv_name);
++	if (sdev->d0_substate == d0_substate)
++		return 0;
++
+ 	/* do platform specific set_state */
+ 	ret = snd_sof_dsp_set_power_state(sdev, d0_substate);
+ 	if (ret < 0)
 -- 
 2.20.1
 
