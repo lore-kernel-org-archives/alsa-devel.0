@@ -2,80 +2,85 @@ Return-Path: <SRS0=1ACS=ZD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83159C43331
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 19:50:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9019EC43331
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 19:51:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0603621655
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 19:50:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC18021655
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 19:51:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oBIOkdpJ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="qWY/Z3og"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0603621655
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="psCfLGsq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="SyjN+ChH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC18021655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C2D783A;
-	Mon, 11 Nov 2019 20:49:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C2D783A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A499167C;
+	Mon, 11 Nov 2019 20:50:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A499167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573501798;
-	bh=e+aPVJjbeqTCFxAF+hnrExDCTL/tTjaqjBvTLshP2hQ=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=oBIOkdpJn/9Efe4mZRbQLpYN8MnJTTgiKm/Ys31iQzxaYu/opo60Qi36Y0dx2c3SW
-	 e9n6Oa8GEo5fraqVnCTII0iNcy6t2RQwP6AIKbhmFyK4Uh2ppHWrAOYUKc8YQS0E0k
-	 Mg3bTbfwYuf2FC2SHMEOPXlLNwOnbpHuZhde3cx8=
+	s=default; t=1573501860;
+	bh=jMIAo9px/qNa0KpFReHEs1RMIRnHcCVJNXUrKRTi8RE=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=psCfLGsq/99vctEgNyf8EVQ7pd2QLoBX654Txiuh5aKY3ZHqwC10Ez7g4asri86qG
+	 va7B5FTFzieoxjWhLw1pmYycpuk4aT8+6qt0ACdIOaLqGjkqJfmdcsHRuVS/33/sKa
+	 ibiddIj+udwwt3v/GgKjft8fth8g6TtV0gNWHeXM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B5F6F8045D;
-	Mon, 11 Nov 2019 20:49:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B77FAF805FF;
+	Mon, 11 Nov 2019 20:49:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CD17F804FF; Mon, 11 Nov 2019 20:49:07 +0100 (CET)
+ id 7B9F4F80600; Mon, 11 Nov 2019 20:49:38 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B519F8015C
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 20:49:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B519F8015C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E04CF80275
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 20:49:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E04CF80275
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="qWY/Z3og"
+ header.b="SyjN+ChH"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=xlxRJ7eQ2hoWBNWiw5OQy4FAPQxSog2xIp1mf5n6J1Q=; b=qWY/Z3ogFpgE
- WO6W2d8bShpmUmf2IhB/qFCwk1w0Mo/LYxhZESl7RHlfuSEtRWCmHgC8LXLMy/D14o+zx9PdlBovE
- xYRLpGDUa+uK4HPiuxTSjIJ1EVWCNzwiq1zKxqB0y76ltcvYH93B7dwDbARPp65PUsaKhtlq7SjfV
- E2JRM=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=dtnQhrLcA6Dn/As/OrO/10b7sB82SnSNakaXENAloVA=; b=SyjN+ChHN2juaWY5YQMiuX1aY
+ CeTEXEVFxbd3BfGyS2eX3JJHU9fiJeljPYjWVUQJBKVgzRaKSboR06/IsP1GqMOQe31TD/owVChN6
+ ESS8tp6sqJOuMosq+s5h3Dk/bEbtYxZzvT27Jgj1OcCFU5cWnEfresi1FQaZDEkVg6whg=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iUFgN-0005NW-Qr; Mon, 11 Nov 2019 19:49:03 +0000
+ id 1iUFgs-0005OG-J2; Mon, 11 Nov 2019 19:49:34 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 3FB1E27429EB; Mon, 11 Nov 2019 19:49:03 +0000 (GMT)
+ id D949927429EB; Mon, 11 Nov 2019 19:49:33 +0000 (GMT)
+Date: Mon, 11 Nov 2019 19:49:33 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Jacob Rasmussen <jacobraz@chromium.org>
-In-Reply-To: 
-X-Patchwork-Hint: ignore
-Message-Id: <20191111194903.3FB1E27429EB@ypsilon.sirena.org.uk>
-Date: Mon, 11 Nov 2019 19:49:03 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Jacob Rasmussen <jacobraz@google.com>,
- Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
-Subject: [alsa-devel] Applied "ASoC: rt5645: Fixed buddy jack support." to
-	the asoc tree
+Message-ID: <20191111194933.GF4264@sirena.co.uk>
+References: <20191111185957.217244-1-jacobraz@google.com>
+ <20191111194427.GA29859@sirena.co.uk>
+MIME-Version: 1.0
+In-Reply-To: <20191111194427.GA29859@sirena.co.uk>
+X-Cookie: A lie in time saves nine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Jacob Rasmussen <jacobraz@google.com>, Takashi Iwai <tiwai@suse.com>,
+ Ross Zwisler <zwisler@google.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt5645: Fixed buddy jack support.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,97 +93,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9020923108745598163=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: rt5645: Fixed buddy jack support.
+--===============9020923108745598163==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="UBnjLfzoMQYIXCvq"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--UBnjLfzoMQYIXCvq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Nov 11, 2019 at 07:44:27PM +0000, Mark Brown wrote:
+> On Mon, Nov 11, 2019 at 11:59:57AM -0700, Jacob Rasmussen wrote:
+> > The headphone jack on buddy was broken with the following commit:
+> > commit 6b5da66322c5 ("ASoC: rt5645: read jd1_1 status for jd
+> > detection").
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> This commit has been in mainline for a while but this doesn't apply
+> against my fixes branch, I'll apply against -next but it'll need some
+> work backporting to make it back as a fix.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Sorry, the issue with applying wasn't due to conflicts - I've applied as
+a fix now.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--UBnjLfzoMQYIXCvq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
-From e7cfd867fd9842f346688f28412eb83dec342900 Mon Sep 17 00:00:00 2001
-From: Jacob Rasmussen <jacobraz@chromium.org>
-Date: Mon, 11 Nov 2019 11:59:57 -0700
-Subject: [PATCH] ASoC: rt5645: Fixed buddy jack support.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3Ju0wACgkQJNaLcl1U
+h9DX3gf/YtrShJZsOudaKwwQ17lvSz66qAmyxXjzitTuvQlr3QLrHHScvgxbiYjt
+ho0/Rdk87BVNkBKuBxeLGTmZAQquQbGx6hg+TqnnCbLGp102236hpCifnPgTb6/9
+RQP+qeg7Q6/R1uvMBcjm0Ad7P0/CtloH7sfgkXgCZEH+Awb8woNiwJKcqyxG20wy
++bZlT1VTFSnLlN2reOnU1ksrc/DU2b5JKtFY8/yod4gz8CRhYYWEg52ogltOGlX3
+sLbpmqiEIo0W6UErhdpkAlH34otteeKR/V0ogDnPJeN7GMGDSHPk1vpI8SWuEnzE
+f8RVcTvbcGqBgR/q89Wn5/MeiRxCMQ==
+=WROu
+-----END PGP SIGNATURE-----
 
-The headphone jack on buddy was broken with the following commit:
-commit 6b5da66322c5 ("ASoC: rt5645: read jd1_1 status for jd
-detection").
-This changes the jd_mode for buddy to 4 so buddy can read from the same
-register that was used in the working version of this driver without
-affecting any other devices that might use this, since no other device uses
-jd_mode = 4. To test this I plugged and uplugged the headphone jack, verifying
-audio works.
+--UBnjLfzoMQYIXCvq--
 
-Signed-off-by: Jacob Rasmussen <jacobraz@google.com>
-Reviewed-by: Ross Zwisler <zwisler@google.com>
-Link: https://lore.kernel.org/r/20191111185957.217244-1-jacobraz@google.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/codecs/rt5645.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 1c06b3b9218c..902ac98a3fbe 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3270,6 +3270,9 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 		snd_soc_jack_report(rt5645->mic_jack,
- 				    report, SND_JACK_MICROPHONE);
- 		return;
-+	case 4:
-+		val = snd_soc_component_read32(rt5645->component, RT5645_A_JD_CTRL1) & 0x002;
-+		break;
- 	default: /* read rt5645 jd1_1 status */
- 		val = snd_soc_component_read32(rt5645->component, RT5645_INT_IRQ_ST) & 0x1000;
- 		break;
-@@ -3603,7 +3606,7 @@ static const struct rt5645_platform_data intel_braswell_platform_data = {
- static const struct rt5645_platform_data buddy_platform_data = {
- 	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
- 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
--	.jd_mode = 3,
-+	.jd_mode = 4,
- 	.level_trigger_irq = true,
- };
- 
-@@ -3999,6 +4002,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 					   RT5645_JD1_MODE_1);
- 			break;
- 		case 3:
-+		case 4:
- 			regmap_update_bits(rt5645->regmap, RT5645_A_JD_CTRL1,
- 					   RT5645_JD1_MODE_MASK,
- 					   RT5645_JD1_MODE_2);
--- 
-2.20.1
+--===============9020923108745598163==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============9020923108745598163==--
