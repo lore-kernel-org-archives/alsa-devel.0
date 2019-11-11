@@ -2,104 +2,65 @@ Return-Path: <SRS0=1ACS=ZD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E01C43331
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 13:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 730F1C43331
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 13:39:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B0A321E6F
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 13:37:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC58D21E6F
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 13:39:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="it1BLjxD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c6ruehmM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B0A321E6F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A7xBJaDf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC58D21E6F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE34782C;
-	Mon, 11 Nov 2019 14:36:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE34782C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13B4582C;
+	Mon, 11 Nov 2019 14:38:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B4582C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573479434;
-	bh=9Lyv5useRtD0hLBV0rGfs0B61e0suJcvbVvFTKCHQF0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=it1BLjxDeAO/Q3WZBB4lYhJs0CpAeH0d1cfvi9bR7mMYiKjZk9eEzmfXBc32SSye+
-	 /Et2A/aE94lYcNTsR48buVO4Xd/1BDpHUKi5JdSKPDcS77wgNPwK+8bURtME2rddt0
-	 dl79Ou5rdhs78pjDFgAxwPGN5gDWLBwNXp2YTScQ=
+	s=default; t=1573479579;
+	bh=u7SW+u5rFeSsm4Wf1l0dOgWYpO8vTu4Q4fOzhY0dvRk=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=A7xBJaDffyTemiVxHeGgTRfQ5j6qUIvMQtrySb9b9mTrgc9FIkjp1NjMUuCPvHdd3
+	 4g6xvwGW6RRZ/p8VHjFyN8jFdKlIttwj4Cz4QRz6E1+o3MpHvQAShWAGIxRHW2scd6
+	 Yr1n62PZemndahGvQasGPyn5CoIJZFSzMklKDuis=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E583F8045D;
-	Mon, 11 Nov 2019 14:36:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3AB9F804FF;
+	Mon, 11 Nov 2019 14:38:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13A79F804FF; Mon, 11 Nov 2019 14:36:22 +0100 (CET)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D84A2F804FF; Mon, 11 Nov 2019 14:38:46 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7818DF80275
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 14:36:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7818DF80275
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="c6ruehmM"
-Received: by mail-wr1-x442.google.com with SMTP id l7so3086672wrp.6
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 05:36:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to
- :user-agent; bh=0s9ZynTVj8MKyIhAnnLXh+oQ19lAh04mL6+1frjsEwU=;
- b=c6ruehmMh/cva0d4uTQ9KOMr4Uf69bUn/3AhPtA/HZmCVJ8H1L0JWTAUrYzMGP/SkY
- HVvxkQccjvl1SbbGmizCg0YUx/hXIsWM3cCFALBEGEfAsmShHRkA0YuzZbaMXtpZ1SQQ
- tOA/jBvVAdm/W797X0W1Wj6K7RETkhkTKos+BO/+SCBA4zRVJL1l+bB/nhgeQRbu3Csf
- zjS8Hg6M2MW9YWOmE2i5vvxe3ANl8o7WrrrbTKZZvgKBhavqI82JAVZKW7Bx1U0/W40U
- RXZIWXwPCCZEee6oXd1ZR4U6bhQI5pEgWHgZI07HFiMPyUmsyzZvGgMw+tbr6EP4CVvs
- 9pSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to:user-agent;
- bh=0s9ZynTVj8MKyIhAnnLXh+oQ19lAh04mL6+1frjsEwU=;
- b=lbiiMQeoCF4wo+ntiJ8Yz5gS1ViuY9se7xJWugbsDPEPafQMzL+EQWxZITSWqe+vaZ
- JSmnmjT6GMOVDcnc3gOLOicW5UiYyra8bgntl7oC3U0n2CSTiGPZr1Da9A5c/N5/4C0c
- Ey+S7Z9OTpAx4Te/69EkgTbgnLfD20Y6WbsHEQ3cZewdsdSHWBZ3hS5FBRYkFKHYaVz6
- sHzQ739HbvSNdfHBIvSDjDJ7DvuKtkY3CxsXLyr7NS5/ZaJtKSWOAHdhEQ48vLsivgoF
- 191+Ac/L8swv4Qb8ccVHCx9IMxg1HV6gR/Cv3d0xD9H2IwoTpq20FvpmZ4MvMyOGzzBL
- pZhQ==
-X-Gm-Message-State: APjAAAVpRLMCzSyyweBnOPkJsNf+QqbHA7PcClJzb4F1Q891yH5zejC4
- wrQGw8goBkVoHxIPemchvh2KWg==
-X-Google-Smtp-Source: APXvYqzHgmTe66oXstdgxQO4KmGrIbywCgH/1P35rEMm83LcQyasx1HVyYnWKQ86oUmVQzSdPuzgPg==
-X-Received: by 2002:adf:9185:: with SMTP id 5mr22081841wri.389.1573479378512; 
- Mon, 11 Nov 2019 05:36:18 -0800 (PST)
-Received: from dell ([95.147.198.88])
- by smtp.gmail.com with ESMTPSA id q5sm13960498wmc.27.2019.11.11.05.36.17
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 11 Nov 2019 05:36:18 -0800 (PST)
-Date: Mon, 11 Nov 2019 13:36:10 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <20191111133610.GO3218@dell>
-References: <20191029112700.14548-1-srinivas.kandagatla@linaro.org>
- <20191029112700.14548-3-srinivas.kandagatla@linaro.org>
- <20191111111836.GH3218@dell>
- <ce2244ac-2219-3cc0-8ad6-7491295fbbef@linaro.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ce2244ac-2219-3cc0-8ad6-7491295fbbef@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- vinod.koul@linaro.org, devicetree@vger.kernel.org, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org,
- spapothi@codeaurora.org
-Subject: Re: [alsa-devel] [PATCH v3 02/11] mfd: wcd934x: add support to
- wcd9340/wcd9341 codec
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5AEAF802E0
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 14:38:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5AEAF802E0
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 11 Nov 2019 05:38:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,293,1569308400"; d="scan'208";a="197671836"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by orsmga008.jf.intel.com with ESMTP; 11 Nov 2019 05:38:40 -0800
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.de
+Date: Mon, 11 Nov 2019 15:38:38 +0200
+Message-Id: <20191111133838.21213-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: kai.vehmanen@linux.intel.com
+Subject: [alsa-devel] [PATCH] ALSA: hda: hdmi - fix pin setup on Tigerlake
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,25 +73,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PiA+ID4gK3N0YXRpYyB2b2lkIHdjZDkzNHhfc2xpbV9yZW1vdmUoc3RydWN0IHNsaW1fZGV2aWNl
-ICpzZGV2KQo+ID4gPiArewo+ID4gPiArCXN0cnVjdCB3Y2Q5MzR4X2RkYXRhICpkZGF0YSA9IGRl
-dl9nZXRfZHJ2ZGF0YSgmc2Rldi0+ZGV2KTsKPiA+ID4gKwo+ID4gPiArCXJlZ3VsYXRvcl9idWxr
-X2Rpc2FibGUoV0NEOTM0WF9NQVhfU1VQUExZLCBkZGF0YS0+c3VwcGxpZXMpOwo+ID4gPiArCW1m
-ZF9yZW1vdmVfZGV2aWNlcygmc2Rldi0+ZGV2KTsKPiA+ID4gKwlrZnJlZShkZGF0YSk7Cj4gPiA+
-ICt9Cj4gPiA+ICsKPiA+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc2xpbV9kZXZpY2VfaWQgd2Nk
-OTM0eF9zbGltX2lkW10gPSB7Cj4gPiA+ICsJeyBTTElNX01BTkZfSURfUUNPTSwgU0xJTV9QUk9E
-X0NPREVfV0NEOTM0MCwgMHgxLCAweDAgfSwKPiA+IAo+ID4gV2hhdCBkbyB0aGUgbGFzdCBwYXJh
-bWV0ZXJzIG1lYW4/IE1pZ2h0IGJlIGJldHRlciB0byBkZWZpbmUgdGhlbS4KPiAKPiBUaGlzIGlz
-IEluc3RhbmNlIElEIGFuZCBEZXZpY2UgSUQgb2YgU0xJTUJ1cyBlbnVtZXJhdGlvbiBhZGRyZXNz
-LgoKR3JlYXQuCgpQbGVhc2UgZGVmaW5lIHRoZW0gaW4gdGhlIHNhbWUgd2FzIHlvdSBkaWQgZm9y
-IHRoZSBwcm9kdWN0IGNvZGUuCgotLSAKTGVlIEpvbmVzIFvmnY7nkLzmlq9dCkxpbmFybyBTZXJ2
-aWNlcyBUZWNobmljYWwgTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBm
-b3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Apply same logic to pin setup as on previous platforms. Fixes
+errors in HDMI/DP playback.
+
+Tested with both snd-hda-intel and SOF drivers.
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index bda4c2b1bfcc..d883719b1546 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -46,10 +46,12 @@ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ 				((codec)->core.vendor_id == 0x80862800))
+ #define is_cannonlake(codec) ((codec)->core.vendor_id == 0x8086280c)
+ #define is_icelake(codec) ((codec)->core.vendor_id == 0x8086280f)
++#define is_tigerlake(codec) ((codec)->core.vendor_id == 0x80862812)
+ #define is_haswell_plus(codec) (is_haswell(codec) || is_broadwell(codec) \
+ 				|| is_skylake(codec) || is_broxton(codec) \
+ 				|| is_kabylake(codec) || is_geminilake(codec) \
+-				|| is_cannonlake(codec) || is_icelake(codec))
++				|| is_cannonlake(codec) || is_icelake(codec) \
++				|| is_tigerlake(codec))
+ #define is_valleyview(codec) ((codec)->core.vendor_id == 0x80862882)
+ #define is_cherryview(codec) ((codec)->core.vendor_id == 0x80862883)
+ #define is_valleyview_plus(codec) (is_valleyview(codec) || is_cherryview(codec))
+-- 
+2.17.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
