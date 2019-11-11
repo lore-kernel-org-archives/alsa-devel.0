@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9262BC43331
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 11:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B3BCC43331
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 11:14:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F5A62184C
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 11:14:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 535CE21783
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 11:14:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CNklChgU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F5A62184C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jia2lXsh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 535CE21783
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C3ED168A;
-	Mon, 11 Nov 2019 12:13:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C3ED168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32C871683;
+	Mon, 11 Nov 2019 12:13:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32C871683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573470853;
-	bh=5qtaS+RqEhFPDCNLyPm0lnDcpfMV7raz5PKWGoOcJ7M=;
+	s=default; t=1573470884;
+	bh=lYJFe0GSf/w8K6z8aUWfCqp0Er8pDxg109+PDinXzrY=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CNklChgU8KyosS7W695y4xsUlDg32wDt0Bvj5GzRSoKeMEJIv0hnfPsYPlnUDxOrq
-	 7+r0vh0JKu9bmmZs3r+tM1XV5omuodzhq8y23u3+K7btlr53QHbfYixQYrvF8uROaP
-	 54KuhVu1QVF4yEkO/oEmCVWQJgmCrqfeAqsvg7m4=
+	b=Jia2lXshYorBahyKbkz7koy2wd/y0eFVw5Ts+ErG0mn380rvRMWibcZqp8k6LbWNx
+	 bZA4fCXKR1mAk41HKYqxATL6R/27/W62pzgenpDsYhF2RLLYxTIeCq3a7DEzTEsHQS
+	 S+Egvoc/U4zqf16DcOaJDE3aoYOg5fIsAJc3iBMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8663F80649;
-	Mon, 11 Nov 2019 12:10:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59577F8065B;
+	Mon, 11 Nov 2019 12:10:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC449F8064C; Mon, 11 Nov 2019 12:10:05 +0100 (CET)
+ id 43641F8065D; Mon, 11 Nov 2019 12:10:09 +0100 (CET)
 Received: from esa2.mentor.iphmx.com (esa2.mentor.iphmx.com [68.232.141.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E160F8063D
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 12:10:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E160F8063D
-IronPort-SDR: fQZSBLZpICWoXdKfSUDWtp5qoIocOiuGiDq/ukVMUo48dn8b9UMdTXm6YHH5U8NtIj5E1u4QvD
- aGIA8TkydwrjMMoiC6l1iTfhAkR6Zart2ZbEGpAtr95w9YISfVHjTT6kmFAclk5mr1K7Aua01C
- J1QP/CAkXI3gZnrg+WH54b0LFva9xIMbkRGQ+mUK/LhksbJEBmCcfr2tOuXAk6eVIOaCrn2Knx
- fwpFZJqTp+0EUZ8z5oef2sj7F7zjHcdo1rIMEEsuofteZglktpHxFakh6+6rhPahjkM9sxhup7
- AiQ=
-X-IronPort-AV: E=Sophos;i="5.68,292,1569312000"; d="scan'208";a="42981211"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B857F80642
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 12:10:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B857F80642
+IronPort-SDR: 5TWeOyzTEjBbR10WhG1jVNusbhRwojVkX/NIoiNN6pEahfqTetOVnjgMX9z016tGMQRfrEPXYS
+ 3EI/yaEnrrPBX5K304sltFELgSvqk9XgUQMq/xmX5f4aLwx16OuTH/lN/UG6Oez0RYwZ+B4U7z
+ f0B7XDTftcko7hvCuW1v93Lf01POHm4JgW2gYhBNu4m3Bs8zsuN4TEe685/K8o2Q55X0hVTVX9
+ a60F1yYpp+36qQQhu4Ksznl54DiAUAxFZeetphLRKf9jAXVmO0GNCRsAVCY+J6qYByG6oOK7UU
+ wRM=
+X-IronPort-AV: E=Sophos;i="5.68,292,1569312000"; d="scan'208";a="42981218"
 Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
- by esa2.mentor.iphmx.com with ESMTP; 11 Nov 2019 03:09:58 -0800
-IronPort-SDR: 5QwQpd2UBT/k2p5OLkV4ejgc/1AkE/uU0DLu5z1Syzg70AHcDId4OS5HpEaormtYqgyzbWYxxH
- NCvm7gPSm9C/Pdc7gYshOFvrzzdji4AaSSM/rTQCnwbh2hL+GOkpOxplzeEVVz/4S2sXPjnPfy
- lzlu+uNsr5EujyWzTazE0vCsHcDX7vFcmwfhj1jIQrv4Mkc/BvWvSId6GJGQdekrjuWRncPLzZ
- 7XsdK/4E3hnWyipHfBGna7D0soX/QnshmeCfqtAWYB6hhrfrBabEUTY4Bi9muwlqDEMvYiYcQz
- 2uU=
+ by esa2.mentor.iphmx.com with ESMTP; 11 Nov 2019 03:10:04 -0800
+IronPort-SDR: i5nuYU4PmjFemi4jFGKxgJ8k6bM8E2x1VCxSi3kJn+hQ3M4horDJCv6WX/JqWmawukx4De5s9K
+ FUuP0TT/JIZ3kYj+Z8GmoUIcitoCgXh6oxNswWbUo410HGX2aeT65TsZWknHqF2/yriz5gPvsm
+ 9E8Tux54li/18A2Wb8lrzpUVJspnLB14/JDVaud40SAwitylW0jAuFwsVfUr3PkrhCfkA6r7ev
+ dp6TDN8T/Il1WHsFp5C9kI/pJ/hscUVa3GN6zmLPX9G00/KkBLLwVBfiDdT9tzwDAREUSQX/MC
+ NyA=
 From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>, Jaroslav
  Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timo Wischer
  <twischer@de.adit-jv.com>, Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Date: Mon, 11 Nov 2019 05:08:44 -0600
-Message-ID: <20191111110846.18223-6-andrew_gabbasov@mentor.com>
+Date: Mon, 11 Nov 2019 05:08:46 -0600
+Message-ID: <20191111110846.18223-8-andrew_gabbasov@mentor.com>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191111110846.18223-5-andrew_gabbasov@mentor.com>
+In-Reply-To: <20191111110846.18223-7-andrew_gabbasov@mentor.com>
 References: <20191111110846.18223-1-andrew_gabbasov@mentor.com>
  <20191111110846.18223-2-andrew_gabbasov@mentor.com>
  <20191111110846.18223-3-andrew_gabbasov@mentor.com>
  <20191111110846.18223-4-andrew_gabbasov@mentor.com>
  <20191111110846.18223-5-andrew_gabbasov@mentor.com>
+ <20191111110846.18223-6-andrew_gabbasov@mentor.com>
+ <20191111110846.18223-7-andrew_gabbasov@mentor.com>
 MIME-Version: 1.0
 X-Originating-IP: [137.202.0.90]
 X-ClientProxiedBy: svr-ies-mbx-05.mgc.mentorg.com (139.181.222.5) To
  svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
-Subject: [alsa-devel] [PATCH v3 5/7] ALSA: aloop: Move CABLE_VALID_BOTH to
-	the top of file
+Subject: [alsa-devel] [PATCH v3 7/7] ALSA: aloop: Support runtime change of
+	snd_timer via info interface
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,42 +96,96 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+Show and change sound card timer source with read-write info
+file in proc filesystem. Initial string can still be set as
+module parameter.
 
-so all functions can use the same.
+The timer source string value can be changed at any time,
+but it is latched by PCM substream open callback (the first one
+for a particular cable). At this point it is actually used, that
+is the string is parsed, and the timer is looked up and opened.
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+The timer source is set for a loopback card (the same as initial
+setting by module parameter), but every cable uses the value,
+current at the moment of open.
+
+Setting the value to empty string switches the timer to jiffies.
+
 Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 ---
- sound/drivers/aloop.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/drivers/aloop.c | 45 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 42 insertions(+), 3 deletions(-)
 
 diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 178f7260a650..313d7ffe6c91 100644
+index 2f08038f8792..430ab757a4c4 100644
 --- a/sound/drivers/aloop.c
 +++ b/sound/drivers/aloop.c
-@@ -55,6 +55,10 @@ MODULE_PARM_DESC(pcm_notify, "Break capture when PCM format/rate/channels change
- 
- #define NO_PITCH 100000
- 
-+#define CABLE_VALID_PLAYBACK	BIT(SNDRV_PCM_STREAM_PLAYBACK)
-+#define CABLE_VALID_CAPTURE	BIT(SNDRV_PCM_STREAM_CAPTURE)
-+#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK | CABLE_VALID_CAPTURE)
-+
- struct loopback_cable;
- struct loopback_pcm;
- 
-@@ -224,10 +228,6 @@ static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
- 	return 0;
+@@ -1667,7 +1667,7 @@ static void print_cable_info(struct snd_info_entry *entry,
+ 	mutex_unlock(&loopback->cable_lock);
  }
  
--#define CABLE_VALID_PLAYBACK	(1 << SNDRV_PCM_STREAM_PLAYBACK)
--#define CABLE_VALID_CAPTURE	(1 << SNDRV_PCM_STREAM_CAPTURE)
--#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK|CABLE_VALID_CAPTURE)
--
- static int loopback_check_format(struct loopback_cable *cable, int stream)
+-static int loopback_proc_new(struct loopback *loopback, int cidx)
++static int loopback_cable_proc_new(struct loopback *loopback, int cidx)
  {
- 	struct snd_pcm_runtime *runtime, *cruntime;
+ 	char name[32];
+ 
+@@ -1688,6 +1688,44 @@ static void loopback_set_timer_source(struct loopback *loopback,
+ 						      value, GFP_KERNEL);
+ }
+ 
++static void print_timer_source_info(struct snd_info_entry *entry,
++				    struct snd_info_buffer *buffer)
++{
++	struct loopback *loopback = entry->private_data;
++
++	mutex_lock(&loopback->cable_lock);
++	snd_iprintf(buffer, "%s\n",
++		    loopback->timer_source ? loopback->timer_source : "");
++	mutex_unlock(&loopback->cable_lock);
++}
++
++static void change_timer_source_info(struct snd_info_entry *entry,
++				     struct snd_info_buffer *buffer)
++{
++	struct loopback *loopback = entry->private_data;
++	char line[64];
++
++	mutex_lock(&loopback->cable_lock);
++	if (!snd_info_get_line(buffer, line, sizeof(line)))
++		loopback_set_timer_source(loopback, strim(line));
++	mutex_unlock(&loopback->cable_lock);
++}
++
++static int loopback_timer_source_proc_new(struct loopback *loopback)
++{
++	struct snd_info_entry *entry;
++	int err;
++
++	err = snd_card_proc_new(loopback->card, "timer_source", &entry);
++	if (err < 0)
++		return err;
++
++	snd_info_set_text_ops(entry, loopback, print_timer_source_info);
++	entry->mode |= S_IWUSR;
++	entry->c.text.write = change_timer_source_info;
++	return 0;
++}
++
+ static int loopback_probe(struct platform_device *devptr)
+ {
+ 	struct snd_card *card;
+@@ -1720,8 +1758,9 @@ static int loopback_probe(struct platform_device *devptr)
+ 	err = loopback_mixer_new(loopback, pcm_notify[dev] ? 1 : 0);
+ 	if (err < 0)
+ 		goto __nodev;
+-	loopback_proc_new(loopback, 0);
+-	loopback_proc_new(loopback, 1);
++	loopback_cable_proc_new(loopback, 0);
++	loopback_cable_proc_new(loopback, 1);
++	loopback_timer_source_proc_new(loopback);
+ 	strcpy(card->driver, "Loopback");
+ 	strcpy(card->shortname, "Loopback");
+ 	sprintf(card->longname, "Loopback %i", dev + 1);
 -- 
 2.21.0
 
