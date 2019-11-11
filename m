@@ -6,73 +6,73 @@ X-Spam-Status: No, score=-0.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA07C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6366DC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:17:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D8CB206BB
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:16:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D63AF206BB
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:17:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qohTjUCB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D8CB206BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iexQn/YJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D63AF206BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39347886;
-	Tue, 12 Nov 2019 11:15:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39347886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 886DA1673;
+	Tue, 12 Nov 2019 11:16:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 886DA1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573553773;
-	bh=vII8m13ie2oJ4YQN3WD/oD9Mxp2y6WKSI8+yUrC97pA=;
+	s=default; t=1573553819;
+	bh=FC0i8Jk7sRsJTPwiZvuSBIxkCNKNgcy3Qbll2atTqC8=;
 	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qohTjUCBx/mt/c7GxrYmU5/Rdhn8EWuDHNnoIZEw1ogV0RTjg+f4/ay0b3gln0v/w
-	 2KKuelILPGy/bHuNR8DZhMWXXthZmGQtTL5pw+2CND0Zo8jKO1kWLyQ1OoF80rrmrn
-	 TXIxBTt9JW6LX4h8Yg7F2mGTzCNyRnZ96V1eHQ60=
+	b=iexQn/YJz+2+eo8Cyu0gzBRsT1xaewYpniR6LaFlsFO+8YObp9o49XTJdWfXiTSS7
+	 POO6SzC0cuXhCXmIIxoBNjRM36TuLWVJtftu4RaFxd9zVlCAz3Ys8ug0zi85gWBwRS
+	 eXK/JYIs3EhLZWENVZGeSd+d5fLAWXOsiaL6OgX4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF1A9F804CF;
-	Tue, 12 Nov 2019 11:14:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00129F805FF;
+	Tue, 12 Nov 2019 11:14:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1C8FF804FF; Mon, 11 Nov 2019 17:34:15 +0100 (CET)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198])
+ id 3FB54F804FF; Mon, 11 Nov 2019 17:38:14 +0100 (CET)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC894F80275
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 17:34:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC894F80275
-Received: by mail-il1-f198.google.com with SMTP id w69so17429587ilk.2
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 08:34:11 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39BFCF802E0
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 17:38:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39BFCF802E0
+Received: by mail-io1-f71.google.com with SMTP id z12so6796954iop.3
+ for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 08:38:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=ooaEEcjQYZQ9BsrWRW1Khz9xViSSf6YQxzsWFMf6WQU=;
- b=IF45AcU9MWkKMwpyarAxJ93f7pp04Z2B+7X2LU/bgwV/1gFJ3+FMizcEQGMALHqBf7
- faj0nRtxbLWg7APHiuirkWe0gEuRUJBU3k5qQl1PQFaF/wlJ20jGo0kRU0CVm2vV7z9g
- NaxH3Fvt4yhk9GmUBp6Cwi9rSMVCrF4V6f+R6NzIkemXa9D13oWneF2lAkRQU6b/ZPMJ
- 7qC7Dnk+YwNoJoJpmKXcXzUn/3X9O09+12sspYH2yjYVj8bHZ3DaQEOmx90zFs9ryyCy
- +hygMFgqxsST+XXPYDBz8mv4qOE44JXdMGut0thMfz+3FvtjZZ+1+yK307/jDmXv/Zzr
- jmDA==
-X-Gm-Message-State: APjAAAVtH/VqHNPWRqaTrarDFsBcxnpTjw0ifOnKmqcG/KuNeWtmIWZM
- y/tePz1Exy/rpP9L5VoP3CdSqTP+yU1oObMq9lnw8rImr6c4
-X-Google-Smtp-Source: APXvYqyoarDaLS6lJ4bI+TURCZBTw5+IRtgnAdvuq/tSHY2RA9V8+HS/vn1F0lbwGtcBgApOIN9onlL6p3dp6i4kGQcKbNFxJNm7
+ bh=6xGIatM585+y9way6GTbuYnN+gi1LVULfVZFLKPdCMk=;
+ b=OmAl8kvCipHhb/CVAu7mCYfJ3XM/ZszNeTXYmcvPt58cdnchKG6Lhhkd6VK65JTfzI
+ aWvMVJmx3sDdmv3GYQZnERDHeCoG12m588CoB9hfYex5VskJWBx3BKFYwB3DUeUprxq/
+ q1nnONluKaUMkqcbwEUdVSVmn9FNaFwCXFIGVeoh/Y5C7codooTbfCRGRCywYKFeeuH/
+ DLZ4zbOUaTba6//TkbSIY2fdapfrd2bsDCGNUZyOIrnLxN2axGQuqTKL3pk1BPJOEYYi
+ wcmN0AwB/pOwfIvtqK7CN3+K9nJjtu0G+FWJF4Y4NaBksehWAovc2zgJcHzlzhLnQQ3e
+ GJgg==
+X-Gm-Message-State: APjAAAXPOAuUBkfiUfQ4mn4idIbn6MpNr+zg6Btd2Bp4elo2NSdK3qk6
+ e21PWiMjb+Emniqj6qVp196RgVo39YWMf+uXU8G1UQUyroBT
+X-Google-Smtp-Source: APXvYqwj3RfA6oWKkf3zkjMvjEH+2ejXtOS+uLLggxzGC3VSsnFcY4rnii9jzCwFxO17UiKd1S24dzl31MJTxNjjX2PoUtK3lsPx
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9706:: with SMTP id w6mr2987651ioj.252.1573490050160; 
- Mon, 11 Nov 2019 08:34:10 -0800 (PST)
-Date: Mon, 11 Nov 2019 08:34:10 -0800
+X-Received: by 2002:a5e:a501:: with SMTP id 1mr10332198iog.211.1573490289053; 
+ Mon, 11 Nov 2019 08:38:09 -0800 (PST)
+Date: Mon, 11 Nov 2019 08:38:09 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007f69a2059714b34d@google.com>
-From: syzbot <syzbot+4476917c053f60112c99@syzkaller.appspotmail.com>
-To: alexandre.belloni@bootlin.com, allison@lohutok.net, 
- alsa-devel@alsa-project.org, kirr@nexedi.com, linux-kernel@vger.kernel.org, 
- logang@deltatee.com, perex@perex.cz, syzkaller-bugs@googlegroups.com, 
- tglx@linutronix.de, tiwai@suse.com
+Message-ID: <000000000000bc9d78059714c1ac@google.com>
+From: syzbot <syzbot+4a89123a06517944d4c1@syzkaller.appspotmail.com>
+To: allison@lohutok.net, alsa-devel@alsa-project.org, 
+ enric.balletbo@collabora.com, gregkh@linuxfoundation.org, kirr@nexedi.com, 
+ linux-kernel@vger.kernel.org, lkundrak@v3.sk, perex@perex.cz, 
+ syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tiwai@suse.com
 X-Mailman-Approved-At: Tue, 12 Nov 2019 11:14:25 +0100
-Subject: [alsa-devel] KASAN: use-after-free Read in snd_timer_open
+Subject: [alsa-devel] KASAN: use-after-free Read in snd_timer_close_locked
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,22 +96,22 @@ syzbot found the following crash on:
 
 HEAD commit:    6980b7f6 Add linux-next specific files for 20191111
 git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=101679e6e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a82b9ae00000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=2af7db1972ec750e
-dashboard link: https://syzkaller.appspot.com/bug?extid=4476917c053f60112c99
+dashboard link: https://syzkaller.appspot.com/bug?extid=4a89123a06517944d4c1
 compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=108fbfece00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1055d5aae00000
+
+Unfortunately, I don't have any reproducer for this crash yet.
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4476917c053f60112c99@syzkaller.appspotmail.com
+Reported-by: syzbot+4a89123a06517944d4c1@syzkaller.appspotmail.com
 
 ==================================================================
-BUG: KASAN: use-after-free in __list_add_valid+0x9a/0xa0 lib/list_debug.c:26
-Read of size 8 at addr ffff88809fccee78 by task syz-executor075/8825
+BUG: KASAN: use-after-free in snd_timer_close_locked+0xb5f/0xbd0  
+sound/core/timer.c:380
+Read of size 8 at addr ffff8880a906be78 by task syz-executor.4/9580
 
-CPU: 0 PID: 8825 Comm: syz-executor075 Not tainted 5.4.0-rc6-next-20191111  
-#0
+CPU: 1 PID: 9580 Comm: syz-executor.4 Not tainted 5.4.0-rc6-next-20191111 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
 Google 01/01/2011
 Call Trace:
@@ -121,34 +121,38 @@ Call Trace:
   __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
   kasan_report+0x12/0x20 mm/kasan/common.c:634
   __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
-  __list_add_valid+0x9a/0xa0 lib/list_debug.c:26
-  __list_add include/linux/list.h:60 [inline]
-  list_add_tail include/linux/list.h:93 [inline]
-  snd_timer_open+0x245/0x1150 sound/core/timer.c:268
-  snd_timer_user_tselect sound/core/timer.c:1738 [inline]
-  __snd_timer_user_ioctl.isra.0+0x7ed/0x2070 sound/core/timer.c:2008
-  snd_timer_user_ioctl+0x7a/0xa7 sound/core/timer.c:2038
-  vfs_ioctl fs/ioctl.c:47 [inline]
-  file_ioctl fs/ioctl.c:545 [inline]
-  do_vfs_ioctl+0x977/0x14e0 fs/ioctl.c:732
-  ksys_ioctl+0xab/0xd0 fs/ioctl.c:749
-  __do_sys_ioctl fs/ioctl.c:756 [inline]
-  __se_sys_ioctl fs/ioctl.c:754 [inline]
-  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:754
-  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  snd_timer_close_locked+0xb5f/0xbd0 sound/core/timer.c:380
+  snd_timer_close+0x88/0xf0 sound/core/timer.c:418
+  snd_seq_timer_close+0x91/0xe0 sound/core/seq/seq_timer.c:318
+  queue_delete+0x52/0xb0 sound/core/seq/seq_queue.c:134
+  snd_seq_queue_delete+0x4e/0x70 sound/core/seq/seq_queue.c:196
+  snd_seq_ioctl_delete_queue+0x6a/0x90 sound/core/seq/seq_clientmgr.c:1570
+  snd_seq_kernel_client_ctl+0xf8/0x140 sound/core/seq/seq_clientmgr.c:2353
+  delete_seq_queue.part.0+0xb6/0x120 sound/core/seq/oss/seq_oss_init.c:376
+  delete_seq_queue sound/core/seq/oss/seq_oss_init.c:372 [inline]
+  snd_seq_oss_release+0x116/0x150 sound/core/seq/oss/seq_oss_init.c:421
+  odev_release+0x54/0x80 sound/core/seq/oss/seq_oss.c:140
+  __fput+0x2ff/0x890 fs/file_table.c:280
+  ____fput+0x16/0x20 fs/file_table.c:313
+  task_work_run+0x145/0x1c0 kernel/task_work.c:113
+  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+  exit_to_usermode_loop+0x316/0x380 arch/x86/entry/common.c:163
+  prepare_exit_to_usermode arch/x86/entry/common.c:194 [inline]
+  syscall_return_slowpath arch/x86/entry/common.c:274 [inline]
+  do_syscall_64+0x65f/0x760 arch/x86/entry/common.c:300
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x444f39
-Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 bb cd fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd1d1e3c98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000444f39
-RDX: 0000000020029fcc RSI: 0000000040345410 RDI: 0000000000000003
-RBP: 00000000000102a7 R08: 0000000000000004 R09: 00000000004002e0
-R10: 000000000000000f R11: 0000000000000246 R12: 0000000000402180
-R13: 0000000000402210 R14: 0000000000000000 R15: 0000000000000000
+RIP: 0033:0x413db1
+Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48  
+83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48  
+89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fffcff8b860 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000413db1
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 0000000000000001 R08: 00000000ca6eb3e2 R09: 00000000ca6eb3e6
+R10: 00007fffcff8b940 R11: 0000000000000293 R12: 000000000075bf20
+R13: 00000000000361f0 R14: 00000000007607e0 R15: 000000000075bf2c
 
-Allocated by task 8824:
+Allocated by task 9581:
   save_stack+0x23/0x90 mm/kasan/common.c:69
   set_track mm/kasan/common.c:77 [inline]
   __kasan_kmalloc mm/kasan/common.c:510 [inline]
@@ -171,7 +175,7 @@ Allocated by task 8824:
   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-Freed by task 8824:
+Freed by task 9581:
   save_stack+0x23/0x90 mm/kasan/common.c:69
   set_track mm/kasan/common.c:77 [inline]
   kasan_set_free_info mm/kasan/common.c:332 [inline]
@@ -194,25 +198,25 @@ Freed by task 8824:
   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-The buggy address belongs to the object at ffff88809fccee00
+The buggy address belongs to the object at ffff8880a906be00
   which belongs to the cache kmalloc-256 of size 256
 The buggy address is located 120 bytes inside of
-  256-byte region [ffff88809fccee00, ffff88809fccef00)
+  256-byte region [ffff8880a906be00, ffff8880a906bf00)
 The buggy address belongs to the page:
-page:ffffea00027f3380 refcount:1 mapcount:0 mapping:ffff8880aa4008c0  
+page:ffffea0002a41ac0 refcount:1 mapcount:0 mapping:ffff8880aa4008c0  
 index:0x0
 flags: 0x1fffc0000000200(slab)
-raw: 01fffc0000000200 ffffea00027f2e08 ffff8880aa401648 ffff8880aa4008c0
-raw: 0000000000000000 ffff88809fcce000 0000000100000008 0000000000000000
+raw: 01fffc0000000200 ffffea00025db908 ffff8880aa401648 ffff8880aa4008c0
+raw: 0000000000000000 ffff8880a906b000 0000000100000008 0000000000000000
 page dumped because: kasan: bad access detected
 
 Memory state around the buggy address:
-  ffff88809fcced00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88809fcced80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ffff88809fccee00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff8880a906bd00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff8880a906bd80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> ffff8880a906be00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
                                                                  ^
-  ffff88809fccee80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff88809fccef00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  ffff8880a906be80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff8880a906bf00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
 ==================================================================
 
 
@@ -223,8 +227,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this bug report. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
