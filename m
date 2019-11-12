@@ -1,72 +1,71 @@
-Return-Path: <SRS0=1ACS=ZD=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=v73L=ZE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 098D9C43331
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 22:37:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02DF0C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 00:25:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7FD7B21925
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Nov 2019 22:37:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF5572196E
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 00:25:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JXsLWL/S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7FD7B21925
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q96rtD+Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF5572196E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB081167C;
-	Mon, 11 Nov 2019 23:36:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB081167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6E60820;
+	Tue, 12 Nov 2019 01:24:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6E60820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573511865;
-	bh=idLQBC/56N4zf715QRM2mk6tfgknuTV+2moPuyNKTa8=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1573518310;
+	bh=k2Cn92WuouJ6eAhXq8fF/Yg1uXf9RMcfsBN5CFwOO4A=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JXsLWL/STUdKbUdMCDpH6yLgx7bZ+gaA1PVH6pnxN3tkmWgTlkXG/lPF6fMnrGP0M
-	 t3lZSMv6FyPm9++bNnm8o2BZ1vmbtbqP27xeVoG2rQ1F6KPAfthL5lGGHu5ILJpI1H
-	 YkwVAvf1fK6jkLWjpVhiKTV3cyprz62R+jOTMtJU=
+	b=Q96rtD+YvGjBct40UnIQZr7u/BW2O1Q5kAwHPWz+j1vGwVChAaldgwCX3nXSXchR3
+	 ALIdj/iIbXhi/33cN7kgp1agXv83jsCynUEor1XhNktJbOwT0t61Vdx3QsnTH/f+nG
+	 YNku6bRqWo7tjbOaHetcisQ5q9PTR5+17zoUVQcU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91C3CF80611;
-	Mon, 11 Nov 2019 23:34:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ECF3F802E0;
+	Tue, 12 Nov 2019 01:24:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96269F805FF; Mon, 11 Nov 2019 23:34:01 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CEE6F80506
- for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2019 23:33:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CEE6F80506
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2019 14:33:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,294,1569308400"; d="scan'208";a="354903235"
-Received: from kathyche-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.27.186])
- by orsmga004.jf.intel.com with ESMTP; 11 Nov 2019 14:33:52 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 11 Nov 2019 16:33:42 -0600
-Message-Id: <20191111223343.19986-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191111223343.19986-1-pierre-louis.bossart@linux.intel.com>
-References: <20191111223343.19986-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 3/4] ASoC: SOF: add helper to check if we
-	should enter d0i3 suspend
+ id 5C9FCF804FF; Tue, 12 Nov 2019 01:24:18 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5C7E8F802E0
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 01:24:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C7E8F802E0
+Date: 12 Nov 2019 09:24:08 +0900
+X-IronPort-AV: E=Sophos;i="5.68,294,1569250800"; d="scan'208";a="31205283"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 12 Nov 2019 09:24:08 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DC97641212A8;
+ Tue, 12 Nov 2019 09:24:08 +0900 (JST)
+Message-ID: <87sgmu7xhz.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Jon Hunter <jonathanh@nvidia.com>
+In-Reply-To: <c976b330-f635-e818-1feb-f25db42a6ae4@nvidia.com>
+References: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
+ <87d0e63joh.wl-kuninori.morimoto.gx@renesas.com>
+ <c976b330-f635-e818-1feb-f25db42a6ae4@nvidia.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: linux-tegra <linux-tegra@vger.kernel.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v3 02/19] ASoC: soc-core: tidyup
+	soc_init_dai_link()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,59 +83,122 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Keyon Jie <yang.jie@linux.intel.com>
 
-Add helper to check if the DSP should be put in D0i3. This function
-returns true if a stream has ignored the SUSPEND trigger to keep the
-pipelines running in the DSP.
+Hi Jon
 
-Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Thank you for reporting.
+
+> I am seeing an audio regression on -next and bisect is pointing to
+> this commit. I am seeing the following crash on boot during probe
+> deferral of the soundcard ...
+
+It seems timing bug.
+I have a plan to post below patch if my current posting patch are accepted,
+but it seems it is necessary immediately.
+I believe your issue will be solved by this patch,
+but can you please test it ?
+I will formally post it with your tested-by if it was OK.
+
+# It will be more cleanuped in the future,
+# but it needs more other cleanup patches...
+
+--------------------
+Subject: [PATCH] ASoC: soc-core: care card_probed at soc_cleanup_card_resources()
+
+soc_cleanup_card_resources() will call card->remove(), but it should be
+called if card->probe() or card->late_probe() are called.
+snd_soc_bind_card() might be error before calling
+card->probe() / card->late_probe().
+In that time, card->remove() will be called.
+This patch adds card_probed parameter to judge it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sof/core.c     | 13 +++++++++++++
- sound/soc/sof/sof-priv.h |  2 ++
- 2 files changed, 15 insertions(+)
+ sound/soc/soc-core.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 8661c2cca76b..805918d3bcc0 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -132,6 +132,19 @@ struct snd_sof_dai *snd_sof_find_dai(struct snd_sof_dev *sdev,
- 	return NULL;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 55014e7..b078227 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1980,7 +1980,8 @@ static void __soc_setup_card_name(char *name, int len,
+ 	}
  }
  
-+bool snd_sof_dsp_d0i3_on_suspend(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_pcm *spcm;
-+
-+	list_for_each_entry(spcm, &sdev->pcm_list, list) {
-+		if (spcm->stream[SNDRV_PCM_STREAM_PLAYBACK].suspend_ignored ||
-+		    spcm->stream[SNDRV_PCM_STREAM_CAPTURE].suspend_ignored)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /*
-  * FW Panic/fault handling.
-  */
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 6408ac88a3e5..c7c2c70ee4d0 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -553,6 +553,8 @@ struct snd_sof_pcm *snd_sof_find_spcm_dai(struct snd_sof_dev *sdev,
- 	return NULL;
+-static void soc_cleanup_card_resources(struct snd_soc_card *card)
++static void soc_cleanup_card_resources(struct snd_soc_card *card,
++				       int card_probed)
+ {
+ 	struct snd_soc_dai_link *link, *_link;
+ 
+@@ -2007,7 +2008,7 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
+ 	soc_cleanup_card_debugfs(card);
+ 
+ 	/* remove the card */
+-	if (card->remove)
++	if (card_probed && card->remove)
+ 		card->remove(card);
  }
  
-+bool snd_sof_dsp_d0i3_on_suspend(struct snd_sof_dev *sdev);
+@@ -2015,7 +2016,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai_link *dai_link;
+-	int ret, i;
++	int ret, i, card_probed = 0;
+ 
+ 	mutex_lock(&client_mutex);
+ 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
+@@ -2067,6 +2068,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		ret = card->probe(card);
+ 		if (ret < 0)
+ 			goto probe_end;
++		card_probed = 1;
+ 	}
+ 
+ 	/* probe all components used by DAI links on this card */
+@@ -2129,6 +2131,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 			goto probe_end;
+ 		}
+ 	}
++	card_probed = 1;
+ 
+ 	snd_soc_dapm_new_widgets(card);
+ 
+@@ -2145,7 +2148,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 
+ probe_end:
+ 	if (ret < 0)
+-		soc_cleanup_card_resources(card);
++		soc_cleanup_card_resources(card, card_probed);
+ 
+ 	mutex_unlock(&card->mutex);
+ 	mutex_unlock(&client_mutex);
+@@ -2439,11 +2442,13 @@ EXPORT_SYMBOL_GPL(snd_soc_register_card);
+ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
+ {
+ 	if (card->instantiated) {
++		int card_probed = 1;
 +
- struct snd_sof_pcm *snd_sof_find_spcm_name(struct snd_sof_dev *sdev,
- 					   const char *name);
- struct snd_sof_pcm *snd_sof_find_spcm_comp(struct snd_sof_dev *sdev,
+ 		card->instantiated = false;
+ 		snd_soc_dapm_shutdown(card);
+ 		snd_soc_flush_all_delayed_work(card);
+ 
+-		soc_cleanup_card_resources(card);
++		soc_cleanup_card_resources(card, card_probed);
+ 		if (!unregister)
+ 			list_add(&card->list, &unbind_card_list);
+ 	} else {
 -- 
-2.20.1
+2.7.4
 
+
+
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
