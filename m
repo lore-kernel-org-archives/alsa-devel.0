@@ -2,83 +2,82 @@ Return-Path: <SRS0=v73L=ZE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3F11C17441
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C19A8C43331
 	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 19:25:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 42DFA21925
+	by mail.kernel.org (Postfix) with ESMTPS id 43BE721A49
 	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 19:25:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BTGewmYs";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="MU9UB8ho"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42DFA21925
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n0bjCBeO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="it+Piydf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43BE721A49
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0E7A1614;
-	Tue, 12 Nov 2019 20:16:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0E7A1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1218A1667;
+	Tue, 12 Nov 2019 20:17:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1218A1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573586226;
-	bh=9A3HI4oAY7AzS4OgW/6sHL78T91Mpsw4g10cqTZBFo0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BTGewmYsM5hxCGxfFb1P0RgDGXfEUh2JjFI5TMIZVtpR/QCkMbBCLcl5YjHqb813+
-	 zEGWnLBtKZtwdY7bMYyY6OHW3zI4z5n9jIbZJSjFICUlWXgd5NWVFDVIPbsz8D2hJ9
-	 l0YGtfksJbZ7qGh0TXJntvyqO+fzt+eJTFQNwzYM=
+	s=default; t=1573586314;
+	bh=7c9rqTAaVx4fc+5FEiU1SNU/kDZGp2j4CsAM15wKHv0=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=n0bjCBeOROZMHchVNELVWT7EKMxn4TF9jNsN256WKd3kUwv6D100Pz6OZnwKTiOEl
+	 5++xm4qBMTEcfEecSHF4bk524kowCjvbb/GVmvLjZUVwq0QHl0rCvv8ymldF1EanzS
+	 MEJ451KBXwnMeoGdg62AzirtJNuqUh9Umyq43TVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 264BDF80483;
-	Tue, 12 Nov 2019 20:16:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FE51F8048F;
+	Tue, 12 Nov 2019 20:17:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB2D7F8048F; Tue, 12 Nov 2019 20:16:14 +0100 (CET)
+ id 7602CF8049C; Tue, 12 Nov 2019 20:17:42 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 463D5F8044C
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 20:16:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463D5F8044C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C339F80275
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 20:17:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C339F80275
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="MU9UB8ho"
+ header.b="it+Piydf"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=Q4hg0aeHUc/0HiChQjA/soQcPBC23fuMapDnEBYN4vI=; b=MU9UB8ho0AZy5V0fVGYID74Rp
- mt/dF7+kV4HTIZEX9MU68YQcePXE+9Zh1PEuof3W0eYT6/8A3svQSN+Q+ujICa/Hd50U+209rScmT
- 9n395Qjzc0DSQxilKTLTB7eeoreUzq+ZFQsgoWcU3ULjPbc6E7y2rbpw0z5qEgJmq9e4I=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=jKE+HdM/O060TtCOHemxkHkonhg7iC568/HaSxJiGOY=; b=it+PiydfDGka
+ UA3jHkMAxitVC5Py1G5fw8IXG6govPTwkVUY9E2h8ky4kgoWAQb9H8M4ixJfncsoS4rg9iSRqGcEd
+ ReBbSlSS0Q2P5f3gK5cJyG5WzU/BkrgSKEGPFkMLo1XIFXrGAVuzksCde9ET7AL2W+cfC0W/c3rZf
+ 5NvE4=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iUbe7-0000Bm-8y; Tue, 12 Nov 2019 19:16:11 +0000
+ id 1iUbfX-0000Co-He; Tue, 12 Nov 2019 19:17:39 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id C5BDD274299F; Tue, 12 Nov 2019 19:16:10 +0000 (GMT)
-Date: Tue, 12 Nov 2019 19:16:10 +0000
+ id 0B9AC274299F; Tue, 12 Nov 2019 19:17:38 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Rob Herring <robh@kernel.org>
-Message-ID: <20191112191610.GL5195@sirena.co.uk>
-References: <20191108153538.11970-1-robh@kernel.org>
-MIME-Version: 1.0
 In-Reply-To: <20191108153538.11970-1-robh@kernel.org>
-X-Cookie: As famous as the unknown soldier.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Patchwork-Hint: ignore
+Message-Id: <20191112191739.0B9AC274299F@ypsilon.sirena.org.uk>
+Date: Tue, 12 Nov 2019 19:17:38 +0000 (GMT)
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [alsa-devel] [PATCH] dt-bindings: vendor-prefixes: Add
- 'fsi[ab]' to the list of non-vendor prefixes
+Subject: [alsa-devel] Applied "dt-bindings: vendor-prefixes: Add 'fsi[ab]'
+	to the list of non-vendor prefixes" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,55 +90,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2505166148923009121=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---===============2505166148923009121==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="aYrjF+tKt+ApYAdb"
-Content-Disposition: inline
+   dt-bindings: vendor-prefixes: Add 'fsi[ab]' to the list of non-vendor prefixes
 
+has been applied to the asoc tree at
 
---aYrjF+tKt+ApYAdb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
-On Fri, Nov 08, 2019 at 09:35:38AM -0600, Rob Herring wrote:
-> 'fsia' and 'fsib' property prefixes were added as schema in commit
-> 2f52475bac7e ("ASoC: fsi: switch to yaml base Documentation").
-> Unfortunately to do checks on actual vendor prefixes, we have to track
-> the handful of prefixes which are not vendors like 'fsia' and 'fsib'.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Nobody's complained so I'll go ahead with this.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---aYrjF+tKt+ApYAdb
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3LBPkACgkQJNaLcl1U
-h9BBCQf5AZbQ47BYpfn5IuGPdkZUTcnZn0uF1mMVQognzK3a+pVbGhSpYUtn5/Ag
-KGfJZSjwfYQWUDS123xHNtjk7bY9g5FLJV4oZOJ/Fi1nKtzXabeLxRDOB/+xIV85
-DMquZvoXuEFgm2PsYLjgW8/iYf/2G3GaXey7RKzU6dXTtKIKW8yy06RYReVYQntY
-iMuj0VqMyU1lpwLzBJhtM2YkL2TPbiZmbHmMPrHFmIuWMdP8o732SQflkCpkmQl6
-oC7Pou4LGWtQtqIjCb8xi/k853FHJUDvZEVDqoVsqBHiS+JFRWvcuTTd0KY+E+ME
-I0qR8vDbsxZgrA8R59M4GfuSglZZ4A==
-=WTXi
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---aYrjF+tKt+ApYAdb--
+From 5cff6fddb8dca9b3a367c190ec043f4f484c0679 Mon Sep 17 00:00:00 2001
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 8 Nov 2019 09:35:38 -0600
+Subject: [PATCH] dt-bindings: vendor-prefixes: Add 'fsi[ab]' to the list of
+ non-vendor prefixes
 
---===============2505166148923009121==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+'fsia' and 'fsib' property prefixes were added as schema in commit
+2f52475bac7e ("ASoC: fsi: switch to yaml base Documentation").
+Unfortunately to do checks on actual vendor prefixes, we have to track
+the handful of prefixes which are not vendors like 'fsia' and 'fsib'.
+
+Fixes: 2f52475bac7e ASoC: fsi: switch to yaml base Documentation
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/r/20191108153538.11970-1-robh@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 967e78c5ec0a..67b89db54aa2 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -16,7 +16,7 @@ properties: {}
+ patternProperties:
+   # Prefixes which are not vendors, but followed the pattern
+   # DO NOT ADD NEW PROPERTIES TO THIS LIST
+-  "^(at25|devbus|dmacap|dsa|exynos|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*": true
++  "^(at25|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*": true
+   "^(keypad|m25p|max8952|max8997|max8998|mpmc),.*": true
+   "^(pinctrl-single|#pinctrl-single|PowerPC),.*": true
+   "^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*": true
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2505166148923009121==--
