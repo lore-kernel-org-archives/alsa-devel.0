@@ -2,98 +2,84 @@ Return-Path: <SRS0=v73L=ZE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68C66C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31995C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 11:57:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E13BB2084E
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 10:52:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2B3EC20818
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 11:57:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t7N1iWZ1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="CragUSkc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E13BB2084E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="emLogmiK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="rH9jGAi/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B3EC20818
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FC3B1607;
-	Tue, 12 Nov 2019 11:52:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FC3B1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id D98E71612;
+	Tue, 12 Nov 2019 12:57:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D98E71612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573555970;
-	bh=dNnq6GVm3TWpfU1wAouD7zuZxg9vxRS2JVC5jN6UjXU=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1573559872;
+	bh=Qu0ZgdfYIKnMamEYTXlCrujr2rpvUDdutwyFMbZKnf0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t7N1iWZ1Uivbo7PpjrwiW80babYdz+DH8O6z5gsNmU2ze1VoWh4Y48hrw/2f0o6HZ
-	 I1iRf+vpd7eiuYLRMftnHL0iPJQpixo9C2FF97sI4dt61uswbodjMeqXkSg0dPCjfS
-	 ugyghwmhY24tFOHdWUr9gipk5Y8Mg23simKWl3Ys=
+	b=emLogmiKkWenn23uuz+seKoU+i7bFzA3SvbM9AjwcKnD5JnxAeToe1QAPNLxPUuE8
+	 VImGuc9KPaDVM/a9KhwPyj/ioBv6OQSpgqN5DWdbPLVyEyWqsx9m21P4MdeQ7ShXLT
+	 AlWh4JyOV+e0LU5MBe6upSwNT3YP8BONsxrewO94=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCE11F8044C;
-	Tue, 12 Nov 2019 11:51:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56A50F8044C;
+	Tue, 12 Nov 2019 12:57:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC649F80483; Tue, 12 Nov 2019 11:51:57 +0100 (CET)
-Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4B22F802E0
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 11:51:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4B22F802E0
+ id CFF44F80483; Tue, 12 Nov 2019 12:57:00 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CBFAF80275
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 12:56:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CBFAF80275
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="CragUSkc"
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
- hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5dca8e900000>; Tue, 12 Nov 2019 02:50:56 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate102.nvidia.com (PGP Universal service);
- Tue, 12 Nov 2019 02:51:52 -0800
-X-PGP-Universal: processed;
- by hqpgpgate102.nvidia.com on Tue, 12 Nov 2019 02:51:52 -0800
-Received: from [10.21.133.51] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Nov
- 2019 10:51:50 +0000
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
- <87d0e63joh.wl-kuninori.morimoto.gx@renesas.com>
- <c976b330-f635-e818-1feb-f25db42a6ae4@nvidia.com>
- <87sgmu7xhz.wl-kuninori.morimoto.gx@renesas.com>
-From: Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <fe4baf43-a06c-f2ac-9b1c-6f0ec5a25cb2@nvidia.com>
-Date: Tue, 12 Nov 2019 10:51:48 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="rH9jGAi/"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=EcwNjLo8wOnJMMWVhETgrc4fOww9YZh1iHScHUx1/S0=; b=rH9jGAi/k+o/q6ui+psOjJImW
+ Q2XADkVSO7oH+WMMZhZuDAASA6ExvKF6NZkiyIkFAOc2LMiH9nEGl4JK/Vgl2KaB2Ou0Us3quvZEm
+ 86kw5ZxQ96XqBT6AWzti0MnP35KPh1wWzQyb4BzxZZSkUv9ZolLQQh8r4a/lG4P+K4AUM=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=ypsilon.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.co.uk>)
+ id 1iUUn3-0007mZ-6i; Tue, 12 Nov 2019 11:56:57 +0000
+Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
+ id D3FAC274299F; Tue, 12 Nov 2019 11:56:55 +0000 (GMT)
+Date: Tue, 12 Nov 2019 11:56:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Eason Yen <eason.yen@mediatek.com>
+Message-ID: <20191112115655.GA5195@sirena.co.uk>
+References: <1573532538-30602-1-git-send-email-eason.yen@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <87sgmu7xhz.wl-kuninori.morimoto.gx@renesas.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1573555856; bh=9U0iekHPqCKCtONtPFuEXlIHBgl069HGxR9z4sqUB0Y=;
- h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Language:
- Content-Transfer-Encoding;
- b=CragUSkcOp2rOui25I7KothxQEPbeBZIwYXe91TsOf9rEEWagZbwahyZBZvnRRS2t
- mFmr6uDg5UAQabd2kOu3xxe1tFHZplSFIB+cURRqx8UkugVUUXgB+XelV2X6MPcXi2
- HLsQb/iYVWflJEZ641SVLt0xXptzirWcWpb7aUpURrd8UifH1s02v4oRIA8xEL2jBf
- B84STsRC5JMN88tHhNws5B6MYTEHpAjVM3NcwWYirxlbGHXd5T2P6BdsI3LQxCAtJW
- y5AJtHeOsZVx9JRu3cfih2aDCR63JpmF0plY/PMgY02h7Psnnt1Usr4Z14nVewWsA3
- kPYLKlXgVIwXA==
-Cc: linux-tegra <linux-tegra@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v3 02/19] ASoC: soc-core: tidyup
- soc_init_dai_link()
+In-Reply-To: <1573532538-30602-1-git-send-email-eason.yen@mediatek.com>
+X-Cookie: As famous as the unknown soldier.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: matthias.bgg@gmail.com, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org, jiaxin.yu@mediatek.com,
+ chipeng.chang@mediatek.com
+Subject: Re: [alsa-devel] [PATCH v1] ASoC: mediatek: common: refine
+	mtk_afe_fe_hw_params
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,57 +92,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5825426365717287001=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On 12/11/2019 00:24, Kuninori Morimoto wrote:
-> 
-> Hi Jon
-> 
-> Thank you for reporting.
-> 
->> I am seeing an audio regression on -next and bisect is pointing to
->> this commit. I am seeing the following crash on boot during probe
->> deferral of the soundcard ...
-> 
-> It seems timing bug.
-> I have a plan to post below patch if my current posting patch are accepted,
-> but it seems it is necessary immediately.
-> I believe your issue will be solved by this patch,
-> but can you please test it ?
-> I will formally post it with your tested-by if it was OK.
-> 
-> # It will be more cleanuped in the future,
-> # but it needs more other cleanup patches...
-> 
-> --------------------
-> Subject: [PATCH] ASoC: soc-core: care card_probed at soc_cleanup_card_resources()
-> 
-> soc_cleanup_card_resources() will call card->remove(), but it should be
-> called if card->probe() or card->late_probe() are called.
-> snd_soc_bind_card() might be error before calling
-> card->probe() / card->late_probe().
-> In that time, card->remove() will be called.
-> This patch adds card_probed parameter to judge it.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/soc-core.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+--===============5825426365717287001==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Disposition: inline
 
-Thanks! I can confirm that this works, so ...
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers
-Jon
+On Tue, Nov 12, 2019 at 12:22:17PM +0800, Eason Yen wrote:
+> This patch is to refine mtk_afe_fe_hw_params by the following
+> export functions:
+> - mtk_memif_set_enable
+> - mtk_memif_set_disable
 
--- 
-nvpublic
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3KngQACgkQJNaLcl1U
+h9Ds0gf+Jf7PnO4A7M+R3v1MzM3+quMhDl2WoVBFnODb7W1GxbQglVWntQckfuJz
+i9KW1BERNtbmPkRmmhiODCwRjlG7eW25VRxAbkolCf+iclcy3AUR5qcjXcx2ixx6
+66YGRHDwp6cRSnx5yQYvqiOWORq8Og+1Hz6PeURbDjAEPwdwUmXQDw1gGzfb7vN/
+6krFkmtBfZpXQ/IbUteu4IN6dhbNTQkaxXnf3asAeKv7Wgf3f1RbWp7wldUAvBpa
+SnTasgnRZMPQHbxqS5DP5Rnla2AtsgJUDx4mFFKzloK/jt7dMjXadopaxAQn2Krm
+/UN2h4kGa+hKcDX4pKFgWZfkhLgOmA==
+=vQlg
+-----END PGP SIGNATURE-----
+
+--4Ckj6UjgE2iN1+kY--
+
+--===============5825426365717287001==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5825426365717287001==--
