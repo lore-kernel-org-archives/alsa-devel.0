@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C61F9C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:18:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EF53C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:18:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C87F20659
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:18:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1458520659
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:18:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uAfG3sZW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="h6zjJ98a"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C87F20659
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oxn888QT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="D0+aERkj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1458520659
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BB4B1666;
-	Tue, 12 Nov 2019 18:17:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BB4B1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ABD51676;
+	Tue, 12 Nov 2019 18:18:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ABD51676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573579090;
-	bh=JrqqZjaOcsC4qQ5n1EIo9fIcfB6o0UB7GYuoIJ1rMbA=;
+	s=default; t=1573579136;
+	bh=aLW/18D5UxA3JQB7a1ncwcS8SgovGDJ5YpsV0whTYHk=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=uAfG3sZWHC00YYiCEb9LUoLN0Vkwl0zjhETxdM4RMhmVkcOvomDIKskuHYiDAFt3z
-	 XmXrcdQ+8i9KNELXjnUemQh7Xtpc1SJeDMXfnUvCJL4rdPOvscHzLMQMxDLoPJFvrb
-	 Uks/bNASGyMd5cJ0LLg2917hfC8XFxvJJTcQXaR8=
+	b=oxn888QTJMDSYo4NSEivOxU2YivqA6GS0RnV2OWCs47ZsVPVVvpEyPAHucurCoVCV
+	 E0HUnwRL/k6xoR45ZNcHFF1GGakZA4QWFrZ5J8xQmyUi74mYT5yo2+eEkvpkr6tWk+
+	 L8mOcxGwW/lUlsgPUqth797w8tc8fbPbxwguULaU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F41AF8044C;
-	Tue, 12 Nov 2019 18:16:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 150A2F8049C;
+	Tue, 12 Nov 2019 18:16:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AABEF805FE; Tue, 12 Nov 2019 18:16:24 +0100 (CET)
+ id 9FA21F8060E; Tue, 12 Nov 2019 18:16:27 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 149C6F802E0
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 18:16:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 149C6F802E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EEC1F804CF
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 18:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EEC1F804CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="h6zjJ98a"
+ header.b="D0+aERkj"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=tz6ivLnBL9tTbZPhRP3xFzpQPJDaGu/hWULhk+UjXQs=; b=h6zjJ98a/Zrg
- jserkOMu9gunWxK1cavJRZUTzgJS4GeGDIoj/uqoAxqGWFT5syfmrECPAD2pCFQa08I+2OOXebuJA
- BH/8yBL1d1obO+59oFIT9/NliVNghp2pz2waqgTCU7CiWQ5/6tAIDXRoJzaDy2TBoBa/AhAlmKyCc
- 27/JQ=;
+ List-Archive; bh=dcinAWf/tJaSRLt/0YRmPcPfj6Abwv7wOsGYlGg/nEQ=; b=D0+aERkjxMsK
+ VN/EZXsvLZnRAaU7Tf8SLi2OQakgcTXe0tIo0Eo/azMtauEt/FAwP/QIYtsX5fdqWdWwl13+N6UbR
+ jVjPPR8YT0cTonijRg3Xc2b7MXrzKqqsvN8sGS+ghH4NmJhoND3q6p9TmcwrVH42ud3O8+fHBYX8I
+ 7VNZw=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iUZm8-0008Iv-CT; Tue, 12 Nov 2019 17:16:20 +0000
+ id 1iUZm9-0008J8-9l; Tue, 12 Nov 2019 17:16:21 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id D967927429D2; Tue, 12 Nov 2019 17:16:19 +0000 (GMT)
+ id A0359274299F; Tue, 12 Nov 2019 17:16:19 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <20191111223343.19986-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191111223343.19986-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191112171619.D967927429D2@ypsilon.sirena.org.uk>
+Message-Id: <20191112171619.A0359274299F@ypsilon.sirena.org.uk>
 Date: Tue, 12 Nov 2019 17:16:19 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: PM: add state machine to comments"
-	to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: PM: add check before setting
+	d0_substate" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: PM: add state machine to comments
+   ASoC: SOF: PM: add check before setting d0_substate
 
 has been applied to the asoc tree at
 
@@ -122,65 +122,36 @@ to this mail.
 Thanks,
 Mark
 
-From 74b4dd04b19cc03e1cc369d9c371cf4206367df4 Mon Sep 17 00:00:00 2001
+From 58a972efd21bb5adadd97f2546693ec64bfc99b9 Mon Sep 17 00:00:00 2001
 From: Keyon Jie <yang.jie@linux.intel.com>
-Date: Mon, 11 Nov 2019 16:33:40 -0600
-Subject: [PATCH] ASoC: SOF: PM: add state machine to comments
+Date: Mon, 11 Nov 2019 16:33:41 -0600
+Subject: [PATCH] ASoC: SOF: PM: add check before setting d0_substate
 
-Add Audio DSP state machine with comments. Note that the
-'D0<-->runtime D0I3' part is not implemented yet.
+Add check before seeting d0_substate and return success if Audio DSP is
+already in the target substate.
 
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191111223343.19986-2-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191111223343.19986-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/pm.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ sound/soc/sof/pm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 560a937e0484..3204c92f0e7d 100644
+index 3204c92f0e7d..b89810bf3230 100644
 --- a/sound/soc/sof/pm.c
 +++ b/sound/soc/sof/pm.c
-@@ -428,6 +428,38 @@ int snd_sof_set_d0_substate(struct snd_sof_dev *sdev,
- }
- EXPORT_SYMBOL(snd_sof_set_d0_substate);
- 
-+/*
-+ * Audio DSP states may transform as below:-
-+ *
-+ *                                         D0I3 compatible stream
-+ *     Runtime    +---------------------+   opened only, timeout
-+ *     suspend    |                     +--------------------+
-+ *   +------------+       D0(active)    |                    |
-+ *   |            |                     <---------------+    |
-+ *   |   +-------->                     |               |    |
-+ *   |   |Runtime +--^--+---------^--+--+ The last      |    |
-+ *   |   |resume     |  |         |  |    opened D0I3   |    |
-+ *   |   |           |  |         |  |    compatible    |    |
-+ *   |   |     resume|  |         |  |    stream closed |    |
-+ *   |   |      from |  | D3      |  |                  |    |
-+ *   |   |       D3  |  |suspend  |  | d0i3             |    |
-+ *   |   |           |  |         |  |suspend           |    |
-+ *   |   |           |  |         |  |                  |    |
-+ *   |   |           |  |         |  |                  |    |
-+ * +-v---+-----------+--v-------+ |  |           +------+----v----+
-+ * |                            | |  +----------->                |
-+ * |       D3 (suspended)       | |              |      D0I3      +-----+
-+ * |                            | +--------------+                |     |
-+ * |                            |  resume from   |                |     |
-+ * +-------------------^--------+  d0i3 suspend  +----------------+     |
-+ *                     |                                                |
-+ *                     |                       D3 suspend               |
-+ *                     +------------------------------------------------+
-+ *
-+ * d0i3_suspend = s0_suspend && D0I3 stream opened,
-+ * D3 suspend = !d0i3_suspend,
-+ */
-+
- int snd_sof_resume(struct device *dev)
+@@ -416,6 +416,9 @@ int snd_sof_set_d0_substate(struct snd_sof_dev *sdev,
  {
- 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	if (sdev->d0_substate == d0_substate)
++		return 0;
++
+ 	/* do platform specific set_state */
+ 	ret = snd_sof_dsp_set_power_state(sdev, d0_substate);
+ 	if (ret < 0)
 -- 
 2.20.1
 
