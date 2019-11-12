@@ -7,78 +7,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4302C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8633AC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:20:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6AED220659
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:19:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BAAD20659
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 17:20:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="alnRye5I";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LMUdgxU+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AED220659
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DYNIhxsd";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NYvwY0Cl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BAAD20659
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 894BC1671;
-	Tue, 12 Nov 2019 18:18:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 894BC1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE0FE1667;
+	Tue, 12 Nov 2019 18:19:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE0FE1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573579182;
-	bh=vEIiiOX9uNvhEZSe9IQT9N6YxR9Qqlk1Pqlfn6s0EL8=;
+	s=default; t=1573579212;
+	bh=US23GxBP9eodgoXTiImmpLf4CUrb0fPgkltihQxbg2M=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=alnRye5IyCynjWtGsUP4oJtQ9S+yKRddCSQAIPUKzp9/35JdEq9wSeKyr/WOpgeGh
-	 M8ZSkXkz4lVkg9mTs65rJsIDMVu0/Ild+W4cEzDRvRIU6mWbOHzAjjk8YxWmXG1Qub
-	 Pl3kiN0rwaqg6tqcSwpsJ1OyrRc60pOcaXTsiX1Y=
+	b=DYNIhxsd2OEWZpaoKXHHaMbN5txrUcnaGpShBh0cxNnUJGHh1XYxrN7hQTZIZwPp5
+	 daYb96fN+EyJS+weMn/rLa7+pOR+meAat8NJ1Ne67e2HD4jaI7yy8JgL1fJCkNAaPE
+	 G2kfmVJrfBDgpMCbTfC+SVsjmWl31rFNXvnpIaGk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50A7BF8060F;
-	Tue, 12 Nov 2019 18:16:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80517F80634;
+	Tue, 12 Nov 2019 18:16:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDA8DF80600; Tue, 12 Nov 2019 18:16:27 +0100 (CET)
+ id 21D9FF80610; Tue, 12 Nov 2019 18:16:29 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23D1AF8044C
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 18:16:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23D1AF8044C
+ by alsa1.perex.cz (Postfix) with ESMTPS id DDD12F8049C
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 18:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDD12F8049C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="LMUdgxU+"
+ header.b="NYvwY0Cl"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=YfD/0D0q1ioVpB3Cdp1d9yB6I1kiEMo5VzI8L84mW18=; b=LMUdgxU+Fmrp
- F38DRm6VFfpTOmTpS+fKxxy4nNag7yNrlbwaCwcEfc19+fjqtCrglLPfUyu445VqrXT9vbwAUw2ul
- JaghIwSFtSohi3iHkjXGuMqoYS+hBb/dZ2zeorV6nLKkUR425s38cAOrZrsL48c4rGQxLBzuXVv96
- LvOng=;
+ List-Archive; bh=noPIGK2twrWUdnvZZ1bJWF5vj1WeZeoUf+WjpCKkvPg=; b=NYvwY0Cl/jz9
+ n0HBuMp1YDEC/hpyZ4sD3lbgqZBcu2l5RB7kGbXe2tIbUlpE5MoDSYSiAzFdY+5MfNCmhCZqveyeQ
+ FjaWEIJQIGFQtz5ScTNIyUI5YVLs4Q6ZJzjJN8sx3Lw6gV412Ouz7mOvCr200wfYUxQxjV9j3eyr1
+ dppuo=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iUZm7-0008Ij-HA; Tue, 12 Nov 2019 17:16:19 +0000
+ id 1iUZm9-0008J5-3D; Tue, 12 Nov 2019 17:16:21 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id E8ECF27429D2; Tue, 12 Nov 2019 17:16:18 +0000 (GMT)
+ id 92C4C27429D2; Tue, 12 Nov 2019 17:16:20 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-In-Reply-To: <20191111222039.19651-1-pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+In-Reply-To: <20191111222901.19892-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191112171618.E8ECF27429D2@ypsilon.sirena.org.uk>
-Date: Tue, 12 Nov 2019 17:16:18 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Paul Olaru <paul.olaru@nxp.com>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: topology: free kcontrol memory on
-	error" to the asoc tree
+Message-Id: <20191112171620.92C4C27429D2@ypsilon.sirena.org.uk>
+Date: Tue, 12 Nov 2019 17:16:20 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: Fix CFL and CML FW nocodec
+	binary names." to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,11 +97,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: topology: free kcontrol memory on error
+   ASoC: SOF: Intel: Fix CFL and CML FW nocodec binary names.
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -124,198 +122,62 @@ to this mail.
 Thanks,
 Mark
 
-From 1b4efdaf6d6053c8944cee0edba0969dc1be7d4b Mon Sep 17 00:00:00 2001
-From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-Date: Mon, 11 Nov 2019 16:20:38 -0600
-Subject: [PATCH] ASoC: SOF: topology: free kcontrol memory on error
+From 130d3e90777fe974e4b8fa100cec8faf19cac998 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Mon, 11 Nov 2019 16:29:00 -0600
+Subject: [PATCH] ASoC: SOF: Intel: Fix CFL and CML FW nocodec binary names.
 
-The volume and bytes kcontrols are currently not freeing their
-memory on initialization failures. When an error occurs, all the
-widgets loaded so far are unloaded via sof_widget_unload().
-But this only happens for the widgets that got successfully loaded.
+The manifest information is different between CNL, CML and CFL platforms
+hence we need to load different files.
 
-Fix that by kfree()-ing the allocated memory on load error.
-
-Fixes: 311ce4fe7637d ("ASoC: SOF: Add support for loading topologies")
-Reviewed-by: Paul Olaru <paul.olaru@nxp.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191111222039.19651-1-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191111222901.19892-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/topology.c | 67 +++++++++++++++++++++++++++++-----------
- 1 file changed, 49 insertions(+), 18 deletions(-)
+ sound/soc/sof/sof-pci-dev.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 6096731e89ce..d82ab981e840 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -942,18 +942,22 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 	struct sof_ipc_ctrl_data *cdata;
- 	int tlv[TLV_ITEMS];
- 	unsigned int i;
--	int ret;
-+	int ret = 0;
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index d66412a77873..2ef927371b23 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -113,7 +113,7 @@ static const struct sof_dev_desc cnl_desc = {
  
- 	/* validate topology data */
--	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN)
--		return -EINVAL;
-+	if (le32_to_cpu(mc->num_channels) > SND_SOC_TPLG_MAX_CHAN) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
+ static const struct sof_dev_desc cfl_desc = {
+-	.machines		= snd_soc_acpi_intel_cnl_machines,
++	.machines		= snd_soc_acpi_intel_cfl_machines,
+ 	.resindex_lpe_base	= 0,
+ 	.resindex_pcicfg_base	= -1,
+ 	.resindex_imr_base	= -1,
+@@ -122,7 +122,7 @@ static const struct sof_dev_desc cfl_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
+-	.nocodec_fw_filename = "sof-cnl.ri",
++	.nocodec_fw_filename = "sof-cfl.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+ 	.arch_ops = &sof_xtensa_arch_ops
+@@ -133,7 +133,7 @@ static const struct sof_dev_desc cfl_desc = {
+ 	IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
  
- 	/* init the volume get/put data */
- 	scontrol->size = struct_size(scontrol->control_data, chanv,
- 				     le32_to_cpu(mc->num_channels));
- 	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
--	if (!scontrol->control_data)
--		return -ENOMEM;
-+	if (!scontrol->control_data) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 
- 	scontrol->comp_id = sdev->next_comp_id;
- 	scontrol->min_volume_step = le32_to_cpu(mc->min);
-@@ -963,7 +967,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 	/* set cmd for mixer control */
- 	if (le32_to_cpu(mc->max) == 1) {
- 		scontrol->cmd = SOF_CTRL_CMD_SWITCH;
--		goto out;
-+		goto skip;
- 	}
- 
- 	scontrol->cmd = SOF_CTRL_CMD_VOLUME;
-@@ -971,14 +975,15 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 	/* extract tlv data */
- 	if (get_tlv_data(kc->tlv.p, tlv) < 0) {
- 		dev_err(sdev->dev, "error: invalid TLV data\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out_free;
- 	}
- 
- 	/* set up volume table */
- 	ret = set_up_volume_table(scontrol, tlv, le32_to_cpu(mc->max) + 1);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: setting up volume table\n");
--		return ret;
-+		goto out_free;
- 	}
- 
- 	/* set default volume values to 0dB in control */
-@@ -988,7 +993,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 		cdata->chanv[i].value = VOL_ZERO_DB;
- 	}
- 
--out:
-+skip:
- 	/* set up possible led control from mixer private data */
- 	ret = sof_parse_tokens(scomp, &scontrol->led_ctl, led_tokens,
- 			       ARRAY_SIZE(led_tokens), mc->priv.array,
-@@ -996,13 +1001,21 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 	if (ret != 0) {
- 		dev_err(sdev->dev, "error: parse led tokens failed %d\n",
- 			le32_to_cpu(mc->priv.size));
--		return ret;
-+		goto out_free_table;
- 	}
- 
- 	dev_dbg(sdev->dev, "tplg: load kcontrol index %d chans %d\n",
- 		scontrol->comp_id, scontrol->num_channels);
- 
--	return 0;
-+	return ret;
-+
-+out_free_table:
-+	if (le32_to_cpu(mc->max) > 1)
-+		kfree(scontrol->volume_table);
-+out_free:
-+	kfree(scontrol->control_data);
-+out:
-+	return ret;
- }
- 
- static int sof_control_load_enum(struct snd_soc_component *scomp,
-@@ -1047,6 +1060,7 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
- 		container_of(hdr, struct snd_soc_tplg_bytes_control, hdr);
- 	struct soc_bytes_ext *sbe = (struct soc_bytes_ext *)kc->private_value;
- 	int max_size = sbe->max;
-+	int ret = 0;
- 
- 	/* init the get/put bytes data */
- 	scontrol->size = sizeof(struct sof_ipc_ctrl_data) +
-@@ -1055,13 +1069,16 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
- 	if (scontrol->size > max_size) {
- 		dev_err(sdev->dev, "err: bytes data size %d exceeds max %d.\n",
- 			scontrol->size, max_size);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 
- 	scontrol->control_data = kzalloc(max_size, GFP_KERNEL);
- 	cdata = scontrol->control_data;
--	if (!scontrol->control_data)
--		return -ENOMEM;
-+	if (!scontrol->control_data) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 
- 	scontrol->comp_id = sdev->next_comp_id;
- 	scontrol->cmd = SOF_CTRL_CMD_BINARY;
-@@ -1076,23 +1093,32 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
- 		if (cdata->data->magic != SOF_ABI_MAGIC) {
- 			dev_err(sdev->dev, "error: Wrong ABI magic 0x%08x.\n",
- 				cdata->data->magic);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto out_free;
- 		}
- 		if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION,
- 						 cdata->data->abi)) {
- 			dev_err(sdev->dev,
- 				"error: Incompatible ABI version 0x%08x.\n",
- 				cdata->data->abi);
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto out_free;
- 		}
- 		if (cdata->data->size + sizeof(const struct sof_abi_hdr) !=
- 		    le32_to_cpu(control->priv.size)) {
- 			dev_err(sdev->dev,
- 				"error: Conflict in bytes vs. priv size.\n");
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto out_free;
- 		}
- 	}
--	return 0;
-+
-+	return ret;
-+
-+out_free:
-+	kfree(scontrol->control_data);
-+out:
-+	return ret;
- }
- 
- /* external kcontrol init - used for any driver specific init */
-@@ -1150,6 +1176,11 @@ static int sof_control_load(struct snd_soc_component *scomp, int index,
- 		return 0;
- 	}
- 
-+	if (ret < 0) {
-+		kfree(scontrol);
-+		return ret;
-+	}
-+
- 	dobj->private = scontrol;
- 	list_add(&scontrol->list, &sdev->kcontrol_list);
- 	return ret;
+ static const struct sof_dev_desc cml_desc = {
+-	.machines		= snd_soc_acpi_intel_cnl_machines,
++	.machines		= snd_soc_acpi_intel_cml_machines,
+ 	.resindex_lpe_base	= 0,
+ 	.resindex_pcicfg_base	= -1,
+ 	.resindex_imr_base	= -1,
+@@ -142,7 +142,7 @@ static const struct sof_dev_desc cml_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
+-	.nocodec_fw_filename = "sof-cnl.ri",
++	.nocodec_fw_filename = "sof-cml.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+ 	.arch_ops = &sof_xtensa_arch_ops
 -- 
 2.20.1
 
