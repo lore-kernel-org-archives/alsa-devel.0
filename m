@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CD48C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 20:26:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B931C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 20:29:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7580720674
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 20:26:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D769E21872
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 20:29:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oW2lHIMC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7580720674
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oxUHaAM/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D769E21872
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CC8E74C;
-	Tue, 12 Nov 2019 21:26:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CC8E74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 133E0886;
+	Tue, 12 Nov 2019 21:28:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 133E0886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573590416;
-	bh=NneRlA18f0DW6PcsoFfIu7b67X27QRTZ+Y3+9U5XKdU=;
+	s=default; t=1573590545;
+	bh=3DjelN9k1pTLJbZkdoN6k0nzzpxbQCyJwngpg8Ytchc=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oW2lHIMCQrpB1YRxAWeQLgeHAzceFbMLYWhmx1aG+mPQ+NujBohwUWShC9tlyBlgZ
-	 9Wf79ol4t2/BOTQO7AmGCptiFiKv/zWZZrCzicKLmN5JR17e7uffDYS7wAbfyN9BpE
-	 HNWTKRP3lrm04DyXk1eSnAnZQeUmhrNx6FpVtYoM=
+	b=oxUHaAM/fjetb43THDU1ybkIhP5+xkRSFM7jzs9UE+pIsU5E57Cg/1b0KJxhB3FU6
+	 jBzg7lzPq4bIK6Pz438z0+QMPaWi1F26lXWrmbkGg6kRvnZfOO2pH3uBJ8nIgRzxZX
+	 0utriw3cPPCpxh1Dkx19QMXAtk4Q4NIDN1THMWiU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96A96F8049C;
-	Tue, 12 Nov 2019 21:26:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABB52F8049C;
+	Tue, 12 Nov 2019 21:28:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9A90F804CF; Tue, 12 Nov 2019 21:26:04 +0100 (CET)
+ id F142FF804CF; Tue, 12 Nov 2019 21:28:11 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F4E7F802E0
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 21:26:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F4E7F802E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F535F802E0
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 21:28:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F535F802E0
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 161CFACEC;
- Tue, 12 Nov 2019 20:26:01 +0000 (UTC)
-Date: Tue, 12 Nov 2019 21:26:00 +0100
-Message-ID: <s5hmud07sfb.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 4CDE7ACEC;
+ Tue, 12 Nov 2019 20:28:06 +0000 (UTC)
+Date: Tue, 12 Nov 2019 21:28:06 +0100
+Message-ID: <s5hlfsk7sbt.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <CAK8P3a0esv0T6ALMXJW40B45Qy5BqVSV9rhSD_sVNUc1T+suEg@mail.gmail.com>
+In-Reply-To: <CAK8P3a1fsC+05i-i77g2aR3bkzprnhbhROLkMPcy=UFfsV3GMw@mail.gmail.com>
 References: <20191112151642.680072-1-arnd@arndb.de>
- <20191112151642.680072-6-arnd@arndb.de>
- <s5hv9rpnj6m.wl-tiwai@suse.de>
- <CAK8P3a0esv0T6ALMXJW40B45Qy5BqVSV9rhSD_sVNUc1T+suEg@mail.gmail.com>
+ <20191112151642.680072-3-arnd@arndb.de>
+ <s5hblthp0di.wl-tiwai@suse.de>
+ <CAK8P3a1fsC+05i-i77g2aR3bkzprnhbhROLkMPcy=UFfsV3GMw@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -67,8 +67,8 @@ Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
  Baolin Wang <baolin.wang7@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v6 5/8] ALSA: Avoid using timespec for
-	struct snd_rawmidi_status
+Subject: Re: [alsa-devel] [PATCH v6 2/8] ALSA: Avoid using timespec for
+	struct snd_timer_status
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,49 +86,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 12 Nov 2019 21:04:10 +0100,
+On Tue, 12 Nov 2019 21:08:17 +0100,
 Arnd Bergmann wrote:
 > 
-> On Tue, Nov 12, 2019 at 5:38 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > On Tue, 12 Nov 2019 16:16:39 +0100, Arnd Bergmann wrote:
-> > > +#ifndef __KERNEL__
-> > >  struct snd_rawmidi_status {
-> > >       int stream;
-> > > +     unsigned char pad1[sizeof(time_t) - sizeof(int)];
-> > >       struct timespec tstamp;         /* Timestamp */
-> > >       size_t avail;                   /* available bytes */
-> > >       size_t xruns;                   /* count of overruns since last status (in bytes) */
-> > >       unsigned char reserved[16];     /* reserved for future use */
+> On Tue, Nov 12, 2019 at 4:42 PM Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> > > @@ -761,6 +761,7 @@ struct snd_timer_params {
+> > >       unsigned char reserved[60];     /* reserved */
 > > >  };
+> > >
+> > > +#ifndef __KERNEL__
+> > >  struct snd_timer_status {
+> > >       struct timespec tstamp;         /* Timestamp - last update */
+> > >       unsigned int resolution;        /* current period resolution in ns */
 > >
-> > Can we use union instead of padding?  Something like:
-> >
-> > struct snd_rawmidi_status {
-> >         union {
-> >                 int stream;
-> >                 time_t stream_alignment;
-> >         };
-> >         struct timespec tstamp;         /* Timestamp */
-> >         ....
+> > Do we need this ifndef?  Is it for stopping the reference of struct
+> > snd_timer_status from the kernel code but only 32 and 64 variants?
 > 
-> I think this would work most of the time, though I don't feel this is more
-> readable than the other version.
-> 
-> More importantly, it requires compiling user applications with GNU extensions
-> (--std=gnu89 or higher) or C11, but not C99, so this could be a problem
-> for some applications.
+> Well spotted, this is indeed a very recent change I did to the patch.
+> The idea here is to hide any use of 'time_t', 'timespec' and 'timeval'
+> from kernel compilation. These types are now defined in an incompatible
+> way by libc, so we have to remove them from the kernel's uapi headers.
+> I would prefer to remove them completely from the kernel (rather than
+> moving them from uapi to internal headers) to make it harder to write
+> y2038-incompatible code, and with the 90 patches I sent this week,
+> all users are gone from the kernel (this series was the last part).
 
-OK, fair enough.
+Could you put this trick in the changelog, too?
 
-> If you feel there is a problem with the padding syntax, how about enclosing
-> it in a typedef like:
-> 
-> typedef struct { char pad[sizeof(time_t) - sizeof(int)]; } __time_pad;
-> 
-> This typedef could be used in several structures from the other patches
-> as well.
+> Interestingly, hiding snd_timer_status from the drivers /also/ caught
+> a but in a file when I had missed a reference that needed to be converted
+> to snd_timer_status64.
 
-Yes, that improves the readability.
+Heh, that's no surprising, proving the usefulness :)
 
 
 thanks,
