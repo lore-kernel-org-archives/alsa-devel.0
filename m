@@ -2,70 +2,75 @@ Return-Path: <SRS0=v73L=ZE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02DF0C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 00:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2CC5C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 05:22:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF5572196E
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 00:25:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4307214E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 05:22:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q96rtD+Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF5572196E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CP9rFIIZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4307214E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6E60820;
-	Tue, 12 Nov 2019 01:24:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6E60820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59E561607;
+	Tue, 12 Nov 2019 06:21:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59E561607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573518310;
-	bh=k2Cn92WuouJ6eAhXq8fF/Yg1uXf9RMcfsBN5CFwOO4A=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1573536136;
+	bh=avocupmqtApHhHDprv9D2IZPgU2PxHwIU6kIYkuQjZo=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q96rtD+YvGjBct40UnIQZr7u/BW2O1Q5kAwHPWz+j1vGwVChAaldgwCX3nXSXchR3
-	 ALIdj/iIbXhi/33cN7kgp1agXv83jsCynUEor1XhNktJbOwT0t61Vdx3QsnTH/f+nG
-	 YNku6bRqWo7tjbOaHetcisQ5q9PTR5+17zoUVQcU=
+	b=CP9rFIIZy3OVhPyjKpkhzaFylcC8PV3Ay+uAYHKuGX45YQDBZA/X60/vkRxolcxu9
+	 8k1g+hMmBgdNONMaFM6umv5pfPE4B85FrUapnQMQclvYwYgFhy7zOdMebk2S1E0oVG
+	 xgpv7VaefLtAIe0R1Wo7WByhPLrET3ybN7e+tR50=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ECF3F802E0;
-	Tue, 12 Nov 2019 01:24:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 209E4F8044C;
+	Tue, 12 Nov 2019 06:21:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C9FCF804FF; Tue, 12 Nov 2019 01:24:18 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5C7E8F802E0
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 01:24:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C7E8F802E0
-Date: 12 Nov 2019 09:24:08 +0900
-X-IronPort-AV: E=Sophos;i="5.68,294,1569250800"; d="scan'208";a="31205283"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 12 Nov 2019 09:24:08 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id DC97641212A8;
- Tue, 12 Nov 2019 09:24:08 +0900 (JST)
-Message-ID: <87sgmu7xhz.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <c976b330-f635-e818-1feb-f25db42a6ae4@nvidia.com>
+ id 691EFF80483; Tue, 12 Nov 2019 06:21:23 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5410F80275
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 06:21:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5410F80275
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 11 Nov 2019 21:21:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,295,1569308400"; d="scan'208";a="404128320"
+Received: from grueda-mobl1.amr.corp.intel.com (HELO [10.251.144.145])
+ ([10.251.144.145])
+ by fmsmga005.fm.intel.com with ESMTP; 11 Nov 2019 21:21:14 -0800
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
 References: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
- <87d0e63joh.wl-kuninori.morimoto.gx@renesas.com>
- <c976b330-f635-e818-1feb-f25db42a6ae4@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: linux-tegra <linux-tegra@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ <877e4e3jni.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8ed58ca1-0f9d-63e8-ba5d-28ee5209aee5@linux.intel.com>
+Date: Mon, 11 Nov 2019 23:21:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <877e4e3jni.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v3 02/19] ASoC: soc-core: tidyup
-	soc_init_dai_link()
+Subject: Re: [alsa-devel] [PATCH v3 06/19] ASoC: soc-core: add
+ soc_unbind_dai_link()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,127 +83,112 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Jon
 
-Thank you for reporting.
+On 11/5/19 12:46 AM, Kuninori Morimoto wrote:
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> It is easy to read code if it is cleanly using paired function/naming,
+> like start <-> stop, register <-> unregister, etc, etc.
+> But, current ALSA SoC code is very random, unbalance, not paired, etc.
+> It is easy to create bug at the such code, and it will be difficult to
+> debug.
+> 
+> ALSA SoC has soc_bind_dai_link(), but its paired soc_unbind_dai_link()
+> is not implemented.
+> More confusable is that soc_remove_pcm_runtimes() which should be
+> soc_unbind_dai_link() is implemented without synchronised
+> to soc_bind_dai_link().
+> 
+> This patch cleanup this unbalance.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-> I am seeing an audio regression on -next and bisect is pointing to
-> this commit. I am seeing the following crash on boot during probe
-> deferral of the soundcard ...
+Morimoto-san, this patch seems to introduce a regression in our SOF 
+module removal tests. Without a couple of load/unload modules cycles, we 
+hit a kernel oops while freeing the card.
 
-It seems timing bug.
-I have a plan to post below patch if my current posting patch are accepted,
-but it seems it is necessary immediately.
-I believe your issue will be solved by this patch,
-but can you please test it ?
-I will formally post it with your tested-by if it was OK.
+see https://github.com/thesofproject/linux/issues/1466 for some logs.
 
-# It will be more cleanuped in the future,
-# but it needs more other cleanup patches...
+This issue did not happen with our November 6 rebase on Mark's tree, and 
+showed up today. I couldn't really bisect the whole tree due to other 
+issues, so manually applied your patches on top of this 11/06 tree and 
+bisected from there.
 
---------------------
-Subject: [PATCH] ASoC: soc-core: care card_probed at soc_cleanup_card_resources()
-
-soc_cleanup_card_resources() will call card->remove(), but it should be
-called if card->probe() or card->late_probe() are called.
-snd_soc_bind_card() might be error before calling
-card->probe() / card->late_probe().
-In that time, card->remove() will be called.
-This patch adds card_probed parameter to judge it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/soc-core.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 55014e7..b078227 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1980,7 +1980,8 @@ static void __soc_setup_card_name(char *name, int len,
- 	}
- }
- 
--static void soc_cleanup_card_resources(struct snd_soc_card *card)
-+static void soc_cleanup_card_resources(struct snd_soc_card *card,
-+				       int card_probed)
- {
- 	struct snd_soc_dai_link *link, *_link;
- 
-@@ -2007,7 +2008,7 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
- 	soc_cleanup_card_debugfs(card);
- 
- 	/* remove the card */
--	if (card->remove)
-+	if (card_probed && card->remove)
- 		card->remove(card);
- }
- 
-@@ -2015,7 +2016,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- {
- 	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_dai_link *dai_link;
--	int ret, i;
-+	int ret, i, card_probed = 0;
- 
- 	mutex_lock(&client_mutex);
- 	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_INIT);
-@@ -2067,6 +2068,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		ret = card->probe(card);
- 		if (ret < 0)
- 			goto probe_end;
-+		card_probed = 1;
- 	}
- 
- 	/* probe all components used by DAI links on this card */
-@@ -2129,6 +2131,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 			goto probe_end;
- 		}
- 	}
-+	card_probed = 1;
- 
- 	snd_soc_dapm_new_widgets(card);
- 
-@@ -2145,7 +2148,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 
- probe_end:
- 	if (ret < 0)
--		soc_cleanup_card_resources(card);
-+		soc_cleanup_card_resources(card, card_probed);
- 
- 	mutex_unlock(&card->mutex);
- 	mutex_unlock(&client_mutex);
-@@ -2439,11 +2442,13 @@ EXPORT_SYMBOL_GPL(snd_soc_register_card);
- static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- {
- 	if (card->instantiated) {
-+		int card_probed = 1;
-+
- 		card->instantiated = false;
- 		snd_soc_dapm_shutdown(card);
- 		snd_soc_flush_all_delayed_work(card);
- 
--		soc_cleanup_card_resources(card);
-+		soc_cleanup_card_resources(card, card_probed);
- 		if (!unregister)
- 			list_add(&card->list, &unbind_card_list);
- 	} else {
--- 
-2.7.4
+I will need to confirm this finding (it's quite late for me) but looking 
+at the code I wonder if the move of pcm_runtime deletion is correct?
 
 
-
-
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+> ---
+> v2 -> v3
+> 	- no change
+> 	- add Reviewed-by
+> 
+>   sound/soc/soc-core.c | 22 ++++++++++++----------
+>   1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index e8ff6f2..1e8dd19 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -470,14 +470,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+>   	return NULL;
+>   }
+>   
+> -static void soc_remove_pcm_runtimes(struct snd_soc_card *card)
+> -{
+> -	struct snd_soc_pcm_runtime *rtd, *_rtd;
+> -
+> -	for_each_card_rtds_safe(card, rtd, _rtd)
+> -		soc_free_pcm_runtime(rtd);
+> -}
+> -
+>   struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
+>   		const char *dai_link)
+>   {
+> @@ -1037,6 +1029,16 @@ static int soc_dai_link_sanity_check(struct snd_soc_card *card,
+>   	return 0;
+>   }
+>   
+> +static void soc_unbind_dai_link(struct snd_soc_card *card,
+> +				struct snd_soc_dai_link *dai_link)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd;
+> +
+> +	rtd = snd_soc_get_pcm_runtime(card, dai_link->name);
+> +	if (rtd)
+> +		soc_free_pcm_runtime(rtd);
+> +}
+> +
+>   static int soc_bind_dai_link(struct snd_soc_card *card,
+>   	struct snd_soc_dai_link *dai_link)
+>   {
+> @@ -1466,6 +1468,8 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+>   		card->remove_dai_link(card, dai_link);
+>   
+>   	list_del(&dai_link->list);
+> +
+> +	soc_unbind_dai_link(card, dai_link);
+>   }
+>   EXPORT_SYMBOL_GPL(snd_soc_remove_dai_link);
+>   
+> @@ -1974,8 +1978,6 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
+>   	for_each_card_links_safe(card, link, _link)
+>   		snd_soc_remove_dai_link(card, link);
+>   
+> -	soc_remove_pcm_runtimes(card);
+> -
+>   	/* remove auxiliary devices */
+>   	soc_remove_aux_devices(card);
+>   	soc_unbind_aux_dev(card);
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
