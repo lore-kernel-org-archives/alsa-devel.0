@@ -7,79 +7,79 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAEC4C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 15:21:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62DADC43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 15:21:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E54821872
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 15:21:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA6EB21872
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 15:21:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h588Rop/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E54821872
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DzUXfwEG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA6EB21872
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EEFB166E;
-	Tue, 12 Nov 2019 16:20:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EEFB166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F37D31673;
+	Tue, 12 Nov 2019 16:20:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F37D31673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573572064;
-	bh=+41D9XDaCixUZnnw2+2B0UZa/KOi+BjpNd8zoxrFtuQ=;
+	s=default; t=1573572104;
+	bh=dLfTkAJfFCQ9C3UJ7/ph8mKh5MKwSQEqLOqK3WE1dZc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h588Rop/dtdLET7riXvfnA4shrHAXy3kmsl6lg/m4zrR/wJcI0KdgL9Qo8vDdmRpr
-	 lbc8TRO7Dp/stt5q/2VI3oa1djA61wZNuQOxWwZaDmax0AuBIt15gDb0nYUifK4nZY
-	 sDPK5Wr3eq0fvA1PQvzL9XAidfV6TVHTHZTdcE34=
+	b=DzUXfwEGhtG9MdwlTeuMTR0elfW9qAf76GGvjIvSFruqCFgc5expNfijpj2GOx5Nx
+	 SYwX4KDOo+MuQiIO0qi6h2YOojI3uQcmDd6u6H3vL7WpKHMkaLjn+ADE9NLs/IYcEs
+	 WahzRrZuTonJUVHKSQFsLdAGW2CZFjb0VZusSEdY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7088DF80639;
-	Tue, 12 Nov 2019 16:18:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A31EF80642;
+	Tue, 12 Nov 2019 16:18:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78A48F80611; Tue, 12 Nov 2019 16:18:21 +0100 (CET)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+ id C03A2F80612; Tue, 12 Nov 2019 16:18:21 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C629F8044C
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 16:18:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C629F8044C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 199D0F804CF
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 16:18:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 199D0F804CF
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
  (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MxDgs-1hfkbx37SC-00xZ7R; Tue, 12 Nov 2019 16:16:57 +0100
+ 1MtfRp-1hc9qB3Td1-00v4Hm; Tue, 12 Nov 2019 16:16:56 +0100
 From: Arnd Bergmann <arnd@arndb.de>
 To: alsa-devel@alsa-project.org,
 	Takashi Iwai <tiwai@suse.com>
-Date: Tue, 12 Nov 2019 16:16:39 +0100
-Message-Id: <20191112151642.680072-6-arnd@arndb.de>
+Date: Tue, 12 Nov 2019 16:16:36 +0100
+Message-Id: <20191112151642.680072-3-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20191112151642.680072-1-arnd@arndb.de>
 References: <20191112151642.680072-1-arnd@arndb.de>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:oteOMmI0dXPrDHNc2XCfhWBTdBAsQTVsR3zs+QycZH8TUXTIfxR
- umwN0s0jIaMu6jGbAPZgimTu9AqcoxYPCDBhSFXdE/Xd7/7owaQ8yM65DCZPch15xJ6Ad4U
- /nTZBdUK44nL+r+u1Q8GDlOsnrz5B+UdGw1ct5PCU5gnptsOtYSV81pYVLMep7B/Dudvx/2
- FgNMh0DCOsYjDwBndsi5w==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Dln6VzD+Ggo=:leyUFR3GRK8xNY7NyYzdvk
- L2ct6UfBSUnYUR28nfSqY3Wu5JdSUEz0pJnGIgPAIGiotK67rePTS3C4UUs2+TRpoh1+Bif/N
- C0eX9DM9/ZmoSuSLfbgtLDuiezKKB8r7sTEZKtsoSr12d4eRlj74+rJRwGUgoX37CQ7+nb4ui
- PSqrlR0EW/unHh/J2iX0nY1+NsWPs1ckqbK9P9SEnWF2IQYT5wexpyCXZuWDS8oEcUqSQT2AI
- Dsru1WzjdhyTepH0Vh1Ij5SC9TZ8ijwEGg1+Bms+BSJKzXpOFAvuwl9BZYU/5YHriYepVwon2
- P9dghNI5HWuzEFqmjb6XQ7kbQzi7aP4BSThPjjL5vGw4AFEyJ0+JOxzbFjZJZWoURS7Hv5+DD
- 7RWcwok7JjMY9QumGTifXqPbfiEF1uVWn2DTfNXr5iAWxM0jyJEM9edu+Jcd4+kQBP+tJwwLK
- icW4ANHXerhLP3foqjKENIn9F0OZNyiXDBFhYo0nyi8XG9TSlqDF+7WwAKBrMRhIao3VK0B0X
- tHmdfl689MFpP+pDUEV0n68si28RT3AMk6WL4rqlCkWzjncQBbpfdY267JuPReF4+0yJMTP+D
- /v9SAW//LhpPG9ZIQCelr51uZ+clQFil5BKYZUTFwEF3bXyz/DMDvgXsz7BVn04ACvD5x7M40
- r+zvvRFWmpqrK1BSbGKMtanOmHXkYhQMb4zw4/hNsNA/lYyMATGh51gfjDLxMC/WzENqiMfhI
- l/e/GkmrS3L3jE4A5rErmHMucaVK6eCN0tWBXV1o3qmenkioSNgz+ZWoRXY4nzeyqXTVvj/B6
- vdGBJ65Uc1zhz/XJWpG4UYv+ozcWtzhB9glNfax84pkDaEG9bXNr/Brtb5BEnrscgCqg0Ai4I
- +qgrthNLvakP5HQTN+2Q==
+X-Provags-ID: V03:K1:u3zGZYSUP0mPAgM1xzr7VtvAdHVSHJvfYGEoRMDWeoYEsEXXSCB
+ 2a0XtIGPepntRjOYl5w4Uldg2inkkpHr7o6pFEbF5HT2hRsNg7aXA3oDJNmCaGwhGoL3t/+
+ lGn4c4O/jnzvkUwsfEbgxExa7aXDXwwP9a3V+wpaGSc+tQZ7WdA3ewmWhtXZ0FRKVeACN96
+ nJRGS96Mosu+p5pjnnX9A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0XEazvyASJg=:SlRb9zMUQw9OFLamESQKxP
+ 2TmH0aE8/RWYsoFgTzFlQQS3pH+9z+x3SZehXXxaNvj3GYpBNc+O6OcFPDcgeL0Gr61a9JkTC
+ HYQQ/TwBokGTfZ147wNjak5exIJA2RvU+6Qk0u+lsM/hHTVKG36ytF7vOx+sOeBJSSvqFZ/+u
+ CxybcpN5DiDVyLVZYxYoHz53HXxuRSoLLwqGjPEOgV62zMBMiHZ8LBvp/kSDDpYxbh4miTKrl
+ tsYss2hinqfrsqrNb94lQLxU47ULfqkk5yqVoIIKgRnA2ITPdSdnsx+XJf0NYyx9hvOq86c9+
+ FL9eBfolGHAYi2aP0YnPn8bcYuL/WzU3IFBJF7jst0CGKUJ935HR8x/L2N40wsSKv/bM/QFar
+ wsv1kvP9fns4sbdEa/XoToWzXV4s3lh9zfAqzQVwBKf1sJ35p2oiZkcTKbarnF49s9G0RwxRi
+ iAaen3Bw6MiPop4I6NmMAkzDZjDEl0YRL3ZDo8sSxVi1585jRY5QBH41fGfg70PiiXVbuW4dD
+ nvMsPbNGKM7ogdwwHrIqPH9wcDZGXXDhNVlSkR/DjCT4/j/dHK7trAKfrUTZkgPz59498uQV4
+ LgzrbIyipsphKjESiEIW3+yDphXaJnwwQsEfOrU3gKtTI2XZIKFrWEPVbaacX3qvTOathYqPr
+ jj4pOSZEPzeIrP7QjcCqRJn3ENsQogP0u1rsuUZ+E8Cb8Ipi6Gm6vDCdWKW3OislxSEU/qYQK
+ s3ZoXTKSDz99GsC773JSVv6MJZkkJzPrDWl7RXi4Tx+G6xsaue1Pe74OHsCpw1N/odwAeXc1I
+ lqBwPjPyH7Uwtmt5OlFgHIzWUJqmMS313hQ2v+8VjA/H9Hk4hw3e/xX4Mppw3xB3WqGVgq8NL
+ wneV/KLj/C5II6NQPFJQ==
 Cc: Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>,
  y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
  Mark Brown <broonie@kernel.org>, Baolin Wang <baolin.wang7@gmail.com>
-Subject: [alsa-devel] [PATCH v6 5/8] ALSA: Avoid using timespec for struct
-	snd_rawmidi_status
+Subject: [alsa-devel] [PATCH v6 2/8] ALSA: Avoid using timespec for struct
+	snd_timer_status
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,346 +99,215 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Baolin Wang <baolin.wang@linaro.org>
 
-The struct snd_rawmidi_status will use 'timespec' type variables to record
-timestamp, which is not year 2038 safe on 32bits system.
+struct snd_timer_status uses 'timespec' type variables to record
+timestamp, which will be changed to an incompatible layout with
+updated user space using 64-bit time_t.
 
-Thus we introduced 'struct snd_rawmidi_status32' and 'struct snd_rawmidi_status64'
-to handle 32bit time_t and 64bit time_t in native mode, which replace
-timespec with s64 type.
+To handle both the old and the new layout on 32-bit architectures,
+this patch introduces 'struct snd_timer_status32' and 'struct snd_timer_status64'
+to handle 32bit time_t and 64bit time_t in native mode and compat mode,
+which replaces timespec with s64 type.
 
-In compat mode, we renamed or introduced new structures to handle 32bit/64bit
-time_t in compatible mode. The 'struct snd_rawmidi_status32' and
-snd_rawmidi_ioctl_status32() are used to handle 32bit time_t in compat mode.
-'struct compat_snd_rawmidi_status64' is used to handle 64bit time_t.
-
-When glibc changes time_t to 64-bit, any recompiled program will issue ioctl
-commands that the kernel does not understand without this patch.
+When glibc changes time_t to 64-bit, any recompiled program will issue
+ioctl commands that the kernel does not understand without this patch.
 
 Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/uapi/sound/asound.h |   3 +
- sound/core/rawmidi.c        | 132 ++++++++++++++++++++++++++++--------
- sound/core/rawmidi_compat.c |  87 ++++++------------------
- 3 files changed, 128 insertions(+), 94 deletions(-)
+ include/uapi/sound/asound.h |  2 ++
+ sound/core/timer.c          | 62 +++++++++++++++++++++++++++++++++----
+ sound/core/timer_compat.c   | 57 ++++------------------------------
+ 3 files changed, 64 insertions(+), 57 deletions(-)
 
 diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 7b74524f9406..cb830813da5d 100644
+index df1153cea0b7..930854f67fd3 100644
 --- a/include/uapi/sound/asound.h
 +++ b/include/uapi/sound/asound.h
-@@ -651,13 +651,16 @@ struct snd_rawmidi_params {
- 	unsigned char reserved[16];	/* reserved for future use */
+@@ -761,6 +761,7 @@ struct snd_timer_params {
+ 	unsigned char reserved[60];	/* reserved */
  };
  
 +#ifndef __KERNEL__
- struct snd_rawmidi_status {
- 	int stream;
-+	unsigned char pad1[sizeof(time_t) - sizeof(int)];
- 	struct timespec tstamp;		/* Timestamp */
- 	size_t avail;			/* available bytes */
- 	size_t xruns;			/* count of overruns since last status (in bytes) */
- 	unsigned char reserved[16];	/* reserved for future use */
+ struct snd_timer_status {
+ 	struct timespec tstamp;		/* Timestamp - last update */
+ 	unsigned int resolution;	/* current period resolution in ns */
+@@ -769,6 +770,7 @@ struct snd_timer_status {
+ 	unsigned int queue;		/* used queue size */
+ 	unsigned char reserved[64];	/* reserved */
  };
 +#endif
  
- #define SNDRV_RAWMIDI_IOCTL_PVERSION	_IOR('W', 0x00, int)
- #define SNDRV_RAWMIDI_IOCTL_INFO	_IOR('W', 0x01, struct snd_rawmidi_info)
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 8a12a7538d63..cd9bbb546846 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -50,6 +50,29 @@ static DEFINE_MUTEX(register_mutex);
- #define rmidi_dbg(rmidi, fmt, args...) \
- 	dev_dbg(&(rmidi)->dev, fmt, ##args)
+ #define SNDRV_TIMER_IOCTL_PVERSION	_IOR('T', 0x00, int)
+ #define SNDRV_TIMER_IOCTL_NEXT_DEVICE	_IOWR('T', 0x01, struct snd_timer_id)
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 29b99cfb5215..921f4ae2f9bf 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -65,6 +65,30 @@ struct snd_timer_user {
+ 	struct mutex ioctl_lock;
+ };
  
-+struct snd_rawmidi_status32 {
-+	s32 stream;
-+	s32 tstamp_sec;			/* Timestamp */
++struct snd_timer_status32 {
++	s32 tstamp_sec;			/* Timestamp - last update */
 +	s32 tstamp_nsec;
-+	u32 avail;			/* available bytes */
-+	u32 xruns;			/* count of overruns since last status (in bytes) */
-+	unsigned char reserved[16];	/* reserved for future use */
++	unsigned int resolution;	/* current period resolution in ns */
++	unsigned int lost;		/* counter of master tick lost */
++	unsigned int overrun;		/* count of read queue overruns */
++	unsigned int queue;		/* used queue size */
++	unsigned char reserved[64];	/* reserved */
 +};
 +
-+#define SNDRV_RAWMIDI_IOCTL_STATUS32	_IOWR('W', 0x20, struct snd_rawmidi_status32)
++#define SNDRV_TIMER_IOCTL_STATUS32	_IOR('T', 0x14, struct snd_timer_status32)
 +
-+struct snd_rawmidi_status64 {
-+	int stream;
-+	u8 rsvd[4];			/* alignment */
-+	s64 tstamp_sec;			/* Timestamp */
++struct snd_timer_status64 {
++	s64 tstamp_sec;			/* Timestamp - last update */
 +	s64 tstamp_nsec;
-+	size_t avail;			/* available bytes */
-+	size_t xruns;			/* count of overruns since last status (in bytes) */
-+	unsigned char reserved[16];	/* reserved for future use */
++	unsigned int resolution;	/* current period resolution in ns */
++	unsigned int lost;		/* counter of master tick lost */
++	unsigned int overrun;		/* count of read queue overruns */
++	unsigned int queue;		/* used queue size */
++	unsigned char reserved[64];	/* reserved */
 +};
 +
-+#define SNDRV_RAWMIDI_IOCTL_STATUS64	_IOWR('W', 0x20, struct snd_rawmidi_status64)
++#define SNDRV_TIMER_IOCTL_STATUS64	_IOR('T', 0x14, struct snd_timer_status64)
 +
- static struct snd_rawmidi *snd_rawmidi_search(struct snd_card *card, int device)
- {
- 	struct snd_rawmidi *rawmidi;
-@@ -677,7 +700,7 @@ int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
- EXPORT_SYMBOL(snd_rawmidi_input_params);
+ /* list of timers */
+ static LIST_HEAD(snd_timer_list);
  
- static int snd_rawmidi_output_status(struct snd_rawmidi_substream *substream,
--				     struct snd_rawmidi_status *status)
-+				     struct snd_rawmidi_status64 *status)
- {
- 	struct snd_rawmidi_runtime *runtime = substream->runtime;
- 
-@@ -690,7 +713,7 @@ static int snd_rawmidi_output_status(struct snd_rawmidi_substream *substream,
+@@ -1861,17 +1885,41 @@ static int snd_timer_user_params(struct file *file,
+ 	return err;
  }
  
- static int snd_rawmidi_input_status(struct snd_rawmidi_substream *substream,
--				    struct snd_rawmidi_status *status)
-+				    struct snd_rawmidi_status64 *status)
+-static int snd_timer_user_status(struct file *file,
+-				 struct snd_timer_status __user *_status)
++static int snd_timer_user_status32(struct file *file,
++				   struct snd_timer_status32 __user *_status)
++ {
++	struct snd_timer_user *tu;
++	struct snd_timer_status32 status;
++
++	tu = file->private_data;
++	if (!tu->timeri)
++		return -EBADFD;
++	memset(&status, 0, sizeof(status));
++	status.tstamp_sec = tu->tstamp.tv_sec;
++	status.tstamp_nsec = tu->tstamp.tv_nsec;
++	status.resolution = snd_timer_resolution(tu->timeri);
++	status.lost = tu->timeri->lost;
++	status.overrun = tu->overrun;
++	spin_lock_irq(&tu->qlock);
++	status.queue = tu->qused;
++	spin_unlock_irq(&tu->qlock);
++	if (copy_to_user(_status, &status, sizeof(status)))
++		return -EFAULT;
++	return 0;
++}
++
++static int snd_timer_user_status64(struct file *file,
++				   struct snd_timer_status64 __user *_status)
  {
- 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+ 	struct snd_timer_user *tu;
+-	struct snd_timer_status status;
++	struct snd_timer_status64 status;
  
-@@ -704,6 +727,80 @@ static int snd_rawmidi_input_status(struct snd_rawmidi_substream *substream,
+ 	tu = file->private_data;
+ 	if (!tu->timeri)
+ 		return -EBADFD;
+ 	memset(&status, 0, sizeof(status));
+-	status.tstamp = timespec64_to_timespec(tu->tstamp);
++	status.tstamp_sec = tu->tstamp.tv_sec;
++	status.tstamp_nsec = tu->tstamp.tv_nsec;
+ 	status.resolution = snd_timer_resolution(tu->timeri);
+ 	status.lost = tu->timeri->lost;
+ 	status.overrun = tu->overrun;
+@@ -1995,8 +2043,10 @@ static long __snd_timer_user_ioctl(struct file *file, unsigned int cmd,
+ 		return snd_timer_user_info(file, argp);
+ 	case SNDRV_TIMER_IOCTL_PARAMS:
+ 		return snd_timer_user_params(file, argp);
+-	case SNDRV_TIMER_IOCTL_STATUS:
+-		return snd_timer_user_status(file, argp);
++	case SNDRV_TIMER_IOCTL_STATUS32:
++		return snd_timer_user_status32(file, argp);
++	case SNDRV_TIMER_IOCTL_STATUS64:
++		return snd_timer_user_status64(file, argp);
+ 	case SNDRV_TIMER_IOCTL_START:
+ 	case SNDRV_TIMER_IOCTL_START_OLD:
+ 		return snd_timer_user_start(file);
+diff --git a/sound/core/timer_compat.c b/sound/core/timer_compat.c
+index bb6be484dfd3..20eef5bc304b 100644
+--- a/sound/core/timer_compat.c
++++ b/sound/core/timer_compat.c
+@@ -69,54 +69,11 @@ static int snd_timer_user_info_compat(struct file *file,
  	return 0;
  }
  
-+static int snd_rawmidi_ioctl_status32(struct snd_rawmidi_file *rfile,
-+				      struct snd_rawmidi_status32 __user *argp)
-+{
-+	int err = 0;
-+	struct snd_rawmidi_status32 __user *status = argp;
-+	struct snd_rawmidi_status32 status32;
-+	struct snd_rawmidi_status64 status64;
-+
-+	if (copy_from_user(&status32, argp,
-+			   sizeof(struct snd_rawmidi_status32)))
-+		return -EFAULT;
-+
-+	switch (status32.stream) {
-+	case SNDRV_RAWMIDI_STREAM_OUTPUT:
-+		if (rfile->output == NULL)
-+			return -EINVAL;
-+		err = snd_rawmidi_output_status(rfile->output, &status64);
-+		break;
-+	case SNDRV_RAWMIDI_STREAM_INPUT:
-+		if (rfile->input == NULL)
-+			return -EINVAL;
-+		err = snd_rawmidi_input_status(rfile->input, &status64);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	if (err < 0)
-+		return err;
-+
-+	status32 = (struct snd_rawmidi_status32) {
-+		.stream = status64.stream,
-+		.tstamp_sec = status64.tstamp_sec,
-+		.tstamp_nsec = status64.tstamp_nsec,
-+		.avail = status64.avail,
-+		.xruns = status64.xruns,
-+	};
-+
-+	if (copy_to_user(status, &status32, sizeof(*status)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int snd_rawmidi_ioctl_status64(struct snd_rawmidi_file *rfile,
-+				      struct snd_rawmidi_status64 __user *argp)
-+{
-+	int err = 0;
-+	struct snd_rawmidi_status64 status;
-+
-+	if (copy_from_user(&status, argp, sizeof(struct snd_rawmidi_status64)))
-+		return -EFAULT;
-+
-+	switch (status.stream) {
-+	case SNDRV_RAWMIDI_STREAM_OUTPUT:
-+		if (rfile->output == NULL)
-+			return -EINVAL;
-+		err = snd_rawmidi_output_status(rfile->output, &status);
-+		break;
-+	case SNDRV_RAWMIDI_STREAM_INPUT:
-+		if (rfile->input == NULL)
-+			return -EINVAL;
-+		err = snd_rawmidi_input_status(rfile->input, &status);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	if (err < 0)
-+		return err;
-+	if (copy_to_user(argp, &status,
-+			 sizeof(struct snd_rawmidi_status64)))
-+		return -EFAULT;
-+	return 0;
-+}
-+
- static long snd_rawmidi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	struct snd_rawmidi_file *rfile;
-@@ -750,33 +847,10 @@ static long snd_rawmidi_ioctl(struct file *file, unsigned int cmd, unsigned long
- 			return -EINVAL;
- 		}
- 	}
--	case SNDRV_RAWMIDI_IOCTL_STATUS:
--	{
--		int err = 0;
--		struct snd_rawmidi_status status;
--
--		if (copy_from_user(&status, argp, sizeof(struct snd_rawmidi_status)))
--			return -EFAULT;
--		switch (status.stream) {
--		case SNDRV_RAWMIDI_STREAM_OUTPUT:
--			if (rfile->output == NULL)
--				return -EINVAL;
--			err = snd_rawmidi_output_status(rfile->output, &status);
--			break;
--		case SNDRV_RAWMIDI_STREAM_INPUT:
--			if (rfile->input == NULL)
--				return -EINVAL;
--			err = snd_rawmidi_input_status(rfile->input, &status);
--			break;
--		default:
--			return -EINVAL;
--		}
--		if (err < 0)
--			return err;
--		if (copy_to_user(argp, &status, sizeof(struct snd_rawmidi_status)))
--			return -EFAULT;
--		return 0;
--	}
-+	case SNDRV_RAWMIDI_IOCTL_STATUS32:
-+		return snd_rawmidi_ioctl_status32(rfile, argp);
-+	case SNDRV_RAWMIDI_IOCTL_STATUS64:
-+		return snd_rawmidi_ioctl_status64(rfile, argp);
- 	case SNDRV_RAWMIDI_IOCTL_DROP:
- 	{
- 		int val;
-diff --git a/sound/core/rawmidi_compat.c b/sound/core/rawmidi_compat.c
-index 66eee61674b6..7397130976d0 100644
---- a/sound/core/rawmidi_compat.c
-+++ b/sound/core/rawmidi_compat.c
-@@ -41,19 +41,22 @@ static int snd_rawmidi_ioctl_params_compat(struct snd_rawmidi_file *rfile,
- 	return -EINVAL;
- }
- 
--struct snd_rawmidi_status32 {
-+struct compat_snd_rawmidi_status64 {
- 	s32 stream;
+-struct snd_timer_status32 {
 -	struct compat_timespec tstamp;
-+	u8 rsvd[4]; /* alignment */
-+	s64 tstamp_sec;
-+	s64 tstamp_nsec;
- 	u32 avail;
- 	u32 xruns;
- 	unsigned char reserved[16];
- } __attribute__((packed));
- 
--static int snd_rawmidi_ioctl_status_compat(struct snd_rawmidi_file *rfile,
--					   struct snd_rawmidi_status32 __user *src)
-+static int snd_rawmidi_ioctl_status_compat64(struct snd_rawmidi_file *rfile,
-+					     struct compat_snd_rawmidi_status64 __user *src)
- {
- 	int err;
--	struct snd_rawmidi_status status;
-+	struct snd_rawmidi_status64 status;
-+	struct compat_snd_rawmidi_status64 compat_status;
- 
- 	if (get_user(status.stream, &src->stream))
- 		return -EFAULT;
-@@ -75,68 +78,24 @@ static int snd_rawmidi_ioctl_status_compat(struct snd_rawmidi_file *rfile,
- 	if (err < 0)
- 		return err;
- 
--	if (compat_put_timespec(&status.tstamp, &src->tstamp) ||
--	    put_user(status.avail, &src->avail) ||
--	    put_user(status.xruns, &src->xruns))
--		return -EFAULT;
+-	u32 resolution;
+-	u32 lost;
+-	u32 overrun;
+-	u32 queue;
+-	unsigned char reserved[64];
+-};
 -
+-static int snd_timer_user_status_compat(struct file *file,
+-					struct snd_timer_status32 __user *_status)
+-{
+-	struct snd_timer_user *tu;
+-	struct snd_timer_status32 status;
+-	
+-	tu = file->private_data;
+-	if (!tu->timeri)
+-		return -EBADFD;
+-	memset(&status, 0, sizeof(status));
+-	status.tstamp.tv_sec = tu->tstamp.tv_sec;
+-	status.tstamp.tv_nsec = tu->tstamp.tv_nsec;
+-	status.resolution = snd_timer_resolution(tu->timeri);
+-	status.lost = tu->timeri->lost;
+-	status.overrun = tu->overrun;
+-	spin_lock_irq(&tu->qlock);
+-	status.queue = tu->qused;
+-	spin_unlock_irq(&tu->qlock);
+-	if (copy_to_user(_status, &status, sizeof(status)))
+-		return -EFAULT;
 -	return 0;
 -}
 -
 -#ifdef CONFIG_X86_X32
--/* X32 ABI has 64bit timespec and 64bit alignment */
--struct snd_rawmidi_status_x32 {
--	s32 stream;
--	u32 rsvd; /* alignment */
--	struct timespec tstamp;
--	u32 avail;
--	u32 xruns;
--	unsigned char reserved[16];
--} __attribute__((packed));
--
--#define put_timespec(src, dst) copy_to_user(dst, src, sizeof(*dst))
--
--static int snd_rawmidi_ioctl_status_x32(struct snd_rawmidi_file *rfile,
--					struct snd_rawmidi_status_x32 __user *src)
--{
--	int err;
--	struct snd_rawmidi_status status;
--
--	if (get_user(status.stream, &src->stream))
--		return -EFAULT;
--
--	switch (status.stream) {
--	case SNDRV_RAWMIDI_STREAM_OUTPUT:
--		if (!rfile->output)
--			return -EINVAL;
--		err = snd_rawmidi_output_status(rfile->output, &status);
--		break;
--	case SNDRV_RAWMIDI_STREAM_INPUT:
--		if (!rfile->input)
--			return -EINVAL;
--		err = snd_rawmidi_input_status(rfile->input, &status);
--		break;
--	default:
--		return -EINVAL;
--	}
--	if (err < 0)
--		return err;
-+	compat_status = (struct compat_snd_rawmidi_status64) {
-+		.stream = status.stream,
-+		.tstamp_sec = status.tstamp_sec,
-+		.tstamp_nsec = status.tstamp_nsec,
-+		.avail = status.avail,
-+		.xruns = status.xruns,
-+	};
- 
--	if (put_timespec(&status.tstamp, &src->tstamp) ||
--	    put_user(status.avail, &src->avail) ||
--	    put_user(status.xruns, &src->xruns))
-+	if (copy_to_user(src, &compat_status, sizeof(*src)))
- 		return -EFAULT;
- 
- 	return 0;
- }
+-/* X32 ABI has the same struct as x86-64 */
+-#define snd_timer_user_status_x32(file, s) \
+-	snd_timer_user_status(file, s)
 -#endif /* CONFIG_X86_X32 */
- 
+-
+-/*
+- */
+-
  enum {
- 	SNDRV_RAWMIDI_IOCTL_PARAMS32 = _IOWR('W', 0x10, struct snd_rawmidi_params32),
--	SNDRV_RAWMIDI_IOCTL_STATUS32 = _IOWR('W', 0x20, struct snd_rawmidi_status32),
+ 	SNDRV_TIMER_IOCTL_GPARAMS32 = _IOW('T', 0x04, struct snd_timer_gparams32),
+ 	SNDRV_TIMER_IOCTL_INFO32 = _IOR('T', 0x11, struct snd_timer_info32),
+-	SNDRV_TIMER_IOCTL_STATUS32 = _IOW('T', 0x14, struct snd_timer_status32),
 -#ifdef CONFIG_X86_X32
--	SNDRV_RAWMIDI_IOCTL_STATUS_X32 = _IOWR('W', 0x20, struct snd_rawmidi_status_x32),
+-	SNDRV_TIMER_IOCTL_STATUS_X32 = _IOW('T', 0x14, struct snd_timer_status),
 -#endif /* CONFIG_X86_X32 */
-+	SNDRV_RAWMIDI_IOCTL_STATUS_COMPAT32 = _IOWR('W', 0x20, struct snd_rawmidi_status32),
-+	SNDRV_RAWMIDI_IOCTL_STATUS_COMPAT64 = _IOWR('W', 0x20, struct compat_snd_rawmidi_status64),
++	SNDRV_TIMER_IOCTL_STATUS_COMPAT32 = _IOW('T', 0x14, struct snd_timer_status32),
++	SNDRV_TIMER_IOCTL_STATUS_COMPAT64 = _IOW('T', 0x14, struct snd_timer_status64),
  };
  
- static long snd_rawmidi_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
-@@ -153,12 +112,10 @@ static long snd_rawmidi_ioctl_compat(struct file *file, unsigned int cmd, unsign
- 		return snd_rawmidi_ioctl(file, cmd, (unsigned long)argp);
- 	case SNDRV_RAWMIDI_IOCTL_PARAMS32:
- 		return snd_rawmidi_ioctl_params_compat(rfile, argp);
--	case SNDRV_RAWMIDI_IOCTL_STATUS32:
--		return snd_rawmidi_ioctl_status_compat(rfile, argp);
+ static long __snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd,
+@@ -145,12 +102,10 @@ static long __snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd,
+ 		return snd_timer_user_gparams_compat(file, argp);
+ 	case SNDRV_TIMER_IOCTL_INFO32:
+ 		return snd_timer_user_info_compat(file, argp);
+-	case SNDRV_TIMER_IOCTL_STATUS32:
+-		return snd_timer_user_status_compat(file, argp);
 -#ifdef CONFIG_X86_X32
--	case SNDRV_RAWMIDI_IOCTL_STATUS_X32:
--		return snd_rawmidi_ioctl_status_x32(rfile, argp);
+-	case SNDRV_TIMER_IOCTL_STATUS_X32:
+-		return snd_timer_user_status_x32(file, argp);
 -#endif /* CONFIG_X86_X32 */
-+	case SNDRV_RAWMIDI_IOCTL_STATUS_COMPAT32:
-+		return snd_rawmidi_ioctl_status32(rfile, argp);
-+	case SNDRV_RAWMIDI_IOCTL_STATUS_COMPAT64:
-+		return snd_rawmidi_ioctl_status_compat64(rfile, argp);
++	case SNDRV_TIMER_IOCTL_STATUS_COMPAT32:
++		return snd_timer_user_status32(file, argp);
++	case SNDRV_TIMER_IOCTL_STATUS_COMPAT64:
++		return snd_timer_user_status64(file, argp);
  	}
  	return -ENOIOCTLCMD;
  }
