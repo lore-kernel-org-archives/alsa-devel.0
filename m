@@ -2,62 +2,63 @@ Return-Path: <SRS0=v73L=ZE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2ACBC43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 05:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66DE9C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 05:51:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB7DD21783
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 05:38:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D4C8921925
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 05:51:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sMeydre1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB7DD21783
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d7MEPZmq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4C8921925
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDFBE1607;
-	Tue, 12 Nov 2019 06:38:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDFBE1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5DBB1612;
+	Tue, 12 Nov 2019 06:50:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5DBB1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573537132;
-	bh=KGj32O26NGwOGs171zJo4GZpQMRfnBfv9/oixpt48ww=;
+	s=default; t=1573537873;
+	bh=xD+ERv8XZWlp8LLdCX6flWV7XWYIiJNwMbWrSOYepg8=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sMeydre15V8+Ako4tW1xPd8zoryxsKqTufCMIjqNooXtPg0xziaCxKi72FeYCV7bp
-	 d37d96r/Ah/jQgFEChOoWDDh1jAwMq/956jMA/KMNvROuTI3/DqW0WzqIH59OqJr34
-	 0B6f+tbNXWy61XUg0qS3zkoasMZ3V0mhpoZuuR/4=
+	b=d7MEPZmq/4vzI83FOlIIMTiioHIt95fXgtcm9s10sFoZf8Ay3R491dy1LfNDqwcey
+	 axEZte+YQ9rfDtz7qXrLw23rdcc8osHRZBKB8ASEP+9HRiPfxjj9lAzNcydlphf4HS
+	 6ky6wDFipZ7xQVRz+bFUQw9YJKQqM5lY1dnA/Dxg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BC87F8044C;
-	Tue, 12 Nov 2019 06:38:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 275A0F8044C;
+	Tue, 12 Nov 2019 06:50:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA58BF80483; Tue, 12 Nov 2019 06:37:59 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 40791F80275
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 06:37:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40791F80275
-Date: 12 Nov 2019 14:37:50 +0900
-X-IronPort-AV: E=Sophos;i="5.68,295,1569250800"; d="scan'208";a="31236613"
+ id 2EC94F80483; Tue, 12 Nov 2019 06:50:21 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1B864F802E0
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 06:50:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B864F802E0
+Date: 12 Nov 2019 14:50:12 +0900
+X-IronPort-AV: E=Sophos;i="5.68,295,1569250800"; d="scan'208";a="31451043"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 12 Nov 2019 14:37:50 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 12 Nov 2019 14:50:12 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 028B840078CD;
- Tue, 12 Nov 2019 14:37:50 +0900 (JST)
-Message-ID: <87pnhx8xjl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DB48940078D6;
+ Tue, 12 Nov 2019 14:50:12 +0900 (JST)
+Message-ID: <87o8xh8wyz.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <8ed58ca1-0f9d-63e8-ba5d-28ee5209aee5@linux.intel.com>
+In-Reply-To: <87pnhx8xjl.wl-kuninori.morimoto.gx@renesas.com>
 References: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
  <877e4e3jni.wl-kuninori.morimoto.gx@renesas.com>
  <8ed58ca1-0f9d-63e8-ba5d-28ee5209aee5@linux.intel.com>
+ <87pnhx8xjl.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
@@ -82,57 +83,37 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Pierre-Louis
+Hi Pierre-Louis, again
 
-Thank you for reporting
-
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > Morimoto-san, this patch seems to introduce a regression in our SOF
+> > module removal tests. Without a couple of load/unload modules cycles,
+> > we hit a kernel oops while freeing the card.
 > > 
-> > It is easy to read code if it is cleanly using paired function/naming,
-> > like start <-> stop, register <-> unregister, etc, etc.
-> > But, current ALSA SoC code is very random, unbalance, not paired, etc.
-> > It is easy to create bug at the such code, and it will be difficult to
-> > debug.
+> > see https://github.com/thesofproject/linux/issues/1466 for some logs.
 > > 
-> > ALSA SoC has soc_bind_dai_link(), but its paired soc_unbind_dai_link()
-> > is not implemented.
-> > More confusable is that soc_remove_pcm_runtimes() which should be
-> > soc_unbind_dai_link() is implemented without synchronised
-> > to soc_bind_dai_link().
+> > This issue did not happen with our November 6 rebase on Mark's tree,
+> > and showed up today. I couldn't really bisect the whole tree due to
+> > other issues, so manually applied your patches on top of this 11/06
+> > tree and bisected from there.
 > > 
-> > This patch cleanup this unbalance.
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > I will need to confirm this finding (it's quite late for me) but
+> > looking at the code I wonder if the move of pcm_runtime deletion is
+> > correct?
 > 
-> Morimoto-san, this patch seems to introduce a regression in our SOF
-> module removal tests. Without a couple of load/unload modules cycles,
-> we hit a kernel oops while freeing the card.
+> Hmm...
+> It is just merged verbose 2 functions into 1,
+> nothing changed from logic point of view
+> if my understanding was correct.
 > 
-> see https://github.com/thesofproject/linux/issues/1466 for some logs.
+> And now, I tried unbind test for cpu/codec/card on my side,
+> but nothing happen...
 > 
-> This issue did not happen with our November 6 rebase on Mark's tree,
-> and showed up today. I couldn't really bisect the whole tree due to
-> other issues, so manually applied your patches on top of this 11/06
-> tree and bisected from there.
+> I'm using this commit
 > 
-> I will need to confirm this finding (it's quite late for me) but
-> looking at the code I wonder if the move of pcm_runtime deletion is
-> correct?
+> 	bc7a9091e5b927ecc20dbb3bc07a5a09783fc27b
+> 	("ASoC: soc-core: add soc_unbind_dai_link()")
 
-Hmm...
-It is just merged verbose 2 functions into 1,
-nothing changed from logic point of view
-if my understanding was correct.
-
-And now, I tried unbind test for cpu/codec/card on my side,
-but nothing happen...
-
-I'm using this commit
-
-	bc7a9091e5b927ecc20dbb3bc07a5a09783fc27b
-	("ASoC: soc-core: add soc_unbind_dai_link()")
-
+Does it happen from soc-topology.c :: remove_link ?
 
 Thank you for your help !!
 Best regards
