@@ -7,92 +7,91 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54AC1C43331
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 18:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59C48C43331
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 18:34:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AE5920818
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 18:33:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D99A521872
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Nov 2019 18:33:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rkfEwfXX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Xo8QS0SV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AE5920818
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o7Fua/IP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Eck9OkBW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D99A521872
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A78B165F;
-	Tue, 12 Nov 2019 19:32:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A78B165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C582D1670;
+	Tue, 12 Nov 2019 19:33:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C582D1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573583591;
-	bh=vszFPoV4sncCcBCK/wAnYvm9iIvCk8a85ls1r+csfgk=;
+	s=default; t=1573583637;
+	bh=ZTCh78X4EjOX3pj2X10F6j99yEoonjYky7XvyNEicZo=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rkfEwfXX4ezllmfbdRPf/4pDQl80EO0KKh92zrRrgB5x3zAC/SVPMNAh54nScwEeT
-	 +vTfz8PC5oRGThTZAQQ2h7EYHSN5LWU7WmpH0mHyP0OdhpN8aBAWnjTlz944MImUJ4
-	 3O7DEaU2AhxGb80zViycS3fiMBeA+G2oHs2eLKdM=
+	b=o7Fua/IPSMSa7xvapDGokD2Pljaq7HfhJEJ8UDSVLGPz0Ni78Uqgj+11UVAHLJOQI
+	 ipQbtFH6o7Gbrp+IEYhSvmjoN3KFHxPwbmcV9VPaHDiumTwLE7p+/yI3wxER2YH5WT
+	 +qCUxZzu6Eoc+XFAraB5gFJQJMKHQhRHPtHainBk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73D2CF804CF;
-	Tue, 12 Nov 2019 19:31:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB56EF805FF;
+	Tue, 12 Nov 2019 19:31:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13288F806FA; Tue, 12 Nov 2019 18:17:32 +0100 (CET)
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com
- [IPv6:2607:f8b0:4864:20::543])
+ id 923B6F8070B; Tue, 12 Nov 2019 18:17:37 +0100 (CET)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33550F805FC
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 18:17:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33550F805FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD4D8F805FC
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 18:17:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD4D8F805FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="Xo8QS0SV"
-Received: by mail-pg1-x543.google.com with SMTP id q22so12298887pgk.2
- for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 09:17:29 -0800 (PST)
+ header.b="Eck9OkBW"
+Received: by mail-pf1-x444.google.com with SMTP id x28so13815140pfo.6
+ for <alsa-devel@alsa-project.org>; Tue, 12 Nov 2019 09:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=4xxRHw6/3z9e2nyAGWJzoGw1p/LSUOxTCybLFFSHdxw=;
- b=Xo8QS0SVtI4s+qaYHPpfI6h/nZGf1AlXbz0BoZb5ocvmRZg5XXoB5+wcMAyVAIAT4Z
- 6mOUpWbWGIxouNJip901iGjMT/tYzksw+PDPsnhrNCTR4JdUmFaXIM8BlOPBvAcYlydI
- 6L0cTwTfHYVxSDbY8oDzkzZ8Md+upvqGK6Gag=
+ bh=8VfkhaVR0FXWRYv7TUO3M4lLEIpTtvESy4tfTTW+/D0=;
+ b=Eck9OkBWHfxSZjjibIiuQWO1WWXBY4jQiiMwqUVvTCjRd0kel/+JdOYcUC8CgQY/QM
+ nVizBuNEQYMGHGXv4hMH5aVGNcAUQTx22lQqLRAj9r2rxyGLXUpzuI52FNm4y323K3wc
+ Jn/KseHvjTJPLalBLwPWq2vgEngd54d0J6Cyg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=4xxRHw6/3z9e2nyAGWJzoGw1p/LSUOxTCybLFFSHdxw=;
- b=tp1LuxZ8cAOVy48s1v7M0ed5eHOAoUg2utleX3NLp/Jv71WhsJJD91MA+3u/qi9u4f
- GOBz0ZJS0aeG8CBjnMKJ13o3emEzM24y/kxBQnYcY58pchCOWIpr/2wpBJsnorgqlEwI
- J1Eglhv6L4WHxIH5oYA1CfwFJ+Pvg8wlB9llyt4P2dzXqkbOB+bpQXmGVNpqZkErZ5K5
- jaKOOdYujgFyFpq9bI4tvD6i5LytNGfYNKTDMIffTVU8FR5HuiCuGz6m65/sxRRS65Bp
- WfYi1GnNtXvADphkE7cWtrVxj6DUfDq4PumuzmBFq7yk9Ajjad6dTwXo7iZCyDZSegXo
- 5lMQ==
-X-Gm-Message-State: APjAAAXxQ1DuBEBowHyg5ysBkwe9tapMMpg5j8Ao1MVYi/H6ow8V3JUm
- MXFZJcSadLue1Bbvl3hpq0bgnsYs/Ug=
-X-Google-Smtp-Source: APXvYqzcgPkS4O6FeQTFiG7nNrQjhKqrGzeupyYwb4ad78uCvoMVN7a8JupAU0W1pAEsMoCbCdlhqQ==
-X-Received: by 2002:a17:90a:9604:: with SMTP id
- v4mr7820912pjo.105.1573579047795; 
- Tue, 12 Nov 2019 09:17:27 -0800 (PST)
+ bh=8VfkhaVR0FXWRYv7TUO3M4lLEIpTtvESy4tfTTW+/D0=;
+ b=a2710bROyHCe71oV+pmdzD38+er2LIIXmpKv8q6AnG/dB7mVmvHS3GCWi6ag/SuTC/
+ xGVHCXO1ajeDjTPcKb+heH4xYGgys01QJstOSSI3EtY5L1Lyb7m3/ywR6cbaCEluEvZS
+ +/K+DCUydiKnzozoYrxKKSuPBNVFWKp/oKh8Wg0x2ve0C0mREp2GGLs3srmLsF/TxHLF
+ 9NRWaTrPKC6/JlWHff7U2uwvQNo/wkHQROIkuI/SMyLKUpyCuDtAIRexIifjOue1je5M
+ +PqVSqpFfNL43rIouQcYvpXEaMgSlTZWTb23J+GZ7tTMMD8Ggz6cZsXLASo46Ug6R00h
+ 5cUg==
+X-Gm-Message-State: APjAAAXEOW9mWUE4zkdp29g0Wd89eRNfVh0OE71RKZYMB6lUEy1NvtJb
+ dP2AwOPb47rT5roc8522RPfXAg==
+X-Google-Smtp-Source: APXvYqxMdjhhO6SVolj4I3rxcxYKkIWLUqdmeXeWHxK0vphaxqGvLdDOrNkQo72JPu2mYsAK35CHtw==
+X-Received: by 2002:a63:d10c:: with SMTP id k12mr37971418pgg.344.1573579052775; 
+ Tue, 12 Nov 2019 09:17:32 -0800 (PST)
 Received: from localhost ([2401:fa00:1:10:521e:3469:803b:9ad6])
- by smtp.gmail.com with ESMTPSA id h195sm3262634pfe.88.2019.11.12.09.17.26
+ by smtp.gmail.com with ESMTPSA id a66sm19987305pfb.166.2019.11.12.09.17.31
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 12 Nov 2019 09:17:27 -0800 (PST)
+ Tue, 12 Nov 2019 09:17:32 -0800 (PST)
 From: paulhsia <paulhsia@chromium.org>
 To: linux-kernel@vger.kernel.org
-Date: Wed, 13 Nov 2019 01:17:14 +0800
-Message-Id: <20191112171715.128727-2-paulhsia@chromium.org>
+Date: Wed, 13 Nov 2019 01:17:15 +0800
+Message-Id: <20191112171715.128727-3-paulhsia@chromium.org>
 X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
 In-Reply-To: <20191112171715.128727-1-paulhsia@chromium.org>
 References: <20191112171715.128727-1-paulhsia@chromium.org>
 MIME-Version: 1.0
-X-Mailman-Approved-At: Tue, 12 Nov 2019 19:31:23 +0100
+X-Mailman-Approved-At: Tue, 12 Nov 2019 19:31:24 +0100
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  paulhsia <paulhsia@chromium.org>, Takashi Iwai <tiwai@suse.com>
-Subject: [alsa-devel] [PATCH 1/2] ALSA: pcm: Fix stream lock usage in
-	snd_pcm_period_elapsed()
+Subject: [alsa-devel] [PATCH 2/2] ALSA: pcm: Use stream lock in
+	snd_pcm_detach_substream()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,44 +109,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the nullity check for `substream->runtime` is outside of the lock
-region, it is possible to have a null runtime in the critical section
-if snd_pcm_detach_substream is called right before the lock.
+Since snd_pcm_detach_substream modifies the input substream, the
+function should use stream lock to protect the modification section.
 
 Signed-off-by: paulhsia <paulhsia@chromium.org>
 ---
- sound/core/pcm_lib.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/core/pcm.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index d80041ea4e01..2236b5e0c1f2 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1782,11 +1782,14 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 9a72d641743d..06da9cb8984a 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -980,8 +980,12 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
+ {
  	struct snd_pcm_runtime *runtime;
- 	unsigned long flags;
  
 -	if (PCM_RUNTIME_CHECK(substream))
 +	if (snd_BUG_ON(!substream))
  		return;
--	runtime = substream->runtime;
- 
- 	snd_pcm_stream_lock_irqsave(substream, flags);
-+	if (PCM_RUNTIME_CHECK(substream))
-+		goto _unlock;
-+	runtime = substream->runtime;
 +
- 	if (!snd_pcm_running(substream) ||
- 	    snd_pcm_update_hw_ptr0(substream, 1) < 0)
- 		goto _end;
-@@ -1797,6 +1800,7 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
- #endif
-  _end:
- 	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
-+ _unlock:
- 	snd_pcm_stream_unlock_irqrestore(substream, flags);
++	snd_pcm_stream_lock_irq(substream);
++	if (PCM_RUNTIME_CHECK(substream))
++		goto unlock;
+ 	runtime = substream->runtime;
+ 	if (runtime->private_free != NULL)
+ 		runtime->private_free(runtime);
+@@ -1000,6 +1004,8 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
+ 	put_pid(substream->pid);
+ 	substream->pid = NULL;
+ 	substream->pstr->substream_opened--;
++ unlock:
++	snd_pcm_stream_unlock_irq(substream);
  }
- EXPORT_SYMBOL(snd_pcm_period_elapsed);
+ 
+ static ssize_t show_pcm_class(struct device *dev,
 -- 
 2.24.0.rc1.363.gb1bccd3e3d-goog
 
