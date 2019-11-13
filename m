@@ -6,62 +6,56 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DB6C43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 00:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 718E0C43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 01:16:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCE1A21E6F
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 00:51:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6CE6D222CD
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 01:16:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HwTdZ00H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCE1A21E6F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qqqldz5+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CE6D222CD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BD941607;
-	Wed, 13 Nov 2019 01:50:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BD941607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F3E0820;
+	Wed, 13 Nov 2019 02:15:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F3E0820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573606309;
-	bh=ugwJDSELSQ8KWKJjfb/GF0E0+KSp931JGsZDyXxsMZ0=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HwTdZ00HUsErGYGy5tiaho3ogjLmWMc7yXlxXrKh86OLfMnJYUrvMdKpBeRgOzwIC
-	 mw+Wl0KJHVu2fHQH3PeHjCZxPC81U7X/cI1ZG8TQ3w++BITkXf58S/5wsFAxoOmKah
-	 9xWtfVoc038HMpjjTT/A5x1bATZeONv0zMAIqtOQ=
+	s=default; t=1573607809;
+	bh=igaWoua/ySm7ZM1RaV4KizY/431v6CZQPoN21TaHJQk=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qqqldz5+eMWeAThHAFaooxzSkbtQ/1nfXvQcjjsvgxDQN+M5kQjQW1e/XtF5KwHk+
+	 GUHYE4mHXxI7tmKGX9vO0X961TBsvkbS/UW773r0rFBxsb+wzsykGOCtRqrs16pILg
+	 vxC/LoAfUB4uqjI5NDwJdhSvg9ukRjHE1yDk/aHs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E77A3F8049C;
-	Wed, 13 Nov 2019 01:50:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F292F8049C;
+	Wed, 13 Nov 2019 02:15:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 797E3F804CF; Wed, 13 Nov 2019 01:50:57 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id DA078F80275
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2019 01:50:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA078F80275
-Date: 13 Nov 2019 09:50:48 +0900
-X-IronPort-AV: E=Sophos;i="5.68,298,1569250800"; d="scan'208";a="31308287"
+ id 0B0B6F804CF; Wed, 13 Nov 2019 02:15:57 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 87F16F802E0
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2019 02:15:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87F16F802E0
+Date: 13 Nov 2019 10:15:48 +0900
+X-IronPort-AV: E=Sophos;i="5.68,298,1569250800"; d="scan'208";a="31524226"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 13 Nov 2019 09:50:48 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 13 Nov 2019 10:15:48 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 66126400A11F;
- Wed, 13 Nov 2019 09:50:47 +0900 (JST)
-Message-ID: <87tv784n14.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 60F3340041AC;
+ Wed, 13 Nov 2019 10:15:48 +0900 (JST)
+Message-ID: <87sgms4lvf.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191112184606.GA49098@sirena.co.uk>
-References: <87wocdhkz6.wl-kuninori.morimoto.gx@renesas.com>
- <87o8xphkwt.wl-kuninori.morimoto.gx@renesas.com>
- <20191112184606.GA49098@sirena.co.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 6/9] ASoC: soc-core: merge
-	soc_remove_component() and soc_cleanup_component()
+Subject: [alsa-devel] [PATCH 0/3] ASoC: soc-core cleanup step5+alpha
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,23 +76,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Mark
 
-Thank you for applying my patches
+I got report from you that some patch couldn't apply against current code.
+I'm checking posted patches and accepted patches, and it seems not yet
+accepted was previous series's [9/9].
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > having both soc_remove_component() and soc_cleanup_component() is
-> > very confusable. Let's merge these.
-> 
-> This doesn't apply against current code, please check and resend.
+1) is same as [9/9], and I checked that it can apply to your for-5.5 branch.
 
-I could find this patch as
-c6619b729814c855fc7bfa5a6936f5ea94d60dfd
-("ASoC: soc-core: merge soc_remove_component() and soc_cleanup_component()")
+Jon Hunter reported that my below patch created bug.
+2) and 3) are fixup patch for it.
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+bfce78a559655c5c4512a898a7e5d3a796fbb473
+("ASoC: soc-core: tidyup soc_init_dai_link()")
+
+Kuninori Morimoto (3):
+  1) ASoC: soc-core: call snd_soc_dapm_shutdown() at soc_cleanup_card_resources()
+  2) ASoC: soc-core: move snd_soc_unbind_card() next to snd_soc_bind_card()
+  3) ASoC: soc-core: care card_probed at soc_cleanup_card_resources()
+
+ sound/soc/soc-core.c | 46 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 26 insertions(+), 20 deletions(-)
+
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
