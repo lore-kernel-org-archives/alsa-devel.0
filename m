@@ -2,58 +2,60 @@ Return-Path: <SRS0=Rgv7=ZF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7585C432C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 18:14:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41A79C432C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 20:49:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DF9B206EE
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 18:14:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E290206CB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 20:49:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WJffH7Gb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DF9B206EE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pqIrFo/E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E290206CB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F06C11C;
-	Wed, 13 Nov 2019 19:13:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F06C11C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B683910E;
+	Wed, 13 Nov 2019 21:48:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B683910E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573668853;
-	bh=H6ZMAChaSYgfnHU/aoHCRrgIP60xJl5hk05xywjhMvw=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1573678171;
+	bh=/kaQKprO9+oGDv9hzLQ3aH5I4+nPRlqtlkNJxahDawI=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WJffH7GbmzWTdrTBd2VeD0wc6wVYXIJDNDIq6diCVV4cSsrLcxJYInG+nRhMLcr6e
-	 GFWQB90zRm8mcFLfy7PmPYc9H2RjneaOfpFY0IIsuddSx24gnBaRieRIV07+cGxgXh
-	 9ROq/h1Zl31PmqO/+7Urip8DhisHUkAEmgb6u3qY=
+	b=pqIrFo/EE+toB1G9bloIyY5sl2v8O4ftHj3Ox4Ouim6MtaWYCrPGEnyHVaDIoaX5U
+	 E+TqhH95BXW1nLZVfNroAysNU57CabvAyHdylZfWlWxsp3r1HCZ+DbbDGkhcejM5z1
+	 2mRzzffp+eggJoIAlOgDvinFeYlv1N8tQj9xizZk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E26BF80085;
-	Wed, 13 Nov 2019 19:13:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32089F80084;
+	Wed, 13 Nov 2019 21:48:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA574F80084; Wed, 13 Nov 2019 19:13:20 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5AB71F80085; Wed, 13 Nov 2019 21:48:38 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B40DCF80084
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2019 19:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B40DCF80084
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id A510CB219;
- Wed, 13 Nov 2019 18:13:15 +0000 (UTC)
-Date: Wed, 13 Nov 2019 19:13:15 +0100
-Message-ID: <s5h1rub7ih0.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <CAK8P3a2+DgOBXS9MmPfvyyCUmqMB-pOx-qLjTV-VjDgStP6tww@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AED01F80084
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2019 21:48:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AED01F80084
+Received: from mail-qk1-f178.google.com ([209.85.222.178]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MJVY8-1iB7Gc12U4-00Jqil for <alsa-devel@alsa-project.org>; Wed, 13 Nov
+ 2019 21:48:34 +0100
+Received: by mail-qk1-f178.google.com with SMTP id e2so3043482qkn.5
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2019 12:48:33 -0800 (PST)
+X-Gm-Message-State: APjAAAX6JORpwNEQ+uiJZkKmI/VKAxDlEqxkjZox+tVvrn41M8oXrOKv
+ j/C1/TgUhA6qwUWA420YGutS1OEX/TRfApR9vkA=
+X-Google-Smtp-Source: APXvYqx7UkBV/kC0is9Dpo8dDdWGF+Zki5016/BoG73dW6kFhspK8vxYn64om37wWSVD3T/yekPlGM3LvP76mG8ZG74=
+X-Received: by 2002:a37:4f13:: with SMTP id d19mr890459qkb.138.1573678112912; 
+ Wed, 13 Nov 2019 12:48:32 -0800 (PST)
+MIME-Version: 1.0
 References: <20191112151642.680072-1-arnd@arndb.de>
  <s5hk1847rvm.wl-tiwai@suse.de>
  <CAK8P3a2TMEUhzxH7RKvAW9STk33KrbCriUaQawOMffoFC6UTQw@mail.gmail.com>
@@ -61,10 +63,31 @@ References: <20191112151642.680072-1-arnd@arndb.de>
  <CAK8P3a3n9hrb-qfAYW9=eYApSX=pkOK5p6iGe0T29-KqGuh0tg@mail.gmail.com>
  <s5hy2wjn1w2.wl-tiwai@suse.de>
  <CAK8P3a2+DgOBXS9MmPfvyyCUmqMB-pOx-qLjTV-VjDgStP6tww@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ <s5h1rub7ih0.wl-tiwai@suse.de>
+In-Reply-To: <s5h1rub7ih0.wl-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 13 Nov 2019 21:48:16 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0zNKyauCpZKoXuAeFmpJ-LAY8XhzwhxhMNAJsdbYdKAA@mail.gmail.com>
+Message-ID: <CAK8P3a0zNKyauCpZKoXuAeFmpJ-LAY8XhzwhxhMNAJsdbYdKAA@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+X-Provags-ID: V03:K1:Q+Iu5APqFqu61I6/JkXSLl7jWn70eg+Gb23YmJ71aCAY5bf1E1G
+ OsQRsO/vTy7WhQH5UTTuwDrlJYCls/4VILKcbBttlM0IAiBqlyYsFsudnUik0GtbnA5gg7Q
+ lyy2vjiH+j1MOFAetCaCtdmbCKrkriwRyAIqnsqhhut0VDTO0SxM/c6baC/kVSL9GFrQkuu
+ NpyKzGjuUYfcL2RpvBy8w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FCfW6ioqUyA=:UzYxXDJQeJ8GBsX/ecC3SX
+ kFa7vZ6RZxTUBaEP7nyNooEAwmRrte713EAp5F2CjATpbI1J5FRnMMN2wV9EHOvC4aSMuGyLo
+ hQvbNoMEfNfuLCf5786irrK30m/Qx4CER6pFiDJYHSmXO44Vah80YgS8OHKqFAm1r0BmcTW2p
+ KiO4TAe+lSxN4pXgHuXhf/3fQyoFLDc0ioC2nU2/q0O6mu4pJykP0hsBQO0k8/phjzABxvebV
+ rDF0qwv39pfCTkWoY+heck1zXQ/PD2nrQCVKIxXPp3rVvAZrToaY3Hoi8g4vwdCQk0U0njovH
+ JF837BSK582v2FLxlCPKcPGj/55Xf8W47w1ex+mFqbcaYvcjj0qGdntyNPwmnHX8t/vlG8IPl
+ nu3TUtXqZUl6DSwX8Vunb194Eu131IgZsDoOCpzsBpkLyF2KjWKvPVrhgIVz/e47g1cKRkIWB
+ EEZuc5VJY8yPtEasECg76/GbsRkExfh2rjqg6f5NPauPb/lCjPtKT1PzL6MFHwKRxjmdUw0P7
+ CorBOc8n/blaso3wOIm/r1MvQiIL/A4HvWbjizlcMvsq6Kp+mOfPluymZMxiQCX3iMgk/cttK
+ cLIBoRVfieTp/seu3nmn1dY/005P7yR0qmyGcxwnL2WAm+EZBff/3g/i1LmYEEH5m0ksfJBoM
+ Xm76bfNnoDXD7PAkD+Jz8ONBDNU98LgwxKNNVtjG50wGJQ9Pqa42FNZbXaBCoLBAPBEhzJBIF
+ /RkQGGHnY+U+OADAi7XzjEbIbmGGi0Aenb/ehuQlQQwBtmTeHSuSwzo/M8Yo31jwE1MIargul
+ jCnGQdziznhhEDnZwGFH6t4ztE5q/dYoh9quAXo9a0EbCBus+Nc/jiFXJ1PTP+A21TqDnIQDJ
+ lDC4GpVW1gzKmQHESFJg==
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
  y2038 Mailman List <y2038@lists.linaro.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -89,115 +112,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 13 Nov 2019 18:19:56 +0100,
-Arnd Bergmann wrote:
-> 
-> On Wed, Nov 13, 2019 at 6:04 PM Takashi Iwai <tiwai@suse.de> wrote:
+On Wed, Nov 13, 2019 at 7:13 PM Takashi Iwai <tiwai@suse.de> wrote:
+> On Wed, 13 Nov 2019 18:19:56 +0100, Arnd Bergmann wrote:
+> > On Wed, Nov 13, 2019 at 6:04 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > I don't mind much about that, so it's up to you -- we can fold this
+> > > change into the patch that actually adds or modifies the ioctl, too.
 > >
-> > On Wed, 13 Nov 2019 17:51:57 +0100,
-> > Arnd Bergmann wrote:
-> > >
-> > > On Wed, Nov 13, 2019 at 5:40 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > > On Wed, 13 Nov 2019 15:32:44 +0100, Arnd Bergmann wrote:
-> > >
-> > > > > We had discussed alternatives for this one last time, and decided
-> > > > > to go with the solution I posted here. The main alternative would
-> > > > > be to change the 'timespec' in snd_timer_tread to a fixed-length
-> > > > > structure based on two 'long' members. This would avoid the
-> > > > > need to match the command with the time_t type, but the cost would
-> > > > > be requiring CLOCK_MONOTONIC timestamps to avoid the
-> > > > > overflow, and changing all application source code that requires
-> > > > > the type to be compatible with 'timespec'.
-> > > >
-> > > > Fair enough.
-> > > >
-> > > > One thing I forgot to mention: when we add/modify the ioctl or ABI, we
-> > > > need to increment the protocol version, e.g. SNDRV_PCM_VERSION to
-> > > > indicate user-space the supported ABI.  Please change these in your
-> > > > next patches, too.
-> > >
-> > > Just to confirm: this should be a simple one-line patch at the end of the
-> > > series like
-> > >
-> > > diff --git a/tools/include/uapi/sound/asound.h
-> > > b/tools/include/uapi/sound/asound.h
-> > > index df1153cea0b7..72e8380c6dcd 100644
-> > > --- a/include/uapi/sound/asound.h
-> > > +++ b/include/uapi/sound/asound.h
-> > > @@ -154,7 +154,7 @@ struct snd_hwdep_dsp_image {
-> > >   *                                                                           *
-> > >   *****************************************************************************/
-> > >
-> > > -#define SNDRV_PCM_VERSION              SNDRV_PROTOCOL_VERSION(2, 0, 14)
-> > > +#define SNDRV_PCM_VERSION              SNDRV_PROTOCOL_VERSION(2, 0, 15)
-> > >
-> > >  typedef unsigned long snd_pcm_uframes_t;
-> > >  typedef signed long snd_pcm_sframes_t;
-> > >
-> > > right? Most other kernel interfaces have no version numbering, so
-> > > I don't know what policy you have here.
-> >
-> > I don't mind much about that, so it's up to you -- we can fold this
-> > change into the patch that actually adds or modifies the ioctl, too.
-> 
-> I've added the patch below to the end of the series now, will repost
-> the series  after no more comments come in for this version.
-> Having a single patch to update the version seems better than updating
-> it multiple times with each patch touching the ABI in this series.
-> 
->       Arnd
-> 
-> commit b83a3eaece9b445f897a6f5ac2a903f2566a0e9d
-> Author: Arnd Bergmann <arnd@arndb.de>
-> Date:   Wed Nov 13 17:49:14 2019 +0100
-> 
->     ALSA: bump uapi version number
-> 
->     Change SNDRV_PCM_VERSION to indicate the addition of the time64
->     version of the mmap interface and these ioctl commands:
-> 
->     SNDRV_PCM_IOCTL_SYNC
->     SNDRV_RAWMIDI_IOCTL_STATUS
->     SNDRV_PCM_IOCTL_STATUS
->     SNDRV_PCM_IOCTL_STATUS_EXT
->     SNDRV_TIMER_IOCTL_TREAD
->     SNDRV_TIMER_IOCTL_STATUS
-> 
->     32-bit applications built with 64-bit time_t require both the headers
->     and the running kernel to support at least API version 2.0.15. When
->     built with earlier kernel headers, some of these may not work
->     correctly, so applications are encouraged to fail compilation like
-> 
->      #if SNDRV_PCM_VERSION < SNDRV_PROTOCOL_VERSION(2, 0, 15)
->      extern int __fail_build_for_time_64[sizeof(long) - sizeof(time_t)];
->      #endif
-> 
->     or provide their own updated copy of the header file.
-> 
->     Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index 25dbf71fa667..5cddfe62c97a 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -156,7 +156,7 @@ struct snd_hwdep_dsp_image {
->   *                                                                           *
->   *****************************************************************************/
-> 
-> -#define SNDRV_PCM_VERSION              SNDRV_PROTOCOL_VERSION(2, 0, 14)
-> +#define SNDRV_PCM_VERSION              SNDRV_PROTOCOL_VERSION(2, 0, 15)
-> 
->  typedef unsigned long snd_pcm_uframes_t;
->  typedef signed long snd_pcm_sframes_t;
+> > I've added the patch below to the end of the series now, will repost
+> > the series  after no more comments come in for this version.
+> > Having a single patch to update the version seems better than updating
+> > it multiple times with each patch touching the ABI in this series.
+>
+> I wasn't clear enough.  Each ALSA device API has a protocol version,
+> not only PCM, so we need updating SNDRV_RAWMIDI_VERSION and
+> SNDRV_TIMER_VERSION as well.
 
-I wasn't clear enough.  Each ALSA device API has a protocol version,
-not only PCM, so we need updating SNDRV_RAWMIDI_VERSION and
-SNDRV_TIMER_VERSION as well.
+Ok, I see. I've updated the patch to include all three, and adapted the
+changelog text. There are still multiple changes for the PCM interface,
+so this avoids having the version number change attached to half the
+code changes.
 
-
-thanks,
-
-Takashi
+     Arnd
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
