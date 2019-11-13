@@ -2,69 +2,87 @@ Return-Path: <SRS0=Rgv7=ZF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 984D1C43331
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 11:37:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D299FC43331
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 12:47:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93E182196E
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 11:37:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C50D4222D0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Nov 2019 12:47:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bX+ZNsXX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93E182196E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oY8stywJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pXlv7oIm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C50D4222D0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 614691614;
-	Wed, 13 Nov 2019 12:36:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 614691614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A9131612;
+	Wed, 13 Nov 2019 13:46:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A9131612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573645028;
-	bh=Rdq3lPKfDPRxxMAVbeiF01HNhE3kMYac8Pd9zv5UgtY=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bX+ZNsXX0t8G8Rjcz62J+yZP0Jr5MI8zBg1EWv0a3ZD0AnhFY9Bj+XgpX3q7mM7Rx
-	 da0sCh7umIBXfqyLADFPmMLBFVwSgUE0J7y/++U0hxiujRHbDe39/iroCoVvx9x5qm
-	 SdIQQAaQarW9muAWuFYkeGV1hkmU7vxRH0FkS7Eo=
+	s=default; t=1573649242;
+	bh=wtKJ696gSAHQsNqK0+3iicZaknJPD6DNx593hg5Ddwk=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=oY8stywJZcsP1MVidLiBYdZaw6dmyVSbv9EwJvz9FMLCtMRoMot4DkokuWtkQb+WG
+	 ilUHNtJNO0XmOzcRvl9/qz/v5y3PuHYmTsyK89EmIDNnSKk64mbSpL3pUu2kgKKSrT
+	 LhRSPp0T5Gh7JyO+z3WRI7KGEghELMbHw6FCkcQk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7EE2F8007C;
-	Wed, 13 Nov 2019 12:36:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2BEAF8007E;
+	Wed, 13 Nov 2019 13:46:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBF13F8007E; Wed, 13 Nov 2019 12:36:11 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 42DDCF80081; Wed, 13 Nov 2019 13:46:28 +0100 (CET)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2B98F80051
- for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2019 12:36:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2B98F80051
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id B05E3B22E;
- Wed, 13 Nov 2019 11:36:07 +0000 (UTC)
-Date: Wed, 13 Nov 2019 12:36:07 +0100
-Message-ID: <s5hftisnh3s.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Chih-Yang Hsia <paulhsia@chromium.org>
-In-Reply-To: <s5h7e446raw.wl-tiwai@suse.de>
-References: <20191112171715.128727-1-paulhsia@chromium.org>
- <s5h1rud7yel.wl-tiwai@suse.de>
- <CAJaf1TaZzsPdydcMZMemVSkjRvhYvx7ZxY2JEvExQ56B+MjQLQ@mail.gmail.com>
- <s5h7e446raw.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [alsa-devel] [PATCH 0/2] ALSA: pcm: Fix race condition in
-	runtime access
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57F15F8007E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Nov 2019 13:46:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57F15F8007E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="pXlv7oIm"
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id xADCkLiL119767;
+ Wed, 13 Nov 2019 06:46:21 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1573649181;
+ bh=pRF7p8v054t/HDVdz8KBBBRwhrT3OT3e+Ov7Dq3EyOQ=;
+ h=From:To:CC:Subject:Date;
+ b=pXlv7oImuE/C6oRnXLibrgZFjh1nXHEIkiEAQ6Pa48LXx2dMfrclCs1fsA3rd7wfH
+ lmM/k+fk0ZjymJCgHEStLTL/CS8+pfeuO8GaU4OvCZoWCbeVVFRlWwirJmt0cJj+RK
+ STVY1nwmY/c6JHRsmpSiP2YVmVs9UFoa3AEbwF0c=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xADCkLed115017
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 13 Nov 2019 06:46:21 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 13
+ Nov 2019 06:46:03 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 13 Nov 2019 06:46:03 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id xADCkIGE127078;
+ Wed, 13 Nov 2019 06:46:19 -0600
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Date: Wed, 13 Nov 2019 14:47:32 +0200
+Message-ID: <20191113124734.27984-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.24.0
+MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, linus.walleij@linaro.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org
+Subject: [alsa-devel] [PATCH 0/2] ASoC: pcm3168a: Poor man's RST gpio
+	handling
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,121 +100,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 13 Nov 2019 10:47:51 +0100,
-Takashi Iwai wrote:
-> 
-> On Wed, 13 Nov 2019 08:24:41 +0100,
-> Chih-Yang Hsia wrote:
-> > 
-> > On Wed, Nov 13, 2019 at 2:16 AM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Tue, 12 Nov 2019 18:17:13 +0100,
-> > > paulhsia wrote:
-> > > >
-> > > > Since
-> > > > - snd_pcm_detach_substream sets runtime to null without stream lock and
-> > > > - snd_pcm_period_elapsed checks the nullity of the runtime outside of
-> > > >   stream lock.
-> > > >
-> > > > This will trigger null memory access in snd_pcm_running() call in
-> > > > snd_pcm_period_elapsed.
-> > >
-> > > Well, if a stream is detached, it means that the stream must have been
-> > > already closed; i.e. it's already a clear bug in the driver that
-> > > snd_pcm_period_elapsed() is called against such a stream.
-> > >
-> > > Or am I missing other possible case?
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> > >
-> > 
-> > In multithreaded environment, it is possible to have to access both
-> > `interrupt_handler` (from irq) and `substream close` (from
-> > snd_pcm_release) at the same time.
-> > Therefore, in driver implementation, if "substream close function" and
-> > the "code section where snd_pcm_period_elapsed() in" do not hold the
-> > same lock, then the following things can happen:
-> > 
-> > 1. interrupt_handler -> goes into snd_pcm_period_elapsed with a valid
-> > sustream pointer
-> > 2. snd_pcm_release_substream: call close without blocking
-> > 3. snd_pcm_release_substream: call snd_pcm_detache_substream and set
-> > substream->runtime to NULL
-> > 4. interrupt_handler -> call snd_pcm_runtime() and crash while
-> > accessing fields in `substream->runtime`
-> > 
-> > e.g. In intel8x0.c driver for ac97 device,
-> > In driver intel8x0.c, `snd_pcm_period_elapsed` is called after
-> > checking `ichdev->substream` in `snd_intel8x0_update`.
-> > And if a `snd_pcm_release` call from alsa-lib and pass through close()
-> > and run to snd_pcm_detach_substream() in another thread, it's possible
-> > to trigger a crash.
-> > I can reproduce the issue within a multithread VM easily.
-> > 
-> > My patches are trying to provide a basic protection for this situation
-> > (and internal pcm lock between detach and elapsed), since
-> > - the usage of `snd_pcm_period_elapsed` does not warn callers about
-> > the possible race if the driver does not  force the order for `calling
-> > snd_pcm_period_elapsed` and `close` by lock and
-> > - lots of drivers already have this hidden issue and I can't fix them
-> > one by one (You can check the "snd_pcm_period_elapsed usage" and the
-> > "close implementation" within all the drivers). The most common
-> > mistake is that
-> >   - Checking if the substream is null and call into snd_pcm_period_elapsed
-> >   - But `close` can happen anytime, pass without block and
-> > snd_pcm_detach_substream will be trigger right after it
-> 
-> Thanks, point taken.  While this argument is valid and it's good to
-> harden the PCM core side, the concurrent calls are basically a bug,
-> and we'd need another fix in anyway.  Also, the patch 2 makes little
-> sense; there can't be multiple close calls racing with each other.  So
-> I'll go for taking your fix but only the first patch.
-> 
-> Back to this race: the surfaced issue is, as you pointed out, the race
-> between snd_pcm_period_elapsed() vs close call.  However, the
-> fundamental problem is the pending action after the PCM trigger-stop
-> call.  Since the PCM trigger doesn't block nor wait until the hardware
-> actually stops the things, the driver may go to the other step even
-> after this "supposed-to-be-stopped" point.  In your case, it goes up
-> to close, and crashes.  If we had a sync-stop operation, the interrupt
-> handler should have finished before moving to the close stage, hence
-> such a race could be avoided.
-> 
-> It's been a long known problem, and some drivers have the own
-> implementation for stop-sync.  I think it's time to investigate and
-> start implementing the fundamental solution.
+Hi,
 
-BTW, what we need essentially for intel8x0 is to just call
-synchronize_irq() before closing, at best in hw_free procedure:
+when the codec RST input is connected to a GPIO it needs to be pulled high in
+order to take the pcm3168a out from reset and to make it respond to register
+accesses via i2c.
 
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -923,8 +923,10 @@ static int snd_intel8x0_hw_params(struct snd_pcm_substream *substream,
- 
- static int snd_intel8x0_hw_free(struct snd_pcm_substream *substream)
- {
-+	struct intel8x0 *chip = snd_pcm_substream_chip(substream);
- 	struct ichdev *ichdev = get_ichdev(substream);
- 
-+	synchronize_irq(chip->irq);
- 	if (ichdev->pcm_open_flag) {
- 		snd_ac97_pcm_close(ichdev->pcm);
- 		ichdev->pcm_open_flag = 0;
+I have a board where one GPIO line is connected to two pcm3168a codec so runtime
+handling of the RST gpio is not possible (one codec would place the other codec
+to reset as well).
 
+The only possible solution is to request the gpio with
+GPIOD_FLAGS_BIT_NONEXCLUSIVE flag, ask it to be high initially and never touch
+it again.
 
-The same would be needed also at the beginning of the prepare, as the
-application may restart the stream without release.
+If the optinal GPIO is not described then issue the reset as the driver did.
 
-My idea is to add sync_stop PCM ops and call it from PCM core at
-snd_pcm_prepare() and snd_pcm_hw_free().
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  bindings: sound: pcm3168a: Document optional RST gpio
+  ASoC: pcm3168a: Add support for optional RST gpio handling
 
+ .../devicetree/bindings/sound/ti,pcm3168a.txt |  7 ++++
+ sound/soc/codecs/pcm3168a.c                   | 38 +++++++++++++++++--
+ 2 files changed, 41 insertions(+), 4 deletions(-)
 
-thanks,
+-- 
+Peter
 
-Takashi
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
