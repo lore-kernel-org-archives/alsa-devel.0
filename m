@@ -2,67 +2,66 @@ Return-Path: <SRS0=S9OM=ZG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF7EDC432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 10:58:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4D66C432C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 11:03:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 652B42070E
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 10:58:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2EDD8206EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 11:03:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rX5F1B3+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 652B42070E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kg1I48sv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EDD8206EF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 937AE847;
-	Thu, 14 Nov 2019 11:57:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 937AE847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F12C839;
+	Thu, 14 Nov 2019 12:02:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F12C839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573729123;
-	bh=tPNr66l1MBbW8fsL7na8W175XV16mpyH16nFR+cPf1U=;
+	s=default; t=1573729421;
+	bh=/IwYF7AWf/RntOZqhOi0uFqqA9BK7tDjF22Z+hS8wQQ=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rX5F1B3+MFfPzKreXG1d7GC4042LFOMgwviwmslObdtH6rdAkOodS+uNEhZ6LW37j
-	 Yncfi4/w3qjUMJMJSrBj9R21rPPkHSfQVLQFKi1Se8IIq4i637TdtDI/28H103WLLB
-	 dDBSkyhaVmnJL2mTj+EOlzFxsEkO/D5v0JgQU/1U=
+	b=kg1I48svFfrQsLtlO52VsuJmoX/mEa9MXQmC8M6vIYw+0ZwLY9/gT3XaQn0AY9JmK
+	 GfFWr1J1M926lxRtfulZ2xVOnM32Kt8LVeopoB+xBqRSfFAnzYrVYCEfmefQDxGqng
+	 7n3J7wmV7xqr5Iy5GbNYqvX1reFcERrBpydtqUzc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EA80F800CD;
-	Thu, 14 Nov 2019 11:57:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D90EFF800CD;
+	Thu, 14 Nov 2019 12:02:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20F36F800CF; Thu, 14 Nov 2019 11:57:52 +0100 (CET)
+ id D7519F800CF; Thu, 14 Nov 2019 12:02:49 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2BCFF80084
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 11:57:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2BCFF80084
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D003F80084
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 12:02:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D003F80084
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id C0D83AD00;
- Thu, 14 Nov 2019 10:57:48 +0000 (UTC)
-Date: Thu, 14 Nov 2019 11:57:48 +0100
-Message-ID: <s5ho8xen2s3.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id C344BAE8A;
+ Thu, 14 Nov 2019 11:02:46 +0000 (UTC)
+Date: Thu, 14 Nov 2019 12:02:46 +0100
+Message-ID: <s5hmucyn2jt.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Nikhil Mahale <nmahale@nvidia.com>
-In-Reply-To: <20191114033704.18171-4-nmahale@nvidia.com>
+In-Reply-To: <20191114033704.18171-6-nmahale@nvidia.com>
 References: <20191114033704.18171-1-nmahale@nvidia.com>
- <20191114033704.18171-4-nmahale@nvidia.com>
+ <20191114033704.18171-6-nmahale@nvidia.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com, aplattner@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v1 3/5] ALSA: hda - Add DP-MST conn list
-	support
+Subject: Re: [alsa-devel] [PATCH v1 5/5] ALSA: hda - Add DP-MST support for
+	NVIDIA codecs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,69 +79,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 Nov 2019 04:37:02 +0100,
+On Thu, 14 Nov 2019 04:37:04 +0100,
 Nikhil Mahale wrote:
 > 
-> Document change notification HDA040-A for the Intel High Definition
-> Audio 1.0a specification introduces a Device Select verb for Digital
-> Display Pin Widgets that are multi-stream capable. This verb selects
-> a Device Entry that is used by subsequent Pin Widget verbs,
-> including the Get Connection List Entry verb.
-> 
-> This patch queries the current Device Select value, associates it
-> with the connection list, and updates the connection list management
-> code to consider dev_id along with nid.
+> @@ -3494,11 +3500,86 @@ static const struct drm_audio_component_audio_ops nvhdmi_audio_ops = {
+>  	.master_unbind = generic_acomp_master_unbind,
+>  };
+>  
+> +static int nvhdmi_find_pcm_slot(struct hdmi_spec *spec,
+> +				struct hdmi_spec_per_pin *per_pin)
+> +{
+> +	int i;
+> +
+> +	/*
+> +	 * generic_hdmi_build_pcms() allocates (num_nids + dev_num - 1)
+> +	 * number of pcms.
+> +	 *
+> +	 * The per_pin of pin_nid_idx=n and dev_id=m prefers to get pcm-n if m==0.
+> +	 * This guarantees that dynamic pcm assignments are compatible with the
+> +	 * legacy static per_pin-pmc assignment that existed in the days before
+> +	 * DP-MST.
+> +	 *
+> +	 * per_pin of m!=0 prefers to get pcm=(num_nids + (m - 1)).
+> +	 */
+> +	if (per_pin->dev_id == 0 &&
+> +	    !test_bit(per_pin->pin_nid_idx, &spec->pcm_bitmap))
+> +		return per_pin->pin_nid_idx;
+> +
+> +	if (per_pin->dev_id != 0 &&
+> +	    !(test_bit(spec->num_nids + (per_pin->dev_id - 1),
+> +		&spec->pcm_bitmap))) {
+> +		return spec->num_nids + (per_pin->dev_id - 1);
+> +	}
+> +
+> +	/* have a second try; check the area over num_nids */
+> +	for (i = spec->num_nids; i < spec->pcm_used; i++) {
+> +		if (!test_bit(i, &spec->pcm_bitmap))
+> +			return i;
+> +	}
+> +
+> +	/* the last try; check the empty slots in pins */
+> +	for (i = 0; i < spec->num_nids; i++) {
+> +		if (!test_bit(i, &spec->pcm_bitmap))
+> +			return i;
+> +	}
+> +	return -EBUSY;
+> +}
 
-I don't get why this is needed.  This is the list that is added only
-from snd_hda_override_conn_list(), and you don't change that call
-pattern, so dev_id is always zero.
+I think this can be applied for Intel case, too.  No need for creating
+yet another indirect branch.
 
 
 thanks,
 
 Takashi
-
-> 
-> Signed-off-by: Nikhil Mahale <nmahale@nvidia.com>
-> Reviewed-by: Aaron Plattner <aplattner@nvidia.com>
-> ---
->  sound/pci/hda/hda_codec.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> index a2fb19129219..8f32cab8f4a4 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -88,6 +88,7 @@ struct hda_conn_list {
->  	struct list_head list;
->  	int len;
->  	hda_nid_t nid;
-> +	int dev_id;
->  	hda_nid_t conns[0];
->  };
->  
-> @@ -96,8 +97,9 @@ static struct hda_conn_list *
->  lookup_conn_list(struct hda_codec *codec, hda_nid_t nid)
->  {
->  	struct hda_conn_list *p;
-> +	int dev_id = snd_hda_get_dev_select(codec, nid);
->  	list_for_each_entry(p, &codec->conn_list, list) {
-> -		if (p->nid == nid)
-> +		if (p->nid == nid && p->dev_id == dev_id)
->  			return p;
->  	}
->  	return NULL;
-> @@ -113,6 +115,7 @@ static int add_conn_list(struct hda_codec *codec, hda_nid_t nid, int len,
->  		return -ENOMEM;
->  	p->len = len;
->  	p->nid = nid;
-> +	p->dev_id = snd_hda_get_dev_select(codec, nid);
->  	memcpy(p->conns, list, len * sizeof(hda_nid_t));
->  	list_add(&p->list, &codec->conn_list);
->  	return 0;
-> -- 
-> 2.16.4
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
