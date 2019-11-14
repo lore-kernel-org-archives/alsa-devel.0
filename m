@@ -2,65 +2,70 @@ Return-Path: <SRS0=S9OM=ZG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED8A1C432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 10:39:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C849C432C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 10:47:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E803C206D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 10:39:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B42542071F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 10:47:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k1kuyOK3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E803C206D9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cETQ/20L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B42542071F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A84A8839;
-	Thu, 14 Nov 2019 11:38:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A84A8839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99880847;
+	Thu, 14 Nov 2019 11:46:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99880847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573727939;
-	bh=3Ho9saoJtL2JleHgUp32NAgqbbG/i6a/5AtilkqMkq0=;
+	s=default; t=1573728454;
+	bh=JiFq3JLm0rWhLkITOTeCYWHIfrJXYR0zKrgFbDr8gwU=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k1kuyOK3zLTB/C7rZ/EP9jYn7RAj4+U7HO/vpH9Qg9YSmZnjv1QIckAAoAecKct87
-	 QVlII4U3vLfNtFzLP4HL8zegd4wbxCZIvGdrgyuh/7ukFZcxgW3CxDihM8t4MBbb3q
-	 bEq3nkVoPQbRHNq+C7i1Q5FZvUKlw0MHxsbwcJsY=
+	b=cETQ/20Lqpl1CMPM96xiFOI+xNWfu18H88vCntqI2DkFvu89wcF3jQ/cvKWzi4fwH
+	 JIVPo0tA7uBEHsFXv9uHYU+b6AqavFGWKxkfWEbDxecLCU+oNNbZ8PfzDXAU4mVRrQ
+	 zu/zZ1WsLDFWmJ5heup9NSHI3D2u5Vm+nLxFTzJ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40312F8007E;
-	Thu, 14 Nov 2019 11:38:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22EE0F800CD;
+	Thu, 14 Nov 2019 11:46:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 129F6F800CF; Thu, 14 Nov 2019 11:38:07 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2E0C7F800CF; Thu, 14 Nov 2019 11:46:42 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B82BF8007E
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 11:38:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B82BF8007E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 9CF58ACB4;
- Thu, 14 Nov 2019 10:38:02 +0000 (UTC)
-Date: Thu, 14 Nov 2019 11:38:02 +0100
-Message-ID: <s5hr22an3p1.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C00C3F8007E
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 11:46:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C00C3F8007E
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 14 Nov 2019 02:46:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="207753787"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by orsmga003.jf.intel.com with ESMTP; 14 Nov 2019 02:46:35 -0800
+Date: Thu, 14 Nov 2019 12:46:34 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@zeliteleevi
 To: Nikhil Mahale <nmahale@nvidia.com>
-In-Reply-To: <20191114033704.18171-1-nmahale@nvidia.com>
+In-Reply-To: <20191114033704.18171-3-nmahale@nvidia.com>
+Message-ID: <alpine.DEB.2.21.1911141241280.16459@zeliteleevi>
 References: <20191114033704.18171-1-nmahale@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ <20191114033704.18171-3-nmahale@nvidia.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com, aplattner@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v1 0/5] ALSA: hda - Add DP-MST support for
-	NVIDIA codecs
+Subject: Re: [alsa-devel] [PATCH v1 2/5] ALSA: hda - Add DP-MST jack support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,37 +83,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 Nov 2019 04:36:59 +0100,
-Nikhil Mahale wrote:
-> 
-> Today, DisplayPort multi-stream transport (DP-MST) audio is not
-> supported on codec drivers which don't use the audio component
-> (acomp) binding.
-> 
-> The commit ade49db337a9 (ALSA: hda/hdmi - Allow audio component for
-> AMD/ATI and Nvidia HDMI) added the DRM audio component binding for
-> the NVIDIA codec drivers, but the traditional HD-audio unsolicited
-> event code path is still in use by the proprietary NVIDIA graphics
-> driver.
-> 
-> This patch set adds DP-MST audio support for non-acomp codec drivers
-> which use the traditional HD-audio unsolicited event code path. This
-> patch set adds DP-MST support for NVIDIA codecs.
-> 
-> The patch set has been tested for HDMI/DP-SST/DP-MST(4 dp-mst audio
-> streams) configurations on NVIDIA Kepler and Maxwell GPUs, using
-> both the nouveau driver and the proprietary NVIDIA graphics driver.
+Hi Nikhil,
 
-Thanks for the patch.  The logic looks good, but there are a few
-concerns in implementation details.  Will comment in the reply of each
-patch.
+On Thu, 14 Nov 2019, Nikhil Mahale wrote:
 
-The timing is a bit late for merging into 5.5, though, for this kind
-of non-trivial changes.  It'll be likely applied after 5.5 merge
-window, so for 5.6.
+> This patch adds DP-MST jack support which will be used on NVIDIA
+> platforms. Today, DP-MST audio is supported only if the codec has
+> acomp support. This patch makes it possible to add DP-MST support
+> for non-acomp codecs.
+[...]
+> +++ b/sound/pci/hda/hda_generic.c
+> @@ -4203,7 +4203,7 @@ static bool detect_pin_state(struct hda_codec *codec, hda_nid_t pin)
+>  {
+>  	if (!is_jack_detectable(codec, pin))
+>  		return true;
+> -	return snd_hda_jack_detect_state(codec, pin) != HDA_JACK_NOT_PRESENT;
+> +	return snd_hda_jack_detect_state(codec, pin, 0) != HDA_JACK_NOT_PRESENT;
+>  }
 
+the patch adds quite a few checkpatch warnings. E.g. this line over 
+80 character limit. Run checkpatch yourself or take a look at e.g.
+https://travis-ci.org/thesofproject/linux/jobs/611787177?utm_medium=notification&utm_source=github_status
 
-Takashi
+I'll queued the series to SOF CI to do some testing against regressions 
+on our platforms. I'll report later if anything major found.
+
+Br, Kai
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
