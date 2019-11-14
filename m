@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F139C432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 964BFC432C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:22:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F82E206DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:21:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 216772068F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:22:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="owZE3ZEy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F82E206DC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ef+zcvuT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 216772068F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 371EA1674;
-	Thu, 14 Nov 2019 19:20:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 371EA1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F9181672;
+	Thu, 14 Nov 2019 19:21:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F9181672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573755707;
-	bh=f5YcUYRdVx0YGdQKkUgzamkVo4eao8rmxG/KSEnzV4E=;
+	s=default; t=1573755725;
+	bh=HEHu7tFSFMZyG2wG8tfj621p92oj1w0kqnJyIW5XJmU=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=owZE3ZEy92NFvPbAM0YsLngETfbQNcP49EEl9p/IWoBzJlzAXrJPHkNCmq4YM5kBS
-	 VT7sK30c2wDvB7zHHXWuaWknax4OeGCR0pOJNr3+dSaWYplNbNFps9GnJzvXMN1G6X
-	 lnVPURbiRiJtNhXnqwsynWOdFW7vf16m8iS8nIH8=
+	b=Ef+zcvuTe3balN9JXgzn56ckvJa2B7+KpEFLqepVrTL8YPPMyLgbTjQ6H6/NTdL8L
+	 KLorCLkuJA2WYAMjSjL0J+qFD0HiXGExOBOwzRdaQqE9y3B5PxL4+f5BFIGmXM2gZd
+	 ebVlju0UJTnnShE5mT2ZHKbCudqWMmrc+mjKLA7U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9339F80124;
-	Thu, 14 Nov 2019 19:17:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 299D9F80117;
+	Thu, 14 Nov 2019 19:18:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BD8FF80108; Thu, 14 Nov 2019 19:17:46 +0100 (CET)
+ id 937F2F8010B; Thu, 14 Nov 2019 19:17:48 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F27F1F800FD
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:17:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F27F1F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20115F800FF
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:17:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20115F800FF
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Nov 2019 10:17:34 -0800
+ 14 Nov 2019 10:17:38 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="195123385"
+X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="195123409"
 Received: from chiahuil-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.228.77])
- by orsmga007.jf.intel.com with ESMTP; 14 Nov 2019 10:17:32 -0800
+ by orsmga007.jf.intel.com with ESMTP; 14 Nov 2019 10:17:36 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Thu, 14 Nov 2019 12:16:43 -0600
-Message-Id: <20191114181702.22254-4-pierre-louis.bossart@linux.intel.com>
+Date: Thu, 14 Nov 2019 12:16:45 -0600
+Message-Id: <20191114181702.22254-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191114181702.22254-1-pierre-louis.bossart@linux.intel.com>
 References: <20191114181702.22254-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 03/22] soundwire: bus: add PM/no-PM versions
-	of read/write functions
+Subject: [alsa-devel] [PATCH v3 05/22] soundwire: intel: add helpers for
+	link power down and shim wake
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,121 +89,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for pm_runtime with the appropriate error checks for
-sdw_write/read functions, e.g. when pm_runtime is not supported.
-
-Also expose internal functions without pm_runtime support, which are
-required to perform any sort of suspend/resume operation, as well as
-any enumeration tasks.
+These routines are required for power management
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 68 +++++++++++++++++++++++++++++++----------
- 1 file changed, 52 insertions(+), 16 deletions(-)
+ drivers/soundwire/intel.c | 53 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index d99acbc614c6..a397d0a772b3 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -317,6 +317,46 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
- 	return 0;
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 23c5c3f9d30d..00fa5c3a6c1f 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -362,6 +362,59 @@ static int intel_shim_init(struct sdw_intel *sdw)
+ 	return ret;
  }
  
-+/*
-+ * Read/Write IO functions.
-+ * no_pm versions can only be called by the bus, e.g. while enumerating or
-+ * handling suspend-resume sequences.
-+ * all clients need to use the pm versions
-+ */
-+
-+static int
-+sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
 +{
-+	struct sdw_msg msg;
-+	int ret;
++	void __iomem *shim = sdw->link_res->shim;
++	unsigned int link_id = sdw->instance;
++	u16 wake_en, wake_sts;
 +
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			   slave->dev_num, SDW_MSG_FLAG_READ, val);
++	if (wake_enable) {
++		/* Enable the wakeup */
++		intel_writew(shim, SDW_SHIM_WAKEEN,
++			     (SDW_SHIM_WAKEEN_ENABLE << link_id));
++	} else {
++		/* Disable the wake up interrupt */
++		wake_en = intel_readw(shim, SDW_SHIM_WAKEEN);
++		wake_en &= ~(SDW_SHIM_WAKEEN_ENABLE << link_id);
++		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
++
++		/* Clear wake status */
++		wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
++		wake_sts |= (SDW_SHIM_WAKEEN_ENABLE << link_id);
++		intel_writew(shim, SDW_SHIM_WAKESTS_STATUS, wake_sts);
++	}
++}
++
++static int intel_link_power_down(struct sdw_intel *sdw)
++{
++	int link_control, spa_mask, cpa_mask, ret;
++	unsigned int link_id = sdw->instance;
++	void __iomem *shim = sdw->link_res->shim;
++	u16 ioctl;
++
++	/* Glue logic */
++	ioctl = intel_readw(shim, SDW_SHIM_IOCTL(link_id));
++	ioctl |= SDW_SHIM_IOCTL_BKE;
++	ioctl |= SDW_SHIM_IOCTL_COE;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	ioctl &= ~(SDW_SHIM_IOCTL_MIF);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++
++	/* Link power down sequence */
++	link_control = intel_readl(shim, SDW_SHIM_LCTL);
++	spa_mask = ~(SDW_SHIM_LCTL_SPA << link_id);
++	cpa_mask = (SDW_SHIM_LCTL_CPA << link_id);
++	link_control &=  spa_mask;
++
++	ret = intel_clear_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
 +	if (ret < 0)
 +		return ret;
 +
-+	return sdw_transfer(slave->bus, &msg);
++	sdw->cdns.link_up = false;
++	return 0;
 +}
 +
-+static int
-+sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-+{
-+	struct sdw_msg msg;
-+	int ret;
-+
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return sdw_transfer(slave->bus, &msg);
-+}
-+
-+int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
-+{
-+	return sdw_nwrite_no_pm(slave, addr, 1, &value);
-+}
-+
- /**
-  * sdw_nread() - Read "n" contiguous SDW Slave registers
-  * @slave: SDW Slave
-@@ -326,19 +366,17 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+ /*
+  * PDI routines
   */
- int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- {
--	struct sdw_msg msg;
- 	int ret;
- 
--	ret = sdw_fill_msg(&msg, slave, addr, count,
--			   slave->dev_num, SDW_MSG_FLAG_READ, val);
--	if (ret < 0)
--		return ret;
--
- 	ret = pm_runtime_get_sync(slave->bus->dev);
--	if (ret < 0)
-+	if (ret < 0 && ret != -EACCES) {
-+		pm_runtime_put_noidle(slave->bus->dev);
- 		return ret;
-+	}
-+
-+	ret = sdw_nread_no_pm(slave, addr, count, val);
- 
--	ret = sdw_transfer(slave->bus, &msg);
-+	pm_runtime_mark_last_busy(slave->bus->dev);
- 	pm_runtime_put(slave->bus->dev);
- 
- 	return ret;
-@@ -354,19 +392,17 @@ EXPORT_SYMBOL(sdw_nread);
-  */
- int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- {
--	struct sdw_msg msg;
- 	int ret;
- 
--	ret = sdw_fill_msg(&msg, slave, addr, count,
--			   slave->dev_num, SDW_MSG_FLAG_WRITE, val);
--	if (ret < 0)
--		return ret;
--
- 	ret = pm_runtime_get_sync(slave->bus->dev);
--	if (ret < 0)
-+	if (ret < 0 && ret != -EACCES) {
-+		pm_runtime_put_noidle(slave->bus->dev);
- 		return ret;
-+	}
-+
-+	ret = sdw_nwrite_no_pm(slave, addr, count, val);
- 
--	ret = sdw_transfer(slave->bus, &msg);
-+	pm_runtime_mark_last_busy(slave->bus->dev);
- 	pm_runtime_put(slave->bus->dev);
- 
- 	return ret;
 -- 
 2.20.1
 
