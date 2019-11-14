@@ -7,73 +7,71 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FA6EC432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:32:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF2EC432C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:33:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAD83206F0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:32:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 193122073A
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:33:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="egbEmEFm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAD83206F0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pUnIigId"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 193122073A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BCED165E;
-	Thu, 14 Nov 2019 19:32:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BCED165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6064E1672;
+	Thu, 14 Nov 2019 19:32:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6064E1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573756377;
-	bh=lwjahv/g/t6w4y5eqE65PW1+WZatDrpSEfe3g+bj1CI=;
+	s=default; t=1573756419;
+	bh=o1FASiMQtO4cvJvVdAzZxeLkvfOLh09y/XMAF9azJ8g=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=egbEmEFmcot972EuE9h//+kfs9LaNPRboKBNkKVLDExdPr5nLtJhpv6oe/gsd/GRa
-	 IqoK7o/nmxucqHl+ol62bAt1e2BWG6NpCHBQEKs2UqrderrCG4krS0nnN6jhzik9h+
-	 1qDm55ephhzSbK95N0pxMth/lANsKbwbo1cgjGi8=
+	b=pUnIigIdFAMcheX2Tj0WxmMJQUiGy6En2fHn5MmAFAmjH/Krt0fmUuJ1q4L8zSF+o
+	 hVqHO7J9Durbtwhd0KsOmdXJRcOL7iH7vdRv3hfakt920Tne7r+GLPohJd3s5JtLk9
+	 UM+7pdQd148mGlFDOTYSQwiTYmJozCdaDyo/5VWo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6BCEF8028B;
-	Thu, 14 Nov 2019 19:18:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCC53F80290;
+	Thu, 14 Nov 2019 19:18:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8C85F8015D; Thu, 14 Nov 2019 19:18:18 +0100 (CET)
+ id 686BDF8015A; Thu, 14 Nov 2019 19:18:19 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A3B9F8012F
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:18:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A3B9F8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 886BCF8012E
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:18:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 886BCF8012E
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Nov 2019 10:18:01 -0800
+ 14 Nov 2019 10:18:08 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="195123577"
+X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="195123622"
 Received: from chiahuil-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.228.77])
- by orsmga007.jf.intel.com with ESMTP; 14 Nov 2019 10:18:00 -0800
+ by orsmga007.jf.intel.com with ESMTP; 14 Nov 2019 10:18:07 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Thu, 14 Nov 2019 12:16:58 -0600
-Message-Id: <20191114181702.22254-19-pierre-louis.bossart@linux.intel.com>
+Date: Thu, 14 Nov 2019 12:17:02 -0600
+Message-Id: <20191114181702.22254-23-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191114181702.22254-1-pierre-louis.bossart@linux.intel.com>
 References: <20191114181702.22254-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Jonathan Corbet <corbet@lwn.net>, tiwai@suse.de, gregkh@linuxfoundation.org,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- linux-kernel@vger.kernel.org,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 18/22] soundwire: stream: update state
-	machine and add state checks
+Subject: [alsa-devel] [PATCH v3 22/22] soundwire: intel: pm_runtime idle
+	scheduling
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,210 +89,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The state machine and notes don't accurately explain or allow
-transitions from STREAM_DEPREPARED and STREAM_DISABLED.
+Add quirk and pm_runtime idle scheduling to let the Master suspend if
+no Slaves become attached. This can happen when a link is not marked
+as disabled and has devices exposed in the DSDT, if the power is
+controlled by sideband means or the link includes a pluggable
+connector.
 
-Add more explanations and allow for more transitions as a result of a
-trigger_stop(), trigger_suspend() and prepare(), depending on the
-ALSA/ASoC layer behavior defined by the INFO_RESUME and INFO_PAUSE
-flags.
-
-Also add basic checks to help debug inconsistent states and illegal
-state machine transitions.
-
+Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- Documentation/driver-api/soundwire/stream.rst | 63 +++++++++++++------
- drivers/soundwire/stream.c                    | 37 +++++++++++
- 2 files changed, 82 insertions(+), 18 deletions(-)
+ drivers/soundwire/intel.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
-index 5351bd2f34a8..9b7418ff8d59 100644
---- a/Documentation/driver-api/soundwire/stream.rst
-+++ b/Documentation/driver-api/soundwire/stream.rst
-@@ -156,22 +156,27 @@ Below shows the SoundWire stream states and state transition diagram. ::
- 	+-----------+     +------------+     +----------+     +----------+
- 	| ALLOCATED +---->| CONFIGURED +---->| PREPARED +---->| ENABLED  |
- 	|   STATE   |     |    STATE   |     |  STATE   |     |  STATE   |
--	+-----------+     +------------+     +----------+     +----+-----+
--	                                                           ^
--	                                                           |
--	                                                           |
--	                                                           v
--	         +----------+           +------------+        +----+-----+
-+	+-----------+     +------------+     +---+--+---+     +----+-----+
-+	                                         ^  ^              ^
-+				                 |  |              |
-+				               __|  |___________   |
-+				              |                 |  |
-+	                                      v                 |  v
-+	         +----------+           +-----+------+        +-+--+-----+
- 	         | RELEASED |<----------+ DEPREPARED |<-------+ DISABLED |
- 	         |  STATE   |           |   STATE    |        |  STATE   |
- 	         +----------+           +------------+        +----------+
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index b114e9a72fdc..f0077f58c4bf 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -29,8 +29,9 @@
+  * flags reused in each byte, with master0 using the ls-byte, etc.
+  */
  
--NOTE: State transition between prepare and deprepare is supported in Spec
--but not in the software (subsystem)
-+NOTE: State transitions between ``SDW_STREAM_ENABLED`` and
-+``SDW_STREAM_DISABLED`` are only relevant when then INFO_PAUSE flag is
-+supported at the ALSA/ASoC level. Likewise the transition between
-+``SDW_DISABLED_STATE`` and ``SDW_PREPARED_STATE`` depends on the
-+INFO_RESUME flag.
+-#define SDW_INTEL_MASTER_DISABLE_PM_RUNTIME BIT(0)
+-#define SDW_INTEL_MASTER_DISABLE_CLOCK_STOP BIT(1)
++#define SDW_INTEL_MASTER_DISABLE_PM_RUNTIME		BIT(0)
++#define SDW_INTEL_MASTER_DISABLE_CLOCK_STOP		BIT(1)
++#define SDW_INTEL_MASTER_DISABLE_PM_RUNTIME_IDLE	BIT(2)
  
--NOTE2: Stream state transition checks need to be handled by caller
--framework, for example ALSA/ASoC. No checks for stream transition exist in
--SoundWire subsystem.
-+NOTE2: The framework implements basic state transition checks, but
-+does not e.g. check if a transition from DISABLED to ENABLED is valid
-+on a specific platform. Such tests need to be added at the ALSA/ASoC
-+level.
- 
- Stream State Operations
- -----------------------
-@@ -246,6 +251,9 @@ SDW_STREAM_PREPARED
- 
- Prepare state of stream. Operations performed before entering in this state:
- 
-+  (0) Steps 1 and 2 are omitted in the case of a resume operation,
-+      where the bus bandwidth is known.
-+
-   (1) Bus parameters such as bandwidth, frame shape, clock frequency,
-       are computed based on current stream as well as already active
-       stream(s) on Bus. Re-computation is required to accommodate current
-@@ -270,13 +278,15 @@ Prepare state of stream. Operations performed before entering in this state:
- After all above operations are successful, stream state is set to
- ``SDW_STREAM_PREPARED``.
- 
--Bus implements below API for PREPARE state which needs to be called once per
--stream. From ASoC DPCM framework, this stream state is linked to
--.prepare() operation.
-+Bus implements below API for PREPARE state which needs to be called
-+once per stream. From ASoC DPCM framework, this stream state is linked
-+to .prepare() operation. Since the .trigger() operations may not
-+follow the .prepare(), a direct transitions from
-+``SDW_STREAM_PREPARED`` to ``SDW_STREAM_DEPREPARED`` is allowed.
- 
- .. code-block:: c
- 
--  int sdw_prepare_stream(struct sdw_stream_runtime * stream);
-+  int sdw_prepare_stream(struct sdw_stream_runtime * stream, bool resume);
- 
- 
- SDW_STREAM_ENABLED
-@@ -332,6 +342,14 @@ Bus implements below API for DISABLED state which needs to be called once
- per stream. From ASoC DPCM framework, this stream state is linked to
- .trigger() stop operation.
- 
-+When the INFO_PAUSE flag is supported, a direct transition to
-+``SDW_STREAM_ENABLED`` is allowed.
-+
-+For resume operations where ASoC will use the .prepare() callback, the
-+stream can transition from ``SDW_STREAM_DISABLED`` to
-+``SDW_STREAM_PREPARED``, with all required settings restored but
-+without updating the bandwidth and bit allocation.
-+
- .. code-block:: c
- 
-   int sdw_disable_stream(struct sdw_stream_runtime * stream);
-@@ -353,9 +371,18 @@ state:
- After all above operations are successful, stream state is set to
- ``SDW_STREAM_DEPREPARED``.
- 
--Bus implements below API for DEPREPARED state which needs to be called once
--per stream. From ASoC DPCM framework, this stream state is linked to
--.trigger() stop operation.
-+Bus implements below API for DEPREPARED state which needs to be called
-+once per stream. ALSA/ASoC do not have a concept of 'deprepare', and
-+the mapping from this stream state to ALSA/ASoC operation may be
-+implementation specific.
-+
-+When the INFO_PAUSE flag is supported, the stream state is linked to
-+the .hw_free() operation - the stream is not deprepared on a
-+TRIGGER_STOP.
-+
-+Other implementations may transition to the ``SDW_STREAM_DEPREPARED``
-+state on TRIGGER_STOP, should they require a transition through the
-+``SDW_STREAM_PREPARED`` state.
- 
- .. code-block:: c
- 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 178ae92b8cc1..6aa0b5d370c0 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1553,8 +1553,18 @@ int sdw_prepare_stream(struct sdw_stream_runtime *stream)
- 
- 	sdw_acquire_bus_lock(stream);
- 
-+	if (stream->state != SDW_STREAM_CONFIGURED &&
-+	    stream->state != SDW_STREAM_DEPREPARED &&
-+	    stream->state != SDW_STREAM_DISABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
-+		goto state_err;
-+	}
-+
- 	ret = _sdw_prepare_stream(stream);
- 
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
-@@ -1619,8 +1629,17 @@ int sdw_enable_stream(struct sdw_stream_runtime *stream)
- 
- 	sdw_acquire_bus_lock(stream);
- 
-+	if (stream->state != SDW_STREAM_PREPARED &&
-+	    stream->state != SDW_STREAM_DISABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
-+		goto state_err;
-+	}
-+
- 	ret = _sdw_enable_stream(stream);
- 
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
-@@ -1693,8 +1712,16 @@ int sdw_disable_stream(struct sdw_stream_runtime *stream)
- 
- 	sdw_acquire_bus_lock(stream);
- 
-+	if (stream->state != SDW_STREAM_ENABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
-+		goto state_err;
-+	}
-+
- 	ret = _sdw_disable_stream(stream);
- 
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
-@@ -1749,8 +1776,18 @@ int sdw_deprepare_stream(struct sdw_stream_runtime *stream)
+ static int md_flags;
+ module_param_named(sdw_md_flags, md_flags, int, 0444);
+@@ -1329,6 +1330,22 @@ static int intel_master_startup(struct sdw_master_device *md)
+ 		pm_runtime_enable(&md->dev);
  	}
  
- 	sdw_acquire_bus_lock(stream);
++	/*
++	 * Slave devices have an pm_runtime of 'Unsupported' until
++	 * they report as ATTACHED. If they don't, e.g. because there
++	 * are no Slave devices populated or if the power-on is
++	 * delayed or dependent on a power switch, the Master will
++	 * remain active and prevent its parent from suspending.
++	 *
++	 * Conditionally force the pm_runtime core to re-evaluate the
++	 * Master status in the absence of any Slave activity. A quirk
++	 * is provided to e.g. deal with Slaves that may be powered on
++	 * with a delay. A more complete solution would require the
++	 * definition of Master properties.
++	 */
++	if (!(link_flags & SDW_INTEL_MASTER_DISABLE_PM_RUNTIME_IDLE))
++		pm_runtime_idle(&md->dev);
 +
-+	if (stream->state != SDW_STREAM_PREPARED &&
-+	    stream->state != SDW_STREAM_DISABLED) {
-+		pr_err("%s: %s: inconsistent state state %d\n",
-+		       __func__, stream->name, stream->state);
-+		ret = -EINVAL;
-+		goto state_err;
-+	}
-+
- 	ret = _sdw_deprepare_stream(stream);
+ 	return 0;
  
-+state_err:
- 	sdw_release_bus_lock(stream);
- 	return ret;
- }
+ err_interrupt:
+@@ -1443,6 +1460,7 @@ static int intel_resume(struct device *dev)
+ 	struct sdw_master_device *md = to_sdw_master_device(dev);
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
++	int link_flags;
+ 	int ret;
+ 
+ 	if (cdns->bus.prop.hw_disabled) {
+@@ -1463,6 +1481,10 @@ static int intel_resume(struct device *dev)
+ 		pm_runtime_enable(dev);
+ 
+ 		md->pm_runtime_suspended = false;
++
++		link_flags = md_flags >> (sdw->cdns.bus.link_id * 8);
++		if (!(link_flags & SDW_INTEL_MASTER_DISABLE_PM_RUNTIME_IDLE))
++			pm_runtime_idle(&md->dev);
+ 	}
+ 
+ 	ret = intel_init(sdw);
 -- 
 2.20.1
 
