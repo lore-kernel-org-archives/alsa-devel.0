@@ -2,76 +2,76 @@ Return-Path: <SRS0=S9OM=ZG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CD83C432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 17:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BA42C432C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:00:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 853A9206DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 17:59:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 868BC20727
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:00:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s0KB48iu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 853A9206DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J2DvFZQM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 868BC20727
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDB811668;
-	Thu, 14 Nov 2019 18:58:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDB811668
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD56B74C;
+	Thu, 14 Nov 2019 19:00:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD56B74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573754355;
-	bh=MF9sRw1KWLqzdin2OhzicOkkEz8MtsuGwMQTJoZFm88=;
+	s=default; t=1573754450;
+	bh=8jIAkIekH+gx8sAV9PUhUKjhZ6Q52xI3RUnx9lxdEzY=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s0KB48iu4/ZnZW5V8Bm0dU/77LQDGC5mlSC1xrQEIQqHU0KoUEVNXQHJY4Yws4PAy
-	 BUpwsAYsYrYRa+F+bjjBxyMN08Y7GA87RT995BkAMHoC5wmIz6LemC4sCG81UWClak
-	 9UxzLsNcAJlDBbiWzGGmcYm4Z7KYAyy22JUXdAu4=
+	b=J2DvFZQMCcR7eW7KwHgEAnG+PwM27GLYLlDQBPOdhx6aK4DVP6lfV47Qdnod2c7Dj
+	 lwcUamFYXKH2PS7fSCeRfX29049rqNQX/Iabc4j4tCt6cYZPw/98c9lLc1cZCvfrC1
+	 02XRtpU5MtwccDEf1ySIq/zh39d3AJTYsfRZ5zHA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24057F8012F;
-	Thu, 14 Nov 2019 18:54:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EA5BF80084;
+	Thu, 14 Nov 2019 19:00:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EDBFBF8012D; Thu, 14 Nov 2019 18:54:19 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 6BAC1F800EF; Thu, 14 Nov 2019 18:59:57 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48076F80107
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 18:54:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48076F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57F07F800CC
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 18:59:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57F07F800CC
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Nov 2019 09:54:06 -0800
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 14 Nov 2019 09:59:52 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="203133039"
+X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="207871426"
 Received: from chiahuil-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.228.77])
- by fmsmga008.fm.intel.com with ESMTP; 14 Nov 2019 09:54:04 -0800
+ by orsmga003.jf.intel.com with ESMTP; 14 Nov 2019 09:59:50 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Thu, 14 Nov 2019 11:53:45 -0600
-Message-Id: <20191114175345.21836-7-pierre-louis.bossart@linux.intel.com>
+Date: Thu, 14 Nov 2019 11:59:20 -0600
+Message-Id: <20191114175933.21992-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191114175345.21836-1-pierre-louis.bossart@linux.intel.com>
-References: <20191114175345.21836-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191114175933.21992-1-pierre-louis.bossart@linux.intel.com>
+References: <20191114175933.21992-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.de,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 6/6] soundwire: intel: update stream
-	callbacks for hwparams/free stream operations
+Subject: [alsa-devel] [PATCH v3 02/15] soundwire: rename dev_to_sdw_dev macro
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,164 +89,132 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@linux.intel.com>
+Since we want to introduce master devices, rename macro so that we
+have consistency between slave and master device access, following the
+Grey Bus example.
 
-The SoundWire DAIs for Intel platform are created in
-drivers/soundwire/intel.c, while the communication with the Intel DSP
-is all controlled in soc/sof/intel
-
-When the DAI status changes, a callback is used to bridge the gap
-between the two subsystems.
-
-The naming of the existing 'config_stream' callback does not map well
-with any of ALSA/ASoC concepts. This patch renames it as
-'params_stream' to be more self-explanatory.
-
-A new 'free_stream' callback is added in case any resources allocated
-in the 'params_stream' stage need to be released. In the SOF
-implementation, this is used in the hw_free case to release the DMA
-channels over IPC.
-
-These two callbacks now rely on structures which expose the link_id
-and alh_stream_id (required by the firmware IPC), instead of a list of
-parameters. The 'void *' definitions are changed to use explicit
-types, as suggested on alsa-devel during earlier reviews.
-
-Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.c           | 20 ++++++++++++------
- drivers/soundwire/intel.h           |  4 ++--
- drivers/soundwire/intel_init.c      |  1 +
- include/linux/soundwire/sdw_intel.h | 32 +++++++++++++++++++++++++----
- 4 files changed, 45 insertions(+), 12 deletions(-)
+ drivers/base/regmap/regmap-sdw.c |  4 ++--
+ drivers/soundwire/bus.c          |  2 +-
+ drivers/soundwire/bus_type.c     | 11 ++++++-----
+ drivers/soundwire/slave.c        |  2 +-
+ include/linux/soundwire/sdw.h    |  3 ++-
+ 5 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 99dc61021211..0371d3d5501a 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -529,17 +529,24 @@ intel_pdi_alh_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
- 	intel_writel(alh, SDW_ALH_STRMZCFG(pdi->intel_alh_id), conf);
- }
- 
--static int intel_config_stream(struct sdw_intel *sdw,
-+static int intel_params_stream(struct sdw_intel *sdw,
- 			       struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai,
--			       struct snd_pcm_hw_params *hw_params, int link_id)
-+			       struct snd_pcm_hw_params *hw_params,
-+			       int link_id, int alh_stream_id)
+diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
+index 50a66382d87d..d1fc0c22180a 100644
+--- a/drivers/base/regmap/regmap-sdw.c
++++ b/drivers/base/regmap/regmap-sdw.c
+@@ -10,7 +10,7 @@
+ static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
  {
- 	struct sdw_intel_link_res *res = sdw->res;
-+	struct sdw_intel_stream_params_data params_data;
+ 	struct device *dev = context;
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
  
--	if (res->ops && res->ops->config_stream && res->arg)
--		return res->ops->config_stream(res->arg,
--				substream, dai, hw_params, link_id);
-+	params_data.substream = substream;
-+	params_data.dai = dai;
-+	params_data.hw_params = hw_params;
-+	params_data.link_id = link_id;
-+	params_data.alh_stream_id = alh_stream_id;
- 
-+	if (res->ops && res->ops->params_stream && res->dev)
-+		return res->ops->params_stream(res->dev,
-+					       &params_data);
- 	return -EIO;
+ 	return sdw_write(slave, reg, val);
  }
+@@ -18,7 +18,7 @@ static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
+ static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
+ {
+ 	struct device *dev = context;
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 	int read;
  
-@@ -654,7 +661,8 @@ static int intel_hw_params(struct snd_pcm_substream *substream,
+ 	read = sdw_read(slave, reg);
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index be5d437058ed..4b22ee996a65 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -110,7 +110,7 @@ EXPORT_SYMBOL(sdw_add_bus_master);
  
+ static int sdw_delete_slave(struct device *dev, void *data)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 	struct sdw_bus *bus = slave->bus;
  
- 	/* Inform DSP about PDI stream number */
--	ret = intel_config_stream(sdw, substream, dai, params,
-+	ret = intel_params_stream(sdw, substream, dai, params,
-+				  sdw->instance,
- 				  pdi->intel_alh_id);
- 	if (ret)
- 		goto error;
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index e4cc1d3804ff..38b7c125fb10 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -14,7 +14,7 @@
-  * @alh: ALH (Audio Link Hub) pointer
-  * @irq: Interrupt line
-  * @ops: Shim callback ops
-- * @arg: Shim callback ops argument
-+ * @dev: device implementing hw_params and free callbacks
-  */
- struct sdw_intel_link_res {
- 	struct platform_device *pdev;
-@@ -24,7 +24,7 @@ struct sdw_intel_link_res {
- 	void __iomem *alh;
- 	int irq;
- 	const struct sdw_intel_ops *ops;
--	void *arg;
-+	struct device *dev;
+ 	sdw_slave_debugfs_exit(slave);
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+index 370b94752662..c0585bcc8a41 100644
+--- a/drivers/soundwire/bus_type.c
++++ b/drivers/soundwire/bus_type.c
+@@ -33,7 +33,7 @@ sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
+ 
+ static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 	struct sdw_driver *drv = drv_to_sdw_slave_driver(ddrv);
+ 
+ 	return !!sdw_get_device_id(slave, drv);
+@@ -49,7 +49,7 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
+ 
+ static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 	char modalias[32];
+ 
+ 	sdw_slave_modalias(slave, modalias, sizeof(modalias));
+@@ -69,7 +69,7 @@ EXPORT_SYMBOL_GPL(sdw_bus_type);
+ 
+ static int sdw_drv_probe(struct device *dev)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 	struct sdw_driver *drv = drv_to_sdw_slave_driver(dev->driver);
+ 	const struct sdw_device_id *id;
+ 	int ret;
+@@ -115,8 +115,9 @@ static int sdw_drv_probe(struct device *dev)
+ 
+ static int sdw_drv_remove(struct device *dev)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 	struct sdw_driver *drv = drv_to_sdw_slave_driver(dev->driver);
++
+ 	int ret = 0;
+ 
+ 	if (drv->remove)
+@@ -129,7 +130,7 @@ static int sdw_drv_remove(struct device *dev)
+ 
+ static void sdw_drv_shutdown(struct device *dev)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 	struct sdw_driver *drv = drv_to_sdw_slave_driver(dev->driver);
+ 
+ 	if (drv->shutdown)
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index 19919975bb6d..48a513680db6 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -9,7 +9,7 @@
+ 
+ static void sdw_slave_release(struct device *dev)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_slave *slave = to_sdw_slave_device(dev);
+ 
+ 	kfree(slave);
+ }
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index b7c9eca4332a..5b1180f1e6b5 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -582,7 +582,8 @@ struct sdw_slave {
+ 	u32 unattach_request;
  };
  
- #endif /* __SDW_INTEL_LOCAL_H */
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index f8ae199094d3..6bc167c83b47 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -119,6 +119,7 @@ static struct sdw_intel_ctx
- 		link->alh = res->mmio_base + SDW_ALH_BASE;
+-#define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
++#define to_sdw_slave_device(d) \
++	container_of(d, struct sdw_slave, dev)
  
- 		link->ops = res->ops;
-+		link->dev = res->dev;
- 
- 		memset(&pdevinfo, 0, sizeof(pdevinfo));
- 
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 034eca8df748..3ccb38d48eef 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -4,15 +4,39 @@
- #ifndef __SDW_INTEL_H
- #define __SDW_INTEL_H
- 
-+/**
-+ * struct sdw_intel_stream_params_data: configuration passed during
-+ * the @params_stream callback, e.g. for interaction with DSP
-+ * firmware.
-+ */
-+struct sdw_intel_stream_params_data {
-+	struct snd_pcm_substream *substream;
-+	struct snd_soc_dai *dai;
-+	struct snd_pcm_hw_params *hw_params;
-+	int link_id;
-+	int alh_stream_id;
-+};
-+
-+/**
-+ * struct sdw_intel_stream_free_data: configuration passed during
-+ * the @free_stream callback, e.g. for interaction with DSP
-+ * firmware.
-+ */
-+struct sdw_intel_stream_free_data {
-+	struct snd_pcm_substream *substream;
-+	struct snd_soc_dai *dai;
-+	int link_id;
-+};
-+
- /**
-  * struct sdw_intel_ops: Intel audio driver callback ops
-  *
-- * @config_stream: configure the stream with the hw_params
-- * the first argument containing the context is mandatory
-  */
- struct sdw_intel_ops {
--	int (*config_stream)(void *arg, void *substream,
--			     void *dai, void *hw_params, int stream_num);
-+	int (*params_stream)(struct device *dev,
-+			     struct sdw_intel_stream_params_data *params_data);
-+	int (*free_stream)(struct device *dev,
-+			   struct sdw_intel_stream_free_data *free_data);
- };
- 
- /**
+ struct sdw_driver {
+ 	const char *name;
 -- 
 2.20.1
 
