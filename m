@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F728C432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:23:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47DA5C43215
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:24:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27C36206F0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:23:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C15CF20709
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:24:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ix0eKwv6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27C36206F0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WkOeK+x6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C15CF20709
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EF611689;
-	Thu, 14 Nov 2019 19:22:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EF611689
+	by alsa0.perex.cz (Postfix) with ESMTPS id F10401683;
+	Thu, 14 Nov 2019 19:23:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F10401683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573755814;
-	bh=6+YeqGi/RVqo+9O94mHBaSl58d1W+x9KkbhLkZpkSzs=;
+	s=default; t=1573755859;
+	bh=qdfU4MbY6oIUv5yteXrHsTBJ4VWx2nlLNBhBCDIG+Ek=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ix0eKwv6+JeJqt4xJOzx2kFyoRyEctjlqXTjXrzBCN1XtlH1ssEIsU1kYM244h92b
-	 27YtoA3KXOMbslIHID/MVlzlKICETDwNV/UEXOsJPjm8kBukfQvTHfp+mZy37J9Zhw
-	 6an81XKu4ol8wb5QhDXeEDCvdTmQ7DKndHK8gi3I=
+	b=WkOeK+x6TNq0L+CjTy7wU4g1D8o7h8WU6XZMWTObKxuJKRm95Ng0bMZyJjdrE8+fy
+	 5k7zS5NaZLrSRO1sDhWyefS/oNpr1qRe5ghAPWqCIOSrCIfL8Qi7F/7T/08+NhpREH
+	 fqmbQDVDPYIoSV7rNQQLLIcsHUKjKBKdXgQI4TG0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98268F8014A;
-	Thu, 14 Nov 2019 19:18:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18BB9F8014D;
+	Thu, 14 Nov 2019 19:18:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9188F80117; Thu, 14 Nov 2019 19:17:53 +0100 (CET)
+ id D8923F80118; Thu, 14 Nov 2019 19:17:54 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5A86F800CC
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:17:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A86F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9A9DF800CD
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:17:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9A9DF800CD
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Nov 2019 10:17:45 -0800
+ 14 Nov 2019 10:17:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="195123462"
+X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="195123423"
 Received: from chiahuil-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.228.77])
- by orsmga007.jf.intel.com with ESMTP; 14 Nov 2019 10:17:43 -0800
+ by orsmga007.jf.intel.com with ESMTP; 14 Nov 2019 10:17:38 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Thu, 14 Nov 2019 12:16:49 -0600
-Message-Id: <20191114181702.22254-10-pierre-louis.bossart@linux.intel.com>
+Date: Thu, 14 Nov 2019 12:16:46 -0600
+Message-Id: <20191114181702.22254-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191114181702.22254-1-pierre-louis.bossart@linux.intel.com>
 References: <20191114181702.22254-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 09/22] soundwire: bus: add helper to reset
-	Slave status to UNATTACHED
+Subject: [alsa-devel] [PATCH v3 06/22] soundwire: intel: Add basic power
+	management support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,60 +89,107 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When resuming, we need to re-enumerate and restart from UNATTACHED.
+Implement suspend/resume capabilities (not runtime_pm for now)
+The resume part is essentially a full-blown re-enumeration.
 
-This will help implement a more robust state machine avoiding race
-conditions on resume.
+When S0ix is supported, we will select clock stop mode when the ACPI
+target state is S0, and tear down the link for S3.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 24 ++++++++++++++++++++++++
- drivers/soundwire/bus.h |  2 ++
- 2 files changed, 26 insertions(+)
+ drivers/soundwire/intel.c | 75 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index d0461bb2fb86..b050a45d1745 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1108,3 +1108,27 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
- 	return ret;
- }
- EXPORT_SYMBOL(sdw_handle_slave_status);
-+
-+void sdw_clear_slave_status(struct sdw_bus *bus)
-+{
-+	struct sdw_slave *slave;
-+	int i;
-+
-+	/* Check all non-zero devices */
-+	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
-+		mutex_lock(&bus->bus_lock);
-+		if (test_bit(i, bus->assigned) == false) {
-+			mutex_unlock(&bus->bus_lock);
-+			continue;
-+		}
-+		mutex_unlock(&bus->bus_lock);
-+
-+		slave = sdw_get_slave(bus, i);
-+		if (!slave)
-+			continue;
-+
-+		if (slave->status != SDW_SLAVE_UNATTACHED)
-+			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
-+	}
-+}
-+EXPORT_SYMBOL(sdw_clear_slave_status);
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 93e7bbab0938..4e6fb5d2f5cc 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -167,4 +167,6 @@ sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
- 	return sdw_write(slave, addr, tmp);
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 00fa5c3a6c1f..c15596c011de 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1253,10 +1253,85 @@ static int intel_master_remove(struct sdw_master_device *md)
+ 	return 0;
  }
  
-+void sdw_clear_slave_status(struct sdw_bus *bus);
++/*
++ * PM calls
++ */
 +
- #endif /* __SDW_BUS_H */
++#ifdef CONFIG_PM
++
++static int intel_suspend(struct device *dev)
++{
++	struct sdw_cdns *cdns = dev_get_drvdata(dev);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++	int ret;
++
++	if (cdns->bus.prop.hw_disabled) {
++		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
++			cdns->bus.link_id);
++		return 0;
++	}
++
++	ret = sdw_cdns_enable_interrupt(cdns, false);
++	if (ret < 0) {
++		dev_err(dev, "cannot disable interrupts on suspend\n");
++		return ret;
++	}
++
++	ret = intel_link_power_down(sdw);
++	if (ret) {
++		dev_err(dev, "Link power down failed: %d", ret);
++		return ret;
++	}
++
++	intel_shim_wake(sdw, false);
++
++	return 0;
++}
++
++static int intel_resume(struct device *dev)
++{
++	struct sdw_cdns *cdns = dev_get_drvdata(dev);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++	int ret;
++
++	if (cdns->bus.prop.hw_disabled) {
++		dev_dbg(dev, "SoundWire master %d is disabled, ignoring\n",
++			cdns->bus.link_id);
++		return 0;
++	}
++
++	ret = intel_init(sdw);
++	if (ret) {
++		dev_err(dev, "%s failed: %d", __func__, ret);
++		return ret;
++	}
++
++	ret = sdw_cdns_enable_interrupt(cdns, true);
++	if (ret < 0) {
++		dev_err(dev, "cannot enable interrupts during resume\n");
++		return ret;
++	}
++
++	ret = sdw_cdns_exit_reset(cdns);
++	if (ret < 0) {
++		dev_err(dev, "unable to exit bus reset sequence during resume\n");
++		return ret;
++	}
++
++	return ret;
++}
++
++#endif
++
++static const struct dev_pm_ops intel_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
++};
++
+ struct sdw_md_driver intel_sdw_driver = {
+ 	.driver = {
+ 		.name = "intel-sdw",
+ 		.owner = THIS_MODULE,
++		.pm = &intel_pm,
+ 	},
+ 	.probe = intel_master_probe,
+ 	.startup = intel_master_startup,
 -- 
 2.20.1
 
