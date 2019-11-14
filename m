@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B610CC432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF049C43141
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:06:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B5552071B
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:05:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F6682071B
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Nov 2019 18:06:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BFFxIBRR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B5552071B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ooueETCW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F6682071B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5074C167B;
-	Thu, 14 Nov 2019 19:05:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5074C167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8809D167E;
+	Thu, 14 Nov 2019 19:05:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8809D167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573754754;
-	bh=HGUjfMwDpfFVu+X6RYWYCkVe3metVBlr885cjEMT2eI=;
+	s=default; t=1573754802;
+	bh=ZXYevfbPT8W4/8yU/zPSYYKRkare9WZCYEZ10EIaxAg=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BFFxIBRRBgc47NsNOPyhgWWn8l5qmfsmCxJu8LoAYsAnMGYP3sH0jOB//6eED/MW4
-	 ml0qI9+4O18A/dYeIF3okhAOUY2fBdG9+fnzFCNmk5BktH0H2hZGllEOIOV0IhHT9s
-	 jWxj6bNSv638x3HYwN+6IzfUap5RGfQd34OgW/4o=
+	b=ooueETCWXIApGxsT3Ia6P4jCavMevTrhC85H575pdmYmFTnBaLsrJ7W5VM/wWcvIr
+	 kon0/wl68SqGPpIeF3QbrbDQM5LxS4KasKBTtnl4qzlzmbOCTCaGRI8eSouDb+J29o
+	 LiVknX2BOrkwxu/xOy7HA/DlgNwDf4wkBt3aiyKg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65CE9F8014C;
-	Thu, 14 Nov 2019 19:00:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92D70F8013D;
+	Thu, 14 Nov 2019 19:00:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC1FBF80121; Thu, 14 Nov 2019 19:00:14 +0100 (CET)
+ id 68771F80123; Thu, 14 Nov 2019 19:00:15 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36D3AF800E9
- for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:00:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36D3AF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id AACABF80108
+ for <alsa-devel@alsa-project.org>; Thu, 14 Nov 2019 19:00:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AACABF80108
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Nov 2019 09:59:59 -0800
+ 14 Nov 2019 10:00:05 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="207871483"
+X-IronPort-AV: E=Sophos;i="5.68,304,1569308400"; d="scan'208";a="207871568"
 Received: from chiahuil-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.228.77])
- by orsmga003.jf.intel.com with ESMTP; 14 Nov 2019 09:59:58 -0800
+ by orsmga003.jf.intel.com with ESMTP; 14 Nov 2019 10:00:03 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Thu, 14 Nov 2019 11:59:24 -0600
-Message-Id: <20191114175933.21992-7-pierre-louis.bossart@linux.intel.com>
+Date: Thu, 14 Nov 2019 11:59:26 -0600
+Message-Id: <20191114175933.21992-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191114175933.21992-1-pierre-louis.bossart@linux.intel.com>
 References: <20191114175933.21992-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 06/15] soundwire: add support for
-	sdw_slave_type
+Subject: [alsa-devel] [PATCH v3 08/15] soundwire: add initial definitions
+	for sdw_master_device
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,96 +89,211 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently the bus does not have any explicit support for master
-devices.
+Since we want an explicit support for the SoundWire Master device, add
+the definitions, following the Grey Bus example.
 
-First add explicit support for sdw_slave_type and error checks if this type
-is not set.
-
-In follow-up patches we can add support for the sdw_md_type (md==Master
-Device), following the Grey Bus example.
+Unlike for the Slave device, we do not set a variable when dealing
+with the master uevent.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus_type.c       | 16 ++++++++++++----
- drivers/soundwire/slave.c          |  7 ++++++-
- include/linux/soundwire/sdw_type.h |  6 ++++++
- 3 files changed, 24 insertions(+), 5 deletions(-)
+ drivers/soundwire/Makefile         |  2 +-
+ drivers/soundwire/bus_type.c       |  7 +++-
+ drivers/soundwire/master.c         | 62 ++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw.h      | 35 +++++++++++++++++
+ include/linux/soundwire/sdw_type.h |  9 +++++
+ 5 files changed, 112 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/soundwire/master.c
 
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index 563894e5ecaf..89b29819dd3a 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -4,7 +4,7 @@
+ #
+ 
+ #Bus Objs
+-soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o stream.o
++soundwire-bus-objs := bus_type.o bus.o master.o slave.o mipi_disco.o stream.o
+ obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+ 
+ ifdef CONFIG_DEBUG_FS
 diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 9a0fd3ee1014..bbdedce5eb26 100644
+index 5c18c21545b5..df1271f6db61 100644
 --- a/drivers/soundwire/bus_type.c
 +++ b/drivers/soundwire/bus_type.c
-@@ -49,13 +49,21 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
+@@ -59,9 +59,12 @@ int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
  
- static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
- {
--	struct sdw_slave *slave = to_sdw_slave_device(dev);
-+	struct sdw_slave *slave;
- 	char modalias[32];
- 
--	sdw_slave_modalias(slave, modalias, sizeof(modalias));
-+	if (is_sdw_slave(dev)) {
-+		slave = to_sdw_slave_device(dev);
-+
-+		sdw_slave_modalias(slave, modalias, sizeof(modalias));
- 
--	if (add_uevent_var(env, "MODALIAS=%s", modalias))
--		return -ENOMEM;
-+		if (add_uevent_var(env, "MODALIAS=%s", modalias))
-+			return -ENOMEM;
-+	} else {
-+		/* only Slave device type supported */
-+		dev_warn(dev, "uevent for unknown Soundwire type\n");
+ 		if (add_uevent_var(env, "MODALIAS=%s", modalias))
+ 			return -ENOMEM;
++	} else if (is_sdw_md(dev)) {
++		/* this should not happen but throw an error */
++		dev_warn(dev, "uevent for Master device, unsupported\n");
 +		return -EINVAL;
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 48a513680db6..c87267f12a3b 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -14,6 +14,11 @@ static void sdw_slave_release(struct device *dev)
- 	kfree(slave);
- }
- 
-+struct device_type sdw_slave_type = {
-+	.name =		"sdw_slave",
-+	.release =	sdw_slave_release,
-+};
-+
- static int sdw_slave_add(struct sdw_bus *bus,
- 			 struct sdw_slave_id *id, struct fwnode_handle *fwnode)
- {
-@@ -41,9 +46,9 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 			     id->class_id, id->unique_id);
+ 	} else {
+-		/* only Slave device type supported */
+-		dev_warn(dev, "uevent for unknown Soundwire type\n");
++		dev_warn(dev, "uevent for unknown device\n");
+ 		return -EINVAL;
  	}
  
--	slave->dev.release = sdw_slave_release;
- 	slave->dev.bus = &sdw_bus_type;
- 	slave->dev.of_node = of_node_get(to_of_node(fwnode));
-+	slave->dev.type = &sdw_slave_type;
- 	slave->bus = bus;
- 	slave->status = SDW_SLAVE_UNATTACHED;
- 	slave->dev_num = 0;
+diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
+new file mode 100644
+index 000000000000..6210098c892b
+--- /dev/null
++++ b/drivers/soundwire/master.c
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2019 Intel Corporation.
++
++#include <linux/device.h>
++#include <linux/acpi.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_type.h>
++#include "bus.h"
++
++static void sdw_md_release(struct device *dev)
++{
++	struct sdw_master_device *md = to_sdw_master_device(dev);
++
++	kfree(md);
++}
++
++struct device_type sdw_md_type = {
++	.name =		"soundwire_master",
++	.release =	sdw_md_release,
++};
++
++struct sdw_master_device *sdw_md_add(struct sdw_md_driver *driver,
++				     struct device *parent,
++				     struct fwnode_handle *fwnode,
++				     int link_id)
++{
++	struct sdw_master_device *md;
++	int ret;
++
++	if (!driver->probe) {
++		dev_err(parent, "mandatory probe callback missing\n");
++		return ERR_PTR(-EINVAL);
++	}
++
++	md = kzalloc(sizeof(*md), GFP_KERNEL);
++	if (!md)
++		return ERR_PTR(-ENOMEM);
++
++	md->link_id = link_id;
++
++	md->driver = driver;
++
++	md->dev.parent = parent;
++	md->dev.fwnode = fwnode;
++	md->dev.bus = &sdw_bus_type;
++	md->dev.type = &sdw_md_type;
++	md->dev.dma_mask = md->dev.parent->dma_mask;
++	dev_set_name(&md->dev, "sdw-master-%d", md->link_id);
++
++	ret = device_register(&md->dev);
++	if (ret) {
++		dev_err(parent, "Failed to add master: ret %d\n", ret);
++		/*
++		 * On err, don't free but drop ref as this will be freed
++		 * when release method is invoked.
++		 */
++		put_device(&md->dev);
++	}
++
++	return md;
++}
++EXPORT_SYMBOL(sdw_md_add);
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 5b1180f1e6b5..af0a72e7afdf 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -585,6 +585,16 @@ struct sdw_slave {
+ #define to_sdw_slave_device(d) \
+ 	container_of(d, struct sdw_slave, dev)
+ 
++struct sdw_master_device {
++	struct device dev;
++	int link_id;
++	struct sdw_md_driver *driver;
++	void *pdata; /* core does not touch */
++};
++
++#define to_sdw_master_device(d)	\
++	container_of(d, struct sdw_master_device, dev)
++
+ struct sdw_driver {
+ 	const char *name;
+ 
+@@ -599,6 +609,26 @@ struct sdw_driver {
+ 	struct device_driver driver;
+ };
+ 
++struct sdw_md_driver {
++	/* initializations and allocations */
++	int (*probe)(struct sdw_master_device *md, void *link_ctx);
++	/* hardware enablement, all clock/power dependencies are available */
++	int (*startup)(struct sdw_master_device *md);
++	/* hardware disabled */
++	int (*shutdown)(struct sdw_master_device *md);
++	/* free all resources */
++	int (*remove)(struct sdw_master_device *md);
++	/*
++	 * enable/disable driver control while in clock-stop mode,
++	 * typically in always-on/D0ix modes. When the driver yields
++	 * control, another entity in the system (typically firmware
++	 * running on an always-on microprocessor) is responsible to
++	 * tracking Slave-initiated wakes
++	 */
++	int (*autonomous_clock_stop_enable)(struct sdw_master_device *md,
++					    bool state);
++};
++
+ #define SDW_SLAVE_ENTRY(_mfg_id, _part_id, _drv_data) \
+ 	{ .mfg_id = (_mfg_id), .part_id = (_part_id), \
+ 	  .driver_data = (unsigned long)(_drv_data) }
+@@ -788,6 +818,11 @@ struct sdw_bus {
+ int sdw_add_bus_master(struct sdw_bus *bus);
+ void sdw_delete_bus_master(struct sdw_bus *bus);
+ 
++struct sdw_master_device *sdw_md_add(struct sdw_md_driver *driver,
++				     struct device *parent,
++				     struct fwnode_handle *fwnode,
++				     int link_id);
++
+ /**
+  * sdw_port_config: Master or Slave Port configuration
+  *
 diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
-index 7d4bc6a979bf..c681b3426478 100644
+index c681b3426478..463d6d018d56 100644
 --- a/include/linux/soundwire/sdw_type.h
 +++ b/include/linux/soundwire/sdw_type.h
-@@ -5,6 +5,12 @@
- #define __SOUNDWIRE_TYPES_H
+@@ -6,15 +6,24 @@
  
  extern struct bus_type sdw_bus_type;
-+extern struct device_type sdw_slave_type;
-+
-+static inline int is_sdw_slave(const struct device *dev)
-+{
-+	return dev->type == &sdw_slave_type;
-+}
+ extern struct device_type sdw_slave_type;
++extern struct device_type sdw_md_type;
  
+ static inline int is_sdw_slave(const struct device *dev)
+ {
+ 	return dev->type == &sdw_slave_type;
+ }
+ 
++static inline int is_sdw_md(const struct device *dev)
++{
++	return dev->type == &sdw_md_type;
++}
++
  #define to_sdw_slave_driver(_drv) \
  	container_of(_drv, struct sdw_driver, driver)
+ 
++#define to_sdw_md_driver(_drv) \
++	container_of(_drv, struct sdw_md_driver, driver)
++
+ #define sdw_register_slave_driver(drv) \
+ 	__sdw_register_slave_driver(drv, THIS_MODULE)
+ 
 -- 
 2.20.1
 
