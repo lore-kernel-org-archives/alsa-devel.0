@@ -2,82 +2,139 @@ Return-Path: <SRS0=30sX=ZH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38FB1C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 10:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7DF7C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:13:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B43EA207FA
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 10:51:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6D7420748
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:13:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ies+qDLg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="oUsHjCwD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B43EA207FA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qyazp4B0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="Il87WzvO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6D7420748
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B0711678;
-	Fri, 15 Nov 2019 11:50:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B0711678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8198F1612;
+	Fri, 15 Nov 2019 13:12:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8198F1612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573815092;
-	bh=UWTVdQgW6jMF2UIq2BdhJzgkJBsAGzMQT47Fqasj+1U=;
+	s=default; t=1573819992;
+	bh=LxaQeFztRNGwjECoE0gr4qgRR83tCdrrlXw66mjgAvk=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ies+qDLgsw5ZZgpJIMNddTplmf42Ihb77cjGgfB9EEB7MeXmrLwmphQGXL0rYNbxq
-	 hrS05j/zerqofiYOI3wQTlrHsvK0ROkQ0M7do2ahR1sBwrYmwohKrovo4FZCkd3ejh
-	 2/T1lQ0Clfoi8DO9slc5FCxhfxggc5ev+T8Nj0cM=
+	b=qyazp4B0R4xqmxxBlK7A0R/UIOevF5bsipjEXgrLAZ8ETNj8xRqP+GLAgpkP8qeoA
+	 CdCVDcGj4PiO4Ie9xFWGqTzwb/JyO4mGJdmzc6lUGick/g9Dq9d4OnOegiLR0RyR5w
+	 z3HSeznTGM+den4bwXrrsY6ukz6f+/lOozmpwGiA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4102EF8010B;
-	Fri, 15 Nov 2019 11:49:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A3A8F80103;
+	Fri, 15 Nov 2019 13:12:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57748F80107; Fri, 15 Nov 2019 11:49:02 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa1.perex.cz (Postfix) with ESMTP id 5DE86F800FF
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 11:48:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DE86F800FF
+ id 409BDF80104; Fri, 15 Nov 2019 13:12:20 +0100 (CET)
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr730065.outbound.protection.outlook.com [40.107.73.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE212F800CC
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 13:12:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE212F800CC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="oUsHjCwD"
-X-UUID: f2a09c3127dc4716af462007c313963a-20191115
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=fO8zwr7/pfaI7sruuHEycEGQ3hMXMR21z1zQRKzuxSI=; 
- b=oUsHjCwDyZR57es7gYEN71jpK4kZoKsXXQvCPMogcmNKWrq7hEqQLChZ6VsuY2Vjd4x6hZ18+TWtpNeWMjibprlvRpF3bDpau5OLioGbBLbXSgsSTJw0TM7KN6w0LNmOFFUHoLOj/xWnJLdv0H0cxwWkutWrn04DCFMzE2U6Itg=;
-X-UUID: f2a09c3127dc4716af462007c313963a-20191115
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw01.mediatek.com (envelope-from <eason.yen@mediatek.com>)
- (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
- with ESMTP id 1172088131; Fri, 15 Nov 2019 18:48:51 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Fri, 15 Nov 2019 18:48:47 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
- Frontend Transport; Fri, 15 Nov 2019 18:48:47 +0800
-From: Eason Yen <eason.yen@mediatek.com>
-To: <broonie@kernel.org>
-Date: Fri, 15 Nov 2019 18:48:45 +0800
-Message-ID: <1573814926-15805-2-git-send-email-eason.yen@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1573814926-15805-1-git-send-email-eason.yen@mediatek.com>
-References: <1573814926-15805-1-git-send-email-eason.yen@mediatek.com>
+ dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
+ header.i=@amdcloud.onmicrosoft.com header.b="Il87WzvO"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BKJnYedHE8aXxEuXwvEteZM8RcNQR1RhDwM81/643ROQs+Ela+NyazJ5WD62fboU+AQfkLvLu4iilxCikNENZ7wAevpaFOmyfSQTXHaepg0TvuiuMzht9+jbwg6MwR9CSn18wvWldWCpTmvoEZOaHBkmhlakTq8jkiuoW4LdzCHSVZF4c1k67xGDBVrmZGM4g2muiJYfgAHkqhUHFheOBO6/xWspbJaCR9wPZTeZ/7JZhovLG0iUQG1ft5neBMsyyI1CvYn9Q3+halN+IR+b/PyBusapGQ9yiInaSvneijS8i28KVkQJXcN6DRWls+9JLLfNT3VvNqyPQnrrM48QXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QcEmt8NxVLE7sSU0U/qd/lZSmQGTyMlbkItxAcY3C28=;
+ b=h6m8Mh9F7qbO4rhPfEY/4cghmsJHogaqP/P8grCMUYj6CeULr2TvAg/x6p1sgbufFG0LmWFIvV5X+i2qPWkZvbyhSOftvqjhCA63EdkyjR6Vu4QSHv9nfkBrfr/sXn9v20LfDpg7u/Sz+j8/OQeh43UYDB3T148Z3K73SJZdD2+yTxQ2Q+ldX+9PLEjyeBXopT/TD0zvXPUUeYbPAHcg24BIVncY+aTEgYcHaTsUHbYHXJUvt80MysdDM/mVrCNXv98YVoKq1PBVxPQDUCk1m2RNYZm30gQZsf0eAi0ChjkqUSH2+RiJ7TJcaZjFhtuQn19MUNbYToDbn7+u5oF0AA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com;
+ dmarc=permerror action=none header.from=amd.com; dkim=none (message not
+ signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QcEmt8NxVLE7sSU0U/qd/lZSmQGTyMlbkItxAcY3C28=;
+ b=Il87WzvOSRdXTZAYm+s/IauryHZMfLGByLMkC2MRLB2prKzV9DaPtG8lt2+pG6/x6OighHliVWK2CwQQ1rmwUZJJ0TOAIMO+0vSLI6NtwyvIds8r0+EjC0n12SuQFtFy4xUbLmflYX8+SK+ZZW8VCXe3nc+XlYkJvDv52JoLYbk=
+Received: from DM3PR12CA0083.namprd12.prod.outlook.com (2603:10b6:0:57::27) by
+ DM6PR12MB3116.namprd12.prod.outlook.com (2603:10b6:5:38::12) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.27; Fri, 15 Nov 2019 12:12:12 +0000
+Received: from DM6NAM11FT023.eop-nam11.prod.protection.outlook.com
+ (2a01:111:f400:7eaa::207) by DM3PR12CA0083.outlook.office365.com
+ (2603:10b6:0:57::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2451.23 via Frontend
+ Transport; Fri, 15 Nov 2019 12:12:12 +0000
+Authentication-Results: spf=none (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=permerror action=none header.from=amd.com;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+Received: from SATLEXMB01.amd.com (165.204.84.17) by
+ DM6NAM11FT023.mail.protection.outlook.com (10.13.173.96) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.2451.23 via Frontend Transport; Fri, 15 Nov 2019 12:12:12 +0000
+Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB01.amd.com
+ (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Fri, 15 Nov
+ 2019 06:12:11 -0600
+Received: from vishnu-All-Series.amd.com (10.180.168.240) by
+ SATLEXMB02.amd.com (10.181.40.143) with Microsoft SMTP Server id 15.1.1713.5
+ via Frontend Transport; Fri, 15 Nov 2019 06:12:02 -0600
+From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+To: 
+Date: Fri, 15 Nov 2019 17:40:18 +0530
+Message-ID: <1573819823-23731-2-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1573819823-23731-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+References: <1573819823-23731-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
 MIME-Version: 1.0
-X-MTK: N
-Cc: alsa-devel@alsa-project.org, chipeng.chang@mediatek.com,
- jiaxin.yu@mediatek.com, linux-mediatek@lists.infradead.org,
- eason.yen@mediatek.com, matthias.bgg@gmail.com
-Subject: [alsa-devel] [PATCH v2 1/2] ASoC: mediatek: common: add some
-	helpers to control mtk_memif
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:165.204.84.17; IPV:NLI; CTRY:US; EFV:NLI;
+ SFV:NSPM;
+ SFS:(10009020)(4636009)(396003)(346002)(376002)(136003)(39860400002)(428003)(199004)(189003)(53416004)(26005)(81156014)(70206006)(81166006)(186003)(51416003)(7696005)(8676002)(305945005)(76176011)(5660300002)(54906003)(70586007)(316002)(11346002)(47776003)(16586007)(478600001)(2616005)(476003)(446003)(426003)(336012)(2906002)(126002)(50466002)(50226002)(6666004)(356004)(48376002)(36756003)(4326008)(86362001)(8936002)(109986005)(1671002)(486006)(266003);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR12MB3116; H:SATLEXMB01.amd.com; FPR:;
+ SPF:None; LANG:en; PTR:InfoDomainNonexistent; A:1; MX:1; 
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a89a0a8a-488d-4a5d-3ef2-08d769c50ba7
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3116:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB311616DDAB40644BFBEAD72EE7700@DM6PR12MB3116.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:182;
+X-Forefront-PRVS: 02229A4115
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ucb7Y2MdG5VnOaszH8N6wB4oh2l/sGsMxl0BOoPjTRxZWjbIqDRQpWejqFSDcN+pNn85TcczfqaVhnvkaYT9B5oNVKNgofctjyxY0mZ8n3dUdlK0DtvrbTyZBnEW9rWP5mOyTc2SB8rm6ZfsMbdXAuTrEo1oeS4yJfJmoskCtzoDAeQJi6COqlT5wfyQZ99gV49egw1O2Jjac27wAtaNnEXWWvmVFWfFzqvA2/I/WRmWzI3ZJn0JC3T+Kmj3H99g/sVJe+94XJv6AR01Z4NIVQ2yUhJxTyeKbA/t+qvi1Esa+8WaqYNFjsAK1GapQUcR7PFPw5seyiVfNqidg9RhX95PGsg9yDPSheMGORqO/MqDWZ2vrq7l69WKYQ9NtJFdfbspdFaFY4JNhY1Huj9cdgpUmh2u0fkycBdOgFpgMurcyJZRhrrHi0iQyx+fbmLb
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2019 12:12:12.0357 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a89a0a8a-488d-4a5d-3ef2-08d769c50ba7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB01.amd.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3116
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Akshu.Agrawal@amd.com,
+ Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
+ Mark Brown <broonie@kernel.org>, djkurtz@google.com, Vijendar
+ Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>,
+ Colin Ian King <colin.king@canonical.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [alsa-devel] [PATCH v6 1/6] ASoC: amd:Create multiple I2S platform
+	device endpoint
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,347 +152,207 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-1. Add the following helper in mtk-afe-fe-dai to control
-to control mtk_memif
-- mtk_memif_set_enable
-- mtk_memif_set_disable
-- mtk_memif_set_addr
-- mtk_memif_set_channel
-- mtk_memif_set_rate
-- mtk_memif_set_rate_substream
-- mtk_memif_set_format
-- mtk_memif_set_pbuf_size
+Creates Platform Device endpoints for multiple
+I2S instances: SP and  BT endpoints device.
+Pass PCI resources like MMIO, irq to the platform devices.
 
-2.extend mtk_base_memif_data struct for new platform
-
-Signed-off-by: Eason Yen <eason.yen@mediatek.com>
+Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
 ---
- sound/soc/mediatek/common/mtk-afe-fe-dai.c | 216 +++++++++++++++++++++++++++++
- sound/soc/mediatek/common/mtk-afe-fe-dai.h |  16 +++
- sound/soc/mediatek/common/mtk-base-afe.h   |  28 +++-
- 3 files changed, 259 insertions(+), 1 deletion(-)
+ sound/soc/amd/raven/acp3x.h     |  5 +++
+ sound/soc/amd/raven/pci-acp3x.c | 96 +++++++++++++++++++++++++++++------------
+ 2 files changed, 73 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-index 10ea4fd..309dc1e 100644
---- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-+++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-@@ -361,6 +361,222 @@ int mtk_afe_dai_resume(struct snd_soc_dai *dai)
- }
- EXPORT_SYMBOL_GPL(mtk_afe_dai_resume);
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index 4f2cadd..2f15fe1 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -7,10 +7,15 @@
  
-+int mtk_memif_set_enable(struct mtk_base_afe *afe, int id)
-+{
-+	struct mtk_base_afe_memif *memif = &afe->memif[id];
+ #include "chip_offset_byte.h"
+ 
++#define ACP3x_DEVS		3
+ #define ACP3x_PHY_BASE_ADDRESS 0x1240000
+ #define	ACP3x_I2S_MODE	0
+ #define	ACP3x_REG_START	0x1240000
+ #define	ACP3x_REG_END	0x1250200
++#define ACP3x_I2STDM_REG_START	0x1242400
++#define ACP3x_I2STDM_REG_END	0x1242410
++#define ACP3x_BT_TDM_REG_START	0x1242800
++#define ACP3x_BT_TDM_REG_END	0x1242810
+ #define I2S_MODE	0x04
+ #define	BT_TX_THRESHOLD 26
+ #define	BT_RX_THRESHOLD 25
+diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
+index facec24..4c4601d 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -16,17 +16,17 @@ struct acp3x_dev_data {
+ 	void __iomem *acp3x_base;
+ 	bool acp3x_audio_mode;
+ 	struct resource *res;
+-	struct platform_device *pdev;
++	struct platform_device *pdev[ACP3x_DEVS];
+ };
+ 
+ static int snd_acp3x_probe(struct pci_dev *pci,
+ 			   const struct pci_device_id *pci_id)
+ {
+-	int ret;
+-	u32 addr, val;
+ 	struct acp3x_dev_data *adata;
+-	struct platform_device_info pdevinfo;
++	struct platform_device_info pdevinfo[ACP3x_DEVS];
+ 	unsigned int irqflags;
++	int ret;
++	u32 addr, val, i;
+ 
+ 	if (pci_enable_device(pci)) {
+ 		dev_err(&pci->dev, "pci_enable_device failed\n");
+@@ -43,7 +43,7 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 			     GFP_KERNEL);
+ 	if (!adata) {
+ 		ret = -ENOMEM;
+-		goto release_regions;
++		goto adata_free;
+ 	}
+ 
+ 	/* check for msi interrupt support */
+@@ -68,11 +68,11 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 	switch (val) {
+ 	case I2S_MODE:
+ 		adata->res = devm_kzalloc(&pci->dev,
+-					  sizeof(struct resource) * 2,
++					  sizeof(struct resource) * 4,
+ 					  GFP_KERNEL);
+ 		if (!adata->res) {
+ 			ret = -ENOMEM;
+-			goto unmap_mmio;
++			goto release_regions;
+ 		}
+ 
+ 		adata->res[0].name = "acp3x_i2s_iomem";
+@@ -80,28 +80,52 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 		adata->res[0].start = addr;
+ 		adata->res[0].end = addr + (ACP3x_REG_END - ACP3x_REG_START);
+ 
+-		adata->res[1].name = "acp3x_i2s_irq";
+-		adata->res[1].flags = IORESOURCE_IRQ;
+-		adata->res[1].start = pci->irq;
+-		adata->res[1].end = pci->irq;
++		adata->res[1].name = "acp3x_i2s_sp";
++		adata->res[1].flags = IORESOURCE_MEM;
++		adata->res[1].start = addr + ACP3x_I2STDM_REG_START;
++		adata->res[1].end = addr + ACP3x_I2STDM_REG_END;
 +
-+	if (memif->data->enable_shift < 0) {
-+		dev_warn(afe->dev, "%s(), error, id %d, enable_shift < 0\n",
-+			 __func__, id);
-+		return 0;
++		adata->res[2].name = "acp3x_i2s_bt";
++		adata->res[2].flags = IORESOURCE_MEM;
++		adata->res[2].start = addr + ACP3x_BT_TDM_REG_START;
++		adata->res[2].end = addr + ACP3x_BT_TDM_REG_END;
++
++		adata->res[3].name = "acp3x_i2s_irq";
++		adata->res[3].flags = IORESOURCE_IRQ;
++		adata->res[3].start = pci->irq;
++		adata->res[3].end = adata->res[3].start;
+ 
+ 		adata->acp3x_audio_mode = ACP3x_I2S_MODE;
+ 
+ 		memset(&pdevinfo, 0, sizeof(pdevinfo));
+-		pdevinfo.name = "acp3x_rv_i2s";
+-		pdevinfo.id = 0;
+-		pdevinfo.parent = &pci->dev;
+-		pdevinfo.num_res = 2;
+-		pdevinfo.res = adata->res;
+-		pdevinfo.data = &irqflags;
+-		pdevinfo.size_data = sizeof(irqflags);
+-
+-		adata->pdev = platform_device_register_full(&pdevinfo);
+-		if (IS_ERR(adata->pdev)) {
+-			dev_err(&pci->dev, "cannot register %s device\n",
+-				pdevinfo.name);
+-			ret = PTR_ERR(adata->pdev);
+-			goto unmap_mmio;
++		pdevinfo[0].name = "acp3x_rv_i2s_dma";
++		pdevinfo[0].id = 0;
++		pdevinfo[0].parent = &pci->dev;
++		pdevinfo[0].num_res = 4;
++		pdevinfo[0].res = &adata->res[0];
++		pdevinfo[0].data = &irqflags;
++		pdevinfo[0].size_data = sizeof(irqflags);
++
++		pdevinfo[1].name = "acp3x_i2s_playcap";
++		pdevinfo[1].id = 0;
++		pdevinfo[1].parent = &pci->dev;
++		pdevinfo[1].num_res = 1;
++		pdevinfo[1].res = &adata->res[1];
++
++		pdevinfo[2].name = "acp3x_i2s_playcap";
++		pdevinfo[2].id = 1;
++		pdevinfo[2].parent = &pci->dev;
++		pdevinfo[2].num_res = 1;
++		pdevinfo[2].res = &adata->res[2];
++		for (i = 0; i < ACP3x_DEVS ; i++) {
++			adata->pdev[i] =
++				platform_device_register_full(&pdevinfo[i]);
++			if (IS_ERR(adata->pdev[i])) {
++				dev_err(&pci->dev, "cannot register %s device\n",
++					pdevinfo[i].name);
++				ret = PTR_ERR(adata->pdev[i]);
++				goto unmap_mmio;
++			}
+ 		}
+ 		break;
+ 	default:
+@@ -112,10 +136,22 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 	return 0;
+ 
+ unmap_mmio:
+-	pci_disable_msi(pci);
++	for (i = 0 ; i < ACP3x_DEVS ; i++)
++		platform_device_unregister(adata->pdev[i]);
+ 	iounmap(adata->acp3x_base);
++	kfree(adata->res);
++	kfree(adata);
++	pci_disable_msi(pci);
++	pci_release_regions(pci);
++	pci_disable_device(pci);
+ release_regions:
++	kfree(adata);
++	pci_disable_msi(pci);
++	pci_release_regions(pci);
++	pci_disable_device(pci);
++adata_free:
+ 	pci_release_regions(pci);
++	pci_disable_device(pci);
+ disable_pci:
+ 	pci_disable_device(pci);
+ 
+@@ -125,10 +161,13 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ static void snd_acp3x_remove(struct pci_dev *pci)
+ {
+ 	struct acp3x_dev_data *adata = pci_get_drvdata(pci);
++	int i;
+ 
+-	platform_device_unregister(adata->pdev);
++	if (adata->acp3x_audio_mode == ACP3x_I2S_MODE) {
++		for (i = 0 ; i <  ACP3x_DEVS ; i++)
++			platform_device_unregister(adata->pdev[i]);
 +	}
-+	return mtk_regmap_update_bits(afe->regmap, memif->data->enable_reg,
-+				      1, 1, memif->data->enable_shift);
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_enable);
-+
-+int mtk_memif_set_disable(struct mtk_base_afe *afe, int id)
-+{
-+	struct mtk_base_afe_memif *memif = &afe->memif[id];
-+
-+	if (memif->data->enable_shift < 0) {
-+		dev_warn(afe->dev, "%s(), error, id %d, enable_shift < 0\n",
-+			 __func__, id);
-+		return 0;
-+	}
-+	return mtk_regmap_update_bits(afe->regmap, memif->data->enable_reg,
-+				      1, 0, memif->data->enable_shift);
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_disable);
-+
-+int mtk_memif_set_addr(struct mtk_base_afe *afe, int id,
-+		       unsigned char *dma_area,
-+		       dma_addr_t dma_addr,
-+		       size_t dma_bytes)
-+{
-+	struct mtk_base_afe_memif *memif = &afe->memif[id];
-+	int msb_at_bit33 = upper_32_bits(dma_addr) ? 1 : 0;
-+	unsigned int phys_buf_addr = lower_32_bits(dma_addr);
-+	unsigned int phys_buf_addr_upper_32 = upper_32_bits(dma_addr);
-+
-+	memif->dma_area = dma_area;
-+	memif->dma_addr = dma_addr;
-+	memif->dma_bytes = dma_bytes;
-+
-+	/* start */
-+	mtk_regmap_write(afe->regmap, memif->data->reg_ofs_base,
-+			 phys_buf_addr);
-+	/* end */
-+	if (memif->data->reg_ofs_end)
-+		mtk_regmap_write(afe->regmap,
-+				 memif->data->reg_ofs_end,
-+				 phys_buf_addr + dma_bytes - 1);
-+	else
-+		mtk_regmap_write(afe->regmap,
-+				 memif->data->reg_ofs_base +
-+				 AFE_BASE_END_OFFSET,
-+				 phys_buf_addr + dma_bytes - 1);
-+
-+	/* set start, end, upper 32 bits */
-+	if (memif->data->reg_ofs_base_msb) {
-+		mtk_regmap_write(afe->regmap, memif->data->reg_ofs_base_msb,
-+				 phys_buf_addr_upper_32);
-+		mtk_regmap_write(afe->regmap,
-+				 memif->data->reg_ofs_end_msb,
-+				 phys_buf_addr_upper_32);
-+	}
-+
-+	/* set MSB to 33-bit */
-+	if (memif->data->msb_reg >= 0)
-+		mtk_regmap_update_bits(afe->regmap, memif->data->msb_reg,
-+				       1, msb_at_bit33, memif->data->msb_shift);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_addr);
-+
-+int mtk_memif_set_channel(struct mtk_base_afe *afe,
-+			  int id, unsigned int channel)
-+{
-+	struct mtk_base_afe_memif *memif = &afe->memif[id];
-+	unsigned int mono;
-+
-+	if (memif->data->mono_shift < 0)
-+		return 0;
-+
-+	if (memif->data->quad_ch_mask) {
-+		unsigned int quad_ch = (channel == 4) ? 1 : 0;
-+
-+		mtk_regmap_update_bits(afe->regmap, memif->data->quad_ch_reg,
-+				       memif->data->quad_ch_mask,
-+				       quad_ch, memif->data->quad_ch_shift);
-+	}
-+
-+	if (memif->data->mono_invert)
-+		mono = (channel == 1) ? 0 : 1;
-+	else
-+		mono = (channel == 1) ? 1 : 0;
-+
-+	return mtk_regmap_update_bits(afe->regmap, memif->data->mono_reg,
-+				      1, mono, memif->data->mono_shift);
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_channel);
-+
-+static int mtk_memif_set_rate_fs(struct mtk_base_afe *afe,
-+				 int id, int fs)
-+{
-+	struct mtk_base_afe_memif *memif = &afe->memif[id];
-+
-+	if (memif->data->fs_shift >= 0)
-+		mtk_regmap_update_bits(afe->regmap, memif->data->fs_reg,
-+				       memif->data->fs_maskbit,
-+				       fs, memif->data->fs_shift);
-+
-+	return 0;
-+}
-+
-+int mtk_memif_set_rate(struct mtk_base_afe *afe,
-+		       int id, unsigned int rate)
-+{
-+	int fs = 0;
-+
-+	if (!afe->get_dai_fs) {
-+		dev_err(afe->dev, "%s(), error, afe->get_dai_fs == NULL\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
-+	fs = afe->get_dai_fs(afe, id, rate);
-+
-+	if (fs < 0)
-+		return -EINVAL;
-+
-+	return mtk_memif_set_rate_fs(afe, id, fs);
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_rate);
-+
-+int mtk_memif_set_rate_substream(struct snd_pcm_substream *substream,
-+				 int id, unsigned int rate)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+
-+	int fs = 0;
-+
-+	if (!afe->memif_fs) {
-+		dev_err(afe->dev, "%s(), error, afe->memif_fs == NULL\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
-+	fs = afe->memif_fs(substream, rate);
-+
-+	if (fs < 0)
-+		return -EINVAL;
-+
-+	return mtk_memif_set_rate_fs(afe, id, fs);
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_rate_substream);
-+
-+int mtk_memif_set_format(struct mtk_base_afe *afe,
-+			 int id, snd_pcm_format_t format)
-+{
-+	struct mtk_base_afe_memif *memif = &afe->memif[id];
-+	int hd_audio = 0;
-+	int hd_align = 0;
-+
-+	/* set hd mode */
-+	switch (format) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+	case SNDRV_PCM_FORMAT_U16_LE:
-+		hd_audio = 0;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+	case SNDRV_PCM_FORMAT_U32_LE:
-+		hd_audio = 1;
-+		hd_align = 1;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_U24_LE:
-+		hd_audio = 1;
-+		break;
-+	default:
-+		dev_err(afe->dev, "%s() error: unsupported format %d\n",
-+			__func__, format);
-+		break;
-+	}
-+
-+	mtk_regmap_update_bits(afe->regmap, memif->data->hd_reg,
-+			       1, hd_audio, memif->data->hd_shift);
-+
-+	mtk_regmap_update_bits(afe->regmap, memif->data->hd_align_reg,
-+			       1, hd_align, memif->data->hd_align_mshift);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_format);
-+
-+int mtk_memif_set_pbuf_size(struct mtk_base_afe *afe,
-+			    int id, int pbuf_size)
-+{
-+	const struct mtk_base_memif_data *memif_data = afe->memif[id].data;
-+
-+	if (memif_data->pbuf_mask == 0 || memif_data->minlen_mask == 0)
-+		return 0;
-+
-+	mtk_regmap_update_bits(afe->regmap, memif_data->pbuf_reg,
-+			       memif_data->pbuf_mask,
-+			       pbuf_size, memif_data->pbuf_shift);
-+
-+	mtk_regmap_update_bits(afe->regmap, memif_data->minlen_reg,
-+			       memif_data->minlen_mask,
-+			       pbuf_size, memif_data->minlen_shift);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mtk_memif_set_pbuf_size);
-+
- MODULE_DESCRIPTION("Mediatek simple fe dai operator");
- MODULE_AUTHOR("Garlic Tseng <garlic.tseng@mediatek.com>");
+ 	iounmap(adata->acp3x_base);
+-
+ 	pci_disable_msi(pci);
+ 	pci_release_regions(pci);
+ 	pci_disable_device(pci);
+@@ -151,6 +190,7 @@ static struct pci_driver acp3x_driver  = {
+ 
+ module_pci_driver(acp3x_driver);
+ 
++MODULE_AUTHOR("Vishnuvardhanrao.Ravulapati@amd.com");
+ MODULE_AUTHOR("Maruthi.Bayyavarapu@amd.com");
+ MODULE_DESCRIPTION("AMD ACP3x PCI driver");
  MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.h b/sound/soc/mediatek/common/mtk-afe-fe-dai.h
-index 55074fb..507e3e7 100644
---- a/sound/soc/mediatek/common/mtk-afe-fe-dai.h
-+++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.h
-@@ -34,4 +34,20 @@ int mtk_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
- int mtk_afe_dai_suspend(struct snd_soc_dai *dai);
- int mtk_afe_dai_resume(struct snd_soc_dai *dai);
- 
-+int mtk_memif_set_enable(struct mtk_base_afe *afe, int id);
-+int mtk_memif_set_disable(struct mtk_base_afe *afe, int id);
-+int mtk_memif_set_addr(struct mtk_base_afe *afe, int id,
-+		       unsigned char *dma_area,
-+		       dma_addr_t dma_addr,
-+		       size_t dma_bytes);
-+int mtk_memif_set_channel(struct mtk_base_afe *afe,
-+			  int id, unsigned int channel);
-+int mtk_memif_set_rate(struct mtk_base_afe *afe,
-+		       int id, unsigned int rate);
-+int mtk_memif_set_rate_substream(struct snd_pcm_substream *substream,
-+				 int id, unsigned int rate);
-+int mtk_memif_set_format(struct mtk_base_afe *afe,
-+			 int id, snd_pcm_format_t format);
-+int mtk_memif_set_pbuf_size(struct mtk_base_afe *afe,
-+			    int id, int pbuf_size);
- #endif
-diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
-index 60cb609..a8cf44d 100644
---- a/sound/soc/mediatek/common/mtk-base-afe.h
-+++ b/sound/soc/mediatek/common/mtk-base-afe.h
-@@ -16,21 +16,38 @@ struct mtk_base_memif_data {
- 	const char *name;
- 	int reg_ofs_base;
- 	int reg_ofs_cur;
-+	int reg_ofs_end;
-+	int reg_ofs_base_msb;
-+	int reg_ofs_cur_msb;
-+	int reg_ofs_end_msb;
- 	int fs_reg;
- 	int fs_shift;
- 	int fs_maskbit;
- 	int mono_reg;
- 	int mono_shift;
-+	int mono_invert;
-+	int quad_ch_reg;
-+	int quad_ch_mask;
-+	int quad_ch_shift;
- 	int enable_reg;
- 	int enable_shift;
- 	int hd_reg;
--	int hd_align_reg;
- 	int hd_shift;
-+	int hd_align_reg;
- 	int hd_align_mshift;
- 	int msb_reg;
- 	int msb_shift;
-+	int msb2_reg;
-+	int msb2_shift;
- 	int agent_disable_reg;
- 	int agent_disable_shift;
-+	/* playback memif only */
-+	int pbuf_reg;
-+	int pbuf_mask;
-+	int pbuf_shift;
-+	int minlen_reg;
-+	int minlen_mask;
-+	int minlen_shift;
- };
- 
- struct mtk_base_irq_data {
-@@ -84,6 +101,12 @@ struct mtk_base_afe {
- 			unsigned int rate);
- 	int (*irq_fs)(struct snd_pcm_substream *substream,
- 		      unsigned int rate);
-+	int (*get_dai_fs)(struct mtk_base_afe *afe,
-+			  int dai_id, unsigned int rate);
-+	int (*get_memif_pbuf_size)(struct snd_pcm_substream *substream);
-+
-+	int (*request_dram_resource)(struct device *dev);
-+	int (*release_dram_resource)(struct device *dev);
- 
- 	void *platform_priv;
- };
-@@ -95,6 +118,9 @@ struct mtk_base_afe_memif {
- 	const struct mtk_base_memif_data *data;
- 	int irq_usage;
- 	int const_irq;
-+	unsigned char *dma_area;
-+	dma_addr_t dma_addr;
-+	size_t dma_bytes;
- };
- 
- struct mtk_base_afe_irq {
 -- 
-1.9.1
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
