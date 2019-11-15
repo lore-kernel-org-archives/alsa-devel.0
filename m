@@ -2,96 +2,100 @@ Return-Path: <SRS0=30sX=ZH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6250C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:52:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33D61C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:53:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A01F2072A
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:52:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB2182072A
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:53:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S/hdegHU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sbghSlNM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A01F2072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nut4ieUO";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQBalVcm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB2182072A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB42311C;
-	Fri, 15 Nov 2019 17:51:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB42311C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E96561671;
+	Fri, 15 Nov 2019 17:52:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E96561671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573836761;
-	bh=dlfr8sXFGqN7FbUUhAn7jd3jC/b2v0intR5c0xF27Jo=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=S/hdegHUSFRi4EBsYXd/bb4w+HEv2nJkgsz1ygjbKQegHLWNzQIXXJJIMw9A/UPth
-	 7yKQi4xtMDw+3P0PmmXpF5+R269PDcF7pl4PUYhUBY8pVsX5D2Haf4CoEMaydhF+o0
-	 t0+D3t1hYBe6BXuWwmnGaGGQ7K7s5ye9/yC6YosE=
+	s=default; t=1573836808;
+	bh=vKZNZPD121ERugMJrjSPXB8anSko4PhYDPDh5LOG3wQ=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Nut4ieUO4ll4236IpxqwECLoiClVpLlaOKZ0NFsFQh92QEIaka3SWw+5THj5GqM2b
+	 Ohf4s5SgIH4hbH/7La1fgxY3SvBbuSKdM+eNGDu2LXwSEuLXKevnLGhbgezzTELGXO
+	 Jblf9f3JEp3u2YRFnOl4FZHu8X+GQENY7qVmAOA0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47CF5F8010C;
-	Fri, 15 Nov 2019 17:50:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 825E3F8011E;
+	Fri, 15 Nov 2019 17:51:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F545F80107; Fri, 15 Nov 2019 17:50:53 +0100 (CET)
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
- [IPv6:2607:f8b0:4864:20::742])
+ id C8D9EF80107; Fri, 15 Nov 2019 17:50:54 +0100 (CET)
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
+ [IPv6:2607:f8b0:4864:20::744])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3F4AF80103
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 17:50:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3F4AF80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB08FF80104
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 17:50:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB08FF80104
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="sbghSlNM"
-Received: by mail-qk1-x742.google.com with SMTP id d13so8624282qko.3
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 08:50:48 -0800 (PST)
+ header.b="fQBalVcm"
+Received: by mail-qk1-x744.google.com with SMTP id m4so8595912qke.9
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 08:50:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AKG53leD+VS+BIKsk2yJF791AEJDMUDmdfqQ8c5h1+0=;
- b=sbghSlNMyxMPfpAD5q1khmAPpxRApzzAiOuTfW37wjptTZABiXmjNYR8AzLB/9otzT
- FUj2XSzEV0PR2huAMXExh+sG2CkQi9fUSlMioJcvi0XELnLfYoACYU0cyZ8P6OSicahK
- v7hrxGR7xe/MZv4psEktFB88kDLeAPoYtV74YCaA8kv3/HmTPQ8SF72Jpq+W4sXwTIuN
- ZXyfLAHX/qs3qBB4sFFTxeCaMeRO8fhQQ71hOWDOG0FbClKnm+woS8GU5bUeZzosb7Gt
- aaLBz0DhcgaiB76XPih4DUOVN49XbFdDxoYm5dujRcFDRrP3Tc75c5I04O4YAlenJlte
- /Nwg==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=5jWqSWkcr8Rvf8rBv65dsS38w4SQg0IVGsPkUDNSymc=;
+ b=fQBalVcmuS7D569AzzAGn5yTvOZvdpQPU2UShbNTmLqwpKsEorCDhr7Dw4AWCciYfE
+ PX/Up36rA7FEBlgy9zgDahv9Yd0plrB/BPAiZyX2mMX0hN6ANHfy1NH1hpuOAf66mPkp
+ FHGCTwx/EJbUvbL+yDQyK04NBXQHEAg4JVRhiOnlPoOf9tayeVtQ7Q6oAkYZrLPrmXLm
+ MzO5R0nYGBi/iYWhe0g5tjPXLwnI3gUy67Kfe5UlEBkRohVOW17XINHlZEjHBo/43jCo
+ j4NEHyBQ726r5aj8j0ULGbMlM6I0nyIG4NokGn5F/T7BLjQm6gMbWnYQyD92mwng+J96
+ 1/Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AKG53leD+VS+BIKsk2yJF791AEJDMUDmdfqQ8c5h1+0=;
- b=OIX/6cn8A7fGjG5vHRD/npnMlENw1p1a1JaAzevvNBBdFgFrwWPMWAvG43DZkS2rlB
- nmHTP4Gl/8szRdUAXMjEaIKf3DKbObe32AgQIcbGrQXnkarhueD7rT12ZnLDifJMndLG
- hU6sZz8dLud1C3bN9EPXrBEZ/LN3q3IpYOPvOROmPTwqvWXNQrg0CGwwYrPfVZ55RIrQ
- WhhO3M6JlyCa2o7jbxhj8/P58HFefpkMR66GtngQ8dV2UViJKC/B/5ibquDxs/p0QbGO
- kGKXoqRdyq9ttmzDOJ1+Wez/BD/czxedKLBDYnXu6byip46WPuz7icYGn2eE+gyeo1yr
- 5V8Q==
-X-Gm-Message-State: APjAAAVMBI0MgcbnjIM7j5nXlXmeB4mVlF2/t6xTB2OiMw2ugaIRb18i
- 56Qt/kFcWiAxW8ijz6GqM5I=
-X-Google-Smtp-Source: APXvYqyKj2APy9jGoN/4Buj+9lgiQIZlMXXiT9bO2e/R46AY329kD1/YIEL135SlLqTAsXQ/8Uqf0g==
-X-Received: by 2002:a37:7d05:: with SMTP id y5mr358180qkc.27.1573836646870;
- Fri, 15 Nov 2019 08:50:46 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=5jWqSWkcr8Rvf8rBv65dsS38w4SQg0IVGsPkUDNSymc=;
+ b=oX4vtMLkuqMei86NUc4ZM6nPYmsxNQT/Qz/i1HEMLMOfCEVzaFJFpCKB7gbSI/0JPa
+ LhpUP6GmqdWql0MAjyDvw8Slnm1DZ11OyRStiDS2YuYxHlJ7eL/+ELGfx50GrlIzJtLV
+ S9DxAoUEIPcAlm/LqHg8HxKztmUzuLylJca8mEA1e1QvQMTHmfHW2sAk828QIPRycLN7
+ nxBrmXN3Up3jAqzWM/KyTTlrba2nhHWdzfZPP/mpSrtdEizYuYJFiTNMbZ6i/5i78YUj
+ MbTsUxEZheqGUnKt0WNCDkjol3MQE6PwiJIQLBscjg9+dkXlVu9PKpmTBxOXpQHbkaGa
+ CV2g==
+X-Gm-Message-State: APjAAAUsWD0k6r218ak05u2JmKsqdAIjRiDqTdRYqmrvKTfHnb7vh9DG
+ 7S8DILALsUnFUYJTTD4QT3nuE0FI
+X-Google-Smtp-Source: APXvYqwUQN4Ql9efspU0qVkhPDNX5y515UaSRjj54wrpz4vvqvq1LDWOHRa+MzIcW6l4aJe0ILVY9g==
+X-Received: by 2002:a37:6554:: with SMTP id z81mr13753900qkb.9.1573836649131; 
+ Fri, 15 Nov 2019 08:50:49 -0800 (PST)
 Received: from localhost.localdomain ([71.219.59.120])
- by smtp.gmail.com with ESMTPSA id r29sm5610331qtb.63.2019.11.15.08.50.46
+ by smtp.gmail.com with ESMTPSA id r29sm5610331qtb.63.2019.11.15.08.50.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 Nov 2019 08:50:46 -0800 (PST)
+ Fri, 15 Nov 2019 08:50:48 -0800 (PST)
 From: Alex Deucher <alexdeucher@gmail.com>
 X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
 To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, tiwai@suse.de,
  lukas@wunner.de
-Date: Fri, 15 Nov 2019 11:50:18 -0500
-Message-Id: <20191115165038.56646-1-alexander.deucher@amd.com>
+Date: Fri, 15 Nov 2019 11:50:20 -0500
+Message-Id: <20191115165038.56646-3-alexander.deucher@amd.com>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191115165038.56646-1-alexander.deucher@amd.com>
+References: <20191115165038.56646-1-alexander.deucher@amd.com>
 MIME-Version: 1.0
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Subject: [alsa-devel] [PATCH 00/20] Enable BACO for power savings (v3)
+Cc: Alex Deucher <alexander.deucher@amd.com>, Evan Quan <evan.quan@amd.com>
+Subject: [alsa-devel] [PATCH 02/20] drm/amdgpu: add supports_baco callback
+	for soc15 asics. (v2)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,90 +113,67 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set enables BACO (Bus Active Chip Off) for
-power savings on VI+ asics.  Similar to PowerXpress
-and Hybrid Graphics (PX/HG) laptops, we can disable GPUs
-at runtime when they are not in use if they support
-BACO.  The runtime pm code in amdgpu was originally
-developed for PX/HG laptops, so it was pretty entangled
-with the vga_switcheroo and ACPI code.  Since the GPU
-contains an audio codec for HDMI/DP, there is some
-interaction with the hda driver.  I am by no means an
-expert on alsa, so any advice on those patches is much
-appreciated.  I had to enable runtime pm on the hda
-device to allow the GPU to enter runtime pm because
-they are linked.
+BACO - Bus Active, Chip Off
 
-The full tree can be found here:
-https://cgit.freedesktop.org/~agd5f/linux/log/?h=baco
+Check the BACO capabilities from the powerplay table.
 
-TODO:
-- Turn off runtime pm when KFD user queues are active
+v2: drop unrelated struct cleanup
 
-I've tested these pretty extensively on the asics I
-have access to.  All seems to work properly.  HDMI
-audio works fine with runtime pm both with and without
-the GPU BACO stuff.
+Reviewed-by: Evan Quan <evan.quan@amd.com> (v1)
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ drivers/gpu/drm/amd/amdgpu/soc15.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-I'd like to land the the audio patches and the first 15 GPU
-patches.  I don't plan to enable this by default
-(last patch in the GPU set) until the KFD changes are
-in place to properly handle runtime pm, however it can
-be enabled via module parameter (runpm=1).
-
-v2:
-- Split whitespace changes from baco callback addition
-- Fix pci ref counting in px/hg handling in hda driver
-- Handle CONFIG_ACPI properly
-- Split adding new hda pci ids from adding runpm flag
-
-v3:
-- Don't enable BACO on Navi chips yet
-
-Alex Deucher (20):
-  drm/amdgpu: add asic callback for BACO support
-  drm/amdgpu: add supports_baco callback for soc15 asics. (v2)
-  drm/amdgpu: add supports_baco callback for SI asics.
-  drm/amdgpu: add supports_baco callback for CIK asics.
-  drm/amdgpu: add supports_baco callback for VI asics.
-  drm/amdgpu: add supports_baco callback for NV asics.
-  drm/amdgpu: add a amdgpu_device_supports_baco helper
-  drm/amdgpu: rename amdgpu_device_is_px to amdgpu_device_supports_boco
-    (v2)
-  drm/amdgpu: add additional boco checks to runtime suspend/resume (v2)
-  drm/amdgpu: split swSMU baco_reset into enter and exit
-  drm/amdgpu: add helpers for baco entry and exit
-  drm/amdgpu: add baco support to runtime suspend/resume
-  drm/amdgpu: start to disentangle boco from runtime pm
-  drm/amdgpu: disentangle runtime pm and vga_switcheroo
-  drm/amdgpu: enable runtime pm on BACO capable boards if runpm=1
-  drm/amdgpu/runpm: enable runpm on baco capable VI+ asics (v2)
-  ALSA: hda/hdmi - fix vgaswitcheroo detection for AMD
-  ALSA: hda/hdmi - Add new pci ids for AMD GPU display audio
-  ALSA: hda/hdmi - enable runtime pm for newer AMD display audio
-  ALSA: hda/hdmi - enable automatic runtime pm for AMD HDMI codecs by
-    default
-
- drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  11 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    | 106 ++++++++++++++++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  63 ++++++-----
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c       |  21 +++-
- drivers/gpu/drm/amd/amdgpu/cik.c              |  18 +++
- drivers/gpu/drm/amd/amdgpu/nv.c               |  18 ++-
- drivers/gpu/drm/amd/amdgpu/si.c               |   6 +
- drivers/gpu/drm/amd/amdgpu/soc15.c            |  34 +++++-
- drivers/gpu/drm/amd/amdgpu/vi.c               |  22 ++++
- drivers/gpu/drm/amd/powerplay/amdgpu_smu.c    |  20 +++-
- drivers/gpu/drm/amd/powerplay/arcturus_ppt.c  |   3 +-
- .../gpu/drm/amd/powerplay/inc/amdgpu_smu.h    |   6 +-
- drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h |   3 +-
- drivers/gpu/drm/amd/powerplay/navi10_ppt.c    |   3 +-
- drivers/gpu/drm/amd/powerplay/smu_v11_0.c     |   9 +-
- drivers/gpu/drm/amd/powerplay/vega20_ppt.c    |   3 +-
- sound/pci/hda/hda_intel.c                     |  80 ++++++++++++-
- sound/pci/hda/patch_hdmi.c                    |   1 +
- 18 files changed, 366 insertions(+), 61 deletions(-)
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
+index 305ad3eec987..1acbb38f6384 100644
+--- a/drivers/gpu/drm/amd/amdgpu/soc15.c
++++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
+@@ -599,6 +599,28 @@ static int soc15_asic_reset(struct amdgpu_device *adev)
+ 	}
+ }
+ 
++static bool soc15_supports_baco(struct amdgpu_device *adev)
++{
++	bool baco_support;
++
++	switch (adev->asic_type) {
++	case CHIP_VEGA10:
++	case CHIP_VEGA12:
++		soc15_asic_get_baco_capability(adev, &baco_support);
++		break;
++	case CHIP_VEGA20:
++		if (adev->psp.sos_fw_version >= 0x80067)
++			soc15_asic_get_baco_capability(adev, &baco_support);
++		else
++			baco_support = false;
++		break;
++	default:
++		return false;
++	}
++
++	return baco_support;
++}
++
+ /*static int soc15_set_uvd_clock(struct amdgpu_device *adev, u32 clock,
+ 			u32 cntl_reg, u32 status_reg)
+ {
+@@ -999,6 +1021,7 @@ static const struct amdgpu_asic_funcs soc15_asic_funcs =
+ 	.get_pcie_usage = &soc15_get_pcie_usage,
+ 	.need_reset_on_init = &soc15_need_reset_on_init,
+ 	.get_pcie_replay_count = &soc15_get_pcie_replay_count,
++	.supports_baco = &soc15_supports_baco,
+ };
+ 
+ static const struct amdgpu_asic_funcs vega20_asic_funcs =
+@@ -1020,6 +1043,7 @@ static const struct amdgpu_asic_funcs vega20_asic_funcs =
+ 	.get_pcie_usage = &vega20_get_pcie_usage,
+ 	.need_reset_on_init = &soc15_need_reset_on_init,
+ 	.get_pcie_replay_count = &soc15_get_pcie_replay_count,
++	.supports_baco = &soc15_supports_baco,
+ };
+ 
+ static int soc15_common_early_init(void *handle)
 -- 
 2.23.0
 
