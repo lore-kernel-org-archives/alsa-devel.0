@@ -2,70 +2,80 @@ Return-Path: <SRS0=30sX=ZH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6119C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 10:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D74AC432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 10:47:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4CB4E206C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 10:31:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 89FB72075E
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 10:47:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oRcOUlj2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CB4E206C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KS1ZPR1w";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Kr1DaXRh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89FB72075E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79820167A;
-	Fri, 15 Nov 2019 11:30:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79820167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42CDE15F9;
+	Fri, 15 Nov 2019 11:46:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42CDE15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573813884;
-	bh=qSiebwJ5pe56JYx1YIYvgg7WXMRnSUpaAVnUIQkZXI0=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oRcOUlj233JuJB08Cs6wjr7keHRhOoHOvC+8mN4k9vv53trXtReH2WvuaIYYL1+jH
-	 LboPooMX+nhzUxElZX1w2egCMvQgdWpKyTOFbyy/Qd60CVgHCdcJ7l723bDOUoLzLP
-	 i6dtqmHy2FJ2kLIwFeCSYxvx/+Hx8/Ml2XOjZLHg=
+	s=default; t=1573814858;
+	bh=pU0qj9cLiE+Dk6U9i5ooQekMKXTcGNFxSzF71F4fK0Y=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KS1ZPR1w8fP4aS4H5426lEnYxrDzcNO5CyZy1IPR4quxWdMA0g1JrWKFCdW0uTEv2
+	 2tEsN9vF7bmGzSBcSaVs4Cv0CgCjzo9nKC2f2P2V8P9CUM1KSdw7oKBl1QUtmg6TyD
+	 3vNu94/cast+B/y4RuAw4XdZdMNEDSg5k0RmFeBI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09BFEF80103;
-	Fri, 15 Nov 2019 11:30:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0912F80102;
+	Fri, 15 Nov 2019 11:46:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCB9DF80104; Fri, 15 Nov 2019 11:30:12 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D971F800FF
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 11:30:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D971F800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id CE730B278;
- Fri, 15 Nov 2019 10:30:08 +0000 (UTC)
-Date: Fri, 15 Nov 2019 11:30:08 +0100
-Message-ID: <s5hr229jutr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Nikhil Mahale <nmahale@nvidia.com>
-In-Reply-To: <5eb1ef50-e129-c188-0996-cd74de6a5025@nvidia.com>
-References: <20191114033704.18171-1-nmahale@nvidia.com>
- <20191114033704.18171-4-nmahale@nvidia.com>
- <s5ho8xen2s3.wl-tiwai@suse.de>
- <9a6f7ac2-998f-23ff-c606-a780c4804eba@nvidia.com>
- <s5hd0dumwg5.wl-tiwai@suse.de>
- <5eb1ef50-e129-c188-0996-cd74de6a5025@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, aplattner@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v1 3/5] ALSA: hda - Add DP-MST conn list
-	support
+ id CA8A6F80103; Fri, 15 Nov 2019 11:46:45 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa1.perex.cz (Postfix) with ESMTP id ADE17F8007E
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 11:46:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADE17F8007E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="Kr1DaXRh"
+X-UUID: 4e8cdbe1277c44a8b64edd28e9994f4c-20191115
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=XvSkp9xVpFWOB3NWQrX4rm3jnrQn3054pdByDxnuQzU=; 
+ b=Kr1DaXRhpepMjBPTFzzkJ8Qqq4AmpHM8CVMR5I3IKYkkL+mM3+AFRh8RPaWzP8s6aQAtvMHMLj57UE+kEvGyU7Er2IVt4EoEir36yPnrKQ2c8OUHFJVim+NbNKnbjnoVxWyh7Q61Cu6MpesO+0eM8OfpLmR0929paDEe8X24TIw=;
+X-UUID: 4e8cdbe1277c44a8b64edd28e9994f4c-20191115
+Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by
+ mailgw01.mediatek.com (envelope-from <eason.yen@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+ with ESMTP id 1408849721; Fri, 15 Nov 2019 18:46:35 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Fri, 15 Nov 2019 18:46:29 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via
+ Frontend Transport; Fri, 15 Nov 2019 18:46:30 +0800
+From: Eason Yen <eason.yen@mediatek.com>
+To: <broonie@kernel.org>
+Date: Fri, 15 Nov 2019 18:46:28 +0800
+Message-ID: <1573814790-15057-1-git-send-email-eason.yen@mediatek.com>
+X-Mailer: git-send-email 1.9.1
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 0E10D15F3C201DB86376E220A1CD87BB91925424D676BEC5877C277BBC603FAA2000:8
+X-MTK: N
+Cc: alsa-devel@alsa-project.org, chipeng.chang@mediatek.com,
+ jiaxin.yu@mediatek.com, linux-mediatek@lists.infradead.org,
+ eason.yen@mediatek.com, matthias.bgg@gmail.com
+Subject: [alsa-devel] [PATCH v2 0/2] ASoC: mediatek: common: refine
+	mtk_afe_fe_hw_params
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,60 +93,28 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Nov 2019 10:52:30 +0100,
-Nikhil Mahale wrote:
-> 
-> On 11/14/19 6:44 PM, Takashi Iwai wrote:
-> > On Thu, 14 Nov 2019 12:47:36 +0100,
-> > Nikhil Mahale wrote:
-> >>
-> >> On 11/14/19 4:27 PM, Takashi Iwai wrote:
-> >>> On Thu, 14 Nov 2019 04:37:02 +0100,
-> >>> Nikhil Mahale wrote:
-> >>>>
-> >>>> Document change notification HDA040-A for the Intel High Definition
-> >>>> Audio 1.0a specification introduces a Device Select verb for Digital
-> >>>> Display Pin Widgets that are multi-stream capable. This verb selects
-> >>>> a Device Entry that is used by subsequent Pin Widget verbs,
-> >>>> including the Get Connection List Entry verb.
-> >>>>
-> >>>> This patch queries the current Device Select value, associates it
-> >>>> with the connection list, and updates the connection list management
-> >>>> code to consider dev_id along with nid.
-> >>>
-> >>> I don't get why this is needed.  This is the list that is added only
-> >>> from snd_hda_override_conn_list(), and you don't change that call
-> >>> pattern, so dev_id is always zero.
-> >>
-> >> In follow-on patch "ALSA: hda - Add DP-MST support for non-acomp codecs",
-> >> hdmi_read_pin_conn() calls into snd_hda_set_dev_select() before
-> >> running into code path -
-> >>   
-> >>   snd_hda_get_connections()
-> >>    |-> snd_hda_get_conn_list()
-> >>         |-> read_and_add_raw_conns()
-> >>              |-> snd_hda_override_conn_list()
-> >>                   |-> add_conn_list()
-> >>
-> >> If I understand spec correctly, conn_list need to read/write/track
-> >> along with device entry set into AC_VERB_SET_DEVICE_SEL verb, right?
-> > 
-> > AFAIK, the device connection list itself is same no matter which
-> > device entry is.  The pin widget may choose the route per device
-> > entry, but the available routes should be same.
-> 
-> Section 7.3.3.42 of https://www.intel.com/content/dam/www/public/us/en/documents/specification-updates/high-definition-audio-multi-stream.pdf says that 'Get Connection List Entry' control should be per-device!
+This patch is to add more helpers to control mtk_memif dma_address/format/pbuf_size
+And refine hw_params and hw_prepare by these helpers.
 
-Hrm, right.  It's a bit concern that this may lead to the unlimited
-number of data, though.
+*** BLURB HERE ***
+v2 changes:
+  split patch v1 to two seprated patches for different purpose.
 
-Since the necessity is only for HDMI codec, if that's the only place
-we need the connection list, the call there can be replaced with
-snd_hda_get_raw_connections() so that the result won't be cached in
-HD-audio core side.
+v1 changes:
+  1. patchwork list:
+     https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158394.html
 
+Eason Yen (2):
+  ASoC: mediatek: common: add some helpers to control mtk_memif
+  ASoC: mediatek: common: refine hw_params and hw_prepare
 
-Takashi
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 359 +++++++++++++++++++++++------
+ sound/soc/mediatek/common/mtk-afe-fe-dai.h |  16 ++
+ sound/soc/mediatek/common/mtk-base-afe.h   |  28 ++-
+ 3 files changed, 336 insertions(+), 67 deletions(-)
+
+-- 
+1.9.1
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
