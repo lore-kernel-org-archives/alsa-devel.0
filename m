@@ -2,76 +2,75 @@ Return-Path: <SRS0=30sX=ZH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F080EC432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 14:14:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACCCAC432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 14:56:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C4D220730
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 14:13:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 66AF82053B
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 14:56:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eTs+bYHo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="1M5YbwtN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C4D220730
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T1krHPtT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66AF82053B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C509E1615;
-	Fri, 15 Nov 2019 15:13:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C509E1615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 976301614;
+	Fri, 15 Nov 2019 15:55:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 976301614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573827237;
-	bh=2k8HD+5hnrToikWRU+kIajj2utTZqFDxkVc98uDfZDI=;
-	h=References:From:To:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1573829794;
+	bh=LVPjF6OPTkoZ8BA8IbYKl+xVnSD2fUvIc7/CGzwmCqU=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eTs+bYHorpEAJHb+CqJ+dOwr8Q8SoMisn413KvwTe3qvXg4BxMm7SbwxXCVapAHSI
-	 D0aI8fZDMBKeUWt0tB+SVgH7OoD2OO8J4GE//QUE4qP+mI7re1F5h/DV20p9ng1ka3
-	 HIP+/I0PCfr6CQnyeloXKP+L5so0JanJl0BLzUYI=
+	b=T1krHPtTKyzcuYBtoPFHsxFMrHn6g0sWNLyOl4YYnpoDfNhWrNi1gYKfjlBK3q2gb
+	 9NSBWRR3dAO1BXhvW3XgIQoDXJMjnIHJSAH91z+AF818VTs1ua9UGALX1N+X6ClNFy
+	 oGiyvoLplnuxCQO3EqqA4qVuOo3YJ5ut1ltUlKk4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4244CF80103;
-	Fri, 15 Nov 2019 15:13:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1808F800FF;
+	Fri, 15 Nov 2019 15:55:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52828F80104; Fri, 15 Nov 2019 15:13:04 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CCB5EF80104; Fri, 15 Nov 2019 15:55:40 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA2ACF800CC
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 15:13:01 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 873CEA003F;
- Fri, 15 Nov 2019 15:13:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 873CEA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1573827180; bh=291SjE9LD8dZmRiIlBtdPNwi5kL+jdaWgdF5YsnNhHk=;
- h=Subject:References:From:To:Cc:Date:In-Reply-To:From;
- b=1M5YbwtN2sAZWavthkwGb9vYxE5FdrPf44uw7P3JFLfhDmZJknVy2mShe/dbldXXU
- um2UdfDZRjzvFnhPtmUne1s6z0p4hB1LVszJnGYgMpGUrSCXVv+oHpVDXu36kLBR3R
- mEYSi3DzdJpojVf7wl9LqjKlp0/9gnYaZBxZBcDc=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 15 Nov 2019 15:12:58 +0100 (CET)
-References: <ed96d068-79ae-18ab-e24e-b3ac07897cfc@perex.cz>
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-X-Forwarded-Message-Id: <ed96d068-79ae-18ab-e24e-b3ac07897cfc@perex.cz>
-Message-ID: <07f9c6fd-0dcf-e399-b012-05cd2cf6aced@perex.cz>
-Date: Fri, 15 Nov 2019 15:12:57 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49404F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 15:55:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49404F800FF
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 15 Nov 2019 06:55:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,308,1569308400"; d="scan'208";a="214789942"
+Received: from jdstodda-mobl.amr.corp.intel.com (HELO [10.254.177.96])
+ ([10.254.177.96])
+ by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2019 06:55:28 -0800
+To: Vinod Koul <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.com>
+References: <20191115102705.649976-1-vkoul@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <19c70dac-aa3e-f0ea-d729-26df4f193eb0@linux.intel.com>
+Date: Fri, 15 Nov 2019 08:55:28 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <ed96d068-79ae-18ab-e24e-b3ac07897cfc@perex.cz>
+In-Reply-To: <20191115102705.649976-1-vkoul@kernel.org>
 Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [alsa-devel] ALSA 1.2.1 release
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [alsa-devel] [RFC PATCH 0/3] ALSA: compress: Add support for
+	FLAC
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,38 +88,24 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello all,
 
-   new ALSA userspace packages were released. You may download them from
-the ALSA website http://www.alsa-project.org or directly from the FTP
-server ftp://ftp.alsa-project.org/pub .
 
-Full list of changes:
+On 11/15/19 4:27 AM, Vinod Koul wrote:
+> The current design of sending codec parameters assumes that decoders
+> will have parsers so they can parse the encoded stream for parameters
+> and configure the decoder.
 
-   http://www.alsa-project.org/main/index.php/Changes_v1.1.9_v1.2.1
+that's not quite correct. It's rather than there was no need so far for 
+existing implementations to have parameters on decode, this was never a 
+limitation of the design, see e.g. the comments below:
 
-A few remarks to alsa-lib:
+/* AAC modes are required for encoders and decoders */
 
-- the topology routines were moved to library libatopology.(a|so)
-- ucm configuration syntax was improved (ucm2)
-- ucm configuration files were moved to alsa-ucm-conf package
-   (3-clause BSD licence)
-- topology configuration files were moved to alsa-topology-conf
-   package (3-clause BSD licence)
-
-Because of all above changes, I decided to increase the second version
-number to 2. There are two reasons:
-
-- keep the version number in three digits ;-)
-- the package maintaners should be more careful to handle the ucm and topology
-   configuration split
-
-				Have fun,
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+/*
+  * IEC modes are mandatory for decoders. Format autodetection
+  * will only happen on the DSP side with mode 0. The PCM mode should
+  * not be used, the PCM codec should be used instead.
+  */
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
