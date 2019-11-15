@@ -2,83 +2,101 @@ Return-Path: <SRS0=30sX=ZH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8862AC432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:24:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E97D1C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:51:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C3EE2072D
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:24:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E732620718
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:51:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E9ITKdre"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C3EE2072D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n/8Mos7v";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aAp93I04"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E732620718
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0716715F9;
-	Fri, 15 Nov 2019 17:23:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0716715F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B853142;
+	Fri, 15 Nov 2019 17:50:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B853142
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573835044;
-	bh=LcpxGnO4/iaj9JhklORsLjywhLtWwv/V2G2NtKaKhaU=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1573836706;
+	bh=eDq5STARrZSpV8+baTbjdgr2q5Y+1EtdzxJ7HPTZ9L8=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E9ITKdre4/40oA00hxU61gzIw9xdq3/ZLwcCgntPRX2srTa3gWlLJmkI8gTLz19zh
-	 NNkg4BDzdgBxGIfRBV9m13d1rafR1IZdsbD+UhZYaHhC5MYKUUaIfVd6uSMrOQWRoF
-	 CcNXhvs0eBAwVsAxrafV6Lp15PTlOOXaYN3wqoJY=
+	b=n/8Mos7v8oNISUMR5Jjv7qPTk9PSKufHFBi+4RqgE2OR00Gvut/eYQPOpJ0AW3s8u
+	 2QgBlbDvgV1kkU+bySFoqPhNr6tZT5lDGO5pLIk7Kr1AvcIMRqrSCTnM5LJODWQImt
+	 AwBlQQy/rqkvfDQexdDeHxLMU/tg6Dp3TNSPPJ60=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DF98F80103;
-	Fri, 15 Nov 2019 17:23:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFF1DF80108;
+	Fri, 15 Nov 2019 17:50:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77B70F80104; Fri, 15 Nov 2019 17:23:11 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [85.220.165.71])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 67E4EF800CC; Fri, 15 Nov 2019 17:50:53 +0100 (CET)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E77B9F8007E
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 17:23:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E77B9F8007E
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <mfe@pengutronix.de>)
- id 1iVeL8-0003uL-50; Fri, 15 Nov 2019 17:20:54 +0100
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
- (envelope-from <mfe@pengutronix.de>)
- id 1iVeL7-00012y-SE; Fri, 15 Nov 2019 17:20:53 +0100
-Date: Fri, 15 Nov 2019 17:20:53 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Mark Brown <broonie@kernel.org>
-Message-ID: <20191115162053.fgsd45seg526gafv@pengutronix.de>
-References: <20191115160819.15557-1-m.felsch@pengutronix.de>
- <20191115160819.15557-4-m.felsch@pengutronix.de>
- <20191115161210.GB4210@sirena.co.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8117EF800CC
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 17:50:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8117EF800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="aAp93I04"
+Received: by mail-qk1-x741.google.com with SMTP id q70so8597793qke.12
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 08:50:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=jp8sobe6U2u/1BYRu0meomBohcsXcgJT/B6VFFnSNhY=;
+ b=aAp93I047Vl2VQRrYJgBx8KytGIYitYGKGgxj1ED8keEvjyUuvLcBZaDLm+99c1B/q
+ sr0DAV87wpueuOWDHYi9bH+ohGGUUzT51pUMVjSqcAjLDBiN+UEzd3kE9DWKfOIlA9Rk
+ DGcHtca1bs7oPe8PYwnVLVykebg736PFNv5RaW+uHpceiMWpWXQtCe0ByamvItKXCWf/
+ BWvaPcjHjzNodb62mO0DPFXLfJ8NFt7VkQSSP4Keq7oNjeVnmVV13cKrgeSNbbE3GonG
+ 3kgOKPUKGVgweSQtzhAaWMk0DPpuC8ew23fIwFEBbLn12hWY3OEOWa6P4SeEJmnPH9hG
+ qWeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=jp8sobe6U2u/1BYRu0meomBohcsXcgJT/B6VFFnSNhY=;
+ b=nO4FsJkPu9DVKktVzvDIaPdDKsaQUezealUft1qkNQlTNDthGvF2if9sm8GbY1Z/ON
+ 1A3yXilaN0LUFWmr8+CfEJviWFQRKq7T9MaL21WtAmG/SJXwja9V/FX32O5X/LGpYgZN
+ +h9mzE3xrNOCUSj0wZJf0LwDbKhMxZx+1PFo8sxPNlgvt58vQlAl7aauMC3HxZSVcLTo
+ suzB6jc1dF5G0L69uhTCyVgWrsM1e5wMcFVDvGbrUQOnvUukNjOdr8iVjNxc6qfnjOI2
+ 7FX/nAwPGm+ItYnLOiE8aXbQ63WZXN/FWc11A/4jR57mge3bPIk36KcGqgyCD/+e47nD
+ 6fQA==
+X-Gm-Message-State: APjAAAVcZq6KmuNwO+sPaMQOgQQNF9Xrj/jJCSsh65xr2G4jFsklaaDB
+ fVagERPBRriqoBab+SJQ7d4=
+X-Google-Smtp-Source: APXvYqwWaQa8o0dQnDtY/M2B2mXXeP4TFBayHN/JKxxVC4lgxAzXhFEo3QF2BNI0f0KWDymMUpRoWA==
+X-Received: by 2002:a37:a281:: with SMTP id
+ l123mr13209328qke.135.1573836647772; 
+ Fri, 15 Nov 2019 08:50:47 -0800 (PST)
+Received: from localhost.localdomain ([71.219.59.120])
+ by smtp.gmail.com with ESMTPSA id r29sm5610331qtb.63.2019.11.15.08.50.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 15 Nov 2019 08:50:47 -0800 (PST)
+From: Alex Deucher <alexdeucher@gmail.com>
+X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
+To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, tiwai@suse.de,
+ lukas@wunner.de
+Date: Fri, 15 Nov 2019 11:50:19 -0500
+Message-Id: <20191115165038.56646-2-alexander.deucher@amd.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191115165038.56646-1-alexander.deucher@amd.com>
+References: <20191115165038.56646-1-alexander.deucher@amd.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191115161210.GB4210@sirena.co.uk>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 17:15:40 up  7:34, 20 users,  load average: 0.13, 0.07, 0.02
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, KCHSU0@nuvoton.com,
- robh+dt@kernel.org, kernel@pengutronix.de, thomas.fehrenbacher@siedle.de
-Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: nau8810: add aux input control,
- available on NAU8812
+Cc: Alex Deucher <alexander.deucher@amd.com>, Evan Quan <evan.quan@amd.com>
+Subject: [alsa-devel] [PATCH 01/20] drm/amdgpu: add asic callback for BACO
+	support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,26 +114,42 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark,
+BACO - Bus Active, Chip Off
 
-On 19-11-15 16:12, Mark Brown wrote:
-> On Fri, Nov 15, 2019 at 05:08:19PM +0100, Marco Felsch wrote:
-> 
-> > This commit adds the support to control the aux-port on the nau8812
-> > devices. We don't need to differentiate the aux-port registers since
-> > those bitfields are set to '0' on the nau8810 devices [1,2].
-> 
-> It'd still be better to only register these controls if the device isn't
-> a nau8812 so that userspace doesn't see them.
+Used to check whether the device supports BACO.  This will
+be used to enable runtime pm on devices which support BACO.
 
-That's the thing I tought about 10min.. Imagine that: You have an
-embedded device with a very good codec driver (all codec controlls are
-available) but the hw-guys didn't connect all the in-/outputs. So
-switching those controls are useless too. IMHO this is exactly the same
-thing here.
+Reviewed-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Regards,
-  Marco
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+index 4eac1549d4de..d951907980b1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -591,6 +591,8 @@ struct amdgpu_asic_funcs {
+ 	bool (*need_reset_on_init)(struct amdgpu_device *adev);
+ 	/* PCIe replay counter */
+ 	uint64_t (*get_pcie_replay_count)(struct amdgpu_device *adev);
++	/* device supports BACO */
++	bool (*supports_baco)(struct amdgpu_device *adev);
+ };
+ 
+ /*
+@@ -1121,6 +1123,8 @@ int emu_soc_asic_init(struct amdgpu_device *adev);
+ #define amdgpu_asic_get_pcie_usage(adev, cnt0, cnt1) ((adev)->asic_funcs->get_pcie_usage((adev), (cnt0), (cnt1)))
+ #define amdgpu_asic_need_reset_on_init(adev) (adev)->asic_funcs->need_reset_on_init((adev))
+ #define amdgpu_asic_get_pcie_replay_count(adev) ((adev)->asic_funcs->get_pcie_replay_count((adev)))
++#define amdgpu_asic_supports_baco(adev) (adev)->asic_funcs->supports_baco((adev))
++
+ #define amdgpu_inc_vram_lost(adev) atomic_inc(&((adev)->vram_lost_counter));
+ 
+ /* Common functions */
+-- 
+2.23.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
