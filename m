@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DD2C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:29:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB010C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:30:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 453522073C
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:29:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73E2E2067D
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:30:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="muR/qXxR";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="mnFynAlT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 453522073C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aplnU8sf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="OfifgALu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73E2E2067D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A0D3165E;
-	Fri, 15 Nov 2019 13:28:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A0D3165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99DA61672;
+	Fri, 15 Nov 2019 13:29:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99DA61672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573820967;
-	bh=6SuF/FA17TJlyDvAbecLLxTeNtS9iqdg09YC6sr4fko=;
+	s=default; t=1573821014;
+	bh=bEuVVs87mzV1JHgvtE52BNWA/5Dfp6knfKjH/XhBbac=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=muR/qXxRcjmvGF9l1Z3mG5nvavpohejjBpSMZJN11UySh77EZppIzhjDeoD604EEX
-	 tCSZ0b8ULXxsufF0TiTJLzLRp6YO3XeBIrkV+DNdCVLiFrFfBoabJ5EfW3RseUtOXi
-	 6cNYPpSETUFeYxO93SG5Bu8OlYylrg8Qa+3FoeWs=
+	b=aplnU8sfeX6L8nZ54ygOC8jjBwCbcumWyzzy6ErqJKoTrkFMEhNljsJPymYFPL0M/
+	 tveC4VN3XSf/Py697HXDxuy1N78Vr/6N0rcHiCSuBGXkEwO4QGt73RKmsCeIw/8H1n
+	 +5RB9PZMdlosh2OAtTqwYHsCNfTdHzFol0uBRDVg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E42AF80126;
-	Fri, 15 Nov 2019 13:25:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EBADF80131;
+	Fri, 15 Nov 2019 13:25:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B643F8010C; Fri, 15 Nov 2019 13:25:12 +0100 (CET)
+ id 83B2CF80107; Fri, 15 Nov 2019 13:25:13 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06B19F80107
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 13:25:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06B19F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96BDEF80108
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 13:25:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96BDEF80108
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="mnFynAlT"
+ header.b="OfifgALu"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=qICwKqMRm4yg2Mobp12iIzV+VQB/juSAmGwdio0/GME=; b=mnFynAlTrYRB
- cytoaSOKA8ZeJoWK3vvwmFvrKNUY9ZiWEnWS+UayPDKvWfadrWpSR/5gxz7RrzJylzOLbiiUNMG6A
- PZHb7dQEb6MO9D74N1r9Ye8sbV06EnROVXHdxr1ipo1K5uzrYW10wCccsPRWl64JPnYbgbnUABYdQ
- eqKSw=;
+ List-Archive; bh=9Xr+rAsIpC8CQjO9znN4MATq/9q62joQAxWNOZyqq4o=; b=OfifgALu+Jk8
+ +01yTvo/23z/ruBH+bITj+mKv3MQITklmQoUVZzusEdc7ek85enxfAS6rsMtCFPGwwSOwyJodvyqO
+ Mi2omigkbGXSpajrbgjB3WdcyZsT1cqpY1jqMu8lIYCsF8pQx+NoEGqJY6Hm3PUrW6iNSq9rAsgnY
+ Z1ykY=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iVaer-0000Jv-Ld; Fri, 15 Nov 2019 12:25:01 +0000
+ id 1iVaes-0000KB-7q; Fri, 15 Nov 2019 12:25:02 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id 23ADF27415A7; Fri, 15 Nov 2019 12:25:01 +0000 (GMT)
+ id A43D1274162A; Fri, 15 Nov 2019 12:25:01 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Colin Ian King <colin.king@canonical.com>
-In-Reply-To: <20191112190218.282337-1-colin.king@canonical.com>
+To: Michael Walle <michael@walle.cc>
+In-Reply-To: <20191112223629.21867-1-michael@walle.cc>
 X-Patchwork-Hint: ignore
-Message-Id: <20191115122501.23ADF27415A7@ypsilon.sirena.org.uk>
+Message-Id: <20191115122501.A43D1274162A@ypsilon.sirena.org.uk>
 Date: Fri, 15 Nov 2019 12:25:01 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: tas2770: clean up an indentation issue"
-	to the asoc tree
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: wm8904: fix regcache handling" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,11 +99,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: tas2770: clean up an indentation issue
+   ASoC: wm8904: fix regcache handling
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -123,43 +124,39 @@ to this mail.
 Thanks,
 Mark
 
-From b26eb5173c85082eec7d6e18369f6f9d96bf0b21 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Tue, 12 Nov 2019 19:02:18 +0000
-Subject: [PATCH] ASoC: tas2770: clean up an indentation issue
+From e9149b8c00d25dbaef1aa174fc604bed207e576d Mon Sep 17 00:00:00 2001
+From: Michael Walle <michael@walle.cc>
+Date: Tue, 12 Nov 2019 23:36:29 +0100
+Subject: [PATCH] ASoC: wm8904: fix regcache handling
 
-There is a block that is indented too deeply, remove
-the extraneous tabs.
+The current code assumes that the power is turned off in
+SND_SOC_BIAS_OFF. If there are no actual regulator the codec isn't
+turned off and the registers are not reset to their default values but
+the regcache is still marked as dirty. Thus a value might not be written
+to the hardware if it is set to the default value. Do a software reset
+before turning off the power to make sure the registers are always reset
+to their default states.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20191112190218.282337-1-colin.king@canonical.com
+Signed-off-by: Michael Walle <michael@walle.cc>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20191112223629.21867-1-michael@walle.cc
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2770.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8904.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index ad76f22fcfac..54c8135fe43c 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -761,12 +761,12 @@ static int tas2770_i2c_probe(struct i2c_client *client,
- 	tas2770->reset_gpio = devm_gpiod_get_optional(tas2770->dev,
- 							  "reset-gpio",
- 						      GPIOD_OUT_HIGH);
--		if (IS_ERR(tas2770->reset_gpio)) {
--			if (PTR_ERR(tas2770->reset_gpio) == -EPROBE_DEFER) {
--				tas2770->reset_gpio = NULL;
--				return -EPROBE_DEFER;
--			}
-+	if (IS_ERR(tas2770->reset_gpio)) {
-+		if (PTR_ERR(tas2770->reset_gpio) == -EPROBE_DEFER) {
-+			tas2770->reset_gpio = NULL;
-+			return -EPROBE_DEFER;
- 		}
-+	}
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index bcb3c9d5abf0..9e8c564f6e9c 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -1917,6 +1917,7 @@ static int wm8904_set_bias_level(struct snd_soc_component *component,
+ 		snd_soc_component_update_bits(component, WM8904_BIAS_CONTROL_0,
+ 				    WM8904_BIAS_ENA, 0);
  
- 	tas2770->channel_size = 0;
- 	tas2770->slot_width = 0;
++		snd_soc_component_write(component, WM8904_SW_RESET_AND_ID, 0);
+ 		regcache_cache_only(wm8904->regmap, true);
+ 		regcache_mark_dirty(wm8904->regmap);
+ 
 -- 
 2.20.1
 
