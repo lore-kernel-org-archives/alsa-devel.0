@@ -8,94 +8,95 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D37DEC432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:59:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86916C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 17:00:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FBF02073A
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 16:59:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E89D206D9
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 17:00:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KN0fivgT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kud+mVtw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FBF02073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mXtIGTuv";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W9lWU6bJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E89D206D9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23399167E;
-	Fri, 15 Nov 2019 17:58:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23399167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 443561682;
+	Fri, 15 Nov 2019 17:59:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 443561682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573837174;
-	bh=VKKTReDQHrcbMGPcT9gpYWeGsrIIVGauvzStyiNzhCU=;
+	s=default; t=1573837217;
+	bh=mLOS4dqXgwHwu49FQbqdu2Ixu6HgeNi6jyGn38ySl9Y=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KN0fivgTRIBXlUsbNCEBUMC+CVL1V9isfBX9bAWsjNVQgwtiVKeVoReQOsRPg80of
-	 wfgFJsQvKBWvM06+PfXgOp2PSq5AQ+F/WBHs40vR2qEmblxTQ2fJp1qNFQc1uMWPF1
-	 4BrVPs/cj3vBgGIAhcRPlIFe3qjSmHjMUiSM9uEc=
+	b=mXtIGTuvTeWmuFs2Wo85f1gBRRbbhPYg+fWdclbtYuAp/MA/vcC3/nMuE/znh0QLF
+	 /I3W6+AAE+e0jXBcUYkHmta93LLzJqByCMpJnlI2yDJ7uDSFHbw49kt/9egjfmYBEo
+	 40Erl2zYimSF/CLcoKQNh68PtVD4KJCoKrHXEYco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77D3BF8020B;
-	Fri, 15 Nov 2019 17:51:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9083F80214;
+	Fri, 15 Nov 2019 17:51:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3132F8013B; Fri, 15 Nov 2019 17:51:11 +0100 (CET)
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com
- [IPv6:2607:f8b0:4864:20::72e])
+ id 860E7F8013D; Fri, 15 Nov 2019 17:51:13 +0100 (CET)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13603F80107
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 17:50:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13603F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 280F4F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 17:51:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 280F4F800FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="kud+mVtw"
-Received: by mail-qk1-x72e.google.com with SMTP id z16so8626503qkg.7
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 08:50:58 -0800 (PST)
+ header.b="W9lWU6bJ"
+Received: by mail-qk1-x742.google.com with SMTP id m4so8596340qke.9
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 08:51:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=VVgxIWcj/FlBXGVRaxV/L0LEMIri/0ix2aG74MCVJXk=;
- b=kud+mVtwM4rBQutreGW53E9Hq6DXKEs+Ac5s249ubn6wUvx7duqSUGFxGYvKgm0mcD
- r+dX81XgCJ5UKPGfQxiPNqvYGr5Y64hhUqsRzMkyN//FF1OLZtsqSsxFxPev0m2OWn24
- VXxnkarpX7HIfhy5vRpzfQ9QcS1taCDoijlHOw8rjOpuCBzCXOJNnBOe4w/3x+6aQSIS
- fgvUGzd6GLvTPIevLgLm0C3ZQauWNDNmdqDjFBrF66b6bWvq9l91Nm00SkPsT7+IO+aM
- oTrpFH7a672Twqy9HT0d4WD0zKmJrJ3yhzuL4XAciJQrOOv+EGPauCaUQuiZ/oQ+RYif
- C+cQ==
+ bh=0MgTuC5BgKHh8g9okFWnMYj+ryxsdDpMF+psrmOrlpc=;
+ b=W9lWU6bJiT0xvZaPdZUCULtlKXJkcF+7t3J9/CdUquDlbCdERiUcQXYjHQIhAPyxNF
+ CVwEn8/PWOKMS4+Kdy83JRY9IDPAhc9QZt5xKm+9E26e/yj0Glfw51BjFBkR0fpOPqiD
+ naSnUkBDSLtn6S8szFjKIw/Al/TwNrctfHKNnFQ4hgYTBKsdgIPWn2hwtqU0JIwsJn30
+ Oxt4GazjXaDq8aXZUKTAKmXnD02FltuNSGSgK6y1mti/4WRkWratwOrgNfvzwuNjxizT
+ CX2KHzeEdS+kqSaEzync0eaKpgUH5k3tj+JcGBJ3++J4vwb6cbyG2LyKz7Qa/zVNe/vC
+ 6F1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=VVgxIWcj/FlBXGVRaxV/L0LEMIri/0ix2aG74MCVJXk=;
- b=NGJj9MN5t8tasWn2jUJvzo/m1DyTn2qhPhEG8zFBCdmD9Te+76b7gbfiCnwQjE6jPt
- h5kNyE2qUjBSSBg+OoWw9ow8R0PsM+fvpNdAM0zqBSfQy+U35PrmOg6n6tVh8C+TfYz5
- QpRZ8/iFUV73OwkmWC4FVlwfuifzPiZIXwJAXBjTUvXjyZi5QT9pJhZJJn3TaFMLCZfa
- SA/Snc5OD4N04M89mHUCPrTQ84xlVAywbB2/iuWT87Bz9875oYwcECZsdgs25nrvYZpG
- 6CPLuN0H3Tjouphr5OZ09MMC6HgdD92uRiUOcO9epLjk8JFzVfvW0FsIvbT1A2LXMJDE
- 347Q==
-X-Gm-Message-State: APjAAAVzG4I7pulywZNB0ug/cM5BZqYuY4IqSiL1JVt0hitmVPoGLulB
- 5rXaf2W6H/rnP65kEvueJzU=
-X-Google-Smtp-Source: APXvYqxnjq/dwG0B6CwHz8/cih7zvaLEoyqrP+kPLCcDv82B75tw/9bA1xo8eNQl8pBhGSgHHbGu3Q==
-X-Received: by 2002:a37:6354:: with SMTP id x81mr5613352qkb.316.1573836657090; 
- Fri, 15 Nov 2019 08:50:57 -0800 (PST)
+ bh=0MgTuC5BgKHh8g9okFWnMYj+ryxsdDpMF+psrmOrlpc=;
+ b=XTKvLDbDKtu7rCIt2luMy66gbCGtLm/Xa+TJw1SQL9TdVsOJJb7SG/ePOC4TAF1519
+ qich8zTGC0UI9q4vtC9yajgwMJAI+uBH+UaR92mHAs2NMycRD5/bXI9zMhYQQ1mYKhdk
+ 8YVz3dv5A1/XJSV0n1JcMjO1HP1c6SWxcBuLa+bDoacuFvkAyvzpK5Qrer3whu+kuYvY
+ gcSaZpHzWnp6nVdWYv+PGbfdfRMaVY9bmc1ymbSM3mLXtEDThFmwrlNb5PHRH3v2NZW2
+ oeaPrhms942BEYeG/tAnpdvv7Mh0fvlU+ptxWbgQGryuvo9R4o0Gik8LwbgV8fRjfjth
+ jdew==
+X-Gm-Message-State: APjAAAX+yw7C+2+BDeCj20Ys3T2Cx5HFnLmVM8Zune7WlCDkeDIm9IZi
+ NQEo83edm16dLB5b/mshJ+w=
+X-Google-Smtp-Source: APXvYqyeoT309l8spittf8ytRO2+pekLf702hNJ94cEtqBbyi0eY5X9hsZWCSJwEFOpZWmUpYZqJYA==
+X-Received: by 2002:a37:9585:: with SMTP id
+ x127mr13692046qkd.146.1573836658926; 
+ Fri, 15 Nov 2019 08:50:58 -0800 (PST)
 Received: from localhost.localdomain ([71.219.59.120])
- by smtp.gmail.com with ESMTPSA id r29sm5610331qtb.63.2019.11.15.08.50.56
+ by smtp.gmail.com with ESMTPSA id r29sm5610331qtb.63.2019.11.15.08.50.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 Nov 2019 08:50:56 -0800 (PST)
+ Fri, 15 Nov 2019 08:50:58 -0800 (PST)
 From: Alex Deucher <alexdeucher@gmail.com>
 X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
 To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, tiwai@suse.de,
  lukas@wunner.de
-Date: Fri, 15 Nov 2019 11:50:28 -0500
-Message-Id: <20191115165038.56646-11-alexander.deucher@amd.com>
+Date: Fri, 15 Nov 2019 11:50:30 -0500
+Message-Id: <20191115165038.56646-13-alexander.deucher@amd.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191115165038.56646-1-alexander.deucher@amd.com>
 References: <20191115165038.56646-1-alexander.deucher@amd.com>
 MIME-Version: 1.0
 Cc: Alex Deucher <alexander.deucher@amd.com>, Evan Quan <evan.quan@amd.com>
-Subject: [alsa-devel] [PATCH 10/20] drm/amdgpu: split swSMU baco_reset into
-	enter and exit
+Subject: [alsa-devel] [PATCH 12/20] drm/amdgpu: add baco support to runtime
+	suspend/resume
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,205 +116,48 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 BACO - Bus Active, Chip Off
 
-So we can use it for power savings rather than just reset.
+This adds the necessary support to the runtime suspend
+and resume functions to handle boards that support
+baco.
 
 Reviewed-by: Evan Quan <evan.quan@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- drivers/gpu/drm/amd/amdgpu/nv.c               |  7 ++++++-
- drivers/gpu/drm/amd/amdgpu/soc15.c            | 10 ++++++++--
- drivers/gpu/drm/amd/powerplay/amdgpu_smu.c    | 20 ++++++++++++++++---
- drivers/gpu/drm/amd/powerplay/arcturus_ppt.c  |  3 ++-
- .../gpu/drm/amd/powerplay/inc/amdgpu_smu.h    |  6 ++++--
- drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h |  3 ++-
- drivers/gpu/drm/amd/powerplay/navi10_ppt.c    |  3 ++-
- drivers/gpu/drm/amd/powerplay/smu_v11_0.c     |  9 ++++++++-
- drivers/gpu/drm/amd/powerplay/vega20_ppt.c    |  3 ++-
- 9 files changed, 51 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/nv.c b/drivers/gpu/drm/amd/amdgpu/nv.c
-index b25b72a73048..7b19a8381675 100644
---- a/drivers/gpu/drm/amd/amdgpu/nv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/nv.c
-@@ -352,7 +352,12 @@ static int nv_asic_reset(struct amdgpu_device *adev)
- 	if (nv_asic_reset_method(adev) == AMD_RESET_METHOD_BACO) {
- 		if (!adev->in_suspend)
- 			amdgpu_inc_vram_lost(adev);
--		ret = smu_baco_reset(smu);
-+		ret = smu_baco_enter(smu);
-+		if (ret)
-+			return ret;
-+		ret = smu_baco_exit(smu);
-+		if (ret)
-+			return ret;
- 	} else {
- 		if (!adev->in_suspend)
- 			amdgpu_inc_vram_lost(adev);
-diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
-index 1acbb38f6384..3e37a3af59eb 100644
---- a/drivers/gpu/drm/amd/amdgpu/soc15.c
-+++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
-@@ -509,9 +509,15 @@ static int soc15_asic_baco_reset(struct amdgpu_device *adev)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index d05f8c03e559..7b5437a87b01 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1166,7 +1166,8 @@ static int amdgpu_pmops_resume(struct device *dev)
+ 	struct drm_device *drm_dev = dev_get_drvdata(dev);
  
- 	if (is_support_sw_smu(adev)) {
- 		struct smu_context *smu = &adev->smu;
-+		int ret;
+ 	/* GPU comes up enabled by the bios on resume */
+-	if (amdgpu_device_supports_boco(drm_dev)) {
++	if (amdgpu_device_supports_boco(drm_dev) ||
++	    amdgpu_device_supports_baco(drm_dev)) {
+ 		pm_runtime_disable(dev);
+ 		pm_runtime_set_active(dev);
+ 		pm_runtime_enable(dev);
+@@ -1233,6 +1234,8 @@ static int amdgpu_pmops_runtime_suspend(struct device *dev)
+ 		else if (!amdgpu_has_atpx_dgpu_power_cntl())
+ 			pci_set_power_state(pdev, PCI_D3hot);
+ 		drm_dev->switch_power_state = DRM_SWITCH_POWER_DYNAMIC_OFF;
++	} else if (amdgpu_device_supports_baco(drm_dev)) {
++		amdgpu_device_baco_enter(drm_dev);
+ 	}
  
--		if (smu_baco_reset(smu))
--			return -EIO;
-+		ret = smu_baco_enter(smu);
-+		if (ret)
-+			return ret;
-+
-+		ret = smu_baco_exit(smu);
-+		if (ret)
-+			return ret;
- 	} else {
- 		void *pp_handle = adev->powerplay.pp_handle;
- 		const struct amd_pm_funcs *pp_funcs = adev->powerplay.pp_funcs;
-diff --git a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
-index 753c1afcfaa3..356be22910db 100644
---- a/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
-+++ b/drivers/gpu/drm/amd/powerplay/amdgpu_smu.c
-@@ -2428,14 +2428,28 @@ int smu_baco_get_state(struct smu_context *smu, enum smu_baco_state *state)
  	return 0;
- }
- 
--int smu_baco_reset(struct smu_context *smu)
-+int smu_baco_enter(struct smu_context *smu)
- {
- 	int ret = 0;
- 
- 	mutex_lock(&smu->mutex);
- 
--	if (smu->ppt_funcs->baco_reset)
--		ret = smu->ppt_funcs->baco_reset(smu);
-+	if (smu->ppt_funcs->baco_enter)
-+		ret = smu->ppt_funcs->baco_enter(smu);
-+
-+	mutex_unlock(&smu->mutex);
-+
-+	return ret;
-+}
-+
-+int smu_baco_exit(struct smu_context *smu)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&smu->mutex);
-+
-+	if (smu->ppt_funcs->baco_exit)
-+		ret = smu->ppt_funcs->baco_exit(smu);
- 
- 	mutex_unlock(&smu->mutex);
- 
-diff --git a/drivers/gpu/drm/amd/powerplay/arcturus_ppt.c b/drivers/gpu/drm/amd/powerplay/arcturus_ppt.c
-index 58c7c4a3053e..f251e402147c 100644
---- a/drivers/gpu/drm/amd/powerplay/arcturus_ppt.c
-+++ b/drivers/gpu/drm/amd/powerplay/arcturus_ppt.c
-@@ -2156,7 +2156,8 @@ static const struct pptable_funcs arcturus_ppt_funcs = {
- 	.baco_is_support= smu_v11_0_baco_is_support,
- 	.baco_get_state = smu_v11_0_baco_get_state,
- 	.baco_set_state = smu_v11_0_baco_set_state,
--	.baco_reset = smu_v11_0_baco_reset,
-+	.baco_enter = smu_v11_0_baco_enter,
-+	.baco_exit = smu_v11_0_baco_exit,
- 	.get_dpm_ultimate_freq = smu_v11_0_get_dpm_ultimate_freq,
- 	.set_soft_freq_limited_range = smu_v11_0_set_soft_freq_limited_range,
- 	.override_pcie_parameters = smu_v11_0_override_pcie_parameters,
-diff --git a/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h b/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h
-index 999445c5c010..725acd6d5e00 100644
---- a/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h
-+++ b/drivers/gpu/drm/amd/powerplay/inc/amdgpu_smu.h
-@@ -542,7 +542,8 @@ struct pptable_funcs {
- 	bool (*baco_is_support)(struct smu_context *smu);
- 	enum smu_baco_state (*baco_get_state)(struct smu_context *smu);
- 	int (*baco_set_state)(struct smu_context *smu, enum smu_baco_state state);
--	int (*baco_reset)(struct smu_context *smu);
-+	int (*baco_enter)(struct smu_context *smu);
-+	int (*baco_exit)(struct smu_context *smu);
- 	int (*mode2_reset)(struct smu_context *smu);
- 	int (*get_dpm_ultimate_freq)(struct smu_context *smu, enum smu_clk_type clk_type, uint32_t *min, uint32_t *max);
- 	int (*set_soft_freq_limited_range)(struct smu_context *smu, enum smu_clk_type clk_type, uint32_t min, uint32_t max);
-@@ -624,7 +625,8 @@ bool smu_baco_is_support(struct smu_context *smu);
- 
- int smu_baco_get_state(struct smu_context *smu, enum smu_baco_state *state);
- 
--int smu_baco_reset(struct smu_context *smu);
-+int smu_baco_enter(struct smu_context *smu);
-+int smu_baco_exit(struct smu_context *smu);
- 
- int smu_mode2_reset(struct smu_context *smu);
- 
-diff --git a/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h b/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h
-index 606149085683..5a277136f2aa 100644
---- a/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h
-+++ b/drivers/gpu/drm/amd/powerplay/inc/smu_v11_0.h
-@@ -248,7 +248,8 @@ enum smu_baco_state smu_v11_0_baco_get_state(struct smu_context *smu);
- 
- int smu_v11_0_baco_set_state(struct smu_context *smu, enum smu_baco_state state);
- 
--int smu_v11_0_baco_reset(struct smu_context *smu);
-+int smu_v11_0_baco_enter(struct smu_context *smu);
-+int smu_v11_0_baco_exit(struct smu_context *smu);
- 
- int smu_v11_0_get_dpm_ultimate_freq(struct smu_context *smu, enum smu_clk_type clk_type,
- 						 uint32_t *min, uint32_t *max);
-diff --git a/drivers/gpu/drm/amd/powerplay/navi10_ppt.c b/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
-index 14be350a6127..f843ecb09db6 100644
---- a/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
-+++ b/drivers/gpu/drm/amd/powerplay/navi10_ppt.c
-@@ -2064,7 +2064,8 @@ static const struct pptable_funcs navi10_ppt_funcs = {
- 	.baco_is_support= smu_v11_0_baco_is_support,
- 	.baco_get_state = smu_v11_0_baco_get_state,
- 	.baco_set_state = smu_v11_0_baco_set_state,
--	.baco_reset = smu_v11_0_baco_reset,
-+	.baco_enter = smu_v11_0_baco_enter,
-+	.baco_exit = smu_v11_0_baco_exit,
- 	.get_dpm_ultimate_freq = smu_v11_0_get_dpm_ultimate_freq,
- 	.set_soft_freq_limited_range = smu_v11_0_set_soft_freq_limited_range,
- 	.override_pcie_parameters = smu_v11_0_override_pcie_parameters,
-diff --git a/drivers/gpu/drm/amd/powerplay/smu_v11_0.c b/drivers/gpu/drm/amd/powerplay/smu_v11_0.c
-index fc9679ea2368..6071510ed206 100644
---- a/drivers/gpu/drm/amd/powerplay/smu_v11_0.c
-+++ b/drivers/gpu/drm/amd/powerplay/smu_v11_0.c
-@@ -1688,7 +1688,7 @@ int smu_v11_0_baco_set_state(struct smu_context *smu, enum smu_baco_state state)
- 	return ret;
- }
- 
--int smu_v11_0_baco_reset(struct smu_context *smu)
-+int smu_v11_0_baco_enter(struct smu_context *smu)
- {
- 	int ret = 0;
- 
-@@ -1702,6 +1702,13 @@ int smu_v11_0_baco_reset(struct smu_context *smu)
- 
- 	msleep(10);
- 
-+	return ret;
-+}
-+
-+int smu_v11_0_baco_exit(struct smu_context *smu)
-+{
-+	int ret = 0;
-+
- 	ret = smu_v11_0_baco_set_state(smu, SMU_BACO_STATE_EXIT);
- 	if (ret)
- 		return ret;
-diff --git a/drivers/gpu/drm/amd/powerplay/vega20_ppt.c b/drivers/gpu/drm/amd/powerplay/vega20_ppt.c
-index 0b4892833808..02ede5c8b73a 100644
---- a/drivers/gpu/drm/amd/powerplay/vega20_ppt.c
-+++ b/drivers/gpu/drm/amd/powerplay/vega20_ppt.c
-@@ -3257,7 +3257,8 @@ static const struct pptable_funcs vega20_ppt_funcs = {
- 	.baco_is_support= smu_v11_0_baco_is_support,
- 	.baco_get_state = smu_v11_0_baco_get_state,
- 	.baco_set_state = smu_v11_0_baco_set_state,
--	.baco_reset = smu_v11_0_baco_reset,
-+	.baco_enter = smu_v11_0_baco_enter,
-+	.baco_exit = smu_v11_0_baco_exit,
- 	.get_dpm_ultimate_freq = smu_v11_0_get_dpm_ultimate_freq,
- 	.set_soft_freq_limited_range = smu_v11_0_set_soft_freq_limited_range,
- 	.override_pcie_parameters = smu_v11_0_override_pcie_parameters,
+@@ -1258,6 +1261,8 @@ static int amdgpu_pmops_runtime_resume(struct device *dev)
+ 		if (ret)
+ 			return ret;
+ 		pci_set_master(pdev);
++	} else if (amdgpu_device_supports_baco(drm_dev)) {
++		amdgpu_device_baco_exit(drm_dev);
+ 	}
+ 	ret = amdgpu_device_resume(drm_dev, false, false);
+ 	drm_kms_helper_poll_enable(drm_dev);
 -- 
 2.23.0
 
