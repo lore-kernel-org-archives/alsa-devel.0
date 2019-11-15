@@ -7,78 +7,79 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB010C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AD2BC432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:31:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73E2E2067D
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:30:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B5C72067D
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 12:31:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aplnU8sf";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="OfifgALu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73E2E2067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SbksRHmr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="oR82FhYF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B5C72067D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99DA61672;
-	Fri, 15 Nov 2019 13:29:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99DA61672
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD3F71669;
+	Fri, 15 Nov 2019 13:30:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD3F71669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573821014;
-	bh=bEuVVs87mzV1JHgvtE52BNWA/5Dfp6knfKjH/XhBbac=;
+	s=default; t=1573821059;
+	bh=Q5EIIDZQQyBZlC8COXDgeSHEYknMyQa6gyEiLRka4Hs=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=aplnU8sfeX6L8nZ54ygOC8jjBwCbcumWyzzy6ErqJKoTrkFMEhNljsJPymYFPL0M/
-	 tveC4VN3XSf/Py697HXDxuy1N78Vr/6N0rcHiCSuBGXkEwO4QGt73RKmsCeIw/8H1n
-	 +5RB9PZMdlosh2OAtTqwYHsCNfTdHzFol0uBRDVg=
+	b=SbksRHmrTulPRfWRIbT1eI3QFsYwDaq2rGpwZFne1kJpBWxx2Ls0NX6y97yrW6yFy
+	 Z1VAm0V6FTAkBh3ikpt1pqvU4b5k5DumWUL+w20DHGDSSWoVMEYPrFEWFNSkzWV66B
+	 8UPqi315vbwWqT5S0VD6SB6mUFWAyD3rh/LVDkcA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EBADF80131;
-	Fri, 15 Nov 2019 13:25:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 923D4F8013A;
+	Fri, 15 Nov 2019 13:25:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83B2CF80107; Fri, 15 Nov 2019 13:25:13 +0100 (CET)
+ id A690AF8010C; Fri, 15 Nov 2019 13:25:13 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96BDEF80108
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7EB7AF80106
  for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 13:25:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96BDEF80108
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EB7AF80106
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="OfifgALu"
+ header.b="oR82FhYF"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=9Xr+rAsIpC8CQjO9znN4MATq/9q62joQAxWNOZyqq4o=; b=OfifgALu+Jk8
- +01yTvo/23z/ruBH+bITj+mKv3MQITklmQoUVZzusEdc7ek85enxfAS6rsMtCFPGwwSOwyJodvyqO
- Mi2omigkbGXSpajrbgjB3WdcyZsT1cqpY1jqMu8lIYCsF8pQx+NoEGqJY6Hm3PUrW6iNSq9rAsgnY
- Z1ykY=;
+ List-Archive; bh=immwQu1s4GLBl9d9SM1DbC/YW1vUXocvDwY8FGJGiCY=; b=oR82FhYFqr8f
+ xA0DUVdcDhwNVB50yvpHL96TcDazahN8+TjfNU/B6JlWJL8VDX3jY4nIJN0tBhdxqxvpm2UUglRbA
+ ZoSBmDkdZ4I3hNBa9y8CQA2vrHtNFJlAHcox8I+Jt6wpQ+aUIFsW9FD2yWgLmJ5bz4jC5HJDPFayN
+ nB09c=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=ypsilon.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.co.uk>)
- id 1iVaes-0000KB-7q; Fri, 15 Nov 2019 12:25:02 +0000
+ id 1iVaes-0000Jz-1K; Fri, 15 Nov 2019 12:25:02 +0000
 Received: by ypsilon.sirena.org.uk (Postfix, from userid 1000)
- id A43D1274162A; Fri, 15 Nov 2019 12:25:01 +0000 (GMT)
+ id 64F8E2741609; Fri, 15 Nov 2019 12:25:01 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Michael Walle <michael@walle.cc>
-In-Reply-To: <20191112223629.21867-1-michael@walle.cc>
+To: Jacob Rasmussen <jacobraz@chromium.org>
+In-Reply-To: <20191114232011.165762-1-jacobraz@google.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191115122501.A43D1274162A@ypsilon.sirena.org.uk>
+Message-Id: <20191115122501.64F8E2741609@ypsilon.sirena.org.uk>
 Date: Fri, 15 Nov 2019 12:25:01 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: wm8904: fix regcache handling" to the
-	asoc tree
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ jacobraz@google.com, Takashi Iwai <tiwai@suse.com>,
+ Ross Zwisler <zwisler@google.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] Applied "ASoC: rt5645: Fixed typo for buddy jack
+	support." to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,7 +100,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: wm8904: fix regcache handling
+   ASoC: rt5645: Fixed typo for buddy jack support.
 
 has been applied to the asoc tree at
 
@@ -124,39 +125,38 @@ to this mail.
 Thanks,
 Mark
 
-From e9149b8c00d25dbaef1aa174fc604bed207e576d Mon Sep 17 00:00:00 2001
-From: Michael Walle <michael@walle.cc>
-Date: Tue, 12 Nov 2019 23:36:29 +0100
-Subject: [PATCH] ASoC: wm8904: fix regcache handling
+From fe23be2d85b05f561431d75acddec726ea807d2a Mon Sep 17 00:00:00 2001
+From: Jacob Rasmussen <jacobraz@chromium.org>
+Date: Thu, 14 Nov 2019 16:20:11 -0700
+Subject: [PATCH] ASoC: rt5645: Fixed typo for buddy jack support.
 
-The current code assumes that the power is turned off in
-SND_SOC_BIAS_OFF. If there are no actual regulator the codec isn't
-turned off and the registers are not reset to their default values but
-the regcache is still marked as dirty. Thus a value might not be written
-to the hardware if it is set to the default value. Do a software reset
-before turning off the power to make sure the registers are always reset
-to their default states.
+Had a typo in e7cfd867fd98 that resulted in buddy jack support not being
+fixed.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20191112223629.21867-1-michael@walle.cc
+Fixes: e7cfd867fd98 ("ASoC: rt5645: Fixed buddy jack support.")
+Signed-off-by: Jacob Rasmussen <jacobraz@google.com>
+Reviewed-by: Ross Zwisler <zwisler@google.com>
+Cc: <jacobraz@google.com>
+CC: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20191114232011.165762-1-jacobraz@google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8904.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5645.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index bcb3c9d5abf0..9e8c564f6e9c 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -1917,6 +1917,7 @@ static int wm8904_set_bias_level(struct snd_soc_component *component,
- 		snd_soc_component_update_bits(component, WM8904_BIAS_CONTROL_0,
- 				    WM8904_BIAS_ENA, 0);
- 
-+		snd_soc_component_write(component, WM8904_SW_RESET_AND_ID, 0);
- 		regcache_cache_only(wm8904->regmap, true);
- 		regcache_mark_dirty(wm8904->regmap);
- 
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 902ac98a3fbe..19662ee330d6 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3271,7 +3271,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 				    report, SND_JACK_MICROPHONE);
+ 		return;
+ 	case 4:
+-		val = snd_soc_component_read32(rt5645->component, RT5645_A_JD_CTRL1) & 0x002;
++		val = snd_soc_component_read32(rt5645->component, RT5645_A_JD_CTRL1) & 0x0020;
+ 		break;
+ 	default: /* read rt5645 jd1_1 status */
+ 		val = snd_soc_component_read32(rt5645->component, RT5645_INT_IRQ_ST) & 0x1000;
 -- 
 2.20.1
 
