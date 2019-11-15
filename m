@@ -2,100 +2,97 @@ Return-Path: <SRS0=30sX=ZH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52E7AC432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 17:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB6A8C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 17:06:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE7A02072D
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 17:05:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F1D620728
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Nov 2019 17:06:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y2O4Ql13";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k2Mmq4xN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE7A02072D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VzD9qudu";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cBW5Bg9h"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F1D620728
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02573168D;
-	Fri, 15 Nov 2019 18:04:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02573168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AAFC1676;
+	Fri, 15 Nov 2019 18:05:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AAFC1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573837538;
-	bh=bwmMpYtDdooRXCZKMcyunPVcbLr1WxI6WHDs3zUCrUQ=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1573837588;
+	bh=DjzWKZ9a3zMkg1+GsUFhyYQ+g+lpsDmrXEejusIiogU=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y2O4Ql135wzxY/X5zOlF6ZDNGwUqHwBi4Jgn75o8FxJyZqgL7Mcv7Opy/6TX+hT+V
-	 sIjMUcOcmrbuDOC86jiGf3wgOkMNNN7Jl8vRt/BjyVqihfkv3a5N4QAhJzmfJGG8bS
-	 zw13xEvHwmNqjkJDjIZcsYnpVnv9LoWgckCxI5o0=
+	b=VzD9quduqRMW12VjetNob29pEsPmjMPk53U4qrh5fqfhfGwyiy0iPmpXj57ipqWrS
+	 62eKtQ/WettHL1biaCtl6CvCP8iHQH3tyPo/pckXeL3hFv1yjNPh7u0DGVOh5B3m8e
+	 58dDHg5lKo85b9l95rSmE9tyZYjZkAZI3uxIb2Pc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF33BF8028A;
-	Fri, 15 Nov 2019 17:51:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E2E9F80103;
+	Fri, 15 Nov 2019 18:04:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F248F8014E; Fri, 15 Nov 2019 17:51:27 +0100 (CET)
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com
- [IPv6:2607:f8b0:4864:20::744])
+ id 3EF76F80104; Fri, 15 Nov 2019 18:04:26 +0100 (CET)
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com
+ [IPv6:2607:f8b0:4864:20::244])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4859DF8010B
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 17:51:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4859DF8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4DF4F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 18:04:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4DF4F800FF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="k2Mmq4xN"
-Received: by mail-qk1-x744.google.com with SMTP id 15so8615821qkh.6
- for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 08:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=tLz/VLKnB1IPKE8d1KUr8XukeZ9FBVXcYJIk8ITPAWE=;
- b=k2Mmq4xNDrMueFN+S5IYn0SLmlmdLuJ7XmfPyLwQg5xlOKgrJr+cTD4KhXAuB/ejY6
- OkwTzbmLX1Mg0DNj5ZHK4Uoi5KFg4xkB1CHjEbINwJexb1otsY/ECFLHr3PVkedBPJFs
- MKosveYfJWtHZPzHglxAG3sy2Lu6Opz1hAzSgs240DBPTwS8C1evxHHTMWPY3ZMf3dNZ
- /uu+nTHMPfGW9onwBEBrMo5eUhc/mXHuYIQku3h6r2ltHQ3+i6OkGUl3IhasJIGEBcIo
- iIsiOg17EaHpMoynE6TDXL1NmsPZ5FT/dUU1g4h1Kh0MEEVfn5vcNOzdKebBAaJF3kBz
- XBCA==
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="cBW5Bg9h"
+Received: by mail-oi1-x244.google.com with SMTP id y194so9233064oie.4
+ for <alsa-devel@alsa-project.org>; Fri, 15 Nov 2019 09:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=sLwmrek6v61RR3DalfhXkn+wHZGR1OHjIuniBq9eWwQ=;
+ b=cBW5Bg9ht9322NqLmbQ3wvaCDCMYINxLRFjsGdaOCnNJ7nbM/Eg3bvgxm4GbKhSsVf
+ n0XYkRm/kb0peWeozxDsm5IlXvh+C8qaPtH2bhOkHvJJc2N8pOxJDchO35xN0RVkKcww
+ gfzeqUVnvByRxb9ebEAIScF+7i23qUZXQd3MI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=tLz/VLKnB1IPKE8d1KUr8XukeZ9FBVXcYJIk8ITPAWE=;
- b=gBcU0CO8e62P6vLPLElq3u1KQxMoj5unWgiZPAXFN3ZS69IoqTmMRQ4MmD2BCvV2+U
- 2upELxueZT2XfxM2orNBbrCQoyKcr3KZn0aF/8br+V3yQ/meazTVyL45fouPtE2/7IhV
- RagDb0xpcjfgpco3Al5ixeONLrrWDVRkDAhhmAgT1aXd6Qklh43/RfmkdZqSIsOIiZ6x
- WCCiyPRTbcjRDpgxvStxtQ2bVrKw3UyRD48esOw3rj8u8wBtleQq6zL03vDia5CpmWEp
- 21pfSZtiJT/6tnm46HW/5sE8UVlatIT+dLnkPQJaW2LBbQwQv79e12rDLqBAynLeSmbO
- nh2A==
-X-Gm-Message-State: APjAAAXijKLsELXX+8z7E13mnciwsmch0NnccHgejSX8TV/hjAudUnn6
- 7bt/6E/nLyIg7EW54tGg/Bo=
-X-Google-Smtp-Source: APXvYqzjkHM6ssye1kE7FAxKANBSwnDs9ma/Cld5Id0ce+XZqcyTcozVOHzvoFZkMrYR5ULbhbulvg==
-X-Received: by 2002:a37:ef04:: with SMTP id j4mr13454835qkk.442.1573836665699; 
- Fri, 15 Nov 2019 08:51:05 -0800 (PST)
-Received: from localhost.localdomain ([71.219.59.120])
- by smtp.gmail.com with ESMTPSA id r29sm5610331qtb.63.2019.11.15.08.51.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 Nov 2019 08:51:05 -0800 (PST)
-From: Alex Deucher <alexdeucher@gmail.com>
-X-Google-Original-From: Alex Deucher <alexander.deucher@amd.com>
-To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, tiwai@suse.de,
- lukas@wunner.de
-Date: Fri, 15 Nov 2019 11:50:37 -0500
-Message-Id: <20191115165038.56646-20-alexander.deucher@amd.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191115165038.56646-1-alexander.deucher@amd.com>
-References: <20191115165038.56646-1-alexander.deucher@amd.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=sLwmrek6v61RR3DalfhXkn+wHZGR1OHjIuniBq9eWwQ=;
+ b=MdASRubVPGrbItKVvXAwzLMZeViYaZ1I9LNdWibhqusz21kJoxEf7VhX5rE3FBUd32
+ u6rKSkp5pRv1GrSWNrv2WIF5WbLWf56bPmsjTChLXgq+s60krYH6sI/XjX7K/wY/t36y
+ RZE69zLlpIusBW0n8h4BVXZxwwcByMUTvBI1TF45Axr8ECExzYbNSbVf3xyCJ5yeNct/
+ vKjnGdeyTviPMhWp08uqKkt8kMPpXjjgCuFp5y4Nrdi6QPNG22h+sg11c/7Af67unLx6
+ /ItGxs7vZe99YttYp/MsgS15uQ/SD70WSdzTHqVie8KxK470hUG2DLoGcho65Pckp6OW
+ iM+g==
+X-Gm-Message-State: APjAAAXgHt/m744l3c+6qM5AY7mU5YXC/YYJQ6bnYzyQOxP3aMmLyfgE
+ fn2r66h+exmKID/mpBtgE7ZQVLbHB77/Dgt8DMXyTA==
+X-Google-Smtp-Source: APXvYqxalaATIAJzyoFdEPNe27i5QWa79+QDORiaYPCzUOY966y9isziXs/sk3oEa6f8XVvN2ECDL27KXEWRuEfnCXk=
+X-Received: by 2002:aca:dd0a:: with SMTP id u10mr9065882oig.130.1573837461018; 
+ Fri, 15 Nov 2019 09:04:21 -0800 (PST)
 MIME-Version: 1.0
-Cc: Alex Deucher <alexander.deucher@amd.com>, Evan Quan <evan.quan@amd.com>
-Subject: [alsa-devel] [PATCH 19/20] ALSA: hda/hdmi - enable runtime pm for
-	newer AMD display audio
+References: <20191112171715.128727-1-paulhsia@chromium.org>
+ <s5h1rud7yel.wl-tiwai@suse.de>
+ <CAJaf1TaZzsPdydcMZMemVSkjRvhYvx7ZxY2JEvExQ56B+MjQLQ@mail.gmail.com>
+ <s5h7e446raw.wl-tiwai@suse.de> <s5hftisnh3s.wl-tiwai@suse.de>
+ <CAJaf1TYwbsuNZ_RmRfo7ZcVPJ04e4Dh3G1e3kVYPQh_sX9TgWQ@mail.gmail.com>
+ <s5h36eqmtf3.wl-tiwai@suse.de>
+ <CAJaf1TbOqOeRqN6jfAeHVu6drTZ9wBUHf5J9uy4-Ng1Pkr5nww@mail.gmail.com>
+ <s5h7e42l7ed.wl-tiwai@suse.de>
+ <CAJaf1Ta1tqYMCTaWxeL82gfY8Fg6hidLjHO3FFiqU7yyn5oVPg@mail.gmail.com>
+ <s5hy2whi1gw.wl-tiwai@suse.de>
+In-Reply-To: <s5hy2whi1gw.wl-tiwai@suse.de>
+From: Chih-Yang Hsia <paulhsia@chromium.org>
+Date: Sat, 16 Nov 2019 01:04:09 +0800
+Message-ID: <CAJaf1TaF5+hYuezDOvcKL5QP9Q7us6pn_33mdLfOAq_rKTtt4Q@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [alsa-devel] [PATCH 0/2] ALSA: pcm: Fix race condition in
+	runtime access
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,74 +110,248 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are able to power down the GPU and audio via the GPU driver
-so flag these asics as supporting runtime pm.
+On Fri, Nov 15, 2019 at 11:49 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Fri, 15 Nov 2019 16:35:19 +0100,
+> Chih-Yang Hsia wrote:
+> >
+> > On Fri, Nov 15, 2019 at 1:00 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Thu, 14 Nov 2019 17:37:54 +0100,
+> > > Chih-Yang Hsia wrote:
+> > > >
+> > > > On Thu, Nov 14, 2019 at 10:20 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > >
+> > > > > On Thu, 14 Nov 2019 15:16:04 +0100,
+> > > > > Chih-Yang Hsia wrote:
+> > > > > >
+> > > > > > On Wed, Nov 13, 2019 at 7:36 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > >
+> > > > > > > On Wed, 13 Nov 2019 10:47:51 +0100,
+> > > > > > > Takashi Iwai wrote:
+> > > > > > > >
+> > > > > > > > On Wed, 13 Nov 2019 08:24:41 +0100,
+> > > > > > > > Chih-Yang Hsia wrote:
+> > > > > > > > >
+> > > > > > > > > On Wed, Nov 13, 2019 at 2:16 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Tue, 12 Nov 2019 18:17:13 +0100,
+> > > > > > > > > > paulhsia wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > Since
+> > > > > > > > > > > - snd_pcm_detach_substream sets runtime to null without stream lock and
+> > > > > > > > > > > - snd_pcm_period_elapsed checks the nullity of the runtime outside of
+> > > > > > > > > > >   stream lock.
+> > > > > > > > > > >
+> > > > > > > > > > > This will trigger null memory access in snd_pcm_running() call in
+> > > > > > > > > > > snd_pcm_period_elapsed.
+> > > > > > > > > >
+> > > > > > > > > > Well, if a stream is detached, it means that the stream must have been
+> > > > > > > > > > already closed; i.e. it's already a clear bug in the driver that
+> > > > > > > > > > snd_pcm_period_elapsed() is called against such a stream.
+> > > > > > > > > >
+> > > > > > > > > > Or am I missing other possible case?
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > thanks,
+> > > > > > > > > >
+> > > > > > > > > > Takashi
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > In multithreaded environment, it is possible to have to access both
+> > > > > > > > > `interrupt_handler` (from irq) and `substream close` (from
+> > > > > > > > > snd_pcm_release) at the same time.
+> > > > > > > > > Therefore, in driver implementation, if "substream close function" and
+> > > > > > > > > the "code section where snd_pcm_period_elapsed() in" do not hold the
+> > > > > > > > > same lock, then the following things can happen:
+> > > > > > > > >
+> > > > > > > > > 1. interrupt_handler -> goes into snd_pcm_period_elapsed with a valid
+> > > > > > > > > sustream pointer
+> > > > > > > > > 2. snd_pcm_release_substream: call close without blocking
+> > > > > > > > > 3. snd_pcm_release_substream: call snd_pcm_detache_substream and set
+> > > > > > > > > substream->runtime to NULL
+> > > > > > > > > 4. interrupt_handler -> call snd_pcm_runtime() and crash while
+> > > > > > > > > accessing fields in `substream->runtime`
+> > > > > > > > >
+> > > > > > > > > e.g. In intel8x0.c driver for ac97 device,
+> > > > > > > > > In driver intel8x0.c, `snd_pcm_period_elapsed` is called after
+> > > > > > > > > checking `ichdev->substream` in `snd_intel8x0_update`.
+> > > > > > > > > And if a `snd_pcm_release` call from alsa-lib and pass through close()
+> > > > > > > > > and run to snd_pcm_detach_substream() in another thread, it's possible
+> > > > > > > > > to trigger a crash.
+> > > > > > > > > I can reproduce the issue within a multithread VM easily.
+> > > > > > > > >
+> > > > > > > > > My patches are trying to provide a basic protection for this situation
+> > > > > > > > > (and internal pcm lock between detach and elapsed), since
+> > > > > > > > > - the usage of `snd_pcm_period_elapsed` does not warn callers about
+> > > > > > > > > the possible race if the driver does not  force the order for `calling
+> > > > > > > > > snd_pcm_period_elapsed` and `close` by lock and
+> > > > > > > > > - lots of drivers already have this hidden issue and I can't fix them
+> > > > > > > > > one by one (You can check the "snd_pcm_period_elapsed usage" and the
+> > > > > > > > > "close implementation" within all the drivers). The most common
+> > > > > > > > > mistake is that
+> > > > > > > > >   - Checking if the substream is null and call into snd_pcm_period_elapsed
+> > > > > > > > >   - But `close` can happen anytime, pass without block and
+> > > > > > > > > snd_pcm_detach_substream will be trigger right after it
+> > > > > > > >
+> > > > > > > > Thanks, point taken.  While this argument is valid and it's good to
+> > > > > > > > harden the PCM core side, the concurrent calls are basically a bug,
+> > > > > > > > and we'd need another fix in anyway.  Also, the patch 2 makes little
+> > > > > > > > sense; there can't be multiple close calls racing with each other.  So
+> > > > > > > > I'll go for taking your fix but only the first patch.
+> > > > > > > >
+> > > > > > > > Back to this race: the surfaced issue is, as you pointed out, the race
+> > > > > > > > between snd_pcm_period_elapsed() vs close call.  However, the
+> > > > > > > > fundamental problem is the pending action after the PCM trigger-stop
+> > > > > > > > call.  Since the PCM trigger doesn't block nor wait until the hardware
+> > > > > > > > actually stops the things, the driver may go to the other step even
+> > > > > > > > after this "supposed-to-be-stopped" point.  In your case, it goes up
+> > > > > > > > to close, and crashes.  If we had a sync-stop operation, the interrupt
+> > > > > > > > handler should have finished before moving to the close stage, hence
+> > > > > > > > such a race could be avoided.
+> > > > > > > >
+> > > > > > > > It's been a long known problem, and some drivers have the own
+> > > > > > > > implementation for stop-sync.  I think it's time to investigate and
+> > > > > > > > start implementing the fundamental solution.
+> > > > > > >
+> > > > > > > BTW, what we need essentially for intel8x0 is to just call
+> > > > > > > synchronize_irq() before closing, at best in hw_free procedure:
+> > > > > > >
+> > > > > > > --- a/sound/pci/intel8x0.c
+> > > > > > > +++ b/sound/pci/intel8x0.c
+> > > > > > > @@ -923,8 +923,10 @@ static int snd_intel8x0_hw_params(struct snd_pcm_substream *substream,
+> > > > > > >
+> > > > > > >  static int snd_intel8x0_hw_free(struct snd_pcm_substream *substream)
+> > > > > > >  {
+> > > > > > > +       struct intel8x0 *chip = snd_pcm_substream_chip(substream);
+> > > > > > >         struct ichdev *ichdev = get_ichdev(substream);
+> > > > > > >
+> > > > > > > +       synchronize_irq(chip->irq);
+> > > > > > >         if (ichdev->pcm_open_flag) {
+> > > > > > >                 snd_ac97_pcm_close(ichdev->pcm);
+> > > > > > >                 ichdev->pcm_open_flag = 0;
+> > > > > > >
+> > > > > > >
+> > > > > > > The same would be needed also at the beginning of the prepare, as the
+> > > > > > > application may restart the stream without release.
+> > > > > > >
+> > > > > > > My idea is to add sync_stop PCM ops and call it from PCM core at
+> > > > > > > snd_pcm_prepare() and snd_pcm_hw_free().
+> > > > > > >
+> > > > > > Will adding synchronize_irq() in snd_pcm_hw_free there fix the race issue?
+> > > > > > Is it possible to have sequence like the following steps ?
+> > > > > > - [Thread 1] snd_pcm_hw_free: just pass synchronize_irq()
+> > > > > > - [Thread 2] another interrupt come -> snd_intel8x0_update() -> goes
+> > > > > > into the lock region of snd_pcm_period_elapsed() and passes the
+> > > > > > PCM_RUNTIME_CHECK (right before snd_pcm_running())
+> > > > >
+> > > > > This shouldn't happen because at the point snd_pcm_hw_free() the
+> > > > > stream has been already in the SETUP state, i.e. with trigger PCM
+> > > > > callback, the hardware has been programmed not to generate the PCM
+> > > > > stream IRQ.
+> > > > >
+> > > > Thanks for pointing that out.
+> > > > snd_pcm_drop() will be called right before accessing `opts->hw_free`
+> > > > and device dma will be stopped by SNDRV_PCM_TRIGGER_STOP.
+> > > > And snd_pcm_prepare() will be called when the device is not running.
+> > > > So synchronize_irq() should be enough for both of them.
+> > > >
+> > > > I have a patch like this now in intel8x0:
+> > > >
+> > > > diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+> > > > index 6ff94d8ad86e..728588937673 100644
+> > > > --- a/sound/pci/intel8x0.c
+> > > > +++ b/sound/pci/intel8x0.c
+> > > > @@ -923,8 +923,10 @@ static int snd_intel8x0_hw_params(struct
+> > > > snd_pcm_substream *substream,
+> > > >
+> > > >  static int snd_intel8x0_hw_free(struct snd_pcm_substream *substream)
+> > > >  {
+> > > > +       struct intel8x0 *chip = snd_pcm_substream_chip(substream);
+> > > >         struct ichdev *ichdev = get_ichdev(substream);
+> > > >
+> > > > +       synchronize_irq(chip->irq);
+> > > >         if (ichdev->pcm_open_flag) {
+> > > >                 snd_ac97_pcm_close(ichdev->pcm);
+> > > >                 ichdev->pcm_open_flag = 0;
+> > > > @@ -993,6 +995,7 @@ static int snd_intel8x0_pcm_prepare(struct
+> > > > snd_pcm_substream *substream)
+> > > >         struct snd_pcm_runtime *runtime = substream->runtime;
+> > > >         struct ichdev *ichdev = get_ichdev(substream);
+> > > >
+> > > > +       synchronize_irq(chip->irq);
+> > > >         ichdev->physbuf = runtime->dma_addr;
+> > > >         ichdev->size = snd_pcm_lib_buffer_bytes(substream);
+> > > >         ichdev->fragsize = snd_pcm_lib_period_bytes(substream);
+> > > >
+> > > > If that looks good to you, I can upload the patch to pw as well.
+> > > > Then we can upstream the intel8x0 patch and the first change I made in
+> > > > this series (the elapse one).
+> > > > Does that sound good to you?
+> > >
+> > > I already have a patch set that adds the irq-sync commonly, as this
+> > > problem is seen on various drivers as you already pointed.
+> > >
+> > > Below two patches add the support in PCM core side, and the rest need in
+> > > intel8x0.c is something like:
+> > >
+> > > --- a/sound/pci/intel8x0.c
+> > > +++ b/sound/pci/intel8x0.c
+> > > @@ -3092,6 +3092,7 @@ static int snd_intel8x0_create(struct snd_card *card,
+> > >                 return -EBUSY;
+> > >         }
+> > >         chip->irq = pci->irq;
+> > > +       card->sync_irq = chip->irq;
+> > >
+> > Will this assignment or removement cause possible race if the driver
+> > is careless?
+>
+> Not really, it just influences on the possible synchronize_irq() call,
+> and the call itself can't be so racy.  So it's basically safe to set
+> and clear at any time.
+Got it. I'm not that familiar with that function.
+>
+> > Maybe providing some helper functions or teaching driver writers when
+> > is the right time to change or remove the sync_irq will help.
+>
+> The assumption is to set this whenever an irq handler is requested or
+> freed.  I don't mind introducing an API function
+> (e.g. snd_card_set_sync_irq(card, irq)), but OTOH I don't see much
+> benefit by that, either.  This is no mandatory thing, you can
+> implement in the driver side in different ways, too...
+>
+Thanks for your clarification. I think both ways would be fine.
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
----
- sound/pci/hda/hda_intel.c | 35 +++++++++++++++++++++++------------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+Let me wait for your patches and add the fix for intel8x0 based on it later?
+CC me anytime when you're ready.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 79ca97d6c811..111b9a869162 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2599,27 +2599,38 @@ static const struct pci_device_id azx_ids[] = {
- 	{ PCI_DEVICE(0x1002, 0xaac8),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
- 	{ PCI_DEVICE(0x1002, 0xaad8),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0xaae8),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xaae0),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
-+	{ PCI_DEVICE(0x1002, 0xaae8),
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xaaf0),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xaaf8),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab00),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab08),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab10),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab18),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab20),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab38),
--	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	/* VIA VT8251/VT8237A */
- 	{ PCI_DEVICE(0x1106, 0x3288), .driver_data = AZX_DRIVER_VIA },
- 	/* VIA GFX VT7122/VX900 */
--- 
-2.23.0
-
+Thanks!
+Paul
+>
+> thanks,
+>
+> Takashi
+>
+> >
+> > Best,
+> > Paul
+> >
+> > >         if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+> > >                 snd_intel8x0_free(chip);
+> > >
+> > >
+> > > (The intel8x0 does re-acquire IRQ, so it'll need a bit more lines, but
+> > >  you get the idea.)
+> > >
+> > > My plan is to merge the whole changes after 5.5-rc1, destined for
+> > > 5.6.
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Takashi
+> > >
+> >
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
