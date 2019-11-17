@@ -2,62 +2,61 @@ Return-Path: <SRS0=JTXi=ZJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60007C432C0
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:57:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2A79C432C0
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:58:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA1C620740
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:57:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 38E212075C
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:58:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fzUs5+r/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA1C620740
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B3Vjlhwj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38E212075C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D8E61691;
-	Sun, 17 Nov 2019 09:56:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D8E61691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DF9F1694;
+	Sun, 17 Nov 2019 09:57:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DF9F1694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573981067;
-	bh=FYLyKGgCC1XjSaRMrQ+IDGPtJhI07WJhX5/reBWTqPE=;
+	s=default; t=1573981114;
+	bh=7II1uUCPn+Dm/v/hBXAbE6Hu47MHHefXy+RxZ/VzTZ4=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fzUs5+r/r0/bxD5Q2SoyPn/oQpJlFsEi3AIXKIJmx8EmHhWRALzcNVyMVbAxX4Zyi
-	 iFki39YBRmN6E3s1+gHrraFk62WjdSzzhdvXy/CWcI1/rJEvcfYxF4gGzxhO66DPkf
-	 14YyhCM/iQtDn9AqW5O6CBjEOm2wYuR1hDBbeyF4=
+	b=B3VjlhwjJLpv/xV3uKH+2n3g5VnZ6lShnYXJF/MffaXLsavsAc3JvMG1zwioI2RM6
+	 OLuul8u1rSr8cNmGprVtNjSw5M1c5FWwIUA+m69XtEb2GYNMD8wdvs77BehHIxjCMn
+	 1oBzdoKgD4iIf2lp0N+eYbVzRZrJq9vqiA9HhPeo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B419FF8014F;
-	Sun, 17 Nov 2019 09:53:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FBD6F8015E;
+	Sun, 17 Nov 2019 09:53:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB150F8013A; Sun, 17 Nov 2019 09:53:30 +0100 (CET)
+ id E3486F800E6; Sun, 17 Nov 2019 09:53:30 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3E33F800F1
- for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2019 09:53:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3E33F800F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4895BF800E6
+ for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2019 09:53:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4895BF800E6
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 1EC44B234
- for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2019 08:53:19 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id EAA65B204
+ for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2019 08:53:18 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun, 17 Nov 2019 09:53:06 +0100
-Message-Id: <20191117085308.23915-7-tiwai@suse.de>
+Date: Sun, 17 Nov 2019 09:53:03 +0100
+Message-Id: <20191117085308.23915-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191117085308.23915-1-tiwai@suse.de>
 References: <20191117085308.23915-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 6/8] ALSA: pcm: Add the support for sync-stop
-	operation
+Subject: [alsa-devel] [PATCH 3/8] ALSA: pcm: Allow NULL ioctl ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,113 +75,66 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The standard programming model of a PCM sound driver is to process
-snd_pcm_period_elapsed() from an interrupt handler.  When a running
-stream is stopped, PCM core calls the trigger-STOP PCM ops, sets the
-stream state to SETUP, and moves on to the next step.  This is
-performed in an atomic manner -- this could be called from the interrupt
-context, after all.
-
-The problem is that, if the stream goes further and reaches to the
-CLOSE state immediately, the stream might be still being processed in
-snd_pcm_period_elapsed() in the interrupt context, and hits a NULL
-dereference.  Such a crash happens because of the atomic operation,
-and we can't wait until the stream-stop finishes.
-
-For addressing such a problem, this commit adds a new PCM ops,
-sync_stop.  This gets called at the appropriate places that need a
-sync with the stream-stop, i.e. at hw_params, prepare and hw_free.
-
-Some drivers already have a similar mechanism implemented locally, and
-we'll refactor the code later.
+Currently PCM ioctl ops is a mandatory field but almost all drivers
+simply pass snd_pcm_lib_ioctl.  For simplicity, allow to set NULL in
+the field and call snd_pcm_lib_ioctl() as default.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h     |  2 ++
- sound/core/pcm_native.c | 15 +++++++++++++++
- 2 files changed, 17 insertions(+)
+ sound/core/pcm_native.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 25563317782c..8a89fa6fdd5e 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -59,6 +59,7 @@ struct snd_pcm_ops {
- 	int (*hw_free)(struct snd_pcm_substream *substream);
- 	int (*prepare)(struct snd_pcm_substream *substream);
- 	int (*trigger)(struct snd_pcm_substream *substream, int cmd);
-+	int (*sync_stop)(struct snd_pcm_substream *substream);
- 	snd_pcm_uframes_t (*pointer)(struct snd_pcm_substream *substream);
- 	int (*get_time_info)(struct snd_pcm_substream *substream,
- 			struct timespec *system_ts, struct timespec *audio_ts,
-@@ -395,6 +396,7 @@ struct snd_pcm_runtime {
- 	wait_queue_head_t sleep;	/* poll sleep */
- 	wait_queue_head_t tsleep;	/* transfer sleep */
- 	struct fasync_struct *fasync;
-+	bool stop_operating;		/* sync_stop will be called */
- 
- 	/* -- private section -- */
- 	void *private_data;
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 704ea75199e4..163d621ff238 100644
+index f1646735bde6..704ea75199e4 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -568,6 +568,15 @@ static inline void snd_pcm_timer_notify(struct snd_pcm_substream *substream,
- #endif
+@@ -178,6 +178,16 @@ void snd_pcm_stream_unlock_irqrestore(struct snd_pcm_substream *substream,
  }
+ EXPORT_SYMBOL_GPL(snd_pcm_stream_unlock_irqrestore);
  
-+static void snd_pcm_sync_stop(struct snd_pcm_substream *substream)
++/* Run PCM ioctl ops */
++static int snd_pcm_ops_ioctl(struct snd_pcm_substream *substream,
++			     unsigned cmd, void *arg)
 +{
-+	if (substream->runtime->stop_operating) {
-+		substream->runtime->stop_operating = false;
-+		if (substream->ops->sync_stop)
-+			substream->ops->sync_stop(substream);
-+	}
++	if (substream->ops->ioctl)
++		return substream->ops->ioctl(substream, cmd, arg);
++	else
++		return snd_pcm_lib_ioctl(substream, cmd, arg);
 +}
 +
- /**
-  * snd_pcm_hw_param_choose - choose a configuration defined by @params
-  * @pcm: PCM instance
-@@ -660,6 +669,8 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 		if (atomic_read(&substream->mmap_count))
- 			return -EBADFD;
- 
-+	snd_pcm_sync_stop(substream);
-+
- 	params->rmask = ~0U;
- 	err = snd_pcm_hw_refine(substream, params);
- 	if (err < 0)
-@@ -788,6 +799,7 @@ static int snd_pcm_hw_free(struct snd_pcm_substream *substream)
- 	snd_pcm_stream_unlock_irq(substream);
- 	if (atomic_read(&substream->mmap_count))
- 		return -EBADFD;
-+	snd_pcm_sync_stop(substream);
- 	if (substream->ops->hw_free)
- 		result = substream->ops->hw_free(substream);
- 	if (substream->managed_buffer_alloc)
-@@ -1313,6 +1325,7 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream, int state)
- 		runtime->status->state = state;
- 		snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTOP);
- 	}
-+	runtime->stop_operating = true;
- 	wake_up(&runtime->sleep);
- 	wake_up(&runtime->tsleep);
- }
-@@ -1589,6 +1602,7 @@ static void snd_pcm_post_resume(struct snd_pcm_substream *substream, int state)
- 	snd_pcm_trigger_tstamp(substream);
- 	runtime->status->state = runtime->status->suspended_state;
- 	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MRESUME);
-+	snd_pcm_sync_stop(substream);
- }
- 
- static const struct action_ops snd_pcm_action_resume = {
-@@ -1709,6 +1723,7 @@ static int snd_pcm_pre_prepare(struct snd_pcm_substream *substream,
- static int snd_pcm_do_prepare(struct snd_pcm_substream *substream, int state)
+ int snd_pcm_info(struct snd_pcm_substream *substream, struct snd_pcm_info *info)
  {
- 	int err;
-+	snd_pcm_sync_stop(substream);
- 	err = substream->ops->prepare(substream);
+ 	struct snd_pcm *pcm = substream->pcm;
+@@ -448,8 +458,9 @@ static int fixup_unreferenced_params(struct snd_pcm_substream *substream,
+ 		m = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+ 		if (snd_mask_single(m) && snd_interval_single(i)) {
+-			err = substream->ops->ioctl(substream,
+-					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
++			err = snd_pcm_ops_ioctl(substream,
++						SNDRV_PCM_IOCTL1_FIFO_SIZE,
++						params);
+ 			if (err < 0)
+ 				return err;
+ 		}
+@@ -971,7 +982,7 @@ static int snd_pcm_channel_info(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	memset(info, 0, sizeof(*info));
+ 	info->channel = channel;
+-	return substream->ops->ioctl(substream, SNDRV_PCM_IOCTL1_CHANNEL_INFO, info);
++	return snd_pcm_ops_ioctl(substream, SNDRV_PCM_IOCTL1_CHANNEL_INFO, info);
+ }
+ 
+ static int snd_pcm_channel_info_user(struct snd_pcm_substream *substream,
+@@ -1647,7 +1658,7 @@ static int snd_pcm_pre_reset(struct snd_pcm_substream *substream, int state)
+ static int snd_pcm_do_reset(struct snd_pcm_substream *substream, int state)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int err = substream->ops->ioctl(substream, SNDRV_PCM_IOCTL1_RESET, NULL);
++	int err = snd_pcm_ops_ioctl(substream, SNDRV_PCM_IOCTL1_RESET, NULL);
  	if (err < 0)
  		return err;
+ 	runtime->hw_ptr_base = 0;
 -- 
 2.16.4
 
