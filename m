@@ -7,56 +7,57 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55A7CC432C0
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60007C432C0
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:57:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4C092075C
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:57:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DA1C620740
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Nov 2019 08:57:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vBOUqmCr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4C092075C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fzUs5+r/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA1C620740
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF19F1694;
-	Sun, 17 Nov 2019 09:56:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF19F1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D8E61691;
+	Sun, 17 Nov 2019 09:56:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D8E61691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1573981034;
-	bh=KJF8l6Y6Fs0KdnLU3qCcgVfQr2p2ZTWcvlkOVYMUjys=;
+	s=default; t=1573981067;
+	bh=FYLyKGgCC1XjSaRMrQ+IDGPtJhI07WJhX5/reBWTqPE=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vBOUqmCrpAQlkgEOD8Gl8yb8SNdGSiPCJBdpbV5Q1YXuyjNOiTTzf+7eiP0VNlWQj
-	 XryqwTtj2WsPRKUzEICWjpP+n8RalYl9QGf9QduQ3PQVHQDzvSBAbutGmO8JZAAGzN
-	 eFcTma/n2u5T2NZuOCXEWhfv11qFNBegrjI7P82Y=
+	b=fzUs5+r/r0/bxD5Q2SoyPn/oQpJlFsEi3AIXKIJmx8EmHhWRALzcNVyMVbAxX4Zyi
+	 iFki39YBRmN6E3s1+gHrraFk62WjdSzzhdvXy/CWcI1/rJEvcfYxF4gGzxhO66DPkf
+	 14YyhCM/iQtDn9AqW5O6CBjEOm2wYuR1hDBbeyF4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5987EF8014A;
-	Sun, 17 Nov 2019 09:53:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B419FF8014F;
+	Sun, 17 Nov 2019 09:53:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDCC2F8014A; Sun, 17 Nov 2019 09:53:30 +0100 (CET)
+ id DB150F8013A; Sun, 17 Nov 2019 09:53:30 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8421F8013A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3E33F800F1
  for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2019 09:53:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8421F8013A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3E33F800F1
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2D16DB237
+ by mx1.suse.de (Postfix) with ESMTP id 1EC44B234
  for <alsa-devel@alsa-project.org>; Sun, 17 Nov 2019 08:53:19 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun, 17 Nov 2019 09:53:07 +0100
-Message-Id: <20191117085308.23915-8-tiwai@suse.de>
+Date: Sun, 17 Nov 2019 09:53:06 +0100
+Message-Id: <20191117085308.23915-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191117085308.23915-1-tiwai@suse.de>
 References: <20191117085308.23915-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 7/8] ALSA: pcm: Add card sync_irq field
+Subject: [alsa-devel] [PATCH 6/8] ALSA: pcm: Add the support for sync-stop
+	operation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,58 +76,113 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Many PCI and other drivers performs snd_pcm_period_elapsed() simply in
-its interrupt handler, so the sync_stop operation is just to call
-synchronize_irq().  Instead of putting this call multiple times,
-introduce the common card->sync_irq field.  When this field is set,
-PCM core performs synchronize_irq() for sync-stop operation.  Each
-driver just needs to copy its local IRQ number to card->sync_irq, and
-that's all we need.
+The standard programming model of a PCM sound driver is to process
+snd_pcm_period_elapsed() from an interrupt handler.  When a running
+stream is stopped, PCM core calls the trigger-STOP PCM ops, sets the
+stream state to SETUP, and moves on to the next step.  This is
+performed in an atomic manner -- this could be called from the interrupt
+context, after all.
+
+The problem is that, if the stream goes further and reaches to the
+CLOSE state immediately, the stream might be still being processed in
+snd_pcm_period_elapsed() in the interrupt context, and hits a NULL
+dereference.  Such a crash happens because of the atomic operation,
+and we can't wait until the stream-stop finishes.
+
+For addressing such a problem, this commit adds a new PCM ops,
+sync_stop.  This gets called at the appropriate places that need a
+sync with the stream-stop, i.e. at hw_params, prepare and hw_free.
+
+Some drivers already have a similar mechanism implemented locally, and
+we'll refactor the code later.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h    | 1 +
- sound/core/init.c       | 1 +
- sound/core/pcm_native.c | 2 ++
- 3 files changed, 4 insertions(+)
+ include/sound/pcm.h     |  2 ++
+ sound/core/pcm_native.c | 15 +++++++++++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index ee238f100f73..af3dce956c17 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -117,6 +117,7 @@ struct snd_card {
- 	struct device card_dev;		/* cardX object for sysfs */
- 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
- 	bool registered;		/* card_dev is registered? */
-+	int sync_irq;			/* assigned irq, used for PCM sync */
- 	wait_queue_head_t remove_sleep;
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 25563317782c..8a89fa6fdd5e 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -59,6 +59,7 @@ struct snd_pcm_ops {
+ 	int (*hw_free)(struct snd_pcm_substream *substream);
+ 	int (*prepare)(struct snd_pcm_substream *substream);
+ 	int (*trigger)(struct snd_pcm_substream *substream, int cmd);
++	int (*sync_stop)(struct snd_pcm_substream *substream);
+ 	snd_pcm_uframes_t (*pointer)(struct snd_pcm_substream *substream);
+ 	int (*get_time_info)(struct snd_pcm_substream *substream,
+ 			struct timespec *system_ts, struct timespec *audio_ts,
+@@ -395,6 +396,7 @@ struct snd_pcm_runtime {
+ 	wait_queue_head_t sleep;	/* poll sleep */
+ 	wait_queue_head_t tsleep;	/* transfer sleep */
+ 	struct fasync_struct *fasync;
++	bool stop_operating;		/* sync_stop will be called */
  
- #ifdef CONFIG_PM
-diff --git a/sound/core/init.c b/sound/core/init.c
-index db99b7fad6ad..faa9f03c01ca 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -215,6 +215,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	init_waitqueue_head(&card->power_sleep);
- #endif
- 	init_waitqueue_head(&card->remove_sleep);
-+	card->sync_irq = -1;
- 
- 	device_initialize(&card->card_dev);
- 	card->card_dev.parent = parent;
+ 	/* -- private section -- */
+ 	void *private_data;
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 163d621ff238..1fe581167b7b 100644
+index 704ea75199e4..163d621ff238 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -574,6 +574,8 @@ static void snd_pcm_sync_stop(struct snd_pcm_substream *substream)
- 		substream->runtime->stop_operating = false;
- 		if (substream->ops->sync_stop)
- 			substream->ops->sync_stop(substream);
-+		else if (substream->pcm->card->sync_irq > 0)
-+			synchronize_irq(substream->pcm->card->sync_irq);
- 	}
+@@ -568,6 +568,15 @@ static inline void snd_pcm_timer_notify(struct snd_pcm_substream *substream,
+ #endif
  }
  
++static void snd_pcm_sync_stop(struct snd_pcm_substream *substream)
++{
++	if (substream->runtime->stop_operating) {
++		substream->runtime->stop_operating = false;
++		if (substream->ops->sync_stop)
++			substream->ops->sync_stop(substream);
++	}
++}
++
+ /**
+  * snd_pcm_hw_param_choose - choose a configuration defined by @params
+  * @pcm: PCM instance
+@@ -660,6 +669,8 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		if (atomic_read(&substream->mmap_count))
+ 			return -EBADFD;
+ 
++	snd_pcm_sync_stop(substream);
++
+ 	params->rmask = ~0U;
+ 	err = snd_pcm_hw_refine(substream, params);
+ 	if (err < 0)
+@@ -788,6 +799,7 @@ static int snd_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	snd_pcm_stream_unlock_irq(substream);
+ 	if (atomic_read(&substream->mmap_count))
+ 		return -EBADFD;
++	snd_pcm_sync_stop(substream);
+ 	if (substream->ops->hw_free)
+ 		result = substream->ops->hw_free(substream);
+ 	if (substream->managed_buffer_alloc)
+@@ -1313,6 +1325,7 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream, int state)
+ 		runtime->status->state = state;
+ 		snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTOP);
+ 	}
++	runtime->stop_operating = true;
+ 	wake_up(&runtime->sleep);
+ 	wake_up(&runtime->tsleep);
+ }
+@@ -1589,6 +1602,7 @@ static void snd_pcm_post_resume(struct snd_pcm_substream *substream, int state)
+ 	snd_pcm_trigger_tstamp(substream);
+ 	runtime->status->state = runtime->status->suspended_state;
+ 	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MRESUME);
++	snd_pcm_sync_stop(substream);
+ }
+ 
+ static const struct action_ops snd_pcm_action_resume = {
+@@ -1709,6 +1723,7 @@ static int snd_pcm_pre_prepare(struct snd_pcm_substream *substream,
+ static int snd_pcm_do_prepare(struct snd_pcm_substream *substream, int state)
+ {
+ 	int err;
++	snd_pcm_sync_stop(substream);
+ 	err = substream->ops->prepare(substream);
+ 	if (err < 0)
+ 		return err;
 -- 
 2.16.4
 
