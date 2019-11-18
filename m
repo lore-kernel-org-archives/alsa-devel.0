@@ -7,60 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07EE9C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:50:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB89EC432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:51:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B0B42192B
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:50:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 43A982192B
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:51:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DyE1fwgy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B0B42192B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l5MzlwaR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43A982192B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82FF2168C;
-	Mon, 18 Nov 2019 18:49:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82FF2168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B40D169E;
+	Mon, 18 Nov 2019 18:50:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B40D169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574099434;
-	bh=fhYYcOypPYW2C89bJGiacVFPhFqPJ/JPjNSwP3Qgc2o=;
+	s=default; t=1574099487;
+	bh=xoADsm24Otqpra0NoWUmPtayJ1X98GbFMYBDqXB9iI4=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=DyE1fwgyeazSxRzC53I+/IgGIhPi/n7+ZWLKhNq0AiJ/vrYTr/pS52Yi2L58hVQgX
-	 ++ZT9+B+jrSMyZrlrBIGl6MucpoLT/+eUhhV2es5xz+o1DFGRBikL+akVZ+md8M1Bw
-	 gXHVexs7XBHxdqAp02mlylD8bHlMZO/uVlovFUxk=
+	b=l5MzlwaRrnkWUZk9CbKYiazALJUdifFblaHIde3oIqqQHYdkoLyeW2Um396ozF1Yy
+	 DlExvWAgkcptgMC7txxF4xV7RvWU/fnmik8ZU69Qha8Il/pzamtXwGvGUY0+IR/zBJ
+	 +d5KhQ4goaFNQIxfIh5VOF7mP821d6HWyCsZmhcE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBCEBF8013F;
-	Mon, 18 Nov 2019 18:48:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FFA7F80146;
+	Mon, 18 Nov 2019 18:48:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0B0CF800FF; Mon, 18 Nov 2019 18:48:49 +0100 (CET)
+ id E3846F80150; Mon, 18 Nov 2019 18:48:54 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C9B23F800FF
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 18:48:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9B23F800FF
+ by alsa1.perex.cz (Postfix) with ESMTP id EC415F80146
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 18:48:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC415F80146
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68BF0DA7;
- Mon, 18 Nov 2019 09:48:45 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8702D1FB;
+ Mon, 18 Nov 2019 09:48:50 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB6143F703;
- Mon, 18 Nov 2019 09:48:44 -0800 (PST)
-Date: Mon, 18 Nov 2019 17:48:43 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA34A3F703;
+ Mon, 18 Nov 2019 09:48:49 -0800 (PST)
+Date: Mon, 18 Nov 2019 17:48:48 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Lucas Stach <l.stach@pengutronix.de>
-In-Reply-To: <20191118151207.28576-1-l.stach@pengutronix.de>
-Message-Id: <applied-20191118151207.28576-1-l.stach@pengutronix.de>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+In-Reply-To: <20191111222901.19892-3-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191111222901.19892-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, "Andrew F . Davis" <afd@ti.com>,
- Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
- patchwork-lst@pengutronix.de, Chris Healy <cphealy@gmail.com>
-Subject: [alsa-devel] Applied "ASoC: tlv320aic31xx: configure output
-	common-mode voltage" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: Fix CFL and CML FW nocodec
+	binary names." to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,11 +78,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: tlv320aic31xx: configure output common-mode voltage
+   ASoC: SOF: Intel: Fix CFL and CML FW nocodec binary names.
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -106,140 +103,62 @@ to this mail.
 Thanks,
 Mark
 
-From e48fdb53bd1fa50796b5a050e6e31fde3891a2c8 Mon Sep 17 00:00:00 2001
-From: Lucas Stach <l.stach@pengutronix.de>
-Date: Mon, 18 Nov 2019 16:12:06 +0100
-Subject: [PATCH] ASoC: tlv320aic31xx: configure output common-mode voltage
+From 653c28afa76b45c570370c3c3a89975c68c5fc8e Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Mon, 11 Nov 2019 16:29:00 -0600
+Subject: [PATCH] ASoC: SOF: Intel: Fix CFL and CML FW nocodec binary names.
 
-The tlv320aic31xx devices allow to adjust the output common-mode voltage
-for best analog performance. The datasheet states that the common mode
-voltage should be set to be <= AVDD/2.
+The manifest information is different between CNL, CML and CFL platforms
+hence we need to load different files.
 
-This changes allows to configure the output common-mode voltage via a DT
-property. If the property is absent the voltage is automatically chosen
-as the highest voltage below/equal to AVDD/2.
-
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Link: https://lore.kernel.org/r/20191118151207.28576-1-l.stach@pengutronix.de
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191111222901.19892-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/tlv320aic31xx.txt          |  5 +++
- sound/soc/codecs/tlv320aic31xx.c              | 45 +++++++++++++++++++
- sound/soc/codecs/tlv320aic31xx.h              |  8 ++++
- 3 files changed, 58 insertions(+)
+ sound/soc/sof/sof-pci-dev.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-index 5b3c33bb99e5..e372303697dc 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-@@ -29,6 +29,11 @@ Optional properties:
-         3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
- 	If this node is not mentioned or if the value is unknown, then
- 	micbias	is set to 2.0V.
-+- ai31xx-ocmv - output common-mode voltage setting
-+        0 - 1.35V,
-+        1 - 1.5V,
-+        2 - 1.65V,
-+        3 - 1.8V
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 4de90d04a91b..3252dbe277c8 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -119,7 +119,7 @@ static const struct sof_dev_desc cnl_desc = {
  
- Deprecated properties:
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
+ static const struct sof_dev_desc cfl_desc = {
+-	.machines		= snd_soc_acpi_intel_cnl_machines,
++	.machines		= snd_soc_acpi_intel_cfl_machines,
+ 	.resindex_lpe_base	= 0,
+ 	.resindex_pcicfg_base	= -1,
+ 	.resindex_imr_base	= -1,
+@@ -128,7 +128,7 @@ static const struct sof_dev_desc cfl_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
+-	.nocodec_fw_filename = "sof-cnl.ri",
++	.nocodec_fw_filename = "sof-cfl.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+ 	.arch_ops = &sof_xtensa_arch_ops
+@@ -139,7 +139,7 @@ static const struct sof_dev_desc cfl_desc = {
+ 	IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
  
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index df627a08def9..f6f19fdc72f5 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -171,6 +171,7 @@ struct aic31xx_priv {
- 	int rate_div_line;
- 	bool master_dapm_route_applied;
- 	int irq;
-+	u8 ocmv; /* output common-mode voltage */
- };
- 
- struct aic31xx_rate_divs {
-@@ -1312,6 +1313,11 @@ static int aic31xx_codec_probe(struct snd_soc_component *component)
- 	if (ret)
- 		return ret;
- 
-+	/* set output common-mode voltage */
-+	snd_soc_component_update_bits(component, AIC31XX_HPDRIVER,
-+				      AIC31XX_HPD_OCMV_MASK,
-+				      aic31xx->ocmv << AIC31XX_HPD_OCMV_SHIFT);
-+
- 	return 0;
- }
- 
-@@ -1501,6 +1507,43 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
- 		return IRQ_NONE;
- }
- 
-+static void aic31xx_configure_ocmv(struct aic31xx_priv *priv)
-+{
-+	struct device *dev = priv->dev;
-+	int dvdd, avdd;
-+	u32 value;
-+
-+	if (dev->fwnode &&
-+	    fwnode_property_read_u32(dev->fwnode, "ai31xx-ocmv", &value)) {
-+		/* OCMV setting is forced by DT */
-+		if (value <= 3) {
-+			priv->ocmv = value;
-+			return;
-+		}
-+	}
-+
-+	avdd = regulator_get_voltage(priv->supplies[3].consumer);
-+	dvdd = regulator_get_voltage(priv->supplies[5].consumer);
-+
-+	if (avdd > 3600000 || dvdd > 1950000) {
-+		dev_warn(dev,
-+			 "Too high supply voltage(s) AVDD: %d, DVDD: %d\n",
-+			 avdd, dvdd);
-+	} else if (avdd == 3600000 && dvdd == 1950000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_8V;
-+	} else if (avdd >= 3300000 && dvdd >= 1800000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_65V;
-+	} else if (avdd >= 3000000 && dvdd >= 1650000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_5V;
-+	} else if (avdd >= 2700000 && dvdd >= 1525000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_35V;
-+	} else {
-+		dev_warn(dev,
-+			 "Invalid supply voltage(s) AVDD: %d, DVDD: %d\n",
-+			 avdd, dvdd);
-+	}
-+}
-+
- static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
- {
-@@ -1570,6 +1613,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	aic31xx_configure_ocmv(aic31xx);
-+
- 	if (aic31xx->irq > 0) {
- 		regmap_update_bits(aic31xx->regmap, AIC31XX_GPIO1,
- 				   AIC31XX_GPIO1_FUNC_MASK,
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index cb024955c978..83a8c7604cc3 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -232,6 +232,14 @@ struct aic31xx_pdata {
- #define AIC31XX_HSD_HP			0x01
- #define AIC31XX_HSD_HS			0x03
- 
-+/* AIC31XX_HPDRIVER */
-+#define AIC31XX_HPD_OCMV_MASK		GENMASK(4, 3)
-+#define AIC31XX_HPD_OCMV_SHIFT		3
-+#define AIC31XX_HPD_OCMV_1_35V		0x0
-+#define AIC31XX_HPD_OCMV_1_5V		0x1
-+#define AIC31XX_HPD_OCMV_1_65V		0x2
-+#define AIC31XX_HPD_OCMV_1_8V		0x3
-+
- /* AIC31XX_MICBIAS */
- #define AIC31XX_MICBIAS_MASK		GENMASK(1, 0)
- #define AIC31XX_MICBIAS_SHIFT		0
+ static const struct sof_dev_desc cml_desc = {
+-	.machines		= snd_soc_acpi_intel_cnl_machines,
++	.machines		= snd_soc_acpi_intel_cml_machines,
+ 	.resindex_lpe_base	= 0,
+ 	.resindex_pcicfg_base	= -1,
+ 	.resindex_imr_base	= -1,
+@@ -148,7 +148,7 @@ static const struct sof_dev_desc cml_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
+-	.nocodec_fw_filename = "sof-cnl.ri",
++	.nocodec_fw_filename = "sof-cml.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+ 	.arch_ops = &sof_xtensa_arch_ops
 -- 
 2.20.1
 
