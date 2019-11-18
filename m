@@ -7,62 +7,59 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96F20C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 13:04:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B050C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 13:05:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D83B20692
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 13:04:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B62EB20692
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 13:05:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jJLKwpcw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D83B20692
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O5DqqWDY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B62EB20692
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A3EE168C;
-	Mon, 18 Nov 2019 14:03:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A3EE168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCA771698;
+	Mon, 18 Nov 2019 14:04:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCA771698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574082287;
-	bh=IOsELzRkWXRzgKthN7bsBKDN8uykX0aSk/R2DnN9eEU=;
+	s=default; t=1574082308;
+	bh=8xK2c+I53yfIn6Q6fOPs8+cAgbnhUIBEIs0aS8Q7z4U=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jJLKwpcwIe1BJ7yXaQ2P5NmsrUIgzIbrLuaG/gfsfrYuM11TETfK2Aa3/Y/yQL/ab
-	 le8HriptASJhT2UIl76iZgv+mes8DN+A0p1RFUZFPDWpecy2jDaP9vGvokND+W/xV4
-	 qvULR/c/gKeJ1Uzi3osSwCyIjv+Wo2SKygG9fb1I=
+	b=O5DqqWDYEoj0+iiRQ53gx8Ag0mQSBuetr/xrBPVEWZbQ0pXJ7xiMN2qZ1vSDBCaZG
+	 LbQxcMqEkDq768G1quJK1YdEX0vf3aQLufoF2Sue1NXXpJi9YdSzpFYb976HPIRLOQ
+	 XEErbI8IV1TJThKR4cyEbE9rjTlEQpat8E2MILck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41B0BF80162;
-	Mon, 18 Nov 2019 14:00:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A9CCF801DB;
+	Mon, 18 Nov 2019 14:00:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1742CF8014E; Mon, 18 Nov 2019 14:00:46 +0100 (CET)
+ id 6F155F801ED; Mon, 18 Nov 2019 14:00:52 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 19521F80147
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 14:00:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19521F80147
+ by alsa1.perex.cz (Postfix) with ESMTP id 874DCF801DA
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 14:00:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 874DCF801DA
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 213D31042;
- Mon, 18 Nov 2019 05:00:43 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B162A113E;
+ Mon, 18 Nov 2019 05:00:48 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85C833F6C4;
- Mon, 18 Nov 2019 05:00:42 -0800 (PST)
-Date: Mon, 18 Nov 2019 13:00:40 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F0403F6C4;
+ Mon, 18 Nov 2019 05:00:47 -0800 (PST)
+Date: Mon, 18 Nov 2019 13:00:46 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-In-Reply-To: <20191115102705.649976-2-vkoul@kernel.org>
+To: Shuming Fan <shumingf@realtek.com>
+In-Reply-To: <20191118091624.18699-1-shumingf@realtek.com>
 X-Patchwork-Hint: ignore
-Message-Id: <20191118130047.1742CF8014E@alsa1.perex.cz>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, linux-kernel@vger.kernel.org
-Subject: [alsa-devel] Applied "ALSA: compress: add flac decoder params" to
-	the asoc tree
+Message-Id: <20191118130052.6F155F801ED@alsa1.perex.cz>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com,
+ Mark Brown <broonie@kernel.org>, alexlee@realtek.com, derek.fang@realtek.com,
+ flove@realtek.com
+Subject: [alsa-devel] Applied "ASoC: rt5682: fix the charge pump capacitor
+	discharges" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,11 +80,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ALSA: compress: add flac decoder params
+   ASoC: rt5682: fix the charge pump capacitor discharges
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -108,59 +105,74 @@ to this mail.
 Thanks,
 Mark
 
-From f6ff3e958e0ec5949434b7db3c42c3604c85c8a0 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vkoul@kernel.org>
-Date: Fri, 15 Nov 2019 15:57:03 +0530
-Subject: [PATCH] ALSA: compress: add flac decoder params
+From 44d13f6c2a0b739a7c4df3c478c8070320c4fd45 Mon Sep 17 00:00:00 2001
+From: Shuming Fan <shumingf@realtek.com>
+Date: Mon, 18 Nov 2019 17:16:24 +0800
+Subject: [PATCH] ASoC: rt5682: fix the charge pump capacitor discharges
 
-The current design of sending codec parameters assumes that decoders
-will have parsers so they can parse the encoded stream for parameters
-and configure the decoder.
+Due to switching the HV to LV mode while stopping playback,
+the charge pump capacitor will be discharged to the source of the pump circuit.
+Therefore, this patch removed the event control.
 
-But this assumption may not be universally true and we know some DSPs
-which do not contain the parsers so additional parameters are required
-to be passed.
-
-So add these parameters starting with FLAC decoder. The size of
-snd_codec_options is still 120 bytes after this change (due to this
-being a union)
-
-Co-developed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20191115102705.649976-2-vkoul@kernel.org
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Link: https://lore.kernel.org/r/20191118091624.18699-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/compress_params.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/codecs/rt5682.c | 27 +++------------------------
+ 1 file changed, 3 insertions(+), 24 deletions(-)
 
-diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
-index 3d4d6de66a17..9c96fb0e4d90 100644
---- a/include/uapi/sound/compress_params.h
-+++ b/include/uapi/sound/compress_params.h
-@@ -317,12 +317,22 @@ struct snd_enc_generic {
- 	__s32 reserved[15];	/* Can be used for SND_AUDIOCODEC_BESPOKE */
- } __attribute__((packed, aligned(4)));
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 62b8ed412bd1..5370e4b00104 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -1451,28 +1451,6 @@ static const struct snd_kcontrol_new hpor_switch =
+ 	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5682_HP_CTRL_1,
+ 					RT5682_R_MUTE_SFT, 1, 1);
  
-+struct snd_dec_flac {
-+	__u16 sample_size;
-+	__u16 min_blk_size;
-+	__u16 max_blk_size;
-+	__u16 min_frame_size;
-+	__u16 max_frame_size;
-+	__u16 reserved;
-+} __attribute__((packed, aligned(4)));
-+
- union snd_codec_options {
- 	struct snd_enc_wma wma;
- 	struct snd_enc_vorbis vorbis;
- 	struct snd_enc_real real;
- 	struct snd_enc_flac flac;
- 	struct snd_enc_generic generic;
-+	struct snd_dec_flac flac_d;
- } __attribute__((packed, aligned(4)));
+-static int rt5682_charge_pump_event(struct snd_soc_dapm_widget *w,
+-	struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_component *component =
+-		snd_soc_dapm_to_component(w->dapm);
+-
+-	switch (event) {
+-	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_component_update_bits(component,
+-			RT5682_HP_CHARGE_PUMP_1, RT5682_PM_HP_MASK, RT5682_PM_HP_HV);
+-		break;
+-	case SND_SOC_DAPM_POST_PMD:
+-		snd_soc_component_update_bits(component,
+-			RT5682_HP_CHARGE_PUMP_1, RT5682_PM_HP_MASK, RT5682_PM_HP_LV);
+-		break;
+-	default:
+-		return 0;
+-	}
+-
+-	return 0;
+-}
+-
+ static int rt5682_hp_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -1756,8 +1734,7 @@ static const struct snd_soc_dapm_widget rt5682_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("HP Amp R", RT5682_PWR_ANLG_1,
+ 		RT5682_PWR_HA_R_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY_S("Charge Pump", 1, RT5682_DEPOP_1,
+-		RT5682_PUMP_EN_SFT, 0, rt5682_charge_pump_event,
+-		SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++		RT5682_PUMP_EN_SFT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY_S("Capless", 2, RT5682_DEPOP_1,
+ 		RT5682_CAPLESS_EN_SFT, 0, NULL, 0),
  
- /** struct snd_codec_desc - description of codec capabilities
+@@ -2655,6 +2632,8 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+ 			RT5682_HPA_CP_BIAS_CTRL_MASK, RT5682_HPA_CP_BIAS_3UA);
+ 	regmap_update_bits(rt5682->regmap, RT5682_CHARGE_PUMP_1,
+ 			RT5682_CP_CLK_HP_MASK, RT5682_CP_CLK_HP_300KHZ);
++	regmap_update_bits(rt5682->regmap, RT5682_HP_CHARGE_PUMP_1,
++			RT5682_PM_HP_MASK, RT5682_PM_HP_HV);
+ 
+ 	INIT_DELAYED_WORK(&rt5682->jack_detect_work,
+ 				rt5682_jack_detect_handler);
 -- 
 2.20.1
 
