@@ -2,62 +2,66 @@ Return-Path: <SRS0=vuHx=ZK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0159C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 01:50:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C7B9C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 01:51:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCA35206D6
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 01:50:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 03FD120679
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 01:51:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oK/vLXm8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCA35206D6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OCNqO28q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03FD120679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53FA9166E;
-	Mon, 18 Nov 2019 02:50:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53FA9166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 520C01674;
+	Mon, 18 Nov 2019 02:50:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 520C01674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574041851;
-	bh=1sRwWy5e7Pbb/wc5td2w13ncxB1iaPKu2EZ30K48yFU=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=oK/vLXm8G4R0LXJQ6/VBcLGjDgx1Kh5sx+LuLFmwxAi9pri8CcRLabPL7fhuzdZP/
-	 7IGE3AIbTQlomGgaqB/CkOAzW0TAiztt67f8cHr0uyWBqjDPcc+E1eKQBiDnBPad5g
-	 CNi2dVV+k85vEpsmQOxcFZNspZu7fU+tXZ1sFUbU=
+	s=default; t=1574041906;
+	bh=/mklp8pN9u9CdnsPp4Ew7uIg5Um7Uc80i7voxIEwijw=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=OCNqO28qTvUoNfq2xh/SHRw/Wjc3JjkiaJEqoWgpxcVis3/YrjYOCIVLNxyWtvkU3
+	 lpF9/QaCaoK+Wa9cypEO0AEF+VQ7REy7jUN/jf+tI6THtqgFdH/w1A/49f0z1BLA/B
+	 zRLlRd0+NdQk0gIjCXJZT5JutknWYTCQOfW6uXko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5758F80123;
-	Mon, 18 Nov 2019 02:50:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9773DF80137;
+	Mon, 18 Nov 2019 02:50:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8140F80131; Mon, 18 Nov 2019 02:49:58 +0100 (CET)
+ id 74314F80139; Mon, 18 Nov 2019 02:50:38 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9A55DF800F1
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 02:49:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A55DF800F1
-Date: 18 Nov 2019 10:49:49 +0900
-X-IronPort-AV: E=Sophos;i="5.68,318,1569250800"; d="scan'208";a="31720981"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 18 Nov 2019 10:49:49 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 28C9DF80137
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 02:50:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28C9DF80137
+Date: 18 Nov 2019 10:50:32 +0900
+X-IronPort-AV: E=Sophos;i="5.68,318,1569250800"; d="scan'208";a="31721095"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Nov 2019 10:50:32 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 02BF34001DA1;
- Mon, 18 Nov 2019 10:49:49 +0900 (JST)
-Message-ID: <87r226x8aq.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7F83F4113998;
+ Mon, 18 Nov 2019 10:50:32 +0900 (JST)
+Message-ID: <87pnhqx89j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87r226x8aq.wl-kuninori.morimoto.gx@renesas.com>
+References: <87r226x8aq.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 0/2] ASoC: fixup topology dai_link remove issue
+Subject: [alsa-devel] [PATCH 1/2] ASoC: soc-component: tidyup
+	snd_soc_pcm_component_new/free() parameter
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,31 +79,86 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
-Cc Pierre-Louis, Takashi-san
+This patch uses rtd instead of pcm at snd_soc_pcm_component_new/free()
+parameter.
+This is prepare for dai_link remove bug fix on topology.
 
-Currently, I'm focusing to ASoC cleanup / balance-up.
-But, it found more unbalance issue, and Intel noticed about it.
-These patches fix dai_link remove issue on topology.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/soc-component.h | 4 ++--
+ sound/soc/soc-component.c     | 8 +++-----
+ sound/soc/soc-pcm.c           | 4 ++--
+ 3 files changed, 7 insertions(+), 9 deletions(-)
 
-I want to get Acked-by or Reviewed-by from Takashi-san
-for 2) patch if possible.
-
-These are already tested by Intel CI, and all issues were solved.
-(https://github.com/thesofproject/linux/pull/1504)
-Extra Tested-by / Reviewed-by are very welcome from Intel
-
-Kuninori Morimoto (2):
-  1) ASoC: soc-component: tidyup snd_soc_pcm_component_new/free() parameter
-  2) ASoC: soc-pcm: remove soc_pcm_private_free()
-
- include/sound/soc-component.h |  4 ++--
- sound/soc/soc-component.c     |  8 +++-----
- sound/soc/soc-core.c          | 19 +++++++++++--------
- sound/soc/soc-pcm.c           | 12 +-----------
- 4 files changed, 17 insertions(+), 26 deletions(-)
-
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 6aa3ecb..f8fadf0 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -412,7 +412,7 @@ struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
+ 					unsigned long offset);
+ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
+ 			       struct vm_area_struct *vma);
+-int snd_soc_pcm_component_new(struct snd_pcm *pcm);
+-void snd_soc_pcm_component_free(struct snd_pcm *pcm);
++int snd_soc_pcm_component_new(struct snd_soc_pcm_runtime *rtd);
++void snd_soc_pcm_component_free(struct snd_soc_pcm_runtime *rtd);
+ 
+ #endif /* __SOC_COMPONENT_H */
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 98ef066..1590e80 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -498,9 +498,8 @@ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
+ 	return -EINVAL;
+ }
+ 
+-int snd_soc_pcm_component_new(struct snd_pcm *pcm)
++int snd_soc_pcm_component_new(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_component *component;
+ 	int ret;
+@@ -516,13 +515,12 @@ int snd_soc_pcm_component_new(struct snd_pcm *pcm)
+ 	return 0;
+ }
+ 
+-void snd_soc_pcm_component_free(struct snd_pcm *pcm)
++void snd_soc_pcm_component_free(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_component *component;
+ 
+ 	for_each_rtd_components(rtd, rtdcom, component)
+ 		if (component->driver->pcm_destruct)
+-			component->driver->pcm_destruct(component, pcm);
++			component->driver->pcm_destruct(component, rtd->pcm);
+ }
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 4bf71e3..c624d30 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2898,7 +2898,7 @@ static void soc_pcm_private_free(struct snd_pcm *pcm)
+ 
+ 	/* need to sync the delayed work before releasing resources */
+ 	flush_delayed_work(&rtd->delayed_work);
+-	snd_soc_pcm_component_free(pcm);
++	snd_soc_pcm_component_free(rtd);
+ }
+ 
+ /* create a new pcm */
+@@ -3036,7 +3036,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	if (capture)
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
+ 
+-	ret = snd_soc_pcm_component_new(pcm);
++	ret = snd_soc_pcm_component_new(rtd);
+ 	if (ret < 0) {
+ 		dev_err(rtd->dev, "ASoC: pcm constructor failed: %d\n", ret);
+ 		return ret;
 -- 
 2.7.4
 
