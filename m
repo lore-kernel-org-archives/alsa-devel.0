@@ -2,72 +2,88 @@ Return-Path: <SRS0=vuHx=ZK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D541BC432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 15:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEB2FC432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 15:46:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D030B2071B
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 15:13:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B729F20857
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 15:46:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MP2iP/Ls"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D030B2071B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZoAX62cl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B729F20857
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FC68167B;
-	Mon, 18 Nov 2019 16:12:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FC68167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E6F81674;
+	Mon, 18 Nov 2019 16:45:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E6F81674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574089988;
-	bh=/LDyArCimkIS2bjvFw6MEbrmf3b+9pBz9LMyr7KYmsY=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MP2iP/LscOO8XUmkn+aJfoMfUGJcWdVw+RlpQhlQhwJIAmeTJulqFl7NFgHGAFNim
-	 v/Fh3r80PC7uFs/XTx64KIwNfKkSQPN5a4n0oplPpmdmugzIusjPTWILvjQIqus+/x
-	 Rxz+43OANM+HIDx4JkrSWzCiy0oI2uYvi27zIi/0=
+	s=default; t=1574091978;
+	bh=mUWPSKvnaj7ulCZjMAbi5Qi3Ih4TRmrnniwckClTZHM=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZoAX62clQaWCWxHZJmwIC2E7ZioPX9PKDivzgtddDmIooFXNdkQQL/KvIMPMVcUH1
+	 sPKbBors1ow8YHANYr13AgrjD0OC+wBVLwqgOXJAG6MO0a+fBalMMfdgyKASw271vd
+	 3NpumuBQG5NfmjOeMhSc1/pnsBuH/6q+ZMEVyZ44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC6F3F800FF;
-	Mon, 18 Nov 2019 16:12:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB48AF8013D;
+	Mon, 18 Nov 2019 16:45:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC7AFF8013B; Mon, 18 Nov 2019 16:12:16 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id ED9FEF8013B; Mon, 18 Nov 2019 16:45:26 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04A64F800FF
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 16:12:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04A64F800FF
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28]
- helo=dude02.pengutronix.de.)
- by metis.ext.pengutronix.de with esmtp (Exim 4.92)
- (envelope-from <l.stach@pengutronix.de>)
- id 1iWihD-0008FH-TD; Mon, 18 Nov 2019 16:12:07 +0100
-From: Lucas Stach <l.stach@pengutronix.de>
-To: Mark Brown <broonie@kernel.org>
-Date: Mon, 18 Nov 2019 16:12:06 +0100
-Message-Id: <20191118151207.28576-1-l.stach@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 211F7F800F1
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 16:45:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 211F7F800F1
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 18 Nov 2019 07:45:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,320,1569308400"; d="scan'208";a="289292799"
+Received: from nmdeliwa-mobl1.amr.corp.intel.com (HELO [10.251.155.92])
+ ([10.251.155.92])
+ by orsmga001.jf.intel.com with ESMTP; 18 Nov 2019 07:45:18 -0800
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <87ftj23jph.wl-kuninori.morimoto.gx@renesas.com>
+ <877e4e3jni.wl-kuninori.morimoto.gx@renesas.com>
+ <8ed58ca1-0f9d-63e8-ba5d-28ee5209aee5@linux.intel.com>
+ <87pnhx8xjl.wl-kuninori.morimoto.gx@renesas.com>
+ <87o8xh8wyz.wl-kuninori.morimoto.gx@renesas.com>
+ <87mud18ukk.wl-kuninori.morimoto.gx@renesas.com>
+ <73feb970-bca5-b736-ce44-d44dacab02d1@linux.intel.com>
+ <20191112190326.GJ5195@sirena.co.uk>
+ <ce011d55-b1b2-7bd9-9de3-48fb616703f0@linux.intel.com>
+ <87lfsk4cit.wl-kuninori.morimoto.gx@renesas.com>
+ <3e4b8289-8e59-d8fe-635b-d55d2b20de5d@linux.intel.com>
+ <87a78zia3n.wl-kuninori.morimoto.gx@renesas.com>
+ <878soji808.wl-kuninori.morimoto.gx@renesas.com>
+ <28d2c726-2a6c-08c2-3393-21c88dcfb03e@linux.intel.com>
+ <87tv72xb6l.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <c268ae1a-985f-55a3-8952-d322e6bb8d10@linux.intel.com>
+Date: Mon, 18 Nov 2019 09:14:39 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- "Andrew F . Davis" <afd@ti.com>, Rob Herring <robh+dt@kernel.org>,
- kernel@pengutronix.de, patchwork-lst@pengutronix.de,
- Chris Healy <cphealy@gmail.com>
-Subject: [alsa-devel] [PATCH] ASoC: tlv320aic31xx: configure output
-	common-mode voltage
+In-Reply-To: <87tv72xb6l.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v3 06/19] ASoC: soc-core: add
+ soc_unbind_dai_link()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,141 +96,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The tlv320aic31xx devices allow to adjust the output common-mode voltage
-for best analog performance. The datasheet states that the common mode
-voltage should be set to be <= AVDD/2.
 
-This changes allows to configure the output common-mode voltage via a DT
-property. If the property is absent the voltage is automatically chosen
-as the highest voltage below/equal to AVDD/2.
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
----
- .../bindings/sound/tlv320aic31xx.txt          |  5 +++
- sound/soc/codecs/tlv320aic31xx.c              | 45 +++++++++++++++++++
- sound/soc/codecs/tlv320aic31xx.h              |  8 ++++
- 3 files changed, 58 insertions(+)
+On 11/17/19 6:47 PM, Kuninori Morimoto wrote:
+> 
+> Hi Pierre-Louis
+> 
+> Thank you for testing
+> 
+>>> But, these are just my guess.
+>>> It works for me, but I can't re-produce the issue.
+>>>
+>>> Below is the patch for "testing".
+>>
+>> Morimoto-san, I haven't fully tested the logic and all the long
+>> description, but the patch suggested seems to work on all the
+>> platforms I tested on - and actually improves things on
+>> Baytrail/Cherrytrail.
+>>
+>> I haven't seen any oopses in several hours now and no regression
+>> reported by Intel CI https://github.com/thesofproject/linux/pull/1504
+> 
+> Wow !! Nice to know !!
+> I'm very happy about that !!
+> 
+> OK, I will post the patch officially with your tested by.
+> 
+>> Let's see what others think or tested.
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-index 5b3c33bb99e5..e372303697dc 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-@@ -29,6 +29,11 @@ Optional properties:
-         3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
- 	If this node is not mentioned or if the value is unknown, then
- 	micbias	is set to 2.0V.
-+- ai31xx-ocmv - output common-mode voltage setting
-+        0 - 1.35V,
-+        1 - 1.5V,
-+        2 - 1.65V,
-+        3 - 1.8V
- 
- Deprecated properties:
- 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index df627a08def9..f6f19fdc72f5 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -171,6 +171,7 @@ struct aic31xx_priv {
- 	int rate_div_line;
- 	bool master_dapm_route_applied;
- 	int irq;
-+	u8 ocmv; /* output common-mode voltage */
- };
- 
- struct aic31xx_rate_divs {
-@@ -1312,6 +1313,11 @@ static int aic31xx_codec_probe(struct snd_soc_component *component)
- 	if (ret)
- 		return ret;
- 
-+	/* set output common-mode voltage */
-+	snd_soc_component_update_bits(component, AIC31XX_HPDRIVER,
-+				      AIC31XX_HPD_OCMV_MASK,
-+				      aic31xx->ocmv << AIC31XX_HPD_OCMV_SHIFT);
-+
- 	return 0;
- }
- 
-@@ -1501,6 +1507,43 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
- 		return IRQ_NONE;
- }
- 
-+static void aic31xx_configure_ocmv(struct aic31xx_priv *priv)
-+{
-+	struct device *dev = priv->dev;
-+	int dvdd, avdd;
-+	u32 value;
-+
-+	if (dev->fwnode &&
-+	    fwnode_property_read_u32(dev->fwnode, "ai31xx-ocmv", &value)) {
-+		/* OCMV setting is forced by DT */
-+		if (value <= 3) {
-+			priv->ocmv = value;
-+			return;
-+		}
-+	}
-+
-+	avdd = regulator_get_voltage(priv->supplies[3].consumer);
-+	dvdd = regulator_get_voltage(priv->supplies[5].consumer);
-+
-+	if (avdd > 3600000 || dvdd > 1950000) {
-+		dev_warn(dev,
-+			 "Too high supply voltage(s) AVDD: %d, DVDD: %d\n",
-+			 avdd, dvdd);
-+	} else if (avdd == 3600000 && dvdd == 1950000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_8V;
-+	} else if (avdd >= 3300000 && dvdd >= 1800000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_65V;
-+	} else if (avdd >= 3000000 && dvdd >= 1650000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_5V;
-+	} else if (avdd >= 2700000 && dvdd >= 1525000) {
-+		priv->ocmv = AIC31XX_HPD_OCMV_1_35V;
-+	} else {
-+		dev_warn(dev,
-+			 "Invalid supply voltage(s) AVDD: %d, DVDD: %d\n",
-+			 avdd, dvdd);
-+	}
-+}
-+
- static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
- {
-@@ -1570,6 +1613,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	aic31xx_configure_ocmv(aic31xx);
-+
- 	if (aic31xx->irq > 0) {
- 		regmap_update_bits(aic31xx->regmap, AIC31XX_GPIO1,
- 				   AIC31XX_GPIO1_FUNC_MASK,
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index cb024955c978..83a8c7604cc3 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -232,6 +232,14 @@ struct aic31xx_pdata {
- #define AIC31XX_HSD_HP			0x01
- #define AIC31XX_HSD_HS			0x03
- 
-+/* AIC31XX_HPDRIVER */
-+#define AIC31XX_HPD_OCMV_MASK		GENMASK(4, 3)
-+#define AIC31XX_HPD_OCMV_SHIFT		3
-+#define AIC31XX_HPD_OCMV_1_35V		0x0
-+#define AIC31XX_HPD_OCMV_1_5V		0x1
-+#define AIC31XX_HPD_OCMV_1_65V		0x2
-+#define AIC31XX_HPD_OCMV_1_8V		0x3
-+
- /* AIC31XX_MICBIAS */
- #define AIC31XX_MICBIAS_MASK		GENMASK(1, 0)
- #define AIC31XX_MICBIAS_SHIFT		0
--- 
-2.20.1
+the only issue we found in additional testing is that we need to insert 
+a ~20s delay after each of module insertion/removal sequences, or we get 
+stuck in at some point. That is a likely sign of delayed work not 
+properly canceled - it may however be a different topic altogether, I 
+saw the same sighting with my initial patch which reverted the "ASoC: 
+soc-core: add soc_unbind_dai_link()" patch.
 
+Others at Intel redid my tests and also found that the module 
+load/unload tests worked across the board on CI devices.
+
+from the Intel side we're good.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
