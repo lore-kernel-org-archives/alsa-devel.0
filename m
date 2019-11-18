@@ -2,72 +2,61 @@ Return-Path: <SRS0=vuHx=ZK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB955C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 20:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EDB0C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:52:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDD1C20708
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 20:41:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E85A218AE
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:52:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VXrZoX3m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDD1C20708
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mAue6IUF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E85A218AE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6527E166C;
-	Mon, 18 Nov 2019 21:40:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6527E166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C673C1692;
+	Mon, 18 Nov 2019 18:51:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C673C1692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574109690;
-	bh=V3Fll2NB56FYIAxuu+Ed+Q5pVE1xf8GXzbtu3MpZca0=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VXrZoX3mk3BEdCHx9c+Jw85XrZWnfFYN7vm11MM/v6j7pIcIZgwcw6wjVXhhPW713
-	 Z1DQ8l4FOLe4oJW/P+jUbCxc87cLN96Gc23O+usgZyeGT5DmjCqrZULm/fZPGSKUWG
-	 sGN0lAoQnvr61nE48xEyAZKd/9+afRYmZYW5pHxA=
+	s=default; t=1574099530;
+	bh=2uOixDNslEAkThuC3VusIciXrMGiKNWnKJ+OHNeOVaw=;
+	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=mAue6IUFGEWZZ5nnAz4Pz87jlaA5zS08lD9lhjv+wmO+cIQ51f6mG9MThBZnv/QVe
+	 yqhVEKIgGN+wAJjzpKN83wNQBmcdQkwxDHRYTmoaZM6d4x4DOferNTqISta0WHcXzk
+	 ajUwRtrxBU3EvjVDxE8MKfwgOfMyEYwS3Y4aSSKw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9328F80100;
-	Mon, 18 Nov 2019 21:40:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F444F8015D;
+	Mon, 18 Nov 2019 18:49:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48B23F8013B; Mon, 18 Nov 2019 21:40:38 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74074F800FF
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 21:40:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74074F800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2D5DFAF9F;
- Mon, 18 Nov 2019 20:40:34 +0000 (UTC)
-Date: Mon, 18 Nov 2019 21:40:33 +0100
-Message-ID: <s5hmucszzni.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-In-Reply-To: <CAFQqKeWPgPWpDgZUPvOqSFUY2Zq=8zW-=LhYimtg0S0Hqpc43A@mail.gmail.com>
-References: <20191117085308.23915-1-tiwai@suse.de>
- <20191117085308.23915-8-tiwai@suse.de>
- <3b407a02-b791-52a4-2335-e21d8ab732dd@linux.intel.com>
- <s5hy2wdyq3t.wl-tiwai@suse.de>
- <CAFQqKeWgqHwrCSSbLrkuCHkBww2g4dsBcF93SDN_ZK_-KSe5tg@mail.gmail.com>
- <s5hpnhpyng6.wl-tiwai@suse.de>
- <CAFQqKeWPgPWpDgZUPvOqSFUY2Zq=8zW-=LhYimtg0S0Hqpc43A@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 7/8] ALSA: pcm: Add card sync_irq field
+ id D10A1F8015E; Mon, 18 Nov 2019 18:48:59 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 93897F80157
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 18:48:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93897F80157
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2551EDA7;
+ Mon, 18 Nov 2019 09:48:55 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 886893F703;
+ Mon, 18 Nov 2019 09:48:54 -0800 (PST)
+Date: Mon, 18 Nov 2019 17:48:52 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: 
+Message-Id: 
+X-Patchwork-Hint: ignore
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: Fix build break" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,183 +69,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gTW9uLCAxOCBOb3YgMjAxOSAyMDo1NToxOSArMDEwMCwKU3JpZGhhcmFuLCBSYW5qYW5pIHdy
-b3RlOgo+IAo+ICAgICA+IFRoYW5rcyBmb3IgdGhlIGNsYXJpZmljYXRpb24sIFRha2FzaGkuIEJ1
-dCBqdXN0IHdvbmRlcmluZyBob3cgd291bGQgb25lCj4gICAgIHBhc3MKPiAgICAgPiBvbiB0aGUg
-c3luY19pcnEgd2hlbiB0aGUgc25kX2NhcmQgaXMgY3JlYXRlZD8gVHlwaWNhbGx5IGluIHRoZSBj
-YXNlIG9mCj4gICAgIHRoZQo+ICAgICA+IEludGVsIHBsYXRmb3JtcywgdGhlIGNhcmQtPmRldiBw
-b2ludHMgdG8gdGhlIHBsYXRmb3JtIGRldmljZSBmb3IgdGhlCj4gICAgIG1hY2hpbmUKPiAgICAg
-PiBkcml2ZXIgdGhhdCByZWdpc3RlcnMgdGhlIGNhcmQgYW5kIHRoZSBQQ0kgZGV2aWNlIGlzIHRo
-ZSBwYXJlbnQgb2YgdGhlCj4gICAgIG1hY2hpbmUKPiAgICAgPiBkcnYgcGxhdGZvcm0gZGV2aWNl
-LsKgCj4gICAgCj4gICAgIEl0J3MgY29tcGxldGVseSB1cCB0byB0aGUgZHJpdmVyIGltcGxlbWVu
-dGF0aW9uIDopCj4gICAgIFlvdSBjYW4gaW1wbGVtZW50IHRoZSBvd24gc3luY19zdG9wIG9wcyBp
-ZiB0aGF0J3MgZWFzaWVyLCB0b28uCj4gCj4gSSB0aGluayB0aGlzIHdvdWxkIG1ha2Ugc2Vuc2Ug
-aW4gdGhlIGNhc2Ugb2YgdGhlIFNPRiBkcml2ZXIgYW5kIHdlJ2QgcHJvYmFibHkKPiBuZWVkIHRv
-IGp1c3QgY2FsbCBzeW5jaHJvbml6ZV9pcnEoKSBpbiB0aGUgc3luY19zdG9wKCkgb3BlcmF0aW9u
-LiBXaXRoIHRoaXMKPiBjaGFuZ2UsIHdlIGNhbiBwcm9iYWJseSByZW1vdmUgdGhlIHdvcmthcm91
-bmQgd2UgaGF2ZSB0byBhZGRyZXNzIHRoZSBpc3N1ZSB3ZQo+IHdlcmUgZmFjaW5nIGR1cmluZyBz
-bmRfcGNtX3BlcmlvZF9lbGFwc2VkKCkuwqAKPiAKPiBJIGNhbiBnaXZlIHRoaXMgYSB0cnkuIFdl
-IG1pZ2h0IG5lZWQgdG8gcnVuIHNvbWUgc3RyZXNzIHRlc3RzIHRvIG1ha2Ugc3VyZSBpdAo+IGRv
-ZXNuJ3TCoGJyZWFrIGFueXRoaW5nLsKgCgpJZiB0aGlzIGhlbHBzIGZvciBTT0YsIGl0J2QgYmUg
-Z3JlYXQuICBJIGhhdmUgY29udmVydGVkIG9ubHkgbm9uLUFTb0MKZHJpdmVycyByZWdhcmRpbmcg
-dGhlIHN5bmMtc3RvcCBzdHVmZiwgc28gaXQgd29uJ3QgY29uZmxpY3QgbXkKdXBjb21pbmcgY2hh
-bmdlcyA6KQoKRldJVywgdGhlIHJlc3QgZGlmZiAocG9zdCB0b3BpYy9wY20tbWFuYWdlZCkgbG9v
-a3MgbGlrZToKCiAuLi4vZ3B1L2RybS9icmlkZ2Uvc3lub3BzeXMvZHctaGRtaS1haGItYXVkaW8u
-YyAgICB8ICAxIC0KIGRyaXZlcnMvbWVkaWEvcGNpL2NvYmFsdC9jb2JhbHQtYWxzYS1wY20uYyAg
-ICAgICAgIHwgIDggLS0tLS0KIGRyaXZlcnMvbWVkaWEvcGNpL2N4MTgvY3gxOC1hbHNhLXBjbS5j
-ICAgICAgICAgICAgIHwgMTMgLS0tLS0tLS0KIGRyaXZlcnMvbWVkaWEvcGNpL2N4MjM4ODUvY3gy
-Mzg4NS1hbHNhLmMgICAgICAgICAgIHwgIDEgLQogZHJpdmVycy9tZWRpYS9wY2kvY3gyNTgyMS9j
-eDI1ODIxLWFsc2EuYyAgICAgICAgICAgfCAgMSAtCiBkcml2ZXJzL21lZGlhL3BjaS9jeDg4L2N4
-ODgtYWxzYS5jICAgICAgICAgICAgICAgICB8ICAxIC0KIGRyaXZlcnMvbWVkaWEvcGNpL2l2dHYv
-aXZ0di1hbHNhLXBjbS5jICAgICAgICAgICAgIHwgMTMgLS0tLS0tLS0KIGRyaXZlcnMvbWVkaWEv
-cGNpL3NhYTcxMzQvc2FhNzEzNC1hbHNhLmMgICAgICAgICAgIHwgIDEgLQogZHJpdmVycy9tZWRp
-YS9wY2kvc29sbzZ4MTAvc29sbzZ4MTAtZzcyMy5jICAgICAgICAgfCAgMSAtCiBkcml2ZXJzL21l
-ZGlhL3BjaS90dzY4NngvdHc2ODZ4LWF1ZGlvLmMgICAgICAgICAgICB8ICAxIC0KIGRyaXZlcnMv
-bWVkaWEvdXNiL2N4MjMxeHgvY3gyMzF4eC1hdWRpby5jICAgICAgICAgIHwgIDEgLQogZHJpdmVy
-cy9tZWRpYS91c2IvZW0yOHh4L2VtMjh4eC1hdWRpby5jICAgICAgICAgICAgfCAgMSAtCiBkcml2
-ZXJzL21lZGlhL3VzYi9nbzcwMDcvc25kLWdvNzAwNy5jICAgICAgICAgICAgICB8ICAxIC0KIGRy
-aXZlcnMvbWVkaWEvdXNiL3RtNjAwMC90bTYwMDAtYWxzYS5jICAgICAgICAgICAgIHwgIDEgLQog
-ZHJpdmVycy9tZWRpYS91c2IvdXNidHYvdXNidHYtYXVkaW8uYyAgICAgICAgICAgICAgfCAgMSAt
-CiBkcml2ZXJzL3N0YWdpbmcvbW9zdC9zb3VuZC9zb3VuZC5jICAgICAgICAgICAgICAgICB8ICAx
-IC0KIC4uLi92YzA0X3NlcnZpY2VzL2JjbTI4MzUtYXVkaW8vYmNtMjgzNS1wY20uYyAgICAgIHwg
-IDIgLS0KIGRyaXZlcnMvdXNiL2dhZGdldC9mdW5jdGlvbi91X2F1ZGlvLmMgICAgICAgICAgICAg
-IHwgIDEgLQogaW5jbHVkZS9zb3VuZC9wY20uaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgMiAtLQogc291bmQvYW9hL3NvdW5kYnVzL2kyc2J1cy9wY20uYyAgICAgICAgICAgICAg
-ICAgICAgfCAgMiAtLQogc291bmQvYXJtL2FhY2kuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgMiAtLQogc291bmQvYXJtL3B4YTJ4eC1hYzk3LmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMSAtCiBzb3VuZC9hdG1lbC9hYzk3Yy5jICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICAyIC0tCiBzb3VuZC9jb3JlL3BjbV9sb2NhbC5oICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8ICAyICsrCiBzb3VuZC9jb3JlL3BjbV9tZW1vcnkuYyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8IDE2ICsrLS0tLS0tLQogc291bmQvZHJpdmVycy9hbG9vcC5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSAtCiBzb3VuZC9kcml2ZXJzL2R1bW15
-LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyIC0tCiBzb3VuZC9kcml2ZXJzL21s
-NDAzLWFjOTdjci5jICAgICAgICAgICAgICAgICAgICAgICB8ICAyIC0tCiBzb3VuZC9kcml2ZXJz
-L3Bjc3AvcGNzcF9saWIuYyAgICAgICAgICAgICAgICAgICAgICB8ICAxIC0KIHNvdW5kL2RyaXZl
-cnMvdngvdnhfcGNtLmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgLS0KIHNvdW5kL2Zp
-cmV3aXJlL2JlYm9iL2JlYm9iX3BjbS5jICAgICAgICAgICAgICAgICAgIHwgIDIgLS0KIHNvdW5k
-L2ZpcmV3aXJlL2RpY2UvZGljZS1wY20uYyAgICAgICAgICAgICAgICAgICAgIHwgIDIgLS0KIHNv
-dW5kL2ZpcmV3aXJlL2RpZ2kwMHgvZGlnaTAweC1wY20uYyAgICAgICAgICAgICAgIHwgIDIgLS0K
-IHNvdW5kL2ZpcmV3aXJlL2ZpcmVmYWNlL2ZmLXBjbS5jICAgICAgICAgICAgICAgICAgIHwgIDIg
-LS0KIHNvdW5kL2ZpcmV3aXJlL2ZpcmV3b3Jrcy9maXJld29ya3NfcGNtLmMgICAgICAgICAgIHwg
-IDIgLS0KIHNvdW5kL2ZpcmV3aXJlL2lzaWdodC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDEgLQogc291bmQvZmlyZXdpcmUvbW90dS9tb3R1LXBjbS5jICAgICAgICAgICAgICAgICAg
-ICAgfCAgMiAtLQogc291bmQvZmlyZXdpcmUvb3hmdy9veGZ3LXBjbS5jICAgICAgICAgICAgICAg
-ICAgICAgfCAgMiAtLQogc291bmQvZmlyZXdpcmUvdGFzY2FtL3Rhc2NhbS1wY20uYyAgICAgICAg
-ICAgICAgICAgfCAgMiAtLQogc291bmQvaXNhL2FkMTgxNmEvYWQxODE2YV9saWIuYyAgICAgICAg
-ICAgICAgICAgICAgfCAgMyArLQogc291bmQvaXNhL2VzMTY4OC9lczE2ODhfbGliLmMgICAgICAg
-ICAgICAgICAgICAgICAgfCAgOSArLS0tLQogc291bmQvaXNhL2VzMTh4eC5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfCAgMyArLQogc291bmQvaXNhL2d1cy9ndXNfbWFpbi5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSArCiBzb3VuZC9pc2EvZ3VzL2d1c19wY20uYyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyIC0tCiBzb3VuZC9pc2EvZ3VzL2d1c21heC5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAzICstCiBzb3VuZC9pc2EvZ3VzL2ludGVy
-d2F2ZS5jICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxICsKIHNvdW5kL2lzYS9tc25kL21z
-bmQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgLS0KIHNvdW5kL2lzYS9tc25k
-L21zbmRfcGlubmFjbGUuYyAgICAgICAgICAgICAgICAgICAgIHwgIDEgKwogc291bmQvaXNhL29w
-bDNzYTIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSArCiBzb3VuZC9pc2Ev
-b3B0aTl4eC9vcHRpOTJ4LWFkMTg0OC5jICAgICAgICAgICAgICAgICB8ICAxICsKIHNvdW5kL2lz
-YS9zYi9lbXU4MDAwX3BjbS5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEgLQogc291bmQv
-aXNhL3NiL3NiMTZfbWFpbi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiAtLQogc291
-bmQvaXNhL3NiL3NiOF9tYWluLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiAtLQog
-c291bmQvaXNhL3NiL3NiX2NvbW1vbi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSAr
-CiBzb3VuZC9pc2Evd2F2ZWZyb250L3dhdmVmcm9udC5jICAgICAgICAgICAgICAgICAgICB8ICAx
-ICsKIHNvdW5kL2lzYS93c3Mvd3NzX2xpYi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
-IDMgKy0KIHNvdW5kL21pcHMvaGFsMi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgLS0KIHNvdW5kL21pcHMvc2dpbzJhdWRpby5jICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDMgLS0KIHNvdW5kL3BhcmlzYy9oYXJtb255LmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDIgLS0KIHNvdW5kL3BjaS9hZDE4ODkuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgIDQgKy0tCiBzb3VuZC9wY2kvYWxpNTQ1MS9hbGk1NDUxLmMgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICA3ICstLS0KIHNvdW5kL3BjaS9hbHMzMDAuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDQgKy0tCiBzb3VuZC9wY2kvYWxzNDAwMC5jICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAyIC0tCiBzb3VuZC9wY2kvYXNpaHBpL2FzaWhwaS5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8IDE3IC0tLS0tLS0tLS0KIHNvdW5kL3BjaS9hdGlp
-eHAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDUgKy0tCiBzb3VuZC9wY2kv
-YXRpaXhwX21vZGVtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstLQogc291bmQv
-cGNpL2F1ODh4MC9hdTg4eDAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSArCiBzb3Vu
-ZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYyAgICAgICAgICAgICAgICAgICAgICB8ICAxIC0KIHNv
-dW5kL3BjaS9hdzIvYXcyLWFsc2EuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDMgKy0K
-IHNvdW5kL3BjaS9henQzMzI4LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDUg
-Ky0tCiBzb3VuZC9wY2kvYnQ4N3guYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAzICstCiBzb3VuZC9wY2kvY2EwMTA2L2NhMDEwNl9tYWluLmMgICAgICAgICAgICAgICAgICAg
-ICB8ICA5ICstLS0tCiBzb3VuZC9wY2kvY21pcGNpLmMgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICA2ICstLS0KIHNvdW5kL3BjaS9jczQyODEuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgIDcgKy0tLQogc291bmQvcGNpL2NzNDZ4eC9jczQ2eHhfbGliLmMgICAg
-ICAgICAgICAgICAgICAgICAgfCAxMSArLS0tLS0KIHNvdW5kL3BjaS9jczU1MzVhdWRpby9jczU1
-MzVhdWRpby5jICAgICAgICAgICAgICAgIHwgIDIgKy0KIHNvdW5kL3BjaS9jczU1MzVhdWRpby9j
-czU1MzVhdWRpb19wY20uYyAgICAgICAgICAgIHwgIDIgLS0KIHNvdW5kL3BjaS9jdHhmaS9jdGh3
-MjBrMS5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0tCiBzb3VuZC9wY2kvY3R4Zmkv
-Y3RodzIwazIuYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxICsKIHNvdW5kL3BjaS9jdHhm
-aS9jdHBjbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgLS0KIHNvdW5kL3BjaS9l
-Y2hvYXVkaW8vZWNob2F1ZGlvLmMgICAgICAgICAgICAgICAgICAgIHwgIDcgKystLQogc291bmQv
-cGNpL2VtdTEwazEvZW11MTBrMV9tYWluLmMgICAgICAgICAgICAgICAgICAgfCAgMSArCiBzb3Vu
-ZC9wY2kvZW11MTBrMS9lbXUxMGsxeC5jICAgICAgICAgICAgICAgICAgICAgICB8ICAzICstCiBz
-b3VuZC9wY2kvZW11MTBrMS9lbXVwY20uYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICA2IC0t
-LS0KIHNvdW5kL3BjaS9lbXUxMGsxL3AxNnYuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
-IDIgLS0KIHNvdW5kL3BjaS9lbnMxMzcwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDcgKy0tLQogc291bmQvcGNpL2VzMTkzOC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgNSArLS0KIHNvdW5kL3BjaS9lczE5NjguYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgIDQgLS0tCiBzb3VuZC9wY2kvZm04MDEuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICAzICstCiBzb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMgICAg
-ICAgICAgICAgICAgICAgICB8ICAxIC0KIHNvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDQgKystCiBzb3VuZC9wY2kvaGRhL2hkYV90ZWdyYS5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstLQogc291bmQvcGNpL2ljZTE3MTIvaWNlMTcx
-Mi5jICAgICAgICAgICAgICAgICAgICAgICAgfCAgNyArLS0tCiBzb3VuZC9wY2kvaWNlMTcxMi9p
-Y2UxNzI0LmMgICAgICAgICAgICAgICAgICAgICAgICB8ICA3ICstLS0KIHNvdW5kL3BjaS9pbnRl
-bDh4MC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTYgKystLS0tLS0tCiBzb3Vu
-ZC9wY2kvaW50ZWw4eDBtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA1ICstLQog
-c291bmQvcGNpL2tvcmcxMjEyL2tvcmcxMjEyLmMgICAgICAgICAgICAgICAgICAgICAgfCAgMSAr
-CiBzb3VuZC9wY2kvbG9sYS9sb2xhLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAy
-ICstCiBzb3VuZC9wY2kvbG9sYS9sb2xhX3BjbS5jICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAxIC0KIHNvdW5kL3BjaS9seDY0NjRlcy9seDY0NjRlcy5jICAgICAgICAgICAgICAgICAgICAg
-IHwgIDMgKy0KIHNvdW5kL3BjaS9tYWVzdHJvMy5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDMgKy0KIHNvdW5kL3BjaS9taXhhcnQvbWl4YXJ0LmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDMgKy0KIHNvdW5kL3BjaS9ubTI1Ni9ubTI1Ni5jICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgIDQgKy0tCiBzb3VuZC9wY2kvb3h5Z2VuL294eWdlbl9saWIuYyAgICAgICAg
-ICAgICAgICAgICAgICB8ICAyICstCiBzb3VuZC9wY2kvb3h5Z2VuL294eWdlbl9wY20uYyAgICAg
-ICAgICAgICAgICAgICAgICB8ICA2IC0tLS0KIHNvdW5kL3BjaS9wY3hoci9wY3hoci5jICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIHNvdW5kL3BjaS9yaXB0aWRlL3JpcHRpZGUu
-YyAgICAgICAgICAgICAgICAgICAgICAgIHwgIDMgKy0KIHNvdW5kL3BjaS9ybWUzMi5jICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDkgKy0tLS0KIHNvdW5kL3BjaS9ybWU5Ni5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDUgKy0tCiBzb3VuZC9wY2kvcm1l
-OTY1Mi9oZHNwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxICsKIHNvdW5kL3BjaS9y
-bWU5NjUyL2hkc3BtLmMgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEgKwogc291bmQvcGNp
-L3JtZTk2NTIvcm1lOTY1Mi5jICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSArCiBzb3VuZC9w
-Y2kvc2lzNzAxOS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAzICstCiBzb3Vu
-ZC9wY2kvc29uaWN2aWJlcy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAzICstCiBz
-b3VuZC9wY2kvdHJpZGVudC90cmlkZW50X21haW4uYyAgICAgICAgICAgICAgICAgICB8IDMyICst
-LS0tLS0tLS0tLS0tLS0tLQogc291bmQvcGNpL3ZpYTgyeHguYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgOCArLS0tLQogc291bmQvcGNpL3ZpYTgyeHhfbW9kZW0uYyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgfCAgNSArLS0KIHNvdW5kL3BjaS92eDIyMi92eDIyMi5jICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgIDEgKwogc291bmQvcGNpL3ltZnBjaS95bWZwY2lfbWFp
-bi5jICAgICAgICAgICAgICAgICAgICAgfCAgNiArLS0tCiBzb3VuZC9wY21jaWEvcGRhdWRpb2Nm
-L3BkYXVkaW9jZi5jICAgICAgICAgICAgICAgICB8ICAxICsKIHNvdW5kL3BjbWNpYS9wZGF1ZGlv
-Y2YvcGRhdWRpb2NmX3BjbS5jICAgICAgICAgICAgIHwgIDEgLQogc291bmQvcGNtY2lhL3Z4L3Z4
-cG9ja2V0LmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSArCiBzb3VuZC9wcGMvcG1hYy5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyIC0tCiBzb3VuZC9wcGMvc25k
-X3BzMy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxIC0KIHNvdW5kL3NoL2Fp
-Y2EuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEgLQogc291bmQvc2gv
-c2hfZGFjX2F1ZGlvLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSAtCiBzb3VuZC9z
-cGFyYy9hbWQ3OTMwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyIC0tCiBzb3Vu
-ZC9zcGFyYy9jczQyMzEuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyIC0tCiBz
-b3VuZC9zcGFyYy9kYnJpLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxIC0K
-IHNvdW5kL3NwaS9hdDczYzIxMy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEg
-LQogc291bmQvdXNiLzZmaXJlL3BjbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-MSAtCiBzb3VuZC91c2IvY2FpYXEvYXVkaW8uYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAxIC0KIHNvdW5kL3VzYi9oaWZhY2UvcGNtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDEgLQogc291bmQvdXNiL2xpbmU2L2NhcHR1cmUuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgMSAtCiBzb3VuZC91c2IvbGluZTYvcGxheWJhY2suYyAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAxIC0KIHNvdW5kL3VzYi9taXNjL3VhMTAxLmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDIgLS0KIHNvdW5kL3VzYi9wY20uYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgMzkgKysrKysrKysrKysrKystLS0tLS0tLQogc291bmQvdXNiL3VzeDJ5L3Vz
-YnVzeDJ5YXVkaW8uYyAgICAgICAgICAgICAgICAgICAgfCAgMSAtCiBzb3VuZC91c2IvdXN4Mnkv
-dXN4Mnlod2RlcHBjbS5jICAgICAgICAgICAgICAgICAgICB8ICAxIC0KIHNvdW5kL3g4Ni9pbnRl
-bF9oZG1pX2F1ZGlvLmMgICAgICAgICAgICAgICAgICAgICAgIHwgIDEgLQogc291bmQveGVuL3hl
-bl9zbmRfZnJvbnRfYWxzYS5jICAgICAgICAgICAgICAgICAgICAgfCAgMiAtLQogMTQxIGZpbGVz
-IGNoYW5nZWQsIDEwNCBpbnNlcnRpb25zKCspLCAzOTQgZGVsZXRpb25zKC0pCgoKVGFrYXNoaQpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The patch
+
+   ASoC: SOF: Intel: Fix build break
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 302ee055af0201e61be7670f957c1622d6ce176e Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@kernel.org>
+Date: Mon, 18 Nov 2019 15:52:47 +0000
+Subject: [PATCH] ASoC: SOF: Intel: Fix build break
+
+Commit 130d3e9077 (Fix CFL and CML FW nocodec binary names.) broke the
+build in some configurations as it depends on changes in the development
+branch, revert it.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sof/sof-pci-dev.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 2ef927371b23..d66412a77873 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -113,7 +113,7 @@ static const struct sof_dev_desc cnl_desc = {
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
+ static const struct sof_dev_desc cfl_desc = {
+-	.machines		= snd_soc_acpi_intel_cfl_machines,
++	.machines		= snd_soc_acpi_intel_cnl_machines,
+ 	.resindex_lpe_base	= 0,
+ 	.resindex_pcicfg_base	= -1,
+ 	.resindex_imr_base	= -1,
+@@ -122,7 +122,7 @@ static const struct sof_dev_desc cfl_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
+-	.nocodec_fw_filename = "sof-cfl.ri",
++	.nocodec_fw_filename = "sof-cnl.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+ 	.arch_ops = &sof_xtensa_arch_ops
+@@ -133,7 +133,7 @@ static const struct sof_dev_desc cfl_desc = {
+ 	IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
+ 
+ static const struct sof_dev_desc cml_desc = {
+-	.machines		= snd_soc_acpi_intel_cml_machines,
++	.machines		= snd_soc_acpi_intel_cnl_machines,
+ 	.resindex_lpe_base	= 0,
+ 	.resindex_pcicfg_base	= -1,
+ 	.resindex_imr_base	= -1,
+@@ -142,7 +142,7 @@ static const struct sof_dev_desc cml_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
+-	.nocodec_fw_filename = "sof-cml.ri",
++	.nocodec_fw_filename = "sof-cnl.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+ 	.arch_ops = &sof_xtensa_arch_ops
+-- 
+2.20.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
