@@ -2,87 +2,79 @@ Return-Path: <SRS0=vuHx=ZK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-13.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41EE3C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 21:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B1F7C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 22:45:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39FD92230E
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 21:33:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 951CE222EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 22:45:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NZ8cQPdJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39FD92230E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tWSkKcMW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="CPy6vReg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 951CE222EF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6D131679;
-	Mon, 18 Nov 2019 22:33:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6D131679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A910167C;
+	Mon, 18 Nov 2019 23:44:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A910167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574112835;
-	bh=J1akQbqBWSAGkOFXvl7L6wHFcCwnxtWn+KAV7ld4Ub0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1574117108;
+	bh=DwrBGyLutqm9hLR8U6J9or/+8wT9H2RSksIf1pXDCFQ=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NZ8cQPdJajzbK4o7b7TnIZy43r3wftVsU8kJTt54BCaAFJuQP1W2WpNb/Fu1cOE2x
-	 SF7C7Vu+LDQ3cSvlwTuHkz37otqTDUCCY/Q1ySXMLil3jbM9fPU0LTE0mdbWg4+H8G
-	 JxWOVfzVUbJmj3+Ze5FYM3Jm4nGjYfLFKm6C0i5w=
+	b=tWSkKcMW8B5w9in1y0TdpYirz4NKiHwC8xCNazhu3BgsKWWIZTZ+3Lm01AfmqYm0D
+	 RdsQGK6nyOtUPl8a2lzwG2eifihoWJPzuJA+z78A2tSpvv/7B6kr5GsaAoJLrf2Udt
+	 nNZwokjf7GVCd2SEAbhaS9be/wWPjueAZXaoMXmc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48ACEF80100;
-	Mon, 18 Nov 2019 22:33:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2852F800FF;
+	Mon, 18 Nov 2019 23:44:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D596F8013B; Mon, 18 Nov 2019 22:33:03 +0100 (CET)
-Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
- [209.85.167.193])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 91062F8013B; Mon, 18 Nov 2019 23:44:16 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A3BEF800F1
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 22:32:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A3BEF800F1
-Received: by mail-oi1-f193.google.com with SMTP id l20so16760444oie.10
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 13:32:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=+gNao6bjSYC1WxI91s+ikl6/okUQ4D7/7Wn4Hq9wK5g=;
- b=GO4rXBhwAQZBQol7lFe+MXucWydPZgHN1l/ToJl47XjDStV0l18cPH3xfAEp4SMyzl
- hed3WgW2eoHerFEIpFlJ3mQB+hRHXsBE+R9kSpY5oL8fujUhUjA5hlSTxd2ecCf+Dmce
- HOxZ8m+5oiLEJKql5n23TuYj/kV0/0qWULAJ75ZjHc8Kmd3efcLJKAbcwZDTKYE2IaHp
- MrF/h22Gc6ohQO6gh7gI3ldgwxY9V6HXqnTkWvvUGqavnBanMVu/lv0CjEqATayK23ZP
- V4T8ngo3gewUZYn1uwg17n3EO6bLG1cz7PDQw0wAPYUbBO9k/qDTNIu8hEk6hxMh3yMa
- xoxA==
-X-Gm-Message-State: APjAAAUnlKdrtaCtaaQFfzheijwypMNT7t9fpn+Ik+aog4cr7SI2Nfqb
- SA/PbgBBx6nrSfaQ34n0AQ==
-X-Google-Smtp-Source: APXvYqx1RtTBrYQED9QhIjvirrPV/a4JBKzhJx9hGC6wh4UxphAZLwpmJqsB1gKcOe+gKsus8SwRxw==
-X-Received: by 2002:aca:d610:: with SMTP id n16mr955357oig.64.1574112778145;
- Mon, 18 Nov 2019 13:32:58 -0800 (PST)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id b12sm6586756otl.34.2019.11.18.13.32.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 18 Nov 2019 13:32:57 -0800 (PST)
-Date: Mon, 18 Nov 2019 15:32:56 -0600
-From: Rob Herring <robh@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <20191118213256.GA27262@bogus>
-References: <20191113124734.27984-1-peter.ujfalusi@ti.com>
- <20191113124734.27984-2-peter.ujfalusi@ti.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A195F800FF
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 23:44:11 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 6BB89A003F;
+ Mon, 18 Nov 2019 23:44:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 6BB89A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1574117051; bh=9+t1CYqxrPEcDIUQMWqAvvJJaUzBRdpRf666XjXD5d4=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=CPy6vReg3fH0Cuv8D/Kcj7qKem2tvOAFszqNwGLWolurBf3akGe4Rwg4YAeO7h7TR
+ dFl/mJe/ACDgxsBPkNqeWR5+Fs20USy2KTGFOr3dpGKgrwlXBLchKpccPV4K/1eKIw
+ XSnjOOE1AfHy6U+NAhztIfF9bATO/fFXLawek3pE=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon, 18 Nov 2019 23:44:06 +0100 (CET)
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20191104224812.3393-1-ranjani.sridharan@linux.intel.com>
+ <20191104224812.3393-3-ranjani.sridharan@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <a87bce63-0413-d475-9b3c-19aa0f803232@perex.cz>
+Date: Mon, 18 Nov 2019 23:44:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191113124734.27984-2-peter.ujfalusi@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, linus.walleij@linaro.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH 1/2] bindings: sound: pcm3168a: Document
-	optional RST gpio
+In-Reply-To: <20191104224812.3393-3-ranjani.sridharan@linux.intel.com>
+Content-Language: en-US
+Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+Subject: Re: [alsa-devel] [PATCH v2 2/2] ASoC: SOF: topology: set trigger
+ order for FE DAI link
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,55 +87,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 13, 2019 at 02:47:33PM +0200, Peter Ujfalusi wrote:
-> On boards where the RST line is not pulled up, but it is connected to a
-> GPIO line this property must present in order to be able to enable the
-> codec.
+Dne 04. 11. 19 v 23:48 Ranjani Sridharan napsal(a):
+> Set trigger order for FE DAI links to SND_SOC_DPCM_TRIGGER_POST
+> to trigger the BE DAI's before the FE DAI's. This prevents the
+> xruns seen on playback pipelines using the link DMA.
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  Documentation/devicetree/bindings/sound/ti,pcm3168a.txt | 7 +++++++
->  1 file changed, 7 insertions(+)
+>   sound/soc/sof/topology.c | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt b/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
-> index 5d9cb84c661d..f30aebc7603a 100644
-> --- a/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
-> +++ b/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
-> @@ -25,6 +25,12 @@ Required properties:
->  
->  For required properties on SPI/I2C, consult SPI/I2C device tree documentation
->  
-> +Optional properties:
+> diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+> index e0e2ae734632..e7076692119b 100644
+> --- a/sound/soc/sof/topology.c
+> +++ b/sound/soc/sof/topology.c
+> @@ -2951,6 +2951,10 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
+>   	if (!link->no_pcm) {
+>   		link->nonatomic = true;
+>   
+> +		/* set trigger order */
+> +		link->trigger[0] = SND_SOC_DPCM_TRIGGER_POST;
+> +		link->trigger[1] = SND_SOC_DPCM_TRIGGER_POST;
 > +
-> +  - rst-gpios : Optional RST gpio line for the codec
-> +		RST = low: device power-down
-> +		RST = high: device is enabled
-
-'reset-gpios' is the standard naming for reset lines.
-
-> +
->  Examples:
->  
->  i2c0: i2c0@0 {
-> @@ -34,6 +40,7 @@ i2c0: i2c0@0 {
->  	pcm3168a: audio-codec@44 {
->  		compatible = "ti,pcm3168a";
->  		reg = <0x44>;
-> +		rst-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
->  		clocks = <&clk_core CLK_AUDIO>;
->  		clock-names = "scki";
->  		VDD1-supply = <&supply3v3>;
-> -- 
-> Peter
+>   		/* nothing more to do for FE dai links */
+>   		return 0;
+>   	}
 > 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-> 
+
+It seems that this patch breaks the signed 1.3 firmware. Tested on Lenovo 
+Carbon X1 7th gen.
+
+https://github.com/thesofproject/sof/issues/2102
+
+					Jaroslav
+
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
