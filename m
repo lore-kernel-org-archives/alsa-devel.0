@@ -2,61 +2,87 @@ Return-Path: <SRS0=vuHx=ZK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EDB0C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:52:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41EE3C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 21:33:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8E85A218AE
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:52:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 39FD92230E
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 21:33:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mAue6IUF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E85A218AE
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NZ8cQPdJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39FD92230E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C673C1692;
-	Mon, 18 Nov 2019 18:51:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C673C1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6D131679;
+	Mon, 18 Nov 2019 22:33:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6D131679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574099530;
-	bh=2uOixDNslEAkThuC3VusIciXrMGiKNWnKJ+OHNeOVaw=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=mAue6IUFGEWZZ5nnAz4Pz87jlaA5zS08lD9lhjv+wmO+cIQ51f6mG9MThBZnv/QVe
-	 yqhVEKIgGN+wAJjzpKN83wNQBmcdQkwxDHRYTmoaZM6d4x4DOferNTqISta0WHcXzk
-	 ajUwRtrxBU3EvjVDxE8MKfwgOfMyEYwS3Y4aSSKw=
+	s=default; t=1574112835;
+	bh=J1akQbqBWSAGkOFXvl7L6wHFcCwnxtWn+KAV7ld4Ub0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NZ8cQPdJajzbK4o7b7TnIZy43r3wftVsU8kJTt54BCaAFJuQP1W2WpNb/Fu1cOE2x
+	 SF7C7Vu+LDQ3cSvlwTuHkz37otqTDUCCY/Q1ySXMLil3jbM9fPU0LTE0mdbWg4+H8G
+	 JxWOVfzVUbJmj3+Ze5FYM3Jm4nGjYfLFKm6C0i5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F444F8015D;
-	Mon, 18 Nov 2019 18:49:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48ACEF80100;
+	Mon, 18 Nov 2019 22:33:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D10A1F8015E; Mon, 18 Nov 2019 18:48:59 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 93897F80157
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 18:48:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93897F80157
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2551EDA7;
- Mon, 18 Nov 2019 09:48:55 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 886893F703;
- Mon, 18 Nov 2019 09:48:54 -0800 (PST)
-Date: Mon, 18 Nov 2019 17:48:52 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: 
-Message-Id: 
-X-Patchwork-Hint: ignore
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: Fix build break" to the
-	asoc tree
+ id 9D596F8013B; Mon, 18 Nov 2019 22:33:03 +0100 (CET)
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com
+ [209.85.167.193])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A3BEF800F1
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 22:32:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A3BEF800F1
+Received: by mail-oi1-f193.google.com with SMTP id l20so16760444oie.10
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 13:32:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=+gNao6bjSYC1WxI91s+ikl6/okUQ4D7/7Wn4Hq9wK5g=;
+ b=GO4rXBhwAQZBQol7lFe+MXucWydPZgHN1l/ToJl47XjDStV0l18cPH3xfAEp4SMyzl
+ hed3WgW2eoHerFEIpFlJ3mQB+hRHXsBE+R9kSpY5oL8fujUhUjA5hlSTxd2ecCf+Dmce
+ HOxZ8m+5oiLEJKql5n23TuYj/kV0/0qWULAJ75ZjHc8Kmd3efcLJKAbcwZDTKYE2IaHp
+ MrF/h22Gc6ohQO6gh7gI3ldgwxY9V6HXqnTkWvvUGqavnBanMVu/lv0CjEqATayK23ZP
+ V4T8ngo3gewUZYn1uwg17n3EO6bLG1cz7PDQw0wAPYUbBO9k/qDTNIu8hEk6hxMh3yMa
+ xoxA==
+X-Gm-Message-State: APjAAAUnlKdrtaCtaaQFfzheijwypMNT7t9fpn+Ik+aog4cr7SI2Nfqb
+ SA/PbgBBx6nrSfaQ34n0AQ==
+X-Google-Smtp-Source: APXvYqx1RtTBrYQED9QhIjvirrPV/a4JBKzhJx9hGC6wh4UxphAZLwpmJqsB1gKcOe+gKsus8SwRxw==
+X-Received: by 2002:aca:d610:: with SMTP id n16mr955357oig.64.1574112778145;
+ Mon, 18 Nov 2019 13:32:58 -0800 (PST)
+Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id b12sm6586756otl.34.2019.11.18.13.32.57
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 18 Nov 2019 13:32:57 -0800 (PST)
+Date: Mon, 18 Nov 2019 15:32:56 -0600
+From: Rob Herring <robh@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <20191118213256.GA27262@bogus>
+References: <20191113124734.27984-1-peter.ujfalusi@ti.com>
+ <20191113124734.27984-2-peter.ujfalusi@ti.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191113124734.27984-2-peter.ujfalusi@ti.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, linus.walleij@linaro.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org
+Subject: Re: [alsa-devel] [PATCH 1/2] bindings: sound: pcm3168a: Document
+	optional RST gpio
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,97 +95,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Wed, Nov 13, 2019 at 02:47:33PM +0200, Peter Ujfalusi wrote:
+> On boards where the RST line is not pulled up, but it is connected to a
+> GPIO line this property must present in order to be able to enable the
+> codec.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  Documentation/devicetree/bindings/sound/ti,pcm3168a.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt b/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
+> index 5d9cb84c661d..f30aebc7603a 100644
+> --- a/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
+> +++ b/Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
+> @@ -25,6 +25,12 @@ Required properties:
+>  
+>  For required properties on SPI/I2C, consult SPI/I2C device tree documentation
+>  
+> +Optional properties:
+> +
+> +  - rst-gpios : Optional RST gpio line for the codec
+> +		RST = low: device power-down
+> +		RST = high: device is enabled
 
-   ASoC: SOF: Intel: Fix build break
+'reset-gpios' is the standard naming for reset lines.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 302ee055af0201e61be7670f957c1622d6ce176e Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 18 Nov 2019 15:52:47 +0000
-Subject: [PATCH] ASoC: SOF: Intel: Fix build break
-
-Commit 130d3e9077 (Fix CFL and CML FW nocodec binary names.) broke the
-build in some configurations as it depends on changes in the development
-branch, revert it.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/sof-pci-dev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 2ef927371b23..d66412a77873 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -113,7 +113,7 @@ static const struct sof_dev_desc cnl_desc = {
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
- static const struct sof_dev_desc cfl_desc = {
--	.machines		= snd_soc_acpi_intel_cfl_machines,
-+	.machines		= snd_soc_acpi_intel_cnl_machines,
- 	.resindex_lpe_base	= 0,
- 	.resindex_pcicfg_base	= -1,
- 	.resindex_imr_base	= -1,
-@@ -122,7 +122,7 @@ static const struct sof_dev_desc cfl_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
--	.nocodec_fw_filename = "sof-cfl.ri",
-+	.nocodec_fw_filename = "sof-cnl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
- 	.arch_ops = &sof_xtensa_arch_ops
-@@ -133,7 +133,7 @@ static const struct sof_dev_desc cfl_desc = {
- 	IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
- 
- static const struct sof_dev_desc cml_desc = {
--	.machines		= snd_soc_acpi_intel_cml_machines,
-+	.machines		= snd_soc_acpi_intel_cnl_machines,
- 	.resindex_lpe_base	= 0,
- 	.resindex_pcicfg_base	= -1,
- 	.resindex_imr_base	= -1,
-@@ -142,7 +142,7 @@ static const struct sof_dev_desc cml_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
--	.nocodec_fw_filename = "sof-cml.ri",
-+	.nocodec_fw_filename = "sof-cnl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
- 	.arch_ops = &sof_xtensa_arch_ops
--- 
-2.20.1
-
+> +
+>  Examples:
+>  
+>  i2c0: i2c0@0 {
+> @@ -34,6 +40,7 @@ i2c0: i2c0@0 {
+>  	pcm3168a: audio-codec@44 {
+>  		compatible = "ti,pcm3168a";
+>  		reg = <0x44>;
+> +		rst-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+>  		clocks = <&clk_core CLK_AUDIO>;
+>  		clock-names = "scki";
+>  		VDD1-supply = <&supply3v3>;
+> -- 
+> Peter
+> 
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
