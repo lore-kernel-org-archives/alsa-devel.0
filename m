@@ -7,58 +7,60 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C357BC432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07EE9C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:50:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2BE22192B
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:49:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8B0B42192B
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Nov 2019 17:50:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VQYyAQVH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2BE22192B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DyE1fwgy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B0B42192B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FD9D1679;
-	Mon, 18 Nov 2019 18:48:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FD9D1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82FF2168C;
+	Mon, 18 Nov 2019 18:49:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82FF2168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574099379;
-	bh=BECzElPItFCor9H7wZoaflfbY7DhUWbXMd9ruVybO3k=;
+	s=default; t=1574099434;
+	bh=fhYYcOypPYW2C89bJGiacVFPhFqPJ/JPjNSwP3Qgc2o=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=VQYyAQVHvEVRdmtXjH0vT5YDeDLyqGj+jcla+r3OOn63/TdFyjXRNdz7T46hjvfBk
-	 BYicsQSvJ4du5Cngg9ikC+93Wn3JxvostEQCvwqq2UrZ0X1p11AP8GubJ6Kjp+XZS9
-	 RBDS+a9cQG8OBabdD472NEHvxQ45jAIYSk5WLvEs=
+	b=DyE1fwgyeazSxRzC53I+/IgGIhPi/n7+ZWLKhNq0AiJ/vrYTr/pS52Yi2L58hVQgX
+	 ++ZT9+B+jrSMyZrlrBIGl6MucpoLT/+eUhhV2es5xz+o1DFGRBikL+akVZ+md8M1Bw
+	 gXHVexs7XBHxdqAp02mlylD8bHlMZO/uVlovFUxk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED77CF80100;
-	Mon, 18 Nov 2019 18:48:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBCEBF8013F;
+	Mon, 18 Nov 2019 18:48:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88EA0F8013B; Mon, 18 Nov 2019 18:48:47 +0100 (CET)
+ id A0B0CF800FF; Mon, 18 Nov 2019 18:48:49 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 910E0F800FF
- for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 18:48:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 910E0F800FF
+ by alsa1.perex.cz (Postfix) with ESMTP id C9B23F800FF
+ for <alsa-devel@alsa-project.org>; Mon, 18 Nov 2019 18:48:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9B23F800FF
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AE9C1FB;
- Mon, 18 Nov 2019 09:48:42 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68BF0DA7;
+ Mon, 18 Nov 2019 09:48:45 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 072AE3F703;
- Mon, 18 Nov 2019 09:48:41 -0800 (PST)
-Date: Mon, 18 Nov 2019 17:48:40 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB6143F703;
+ Mon, 18 Nov 2019 09:48:44 -0800 (PST)
+Date: Mon, 18 Nov 2019 17:48:43 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Li Xu <li.xu@cirrus.com>
-In-Reply-To: <1573847653-17094-2-git-send-email-david.rhodes@cirrus.com>
-Message-Id: <applied-1573847653-17094-2-git-send-email-david.rhodes@cirrus.com>
+To: Lucas Stach <l.stach@pengutronix.de>
+In-Reply-To: <20191118151207.28576-1-l.stach@pengutronix.de>
+Message-Id: <applied-20191118151207.28576-1-l.stach@pengutronix.de>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- patches@opensource.cirrus.com, lgirdwood@gmail.com,
- David Rhodes <david.rhodes@cirrus.com>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: wm_adsp: Expose mixer control API" to
-	the asoc tree
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, "Andrew F . Davis" <afd@ti.com>,
+ Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
+ patchwork-lst@pengutronix.de, Chris Healy <cphealy@gmail.com>
+Subject: [alsa-devel] Applied "ASoC: tlv320aic31xx: configure output
+	common-mode voltage" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,7 +81,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: wm_adsp: Expose mixer control API
+   ASoC: tlv320aic31xx: configure output common-mode voltage
 
 has been applied to the asoc tree at
 
@@ -104,166 +106,140 @@ to this mail.
 Thanks,
 Mark
 
-From eb65ccdb083639f8a9b6919c94d1df570396a9a1 Mon Sep 17 00:00:00 2001
-From: Li Xu <li.xu@cirrus.com>
-Date: Fri, 15 Nov 2019 13:54:13 -0600
-Subject: [PATCH] ASoC: wm_adsp: Expose mixer control API
+From e48fdb53bd1fa50796b5a050e6e31fde3891a2c8 Mon Sep 17 00:00:00 2001
+From: Lucas Stach <l.stach@pengutronix.de>
+Date: Mon, 18 Nov 2019 16:12:06 +0100
+Subject: [PATCH] ASoC: tlv320aic31xx: configure output common-mode voltage
 
-Expose mixer control API for reading and writing controls from the kernel.
-This API can be used by ALSA kernel drivers with ADSP support to
-read and write firmware-defined memory regions.
+The tlv320aic31xx devices allow to adjust the output common-mode voltage
+for best analog performance. The datasheet states that the common mode
+voltage should be set to be <= AVDD/2.
 
-Signed-off-by: Li Xu <li.xu@cirrus.com>
-Signed-off-by: David Rhodes <david.rhodes@cirrus.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/1573847653-17094-2-git-send-email-david.rhodes@cirrus.com
+This changes allows to configure the output common-mode voltage via a DT
+property. If the property is absent the voltage is automatically chosen
+as the highest voltage below/equal to AVDD/2.
+
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Link: https://lore.kernel.org/r/20191118151207.28576-1-l.stach@pengutronix.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 81 +++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/wm_adsp.h |  4 ++
- 2 files changed, 84 insertions(+), 1 deletion(-)
+ .../bindings/sound/tlv320aic31xx.txt          |  5 +++
+ sound/soc/codecs/tlv320aic31xx.c              | 45 +++++++++++++++++++
+ sound/soc/codecs/tlv320aic31xx.h              |  8 ++++
+ 3 files changed, 58 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 9b8bb7bbe945..2a9b610f6d43 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -599,6 +599,9 @@ struct wm_coeff_ctl_ops {
- struct wm_coeff_ctl {
- 	const char *name;
- 	const char *fw_name;
-+	/* Subname is needed to match with firmware */
-+	const char *subname;
-+	unsigned int subname_len;
- 	struct wm_adsp_alg_region alg_region;
- 	struct wm_coeff_ctl_ops ops;
- 	struct wm_adsp *dsp;
-@@ -1399,6 +1402,7 @@ static void wm_adsp_free_ctl_blk(struct wm_coeff_ctl *ctl)
- {
- 	kfree(ctl->cache);
- 	kfree(ctl->name);
-+	kfree(ctl->subname);
- 	kfree(ctl);
- }
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+index 5b3c33bb99e5..e372303697dc 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+@@ -29,6 +29,11 @@ Optional properties:
+         3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
+ 	If this node is not mentioned or if the value is unknown, then
+ 	micbias	is set to 2.0V.
++- ai31xx-ocmv - output common-mode voltage setting
++        0 - 1.35V,
++        1 - 1.5V,
++        2 - 1.65V,
++        3 - 1.8V
  
-@@ -1472,6 +1476,15 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 		ret = -ENOMEM;
- 		goto err_ctl;
- 	}
-+	if (subname) {
-+		ctl->subname_len = subname_len;
-+		ctl->subname = kmemdup(subname,
-+				       strlen(subname) + 1, GFP_KERNEL);
-+		if (!ctl->subname) {
-+			ret = -ENOMEM;
-+			goto err_ctl_name;
-+		}
-+	}
- 	ctl->enabled = 1;
- 	ctl->set = 0;
- 	ctl->ops.xget = wm_coeff_get;
-@@ -1485,7 +1498,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 	ctl->cache = kzalloc(ctl->len, GFP_KERNEL);
- 	if (!ctl->cache) {
- 		ret = -ENOMEM;
--		goto err_ctl_name;
-+		goto err_ctl_subname;
- 	}
+ Deprecated properties:
  
- 	list_add(&ctl->list, &dsp->ctl_list);
-@@ -1508,6 +1521,8 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index df627a08def9..f6f19fdc72f5 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -171,6 +171,7 @@ struct aic31xx_priv {
+ 	int rate_div_line;
+ 	bool master_dapm_route_applied;
+ 	int irq;
++	u8 ocmv; /* output common-mode voltage */
+ };
  
- err_ctl_cache:
- 	kfree(ctl->cache);
-+err_ctl_subname:
-+	kfree(ctl->subname);
- err_ctl_name:
- 	kfree(ctl->name);
- err_ctl:
-@@ -1995,6 +2010,70 @@ static int wm_adsp_load(struct wm_adsp *dsp)
- 	return ret;
- }
+ struct aic31xx_rate_divs {
+@@ -1312,6 +1313,11 @@ static int aic31xx_codec_probe(struct snd_soc_component *component)
+ 	if (ret)
+ 		return ret;
  
-+/*
-+ * Find wm_coeff_ctl with input name as its subname
-+ * If not found, return NULL
-+ */
-+static struct wm_coeff_ctl *wm_adsp_get_ctl(struct wm_adsp *dsp,
-+					     const char *name, int type,
-+					     unsigned int alg)
-+{
-+	struct wm_coeff_ctl *pos, *rslt = NULL;
++	/* set output common-mode voltage */
++	snd_soc_component_update_bits(component, AIC31XX_HPDRIVER,
++				      AIC31XX_HPD_OCMV_MASK,
++				      aic31xx->ocmv << AIC31XX_HPD_OCMV_SHIFT);
 +
-+	list_for_each_entry(pos, &dsp->ctl_list, list) {
-+		if (!pos->subname)
-+			continue;
-+		if (strncmp(pos->subname, name, pos->subname_len) == 0 &&
-+				pos->alg_region.alg == alg &&
-+				pos->alg_region.type == type) {
-+			rslt = pos;
-+			break;
+ 	return 0;
+ }
+ 
+@@ -1501,6 +1507,43 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 		return IRQ_NONE;
+ }
+ 
++static void aic31xx_configure_ocmv(struct aic31xx_priv *priv)
++{
++	struct device *dev = priv->dev;
++	int dvdd, avdd;
++	u32 value;
++
++	if (dev->fwnode &&
++	    fwnode_property_read_u32(dev->fwnode, "ai31xx-ocmv", &value)) {
++		/* OCMV setting is forced by DT */
++		if (value <= 3) {
++			priv->ocmv = value;
++			return;
 +		}
 +	}
 +
-+	return rslt;
++	avdd = regulator_get_voltage(priv->supplies[3].consumer);
++	dvdd = regulator_get_voltage(priv->supplies[5].consumer);
++
++	if (avdd > 3600000 || dvdd > 1950000) {
++		dev_warn(dev,
++			 "Too high supply voltage(s) AVDD: %d, DVDD: %d\n",
++			 avdd, dvdd);
++	} else if (avdd == 3600000 && dvdd == 1950000) {
++		priv->ocmv = AIC31XX_HPD_OCMV_1_8V;
++	} else if (avdd >= 3300000 && dvdd >= 1800000) {
++		priv->ocmv = AIC31XX_HPD_OCMV_1_65V;
++	} else if (avdd >= 3000000 && dvdd >= 1650000) {
++		priv->ocmv = AIC31XX_HPD_OCMV_1_5V;
++	} else if (avdd >= 2700000 && dvdd >= 1525000) {
++		priv->ocmv = AIC31XX_HPD_OCMV_1_35V;
++	} else {
++		dev_warn(dev,
++			 "Invalid supply voltage(s) AVDD: %d, DVDD: %d\n",
++			 avdd, dvdd);
++	}
 +}
 +
-+int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
-+		      unsigned int alg, void *buf, size_t len)
-+{
-+	struct wm_coeff_ctl *ctl;
-+	struct snd_kcontrol *kcontrol;
-+	int ret;
-+
-+	ctl = wm_adsp_get_ctl(dsp, name, type, alg);
-+	if (!ctl)
-+		return -EINVAL;
-+
-+	if (len > ctl->len)
-+		return -EINVAL;
-+
-+	ret = wm_coeff_write_control(ctl, buf, len);
-+
-+	kcontrol = snd_soc_card_get_kcontrol(dsp->component->card, ctl->name);
-+	snd_ctl_notify(dsp->component->card->snd_card,
-+		       SNDRV_CTL_EVENT_MASK_VALUE, &kcontrol->id);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_write_ctl);
-+
-+int wm_adsp_read_ctl(struct wm_adsp *dsp, const char *name, int type,
-+		     unsigned int alg, void *buf, size_t len)
-+{
-+	struct wm_coeff_ctl *ctl;
-+
-+	ctl = wm_adsp_get_ctl(dsp, name, type, alg);
-+	if (!ctl)
-+		return -EINVAL;
-+
-+	if (len > ctl->len)
-+		return -EINVAL;
-+
-+	return wm_coeff_read_control(ctl, buf, len);
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_read_ctl);
-+
- static void wm_adsp_ctl_fixup_base(struct wm_adsp *dsp,
- 				  const struct wm_adsp_alg_region *alg_region)
+ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
  {
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index aa634ef6c9f5..4c481cf20275 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -201,5 +201,9 @@ int wm_adsp_compr_pointer(struct snd_compr_stream *stream,
- 			  struct snd_compr_tstamp *tstamp);
- int wm_adsp_compr_copy(struct snd_compr_stream *stream,
- 		       char __user *buf, size_t count);
-+int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name,  int type,
-+		      unsigned int alg, void *buf, size_t len);
-+int wm_adsp_read_ctl(struct wm_adsp *dsp, const char *name,  int type,
-+		      unsigned int alg, void *buf, size_t len);
+@@ -1570,6 +1613,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
  
- #endif
++	aic31xx_configure_ocmv(aic31xx);
++
+ 	if (aic31xx->irq > 0) {
+ 		regmap_update_bits(aic31xx->regmap, AIC31XX_GPIO1,
+ 				   AIC31XX_GPIO1_FUNC_MASK,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index cb024955c978..83a8c7604cc3 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -232,6 +232,14 @@ struct aic31xx_pdata {
+ #define AIC31XX_HSD_HP			0x01
+ #define AIC31XX_HSD_HS			0x03
+ 
++/* AIC31XX_HPDRIVER */
++#define AIC31XX_HPD_OCMV_MASK		GENMASK(4, 3)
++#define AIC31XX_HPD_OCMV_SHIFT		3
++#define AIC31XX_HPD_OCMV_1_35V		0x0
++#define AIC31XX_HPD_OCMV_1_5V		0x1
++#define AIC31XX_HPD_OCMV_1_65V		0x2
++#define AIC31XX_HPD_OCMV_1_8V		0x3
++
+ /* AIC31XX_MICBIAS */
+ #define AIC31XX_MICBIAS_MASK		GENMASK(1, 0)
+ #define AIC31XX_MICBIAS_SHIFT		0
 -- 
 2.20.1
 
