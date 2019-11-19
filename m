@@ -4,77 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08F27C432C0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 13:22:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E8AEC432C0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 13:35:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB8EB2080F
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 13:22:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C054E22304
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 13:35:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qtGkBxK4";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="AOz5Z8B0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB8EB2080F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gpL/COZY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ERpzotDS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C054E22304
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EEB6167B;
-	Tue, 19 Nov 2019 14:21:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EEB6167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1019F41;
+	Tue, 19 Nov 2019 14:34:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1019F41
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574169724;
-	bh=4ZjnNsLFtApu8k3eWr4qRe6o1B+oOeSab7oDpwsMAHw=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1574170543;
+	bh=SKz6xbVZvTyOL5nAcZAB0ztPc/p97zw0EWWC5mFwKvE=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qtGkBxK4UY4j7dsNIEPPJeA33SBwiD/UeXYwR0XCX1eXkD/5U4Z0/77MNHRNLVJVI
-	 qlEbsn64j110Yr9LK5QkWMrUvSqsHKEckXZUT6LN68+7ULRuPIczxud0mq8AXtZ05E
-	 olAwxNacftKRvIYAoEOTgztYcBxtF1eKMQ4MyoGk=
+	b=gpL/COZYDHK6gr58OOpKh9nCn6CSs61WCcsnL4x2rVBp9Tmm5dzq1ifvsw5z0A0Ck
+	 F7uTVCpFa7cvkfYU9mrW9Q1EMOl9D8HwGxQcZx98cEZ3tzcHjfe/PBTdMYBuFrxW2T
+	 Kdy7QHjwjbRwbVPZv6KeMj8u5CxQ60ya9XbZGoYI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 113DAF80137;
-	Tue, 19 Nov 2019 14:21:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A636F800FF;
+	Tue, 19 Nov 2019 14:34:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 058DBF80138; Tue, 19 Nov 2019 14:21:13 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D189EF80138; Tue, 19 Nov 2019 14:34:50 +0100 (CET)
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94CA5F80135
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 14:21:10 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id AFE4FA003F;
- Tue, 19 Nov 2019 14:21:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz AFE4FA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1574169669; bh=WEE3Zrjty1AmuPTtluDHYO8xRAUe8o+WgtrWp3iSAC4=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=AOz5Z8B0lfMrcUKXH1VyUgva1NQakemD5T20Q+ZKPwiINxOSir/GP+axkV48P32Fc
- JwRk14En0wsJnF31H35Aw7696CVzTndNF2pthXliBFfa6h85GrEt0HhHp8S5K8CAYv
- f/HL/WHqsmBmRevLUPCjHc0Abjw+5pBgtzukcpu0=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue, 19 Nov 2019 14:21:05 +0100 (CET)
-To: Hans de Goede <hdegoede@redhat.com>
-References: <20191119104822.15053-1-hdegoede@redhat.com>
- <3a473499-4fb2-dabd-3816-5edd1332f46e@perex.cz>
- <56edc7da-ba0f-1ffe-6b31-6eb6b570580d@redhat.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <8d5a2fa8-9294-bee4-1cef-24bcf2c325a9@perex.cz>
-Date: Tue, 19 Nov 2019 14:21:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12661F800FF
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 14:34:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12661F800FF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="ERpzotDS"
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJDYJsw142439;
+ Tue, 19 Nov 2019 13:34:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=zeT1T5F4u/9t9rqf7pRcWtmarJGMaGO5YjAnx2eEqyo=;
+ b=ERpzotDSLHZmw2HCw7RKqcEvDqjcLJRsdk7QizAlNvOKi0LhoStogrFjvgiyf//iMCeR
+ pU98NNr39sva/nm9BsKBfmUQqTqQAUwUshf/SrB/Q+tkuU11pNEEUykOCVKxbYedLVbq
+ 6I7G/wqLRC1vtPUPaLV7MRyg60gpJxMlJ2uF8dHVuplQGImtoxOlUMzFfIVcANf0gkb5
+ T4vKCvgWcxD2svCxH3OSOWXMa3ix52480yQto2fyxkFEZrRf0SdhixWXysHTqOtqIqex
+ a8SeLc7rUmnu68q/Jj/1lzYEOaa/kY4buLqBG5d5RkLkcR0KTNeloZptD6SuFbmzxInM 9w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2130.oracle.com with ESMTP id 2wa8htpxbt-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 19 Nov 2019 13:34:45 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJDVkE7105282;
+ Tue, 19 Nov 2019 13:34:44 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by userp3030.oracle.com with ESMTP id 2wc0agdf4g-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 19 Nov 2019 13:34:44 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAJDYbd0020028;
+ Tue, 19 Nov 2019 13:34:37 GMT
+Received: from kadam (/41.210.141.188) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 19 Nov 2019 05:34:35 -0800
+Date: Tue, 19 Nov 2019 16:34:16 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: vishnu <vravulap@amd.com>
+Message-ID: <20191119133416.GB30789@kadam>
+References: <1574165476-24987-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+ <1574165476-24987-7-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+ <20191119123531.GA30789@kadam>
+ <3321478e-de8f-2eb6-6e6f-6eb621b8434b@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <56edc7da-ba0f-1ffe-6b31-6eb6b570580d@redhat.com>
-Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH alsa-lib 1/4] ucm: Fix opening of
- master-configs by the card's longname
+Content-Disposition: inline
+In-Reply-To: <3321478e-de8f-2eb6-6e6f-6eb621b8434b@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911190124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911190125
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ YueHaibing <yuehaibing@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Akshu.Agrawal@amd.com, Alexander.Deucher@amd.com,
+ Mark Brown <broonie@kernel.org>, djkurtz@google.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Subject: Re: [alsa-devel] [RESEND PATCH v9 6/6] ASoC: amd: Added ACP3x
+ system resume and runtime pm
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,106 +129,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 19. 11. 19 v 13:40 Hans de Goede napsal(a):
-> Hi,
+On Tue, Nov 19, 2019 at 06:26:17PM +0530, vishnu wrote:
 > 
-> On 19-11-2019 13:23, Jaroslav Kysela wrote:
->> Dne 19. 11. 19 v 11:48 Hans de Goede napsal(a):
->>> Prior to commit aba2260ae7b5 ("ucm: switch to ucm2 directory and v2 format,
->>> keep backward compatibility").
->>>
->>> The filename build in parse_verb_file() was build like this:
->>> <prefix>/<uc_mgr->conf_file_name>/<file>
->>>
->>> Where uc_mgr->conf_file_name would contain either the card_name or the
->>> card's longname depending on the detection of a longname based config in
->>> uc_mgr_import_master_config().
->>>
->>> While the filename used in load_master_config() was build like this:
->>> <prefix>/<card_name>/<card_name>.conf
->>>
->>> And uc_mgr_import_master_config() first calls load_master_config()
->>> with the card's longname and if that succeeds it overwrites
->>> uc_mgr->conf_file_name with the longname so that the subsequent uses
->>> of uc_mgr->conf_file_name in parse_verb_file() correctly use the longname.
->>>
->>> But the new configuration_filename() helper added in commit aba2260ae7b5
->>> _always_ builds the filename like this:
->>> <prefix>/<uc_mgr->conf_file_name>/<file><suffix>
->>>
->>> This breaks the loading of the master-config by its longname, as when
->>> the longname is tried uc_mgr->conf_file_name still contains the card_name.
->>
->> Hi Hans,
->>
->> This new behaviour was intended for ucm2. I applied all four your patches, and added 10a63e093c4a98acfa9bcdfdd06938bcd874b008 on top which should keep the
->> new behaviour for v2 configs.
 > 
-> Ah I see.
+> On 19/11/19 6:05 PM, Dan Carpenter wrote:
+> > I can't apply this because I'm not CC'd on patches 2-5.
+> > 
+> > On Tue, Nov 19, 2019 at 05:41:16PM +0530, Ravulapati Vishnu vardhan rao wrote:
+> > > +static int acp3x_power_on(void __iomem *acp3x_base)
+> > > +{
+> > > +	u32 val;
+> > > +	u32 timeout;
+> > > +
+> > > +	timeout = 0;
+> > > +	val = rv_readl(acp3x_base + mmACP_PGFSM_STATUS);
+> > > +
+> > > +	if (val == 0)
+> > > +		return val;
+> > > +
+> > > +	if (!((val & ACP_PGFSM_STATUS_MASK) ==
+> > > +				ACP_POWER_ON_IN_PROGRESS))
+> > > +		rv_writel(ACP_PGFSM_CNTL_POWER_ON_MASK,
+> > > +			acp3x_base + mmACP_PGFSM_CONTROL);
+> > > +	while (++timeout) {
+> > 
+> > while (++timeout < 500)
+> > 
 > 
-> There is a bug in the commit you added on top though,
-> when load_master_config() gets called with longname == 1
-> and ALSA_CONFIG_UCM2_VAR is not set and ALSA_CONFIG_UCM_VAR
-> is set, then the if condition in the block is false, so it never executes:
-> 
-> +               if (getenv(ALSA_CONFIG_UCM2_VAR) || !getenv(ALSA_CONFIG_UCM_VAR)) {
-> +                       uc_mgr->conf_format = 2;
-> +                       configuration_filename(uc_mgr, filename, sizeof(filename),
-> +                                              uc_mgr->conf_file_name, card_name, ".conf");
-> +               }
-> 
-> Causing the next block to also not execute:
-> 
-> +               if (uc_mgr->conf_format >= 2 && access(filename, R_OK) != 0) {
-> +                       /* try the old ucm directory */
-> +                       uc_mgr->conf_format = 1;
-> +                       configuration_filename(uc_mgr, filename, sizeof(filename),
-> +                                              card_name, card_name, ".conf");
-> +                       if (access(filename, R_OK) != 0)
-> +                               return -ENOENT;
-> +               }
-> 
-> Causing load_master_config() to continue with an uninitialized filename.
-> 
-> I think you wanted the following condition for the second block:
-> 
->                   if (uc_mgr->conf_format == 0 || access(filename, R_OK) != 0) {
-> 
-> Also don't you want the same behavor wrt forcing the conf_format based
-> on env. when trying the shortname ?
-> 
-> I think you can move the entire block under if (longname) to be unconditional,
-> since conf_file_name == card_name for the shortname case using the longname
-> path in the shortname case too is fine. Then you always call configuration_filename
-> with conf_format set and all the handling for conf_format not being set (and
-> for overriding it) can be dropped from configuration_filename() then.
+> If I check with timeout<500 and in next condition i have
+> if(timeout >500) this never happens.
 
-Thanks again, fixed in 1d848ab739f0d207098627d2ba66421b3ec75eeb .
+I was maybe not clear enough.  Please don't write:
 
-> 
->> It's time to create the 1.2.1.1 bugfix alsa-lib release, I guess.
-> 
-> Yes that is a good idea (once the above is resolved).
+	while (++timeout) {
 
-The tar ball is in ftp://ftp.alsa-project.org/pub/testing .
+That doesn't make sense as a loop.  It looks like you are trying to
+loop UINT_MAX times.  Put the ++ and the limit on the same line.
 
-				Jaroslav
+There is only one real bug in my review but there is just a lot of clean
+up left.  Can you have a co-worker review your patch before resending?
+The patch 1/6 looks pretty good now but I haven't seen patches 2-5 so
+I'm worried there is a lot of cleanup left to do.
 
-> 
-> Regards,
-> 
-> Hans
-> 
+regards,
+dan carpenter
 
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
