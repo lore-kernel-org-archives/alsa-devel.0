@@ -2,71 +2,69 @@ Return-Path: <SRS0=I/J9=ZL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 339C8C432C0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 20:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51551C432C0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 20:42:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE76722469
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 20:38:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C4CB62245C
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 20:42:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EmjdyuvD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE76722469
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qPcXtdbf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4CB62245C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5B9B168B;
-	Tue, 19 Nov 2019 21:37:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5B9B168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3FDC167B;
+	Tue, 19 Nov 2019 21:41:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3FDC167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574195892;
-	bh=dbh4ie42OpUMXEqtcM5UGKYsul80Fhsiy2D8Hc7hlsw=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1574196166;
+	bh=QctDtVVgXxLrdx9HRIkWrmJ+UnTVA49RdNWYA4Ykp/0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EmjdyuvDPKfdTWaMWHk61gWQxixVcxLIHuugq6za9/kb5QFBHtx0B53dvSBXyB4Ll
-	 KJZo6LJacdQPube09ucWZnZzlFv8R8wK+3ayVitIpZxwDwd3Qjpkv3gQRmIsGBM0eY
-	 CKIr1L3u+OhJzc9cq4ds0QqmfUpTztJhI3tDJtUk=
+	b=qPcXtdbfFFT0Bs/mT/uomyj+59S+EwXi12j2v40jbD1jaCqOJ/UhSSiSd7V3mjo3E
+	 jLJ8t647T6Bm5DNg4SERzIFxmcdPkdwbxhcjj9eVYCE17eCqTp62CK35abKa/I7fYv
+	 N0A0Nlwk1vkIthPvkT+Paqleki/xxg4LkCq9p6d4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16CD0F80137;
-	Tue, 19 Nov 2019 21:37:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 365E2F80137;
+	Tue, 19 Nov 2019 21:41:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BE55F80138; Tue, 19 Nov 2019 21:37:20 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1C5DF800FF
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 21:37:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1C5DF800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id E4FEEAC4A;
- Tue, 19 Nov 2019 20:37:15 +0000 (UTC)
-Date: Tue, 19 Nov 2019 21:37:15 +0100
-Message-ID: <s5h36ejy550.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <f2de9597-c9c2-7696-622b-a2bbc2c32bb7@perex.cz>
+ id DE891F80135; Tue, 19 Nov 2019 21:41:50 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id C4B24F80135
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 21:41:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4B24F80135
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22B1B31B;
+ Tue, 19 Nov 2019 12:41:41 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83A753F6C4;
+ Tue, 19 Nov 2019 12:41:40 -0800 (PST)
+Date: Tue, 19 Nov 2019 20:41:38 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20191119204138.GI3634@sirena.org.uk>
 References: <20191119174933.25526-1-perex@perex.cz>
  <20191119174933.25526-2-perex@perex.cz>
  <72dfc285-70e8-706d-3018-535bda1e8630@linux.intel.com>
  <f2de9597-c9c2-7696-622b-a2bbc2c32bb7@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ <s5h36ejy550.wl-tiwai@suse.de>
+MIME-Version: 1.0
+In-Reply-To: <s5h36ejy550.wl-tiwai@suse.de>
+X-Cookie: Beam me up, Scotty!  It ate my phaser!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: ALSA development <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: Intel - use control components
-	to describe card config
+ to describe card config
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,70 +77,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8446197871711576728=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Nov 2019 20:22:56 +0100,
-Jaroslav Kysela wrote:
-> 
-> Dne 19. 11. 19 v 20:12 Pierre-Louis Bossart napsal(a):
-> >
-> >
-> > On 11/19/19 11:49 AM, Jaroslav Kysela wrote:
-> >> Use the control interface (field 'components' in the info structure)
-> >> to pass the I/O configuration details. The long card name might
-> >> be used in GUI. This information should be hidden.
-> >>
-> >> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> >> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> >> Cc: Mark Brown <broonie@kernel.org>
-> >> ---
-> >>    sound/soc/intel/Kconfig                |  9 +++++++++
-> >>    sound/soc/intel/boards/bytcht_es8316.c | 16 ++++++++++++----
-> >>    sound/soc/intel/boards/bytcr_rt5640.c  | 14 +++++++++++---
-> >>    sound/soc/intel/boards/bytcr_rt5651.c  | 26 ++++++++++++++++----------
-> >>    4 files changed, 48 insertions(+), 17 deletions(-)
-> >>
-> >> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> >> index c8de0bb5bed9..3421957adedb 100644
-> >> --- a/sound/soc/intel/Kconfig
-> >> +++ b/sound/soc/intel/Kconfig
-> >> @@ -47,6 +47,15 @@ config SND_SOC_INTEL_SST_FIRMWARE
-> >>    	# Haswell/Broadwell/Baytrail legacy and will be set
-> >>    	# when these platforms are enabled
-> >>    +config SND_SOC_INTEL_USE_CTL_COMPONENTS
-> >> +	bool "Use CTL components for I/O configuration"
-> >> +	help
-> >> +	  Some drivers might pass the I/O configuration through the
-> >> +	  soundcard's driver name in the control user space API.
-> >> +	  The new scheme is to put this information to the components
-> >> +	  field in the ALSA's card info structure. Say Y, if you
-> >> +	  have ALSA user space version 1.2.2+.
-> >> +
-> >
-> > If this is at the board level, then maybe move this to
-> > sound/soc/intel/boards/Kconfig
-> >
-> > I am not sure about the alsa-lib dependency, it's a bit odd, isn't it?
-> > shouldn't this be handled via protocol versions? or a configuration
-> > provided by alsa-lib somehow?
-> 
-> It's not about the protocol. It's about to move this type of
-> information to another place. I can remove the ALSA version sentence
-> from the help, because it's just a hint. I would like to create ucm2
-> configurations based on this rather than the misused long card names.
 
-But why these are exclusive?  The current longname workaround makes
-the device appearing a bit messy, but does it conflict with the
-additional component string?
+--===============8446197871711576728==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Encpt1P6Mxii2VuT"
+Content-Disposition: inline
 
 
-thanks,
+--Encpt1P6Mxii2VuT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Takashi
+On Tue, Nov 19, 2019 at 09:37:15PM +0100, Takashi Iwai wrote:
+> Jaroslav Kysela wrote:
+
+> > It's not about the protocol. It's about to move this type of
+> > information to another place. I can remove the ALSA version sentence
+> > from the help, because it's just a hint. I would like to create ucm2
+> > configurations based on this rather than the misused long card names.
+
+> But why these are exclusive?  The current longname workaround makes
+> the device appearing a bit messy, but does it conflict with the
+> additional component string?
+
+Yeah, it's not clear to me why it's a config option to enable this.  I
+can see a config option to turn off the old display name if it's
+particularly irritating to people but I can't see any reason not to
+just provide the new stuff.
+
+--Encpt1P6Mxii2VuT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3UU4IACgkQJNaLcl1U
+h9CU2wf/Y0yBdjYmnykObqTI3t5Ek8lW6HP6uWPtKRNjudvMBFxZ5Nu90oMRJx9g
+p09C/xO0KcbeC01s51uMyxDKGg2EohbDgIYuOzM0BPFLlwzc0loT1wR0iXG0mMzY
+odRy2Arj+9XxdMH6h0qgqNXl2scnEcoXpp0KzIRn7wHenPTsJffouZTMJWxn4sbI
+8t40wRf2iyO8V0Bxoh/cygDKGEvVcIMJNVGIDFgTi1eOU77kvthwnwpT6xSU6UJC
+7c89as4zHjZDbJsH7auPp6B7g83iVeI5p+7gejf+YRyt2phwt5Ce2mMR+iPJiIew
+Vew/Mv7NtjNWUSzOdwJ9Cth+Iv1tgw==
+=XcJ2
+-----END PGP SIGNATURE-----
+
+--Encpt1P6Mxii2VuT--
+
+--===============8446197871711576728==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8446197871711576728==--
