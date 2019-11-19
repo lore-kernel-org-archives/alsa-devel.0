@@ -4,78 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87A20C432C0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 14:28:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D960AC432C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 14:30:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0ACF2222B0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 14:28:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 60C8A222DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Nov 2019 14:30:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Srt4+LUr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ACF2222B0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iPpX3SKK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jGtW79A1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60C8A222DD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C90C169A;
-	Tue, 19 Nov 2019 15:27:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C90C169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FC05168B;
+	Tue, 19 Nov 2019 15:29:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FC05168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574173702;
-	bh=eDuwhqI1GeAZ0VTvgboRJvdcDloEoFJHX+KJTRAntMI=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1574173818;
+	bh=rDBLhCYr9hKvDa8Po60EmMElhig9vycbOCCcT2kAzy0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Srt4+LUrmINWobk9maocX0rCXkbWQcgCGyLnPj7QBDRIcclt/s/tDDEMyMK8jJ5uQ
-	 xVEvWOjKAOHxhTUendWFd8hDm10Y1aCdNWngCMG5EE9zETySN4hY+l7ylo5laAubeS
-	 5fgnCiHkGi9p91IesPyJDZt2lcoyeUgI05wW3rk8=
+	b=iPpX3SKKArEeXxqS/gkcM52VnPqb3GJ7on/MgJ4rvgJv4AhQveilufGIoWqf5/je0
+	 Ob8s2cRAIfLMckoGZnbuByMD8xqduB5sR04WT8hx6WMp9fYo4bHzskTJeNogO6CfBA
+	 zH8Wu1bRCoxK3pyjzViG0+96vPcWmNFWKyGw5/qI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 813FAF8014D;
-	Tue, 19 Nov 2019 15:25:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC238F80137;
+	Tue, 19 Nov 2019 15:29:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A55E3F80147; Tue, 19 Nov 2019 15:25:51 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 00157F80138; Tue, 19 Nov 2019 15:29:25 +0100 (CET)
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8676F80137
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 15:25:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8676F80137
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 19 Nov 2019 06:25:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,324,1569308400"; d="scan'208";a="215551232"
-Received: from trgallx-mobl.amr.corp.intel.com (HELO [10.251.154.79])
- ([10.251.154.79])
- by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2019 06:25:42 -0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72707F800FF
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 15:29:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72707F800FF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="jGtW79A1"
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJEJFrj171891;
+ Tue, 19 Nov 2019 14:29:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=YGqCGMrjp855JQhfRhha1mrka4pAadiq0XrsZH5hYAw=;
+ b=jGtW79A1pr9OPnc5oA91hidud7AxlatNcxYphekZmeVmfzy+ypV4kHy6qK9RNCH4eBMD
+ D2Jlgwa/4Y7oldYkflEq16oQsCJSErifIWvenZQNNFvEEsiV5lgUKVqTKUFm8EjbmYGb
+ 8Y3S8Kn2gZ5BqyfRJIZyH/AYo0IuWZNS0fvdkbOPuV2Y/Odxy/ISzkEcwSPAp/yeDBNh
+ /u15xaW8YEh++soJ/JxI8H9YGhCNOkFvHgjTbeNrv6bIjmUFkmPp52PrLN+Efp7ATdGJ
+ j/2dXvCZarL8bAUNh65YpFt+vF5ZussuG3jENLqp8zfTl5p6bIv4qlxU+LX7Usupj/Kz 1A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+ by aserp2120.oracle.com with ESMTP id 2wa92pq6kh-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 19 Nov 2019 14:29:20 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+ by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJES0U2101336;
+ Tue, 19 Nov 2019 14:29:20 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+ by aserp3030.oracle.com with ESMTP id 2wbxm4bu1f-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Tue, 19 Nov 2019 14:29:20 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+ by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAJETDHY032503;
+ Tue, 19 Nov 2019 14:29:14 GMT
+Received: from kadam (/41.210.141.188) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 19 Nov 2019 06:29:12 -0800
+Date: Tue, 19 Nov 2019 17:28:57 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
 To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-References: <1574155967-1315-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
- <1574155967-1315-3-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <0c3d3545-b0ee-4bb3-558a-045633a30e46@linux.intel.com>
-Date: Tue, 19 Nov 2019 07:53:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+Message-ID: <20191119142856.GE30789@kadam>
+References: <1574172508-26546-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+ <1574172508-26546-7-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <1574155967-1315-3-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1574172508-26546-7-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911190133
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911190133
 Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
  <alsa-devel@alsa-project.org>,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
- Liam Girdwood <lgirdwood@gmail.com>, YueHaibing <yuehaibing@huawei.com>,
- Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>, djkurtz@google.com,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ djkurtz@google.com, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Alexander.Deucher@amd.com, Colin Ian King <colin.king@canonical.com>,
  Akshu.Agrawal@amd.com
-Subject: Re: [alsa-devel] [PATCH v8 2/6] ASoC: amd: Refactoring of DAI from
- DMA driver
+Subject: Re: [alsa-devel] [PATCH v10 6/6] ASoC: amd: Added ACP3x system
+ resume and runtime pm
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,83 +126,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This is improved.  Thanks!
 
-
-> +static int acp3x_dai_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *res;
-> +	struct i2s_dev_data *adata;
-> +	int status;
-> +
-> +	adata = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dev_data),
-> +			GFP_KERNEL);
-> +	if (!adata)
-> +		return -ENOMEM;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	adata->acp3x_base = devm_ioremap(&pdev->dev, res->start,
-> +			resource_size(res));
-> +	if (IS_ERR(adata->acp3x_base))
-> +		return PTR_ERR(adata->acp3x_base);
-> +
-> +	adata->i2s_irq = res->start;
-> +	dev_set_drvdata(&pdev->dev, adata);
-> +	status = devm_snd_soc_register_component(&pdev->dev,
-> +			&acp3x_dai_component, &acp3x_i2s_dai, 1);
-> +	if (status) {
-> +		dev_err(&pdev->dev, "Fail to register acp i2s dai\n");
-> +		return -ENODEV;
-> +	}
-> +	pm_runtime_set_autosuspend_delay(&pdev->dev, 5000);
-> +	pm_runtime_use_autosuspend(&pdev->dev);
-> +	pm_runtime_enable(&pdev->dev);
-
-question: here you want to use pm_runtime for this platform device...
-
-> +	return 0;
-> +}
-> +
-> +static int acp3x_dai_remove(struct platform_device *pdev)
-> +{
-> +	pm_runtime_disable(&pdev->dev);
-> +	return 0;
-> +}
-> +static struct platform_driver acp3x_dai_driver = {
-> +	.probe = acp3x_dai_probe,
-> +	.remove = acp3x_dai_remove,
-> +	.driver = {
-> +		.name = "acp3x_i2s_playcap",
-
-... but here there is no .pm structure and I don't see any 
-suspend/resume routines for this driver...
-
-> +	},
-> +};
-
-> @@ -774,13 +586,14 @@ static struct platform_driver acp3x_dma_driver = {
->   	.probe = acp3x_audio_probe,
->   	.remove = acp3x_audio_remove,
->   	.driver = {
-> -		.name = "acp3x_rv_i2s",
-> +		.name = "acp3x_rv_i2s_dma",
->   		.pm = &acp3x_pm_ops,
->   	},
-
-... but for this other platform_driver you do have a .pm structure and 
-suspend-resume implementations.
-
-Wondering if this is a miss or a feature?
-
+regards,
+dan carpenter
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
