@@ -2,64 +2,68 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6758DC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 084CAC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:06:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E755622365
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:05:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 829D020857
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:06:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PbidTqiP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E755622365
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l0UKjD+S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 829D020857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1735916AE;
-	Wed, 20 Nov 2019 12:04:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1735916AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C60A7169D;
+	Wed, 20 Nov 2019 12:05:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C60A7169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574247941;
-	bh=RWnvSvbFrLfpU6tHSEFHPvNPfUrufEcR14L2ITEPiDI=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PbidTqiPeG40txwlf/KTVqns2lrI+wJu4gxm8h7awrX/kaEjQc6kLdNM5J6gc8/xh
-	 v/JKP7xkchDNliAMEXuZIY6j7y7rOzp0PtcB4EDv8QqfSpDwNDofBLmrH9t+ZNvsFI
-	 QkXAAziXXOgzGVZ9VVVYLazlxrNIj7AhySgRDLpg=
+	s=default; t=1574247969;
+	bh=df3uL3qGxcoRrkOK6JqX+5uFfRG1XfwlDoTwT4u1Jx0=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=l0UKjD+SnqA0p7Jv3hIfcwvJWoqCeatbHRyc9ewfYvIp9l+kdjcLG422uU9uZDOnx
+	 cDql39oM1anpeyOvFbcWJumBgKVHo2u3fbeTk+DC7Ro+A+Qsev7718pGz4KkOqxwCU
+	 oj/lDUfZ969kqOaV13omDaZRLGxY7dCirblho0sk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C016EF80159;
-	Wed, 20 Nov 2019 12:02:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FEF9F80160;
+	Wed, 20 Nov 2019 12:02:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C7ABF8013F; Tue, 19 Nov 2019 01:21:45 +0100 (CET)
+ id 6559EF80146; Tue, 19 Nov 2019 01:21:47 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D7DDF800F6
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 01:21:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D7DDF800F6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48018F800F1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 01:21:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48018F800F1
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Nov 2019 16:21:37 -0800
+ 18 Nov 2019 16:21:38 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,321,1569308400"; d="scan'208";a="215412011"
+X-IronPort-AV: E=Sophos;i="5.68,321,1569308400"; d="scan'208";a="215412016"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.41])
- by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2019 16:21:36 -0800
+ by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2019 16:21:37 -0800
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, x86@kernel.org,
  "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>,
  Pavel Machek <pavel@ucw.cz>
-Date: Mon, 18 Nov 2019 16:21:09 -0800
-Message-Id: <20191119002121.4107-1-sean.j.christopherson@intel.com>
+Date: Mon, 18 Nov 2019 16:21:10 -0800
+Message-Id: <20191119002121.4107-2-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191119002121.4107-1-sean.j.christopherson@intel.com>
+References: <20191119002121.4107-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Wed, 20 Nov 2019 12:02:18 +0100
 Cc: Mark Rutland <mark.rutland@arm.com>,
@@ -79,8 +83,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
  Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  linux-kernel@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
-Subject: [alsa-devel] [PATCH 00/12] treewide: break dependencies on x86's RM
-	header
+Subject: [alsa-devel] [PATCH 01/12] x86/efi: Explicitly include realmode.h
+	to handle RM trampoline quirk
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,73 +102,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-x86's asm/realmode.h, which defines low level structures, variables and
-helpers used to bring up APs during SMP boot, ends up getting included in
-practically every nook and cranny of the kernel because the address used
-by ACPI for resuming from S3 also happens to be stored in the real mode
-header, and ACPI bleeds the dependency into its widely included headers.
+Explicitly include asm/realmode.h, which is needed to handle a real mode
+trampoline quirk in efi_free_boot_services(), instead of picking it up
+by way of linux/acpi.h.  acpi.h will soon stop including realmode.h so
+that changing realmode.h doesn't require a full kernel rebuild.
 
-As a result, modifying realmode.h for even the most trivial change to the
-boot code triggers a full kernel rebuild, which is frustrating to say the
-least as it some of the most difficult code to get exactly right *and* is
-also some of the most functionally isolated code in the kernel.
+Fixes: 5bc653b731821 ("x86/efi: Allocate a trampoline if needed in efi_free_boot_services()")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/x86/platform/efi/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-To break the kernel's widespread dependency on realmode.h, add a wrapper
-in the aforementioned ACPI S3 code to access the real mode header instead
-of derefencing the header directly in asm/acpi.h and thereby exposing it
-to the world via linux/acpi.h.
-
-Build tested on x86 with allyesconfig and allmodconfig, so hopefully there
-aren't more build issues lurking, but at this point it wouldn't surprise
-me in the least if this somehow manages to break the build.
-
-Based on tip/master, commit ceceaf1f12ba ("Merge branch 'WIP.x86/cleanups'").
-
-Patch Synopsis:
-  - Patches 01-09 fix a variety of build errors that arise when patch 12
-    drops realmode.h from asm/acpi.h.  Most of the errors are quite absurb
-    as they have no relation whatsoever to x86's RM boot code, but occur
-    because realmode.h happens to include asm/io.h.
-
-  - Patch 10 removes a spurious include of realmode.h from an ACPI header.
-
-  - Patches 11 and 12 implement the wrapper and move it out of acpi.h.
-
-
-Sean Christopherson (12):
-  x86/efi: Explicitly include realmode.h to handle RM trampoline quirk
-  x86/boot: Explicitly include realmode.h to handle RM reservations
-  x86/ftrace: Explicitly include vmalloc.h for
-    set_vm_flush_reset_perms()
-  x86/kprobes: Explicitly include vmalloc.h for
-    set_vm_flush_reset_perms()
-  perf/x86/intel: Explicitly include asm/io.h to use virt_to_phys()
-  efi/capsule-loader: Explicitly include linux/io.h for page_to_phys()
-  virt: vbox: Explicitly include linux/io.h to pick up various defs
-  vmw_balloon: Explicitly include linux/io.h for virt_to_phys()
-  ASoC: Intel: Skylake: Explicitly include linux/io.h for virt_to_phys()
-  x86/ACPI/sleep: Remove an unnecessary include of asm/realmode.h
-  ACPI/sleep: Convert acpi_wakeup_address into a function
-  x86/ACPI/sleep: Move acpi_wakeup_address() definition into sleep.c
-
- arch/ia64/include/asm/acpi.h             |  5 ++++-
- arch/ia64/kernel/acpi.c                  |  2 --
- arch/x86/events/intel/ds.c               |  1 +
- arch/x86/include/asm/acpi.h              |  3 +--
- arch/x86/kernel/acpi/sleep.c             | 11 +++++++++++
- arch/x86/kernel/acpi/sleep.h             |  2 +-
- arch/x86/kernel/ftrace.c                 |  1 +
- arch/x86/kernel/kprobes/core.c           |  1 +
- arch/x86/kernel/setup.c                  |  1 +
- arch/x86/platform/efi/quirks.c           |  1 +
- drivers/acpi/sleep.c                     |  4 ++--
- drivers/firmware/efi/capsule-loader.c    |  1 +
- drivers/misc/vmw_balloon.c               |  1 +
- drivers/virt/vboxguest/vboxguest_core.c  |  1 +
- drivers/virt/vboxguest/vboxguest_utils.c |  1 +
- sound/soc/intel/skylake/skl-sst-cldma.c  |  1 +
- 16 files changed, 29 insertions(+), 8 deletions(-)
-
+diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+index 3b9fd679cea9..f9ef5c5346ca 100644
+--- a/arch/x86/platform/efi/quirks.c
++++ b/arch/x86/platform/efi/quirks.c
+@@ -16,6 +16,7 @@
+ #include <asm/efi.h>
+ #include <asm/uv/uv.h>
+ #include <asm/cpu_device_id.h>
++#include <asm/realmode.h>
+ #include <asm/reboot.h>
+ 
+ #define EFI_MIN_RESERVE 5120
 -- 
 2.24.0
 
