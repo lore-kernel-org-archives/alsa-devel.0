@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 541D4C432C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B05E5C432C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:09:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1C6B21D7B
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:08:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3D28822365
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:09:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XnZwcDtS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1C6B21D7B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qLUuqFxr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D28822365
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20EBF16BC;
-	Wed, 20 Nov 2019 12:07:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20EBF16BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C9AA16D3;
+	Wed, 20 Nov 2019 12:08:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C9AA16D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574248125;
-	bh=ar4F7WnaBuMULz9rH2VPzczOKbcSwvthJ5+Mrugj/rQ=;
+	s=default; t=1574248163;
+	bh=kTtZizbAqpWXX07tylTW/GjWhQkJ2ivbXpXzb0gXS8M=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XnZwcDtS/ewCQdibOum6EPY5vNU5E5v82WirP75DPjz2sUbSe/tNhIYGhfKDTz0Ql
-	 qHvsASXtYBduIINc+61NtjFB5gcpe+jn+weEYpIB6Yj4en4WCdeU0bZiqc2/7L1OY/
-	 MAJutDlqeIQ6X+3dtwHCWAxlm8uA1IDCidfSxQek=
+	b=qLUuqFxrb5fNAdb3bXgdFm55ijg1NXCAvf/HtG1eMPViGbKlV7Skn2jSfXK0DU0Yu
+	 bt5hHPiMJbDOI1lmsjuNW18tw5K0A+iTNzp1zJjjGSs11TnntbKyvZC4GziYsuUp4f
+	 NNcz9qgIkpnDckfTlI+5CLMKuWYTzKsqd4/RivWw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0C10F80214;
-	Wed, 20 Nov 2019 12:02:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28F58F8021D;
+	Wed, 20 Nov 2019 12:02:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD090F8013C; Tue, 19 Nov 2019 01:21:50 +0100 (CET)
+ id 64001F80146; Tue, 19 Nov 2019 01:21:51 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CEAA4F8013C
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 01:21:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEAA4F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF353F800F6
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 01:21:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF353F800F6
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Nov 2019 16:21:45 -0800
+ 18 Nov 2019 16:21:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,321,1569308400"; d="scan'208";a="215412039"
+X-IronPort-AV: E=Sophos;i="5.68,321,1569308400"; d="scan'208";a="215412033"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.41])
- by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2019 16:21:44 -0800
+ by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2019 16:21:42 -0800
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, x86@kernel.org,
  "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>,
  Pavel Machek <pavel@ucw.cz>
-Date: Mon, 18 Nov 2019 16:21:15 -0800
-Message-Id: <20191119002121.4107-7-sean.j.christopherson@intel.com>
+Date: Mon, 18 Nov 2019 16:21:14 -0800
+Message-Id: <20191119002121.4107-6-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20191119002121.4107-1-sean.j.christopherson@intel.com>
 References: <20191119002121.4107-1-sean.j.christopherson@intel.com>
@@ -83,8 +83,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
  Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  linux-kernel@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
-Subject: [alsa-devel] [PATCH 06/12] efi/capsule-loader: Explicitly include
-	linux/io.h for page_to_phys()
+Subject: [alsa-devel] [PATCH 05/12] perf/x86/intel: Explicitly include
+	asm/io.h to use virt_to_phys()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,30 +102,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Through a labyrinthian sequence of includes, usage of page_to_phys() is
-dependent on the include of asm/io.h in x86's asm/realmode.h, which is
-included in x86's asm/acpi.h and thus by linux/acpi.h.  Explicitly
-include linux/io.h to break the dependency on realmode.h so that a
-future patch can remove the realmode.h include from acpi.h without
-breaking the build.
+Through a labyrinthian sequence of includes, usage of virt_to_phys() is
+dependent on the include of asm/io.h in asm/realmode.h via asm/acpi.h.
+Explicitly include asm/io.h to break the dependency on realmode.h so
+that a future patch can remove the realmode.h include from acpi.h
+without breaking the build.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- drivers/firmware/efi/capsule-loader.c | 1 +
+ arch/x86/events/intel/ds.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/efi/capsule-loader.c b/drivers/firmware/efi/capsule-loader.c
-index b1395133389e..d3067cbd5114 100644
---- a/drivers/firmware/efi/capsule-loader.c
-+++ b/drivers/firmware/efi/capsule-loader.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <linux/miscdevice.h>
- #include <linux/highmem.h>
-+#include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/mutex.h>
- #include <linux/efi.h>
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index ce83950036c5..4b94ae4ae369 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -7,6 +7,7 @@
+ #include <asm/perf_event.h>
+ #include <asm/tlbflush.h>
+ #include <asm/insn.h>
++#include <asm/io.h>
+ 
+ #include "../perf_event.h"
+ 
 -- 
 2.24.0
 
