@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D836AC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BAB8C432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:13:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62F8222365
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:12:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BD4222365
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:13:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bvvyo3Tk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62F8222365
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XhW/Znua"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BD4222365
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A72F216ED;
-	Wed, 20 Nov 2019 12:11:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A72F216ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 033DA16F2;
+	Wed, 20 Nov 2019 12:12:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 033DA16F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574248360;
-	bh=vKEp0w6eLJiE6t4Xvp17Ubu1Rzo8d1w7jkZXPLgcX30=;
+	s=default; t=1574248403;
+	bh=Q0Bzmz9UAX5p8q1Ly/JuyTkMNusGtSq5y8F/rJ7tr5A=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bvvyo3Tk21RvdySXGU7OZdS3a+zt6zD22F7svyg3wvRTmMT0t5UD8xQsdhvqEWO8V
-	 RFnRR6FDIAtPH7QY7PweHYagwcyRqd10ULJjolyV3WjGL88xSiavwwS1hRBGZe71rH
-	 EPJ14/pBxp/caB2D5mRhYVqiy4Kx55YqyC1T8V1I=
+	b=XhW/ZnuapXoj2OReDZhiPB8eGQ0FAbO675GpQcugUWiTeBG8/J+2cOHAUMf48H3YL
+	 puL86/agBN6E4fW/Mj1vtR+8NA3wMtCZs/tVl2JJwy3s1DiLIiw8KW0vQqKQn+YxXp
+	 PN/j5dE7vVPJSatOH1olMgBa5kTA/wEVYSQa8znE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 312D3F80257;
-	Wed, 20 Nov 2019 12:02:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E08DF8025A;
+	Wed, 20 Nov 2019 12:02:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3DF1F800F1; Tue, 19 Nov 2019 01:21:55 +0100 (CET)
+ id 990D2F8013D; Tue, 19 Nov 2019 01:21:57 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 151CCF80146
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 01:21:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 151CCF80146
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A291F80100
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 01:21:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A291F80100
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 18 Nov 2019 16:21:51 -0800
+ 18 Nov 2019 16:21:52 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,321,1569308400"; d="scan'208";a="215412059"
+X-IronPort-AV: E=Sophos;i="5.68,321,1569308400"; d="scan'208";a="215412063"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.41])
- by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2019 16:21:50 -0800
+ by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2019 16:21:51 -0800
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, x86@kernel.org,
  "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>,
  Pavel Machek <pavel@ucw.cz>
-Date: Mon, 18 Nov 2019 16:21:20 -0800
-Message-Id: <20191119002121.4107-12-sean.j.christopherson@intel.com>
+Date: Mon, 18 Nov 2019 16:21:21 -0800
+Message-Id: <20191119002121.4107-13-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <20191119002121.4107-1-sean.j.christopherson@intel.com>
 References: <20191119002121.4107-1-sean.j.christopherson@intel.com>
@@ -83,8 +83,8 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
  Alexander Shishkin <alexander.shishkin@linux.intel.com>,
  linux-kernel@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
-Subject: [alsa-devel] [PATCH 11/12] ACPI/sleep: Convert acpi_wakeup_address
-	into a function
+Subject: [alsa-devel] [PATCH 12/12] x86/ACPI/sleep: Move
+	acpi_wakeup_address() definition into sleep.c
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,83 +102,65 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert acpi_wakeup_address from a raw variable into a function so that
-x86 can wrap its dereference of the real mode boot header in a function
-instead of broadcasting it to the world via a #define.  This sets the
-stage for a future patch to move the definition of acpi_wakeup_address()
-out of asm/acpi.h and thus break acpi.h's dependency on asm/realmode.h.
-
-No functional change intended.
+Move the definition of acpi_wakeup_address() into sleep.c to break
+linux/acpi.h's dependency (by way of asm/acpi.h) on asm/realmode.h.
+Everyone and their mother includes linux/acpi.h, i.e. modifying
+realmode.h results in a full kernel rebuild, which makes the already
+inscrutable real mode boot code even more difficult to understand and is
+positively rage inducing when trying to make changes to x86's boot flow.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/ia64/include/asm/acpi.h | 5 ++++-
- arch/ia64/kernel/acpi.c      | 2 --
- arch/x86/include/asm/acpi.h  | 5 ++++-
- drivers/acpi/sleep.c         | 4 ++--
- 4 files changed, 10 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/acpi.h  |  6 +-----
+ arch/x86/kernel/acpi/sleep.c | 11 +++++++++++
+ 2 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/arch/ia64/include/asm/acpi.h b/arch/ia64/include/asm/acpi.h
-index f886d4dc9d55..36d7003eee71 100644
---- a/arch/ia64/include/asm/acpi.h
-+++ b/arch/ia64/include/asm/acpi.h
-@@ -38,7 +38,10 @@ int acpi_gsi_to_irq (u32 gsi, unsigned int *irq);
- /* Low-level suspend routine. */
- extern int acpi_suspend_lowlevel(void);
- 
--extern unsigned long acpi_wakeup_address;
-+static inline unsigned long acpi_wakeup_address(void)
-+{
-+	return 0;
-+}
- 
- /*
-  * Record the cpei override flag and current logical cpu. This is
-diff --git a/arch/ia64/kernel/acpi.c b/arch/ia64/kernel/acpi.c
-index 70d1587ddcd4..a5636524af76 100644
---- a/arch/ia64/kernel/acpi.c
-+++ b/arch/ia64/kernel/acpi.c
-@@ -42,8 +42,6 @@ int acpi_lapic;
- unsigned int acpi_cpei_override;
- unsigned int acpi_cpei_phys_cpuid;
- 
--unsigned long acpi_wakeup_address = 0;
--
- #define ACPI_MAX_PLATFORM_INTERRUPTS	256
- 
- /* Array to record platform interrupt vectors for generic interrupt routing. */
 diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-index bc9693c9107e..57788ec6fa82 100644
+index 57788ec6fa82..0cae3f773d44 100644
 --- a/arch/x86/include/asm/acpi.h
 +++ b/arch/x86/include/asm/acpi.h
-@@ -62,7 +62,10 @@ static inline void acpi_disable_pci(void)
+@@ -13,7 +13,6 @@
+ #include <asm/processor.h>
+ #include <asm/mmu.h>
+ #include <asm/mpspec.h>
+-#include <asm/realmode.h>
+ #include <asm/x86_init.h>
+ 
+ #ifdef CONFIG_ACPI_APEI
+@@ -62,10 +61,7 @@ static inline void acpi_disable_pci(void)
  extern int (*acpi_suspend_lowlevel)(void);
  
  /* Physical address to resume after wakeup */
--#define acpi_wakeup_address ((unsigned long)(real_mode_header->wakeup_start))
-+static inline unsigned long acpi_wakeup_address(void)
-+{
-+	return ((unsigned long)(real_mode_header->wakeup_start));
-+}
+-static inline unsigned long acpi_wakeup_address(void)
+-{
+-	return ((unsigned long)(real_mode_header->wakeup_start));
+-}
++unsigned long acpi_wakeup_address(void);
  
  /*
   * Check if the CPU can handle C2 and deeper
-diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-index 2af937a8b1c5..9e66c4109556 100644
---- a/drivers/acpi/sleep.c
-+++ b/drivers/acpi/sleep.c
-@@ -63,9 +63,9 @@ static int acpi_sleep_prepare(u32 acpi_state)
- #ifdef CONFIG_ACPI_SLEEP
- 	/* do we have a wakeup address for S2 and S3? */
- 	if (acpi_state == ACPI_STATE_S3) {
--		if (!acpi_wakeup_address)
-+		if (!acpi_wakeup_address())
- 			return -EFAULT;
--		acpi_set_waking_vector(acpi_wakeup_address);
-+		acpi_set_waking_vector(acpi_wakeup_address());
+diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
+index ca13851f0570..44d3fb1a1de3 100644
+--- a/arch/x86/kernel/acpi/sleep.c
++++ b/arch/x86/kernel/acpi/sleep.c
+@@ -26,6 +26,17 @@ unsigned long acpi_realmode_flags;
+ static char temp_stack[4096];
+ #endif
  
- 	}
- 	ACPI_FLUSH_CPU_CACHE();
++/**
++ * acpi_wakeup_address - provide physical address for S3 wakeup
++ *
++ * Returns the physical address where the kernel should be resumed after the
++ * system awakes from S3, e.g. for programming into the firmware waking vector.
++ */
++unsigned long acpi_wakeup_address(void)
++{
++	return ((unsigned long)(real_mode_header->wakeup_start));
++}
++
+ /**
+  * x86_acpi_enter_sleep_state - enter sleep state
+  * @state: Sleep state to enter.
 -- 
 2.24.0
 
