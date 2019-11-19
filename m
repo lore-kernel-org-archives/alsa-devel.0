@@ -2,88 +2,96 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	FSL_HELO_FAKE,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BD6CC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:16:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBA4AC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:17:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B674223D0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:16:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44A83223D0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:17:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Khu+XOmw";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RSaaXLGG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B674223D0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sV3Ces4a";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FM53ORQw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44A83223D0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3AF316C7;
-	Wed, 20 Nov 2019 12:15:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3AF316C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98A3216F2;
+	Wed, 20 Nov 2019 12:16:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98A3216F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574248598;
-	bh=F9IZ6QzAfS/OP737Tc4jecq5PqPAicDXSNYhMNnGp1o=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1574248635;
+	bh=n6vn2g4a63GPcBlpGUu7Rx4aHMlW6g+u0G6ghdfaB3Q=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Khu+XOmwFdUaEo8dl5HEvzuY7kQ8RKDdD4RtiX7+neFdmGYxhyFOsS7Az3q+GlJXs
-	 kRjN6ZhE46Sbr4R9DWEph7WIycHHtJO585DWAvaRRQf8M4S770SsFlxesLtEFWwFJw
-	 LFZz2V4LiszP50HsrTaeWGrZIcKlLzisbYXZCA+c=
+	b=sV3Ces4a6PYXoZ68MfRxzYSdvG8LUTKFAjKx7QXxJ/K9a/otozVL1zBHg+JawkTGQ
+	 o2oIB8sCKwc3Pph07meAhaCT3NqH3R8m27E9aTKLVXHoJU88MODBPdI1iSII99f0FF
+	 xVbtl58XyesAcd+uWwPgblqOZpfolHDoFXz4WT2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F443F80299;
-	Wed, 20 Nov 2019 12:02:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56528F8029B;
+	Wed, 20 Nov 2019 12:02:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36548F80137; Tue, 19 Nov 2019 13:09:15 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id 4CBD7F80137; Tue, 19 Nov 2019 13:22:27 +0100 (CET)
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
+ [IPv6:2a00:1450:4864:20::344])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F8FFF800FF
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 13:09:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F8FFF800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id D825CF800F4
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 13:22:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D825CF800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="RSaaXLGG"
-Received: by mail-wr1-x443.google.com with SMTP id q15so10722012wrw.7
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 04:09:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=ivBxIQiw/QvtMfmpR5iQrO/2f3Dutvsc0GR6a8pfJQ0=;
- b=RSaaXLGGQlX7yfXlu5Z0jagMZpyaCg6RuPa26b20m/OvaqlU5ocVtDiZCnVIEt8kMu
- ZvwwC3bFBzFqAWIVjrZTaobfuXs5UZnbmdfsiILEmizj50l29O+7U4uYt1ArPz+kNZRh
- hDiWZwZexe9ifx4uU/MBeZAVyBde6hOCmojuRoP08SVjUDBKnsX1uP3WiQ/IvYIIueUg
- UXNL+Q3Nbdjx43nM2xHZl4aj1ft4lWWVIY8rA9tK6fxYdMTA/kSD/z6lHBLjBo3Phl+q
- L89HkBiLMWoxtzjTSRZTZlbePnCR7tHPJRkk8PtkPvIV3udwFbVA0RFT4JGDzmIEZEQa
- fY9g==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="FM53ORQw"
+Received: by mail-wm1-x344.google.com with SMTP id u18so2971230wmc.3
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 04:22:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=sender:date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=pCZ+boQU06taG0uRqRU5p4OOluIcsIWA0zaH1C287a4=;
+ b=FM53ORQwVWjNBirpF/b/+wjx/e/Vkp4KItN0WlU1fYzCw4RAjrqFTtnM1/Uby3dVdK
+ FCJ2nKsQJhpo4l/bZk7Mn4z199l/383/1X7afTKdZblq/CJAKCWCvta88xxwyXl3UZci
+ FtloJoF1fjzEmTqusleWmxmV53XzWbjgfOHucCsGFLIiuaTkoC1uNxNy5sBv/8lhagE6
+ qPoSqMrrhpbvXhW6fyDB0xkiv1z9FaKX0j/tQHxrrf3tAq/TC3/EF3T/oJvmKOTtL1V4
+ N712FUpDdceOhaggMDCiLsd2aHyJNLUosvD4PCEhff6lFjUG8qXy5FvJ1ReseK+Bt2hx
+ mF/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=ivBxIQiw/QvtMfmpR5iQrO/2f3Dutvsc0GR6a8pfJQ0=;
- b=HvnPW/h5tMsIHOb6kPnILJvN2fZTKZd6CXqqM1yccQCgrFd4SPyduu1xdsSU/nF+UR
- eSRJ6VE+jpOG2lANhMZYCbbqhKlsCd5BwT5fUVEC0HvCdQxyqZqTGA392+IjjDxAeivw
- yCScWf1ouyTvmHmLwA8BQLsOxELzUatQBZVWBRaWQavNvJgQA3U9fWarzWSIhX83rK9K
- xHWpLEWe+kWwzmpKkUBy8UBXHuLaVNOiHVn1ZeY4EpSTMI/O0MHyTba6YE44g1RAkwHg
- +a99xzh+zmV8CsUvqwuZyNwkH4Zt7BagsaL5azZbqy0swCjBHLr7hcZyBefavuUF4fq8
- g8VA==
-X-Gm-Message-State: APjAAAVBDsVThYj8Ygg/tMDruxv0y0w0nQmy3xtAmya7S3y3+aSILWLN
- 2wIKutUIuvk8k62RAjZiU20j091ByX2cn4jy3xaNEQ==
-X-Google-Smtp-Source: APXvYqzVh5wmA90P19s7zmbb2x7Na4wJQqfpSJjjGSz8H0l9CWz1oPf8pw9K4u4+qFJI0+MGYo/t6MxvnfJIJ9zAjTc=
-X-Received: by 2002:adf:b1cb:: with SMTP id r11mr400801wra.246.1574165351430; 
- Tue, 19 Nov 2019 04:09:11 -0800 (PST)
-MIME-Version: 1.0
+ h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+ :references:mime-version:content-disposition:in-reply-to:user-agent;
+ bh=pCZ+boQU06taG0uRqRU5p4OOluIcsIWA0zaH1C287a4=;
+ b=ZyL4f8ZOWddmVbOxcxpuNqVKEivqwPksjr9hPQNvDiyCQg05u0odlgKxV2Upsoqz1s
+ 9NcPK5eP6RMHHCtAXhYPYFfhspDpia8ZP+VC9T85ySPVsxd5famzYoGAWrIGs2N2L7F1
+ GQSBQKuRJNmA2Q+HK74BqKjDLvDQiAAIfcHNPKcPEV5uKc/8htlFRpSeyXq/MeehWMuM
+ B5Pqrgg7nW5CedSS6Phg/nIMZyDYYFt00MLdhoIYYmbXWr1Xikw7GnhRPIIfb1ph4Qor
+ hg54F+iXoE5Hok+rwnEB0jAjmRHWaVBKJ4BKs4caAuyRkUuIiJmLMuPr8GTdSWvP7vz8
+ Lguw==
+X-Gm-Message-State: APjAAAVWMJZuELGqHW41fWlQSpJ1yHST9vgszqvt9IYamkoHfXqHx99Z
+ xknssZH0CKrdAcQm3KVvX6g=
+X-Google-Smtp-Source: APXvYqx8J0A9Fq4xFkjwZhw6QIza/BfWFpr6MygFUiV3WR/Xgy1tZfffFAp6e+6ePrvxr9A8W8GhgQ==
+X-Received: by 2002:a1c:a556:: with SMTP id o83mr5077222wme.165.1574166141047; 
+ Tue, 19 Nov 2019 04:22:21 -0800 (PST)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+ by smtp.gmail.com with ESMTPSA id o187sm2916196wmo.20.2019.11.19.04.22.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 19 Nov 2019 04:22:20 -0800 (PST)
+Date: Tue, 19 Nov 2019 13:22:17 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Message-ID: <20191119122217.GA24878@gmail.com>
 References: <20191119002121.4107-1-sean.j.christopherson@intel.com>
  <20191119111012.GA109842@gmail.com>
-In-Reply-To: <20191119111012.GA109842@gmail.com>
-From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date: Tue, 19 Nov 2019 12:09:07 +0000
-Message-ID: <CAKv+Gu9C132peF9_j2rRwRh4s+aWZBY82rgjqmwaE_X=_6y4Zw@mail.gmail.com>
-To: Ingo Molnar <mingo@kernel.org>
+ <CAKv+Gu9C132peF9_j2rRwRh4s+aWZBY82rgjqmwaE_X=_6y4Zw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAKv+Gu9C132peF9_j2rRwRh4s+aWZBY82rgjqmwaE_X=_6y4Zw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Mailman-Approved-At: Wed, 20 Nov 2019 12:02:18 +0100
 Cc: Mark Rutland <mark.rutland@arm.com>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -130,68 +138,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Nov 2019 at 12:10, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Sean Christopherson <sean.j.christopherson@intel.com> wrote:
->
-> > x86's asm/realmode.h, which defines low level structures, variables and
-> > helpers used to bring up APs during SMP boot, ends up getting included in
-> > practically every nook and cranny of the kernel because the address used
-> > by ACPI for resuming from S3 also happens to be stored in the real mode
-> > header, and ACPI bleeds the dependency into its widely included headers.
-> >
-> > As a result, modifying realmode.h for even the most trivial change to the
-> > boot code triggers a full kernel rebuild, which is frustrating to say the
-> > least as it some of the most difficult code to get exactly right *and* is
-> > also some of the most functionally isolated code in the kernel.
-> >
-> > To break the kernel's widespread dependency on realmode.h, add a wrapper
-> > in the aforementioned ACPI S3 code to access the real mode header instead
-> > of derefencing the header directly in asm/acpi.h and thereby exposing it
-> > to the world via linux/acpi.h.
-> >
-> > Build tested on x86 with allyesconfig and allmodconfig, so hopefully there
-> > aren't more build issues lurking, but at this point it wouldn't surprise
-> > me in the least if this somehow manages to break the build.
-> >
-> > Based on tip/master, commit ceceaf1f12ba ("Merge branch 'WIP.x86/cleanups'").
-> >
-> > Patch Synopsis:
-> >   - Patches 01-09 fix a variety of build errors that arise when patch 12
-> >     drops realmode.h from asm/acpi.h.  Most of the errors are quite absurb
-> >     as they have no relation whatsoever to x86's RM boot code, but occur
-> >     because realmode.h happens to include asm/io.h.
->
-> Yeah, these kind of parasitic header dependencies are the main driving
-> force behind kernel header spaghetti hell: it's super easy to add a new
-> header, but very hard to remove them...
->
-> Hence they practically only accumulate.
->
-> As a result header removal patches get priority, from me at least. :-)
->
-> >   - Patch 10 removes a spurious include of realmode.h from an ACPI header.
-> >
-> >   - Patches 11 and 12 implement the wrapper and move it out of acpi.h.
->
-> So if the ACPI maintainers are fine with -tip carrying patches #11 and #12
-> then I'd be glad to route these patches upstream.
->
-> I've applied them to tip:WIP.core/headers as a work-in-progress tree, and
-> I'm testing them on randconfigs to make sure there's no broken
-> dependencies. I'll wait for the ACPI acks.
->
-> I edited the title of patch 12 slightly, to:
->
->    c8bceb321209: x86/ACPI/sleep: Move acpi_wakeup_address() definition into sleep.c, remove <asm/realmode.h> from <asm/acpi.h>
->
-> to make sure the big header dependency change is obvious at first sight.
->
 
-I'm fine with the patches but can we drop the fixes headers please?
-This doesn't actually fix anything, and touching early boot stuff for
-no good reason should be avoided imo.
+* Ard Biesheuvel <ard.biesheuvel@linaro.org> wrote:
+
+> On Tue, 19 Nov 2019 at 12:10, Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> >
+> > * Sean Christopherson <sean.j.christopherson@intel.com> wrote:
+> >
+> > > x86's asm/realmode.h, which defines low level structures, variables and
+> > > helpers used to bring up APs during SMP boot, ends up getting included in
+> > > practically every nook and cranny of the kernel because the address used
+> > > by ACPI for resuming from S3 also happens to be stored in the real mode
+> > > header, and ACPI bleeds the dependency into its widely included headers.
+> > >
+> > > As a result, modifying realmode.h for even the most trivial change to the
+> > > boot code triggers a full kernel rebuild, which is frustrating to say the
+> > > least as it some of the most difficult code to get exactly right *and* is
+> > > also some of the most functionally isolated code in the kernel.
+> > >
+> > > To break the kernel's widespread dependency on realmode.h, add a wrapper
+> > > in the aforementioned ACPI S3 code to access the real mode header instead
+> > > of derefencing the header directly in asm/acpi.h and thereby exposing it
+> > > to the world via linux/acpi.h.
+> > >
+> > > Build tested on x86 with allyesconfig and allmodconfig, so hopefully there
+> > > aren't more build issues lurking, but at this point it wouldn't surprise
+> > > me in the least if this somehow manages to break the build.
+> > >
+> > > Based on tip/master, commit ceceaf1f12ba ("Merge branch 'WIP.x86/cleanups'").
+> > >
+> > > Patch Synopsis:
+> > >   - Patches 01-09 fix a variety of build errors that arise when patch 12
+> > >     drops realmode.h from asm/acpi.h.  Most of the errors are quite absurb
+> > >     as they have no relation whatsoever to x86's RM boot code, but occur
+> > >     because realmode.h happens to include asm/io.h.
+> >
+> > Yeah, these kind of parasitic header dependencies are the main driving
+> > force behind kernel header spaghetti hell: it's super easy to add a new
+> > header, but very hard to remove them...
+> >
+> > Hence they practically only accumulate.
+> >
+> > As a result header removal patches get priority, from me at least. :-)
+> >
+> > >   - Patch 10 removes a spurious include of realmode.h from an ACPI header.
+> > >
+> > >   - Patches 11 and 12 implement the wrapper and move it out of acpi.h.
+> >
+> > So if the ACPI maintainers are fine with -tip carrying patches #11 and #12
+> > then I'd be glad to route these patches upstream.
+> >
+> > I've applied them to tip:WIP.core/headers as a work-in-progress tree, and
+> > I'm testing them on randconfigs to make sure there's no broken
+> > dependencies. I'll wait for the ACPI acks.
+> >
+> > I edited the title of patch 12 slightly, to:
+> >
+> >    c8bceb321209: x86/ACPI/sleep: Move acpi_wakeup_address() definition into sleep.c, remove <asm/realmode.h> from <asm/acpi.h>
+> >
+> > to make sure the big header dependency change is obvious at first sight.
+> >
+> 
+> I'm fine with the patches but can we drop the fixes headers please?
+> This doesn't actually fix anything, and touching early boot stuff for
+> no good reason should be avoided imo.
+
+Agreed and done.
+
+Thanks,
+
+	Ingo
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
