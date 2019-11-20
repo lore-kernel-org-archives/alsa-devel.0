@@ -2,78 +2,96 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 320FAC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 18:47:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D65AC43215
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 19:13:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3173F20878
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 18:47:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 11047206DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 19:13:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sOxJUbId";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="LFl40MKq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3173F20878
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hOL3YyZw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vbKUuFnp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11047206DA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E83681729;
-	Wed, 20 Nov 2019 19:46:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E83681729
+	by alsa0.perex.cz (Postfix) with ESMTPS id C35451735;
+	Wed, 20 Nov 2019 20:12:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C35451735
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574275668;
-	bh=PrJNN1MzKBubteq2gyWgrFGF5iK9CTy+nvNATYYfnNM=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sOxJUbIdBnzRbxCSufIzVP8ItB5CryeZpOwEc+wDcjAD0WWrMKGOypUDldzBTXwZ/
-	 a7+mTc7UKxwGp+IxL7Z384U2+XcH/S7H5UJ3OiquKkyftFpPkKIxE1EbREyJkASUd9
-	 gf0IZDvvEm8AOz/7R5FVRIxVY9+yBiOrw67PkqpU=
+	s=default; t=1574277220;
+	bh=ahdep5rvEZBYmyn6JNKqo4DendtsZvU0GRrxlMHXjFM=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hOL3YyZw/cQtepJhogoW3cSn25TdlwrHAlTXdTTEYlTBso37SuEr+kuJy4jHJ2GWG
+	 0UY9q9mPo55BinuaiAfvm33NAG1KMsDz9zA87PwFNVVEvGo/XJzae2Aq5URnQqEHNw
+	 BMcbbn1nuDvUZ3/c3oR+Yb2zm/wDjNLksSriDv4Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BC8AF8013C;
-	Wed, 20 Nov 2019 19:46:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 424EBF8013C;
+	Wed, 20 Nov 2019 20:12:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD632F8013D; Wed, 20 Nov 2019 19:46:55 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27FD3F800F0
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 19:46:52 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0355CA0040;
- Wed, 20 Nov 2019 19:46:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 0355CA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1574275612; bh=iOkWgKa6LtW7fqW5h7O9a21Xvqap/Ml5RPs8LvvR/Oo=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=LFl40MKq+YFj7z92f2W0H68hxnPnep9St0djy+KrZiXBGKk3Fvv/0gC2iRKNogVFZ
- QAheL2/QPhOSsqXj7kH+e4Zb3/0IcYYUE7jB89R2WOMhrwU5kjp0B7P2SfQ3Xb9vQC
- dN3utf4l3iKj7HEcf09h1mKpGhZobmysoOvMqXeA=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ id 69023F8013D; Wed, 20 Nov 2019 20:12:48 +0100 (CET)
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
+ [IPv6:2607:f8b0:4864:20::643])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 20 Nov 2019 19:46:47 +0100 (CET)
-To: Mark Brown <broonie@kernel.org>
-References: <ef29c9d6-b359-a9df-f8fa-d547b02bc8d2@perex.cz>
- <20191120181946.GC5705@sirena.org.uk>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <4fde7eec-4a5a-c882-87d2-177cfc808126@perex.cz>
-Date: Wed, 20 Nov 2019 19:46:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87700F800C1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 20:12:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87700F800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="vbKUuFnp"
+Received: by mail-pl1-x643.google.com with SMTP id f9so216719plr.7
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 11:12:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=J89rFEpX2bcn4MT2rPqMISIns9zkUW3SAqfx6stcmDY=;
+ b=vbKUuFnpjfJvhuUKKja6vHEpvk/MObeRe3IhQevXbNqezXzUbsV0cVX4hw7adTt+LM
+ QTvOp/vQ20lVAv3n+DrS6ZZpNgbv1Y6RIm9hAqfu6j1l01m+87zvrB8Tg6/6EEkNHXet
+ POwLlYM+ptX+E3pk4NPK1v9PNeg7D1lcml9m6svRjLG243bG1N9C8eJm+RTAuFDWYyIH
+ Yex95Vf1x5B0/3ot1YSx+57pmpPM03Ntu+L8MJRoCrqq5jydnxgt22PLU6QwCJGEmzMc
+ t/7E+2XkFkM8xENO5PgYzoTZ+1mvi9jC2rLHSQCbxJJRQU6PQldJlLOg44gstt/uQFNI
+ SW5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=J89rFEpX2bcn4MT2rPqMISIns9zkUW3SAqfx6stcmDY=;
+ b=STJATZ2OI4lh7Z3zas5RgcRKXFDRp1pQxBvDFJ/ERgDe4+kGqntOtVEIzYIeUQyjL3
+ gYtsJTfdi6cuKF9DEOFDT+c1VgdFArLBrBXP2X99a8ybj6ceJ+FxLYcTjZuPxu6FCorr
+ na4Rt7qCvhR33cNF7SrQCrzHZ7j1BITZuNFXGsDl68UngdTwBOIkLIm8DaNZG07t0ObF
+ /0sT6Em0GpDJwhb71g0oeVIkVoJy6AKRVgda7Y/wky6FUAROF9hh+dGaEVDFn4R1qBwA
+ 1mRmLQiVDO8cu3i4IQohF2pmIZeGETDQwGCOcSzRGudzhjMnvcrZQyp01USl6K2f+iD5
+ ob2w==
+X-Gm-Message-State: APjAAAVdvO8FqP0eX2DuSz7nrHiFyjxxRl9eMgyfiut5aRlCtZVOPTq/
+ IpubOqWI5sD0/kDLSHPq2oQgyZPlcIM=
+X-Google-Smtp-Source: APXvYqx6ToveC8vMvJEIUJZIaEYGHMUI5soASX6ocwFi7Mrc2xfaH6mjYyGdWNEB/BOYZM7VUsXG0g==
+X-Received: by 2002:a17:902:690a:: with SMTP id
+ j10mr4547778plk.67.1574277162652; 
+ Wed, 20 Nov 2019 11:12:42 -0800 (PST)
+Received: from mangix-trapnet.lan ([69.42.0.214])
+ by smtp.gmail.com with ESMTPSA id y1sm120495pfq.138.2019.11.20.11.12.41
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 20 Nov 2019 11:12:41 -0800 (PST)
+From: Rosen Penev <rosenp@gmail.com>
+To: alsa-devel@alsa-project.org
+Date: Wed, 20 Nov 2019 11:12:40 -0800
+Message-Id: <20191120191240.260130-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191120181946.GC5705@sirena.org.uk>
-Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] ASoC, DMI and UCM
+Subject: [alsa-devel] [PATCHv2] aplay: Limit VUMeter progress bar to 100 for
+	negative as well
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,42 +104,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 20. 11. 19 v 19:19 Mark Brown napsal(a):
-> On Wed, Nov 20, 2019 at 11:04:38AM +0100, Jaroslav Kysela wrote:
-> 
->> 	I would like to discuss the way we use DMI information for the board
->> identification in ASoC for the user space (long card name). It's a bit
->> redundant information, because DMI is already exposed through
->> /sys/class/dmi/id/ to the user space nowadays.
-> 
->> 	My idea is to add 'DMI:sysfs' ctl info component string for the appropriate
->> ASoC driver to detect the existence of this dmi interface. Then I can add
->> the sysfs support to the ucm2 conditions.
-> 
-> I'm not clear what adding the component string does here - is the
-> intention just to say that the card is built in to the machine and hence
-> DMI can be used?  If that is the case something more generic that'd also
-> work with other firmware interfaces might be good.
+While the progress bar cannot be negative, GCC concludes that it can be
+and assumes tmp can be written past the end. Fixes this GCC warning:
 
-Yes, basically, it would mean that the sound card is integrated to the 
-motherboard thus the DMI info can be used for the special configs. I already 
-added sysfs support to alsa-lib ucm substitution.
+aplay.c:1747:18: warning: '%02d' directive writing between 2 and 11 bytes
+ into a region of size 4 [-Wformat-overflow=]
+ 1747 |    sprintf(tmp, "%02d%%", maxperc[c]);
 
-Thinking more -  we don't need this probably urgently for ASoC drivers, 
-because they all work with the integrated (built in) hardware, but it might 
-make sense for other drivers. Probably another component identifier should be 
-selected like 'integrated' or 'builtin' or so.
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ v2: Reworded
+ aplay/aplay.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-					Jaroslav
-
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index 78adee2..1a887e4 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -54,6 +54,8 @@
+ #include "formats.h"
+ #include "version.h"
+ 
++#define ABS(a)  (a) < 0 ? -(a) : (a)
++
+ #ifdef SND_CHMAP_API_VERSION
+ #define CONFIG_SUPPORT_CHMAP	1
+ #endif
+@@ -1741,7 +1743,7 @@ static void print_vu_meter_stereo(int *perc, int *maxperc)
+ 			line[bar_length + 6 + 1 + p] = '+';
+ 		else
+ 			line[bar_length - p - 1] = '+';
+-		if (maxperc[c] > 99)
++		if (ABS(maxperc[c]) > 99)
+ 			sprintf(tmp, "MAX");
+ 		else
+ 			sprintf(tmp, "%02d%%", maxperc[c]);
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.23.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
