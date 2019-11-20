@@ -2,96 +2,97 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D65AC43215
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 19:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCADBC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 19:14:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11047206DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 19:13:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 445F7206DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 19:14:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hOL3YyZw";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vbKUuFnp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11047206DA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N9U8hqs7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kKwBSFSe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 445F7206DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C35451735;
-	Wed, 20 Nov 2019 20:12:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C35451735
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96EF6173A;
+	Wed, 20 Nov 2019 20:13:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96EF6173A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574277220;
-	bh=ahdep5rvEZBYmyn6JNKqo4DendtsZvU0GRrxlMHXjFM=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hOL3YyZw/cQtepJhogoW3cSn25TdlwrHAlTXdTTEYlTBso37SuEr+kuJy4jHJ2GWG
-	 0UY9q9mPo55BinuaiAfvm33NAG1KMsDz9zA87PwFNVVEvGo/XJzae2Aq5URnQqEHNw
-	 BMcbbn1nuDvUZ3/c3oR+Yb2zm/wDjNLksSriDv4Q=
+	s=default; t=1574277275;
+	bh=rk2kO1kgGk2XS86CNseV0PVTlv34/PCyP1E2b5cqllw=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=N9U8hqs7HNJVkqt1lBDbmV7pzVhs3s5j88ZYrZ6Dw0rfAGFPoi6s710Hs0V/ELn2I
+	 ewbD+RlTKpoV4gdSryFxzTQrLNLv//IyWxCbLY1YHRhubOVGNofYV4vcGVbMncDm2m
+	 zSEerGwzMqTe42hWbPpPcmOER6oEiuW4Bz6Iz5Mo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 424EBF8013C;
-	Wed, 20 Nov 2019 20:12:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 655FEF800F0;
+	Wed, 20 Nov 2019 20:13:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69023F8013D; Wed, 20 Nov 2019 20:12:48 +0100 (CET)
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
- [IPv6:2607:f8b0:4864:20::643])
+ id 4EA61F8014A; Wed, 20 Nov 2019 20:13:01 +0100 (CET)
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com
+ [IPv6:2607:f8b0:4864:20::244])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87700F800C1
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 20:12:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87700F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70771F8013F
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 20:12:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70771F8013F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="vbKUuFnp"
-Received: by mail-pl1-x643.google.com with SMTP id f9so216719plr.7
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 11:12:45 -0800 (PST)
+ header.b="kKwBSFSe"
+Received: by mail-oi1-x244.google.com with SMTP id 14so760711oir.12
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 11:12:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=J89rFEpX2bcn4MT2rPqMISIns9zkUW3SAqfx6stcmDY=;
- b=vbKUuFnpjfJvhuUKKja6vHEpvk/MObeRe3IhQevXbNqezXzUbsV0cVX4hw7adTt+LM
- QTvOp/vQ20lVAv3n+DrS6ZZpNgbv1Y6RIm9hAqfu6j1l01m+87zvrB8Tg6/6EEkNHXet
- POwLlYM+ptX+E3pk4NPK1v9PNeg7D1lcml9m6svRjLG243bG1N9C8eJm+RTAuFDWYyIH
- Yex95Vf1x5B0/3ot1YSx+57pmpPM03Ntu+L8MJRoCrqq5jydnxgt22PLU6QwCJGEmzMc
- t/7E+2XkFkM8xENO5PgYzoTZ+1mvi9jC2rLHSQCbxJJRQU6PQldJlLOg44gstt/uQFNI
- SW5w==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=HIQEKd6TofbIVkSXkyhR8UBPl3/YBPiFJvSOLX+5OT0=;
+ b=kKwBSFSercUrdZ/ptBH1K7dKEGVw7zs2UQ3hnuN3kLn3KcsLiMuA4JC/2GRlGfh2XC
+ I0TJHX1mY+h6Xdec9WWUpISzCayK5Tj07a+ggLU/zNbEYjHewIQDcXSWh5PhgIf4qitK
+ qks2Gjdhmyb8V9I07ZFrAlsIPtXzIWNkWskmpxMnRkoYvkRJm0Qah+yOrIuyduEvNhsy
+ aFJW77PEiu16b7x11VgPikti+0mecMZOBEtC8rqRy33r64k/27W5hfLqlCMHNV6ggQoK
+ IthJ2uIWBQ/H3iw1c278EcBY8DZd4zx0z+mkX4tqdTZUcZ+0TxOYRJlUvBY6Xmom5wTV
+ bFiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=J89rFEpX2bcn4MT2rPqMISIns9zkUW3SAqfx6stcmDY=;
- b=STJATZ2OI4lh7Z3zas5RgcRKXFDRp1pQxBvDFJ/ERgDe4+kGqntOtVEIzYIeUQyjL3
- gYtsJTfdi6cuKF9DEOFDT+c1VgdFArLBrBXP2X99a8ybj6ceJ+FxLYcTjZuPxu6FCorr
- na4Rt7qCvhR33cNF7SrQCrzHZ7j1BITZuNFXGsDl68UngdTwBOIkLIm8DaNZG07t0ObF
- /0sT6Em0GpDJwhb71g0oeVIkVoJy6AKRVgda7Y/wky6FUAROF9hh+dGaEVDFn4R1qBwA
- 1mRmLQiVDO8cu3i4IQohF2pmIZeGETDQwGCOcSzRGudzhjMnvcrZQyp01USl6K2f+iD5
- ob2w==
-X-Gm-Message-State: APjAAAVdvO8FqP0eX2DuSz7nrHiFyjxxRl9eMgyfiut5aRlCtZVOPTq/
- IpubOqWI5sD0/kDLSHPq2oQgyZPlcIM=
-X-Google-Smtp-Source: APXvYqx6ToveC8vMvJEIUJZIaEYGHMUI5soASX6ocwFi7Mrc2xfaH6mjYyGdWNEB/BOYZM7VUsXG0g==
-X-Received: by 2002:a17:902:690a:: with SMTP id
- j10mr4547778plk.67.1574277162652; 
- Wed, 20 Nov 2019 11:12:42 -0800 (PST)
-Received: from mangix-trapnet.lan ([69.42.0.214])
- by smtp.gmail.com with ESMTPSA id y1sm120495pfq.138.2019.11.20.11.12.41
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 Nov 2019 11:12:41 -0800 (PST)
-From: Rosen Penev <rosenp@gmail.com>
-To: alsa-devel@alsa-project.org
-Date: Wed, 20 Nov 2019 11:12:40 -0800
-Message-Id: <20191120191240.260130-1-rosenp@gmail.com>
-X-Mailer: git-send-email 2.23.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=HIQEKd6TofbIVkSXkyhR8UBPl3/YBPiFJvSOLX+5OT0=;
+ b=pSgaze9PmHqq36fUErKbCAAkbEnqLN+PpbP/9wwkcyYBGFhbVkTzJNQVaBuNdTcJ1M
+ 1fLVli2hKbD0ufP/5R7iI3ueIpUDAWEaKescnHxHy+pYv3xv1kvJ7AqR1T/NmHANnHQ2
+ MJR65OfxkHLKdj+oWFaBbnpTpD3RTJfJvwyYLno0YpgXas6GbunEDfsJVkyLY/ZiqEY8
+ OrI8BDjtXC9XSHKxXHnZ3UM2Iw5/lDUwfWzHt3ViQtSWhMW0NdAbZ2247LrTuj0V0xRF
+ EbMHNXHZv+U0mZizVXp31Xm15poVZkPow+xvyXeV4Jr28IRSBkpzV+gPUloZskZXNAmj
+ qA9g==
+X-Gm-Message-State: APjAAAWi+WoE3wTa+ec5UOBZYTuBFRIvKDHJ5+9FPOVFAaBKK3H5eQIk
+ RfFhTLeqZkVn7Mpl26eJg9+LzM39cR8FhlGpqeE=
+X-Google-Smtp-Source: APXvYqyuWTvhbco2f9hNngg/g+iDQi1n+goAYTjbpPmQDFOcvm4pZKUyTIzU4mXgOfgAVTV0G/Lj/E78gI6EXeqE2OA=
+X-Received: by 2002:aca:1c12:: with SMTP id c18mr4200383oic.113.1574277176070; 
+ Wed, 20 Nov 2019 11:12:56 -0800 (PST)
 MIME-Version: 1.0
-Subject: [alsa-devel] [PATCHv2] aplay: Limit VUMeter progress bar to 100 for
-	negative as well
+References: <20191120042856.415854-1-rosenp@gmail.com>
+ <20191120042856.415854-4-rosenp@gmail.com>
+ <s5hlfsbvzb9.wl-tiwai@suse.de>
+ <CAKxU2N_2yLB3g9UqXzkRQ1NNNyfXPKXRLP6A3pMHV+Vkpz5QSw@mail.gmail.com>
+ <s5hh82zvy9f.wl-tiwai@suse.de>
+ <CAKxU2N9e=gab5axaZZVswOB_ihB=RU-xg08WNZA+LBfBMprL8A@mail.gmail.com>
+ <s5hk17uv1lm.wl-tiwai@suse.de>
+In-Reply-To: <s5hk17uv1lm.wl-tiwai@suse.de>
+From: Rosen Penev <rosenp@gmail.com>
+Date: Wed, 20 Nov 2019 11:12:45 -0800
+Message-ID: <CAKxU2N97ie0nN-H4enKALmcW7spG0K4znqHwLP+-HaXvDb5sWA@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH 4/4] aplay: Limit VUMeter progress bar to
+ 100 for negative as well
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,44 +110,59 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-While the progress bar cannot be negative, GCC concludes that it can be
-and assumes tmp can be written past the end. Fixes this GCC warning:
-
-aplay.c:1747:18: warning: '%02d' directive writing between 2 and 11 bytes
- into a region of size 4 [-Wformat-overflow=]
- 1747 |    sprintf(tmp, "%02d%%", maxperc[c]);
-
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- v2: Reworded
- aplay/aplay.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 78adee2..1a887e4 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -54,6 +54,8 @@
- #include "formats.h"
- #include "version.h"
- 
-+#define ABS(a)  (a) < 0 ? -(a) : (a)
-+
- #ifdef SND_CHMAP_API_VERSION
- #define CONFIG_SUPPORT_CHMAP	1
- #endif
-@@ -1741,7 +1743,7 @@ static void print_vu_meter_stereo(int *perc, int *maxperc)
- 			line[bar_length + 6 + 1 + p] = '+';
- 		else
- 			line[bar_length - p - 1] = '+';
--		if (maxperc[c] > 99)
-+		if (ABS(maxperc[c]) > 99)
- 			sprintf(tmp, "MAX");
- 		else
- 			sprintf(tmp, "%02d%%", maxperc[c]);
--- 
-2.23.0
-
+On Wed, Nov 20, 2019 at 10:34 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Wed, 20 Nov 2019 18:55:43 +0100,
+> Rosen Penev wrote:
+> >
+> > On Tue, Nov 19, 2019 at 10:48 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Wed, 20 Nov 2019 07:36:19 +0100,
+> > > Rosen Penev wrote:
+> > > >
+> > > > On Tue, Nov 19, 2019 at 10:26 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > >
+> > > > > On Wed, 20 Nov 2019 05:28:56 +0100,
+> > > > > Rosen Penev wrote:
+> > > > > >
+> > > > > > If the progress bar somehow becomes negative, it ends up overwritting
+> > > > > > tmp. Fixes this GCC warning:
+> > > > > >
+> > > > > > aplay.c:1747:18: warning: '%02d' directive writing between 2 and 11 bytes
+> > > > > >  into a region of size 4 [-Wformat-overflow=]
+> > > > > >  1747 |    sprintf(tmp, "%02d%%", maxperc[c]);
+> > > > >
+> > > > > This is false-positive.  The value passed there is guaranteed to be a
+> > > > > positive integer at the calculation time.
+> > > > Sure. But best to silence GCC. It probably optimizes better this way.
+> > >
+> > > I guess this adds more code in binary.  Comparing with 99U would work?
+> > I tried that. Here are some results:
+> >
+> > 134348 for this patch
+> > 134832 if changed to U. Also tried casting lhs to unnsigned int, same size.
+> > 135125 originally
+> >
+> > I understand this is an exercise in micro-optimization, but still.
+> >
+> > Sizes are in bytes. It's the size of a compressed OpenWrt archive.
+>
+> Thanks for the analysis.  It's surprising, though, the original code
+> became bigger.
+I've learned not to question the compiler. If it complains, it means
+it generates suboptimal code.
+>
+> The cast of lhs is basically superfluous since C performs the cast
+> implicitly at comparison, BTW.
+>
+> In anyway, the number tells.  Could you respin this patch?
+I can resend. Not sure what you really want.
+> Meanwhile I'll apply the rest patches.
+>
+>
+> thanks,
+>
+> Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
