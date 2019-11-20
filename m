@@ -2,84 +2,83 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74202C432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA93AC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 12:05:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1D9122444
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 11:20:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 34C9C223D1
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 12:05:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ONsajk0D"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1D9122444
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ABsJ+3TT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34C9C223D1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 435C3170B;
-	Wed, 20 Nov 2019 12:19:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 435C3170B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D0011701;
+	Wed, 20 Nov 2019 13:04:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D0011701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574248833;
-	bh=x/XLG2Rg73O0870BIrHuyrI2hP4PT/bm7SXAbRyRnVw=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1574251510;
+	bh=UpwEboLxEwQ7+kxVwiMfoEqj3vEJJ81t196S/O/OWLE=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ONsajk0DnQZZFL9TLpXAiS5UwhiAGaIXGKWacCz99AgrzcQn1bwtw8jkr9Bj5Xvwx
-	 FoTbzj6f/vhP2QsS1CwGHJrg9HMmG/m8WyibeFRmXdoH1nVljxkN/89iZipRlv9P+B
-	 TM/kCi5LRNmhEGFArWVVZzjYyQCMrco+wtbYrAXk=
+	b=ABsJ+3TTyJiP0q8fAW2Hi1EuQQiVu5/A0vyL0W+qHNlUfU0SrEoRir3FYJvpAmlAo
+	 MPDtQhqe4N9vbNBcBmgEoj1SF+UC7DGIIWJ/DqWBQ+A7dOBcTVPdNltG/FHnpfg1fA
+	 FpZsiZAuzvqzscTWiG4L90RIwP+aKzELzip923kE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A4C8F80304;
-	Wed, 20 Nov 2019 12:02:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64360F80217;
+	Wed, 20 Nov 2019 13:00:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89B40F8013D; Wed, 20 Nov 2019 12:00:52 +0100 (CET)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl
- [79.96.170.134])
+ id 6BECBF80212; Wed, 20 Nov 2019 13:00:13 +0100 (CET)
+Received: from esa2.mentor.iphmx.com (esa2.mentor.iphmx.com [68.232.141.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28A27F800FF
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 12:00:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28A27F800FF
-Received: from 79.184.253.244.ipv4.supernova.orange.pl (79.184.253.244) (HELO
- kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.292)
- id a3504edb7f1d7620; Wed, 20 Nov 2019 12:00:49 +0100
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Sean Christopherson <sean.j.christopherson@intel.com>
-Date: Wed, 20 Nov 2019 12:00:48 +0100
-Message-ID: <1707133.c5szpGgj5A@kreacher>
-In-Reply-To: <20191119002121.4107-13-sean.j.christopherson@intel.com>
-References: <20191119002121.4107-1-sean.j.christopherson@intel.com>
- <20191119002121.4107-13-sean.j.christopherson@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E747F801F4
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 13:00:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E747F801F4
+IronPort-SDR: 9kCgK+uTckNFiX1G4h50skMBQgE94zL/1Gmlnnblz1sDcjMWim7eg4grSdHibAU9+3F7N7PwJn
+ VB5ZaGyNNqLgWad+DUf6FystE1Azr57udoAo5TqVdFbF5jbNIV6hbOukz0Oxt2NSosFG0pZLIK
+ YLVexZlMYDClFJYKWi6eAOeudzVqE9kT/6xT0cxPqEz3+HaJhBhb+PVMWMNa+nmoQEUuzDxuhk
+ zNji0TaB+yTKzIwtRZVyZcd4eoezJUMcVfWMysDJUAmJE3TF4mPKYzTZ35GZAvXf56y6BD+VHp
+ b3E=
+X-IronPort-AV: E=Sophos;i="5.69,221,1571731200"; d="scan'208";a="43282952"
+Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
+ by esa2.mentor.iphmx.com with ESMTP; 20 Nov 2019 04:00:08 -0800
+IronPort-SDR: 9BO8PS76rbrX3Nz2edhwu25bV/lNGy5OVzZ82kkpPmuBSUmne1ciXaMMTik1y/dT7hhYCDLAcE
+ O3McfE/mi3Zo3TzPIJRNJGS6K4OD5xfw1JmYoMHkEhORHgKo2PUArPGtbNioHRJ0r93y0W+/Jj
+ 5AjQ49duS247wxUG1VI5D4G6mjHHvzRaMM70sVk2wYGf/l9KoPARleWoX5g5ykMVmb0+bANGd5
+ Cmz1tkEw0uSR+sMbA+KPecpkmyt12hlPJ4xrsvqfizfBoq71OJ9ErnFBfdok0koyaiA0TC/6Rf
+ Ync=
+From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timo Wischer
+ <twischer@de.adit-jv.com>, Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Date: Wed, 20 Nov 2019 05:58:56 -0600
+Message-ID: <20191120115856.4125-8-andrew_gabbasov@mentor.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191120115856.4125-7-andrew_gabbasov@mentor.com>
+References: <20191120115856.4125-1-andrew_gabbasov@mentor.com>
+ <20191120115856.4125-2-andrew_gabbasov@mentor.com>
+ <20191120115856.4125-3-andrew_gabbasov@mentor.com>
+ <20191120115856.4125-4-andrew_gabbasov@mentor.com>
+ <20191120115856.4125-5-andrew_gabbasov@mentor.com>
+ <20191120115856.4125-6-andrew_gabbasov@mentor.com>
+ <20191120115856.4125-7-andrew_gabbasov@mentor.com>
 MIME-Version: 1.0
-X-Mailman-Approved-At: Wed, 20 Nov 2019 12:02:18 +0100
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, linux-efi@vger.kernel.org,
- linux-ia64@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
- Peter Zijlstra <peterz@infradead.org>, Jie Yang <yang.jie@linux.intel.com>,
- alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Nadav Amit <namit@vmware.com>, Pavel Machek <pavel@ucw.cz>,
- "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
- Ard Biesheuvel <ardb@kernel.org>, linux-acpi@vger.kernel.org, x86@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "VMware,
- Inc." <pv-drivers@vmware.com>, Ingo Molnar <mingo@redhat.com>,
- Darren Hart <dvhart@infradead.org>, Len Brown <len.brown@intel.com>,
- Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Steven Rostedt <rostedt@goodmis.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- platform-driver-x86@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- linux-kernel@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
-Subject: Re: [alsa-devel] [PATCH 12/12] x86/ACPI/sleep: Move
-	acpi_wakeup_address() definition into sleep.c
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2) To
+ svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Subject: [alsa-devel] [PATCH v4 7/7] ALSA: aloop: Support runtime change of
+	snd_timer via info interface
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,73 +96,90 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tuesday, November 19, 2019 1:21:21 AM CET Sean Christopherson wrote:
-> Move the definition of acpi_wakeup_address() into sleep.c to break
-> linux/acpi.h's dependency (by way of asm/acpi.h) on asm/realmode.h.
-> Everyone and their mother includes linux/acpi.h, i.e. modifying
-> realmode.h results in a full kernel rebuild, which makes the already
-> inscrutable real mode boot code even more difficult to understand and is
-> positively rage inducing when trying to make changes to x86's boot flow.
-> 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Show and change sound card timer source with read-write info
+file in proc filesystem. Initial string can still be set as
+module parameter.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+The timer source string value can be changed at any time,
+but it is latched by PCM substream open callback (the first one
+for a particular cable). At this point it is actually used, that
+is the string is parsed, and the timer is looked up and opened.
 
-> ---
->  arch/x86/include/asm/acpi.h  |  6 +-----
->  arch/x86/kernel/acpi/sleep.c | 11 +++++++++++
->  2 files changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-> index 57788ec6fa82..0cae3f773d44 100644
-> --- a/arch/x86/include/asm/acpi.h
-> +++ b/arch/x86/include/asm/acpi.h
-> @@ -13,7 +13,6 @@
->  #include <asm/processor.h>
->  #include <asm/mmu.h>
->  #include <asm/mpspec.h>
-> -#include <asm/realmode.h>
->  #include <asm/x86_init.h>
->  
->  #ifdef CONFIG_ACPI_APEI
-> @@ -62,10 +61,7 @@ static inline void acpi_disable_pci(void)
->  extern int (*acpi_suspend_lowlevel)(void);
->  
->  /* Physical address to resume after wakeup */
-> -static inline unsigned long acpi_wakeup_address(void)
-> -{
-> -	return ((unsigned long)(real_mode_header->wakeup_start));
-> -}
-> +unsigned long acpi_wakeup_address(void);
->  
->  /*
->   * Check if the CPU can handle C2 and deeper
-> diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-> index ca13851f0570..44d3fb1a1de3 100644
-> --- a/arch/x86/kernel/acpi/sleep.c
-> +++ b/arch/x86/kernel/acpi/sleep.c
-> @@ -26,6 +26,17 @@ unsigned long acpi_realmode_flags;
->  static char temp_stack[4096];
->  #endif
->  
-> +/**
-> + * acpi_wakeup_address - provide physical address for S3 wakeup
-> + *
-> + * Returns the physical address where the kernel should be resumed after the
-> + * system awakes from S3, e.g. for programming into the firmware waking vector.
-> + */
-> +unsigned long acpi_wakeup_address(void)
-> +{
-> +	return ((unsigned long)(real_mode_header->wakeup_start));
-> +}
-> +
->  /**
->   * x86_acpi_enter_sleep_state - enter sleep state
->   * @state: Sleep state to enter.
-> 
+The timer source is set for a loopback card (the same as initial
+setting by module parameter), but every cable uses the value,
+current at the moment of open.
 
+Setting the value to empty string switches the timer to jiffies.
 
+Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+---
+ sound/drivers/aloop.c | 37 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
 
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 67ebbd510e1b..626a8b642b63 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -1666,7 +1666,7 @@ static void print_cable_info(struct snd_info_entry *entry,
+ 	mutex_unlock(&loopback->cable_lock);
+ }
+ 
+-static int loopback_proc_new(struct loopback *loopback, int cidx)
++static int loopback_cable_proc_new(struct loopback *loopback, int cidx)
+ {
+ 	char name[32];
+ 
+@@ -1687,6 +1687,36 @@ static void loopback_set_timer_source(struct loopback *loopback,
+ 						      value, GFP_KERNEL);
+ }
+ 
++static void print_timer_source_info(struct snd_info_entry *entry,
++				    struct snd_info_buffer *buffer)
++{
++	struct loopback *loopback = entry->private_data;
++
++	mutex_lock(&loopback->cable_lock);
++	snd_iprintf(buffer, "%s\n",
++		    loopback->timer_source ? loopback->timer_source : "");
++	mutex_unlock(&loopback->cable_lock);
++}
++
++static void change_timer_source_info(struct snd_info_entry *entry,
++				     struct snd_info_buffer *buffer)
++{
++	struct loopback *loopback = entry->private_data;
++	char line[64];
++
++	mutex_lock(&loopback->cable_lock);
++	if (!snd_info_get_line(buffer, line, sizeof(line)))
++		loopback_set_timer_source(loopback, strim(line));
++	mutex_unlock(&loopback->cable_lock);
++}
++
++static int loopback_timer_source_proc_new(struct loopback *loopback)
++{
++	return snd_card_rw_proc_new(loopback->card, "timer_source", loopback,
++				    print_timer_source_info,
++				    change_timer_source_info);
++}
++
+ static int loopback_probe(struct platform_device *devptr)
+ {
+ 	struct snd_card *card;
+@@ -1719,8 +1749,9 @@ static int loopback_probe(struct platform_device *devptr)
+ 	err = loopback_mixer_new(loopback, pcm_notify[dev] ? 1 : 0);
+ 	if (err < 0)
+ 		goto __nodev;
+-	loopback_proc_new(loopback, 0);
+-	loopback_proc_new(loopback, 1);
++	loopback_cable_proc_new(loopback, 0);
++	loopback_cable_proc_new(loopback, 1);
++	loopback_timer_source_proc_new(loopback);
+ 	strcpy(card->driver, "Loopback");
+ 	strcpy(card->shortname, "Loopback");
+ 	sprintf(card->longname, "Loopback %i", dev + 1);
+-- 
+2.21.0
 
 _______________________________________________
 Alsa-devel mailing list
