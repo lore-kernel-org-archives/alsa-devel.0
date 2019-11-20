@@ -4,71 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BA6EC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECD36C432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:56:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A330208A1
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:55:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 77B3920878
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:56:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MGsFDrT0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="wBui1ewp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A330208A1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I1vvJ6Yf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77B3920878
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8929B1720;
-	Wed, 20 Nov 2019 18:45:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8929B1720
+	by alsa0.perex.cz (Postfix) with ESMTPS id C711B174D;
+	Wed, 20 Nov 2019 18:55:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C711B174D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574271953;
-	bh=wPHEO2RXyPKwtUcT9unr4pV+TCzxipsBvc76zqHjcp8=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MGsFDrT0BHd59DWu0KfU55aRpT8nvGgPGggpFdevo1hqZfWEOuIpFFdmrKc5Qk3Sa
-	 4z3/wJnukMbBIN+z2lpAwcuWHjZjgp3CFV/fTEq+U2Hi0RSKCgYd/kG2lZnflkht2z
-	 HGLI33xVhpXLtQkrGLee63lDUdLD3D2fQfsVRDcM=
+	s=default; t=1574272576;
+	bh=BlsauNs52hw9XbzQWymu3soun6G7P20l5Xyn91jL4Xc=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=I1vvJ6Yf2J1OzA+3C1nZHCZhYAwjjZKDctElTYkr8ZFTZcb5Pt7ONu7ub3IqtPl6x
+	 BiuUmPW8kgJsrej3ohq5ZT5gA6YpHMDhtZ8359XPRXBsq6/Cx62vGvXytOJXlwjLM+
+	 7zXPycEr520LJ4PyN6nmUu+jPYE2FDmV7bcoNXU8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C201BF8013C;
-	Wed, 20 Nov 2019 18:45:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DB1DF8013F;
+	Wed, 20 Nov 2019 18:52:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4657AF8013D; Wed, 20 Nov 2019 18:45:01 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 875C4F800C1
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:44:58 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 430E1A003F;
- Wed, 20 Nov 2019 18:44:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 430E1A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1574271897; bh=cmB3ueqg5Fq5tf1AcRb4YtammwsjUP5VJrBCQ0zViqY=;
- h=From:To:Cc:Subject:Date:From;
- b=wBui1ewpz/TXUr4XzSXnS+R5zaJnMC6BA/GlEo4RzI+w+EtKOdajNYc45mzDCqS0j
- LVsHYqlFOwqr8HnryuCl8KlFHA0NspRyQGCArJgXOZvRm7CCxR/c6nUZp0vo6I4F9q
- Y6yw5h7r2wgrrQDJcAqzvcdbWxFGAmamMDGQkYWo=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 20 Nov 2019 18:44:52 +0100 (CET)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Date: Wed, 20 Nov 2019 18:44:34 +0100
-Message-Id: <20191120174435.30920-1-perex@perex.cz>
-X-Mailer: git-send-email 2.20.1
+ id 77A39F80216; Wed, 20 Nov 2019 18:52:02 +0100 (CET)
+Received: from esa4.mentor.iphmx.com (esa4.mentor.iphmx.com [68.232.137.252])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F83BF8013C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:51:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F83BF8013C
+IronPort-SDR: lt3kE+kOLD1t1ib04Dza7FMO+vJscugu/xZOw1mXB1b0z4phz0Hi3+ayKVwouWj/CnO/zbj/gP
+ n4HFrD9Es2a8UnVi4hKEr5d0rn2/IQwK/r6lVT6W4gugO+BRdwpcCB+aGQUKdvD4Y/IHd5ZWFt
+ 4TnYLhPZo5UImBTf/VnFSR24uixN79yinAKLATupDcO+/i5XgtibaQ2lrMjY+JfUqvjKnMqxwv
+ fMsaHQslgNeP4LRydMejP2MZhbP63grBdNMncImU3/NOTMSSS9JNykeCqE7FzGLqywEkQOCTaz
+ hBk=
+X-IronPort-AV: E=Sophos;i="5.69,222,1571731200"; d="scan'208";a="43396842"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+ by esa4.mentor.iphmx.com with ESMTP; 20 Nov 2019 09:51:36 -0800
+IronPort-SDR: 7gtEb9POe0rfgcIZkSPU56OvI89DAD5MUKBkgY4rynlV71rs3ByTSuy3lnS4geWhx7R++UXffE
+ f49bSImBoZIXQErpr+Y/DTT0FvcwjUZ8+Oa3CZIXkyNnvW2auZEk/QDdDvzc530B0coq2qNYwH
+ qcVutl+xjqqtou6UMFjGNw7unw1Ar4sNVCR7p1rymAA6u/gi+jUyCsYrl1jJALXeHOHtkpvDp+
+ iYVlK4ZSzz7/Q9N3iSL2cjmpd2Dng28VuoaMXah56PBzBAAiUWYLRAHQIIDtUb2XcqzlgVBCi6
+ DQ4=
+From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timo Wischer
+ <twischer@de.adit-jv.com>, Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Date: Wed, 20 Nov 2019 11:49:54 -0600
+Message-ID: <20191120174955.6410-7-andrew_gabbasov@mentor.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191120174955.6410-6-andrew_gabbasov@mentor.com>
+References: <20191120174955.6410-1-andrew_gabbasov@mentor.com>
+ <20191120174955.6410-2-andrew_gabbasov@mentor.com>
+ <20191120174955.6410-3-andrew_gabbasov@mentor.com>
+ <20191120174955.6410-4-andrew_gabbasov@mentor.com>
+ <20191120174955.6410-5-andrew_gabbasov@mentor.com>
+ <20191120174955.6410-6-andrew_gabbasov@mentor.com>
 MIME-Version: 1.0
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 1/2] ASoC: improve the DMI long card code in
-	asoc-core
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
+ svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Subject: [alsa-devel] [PATCH v5 6/7] ALSA: aloop: Support selection of
+	snd_timer instead of jiffies
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,132 +95,641 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add append_dmi_string() function and make the code more readable.
+From: Timo Wischer <twischer@de.adit-jv.com>
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+to do synchronous audio forwarding between hardware sound card and aloop
+devices. Such an audio route could look like the following:
+Sound card -> Loopback application -> ALSA loop device -> arecord
+
+In this case the loopback device should use the sound timer of the sound
+card. Without this patch the loopback application has to implement an
+adaptive sample rate converter to align the different clocks of the
+different ALSA devices.
+
+The used timer can be selected by referring to a sound card, its device
+and subdevice, when loading the module:
+  $ modprobe snd_aloop enable=1 timer_source=[<card>[.<dev>[.<subdev>]]]
+<card> is the name (id) of the sound card or a card number.
+<dev> and <subdev> are device and subdevice numbers (defaults are 0).
+Empty string as a value of timer_source= parameter enables previous
+functionality (using jiffies timer).
+
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 ---
- sound/soc/soc-core.c | 66 +++++++++++++++++---------------------------
- 1 file changed, 25 insertions(+), 41 deletions(-)
+ sound/drivers/aloop.c | 477 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 476 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b4683d4588ee..db56507174bd 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1755,6 +1755,23 @@ static int is_dmi_valid(const char *field)
- 	return 1;
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 0eacaa9d7862..e8a85f887222 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -28,6 +28,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/info.h>
+ #include <sound/initval.h>
++#include <sound/timer.h>
+ 
+ MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+ MODULE_DESCRIPTION("A loopback soundcard");
+@@ -41,6 +42,7 @@ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+ static bool enable[SNDRV_CARDS] = {1, [1 ... (SNDRV_CARDS - 1)] = 0};
+ static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
+ static int pcm_notify[SNDRV_CARDS];
++static char *timer_source[SNDRV_CARDS];
+ 
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for loopback soundcard.");
+@@ -52,6 +54,8 @@ module_param_array(pcm_substreams, int, NULL, 0444);
+ MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-8) for loopback driver.");
+ module_param_array(pcm_notify, int, NULL, 0444);
+ MODULE_PARM_DESC(pcm_notify, "Break capture when PCM format/rate/channels changes.");
++module_param_array(timer_source, charp, NULL, 0444);
++MODULE_PARM_DESC(timer_source, "Sound card name or number and device/subdevice number of timer to be used. Empty string for jiffies timer [default].");
+ 
+ #define NO_PITCH 100000
+ 
+@@ -102,6 +106,13 @@ struct loopback_cable {
+ 	unsigned int pause;
+ 	/* timer specific */
+ 	struct loopback_ops *ops;
++	/* If sound timer is used */
++	struct {
++		int stream;
++		struct snd_timer_id id;
++		struct tasklet_struct event_tasklet;
++		struct snd_timer_instance *instance;
++	} snd_timer;
+ };
+ 
+ struct loopback_setup {
+@@ -122,6 +133,7 @@ struct loopback {
+ 	struct loopback_cable *cables[MAX_PCM_SUBSTREAMS][2];
+ 	struct snd_pcm *pcm[2];
+ 	struct loopback_setup setup[MAX_PCM_SUBSTREAMS][2];
++	const char *timer_source;
+ };
+ 
+ struct loopback_pcm {
+@@ -145,6 +157,7 @@ struct loopback_pcm {
+ 	unsigned int period_size_frac;	/* period size in jiffies ticks */
+ 	unsigned int last_drift;
+ 	unsigned long last_jiffies;
++	/* If jiffies timer is used */
+ 	struct timer_list timer;
+ };
+ 
+@@ -212,6 +225,35 @@ static int loopback_jiffies_timer_start(struct loopback_pcm *dpcm)
+ 	return 0;
  }
  
-+/*
-+ * Append a string to card->dmi_longname with character cleanups.
-+ */
-+static void append_dmi_string(struct snd_soc_card *card, const char *str)
++/* call in cable->lock */
++static int loopback_snd_timer_start(struct loopback_pcm *dpcm)
 +{
-+	char *dst = card->dmi_longname;
-+	size_t dst_len = sizeof(card->dmi_longname);
-+	size_t len;
++	struct loopback_cable *cable = dpcm->cable;
++	int err;
 +
-+	len = strlen(dst);
-+	snprintf(dst + len, dst_len - len, "-%s", str);
++	/* Loopback device has to use same period as timer card. Therefore
++	 * wake up for each snd_pcm_period_elapsed() call of timer card.
++	 */
++	err = snd_timer_start(cable->snd_timer.instance, 1);
++	if (err < 0) {
++		/* do not report error if trying to start but already
++		 * running. For example called by opposite substream
++		 * of the same cable
++		 */
++		if (err == -EBUSY)
++			return 0;
 +
-+	len++;	/* skip the separator "-" */
-+	if (len < dst_len)
-+		cleanup_dmi_name(dst + len);
++		pcm_err(dpcm->substream->pcm,
++			"snd_timer_start(%d,%d,%d) failed with %d",
++			cable->snd_timer.id.card,
++			cable->snd_timer.id.device,
++			cable->snd_timer.id.subdevice,
++			err);
++	}
++
++	return err;
 +}
 +
- /**
-  * snd_soc_set_dmi_name() - Register DMI names to card
-  * @card: The card to register DMI names
-@@ -1789,61 +1806,36 @@ static int is_dmi_valid(const char *field)
- int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+ /* call in cable->lock */
+ static inline int loopback_jiffies_timer_stop(struct loopback_pcm *dpcm)
  {
- 	const char *vendor, *product, *product_version, *board;
--	size_t longname_buf_size = sizeof(card->snd_card->longname);
--	size_t len;
+@@ -221,6 +263,29 @@ static inline int loopback_jiffies_timer_stop(struct loopback_pcm *dpcm)
+ 	return 0;
+ }
  
- 	if (card->long_name)
- 		return 0; /* long name already set by driver or from DMI */
++/* call in cable->lock */
++static int loopback_snd_timer_stop(struct loopback_pcm *dpcm)
++{
++	struct loopback_cable *cable = dpcm->cable;
++	int err;
++
++	/* only stop if both devices (playback and capture) are not running */
++	if (cable->running ^ cable->pause)
++		return 0;
++
++	err = snd_timer_stop(cable->snd_timer.instance);
++	if (err < 0) {
++		pcm_err(dpcm->substream->pcm,
++			"snd_timer_stop(%d,%d,%d) failed with %d",
++			cable->snd_timer.id.card,
++			cable->snd_timer.id.device,
++			cable->snd_timer.id.subdevice,
++			err);
++	}
++
++	return err;
++}
++
+ static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
+ {
+ 	del_timer_sync(&dpcm->timer);
+@@ -228,6 +293,30 @@ static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
+ 	return 0;
+ }
  
--	/* make up dmi long name as: vendor.product.version.board */
-+	/* make up dmi long name as: vendor-product-version-board */
- 	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
- 	if (!vendor || !is_dmi_valid(vendor)) {
- 		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
- 		return 0;
++/* call in loopback->cable_lock */
++static int loopback_snd_timer_close_cable(struct loopback_pcm *dpcm)
++{
++	struct loopback_cable *cable = dpcm->cable;
++
++	/* snd_timer was not opened */
++	if (!cable->snd_timer.instance)
++		return 0;
++
++	/* wait till drain tasklet has finished if requested */
++	tasklet_kill(&cable->snd_timer.event_tasklet);
++
++	/* will only be called from free_cable() when other stream was
++	 * already closed. Other stream cannot be reopened as long as
++	 * loopback->cable_lock is locked. Therefore no need to lock
++	 * cable->lock;
++	 */
++	snd_timer_close(cable->snd_timer.instance);
++	snd_timer_instance_free(cable->snd_timer.instance);
++	memset(&cable->snd_timer, 0, sizeof(cable->snd_timer));
++
++	return 0;
++}
++
+ static int loopback_check_format(struct loopback_cable *cable, int stream)
+ {
+ 	struct snd_pcm_runtime *runtime, *cruntime;
+@@ -353,6 +442,13 @@ static void params_change(struct snd_pcm_substream *substream)
+ 	cable->hw.rate_max = runtime->rate;
+ 	cable->hw.channels_min = runtime->channels;
+ 	cable->hw.channels_max = runtime->channels;
++
++	if (cable->snd_timer.instance) {
++		cable->hw.period_bytes_min =
++				frames_to_bytes(runtime, runtime->period_size);
++		cable->hw.period_bytes_max = cable->hw.period_bytes_min;
++	}
++
+ }
+ 
+ static int loopback_prepare(struct snd_pcm_substream *substream)
+@@ -576,6 +672,167 @@ static void loopback_jiffies_timer_function(struct timer_list *t)
+ 	spin_unlock_irqrestore(&dpcm->cable->lock, flags);
+ }
+ 
++/* call in cable->lock */
++static int loopback_snd_timer_check_resolution(struct snd_pcm_runtime *runtime,
++					       unsigned long resolution)
++{
++	if (resolution != runtime->timer_resolution) {
++		struct loopback_pcm *dpcm = runtime->private_data;
++		struct loopback_cable *cable = dpcm->cable;
++		/* Worst case estimation of possible values for resolution
++		 * resolution <= (512 * 1024) frames / 8kHz in nsec
++		 * resolution <= 65.536.000.000 nsec
++		 *
++		 * period_size <= 65.536.000.000 nsec / 1000nsec/usec * 192kHz +
++		 *  500.000
++		 * period_size <= 12.582.912.000.000  <64bit
++		 *  / 1.000.000 usec/sec
++		 */
++		snd_pcm_uframes_t period_size_usec =
++				resolution / 1000 * runtime->rate;
++		/* round to nearest sample rate */
++		snd_pcm_uframes_t period_size =
++				(period_size_usec + 500 * 1000) / (1000 * 1000);
++
++		pcm_err(dpcm->substream->pcm,
++			"Period size (%lu frames) of loopback device is not corresponding to timer resolution (%lu nsec = %lu frames) of card timer %d,%d,%d. Use period size of %lu frames for loopback device.",
++			runtime->period_size, resolution, period_size,
++			cable->snd_timer.id.card,
++			cable->snd_timer.id.device,
++			cable->snd_timer.id.subdevice,
++			period_size);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static void loopback_snd_timer_period_elapsed(struct loopback_cable *cable,
++					      int event,
++					      unsigned long resolution)
++{
++	struct loopback_pcm *dpcm_play, *dpcm_capt;
++	struct snd_pcm_substream *substream_play, *substream_capt;
++	struct snd_pcm_runtime *valid_runtime;
++	unsigned int running, elapsed_bytes;
++	unsigned long flags;
++
++	spin_lock_irqsave(&cable->lock, flags);
++	running = cable->running ^ cable->pause;
++	/* no need to do anything if no stream is running */
++	if (!running) {
++		spin_unlock_irqrestore(&cable->lock, flags);
++		return;
++	}
++
++	dpcm_play = cable->streams[SNDRV_PCM_STREAM_PLAYBACK];
++	dpcm_capt = cable->streams[SNDRV_PCM_STREAM_CAPTURE];
++	substream_play = (running & (1 << SNDRV_PCM_STREAM_PLAYBACK)) ?
++			dpcm_play->substream : NULL;
++	substream_capt = (running & (1 << SNDRV_PCM_STREAM_CAPTURE)) ?
++			dpcm_capt->substream : NULL;
++
++	if (event == SNDRV_TIMER_EVENT_MSTOP) {
++		if (!dpcm_play ||
++		    dpcm_play->substream->runtime->status->state !=
++				SNDRV_PCM_STATE_DRAINING) {
++			spin_unlock_irqrestore(&cable->lock, flags);
++			return;
++		}
++	}
++
++	valid_runtime = (running & (1 << SNDRV_PCM_STREAM_PLAYBACK)) ?
++				dpcm_play->substream->runtime :
++				dpcm_capt->substream->runtime;
++
++	/* resolution is only valid for SNDRV_TIMER_EVENT_TICK events */
++	if (event == SNDRV_TIMER_EVENT_TICK) {
++		/* The hardware rules guarantee that playback and capture period
++		 * are the same. Therefore only one device has to be checked
++		 * here.
++		 */
++		if (loopback_snd_timer_check_resolution(valid_runtime,
++							resolution) < 0) {
++			spin_unlock_irqrestore(&cable->lock, flags);
++			if (substream_play)
++				snd_pcm_stop_xrun(substream_play);
++			if (substream_capt)
++				snd_pcm_stop_xrun(substream_capt);
++			return;
++		}
++	}
++
++	elapsed_bytes = frames_to_bytes(valid_runtime,
++					valid_runtime->period_size);
++	/* The same timer interrupt is used for playback and capture device */
++	if ((running & (1 << SNDRV_PCM_STREAM_PLAYBACK)) &&
++	    (running & (1 << SNDRV_PCM_STREAM_CAPTURE))) {
++		copy_play_buf(dpcm_play, dpcm_capt, elapsed_bytes);
++		bytepos_finish(dpcm_play, elapsed_bytes);
++		bytepos_finish(dpcm_capt, elapsed_bytes);
++	} else if (running & (1 << SNDRV_PCM_STREAM_PLAYBACK)) {
++		bytepos_finish(dpcm_play, elapsed_bytes);
++	} else if (running & (1 << SNDRV_PCM_STREAM_CAPTURE)) {
++		clear_capture_buf(dpcm_capt, elapsed_bytes);
++		bytepos_finish(dpcm_capt, elapsed_bytes);
++	}
++	spin_unlock_irqrestore(&cable->lock, flags);
++
++	if (substream_play)
++		snd_pcm_period_elapsed(substream_play);
++	if (substream_capt)
++		snd_pcm_period_elapsed(substream_capt);
++}
++
++static void loopback_snd_timer_function(struct snd_timer_instance *timeri,
++					unsigned long resolution,
++					unsigned long ticks)
++{
++	struct loopback_cable *cable = timeri->callback_data;
++
++	loopback_snd_timer_period_elapsed(cable, SNDRV_TIMER_EVENT_TICK,
++					  resolution);
++}
++
++static void loopback_snd_timer_tasklet(unsigned long arg)
++{
++	struct snd_timer_instance *timeri = (struct snd_timer_instance *)arg;
++	struct loopback_cable *cable = timeri->callback_data;
++
++	loopback_snd_timer_period_elapsed(cable, SNDRV_TIMER_EVENT_MSTOP, 0);
++}
++
++static void loopback_snd_timer_event(struct snd_timer_instance *timeri,
++				     int event,
++				     struct timespec *tstamp,
++				     unsigned long resolution)
++{
++	/* Do not lock cable->lock here because timer->lock is already hold.
++	 * There are other functions which first lock cable->lock and than
++	 * timer->lock e.g.
++	 * loopback_trigger()
++	 * spin_lock(&cable->lock)
++	 * loopback_snd_timer_start()
++	 * snd_timer_start()
++	 * spin_lock(&timer->lock)
++	 * Therefore when using the oposit order of locks here it could result
++	 * in a deadlock.
++	 */
++
++	if (event == SNDRV_TIMER_EVENT_MSTOP) {
++		struct loopback_cable *cable = timeri->callback_data;
++
++		/* sound card of the timer was stopped. Therefore there will not
++		 * be any further timer callbacks. Due to this forward audio
++		 * data from here if in draining state. When still in running
++		 * state the streaming will be aborted by the usual timeout. It
++		 * should not be aborted here because may be the timer sound
++		 * card does only a recovery and the timer is back soon.
++		 * This tasklet triggers loopback_snd_timer_tasklet()
++		 */
++		tasklet_schedule(&cable->snd_timer.event_tasklet);
++	}
++}
++
+ static void loopback_jiffies_timer_dpcm_info(struct loopback_pcm *dpcm,
+ 					     struct snd_info_buffer *buffer)
+ {
+@@ -588,6 +845,20 @@ static void loopback_jiffies_timer_dpcm_info(struct loopback_pcm *dpcm,
+ 	snd_iprintf(buffer, "    timer_expires:\t%lu\n", dpcm->timer.expires);
+ }
+ 
++static void loopback_snd_timer_dpcm_info(struct loopback_pcm *dpcm,
++					 struct snd_info_buffer *buffer)
++{
++	struct loopback_cable *cable = dpcm->cable;
++
++	snd_iprintf(buffer, "    sound timer:\thw:%d,%d,%d\n",
++		    cable->snd_timer.id.card,
++		    cable->snd_timer.id.device,
++		    cable->snd_timer.id.subdevice);
++	snd_iprintf(buffer, "    timer open:\t\t%s\n",
++		    (cable->snd_timer.stream == SNDRV_PCM_STREAM_CAPTURE) ?
++			    "capture" : "playback");
++}
++
+ static snd_pcm_uframes_t loopback_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -706,6 +977,23 @@ static int rule_channels(struct snd_pcm_hw_params *params,
+ 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+ }
+ 
++static int rule_period_bytes(struct snd_pcm_hw_params *params,
++			     struct snd_pcm_hw_rule *rule)
++{
++	struct loopback_pcm *dpcm = rule->private;
++	struct loopback_cable *cable = dpcm->cable;
++	struct snd_interval t;
++
++	mutex_lock(&dpcm->loopback->cable_lock);
++	t.min = cable->hw.period_bytes_min;
++	t.max = cable->hw.period_bytes_max;
++	mutex_unlock(&dpcm->loopback->cable_lock);
++	t.openmin = 0;
++	t.openmax = 0;
++	t.integer = 0;
++	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
++}
++
+ static void free_cable(struct snd_pcm_substream *substream)
+ {
+ 	struct loopback *loopback = substream->private_data;
+@@ -748,6 +1036,163 @@ static struct loopback_ops loopback_jiffies_timer_ops = {
+ 	.dpcm_info = loopback_jiffies_timer_dpcm_info,
+ };
+ 
++static int loopback_parse_timer_id(const char *str,
++				   struct snd_timer_id *tid)
++{
++	/* [<pref>:](<card name>|<card idx>)[{.,}<dev idx>[{.,}<subdev idx>]] */
++	const char * const sep_dev = ".,";
++	const char * const sep_pref = ":";
++	const char *name = str;
++	char *sep, save = '\0';
++	int card_idx = 0, dev = 0, subdev = 0;
++	int err;
++
++	sep = strpbrk(str, sep_pref);
++	if (sep)
++		name = sep + 1;
++	sep = strpbrk(name, sep_dev);
++	if (sep) {
++		save = *sep;
++		*sep = '\0';
++	}
++	err = kstrtoint(name, 0, &card_idx);
++	if (err == -EINVAL) {
++		/* Must be the name, not number */
++		for (card_idx = 0; card_idx < snd_ecards_limit; card_idx++) {
++			struct snd_card *card = snd_card_ref(card_idx);
++
++			if (card) {
++				if (!strcmp(card->id, name))
++					err = 0;
++				snd_card_unref(card);
++			}
++			if (!err)
++				break;
++		}
++	}
++	if (sep) {
++		*sep = save;
++		if (!err) {
++			char *sep2, save2 = '\0';
++
++			sep2 = strpbrk(sep + 1, sep_dev);
++			if (sep2) {
++				save2 = *sep2;
++				*sep2 = '\0';
++			}
++			err = kstrtoint(sep + 1, 0, &dev);
++			if (sep2) {
++				*sep2 = save2;
++				if (!err)
++					err = kstrtoint(sep2 + 1, 0, &subdev);
++			}
++		}
++	}
++	if (!err && tid) {
++		tid->card = card_idx;
++		tid->device = dev;
++		tid->subdevice = subdev;
++	}
++	return err;
++}
++
++/* call in loopback->cable_lock */
++static int loopback_snd_timer_open(struct loopback_pcm *dpcm)
++{
++	int err = 0;
++	struct snd_timer_id tid = {
++		.dev_class = SNDRV_TIMER_CLASS_PCM,
++		.dev_sclass = SNDRV_TIMER_SCLASS_APPLICATION,
++	};
++	struct snd_timer_instance *timeri;
++	struct loopback_cable *cable = dpcm->cable;
++
++	spin_lock_irq(&cable->lock);
++
++	/* check if timer was already opened. It is only opened once
++	 * per playback and capture subdevice (aka cable).
++	 */
++	if (cable->snd_timer.instance)
++		goto unlock;
++
++	err = loopback_parse_timer_id(dpcm->loopback->timer_source, &tid);
++	if (err < 0) {
++		pcm_err(dpcm->substream->pcm,
++			"Parsing timer source \'%s\' failed with %d",
++			dpcm->loopback->timer_source, err);
++		goto unlock;
++	}
++
++	cable->snd_timer.stream = dpcm->substream->stream;
++	cable->snd_timer.id = tid;
++
++	timeri = snd_timer_instance_new(dpcm->loopback->card->id);
++	if (!timeri) {
++		err = -ENOMEM;
++		goto unlock;
++	}
++	/* The callback has to be called from another tasklet. If
++	 * SNDRV_TIMER_IFLG_FAST is specified it will be called from the
++	 * snd_pcm_period_elapsed() call of the selected sound card.
++	 * snd_pcm_period_elapsed() helds snd_pcm_stream_lock_irqsave().
++	 * Due to our callback loopback_snd_timer_function() also calls
++	 * snd_pcm_period_elapsed() which calls snd_pcm_stream_lock_irqsave().
++	 * This would end up in a dead lock.
++	 */
++	timeri->flags |= SNDRV_TIMER_IFLG_AUTO;
++	timeri->callback = loopback_snd_timer_function;
++	timeri->callback_data = (void *)cable;
++	timeri->ccallback = loopback_snd_timer_event;
++
++	/* initialise a tasklet used for draining */
++	tasklet_init(&cable->snd_timer.event_tasklet,
++		     loopback_snd_timer_tasklet, (unsigned long)timeri);
++
++	/* snd_timer_close() and snd_timer_open() should not be called with
++	 * locked spinlock because both functions can block on a mutex. The
++	 * mutex loopback->cable_lock is kept locked. Therefore snd_timer_open()
++	 * cannot be called a second time by the other device of the same cable.
++	 * Therefore the following issue cannot happen:
++	 * [proc1] Call loopback_timer_open() ->
++	 *	   Unlock cable->lock for snd_timer_close/open() call
++	 * [proc2] Call loopback_timer_open() -> snd_timer_open(),
++	 *	   snd_timer_start()
++	 * [proc1] Call snd_timer_open() and overwrite running timer
++	 *	   instance
++	 */
++	spin_unlock_irq(&cable->lock);
++	err = snd_timer_open(timeri, &cable->snd_timer.id, current->pid);
++	spin_lock_irq(&cable->lock);
++	if (err < 0) {
++		pcm_err(dpcm->substream->pcm,
++			"snd_timer_open (%d,%d,%d) failed with %d",
++			cable->snd_timer.id.card,
++			cable->snd_timer.id.device,
++			cable->snd_timer.id.subdevice,
++			err);
++		snd_timer_instance_free(timeri);
++		goto unlock;
++	}
++
++	cable->snd_timer.instance = timeri;
++
++unlock:
++	spin_unlock_irq(&cable->lock);
++
++	return err;
++}
++
++/* stop_sync() is not required for sound timer because it does not need to be
++ * restarted in loopback_prepare() on Xrun recovery
++ */
++static struct loopback_ops loopback_snd_timer_ops = {
++	.open = loopback_snd_timer_open,
++	.start = loopback_snd_timer_start,
++	.stop = loopback_snd_timer_stop,
++	.close_cable = loopback_snd_timer_close_cable,
++	.dpcm_info = loopback_snd_timer_dpcm_info,
++};
++
+ static int loopback_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -775,7 +1220,10 @@ static int loopback_open(struct snd_pcm_substream *substream)
+ 		}
+ 		spin_lock_init(&cable->lock);
+ 		cable->hw = loopback_pcm_hardware;
+-		cable->ops = &loopback_jiffies_timer_ops;
++		if (loopback->timer_source)
++			cable->ops = &loopback_snd_timer_ops;
++		else
++			cable->ops = &loopback_jiffies_timer_ops;
+ 		loopback->cables[substream->number][dev] = cable;
  	}
+ 	dpcm->cable = cable;
+@@ -811,6 +1259,19 @@ static int loopback_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		goto unlock;
  
--	snprintf(card->dmi_longname, sizeof(card->snd_card->longname),
--			 "%s", vendor);
-+	snprintf(card->dmi_longname, sizeof(card->dmi_longname), "%s", vendor);
- 	cleanup_dmi_name(card->dmi_longname);
++	/* In case of sound timer the period time of both devices of the same
++	 * loop has to be the same.
++	 * This rule only takes effect if a sound timer was chosen
++	 */
++	if (cable->snd_timer.instance) {
++		err = snd_pcm_hw_rule_add(runtime, 0,
++					  SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
++					  rule_period_bytes, dpcm,
++					  SNDRV_PCM_HW_PARAM_PERIOD_BYTES, -1);
++		if (err < 0)
++			goto unlock;
++	}
++
+ 	/* loopback_runtime_free() has not to be called if kfree(dpcm) was
+ 	 * already called here. Otherwise it will end up with a double free.
+ 	 */
+@@ -1214,6 +1675,18 @@ static int loopback_proc_new(struct loopback *loopback, int cidx)
+ 				    print_cable_info);
+ }
  
- 	product = dmi_get_system_info(DMI_PRODUCT_NAME);
- 	if (product && is_dmi_valid(product)) {
--		len = strlen(card->dmi_longname);
--		snprintf(card->dmi_longname + len,
--			 longname_buf_size - len,
--			 "-%s", product);
--
--		len++;	/* skip the separator "-" */
--		if (len < longname_buf_size)
--			cleanup_dmi_name(card->dmi_longname + len);
-+		append_dmi_string(card, product);
++static void loopback_set_timer_source(struct loopback *loopback,
++				      const char *value)
++{
++	if (loopback->timer_source) {
++		devm_kfree(loopback->card->dev, loopback->timer_source);
++		loopback->timer_source = NULL;
++	}
++	if (value && *value)
++		loopback->timer_source = devm_kstrdup(loopback->card->dev,
++						      value, GFP_KERNEL);
++}
++
+ static int loopback_probe(struct platform_device *devptr)
+ {
+ 	struct snd_card *card;
+@@ -1233,6 +1706,8 @@ static int loopback_probe(struct platform_device *devptr)
+ 		pcm_substreams[dev] = MAX_PCM_SUBSTREAMS;
+ 	
+ 	loopback->card = card;
++	loopback_set_timer_source(loopback, timer_source[dev]);
++
+ 	mutex_init(&loopback->cable_lock);
  
- 		/*
- 		 * some vendors like Lenovo may only put a self-explanatory
- 		 * name in the product version field
- 		 */
- 		product_version = dmi_get_system_info(DMI_PRODUCT_VERSION);
--		if (product_version && is_dmi_valid(product_version)) {
--			len = strlen(card->dmi_longname);
--			snprintf(card->dmi_longname + len,
--				 longname_buf_size - len,
--				 "-%s", product_version);
--
--			len++;
--			if (len < longname_buf_size)
--				cleanup_dmi_name(card->dmi_longname + len);
--		}
-+		if (product_version && is_dmi_valid(product_version))
-+			append_dmi_string(card, product_version);
- 	}
- 
- 	board = dmi_get_system_info(DMI_BOARD_NAME);
- 	if (board && is_dmi_valid(board)) {
--		len = strlen(card->dmi_longname);
--		snprintf(card->dmi_longname + len,
--			 longname_buf_size - len,
--			 "-%s", board);
--
--		len++;
--		if (len < longname_buf_size)
--			cleanup_dmi_name(card->dmi_longname + len);
-+		append_dmi_string(card, board);
- 	} else if (!product) {
- 		/* fall back to using legacy name */
- 		dev_warn(card->dev, "ASoC: no DMI board/product name!\n");
-@@ -1851,16 +1843,8 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
- 	}
- 
- 	/* Add flavour to dmi long name */
--	if (flavour) {
--		len = strlen(card->dmi_longname);
--		snprintf(card->dmi_longname + len,
--			 longname_buf_size - len,
--			 "-%s", flavour);
--
--		len++;
--		if (len < longname_buf_size)
--			cleanup_dmi_name(card->dmi_longname + len);
--	}
-+	if (flavour)
-+		append_dmi_string(card, flavour);
- 
- 	/* set the card long name */
- 	card->long_name = card->dmi_longname;
+ 	err = loopback_pcm_new(loopback, 0, pcm_substreams[dev]);
 -- 
-2.20.1
+2.21.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
