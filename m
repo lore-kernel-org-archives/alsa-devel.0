@@ -2,79 +2,73 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6608BC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:29:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9ADAC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:51:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFF1920730
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:29:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E7473206CC
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:51:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lNQ21QEz";
-	dkim=temperror (0-bit key) header.d=perex.cz header.i=@perex.cz header.b="U/WXXoEU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFF1920730
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hLouikm0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7473206CC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56DF61728;
-	Wed, 20 Nov 2019 18:28:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56DF61728
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1E3D16F0;
+	Wed, 20 Nov 2019 18:50:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1E3D16F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574270958;
-	bh=9UIjkHDZcZNfBf3r9tvCUW7hs2LSxtVAbPJ0+QmXI6w=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lNQ21QEz+Wwr8y3QTp6UByYfP0erRt2jXeAys91fab42L1c6mL1KI7xCmMYK+Sy3u
-	 Y0h9iGtmFJzQ0gqvk7q4NGMCdPzLjghTPBlvyZfaQWIDDDufquQuj+wekAHuw1Gp9m
-	 MWpYng5jdVjGsbkhVr6leevSgrYpNsnVrS1ceT30=
+	s=default; t=1574272303;
+	bh=dtiN8fpQB8nNPAtXD5JF78rrB1xeFMFeYFoI7Ur6n08=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hLouikm0P9KLH+NJ4C/WI5op4KTqmthHkcxGlAPmUinzUxLn/ZS7RuLXlwxklSQKw
+	 k9qILnrNqZBOQmWuIqiXQF8itd8EQdWdAWrYEsqu3nt3BmFEGx54R7VQ3GCrf9+Usn
+	 GmH+Tq3id0UQY/5+j+/2VYE7E/NjzluKoul/f8Mk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15E9BF800FF;
-	Wed, 20 Nov 2019 18:28:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15528F800FF;
+	Wed, 20 Nov 2019 18:50:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC9CEF8013D; Wed, 20 Nov 2019 18:28:22 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3C89F800FF
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:28:17 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 36F6FA003F;
- Wed, 20 Nov 2019 18:28:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 36F6FA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1574270896; bh=Qjt2orkau2Pb0FNV9Z4C13Lufx1adArVJZ3/UaccOs4=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=U/WXXoEUmhsksyBrA1APDsLyloISujKVeyiLD9XS3rp2x30JiB8kD/yNbsW84EpBB
- 0a7P6XtYvUpnAhd/MBXIuZvB8srINVFiwZVENXSeg7/WCZUKTzRiI+0XF00kXZ7HSn
- IanBJ+4+XmUR0Ue9p7rqiwbuTdZ5lkvY8kDyANqg=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 20 Nov 2019 18:28:12 +0100 (CET)
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20191120093712.11370-1-perex@perex.cz>
- <dfe78a0b-1cb6-ce19-61bd-86cfded0e3d5@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <a1ea1c88-01e2-8226-2577-1be2114f5505@perex.cz>
-Date: Wed, 20 Nov 2019 18:28:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ id 1BBF2F8013E; Wed, 20 Nov 2019 18:50:51 +0100 (CET)
+Received: from esa3.mentor.iphmx.com (esa3.mentor.iphmx.com [68.232.137.180])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11F06F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:50:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11F06F800FF
+IronPort-SDR: FwdnjRzMsLhtpM38PgrHpGjobUlfYxdx6B/2MIoznxNY/e+TkY91vbvAm+TFBs3UJWQ0Z1uyxU
+ qQYUuJfU2m9DepvaXIbOEIiQFc3V2CwwLgDSrGWIxZhw6/QAF4t/j3LHcX3tmGxCOUQBw1rn41
+ uKqcpr7f1OxiO47v+y15hDx3ZWKhB1DLFOmIdl/FZiih0103VScOhuO/nQnLDMsBCnq3NNRMSX
+ W+ElfTgNUTBmOR/2p/1sC/3Ckbxyh8jpfBtEqg4yoOz1RU83wUGRcj8Uw+/zbUeE97D2ucDrQX
+ QOo=
+X-IronPort-AV: E=Sophos;i="5.69,222,1571731200"; d="scan'208";a="43362982"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+ by esa3.mentor.iphmx.com with ESMTP; 20 Nov 2019 09:50:43 -0800
+IronPort-SDR: LwkJ+aBiWzWoO8KlW+Hyofu76NcIufvzvVULf+U7OIz2/XQKmj4zojojWkYvL5RmfcVQOFZBLs
+ iCqSoRuUVmGSfhSK43HeObqbwaNYxaXB+a6iymrAWLL6pjC8jJuQyS8g46lgOkSPDvD7eU0vFW
+ dKbHJipnJLfqwhCK9DxowwNuT9wMMmyWPnIsbIRo6LWbmlrhhS8rGsuOzaaDMCTIkCFPloO55C
+ wOia4dFn8AUcW3tclEYJo2b1RN5e18J0xw/g0UroampewCs07RlioIXlEFUp8B4iQL8OveIuzf
+ m+s=
+From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timo Wischer
+ <twischer@de.adit-jv.com>, Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Date: Wed, 20 Nov 2019 11:49:48 -0600
+Message-ID: <20191120174955.6410-1-andrew_gabbasov@mentor.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <dfe78a0b-1cb6-ce19-61bd-86cfded0e3d5@linux.intel.com>
-Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: improve the DMI long card code
- in asoc-core
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1) To
+ svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Subject: [alsa-devel] [PATCH v5 0/7] ALSA: aloop: Support sound timer as
+	clock source instead of jiffies
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,81 +81,94 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 20. 11. 19 v 15:55 Pierre-Louis Bossart napsal(a):
-> 
-> 
-> On 11/20/19 3:37 AM, Jaroslav Kysela wrote:
->> Add append_dmi_string() function and make the code more readable.
->>
->> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
->> Cc: Mark Brown <broonie@kernel.org>
->> ---
->>    sound/soc/soc-core.c | 66 +++++++++++++++++---------------------------
->>    1 file changed, 25 insertions(+), 41 deletions(-)
->>
->> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
->> index b4683d4588ee..1d1baf78818c 100644
->> --- a/sound/soc/soc-core.c
->> +++ b/sound/soc/soc-core.c
->> @@ -1755,6 +1755,23 @@ static int is_dmi_valid(const char *field)
->>    	return 1;
->>    }
->>    
->> +/*
->> + *
->> + */
-> 
-> unneeded comments or missing text?
+This patch set is an updated version of patches by Timo Wischer:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-March/146871.html
 
-There should be a text, of course.
+This patch set is required for forwarding audio data between a HW sound
+card and an aloop device without the usage of an asynchronous sample rate
+converter.
 
->> +static void append_dmi_string(struct snd_soc_card *card, const char *str)
->> +{
->> +	char *dst = card->dmi_longname;
->> +	size_t dst_len = sizeof(card->dmi_longname);
->> +	size_t len;
->> +
->> +	len = strlen(dst);
->> +	snprintf(dst + len, dst_len - len, "-%s", str);
->> +
->> +	len++;	/* skip the separator "-" */
->> +	if (len < dst_len)
->> +		cleanup_dmi_name(dst + len);
->> +}
->> +
->>    /**
->>     * snd_soc_set_dmi_name() - Register DMI names to card
->>     * @card: The card to register DMI names
->> @@ -1789,61 +1806,36 @@ static int is_dmi_valid(const char *field)
->>    int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
->>    {
->>    	const char *vendor, *product, *product_version, *board;
->> -	size_t longname_buf_size = sizeof(card->snd_card->longname);
->> -	size_t len;
->>    
->>    	if (card->long_name)
->>    		return 0; /* long name already set by driver or from DMI */
->>    
->> -	/* make up dmi long name as: vendor.product.version.board */
->> +	/* make up dmi long name as: vendor-product-version-board */
-> 
-> here you are just fixing a misleading comment, yes?
-> I don't see any dots to dashes substitution but better ask.
+Most of sound and timers related code is kept the same as in previous set.
+The code, related to snd_pcm_link() functionality and its using for
+timer source setting, is removed (as rejected earlier). The changes in this
+update are mainly related to the parameters handling and some cleanup.
 
-The result is LENOVO-20QE000VMC-ThinkPadX1Carbon7th-20QE000VMC. I think that 
-the dots were replaced by dashes as the field separators during the initial 
-implementation or so. I just reflect the current state.
+The timer source can be initially selected by "timer_source" kernel module
+parameter. It is supposed to have the following format:
+    [<pref>:](<card name>|<card idx>)[{.,}<dev idx>[{.,}<subdev idx>]]
+For example: "hw:I82801AAICH.1.0", or "1.1", or just "I82801AAICH".
+(Prefix is ignored, just allowed here to be able to use the strings,
+the user got used to).
+Although the parsing function recognizes both '.' and ',' as a separator,
+module parameters handling routines use ',' to separate parameters for
+different module instances (array elements), so we have to use '.'
+to separate device and subdevice numbers from the card name or number
+in module parameters.
+Empty string indicates using jiffies as a timer source.
 
-					Jaroslav
+Besides "static" selection of timer source at module load time,
+it is possible to dynamically change it via sound "info" interface
+(using "/proc/asound/<card>/timer_source" file in read-write mode.
+The contents of this file is used as a timer source string for
+a particular loopback card, e.g. "hw:0,0,0" (and here ',' can be used
+as a separator).
+
+The timer source string value can be changed at any time, but it is
+latched by PCM substream open callback "loopback_open()" (the first
+one for a particular cable). At this point it is actually used,
+that is the string is parsed, and the timer is looked up and opened.
+This seems to be a good trade-off between flexibility of updates and
+synchronizations or racing complexity.
+
+The timer source is set for a loopback card (the same as initial setting
+by module parameter), but every cable uses the value, current at the moment
+of opening. Theoretically, it's possible to set the timer source for each
+cable independently (via separate files), but it would be inconsistent
+with the initial setting via module parameters on a per-card basis.
+
+v2:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/157961.html
+
+v3:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158312.html
+- Change sound card lookup to use snd_card_ref() and avoid direct access
+  to sound cards array
+- Squash commits on returning error codes for timer start and stop
+- Some locking related fixes
+- Some code cleanup
+
+v4:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158896.html
+- Change to use updated API for snd_timer_open() (separate timer instance)
+- Change to use snd_timer_close() returning void
+- Some code cleanup
+
+v5:
+- Change to initialize timer event tasklet before calling snd_timer_open()
+
+
+Andrew Gabbasov (1):
+  ALSA: aloop: Support runtime change of snd_timer via info interface
+
+Timo Wischer (6):
+  ALSA: aloop: Describe units of variables
+  ALSA: aloop: Support return of error code for timer start and stop
+  ALSA: aloop: Use callback functions for timer specific implementations
+  ALSA: aloop: Rename all jiffies timer specific functions
+  ALSA: aloop: Move CABLE_VALID_BOTH to the top of file
+  ALSA: aloop: Support selection of snd_timer instead of jiffies
+
+ sound/drivers/aloop.c | 663 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 628 insertions(+), 35 deletions(-)
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.21.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
