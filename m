@@ -2,91 +2,75 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED987C432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 13:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADA42C432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 13:34:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76A902251F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 13:20:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ACE98219FA
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 13:34:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nJuhmzEr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="idf7kk/S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76A902251F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qeHGZgli";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YI7eNcNb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACE98219FA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA22716E9;
-	Wed, 20 Nov 2019 14:19:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA22716E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6E6816DD;
+	Wed, 20 Nov 2019 14:33:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6E6816DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574256038;
-	bh=fhOEgEiWYn5ddFaRxnkiR1wu55g//W/EbOeg5nNoXD4=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nJuhmzErp0JtstQS/+KxPcxexE0f2i6Wk7ZaSnbfYiCH13FUMhrzknWzdYMsCWGof
-	 hSTzCwZ+qDHoyLp/pP3Iwe9+nWho32fi/eX04Njb/47Uzdb6B6vwdyT7xgejfPXFZY
-	 Oh9NPn/6J0g0A8gi1jyVl1iiIVbhm7tEgXN4RoIw=
+	s=default; t=1574256844;
+	bh=ysMiA/1mJxBAfPYbHKva70G+CJFEQTYepg10FnXVUE8=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qeHGZglilRWrYv4prVAJUceLsvnDsBIVJhhXz5fNnljFkIAdQ2tBpmWegrw40TSke
+	 C26TKvOsIMamRY0xQYTyxOJFxbOo5MMwTf4eGXdO9KTePEqx3txgA4mOfiDgNMT01+
+	 bxgg7ol+xKPnWZt3Nok4nmE5D7A2S5Ga0MDu8y+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE777F8014C;
-	Wed, 20 Nov 2019 14:18:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E3FBF8013C;
+	Wed, 20 Nov 2019 14:33:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3466EF8013D; Wed, 20 Nov 2019 14:18:11 +0100 (CET)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 13EB1F800FF; Wed, 20 Nov 2019 14:33:11 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC1EDF8013D
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 14:18:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC1EDF8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBF68F800F0
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 14:33:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBF68F800F0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="idf7kk/S"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id xAKDI4AL033449;
- Wed, 20 Nov 2019 07:18:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1574255884;
- bh=D7ZpGl2GOQVl1LRPY+tj5e7FhNzsNfXiSHrb52YKorU=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=idf7kk/SKW+n+VPi6VHNfUmXqbu9DunvBJm74dYACuYsioLK7uY7gjc0QrJTTvGQV
- 6awdD6aj6/IarAZvQTEXJmushWd5CIxh7TH5nklx43Q20QnZcvwMVUXCVAFpTmwSar
- mqhEZNWAqWqKLE8iYTa/VvjaUBhlx3LIhpN7NTkU=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xAKDI4OI092105
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 20 Nov 2019 07:18:04 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 20
- Nov 2019 07:18:02 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 20 Nov 2019 07:18:02 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id xAKDHru7067880;
- Wed, 20 Nov 2019 07:17:59 -0600
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Date: Wed, 20 Nov 2019 15:17:53 +0200
-Message-ID: <20191120131753.6831-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191120131753.6831-1-peter.ujfalusi@ti.com>
-References: <20191120131753.6831-1-peter.ujfalusi@ti.com>
-MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org
-Subject: [alsa-devel] [PATCH 2/2] ASoC: pcm3168a: Update the RST gpio
-	handling to align with documentation
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="YI7eNcNb"
+Received: from localhost.localdomain (unknown [118.189.143.39])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1DCF2224DF;
+ Wed, 20 Nov 2019 13:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1574256786;
+ bh=H4SPYi/qnMyM0TSI7oix10uwgtqFdYpU3wzOTxKrDdg=;
+ h=From:To:Cc:Subject:Date:From;
+ b=YI7eNcNbmuAVTG9ALhT1vj8CqcdPHKS2ySybd90+5YYClkayN0WLU+siMilqB91qA
+ bfIf6dVkj1fhxNwHW+T8eb0aD3DBedz7Emlh0vOiXSjjo5uZupRV84N4gnFuFdNd+a
+ 5+Z3KD7e8iPmv678msMuLLRr5xNwoQqDbEWIOhyk=
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: linux-kernel@vger.kernel.org
+Date: Wed, 20 Nov 2019 21:32:52 +0800
+Message-Id: <20191120133252.6365-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH] ASoC: Fix Kconfig indentation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,65 +83,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The RST (reset-gpios) is low active so the driver must handle it
-accordingly.
+Adjust indentation from spaces to tab (+optional two spaces) as in
+coding style with command like:
+	$ sed -e 's/^        /\t/' -i */Kconfig
 
-Add comments to explain clearly how the line is used.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/Kconfig | 24 ++++++++++++------------
+ sound/soc/sof/intel/Kconfig    | 10 +++++-----
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index f3475134b519..9711fab296eb 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -707,11 +707,15 @@ int pcm3168a_probe(struct device *dev, struct regmap *regmap)
- 	dev_set_drvdata(dev, pcm3168a);
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 2702aefee775..ef20316e83d1 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -441,18 +441,18 @@ config SND_SOC_INTEL_CML_LP_DA7219_MAX98357A_MACH
+ 	   If unsure select "N".
  
- 	/*
--	 * Request the RST gpio line as non exclusive as the same reset line
--	 * might be connected to multiple pcm3168a codec
-+	 * Request the reset (connected to RST pin) gpio line as non exclusive
-+	 * as the same reset line might be connected to multiple pcm3168a codec
-+	 *
-+	 * The RST is low active, we want the GPIO line to be high initially, so
-+	 * request the initial level to LOW which in practice means DEASSERTED:
-+	 * The deasserted level of GPIO_ACTIVE_LOW is HIGH.
- 	 */
--	pcm3168a->gpio_rst = devm_gpiod_get_optional(dev, "rst",
--						GPIOD_OUT_HIGH |
-+	pcm3168a->gpio_rst = devm_gpiod_get_optional(dev, "reset",
-+						GPIOD_OUT_LOW |
- 						GPIOD_FLAGS_BIT_NONEXCLUSIVE);
- 	if (IS_ERR(pcm3168a->gpio_rst)) {
- 		ret = PTR_ERR(pcm3168a->gpio_rst);
-@@ -814,7 +818,13 @@ void pcm3168a_remove(struct device *dev)
- {
- 	struct pcm3168a_priv *pcm3168a = dev_get_drvdata(dev);
+ config SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH
+-        tristate "CML with RT1011 and RT5682 in I2S Mode"
+-        depends on I2C && ACPI
+-        depends on MFD_INTEL_LPSS || COMPILE_TEST
+-        select SND_SOC_RT1011
+-        select SND_SOC_RT5682
+-        select SND_SOC_DMIC
+-        select SND_SOC_HDAC_HDMI
+-        help
+-          This adds support for ASoC machine driver for SOF platform with
+-          RT1011 + RT5682 I2S codec.
+-          Say Y if you have such a device.
+-          If unsure select "N".
++	tristate "CML with RT1011 and RT5682 in I2S Mode"
++	depends on I2C && ACPI
++	depends on MFD_INTEL_LPSS || COMPILE_TEST
++	select SND_SOC_RT1011
++	select SND_SOC_RT5682
++	select SND_SOC_DMIC
++	select SND_SOC_HDAC_HDMI
++	help
++	  This adds support for ASoC machine driver for SOF platform with
++	  RT1011 + RT5682 I2S codec.
++	  Say Y if you have such a device.
++	  If unsure select "N".
  
--	gpiod_set_value_cansleep(pcm3168a->gpio_rst, 0);
-+	/*
-+	 * The RST is low active, we want the GPIO line to be low when the
-+	 * driver is removed, so set level to 1 which in practice means
-+	 * ASSERTED:
-+	 * The asserted level of GPIO_ACTIVE_LOW is LOW.
-+	 */
-+	gpiod_set_value_cansleep(pcm3168a->gpio_rst, 1);
- 	pm_runtime_disable(dev);
- #ifndef CONFIG_PM
- 	pcm3168a_disable(dev);
+ endif ## SND_SOC_SOF_COMETLAKE_LP && SND_SOC_SOF_HDA_LINK
+ 
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index b27fd3fdf335..cc09bb606f7d 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -264,16 +264,16 @@ config SND_SOC_SOF_ELKHARTLAKE
+ config SND_SOC_SOF_JASPERLAKE_SUPPORT
+ 	bool "SOF support for JasperLake"
+ 	help
+-          This adds support for Sound Open Firmware for Intel(R) platforms
+-          using the JasperLake processors.
+-          Say Y if you have such a device.
+-          If unsure select "N".
++	  This adds support for Sound Open Firmware for Intel(R) platforms
++	  using the JasperLake processors.
++	  Say Y if you have such a device.
++	  If unsure select "N".
+ 
+ config SND_SOC_SOF_JASPERLAKE
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
+ 	help
+-          This option is not user-selectable but automagically handled by
++	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level
+ 
+ config SND_SOC_SOF_HDA_COMMON
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.17.1
 
 _______________________________________________
 Alsa-devel mailing list
