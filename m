@@ -2,97 +2,93 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E351CC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 04:32:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0B4C432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 06:04:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6AC452240D
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 04:32:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 922EB2244A
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 06:04:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="coJPVWPE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qb+wAp4Q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AC452240D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lbWMG3ZS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="csjy0tOc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 922EB2244A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 900DF16A0;
-	Wed, 20 Nov 2019 05:31:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 900DF16A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 572B8168D;
+	Wed, 20 Nov 2019 07:03:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 572B8168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574224347;
-	bh=HICYH6aQrEfX4Wd/YG56HHUqbcuOFvytu8JSMaiHjP8=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1574229880;
+	bh=+Ch4s5U+4hNoWFsNuBsF22JYB3mK/00zDULitv5b/kw=;
+	h=Date:In-Reply-To:References:From:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=coJPVWPEU4FU2k2/rxx1ej9vMRAyEBqWZYrFr37ga3pnAvKukmCZ9BaagnTL/Gznt
-	 BtERR63JyyXPCpvR6AQNiNCPftnhcUF48YILr266i1TDxppyOmaGHL1q8JyNI1imXW
-	 zUMeOzeFzdZiWHJeuq0wh/OT0/jPBlPTf8A+b9XU=
+	b=lbWMG3ZS9iPWJ7MuRMisrFVhjsM/rvqmHVywz/+jpyc50jvMc4m7i4zd89HRKpFXM
+	 i4Sq+WEWgTRtXM95AG/suq3mSXG9DUhHezwcg6fbbWkMlcY0x/tUF7LD3q1141ExRV
+	 WmfgE6SeY1X0M8Wn2pt2PYCOZtGvQ35Zg5cVvz4M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48868F800FF;
-	Wed, 20 Nov 2019 05:29:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB4CCF8013C;
+	Wed, 20 Nov 2019 07:03:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3E86F8013E; Wed, 20 Nov 2019 05:29:07 +0100 (CET)
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
- [IPv6:2607:f8b0:4864:20::641])
+ id 2811FF80140; Wed, 20 Nov 2019 07:03:32 +0100 (CET)
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com
+ [IPv6:2607:f8b0:4864:20::104a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9784FF8013D
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 05:29:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9784FF8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id D14A3F8013C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 07:03:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D14A3F8013C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Qb+wAp4Q"
-Received: by mail-pl1-x641.google.com with SMTP id s10so13205875plp.2
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 20:29:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:subject:date:message-id:in-reply-to:references:mime-version
- :content-transfer-encoding;
- bh=4nfCJ/UBWZ4SqL78Yq/S2dIZKyTU02zXWyjyp+B3PUk=;
- b=Qb+wAp4QKVANVbtFRXv+0uxVC5fPaF2azUy9PUcq9XCtLoCqXePV8FRyzWPWjrwgGa
- EakjLcQdb0h0dVyyEcrqe4OjnOi6/3lK12RGDiJL7/Uu9AI5lOEiPq8XX6jcnARt1RU5
- WEGZvZv/lHelMz9GzuB9Dh7Y3IAAUTjS5n+WEITctx97rZ6uYMDyhtT0+ANqUeh72TbC
- 5h2FiQ9NrrKZV+npPJF02WXa+/b9RGI/JE/xgy2fJTZBv8Ea51mpA4+BS1LZgcgJMaN1
- BDm9RBYVdSfBUWlR2zud/bdDGClK7TRakBq24EulkaYA/kZzF8uGEQqulDrlkgsSW9G5
- fcKw==
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="csjy0tOc"
+Received: by mail-pj1-x104a.google.com with SMTP id d21so2012867pjs.21
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 22:03:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+ :cc; bh=rHvSP+r9Lb+DeD2PMrAaobDRLM7O+VFG6q0IT34Km/U=;
+ b=csjy0tOcIwufMLaU5xSZtfs0SGJF+nnovtK9gquaBsQ7B7+f5sYTLiVgImOrMBJWPa
+ TBP4MiaR94snITMt1g7oOOLleVUuuzE05yKqCgPYS1HmDNGlANjOKoAGUoToCBByMfFK
+ OhmcNv5WbZvYcvuth85LAaNoJ74kryn0/F6fpIce33r/VQwSyleIrXTlOwsvcMvBsN5I
+ z7VsP1GBr3orbBioPL+RYH2bfKNklUg8jTroGjGHdynMBwp+Ewfqe5pX9U5ehYhz3ahC
+ OOtM6qy2QSpodxqzmpXn4rZQOWiO72LbnZNS2g7Z7GmJYgLpKKktY6OY31OcMLHfrpzG
+ LgNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=4nfCJ/UBWZ4SqL78Yq/S2dIZKyTU02zXWyjyp+B3PUk=;
- b=oKXFErMy6vREhvBzBG3jhvScMYeC1nPcKDq9j7VLdZNv8sCITD3PmtcM8LxCtRdvFR
- Oj6Pz+OYiKOR/O4VBdZr7siaQZy0q1IhQ7fUL9FMfZ5ubY6LRcfQuwabOZGC5QH1WBg6
- qczTNAE3tQ79KyPNuT4eSTw1BahWU/LZer1+J5EEet7YYklG4hvtjnDhVQ3R4ms4WkSW
- Rqcd+XzpD3vRbjsMRYlbbWC3FsajTc7kqt84C/KalrFHFfOPyuQT6++tlxzyFjQfBkmr
- U9OVL7gAy7+JBBoNyk8B7BarCN22UqjO9JUyhZ+5AJ+3vx3I/puqrUlkk2r+bp6az0e1
- BHgQ==
-X-Gm-Message-State: APjAAAWDmT9dNmPe6tbsrStwLeL1bctVVfMx+xzS3PTqf2hqPq4NLstC
- 3tnhmAMlHLCrh1z2dm6P2PGzVsSrhOY=
-X-Google-Smtp-Source: APXvYqyIZ6C7rdbxwaVDvrEvi0HgH719IZ2udiGWBQ6U8oI3du4hbBYyrIU1L0fdUXk9HzpaPUYORA==
-X-Received: by 2002:a17:90a:db05:: with SMTP id g5mr1480436pjv.5.1574224140021; 
- Tue, 19 Nov 2019 20:29:00 -0800 (PST)
-Received: from mangix-trapnet.lan ([69.42.0.214])
- by smtp.gmail.com with ESMTPSA id a6sm5447285pja.30.2019.11.19.20.28.59
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 Nov 2019 20:28:59 -0800 (PST)
-From: Rosen Penev <rosenp@gmail.com>
-To: alsa-devel@alsa-project.org
-Date: Tue, 19 Nov 2019 20:28:55 -0800
-Message-Id: <20191120042856.415854-3-rosenp@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191120042856.415854-1-rosenp@gmail.com>
-References: <20191120042856.415854-1-rosenp@gmail.com>
-MIME-Version: 1.0
-Subject: [alsa-devel] [PATCH 3/4] treewide: Fix printf formats
+ h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+ :references:subject:from:to:cc;
+ bh=rHvSP+r9Lb+DeD2PMrAaobDRLM7O+VFG6q0IT34Km/U=;
+ b=D3AVO5EnDU8KDU5cxxejJoLkhTag5MxTIrRvLaECWrMHBx3Csahu45lexsnNSMsKkH
+ N2XIs66Mkq49aXE+Z9kp/DvHaGOXZ52SWA5Gqgh28FxcrlawzIFidLC+ivS2Qcro3i+Y
+ cseY+qAZY5H1Gp53c1iJKzt2hM5pr9hr/gG0W9E6oy78VuLWuejsXMTKLmORnJ24cUS8
+ +Ym8sWUijXAER+NpHwekLQJ3nAnZgdx7TDFBHt5qjgkXGAwKaP9Ppo2u5gGA8tZXNuZf
+ PhZFQbUG6LN6DGens6bJngJDxNMKIr7+rJ2UV6IKgK9WTuePvQGpn+tLdkQwiJCblUe/
+ ipVA==
+X-Gm-Message-State: APjAAAVTiR8sdRd19md/XTCjMA3t860Qp3liznSkdUZvwYXUPAwolC6z
+ pj4EdUif1/uCFolgWGk/Vna24OXtcHL3
+X-Google-Smtp-Source: APXvYqyncm8dq+VdWQeOLEhiBIBHzjAAKv8i0ywII1O6PqXBzGB57jT4OPrmP+RVdhz7/LzIi7VIBmtvCc7o
+X-Received: by 2002:a63:3144:: with SMTP id x65mr1196978pgx.283.1574229794345; 
+ Tue, 19 Nov 2019 22:03:14 -0800 (PST)
+Date: Wed, 20 Nov 2019 14:02:54 +0800
+In-Reply-To: <20191120060256.212818-1-tzungbi@google.com>
+Message-Id: <20191120060256.212818-2-tzungbi@google.com>
+Mime-Version: 1.0
+References: <20191120060256.212818-1-tzungbi@google.com>
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
+From: Tzung-Bi Shih <tzungbi@google.com>
+To: broonie@kernel.org
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com,
+ cychiang@google.com
+Subject: [alsa-devel] [PATCH 1/3] ASoC: max98090: remove msleep in PLL
+	unlocked workaround
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,173 +106,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Found with cppcheck
+It was observed Baytrail-based chromebooks could cause continuous PLL
+unlocked when using playback stream and capture stream simultaneously.
+Specifically, starting a capture stream after started a playback stream.
+As a result, the audio data could corrupt or turn completely silent.
 
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
+As the datasheet suggested, the maximum PLL lock time should be 7 msec.
+The workaround resets the codec softly by toggling SHDN off and on if
+PLL failed to lock for 10 msec.  Notably, there is no suggested hold
+time for SHDN off.
+
+On Baytrail-based chromebooks, it would easily happen continuous PLL
+unlocked if there is a 10 msec delay between SHDN off and on.  Removes
+the msleep().
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- alsactl/init_parse.c  |  4 ++--
- alsaloop/pcmjob.c     | 10 +++++-----
- amixer/amixer.c       |  6 +++---
- aplay/aplay.c         |  2 +-
- axfer/subcmd-list.c   |  2 +-
- axfer/xfer-libffado.c |  2 +-
- axfer/xfer-options.c  |  2 +-
- 7 files changed, 14 insertions(+), 14 deletions(-)
+ sound/soc/codecs/max98090.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/alsactl/init_parse.c b/alsactl/init_parse.c
-index 562e674..c048fd3 100644
---- a/alsactl/init_parse.c
-+++ b/alsactl/init_parse.c
-@@ -187,7 +187,7 @@ static int init_space(struct space **space, int card)
- 		return -ENOMEM;
- 	res->ctl_id_changed = ~0;
- 	res->linenum = -1;
--	sprintf(device, "hw:%u", card);
-+	sprintf(device, "hw:%d", card);
- 	err = snd_hctl_open(&res->ctl_handle, device, 0);
- 	if (err < 0)
- 		goto error;
-@@ -734,7 +734,7 @@ dbvalue:
- 			elem = snd_hctl_elem_next(elem);
- 		}
- 		snd_ctl_elem_id_free(id);
--		sprintf(res, "%u", index);
-+		sprintf(res, "%d", index);
- 		dbg("do_ctl_count found %s controls", res);
- 		return res;
- 	}
-diff --git a/alsaloop/pcmjob.c b/alsaloop/pcmjob.c
-index 29d1aba..b252486 100644
---- a/alsaloop/pcmjob.c
-+++ b/alsaloop/pcmjob.c
-@@ -120,7 +120,7 @@ static int setparams_stream(struct loopback_handle *lhandle,
- 	}
- 	err = snd_pcm_hw_params_set_rate_resample(handle, params, lhandle->resample);
- 	if (err < 0) {
--		logit(LOG_CRIT, "Resample setup failed for %s (val %i): %s\n", lhandle->id, lhandle->resample, snd_strerror(err));
-+		logit(LOG_CRIT, "Resample setup failed for %s (val %u): %s\n", lhandle->id, lhandle->resample, snd_strerror(err));
- 		return err;
- 	}
- 	err = snd_pcm_hw_params_set_access(handle, params, lhandle->access);
-@@ -135,13 +135,13 @@ static int setparams_stream(struct loopback_handle *lhandle,
- 	}
- 	err = snd_pcm_hw_params_set_channels(handle, params, lhandle->channels);
- 	if (err < 0) {
--		logit(LOG_CRIT, "Channels count (%i) not available for %s: %s\n", lhandle->channels, lhandle->id, snd_strerror(err));
-+		logit(LOG_CRIT, "Channels count (%u) not available for %s: %s\n", lhandle->channels, lhandle->id, snd_strerror(err));
- 		return err;
- 	}
- 	rrate = lhandle->rate_req;
- 	err = snd_pcm_hw_params_set_rate_near(handle, params, &rrate, 0);
- 	if (err < 0) {
--		logit(LOG_CRIT, "Rate %iHz not available for %s: %s\n", lhandle->rate_req, lhandle->id, snd_strerror(err));
-+		logit(LOG_CRIT, "Rate %uHz not available for %s: %s\n", lhandle->rate_req, lhandle->id, snd_strerror(err));
- 		return err;
- 	}
- 	rrate = 0;
-@@ -152,7 +152,7 @@ static int setparams_stream(struct loopback_handle *lhandle,
- 	    !lhandle->loopback->src_enable &&
- #endif
- 	    (int)rrate != lhandle->rate) {
--		logit(LOG_CRIT, "Rate does not match (requested %iHz, got %iHz, resample %i)\n", lhandle->rate, rrate, lhandle->resample);
-+		logit(LOG_CRIT, "Rate does not match (requested %uHz, got %uHz, resample %u)\n", lhandle->rate, rrate, lhandle->resample);
- 		return -EINVAL;
- 	}
- 	lhandle->pitch = (double)lhandle->rate_req / (double)lhandle->rate;
-@@ -1613,7 +1613,7 @@ __again:
- 	if (count > loop->play->buffer_size)
- 		count = loop->play->buffer_size;
- 	if (err != count) {
--		logit(LOG_CRIT, "%s: initial playback fill error (%i/%i/%i)\n", loop->id, err, (int)count, loop->play->buffer_size);
-+		logit(LOG_CRIT, "%s: initial playback fill error (%i/%i/%u)\n", loop->id, err, (int)count, loop->play->buffer_size);
- 		err = -EIO;
- 		goto __error;
- 	}
-diff --git a/amixer/amixer.c b/amixer/amixer.c
-index f7f31f0..928f7c5 100644
---- a/amixer/amixer.c
-+++ b/amixer/amixer.c
-@@ -465,7 +465,7 @@ static void decode_tlv(unsigned int spaces, unsigned int *tlv, unsigned int tlv_
- 	size = tlv[idx++];
- 	tlv_size -= 2 * sizeof(unsigned int);
- 	if (size > tlv_size) {
--		printf("TLV size error (%i, %i, %i)!\n", type, size, tlv_size);
-+		printf("TLV size error (%u, %u, %u)!\n", type, size, tlv_size);
- 		return;
- 	}
- 	switch (type) {
-@@ -576,7 +576,7 @@ static void decode_tlv(unsigned int spaces, unsigned int *tlv, unsigned int tlv_
- 		break;
- #endif
- 	default:
--		printf("unk-%i-", type);
-+		printf("unk-%u-", type);
- 		while (size > 0) {
- 			printf("0x%08x,", tlv[idx++]);
- 			size -= sizeof(unsigned int);
-@@ -611,7 +611,7 @@ static int show_control(const char *space, snd_hctl_elem_t *elem,
- 	}
- 	count = snd_ctl_elem_info_get_count(info);
- 	type = snd_ctl_elem_info_get_type(info);
--	printf("%s; type=%s,access=%s,values=%i", space, control_type(info), control_access(info), count);
-+	printf("%s; type=%s,access=%s,values=%u", space, control_type(info), control_access(info), count);
- 	switch (type) {
- 	case SND_CTL_ELEM_TYPE_INTEGER:
- 		printf(",min=%li,max=%li,step=%li\n", 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 5241068..72fa567 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -3346,7 +3346,7 @@ static void playbackv(char **names, unsigned int count)
- 		}
- 		alloced = 1;
- 	} else if (count != channels) {
--		error(_("You need to specify %d files"), channels);
-+		error(_("You need to specify %u files"), channels);
- 		prg_exit(EXIT_FAILURE);
- 	}
- 
-diff --git a/axfer/subcmd-list.c b/axfer/subcmd-list.c
-index e22628c..359f73f 100644
---- a/axfer/subcmd-list.c
-+++ b/axfer/subcmd-list.c
-@@ -31,7 +31,7 @@ static int dump_device(snd_ctl_t *handle, const char *id, const char *name,
- 	       snd_pcm_info_get_name(info));
- 
- 	count = snd_pcm_info_get_subdevices_count(info);
--	printf("  Subdevices: %i/%i\n",
-+	printf("  Subdevices: %i/%u\n",
- 	       snd_pcm_info_get_subdevices_avail(info), count);
- 
- 	for (i = 0; i < count; ++i) {
-diff --git a/axfer/xfer-libffado.c b/axfer/xfer-libffado.c
-index a37cce6..6db835d 100644
---- a/axfer/xfer-libffado.c
-+++ b/axfer/xfer-libffado.c
-@@ -440,7 +440,7 @@ static int xfer_libffado_pre_process(struct xfer_context *xfer,
- 	}
- 	if (*samples_per_frame != channels) {
- 		fprintf(stderr,
--			"The number of samples per frame should be %i.\n",
-+			"The number of samples per frame should be %u.\n",
- 			channels);
- 		return -EINVAL;
- 	}
-diff --git a/axfer/xfer-options.c b/axfer/xfer-options.c
-index 352d126..3740b16 100644
---- a/axfer/xfer-options.c
-+++ b/axfer/xfer-options.c
-@@ -238,7 +238,7 @@ static int validate_options(struct xfer_context *xfer)
- 		xfer->frames_per_second *= 1000;
- 	if (xfer->frames_per_second < 2000 ||
- 	    xfer->frames_per_second > 192000) {
--		fprintf(stderr, "bad speed value '%i'\n", val);
-+		fprintf(stderr, "bad speed value '%u'\n", val);
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index f6bf4cfbea23..8382a77586ee 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2117,7 +2117,6 @@ static void max98090_pll_work(struct work_struct *work)
+ 	/* Toggle shutdown OFF then ON */
+ 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
+ 			    M98090_SHDNN_MASK, 0);
+-	msleep(10);
+ 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
+ 			    M98090_SHDNN_MASK, M98090_SHDNN_MASK);
  
 -- 
-2.23.0
+2.24.0.432.g9d3f5f5b63-goog
 
 _______________________________________________
 Alsa-devel mailing list
