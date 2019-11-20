@@ -2,96 +2,73 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FD68C432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55490C432C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 18:00:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB89A20643
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:59:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC5B520643
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 18:00:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JzX9ISLW";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k2KwKcMm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB89A20643
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e2qL2uEn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="U/eBt1bA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC5B520643
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1FD41756;
-	Wed, 20 Nov 2019 18:58:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1FD41756
+	by alsa0.perex.cz (Postfix) with ESMTPS id E305016F0;
+	Wed, 20 Nov 2019 18:59:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E305016F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574272780;
-	bh=hlhYBV95UU2+fm1b/m9FxfKXWHuQXZqzfWShIzWVj7I=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=JzX9ISLWH5CbFkyDNjk/4m5mMqiEXal56Sdz+ao6eaNDTB1DD08pAHxed+DswCgCq
-	 hhU/IdwR9Jx6XERScYrmyWznm6zoq6aXfr/4Xe1bGMbf9JCELgyEfjwI/wbWH0G4Rs
-	 m7E56h1BIYscedUpkMsrnxU8reACWX536ZcRpAPg=
+	s=default; t=1574272825;
+	bh=2N/4QdWdIbsSx5rqGz/79ZewSFs1oEaevieiT6E1vs8=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=e2qL2uEnYJs8fDD0CxM6nHOg0hpS7wpFVj02Un03m8ZsqSgw+aVHIp2VwynPOgfMl
+	 xZU9eJQuBUoxG2uIwkLJisqy04ysvHA1dPTDPJL9QHRhp7seVxrk3pEBf5TzD4ofkq
+	 XLlW2w448ngHYJxfqK23TRWWc/Fpp7CbDALJ//44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07CE2F8015F;
-	Wed, 20 Nov 2019 18:56:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97DECF8015D;
+	Wed, 20 Nov 2019 18:56:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B028F80160; Wed, 20 Nov 2019 18:56:00 +0100 (CET)
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com
- [IPv6:2607:f8b0:4864:20::242])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B0DBBF80162; Wed, 20 Nov 2019 18:56:56 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99C39F8015E
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:55:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99C39F8015E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="k2KwKcMm"
-Received: by mail-oi1-x242.google.com with SMTP id s71so538889oih.11
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 09:55:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=GP9Nfbs8Vs06X+4MJM8B1jJrBxYKX4ZtXqp7aohh5Lk=;
- b=k2KwKcMmI6kJJmfjL3agKy7Hbrf6k5BQCZgZSZkatXMsaPozNMVjVbSBlEDBdf5xaC
- NsKOLL3rkrv2ULLbQ0JwoL8jLITOfodf3nWZ+Jy3zWV4EdqWs7t6lFxILnF8weKls/EF
- cd4Z9U0YMME3zyzy6jMbwG0NrgGAko2zbWVm0EIApQegdIdxb7lLfTM+ESAr7FWu+7zt
- qLvp/TSK8d8eQfHk0ZiwXwm71AAHdQGsculB0kZeGnJljpb1XJY6OnPKRMx7iClCONuz
- RNvH2APNjCyKfadP0gzQ0eJGkBUPFTfKkt2N3CjnMz52NE2gQi8MCvOeXOTKxInqnhnT
- zs6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=GP9Nfbs8Vs06X+4MJM8B1jJrBxYKX4ZtXqp7aohh5Lk=;
- b=NYBg1OmVlv3HlIyR9QETrljzHRnBE2NrWz+nlZx1KBdsdXWhZ60troOZ/pvHEb6pAR
- KsMfXPgnXqWAZachnlaRY/n8miLNV3EyUEugvay2Ptvs0e+Sde1RpJ9QqNwgKcvead+c
- NiuG0AYG1f0aCVhQAKUvEzUaJkZ01sFpJRx5BC5w05kiOSBS6yc6xvQJc9wO/sFIo4gx
- rs5RyzaCcuoHA72OlWRzGTOjhJSDRdzJ3NuCoYy1nYdZD1/5aYYhdZBc9mcnqQk/FdvP
- SGc8PeHcdoUvCdUGfu/D8/wl9CQwMH27ksUUNWFxQnsHKPgFfZqTAYceRJ7wdb5PT2TL
- h3pg==
-X-Gm-Message-State: APjAAAXrzNk+WPh+nHLh19dfLCvgw1Qic9j3CyPCX0hlXx99XqVx+KLg
- uLfnuoD13X5nr9X7HiaCTxSHHtFtcSwdBFqP40A=
-X-Google-Smtp-Source: APXvYqwRClFXsJiEfHWJwEj0Bxa33UyPbNSebx0ZfxkSueQ/DWeQ1HxMKaZNEN3p8oZdaLcp1BHvfQMmWA4Y2bvr2/c=
-X-Received: by 2002:a05:6808:4c3:: with SMTP id
- a3mr4067298oie.40.1574272554222; 
- Wed, 20 Nov 2019 09:55:54 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2316FF8013F
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:56:54 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 371C5A003F;
+ Wed, 20 Nov 2019 18:56:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 371C5A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1574272613; bh=NyBSsf3hTmcGFkXPqe7QzfqNKOSrb3YgJtkqVpy9sHs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=U/eBt1bA/2MwX3XvHSflkjzeusUsfXMas4KrN7wa1MO2sBCrC1Zuo5MeVSNQZodTK
+ LFrImqRoIhIv17mUFUHME0low8ih5Yh6p7BCdrP1a70cBy9PxR6GeD3XHJ1J92TUS0
+ h+SYR+PxBu5FGDMo/QBDrOAroKleQTDvzwXopL1g=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 20 Nov 2019 18:56:48 +0100 (CET)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Date: Wed, 20 Nov 2019 18:56:43 +0100
+Message-Id: <20191120175644.31839-1-perex@perex.cz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20191120042856.415854-1-rosenp@gmail.com>
- <20191120042856.415854-4-rosenp@gmail.com>
- <s5hlfsbvzb9.wl-tiwai@suse.de>
- <CAKxU2N_2yLB3g9UqXzkRQ1NNNyfXPKXRLP6A3pMHV+Vkpz5QSw@mail.gmail.com>
- <s5hh82zvy9f.wl-tiwai@suse.de>
-In-Reply-To: <s5hh82zvy9f.wl-tiwai@suse.de>
-From: Rosen Penev <rosenp@gmail.com>
-Date: Wed, 20 Nov 2019 09:55:43 -0800
-Message-ID: <CAKxU2N9e=gab5axaZZVswOB_ihB=RU-xg08WNZA+LBfBMprL8A@mail.gmail.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH 4/4] aplay: Limit VUMeter progress bar to
- 100 for negative as well
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH v4 1/2] ASoC: Intel - use control components to
+	describe card config
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,86 +86,130 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Nov 19, 2019 at 10:48 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Wed, 20 Nov 2019 07:36:19 +0100,
-> Rosen Penev wrote:
-> >
-> > On Tue, Nov 19, 2019 at 10:26 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Wed, 20 Nov 2019 05:28:56 +0100,
-> > > Rosen Penev wrote:
-> > > >
-> > > > If the progress bar somehow becomes negative, it ends up overwritting
-> > > > tmp. Fixes this GCC warning:
-> > > >
-> > > > aplay.c:1747:18: warning: '%02d' directive writing between 2 and 11 bytes
-> > > >  into a region of size 4 [-Wformat-overflow=]
-> > > >  1747 |    sprintf(tmp, "%02d%%", maxperc[c]);
-> > >
-> > > This is false-positive.  The value passed there is guaranteed to be a
-> > > positive integer at the calculation time.
-> > Sure. But best to silence GCC. It probably optimizes better this way.
->
-> I guess this adds more code in binary.  Comparing with 99U would work?
-I tried that. Here are some results:
+Use the control interface (field 'components' in the info structure)
+to pass the I/O configuration details. The goal is to replace
+the card long name with this.
 
-134348 for this patch
-134832 if changed to U. Also tried casting lhs to unnsigned int, same size.
-135125 originally
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcht_es8316.c | 10 +++++++++-
+ sound/soc/intel/boards/bytcr_rt5640.c  |  6 ++++++
+ sound/soc/intel/boards/bytcr_rt5651.c  | 18 +++++++++++-------
+ 3 files changed, 26 insertions(+), 8 deletions(-)
 
-I understand this is an exercise in micro-optimization, but still.
-
-Sizes are in bytes. It's the size of a compressed OpenWrt archive.
-
->
->
-> Takashi
->
->
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> > >
-> > > >
-> > > > Signed-off-by: Rosen Penev <rosenp@gmail.com>
-> > > > ---
-> > > >  aplay/aplay.c | 4 +++-
-> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/aplay/aplay.c b/aplay/aplay.c
-> > > > index 72fa567..9c5a11b 100644
-> > > > --- a/aplay/aplay.c
-> > > > +++ b/aplay/aplay.c
-> > > > @@ -54,6 +54,8 @@
-> > > >  #include "formats.h"
-> > > >  #include "version.h"
-> > > >
-> > > > +#define ABS(a)  (a) < 0 ? -(a) : (a)
-> > > > +
-> > > >  #ifdef SND_CHMAP_API_VERSION
-> > > >  #define CONFIG_SUPPORT_CHMAP 1
-> > > >  #endif
-> > > > @@ -1741,7 +1743,7 @@ static void print_vu_meter_stereo(int *perc, int *maxperc)
-> > > >                       line[bar_length + 6 + 1 + p] = '+';
-> > > >               else
-> > > >                       line[bar_length - p - 1] = '+';
-> > > > -             if (maxperc[c] > 99)
-> > > > +             if (ABS(maxperc[c]) > 99)
-> > > >                       sprintf(tmp, "MAX");
-> > > >               else
-> > > >                       sprintf(tmp, "%02d%%", maxperc[c]);
-> > > > --
-> > > > 2.23.0
-> > > >
-> > > > _______________________________________________
-> > > > Alsa-devel mailing list
-> > > > Alsa-devel@alsa-project.org
-> > > > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > > >
-> >
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 46612331f5ea..4090550f0fe1 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -361,6 +361,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
+ /* SoC card */
+ static char codec_name[SND_ACPI_I2C_ID_LEN];
+ static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
++static char components_string[32]; /* = "cfg-spk:* cfg-mic:* */
+ 
+ static int byt_cht_es8316_suspend(struct snd_soc_card *card)
+ {
+@@ -572,17 +573,24 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	/* register the soc card */
++	snprintf(components_string, sizeof(components_string),
++		 "cfg-spk:%s cfg-mic:%s",
++		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "1" : "2",
++		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
++	byt_cht_es8316_card.components = components_string;
+ 	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
+ 		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
+ 		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
+ 	byt_cht_es8316_card.long_name = long_name;
++
++	/* register the soc card */
+ 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
+ 
+ 	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
+ 	if (ret) {
+ 		gpiod_put(priv->speaker_en_gpio);
+ 		dev_err(dev, "snd_soc_register_card failed: %d\n", ret);
++
+ 		return ret;
+ 	}
+ 	platform_set_drvdata(pdev, &byt_cht_es8316_card);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 9c1aa4ec9cba..0170d31e691a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1081,6 +1081,7 @@ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
++static char byt_rt5640_components[32]; /* = "cfg-spk:* cfg-mic:*" */
+ 
+ static int byt_rt5640_suspend(struct snd_soc_card *card)
+ {
+@@ -1303,6 +1304,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
++		 "cfg-spk:%s cfg-mic:%s",
++		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
++		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
++	byt_rt5640_card.components = byt_rt5640_components;
+ 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
+ 		 "bytcr-rt5640-%s-spk-%s-mic",
+ 		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 4606f6f582d6..80a5674ddb1b 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -798,6 +798,7 @@ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+ static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
++static char byt_rt5651_components[50]; /* = "cfg-spk:* cfg-mic:*" */
+ 
+ static int byt_rt5651_suspend(struct snd_soc_card *card)
+ {
+@@ -876,7 +877,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+ 	struct device *codec_dev;
+-	const char *hp_swapped;
+ 	bool is_bytcr = false;
+ 	int ret_val = 0;
+ 	int dai_index = 0;
+@@ -1080,16 +1080,20 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED)
+-		hp_swapped = "-hp-swapped";
+-	else
+-		hp_swapped = "";
+-
++	snprintf(byt_rt5651_components, sizeof(byt_rt5651_components),
++		 "cfg-spk:%s cfg-mic:%s%s",
++		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ? "1" : "2",
++		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
++		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
++			" cfg-hp:lrswap" : "");
++	byt_rt5651_card.components = byt_rt5651_components;
+ 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
+ 		 "bytcr-rt5651-%s-spk-%s-mic%s",
+ 		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
+ 			"mono" : "stereo",
+-		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
++		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
++		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
++			"-hp-swapped" : "");
+ 	byt_rt5651_card.long_name = byt_rt5651_long_name;
+ 
+ 	/* override plaform name, if required */
+-- 
+2.20.1
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
