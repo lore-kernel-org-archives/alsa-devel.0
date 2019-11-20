@@ -6,57 +6,58 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E529C432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8051AC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:22:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1240820895
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:22:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DDBC92067D
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:22:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sGRVs+tJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1240820895
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XXwuCzRv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDBC92067D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 037FD1730;
-	Wed, 20 Nov 2019 18:21:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 037FD1730
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9285F1708;
+	Wed, 20 Nov 2019 18:21:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9285F1708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574270537;
-	bh=6eU+RziTSYM25wgV7+gkz0a68v2v2G2Qg2271gZB9ns=;
+	s=default; t=1574270558;
+	bh=rlwmnStREPdtQgbv4QjBF5M9AQqLw7lXvbpKHCABZSI=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=sGRVs+tJXJb51RYNWsGBrlKsg6vt8yubepfQ8SXyRFXPSaWE/Mj65jXJlvdiXo7dW
-	 I1XquWohAfkqCe+PHXemujuPbhAUg0LcycoDnK0fgmlLMA7BH9FO6qFv8NT7+DBgWN
-	 oCAQQQPSDRmvGmvNdSDHy/RAHWN5pEY1T5Ut7U20=
+	b=XXwuCzRvkv/jDMHjT3z+mWe7ocoBQzm25JMx1Bp1SUb1Q+KVpSfccDe/zwMMEiap2
+	 7/iMUf3R9Q+ZbPqRQy/4KLIMtZfZKb6JPoEkLTRAYEfU2c518788HTc5i7FzqFXdxq
+	 WgZKFP3u5MIeyJpqAi8fvdFcjfm3BeLCkojGmajU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D9EAF801EC;
-	Wed, 20 Nov 2019 18:18:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33FA4F801F7;
+	Wed, 20 Nov 2019 18:18:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7424F8014F; Wed, 20 Nov 2019 18:18:15 +0100 (CET)
+ id 59665F80161; Wed, 20 Nov 2019 18:18:19 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1E364F8014D
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:18:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E364F8014D
+ by alsa1.perex.cz (Postfix) with ESMTP id 89C19F8015A
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:18:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89C19F8015A
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 090B51045;
- Wed, 20 Nov 2019 09:18:12 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 857EF1063;
+ Wed, 20 Nov 2019 09:18:14 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BD1E3F703;
- Wed, 20 Nov 2019 09:18:11 -0800 (PST)
-Date: Wed, 20 Nov 2019 17:18:09 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 054BD3F703;
+ Wed, 20 Nov 2019 09:18:13 -0800 (PST)
+Date: Wed, 20 Nov 2019 17:18:12 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20191120060844.224607-2-tzungbi@google.com>
-Message-Id: <applied-20191120060844.224607-2-tzungbi@google.com>
+To: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20191119174933.25526-1-perex@perex.cz>
+Message-Id: <applied-20191119174933.25526-1-perex@perex.cz>
 X-Patchwork-Hint: ignore
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
-Subject: [alsa-devel] Applied "ASoC: core: add SND_SOC_BYTES_E" to the asoc
-	tree
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: add control components management" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: core: add SND_SOC_BYTES_E
+   ASoC: add control components management
 
 has been applied to the asoc tree at
 
@@ -102,37 +103,60 @@ to this mail.
 Thanks,
 Mark
 
-From fb5126778333d289b2623a7e6260beeb1ac1b819 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Wed, 20 Nov 2019 14:08:43 +0800
-Subject: [PATCH] ASoC: core: add SND_SOC_BYTES_E
+From dc73d73aa7145f55412611f3eead1e85ae026785 Mon Sep 17 00:00:00 2001
+From: Jaroslav Kysela <perex@perex.cz>
+Date: Tue, 19 Nov 2019 18:49:32 +0100
+Subject: [PATCH] ASoC: add control components management
 
-Add SND_SOC_BYTES_E to accept getter and putter.
+This ASCII string can carry additional information about
+soundcard components or configuration. Add the possibility
+to set this string via the ASoC card.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20191120060844.224607-2-tzungbi@google.com
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20191119174933.25526-1-perex@perex.cz
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/sound/soc.h  |  1 +
+ sound/soc/soc-core.c | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index bd943b5d7d45..c28a1ed5e8df 100644
+index e0855dc08d30..bd943b5d7d45 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -299,6 +299,12 @@
- 	.put = snd_soc_bytes_put, .private_value =	      \
- 		((unsigned long)&(struct soc_bytes)           \
- 		{.base = xbase, .num_regs = xregs }) }
-+#define SND_SOC_BYTES_E(xname, xbase, xregs, xhandler_get, xhandler_put) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = snd_soc_bytes_info, .get = xhandler_get, \
-+	.put = xhandler_put, .private_value = \
-+		((unsigned long)&(struct soc_bytes) \
-+		{.base = xbase, .num_regs = xregs }) }
+@@ -982,6 +982,7 @@ struct snd_soc_card {
+ 	const char *name;
+ 	const char *long_name;
+ 	const char *driver_name;
++	const char *components;
+ 	char dmi_longname[80];
+ 	char topology_shortname[32];
  
- #define SND_SOC_BYTES_MASK(xname, xbase, xregs, xmask)	      \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e3a53ef1db04..cc0ef0fcc005 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2108,6 +2108,19 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
+ 	soc_setup_card_name(card->snd_card->driver,
+ 			    card->driver_name, card->name, 1);
+ 
++	if (card->components) {
++		/* the current implementation of snd_component_add() accepts */
++		/* multiple components in the string separated by space, */
++		/* but the string collision (identical string) check might */
++		/* not work correctly */
++		ret = snd_component_add(card->snd_card, card->components);
++		if (ret < 0) {
++			dev_err(card->dev, "ASoC: %s snd_component_add() failed: %d\n",
++				card->name, ret);
++			goto probe_end;
++		}
++	}
++
+ 	if (card->late_probe) {
+ 		ret = card->late_probe(card);
+ 		if (ret < 0) {
 -- 
 2.20.1
 
