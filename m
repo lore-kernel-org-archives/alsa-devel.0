@@ -8,92 +8,92 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2638BC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 04:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E7B5C432C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 04:31:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A277F2240D
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 04:30:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 051352240D
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 04:31:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cre70TGj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LBjJhoQv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A277F2240D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RkNUImbI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TdDqEiPh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 051352240D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E13A1699;
-	Wed, 20 Nov 2019 05:30:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E13A1699
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6CA716A2;
+	Wed, 20 Nov 2019 05:30:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6CA716A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574224254;
-	bh=T+aEcyVj9BjZcVxPlXw1L4XHVWUMtS2+tLFb0VoUphQ=;
+	s=default; t=1574224300;
+	bh=cJTqw6aKkyDxCiM1cSIAtk+8XPBb0utW7ijNU0FEyrE=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cre70TGjGlTSFTZSJPmPeEii5Em0qo2yFlmU5hS7x5qOPALB3hqG79O6I5mktzGN5
-	 g/VX9H42p1TU2Yd6xHkkstUhPMefSWef45LK6yPaxH9loaKTZ6/jBW4j6PADmJR0ph
-	 bIgGUi2fmCbSr8kwkP/62QuyQCan9fJbAky/TsmI=
+	b=RkNUImbIKQw/F5ZVRzhb2JctttTKw1fNCDYjSlSo9Rp756DuMqb+dC/kKDRPz3Lih
+	 q+YDZi2WGCJAugQbhPkGikFRoF+wT9llJw5pQ8Qh6nlL74vLPhD+gEqMdzMbWbrTvB
+	 uA9K2E/Z7tgJpCWFlD8LbfC3dNU7WsBdbUzclrr4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87204F8014A;
-	Wed, 20 Nov 2019 05:29:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAB0FF8014F;
+	Wed, 20 Nov 2019 05:29:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A457F8014A; Wed, 20 Nov 2019 05:29:06 +0100 (CET)
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com
- [IPv6:2607:f8b0:4864:20::1043])
+ id B4662F800FF; Wed, 20 Nov 2019 05:29:07 +0100 (CET)
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
+ [IPv6:2607:f8b0:4864:20::444])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40014F800C1
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 05:29:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40014F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2525F8013E
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 05:29:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2525F8013E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LBjJhoQv"
-Received: by mail-pj1-x1043.google.com with SMTP id f7so3592544pjw.5
- for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 20:29:01 -0800 (PST)
+ header.b="TdDqEiPh"
+Received: by mail-pf1-x444.google.com with SMTP id c13so13559489pfp.5
+ for <alsa-devel@alsa-project.org>; Tue, 19 Nov 2019 20:29:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:subject:date:message-id:in-reply-to:references:mime-version
  :content-transfer-encoding;
- bh=qtMzY8AGN3QG9aa6nEI7DA8/k3R+/MfhiSaP8tJFdSM=;
- b=LBjJhoQvqDe3OeE9Ca+ISlgmSstriSGyeywxEVSlUkvpRpJf5qcT8ebqtAUi6w5nnL
- TbEDFYL9ZVhSKRJszp1s6PwO4tKNIG8FvUEJ++hIrsPiNiZ6r3bOFX7M2JrbqdQMRMqL
- /tb3HAo75ISkHvCmF7UryBY1ozyRkHzDiOIBBwebxsLY6Qt3TXv/ltugObhCOdJir7Mi
- /ZIPaQxDyjLNGE3izpJ8ImalaHtPzXMqruEG9RpNjbg+vSyVT/UvSuAfoov32KnDwdft
- sF8SOu/sVqREXJGa7T5OqZc5o1zeNyjPMYtnOYjCZEg3J7/TcilPoMTi8nRsh+yqgFJr
- mW/g==
+ bh=6pJPh01pMemYS+jhC5QWYxBUq3Dcy/FkJCK6VSKpF+Q=;
+ b=TdDqEiPh3g6ibfqBMC8y5O+MFum6u/hDqENjVSuSsMxu6Ugok0rAwR8KIZWqtvOmzJ
+ Dx+ukx8JnUjwpOxgjRLNvoyAcLLSZGGvAkrOk2pU75Jiw2cRj44vXkeQ3hRKbjSTcSaY
+ wtQWV9oMrb71uU6mnPtWY+tRJ19P+MPubfUHtjzegLQgi0/Wywqiaw3236bHKxsbwzyj
+ hcEZv5pFIKjn9vXQGT/S8qa4vb7S4asxogNW5b0+99ALOX2ad9MdxHgM2rvD3SUfl78h
+ U+4JPIp2jt5LyCiXMblVYbZHvJGte5ZN868lxLSqB0If2CEhe0IOS/8TRbFlKi9UFaED
+ oaig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=qtMzY8AGN3QG9aa6nEI7DA8/k3R+/MfhiSaP8tJFdSM=;
- b=FcwNgvoaZLBctvf8nrU6GHJKGbjr9UG4znPCYyWsA6R6pz/inYpOQVlXUr0t0g5GFQ
- pROkMaIJZYxfOw9YezxqhTRR/4FpGKN9XenGF7bKb/FUp+PG4YdYKm54YFGNFG7cYY20
- Em4by0MfU2nXLPLoib3pwTLg4q04pCBF6wIX+qT4DTFgO8xQNDJAA6GWq6w+1UsjarL5
- cwe5MKlX2tnV7SvCKIu05L2Q9BfEHaV3osbos/xgkE/8OpifpsJHmnKSSOaclZWlZioV
- im1bqm3n8x1+635WLqnDhx9MY+iXxyecDFefPYfDn35HDU+4emgZnW8YdZsz78LWo4Vy
- 1Hjw==
-X-Gm-Message-State: APjAAAURjVBrwvbEDbHJdnyYUv3Bjq/Y/UAeP9zvtG/qiv8bBDIjJJjH
- htVwacP/4ooZUtwJqm6H6szchtOUjKo=
-X-Google-Smtp-Source: APXvYqwHCJXwsaxqRuWx1YhLD39HujaWXpKicK0N3YusJLx6hVmdJxqP5UyIJHhZ2PrCvtpdyvLXXQ==
-X-Received: by 2002:a17:90a:bf16:: with SMTP id
- c22mr1396930pjs.83.1574224139301; 
- Tue, 19 Nov 2019 20:28:59 -0800 (PST)
+ bh=6pJPh01pMemYS+jhC5QWYxBUq3Dcy/FkJCK6VSKpF+Q=;
+ b=lb8lbpN1103WTPmk3Q620D9/rs2H/veZLvuHybeQllkUcHIED8Z5FEH/AplKviVIg5
+ 2iITA7wyhl3JJxnSbTjR5XcWdC9CKJWFCNWHygfqwgj2l1hK7PHJBZlxpzHDPl/KJEgW
+ iNggix7y74EhRn/4nh16NXjfy5HAjB6vMo3yHlsJvfs2Vq5DFHjJKwBxPEAU3Ipcx2y6
+ sXkO5N1A4jYLl26mu/LTvfqhKXR0fMQrUTzHzHtmItwHlEh/m+NlkbA78hG4hnZtnwYF
+ wBN63uJIWQIyh3AnAPET7r3xmjwQQXZUsRX60SOhWetuzIYljoCiEFc+SIQHu3oB9+B7
+ glsQ==
+X-Gm-Message-State: APjAAAVjGIR3P8aV+EzIV0TQepnqGF5zbVLibfsHzgR0PIVHOVo1Goqf
+ gvLKNT+XcLBOVDvdZJ3KOFvn0oTz6PQ=
+X-Google-Smtp-Source: APXvYqx4MyYmyNvGjAgOGFvbZL+H6kc32FBg65NcN+fgtYJ6nFJ429tTIUAbPbiLoYuvVJBpj7K62w==
+X-Received: by 2002:a63:5551:: with SMTP id f17mr822944pgm.287.1574224140694; 
+ Tue, 19 Nov 2019 20:29:00 -0800 (PST)
 Received: from mangix-trapnet.lan ([69.42.0.214])
- by smtp.gmail.com with ESMTPSA id a6sm5447285pja.30.2019.11.19.20.28.58
+ by smtp.gmail.com with ESMTPSA id a6sm5447285pja.30.2019.11.19.20.29.00
  for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 Nov 2019 20:28:58 -0800 (PST)
+ Tue, 19 Nov 2019 20:29:00 -0800 (PST)
 From: Rosen Penev <rosenp@gmail.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 19 Nov 2019 20:28:54 -0800
-Message-Id: <20191120042856.415854-2-rosenp@gmail.com>
+Date: Tue, 19 Nov 2019 20:28:56 -0800
+Message-Id: <20191120042856.415854-4-rosenp@gmail.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191120042856.415854-1-rosenp@gmail.com>
 References: <20191120042856.415854-1-rosenp@gmail.com>
 MIME-Version: 1.0
-Subject: [alsa-devel] [PATCH 2/4] treewide: Fix wrong formats on 32-bit
+Subject: [alsa-devel] [PATCH 4/4] aplay: Limit VUMeter progress bar to 100
+	for negative as well
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,71 +111,40 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-uint64_t evaluates to unsigned long long on 32-bit, not unsigned long.
-Use the proper formats.
+If the progress bar somehow becomes negative, it ends up overwritting
+tmp. Fixes this GCC warning:
+
+aplay.c:1747:18: warning: '%02d' directive writing between 2 and 11 bytes
+ into a region of size 4 [-Wformat-overflow=]
+ 1747 |    sprintf(tmp, "%02d%%", maxperc[c]);
 
 Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- axfer/container.c       | 7 ++++---
- axfer/subcmd-transfer.c | 4 +++-
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ aplay/aplay.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/axfer/container.c b/axfer/container.c
-index 7da97c6..566acd0 100644
---- a/axfer/container.c
-+++ b/axfer/container.c
-@@ -13,6 +13,7 @@
- #include <errno.h>
- #include <string.h>
- #include <fcntl.h>
-+#include <inttypes.h>
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index 72fa567..9c5a11b 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -54,6 +54,8 @@
+ #include "formats.h"
+ #include "version.h"
  
- static const char *const cntr_type_labels[] = {
- 	[CONTAINER_TYPE_PARSER] = "parser",
-@@ -356,10 +357,10 @@ int container_context_pre_process(struct container_context *cntr,
- 		fprintf(stderr, "  frames/second: %u\n",
- 			cntr->frames_per_second);
- 		if (cntr->type == CONTAINER_TYPE_PARSER) {
--			fprintf(stderr, "  frames: %lu\n",
-+			fprintf(stderr, "  frames: %" PRIu64 "\n",
- 				*frame_count);
- 		} else {
--			fprintf(stderr, "  max frames: %lu\n",
-+			fprintf(stderr, "  max frames: %" PRIu64 "\n",
- 				*frame_count);
- 		}
- 	}
-@@ -427,7 +428,7 @@ int container_context_post_process(struct container_context *cntr,
- 	assert(frame_count);
- 
- 	if (cntr->verbose && cntr->handled_byte_count > 0) {
--		fprintf(stderr, "  Handled bytes: %lu\n",
-+		fprintf(stderr, "  Handled bytes: %" PRIu64 "\n",
- 			cntr->handled_byte_count);
- 	}
- 
-diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
-index 3ca745a..8746e6f 100644
---- a/axfer/subcmd-transfer.c
-+++ b/axfer/subcmd-transfer.c
-@@ -11,6 +11,7 @@
- #include "misc.h"
- 
- #include <signal.h>
-+#include <inttypes.h>
- 
- struct context {
- 	struct xfer_context xfer;
-@@ -389,7 +390,8 @@ static int context_process_frames(struct context *ctx,
- 
- 	if (!ctx->xfer.quiet) {
- 		fprintf(stderr,
--			"%s: Expected %lu frames, Actual %lu frames\n",
-+			"%s: Expected %" PRIu64 "frames, "
-+			"Actual %" PRIu64 "frames\n",
- 			snd_pcm_stream_name(direction), expected_frame_count,
- 			*actual_frame_count);
- 		if (ctx->interrupted) {
++#define ABS(a)  (a) < 0 ? -(a) : (a)
++
+ #ifdef SND_CHMAP_API_VERSION
+ #define CONFIG_SUPPORT_CHMAP	1
+ #endif
+@@ -1741,7 +1743,7 @@ static void print_vu_meter_stereo(int *perc, int *maxperc)
+ 			line[bar_length + 6 + 1 + p] = '+';
+ 		else
+ 			line[bar_length - p - 1] = '+';
+-		if (maxperc[c] > 99)
++		if (ABS(maxperc[c]) > 99)
+ 			sprintf(tmp, "MAX");
+ 		else
+ 			sprintf(tmp, "%02d%%", maxperc[c]);
 -- 
 2.23.0
 
