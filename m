@@ -2,81 +2,73 @@ Return-Path: <SRS0=+StP=ZM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 008C5C43215
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 12:10:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEC7FC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 12:10:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 77D36224C6
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 12:10:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D21A224C8
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 12:10:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AuVqJjs8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77D36224C6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BZ0N4aqN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D21A224C8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7948170E;
-	Wed, 20 Nov 2019 13:03:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7948170E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D316F16B9;
+	Wed, 20 Nov 2019 12:59:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D316F16B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574251457;
-	bh=hwlVRCrW6Ynhewv6WX3f6tGv16Et+l1IYyn+CtwwcQs=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AuVqJjs82x/bMOc5BWkQ+02yElv8mx8HaanJrKxIBV0HtVgJTu4E2pOsSgmAN2TyJ
-	 9xQSwXeWsuryGBB0L+3gDNlDS+qg9lKg6k/3N+MF7wMGqJg+dU3FlJMuw6RAbqaqJ5
-	 eSyPOr5Zzs95NVii9/jJHZzJr9L4qBQMHp3BqqFE=
+	s=default; t=1574251242;
+	bh=JTtKACx8bqBNXzvoCWzKv9LYmUz0oAHpFk9Z6hFos70=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BZ0N4aqNN6rZlrJ2Ug5Xq9Ple8N0f+i18NFE3zQotsn2AvLhOfLCiYQG83fty+6x/
+	 3XsEyGfnpaP2W4X7H/TMUkUxw/BYbvdFX1ZYoMAdYZ64SzcP+YzbjzduYvzTn2yLsI
+	 7jeUuGIPmp5QS/UM4EhGdW/X31ct3eP3TvhjPYLg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6989BF801F8;
-	Wed, 20 Nov 2019 13:00:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59BD3F8013E;
+	Wed, 20 Nov 2019 12:59:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 207A3F801F7; Wed, 20 Nov 2019 13:00:09 +0100 (CET)
-Received: from esa2.mentor.iphmx.com (esa2.mentor.iphmx.com [68.232.141.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB2BBF801EC
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 13:00:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB2BBF801EC
-IronPort-SDR: 29RKMHRbGrj3DgUd7PIsTEMtoVK8l2m1qCWikHhZfAs0udrOICeKhpMMEMfU+//nxbVoTDUw0y
- 32Q5Aeb/o0MlsdSo/eAq9M6fcgp55XP20rRCusRQx5bpGYq1Pbrk8526vOeSk84Bg6SLb0vT2p
- 8VdzXoLKEud9FJ+80HUtjM9/IchMN9Zf3j/3Vur65LoIVhMGxJgCW3PEKAZRnNXN8z6GfgZZsJ
- VHGdh0Vl33LxgGsXEtkfasduk67/BSaSXBanVvIUXClgPAEI8twwjJwKeUxizCtJloTaBYxyCJ
- M4k=
-X-IronPort-AV: E=Sophos;i="5.69,221,1571731200"; d="scan'208";a="43282939"
+ id 53841F800F0; Wed, 20 Nov 2019 12:59:51 +0100 (CET)
+Received: from esa1.mentor.iphmx.com (esa1.mentor.iphmx.com [68.232.129.153])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49013F800F0
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 12:59:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49013F800F0
+IronPort-SDR: er9p4K3ACzUJh34oLXOl32Dq8de77uF1iXv4PD9JGH2FxufZuno3O9I2xoSavE6H/OS38bYj1W
+ qS6m+PTXM2R6bQU7dzpe/BZZZpBso2OZdRQCkQxNcJPmdlYJ/Y++QjHqGu8Xo23R4pVEAP4AoL
+ bnlG8KCgPSt7/ifRMITcvjwH2T4oV+Mch7zhjZyl5NZqrTCH5/30Wp2GDZK3ZUTrT8Ws2EVGpK
+ w5Ru5rOT1Ptn8tYWu7zUNTLsIDb6otKBYi5piSCGfD89Fako9yPpy9L068QKQgA3JXyTVFTFlG
+ G/o=
+X-IronPort-AV: E=Sophos;i="5.69,221,1571731200"; d="scan'208";a="45209990"
 Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
- by esa2.mentor.iphmx.com with ESMTP; 20 Nov 2019 04:00:02 -0800
-IronPort-SDR: M1RGJJYL1O4xfWcRR3qoAvqTVwR7qqWdH+Jd3iuqh7Yo+ZCJGQngPf0MhlnX4erpKXvVpz8IKE
- JoP5CVmiueKYN0xUlDIGHkqvNh2sb5x1kkBDl40VJEwLPEJTwY7KRk1dMe1TWpO2JR5rRzFLsv
- 1dILFDKGd5pxoN9HrCPBOW+W1nrqAOTbLCkyqO5hB4i4sxcRZ2hoYsmfCvOdwdvjvZYR4PsJfo
- Xlvxex/6BUBkml1lI1Gmm7qs7VXSEjTvhMLm7owk9+Nc8DrUz04ve3PIw68WoagRpRiccGhRfd
- H0c=
+ by esa1.mentor.iphmx.com with ESMTP; 20 Nov 2019 03:59:30 -0800
+IronPort-SDR: mApHb2YvYqahY+ClOh3KtE3bdvPlX8GG25dN96e6IvSRiiAwSbCF8u4E6OYbYiySa/TKiE0mbV
+ Qb7/4otq9gJ10nRJeKvwMUD/LTUgbE9ZhWG57O3OnicDNWbVKsrEvJcb0xblYRfLt7BTzIWQmY
+ UrnijCg/mi4c1pwXyeOxD71Yrw1PAGBbdgluLXyWmL8mXmv6IY92PXEm5Pjx4ygdOsFuj/gWvA
+ AW2u/2NaCbfW/l2RFtTpatsgOSfA6hLyRwGDVJtDGUQ/b/Voszk/MdNo8iFZs3Ks7JrmzBbtw+
+ vo4=
 From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>, Jaroslav
  Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timo Wischer
  <twischer@de.adit-jv.com>, Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Date: Wed, 20 Nov 2019 05:58:54 -0600
-Message-ID: <20191120115856.4125-6-andrew_gabbasov@mentor.com>
+Date: Wed, 20 Nov 2019 05:58:49 -0600
+Message-ID: <20191120115856.4125-1-andrew_gabbasov@mentor.com>
 X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191120115856.4125-5-andrew_gabbasov@mentor.com>
-References: <20191120115856.4125-1-andrew_gabbasov@mentor.com>
- <20191120115856.4125-2-andrew_gabbasov@mentor.com>
- <20191120115856.4125-3-andrew_gabbasov@mentor.com>
- <20191120115856.4125-4-andrew_gabbasov@mentor.com>
- <20191120115856.4125-5-andrew_gabbasov@mentor.com>
 MIME-Version: 1.0
 X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2) To
+X-ClientProxiedBy: SVR-IES-MBX-04.mgc.mentorg.com (139.181.222.4) To
  svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
-Subject: [alsa-devel] [PATCH v4 5/7] ALSA: aloop: Move CABLE_VALID_BOTH to
-	the top of file
+Subject: [alsa-devel] [PATCH v4 0/7] ALSA: aloop: Support sound timer as
+	clock source instead of jiffies
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,42 +86,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+This patch set is an updated version of patches by Timo Wischer:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-March/146871.html
 
-so all functions can use the same.
+This patch set is required for forwarding audio data between a HW sound
+card and an aloop device without the usage of an asynchronous sample rate
+converter.
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
----
- sound/drivers/aloop.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Most of sound and timers related code is kept the same as in previous set.
+The code, related to snd_pcm_link() functionality and its using for
+timer source setting, is removed (as rejected earlier). The changes in this
+update are mainly related to the parameters handling and some cleanup.
 
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 2f208aaa54cf..0eacaa9d7862 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -55,6 +55,10 @@ MODULE_PARM_DESC(pcm_notify, "Break capture when PCM format/rate/channels change
- 
- #define NO_PITCH 100000
- 
-+#define CABLE_VALID_PLAYBACK	BIT(SNDRV_PCM_STREAM_PLAYBACK)
-+#define CABLE_VALID_CAPTURE	BIT(SNDRV_PCM_STREAM_CAPTURE)
-+#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK | CABLE_VALID_CAPTURE)
-+
- struct loopback_cable;
- struct loopback_pcm;
- 
-@@ -224,10 +228,6 @@ static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
- 	return 0;
- }
- 
--#define CABLE_VALID_PLAYBACK	(1 << SNDRV_PCM_STREAM_PLAYBACK)
--#define CABLE_VALID_CAPTURE	(1 << SNDRV_PCM_STREAM_CAPTURE)
--#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK|CABLE_VALID_CAPTURE)
--
- static int loopback_check_format(struct loopback_cable *cable, int stream)
- {
- 	struct snd_pcm_runtime *runtime, *cruntime;
+The timer source can be initially selected by "timer_source" kernel module
+parameter. It is supposed to have the following format:
+    [<pref>:](<card name>|<card idx>)[{.,}<dev idx>[{.,}<subdev idx>]]
+For example: "hw:I82801AAICH.1.0", or "1.1", or just "I82801AAICH".
+(Prefix is ignored, just allowed here to be able to use the strings,
+the user got used to).
+Although the parsing function recognizes both '.' and ',' as a separator,
+module parameters handling routines use ',' to separate parameters for
+different module instances (array elements), so we have to use '.'
+to separate device and subdevice numbers from the card name or number
+in module parameters.
+Empty string indicates using jiffies as a timer source.
+
+Besides "static" selection of timer source at module load time,
+it is possible to dynamically change it via sound "info" interface
+(using "/proc/asound/<card>/timer_source" file in read-write mode.
+The contents of this file is used as a timer source string for
+a particular loopback card, e.g. "hw:0,0,0" (and here ',' can be used
+as a separator).
+
+The timer source string value can be changed at any time, but it is
+latched by PCM substream open callback "loopback_open()" (the first
+one for a particular cable). At this point it is actually used,
+that is the string is parsed, and the timer is looked up and opened.
+This seems to be a good trade-off between flexibility of updates and
+synchronizations or racing complexity.
+
+The timer source is set for a loopback card (the same as initial setting
+by module parameter), but every cable uses the value, current at the moment
+of opening. Theoretically, it's possible to set the timer source for each
+cable independently (via separate files), but it would be inconsistent
+with the initial setting via module parameters on a per-card basis.
+
+v2:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/157961.html
+
+v3:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158312.html
+- Change sound card lookup to use snd_card_ref() and avoid direct access
+  to sound cards array
+- Squash commits on returning error codes for timer start and stop
+- Some locking related fixes
+- Some code cleanup
+
+v4:
+- Change to use updated API for snd_timer_open() (separate timer instance)
+- Change to use snd_timer_close() returning void
+- Some code cleanup
+
+
+Andrew Gabbasov (1):
+  ALSA: aloop: Support runtime change of snd_timer via info interface
+
+Timo Wischer (6):
+  ALSA: aloop: Describe units of variables
+  ALSA: aloop: Support return of error code for timer start and stop
+  ALSA: aloop: Use callback functions for timer specific implementations
+  ALSA: aloop: Rename all jiffies timer specific functions
+  ALSA: aloop: Move CABLE_VALID_BOTH to the top of file
+  ALSA: aloop: Support selection of snd_timer instead of jiffies
+
+ sound/drivers/aloop.c | 663 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 628 insertions(+), 35 deletions(-)
+
 -- 
 2.21.0
 
