@@ -7,76 +7,70 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D468FC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:55:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E9EDC432C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:55:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F6A620878
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:55:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96C4520878
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Nov 2019 17:55:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ryfi4Md5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F6A620878
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mentor.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jMZtke0W";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="NM+rjlzI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96C4520878
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B0A31753;
-	Wed, 20 Nov 2019 18:54:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B0A31753
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCD171700;
+	Wed, 20 Nov 2019 18:45:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCD171700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574272524;
-	bh=hwlVRCrW6Ynhewv6WX3f6tGv16Et+l1IYyn+CtwwcQs=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1574272008;
+	bh=QfwvipcOmKcO1zjB40kwpIN/8C0Sk04FzPPUkXle9ho=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ryfi4Md59vQJmt0K0ValZ+7btYXLKfaIDB4sw1hVfs70s+kLj+CFP/T3tLe4x/00+
-	 uidsUBmuyDVBgw0ekT79l1eORA5nZXGDCAgExzpWeqa2qufZ19+qu36jWjjvMoPAA+
-	 AHX8/F4ctrWxOnFTABUtoVaorV/IRvC451ypkfYw=
+	b=jMZtke0Ws1+/sxNOpRGFermxHKMj3NqNPhItTZlJ2QkqufIViJq/rlbOMVbm7bYX1
+	 bWdiwlLnrWiZzxqkkuQzI3qqL7Q7ONe86GGNqwBSM2+Lv3gINXBiZOaY7EOPjvOQW2
+	 ELWdzDLJYWJ2zAnFmEKbTfQrIfOM/z84tfa46VFo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B2CCF801F5;
-	Wed, 20 Nov 2019 18:51:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5842AF800FF;
+	Wed, 20 Nov 2019 18:45:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06E71F801F7; Wed, 20 Nov 2019 18:51:35 +0100 (CET)
-Received: from esa2.mentor.iphmx.com (esa2.mentor.iphmx.com [68.232.141.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 20D3FF8014B; Wed, 20 Nov 2019 18:45:05 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A974F801F4
- for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:51:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A974F801F4
-IronPort-SDR: BRJxMbVs5fOl3pFJJmr43cp+6vX9vUixpZjp6lu+yBpO2aaFwrMx63dqWiQWsycm+fxHVjEuGo
- cP9MixdX6D2pGtWrOEh7YMHSFXyq97zE65RP7KtObA+AfVSF8umWLu6gK4DkdpQ+9clHUMJdG0
- K0etkgqZfjjSY076qj0kYNSCzzlwRCbidfRhGbUgMYSxHfP7qRsDcZ4aMZhkcEu4vHyXNyt6pn
- m9PHjbhhVilT83X4WsIp6qAfpN00vSkD+P938TzVVu1D5QgDBcd5cdrc40jAVUU10gZPAsqmJ8
- ShI=
-X-IronPort-AV: E=Sophos;i="5.69,222,1571731200"; d="scan'208";a="43299512"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
- by esa2.mentor.iphmx.com with ESMTP; 20 Nov 2019 09:51:30 -0800
-IronPort-SDR: CUHHf9ZBNW0bhNaSV3L/eBL5GYoDBqLnsKtvfhZPRRBi6VrC/IunNhYsgFZOqPj5bW3rYiL5Vu
- 4ukHEQiAS6acUXrV30D5vwu7Jk6jG97W78eBnlHGwpeD6rW2lxMvWLai/GqWdXSKUExUNbN0wa
- lpWwKtKLpqlQ1bEgh9kPnpOLF+omVW8Zcs6WphYVfhdP58FFDh+GDCOZPdBrhEAQgNu77kHiq5
- 76+Skn90gNd/3ci2rULZlNtTrBDO0/iscRWYMHzNDGnDEzeFo7pzYsO1jONcx/fqjJD6Notc2l
- YSc=
-From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>, Jaroslav
- Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Timo Wischer
- <twischer@de.adit-jv.com>, Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Date: Wed, 20 Nov 2019 11:49:53 -0600
-Message-ID: <20191120174955.6410-6-andrew_gabbasov@mentor.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191120174955.6410-5-andrew_gabbasov@mentor.com>
-References: <20191120174955.6410-1-andrew_gabbasov@mentor.com>
- <20191120174955.6410-2-andrew_gabbasov@mentor.com>
- <20191120174955.6410-3-andrew_gabbasov@mentor.com>
- <20191120174955.6410-4-andrew_gabbasov@mentor.com>
- <20191120174955.6410-5-andrew_gabbasov@mentor.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7694EF800FF
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:45:02 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 72B00A0042;
+ Wed, 20 Nov 2019 18:45:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 72B00A0042
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1574271901; bh=/Op/eDl9SjR42eUDBnq8HeUc3yn6/2eBRVvStZ2Jjw4=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=NM+rjlzIe+M+Sptn4dkYK7vItzUC/ksu7kCgOydjqa3xKaiH8jo1W0mEoYI7JGnyb
+ 4V+wN2B6/NX3dlI7w9p3b1K36iLDK0REYWZx1YIkKbE6wsdwRAVXQDskwEBTsdKu30
+ +epdTCjzLdD5+S8ZDN/yD7FfwGLI02tipf5EYAOs=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 20 Nov 2019 18:44:57 +0100 (CET)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Date: Wed, 20 Nov 2019 18:44:35 +0100
+Message-Id: <20191120174435.30920-2-perex@perex.cz>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191120174435.30920-1-perex@perex.cz>
+References: <20191120174435.30920-1-perex@perex.cz>
 MIME-Version: 1.0
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
-Subject: [alsa-devel] [PATCH v5 5/7] ALSA: aloop: Move CABLE_VALID_BOTH to
-	the top of file
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH v2 2/2] ASoC: DMI long name - avoid to add
+	board name if matches with product name
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,45 +88,36 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+Current code:
 
-so all functions can use the same.
+  LENOVO-20QE000VMC-ThinkPadX1Carbon7th-20QE000VMC
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+With the patch:
+
+  LENOVO-20QE000VMC-ThinkPadX1Carbon7th
+
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
 ---
- sound/drivers/aloop.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 2f208aaa54cf..0eacaa9d7862 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -55,6 +55,10 @@ MODULE_PARM_DESC(pcm_notify, "Break capture when PCM format/rate/channels change
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index db56507174bd..ace7e518bc5a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1835,7 +1835,8 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
  
- #define NO_PITCH 100000
- 
-+#define CABLE_VALID_PLAYBACK	BIT(SNDRV_PCM_STREAM_PLAYBACK)
-+#define CABLE_VALID_CAPTURE	BIT(SNDRV_PCM_STREAM_CAPTURE)
-+#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK | CABLE_VALID_CAPTURE)
-+
- struct loopback_cable;
- struct loopback_pcm;
- 
-@@ -224,10 +228,6 @@ static inline int loopback_jiffies_timer_stop_sync(struct loopback_pcm *dpcm)
- 	return 0;
- }
- 
--#define CABLE_VALID_PLAYBACK	(1 << SNDRV_PCM_STREAM_PLAYBACK)
--#define CABLE_VALID_CAPTURE	(1 << SNDRV_PCM_STREAM_CAPTURE)
--#define CABLE_VALID_BOTH	(CABLE_VALID_PLAYBACK|CABLE_VALID_CAPTURE)
--
- static int loopback_check_format(struct loopback_cable *cable, int stream)
- {
- 	struct snd_pcm_runtime *runtime, *cruntime;
+ 	board = dmi_get_system_info(DMI_BOARD_NAME);
+ 	if (board && is_dmi_valid(board)) {
+-		append_dmi_string(card, board);
++		if (!product || strcasecmp(board, product))
++			append_dmi_string(card, board);
+ 	} else if (!product) {
+ 		/* fall back to using legacy name */
+ 		dev_warn(card->dev, "ASoC: no DMI board/product name!\n");
 -- 
-2.21.0
-
+2.20.1
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
