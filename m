@@ -2,64 +2,65 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0965FC432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:04:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03727C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:05:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AC0B20748
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:04:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5FC220748
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:05:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mUNdIhd7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AC0B20748
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Uf9YRxOf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5FC220748
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD6D41723;
-	Thu, 21 Nov 2019 07:03:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD6D41723
+	by alsa0.perex.cz (Postfix) with ESMTPS id 984CF1748;
+	Thu, 21 Nov 2019 07:04:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 984CF1748
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574316287;
-	bh=ygq0WDa4lJv+nZAO1qexCrB07NqMGVO5yiImKcpyoZY=;
+	s=default; t=1574316342;
+	bh=l1WSvvX2mKWweyUCaC1AiMIeUknMRtQbXmJl5mvaCt0=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mUNdIhd77pBRZGyLDUamitnp62ww5+PH3B5i5ac55WY79AXPjuohk3ho83Ctguvsl
-	 6nSG7LgWQwL2BnhftdEsqmhgC6diTH3Cov7rR8jKsIXbn60pEU7Gis3RcNGUdt/hXt
-	 84Q47dtFSTo3mjl5bDjrMcJ4Xnc0spNDApXsnrw0=
+	b=Uf9YRxOfLHQ2ulKElc4qZ28p/0xp1eFFJaxWsxkFvwJ+wUq5jiTYN1UBOFTehwmHa
+	 sjUJTtpkBzGk6UoaETjV8G6s6U/plRXn3QnHJV56MSApP9wptyV1vh+z8hK7G84ZWH
+	 axGsVXSPpSBX2LfFlvh9rur/oSipnYmn/AwoXSAw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44077F80145;
-	Thu, 21 Nov 2019 07:03:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC88AF8014D;
+	Thu, 21 Nov 2019 07:04:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFB74F80146; Thu, 21 Nov 2019 07:03:54 +0100 (CET)
+ id A0019F8014E; Thu, 21 Nov 2019 07:04:04 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B815FF800C1
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 07:03:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B815FF800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14331F800F0
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 07:04:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14331F800F0
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 29C43ABF4;
- Thu, 21 Nov 2019 06:03:50 +0000 (UTC)
-Date: Thu, 21 Nov 2019 07:03:49 +0100
-Message-ID: <s5hlfs9u5oa.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 69484AAC3;
+ Thu, 21 Nov 2019 06:04:01 +0000 (UTC)
+Date: Thu, 21 Nov 2019 07:04:01 +0100
+Message-ID: <s5hk17tu5ny.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Hui Wang <hui.wang@canonical.com>
-In-Reply-To: <20191121022644.8078-1-hui.wang@canonical.com>
+In-Reply-To: <20191121022644.8078-2-hui.wang@canonical.com>
 References: <20191121022644.8078-1-hui.wang@canonical.com>
+ <20191121022644.8078-2-hui.wang@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH 1/2] ALSA: hda/realtek - Move some alc256
+Subject: Re: [alsa-devel] [PATCH 2/2] ALSA: hda/realtek - Move some alc236
 	pintbls to fallback table
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,12 +79,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Nov 2019 03:26:43 +0100,
+On Thu, 21 Nov 2019 03:26:44 +0100,
 Hui Wang wrote:
 > 
 > We have a new Dell machine which needs to apply the quirk
 > ALC255_FIXUP_DELL1_MIC_NO_PRESENCE, try to use the fallback table
-> to fix it this time. And we could remove all pintbls of alc256
+> to fix it this time. And we could remove all pintbls of alc236
 > for applying DELL1_MIC_NO_PRESENCE on Dell machines.
 > 
 > Signed-off-by: Hui Wang <hui.wang@canonical.com>
