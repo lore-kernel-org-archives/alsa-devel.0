@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1C8AC432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7916EC432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:27:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 483012068F
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:25:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0012E206CB
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:27:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W4Mf4YpJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 483012068F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YbC4TKA+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0012E206CB
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8074E17A2;
-	Thu, 21 Nov 2019 22:24:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8074E17A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A9D517A2;
+	Thu, 21 Nov 2019 22:26:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A9D517A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574371546;
-	bh=R3gcYYOC2mej595fKd+fSMIbO0O9d3DQ1bBb38iGcz0=;
+	s=default; t=1574371648;
+	bh=imAsPFXNyowjA2JQ8r9Oyxco8nZXnr1ljSATSmS2DOw=;
 	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W4Mf4YpJ2Ys8vCFTwggaB1nP78vor2gvL3wpij7DtXYBCzJl6CXqB6gCqFLts8QAO
-	 NDWHleSqbCgZqKzU6aCdoUUjQ12VrsXqBdWVDmSC1DpB2r6BE41ATNelZpQYChY0Rd
-	 TYEth2inS1cIy1q7+0CepsyAmTAORuNUf3ISkdsM=
+	b=YbC4TKA+FFJ2DWftvyaRUKj0mT055cisxy76IHdv94Q5QTGtYeKGtKAkew0+fIU6n
+	 LzK9B3o9B7dspIUZCcXpffd7njgZiIQO64qujECuhlQ8/aTNEu91YqVmNyFX4woxAM
+	 27P1Gsna1QWLbLb8qCJl3D+1vLNVZvR3KBvCJlgk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00E76F80145;
-	Thu, 21 Nov 2019 22:24:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA227F80146;
+	Thu, 21 Nov 2019 22:26:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1295BF80146; Thu, 21 Nov 2019 22:24:55 +0100 (CET)
+ id B238BF80147; Thu, 21 Nov 2019 22:26:36 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 8A91BF800C1
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 22:24:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A91BF800C1
+ by alsa1.perex.cz (Postfix) with ESMTP id 374F1F80145
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 22:26:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 374F1F80145
 MIME-Version: 1.0
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1574371491782548904-webhooks-bot@alsa-project.org>
-References: <1574371491782548904-webhooks-bot@alsa-project.org>
-Message-Id: <20191121212455.1295BF80146@alsa1.perex.cz>
-Date: Thu, 21 Nov 2019 22:24:55 +0100 (CET)
+In-Reply-To: <1574371594062711000-webhooks-bot@alsa-project.org>
+References: <1574371594062711000-webhooks-bot@alsa-project.org>
+Message-Id: <20191121212636.B238BF80147@alsa1.perex.cz>
+Date: Thu, 21 Nov 2019 22:26:36 +0100 (CET)
 Subject: [alsa-devel] alsa-lib Plugin: File deadlock when piping to shell
 	command
 X-BeenThere: alsa-devel@alsa-project.org
@@ -69,7 +69,7 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #14 was opened from bharris6:
+alsa-project/alsa-lib issue #14 was edited from bharris6:
 
 When using the [ALSA File plugin](https://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html) you can tell it to pipe playback data to either a file or a program/shell command.
 
@@ -193,7 +193,7 @@ I've tested an alternative method to simulate the popen and pipe into their STDI
 
     head -c 500 /dev/urandom | sh -c safe_fifo_alt  
 
-It appears this was changed in revision 022c790aabc300eabad4da8947a3f2bdadce41e1, where the `dup()` and `pclose()` calls were added and introduced the deadlock.
+It appears this was changed in revision 22ade9b8c150240a960ca683ee6d8f53ce8bc6ea, where the `dup()` and `pclose()` calls were added and introduced the deadlock.
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/14
 Repository URL: https://github.com/alsa-project/alsa-lib
