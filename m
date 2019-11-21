@@ -2,65 +2,97 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18157C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74527C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:18:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDB1820748
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:06:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0A85208A1
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 06:18:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BbqdjVkv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDB1820748
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CjSVgBT/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="txtH/50k"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0A85208A1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 177331754;
-	Thu, 21 Nov 2019 07:05:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 177331754
+	by alsa0.perex.cz (Postfix) with ESMTPS id E42B216FF;
+	Thu, 21 Nov 2019 07:17:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E42B216FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574316389;
-	bh=aSdclfD013VMPnBK6/KQ8my3HNh82XFcmQgb93LbzHM=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1574317109;
+	bh=sIoZX7bURnFweKpnm6k65tiLFNAfBfS1Rw0pqFTOBc8=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BbqdjVkvVwv5pXY5zJKrC8JtfuccpL8t0qzZjPXmvRLZJwRhcOmQE3n5Rb0JBEN2g
-	 tE/M1USs7XoCQtw9uBwGwxVTFuHFRY+g87oJduIKHEKbNxJmnsWsU0e/6rmulOO32Q
-	 KcH/pLmCWv73F8W/xUPJPi8Kyybhp85aVRwUAT84=
+	b=CjSVgBT/oC5qVCT8n6Zg0jwUT1NXht3BFDm6CUOgEd1UORlN4dVbtINQe0dZIFM4F
+	 K0eNx76zFpZ84iVzR6vXW/Q33WogqJ8kL24j3R2qOnz3OFdM8c6TKWrmQUxjb0Bhp+
+	 Y9vIDcWCzh5tnGHkbVChgls0fA8dZTDWeIPo+UPQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F082DF80159;
-	Thu, 21 Nov 2019 07:04:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2F33F80145;
+	Thu, 21 Nov 2019 07:17:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9825BF8015A; Thu, 21 Nov 2019 07:04:18 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F15FAF80146; Thu, 21 Nov 2019 07:17:35 +0100 (CET)
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
+ [IPv6:2607:f8b0:4864:20::d41])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E90A1F80157
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 07:04:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E90A1F80157
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id A9BEFABF4;
- Thu, 21 Nov 2019 06:04:15 +0000 (UTC)
-Date: Thu, 21 Nov 2019 07:04:15 +0100
-Message-ID: <s5himndu5nk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-In-Reply-To: <20191121025427.8856-1-hui.wang@canonical.com>
-References: <20191121025427.8856-1-hui.wang@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda/realtek - Enable the headset-mic
-	on a Xiaomi's laptop
+ by alsa1.perex.cz (Postfix) with ESMTPS id E43C7F800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 07:17:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E43C7F800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="txtH/50k"
+Received: by mail-io1-xd41.google.com with SMTP id b26so177910ion.7
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 22:17:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=EPalLpyV3JBTPCtX+HOh/VghiKwKlUW+4LaduaLxYoI=;
+ b=txtH/50kJydOcA8v6t/b9gxCKnAGWHx9iROR14lGyqNY+jDadJS1UYqRrTs09/tkha
+ K9zahyArUb7vXDzW915XXXe+KuEZXkS2hhERbtvd8ZudTsfe1kx+ipy6EV5h65nx2Jwo
+ 0/Pb9lM8Zr2qZtxqRjIdR+afRWKDPEi5Go0mCUqo84y3v+AalZ8dRa2unB2UX0n4W++R
+ HAOfb/mG1FccORdPWCp/WSd25HOYz2zsXFRSuHJtcfH75FHHimUUhBHrKtuRTq3MCagt
+ FJuyqP+IUcNqaxXR+g0PpCgpGCdNIlwg/dGGLrsqkDc+pU4aM8fUPtd5QypaMGWm3AHP
+ 1YUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=EPalLpyV3JBTPCtX+HOh/VghiKwKlUW+4LaduaLxYoI=;
+ b=pcBMWQ3MlNchLdMUaeFW5fO9kjRj+Cbs+uunt9x6091ikRLB9n8iLT1AYYgX5o9/WB
+ 7B1GiL6CVEQhLtGJoKcnajuuyO7FkTPYTokXa9kGdUYyocIpqJfQPupayTxIlfIkDgNc
+ 0NW2TTzk8fMBT6vsmRn+Tn42XdN7xHwYK52hY0OYGIRWWgnVvFH9+qdRnO0UZUZMkhoL
+ iOHnhe5TpMoV0atqHFAedrkiXEjyO2uuGZMEBwMI6Ve/wMjxhMFPW2ToQPpDoscwy+b6
+ LS3fFRPawxxVok6U0IP4+FpMOM2he7So7GSsfirsgRwJAarnz5hp8BPOTYzDPYATHlSZ
+ Qe8Q==
+X-Gm-Message-State: APjAAAUTqWDErL4ttr5IuvryUtNOiYcsRMO3WZ9UfCGKLezzsqjTIxso
+ JDJVXCLHHglE50V889zDMZnXivZEpAGf+LsrDs2jvw==
+X-Google-Smtp-Source: APXvYqyLUujy3PczsM/JDEv2zRPpm6Zcgl13KUWHe0dXBpPOmFYEz/KzlZ9gsnmVSA65lFGrJ1lQnlWO2CipLCvQpGA=
+X-Received: by 2002:a02:7f93:: with SMTP id r141mr6844853jac.68.1574317049107; 
+ Wed, 20 Nov 2019 22:17:29 -0800 (PST)
+MIME-Version: 1.0
+References: <20191120060256.212818-1-tzungbi@google.com>
+ <20191120060256.212818-4-tzungbi@google.com>
+ <8273f728-3d4b-b0dc-03b7-6276c5ae4460@linux.intel.com>
+ <CA+Px+wWSajOFXwLAS+jrO9XUBeKaxjZaEOqng0YO9VmL3VXaSQ@mail.gmail.com>
+ <7f055263-01a6-e1cd-8085-1790222bb808@linux.intel.com>
+In-Reply-To: <7f055263-01a6-e1cd-8085-1790222bb808@linux.intel.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 21 Nov 2019 14:17:17 +0800
+Message-ID: <CA+Px+wX2UtU3As-3Bf4rWn1kzqDMPw60xk508gDDaOPk6Q5dgw@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: max98090: fix possible race
+	conditions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,20 +110,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Nov 2019 03:54:27 +0100,
-Hui Wang wrote:
-> 
-> The headset on this machine is not defined, after applying the quirk
-> ALC256_FIXUP_ASUS_HEADSET_MIC, the headset-mic works well
-> 
-> BugLink: https://bugs.launchpad.net/bugs/1846148
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+On Thu, Nov 21, 2019 at 11:20 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> Still you may want to clarify your second point and the commit message.
+> The first race condition was clear, the second one not so much.
+>
+> what did you mean with 'assert ULK == 0' and what does this map to in
+> pll_work
 
-Applied now.  Thanks.
+The case (2) race condition is based on the previous patch:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158852.html
 
+After applying the patch, the code would be something like: (in the
+case, two threads read 0x01.)
+static void max98090_pll_work(struct work_struct *work)
+{
+[snip]
+        snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
+                            M98090_SHDNN_MASK, 0);
+        snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
+                            M98090_SHDNN_MASK, M98090_SHDNN_MASK);
 
-Takashi
+        for (i = 0; i < 10; ++i) {
+                /* Check lock status */
+                pll = snd_soc_component_read32(
+                                component, M98090_REG_DEVICE_STATUS);
+                if (!(pll & M98090_ULK_MASK))
+                        break;
+
+                /* Give PLL time to lock */
+                usleep_range(1000, 1200);
+        }
+}
+
+I guess we have 2 choices:
+i. stick to the original plan: option B, remove the second thread of execution.
+In the case, we would be punished by at most 10~12ms delay in the
+interrupt handler thread.  I browsed the max98090_interrupt() and tend
+to think it should be fine if we delay jack detection for extra 10ms.
+
+ii. adopt option A, play with the masks; and drop the previous patch
+to avoid multiple threads access 0x01
+We would be forced to wait >10ms before re-enabling ULK interrupt.
+Notably, Documentation/timers/timers-howto.txt states "msleep(1~20)
+may not do what the caller intends, and will often sleep
+longer".Documentation/timers/timers-howto.txt".
+
+Either way should be fine.  Which one would you suggest?
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
