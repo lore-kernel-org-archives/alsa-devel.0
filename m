@@ -2,79 +2,102 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03E61C432C3
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 14:38:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 477FAC432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 15:02:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7BDD20656
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 14:38:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 46790206DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 15:02:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kJN55x99"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7BDD20656
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tarent.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YxoudBcS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zwd2wM57"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46790206DA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE999175E;
-	Thu, 21 Nov 2019 15:37:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE999175E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5132E175F;
+	Thu, 21 Nov 2019 16:01:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5132E175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574347123;
-	bh=ELgCA4KYLiuBA2AeXSVx0j+4LRrf8zgDV5x3RFV9jPQ=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1574348561;
+	bh=tAZQce0K2LuWbaKo8T8aLKuA/PYNu91Z0WnF/NzOFX8=;
+	h=To:References:From:Date:In-Reply-To:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kJN55x99Cnjhs16oJjL0D+ZEu8yVghyQTaSeT8q8QGLtwDUPUp0jb4yP6e6Lbd6BA
-	 XnMK7m45PCIT4aWY1q7VhdE4f44AL21BG2cM1kqvdFd15mmALuUATsz5GQvQsVEkIu
-	 IkHX1ymB9+kyAjL1OtRSpzP+SB+hvdmjybDsqQco=
+	b=YxoudBcSidC5e+mtAHMs6KabXxpnvzP+p0tHFvtc8yyfcReBH78WtS+CsaYQORZdo
+	 h2Vrsme5aWKmSNZ+x98+B7/52vET61kVwgKO3v+eNNgil7kNB/YY+N0Qj8fv2jo8fI
+	 L53yCaQh8WgI/MM8x/UguiDyL2eY02kHMWyTvB1o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FD90F80145;
-	Thu, 21 Nov 2019 15:37:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF392F80145;
+	Thu, 21 Nov 2019 16:01:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A17FAF80146; Thu, 21 Nov 2019 15:37:51 +0100 (CET)
-Received: from mail.lixid.net (lixid.tarent.de [193.107.123.118])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7E2A7F800C1; Thu, 21 Nov 2019 09:52:15 +0100 (CET)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
+ [IPv6:2a00:1450:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 197AFF800C1
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 15:37:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 197AFF800C1
-Received: from localhost (localhost [127.0.0.1])
- by mail.lixid.net (MTA) with ESMTP id 7409D140B77;
- Thu, 21 Nov 2019 15:37:48 +0100 (CET)
-Received: from mail.lixid.net ([127.0.0.1])
- by localhost (mail.lixid.net [127.0.0.1]) (MFA, port 10024) with LMTP
- id 2yf71HB2ip94; Thu, 21 Nov 2019 15:37:48 +0100 (CET)
-Received: from tglase-nb.lan.tarent.de (vpn-172-28-0-27.dynamic.tarent.de
- [172.28.0.27])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.lixid.net (MTA) with ESMTPS id C87F614018F;
- Thu, 21 Nov 2019 15:37:47 +0100 (CET)
-Received: by tglase-nb.lan.tarent.de (Postfix, from userid 1000)
- id 5DB9852059C; Thu, 21 Nov 2019 15:37:46 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by tglase-nb.lan.tarent.de (Postfix) with ESMTP id 5AB09520438;
- Thu, 21 Nov 2019 15:37:46 +0100 (CET)
-Date: Thu, 21 Nov 2019 15:37:46 +0100 (CET)
-From: Thorsten Glaser <t.glaser@tarent.de>
-X-X-Sender: tglase@tglase-nb.lan.tarent.de
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <s5hzhgpsl7b.wl-tiwai@suse.de>
-Message-ID: <alpine.DEB.2.21.1911211536340.23653@tglase-nb.lan.tarent.de>
-References: <alpine.DEB.2.21.1911202147000.2011@tglase.lan.tarent.de>
- <s5hzhgpsl7b.wl-tiwai@suse.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Content-Language: de-DE-1901
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBAF9F800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 09:52:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBAF9F800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Zwd2wM57"
+Received: by mail-wr1-x441.google.com with SMTP id z3so3337682wru.3
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 00:52:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=to:references:subject:from:message-id:date:user-agent:mime-version
+ :in-reply-to:content-language;
+ bh=QKWnAisNnQ/YaoLB7gxOTChTH+KFwv1xUA3EE5Egses=;
+ b=Zwd2wM579ahYFbCOzUNkwmsY1JIH9wcO3kyBNtAOaoxmbUjBYk7mIqHMNQzR+ManlB
+ O4T3nVzlLjEM8HNoqjmqpTrv+qVkYtDX5cpyDfSWtV0259BAsnFA9Rx1iBxIn0jWJI4h
+ Sx/23oAacoFF5BtrqXWTS1eWGKp5Ksq77VR7q03zYrKyoe7BPUOFlR0WwELmlZmMmwCR
+ ktMNLMk44WRuN8Ld01q71dfU7DJY9LRow6U2V5gccuIp/JKryOhXg1K/80rLw8Jt53mK
+ OLno3Re16VozEv4VzRQgtnSEvM2/PRxb8C4TjWBYr206LgEvtD4kqgjc6R2B0AtlGe8t
+ CzWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:to:references:subject:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language;
+ bh=QKWnAisNnQ/YaoLB7gxOTChTH+KFwv1xUA3EE5Egses=;
+ b=WOhrZY9T1BiTcUaz+0/XWW3ZHtZvuMabEwi1YHeaLmyAU35GMMYHkmprLX4ECtuydu
+ TEO/u/SM38WYp2pJIVagWoIfaU1UpXRXwzlNVK+X5I735d5A02iqDNsOMEa2nwZh1pQ1
+ zRC3/1MFDJ+sN7+WTHCIM3rVJY4j9fEUf3HUvUkRBo+Mcqu8xiXFVcjfNI7hCxbkMpUR
+ OE3qVGxGcRZvjwqpWOb0vTTcWldbqze1EY9smH/RWi+y2gizvW7JMPHRHrjYN5xw5GUX
+ H8MLtc+SA0Lpk/1xDiUsBIlLAw9IbWhJjzoqmipwPZpSoX37+KLmIFWTKWSd9AO0FYBM
+ nxyQ==
+X-Gm-Message-State: APjAAAVCc7qVm6S08UNLRU61Go9BSKYkObthZ5crnHE6X6JVjPscaPeX
+ DnO6p6b/Pq6KjQLR0k0pFmIOYh+K
+X-Google-Smtp-Source: APXvYqz5NtNAaphuqLukgSQ9b+MfM5VC+VaGXTs6wKLQVq/YOc0popgr4niUBkP8/Sm+LI8wfRP0hA==
+X-Received: by 2002:adf:8147:: with SMTP id 65mr9004399wrm.230.1574326331313; 
+ Thu, 21 Nov 2019 00:52:11 -0800 (PST)
+Received: from [192.168.1.113] ([91.106.123.186])
+ by smtp.gmail.com with ESMTPSA id w13sm2419899wrm.8.2019.11.21.00.52.10
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 21 Nov 2019 00:52:10 -0800 (PST)
+To: alsa-devel@alsa-project.org
+References: <20191111054133.GA1817@b4.vu>
+From: Markus Schroetter <project.m.schroetter@gmail.com>
+Message-ID: <861b90c8-8878-c3be-bc8e-769a3638cc14@gmail.com>
+Date: Thu, 21 Nov 2019 09:52:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] fix segfault on x32,
- 64-bit time_t-related format strings
+In-Reply-To: <20191111054133.GA1817@b4.vu>
+Content-Language: en-US
+X-Mailman-Approved-At: Thu, 21 Nov 2019 16:01:49 +0100
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Fix Scarlett 6i6 Gen 2
+ port data
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,24 +110,181 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gVGh1LCAyMSBOb3YgMjAxOSwgVGFrYXNoaSBJd2FpIHdyb3RlOgoKPiBDb3VsZCB5b3Ugc3Bs
-aXQgdGhlc2UgY2hhbmdlcyB0byBzZXBhcmF0ZSBwYXRjaGVzPyAgVGhleSBhcmUgZm9yCj4gZGlm
-ZmVyZW50IHB1cnBvc2VzLgoKSeKAmXZlIHNlbnQgdGhlbSBhcyB0d28gc2VwYXJhdGUgcGF0Y2gg
-ZmlsZXMgYXR0YWNobWVudHMuCgo+IEFsc28sIHVzaW5nIHRpbWVfdCB3b3VsZCBiZSBiZXR0ZXIg
-aWYgcG9zc2libGUuICBVbmZvcnR1bmF0ZWx5IGEgY2FzdAo+IGlzIG5lZWRlZCBmb3IgcHJpbnRm
-IHVzYWdlLCBidXQgb3RoZXIgdGhhbiB0aGF0LCB0aW1lX3Qgd291bGQgbGVhdmUgdXMKPiB0aGUg
-cmlnaHQgc2l6ZS4KCkluIHRpbWVkaWZmKCkgeW91IG1lYW4/IEhybSwgaW5kZWVkLiBJIHRyaWVk
-IHRvIGJlIG1pbmltYWwtaW52YXNpdmUKYXQgZmlyc3QuCgpieWUsCi8vbWlyYWJpbG9zCi0tIAp0
-YXJlbnQgc29sdXRpb25zIEdtYkgKUm9jaHVzc3RyYcOfZSAyLTQsIEQtNTMxMjMgQm9ubiDigKIg
-aHR0cDovL3d3dy50YXJlbnQuZGUvClRlbDogKzQ5IDIyOCA1NDg4MS0zOTMg4oCiIEZheDogKzQ5
-IDIyOCA1NDg4MS0yMzUKSFJCIDUxNjggKEFHIEJvbm4pIOKAoiBVU3QtSUQgKFZBVCk6IERFMTIy
-MjY0OTQxCkdlc2Now6RmdHNmw7xocmVyOiBEci4gU3RlZmFuIEJhcnRoLCBLYWkgRWJlbnJldHQs
-IEJvcmlzIEVzc2VyLCBBbGV4YW5kZXIgU3RlZWcKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+> The s6i6_gen2_info.ports[] array had the Mixer and PCM port type
+> entries in the wrong place. Use designators to explicitly specify the
+> array elements being set.
+>
+> Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
+> Signed-off-by: Geoffrey D. Bennett <g at b4.vu <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>
+> Reported-by: Jonas Berlin <kernel at xkr47.space <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>
+> Tested-by: Alex Fellows <alex.fellows at gmail.com <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>
+Tested-by: Markus Schroetter <project.m.schroetter@gmail.com>
+> ---
+> Hi Takashi,
+>
+> Is there something special I need to do to mark this as a bug fix and
+> request this go into 5.4?
+>
+> Thanks,
+> Geoffrey.
+>
+>  sound/usb/mixer_scarlett_gen2.c | 36 ++++++++++++++++-----------------
+>  1 file changed, 18 insertions(+), 18 deletions(-)
+>
+> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+> index 7d460b1f1735..94b903d95afa 100644
+> --- a/sound/usb/mixer_scarlett_gen2.c
+> +++ b/sound/usb/mixer_scarlett_gen2.c
+> @@ -261,34 +261,34 @@ static const struct scarlett2_device_info s6i6_gen2_info = {
+>  	},
+>  
+>  	.ports = {
+> -		{
+> +		[SCARLETT2_PORT_TYPE_NONE] = {
+>  			.id = 0x000,
+>  			.num = { 1, 0, 8, 8, 8 },
+>  			.src_descr = "Off",
+>  			.src_num_offset = 0,
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_ANALOGUE] = {
+>  			.id = 0x080,
+>  			.num = { 4, 4, 4, 4, 4 },
+>  			.src_descr = "Analogue %d",
+>  			.src_num_offset = 1,
+>  			.dst_descr = "Analogue Output %02d Playback"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_SPDIF] = {
+>  			.id = 0x180,
+>  			.num = { 2, 2, 2, 2, 2 },
+>  			.src_descr = "S/PDIF %d",
+>  			.src_num_offset = 1,
+>  			.dst_descr = "S/PDIF Output %d Playback"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_MIX] = {
+>  			.id = 0x300,
+>  			.num = { 10, 18, 18, 18, 18 },
+>  			.src_descr = "Mix %c",
+>  			.src_num_offset = 65,
+>  			.dst_descr = "Mixer Input %02d Capture"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_PCM] = {
+>  			.id = 0x600,
+>  			.num = { 6, 6, 6, 6, 6 },
+>  			.src_descr = "PCM %d",
+> @@ -317,44 +317,44 @@ static const struct scarlett2_device_info s18i8_gen2_info = {
+>  	},
+>  
+>  	.ports = {
+> -		{
+> +		[SCARLETT2_PORT_TYPE_NONE] = {
+>  			.id = 0x000,
+>  			.num = { 1, 0, 8, 8, 4 },
+>  			.src_descr = "Off",
+>  			.src_num_offset = 0,
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_ANALOGUE] = {
+>  			.id = 0x080,
+>  			.num = { 8, 6, 6, 6, 6 },
+>  			.src_descr = "Analogue %d",
+>  			.src_num_offset = 1,
+>  			.dst_descr = "Analogue Output %02d Playback"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_SPDIF] = {
+> +			.id = 0x180,
+>  			/* S/PDIF outputs aren't available at 192KHz
+>  			 * but are included in the USB mux I/O
+>  			 * assignment message anyway
+>  			 */
+> -			.id = 0x180,
+>  			.num = { 2, 2, 2, 2, 2 },
+>  			.src_descr = "S/PDIF %d",
+>  			.src_num_offset = 1,
+>  			.dst_descr = "S/PDIF Output %d Playback"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_ADAT] = {
+>  			.id = 0x200,
+>  			.num = { 8, 0, 0, 0, 0 },
+>  			.src_descr = "ADAT %d",
+>  			.src_num_offset = 1,
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_MIX] = {
+>  			.id = 0x300,
+>  			.num = { 10, 18, 18, 18, 18 },
+>  			.src_descr = "Mix %c",
+>  			.src_num_offset = 65,
+>  			.dst_descr = "Mixer Input %02d Capture"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_PCM] = {
+>  			.id = 0x600,
+>  			.num = { 20, 18, 18, 14, 10 },
+>  			.src_descr = "PCM %d",
+> @@ -387,20 +387,20 @@ static const struct scarlett2_device_info s18i20_gen2_info = {
+>  	},
+>  
+>  	.ports = {
+> -		{
+> +		[SCARLETT2_PORT_TYPE_NONE] = {
+>  			.id = 0x000,
+>  			.num = { 1, 0, 8, 8, 6 },
+>  			.src_descr = "Off",
+>  			.src_num_offset = 0,
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_ANALOGUE] = {
+>  			.id = 0x080,
+>  			.num = { 8, 10, 10, 10, 10 },
+>  			.src_descr = "Analogue %d",
+>  			.src_num_offset = 1,
+>  			.dst_descr = "Analogue Output %02d Playback"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_SPDIF] = {
+>  			/* S/PDIF outputs aren't available at 192KHz
+>  			 * but are included in the USB mux I/O
+>  			 * assignment message anyway
+> @@ -411,21 +411,21 @@ static const struct scarlett2_device_info s18i20_gen2_info = {
+>  			.src_num_offset = 1,
+>  			.dst_descr = "S/PDIF Output %d Playback"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_ADAT] = {
+>  			.id = 0x200,
+>  			.num = { 8, 8, 8, 4, 0 },
+>  			.src_descr = "ADAT %d",
+>  			.src_num_offset = 1,
+>  			.dst_descr = "ADAT Output %d Playback"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_MIX] = {
+>  			.id = 0x300,
+>  			.num = { 10, 18, 18, 18, 18 },
+>  			.src_descr = "Mix %c",
+>  			.src_num_offset = 65,
+>  			.dst_descr = "Mixer Input %02d Capture"
+>  		},
+> -		{
+> +		[SCARLETT2_PORT_TYPE_PCM] = {
+>  			.id = 0x600,
+>  			.num = { 20, 18, 18, 14, 10 },
+>  			.src_descr = "PCM %d",
+> -- 
+> 2.20.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
