@@ -2,63 +2,95 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E95C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 00:19:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71E4EC432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 02:20:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F08FB20878
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 00:19:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6751320855
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 02:20:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rg1OayRA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F08FB20878
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pC59ZXjn";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="GO9QctZd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6751320855
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B33E51702;
-	Thu, 21 Nov 2019 01:19:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B33E51702
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55D651708;
+	Thu, 21 Nov 2019 03:20:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55D651708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574295595;
-	bh=JKUW8sob63ryEycXoMSM9yuVl1A4b6qUM6RwKLmLc04=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1574302850;
+	bh=RwXqclZOQvLy+pdtmaodRhdVUvk8B993eFFsV7upRGk=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rg1OayRA24TsVQE5PAp+HIcHyQiCHo5ytPiDFc0aFK6ecJXDISKD16c/eDht8Yz0+
-	 389JTz2RR8ioo2IK4AT4mSpL/SygZMnfm6g5Uy3SYrS67TSy8usCB8D+bzE88M8HHK
-	 0AeLDSolcaigQZrVyfM+by1L2EdPxojpnQKw3h6I=
+	b=pC59ZXjnUss/2HmSKXEm5oRXFhc2HoSKu6MXPGcoZQkb5ubj9zPx8+RAnylcbXCsJ
+	 5CuIVB5CImOdFatM3W7HxPtSSeO16b+Ua8vTbUGYXeqTIKF614uEmn3WvEhHkEtFto
+	 7Y2ghYFzphhzfALOrbtCPBEtLcB1XEAXB9vKxy0w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39534F8013C;
-	Thu, 21 Nov 2019 01:19:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB53FF8013C;
+	Thu, 21 Nov 2019 03:19:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37DCBF8013D; Thu, 21 Nov 2019 01:19:03 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 93328F800FF
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 01:18:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93328F800FF
-Date: 21 Nov 2019 09:18:53 +0900
-X-IronPort-AV: E=Sophos;i="5.69,223,1571670000"; d="scan'208";a="32223406"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 21 Nov 2019 09:18:53 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7D584400943D;
- Thu, 21 Nov 2019 09:18:53 +0900 (JST)
-Message-ID: <87mucquln6.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Daniel Baluta <daniel.baluta@gmail.com>
-In-Reply-To: <CAEnQRZD4n3aOe+w8T2EahmRAFb8eRk==XR66QRj-gbxL_FzpiA@mail.gmail.com>
-References: <CAEnQRZD4n3aOe+w8T2EahmRAFb8eRk==XR66QRj-gbxL_FzpiA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] simple-card with platform component
+ id AFC62F8013D; Thu, 21 Nov 2019 03:19:57 +0100 (CET)
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
+ [IPv6:2607:f8b0:4864:20::d43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9758F800FF
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 03:19:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9758F800FF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="GO9QctZd"
+Received: by mail-io1-xd43.google.com with SMTP id x21so1599119ior.2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Nov 2019 18:19:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=qaihhKpnbvKXLn46y6C83O8J7yDbV2a09ptM8U0gXU4=;
+ b=GO9QctZdcwIydheLfhmlzPMQc7irHdfoBzmEF8PRU41+E4f8bv9cjODfY1RPFZi/zh
+ JUY4hbul8ySf/xK0mTSsvyujU1Duw9hbHlO8QZt65w147VwVXhh1T2fSJ8OV3Ti5t+iG
+ djxfRRM6D8vzhu/Z2NaB7Pv7kg7igYwA6qIKs+EuxC7KI3ftZK0Sb22Lj8/Z/V/JUm2W
+ MN2b9yrQ0ZS13b808hQWP5p+GY9L0Yr+egwOS4W8x4tvDR2iqf2EvdHXymBq3ROHLHb1
+ nakhXjc8miij1easVAgjX4bs1hv/d3SMxdK0IL+XVIheoIxlgkzqOpqY9QrwQmNdnskG
+ W7Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=qaihhKpnbvKXLn46y6C83O8J7yDbV2a09ptM8U0gXU4=;
+ b=jDdpqj+eF+hR6u2i2l3PHfdqCZh5qWnHQkRCc2qiiYIf1iPBZPwnfEHyvQ2haq0evU
+ Pe4JMD1WMHJBR6HG+rZPGDPmIjJa+iVg8vah07quRBZPnsj5UPoVZOtGypIC3rQ2GHKf
+ lEndXmkWcZygq7yrX+v2Qj3g6Y9sI2uLBAgewdKqGCfvlxKcsRdxD4FYmGKa6KCDTUA0
+ jfjvtlFMA84XXn6EDDZ9ykqgFpvuQOM/8gnKbeYdIo/Av6c99/ufMJF2CdEcEK+fmL4N
+ ihuqfXUCyT5kB5aJvPT71G6Ot20sl/D9HMB5aP1yGbT4FUoHpv8xjxEv3qOO6xGeBrab
+ llSw==
+X-Gm-Message-State: APjAAAWC5Mihb6qD2Fzq8H2pa87jhESN/S9/Bexo8G7GRpFaIC7y5kiy
+ qg3OuYY67dMx7vk7vOXmUYX7X1Od0KWS7EBg2p2JtQ==
+X-Google-Smtp-Source: APXvYqwif7tx9L8dO7JqMRXKC2G0LKsmkuk3CcloxjIKw3Z4D053KZA4YP6NN5P3iIQVLQhq5k4A04LV/GBJQ76y6no=
+X-Received: by 2002:a6b:ec08:: with SMTP id c8mr574574ioh.257.1574302792468;
+ Wed, 20 Nov 2019 18:19:52 -0800 (PST)
+MIME-Version: 1.0
+References: <20191120060256.212818-1-tzungbi@google.com>
+ <20191120060256.212818-4-tzungbi@google.com>
+ <8273f728-3d4b-b0dc-03b7-6276c5ae4460@linux.intel.com>
+In-Reply-To: <8273f728-3d4b-b0dc-03b7-6276c5ae4460@linux.intel.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 21 Nov 2019 10:19:41 +0800
+Message-ID: <CA+Px+wWSajOFXwLAS+jrO9XUBeKaxjZaEOqng0YO9VmL3VXaSQ@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: max98090: fix possible race
+	conditions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,33 +108,74 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, Nov 21, 2019 at 12:10 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 11/20/19 12:02 AM, Tzung-Bi Shih wrote:
+> > max98090_interrupt() and max98090_pll_work() run in 2 different threads.
+> > There are 2 possible races:
+> >
+> > Note: M98090_REG_DEVICE_STATUS = 0x01.
+> > Note: ULK == 0, PLL is locked; ULK == 1, PLL is unlocked.
+> >
+> > max98090_interrupt      max98090_pll_work
+> > ----------------------------------------------
+> > schedule max98090_pll_work
+> >                          restart max98090 codec
+> > receive ULK INT
+> >                          assert ULK == 0
+> > schedule max98090_pll_work (1).
+> >
+> > In the case (1), the PLL is locked but max98090_interrupt unnecessarily
+> > schedules another max98090_pll_work.
+>
+> if you re-test that the PLL is already running, then you can exit the
+> work function immediately without redoing the sequence?
 
-Hi
+ACK.
 
-> sof-audio-cs42888 {
->       compatible = "simple-scu-audio-card";
-> 
->       simple-audio-card,dai-link {
->            format = "i2s";
->            cpu {
->                 sound-dai = <&dummy>;
->             };
->             codec {
->                sound-dai = <&cs42888>;
->             };
->             plat {
->                 sound-dai = <&dsp>;
->            };
-> };
+> maybe also play with the masks so that the PLL unlock is masked in the
+> interrupt and unmasked after the PLL locks?
 
-I know someone added platfrom support to simple-audio-card,
-but, unfortunately, I don't use it.
-Thus, I'm not sure how it works...
+ACK, this is our option A mentioned below.
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+> > max98090_interrupt      max98090_pll_work      max98090 codec
+> > ----------------------------------------------------------------------
+> >                                                 ULK = 1
+> > receive ULK INT
+> > read 0x01
+> >                                                 ULK = 0 (clear on read)
+> > schedule max98090_pll_work
+> >                          restart max98090 codec
+> >                                                 ULK = 1
+> > receive ULK INT
+> > read 0x01
+> >                                                 ULK = 0 (clear on read)
+> >                          read 0x1
+> >                          assert ULK == 0 (2).
+>
+> what are those 0x01 and 0x1? is the second a typo possibly?
+
+ACK, a typo.
+
+> > In the case (2), both max98090_interrupt and max98090_pll_work read
+> > the same clear-on-read register.  max98090_pll_work would falsely
+> > thought PLL is locked.
+> >
+> > There are 2 possible options:
+> > A. turn off ULK interrupt before scheduling max98090_pll_work; and turn
+> > on again before exiting max98090_pll_work.
+> > B. remove the second thread of execution.
+> >
+> > Adopts option B which is more straightforward.
+>
+> but has the side effect of possibly adding a 10ms delay in the interrupt
+> thread?
+
+(forgot to mention) Option A cannot fix the case (2) race condition:
+there would be 2 threads read the same clear-on-read register.  In
+theory, the hardware should faster than CPUs' accesses via I2C.
+max98090 should returns ULK=1 any time if PLL is unlocked.  Shall we
+ignore the case (2) and adopt option A?
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
