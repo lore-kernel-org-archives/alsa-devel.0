@@ -2,62 +2,80 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72CA0C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F22D6C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:21:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF75A2068E
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:09:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 78F492067D
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:21:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kw1WugJL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF75A2068E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gAC3YDd3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78F492067D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A9FF17A7;
-	Thu, 21 Nov 2019 20:08:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A9FF17A7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D7151679;
+	Thu, 21 Nov 2019 20:20:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D7151679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574363389;
-	bh=9e1N6XdpLBbE8LiN3+klGQ0XRs3ZiCIZaDrbAOPhcrI=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1574364097;
+	bh=xeSOrVJU3fszj1yx4iR8IBv5GSUVZsa5wNcgctZLl3I=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kw1WugJLoGmtd9ElEaTEQiM3tYeHIkhSInLvYgEmtBmYaeI0/42wL4bCXzTfhCeBi
-	 rLo8OghVb8a1d3x1iGGn2HUHX2UwkCDmdVqi93L1LVXFJhhI4sYXdj0bMiZYcKeUn4
-	 NJvMSvU/kaguev9bR5uLAEJTjYB/RDQoztHR1bSg=
+	b=gAC3YDd3SEFb+zbB8HnMVNZi4ENqA6hezx7gi/imGbO5C4eg7Ik2jF6C57J1DWCL+
+	 uKW9LRxykpgopdF6s39o/lVFH1RX/3AMi6N0oNfY6t+jukfpQS8WcnzafloVO15ks4
+	 oJqr8NHmZSgvJSrxz3WSazVirQjgRuC/sBMtAZtU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EDD8F80150;
-	Thu, 21 Nov 2019 20:07:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D286F80145;
+	Thu, 21 Nov 2019 20:20:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10222F8014F; Thu, 21 Nov 2019 20:07:20 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2FD99F80146; Thu, 21 Nov 2019 20:20:45 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46C7BF80146
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 20:07:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46C7BF80146
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 4A67CAE52;
- Thu, 21 Nov 2019 19:07:11 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Date: Thu, 21 Nov 2019 20:07:08 +0100
-Message-Id: <20191121190709.29121-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191121190709.29121-1-tiwai@suse.de>
-References: <20191121190709.29121-1-tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 1/2] ASoC: pcm: Make ioctl ops optional
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2505F800F0
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 20:20:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2505F800F0
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 21 Nov 2019 11:20:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,226,1571727600"; d="scan'208";a="259465489"
+Received: from rpousson-mobl1.amr.corp.intel.com (HELO [10.255.88.8])
+ ([10.255.88.8])
+ by FMSMGA003.fm.intel.com with ESMTP; 21 Nov 2019 11:20:37 -0800
+To: Tzung-Bi Shih <tzungbi@google.com>
+References: <20191120060256.212818-1-tzungbi@google.com>
+ <20191120060256.212818-4-tzungbi@google.com>
+ <8273f728-3d4b-b0dc-03b7-6276c5ae4460@linux.intel.com>
+ <CA+Px+wWSajOFXwLAS+jrO9XUBeKaxjZaEOqng0YO9VmL3VXaSQ@mail.gmail.com>
+ <7f055263-01a6-e1cd-8085-1790222bb808@linux.intel.com>
+ <CA+Px+wX2UtU3As-3Bf4rWn1kzqDMPw60xk508gDDaOPk6Q5dgw@mail.gmail.com>
+ <d97b9724-27d0-f157-ce5d-ed6c75bafae8@linux.intel.com>
+ <CA+Px+wUSpYibKbOdj-XCXCnH9QN8=OtbeYMkhbj4ZREMj7V6Sg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <942ddeb1-762b-1e76-64cd-6450c6adc722@linux.intel.com>
+Date: Thu, 21 Nov 2019 11:20:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <CA+Px+wUSpYibKbOdj-XCXCnH9QN8=OtbeYMkhbj4ZREMj7V6Sg@mail.gmail.com>
+Content-Language: en-US
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: max98090: fix possible race
+ conditions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,50 +88,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now PCM core accepts the NULL ioctl ops as default, and passing a proper
-ioctl ops is no longer mandatory.  Adjust soc_new_pcm() to allow also
-the NULL for component ioctl ops, too.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/soc-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 493a2e80e893..4dd13c9249ab 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -3005,7 +3005,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		rtd->ops.hw_free	= dpcm_fe_dai_hw_free;
- 		rtd->ops.close		= dpcm_fe_dai_close;
- 		rtd->ops.pointer	= soc_pcm_pointer;
--		rtd->ops.ioctl		= snd_soc_pcm_component_ioctl;
- 	} else {
- 		rtd->ops.open		= soc_pcm_open;
- 		rtd->ops.hw_params	= soc_pcm_hw_params;
-@@ -3014,12 +3013,13 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		rtd->ops.hw_free	= soc_pcm_hw_free;
- 		rtd->ops.close		= soc_pcm_close;
- 		rtd->ops.pointer	= soc_pcm_pointer;
--		rtd->ops.ioctl		= snd_soc_pcm_component_ioctl;
- 	}
- 
- 	for_each_rtd_components(rtd, rtdcom, component) {
- 		const struct snd_soc_component_driver *drv = component->driver;
- 
-+		if (drv->ioctl)
-+			rtd->ops.ioctl		= snd_soc_pcm_component_ioctl;
- 		if (drv->copy_user)
- 			rtd->ops.copy_user	= snd_soc_pcm_component_copy_user;
- 		if (drv->page)
--- 
-2.16.4
+>> if your interrupt sees an ULK status, it will schedule the pll_work.
+>> You only test the status again *after* switching the device on/off, so
+>> what is the side effect?
+> 
+> Both interrupt thread and pll_work thread access the status register.
+> The side effect is: interrupt thread could read the status register
+> right before pll_work thread's read.
+> 
+>> I am also wondering if you shouldn't sleep first in the loop, then check
+>> the status?
+> 
+> ACK, "sleep first and check the status" makes more sense.
+> 
+>> And in case you do have a side effect due to the clear on read, maybe
+>> you could save the status in a context and retest in the workqueue, that
+>> way you'd have a trace of the ULK event even if the register was cleared.
+> 
+> I think cache the status couldn't be a good idea.  We couldn't make
+> sure the freshness of the cache.
+
+I was thinking more of treating it as a volatile, but it's ugly indeed.
+
+> Can we suppose CPUs always get ULK=1 if PLL is unlocked so that we can
+> simply ignore the case (2)?  Since we know the register is volatile
+> and read the register via I2C should be much slower than hardware
+> raise the bit.
+
+Your option B with the small change to sleep then retest is probably the 
+better solution overall.
+
+BTW did you test this on both Baytrail and BSW chromebooks? In the past 
+I saw baytrail devices exposed this error a lot more than BSW.
 
 _______________________________________________
 Alsa-devel mailing list
