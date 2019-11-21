@@ -2,83 +2,111 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFC45C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D016C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:15:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BACBB2068E
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:14:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A70E92067D
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:15:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iVYujIuY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BACBB2068E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GqXyTlGo";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="sRJg4b6j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A70E92067D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92AAF17B2;
-	Thu, 21 Nov 2019 22:13:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AAF17B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9799117A9;
+	Thu, 21 Nov 2019 21:50:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9799117A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574370863;
-	bh=dC3/CIw79WXeeERSffhJ60uOzaFsCbSlAoEdHYPm59E=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1574369477;
+	bh=xgkb7/ai4uPO9sbc71FbE1aGSRoQSFGNrZ9/aOLx4KM=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iVYujIuYC0CbE3SKNj8wouBWzoztfLdli0nKDZzc0xtehJTen214MISPH0Cv72/jb
-	 LdhKJ54KeABFEckDZugxlFJsZjf4/RdORleC8lDxi7Evv5RY41DUwWsQ36Eggjf+Jg
-	 bK3H+TFZtumHimASeYI43/gc1hoGh/Cpq8A+mBvY=
+	b=GqXyTlGo+z5YkUedj2elXG8hBaJfFfuR5Pt8UPsjFT8VK8AcMpNV9b/oENbGMl49A
+	 u+atoV3lAH+VzuA/27mhQSwYlE8D/XQjEFKN3jUPu/Ehh7f8Th5KSyMNosvEooLY0q
+	 hiwv7mqUY4x8+0zlO6LYBByGaSsMX6/HQLb4YRM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 197B1F80145;
-	Thu, 21 Nov 2019 22:13:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19085F80145;
+	Thu, 21 Nov 2019 21:50:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDECEF80146; Thu, 21 Nov 2019 22:13:31 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D98BFF80146; Thu, 21 Nov 2019 21:50:24 +0100 (CET)
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 938E3F800EF
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 22:13:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 938E3F800EF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3E17AAED6;
- Thu, 21 Nov 2019 21:13:28 +0000 (UTC)
-Date: Thu, 21 Nov 2019 22:13:27 +0100
-Message-ID: <s5hftihrkzs.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-In-Reply-To: <CAFQqKeUimt32z1myzL+JOXoCUhn7jU1=Mj8e6egQKs+c5CY0pA@mail.gmail.com>
-References: <20191117085308.23915-1-tiwai@suse.de>
- <20191117085308.23915-8-tiwai@suse.de>
- <3b407a02-b791-52a4-2335-e21d8ab732dd@linux.intel.com>
- <s5hy2wdyq3t.wl-tiwai@suse.de>
- <CAFQqKeWgqHwrCSSbLrkuCHkBww2g4dsBcF93SDN_ZK_-KSe5tg@mail.gmail.com>
- <s5hpnhpyng6.wl-tiwai@suse.de>
- <CAFQqKeWPgPWpDgZUPvOqSFUY2Zq=8zW-=LhYimtg0S0Hqpc43A@mail.gmail.com>
- <s5hmucszzni.wl-tiwai@suse.de>
- <3fc820272992362a56881abf7230f1500fdfdd2a.camel@linux.intel.com>
- <s5hblt8z7ow.wl-tiwai@suse.de>
- <030249cd63d754bd70ce5de5c58e04784eecebff.camel@linux.intel.com>
- <s5hv9rgxohq.wl-tiwai@suse.de>
- <ce61828881dea0fffd2c26a92ad2571ab3565404.camel@linux.intel.com>
- <s5hy2wbwo8c.wl-tiwai@suse.de>
- <CAFQqKeVsQ1AjjKgS-HJ0-mg7JbbmMVjJcUB7wbvsbyz9e2TqLg@mail.gmail.com>
- <CAFQqKeWVuJs+bnZsrYAHdke0pZpBSmP71RFVrfwVE3=P4A7hsw@mail.gmail.com>
- <s5himndrmsv.wl-tiwai@suse.de>
- <CAFQqKeUimt32z1myzL+JOXoCUhn7jU1=Mj8e6egQKs+c5CY0pA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 7/8] ALSA: pcm: Add card sync_irq field
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14846F800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 21:50:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14846F800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="sRJg4b6j"
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xALKnNGp101533;
+ Thu, 21 Nov 2019 20:50:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=JqMqk6Pam98kfZFKlDoAMn1so5XjHeYutDiswf96RFU=;
+ b=sRJg4b6jEE3FX2oCNtwZ3h7BrtDVOvdJXXXsQzMgYNFaT4KkWQQZBvCr16tl3uDvg3QL
+ hbUZIinoXwIE7c9h1GLbhs0NmFIgSikwqy1uesZmB2XfjcW9Q+bzTywvrhIYVC7Pov1m
+ KYjCQ3fvDcl3ETtHADppgN1sJjOjAfudpFle9vKC7IFdZBGj/1rhnlrYdiAl8Q+OEwlc
+ oW696zYDYubgmamGDUGG6FjQOBkZ2X6g0XvAgaRPXkCfldVTawfPvEE+zL/OOiyo+Vbo
+ 4vwStNp3RSACWtqoUgag2JAo5RCGXT5Uny8+F7rnqlKIgy+hCaQxW9g0kLR5Jc0egKBb Rw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+ by aserp2120.oracle.com with ESMTP id 2wa92q6uu1-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 21 Nov 2019 20:50:16 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+ by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xALKiT7a129317;
+ Thu, 21 Nov 2019 20:50:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by userp3020.oracle.com with ESMTP id 2wd4700v9b-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 21 Nov 2019 20:50:15 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xALKo7PE022130;
+ Thu, 21 Nov 2019 20:50:11 GMT
+Received: from kadam (/41.210.146.123) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Thu, 21 Nov 2019 12:50:07 -0800
+Date: Thu, 21 Nov 2019 23:49:56 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: syzbot <syzbot+a36ab65c6653d7ccdd62@syzkaller.appspotmail.com>
+Message-ID: <20191121204956.GE617@kadam>
+References: <0000000000002129080597dce70d@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <0000000000002129080597dce70d@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9448
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911210173
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9448
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911210174
+Cc: alsa-devel@alsa-project.org, g@b4.vu, andreyknvl@google.com,
+ linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org, tiwai@suse.com,
+ benquike@gmail.com, wang6495@umn.edu
+Subject: Re: [alsa-devel] general protection fault in snd_usb_create_mixer
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,59 +119,105 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gVGh1LCAyMSBOb3YgMjAxOSAyMTo0NjoxNyArMDEwMCwKU3JpZGhhcmFuLCBSYW5qYW5pIHdy
-b3RlOgo+IAo+ICAgICA+Cj4gICAgID4gSGkgVGFrYXNoaSwKPiAgICAgPgo+ICAgICA+IFNvcnJ5
-IHRoZSBzdHJlc3MgdGVzdHMgdG9vayBhIHdoaWxlLsKgCj4gICAgID4gQXMgd2UgZGlzY3Vzc2Vk
-IGVhcmxpZXIsIGFkZGluZyB0aGUgc3luY19zdG9wKCkgb3AgZGlkbnQgcXVpdGUgaGVscCB0aGUK
-PiAgICAgU09GCj4gICAgID4gZHJpdmVyIGluIHJlbW92aW5nIHRoZSBkZWxheWVkIHdvcmsgZm9y
-IHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKS7CoAo+ICAgIAo+ICAgICBZZWFoLCB0aGF0J3MgdW5k
-ZXJzdGFuZGFibGUuwqAgSWYgdGhlIHN0b3Agb3BlcmF0aW9uIGl0c2VsZiBuZWVkcyBzb21lCj4g
-ICAgIHNlcmlhbGl6YXRpb24sIHN5bmNfc3RvcCgpIHdvbid0IGluZmx1ZW5jZSBhdCBhbGwuCj4g
-ICAgCj4gICAgIEhvd2V2ZXIsIG5vdyBhZnRlciB0aGVzZSBkaXNjdXNzaW9ucywgSSBoYXZlIHNv
-bWUgY29uY2VybnMgaW4gdGhlCj4gICAgIGN1cnJlbnQgY29kZToKPiAgICAKPiAgICAgLSBUaGUg
-YXN5bmMgd29yayBzdGFydGVkIGJ5IHNjaGVkdWxlX3dvcmsoKSBtYXkgYmUgZXhlY3V0ZWQKPiAg
-ICAgwqAgKGxpdGVyYWxseSkgaW1tZWRpYXRlbHkuwqAgU28gaWYgdGhlIHRpbWluZyBvciB0aGUg
-c2VyaWFsaXphdGlvbgo+ICAgICDCoCBtYXR0ZXJzLCBpdCBkb2Vzbid0IGd1YXJhbnRlZSBhdCBh
-bGwuwqAgVGhlIHNhbWUgbGV2ZWwgb2YgY29uY3VycmVuY3kKPiAgICAgwqAgY2FuIGhhcHBlbiBh
-dCBhbnkgdGltZS4KPiAgICAKPiAgICAgLSBUaGUgcGVyaW9kX2VsYXBzZWQgd29yayBtaWdodCBi
-ZSBwZW5kaW5nIGF0IHByZXBhcmUgb3Igb3RoZXIKPiAgICAgwqAgb3BlcmF0aW9uOwo+ICAgICDC
-oCB0aGUgYXN5bmMgd29yayBtZWFucyBhbHNvIHRoYXQgaXQgZG9lc24ndCBndWFyYW50ZWUgaXRz
-IGV4ZWN1dGlvbiBpbgo+ICAgICDCoCB0aW1lLCBhbmQgaXQgbWlnaHQgYmUgZGVsYXllZCBtdWNo
-LCBhbmQgdGhlIFBDTSBjb3JlIG1pZ2h0IGdvIHRvCj4gICAgIMKgIHByZXBhcmUgb3Igb3RoZXIg
-c3RhdGUgZXZlbiBiZWZvcmUgdGhlIHdvcmsgaXMgZXhlY3V0ZWQuCj4gICAgCj4gICAgIFRoZSBz
-ZWNvbmQgcG9pbnQgY2FuIGJlIGZpeGVkIGVhc2lseSBub3cgd2l0aCBzeW5jX3N0b3AuwqAgWW91
-IGNhbiBqdXN0Cj4gICAgIHB1dCBmbHVzaF93b3JrKCkgaW4gc3luY19zdG9wIGluIGFkZGl0aW9u
-IHRvIHN5bmNocm9uaXplX2lycSgpLgo+ICAgIAo+ICAgICBCdXQgdGhlIGZpcnN0IHBvaW50IGlz
-IHN0aWxsIHVuY2xlYXIuwqAgTW9yZSBleGFjdGx5LCB3aGljaCBvcGVyYXRpb24KPiAgICAgZG9l
-cyBpdCBjb25mbGljdD/CoCBEb2VzIGl0IHRoZSBwbGF5YmFjayBkcmFpbj/CoCBUaGVuIGl0IG1p
-Z2h0IHRha2UKPiAgICAgdmVyeSBsb25nICh1cCB0byBzZWNvbmRzKSB0byBibG9jayB0aGUgbmV4
-dCBvcGVyYXRpb24/Cj4gCj4gSGkgVGFrYXNoaSwKPiAKPiBBcyBJIHVuZGVyc3RhbmQgdGhlIG9y
-aWdpbmFsIGludGVudGlvbiBmb3IgYWRkaW5nIHRoZSBwZXJpb2RfZWxhcHNlZF93b3JrKCkKPiB3
-YXPCoCB0aGF0IHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKSBjb3VsZCBjYXVzZSBhIFNUT1AgdHJp
-Z2dlciB3aGlsZSB0aGUKPiBjdXJyZW50IElQQyBpbnRlcnJ1cHQgaXMgc3RpbGwgYmVpbmcgaGFu
-ZGxlZC4KPiBJbiB0aGlzIGNhc2UsIHRoZSBTVE9QIHRyaWdnZXIgZ2VuZXJhdGVzIGFuIElQQyB0
-byB0aGUgRFNQIGJ1dCB0aGUgaG9zdCBuZXZlcgo+IG1pc3NlcyB0aGUgSVBDIHJlc3BvbnNlIGZy
-b20gdGhlIERTUCBiZWNhdXNlIGl0IGlzIHN0aWxsIGhhbmRsaW5nIHRoZSBwcmV2aW91cwo+IGlu
-dGVycnVwdC4KCk9LLCB0aGF0IG1ha2VzIHNlbnNlLiAgU28gdGhlIGlzc3VlIGlzIHRoYXQgdGhl
-IHRyaWdnZXIgc3RvcCBpdHNlbGYKcmVxdWlyZXMgdGhlIGFjayB2aWEgdGhlIGludGVycnVwdCBh
-bmQgaXQgY2FuJ3QgYmUgY2F1Z2h0IGJlY2F1c2UgaXQncwpiZWluZyBjYWxsZWQgZnJvbSB0aGUg
-aXJxIGhhbmRsZXIgaXRzZWxmLgoKSW4gdGhhdCBjYXNlLCB0aG91Z2gsIGFub3RoZXIgc29sdXRp
-b24gd291bGQgYmUgdG8gbWFrZSB0aGUgdHJpZ2dlci0Kc3RvcCBhbiBhc3luYyB3b3JrIChidXQg
-Y29uZGl0aW9uYWxseSkgd2hpbGUgcHJvY2Vzc2luZyB0aGUgbm9ybWFsCnBlcmlvZF9lbGFwc2Vk
-IGluIHRoZSBpcnEgaGFuZGxlci4gIFRoYXQgaXMsIHNldCBzb21lIGZsYWcgYmVmb3JlCmNhbGxp
-bmcgc25kX3BjbV9wZXJpb2RfZWxhcHNlZCgpLCBhbmQgaW4gdGhlIHRyaWdnZXItc3RvcCwgY2hl
-Y2sgdGhlCmZsYWcuICBJZiB0aGUgZmxhZyBpcyBzZXQsIHNjaGVkdWxlIHRoZSB3b3JrIGFuZCBy
-ZXR1cm4uICBBbmQsIHlvdSdsbApzeW5jIHRoaXMgYXN5bmMgd29yayB3aXRoIHN5bmNfc3RvcCgp
-LiAgSW4gdGhhdCB3YXksIHRoZSBwZXJpb2QKaGFuZGxpbmcgaXMgcHJvY2Vzc2VkIHdpdGhvdXQg
-YW55IGRlbGF5IG1vcmUgbGlnaHRseS4KCgp0aGFua3MsCgpUYWthc2hpCgo+IEFkZGluZyBLZXlv
-biB3aG8gYWRkZWQgdGhpcyBjaGFuZ2UgdG8gYWRkIG1vcmUgYW5kIGNsYXJpZnkgeW91ciBjb25j
-ZXJucy4KPiAKPiBUaGFua3MsCj4gUmFuamFuaQo+IAo+ICAgICB0aGFua3MsCj4gICAgCj4gICAg
-IFRha2FzaGkKPiAKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On Thu, Nov 21, 2019 at 07:25:09AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    46178223 usb: gadget: add raw-gadget interface
+> git tree:       https://github.com/google/kasan.git usb-fuzzer
+> console output: https://syzkaller.appspot.com/x/log.txt?x=176f9836e00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=99c88c44660624e7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a36ab65c6653d7ccdd62
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1447d3bae00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ef3a86e00000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+a36ab65c6653d7ccdd62@syzkaller.appspotmail.com
+> 
+> usb 1-1: 208:241 : does not exist
+> usb 1-1: 208:242 : does not exist
+> usb 1-1: 208:243 : does not exist
+> usb 1-1: 208:244 : does not exist
+> usb 1-1: 208:245 : does not exist
+> usb 1-1: 208:246 : does not exist
+> usb 1-1: 208:247 : does not exist
+> usb 1-1: 208:248 : does not exist
+> usb 1-1: 208:249 : does not exist
+> usb 1-1: 208:250 : does not exist
+
+These error messages are because:
+
+sound/usb/card.c
+   128  static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int interface)
+   129  {
+   130          struct usb_device *dev = chip->dev;
+   131          struct usb_host_interface *alts;
+   132          struct usb_interface_descriptor *altsd;
+   133          struct usb_interface *iface = usb_ifnum_to_if(dev, interface);
+   134  
+   135          if (!iface) {
+   136                  dev_err(&dev->dev, "%u:%d : does not exist\n",
+   137                          ctrlif, interface);
+   138                  return -EINVAL;
+   139          }
+
+"iface" is NULL.  The caller ignores the -EINVAL (correctly I think).
+
+Then the NULL dereference happens in snd_usb_mixer_controls_badd()
+
+sound/usb/mixer.c
+  2903  static int snd_usb_mixer_controls_badd(struct usb_mixer_interface *mixer,
+  2904                                         int ctrlif)
+  2905  {
+  2906          struct usb_device *dev = mixer->chip->dev;
+  2907          struct usb_interface_assoc_descriptor *assoc;
+  2908          int badd_profile = mixer->chip->badd_profile;
+  2909          struct uac3_badd_profile *f;
+  2910          const struct usbmix_ctl_map *map;
+  2911          int p_chmask = 0, c_chmask = 0, st_chmask = 0;
+  2912          int i;
+  2913  
+  2914          assoc = usb_ifnum_to_if(dev, ctrlif)->intf_assoc;
+  2915  
+  2916          /* Detect BADD capture/playback channels from AS EP descriptors */
+  2917          for (i = 0; i < assoc->bInterfaceCount; i++) {
+  2918                  int intf = assoc->bFirstInterface + i;
+  2919  
+  2920                  struct usb_interface *iface;
+  2921                  struct usb_host_interface *alts;
+  2922                  struct usb_interface_descriptor *altsd;
+  2923                  unsigned int maxpacksize;
+  2924                  char dir_in;
+  2925                  int chmask, num;
+  2926  
+  2927                  if (intf == ctrlif)
+  2928                          continue;
+  2929  
+  2930                  iface = usb_ifnum_to_if(dev, intf);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+iface is not checked.
+
+Should it be "if (!iface) continue;?"
+
+  2931                  num = iface->num_altsetting;
+  2932  
+  2933                  if (num < 2)
+  2934                          return -EINVAL;
+  2935  
+
+I'm not sure.
+
+regards,
+dan carpenter
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
