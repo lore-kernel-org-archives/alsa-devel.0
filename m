@@ -2,80 +2,107 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F22D6C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 735FBC432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:23:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78F492067D
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:21:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ED4C4206D7
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 19:23:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gAC3YDd3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78F492067D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="s0LkKZXl";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="Nz9Tobym"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED4C4206D7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D7151679;
-	Thu, 21 Nov 2019 20:20:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D7151679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D2E91679;
+	Thu, 21 Nov 2019 20:22:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D2E91679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574364097;
-	bh=xeSOrVJU3fszj1yx4iR8IBv5GSUVZsa5wNcgctZLl3I=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1574364192;
+	bh=4XJ9bTmBrTw43n1O8VarrFSR2CE2/slfcxgAJNVGP+w=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gAC3YDd3SEFb+zbB8HnMVNZi4ENqA6hezx7gi/imGbO5C4eg7Ik2jF6C57J1DWCL+
-	 uKW9LRxykpgopdF6s39o/lVFH1RX/3AMi6N0oNfY6t+jukfpQS8WcnzafloVO15ks4
-	 oJqr8NHmZSgvJSrxz3WSazVirQjgRuC/sBMtAZtU=
+	b=s0LkKZXltELJUq6ygvp8dvj0fWFF5ICQ7ArUqI7iE68UtriZZgO33xaEiRSog1xcU
+	 ztgOhbMuejTnvgT7WdfKJC2M2EHqErn2MDfkefCRURdA8L01zprjYeJ+QtFl2wSNsa
+	 9ekavCTtAzL1qcwi6QWK78nY+o4Rg+nLpGVCz5Xc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D286F80145;
-	Thu, 21 Nov 2019 20:20:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FEB0F80145;
+	Thu, 21 Nov 2019 20:22:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FD99F80146; Thu, 21 Nov 2019 20:20:45 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 96D20F8014C; Thu, 21 Nov 2019 20:22:20 +0100 (CET)
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com
+ [IPv6:2607:f8b0:4864:20::142])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2505F800F0
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 20:20:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2505F800F0
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 21 Nov 2019 11:20:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,226,1571727600"; d="scan'208";a="259465489"
-Received: from rpousson-mobl1.amr.corp.intel.com (HELO [10.255.88.8])
- ([10.255.88.8])
- by FMSMGA003.fm.intel.com with ESMTP; 21 Nov 2019 11:20:37 -0800
-To: Tzung-Bi Shih <tzungbi@google.com>
-References: <20191120060256.212818-1-tzungbi@google.com>
- <20191120060256.212818-4-tzungbi@google.com>
- <8273f728-3d4b-b0dc-03b7-6276c5ae4460@linux.intel.com>
- <CA+Px+wWSajOFXwLAS+jrO9XUBeKaxjZaEOqng0YO9VmL3VXaSQ@mail.gmail.com>
- <7f055263-01a6-e1cd-8085-1790222bb808@linux.intel.com>
- <CA+Px+wX2UtU3As-3Bf4rWn1kzqDMPw60xk508gDDaOPk6Q5dgw@mail.gmail.com>
- <d97b9724-27d0-f157-ce5d-ed6c75bafae8@linux.intel.com>
- <CA+Px+wUSpYibKbOdj-XCXCnH9QN8=OtbeYMkhbj4ZREMj7V6Sg@mail.gmail.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <942ddeb1-762b-1e76-64cd-6450c6adc722@linux.intel.com>
-Date: Thu, 21 Nov 2019 11:20:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42A8AF800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 20:22:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42A8AF800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="Nz9Tobym"
+Received: by mail-il1-x142.google.com with SMTP id a7so4416244ild.6
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 11:22:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=AUYpCoOsWYyPUKhJnruj811k34dkK/YW4ZdZ2Znb05A=;
+ b=Nz9Tobymw3rLvTh8sBsQmokxgbIDltKEQb7UqTOdYcQHhn1jenx1BQGT7S5/KJOZqc
+ 3pTJZNUKCk16NwJ3F5/Zuql9jkF1NVeJMGae/S/RRNIk1Li8SPJbYjfdx01FHhbQjpry
+ WfqJ7COQfKxupl6i1MhpfsF2i6+Mf6aJMybVEofM0F2jLY2FR5VurtfLBX+lfQK6F1cQ
+ JyBgk5olPwbM+LhlFeahgOMhPg6LGMDyJXL9ZrAEnBw/6/uc84bR0GDE+OE2nyRKZ0np
+ VxEUFf83G8BA0gbtTurQFagtG6yBcwbHvL3gBEWAdIDjA8HKjwpzG2tZEcW0x1SJj6MD
+ MFig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=AUYpCoOsWYyPUKhJnruj811k34dkK/YW4ZdZ2Znb05A=;
+ b=XfRbq/5v3ktNCyV+kjgS0oFUUFg/NjF4ZNgqrk47zsEljU9QLUYlc32LaCnd9O5WcL
+ 3dIddcamVZtftxguQr9DgvKmCkUOEzQ/UgkgQHR2RQkxUpATvfHpkoMzKDZduonRsOyz
+ Eim+dR1AW0ft8lyQOxBdMiZwPTrb4+LDmiCnBgGIK3+QAHFjFWosMgcD4wUtPWtf+jvE
+ vnjqWVf3mnNp+RrKbs22AFHUTikp+Dq4SkgqrJuUL7+EbAmFBIfbMr214lAvS62quCRK
+ PChZevFhhh5dvgZJ5T+fO5OrcxKYMhsBf3ZKoeM9JW2tepUvjqd9VWQzFD8KSD7BAA9U
+ nZ4w==
+X-Gm-Message-State: APjAAAVjhHsnPlN8qjq/5SyPFNoKE2DTkADrGqS0EVBdolphP/OenJwm
+ SFSHK9UZJJbNKMzFRSXnnV3k70CyVk58TdgzdKsgXg==
+X-Google-Smtp-Source: APXvYqzE8gaZN+surX0UIAiHauqy16HGUH61rztL54QVlD97TsbHUOSb8QamasdD88fh45/WAXP29+VgmXGyX3JDIjA=
+X-Received: by 2002:a92:8ccc:: with SMTP id s73mr11896459ill.86.1574364133992; 
+ Thu, 21 Nov 2019 11:22:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+Px+wUSpYibKbOdj-XCXCnH9QN8=OtbeYMkhbj4ZREMj7V6Sg@mail.gmail.com>
-Content-Language: en-US
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>
-Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: max98090: fix possible race
- conditions
+References: <20191117085308.23915-1-tiwai@suse.de>
+ <20191117085308.23915-8-tiwai@suse.de>
+ <3b407a02-b791-52a4-2335-e21d8ab732dd@linux.intel.com>
+ <s5hy2wdyq3t.wl-tiwai@suse.de>
+ <CAFQqKeWgqHwrCSSbLrkuCHkBww2g4dsBcF93SDN_ZK_-KSe5tg@mail.gmail.com>
+ <s5hpnhpyng6.wl-tiwai@suse.de>
+ <CAFQqKeWPgPWpDgZUPvOqSFUY2Zq=8zW-=LhYimtg0S0Hqpc43A@mail.gmail.com>
+ <s5hmucszzni.wl-tiwai@suse.de>
+ <3fc820272992362a56881abf7230f1500fdfdd2a.camel@linux.intel.com>
+ <s5hblt8z7ow.wl-tiwai@suse.de>
+ <030249cd63d754bd70ce5de5c58e04784eecebff.camel@linux.intel.com>
+ <s5hv9rgxohq.wl-tiwai@suse.de>
+ <ce61828881dea0fffd2c26a92ad2571ab3565404.camel@linux.intel.com>
+ <s5hy2wbwo8c.wl-tiwai@suse.de>
+ <CAFQqKeVsQ1AjjKgS-HJ0-mg7JbbmMVjJcUB7wbvsbyz9e2TqLg@mail.gmail.com>
+In-Reply-To: <CAFQqKeVsQ1AjjKgS-HJ0-mg7JbbmMVjJcUB7wbvsbyz9e2TqLg@mail.gmail.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Date: Thu, 21 Nov 2019 11:22:03 -0800
+Message-ID: <CAFQqKeWVuJs+bnZsrYAHdke0pZpBSmP71RFVrfwVE3=P4A7hsw@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 7/8] ALSA: pcm: Add card sync_irq field
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,46 +115,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+>
+> > >
+>> > > I couldn't find anything obvious.  Could you try without changing
+>> > > snd_sof_pcm_period_elapsed(), i.e. only adding the stuff and calling
+>> > > sync_stop, in order to see whether the additional stuff broke
+>> > > anything?
+>> > It is indeed the removal of snd_sof_pcm_period_elapsed() that makes the
+>> > device hang when the stream is stoppped. But that's a bit surprising
+>> > given that all I tried was using the snd_pcm_period_elapsed() directly
+>> > instead of scheduling the delayed work to call it.
+>>
+>> If I read the code correctly, this can't work irrelevantly from the
+>> sync_stop stuff.  The call of period_elapsed is from
+>> hda_dsp_stream_check() which is performed in bus->reg_lock spinlock in
+>> hda_dsp_stream_threaded_handler().  Meanwhile, the XRUN trigger goes
+>> to hda_dsp_pcm_trigger() that follows hda_dsp_stream_trigger(), and
+>> this function expects the sleepable context due to
+>> snd_sof_dsp_read_poll_timeout() call.
+>>
+>> So something like below works?
+>>
+>>
+>> Takashi
+>>
+>> --- a/sound/soc/sof/intel/hda-stream.c
+>> +++ b/sound/soc/sof/intel/hda-stream.c
+>> @@ -592,8 +592,11 @@ static bool hda_dsp_stream_check(struct hdac_bus
+>> *bus, u32 status)
+>>                                 continue;
+>>
+>>                         /* Inform ALSA only in case not do that with IPC
+>> */
+>> -                       if (sof_hda->no_ipc_position)
+>> -                               snd_sof_pcm_period_elapsed(s->substream);
+>> +                       if (sof_hda->no_ipc_position) {
+>> +                               spin_unlock_irq(&bus->reg_lock);
+>> +                               snd_pcm_period_elapsed(s->substream);
+>> +                               spin_lock_irq(&bus->reg_lock);
+>>
+> Thanks, Takashi. Yes, I realized it this morning as well that it is due to
+> the reg_lock. It does work with this change now. I will run some stress
+> tests with this change and get back with the results.
+>
+Hi Takashi,
 
+Sorry the stress tests took a while.
+As we discussed earlier, adding the sync_stop() op didnt quite help the SOF
+driver in removing the delayed work for snd_pcm_period_elapsed().
 
->> if your interrupt sees an ULK status, it will schedule the pll_work.
->> You only test the status again *after* switching the device on/off, so
->> what is the side effect?
-> 
-> Both interrupt thread and pll_work thread access the status register.
-> The side effect is: interrupt thread could read the status register
-> right before pll_work thread's read.
-> 
->> I am also wondering if you shouldn't sleep first in the loop, then check
->> the status?
-> 
-> ACK, "sleep first and check the status" makes more sense.
-> 
->> And in case you do have a side effect due to the clear on read, maybe
->> you could save the status in a context and retest in the workqueue, that
->> way you'd have a trace of the ULK event even if the register was cleared.
-> 
-> I think cache the status couldn't be a good idea.  We couldn't make
-> sure the freshness of the cache.
+Thanks,
+Ranjani
 
-I was thinking more of treating it as a volatile, but it's ugly indeed.
-
-> Can we suppose CPUs always get ULK=1 if PLL is unlocked so that we can
-> simply ignore the case (2)?  Since we know the register is volatile
-> and read the register via I2C should be much slower than hardware
-> raise the bit.
-
-Your option B with the small change to sleep then retest is probably the 
-better solution overall.
-
-BTW did you test this on both Baytrail and BSW chromebooks? In the past 
-I saw baytrail devices exposed this error a lot more than BSW.
-
+>
+> Thanks,
+> Ranjani
+>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
