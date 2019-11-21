@@ -2,82 +2,57 @@ Return-Path: <SRS0=ShlF=ZN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E67F7C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 20:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFC45C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:14:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 688242068D
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 20:47:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BACBB2068E
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Nov 2019 21:14:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JuWjIyJq";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="rcGUx83W"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 688242068D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iVYujIuY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BACBB2068E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D475179C;
-	Thu, 21 Nov 2019 21:46:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D475179C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92AAF17B2;
+	Thu, 21 Nov 2019 22:13:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AAF17B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574369246;
-	bh=xxNBzB7gYouzRDCSgik6Sxh/CeTX4HB/HIOCvNCyPXo=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1574370863;
+	bh=dC3/CIw79WXeeERSffhJ60uOzaFsCbSlAoEdHYPm59E=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JuWjIyJqZf+BU7XNef+1Us3kft/pBdWWB5NATfAMIuAnvcOjAfmDN2U3TizfZklPO
-	 hwriwR7U3XJeVkZMg77iWY6oN9F4x9yRxek0TvuQDISktDaCVn32KYLVaT9Ufy11NJ
-	 8QgXznTHMEoiH5ngijmu7UvYke7MapLmI9HmM5zY=
+	b=iVYujIuYC0CbE3SKNj8wouBWzoztfLdli0nKDZzc0xtehJTen214MISPH0Cv72/jb
+	 LdhKJ54KeABFEckDZugxlFJsZjf4/RdORleC8lDxi7Evv5RY41DUwWsQ36Eggjf+Jg
+	 bK3H+TFZtumHimASeYI43/gc1hoGh/Cpq8A+mBvY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A8C3F80145;
-	Thu, 21 Nov 2019 21:46:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 197B1F80145;
+	Thu, 21 Nov 2019 22:13:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD13AF80146; Thu, 21 Nov 2019 21:46:34 +0100 (CET)
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
- [IPv6:2607:f8b0:4864:20::d41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DDECEF80146; Thu, 21 Nov 2019 22:13:31 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BB71F800EF
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 21:46:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BB71F800EF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="rcGUx83W"
-Received: by mail-io1-xd41.google.com with SMTP id v17so5066003iol.12
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 12:46:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=RKA5ZWfmWS+2Qc1T/gh5s52mBpii2iIDSwLFMOaYtLw=;
- b=rcGUx83Wdj60b9PmHngt1yH/aC9pw6m5Z8F43IG0a3pnYtSg8rvcbQx9VKU7nOLQWz
- cEeqoOSMFYgDaWsQeMmmAnjwTS96mmSg6Vrr4ugjmzDsLGQf2grjT/YbrRu+TB4k2cQA
- 9e3CrNDRkWsLjI92isEkjFXD1rwhsFjJiN+F6PQPU6KkJ9r4KVTRHAcr6MXnV0f12U00
- SQ7GyWY3tmO8GqtbalaGr/R5V2ArUCps2+5A0/YUPGrERXFR9dKvsDE0xiSy3QQVmAYI
- pE5uoEPyXJucA6pMoComO1IXT0idoPebwhD29CCnJ+2NIp3sJ76UFgEHOixH5y5Ss9CM
- hVcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=RKA5ZWfmWS+2Qc1T/gh5s52mBpii2iIDSwLFMOaYtLw=;
- b=BbhHw/712ukAhhdA1cbMGR2ttcV/U37PdeRmRV4Qyg8E6A85AnU2oP59X5ehohHUNO
- Z0BMQxRpIHz1pVE10TSqRLeMSt0kPxL0If5dbVkHUnohtSpVwND61qvXKYLT0mW9tCBo
- 7WgxaWMmOvgZwbAm8Ble9H5s7O7NX7MoMwGBd4MAIDWwOc9Oa9pzLksiQOKe2Sk3gDUI
- BNfIZtSL9X+M7qRVYiAA80iggiltrg+wSOd2BSsixr/free0/EwyNPImebzAkG3aVYsz
- GXEvBXu7Hbg8QFaGjZrns2W2NldQxH8UwcpYUf2JC5rgFJvQj0RczYAgMlCpPfu/oO84
- E2/w==
-X-Gm-Message-State: APjAAAWFxnMN1WvznNkFfXWBbcaYjHLOT/89+ffqcgngEqd3hqKkrexp
- 5+Hs6TFVUBolczVnb/Ad1L04ina5TmZmfQmgaD0hhw==
-X-Google-Smtp-Source: APXvYqzYYkH/GRINU5bh1Nk6eh7d4ikmuEwH6vUWVXldP3VIgzB9r+Otj9VAtqrNYQof33OhD8I41LTKpPKQSYTAOoQ=
-X-Received: by 2002:a5d:97d9:: with SMTP id k25mr6792086ios.142.1574369188911; 
- Thu, 21 Nov 2019 12:46:28 -0800 (PST)
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 938E3F800EF
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 22:13:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 938E3F800EF
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 3E17AAED6;
+ Thu, 21 Nov 2019 21:13:28 +0000 (UTC)
+Date: Thu, 21 Nov 2019 22:13:27 +0100
+Message-ID: <s5hftihrkzs.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+In-Reply-To: <CAFQqKeUimt32z1myzL+JOXoCUhn7jU1=Mj8e6egQKs+c5CY0pA@mail.gmail.com>
 References: <20191117085308.23915-1-tiwai@suse.de>
  <20191117085308.23915-8-tiwai@suse.de>
  <3b407a02-b791-52a4-2335-e21d8ab732dd@linux.intel.com>
@@ -95,14 +70,13 @@ References: <20191117085308.23915-1-tiwai@suse.de>
  <CAFQqKeVsQ1AjjKgS-HJ0-mg7JbbmMVjJcUB7wbvsbyz9e2TqLg@mail.gmail.com>
  <CAFQqKeWVuJs+bnZsrYAHdke0pZpBSmP71RFVrfwVE3=P4A7hsw@mail.gmail.com>
  <s5himndrmsv.wl-tiwai@suse.de>
-In-Reply-To: <s5himndrmsv.wl-tiwai@suse.de>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Thu, 21 Nov 2019 12:46:17 -0800
-Message-ID: <CAFQqKeUimt32z1myzL+JOXoCUhn7jU1=Mj8e6egQKs+c5CY0pA@mail.gmail.com>
-To: Takashi Iwai <tiwai@suse.de>, "Jie, Yang" <yang.jie@intel.com>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ <CAFQqKeUimt32z1myzL+JOXoCUhn7jU1=Mj8e6egQKs+c5CY0pA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [alsa-devel] [PATCH 7/8] ALSA: pcm: Add card sync_irq field
 X-BeenThere: alsa-devel@alsa-project.org
@@ -117,66 +91,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
->
->
-> >
-> > Hi Takashi,
-> >
-> > Sorry the stress tests took a while.
-> > As we discussed earlier, adding the sync_stop() op didnt quite help the
-> SOF
-> > driver in removing the delayed work for snd_pcm_period_elapsed().
->
-> Yeah, that's understandable.  If the stop operation itself needs some
-> serialization, sync_stop() won't influence at all.
->
-> However, now after these discussions, I have some concerns in the
-> current code:
->
-> - The async work started by schedule_work() may be executed
->   (literally) immediately.  So if the timing or the serialization
->   matters, it doesn't guarantee at all.  The same level of concurrency
->   can happen at any time.
->
-> - The period_elapsed work might be pending at prepare or other
->   operation;
->   the async work means also that it doesn't guarantee its execution in
->   time, and it might be delayed much, and the PCM core might go to
->   prepare or other state even before the work is executed.
->
-> The second point can be fixed easily now with sync_stop.  You can just
-> put flush_work() in sync_stop in addition to synchronize_irq().
->
-> But the first point is still unclear.  More exactly, which operation
-> does it conflict?  Does it the playback drain?  Then it might take
-> very long (up to seconds) to block the next operation?
->
-Hi Takashi,
-
-As I understand the original intention for adding the period_elapsed_work()
-was  that snd_pcm_period_elapsed() could cause a STOP trigger while the
-current IPC interrupt is still being handled.
-In this case, the STOP trigger generates an IPC to the DSP but the host
-never misses the IPC response from the DSP because it is still handling the
-previous interrupt.
-
-Adding Keyon who added this change to add more and clarify your concerns.
-
-Thanks,
-Ranjani
-
->
->
-> thanks,
->
-> Takashi
->
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVGh1LCAyMSBOb3YgMjAxOSAyMTo0NjoxNyArMDEwMCwKU3JpZGhhcmFuLCBSYW5qYW5pIHdy
+b3RlOgo+IAo+ICAgICA+Cj4gICAgID4gSGkgVGFrYXNoaSwKPiAgICAgPgo+ICAgICA+IFNvcnJ5
+IHRoZSBzdHJlc3MgdGVzdHMgdG9vayBhIHdoaWxlLsKgCj4gICAgID4gQXMgd2UgZGlzY3Vzc2Vk
+IGVhcmxpZXIsIGFkZGluZyB0aGUgc3luY19zdG9wKCkgb3AgZGlkbnQgcXVpdGUgaGVscCB0aGUK
+PiAgICAgU09GCj4gICAgID4gZHJpdmVyIGluIHJlbW92aW5nIHRoZSBkZWxheWVkIHdvcmsgZm9y
+IHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKS7CoAo+ICAgIAo+ICAgICBZZWFoLCB0aGF0J3MgdW5k
+ZXJzdGFuZGFibGUuwqAgSWYgdGhlIHN0b3Agb3BlcmF0aW9uIGl0c2VsZiBuZWVkcyBzb21lCj4g
+ICAgIHNlcmlhbGl6YXRpb24sIHN5bmNfc3RvcCgpIHdvbid0IGluZmx1ZW5jZSBhdCBhbGwuCj4g
+ICAgCj4gICAgIEhvd2V2ZXIsIG5vdyBhZnRlciB0aGVzZSBkaXNjdXNzaW9ucywgSSBoYXZlIHNv
+bWUgY29uY2VybnMgaW4gdGhlCj4gICAgIGN1cnJlbnQgY29kZToKPiAgICAKPiAgICAgLSBUaGUg
+YXN5bmMgd29yayBzdGFydGVkIGJ5IHNjaGVkdWxlX3dvcmsoKSBtYXkgYmUgZXhlY3V0ZWQKPiAg
+ICAgwqAgKGxpdGVyYWxseSkgaW1tZWRpYXRlbHkuwqAgU28gaWYgdGhlIHRpbWluZyBvciB0aGUg
+c2VyaWFsaXphdGlvbgo+ICAgICDCoCBtYXR0ZXJzLCBpdCBkb2Vzbid0IGd1YXJhbnRlZSBhdCBh
+bGwuwqAgVGhlIHNhbWUgbGV2ZWwgb2YgY29uY3VycmVuY3kKPiAgICAgwqAgY2FuIGhhcHBlbiBh
+dCBhbnkgdGltZS4KPiAgICAKPiAgICAgLSBUaGUgcGVyaW9kX2VsYXBzZWQgd29yayBtaWdodCBi
+ZSBwZW5kaW5nIGF0IHByZXBhcmUgb3Igb3RoZXIKPiAgICAgwqAgb3BlcmF0aW9uOwo+ICAgICDC
+oCB0aGUgYXN5bmMgd29yayBtZWFucyBhbHNvIHRoYXQgaXQgZG9lc24ndCBndWFyYW50ZWUgaXRz
+IGV4ZWN1dGlvbiBpbgo+ICAgICDCoCB0aW1lLCBhbmQgaXQgbWlnaHQgYmUgZGVsYXllZCBtdWNo
+LCBhbmQgdGhlIFBDTSBjb3JlIG1pZ2h0IGdvIHRvCj4gICAgIMKgIHByZXBhcmUgb3Igb3RoZXIg
+c3RhdGUgZXZlbiBiZWZvcmUgdGhlIHdvcmsgaXMgZXhlY3V0ZWQuCj4gICAgCj4gICAgIFRoZSBz
+ZWNvbmQgcG9pbnQgY2FuIGJlIGZpeGVkIGVhc2lseSBub3cgd2l0aCBzeW5jX3N0b3AuwqAgWW91
+IGNhbiBqdXN0Cj4gICAgIHB1dCBmbHVzaF93b3JrKCkgaW4gc3luY19zdG9wIGluIGFkZGl0aW9u
+IHRvIHN5bmNocm9uaXplX2lycSgpLgo+ICAgIAo+ICAgICBCdXQgdGhlIGZpcnN0IHBvaW50IGlz
+IHN0aWxsIHVuY2xlYXIuwqAgTW9yZSBleGFjdGx5LCB3aGljaCBvcGVyYXRpb24KPiAgICAgZG9l
+cyBpdCBjb25mbGljdD/CoCBEb2VzIGl0IHRoZSBwbGF5YmFjayBkcmFpbj/CoCBUaGVuIGl0IG1p
+Z2h0IHRha2UKPiAgICAgdmVyeSBsb25nICh1cCB0byBzZWNvbmRzKSB0byBibG9jayB0aGUgbmV4
+dCBvcGVyYXRpb24/Cj4gCj4gSGkgVGFrYXNoaSwKPiAKPiBBcyBJIHVuZGVyc3RhbmQgdGhlIG9y
+aWdpbmFsIGludGVudGlvbiBmb3IgYWRkaW5nIHRoZSBwZXJpb2RfZWxhcHNlZF93b3JrKCkKPiB3
+YXPCoCB0aGF0IHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKSBjb3VsZCBjYXVzZSBhIFNUT1AgdHJp
+Z2dlciB3aGlsZSB0aGUKPiBjdXJyZW50IElQQyBpbnRlcnJ1cHQgaXMgc3RpbGwgYmVpbmcgaGFu
+ZGxlZC4KPiBJbiB0aGlzIGNhc2UsIHRoZSBTVE9QIHRyaWdnZXIgZ2VuZXJhdGVzIGFuIElQQyB0
+byB0aGUgRFNQIGJ1dCB0aGUgaG9zdCBuZXZlcgo+IG1pc3NlcyB0aGUgSVBDIHJlc3BvbnNlIGZy
+b20gdGhlIERTUCBiZWNhdXNlIGl0IGlzIHN0aWxsIGhhbmRsaW5nIHRoZSBwcmV2aW91cwo+IGlu
+dGVycnVwdC4KCk9LLCB0aGF0IG1ha2VzIHNlbnNlLiAgU28gdGhlIGlzc3VlIGlzIHRoYXQgdGhl
+IHRyaWdnZXIgc3RvcCBpdHNlbGYKcmVxdWlyZXMgdGhlIGFjayB2aWEgdGhlIGludGVycnVwdCBh
+bmQgaXQgY2FuJ3QgYmUgY2F1Z2h0IGJlY2F1c2UgaXQncwpiZWluZyBjYWxsZWQgZnJvbSB0aGUg
+aXJxIGhhbmRsZXIgaXRzZWxmLgoKSW4gdGhhdCBjYXNlLCB0aG91Z2gsIGFub3RoZXIgc29sdXRp
+b24gd291bGQgYmUgdG8gbWFrZSB0aGUgdHJpZ2dlci0Kc3RvcCBhbiBhc3luYyB3b3JrIChidXQg
+Y29uZGl0aW9uYWxseSkgd2hpbGUgcHJvY2Vzc2luZyB0aGUgbm9ybWFsCnBlcmlvZF9lbGFwc2Vk
+IGluIHRoZSBpcnEgaGFuZGxlci4gIFRoYXQgaXMsIHNldCBzb21lIGZsYWcgYmVmb3JlCmNhbGxp
+bmcgc25kX3BjbV9wZXJpb2RfZWxhcHNlZCgpLCBhbmQgaW4gdGhlIHRyaWdnZXItc3RvcCwgY2hl
+Y2sgdGhlCmZsYWcuICBJZiB0aGUgZmxhZyBpcyBzZXQsIHNjaGVkdWxlIHRoZSB3b3JrIGFuZCBy
+ZXR1cm4uICBBbmQsIHlvdSdsbApzeW5jIHRoaXMgYXN5bmMgd29yayB3aXRoIHN5bmNfc3RvcCgp
+LiAgSW4gdGhhdCB3YXksIHRoZSBwZXJpb2QKaGFuZGxpbmcgaXMgcHJvY2Vzc2VkIHdpdGhvdXQg
+YW55IGRlbGF5IG1vcmUgbGlnaHRseS4KCgp0aGFua3MsCgpUYWthc2hpCgo+IEFkZGluZyBLZXlv
+biB3aG8gYWRkZWQgdGhpcyBjaGFuZ2UgdG8gYWRkIG1vcmUgYW5kIGNsYXJpZnkgeW91ciBjb25j
+ZXJucy4KPiAKPiBUaGFua3MsCj4gUmFuamFuaQo+IAo+ICAgICB0aGFua3MsCj4gICAgCj4gICAg
+IFRha2FzaGkKPiAKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
