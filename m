@@ -2,68 +2,67 @@ Return-Path: <SRS0=m6EI=ZO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B137C432C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 13:29:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57231C432C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 13:31:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C4D72071C
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 13:29:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AD8920730
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 13:31:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="saNqZdfj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C4D72071C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BHS0NGTY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AD8920730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D061C1816;
-	Fri, 22 Nov 2019 14:28:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D061C1816
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44E1D16B9;
+	Fri, 22 Nov 2019 14:30:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44E1D16B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574429354;
-	bh=uPxLelZTWAW1/9ZCz6NAJGbScU/6zee1HJsX4c2gh8g=;
+	s=default; t=1574429500;
+	bh=aM6vTFe5eZmxAFgknvBkAATVYkt8kfKEsa4ulj9bd6Y=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=saNqZdfjQ5EeheyPTn5sxZtchTkldIy0SCsjmkTtIXUI4RfRKrX1xkWIVoxlsxc9t
-	 Opr9vMl79t6H5zYqRVmjt2oc619rD9K/GW6iMMppGwYx4RGSK1NljF7JX33qgNyCDh
-	 jjParedEXU5aB/FVi2sVJpy7C9Yer96K0ZyQWFgQ=
+	b=BHS0NGTYKgKA1+IMd/1jwB81xlbvoDek1VkBZRYI/gEXzabm7Sz/EhVdrXbRdRcnJ
+	 qC8Bm/9+ol30ETqb+VO+caNsIY+AwKUZ3TJXXqPHUqq/fIArJDTaYaBXUerHLKmw1W
+	 7Wt8TkkmUG+ua1YDc3uu1Ggw71RbIlUF2SdXlqQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 547F5F8013F;
-	Fri, 22 Nov 2019 14:28:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFC85F800EF;
+	Fri, 22 Nov 2019 14:30:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC05FF8013F; Fri, 22 Nov 2019 14:28:22 +0100 (CET)
+ id 3EDA8F800EF; Fri, 22 Nov 2019 14:30:48 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F335F8013F
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 14:28:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F335F8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1072F800EF
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 14:30:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1072F800EF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id D3BC0B2C8;
- Fri, 22 Nov 2019 13:28:19 +0000 (UTC)
-Date: Fri, 22 Nov 2019 14:28:19 +0100
-Message-ID: <s5ho8x43urw.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id E8EEEAB91;
+ Fri, 22 Nov 2019 13:30:44 +0000 (UTC)
+Date: Fri, 22 Nov 2019 14:30:44 +0100
+Message-ID: <s5hmuco3unv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Geoffrey D. Bennett" <g@b4.vu>
-In-Reply-To: <20191122002427.GD18019@b4.vu>
-References: <20191111054133.GA1817@b4.vu>
- <861b90c8-8878-c3be-bc8e-769a3638cc14@gmail.com>
- <s5hsgmh5i3x.wl-tiwai@suse.de> <20191122002427.GD18019@b4.vu>
+To: Thorsten Glaser <t.glaser@tarent.de>
+In-Reply-To: <alpine.DEB.2.21.1911211536340.23653@tglase-nb.lan.tarent.de>
+References: <alpine.DEB.2.21.1911202147000.2011@tglase.lan.tarent.de>
+ <s5hzhgpsl7b.wl-tiwai@suse.de>
+ <alpine.DEB.2.21.1911211536340.23653@tglase-nb.lan.tarent.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Markus Schroetter <project.m.schroetter@gmail.com>,
- alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: Fix Scarlett 6i6 Gen
-	2	port data
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] fix segfault on x32,
+	64-bit time_t-related format strings
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,37 +75,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 22 Nov 2019 01:24:27 +0100,
-Geoffrey D. Bennett wrote:
-> 
-> On Thu, Nov 21, 2019 at 05:06:42PM +0100, Takashi Iwai wrote:
-> > On Thu, 21 Nov 2019 09:52:10 +0100,
-> > Markus Schroetter wrote:
-> > > 
-> > > > The s6i6_gen2_info.ports[] array had the Mixer and PCM port type
-> > > > entries in the wrong place. Use designators to explicitly specify the
-> > > > array elements being set.
-> > > >
-> > > > Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
-> > > > Signed-off-by: Geoffrey D. Bennett <g at b4.vu <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>
-> > > > Reported-by: Jonas Berlin <kernel at xkr47.space <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>
-> > > > Tested-by: Alex Fellows <alex.fellows at gmail.com <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>
-> > > Tested-by: Markus Schroetter <project.m.schroetter@gmail.com>
-> > 
-> > Oh this wasn't taken yet.  Now merged for 5.5.
-> 
-> Thanks for that! Is it possible to get it included in 5.4.1 as well?
-
-Yes, once when merged to Linus tree, it'll be picked up.
-
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVGh1LCAyMSBOb3YgMjAxOSAxNTozNzo0NiArMDEwMCwKVGhvcnN0ZW4gR2xhc2VyIHdyb3Rl
+Ogo+IAo+IE9uIFRodSwgMjEgTm92IDIwMTksIFRha2FzaGkgSXdhaSB3cm90ZToKPiAKPiA+IENv
+dWxkIHlvdSBzcGxpdCB0aGVzZSBjaGFuZ2VzIHRvIHNlcGFyYXRlIHBhdGNoZXM/ICBUaGV5IGFy
+ZSBmb3IKPiA+IGRpZmZlcmVudCBwdXJwb3Nlcy4KPiAKPiBJ4oCZdmUgc2VudCB0aGVtIGFzIHR3
+byBzZXBhcmF0ZSBwYXRjaCBmaWxlcyBhdHRhY2htZW50cy4KClRoZW4gcGxlYXNlIG1ha2UgdGhl
+bSBjbGVhbmx5IGFwcGxpY2FibGUgdmlhIGdpdC1hbSwgd2l0aCBhIHByb3BlcgpzdWJqZWN0LCBh
+IHByb3BlciBjaGFuZ2Vsb2cgYW5kIHlvdXIgc2lnbi1vZmYsIGV0Yy4KQXQgYmVzdCBzZW5kIG9u
+ZSBwYXRjaCBwZXIgbWFpbCAoYW5kIHdpdGggYSBjb3ZlciBsZXR0ZXIgZm9yIG11bHRpcGxlCnBh
+dGNoZXMpLgoKPiA+IEFsc28sIHVzaW5nIHRpbWVfdCB3b3VsZCBiZSBiZXR0ZXIgaWYgcG9zc2li
+bGUuICBVbmZvcnR1bmF0ZWx5IGEgY2FzdAo+ID4gaXMgbmVlZGVkIGZvciBwcmludGYgdXNhZ2Us
+IGJ1dCBvdGhlciB0aGFuIHRoYXQsIHRpbWVfdCB3b3VsZCBsZWF2ZSB1cwo+ID4gdGhlIHJpZ2h0
+IHNpemUuCj4gCj4gSW4gdGltZWRpZmYoKSB5b3UgbWVhbj8gSHJtLCBpbmRlZWQuIEkgdHJpZWQg
+dG8gYmUgbWluaW1hbC1pbnZhc2l2ZQo+IGF0IGZpcnN0LgoKSSBtZWFudCB1c2luZyB0aW1lX3Qg
+YXMgbXVjaCBhcyBwb3NzaWJsZSBpbnN0ZWFkIG9mIGxvbmcgbG9uZy4KRm9yIHByaW50ZigpLCB0
+aGVyZSBpcyBubyBvdGhlciBvcHRpb24sIGJ1dCBvdGhlciBjYWxjdWxhdGlvbnMgY2FuIGJlCnJl
+cGxhY2VkIHdpdGggdGltZV90LgoKCnRoYW5rcywKClRha2FzaGkKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
