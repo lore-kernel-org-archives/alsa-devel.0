@@ -6,67 +6,67 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A62C5C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 17:42:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0394C432C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 17:43:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DFD62068F
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 17:42:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 62AB32068F
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 17:43:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LFbUpntx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DFD62068F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YCtFY49G"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62AB32068F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7541D1813;
-	Fri, 22 Nov 2019 18:41:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7541D1813
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85D131839;
+	Fri, 22 Nov 2019 18:42:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85D131839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574444551;
-	bh=Af7H7IhVydCDrAt1le3fQS+k8tjTTSAqQ5w3HCjb8g4=;
+	s=default; t=1574444584;
+	bh=nqI97SqBotsZLauRfxvURfrCvfTgrSZSWaeGgJRYAdM=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LFbUpntxttBNY8oBS8bjiNOKl00V2vERsXFwJOkUmCl1yTAt9EL20deKA/xyXskMs
-	 Rqlz18OExswb36KAWtWfAoePIv8zqJPS8nxxrFjRnViwFFQ54rLtz3gWLLjTrb9IAU
-	 lqX8EHjTca9Y2H2jD9/0vbd1Pi/ZinAILxIleBYU=
+	b=YCtFY49GuZvg1/yoUBFLFSjKF3eP38NXc4GJjFtECdJTV6Hd07iOnYe+LlsaFS2qe
+	 dUt5X1h0iiplUO0ECpRYgNYUsk7pgKpVpBssvqIMD4xtCF5jbuOqbdWM5p1ATYg8vt
+	 KYzZvmqy/YGBtV4tZ6ksuMLtqB3owEkDgjLxvOKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29C64F80212;
-	Fri, 22 Nov 2019 18:39:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD605F801F8;
+	Fri, 22 Nov 2019 18:39:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03515F801F7; Fri, 22 Nov 2019 18:38:59 +0100 (CET)
+ id 8BA6FF8015E; Fri, 22 Nov 2019 18:39:03 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D24C2F801DA
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 18:38:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D24C2F801DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9F86F80157
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 18:38:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9F86F80157
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Nov 2019 09:38:53 -0800
+ 22 Nov 2019 09:38:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,230,1571727600"; d="scan'208";a="238683065"
+X-IronPort-AV: E=Sophos;i="5.69,230,1571727600"; d="scan'208";a="238682968"
 Received: from sygreen1-mobl4.amr.corp.intel.com (HELO [10.252.195.68])
  ([10.252.195.68])
- by fmsmga002.fm.intel.com with ESMTP; 22 Nov 2019 09:38:52 -0800
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>
-References: <87r2208o9g.wl-kuninori.morimoto.gx@renesas.com>
+ by fmsmga002.fm.intel.com with ESMTP; 22 Nov 2019 09:38:38 -0800
+To: Tzung-Bi Shih <tzungbi@google.com>, broonie@kernel.org
+References: <20191122073114.219945-1-tzungbi@google.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cdde57a5-8c5f-29c6-a32d-b10fc4745d6a@linux.intel.com>
-Date: Fri, 22 Nov 2019 10:49:53 -0600
+Message-ID: <e78ef583-da9c-3491-ab70-6be26c33acc6@linux.intel.com>
+Date: Fri, 22 Nov 2019 09:21:15 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <87r2208o9g.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20191122073114.219945-1-tzungbi@google.com>
 Content-Language: en-US
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] [PATCH 00/14] ASoC: soc-core cleanup step6
+Cc: alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
+Subject: Re: [alsa-devel] [PATCH v2 0/3] ASoC: max98090: fix PLL unlocked
+ workaround-related
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,51 +86,40 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 11/21/19 11:37 PM, Kuninori Morimoto wrote:
-> 
-> Hi Mark
-> 
-> These are soc-core cleanup step6.
-> These doesn't add new features.
+On 11/22/19 1:31 AM, Tzung-Bi Shih wrote:
+> This series is a follow up fix for the question:
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-October/157364.html
 
-Looks mostly good to me, I only have a set of nit-picks.
+For the series
 
-First tests look ok (2 known/unrelated errors)
-https://sof-ci.01.org/linuxpr/PR1538/build2542/devicetest/
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Sounds promising, thanks for all this Morimoto-san.
+Hope this is the last time we see this PLL unlock error :-)
+
 
 > 
-> Kuninori Morimoto (14):
->    ASoC: soc-core: remove dai_link_list
->    ASoC: soc-core: remove snd_soc_disconnect_sync()
->    ASoC: soc-core: remove snd_soc_get_dai_substream()
->    ASoC: soc-core: move snd_soc_get_pcm_runtime()
->    ASoC: soc-core: find rtd via dai_link pointer at snd_soc_get_pcm_runtime()
->    ASoC: soc-core: move snd_soc_find_dai_link()
->    ASoC: soc-core: rename snd_soc_add_dai_link() to snd_soc_add_pcm_runtime()
->    ASoC: soc-core: rename snd_soc_remove_dai_link() to snd_soc_remove_pcm_runtime()
->    ASoC: soc-core: move soc_link_dai_pcm_new()
->    ASoC: soc-core: rename soc_link_dai_pcm_new() to soc_dai_pcm_new()
->    ASoC: soc-core: move soc_link_init()
->    ASoC: soc-core: rename soc_link_init() to soc_init_pcm_runtime()
->    ASoC: soc-core: soc_set_name_prefix(): tidyup loop condition
->    ASoC: soc-core: soc_set_name_prefix(): get component device_node at out of loop
+> Changes from v1:
+> ASoC: max98090: remove msleep in PLL unlocked workaround
+> - add more comments
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158969.html
 > 
->   include/sound/soc.h            |  22 +--
->   sound/soc/fsl/fsl-asoc-card.c  |   2 +-
->   sound/soc/pxa/mioa701_wm9713.c |   2 +-
->   sound/soc/samsung/bells.c      |  12 +-
->   sound/soc/samsung/littlemill.c |  10 +-
->   sound/soc/samsung/snow.c       |   2 +-
->   sound/soc/samsung/speyside.c   |   4 +-
->   sound/soc/samsung/tm2_wm5110.c |   6 +-
->   sound/soc/samsung/tobermory.c  |   6 +-
->   sound/soc/sh/rcar/core.c       |   2 -
->   sound/soc/soc-core.c           | 339 ++++++++++++++++-------------------------
->   sound/soc/soc-topology.c       |  47 +++++-
->   sound/soc/tegra/tegra_wm8903.c |   2 +-
->   13 files changed, 204 insertions(+), 252 deletions(-)
+> ASoC: max98090: exit workaround earlier if PLL is locked
+> - "sleep first and then check the status"
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158998.html
+> 
+> ASoC: max98090: fix possible race conditions
+> - fix typo
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158966.html
+> - add more descriptions in commit message
+> 
+> Tzung-Bi Shih (3):
+>    ASoC: max98090: remove msleep in PLL unlocked workaround
+>    ASoC: max98090: exit workaround earlier if PLL is locked
+>    ASoC: max98090: fix possible race conditions
+> 
+>   sound/soc/codecs/max98090.c | 30 +++++++++++++++++++++---------
+>   sound/soc/codecs/max98090.h |  1 -
+>   2 files changed, 21 insertions(+), 10 deletions(-)
 > 
 _______________________________________________
 Alsa-devel mailing list
