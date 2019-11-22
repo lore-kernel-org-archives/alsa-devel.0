@@ -2,92 +2,100 @@ Return-Path: <SRS0=m6EI=ZO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A160C432C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 07:34:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DD49C432C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 07:54:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 956BD20637
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 07:34:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0716720708
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 07:54:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PQlnHfSy";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="BiELqLyO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 956BD20637
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iZ6CTlnc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="WrX3oYuG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0716720708
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1D8F181F;
-	Fri, 22 Nov 2019 08:34:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D8F181F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA89C180D;
+	Fri, 22 Nov 2019 08:53:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA89C180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574408091;
-	bh=OPRq2i/2Y7+mFaOYogWw04UB/NBHCxUz01IR1Y1ymIg=;
-	h=Date:In-Reply-To:References:From:To:Cc:Subject:List-Id:
+	s=default; t=1574409242;
+	bh=4DVQyzssG3vEMfTYV0U7Jx/G/xaYalbIw9NoduMh1cs=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PQlnHfSypIaSO6qSEEhOVD2PEUpexhPFbai+QjvApMGKR8EmHoscEPCAGUIvhcLpA
-	 d8+UG+UNfm58ogTX1MhMEutcIIMLWzDn3ic3u8e3G26l8Q7N2TYM9kVWDlzCiMQ6/8
-	 t1AgUWtsXhIt7vSAC4O8RxQiRTaHY4YlJb2IPems=
+	b=iZ6CTlncXsql/I9hK5LK2SDAMRhbCBK5JAj4qs2GvYFnQwpkMAlnHPGF5Ts4UKZ9v
+	 wwgfO9RrZuNsQ6g0dXkWuzdhz4+2/vG1kOwJYxqvauL9WSZiVqMJ31Lc3zPw1wSYK/
+	 Ra7pel4lEHkhBRrskBeX6yhhYLT5djAzZC8zbpmI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E54D3F80171;
-	Fri, 22 Nov 2019 08:31:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2704AF8013F;
+	Fri, 22 Nov 2019 08:53:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AB3EF8019B; Fri, 22 Nov 2019 08:31:46 +0100 (CET)
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
- [IPv6:2607:f8b0:4864:20::449])
+ id 45A72F80140; Fri, 22 Nov 2019 08:53:11 +0100 (CET)
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com
+ [IPv6:2607:f8b0:4864:20::143])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11C86F80162
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 08:31:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11C86F80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C35EF800F0
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 08:53:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C35EF800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="BiELqLyO"
-Received: by mail-pf1-x449.google.com with SMTP id s24so3839226pfd.0
- for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 23:31:42 -0800 (PST)
+ header.b="WrX3oYuG"
+Received: by mail-il1-x143.google.com with SMTP id s75so6024660ilc.3
+ for <alsa-devel@alsa-project.org>; Thu, 21 Nov 2019 23:53:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=PJpF59WXyuQHuwY6Mo3791oOyLy5jjBEnMXAd4F3z7k=;
- b=BiELqLyOFOoHHtS40EzMRCc6c8tsaD/r6/B/PF6zYTbzKKF4WlXi8CArxxrGpYPrio
- O1PqLhQRmnyJ4X8NI9svwXMAcevGlSp7obtxfpXg0mAtRwLA+uHLuwD0Q4vajJmeqJrb
- SOWDNysK1UBVRikgzmwOlW2RsDox+nhbuk/yoeLQfzrAJuKOuxws5hhOgjKK5xbSst3g
- akRPxwSsn2FfnXON5WlEFzMGWoKJvnDrE9g46ZoBEPkAbU8BGFF+JPKl6XYOYIiGZcsk
- vAtPQHefVB1LghGdsMbj+tHr0wHEpXTkI47KidFsS+XShnEhnWYI+fDMRxMuoMIs7LZq
- fekg==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=ta9qbXYPfijUAYEwJEeMdsUA63Kl5GlKXveUih7tZ3A=;
+ b=WrX3oYuGlMx1r90LY9203mMTn70rr548OAXyIOWVvpG2AWY6+RAtZIPM6rmOcRB2cw
+ Vq1zeide76xwaf6AXvKrAruBj0vscBLaff7o4cXJ1hnzNoeFac6iP7asaXAr22THdrUh
+ L1ZyiNHrExuVsh8wicyIABx32yPwGtX6qpLcF1XC40IlJkXEzdLZwuwYmw6Q/mhgji/o
+ OIIN+/yCSXcY2B7QVRHTVZiHcnRPAnFRZQZ6ceMGz8z2xMHeGS8qz82jHtUOwSaiEClu
+ egO9NWhHe4dFT6xkhwOMd452dpssbboOJRYmYE4AWnm+E1rtqqUlKamkQJujC1GMfSUf
+ fN/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=PJpF59WXyuQHuwY6Mo3791oOyLy5jjBEnMXAd4F3z7k=;
- b=PumQqF6BQfA2TrbYxn3aqaT9kdTViyjwq0W9LJV2K3Oq6zcPznyHFiXZguBxFjQxfE
- Vujd+MhD9Yz3b+K25iQ753CtEV88uzfG2u7ieFSStBjJiDY+KJdWt9DoIji8KwhAqel/
- L826JGF/8OFN2Db0TPl/k+uOXyz9JsIumnjVp2HDMd3NQm0uQ9ycPrDwtirEhsEQ7hNb
- dJEpBougGqW+A6LxpdAwz5arq6ltTz/uLezwm3lHDYfGjDM6XUUca9Rrey+Nw6EUhbDk
- fkq+BhDmjGhUbRCpLsi4AgFvFcQBvns7E1A6x5ie+Dd1IKE5fRS4UGZdnP5i+WOcwpYx
- Pjow==
-X-Gm-Message-State: APjAAAUTmU0DoaZYkhP9t/ZE2OtMgfS+df3aN3z3C6QMzpVzPuVmim9c
- YgZhfzk19XeE5ZBe1sLvzxglck1Ler71
-X-Google-Smtp-Source: APXvYqxFZzP2xr5z4HWURpTt3DD+Ik3b4MHFFZaH8Jz91pZ/Hvp25A6/v5YwNFqamJOq7EPx8ryblXTdfNjl
-X-Received: by 2002:a63:6c4:: with SMTP id 187mr14584066pgg.421.1574407900399; 
- Thu, 21 Nov 2019 23:31:40 -0800 (PST)
-Date: Fri, 22 Nov 2019 15:31:14 +0800
-In-Reply-To: <20191122073114.219945-1-tzungbi@google.com>
-Message-Id: <20191122073114.219945-4-tzungbi@google.com>
-Mime-Version: 1.0
-References: <20191122073114.219945-1-tzungbi@google.com>
-X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ta9qbXYPfijUAYEwJEeMdsUA63Kl5GlKXveUih7tZ3A=;
+ b=H92Qq0Wvz55e49emZHAXMX97Vv+uluMJAv6+26DGFKWT/sKLFo6hkTGUfkiVbTOe3V
+ FYyOAV8SNEknu3/UNeQVO6Brr141J6EHme9PNX8+sIjUVbqQyZYEnkegVF8ZAq0rvRq5
+ 79xNU8j11TCcPkzjSO+T9J0wo+dY0S4D9bx3XO+Cuj0zTBE5idPW/3FrTgnlKOQT90PN
+ qAR56BpyAC2taXd+S2sRiqEJ/qa3wsHAuX15Fj5pbPy+fCQPExdmo+D1jUImXxYdIxmt
+ PErZ1i67zMN2bYPXcjUhfcTYNh1C51CcdiueBqPbLGzYJNEmLZTypgoJF2pdFQQ2Ru69
+ 8xWQ==
+X-Gm-Message-State: APjAAAUuBwvN/EyUMx6vCe8r4UzwdshIsZCxJXBJ7ZfvznECFnFG9c0v
+ lZN6B3t0lDztN4aqDiC2tRNmszgMhil7YvtfpRhYsA==
+X-Google-Smtp-Source: APXvYqyt4813gPeSLvbOJfUEP66TLs0/PPyPdaPgqREhOo5ifU8VGlSBvD3NeeMrPaxvm301LqhYOxOVg2mJOeGpHZM=
+X-Received: by 2002:a92:9903:: with SMTP id p3mr14059913ili.213.1574409186164; 
+ Thu, 21 Nov 2019 23:53:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20191120060256.212818-1-tzungbi@google.com>
+ <20191120060256.212818-4-tzungbi@google.com>
+ <8273f728-3d4b-b0dc-03b7-6276c5ae4460@linux.intel.com>
+ <CA+Px+wWSajOFXwLAS+jrO9XUBeKaxjZaEOqng0YO9VmL3VXaSQ@mail.gmail.com>
+ <7f055263-01a6-e1cd-8085-1790222bb808@linux.intel.com>
+ <CA+Px+wX2UtU3As-3Bf4rWn1kzqDMPw60xk508gDDaOPk6Q5dgw@mail.gmail.com>
+ <d97b9724-27d0-f157-ce5d-ed6c75bafae8@linux.intel.com>
+ <CA+Px+wUSpYibKbOdj-XCXCnH9QN8=OtbeYMkhbj4ZREMj7V6Sg@mail.gmail.com>
+ <942ddeb1-762b-1e76-64cd-6450c6adc722@linux.intel.com>
+In-Reply-To: <942ddeb1-762b-1e76-64cd-6450c6adc722@linux.intel.com>
 From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org, pierre-louis.bossart@linux.intel.com
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com,
- cychiang@google.com
-Subject: [alsa-devel] [PATCH v2 3/3] ASoC: max98090: fix possible race
+Date: Fri, 22 Nov 2019 15:52:54 +0800
+Message-ID: <CA+Px+wWD0dfGTuMqRLzZYgFRwLQUwc2_RD5N+CHsZAsPSm=Amg@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@google.com>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: max98090: fix possible race
 	conditions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -106,123 +114,26 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-max98090_interrupt() and max98090_pll_work() run in 2 different threads.
-There are 2 possible races:
+On Fri, Nov 22, 2019 at 3:20 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> > Can we suppose CPUs always get ULK=1 if PLL is unlocked so that we can
+> > simply ignore the case (2)?  Since we know the register is volatile
+> > and read the register via I2C should be much slower than hardware
+> > raise the bit.
+>
+> Your option B with the small change to sleep then retest is probably the
+> better solution overall.
 
-Note: M98090_REG_DEVICE_STATUS = 0x01.
-Note: ULK == 0, PLL is locked; ULK == 1, PLL is unlocked.
+Have sent v2, https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/159050.html
 
-max98090_interrupt      max98090_pll_work
-----------------------------------------------
-schedule max98090_pll_work
-                        restart max98090 codec
-receive ULK INT
-                        assert ULK == 0
-schedule max98090_pll_work (1).
+> BTW did you test this on both Baytrail and BSW chromebooks? In the past
+> I saw baytrail devices exposed this error a lot more than BSW.
 
-In the case (1), the PLL is locked but max98090_interrupt unnecessarily
-schedules another max98090_pll_work.
-
-max98090_interrupt      max98090_pll_work      max98090 codec
-----------------------------------------------------------------------
-                                               ULK = 1
-receive ULK INT
-read 0x01
-                                               ULK = 0 (clear on read)
-schedule max98090_pll_work
-                        restart max98090 codec
-                                               ULK = 1
-receive ULK INT
-read 0x01
-                                               ULK = 0 (clear on read)
-                        read 0x01
-                        assert ULK == 0 (2).
-
-In the case (2), both max98090_interrupt and max98090_pll_work read
-the same clear-on-read register.  max98090_pll_work would falsely
-thought PLL is locked.
-Note: the case (2) race is introduced by the previous commit ("ASoC:
-max98090: exit workaround earlier if PLL is locked") to check the status
-and exit the loop earlier in max98090_pll_work.
-
-There are 2 possible solution options:
-A. turn off ULK interrupt before scheduling max98090_pll_work; and turn
-on again before exiting max98090_pll_work.
-B. remove the second thread of execution.
-
-Option A cannot fix the case (2) race because it still has 2 threads
-access the same clear-on-read register simultaneously.  Although we
-could suppose the register is volatile and read the status via I2C could
-be much slower than the hardware raises the bits.
-
-Option B introduces a maximum 10~12 msec penalty delay in the interrupt
-handler.  However, it could only punish the jack detection by extra
-10~12 msec.
-
-Adopts option B which is the better solution overall.
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- sound/soc/codecs/max98090.c | 8 ++------
- sound/soc/codecs/max98090.h | 1 -
- 2 files changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index f531e5a11bdd..e46b6ada13b1 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2103,10 +2103,8 @@ static void max98090_pll_det_disable_work(struct work_struct *work)
- 			    M98090_IULK_MASK, 0);
- }
- 
--static void max98090_pll_work(struct work_struct *work)
-+static void max98090_pll_work(struct max98090_priv *max98090)
- {
--	struct max98090_priv *max98090 =
--		container_of(work, struct max98090_priv, pll_work);
- 	struct snd_soc_component *component = max98090->component;
- 	unsigned int pll;
- 	int i;
-@@ -2275,7 +2273,7 @@ static irqreturn_t max98090_interrupt(int irq, void *data)
- 
- 	if (active & M98090_ULK_MASK) {
- 		dev_dbg(component->dev, "M98090_ULK_MASK\n");
--		schedule_work(&max98090->pll_work);
-+		max98090_pll_work(max98090);
- 	}
- 
- 	if (active & M98090_JDET_MASK) {
-@@ -2438,7 +2436,6 @@ static int max98090_probe(struct snd_soc_component *component)
- 			  max98090_pll_det_enable_work);
- 	INIT_WORK(&max98090->pll_det_disable_work,
- 		  max98090_pll_det_disable_work);
--	INIT_WORK(&max98090->pll_work, max98090_pll_work);
- 
- 	/* Enable jack detection */
- 	snd_soc_component_write(component, M98090_REG_JACK_DETECT,
-@@ -2491,7 +2488,6 @@ static void max98090_remove(struct snd_soc_component *component)
- 	cancel_delayed_work_sync(&max98090->jack_work);
- 	cancel_delayed_work_sync(&max98090->pll_det_enable_work);
- 	cancel_work_sync(&max98090->pll_det_disable_work);
--	cancel_work_sync(&max98090->pll_work);
- 	max98090->component = NULL;
- }
- 
-diff --git a/sound/soc/codecs/max98090.h b/sound/soc/codecs/max98090.h
-index 57965cd678b4..a197114b0dad 100644
---- a/sound/soc/codecs/max98090.h
-+++ b/sound/soc/codecs/max98090.h
-@@ -1530,7 +1530,6 @@ struct max98090_priv {
- 	struct delayed_work jack_work;
- 	struct delayed_work pll_det_enable_work;
- 	struct work_struct pll_det_disable_work;
--	struct work_struct pll_work;
- 	struct snd_soc_jack *jack;
- 	unsigned int dai_fmt;
- 	int tdm_slots;
--- 
-2.24.0.432.g9d3f5f5b63-goog
-
+I tested on a Baytrail-based chromebook which is easy to generate lots
+of "PLL unlocked" on the console.  After applying this series and the
+next series (https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158853.html),
+I seldom see "PLL unlocked" on the console.  It still happens a few
+times, but with very very low probability.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
