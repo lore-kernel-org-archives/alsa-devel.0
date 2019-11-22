@@ -2,71 +2,60 @@ Return-Path: <SRS0=m6EI=ZO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D048C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 11:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69BEFC432C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 11:30:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0360D20658
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 11:29:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E5BB920674
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 11:30:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u4RF8j10"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0360D20658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kN0ttWEx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5BB920674
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69B1D17EC;
-	Fri, 22 Nov 2019 12:28:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69B1D17EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D92817F4;
+	Fri, 22 Nov 2019 12:29:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D92817F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574422147;
-	bh=b5IRJAFp++zuvmfCqDbrh5LiFzE+htfR0ypqVbYSlaE=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=u4RF8j108QykUqEJwsRluUehS0YFxFlL3a0NWEg8FaNTUc1DZ7AN9rRRxpQioZh26
-	 ubKcoUGEed1HU4pwqBYleQFAHhphi/xAg2qIDMkCuczL5QrbKvbAEP1p4WV9koFHiH
-	 CelnfEpZbNTTSHNiixueqTrFi6bTbxizgflFk+RM=
+	s=default; t=1574422201;
+	bh=42l/HadBKYDSShYJbHBfynb5O43BlJE7vQnY+MEi5Pw=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kN0ttWEx4meTDu6zBktXlXpqg+XOiIQhjI47C2JjI/xMHmJOE8HB6vYdmB0kf1E6X
+	 VGwigIoBPPAYhbWieb3sjE4V0KZmK8NtDSar9efCXCScPtgJ0c7lRRwXk/8G8wg31J
+	 cHTF2oM2jKQJUGM/keFcsQv6x7H1LOS/YFcm3iv0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFE1DF8013F;
-	Fri, 22 Nov 2019 12:28:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 232F7F80157;
+	Fri, 22 Nov 2019 12:28:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C76C8F80140; Fri, 22 Nov 2019 12:28:12 +0100 (CET)
+ id BE95EF80159; Fri, 22 Nov 2019 12:28:44 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99249F800EE
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 12:28:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99249F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47ECAF80150
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 12:28:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47ECAF80150
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id EB634AF19;
- Fri, 22 Nov 2019 11:28:06 +0000 (UTC)
-Date: Fri, 22 Nov 2019 12:28:05 +0100
-Message-ID: <s5h4kyw5ewq.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id BC12CB2FB;
+ Fri, 22 Nov 2019 11:28:41 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-In-Reply-To: <20191121204956.GE617@kadam>
-References: <0000000000002129080597dce70d@google.com>
- <20191121204956.GE617@kadam>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, g@b4.vu, andreyknvl@google.com,
- linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- linux-kernel@vger.kernel.org,
- syzbot <syzbot+a36ab65c6653d7ccdd62@syzkaller.appspotmail.com>,
- gregkh@linuxfoundation.org, tiwai@suse.com, benquike@gmail.com,
- wang6495@umn.edu
-Subject: Re: [alsa-devel] general protection fault in snd_usb_create_mixer
+To: alsa-devel@alsa-project.org
+Date: Fri, 22 Nov 2019 12:28:40 +0100
+Message-Id: <20191122112840.24797-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [alsa-devel] [PATCH] ALSA: usb-audio: Fix NULL dereference at
+	parsing BADD
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,105 +68,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Nov 2019 21:49:56 +0100,
-Dan Carpenter wrote:
-> 
-> On Thu, Nov 21, 2019 at 07:25:09AM -0800, syzbot wrote:
-> > Hello,
-> > 
-> > syzbot found the following crash on:
-> > 
-> > HEAD commit:    46178223 usb: gadget: add raw-gadget interface
-> > git tree:       https://github.com/google/kasan.git usb-fuzzer
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=176f9836e00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=99c88c44660624e7
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=a36ab65c6653d7ccdd62
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1447d3bae00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ef3a86e00000
-> > 
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+a36ab65c6653d7ccdd62@syzkaller.appspotmail.com
-> > 
-> > usb 1-1: 208:241 : does not exist
-> > usb 1-1: 208:242 : does not exist
-> > usb 1-1: 208:243 : does not exist
-> > usb 1-1: 208:244 : does not exist
-> > usb 1-1: 208:245 : does not exist
-> > usb 1-1: 208:246 : does not exist
-> > usb 1-1: 208:247 : does not exist
-> > usb 1-1: 208:248 : does not exist
-> > usb 1-1: 208:249 : does not exist
-> > usb 1-1: 208:250 : does not exist
-> 
-> These error messages are because:
-> 
-> sound/usb/card.c
->    128  static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int interface)
->    129  {
->    130          struct usb_device *dev = chip->dev;
->    131          struct usb_host_interface *alts;
->    132          struct usb_interface_descriptor *altsd;
->    133          struct usb_interface *iface = usb_ifnum_to_if(dev, interface);
->    134  
->    135          if (!iface) {
->    136                  dev_err(&dev->dev, "%u:%d : does not exist\n",
->    137                          ctrlif, interface);
->    138                  return -EINVAL;
->    139          }
-> 
-> "iface" is NULL.  The caller ignores the -EINVAL (correctly I think).
-> 
-> Then the NULL dereference happens in snd_usb_mixer_controls_badd()
-> 
-> sound/usb/mixer.c
->   2903  static int snd_usb_mixer_controls_badd(struct usb_mixer_interface *mixer,
->   2904                                         int ctrlif)
->   2905  {
->   2906          struct usb_device *dev = mixer->chip->dev;
->   2907          struct usb_interface_assoc_descriptor *assoc;
->   2908          int badd_profile = mixer->chip->badd_profile;
->   2909          struct uac3_badd_profile *f;
->   2910          const struct usbmix_ctl_map *map;
->   2911          int p_chmask = 0, c_chmask = 0, st_chmask = 0;
->   2912          int i;
->   2913  
->   2914          assoc = usb_ifnum_to_if(dev, ctrlif)->intf_assoc;
->   2915  
->   2916          /* Detect BADD capture/playback channels from AS EP descriptors */
->   2917          for (i = 0; i < assoc->bInterfaceCount; i++) {
->   2918                  int intf = assoc->bFirstInterface + i;
->   2919  
->   2920                  struct usb_interface *iface;
->   2921                  struct usb_host_interface *alts;
->   2922                  struct usb_interface_descriptor *altsd;
->   2923                  unsigned int maxpacksize;
->   2924                  char dir_in;
->   2925                  int chmask, num;
->   2926  
->   2927                  if (intf == ctrlif)
->   2928                          continue;
->   2929  
->   2930                  iface = usb_ifnum_to_if(dev, intf);
->                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> iface is not checked.
-> 
-> Should it be "if (!iface) continue;?"
+snd_usb_mixer_controls_badd() that parses UAC3 BADD profiles misses a
+NULL check for the given interfaces.  When a malformed USB descriptor
+is passed, this may lead to an Oops, as spotted by syzkaller.
+Skip the iteration if the interface doesn't exist for avoiding the
+crash.
 
-Right, that should fix the problem.  Although the interface number
-referred in snd_usb_mixer_controls_badd() can be different from the
-one checked in snd_usb_create_stream(), the culprit is the missing
-NULL check there.
+Fixes: 17156f23e93c ("ALSA: usb: add UAC3 BADD profiles support")
+Reported-by: syzbot+a36ab65c6653d7ccdd62@syzkaller.appspotmail.com
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/mixer.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 45eee5cc312e..6cd4ff09c5ee 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2930,6 +2930,9 @@ static int snd_usb_mixer_controls_badd(struct usb_mixer_interface *mixer,
+ 			continue;
+ 
+ 		iface = usb_ifnum_to_if(dev, intf);
++		if (!iface)
++			continue;
++
+ 		num = iface->num_altsetting;
+ 
+ 		if (num < 2)
+-- 
+2.16.4
 
-thanks,
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
