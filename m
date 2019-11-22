@@ -2,56 +2,56 @@ Return-Path: <SRS0=m6EI=ZO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE531C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:46:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46AA6C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:47:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 743DE20708
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:46:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C21F520708
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:47:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qZpcMiU1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 743DE20708
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DA8bAvwB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C21F520708
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B99D617F3;
-	Fri, 22 Nov 2019 06:45:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B99D617F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBE1417F8;
+	Fri, 22 Nov 2019 06:46:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBE1417F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574401595;
-	bh=CDX7Zb6DIFCUE3m5Uo1qVUgtfM1QZabivL7RP3g7/K4=;
+	s=default; t=1574401642;
+	bh=muqwh1SUBiQEVflWkAdzxkpgf4ZXCXd+420+4+0dmHw=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qZpcMiU1veDP2EI5raXQX43ZEG2lk1C/5QgDMrg0aXlT35Q9jmbEQe82+Lyk75tiZ
-	 e4fp5EsnYpn/4CKYcK6CUnFbAIGlCCu4g5iVblqt9SlPiR2TKbLuN9ErRhWn6wGj/3
-	 e289J8nWJi50Ou5L7UY8ON8I9lNSqbOXGnIRCyyk=
+	b=DA8bAvwBd71Lo9uw34BujvonKtJKBoePxpiP53iXA20qy70Faxq22z/mM76TmxTOJ
+	 FFt95zIL3Fk3umFf12aVtfWcWmf9zMBPUnk7R4D6qeBpE4hr6NYs35EsRyZO/DIDdM
+	 dB+Js8tnzIXVG/+SpIDxmPh4zyTVhb+Rj0MgD7oM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34C09F80227;
-	Fri, 22 Nov 2019 06:41:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E52D7F8022D;
+	Fri, 22 Nov 2019 06:42:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B9D2F80229; Fri, 22 Nov 2019 06:41:48 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 57BBFF8021C
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 06:41:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57BBFF8021C
-Date: 22 Nov 2019 14:41:36 +0900
-X-IronPort-AV: E=Sophos;i="5.69,228,1571670000"; d="scan'208";a="32363177"
+ id BA6B0F80232; Fri, 22 Nov 2019 06:41:59 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 24478F801ED
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 06:41:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24478F801ED
+Date: 22 Nov 2019 14:41:53 +0900
+X-IronPort-AV: E=Sophos;i="5.69,228,1571670000"; d="scan'208";a="32149972"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 22 Nov 2019 14:41:36 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 22 Nov 2019 14:41:53 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id CDBD0414D726;
- Fri, 22 Nov 2019 14:41:36 +0900 (JST)
-Message-ID: <87blt48o33.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DEBD7414ED67;
+ Fri, 22 Nov 2019 14:41:53 +0900 (JST)
+Message-ID: <87a78o8o2m.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,7 +59,8 @@ In-Reply-To: <87r2208o9g.wl-kuninori.morimoto.gx@renesas.com>
 References: <87r2208o9g.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 11/14] ASoC: soc-core: move soc_link_init()
+Subject: [alsa-devel] [PATCH 12/14] ASoC: soc-core: rename soc_link_init()
+	to soc_init_pcm_runtime()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,179 +78,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch moves soc_link_init() to upper side.
-This is prepare for its cleanup.
+soc-core is using soc_link_init().
+It sounds like dai_link function, but it is for pcm_runtime.
+
+This patch renames soc_link_init() to soc_init_pcm_runtime(),
+and checks missing return value.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 144 +++++++++++++++++++++++++--------------------------
- 1 file changed, 72 insertions(+), 72 deletions(-)
+ sound/soc/soc-core.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4c0bcda..f624a2f 100644
+index f624a2f..843bfe1 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1123,6 +1123,78 @@ static int soc_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
- 	return 0;
- }
- 
-+static int soc_link_init(struct snd_soc_card *card,
-+			 struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_component *component;
-+	int ret, num;
-+
-+	/* set default power off timeout */
-+	rtd->pmdown_time = pmdown_time;
-+
-+	/* do machine specific initialization */
-+	if (dai_link->init) {
-+		ret = dai_link->init(rtd);
-+		if (ret < 0) {
-+			dev_err(card->dev, "ASoC: failed to init %s: %d\n",
-+				dai_link->name, ret);
-+			return ret;
-+		}
-+	}
-+
-+	if (dai_link->dai_fmt) {
-+		ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	/* add DPCM sysfs entries */
-+	soc_dpcm_debugfs_add(rtd);
-+
-+	num = rtd->num;
-+
-+	/*
-+	 * most drivers will register their PCMs using DAI link ordering but
-+	 * topology based drivers can use the DAI link id field to set PCM
-+	 * device number and then use rtd + a base offset of the BEs.
-+	 */
-+	for_each_rtd_components(rtd, rtdcom, component) {
-+		if (!component->driver->use_dai_pcm_id)
-+			continue;
-+
-+		if (rtd->dai_link->no_pcm)
-+			num += component->driver->be_pcm_base;
-+		else
-+			num = rtd->dai_link->id;
-+	}
-+
-+	/* create compress_device if possible */
-+	ret = snd_soc_dai_compress_new(cpu_dai, rtd, num);
-+	if (ret != -ENOTSUPP) {
-+		if (ret < 0)
-+			dev_err(card->dev, "ASoC: can't create compress %s\n",
-+				dai_link->stream_name);
-+		return ret;
-+	}
-+
-+	/* create the pcm */
-+	ret = soc_new_pcm(rtd, num);
-+	if (ret < 0) {
-+		dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
-+			dai_link->stream_name, ret);
-+		return ret;
-+	}
-+	ret = soc_dai_pcm_new(&cpu_dai, 1, rtd);
-+	if (ret < 0)
-+		return ret;
-+	ret = soc_dai_pcm_new(rtd->codec_dais,
-+			      rtd->num_codecs, rtd);
-+	return ret;
-+}
-+
- static void soc_set_of_name_prefix(struct snd_soc_component *component)
- {
- 	struct device_node *of_node = soc_component_to_node(component);
-@@ -1400,78 +1472,6 @@ static int soc_probe_link_components(struct snd_soc_card *card)
+@@ -1123,8 +1123,8 @@ static int soc_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
  	return 0;
  }
  
 -static int soc_link_init(struct snd_soc_card *card,
 -			 struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_dai_link *dai_link = rtd->dai_link;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_component *component;
--	int ret, num;
--
--	/* set default power off timeout */
--	rtd->pmdown_time = pmdown_time;
--
--	/* do machine specific initialization */
--	if (dai_link->init) {
--		ret = dai_link->init(rtd);
--		if (ret < 0) {
--			dev_err(card->dev, "ASoC: failed to init %s: %d\n",
--				dai_link->name, ret);
--			return ret;
--		}
--	}
--
--	if (dai_link->dai_fmt) {
--		ret = snd_soc_runtime_set_dai_fmt(rtd, dai_link->dai_fmt);
--		if (ret)
--			return ret;
--	}
--
--	/* add DPCM sysfs entries */
--	soc_dpcm_debugfs_add(rtd);
--
--	num = rtd->num;
--
--	/*
--	 * most drivers will register their PCMs using DAI link ordering but
--	 * topology based drivers can use the DAI link id field to set PCM
--	 * device number and then use rtd + a base offset of the BEs.
--	 */
--	for_each_rtd_components(rtd, rtdcom, component) {
--		if (!component->driver->use_dai_pcm_id)
--			continue;
--
--		if (rtd->dai_link->no_pcm)
--			num += component->driver->be_pcm_base;
--		else
--			num = rtd->dai_link->id;
--	}
--
--	/* create compress_device if possible */
--	ret = snd_soc_dai_compress_new(cpu_dai, rtd, num);
--	if (ret != -ENOTSUPP) {
--		if (ret < 0)
--			dev_err(card->dev, "ASoC: can't create compress %s\n",
--					 dai_link->stream_name);
--		return ret;
--	}
--
--	/* create the pcm */
--	ret = soc_new_pcm(rtd, num);
--	if (ret < 0) {
--		dev_err(card->dev, "ASoC: can't create pcm %s :%d\n",
--			dai_link->stream_name, ret);
--		return ret;
--	}
--	ret = soc_dai_pcm_new(&cpu_dai, 1, rtd);
--	if (ret < 0)
--		return ret;
--	ret = soc_dai_pcm_new(rtd->codec_dais,
--			      rtd->num_codecs, rtd);
--	return ret;
--}
--
- static void soc_unbind_aux_dev(struct snd_soc_card *card)
++static int soc_init_pcm_runtime(struct snd_soc_card *card,
++				struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_soc_component *component, *_component;
+ 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -1998,8 +1998,11 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
+ 		goto probe_end;
+ 	}
+ 
+-	for_each_card_rtds(card, rtd)
+-		soc_link_init(card, rtd);
++	for_each_card_rtds(card, rtd) {
++		ret = soc_init_pcm_runtime(card, rtd);
++		if (ret < 0)
++			goto probe_end;
++	}
+ 
+ 	snd_soc_dapm_link_dai_widgets(card);
+ 	snd_soc_dapm_connect_dai_link_widgets(card);
 -- 
 2.7.4
 
