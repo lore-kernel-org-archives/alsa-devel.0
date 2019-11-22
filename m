@@ -6,77 +6,76 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60E29C432C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:53:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE002C432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:54:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFB752072D
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:53:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1456B2071B
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Nov 2019 05:54:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LfBGa4WN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQKXNHRM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFB752072D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RlR6q8Hm";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tsry0BzO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1456B2071B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D059917F2;
-	Fri, 22 Nov 2019 06:52:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D059917F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1A691811;
+	Fri, 22 Nov 2019 06:53:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1A691811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574402025;
-	bh=xsDmCs40gpUn1X6yA/UZjjXH0DMmpT4mfWzx1GeZj1Y=;
+	s=default; t=1574402080;
+	bh=Hnr4ZEh/RT3FWlmpjRKiLvVSvNF5liOSNzv/qoDP/T0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LfBGa4WNw7DuDMM6/pUplG9hH+and0I1cUxBsi0SBow2WY7E2HZX9fgh2DlunkyAi
-	 4TGZDOxuv23saBWyjuU1CXcRbKBiKUUCnALNgiOmEWwi7makGMaEJra51nLV2kCmNE
-	 iaCjFJpSbuFIiLFpVpq3cZQuxvQsZ3c7elBKFNtM=
+	b=RlR6q8HmQhBG0ZLyhzf/L2SU8DYtHgpGoIbIt5J0R/o0aGAGyr4vT7+P7dSSPHNIB
+	 4ICsStedL3lebVOLlHkoSYfAPv3J0uvnm5HQRN3DBsc5f6iBHArHBQXpwgSinhjm1G
+	 hWoozaa+0hm7/jh6Df0bI4M9d4juKL1yqUXET2dk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5090CF800EE;
-	Fri, 22 Nov 2019 06:52:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F39EF80157;
+	Fri, 22 Nov 2019 06:53:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0ABE3F80140; Fri, 22 Nov 2019 06:52:53 +0100 (CET)
+ id 1C0C4F80159; Fri, 22 Nov 2019 06:53:22 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BE7AF800EE
- for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 06:52:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BE7AF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BC58F800F0
+ for <alsa-devel@alsa-project.org>; Fri, 22 Nov 2019 06:53:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BC58F800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PQKXNHRM"
+ header.b="tsry0BzO"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2CE472071F;
- Fri, 22 Nov 2019 05:52:47 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 03E60207FA;
+ Fri, 22 Nov 2019 05:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1574401967;
- bh=geeeVQ63UDrNG1JfFxbc//qDRyzxsQyqhEbu7hEACLY=;
+ s=default; t=1574401997;
+ bh=pz78iwdXUENbZcbYUMALJIFQGQOKoTGxA9AdC7L3WZw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PQKXNHRMhIHkF1a9Ioi7N1d1dFy1wHjAJUCvUFKj3HYCsUJgqJWOe+jSRGPZ7X6HT
- AsLUAmRy0GRzEQokhnN9klEkxAHfedpbMV5BrEHTFjZ39BKUgQS3hMjcwYoUP1mTAA
- wL1oY8qH/p/ZcQz4gPNKhkFngZs1ZxrJYqLWWzKw=
+ b=tsry0BzOfr/ITWMcYzCLSjqO3Nel0KOHa6QWVsM+1FW6xC8ebcS6y7Ffd8gNcPAw4
+ yF/G0oN5FehqIjZ5ofeuSKSj2jcbkJuyBykoBK3stQ7vStYfPj5ksYmtXgFMx611JY
+ qQ/XRUZY+az3cRYkVu7Z5ubmbexZq8OB4VCG4wdY=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 22 Nov 2019 00:48:40 -0500
-Message-Id: <20191122054911.1750-181-sashal@kernel.org>
+Date: Fri, 22 Nov 2019 00:49:06 -0500
+Message-Id: <20191122054911.1750-207-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
 References: <20191122054911.1750-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 188/219] ASoC: samsung: i2s: Fix
-	prescaler setting for the secondary DAI
+Cc: Hui Wang <hui.wang@canonical.com>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 215/219] ASoC: rt5645: Headphone
+	Jack sense inverts on the LattePanda board
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,60 +93,57 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit 323fb7b947b265753de34703dbbf8acc8ea3a4de ]
+[ Upstream commit 406dcbc55a0a20fd155be889a4a0c4b812f7c18e ]
 
-Make sure i2s->rclk_srcrate is properly initialized also during
-playback through the secondary DAI.
+The LattePanda board has a sound card chtrt5645, when there is nothing
+plugged in the headphone jack, the system thinks the headphone is
+plugged in, while we plug a headphone in the jack, the system thinks
+the headphone is unplugged.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+If adding quirk=0x21 in the module parameter, the headphone jack can
+work well. So let us fix it via platform_data.
+
+https://bugs.launchpad.net/bugs/182459
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index ce00fe2f6aae3..d4bde4834ce5f 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -604,6 +604,7 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
- 	unsigned int fmt)
- {
- 	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = get_other_dai(i2s);
- 	int lrp_shift, sdf_shift, sdf_mask, lrp_rlow, mod_slave;
- 	u32 mod, tmp = 0;
- 	unsigned long flags;
-@@ -661,7 +662,8 @@ static int i2s_set_fmt(struct snd_soc_dai *dai,
- 		 * CLK_I2S_RCLK_SRC clock is not exposed so we ensure any
- 		 * clock configuration assigned in DT is not overwritten.
- 		 */
--		if (i2s->rclk_srcrate == 0 && i2s->clk_data.clks == NULL)
-+		if (i2s->rclk_srcrate == 0 && i2s->clk_data.clks == NULL &&
-+		    other->clk_data.clks == NULL)
- 			i2s_set_sysclk(dai, SAMSUNG_I2S_RCLKSRC_0,
- 							0, SND_SOC_CLOCK_IN);
- 		break;
-@@ -699,6 +701,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
- 	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = get_other_dai(i2s);
- 	u32 mod, mask = 0, val = 0;
- 	struct clk *rclksrc;
- 	unsigned long flags;
-@@ -784,6 +787,9 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- 	i2s->frmclk = params_rate(params);
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 1dc70f452c1b9..f842db498c741 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3662,6 +3662,11 @@ static const struct rt5645_platform_data jd_mode3_platform_data = {
+ 	.jd_mode = 3,
+ };
  
- 	rclksrc = i2s->clk_table[CLK_I2S_RCLK_SRC];
-+	if (!rclksrc || IS_ERR(rclksrc))
-+		rclksrc = other->clk_table[CLK_I2S_RCLK_SRC];
++static const struct rt5645_platform_data lattepanda_board_platform_data = {
++	.jd_mode = 2,
++	.inv_jd1_1 = true
++};
 +
- 	if (rclksrc && !IS_ERR(rclksrc))
- 		i2s->rclk_srcrate = clk_get_rate(rclksrc);
+ static const struct dmi_system_id dmi_platform_data[] = {
+ 	{
+ 		.ident = "Chrome Buddy",
+@@ -3759,6 +3764,15 @@ static const struct dmi_system_id dmi_platform_data[] = {
+ 		},
+ 		.driver_data = (void *)&intel_braswell_platform_data,
+ 	},
++	{
++		.ident = "LattePanda board",
++		.matches = {
++		  DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
++		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
++		  DMI_EXACT_MATCH(DMI_BOARD_VERSION, "Default string"),
++		},
++		.driver_data = (void *)&lattepanda_board_platform_data,
++	},
+ 	{ }
+ };
  
 -- 
 2.20.1
