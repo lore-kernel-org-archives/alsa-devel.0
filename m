@@ -2,58 +2,67 @@ Return-Path: <SRS0=ZD2s=ZQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07C2CC432C3
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2019 08:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D5A4C432C0
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2019 08:41:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1217D207FD
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2019 08:40:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0BB5F2075E
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Nov 2019 08:41:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XbvuXgIm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1217D207FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JX1adPr8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BB5F2075E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7138C184C;
-	Sun, 24 Nov 2019 09:39:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7138C184C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69D9C17CC;
+	Sun, 24 Nov 2019 09:40:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69D9C17CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574584824;
-	bh=P4+ItKHeMf8w00jP0qQmfAKpbEcfAfTQQ613k+9S2C8=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XbvuXgImmfpwNpheoCJ7smASTH6XTTNS3rLuYVfs+WeENGGzaaCFhTzVM+9iq7fd2
-	 ag+uRrJ1903ky2YgHDiIMvwYtQ8J1trLzBRidPmcv8sDAl262H9e8CiZTANLgw/jW0
-	 Nrf5Lext9ZvSJybZEGkvT0MgUcT3XXMSffLzq2uM=
+	s=default; t=1574584878;
+	bh=+KvxvU3gfzqD5G5TRHsnhBnBwxuR1PDbUVwj63H36EI=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JX1adPr8JgJh2pUUxXELtr5NIhpozp3jminPJTmf4lcMVIMjncsB0MEtDtJh2CaEw
+	 P1BKtVCM+jlArkOQ7ungdtbSkzl4GDaUaFAAj/v1BiIu1c9aA16mqNqS7+SO3dZ2Vf
+	 7M1L9a7M/0ytDCOKavuuOWyZ0/9FicrpY57mfUVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E69E1F800E5;
-	Sun, 24 Nov 2019 09:39:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 205B7F801ED;
+	Sun, 24 Nov 2019 09:40:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22068F801ED; Sun, 24 Nov 2019 09:39:31 +0100 (CET)
+ id 84CB3F80108; Sun, 24 Nov 2019 09:40:23 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B8F9F80108
- for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2019 09:39:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B8F9F80108
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F9BFF80108
+ for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2019 09:40:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F9BFF80108
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 226E8AEE0
- for <alsa-devel@alsa-project.org>; Sun, 24 Nov 2019 08:39:26 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 9F27BAEE0;
+ Sun, 24 Nov 2019 08:40:20 +0000 (UTC)
+Date: Sun, 24 Nov 2019 09:40:19 +0100
+Message-ID: <s5h36ed1xcc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Sun, 24 Nov 2019 09:39:24 +0100
-Message-Id: <20191124083924.14049-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: aloop: Fix dependency on timer API
+To: kbuild test robot <lkp@intel.com>
+In-Reply-To: <201911240651.BBgcccwk%lkp@intel.com>
+References: <201911240651.BBgcccwk%lkp@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org,
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>, kbuild-all@lists.01.org
+Subject: Re: [alsa-devel] [sound:for-next 127/148]
+	sound/drivers/aloop.c:313: undefined reference to `snd_timer_close'
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,37 +75,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-An explicit Kconfig dependency is missing for the recent addition of
-the timer support.  CONFIG_SND_TIMER isn't always selected by SND_PCM.
+On Sat, 23 Nov 2019 23:17:53 +0100,
+kbuild test robot wrote:
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+> head:   9314e44f455c8b46d08b2d379cb9e8fba5767207
+> commit: 26c53379f98d22d6a3e50bb146651dc7824334d7 [127/148] ALSA: aloop: Support selection of snd_timer instead of jiffies
+> config: i386-randconfig-f001-20191124 (attached as .config)
+> compiler: gcc-7 (Debian 7.4.0-14) 7.4.0
+> reproduce:
+>         git checkout 26c53379f98d22d6a3e50bb146651dc7824334d7
+>         # save the attached .config to linux build tree
+>         make ARCH=i386 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    ld: sound/drivers/aloop.o: in function `loopback_snd_timer_close_cable':
+> >> sound/drivers/aloop.c:313: undefined reference to `snd_timer_close'
+> >> ld: sound/drivers/aloop.c:314: undefined reference to `snd_timer_instance_free'
+>    ld: sound/drivers/aloop.o: in function `loopback_snd_timer_stop':
+> >> sound/drivers/aloop.c:276: undefined reference to `snd_timer_stop'
+>    ld: sound/drivers/aloop.o: in function `loopback_snd_timer_start':
+> >> sound/drivers/aloop.c:237: undefined reference to `snd_timer_start'
+>    ld: sound/drivers/aloop.o: in function `loopback_snd_timer_open':
+> >> sound/drivers/aloop.c:1129: undefined reference to `snd_timer_instance_new'
+> >> ld: sound/drivers/aloop.c:1164: undefined reference to `snd_timer_open'
+>    ld: sound/drivers/aloop.c:1173: undefined reference to `snd_timer_instance_free'
 
-Fixes: 26c53379f98d ("ALSA: aloop: Support selection of snd_timer instead of jiffies")
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/drivers/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+It's the missing Kconfig dependency.  I submitted the fix patch now.
 
-diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
-index 15d6d46acf9c..577c8e03ec4d 100644
---- a/sound/drivers/Kconfig
-+++ b/sound/drivers/Kconfig
-@@ -92,6 +92,7 @@ config SND_DUMMY
- config SND_ALOOP
- 	tristate "Generic loopback driver (PCM)"
- 	select SND_PCM
-+	select SND_TIMER
- 	help
- 	  Say 'Y' or 'M' to include support for the PCM loopback device.
- 	  This module returns played samples back to the user space using
--- 
-2.16.4
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
