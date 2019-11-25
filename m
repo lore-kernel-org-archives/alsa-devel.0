@@ -2,56 +2,56 @@ Return-Path: <SRS0=E7cH=ZR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FDF9C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86886C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:53:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E33C52073F
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:52:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 079522073F
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:53:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="E61NTiwX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E33C52073F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kiAPAqLT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 079522073F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4837E18A7;
-	Mon, 25 Nov 2019 01:51:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4837E18A7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EAF7189A;
+	Mon, 25 Nov 2019 01:52:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EAF7189A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574643152;
-	bh=pLFbX38Yy8ZGI+jC2/9fPpZV3gp3GQF5lheQ4rwQMG0=;
+	s=default; t=1574643192;
+	bh=PJ81nYQUPRcwLjc4g8o8vlKpGN5IOP8G7QZ7xAPvD0s=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E61NTiwXZqr2OOmxClz5eqLKFZdZqzDjuCifsB8JGHDyIAujZEnVh86UQquJTphMm
-	 /k/LJb+6Xs3wJs6uc8B3275wFKrHpme33b2FIgF/j6Vo4EDW9cO/22ZoGjwocBPnvs
-	 wkCMGaQVN9d1A0yqKMKZncwdPlRFjH8mfhLgrZ8M=
+	b=kiAPAqLTAUjLXgN/04xL0kF3FJwyd4ZtOjs/eTNkswCUn4A9V2/VDvcEfeTFARgJ6
+	 B0CpwvG9wtdnJUTwQ+Se7NmYexBx10XGN5prsNG3tbPpnlxxWfdn/mvkwhRq9nlqAj
+	 Kt5F1Vdb7tycd04a/eeLics15cplnHyAQEDEatEQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7F8AF80214;
-	Mon, 25 Nov 2019 01:45:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDE3AF80279;
+	Mon, 25 Nov 2019 01:45:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB8C6F80278; Mon, 25 Nov 2019 01:45:40 +0100 (CET)
+ id 0E0F2F8027B; Mon, 25 Nov 2019 01:45:44 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 0B152F80268
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 01:45:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B152F80268
-Date: 25 Nov 2019 09:45:33 +0900
-X-IronPort-AV: E=Sophos;i="5.69,239,1571670000"; d="scan'208";a="32536775"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 25 Nov 2019 09:45:33 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 8EAEAF801F9
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 01:45:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EAEAF801F9
+Date: 25 Nov 2019 09:45:39 +0900
+X-IronPort-AV: E=Sophos;i="5.69,239,1571670000"; d="scan'208";a="32536785"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 25 Nov 2019 09:45:39 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id B6EAF4134E20;
- Mon, 25 Nov 2019 09:45:33 +0900 (JST)
-Message-ID: <87pnhgeqc2.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1853A4000F8E;
+ Mon, 25 Nov 2019 09:45:39 +0900 (JST)
+Message-ID: <87o8x0eqbw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +59,8 @@ In-Reply-To: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
 References: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 12/15] ASoC: soc-core: add missing return
-	value check for soc_link_init()
+Subject: [alsa-devel] [PATCH v2 13/15] ASoC: soc-core: rename
+	soc_link_init() to soc_init_pcm_runtime()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,39 +80,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc_link_init() returns error code, but snd_soc_bind_card()
-is not cheking it.
-This patch adds missing return value check for it.
+soc-core is using soc_link_init().
+It sounds like dai_link function, but it is for pcm_runtime.
+This patch renames soc_link_init() to soc_init_pcm_runtime().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
 v1 -> v2
-	- new patch
-	- separate "missing return check" and "function rename"
-	  from v1 patch.
+	- separate "missing return check" and "rename function"
+	- This is for "rename function"
 
- sound/soc/soc-core.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 79a4753..bdae48e 100644
+index bdae48e..6396556 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1983,8 +1983,11 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 		goto probe_end;
+@@ -1123,8 +1123,8 @@ static int soc_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
+ 	return 0;
+ }
+ 
+-static int soc_link_init(struct snd_soc_card *card,
+-			 struct snd_soc_pcm_runtime *rtd)
++static int soc_init_pcm_runtime(struct snd_soc_card *card,
++				struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -1984,7 +1984,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
  	}
  
--	for_each_card_rtds(card, rtd)
--		soc_link_init(card, rtd);
-+	for_each_card_rtds(card, rtd) {
-+		ret = soc_link_init(card, rtd);
-+		if (ret < 0)
-+			goto probe_end;
-+	}
- 
- 	snd_soc_dapm_link_dai_widgets(card);
- 	snd_soc_dapm_connect_dai_link_widgets(card);
+ 	for_each_card_rtds(card, rtd) {
+-		ret = soc_link_init(card, rtd);
++		ret = soc_init_pcm_runtime(card, rtd);
+ 		if (ret < 0)
+ 			goto probe_end;
+ 	}
 -- 
 2.7.4
 
