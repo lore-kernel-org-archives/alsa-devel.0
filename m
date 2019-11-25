@@ -6,60 +6,56 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7C03C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:03:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ED24C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:44:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7587320748
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:03:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9C38B207DD
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:44:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VhN3/Bmj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7587320748
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kLC+JYKZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C38B207DD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD311879;
-	Mon, 25 Nov 2019 01:02:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD311879
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4741C1869;
+	Mon, 25 Nov 2019 01:43:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4741C1869
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574640186;
-	bh=2u1FuyXWYtHMEqLFVn/PMKdzAO9ixQ8sCaAsKQJpI/0=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VhN3/Bmjp5/ApwWKv4ZbL2fpcQn5rgM7ZlQKgkmVeC5vSMzW+BnYhpiS5AZZt0LYo
-	 Kvv+ZXzedw8fR48UpWvQum/TNXuwY//m31zsmaocBfmLT7gnG6WdJLqvoXzQuajLVy
-	 Z7aaV0NJyydetzkeSIRn6ZRK/jMlOKfBxkiDApK4=
+	s=default; t=1574642639;
+	bh=GpyzTS82UOf3B4LtlPvKRS8nmqO1ErpbXm1zCJ7ETMg=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kLC+JYKZBmfur6IOA5MrXlIf5HqJ2TtSdI/wvX7oE9BusvWKNgm2fRY8WmcVviP4q
+	 oK3ZmwCXz9uY7mmL1g2GOzLML3xaN/t6z+Cc5mYskoMdulQEb9SF//IljXgXQWZ9Ke
+	 4i93bchearuRJY982WyNpxr8bwOt6tLgikojgUSg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 181B6F801F5;
-	Mon, 25 Nov 2019 01:01:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 941E2F80159;
+	Mon, 25 Nov 2019 01:43:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A816EF801F7; Mon, 25 Nov 2019 01:01:51 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 366CDF80108
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 01:01:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 366CDF80108
-Date: 25 Nov 2019 09:01:44 +0900
-X-IronPort-AV: E=Sophos;i="5.69,239,1571670000"; d="scan'208";a="32317689"
+ id 7B4DCF801ED; Mon, 25 Nov 2019 01:43:05 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 51AB0F80108
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 01:42:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51AB0F80108
+Date: 25 Nov 2019 09:42:54 +0900
+X-IronPort-AV: E=Sophos;i="5.69,239,1571670000"; d="scan'208";a="32536543"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 25 Nov 2019 09:01:44 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 25 Nov 2019 09:42:54 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 11FDC4000FA3;
- Mon, 25 Nov 2019 09:01:44 +0900 (JST)
-Message-ID: <878so4g6xj.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CC07B40062A5;
+ Mon, 25 Nov 2019 09:42:54 +0900 (JST)
+Message-ID: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-In-Reply-To: <CAFQqKeWn3GWt6tkNT51keZ6wP3xOAak8ZskK1nNFgovLYnyyQQ@mail.gmail.com>
-References: <87r2208o9g.wl-kuninori.morimoto.gx@renesas.com>
- <CAFQqKeWn3GWt6tkNT51keZ6wP3xOAak8ZskK1nNFgovLYnyyQQ@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 00/14] ASoC: soc-core cleanup step6
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH v2 00/15] ASoC: soc-core cleanup step6
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,35 +74,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Sridharan
+Hi Mark
 
-Thank you for reviewing
+These are v2 of soc-core cleanup step6.
+These doesn't add new features.
 
->     Kuninori Morimoto (14):
->       ASoC: soc-core: remove dai_link_list
->       ASoC: soc-core: remove snd_soc_disconnect_sync()
->       ASoC: soc-core: remove snd_soc_get_dai_substream()
->       ASoC: soc-core: move snd_soc_get_pcm_runtime()
->       ASoC: soc-core: find rtd via dai_link pointer at snd_soc_get_pcm_runtime()
->       ASoC: soc-core: move snd_soc_find_dai_link()
->       ASoC: soc-core: rename snd_soc_add_dai_link() to snd_soc_add_pcm_runtime()
->       ASoC: soc-core: rename snd_soc_remove_dai_link() to snd_soc_remove_pcm_runtime()
->       ASoC: soc-core: move soc_link_dai_pcm_new()
->       ASoC: soc-core: rename soc_link_dai_pcm_new() to soc_dai_pcm_new()
->       ASoC: soc-core: move soc_link_init()
->       ASoC: soc-core: rename soc_link_init() to soc_init_pcm_runtime()
->       ASoC: soc-core: soc_set_name_prefix(): tidyup loop condition
->       ASoC: soc-core: soc_set_name_prefix(): get component device_node at out of loop
-> 
-> Looks good to me, Morimoto-san. Thanks for this cleanup!
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Kuninori Morimoto (15):
+      ASoC: soc-core: remove dai_link_list
+      ASoC: soc-core: remove snd_soc_disconnect_sync()
+      ASoC: soc-core: remove snd_soc_get_dai_substream()
+      ASoC: soc-core: move snd_soc_get_pcm_runtime()
+      ASoC: soc-core: find rtd via dai_link pointer at snd_soc_get_pcm_runtime()
+      ASoC: soc-core: move snd_soc_find_dai_link()
+      ASoC: soc-core: rename snd_soc_add_dai_link() to snd_soc_add_pcm_runtime()
+      ASoC: soc-core: rename snd_soc_remove_dai_link() to snd_soc_remove_pcm_runtime()
+      ASoC: soc-core: move soc_link_dai_pcm_new()
+      ASoC: soc-core: rename soc_link_dai_pcm_new() to soc_dai_pcm_new()
+      ASoC: soc-core: move soc_link_init()
+      ASoC: soc-core: add missing return value check for soc_link_init()
+      ASoC: soc-core: rename soc_link_init() to soc_init_pcm_runtime()
+      ASoC: soc-core: soc_set_name_prefix(): tidyup loop condition
+      ASoC: soc-core: soc_set_name_prefix(): get component device_node at out of loop
 
-I will post v2 patch with your reviewed-by
+ include/sound/soc.h            |  22 +--
+ sound/soc/fsl/fsl-asoc-card.c  |   2 +-
+ sound/soc/pxa/mioa701_wm9713.c |   2 +-
+ sound/soc/samsung/bells.c      |  12 +-
+ sound/soc/samsung/littlemill.c |  10 +-
+ sound/soc/samsung/snow.c       |   2 +-
+ sound/soc/samsung/speyside.c   |   4 +-
+ sound/soc/samsung/tm2_wm5110.c |   6 +-
+ sound/soc/samsung/tobermory.c  |   6 +-
+ sound/soc/sh/rcar/core.c       |   2 -
+ sound/soc/soc-core.c           | 339 ++++++++++++++++-------------------------
+ sound/soc/soc-topology.c       |  47 +++++-
+ sound/soc/tegra/tegra_wm8903.c |   2 +-
+ 13 files changed, 204 insertions(+), 252 deletions(-)
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
