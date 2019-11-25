@@ -2,73 +2,71 @@ Return-Path: <SRS0=E7cH=ZR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB6E7C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 15:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE9CBC432C3
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 15:37:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 061092082F
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 15:36:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3F0692082F
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 15:37:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="piDzRi2J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 061092082F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UiKk5bwZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F0692082F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7DBE17DD;
-	Mon, 25 Nov 2019 16:36:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7DBE17DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF1C217EF;
+	Mon, 25 Nov 2019 16:37:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF1C217EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574696217;
-	bh=KlTinfgZdqxpBNB4+2suDWQJSghtdp8Yt9AJA/TXlmE=;
+	s=default; t=1574696271;
+	bh=qd5O3bV67Kcj5eRZuFU/qXN+Tf/BpL9lnIp3i9afNOQ=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=piDzRi2JPKoyYIHH7jGViyqEq9AvMkGJpuba4IYCPOtKJpuduPb64MBzr3zWre9CW
-	 AtgTkdxKQdxoV9u2SlCsQRV14Rk1Zm9sMmKhnUbo5MnY0yxgJjNzULqTz9wFHL7JCo
-	 vqNlZDm/PaA0OejRzSSkqMtUGvd7J6gxg7IHPQjE=
+	b=UiKk5bwZkMy0dNI9TheFONxeTulx6WIAeEHxBTSpqyp3jLS6eFU8uB5GcGA5rRv6H
+	 G2yqf6k0+/v9WhUuGufkDbPDATjzD74rs4uOknqrxQhth0J2kFpO6WCYYyDXCVApL/
+	 nDiJ5f6flJ5ILLqLjygPxp3yOu7VsxL1K1MR0uEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4154DF8014D;
-	Mon, 25 Nov 2019 16:36:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7841FF801DB;
+	Mon, 25 Nov 2019 16:36:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC2E1F80171; Mon, 25 Nov 2019 16:36:04 +0100 (CET)
+ id 0B392F800E5; Mon, 25 Nov 2019 16:36:04 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C97DDF800AB
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 16:35:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C97DDF800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB2E1F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 16:36:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB2E1F800E5
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 25 Nov 2019 07:35:56 -0800
+ 25 Nov 2019 07:35:57 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,241,1571727600"; d="scan'208";a="408342866"
+X-IronPort-AV: E=Sophos;i="5.69,241,1571727600"; d="scan'208";a="408342872"
 Received: from knezevic-mobl3.amr.corp.intel.com (HELO [10.254.182.224])
  ([10.254.182.224])
- by fmsmga005.fm.intel.com with ESMTP; 25 Nov 2019 07:35:55 -0800
-To: Jaroslav Kysela <perex@perex.cz>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20191125143636.28529-1-perex@perex.cz>
+ by fmsmga005.fm.intel.com with ESMTP; 25 Nov 2019 07:35:56 -0800
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
+References: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <aa7fd087-f595-90c8-4524-22302a0f78f7@linux.intel.com>
-Date: Mon, 25 Nov 2019 09:26:18 -0600
+Message-ID: <f18c29fc-4ea1-280e-d0ef-57ed08b2f05b@linux.intel.com>
+Date: Mon, 25 Nov 2019 09:29:20 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20191125143636.28529-1-perex@perex.cz>
+In-Reply-To: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v5 1/2] ASoC: Intel - use control
- components to describe card config
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] [PATCH v2 00/15] ASoC: soc-core cleanup step6
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,130 +86,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 11/25/19 8:36 AM, Jaroslav Kysela wrote:
-> Use the control interface (field 'components' in the info structure)
-> to pass the I/O configuration details. The goal is to replace
-> the card long name with this.
+On 11/24/19 6:42 PM, Kuninori Morimoto wrote:
 > 
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Hi Mark
+> 
+> These are v2 of soc-core cleanup step6.
+> These doesn't add new features.
+> 
+> Kuninori Morimoto (15):
+>        ASoC: soc-core: remove dai_link_list
+>        ASoC: soc-core: remove snd_soc_disconnect_sync()
+>        ASoC: soc-core: remove snd_soc_get_dai_substream()
+>        ASoC: soc-core: move snd_soc_get_pcm_runtime()
+>        ASoC: soc-core: find rtd via dai_link pointer at snd_soc_get_pcm_runtime()
+>        ASoC: soc-core: move snd_soc_find_dai_link()
+>        ASoC: soc-core: rename snd_soc_add_dai_link() to snd_soc_add_pcm_runtime()
+>        ASoC: soc-core: rename snd_soc_remove_dai_link() to snd_soc_remove_pcm_runtime()
+>        ASoC: soc-core: move soc_link_dai_pcm_new()
+>        ASoC: soc-core: rename soc_link_dai_pcm_new() to soc_dai_pcm_new()
+>        ASoC: soc-core: move soc_link_init()
+>        ASoC: soc-core: add missing return value check for soc_link_init()
+>        ASoC: soc-core: rename soc_link_init() to soc_init_pcm_runtime()
+>        ASoC: soc-core: soc_set_name_prefix(): tidyup loop condition
+>        ASoC: soc-core: soc_set_name_prefix(): get component device_node at out of loop
 
-For the series
+For the v2 series
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Thanks Jaroslav.
-
-> Cc: Mark Brown <broonie@kernel.org>
-> ---
->   sound/soc/intel/boards/bytcht_es8316.c |  9 ++++++++-
->   sound/soc/intel/boards/bytcr_rt5640.c  |  6 ++++++
->   sound/soc/intel/boards/bytcr_rt5651.c  | 18 +++++++++++-------
->   3 files changed, 25 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-> index 46612331f5ea..efa33f30dcac 100644
-> --- a/sound/soc/intel/boards/bytcht_es8316.c
-> +++ b/sound/soc/intel/boards/bytcht_es8316.c
-> @@ -361,6 +361,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
->   /* SoC card */
->   static char codec_name[SND_ACPI_I2C_ID_LEN];
->   static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
-> +static char components_string[32]; /* = "cfg-spk:* cfg-mic:* */
->   
->   static int byt_cht_es8316_suspend(struct snd_soc_card *card)
->   {
-> @@ -572,11 +573,17 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
->   		}
->   	}
->   
-> -	/* register the soc card */
-> +	snprintf(components_string, sizeof(components_string),
-> +		 "cfg-spk:%s cfg-mic:%s",
-> +		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "1" : "2",
-> +		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
-> +	byt_cht_es8316_card.components = components_string;
->   	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
->   		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
->   		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
->   	byt_cht_es8316_card.long_name = long_name;
-> +
-> +	/* register the soc card */
->   	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
->   
->   	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 9c1aa4ec9cba..0170d31e691a 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -1081,6 +1081,7 @@ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
->   static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
->   static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
->   static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
-> +static char byt_rt5640_components[32]; /* = "cfg-spk:* cfg-mic:*" */
->   
->   static int byt_rt5640_suspend(struct snd_soc_card *card)
->   {
-> @@ -1303,6 +1304,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
->   		}
->   	}
->   
-> +	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
-> +		 "cfg-spk:%s cfg-mic:%s",
-> +		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
-> +		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
-> +	byt_rt5640_card.components = byt_rt5640_components;
->   	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
->   		 "bytcr-rt5640-%s-spk-%s-mic",
->   		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
-> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-> index 4606f6f582d6..80a5674ddb1b 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5651.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-> @@ -798,6 +798,7 @@ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
->   static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
->   static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
->   static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
-> +static char byt_rt5651_components[50]; /* = "cfg-spk:* cfg-mic:*" */
->   
->   static int byt_rt5651_suspend(struct snd_soc_card *card)
->   {
-> @@ -876,7 +877,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
->   	const char *platform_name;
->   	struct acpi_device *adev;
->   	struct device *codec_dev;
-> -	const char *hp_swapped;
->   	bool is_bytcr = false;
->   	int ret_val = 0;
->   	int dai_index = 0;
-> @@ -1080,16 +1080,20 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
->   		}
->   	}
->   
-> -	if (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED)
-> -		hp_swapped = "-hp-swapped";
-> -	else
-> -		hp_swapped = "";
-> -
-> +	snprintf(byt_rt5651_components, sizeof(byt_rt5651_components),
-> +		 "cfg-spk:%s cfg-mic:%s%s",
-> +		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ? "1" : "2",
-> +		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
-> +		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
-> +			" cfg-hp:lrswap" : "");
-> +	byt_rt5651_card.components = byt_rt5651_components;
->   	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
->   		 "bytcr-rt5651-%s-spk-%s-mic%s",
->   		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
->   			"mono" : "stereo",
-> -		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
-> +		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
-> +		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
-> +			"-hp-swapped" : "");
->   	byt_rt5651_card.long_name = byt_rt5651_long_name;
->   
->   	/* override plaform name, if required */
-> 
+Thanks Morimoto-san
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
