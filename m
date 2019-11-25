@@ -2,55 +2,56 @@ Return-Path: <SRS0=E7cH=ZR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59208C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:48:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2732EC432C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:49:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4EC920748
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:48:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A437020748
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Nov 2019 00:49:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d1+AzWe6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4EC920748
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hzzrlu7m"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A437020748
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32E08187A;
-	Mon, 25 Nov 2019 01:47:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32E08187A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D220F1892;
+	Mon, 25 Nov 2019 01:48:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D220F1892
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574642904;
-	bh=iFhQvGhH+vqoLvUQYyFTfbD0dpNQbFXvrDE6e7k1j3s=;
+	s=default; t=1574642942;
+	bh=QPgNkG66CEq4e6yRtasdWInxLIfJ/gSMF4bd2ez04n0=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d1+AzWe6qPM68750gVafcgLr2HZCqAnsgGYb+IAHVcmZ6+UGRYLyT0kixX2RvGcNw
-	 6lp0hx4BsGiaVP53lF4AO/B82JaXHNiaFoXO8TMJ2J9T5snCVfaUYsiFWeUTzs5gnE
-	 cR7S7t335tmYsJ8S4aVcSAfwebQAVxPi2iV/lPB4=
+	b=Hzzrlu7mtcdIMAdjta6MmoPvjIyWya+srm8NMd9vlPF0MoOvZla6i6PgP7pC4XtaD
+	 Sa4vaDRGPCAT9sJmGaTLsDqMG/74X4oyJwy3uETf+a6mMVVyVgaEIXAWp5dLzmMNCm
+	 k5EhztnWokwwTHixlCg1YEIuB7opSYfPFZ97aZxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75012F80245;
-	Mon, 25 Nov 2019 01:44:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1F8CF80247;
+	Mon, 25 Nov 2019 01:44:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2759EF80246; Mon, 25 Nov 2019 01:44:40 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 220CFF80234
- for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 01:44:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 220CFF80234
-Date: 25 Nov 2019 09:44:33 +0900
-X-IronPort-AV: E=Sophos;i="5.69,239,1571670000"; d="scan'208";a="32322447"
+ id 87F68F80247; Mon, 25 Nov 2019 01:44:51 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id D1B1BF80249
+ for <alsa-devel@alsa-project.org>; Mon, 25 Nov 2019 01:44:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1B1BF80249
+Date: 25 Nov 2019 09:44:45 +0900
+X-IronPort-AV: E=Sophos;i="5.69,239,1571670000"; d="scan'208";a="32536687"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 25 Nov 2019 09:44:33 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 25 Nov 2019 09:44:45 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6B22B4008546;
- Mon, 25 Nov 2019 09:44:33 +0900 (JST)
-Message-ID: <87y2w4eqdq.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9609240062A5;
+ Mon, 25 Nov 2019 09:44:45 +0900 (JST)
+Message-ID: <87woboeqde.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,8 +59,8 @@ In-Reply-To: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
 References: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 06/15] ASoC: soc-core: move
-	snd_soc_find_dai_link()
+Subject: [alsa-devel] [PATCH v2 07/15] ASoC: soc-core: rename
+	snd_soc_add_dai_link() to snd_soc_add_pcm_runtime()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,145 +78,101 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-snd_soc_find_dai_link() is soc-topology specific function.
-We don't need to have it at soc-core.
-This patch moves it to soc-topology.c
+Now soc-core and soc-topology is using snd_soc_add_dai_link().
+The abstract of this function is "create pcm_runtime from
+dai_link information and connect it to card".
+Thus, "add dai_link" is wrong/confusable naming.
+This patch renames function name.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
 v1 -> v2
-	- no change
+	- tidyup git-log explanation
 
- include/sound/soc.h      |  3 ---
- sound/soc/soc-core.c     | 44 --------------------------------------------
- sound/soc/soc-topology.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 41 insertions(+), 47 deletions(-)
+ include/sound/soc.h      |  4 ++--
+ sound/soc/soc-core.c     | 18 +++++++++---------
+ sound/soc/soc-topology.c |  2 +-
+ 3 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 40c2a67..09d3d9b 100644
+index 09d3d9b..b223b2d 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -1327,9 +1327,6 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
- 				struct snd_soc_dai_link *dai_link);
+@@ -1323,8 +1323,8 @@ int snd_soc_of_get_dai_link_codecs(struct device *dev,
+ 				   struct snd_soc_dai_link *dai_link);
+ void snd_soc_of_put_dai_link_codecs(struct snd_soc_dai_link *dai_link);
+ 
+-int snd_soc_add_dai_link(struct snd_soc_card *card,
+-				struct snd_soc_dai_link *dai_link);
++int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
++			    struct snd_soc_dai_link *dai_link);
  void snd_soc_remove_dai_link(struct snd_soc_card *card,
  			     struct snd_soc_dai_link *dai_link);
--struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
--					       int id, const char *name,
--					       const char *stream_name);
  
- struct snd_soc_dai *snd_soc_register_dai(struct snd_soc_component *component,
- 					 struct snd_soc_dai_driver *dai_drv,
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3373615..3221e776 100644
+index 3221e776..e1818bf 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -901,50 +901,6 @@ struct snd_soc_dai *snd_soc_find_dai(
- }
- EXPORT_SYMBOL_GPL(snd_soc_find_dai);
+@@ -1027,18 +1027,18 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ EXPORT_SYMBOL_GPL(snd_soc_remove_dai_link);
  
--/**
-- * snd_soc_find_dai_link - Find a DAI link
-- *
-- * @card: soc card
-- * @id: DAI link ID to match
-- * @name: DAI link name to match, optional
-- * @stream_name: DAI link stream name to match, optional
-- *
-- * This function will search all existing DAI links of the soc card to
-- * find the link of the same ID. Since DAI links may not have their
-- * unique ID, so name and stream name should also match if being
-- * specified.
-- *
-- * Return: pointer of DAI link, or NULL if not found.
-- */
--struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
--					       int id, const char *name,
--					       const char *stream_name)
--{
--	struct snd_soc_pcm_runtime *rtd;
--	struct snd_soc_dai_link *link;
--
--	lockdep_assert_held(&client_mutex);
--
--	for_each_card_rtds(card, rtd) {
--		link = rtd->dai_link;
--
--		if (link->id != id)
--			continue;
--
--		if (name && (!link->name || strcmp(name, link->name)))
--			continue;
--
--		if (stream_name && (!link->stream_name
--			|| strcmp(stream_name, link->stream_name)))
--			continue;
--
--		return link;
--	}
--
--	return NULL;
--}
--EXPORT_SYMBOL_GPL(snd_soc_find_dai_link);
--
- static int soc_dai_link_sanity_check(struct snd_soc_card *card,
- 				     struct snd_soc_dai_link *link)
+ /**
+- * snd_soc_add_dai_link - Add a DAI link dynamically
+- * @card: The ASoC card to which the DAI link is added
+- * @dai_link: The new DAI link to add
++ * snd_soc_add_pcm_runtime - Add a pcm_runtime dynamically via dai_link
++ * @card: The ASoC card to which the pcm_runtime is added
++ * @dai_link: The DAI link to find pcm_runtime
+  *
+- * This function adds a DAI link to the ASoC card's link list.
++ * This function adds a pcm_runtime ASoC card by using dai_link.
+  *
+- * Note: Topology can use this API to add DAI links when probing the
++ * Note: Topology can use this API to add pcm_runtime when probing the
+  * topology component. And machine drivers can still define static
+  * DAI links in dai_link array.
+  */
+-int snd_soc_add_dai_link(struct snd_soc_card *card,
+-			 struct snd_soc_dai_link *dai_link)
++int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
++			    struct snd_soc_dai_link *dai_link)
  {
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai_link_component *codec, *platform;
+@@ -1107,7 +1107,7 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 	soc_free_pcm_runtime(rtd);
+ 	return -EPROBE_DEFER;
+ }
+-EXPORT_SYMBOL_GPL(snd_soc_add_dai_link);
++EXPORT_SYMBOL_GPL(snd_soc_add_pcm_runtime);
+ 
+ static void soc_set_of_name_prefix(struct snd_soc_component *component)
+ {
+@@ -1929,7 +1929,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
+ 	/* add predefined DAI links to the list */
+ 	card->num_rtd = 0;
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		ret = snd_soc_add_dai_link(card, dai_link);
++		ret = snd_soc_add_pcm_runtime(card, dai_link);
+ 		if (ret < 0)
+ 			goto probe_end;
+ 	}
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 81d2af0..cbd605b 100644
+index cbd605b..de42788 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -2207,6 +2207,47 @@ static int link_new_ver(struct soc_tplg *tplg,
+@@ -1945,7 +1945,7 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
+ 	link->dobj.type = SND_SOC_DOBJ_DAI_LINK;
+ 	list_add(&link->dobj.list, &tplg->comp->dobj_list);
+ 
+-	snd_soc_add_dai_link(tplg->comp->card, link);
++	snd_soc_add_pcm_runtime(tplg->comp->card, link);
  	return 0;
  }
  
-+/**
-+ * snd_soc_find_dai_link - Find a DAI link
-+ *
-+ * @card: soc card
-+ * @id: DAI link ID to match
-+ * @name: DAI link name to match, optional
-+ * @stream_name: DAI link stream name to match, optional
-+ *
-+ * This function will search all existing DAI links of the soc card to
-+ * find the link of the same ID. Since DAI links may not have their
-+ * unique ID, so name and stream name should also match if being
-+ * specified.
-+ *
-+ * Return: pointer of DAI link, or NULL if not found.
-+ */
-+static struct snd_soc_dai_link *snd_soc_find_dai_link(struct snd_soc_card *card,
-+						      int id, const char *name,
-+						      const char *stream_name)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_soc_dai_link *link;
-+
-+	for_each_card_rtds(card, rtd) {
-+		link = rtd->dai_link;
-+
-+		if (link->id != id)
-+			continue;
-+
-+		if (name && (!link->name || strcmp(name, link->name)))
-+			continue;
-+
-+		if (stream_name && (!link->stream_name
-+				    || strcmp(stream_name, link->stream_name)))
-+			continue;
-+
-+		return link;
-+	}
-+
-+	return NULL;
-+}
-+
- /* Find and configure an existing physical DAI link */
- static int soc_tplg_link_config(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_link_config *cfg)
 -- 
 2.7.4
 
