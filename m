@@ -2,72 +2,72 @@ Return-Path: <SRS0=RV9o=ZS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F4C1C432C0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 14:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 566F0C432C0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 14:33:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D8FE20722
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 14:32:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D610620722
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 14:33:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OB9IGk6O"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D8FE20722
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ATAtCWJf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D610620722
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B42E1736;
-	Tue, 26 Nov 2019 15:31:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B42E1736
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BB5F16ED;
+	Tue, 26 Nov 2019 15:32:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BB5F16ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574778766;
-	bh=/RQ7XJo8xs8uZsItFP4EaeWTu+yipRvonzTiDLYfeCw=;
+	s=default; t=1574778786;
+	bh=FHKojyEvqE8awxPeZF7BnaWCZugoyTT4GMzelZMN6w0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OB9IGk6O12pQGPkAIpyK28LcX/Sv1QvQfgyT6I7Qc7/AC0aIjyAFQncpcZQcgzqSV
-	 XpuLDQTxJN3hZEekZK9+AXGHgOIYN2xUA665yL5V91UDQ47tT84PbtPMjKhNQUesVn
-	 hWd1pZi9UaUGGZtMreFdoZ3dHuce53pLnHVQvVT0=
+	b=ATAtCWJfukn2XO7jzqgBUycWCBGIHLfuW8LCDwNwYk+1Wl/9e3bTzco3TOd0OZKSX
+	 3f3xy7ldpZ+o6yeHFRvZn//K+CI0zeE4uGxXwtQpI9VapyoOGJSwHh5fGLfrq2F5zY
+	 ipLyZevXcSyB0ZHBAewByoMRnB+Cd892XsT4/BJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 753FBF8023E;
-	Tue, 26 Nov 2019 15:28:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDBF2F80240;
+	Tue, 26 Nov 2019 15:28:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 695D6F80217; Tue, 26 Nov 2019 15:28:42 +0100 (CET)
+ id E6A50F80217; Tue, 26 Nov 2019 15:28:43 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46FC4F801F2
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2019 15:28:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46FC4F801F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEED5F800DD
+ for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2019 15:28:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEED5F800DD
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 26 Nov 2019 06:28:31 -0800
+ 26 Nov 2019 06:28:33 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,246,1571727600"; d="scan'208";a="206473467"
+X-IronPort-AV: E=Sophos;i="5.69,246,1571727600"; d="scan'208";a="206473476"
 Received: from vramali2-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.155.193])
- by fmsmga008.fm.intel.com with ESMTP; 26 Nov 2019 06:28:30 -0800
+ by fmsmga008.fm.intel.com with ESMTP; 26 Nov 2019 06:28:32 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 26 Nov 2019 08:28:09 -0600
-Message-Id: <20191126142815.21856-5-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 26 Nov 2019 08:28:11 -0600
+Message-Id: <20191126142815.21856-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191126142815.21856-1-pierre-louis.bossart@linux.intel.com>
 References: <20191126142815.21856-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 04/10] ASoC: SOF: Introduce default_fw_filename
-	member in sof_dev_desc
+Subject: [alsa-devel] [PATCH 06/10] ASoC: SOF: intel: hda: Modify signature
+	for hda_codec_probe_bus()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,172 +87,106 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Currently the FW filename is obtained from the ACPI matching
-table when determining which machine driver to use. In
-preparation for making the machine driver ACPI match optional
-for Device Tree platforms and moving the machine driver selection
-out of the SOF core, this patch introduces the default_fw_filename
-member in struct sof_dev_desc.
-
-Once the machine driver selection is moved out of SOF core,
-the nocodec_fw_filename will become obsolete and will be removed.
+The machine driver selection for HDA platforms will be
+consolidated and moved out of the SOF DSP
+probe callback. In preparation for that, modify the
+signature for hda_codec_probe_bus() to pass the
+hda_codec_use_common_hdmi as a variable while probing the
+HDA codecs.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof.h          | 3 +++
- sound/soc/sof/sof-acpi-dev.c | 5 +++++
- sound/soc/sof/sof-of-dev.c   | 1 +
- sound/soc/sof/sof-pci-dev.c  | 9 +++++++++
- 4 files changed, 18 insertions(+)
+ sound/soc/sof/intel/hda-codec.c | 16 ++++++----------
+ sound/soc/sof/intel/hda.c       |  2 +-
+ sound/soc/sof/intel/hda.h       |  3 ++-
+ 3 files changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 479101736ee0..1723478db4a2 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -91,6 +91,9 @@ struct sof_dev_desc {
- 	const char *default_fw_path;
- 	const char *default_tplg_path;
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 827f84a0722e..65761e095184 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -80,12 +80,11 @@ EXPORT_SYMBOL(hda_codec_jack_wake_enable);
+ EXPORT_SYMBOL(hda_codec_jack_check);
  
-+	/* default firmware name */
-+	const char *default_fw_filename;
-+
- 	const struct snd_sof_dsp_ops *ops;
- 	const struct sof_arch_ops *arch_ops;
- };
-diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
-index df318f50dd0b..22e13ef09811 100644
---- a/sound/soc/sof/sof-acpi-dev.c
-+++ b/sound/soc/sof/sof-acpi-dev.c
-@@ -45,6 +45,7 @@ static const struct sof_dev_desc sof_acpi_haswell_desc = {
- 	.chip_info = &hsw_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-hsw.ri",
- 	.nocodec_fw_filename = "sof-hsw.ri",
- 	.nocodec_tplg_filename = "sof-hsw-nocodec.tplg",
- 	.ops = &sof_hsw_ops,
-@@ -62,6 +63,7 @@ static const struct sof_dev_desc sof_acpi_broadwell_desc = {
- 	.chip_info = &bdw_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-bdw.ri",
- 	.nocodec_fw_filename = "sof-bdw.ri",
- 	.nocodec_tplg_filename = "sof-bdw-nocodec.tplg",
- 	.ops = &sof_bdw_ops,
-@@ -81,6 +83,7 @@ static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
- 	.chip_info = &byt_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-byt.ri",
- 	.nocodec_fw_filename = "sof-byt.ri",
- 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
- 	.ops = &sof_byt_ops,
-@@ -96,6 +99,7 @@ static const struct sof_dev_desc sof_acpi_baytrail_desc = {
- 	.chip_info = &byt_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-byt.ri",
- 	.nocodec_fw_filename = "sof-byt.ri",
- 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
- 	.ops = &sof_byt_ops,
-@@ -111,6 +115,7 @@ static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
- 	.chip_info = &cht_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cht.ri",
- 	.nocodec_fw_filename = "sof-cht.ri",
- 	.nocodec_tplg_filename = "sof-cht-nocodec.tplg",
- 	.ops = &sof_cht_ops,
-diff --git a/sound/soc/sof/sof-of-dev.c b/sound/soc/sof/sof-of-dev.c
-index 28a9692974e5..81deb5582d77 100644
---- a/sound/soc/sof/sof-of-dev.c
-+++ b/sound/soc/sof/sof-of-dev.c
-@@ -19,6 +19,7 @@ extern struct snd_sof_dsp_ops sof_imx8_ops;
- static struct sof_dev_desc sof_of_imx8qxp_desc = {
- 	.default_fw_path = "imx/sof",
- 	.default_tplg_path = "imx/sof-tplg",
-+	.default_fw_filename = "sof-imx8.ri",
- 	.nocodec_fw_filename = "sof-imx8.ri",
- 	.nocodec_tplg_filename = "sof-imx8-nocodec.tplg",
- 	.ops = &sof_imx8_ops,
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 0b39ea6117cf..1ac184a9eb43 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -47,6 +47,7 @@ static const struct sof_dev_desc bxt_desc = {
- 	.chip_info = &apl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-apl.ri",
- 	.nocodec_fw_filename = "sof-apl.ri",
- 	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
- 	.ops = &sof_apl_ops,
-@@ -65,6 +66,7 @@ static const struct sof_dev_desc glk_desc = {
- 	.chip_info = &apl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-glk.ri",
- 	.nocodec_fw_filename = "sof-glk.ri",
- 	.nocodec_tplg_filename = "sof-glk-nocodec.tplg",
- 	.ops = &sof_apl_ops,
-@@ -93,6 +95,7 @@ static const struct sof_dev_desc tng_desc = {
- 	.chip_info = &tng_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-byt.ri",
- 	.nocodec_fw_filename = "sof-byt.ri",
- 	.nocodec_tplg_filename = "sof-byt.tplg",
- 	.ops = &sof_tng_ops,
-@@ -111,6 +114,7 @@ static const struct sof_dev_desc cnl_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cnl.ri",
- 	.nocodec_fw_filename = "sof-cnl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -129,6 +133,7 @@ static const struct sof_dev_desc cfl_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cfl.ri",
- 	.nocodec_fw_filename = "sof-cfl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -149,6 +154,7 @@ static const struct sof_dev_desc cml_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cml.ri",
- 	.nocodec_fw_filename = "sof-cml.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -167,6 +173,7 @@ static const struct sof_dev_desc icl_desc = {
- 	.chip_info = &icl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-icl.ri",
- 	.nocodec_fw_filename = "sof-icl.ri",
- 	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -185,6 +192,7 @@ static const struct sof_dev_desc tgl_desc = {
- 	.chip_info = &tgl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-tgl.ri",
- 	.nocodec_fw_filename = "sof-tgl.ri",
- 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -203,6 +211,7 @@ static const struct sof_dev_desc ehl_desc = {
- 	.chip_info = &ehl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-ehl.ri",
- 	.nocodec_fw_filename = "sof-ehl.ri",
- 	.nocodec_tplg_filename = "sof-ehl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
+ /* probe individual codec */
+-static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
++static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
++			   bool hda_codec_use_common_hdmi)
+ {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
+ 	struct hdac_hda_priv *hda_priv;
+-	struct snd_soc_acpi_mach_params *mach_params = NULL;
+-	struct snd_sof_pdata *pdata = sdev->pdata;
+ #endif
+ 	struct hda_bus *hbus = sof_to_hbus(sdev);
+ 	struct hdac_device *hdev;
+@@ -115,10 +114,6 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (pdata->machine)
+-		mach_params = (struct snd_soc_acpi_mach_params *)
+-			&pdata->machine->mach_params;
+-
+ 	if ((resp & 0xFFFF0000) == IDISP_VID_INTEL)
+ 		hda_priv->need_display_power = true;
+ 
+@@ -126,7 +121,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
+ 	 * if common HDMI codec driver is not used, codec load
+ 	 * is skipped here and hdac_hdmi is used instead
+ 	 */
+-	if ((mach_params && mach_params->common_hdmi_codec_drv) ||
++	if (hda_codec_use_common_hdmi ||
+ 	    (resp & 0xFFFF0000) != IDISP_VID_INTEL) {
+ 		hdev->type = HDA_DEV_LEGACY;
+ 		hda_codec_load_module(&hda_priv->codec);
+@@ -145,7 +140,8 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
+ }
+ 
+ /* Codec initialization */
+-int hda_codec_probe_bus(struct snd_sof_dev *sdev)
++int hda_codec_probe_bus(struct snd_sof_dev *sdev,
++			bool hda_codec_use_common_hdmi)
+ {
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	int i, ret;
+@@ -156,7 +152,7 @@ int hda_codec_probe_bus(struct snd_sof_dev *sdev)
+ 		if (!(bus->codec_mask & (1 << i)))
+ 			continue;
+ 
+-		ret = hda_codec_probe(sdev, i);
++		ret = hda_codec_probe(sdev, i, hda_codec_use_common_hdmi);
+ 		if (ret < 0) {
+ 			dev_err(bus->dev, "error: codec #%d probe error, ret: %d\n",
+ 				i, ret);
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 91bd88fddac7..3ed0d847160c 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -475,7 +475,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	/* create codec instances */
+-	hda_codec_probe_bus(sdev);
++	hda_codec_probe_bus(sdev, hda_codec_use_common_hdmi);
+ 
+ 	hda_codec_i915_put(sdev);
+ 
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 18d7e72bf9b7..b7164a26984b 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -574,7 +574,8 @@ void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev);
+ /*
+  * HDA Codec operations.
+  */
+-int hda_codec_probe_bus(struct snd_sof_dev *sdev);
++int hda_codec_probe_bus(struct snd_sof_dev *sdev,
++			bool hda_codec_use_common_hdmi);
+ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev);
+ void hda_codec_jack_check(struct snd_sof_dev *sdev);
+ 
 -- 
 2.20.1
 
