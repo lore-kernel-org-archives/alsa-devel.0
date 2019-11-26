@@ -2,74 +2,94 @@ Return-Path: <SRS0=RV9o=ZS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89BF8C432C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 17:51:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 090F3C432C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 21:21:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1677420835
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 17:51:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 807BC2071E
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Nov 2019 21:21:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u9kl/Ya3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1677420835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vUfiAzQE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HxxC2gpL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 807BC2071E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23CC5172E;
-	Tue, 26 Nov 2019 18:50:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23CC5172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6A08173B;
+	Tue, 26 Nov 2019 22:20:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6A08173B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574790699;
-	bh=l8OlAHi2MzisZbweK6O64lpXzNiqJkupWB1GVxxDa6Y=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1574803272;
+	bh=RD9DLjPkDZ6yceJSkxG73snP03Gx4ShAj5u2JYkerR4=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u9kl/Ya3M/oZ+R0q2nk4k6vMRyE1PRUewBr33vlEtJ1CQcPdKEbpjz2JpStVTXDHn
-	 rq6FGBfKiY1p2wZldI0n6LDr+yxoVR+rmn6lX2bULSZKdLQhJCcrHysbKao3ayznVd
-	 65Z18w/V1c3kZBcMfnJfbUhbkWJ4Cjt85mGpNHPg=
+	b=vUfiAzQE6ZckEZBFIekTB7J6EIzqoEb1ctdwr1izKrdpuTCQW4UNb1Bp/9b/zytgF
+	 MJwqtJDMVwRj/zXCUa3iDMgmdb6tYTtM3OMnqctxXmtgQ7xUcKrNQviit0UMqTh5ki
+	 3snYa/Reb17rN5Pcpb0wUZ7jfp2Mer+MaWMWyALE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EB2AF80149;
-	Tue, 26 Nov 2019 18:50:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F238F80149;
+	Tue, 26 Nov 2019 22:20:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50D17F80159; Tue, 26 Nov 2019 18:50:47 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E6D7DF80109
- for <alsa-devel@alsa-project.org>; Tue, 26 Nov 2019 18:50:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6D7DF80109
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E74AB30E;
- Tue, 26 Nov 2019 09:50:42 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CC813F52E;
- Tue, 26 Nov 2019 09:50:42 -0800 (PST)
-Date: Tue, 26 Nov 2019 17:50:40 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Message-ID: <20191126175040.GD4205@sirena.org.uk>
-References: <20191120152406.2744-1-sebastian.reichel@collabora.com>
- <20191120152406.2744-7-sebastian.reichel@collabora.com>
- <AM5PR1001MB0994720A0D615339A978E35C804E0@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
- <AM5PR1001MB0994E628439F021F97B872D480450@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
- <20191126170841.GC4205@sirena.org.uk>
- <AM5PR1001MB09949D557742E8817545637F80450@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+ id A798AF80159; Tue, 26 Nov 2019 22:20:17 +0100 (CET)
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com
+ [IPv6:2a00:1450:4864:20::342])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 201F2F800DD;
+ Tue, 26 Nov 2019 22:20:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 201F2F800DD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="HxxC2gpL"
+Received: by mail-wm1-x342.google.com with SMTP id l17so4842055wmh.0;
+ Tue, 26 Nov 2019 13:20:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=jJXteYvyCfVJ3ypolcMzDVFc1abAKWBFrdndIe0BEgs=;
+ b=HxxC2gpLdgLS3oiXqGeszMxhBNNnAwoBA3VsWduTRKOUExvz55m/gMrFPQg4rW0Men
+ /3CQ8m01yo3bq54n2C+lIPkrjiyby2nTLy9IugZxkBtgHsmVoHZvdQNwDiv3rJzZOeJQ
+ JoofuRAEwRpmt2HS3xuTL9rde3324dLOpKXAmOffjS4hnI5rPJ6gpybX4oefkYN8lcgF
+ 7BcRJIi9J4abfRFjU+YrqTEjaCPGEgtIp9bCn3v4HfNeJ8m1tUkEJ96gI45cPPmFCUan
+ aCAbxRkJ4bxHqiyr6224yx4onThk4i4g+uBrGk3gFdax2oeYau4yNDTSASdU88a7OfhZ
+ twhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=jJXteYvyCfVJ3ypolcMzDVFc1abAKWBFrdndIe0BEgs=;
+ b=s7GyUfLlhN1mFa9+H6vqVo7x2TY9zMprpoGhq8MgBXsSNOu553akQ7pU9lj1/ouq6D
+ 9AyZi+JxIRm3BZzL/obeoaC18Nme3anyCB8SSqK1bTj/WkzOYZmbqFVoUqh1Xt78kaAo
+ pYKIMUxxBp+/1ZdCuIkAkK8I/Ozdw3aPm0vxQ5R1uCh0jT77clkU40r7GsttPkcuCEa0
+ KDix/WWjx7b/kQ28dPIsL/k8xwW5dxd57Og5AXZhd2Nzs+jaB8KIRZnSxbGv7ONxzUqw
+ Y9QvL+3NMuYfMRM2x7BG2iojoFy1NEzDVnmGaOtF4/TIveKHaiZIbuL4X2DJYxYbf5Zm
+ GdMA==
+X-Gm-Message-State: APjAAAVWgfnnV8Wr08g5326zUJONgSFu1BBD4Rm/6oxNifBKZWqIak38
+ 95gCb5HCCy832NzXFuba6gHVoYiz88D+iMaCRsM=
+X-Google-Smtp-Source: APXvYqx0AreVLrOj0YrKvYurHofenjrjsUA3nIIYswBsORykoN7y+VGnBL6eV9KZlC3rgJhXFX4cil0uj4csTGv5IUA=
+X-Received: by 2002:a1c:2745:: with SMTP id n66mr936208wmn.171.1574803212854; 
+ Tue, 26 Nov 2019 13:20:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <AM5PR1001MB09949D557742E8817545637F80450@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
-X-Cookie: Where's SANDY DUNCAN?
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "kernel@collabora.com" <kernel@collabora.com>,
- Support Opensource <Support.Opensource@diasemi.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: Re: [alsa-devel] [PATCHv2 6/6] ASoC: da7213: Add default clock
-	handling
+References: <CAEnQRZBsmz17JGdxT_bB_tDHsmWskdXCW47R5wf5dhEw=Jpu-g@mail.gmail.com>
+ <6a508a6f957b13a2ccb71c1c91316a272fb38b3a.camel@linux.intel.com>
+In-Reply-To: <6a508a6f957b13a2ccb71c1c91316a272fb38b3a.camel@linux.intel.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Tue, 26 Nov 2019 23:20:01 +0200
+Message-ID: <CAEnQRZCia2s-UxoqO4mYuS=4PEY_2Cjsq9prKfmmOAwguV1DEA@mail.gmail.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
+ Ranjani" <ranjani.sridharan@intel.com>, sof@nxp.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
+Subject: Re: [alsa-devel] Converting a non BE to BE inside soc_check_tplg_fes
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,80 +102,107 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8472831650288292419=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Liam,
 
---===============8472831650288292419==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eheScQNz3K90DVRs"
-Content-Disposition: inline
+I continued with the investigation and found really interesting
+things. See below:
+
+On Tue, Nov 26, 2019 at 5:32 PM Liam Girdwood
+<liam.r.girdwood@linux.intel.com> wrote:
+>
+> On Mon, 2019-11-25 at 18:45 +0200, Daniel Baluta wrote:
+> > Hi all,
+> >
+> > I am trying how a non-BE link is converted to a BE link
+> > inside soc_check_tplg_fes.
+> >
+> > soc_check_tplg_fes
+> > => for all components that have ignore_machine setup to card name
+> >      => dai_link->platforms->name = component->name;
+> >      => dai_link->no_pcm = 1;
+> >
+> > But the thing is that the link is a true non-DPCM link, than fields
+> > like dpcm_playback/dpcm_capture are not set and playback/record
+> > substreams are no created.
+>
+> These fields should be being populated by topology since they are
+> runtime configuration on a non DPCM PCM device.
+>
+> >
+> > The question is: is this supposed to be working with non-DPCM links?
+>
+> Yes, it "should do" and did when I last tested - there were some non
+> DPCM Intel machine drivers that needed to work (grep -L no_pcm
+> sound/soc/intel/boards/*.c), but I am not as up to date as other on the
+> SOF driver core now. So if it's not working, it could be a regression
+> (as these non DPCM boards are not used now IIRC).
+
+Did you somehow tested it between March 27 and April 19. I think
+in this window span it should have worked.
+
+The history is like this:
+
+commit 45f8cb57da0d7a9ead4b39d7f5def333a5b0c08b
+Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date:   Tue Mar 27 14:30:40 2018 +0100
+
+    ASoC: core: Allow topology to override machine driver FE DAI link config.
 
 
---eheScQNz3K90DVRs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch introduced the overriding FE capability. This patch
+contains something like this;
 
-On Tue, Nov 26, 2019 at 05:39:45PM +0000, Adam Thomson wrote:
-> On 26 November 2019 17:09, Mark Brown wrote:
++                       /* convert non BE into BE */
++                       dai_link->no_pcm = 1;
++                       dai_link->dpcm_playback = 1;
++                       dai_link->dpcm_capture = 1;
 
-> > If we're special casing simple-card we're doing it wrong - there's
-> > nothing stopping any other machine driver behaving in the same way.
+then the patch got reverted by:
 
-> Ok, what's being proposed here is for the codec to automatically control =
-the PLL
-> rather than leaving it to the machine driver as is the case right now. In=
- the
-> possible scenario where this is done using a card level widget to enable/=
-disable
+commit 291bfb928863d496e25c785e132a8fbfb32341a8
+Author: Mark Brown <broonie@kernel.org>
+Date:   Thu Apr 19 12:14:10 2018 +0100
 
-Wasn't the proposal to add a new mode where the machine driver *could*
-choose to delgate PLL selection to the CODEC driver rather than do so
-unconditionally? =20
+    ASoC: topology: Revert recent changes while boot errors are investigated
 
-> the PLL we will conflict with that using the current suggested approach f=
-or the
-> da7213 driver, albeit with no real consequence other than configuring the=
- PLL
-> twice the first time a stream is started. It's a case of how to determine=
- who's
-> in control of the PLL here; machine driver or codec?
+and then when it got reinstantiated with:
 
-The patch looked like the idea was that as soon as the machine driver
-configures the PLL the CODEC driver will stop touching it which looked
-like a reasonable way of doing it, you could also do it with an explicit
-SYSCLK value (which would have to be 0 for generic machine drivers to
-pick it up) but this works just as well and may even be better.  Perhaps
-I misread it though.
+commit a655de808cbde6c58b3298e704d786b53f59fb5d
+Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date:   Mon Jul 2 16:59:54 2018 +0100
 
---eheScQNz3K90DVRs
-Content-Type: application/pgp-signature; name="signature.asc"
+    ASoC: core: Allow topology to override machine driver FE DAI link config.
 
------BEGIN PGP SIGNATURE-----
+it does have some changes one of them is that
+dpcm_playback/dpcm_capture are no longer
+set.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3dZfAACgkQJNaLcl1U
-h9CwfAf/YV/EIozE9EzDMFY5bhh24HCl54wOPeRj11gAdUc9Dgos5WcUBUp1OKGF
-fMWwffNUQQ6pttjnObQRNpgbEYALQbgmriiDqKa6l7m/jBgm0vaXtF+rdbyHEt7Z
-VGEZcUDDUYjL3lYLHpmCMIxuON1NceLHNn6UjNWc3ukHuKOZTDVKANSoAiskfvuH
-dpcZX/A6I71lUtLq54+uVGh28k7/5cOL2sE/syHjQyA25LcH71hjFVhaByUcx8EC
-AjV8phIVnDYDzwAQhrz0MfXCySpsaq0oPNWHkr9S4d4RZvVaqI5DFVVRGxUivZOM
-auolGphSGFR7UvpNFLu9qItUxlTZxA==
-=SdHM
------END PGP SIGNATURE-----
++                       /* convert non BE into BE */
++                       dai_link->no_pcm = 1;
 
---eheScQNz3K90DVRs--
+Do you remember what was the root cause that caused the crash?
 
---===============8472831650288292419==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I would like to re-add the following lines:
 
++                       dai_link->dpcm_playback = 1;
++                       dai_link->dpcm_capture = 1;
+
+With these two lines added back the non-DPCM link works well for me.
+
+Thanks a lot for your help.
+
+Can someone at Intel test following machine drivers for SOF:
+
+sound/soc/intel/boards/byt-max98090.c
+sound/soc/intel/boards/byt-rt5640.c
+
+I would expect them not to work for SOF case.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8472831650288292419==--
