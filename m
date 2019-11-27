@@ -2,68 +2,66 @@ Return-Path: <SRS0=hmI4=ZT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA8EFC432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC507C432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:40:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED76D20722
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:18:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B461120722
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:40:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d1STnT/m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED76D20722
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pp9PrWOd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B461120722
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E322516A9;
-	Wed, 27 Nov 2019 15:17:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E322516A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4D3B16FE;
+	Wed, 27 Nov 2019 15:39:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4D3B16FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574864308;
-	bh=tu5eXIFNGNxppXVS5rqo2o48wGHRUkzJhNXLbXOkCqw=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=d1STnT/m133LKB7Qhn2FqhF8081in05W3jKU/FSxdUQ6E7YPzTS+wC3ivKiAR/cFK
-	 T4uOoB+TyjVjKtg4ChZFBpvcLD3u2yDr4aHGabHItaimRZRmfmFzjS4CWkBHrlkQOn
-	 EPqN/akMtU5/bigu+KIuZzhja/kQQ7oGfy6W98dU=
+	s=default; t=1574865620;
+	bh=Pi9+TfLG+0mJSyEcqbRp75SPzypNcVqw1qbYUvPs95E=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pp9PrWOdNzOJreG7a9TX1a8J7/nmvXLexfK8tJjqb6LsCzTFZI38PGsplCBs1UH2P
+	 9N9cvZkHL8ralwpbRMD42fqVhNthv9MBdcn8Plq/BD7o/+wyVwk1cuhrWWq6iAeWcP
+	 3oEI943Cwxo6Akbco17drICY9aRcdRv13XXNKKk8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 710CAF800CE;
-	Wed, 27 Nov 2019 15:17:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04FABF8013B;
+	Wed, 27 Nov 2019 15:39:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0C9FF8014D; Wed, 27 Nov 2019 15:17:35 +0100 (CET)
-Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 22548F8014D; Wed, 27 Nov 2019 15:39:28 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A714AF800CE
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 15:17:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A714AF800CE
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
- by Forcepoint Email with ESMTP id EC15AE7AA14F2A1A5D06;
- Wed, 27 Nov 2019 22:17:26 +0800 (CST)
-Received: from localhost (10.133.213.239) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Wed, 27 Nov 2019
- 22:17:17 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.de>, <pierre-louis.bossart@linux.intel.com>,
- <daniel.baluta@nxp.com>, <arnd@arndb.de>, <tglx@linutronix.de>,
- <rdunlap@infradead.org>
-Date: Wed, 27 Nov 2019 22:16:49 +0800
-Message-ID: <20191127141649.5524-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-X-Originating-IP: [10.133.213.239]
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ASoC: SOF: Intel: Fix build error
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43D43F800CE
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 15:39:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43D43F800CE
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 6EB74BB13;
+ Wed, 27 Nov 2019 14:39:23 +0000 (UTC)
+Date: Wed, 27 Nov 2019 15:39:23 +0100
+Message-ID: <s5hd0ddwfhg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?UTF-8?B?TWljaGHFgg==?= Matysiak <matysiakmichal@gmail.com>
+In-Reply-To: <20191127142637.GB33700@prime>
+References: <20191127142637.GB33700@prime>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: hdegoede@redhat.com, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
+Subject: Re: [alsa-devel] kernel oops related to the new HDA audio handling
+	for DP MST
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,43 +74,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If SND_INTEL_DSP_CONFIG is m and SND_SOC_SOF_PCI is y,
-building fails:
-
-sound/soc/sof/sof-pci-dev.o: In function `sof_pci_probe':
-sof-pci-dev.c:(.text+0xb4): undefined reference to `snd_intel_dsp_driver_probe'
-
-Select SND_INTEL_DSP_CONFIG to fix this.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/soc/sof/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 71a0fc0..e0b04b5 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -14,6 +14,7 @@ config SND_SOC_SOF_PCI
- 	depends on PCI
- 	select SND_SOC_SOF
- 	select SND_SOC_ACPI if ACPI
-+	select SND_INTEL_DSP_CONFIG
- 	help
- 	  This adds support for PCI enumeration. This option is
- 	  required to enable Intel Skylake+ devices
--- 
-2.7.4
-
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gV2VkLCAyNyBOb3YgMjAxOSAxNToyNjozNyArMDEwMCwKTWljaGHFgiBNYXR5c2lhayB3cm90
+ZToKPiAKPiBIaQo+IAo+IFJlY2VudGx5IEkndmUgZW5jb3VudGVyZWQgdGhpcyBlcnJvciBhbmQg
+YXMgSGFucyBkZSBHb2VkZSdzIHJlcXVlc3QgSSdtCj4gcmVwb3J0aW5nIHRoaXMgYmFjayB0byB5
+b3UuIFRoaXMgaGFwcGVucyB3aGlsZSBib290aW5nIG15IGxhcHRvcAo+IGNvbm5lY3RlZCB0byBk
+b2NraW5nIHN0YXRpb24gYW5kIHdpdGhvdXQgdXNpbmcgb25lLgo+IAo+IGtlcm5lbDogV0FSTklO
+RzogQ1BVOiAxIFBJRDogMzMwIGF0IHNvdW5kL2hkYS9oZGFjX2NvbXBvbmVudC5jOjI5MCBzbmRf
+aGRhY19hY29tcF9pbml0KzB4ZGUvMHgxMzAgW3NuZF9oZGFfY29yZV0KPiBUaGVyZSBhcmUgMiBt
+b3JlICJjdXQgaGVyZSIsIGJ1dCB0aGV5J3JlIGFsbW9zdCBpZGVudGljYWwgc28gSSd2ZSBvbmx5
+Cj4gaW5jbHVkZWQgb25lIGluIHRoaXMgZW1haWwuCj4gCj4gRG9uJ3Qga25vdyB3aGF0IHdpbGwg
+YmUgdmFsdWFibGUgdG8geW91LCBidXQgSSdtIHdpbGxpbmcgdG8gaGVscCB0ZXN0Cj4gdGhpcyBh
+bmQgZG8gd2hhdCBJJ20gdG9sZC4gU28sIGhvdyBjYW4gSSBoZWxwPwo+IAo+IE1vcmUgaW5mbyBh
+Ym91dCB0aGlzIHBhcnRpY3VsYXIga2VybmVsIGFuZCBpc3N1ZSwgdGhhdCBsZWQgdG8gdGhpcyBp
+cyBhdDoKPiBodHRwczovL2J1Z3ppbGxhLnJlZGhhdC5jb20vc2hvd19idWcuY2dpP2lkPTE3NTc4
+OTEKPiAKPiBkbWVzZyBvdXRwdXQ6Cj4gCj4gTm92IDI2IDE4OjA1OjQ1IGtlcm5lbDogbWljcm9j
+b2RlOiBtaWNyb2NvZGUgdXBkYXRlZCBlYXJseSB0byByZXZpc2lvbiAweDJmLCBkYXRlID0gMjAx
+OS0wMi0xNwo+IE5vdiAyNiAxODowNTo0NSBrZXJuZWw6IExpbnV4IHZlcnNpb24gNS40LjAtMC5y
+YzguZ2l0MC4xLnJoYnoxNzU3ODkxLmZjMzEueDg2XzY0IChtb2NrYnVpbGRAYnVpbGRody0xMC5w
+aHgyLmZlZG9yYXByb2plY3Qub3JnKSAoZ2NjIHZlcnNpb24gOS4yLjEgMjAxOTA4MjcgKFJlZCBI
+YXQgOS4yLjEtMSkgKEdDQykpICMxIFNNUCBXZWQgTm92IDIwIDE0OjUwOjM0IFVUQyAyMDE5Cj4g
+Tm92IDI2IDE4OjA1OjQ1IGtlcm5lbDogQ29tbWFuZCBsaW5lOiBCT09UX0lNQUdFPShoZDAsZ3B0
+Mikvdm1saW51ei01LjQuMC0wLnJjOC5naXQwLjEucmhiejE3NTc4OTEuZmMzMS54ODZfNjQgcm9v
+dD0vZGV2L21hcHBlci9mZWRvcmEtcm9vdCBybyByZXN1bWU9L2Rldi9tYXBwZXIvZmVkb3JhLXN3
+YXAgcmQubHZtLmx2PWZlZG9yYS9yb290IHJkLmx1a3MudXVpZD1sdWtzLWVmZDhiNDM4LThmNTYt
+NDA1YS04Y2VhLTg4ZjgzY2EzOGQyYiByZC5sdm0ubHY9ZmVkb3JhL3N3YXAgcmhnYiBxdWlldAo+
+IC4uLgo+IC4uLgo+IC4uLgo+IE5vdiAyNiAxODowNjoxNiBrZXJuZWw6IC0tLS0tLS0tLS0tLVsg
+Y3V0IGhlcmUgXS0tLS0tLS0tLS0tLQo+IE5vdiAyNiAxODowNjoxNiBrZXJuZWw6IFdBUk5JTkc6
+IENQVTogMCBQSUQ6IDQ2MSBhdCBzb3VuZC9oZGEvaGRhY19jb21wb25lbnQuYzoyOTAgc25kX2hk
+YWNfYWNvbXBfaW5pdCsweGRlLzB4MTMwIFtzbmRfaGRhX2NvcmVdCgpUaGlzIHNob3VsZCBoYXZl
+IGJlZW4gYWxyZWFkeSBmaXhlZCBieSB0aGUgcmVjZW50IGNvbW1pdAo1YTg1OGU3OWM5MTEzMzA2
+NzhiNWE5YmU5MWEyNDgzMGU5NGEwZGM5CiAgICBBTFNBOiBoZGEgLSBEaXNhYmxlIGF1ZGlvIGNv
+bXBvbmVudCBmb3IgbGVnYWN5IE52aWRpYSBIRE1JIGNvZGVjcwp3aGljaCBpcyBhbHJlYWR5IGlu
+Y2x1ZGVkIGluIExpbnVzIHRyZWUuICBQbGVhc2UgY2hlY2sgaXQuCgoKdGhhbmtzLAoKVGFrYXNo
+aQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
