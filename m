@@ -2,96 +2,94 @@ Return-Path: <SRS0=hmI4=ZT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC424C432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:56:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3A5FC432C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:57:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6611220678
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:56:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 48DEB20678
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:57:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FTdoS0UH";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="blDSGNRs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6611220678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VMxfqi6q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48DEB20678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD26E1720;
-	Wed, 27 Nov 2019 15:56:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD26E1720
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7840C16F8;
+	Wed, 27 Nov 2019 15:56:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7840C16F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574866610;
-	bh=Njwv2QjQt8FNtu5s72JQu3/2cN0v3dCZ4F5KYboESes=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FTdoS0UHAI9xyDhY+CnGfp1MJfXPcAvb5/JqYK2oymRVa5ASWhUCXhAMxHBKGgIB7
-	 vdC+kZL/oq0TkJvzMTbxNkdnToWOMqk3+0H5LovLAWko3dRIUgbhuA7bNsx1uQUwA6
-	 akIfWNy5dw6GLbQKuYbFi1dLAzG4XYLeXzA3eDpI=
+	s=default; t=1574866655;
+	bh=DsaHxUEYpmfxF3jsGH6LhjFesCcSlInVcHGWVOA/S+E=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VMxfqi6q9SnXcHHLbFDoJoLzFY/t2CcQwIWPdXkQV1arhOULZXeH/0rxd5nd8MKh0
+	 XwQGu3GmkX+69UoZFF4fYBJmndycOdAGPIyQFRxlCNOc/6cD3p8nRAoRRDQJkTIh3Y
+	 siNb32IeLVCEaA6ml4Rknt5hbIGrtiyJnkdbzZN4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9926AF8020B;
-	Wed, 27 Nov 2019 15:54:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5560F80217;
+	Wed, 27 Nov 2019 15:54:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8235BF8014D; Wed, 27 Nov 2019 15:26:44 +0100 (CET)
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com
- [IPv6:2a00:1450:4864:20::230])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 75D2CF8014D; Wed, 27 Nov 2019 15:47:11 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D32F4F800E9
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 15:26:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D32F4F800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="blDSGNRs"
-Received: by mail-lj1-x230.google.com with SMTP id e28so509370ljo.9
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 06:26:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:mime-version:content-disposition
- :content-transfer-encoding;
- bh=BBu94jDrG4PDI044FYrxwqGssCNtUQQnbHb1NO/7h6o=;
- b=blDSGNRsYkVyXymfdqIotZPspFIk2dmse6DXB3qJ7kH0pQUOTjXWYqe+ycZ8gb3kdA
- zSRqhlF3hsUtyaLbIdEmWG7WlsfW8Xw1RHXmILxkMDfsil8rniEQmij3DcF50Vl1ny/q
- qORIMmCwD6R/jODfzRNdOy9btIir0ZfYVboo7QFNo3NL59/g0q7BPYUNfz3Q0eHWQWOS
- L/kU7wI6/VRuz+8h9W1eP2X9BvvFi+7Pk+1hkgCvjV1rTcMMtaGdghZJzrTleEg17qOl
- /l27HuOnUWTldxiHT/Y/+V+/2O3xE9T0Qqq2efTArdBoAEYgWRuowAlTXgF6vN79yVVl
- 6iRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
- :content-disposition:content-transfer-encoding;
- bh=BBu94jDrG4PDI044FYrxwqGssCNtUQQnbHb1NO/7h6o=;
- b=sdd6SpHC9UTstUC8WvwiuvVS3ti71Djv4GOcG+gd0/n1F/E5nF0oDMuI/fVvl2jGe8
- UIL9qgt4ii2nLfE923l5/MaVSi4dD6qoIH6TXqlfmZQoc/NcY8YOV7GMIEZ1E5J4jG+C
- 9RKLEeP+aX01H23YIyK0lY/OMxTHsHQh3GhnxlP/ZoTI/lFyEuseGOmMkOLbCEI0qyZs
- UcL6qHLQeVU2Oy75VdP7+OfEwuIS0kHhpkL4CqvJpIppMmUp53YjyKljuepVO7tonFhC
- Q7B4PkCHL/G4YgXL1Aq2ocL4TKI5kzgGDE54waMJGXD1FjLAKk55VUMsOXc1NqJkpIbW
- 3Vig==
-X-Gm-Message-State: APjAAAVrZL7bsE7wO1mge9iYhpNLJYIzYH42vlwSYcvk0QFaAwtpVZuP
- wT2l8umLH8V5ztPOxFLTq0U=
-X-Google-Smtp-Source: APXvYqytcUEjmwp01/rTwW3Taib61kuYe9qA+NYer532WJ3CnVC5EaVmjF8SYxjugn/oedCMR/I9Mg==
-X-Received: by 2002:a05:651c:387:: with SMTP id
- e7mr31744503ljp.0.1574864800287; 
- Wed, 27 Nov 2019 06:26:40 -0800 (PST)
-Received: from prime (host-178-216-91-25.sta.tvknaszapraca.pl. [178.216.91.25])
- by smtp.gmail.com with ESMTPSA id i4sm905668ljg.90.2019.11.27.06.26.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 Nov 2019 06:26:39 -0800 (PST)
-Date: Wed, 27 Nov 2019 15:26:37 +0100
-From: =?utf-8?Q?Micha=C5=82?= Matysiak <matysiakmichal@gmail.com>
-To: Takashi Iwai <tiwai@suse.com>
-Message-ID: <20191127142637.GB33700@prime>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4BECF800E9
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 15:47:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4BECF800E9
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2019 06:47:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,249,1571727600"; d="scan'208";a="203094641"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com)
+ ([10.54.74.41])
+ by orsmga008.jf.intel.com with ESMTP; 27 Nov 2019 06:47:03 -0800
+Date: Wed, 27 Nov 2019 06:47:03 -0800
+From: Sean Christopherson <sean.j.christopherson@intel.com>
+To: Ingo Molnar <mingo@kernel.org>
+Message-ID: <20191127144703.GA18530@linux.intel.com>
+References: <20191126165417.22423-1-sean.j.christopherson@intel.com>
+ <20191127072057.GB94748@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <20191127072057.GB94748@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 X-Mailman-Approved-At: Wed, 27 Nov 2019 15:54:17 +0100
-Cc: hdegoede@redhat.com, alsa-devel@alsa-project.org
-Subject: [alsa-devel] kernel oops related to the new HDA audio handling for
-	DP MST
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, linux-efi@vger.kernel.org,
+ linux-ia64@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, "VMware,
+ Inc." <pv-drivers@vmware.com>, Jie Yang <yang.jie@linux.intel.com>,
+ alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Pavel Machek <pavel@ucw.cz>, "H. Peter Anvin" <hpa@zytor.com>,
+ Nadav Amit <nadav.amit@gmail.com>, linux-acpi@vger.kernel.org,
+ Jiri Olsa <jolsa@redhat.com>, x86@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Darren Hart <dvhart@infradead.org>, Len Brown <len.brown@intel.com>,
+ Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Steven Rostedt <rostedt@goodmis.org>,
+ Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ platform-driver-x86@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+ Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
+Subject: Re: [alsa-devel] [PATCH v2 00/12] treewide: break dependencies on
+	x86's RM header
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,107 +102,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGkKClJlY2VudGx5IEkndmUgZW5jb3VudGVyZWQgdGhpcyBlcnJvciBhbmQgYXMgSGFucyBkZSBH
-b2VkZSdzIHJlcXVlc3QgSSdtCnJlcG9ydGluZyB0aGlzIGJhY2sgdG8geW91LiBUaGlzIGhhcHBl
-bnMgd2hpbGUgYm9vdGluZyBteSBsYXB0b3AKY29ubmVjdGVkIHRvIGRvY2tpbmcgc3RhdGlvbiBh
-bmQgd2l0aG91dCB1c2luZyBvbmUuCgprZXJuZWw6IFdBUk5JTkc6IENQVTogMSBQSUQ6IDMzMCBh
-dCBzb3VuZC9oZGEvaGRhY19jb21wb25lbnQuYzoyOTAgc25kX2hkYWNfYWNvbXBfaW5pdCsweGRl
-LzB4MTMwIFtzbmRfaGRhX2NvcmVdClRoZXJlIGFyZSAyIG1vcmUgImN1dCBoZXJlIiwgYnV0IHRo
-ZXkncmUgYWxtb3N0IGlkZW50aWNhbCBzbyBJJ3ZlIG9ubHkKaW5jbHVkZWQgb25lIGluIHRoaXMg
-ZW1haWwuCgpEb24ndCBrbm93IHdoYXQgd2lsbCBiZSB2YWx1YWJsZSB0byB5b3UsIGJ1dCBJJ20g
-d2lsbGluZyB0byBoZWxwIHRlc3QKdGhpcyBhbmQgZG8gd2hhdCBJJ20gdG9sZC4gU28sIGhvdyBj
-YW4gSSBoZWxwPwoKTW9yZSBpbmZvIGFib3V0IHRoaXMgcGFydGljdWxhciBrZXJuZWwgYW5kIGlz
-c3VlLCB0aGF0IGxlZCB0byB0aGlzIGlzIGF0OgpodHRwczovL2J1Z3ppbGxhLnJlZGhhdC5jb20v
-c2hvd19idWcuY2dpP2lkPTE3NTc4OTEKCmRtZXNnIG91dHB1dDoKCk5vdiAyNiAxODowNTo0NSBr
-ZXJuZWw6IG1pY3JvY29kZTogbWljcm9jb2RlIHVwZGF0ZWQgZWFybHkgdG8gcmV2aXNpb24gMHgy
-ZiwgZGF0ZSA9IDIwMTktMDItMTcKTm92IDI2IDE4OjA1OjQ1IGtlcm5lbDogTGludXggdmVyc2lv
-biA1LjQuMC0wLnJjOC5naXQwLjEucmhiejE3NTc4OTEuZmMzMS54ODZfNjQgKG1vY2tidWlsZEBi
-dWlsZGh3LTEwLnBoeDIuZmVkb3JhcHJvamVjdC5vcmcpIChnY2MgdmVyc2lvbiA5LjIuMSAyMDE5
-MDgyNyAoUmVkIEhhdCA5LjIuMS0xKSAoR0NDKSkgIzEgU01QIFdlZCBOb3YgMjAgMTQ6NTA6MzQg
-VVRDIDIwMTkKTm92IDI2IDE4OjA1OjQ1IGtlcm5lbDogQ29tbWFuZCBsaW5lOiBCT09UX0lNQUdF
-PShoZDAsZ3B0Mikvdm1saW51ei01LjQuMC0wLnJjOC5naXQwLjEucmhiejE3NTc4OTEuZmMzMS54
-ODZfNjQgcm9vdD0vZGV2L21hcHBlci9mZWRvcmEtcm9vdCBybyByZXN1bWU9L2Rldi9tYXBwZXIv
-ZmVkb3JhLXN3YXAgcmQubHZtLmx2PWZlZG9yYS9yb290IHJkLmx1a3MudXVpZD1sdWtzLWVmZDhi
-NDM4LThmNTYtNDA1YS04Y2VhLTg4ZjgzY2EzOGQyYiByZC5sdm0ubHY9ZmVkb3JhL3N3YXAgcmhn
-YiBxdWlldAouLi4KLi4uCi4uLgpOb3YgMjYgMTg6MDY6MTYga2VybmVsOiAtLS0tLS0tLS0tLS1b
-IGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0KTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogV0FSTklORzog
-Q1BVOiAwIFBJRDogNDYxIGF0IHNvdW5kL2hkYS9oZGFjX2NvbXBvbmVudC5jOjI5MCBzbmRfaGRh
-Y19hY29tcF9pbml0KzB4ZGUvMHgxMzAgW3NuZF9oZGFfY29yZV0KTm92IDI2IDE4OjA2OjE2IGtl
-cm5lbDogTW9kdWxlcyBsaW5rZWQgaW46IGludGVsX3JhcGxfbXNyIGludGVsX3JhcGxfY29tbW9u
-IGl3bGR2bSB4ODZfcGtnX3RlbXBfdGhlcm1hbCBpbnRlbF9wb3dlcmNsYW1wIHNuZF9oZGFfY29k
-ZWNfaGRtaSBjb3JldGVtcCBtYWM4MDIxMSBzbmRfaGRhX2NvZGVjX2NvbmV4YW50IHNuZF9oZGFf
-Y29kZWNfZ2VuZXJpYyBrdm1faW50ZWwgc25kX2hkYV9pbnRlbCBsaWJhcmM0IHNuZF9pbnRlbF9u
-aGx0IGt2bSBtZWlfd2R0IGlUQ09fd2R0IHNuZF9oZGFfY29kZWMgbWVpX2hkY3AgaXdsd2lmaSBp
-cnFieXBhc3MgaVRDT192ZW5kb3Jfc3VwcG9ydCBzbmRfaGRhX2NvcmUgaW50ZWxfY3N0YXRlIHNu
-ZF9od2RlcCBzbmRfc2VxIGludGVsX3VuY29yZSBzbmRfc2VxX2RldmljZSB0aGlua3BhZF9hY3Bp
-IGpveWRldiBpMmNfaTgwMSB3bWlfYm1vZiBpbnRlbF9yYXBsX3BlcmYgc25kX3BjbSBwY3Nwa3Ig
-bGVkdHJpZ19hdWRpbyBjZmc4MDIxMSBzbmRfdGltZXIgbWVpX21lIHNuZCBtZWkgc291bmRjb3Jl
-IGxwY19pY2ggcmZraWxsIGJpbmZtdF9taXNjIGlwX3RhYmxlcyBkbV9jcnlwdCBpOTE1IG5vdXZl
-YXUgY3JjdDEwZGlmX3BjbG11bCBjcmMzMl9wY2xtdWwgbXhtX3dtaSBjcmMzMmNfaW50ZWwgdHRt
-IGkyY19hbGdvX2JpdCBkcm1fa21zX2hlbHBlciBnaGFzaF9jbG11bG5pX2ludGVsIHNkaGNpX3Bj
-aSBjcWhjaSBkcm0gc2RoY2kgc2VyaW9fcmF3IGUxMDAwZSBmaXJld2lyZV9vaGNpIG1tY19jb3Jl
-IGZpcmV3aXJlX2NvcmUgY3JjX2l0dV90IHdtaSB2aWRlbyBmdXNlCk5vdiAyNiAxODowNjoxNiBr
-ZXJuZWw6IENQVTogMCBQSUQ6IDQ2MSBDb21tOiBrd29ya2VyLzA6MiBUYWludGVkOiBHICAgICAg
-ICBXICAgICAgICAgNS40LjAtMC5yYzguZ2l0MC4xLnJoYnoxNzU3ODkxLmZjMzEueDg2XzY0ICMx
-Ck5vdiAyNiAxODowNjoxNiBrZXJuZWw6IEhhcmR3YXJlIG5hbWU6IExFTk9WTyA0Mjg0NERHLzQy
-ODQ0REcsIEJJT1MgOEJFVDY2V1cgKDEuNDYgKSAwNi8xNC8yMDE4Ck5vdiAyNiAxODowNjoxNiBr
-ZXJuZWw6IFdvcmtxdWV1ZTogZXZlbnRzIGF6eF9wcm9iZV93b3JrIFtzbmRfaGRhX2ludGVsXQpO
-b3YgMjYgMTg6MDY6MTYga2VybmVsOiBSSVA6IDAwMTA6c25kX2hkYWNfYWNvbXBfaW5pdCsweGRl
-LzB4MTMwIFtzbmRfaGRhX2NvcmVdCk5vdiAyNiAxODowNjoxNiBrZXJuZWw6IENvZGU6IDQxIDg5
-IGM0IDg1IGMwIDc4IDNhIDQ1IDMxIGU0IDQ4IDhiIDQ0IDI0IDA4IDY1IDQ4IDMzIDA0IDI1IDI4
-IDAwIDAwIDAwIDc1IDIyIDQ4IDgzIGM0IDEwIDQ0IDg5IGUwIDViIDVkIDQxIDVjIDQxIDVkIDQx
-IDVlIGMzIDwwZj4gMGIgNDEgYmMgZjAgZmYgZmYgZmYgZWIgZDYgNDEgYmMgZjQgZmYgZmYgZmYg
-ZWIgY2UgZTggNmIgN2MgNWYKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogUlNQOiAwMDE4OmZmZmZh
-NWU0MDAyYTNjMjggRUZMQUdTOiAwMDAxMDI4NgpOb3YgMjYgMTg6MDY6MTYga2VybmVsOiBSQVg6
-IGZmZmY5ODRhZTgxNmE3ZTggUkJYOiBmZmZmOTg0YWViZjkxMDAwIFJDWDogZmZmZjk4NGFlYjUw
-YzMzOApOb3YgMjYgMTg6MDY6MTYga2VybmVsOiBSRFg6IDAwMDAwMDAwMDAwMDAwMDEgUlNJOiAw
-MDAwMDAwMDAwMDAwMjgyIFJESTogMDAwMDAwMDAwMDAwMDI4MgpOb3YgMjYgMTg6MDY6MTYga2Vy
-bmVsOiBSQlA6IGZmZmY5ODRhZTUzZTRkZjAgUjA4OiAwMDAwMDAwMDAwMDAwMjgyIFIwOTogZmZm
-Zjk4NGFlYmU0ZTczOApOb3YgMjYgMTg6MDY6MTYga2VybmVsOiBSMTA6IGZmZmY5ODRhZTc3OGEx
-ODAgUjExOiBmZmZmYTVlNDAwMmEzYzBmIFIxMjogZmZmZmZmZmZjMGMyNzBjMApOb3YgMjYgMTg6
-MDY6MTYga2VybmVsOiBSMTM6IGZmZmY5ODRhZWI1MGMwYjAgUjE0OiAwMDAwMDAwMDAwMDAwMDAw
-IFIxNTogMDAwMDAwMDAwMDAwMDAwMQpOb3YgMjYgMTg6MDY6MTYga2VybmVsOiBGUzogIDAwMDAw
-MDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjk4NGFlZTAwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAw
-MDAwMDAwMDAwCk5vdiAyNiAxODowNjoxNiBrZXJuZWw6IENTOiAgMDAxMCBEUzogMDAwMCBFUzog
-MDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogQ1IyOiAw
-MDAwN2YzYTM0M2U4MDAwIENSMzogMDAwMDAwMDM1MzYwYTAwNiBDUjQ6IDAwMDAwMDAwMDAwNjA2
-ZjAKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogQ2FsbCBUcmFjZToKTm92IDI2IDE4OjA2OjE2IGtl
-cm5lbDogIGdlbmVyaWNfYWNvbXBfaW5pdCsweDcxLzB4OTAgW3NuZF9oZGFfY29kZWNfaGRtaV0K
-Tm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIHBhdGNoX252aGRtaSsweDU4LzB4NjAgW3NuZF9oZGFf
-Y29kZWNfaGRtaV0KTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIGhkYV9jb2RlY19kcml2ZXJfcHJv
-YmUrMHg5Mi8weDE1MCBbc25kX2hkYV9jb2RlY10KTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIHJl
-YWxseV9wcm9iZSsweDI5OC8weDNjMApOb3YgMjYgMTg6MDY6MTYga2VybmVsOiAgZHJpdmVyX3By
-b2JlX2RldmljZSsweGI2LzB4MTAwCk5vdiAyNiAxODowNjoxNiBrZXJuZWw6ICA/IGRyaXZlcl9h
-bGxvd3NfYXN5bmNfcHJvYmluZysweDUwLzB4NTAKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIGJ1
-c19mb3JfZWFjaF9kcnYrMHg3ZS8weGMwCk5vdiAyNiAxODowNjoxNiBrZXJuZWw6ICBfX2Rldmlj
-ZV9hdHRhY2grMHhkZi8weDE2MApOb3YgMjYgMTg6MDY6MTYga2VybmVsOiAgYnVzX3Byb2JlX2Rl
-dmljZSsweDhlLzB4YTAKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIGRldmljZV9hZGQrMHgzYTIv
-MHg2NzAKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIHNuZF9oZGFjX2RldmljZV9yZWdpc3Rlcisw
-eDEyLzB4NjAgW3NuZF9oZGFfY29yZV0KTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIHNuZF9oZGFf
-Y29kZWNfY29uZmlndXJlKzB4NDUvMHgxNTAgW3NuZF9oZGFfY29kZWNdCk5vdiAyNiAxODowNjox
-NiBrZXJuZWw6ICBhenhfY29kZWNfY29uZmlndXJlKzB4MmYvMHg2MCBbc25kX2hkYV9jb2RlY10K
-Tm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIGF6eF9wcm9iZV9jb250aW51ZSsweDQ4Yy8weDcwMCBb
-c25kX2hkYV9pbnRlbF0KTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIHByb2Nlc3Nfb25lX3dvcmsr
-MHgxYjAvMHgzNTAKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDogIHdvcmtlcl90aHJlYWQrMHg1MC8w
-eDNiMApOb3YgMjYgMTg6MDY6MTYga2VybmVsOiAga3RocmVhZCsweGZiLzB4MTMwCk5vdiAyNiAx
-ODowNjoxNiBrZXJuZWw6ICA/IHByb2Nlc3Nfb25lX3dvcmsrMHgzNTAvMHgzNTAKTm92IDI2IDE4
-OjA2OjE2IGtlcm5lbDogID8ga3RocmVhZF9wYXJrKzB4OTAvMHg5MApOb3YgMjYgMTg6MDY6MTYg
-a2VybmVsOiAgcmV0X2Zyb21fZm9yaysweDM1LzB4NDAKTm92IDI2IDE4OjA2OjE2IGtlcm5lbDog
-LS0tWyBlbmQgdHJhY2UgM2M4ZDY1YmVkYmE2Mjg0OSBdLS0tCk5vdiAyNiAxODowNjoxNiBrZXJu
-ZWw6IGlucHV0OiBIREEgTlZpZGlhIEhETUkvRFAscGNtPTMgYXMgL2RldmljZXMvcGNpMDAwMDow
-MC8wMDAwOjAwOjAxLjAvMDAwMDowMTowMC4xL3NvdW5kL2NhcmQxL2lucHV0MTUKTm92IDI2IDE4
-OjA2OjE2IGtlcm5lbDogaW5wdXQ6IEhEQSBOVmlkaWEgSERNSS9EUCxwY209NyBhcyAvZGV2aWNl
-cy9wY2kwMDAwOjAwLzAwMDA6MDA6MDEuMC8wMDAwOjAxOjAwLjEvc291bmQvY2FyZDEvaW5wdXQx
-NgpOb3YgMjYgMTg6MDY6MTYga2VybmVsOiBpbnB1dDogSERBIE5WaWRpYSBIRE1JL0RQLHBjbT04
-IGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMS4wLzAwMDA6MDE6MDAuMS9zb3VuZC9j
-YXJkMS9pbnB1dDE3Ck5vdiAyNiAxODowNjoxNiBrZXJuZWw6IGlucHV0OiBIREEgTlZpZGlhIEhE
-TUkvRFAscGNtPTkgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjAxLjAvMDAwMDowMTow
-MC4xL3NvdW5kL2NhcmQxL2lucHV0MTgKCgoKLS0KUmVnYXJkcywKTWljaGHFgiBNYXR5c2lhawpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Nov 27, 2019 at 08:20:57AM +0100, Ingo Molnar wrote:
+> 
+> * Sean Christopherson <sean.j.christopherson@intel.com> wrote:
+> 
+> > x86's asm/realmode.h, which defines low level structures, variables and
+> > helpers used to bring up APs during SMP boot, ends up getting included in
+> > practically every nook and cranny of the kernel because the address used
+> > by ACPI for resuming from S3 also happens to be stored in the real mode
+> > header, and ACPI bleeds the dependency into its widely included headers.
+> > 
+> > As a result, modifying realmode.h for even the most trivial change to the
+> > boot code triggers a full kernel rebuild, which is frustrating to say the
+> > least as it some of the most difficult code to get exactly right *and* is
+> > also some of the most functionally isolated code in the kernel.
+> > 
+> > To break the kernel's widespread dependency on realmode.h, add a wrapper
+> > in the aforementioned ACPI S3 code to access the real mode header instead
+> > of derefencing the header directly in asm/acpi.h and thereby exposing it
+> > to the world via linux/acpi.h.
+> > 
+> > v2:
+> >   - Rebased on tip/x86/cleanups, commit b74374fef924 ("x86/setup: Enhance
+> >     the comments").
+> >   - Use acpi_get_wakeup_address() as new function name. [Boris and Pavel]
+> >   - Capture acpi_get_wakeup_address() in a local address. [Pavel]
+> >   - Collect acks.  I didn't add Rafael's acks on patches 11 and 12 due to
+> >     the above changes.
+> >   - Explicitly call out the removal of <asm/realmode.h> from <asm/acpi.h>
+> >     in patch 12. [Ingo]
+> >   - Remove superfluous Fixes: tags. [Ard]
+> 
+> You didn't include every patch from v1 though, such us my fix to Quark:
+> 
+>   [PATCH] x86/platform/intel/quark: Explicitly include linux/io.h for virt_to_phys()
+> 
+> I've applied that one too and your updated patches, and it's now all 
+> pushed out into tip:WIP.core/headers.
+
+Sorry, it wasn't clear to me whether or not to include that one.  Next
+time I'll ask.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
