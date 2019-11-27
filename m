@@ -2,94 +2,78 @@ Return-Path: <SRS0=hmI4=ZT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3A5FC432C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:57:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF268C432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 15:41:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48DEB20678
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 14:57:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EA1FA206F0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 15:41:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VMxfqi6q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48DEB20678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I69n/+Lj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA1FA206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7840C16F8;
-	Wed, 27 Nov 2019 15:56:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7840C16F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C52F16F6;
+	Wed, 27 Nov 2019 16:40:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C52F16F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574866655;
-	bh=DsaHxUEYpmfxF3jsGH6LhjFesCcSlInVcHGWVOA/S+E=;
+	s=default; t=1574869289;
+	bh=M+L7qPA70Tq+DW+vJCnmqHegAJ0m1kGDdpbwnD4MWH4=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VMxfqi6q9SnXcHHLbFDoJoLzFY/t2CcQwIWPdXkQV1arhOULZXeH/0rxd5nd8MKh0
-	 XwQGu3GmkX+69UoZFF4fYBJmndycOdAGPIyQFRxlCNOc/6cD3p8nRAoRRDQJkTIh3Y
-	 siNb32IeLVCEaA6ml4Rknt5hbIGrtiyJnkdbzZN4=
+	b=I69n/+LjQLfKLNfok9i1Vzhn2PlBb74xskPTLm2Ci0Jrc3KFPVMM0jLCevDGkyczD
+	 10PbNL8z3TosPhVaVMZ5kiVbSVSm3u74iWkEn/YNE+OhWRzpaP978HU0JytEyU48qI
+	 DM/8pCDMux5AEMvMCqur9qG9qr5VNmm1Q8jnYA1E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5560F80217;
-	Wed, 27 Nov 2019 15:54:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC6EFF8013B;
+	Wed, 27 Nov 2019 16:40:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75D2CF8014D; Wed, 27 Nov 2019 15:47:11 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4BECF800E9
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 15:47:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4BECF800E9
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2019 06:47:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,249,1571727600"; d="scan'208";a="203094641"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com)
- ([10.54.74.41])
- by orsmga008.jf.intel.com with ESMTP; 27 Nov 2019 06:47:03 -0800
-Date: Wed, 27 Nov 2019 06:47:03 -0800
-From: Sean Christopherson <sean.j.christopherson@intel.com>
-To: Ingo Molnar <mingo@kernel.org>
-Message-ID: <20191127144703.GA18530@linux.intel.com>
-References: <20191126165417.22423-1-sean.j.christopherson@intel.com>
- <20191127072057.GB94748@gmail.com>
+ id 530F2F8014D; Wed, 27 Nov 2019 16:40:37 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id E9469F80109
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 16:40:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9469F80109
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4A7630E;
+ Wed, 27 Nov 2019 07:40:32 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4305C3F68E;
+ Wed, 27 Nov 2019 07:40:32 -0800 (PST)
+Date: Wed, 27 Nov 2019 15:40:30 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Message-ID: <20191127154030.GD4879@sirena.org.uk>
+References: <20191120152406.2744-1-sebastian.reichel@collabora.com>
+ <20191120152406.2744-7-sebastian.reichel@collabora.com>
+ <AM5PR1001MB0994720A0D615339A978E35C804E0@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+ <AM5PR1001MB0994E628439F021F97B872D480450@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+ <20191126170841.GC4205@sirena.org.uk>
+ <AM5PR1001MB09949D557742E8817545637F80450@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+ <20191126175040.GD4205@sirena.org.uk>
+ <AM5PR1001MB09940CF764711F1F13A6B37E80440@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+ <20191127123317.GA4879@sirena.org.uk>
+ <AM5PR1001MB0994D842A2D7051F81A7765B80440@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191127072057.GB94748@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Mailman-Approved-At: Wed, 27 Nov 2019 15:54:17 +0100
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, linux-efi@vger.kernel.org,
- linux-ia64@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, "VMware,
- Inc." <pv-drivers@vmware.com>, Jie Yang <yang.jie@linux.intel.com>,
- alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Pavel Machek <pavel@ucw.cz>, "H. Peter Anvin" <hpa@zytor.com>,
- Nadav Amit <nadav.amit@gmail.com>, linux-acpi@vger.kernel.org,
- Jiri Olsa <jolsa@redhat.com>, x86@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Darren Hart <dvhart@infradead.org>, Len Brown <len.brown@intel.com>,
- Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Steven Rostedt <rostedt@goodmis.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- platform-driver-x86@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
- Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- linux-kernel@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
-Subject: Re: [alsa-devel] [PATCH v2 00/12] treewide: break dependencies on
-	x86's RM header
+In-Reply-To: <AM5PR1001MB0994D842A2D7051F81A7765B80440@AM5PR1001MB0994.EURPRD10.PROD.OUTLOOK.COM>
+X-Cookie: In the war of wits, he's unarmed.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "kernel@collabora.com" <kernel@collabora.com>,
+ Support Opensource <Support.Opensource@diasemi.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: Re: [alsa-devel] [PATCHv2 6/6] ASoC: da7213: Add default clock
+	handling
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,52 +86,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1248701854371703723=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 27, 2019 at 08:20:57AM +0100, Ingo Molnar wrote:
-> 
-> * Sean Christopherson <sean.j.christopherson@intel.com> wrote:
-> 
-> > x86's asm/realmode.h, which defines low level structures, variables and
-> > helpers used to bring up APs during SMP boot, ends up getting included in
-> > practically every nook and cranny of the kernel because the address used
-> > by ACPI for resuming from S3 also happens to be stored in the real mode
-> > header, and ACPI bleeds the dependency into its widely included headers.
-> > 
-> > As a result, modifying realmode.h for even the most trivial change to the
-> > boot code triggers a full kernel rebuild, which is frustrating to say the
-> > least as it some of the most difficult code to get exactly right *and* is
-> > also some of the most functionally isolated code in the kernel.
-> > 
-> > To break the kernel's widespread dependency on realmode.h, add a wrapper
-> > in the aforementioned ACPI S3 code to access the real mode header instead
-> > of derefencing the header directly in asm/acpi.h and thereby exposing it
-> > to the world via linux/acpi.h.
-> > 
-> > v2:
-> >   - Rebased on tip/x86/cleanups, commit b74374fef924 ("x86/setup: Enhance
-> >     the comments").
-> >   - Use acpi_get_wakeup_address() as new function name. [Boris and Pavel]
-> >   - Capture acpi_get_wakeup_address() in a local address. [Pavel]
-> >   - Collect acks.  I didn't add Rafael's acks on patches 11 and 12 due to
-> >     the above changes.
-> >   - Explicitly call out the removal of <asm/realmode.h> from <asm/acpi.h>
-> >     in patch 12. [Ingo]
-> >   - Remove superfluous Fixes: tags. [Ard]
-> 
-> You didn't include every patch from v1 though, such us my fix to Quark:
-> 
->   [PATCH] x86/platform/intel/quark: Explicitly include linux/io.h for virt_to_phys()
-> 
-> I've applied that one too and your updated patches, and it's now all 
-> pushed out into tip:WIP.core/headers.
 
-Sorry, it wasn't clear to me whether or not to include that one.  Next
-time I'll ask.
+--===============1248701854371703723==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="TybLhxa8M7aNoW+V"
+Content-Disposition: inline
+
+
+--TybLhxa8M7aNoW+V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Nov 27, 2019 at 01:42:54PM +0000, Adam Thomson wrote:
+
+> nicest solution here though. I guess we're stuck with people having to manually
+> configure the PLL for bypass when a non-generic machine driver inits, to avoid
+> the initial double config, as I don't see other options unless you have
+> something to specify at init that it's auto or manual, and this doesn't feel
+> like a DT device specific property thing as it's more software than hardware.
+> At least Sebastian's patch has a good comment block to highlight this.
+
+Not sure I follow here - if we're configuring the PLL explicitly then
+I'd expect the PLL to be configured first, then the SYSCLK, so I'd
+expect that the automatic PLL configuration wouldn't kick in.
+
+--TybLhxa8M7aNoW+V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3emO0ACgkQJNaLcl1U
+h9BAnQf/Q4HBT+E0Q86c5T5kw3hIEfvjSfcdzKbqvPYBoxeiJPWz6BgtIYowJOk/
+VIMobVK2PGfli24WdMYQtG8lwdNCUo5ff2DmOFSEc5U90CRHfaaHh1agqu8g+xX0
+XENPmJDKQNV+T5AhrkNyulGeIwPqn2sOssOTTBzIRlQ5TeD8PvqDFmbNwQ1ty/wh
+pJijH+imJpNcTVQtey9tEP29W2HUqqEURJK6n7QVOFseFXQKLv+KpQaMmsx0Jqrd
+Js/kclZ1np41N3D15cACh/ANKG6RNaT5i03P9imE+ujeWPWFW92Z6P70vf5uzUug
+Q/qbBvhCvX6qIgrcOnsmLYLAlZfXyw==
+=bhaa
+-----END PGP SIGNATURE-----
+
+--TybLhxa8M7aNoW+V--
+
+--===============1248701854371703723==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1248701854371703723==--
