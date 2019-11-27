@@ -2,67 +2,74 @@ Return-Path: <SRS0=hmI4=ZT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DF23C432C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 11:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ADB0C43215
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 11:29:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4FE5220665
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 11:26:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AAC4320684
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 11:29:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ssl6Oo7i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FE5220665
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SD+KomxY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAC4320684
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2513D16F8;
-	Wed, 27 Nov 2019 12:25:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2513D16F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB05E16F9;
+	Wed, 27 Nov 2019 12:29:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB05E16F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574854005;
-	bh=LJfncsi5BPVABgsXXOt4W9k03A5P6X8uBB1Qb0lhCtQ=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ssl6Oo7iDtyaBUGNL8s0INojOjrJfqT+x5KW+lUaELUPnCrbu3hnMnQuozBYJ+Qlk
-	 7uM1iA0bFldsAcH1m/QL3jV/b9eosd6oNWWYxU5W/YH+aPP4gfNpTVf/y0AhAmfPBR
-	 9Be5ZlERD3b9Tjcp3+n0zqbjdDgfwiUn9U5+DHvE=
+	s=default; t=1574854196;
+	bh=6mOb1fvGV8d82Gjc80pP86YDV5HvKOqWm/r4QO1tyt8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SD+KomxYcRWgtICJisfvi1gAau+Pv9Sx0cYcwWvguf1JmTGUJaUu5Oq6v7nC2VUuO
+	 Ft44VDiHwEOoHaIxCRAORfls8M6H38Px0gUz3X0ns9rhyFgje21UZAO9sCe3q0p+zC
+	 hgAsUziWF7OKi8qYXcxjXW9EMuOvd+smeHX+Ry7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA4F3F800CE;
-	Wed, 27 Nov 2019 12:25:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82150F8013B;
+	Wed, 27 Nov 2019 12:29:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97853F8014D; Wed, 27 Nov 2019 12:25:52 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0D6C2F8014D; Wed, 27 Nov 2019 12:29:04 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F575F800CE
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 12:25:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F575F800CE
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2019 03:25:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,249,1571727600"; d="scan'208";a="383474353"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga005.jf.intel.com with ESMTP; 27 Nov 2019 03:25:45 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Date: Wed, 27 Nov 2019 13:25:36 +0200
-Message-Id: <20191127112536.28791-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: Nikhil Mahale <nmahale@nvidia.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] [PATCH] ALSA: hda: hdmi - fix regression in connect
-	list handling
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6736FF800CE
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 12:28:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6736FF800CE
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 7605EAC91;
+ Wed, 27 Nov 2019 11:28:59 +0000 (UTC)
+Date: Wed, 27 Nov 2019 12:28:59 +0100
+Message-ID: <s5h4kypy2v8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Sergey 'Jin' Bostandzhyan <jin@mediatomb.cc>
+In-Reply-To: <20191125173902.GA27981@xn--80adja5bqm.su>
+References: <20190719111231.GA26592@xn--80adja5bqm.su>
+ <s5hzhla9j8b.wl-tiwai@suse.de>
+ <20190720165435.GA5855@xn--80adja5bqm.su>
+ <20190819195714.GA2737@xn--80adja5bqm.su>
+ <s5hef1dthbk.wl-tiwai@suse.de>
+ <20190822203031.GA22363@xn--80adja5bqm.su>
+ <s5h5zmg48u2.wl-tiwai@suse.de>
+ <20190829103805.GA1525@xn--80adja5bqm.su>
+ <s5hsgpk2os6.wl-tiwai@suse.de>
+ <20190830114510.GA10027@xn--80adja5bqm.su>
+ <20191125173902.GA27981@xn--80adja5bqm.su>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Surround speaker connection on Acer 8951G
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,98 +82,80 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix regression in how intel_haswell_fixup_connect_list()
-results are used in hda_read_pin_conn(). Use of
-snd_hda_get_raw_connections() in hda_read_pin_conn() bypasses
-the cache and thus also bypasses the overridden pin connection
-list. On platforms that require the connection list fixup,
-mux list will be empty and HDMI playback will fail to -EBUSY
-at open.
+On Mon, 25 Nov 2019 18:39:02 +0100,
+Sergey 'Jin' Bostandzhyan wrote:
+> 
+> Hi Takashi,
+> 
+> sorry - it's me again about the Acer 8951G LFE speaker.
+> 
+> On Fri, Aug 30, 2019 at 01:45:10PM +0200, Sergey 'Jin' Bostandzhyan wrote:
+> > > > The below HDA_FIXUP_VERBS does the trick, so I do have all 6 speakers working, 
+> > > > finally!
+> > > > 
+> > > > {0x01, AC_VERB_SET_GPIO_DIRECTION, 0x02}
+> > > 
+> > > Actually this must be paired with the corresponding bit of GPIO_DATA,
+> > > too.  Is the bit 0x02 of GPIO_DATA set or cleared?  Usually setting it
+> > > turns on the amp, but sometimes inverted.
+> > 
+> > If I understood everything correctly, then the bit is set, meaning that the
+> > GPIO signal is configured as output. I'll be honest, I exported the
+> > hda-analyzer setting as a python script (nice feature btw) and deducted the
+> > fixup verb setting from there (relevant part of the hda-analyzer export below):
+> > 
+> > def set(nid, verb, param):
+> >   verb = (nid << 24) | (verb << 8) | param
+> >   res = ioctl(FD, IOCTL_VERB_WRITE, struct.pack('II', verb, 0))  
+> > 
+> > set(0x01, 0x717,   0x02) # 0x01071702 (SET_GPIO_DIRECTION)
+> 
+> it seems I indeed missed something here regarding GPIO_DATA, I really am
+> not sure what the influence is, but after updating to Fedora 31 my LFE
+> stopped working, even with the self compiled 5.4-rc8 kernel which I am running
+> now (all the time before I was on Fedora 29 and I just backported my patch to 
+> 5.2.x and compiled the modules outside the tree after being done with the 
+> patch submission).
+> 
+> So ultimately, it seems I now need to do the following in my fixup
+> (original commit was 00066e9733f629e536f6b7957de2ce11a85fe15a):
+> 
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -8875,7 +8875,7 @@ static const struct hda_fixup alc662_fixups[] = {
+>                 .v.verbs = (const struct hda_verb[]) {
+>                         {0x01, AC_VERB_SET_GPIO_MASK, 0x02},
+>                         {0x01, AC_VERB_SET_GPIO_DIRECTION, 0x02},
+> -                       {0x01, AC_VERB_SET_GPIO_DATA, 0x00},
+> +                       {0x01, AC_VERB_SET_GPIO_DATA, 0x02},
+>                         { }
+>                 },
+>                 .chained = true,
 
-Move intel_haswell_fixup_connect_list() call to hda_read_pin_conn()
-as it's not used elsewhere.
+That makes more sense.  Usually GPIO pin is off as default, and the
+driver needs to turn it up manually for a special usage.
 
-Fixes: 9c32fea83692 ("ALSA: hda - Add DP-MST support for non-acomp codecs")
-BugLink: https://github.com/thesofproject/linux/issues/1537
-Cc: Nikhil Mahale <nmahale@nvidia.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/pci/hda/patch_hdmi.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+> My question is: could something on the outside have influence on that? I am
+> really very, very sure that I have tested LFE on kernel 5.4-rc before 
+> submitting the original patch and it has been working as submitted.
+> Why did the behavior change now? What else could I have missed?
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 55d20e40a195..c111bdd566c9 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1293,6 +1293,9 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	return err;
- }
- 
-+static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
-+					     hda_nid_t nid);
-+
- /*
-  * HDA/HDMI auto parsing
-  */
-@@ -1302,6 +1305,7 @@ static int hdmi_read_pin_conn(struct hda_codec *codec, int pin_idx)
- 	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
- 	hda_nid_t pin_nid = per_pin->pin_nid;
- 	int dev_id = per_pin->dev_id;
-+	int conns;
- 
- 	if (!(get_wcaps(codec, pin_nid) & AC_WCAP_CONN_LIST)) {
- 		codec_warn(codec,
-@@ -1312,10 +1316,19 @@ static int hdmi_read_pin_conn(struct hda_codec *codec, int pin_idx)
- 
- 	snd_hda_set_dev_select(codec, pin_nid, dev_id);
- 
-+	if (spec->intel_hsw_fixup) {
-+		intel_haswell_fixup_connect_list(codec, pin_nid);
-+		conns = snd_hda_get_connections(codec, pin_nid,
-+						per_pin->mux_nids,
-+						HDA_MAX_CONNECTIONS);
-+	} else {
-+		conns = snd_hda_get_raw_connections(codec, pin_nid,
-+						    per_pin->mux_nids,
-+						    HDA_MAX_CONNECTIONS);
-+	}
-+
- 	/* all the device entries on the same pin have the same conn list */
--	per_pin->num_mux_nids =
--		snd_hda_get_raw_connections(codec, pin_nid, per_pin->mux_nids,
--					    HDA_MAX_CONNECTIONS);
-+	per_pin->num_mux_nids = conns;
- 
- 	return 0;
- }
-@@ -1713,9 +1726,6 @@ static void hdmi_repoll_eld(struct work_struct *work)
- 	mutex_unlock(&spec->pcm_lock);
- }
- 
--static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
--					     hda_nid_t nid);
--
- static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -1790,8 +1800,6 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- 		per_pin->dev_id = i;
- 		per_pin->non_pcm = false;
- 		snd_hda_set_dev_select(codec, pin_nid, i);
--		if (spec->intel_hsw_fixup)
--			intel_haswell_fixup_connect_list(codec, pin_nid);
- 		err = hdmi_read_pin_conn(codec, pin_idx);
- 		if (err < 0)
- 			return err;
--- 
-2.17.1
+Maybe the chip kept the GPIO pin on after warm boot from Windows or
+such?
 
+Please make sure that which value actually is on and which is off.
+You can change the GPIO bit dynamically via hda-verb, so you can check
+whether the speaker works or not at each flip.
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
