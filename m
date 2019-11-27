@@ -2,66 +2,68 @@ Return-Path: <SRS0=hmI4=ZT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFA32C432C0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 06:52:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8108EC432C0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 08:23:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45852206F0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 06:52:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8C54F2070B
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Nov 2019 08:23:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o+1e1i9R"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45852206F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iy9WzpAO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C54F2070B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8948B1719;
-	Wed, 27 Nov 2019 07:51:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8948B1719
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D2CB16EB;
+	Wed, 27 Nov 2019 09:22:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D2CB16EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574837519;
-	bh=bUSEuca0aKhO2fcpFl/39eOevwsazD23GOO99JSjBOw=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=o+1e1i9RI8bIjj56Pb4oJ/sIyug17h+TDMPFWrUtiSgzNd+qYCBu5hfhxGcMF+9tL
-	 4khtfpzg22CwNc/Fro7Pf11xUTvwLW4nlqFkP/J/OImJrfLyWhGDaf5xKhIghONHn3
-	 J7/jxmRiNdhpm9pxVlpF1mLvUoMEBvv/cqZeTtPw=
+	s=default; t=1574842987;
+	bh=duiF79h2Fmf6wJaDPqRY7Uuv1UOzqdbv9pMKvstJh3o=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=iy9WzpAOUGrFWEBkCo8U/q6n7wY9QAYoVIdpQsoJc1viyhzEWWU4BPmvqWsEZv531
+	 m5lovwpLJGBfaecIXVaIimpM1PmzkLjvHt7rNMKEIv3TbzLjUlaVG5nHz4lSIyZAa+
+	 5O3aZQ+XsfukbfLcNBbYM7X7fxw6AERwiJIIEQhk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 174EDF8013B;
-	Wed, 27 Nov 2019 07:48:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF9D2F8013B;
+	Wed, 27 Nov 2019 09:22:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 931D3F8014D; Wed, 27 Nov 2019 07:48:28 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9A52DF800E9
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 07:48:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A52DF800E9
-Date: 27 Nov 2019 15:48:19 +0900
-X-IronPort-AV: E=Sophos;i="5.69,248,1571670000"; d="scan'208";a="32573211"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 Nov 2019 15:48:19 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8F4A0400C44F;
- Wed, 27 Nov 2019 15:48:19 +0900 (JST)
-Message-ID: <8736e93jd8.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <8b7a2bc1-6d89-ea18-0816-70448cbf9cb0@linux.intel.com>
-References: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
- <87pnhgeqc2.wl-kuninori.morimoto.gx@renesas.com>
- <8b7a2bc1-6d89-ea18-0816-70448cbf9cb0@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 12/15] ASoC: soc-core: add missing
-	return value check for soc_link_init()
+ id 81FD1F8014D; Wed, 27 Nov 2019 09:22:15 +0100 (CET)
+Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B188F80109
+ for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 09:22:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B188F80109
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+ by Forcepoint Email with ESMTP id D27E9A28826B1B02A339;
+ Wed, 27 Nov 2019 16:22:06 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Wed, 27 Nov 2019
+ 16:21:57 +0800
+From: YueHaibing <yuehaibing@huawei.com>
+To: <bardliao@realtek.com>, <oder_chiou@realtek.com>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <benzh@chromium.org>, <cujomalainey@chromium.org>
+Date: Wed, 27 Nov 2019 16:21:45 +0800
+Message-ID: <20191127082145.6100-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH -next] ASoC: rt5677: Fix build error without
+	CONFIG_SPI
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,59 +81,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+If CONFIG_SPI is n, SND_SOC_RT5677_SPI also is n, building fails:
 
-Hi Pierre-Louis
+sound/soc/codecs/rt5677.o: In function `rt5677_irq':
+rt5677.c:(.text+0x2dbf): undefined reference to `rt5677_spi_hotword_detected'
+sound/soc/codecs/rt5677.o: In function `rt5677_dsp_work':
+rt5677.c:(.text+0x3709): undefined reference to `rt5677_spi_write'
 
-> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> > index 79a4753..bdae48e 100644
-> > --- a/sound/soc/soc-core.c
-> > +++ b/sound/soc/soc-core.c
-> > @@ -1983,8 +1983,11 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
-> >   		goto probe_end;
-> >   	}
-> >   -	for_each_card_rtds(card, rtd)
-> > -		soc_link_init(card, rtd);
-> > +	for_each_card_rtds(card, rtd) {
-> > +		ret = soc_link_init(card, rtd);
-> > +		if (ret < 0)
-> > +			goto probe_end;
-> > +	}
-> 
-> Morimoto-san, this patch proves very useful to avoid a kernel oops
-> when a dailink init fails, but I still see a warning when cleaning-up.
-> 
-> I was experimenting with a topology file that wasn't complete and came
-> across the warning below, would you have any ideas/recommendations on
-> what might be missing? I am running out of time this week so thought I
-> would ask, in case this rings a bell.
-> 
-> Thanks!
-> 
-> [   21.098662] bytcr_rt5640 bytcr_rt5640: ASoC: no source widget found
-> for modem_out
-> [   21.098677] bytcr_rt5640 bytcr_rt5640: ASoC: Failed to add route
-> modem_out -> direct -> ssp0 Tx
-> [   21.098694] bytcr_rt5640 bytcr_rt5640: ASoC: no sink widget found
-> for modem_in
-> [   21.098703] bytcr_rt5640 bytcr_rt5640: ASoC: Failed to add route
-> ssp0 Rx -> direct -> modem_in
-> [   21.098732] bytcr_rt5640 bytcr_rt5640: ASoC: failed to init
-> SSP2-Codec: -19
+This adds stub helpers to fix this.
 
-Do you mean, it could save you from Oops, but you still have warning ?
-
-It seems soc-dapm::snd_soc_dapm_add_routes() failed.
-Your kernel is missing widget route/path ?
-Or, sound card driver has some issue ?
-
-I have been faced this error many times.
-I don't remember detail, but, if my memory was correct,
-it was always card driver setup timing, or missing something, in my case.
-
-Thank you for your help !!
-Best regards
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 461c623270e4 ("ASoC: rt5677: Load firmware via SPI using delayed work")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
-Kuninori Morimoto
+ sound/soc/codecs/rt5677-spi.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5677-spi.h b/sound/soc/codecs/rt5677-spi.h
+index 3af36ec..088b779 100644
+--- a/sound/soc/codecs/rt5677-spi.h
++++ b/sound/soc/codecs/rt5677-spi.h
+@@ -9,9 +9,25 @@
+ #ifndef __RT5677_SPI_H__
+ #define __RT5677_SPI_H__
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_RT5677_SPI)
+ int rt5677_spi_read(u32 addr, void *rxbuf, size_t len);
+ int rt5677_spi_write(u32 addr, const void *txbuf, size_t len);
+ int rt5677_spi_write_firmware(u32 addr, const struct firmware *fw);
+ void rt5677_spi_hotword_detected(void);
++#else
++static inline int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
++{
++	return -EINVAL;
++}
++static inline int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
++{
++	return -EINVAL;
++}
++static inline int rt5677_spi_write_firmware(u32 addr, const struct firmware *fw)
++{
++	return -EINVAL;
++}
++static inline void rt5677_spi_hotword_detected(void){}
++#endif
+ 
+ #endif /* __RT5677_SPI_H__ */
+-- 
+2.7.4
+
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
