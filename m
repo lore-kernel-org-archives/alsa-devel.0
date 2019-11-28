@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93199C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:21:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6402C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:21:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1780421787
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:21:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D579208E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:21:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BE6dc8uh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1780421787
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C5BBIOF/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D579208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C33816F5;
-	Thu, 28 Nov 2019 14:20:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C33816F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9695016DF;
+	Thu, 28 Nov 2019 14:20:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9695016DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574947266;
-	bh=K+NAY8si11dnJkqTBuzyZkttyV119ciDY02ZOXt2TR8=;
+	s=default; t=1574947308;
+	bh=ac5BnkTGIi4dVbcpR+gvSf+ORxaksrYWN7E65kT/1wg=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=BE6dc8uhoY1nv0fJslCi7x4uqweQq3fgwfTf9UFa79+/ocPsHw/bvkdOm+i20VubB
-	 OLCtY/AkzuI+E/slaiDdxkNJqJlBGh1Map+fMJvIpxGnpLzNOljmzEelENhvykq6ig
-	 MgcBBJ6KcAvYtQXhctmajDvoEKCffid/k6HQUNZQ=
+	b=C5BBIOF/fL8Y6NSpcE1eTEsuVUUzMxSLqnX2NzXkAnRmKfrq3jQCMFGeuZKOR02E+
+	 dvJKOczFTbgG8mlUEn3Ng7/Of6H54Eb20h/sBblphUkmC/W1HW3tP5s9MmIMIikgbo
+	 KJEgD18UeuBXAdeBcyGRDiZABv8r9/LkZkFvTDxk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D17DFF80216;
-	Thu, 28 Nov 2019 14:18:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E132F80227;
+	Thu, 28 Nov 2019 14:18:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEDCCF801F2; Thu, 28 Nov 2019 14:18:31 +0100 (CET)
+ id 313B4F80213; Thu, 28 Nov 2019 14:18:34 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 317B0F801ED
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 14:18:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 317B0F801ED
+ by alsa1.perex.cz (Postfix) with ESMTP id 4CD74F801ED
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 14:18:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CD74F801ED
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 10D4D30E;
- Thu, 28 Nov 2019 05:18:28 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FCD131B;
+ Thu, 28 Nov 2019 05:18:30 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 84B453F52E;
- Thu, 28 Nov 2019 05:18:27 -0800 (PST)
-Date: Thu, 28 Nov 2019 13:18:25 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F38E63F52E;
+ Thu, 28 Nov 2019 05:18:29 -0800 (PST)
+Date: Thu, 28 Nov 2019 13:18:28 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20191122073114.219945-2-tzungbi@google.com>
-Message-Id: <applied-20191122073114.219945-2-tzungbi@google.com>
+To: Michael Walle <michael@walle.cc>
+In-Reply-To: <20191122232532.22258-1-michael@walle.cc>
+Message-Id: <applied-20191122232532.22258-1-michael@walle.cc>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, cychiang@google.com,
- pierre-louis.bossart@linux.intel.com, tzungbi@google.com,
- Mark Brown <broonie@kernel.org>, dgreid@google.com
-Subject: [alsa-devel] Applied "ASoC: max98090: remove msleep in PLL unlocked
-	workaround" to the asoc tree
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: wm8904: fix automatic sysclk
+	configuration" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,7 +80,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: max98090: remove msleep in PLL unlocked workaround
+   ASoC: wm8904: fix automatic sysclk configuration
 
 has been applied to the asoc tree at
 
@@ -104,55 +105,43 @@ to this mail.
 Thanks,
 Mark
 
-From acb874a7c049ec49d8fc66c893170fb42c01bdf7 Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 22 Nov 2019 15:31:12 +0800
-Subject: [PATCH] ASoC: max98090: remove msleep in PLL unlocked workaround
+From 2a0bda276c64212e517cc1d65cf65719a9ab1ef6 Mon Sep 17 00:00:00 2001
+From: Michael Walle <michael@walle.cc>
+Date: Sat, 23 Nov 2019 00:25:32 +0100
+Subject: [PATCH] ASoC: wm8904: fix automatic sysclk configuration
 
-It was observed Baytrail-based chromebooks could cause continuous PLL
-unlocked when using playback stream and capture stream simultaneously.
-Specifically, starting a capture stream after started a playback stream.
-As a result, the audio data could corrupt or turn completely silent.
+The simple-card tries to signal the codec to disable rate constraints,
+see commit 2458adb8f92a ("SoC: simple-card-utils: set 0Hz to sysclk when
+shutdown"). This wasn't handled by the codec, instead it would set the
+FLL frequency to 0Hz which isn't working. Since we don't have any rate
+constraints just ignore this request.
 
-As the datasheet suggested, the maximum PLL lock time should be 7 msec.
-The workaround resets the codec softly by toggling SHDN off and on if
-PLL failed to lock for 10 msec.  Notably, there is no suggested hold
-time for SHDN off.
-
-On Baytrail-based chromebooks, it would easily happen continuous PLL
-unlocked if there is a 10 msec delay between SHDN off and on.  Removes
-the msleep().
-
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20191122073114.219945-2-tzungbi@google.com
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: 13409d27cb39 ("ASoC: wm8904: configure sysclk/FLL automatically")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20191122232532.22258-1-michael@walle.cc
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8904.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index f6bf4cfbea23..12cb87c0d463 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2114,10 +2114,16 @@ static void max98090_pll_work(struct work_struct *work)
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 2a7d23a5daa8..d191d81850ee 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -1806,6 +1806,12 @@ static int wm8904_set_sysclk(struct snd_soc_dai *dai, int clk_id,
  
- 	dev_info_ratelimited(component->dev, "PLL unlocked\n");
- 
-+	/*
-+	 * As the datasheet suggested, the maximum PLL lock time should be
-+	 * 7 msec.  The workaround resets the codec softly by toggling SHDN
-+	 * off and on if PLL failed to lock for 10 msec.  Notably, there is
-+	 * no suggested hold time for SHDN off.
-+	 */
+ 	switch (clk_id) {
+ 	case WM8904_CLK_AUTO:
++		/* We don't have any rate constraints, so just ignore the
++		 * request to disable constraining.
++		 */
++		if (!freq)
++			return 0;
 +
- 	/* Toggle shutdown OFF then ON */
- 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
- 			    M98090_SHDNN_MASK, 0);
--	msleep(10);
- 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
- 			    M98090_SHDNN_MASK, M98090_SHDNN_MASK);
- 
+ 		mclk_freq = clk_get_rate(priv->mclk);
+ 		/* enable FLL if a different sysclk is desired */
+ 		if (mclk_freq != freq) {
 -- 
 2.20.1
 
