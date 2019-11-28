@@ -2,101 +2,68 @@ Return-Path: <SRS0=87PQ=ZU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98930C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 09:41:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0876C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 12:12:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5ED22176D
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 09:41:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 01056217C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 12:12:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n0mTBl8J";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="wFhcln6M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5ED22176D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cogentembedded.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GPVOyDQ6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01056217C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F74516DA;
-	Thu, 28 Nov 2019 10:40:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F74516DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F98A16DB;
+	Thu, 28 Nov 2019 13:11:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F98A16DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574934060;
-	bh=vNjh/v7tcFwK9qRu6rqEGVLYYjhpFT9/XpvrPGURpxs=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=n0mTBl8JX/PQ78T60T/mfmvvvkVxkKh93CzsIBfC+uDBb1G+aMT4QJVx1dyCjNW4i
-	 ExJkQ0xTA/+a0mNneuN9aVnYVkSN/Om9KjJfTjZX1oyR7ckb+7czu5UvlPIEBJsxN1
-	 Hs7uNWUr0ifks/zP8JCHUnyT3FldNyM9QCZoLYvI=
+	s=default; t=1574943147;
+	bh=6IqIWgA1GK68RdRkPgZ6Kc39YV1Lii30JgZRSshZ+PI=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GPVOyDQ6/1RWhyfDpjXrgoDRBYGXl/w8u0994PBC65rUfqO7YjXbLGFlBp/i6j0S/
+	 fqR4jApS120APeUaL5zoF4Ayvl84ILO9ejn/79ZDXRrQJyB5B7tvnaWAFIz+7eaDQ+
+	 nqIeRZleKQkMOt6gY0ld3Qx7f1WufLkF8FeDTt9Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEC7BF80106;
-	Thu, 28 Nov 2019 10:40:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F10D3F80106;
+	Thu, 28 Nov 2019 13:11:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6E93F80149; Thu, 28 Nov 2019 10:40:08 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72B8CF80106
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 10:40:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72B8CF80106
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com
- header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="wFhcln6M"
-Received: by mail-wr1-x444.google.com with SMTP id n1so30255202wra.10
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 01:40:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=/JTPZnckyzjgJEzpIRleuMXljaM0DFNZiV1GxL/alt8=;
- b=wFhcln6M8qxf18N1O/bdB4MCLIw8mwWvsHlQJCgz+bkNzJ5TKu63c1aX109Yy0GTci
- Irrx9dzqltC3ArhPSav2bCyG0L+eTVr8lNvEhb7eNstKT1Zyj6Vc9n72zpeyKrJdsuS0
- 6bYbohiwF0D4Vl946uBLeLqIgUKHQjlgG5kA6oD7Ei7DcjEJvpX9+Ay00ONY1aEShlSC
- KTTEmsZH71kbakbsWSd79pAft5+k/AYNVHNtgDoUV0e1awngaSdpRHINFE25dfQK3aLN
- 5eYjABk8G7n617MEqZiStbaTxZqf77Q8SYETeUVVUFQv41pJIbTjQFqUi1jr13IUfzJ9
- rhug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=/JTPZnckyzjgJEzpIRleuMXljaM0DFNZiV1GxL/alt8=;
- b=kiaZmOXhp8yN4pfxfaD5yTCpodn5iqC/nSpFqwYuUWEmq1DtQ392VHSxmt+RBTBK46
- l7im+MgE0dieu1JKbLxA+nCIlgv526SSgG3REpBLwws+CrB4m4tah/SyJZNijlBrBB13
- EYvWu5yJ9GhgbsqkER8z0/itW1RIRzR/qo90gzu9JpR9Rdgr2TXjJtbtsrc8VbHpEC5E
- MbLw0bwe6LFemSrMz4v+1p36Bq35zGt5D1KRVlxEFsqdkPLQCzxonb8LCyUeNzopQJT5
- /7luvpZiI34/3R1+cfJG29FCEqOXFfzfpqPZknoRmaz1OImge4/XUr4ieHZw2GpfQwIB
- Z0dw==
-X-Gm-Message-State: APjAAAULuvgnRdytu8eRvgNVrkud2Evqi4IGju8LnrYa2bYX+9NRc3K/
- 2hCuaDf4FLUQ6AAWGjFPy2HZCg==
-X-Google-Smtp-Source: APXvYqwu1QjgKfwI4JCeQQx1SHzEZw7WIBYrq8BpklWehtaitBzDqcEh+OUYTfpGukVZw43XcCA6rw==
-X-Received: by 2002:a05:6000:149:: with SMTP id
- r9mr7594495wrx.147.1574934004238; 
- Thu, 28 Nov 2019 01:40:04 -0800 (PST)
-Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
- by smtp.gmail.com with ESMTPSA id f6sm23073673wrr.15.2019.11.28.01.40.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 Nov 2019 01:40:03 -0800 (PST)
-From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Lucas Stach <l.stach@pengutronix.de>, "Andrew F. Davis" <afd@ti.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Date: Thu, 28 Nov 2019 12:39:55 +0300
-Message-Id: <20191128093955.29567-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.20.1
+ id 675ECF80149; Thu, 28 Nov 2019 13:11:35 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 01D7BF800CB
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 13:11:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01D7BF800CB
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D810C30E;
+ Thu, 28 Nov 2019 04:11:30 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 559613F6C4;
+ Thu, 28 Nov 2019 04:11:30 -0800 (PST)
+Date: Thu, 28 Nov 2019 12:11:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Message-ID: <20191128121128.GA4210@sirena.org.uk>
+References: <20191128093955.29567-1-nikita.yoush@cogentembedded.com>
 MIME-Version: 1.0
-Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Chris Healy <cphealy@gmail.com>
-Subject: [alsa-devel] [PATCH] ASoC: tlv320aic31xx: Add HP output driver pop
-	reduction controls
+In-Reply-To: <20191128093955.29567-1-nikita.yoush@cogentembedded.com>
+X-Cookie: Do not dry clean.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ "Andrew F. Davis" <afd@ti.com>, Chris Healy <cphealy@gmail.com>,
+ Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: tlv320aic31xx: Add HP output driver
+ pop reduction controls
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,58 +76,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3648984455837880798=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-HP output driver has two parameters that can be configured to reduce
-pop noise: power-on delay and ramp-up step time. Two new kcontrols
-have been added to set these parameters.
 
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- sound/soc/codecs/tlv320aic31xx.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+--===============3648984455837880798==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ibTvN161/egqYuK8"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 67323188afd2..740e75032f36 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -263,6 +263,19 @@ static SOC_ENUM_SINGLE_DECL(cm_m_enum, AIC31XX_MICPGAMI, 6, mic_select_text);
- static SOC_ENUM_SINGLE_DECL(mic1lm_m_enum, AIC31XX_MICPGAMI, 4,
- 	mic_select_text);
- 
-+static const char * const hp_poweron_time_text[] = {
-+	"0us", "15.3us", "153us", "1.53ms", "15.3ms", "76.2ms",
-+	"153ms", "304ms", "610ms", "1.22s", "3.04s", "6.1s" };
-+
-+static SOC_ENUM_SINGLE_DECL(hp_poweron_time_enum, AIC31XX_HPPOP, 3,
-+	hp_poweron_time_text);
-+
-+static const char * const hp_rampup_step_text[] = {
-+	"0ms", "0.98ms", "1.95ms", "3.9ms" };
-+
-+static SOC_ENUM_SINGLE_DECL(hp_rampup_step_enum, AIC31XX_HPPOP, 1,
-+	hp_rampup_step_text);
-+
- static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -6350, 50, 0);
- static const DECLARE_TLV_DB_SCALE(adc_fgain_tlv, 0, 10, 0);
- static const DECLARE_TLV_DB_SCALE(adc_cgain_tlv, -2000, 50, 0);
-@@ -286,6 +299,9 @@ static const struct snd_kcontrol_new common31xx_snd_controls[] = {
- 
- 	SOC_DOUBLE_R_TLV("HP Analog Playback Volume", AIC31XX_LANALOGHPL,
- 			 AIC31XX_RANALOGHPR, 0, 0x7F, 1, hp_vol_tlv),
-+
-+	SOC_ENUM("HP Output Driver Power-On time", hp_poweron_time_enum),
-+	SOC_ENUM("HP Output Driver Ramp-up step", hp_rampup_step_enum),
- };
- 
- static const struct snd_kcontrol_new aic31xx_snd_controls[] = {
--- 
-2.20.1
+
+--ibTvN161/egqYuK8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 28, 2019 at 12:39:55PM +0300, Nikita Yushchenko wrote:
+
+> +static const char * const hp_poweron_time_text[] = {
+> +	"0us", "15.3us", "153us", "1.53ms", "15.3ms", "76.2ms",
+> +	"153ms", "304ms", "610ms", "1.22s", "3.04s", "6.1s" };
+> +
+> +static SOC_ENUM_SINGLE_DECL(hp_poweron_time_enum, AIC31XX_HPPOP, 3,
+> +	hp_poweron_time_text);
+> +
+> +static const char * const hp_rampup_step_text[] = {
+> +	"0ms", "0.98ms", "1.95ms", "3.9ms" };
+> +
+> +static SOC_ENUM_SINGLE_DECL(hp_rampup_step_enum, AIC31XX_HPPOP, 1,
+> +	hp_rampup_step_text);
+
+I'm not seeing any integration with DAPM here, I'd expect to see that so
+we don't cut off the start of audio especially with the longer times
+available (which I'm frankly not sure are seriously usable).
+
+--ibTvN161/egqYuK8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3fuW8ACgkQJNaLcl1U
+h9D+5Qf/QFKjJasickPKQCEdE/PrbvW/Mm+6dtmuvmnV9hvdQeCMwT37eyE3TFlE
++hlqcPYoBxVuscGPCTbS+PgplsAB7++PcLBp1gQwcrU3FGg/kbOQiF0AeV/8456X
+hJD1fdSlIMnzV5QXMbKz0iAO6G2uxLJUHreXOGybQS3PYvFFplPs/2Sog4GIcnWt
+94QrFkgRVccIIjVDCbisZngy1WK919xWYrQDCdg/MGKJiCKENfqUuwKSck6Cy+Z6
+GDMCaDw9PNCCfeYW27GIt1DKqrdcL97+J29WsXqTxqth8WOwEM/UmpuMtvhX2nip
+/4l2Iu4vwMmdpgsGwcLLJs+pPbi4Lg==
+=bIgM
+-----END PGP SIGNATURE-----
+
+--ibTvN161/egqYuK8--
+
+--===============3648984455837880798==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3648984455837880798==--
