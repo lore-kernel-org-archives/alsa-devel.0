@@ -2,84 +2,66 @@ Return-Path: <SRS0=87PQ=ZU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFDA9C432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 06:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B8A6C432C0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 06:40:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46F92215E5
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 06:22:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B27B215F2
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 06:40:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rggBXQSw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46F92215E5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HYnCgEot"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B27B215F2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C634C16D6;
-	Thu, 28 Nov 2019 07:22:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C634C16D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DBBF16CD;
+	Thu, 28 Nov 2019 07:39:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DBBF16CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574922175;
-	bh=gv0vp0YSd7GJ2JyI8y5vBm+LDsFz6Fy/pfLkTRYkLXY=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1574923227;
+	bh=Heizq9K6CXNIPMzDCvkKRf+Ty8eWF1XzFWy9QQX8xUE=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rggBXQSwX9Q8TJ9aPdtLEWh2WpPelApbn8P+mYdLDSGCfGyG55pQmYdB/VeWpiZ1u
-	 rLMAZnYRdyDrAwQMXSVx2EMzzmIRYvESBi/BVN0kZfMi2dvR3QuhazV4DlhyeMV+Y9
-	 Ysfz5ZDONWCd73OrR24jrOVkPVyen7YrAL4kAXFM=
+	b=HYnCgEot0zkEDK7CHRcR0YXaGFLSCEawujWgHvuLiVjNNDBmcxKbrpifFsWVsN3PS
+	 rgb31nbTwctK4xT8em+BUD2ptPB4LH8e3AgQMpAQcD46fYs2K7+aPq7TJ9TI0crKhB
+	 u1wJx1NQKTudY3jOuVmjwPVMmUFDZQ7ukgb0rfeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E246F801F2;
-	Thu, 28 Nov 2019 07:21:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB854F8013A;
+	Thu, 28 Nov 2019 07:39:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA30AF8014D; Wed, 27 Nov 2019 22:30:42 +0100 (CET)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 97392F80149; Thu, 28 Nov 2019 07:39:35 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF401F80109
- for <alsa-devel@alsa-project.org>; Wed, 27 Nov 2019 22:30:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF401F80109
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
- id 6ECFA1C228B; Wed, 27 Nov 2019 22:30:38 +0100 (CET)
-Date: Wed, 27 Nov 2019 22:30:37 +0100
-From: Pavel Machek <pavel@denx.de>
-To: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-ID: <20191127213037.GB20612@amd>
-References: <20191126165417.22423-1-sean.j.christopherson@intel.com>
- <20191126165417.22423-12-sean.j.christopherson@intel.com>
-MIME-Version: 1.0
-In-Reply-To: <20191126165417.22423-12-sean.j.christopherson@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Mailman-Approved-At: Thu, 28 Nov 2019 07:21:07 +0100
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, linux-efi@vger.kernel.org,
- linux-ia64@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>, "VMware,
- Inc." <pv-drivers@vmware.com>, Jie Yang <yang.jie@linux.intel.com>,
- alsa-devel@alsa-project.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Nadav Amit <nadav.amit@gmail.com>,
- linux-acpi@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>, x86@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Darren Hart <dvhart@infradead.org>, Len Brown <len.brown@intel.com>,
- Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Borislav Petkov <bp@alien8.de>, Steven Rostedt <rostedt@goodmis.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- platform-driver-x86@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
- Ard Biesheuvel <ard.biesheuvel@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- linux-kernel@vger.kernel.org, Andy Shevchenko <andy@infradead.org>
-Subject: Re: [alsa-devel] [PATCH v2 11/12] ACPI/sleep: Convert
- acpi_wakeup_address into a function
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C15EF800CB
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 07:39:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C15EF800CB
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id DF213B25C;
+ Thu, 28 Nov 2019 06:39:30 +0000 (UTC)
+Date: Thu, 28 Nov 2019 07:39:30 +0100
+Message-ID: <s5hlfs0ld25.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Curtis Malainey <cujomalainey@chromium.org>
+In-Reply-To: <20191128011358.39234-1-cujomalainey@chromium.org>
+References: <20191128011358.39234-1-cujomalainey@chromium.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: core: only flush inited work during
+	free
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,66 +74,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6739124504538289529=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 28 Nov 2019 02:13:58 +0100,
+Curtis Malainey wrote:
+> 
+> There are many paths to soc_free_pcm_runtime which can both have and
+> have not yet inited the workqueue yet. When we flush the queue when we
+> have not yet inited the queue we cause warnings to be printed.
+> 
+> An example is soc_cleanup_card_resources which is called by
+> snd_soc_bind_card which has multiple failure points before and after
+> soc_link_init -> soc_new_pcm which is where the queue is inited.
+> 
+> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 
---===============6739124504538289529==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
-Content-Disposition: inline
+This patch itself isn't wrong, but there is a generic problem in the
+current code in general.  Many fields in snd_soc_pcm_runtime object,
+not only delayed_work, are initialized too late where
+soc_free_pcm_runtime() may be called beforehand.  For example,
+rtd->component_list is initialized after the error path of
+rtd->codec_dais kmalloc, although soc_free_pcm_runtime() has a loop
+over the link.
+
+That said, at least the things like the linked list head and the work
+struct must be initialized right after the allocation before any use
+of the object.
+
+For this delayed_work, the situation is a bit complex, though.
+Usually the work is set up to point to a fixed function, but in the
+case of ASoC, it seems serving for different purposes depending on the
+component type.  I guess the cleaner way would be a redirect call
+like:
+
+static void rtd_delayed_work(struct work_struct *work)
+{
+	struct snd_soc_pcm_runtime *rtd =
+		container_of(work, struct snd_soc_pcm_runtime, delayed_work.work);
+	if (rtd->delayed_work_fn)
+		rtd->delayed_work_fn(rtd);
+}
+
+static struct snd_soc_pcm_runtime *soc_new_pcm_runtime()
+{
+	....
+	INIT_DELAYED_WORK(&rtd->delayed_work, rtd_delayed_work);
+	....
+}
 
 
---ZfOjI3PrQbgiZnxM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+thanks,
 
-On Tue 2019-11-26 08:54:16, Sean Christopherson wrote:
-> Convert acpi_wakeup_address from a raw variable into a function so that
-> x86 can wrap its dereference of the real mode boot header in a function
-> instead of broadcasting it to the world via a #define.  This sets the
-> stage for a future patch to move x86's definition of the new function,
-> acpi_get_wakeup_address(), out of asm/acpi.h and thus break acpi.h's
-> dependency on asm/realmode.h.
->=20
-> No functional change intended.
->=20
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-
-Thanks!
-
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---ZfOjI3PrQbgiZnxM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl3e6v0ACgkQMOfwapXb+vIvKgCgj+csmgRVJU3LjSgRtQ9xs4OL
-1n8An0cFCD4JerAugYVERVISU8Tw+N8s
-=cvdZ
------END PGP SIGNATURE-----
-
---ZfOjI3PrQbgiZnxM--
-
---===============6739124504538289529==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============6739124504538289529==--
