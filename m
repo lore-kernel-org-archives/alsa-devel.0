@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8B0EC432C0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21005C432C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:23:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BF84208E4
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:23:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9B506208E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Nov 2019 13:23:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ASj82vcN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5BF84208E4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rZh97zgc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B506208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F2D516F3;
-	Thu, 28 Nov 2019 14:22:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F2D516F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04BF316F6;
+	Thu, 28 Nov 2019 14:22:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04BF316F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1574947379;
-	bh=sF2u8/PEQDSB1BssuWHQdetyoTdfDBm1Ru/IOYCzl+E=;
+	s=default; t=1574947420;
+	bh=HOPN78iElmO4YpK5uG04ACg7kCTlYPMur5T2QJ9ZBSA=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ASj82vcN5GSpo6ivrFzl14yz0L+D+rZkiEAwIlwdY8f5e6upJkvsF2j1rvCoQgrnC
-	 AsZDmL/dOqegWapEfOPWlGNt0RRDn69nHuEB/eUIuH6VfsJKhl7Am0nqngJO3Orjmk
-	 j849W/HTiot309dUlW3VeqXBFSIVGxl6y39HS7bY=
+	b=rZh97zgcLvD7jdrHUejaRUwNWg1K7pXW49qcaFynImOv7fXtN4cnsg97I4z1mQEq9
+	 epxHyaaCiE4HBeqbl5nO4Th6bgN5Fa6NdbwLXitY4o/YKa3l40Oes1on+kM/bcCGMc
+	 GSlHcbIAbd2y2omL3a5R19usW2j8KaDLVF2fzKHs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 432A0F80240;
-	Thu, 28 Nov 2019 14:18:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71813F80248;
+	Thu, 28 Nov 2019 14:18:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38F45F80233; Thu, 28 Nov 2019 14:18:39 +0100 (CET)
+ id 79EDEF80240; Thu, 28 Nov 2019 14:18:41 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 52B31F80217
- for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 14:18:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52B31F80217
+ by alsa1.perex.cz (Postfix) with ESMTP id 8488BF80217
+ for <alsa-devel@alsa-project.org>; Thu, 28 Nov 2019 14:18:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8488BF80217
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C5A71045;
- Thu, 28 Nov 2019 05:18:35 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DABB91045;
+ Thu, 28 Nov 2019 05:18:37 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0ACC3F52E;
- Thu, 28 Nov 2019 05:18:34 -0800 (PST)
-Date: Thu, 28 Nov 2019 13:18:33 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A2933F52E;
+ Thu, 28 Nov 2019 05:18:37 -0800 (PST)
+Date: Thu, 28 Nov 2019 13:18:35 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@nxp.com>
-In-Reply-To: <20191126141606.21650-1-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191126141606.21650-1-pierre-louis.bossart@linux.intel.com>
+To: Keyon Jie <yang.jie@linux.intel.com>
+In-Reply-To: <20191126141533.21601-1-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191126141533.21601-1-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: topology: Fix unload for SAI/ESAI"
-	to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: BYT: fix a copy/paste
+	mistake in byt_dump()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: topology: Fix unload for SAI/ESAI
+   ASoC: SOF: Intel: BYT: fix a copy/paste mistake in byt_dump()
 
 has been applied to the asoc tree at
 
@@ -103,42 +103,71 @@ to this mail.
 Thanks,
 Mark
 
-From 469b3ad672e27b28c5865c804426f65e69c5e41a Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Tue, 26 Nov 2019 08:16:06 -0600
-Subject: [PATCH] ASoC: SOF: topology: Fix unload for SAI/ESAI
+From b81eb73be03ac736f1f8d27d64a372c62c7159e5 Mon Sep 17 00:00:00 2001
+From: Keyon Jie <yang.jie@linux.intel.com>
+Date: Tue, 26 Nov 2019 08:15:33 -0600
+Subject: [PATCH] ASoC: SOF: Intel: BYT: fix a copy/paste mistake in byt_dump()
 
-Link unload now fails for ESAI/SAI DAIs with:
+The shim registers in BYT/CHT/BSW are 64bits based, correct the
+copy/paste (from bdw.c where the shim registers are 32bits based) error
+in byt_dump().
 
-"error: invalid DAI type 6" because DAI type is not
-properly handled.
-
-Fix this by correctly handling cases where type is ESAI or SAI.
-
-Fixes: a4eff5f86c9c5e7 ("ASoC: SOF: imx: Read ESAI parameters and send them to DSP")
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Fixes: 3a9e204d4e36 ("ASoC: SOF: Intel: Add context data to any IPC timeout")
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191126141606.21650-1-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191126141533.21601-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/topology.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/byt.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index d82ab981e840..e20b806ec80f 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -3132,7 +3132,9 @@ static int sof_link_unload(struct snd_soc_component *scomp,
- 	case SOF_DAI_INTEL_SSP:
- 	case SOF_DAI_INTEL_DMIC:
- 	case SOF_DAI_INTEL_ALH:
--		/* no resource needs to be released for SSP, DMIC and ALH */
-+	case SOF_DAI_IMX_SAI:
-+	case SOF_DAI_IMX_ESAI:
-+		/* no resource needs to be released for all cases above */
- 		break;
- 	case SOF_DAI_INTEL_HDA:
- 		ret = sof_link_hda_unload(sdev, link);
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 2abf80b3eb52..b9061b79a57b 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -145,33 +145,33 @@ static void byt_dump(struct snd_sof_dev *sdev, u32 flags)
+ 	struct sof_ipc_dsp_oops_xtensa xoops;
+ 	struct sof_ipc_panic_info panic_info;
+ 	u32 stack[BYT_STACK_DUMP_SIZE];
+-	u32 status, panic, imrd, imrx;
++	u64 status, panic, imrd, imrx;
+ 
+ 	/* now try generic SOF status messages */
+-	status = snd_sof_dsp_read(sdev, BYT_DSP_BAR, SHIM_IPCD);
+-	panic = snd_sof_dsp_read(sdev, BYT_DSP_BAR, SHIM_IPCX);
++	status = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCD);
++	panic = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IPCX);
+ 	byt_get_registers(sdev, &xoops, &panic_info, stack,
+ 			  BYT_STACK_DUMP_SIZE);
+ 	snd_sof_get_status(sdev, status, panic, &xoops, &panic_info, stack,
+ 			   BYT_STACK_DUMP_SIZE);
+ 
+ 	/* provide some context for firmware debug */
+-	imrx = snd_sof_dsp_read(sdev, BYT_DSP_BAR, SHIM_IMRX);
+-	imrd = snd_sof_dsp_read(sdev, BYT_DSP_BAR, SHIM_IMRD);
++	imrx = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IMRX);
++	imrd = snd_sof_dsp_read64(sdev, BYT_DSP_BAR, SHIM_IMRD);
+ 	dev_err(sdev->dev,
+-		"error: ipc host -> DSP: pending %s complete %s raw 0x%8.8x\n",
++		"error: ipc host -> DSP: pending %s complete %s raw 0x%llx\n",
+ 		(panic & SHIM_IPCX_BUSY) ? "yes" : "no",
+ 		(panic & SHIM_IPCX_DONE) ? "yes" : "no", panic);
+ 	dev_err(sdev->dev,
+-		"error: mask host: pending %s complete %s raw 0x%8.8x\n",
++		"error: mask host: pending %s complete %s raw 0x%llx\n",
+ 		(imrx & SHIM_IMRX_BUSY) ? "yes" : "no",
+ 		(imrx & SHIM_IMRX_DONE) ? "yes" : "no", imrx);
+ 	dev_err(sdev->dev,
+-		"error: ipc DSP -> host: pending %s complete %s raw 0x%8.8x\n",
++		"error: ipc DSP -> host: pending %s complete %s raw 0x%llx\n",
+ 		(status & SHIM_IPCD_BUSY) ? "yes" : "no",
+ 		(status & SHIM_IPCD_DONE) ? "yes" : "no", status);
+ 	dev_err(sdev->dev,
+-		"error: mask DSP: pending %s complete %s raw 0x%8.8x\n",
++		"error: mask DSP: pending %s complete %s raw 0x%llx\n",
+ 		(imrd & SHIM_IMRD_BUSY) ? "yes" : "no",
+ 		(imrd & SHIM_IMRD_DONE) ? "yes" : "no", imrd);
+ 
 -- 
 2.20.1
 
