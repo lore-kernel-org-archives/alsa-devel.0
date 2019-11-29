@@ -2,66 +2,66 @@ Return-Path: <SRS0=Vfj9=ZV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B0FC432C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 14:44:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9188C432C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 14:45:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4582217BA
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 14:44:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 567B921736
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 14:45:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XFy86HUI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4582217BA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aXJaq45Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 567B921736
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8E9E16BE;
-	Fri, 29 Nov 2019 15:44:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8E9E16BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A068B16D6;
+	Fri, 29 Nov 2019 15:45:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A068B16D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575038690;
-	bh=PgXZAEtxQ4OxxS8WH6MJ3Xmyr11Z/jZfU1zq96cdUo0=;
+	s=default; t=1575038756;
+	bh=FFTjd0SKJ3wDKTwrBGq0+kCU3Gjuf5BB1Ex1D+j+Q4c=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XFy86HUIFup71xywHfhjeDySA1pU9N5xr9ToN4BlKEq8Jmj6YI2h7CgpfXbGBXm/Y
-	 CPcktOv3JMz3BThk4or1othCy560lyZlD/fVLy0zJS/WwQwtTX6Ubi8xUVPj+4J6fM
-	 Rv3Op9YlcGXFgx9HPLPV3V4hgg9zjJX0FYiGzn8k=
+	b=aXJaq45YiMSqTpwECE1ctQrjC+1spLtNYIiXrJQMr44Wm7Y2bN+uxjcvMK+90LULb
+	 /nFN8vW7OYUr9z7qUvR+F+kHOQFvBACVmVNmnGBa8w6XNvKKPiYeRnF3KRnRIDHq4i
+	 CsQIDWmn0M3loxTpccUOCxXTrtgodPnR5J2C0Vhk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47133F80106;
-	Fri, 29 Nov 2019 15:44:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EDE5F80141;
+	Fri, 29 Nov 2019 15:45:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2409F80141; Fri, 29 Nov 2019 15:43:58 +0100 (CET)
+ id 8E3D3F8016F; Fri, 29 Nov 2019 15:45:03 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E3B7F80106
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 15:43:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E3B7F80106
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4CBFF800C2
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 15:44:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4CBFF800C2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 09489B07B;
- Fri, 29 Nov 2019 14:43:55 +0000 (UTC)
-Date: Fri, 29 Nov 2019 15:43:54 +0100
-Message-ID: <s5h36e6spxx.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 35847AD19;
+ Fri, 29 Nov 2019 14:44:59 +0000 (UTC)
+Date: Fri, 29 Nov 2019 15:44:59 +0100
+Message-ID: <s5h1rtqspw4.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191129143756.23941-1-kai.vehmanen@linux.intel.com>
+In-Reply-To: <20191129143756.23941-2-kai.vehmanen@linux.intel.com>
 References: <20191129143756.23941-1-kai.vehmanen@linux.intel.com>
+ <20191129143756.23941-2-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org, Nikhil Mahale <nmahale@nvidia.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ALSA: hda: hdmi - fix kernel oops
-	caused by invalid PCM idx
+Subject: Re: [alsa-devel] [PATCH 2/2] [RFC] ALSA: hda: hdmi - preserve
+	non-MST PCM routing for Intel platforms
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,21 +79,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 29 Nov 2019 15:37:55 +0100,
+On Fri, 29 Nov 2019 15:37:56 +0100,
 Kai Vehmanen wrote:
 > 
-> Add additional check in hdmi_find_pcm_slot() to not return
-> a pcm index that points to unallocated pcm. This could happen
-> if codec driver is set up in codec->mst_no_extra_pcms mode.
-> On some platforms, this leads to a kernel oops in snd_ctl_notify(),
-> called via update_eld().
+> Commit 5398e94fb753 ("ALSA: hda - Add DP-MST support for NVIDIA codecs")
+> introduced a slight change of behaviour how non-MST monitors are
+> assigned to PCMs on Intel platforms.
 > 
-> BugLink: https://github.com/thesofproject/linux/issues/1536
-> Fixes: 5398e94fb753 ALSA: hda - Add DP-MST support for NVIDIA codecs
+> In the drm_audio_component.h interface, the third parameter
+> to pin_eld_notify() is pipe number. On Intel platforms, this value
+> is -1 for MST. On other platforms, a non-zero pipe id is used to
+> signal MST use.
+> 
+> This difference leads to some subtle differences in hdmi_find_pcm_slot()
+> with regards to how non-MST monitors are assigned to PCMs.
+> This patch restores the original behaviour on Intel platforms while
+> keeping the new allocation policy on other platforms.
+> 
 > Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Applied, thanks.
+I believe this is the right fix.  I thought of a similar possibility,
+but didn't take it seriously whether it really matters.
 
+So applied it now for the next 5.5-rc1 pull request.
+
+
+thanks,
 
 Takashi
 _______________________________________________
