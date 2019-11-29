@@ -2,78 +2,74 @@ Return-Path: <SRS0=Vfj9=ZV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BD00C432C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 16:02:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5B7FC432C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 16:37:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D663A216F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 16:02:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E19052176D
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 16:37:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SqQgYaCi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="eegNLqIv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D663A216F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q21g7PGa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E19052176D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 970DC16BF;
-	Fri, 29 Nov 2019 17:01:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 970DC16BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9655F16A0;
+	Fri, 29 Nov 2019 17:36:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9655F16A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575043368;
-	bh=kZEKdL63F5/WQdOGhU1XZUSSu+/eqmSAGv0papJzX/E=;
-	h=To:References:From:Date:In-Reply-To:Subject:List-Id:
+	s=default; t=1575045425;
+	bh=xvUSrs4SH+NAQDGM0kKzZCX23218oK/v2DTHtYgy5d8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SqQgYaCi6FDmUzvagj/FIx3v40aumic+QNWhnPK9Se6AzryeSFIi6gE579wJQ8v9w
-	 Q2YVoWoiqro518dYtvCN5K0wpYnFBlXSgJtBaBI5pVLQlQRCcjPut31y1j+N5VcQAo
-	 p2DIarMRQhkOuK9mAj1govh4txnyxMEYWlD7G8C0=
+	b=q21g7PGarCPePISUtRKOWVlDvjYDW5o9nqbGcVVmgobLm8B5xAtu1QtI5/56C9hUW
+	 H46oiWKci9Y34yKZH/LCMxfp30rtKza4dOc9kxL6tW0Dfjeu+T5PRSbWtSeD5IeUY3
+	 udaorIp8S452WBfiOVIvp9lnwmrnJ9E54q3go0x4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12CE9F80141;
-	Fri, 29 Nov 2019 17:01:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B560F800C2;
+	Fri, 29 Nov 2019 17:36:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82B5FF8016F; Fri, 29 Nov 2019 17:01:56 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id ED159F8016F; Fri, 29 Nov 2019 17:36:12 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46A19F80141
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 17:01:51 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 595C3A0046;
- Fri, 29 Nov 2019 17:01:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 595C3A0046
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1575043311; bh=SwZJ4aP38Ng80UDgSUBZreMlt+2xRx91K9PYdgrI+kM=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=eegNLqIvrzSjsqzlQllI/AkHRJbL9rK2+/yl3z/4bOdX+p+8cB/S8y6IAqJQ1aEEZ
- uaPlSF/W/fBs7ltS+8+Zj+7I/P5TX9csk2ciTWW43wJAj32+tco2mUDqSevrT7Cfko
- egZTWMRABNjk2Dvti0HI7c4colCOUUK/iujgc+P4=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 29 Nov 2019 17:01:49 +0100 (CET)
-To: Curtis Malainey <cujomalainey@chromium.org>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20191107015808.26844-1-cujomalainey@chromium.org>
- <20191107015808.26844-2-cujomalainey@chromium.org>
- <4b378b2c-fea2-5d77-26ff-0ff409d8e527@perex.cz>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <0626a79d-4950-ab27-d10a-366cd74da332@perex.cz>
-Date: Fri, 29 Nov 2019 17:01:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67ECAF80141
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 17:36:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67ECAF80141
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 29 Nov 2019 08:36:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,257,1571727600"; d="scan'208";a="409677905"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by fmsmga005.fm.intel.com with ESMTP; 29 Nov 2019 08:36:04 -0800
+Date: Fri, 29 Nov 2019 18:36:04 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@zeliteleevi
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <s5hsgm6ra98.wl-tiwai@suse.de>
+Message-ID: <alpine.DEB.2.21.1911291803050.16459@zeliteleevi>
+References: <20191129143756.23941-1-kai.vehmanen@linux.intel.com>
+ <20191129143756.23941-2-kai.vehmanen@linux.intel.com>
+ <alpine.DEB.2.21.1911291638430.16459@zeliteleevi>
+ <s5hsgm6ra98.wl-tiwai@suse.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-In-Reply-To: <4b378b2c-fea2-5d77-26ff-0ff409d8e527@perex.cz>
-Content-Language: en-US
-Subject: Re: [alsa-devel] [PATCH 02/11] ucm: docs: Add JackType value
+Cc: alsa-devel@alsa-project.org, Nikhil Mahale <nmahale@nvidia.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] [RFC] ALSA: hda: hdmi - preserve
+ non-MST PCM routing for Intel platforms
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,53 +82,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 11. 11. 19 v 14:39 Jaroslav Kysela napsal(a):
-> Dne 07. 11. 19 v 2:57 Curtis Malainey napsal(a):
->> Identifies the type of jack and how it should be accessed
->>
->> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
->> ---
->>    include/use-case.h | 3 +++
->>    1 file changed, 3 insertions(+)
->>
->> diff --git a/include/use-case.h b/include/use-case.h
->> index 2051bd40..3208cc30 100644
->> --- a/include/use-case.h
->> +++ b/include/use-case.h
->> @@ -322,6 +322,9 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
->>     *        configuration that doesn't belong to UCM configuration files.
->>     *   - JackName
->>     *      - Input name is the input device name for the jack
->> + *   - JackType
->> + *      - Specifies whether the jack is accessed via hctl or gpio and therefore
->> + *        only carries the possible values of "gpio" or "hctl"
->>     */
->>    int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
->>                         const char *identifier,
->>
+Hey,
+
+On Fri, 29 Nov 2019, Takashi Iwai wrote:
+
+> On Fri, 29 Nov 2019 15:47:11 +0100, Kai Vehmanen wrote:
+> > This second patch is however trickier. Nikhil your patch changed the 
+> > default allocation a bit, so the routing might be difference also with 
+> > snd-hda-intel (i.e. not SOF) for existing platforms and this may surprise 
+> > users.
 > 
-> What is meant with the "gpio" type? The standard input device interface? I
-> believe it should be "inputdev" and "ctl" (hctl is just interface on top of
-> ctl and the application can access the jack through snd_ctl functions, too.
+> Well, but the allocation itself is dynamic for DP-MST, even on Intel,
+> so user can't expect the completely persistent index assignment.
+> That's the reason I took Nikhil's patch (even I suggested to simplify
+> in that way).
+[...]
+> We had a trick to assign the primary index.  It still works, right?
+> That should be the only concern.
+[...]
+> This is a platform-specific part, and on Intel, the assumption has
+> been that pipe is equivalent with dev_id.  If this changed, of course,
+> we must reconsider the whole picture.
 
-I see (when I was cleaning this extra Chrome stuff in the ucm profiles) that 
-it's related to the gpio (general purpose i/o pin interface) in the linux 
-kernel. The JackSwitch is probably also related and defines the pin number 
-where the application should watch for the jack state. In this case, it would 
-be probably more nice to follow the JackControl and JackDev and define the pin 
-number through JackGPIO or something like that. We will cover all three 
-posibilities: ALSA control interface, Input interface, GPIO interface .
+hmm, the pipe equivalency should actually still hold. Looking at the code 
+more, this could also be a lurking bug on graphics driver that had 
+new side-effects with the recent ALSA side changes. E.g. I've received
+logs where dev_id=1 is for a single connected HDMI monitor. I need to
+investigate more whether this is an expected behaviour or a bug. :)
 
-					Jaroslav
+>> PS I did not have time to fully test the RFC patch, so this is just
+>>    for discussion now...
+> Since the assignment should work with your patch somehow, I already
+> applied it.  Let's do fine tune-up during 5.5 rc cycles, if any.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Ack, ok. My commit message is a bit confusing (the wording about MST is 
+not correct) but the actual code restores original behaviour so this 
+should be good to apply. I'll continue testing and also dig a bit deeper 
+into the bugreports w.r.t. what happens in the problematic non-MST cases. 
+Thanks for the quick reviews!
+
+Br, Kai
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
