@@ -2,72 +2,67 @@ Return-Path: <SRS0=Vfj9=ZV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C9BEC432C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 14:48:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B554C432C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 15:09:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81EDA217AB
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 14:48:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59D8421736
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 15:09:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gKP0jeky"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81EDA217AB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lTgJoPv+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59D8421736
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B659916C0;
-	Fri, 29 Nov 2019 15:47:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B659916C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0850C16BE;
+	Fri, 29 Nov 2019 16:08:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0850C16BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575038892;
-	bh=+BIwhuiuEQgyhAg9YYzksHbIeoqM+gCz5+J+DNJdrQ4=;
+	s=default; t=1575040140;
+	bh=kqBvlNGiU65E3F1jQIL8OhfJZXUcO8SHtdd+1b6k14Q=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gKP0jekyc5nJDpm7KOar/287jXOh0o0ME4gML4MlXEs3nAePeAQlXWmK5Z9RCvJlq
-	 FXXgpP3MDvyNP/9bUZ64hIiofb5kG7KZ125Q6uCYoxpIqg1bEPgKe9oGY66eVfFd0P
-	 F0SR6JyVpdp5/WxTrwKay0DElqIfxAyRoLYf4kLw=
+	b=lTgJoPv+aL6eobWIov2oEw1hNqI/tIp8UsIe4R4oBgpN9SpY00Qc+lCgvNwDOs6D7
+	 ofqkQFlCKH/AQxLzzP5HLShpj6zrrJ9XOReLzQazOa7Ie/1g4f7lFfrjp8XOAguuM7
+	 cqBhy5Kujt2WIxYyV2O53TVAnrHwKE5hDayul04M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47203F8013B;
-	Fri, 29 Nov 2019 15:47:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72153F80106;
+	Fri, 29 Nov 2019 16:08:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28F75F80141; Fri, 29 Nov 2019 15:47:19 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id F36A0F80141; Fri, 29 Nov 2019 16:08:06 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0388F80106
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 15:47:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0388F80106
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2019 06:47:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,257,1571727600"; d="scan'208";a="203755861"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga008.jf.intel.com with ESMTP; 29 Nov 2019 06:47:12 -0800
-Date: Fri, 29 Nov 2019 16:47:11 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@zeliteleevi
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2995F80106
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 16:08:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2995F80106
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 6AAC4B373;
+ Fri, 29 Nov 2019 15:08:03 +0000 (UTC)
+Date: Fri, 29 Nov 2019 16:08:03 +0100
+Message-ID: <s5hsgm6ra98.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191129143756.23941-2-kai.vehmanen@linux.intel.com>
-Message-ID: <alpine.DEB.2.21.1911291638430.16459@zeliteleevi>
+In-Reply-To: <alpine.DEB.2.21.1911291638430.16459@zeliteleevi>
 References: <20191129143756.23941-1-kai.vehmanen@linux.intel.com>
  <20191129143756.23941-2-kai.vehmanen@linux.intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
-MIME-Version: 1.0
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
- Nikhil Mahale <nmahale@nvidia.com>
+ <alpine.DEB.2.21.1911291638430.16459@zeliteleevi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, Nikhil Mahale <nmahale@nvidia.com>
 Subject: Re: [alsa-devel] [PATCH 2/2] [RFC] ALSA: hda: hdmi - preserve
- non-MST PCM routing for Intel platforms
+	non-MST PCM routing for Intel platforms
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,39 +80,69 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Takashi, Nikil and others,
+On Fri, 29 Nov 2019 15:47:11 +0100,
+Kai Vehmanen wrote:
+> 
+> Hi Takashi, Nikil and others,
+> 
+> On Fri, 29 Nov 2019, Kai Vehmanen wrote:
+> > This difference leads to some subtle differences in hdmi_find_pcm_slot()
+> > with regards to how non-MST monitors are assigned to PCMs.
+> > This patch restores the original behaviour on Intel platforms while
+> > keeping the new allocation policy on other platforms.
+> 
+> hmm, there seems a couple of more issues. The first patch is a clear bug 
+> that leads to segfault with SOF+patch_hdmi on some platforms (pipe B used
+> for single monitor HDMI case -> dev_id=1 -> non-existant pcm selected
+> and eventual kernel oops).
+> 
+> This second patch is however trickier. Nikhil your patch changed the 
+> default allocation a bit, so the routing might be difference also with 
+> snd-hda-intel (i.e. not SOF) for existing platforms and this may surprise 
+> users.
 
-On Fri, 29 Nov 2019, Kai Vehmanen wrote:
-> This difference leads to some subtle differences in hdmi_find_pcm_slot()
-> with regards to how non-MST monitors are assigned to PCMs.
-> This patch restores the original behaviour on Intel platforms while
-> keeping the new allocation policy on other platforms.
+Well, but the allocation itself is dynamic for DP-MST, even on Intel,
+so user can't expect the completely persistent index assignment.
+That's the reason I took Nikhil's patch (even I suggested to simplify
+in that way).
 
-hmm, there seems a couple of more issues. The first patch is a clear bug 
-that leads to segfault with SOF+patch_hdmi on some platforms (pipe B used
-for single monitor HDMI case -> dev_id=1 -> non-existant pcm selected
-and eventual kernel oops).
+We had a trick to assign the primary index.  It still works, right?
+That should be the only concern.
 
-This second patch is however trickier. Nikhil your patch changed the 
-default allocation a bit, so the routing might be difference also with 
-snd-hda-intel (i.e. not SOF) for existing platforms and this may surprise 
-users.
+> Digging deeper, we seem to have a slight semantics difference in how
+> intel_pin_eld_notify() and generic_acomp_pin_eld_notify() handle
+> the third pipe/dev_id parameter.
 
-Digging deeper, we seem to have a slight semantics difference in how
-intel_pin_eld_notify() and generic_acomp_pin_eld_notify() handle
-the third pipe/dev_id parameter.
+This is a platform-specific part, and on Intel, the assumption has
+been that pipe is equivalent with dev_id.  If this changed, of course,
+we must reconsider the whole picture.
 
-Any thoughts how to solve? I first I thought making separate functions
-for hdmi_find_pcm_slot() and allow platforms to define an alternative
-implementation, but in this RFC patch I opted for a simpler quirk in the 
-function. This is becoming fairly messy I must say -- the amount of 
-code commentary needed is a good indication some simplifaction would
-be in order.
+For generic_acomp_pin_eld_notify(), it's gfx-driver specific, too.
+And currently dev_id = -1 in AMDGPU, so we don't think too much about
+the behavior compatibility.
 
-PS I did not have time to fully test the RFC patch, so this is just
-   for discussion now...
+> Any thoughts how to solve? I first I thought making separate functions
+> for hdmi_find_pcm_slot() and allow platforms to define an alternative
+> implementation, but in this RFC patch I opted for a simpler quirk in the 
+> function. This is becoming fairly messy I must say -- the amount of 
+> code commentary needed is a good indication some simplifaction would
+> be in order.
 
-Br, Kai
+Yeah, that's a bit messy.  The only expectation is the primary slot
+assignment -- i.e. the case only one monitor is connected.  As long as
+this behavior is kept, I don't think any big problem with the dynamic
+assignment.
+
+> PS I did not have time to fully test the RFC patch, so this is just
+>    for discussion now...
+
+Since the assignment should work with your patch somehow, I already
+applied it.  Let's do fine tune-up during 5.5 rc cycles, if any.
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
