@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_2
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11FC4C432C0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 06:55:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6166C432C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 06:56:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F4D4207FA
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 06:55:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 50596207FA
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Nov 2019 06:56:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="othVsTsK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="rRdrD5gX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F4D4207FA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dHeyQZr+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="qfnE/gvH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50596207FA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD31216E8;
-	Fri, 29 Nov 2019 07:54:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD31216E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id A050816DE;
+	Fri, 29 Nov 2019 07:55:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A050816DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575010545;
-	bh=UqNQ72CeZxbPiJ3U0clVaOcBwnJKJd/8cdHJWiCrbMc=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1575010590;
+	bh=NAEeV6bpy74Rvi5YWKMFiSXdbKioP2f5psvtMAC0jN4=;
+	h=From:To:In-Reply-To:References:Date:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=othVsTsKduAP3AkeMfERWDHCpHipraZplDmbLElaUjnWOx72XTsQREbL53Mr5MTTZ
-	 gLdBPukCeIjkYCx09d3TyQM3HYq7TmLPz6+Eee7Prw8hoSNJyNhro72B7gPU6ydnyC
-	 xg1QwGk1NIzNPlR2Fg/sso/9FKtsaRKnoTAi6VVM=
+	b=dHeyQZr+7ZoREwl62ZUEYEB7JvPbhudVgxyCQ+erRGM2nK6XGs9iP3Y8jUqv/mo//
+	 aWsBlZW7wSrv9jTMu7o7UgCf42AV9/+MeTonxxUxxS4FubYLZAxpNdAHV7aXQkxN8K
+	 wD5NSp0bY9k9fb3VemjY09y0T0icXMRy/DxDxtFI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8FE4F8020C;
-	Fri, 29 Nov 2019 07:53:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CF25F80217;
+	Fri, 29 Nov 2019 07:53:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0EF1F80141; Fri, 29 Nov 2019 07:39:32 +0100 (CET)
+ id EBB29F80141; Fri, 29 Nov 2019 07:44:12 +0100 (CET)
 Received: from mailgw02.mediatek.com (unknown [1.203.163.81])
- by alsa1.perex.cz (Postfix) with ESMTP id C374BF800B3
- for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 07:39:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C374BF800B3
+ by alsa1.perex.cz (Postfix) with ESMTP id E1008F800B3
+ for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2019 07:44:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1008F800B3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="rRdrD5gX"
-X-UUID: c3d17336809f4127a38fe358717e507d-20191129
+ header.b="qfnE/gvH"
+X-UUID: 5fd80979d24a453a84ff3b12e0933b1c-20191129
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
  s=dk; 
- h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
- bh=8lX9vCY1Mdos86S6vjMAmKgXT0YEpzezR8Mrp8YXb4A=; 
- b=rRdrD5gXqndIT3/njBf3FRX8oxFCcumb9b/DpktAiaCfjpXPOjOPyiwB6LtGbDR/WRknR0LgGCnDMKdhuuXkMguPn2mzW9IJzNEbCk6HTjShQ7bI449B12adyhq0xpFpYIRsw8MGR1Bf452Gb5QLc8SPnGSKjfa+eKVA3sBzkAg=;
-X-UUID: c3d17336809f4127a38fe358717e507d-20191129
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+ h=Content-Transfer-Encoding:MIME-Version:Date:Content-Type:References:In-Reply-To:CC:To:From:Subject:Message-ID;
+ bh=oi4tPDzs8ZbqKpkDr986mLKVJSE8Ydo7EgiDBxABqc8=; 
+ b=qfnE/gvHM0lLKuMXq76D7iOBs8W4yf36PnHxz7I7N5qOGu5Etqyn0daooLulozQyzdibxq8+4HT5vgvV1Td/5wEeglrI61C8luxJt2IJtGfarwCCbiIQJojIiJbgJDWo/KqclZzo3VFpgOxbpkP/9QyFihEuYN4yiKDgPZs/BkQ=;
+X-UUID: 5fd80979d24a453a84ff3b12e0933b1c-20191129
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
  (envelope-from <yong.liang@mediatek.com>)
  (mailgw01.mediatek.com ESMTP with TLS)
- with ESMTP id 1273889381; Fri, 29 Nov 2019 14:39:20 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1395.4;
- Fri, 29 Nov 2019 14:38:26 +0800
+ with ESMTP id 1394102897; Fri, 29 Nov 2019 14:44:00 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1395.4;
+ Fri, 29 Nov 2019 14:43:53 +0800
 Received: from [10.17.3.153] (172.27.4.253) by MTKCAS36.mediatek.inc
  (172.27.4.170) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Fri, 29 Nov 2019 14:39:23 +0800
-Message-ID: <1575009551.6367.7.camel@mhfsdcap03>
+ Transport; Fri, 29 Nov 2019 14:43:49 +0800
+Message-ID: <1575009205.6367.4.camel@mhfsdcap03>
 From: Yong Liang <yong.liang@mediatek.com>
 To: Philipp Zabel <p.zabel@pengutronix.de>
-Date: Fri, 29 Nov 2019 14:39:11 +0800
 In-Reply-To: <49c94039ba327a1295fdfd5d74dca0b9805269b0.camel@pengutronix.de>
 References: <1574651030-29519-1-git-send-email-jiaxin.yu@mediatek.com>
  <1574651030-29519-2-git-send-email-jiaxin.yu@mediatek.com>
  <49c94039ba327a1295fdfd5d74dca0b9805269b0.camel@pengutronix.de>
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+Date: Fri, 29 Nov 2019 14:33:25 +0800
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: EA2D3B01FEF3DF1451F222F4DEAE6B23217E6232D37F6AAD440B8D1E6DE8FE882000:8
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+X-TM-SNTS-SMTP: FF3A6F2BD736D72B4F26A39DECBD324E971B973519332DC24613CED2AD969F4E2000:8
 X-MTK: N
 X-Mailman-Approved-At: Fri, 29 Nov 2019 07:53:11 +0100
 Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
@@ -110,7 +110,6 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-
 
 On Mon, 2019-11-25 at 18:07 +0800, Philipp Zabel wrote:
 > On Mon, 2019-11-25 at 11:03 +0800, Jiaxin Yu wrote:
@@ -226,7 +225,6 @@ On Mon, 2019-11-25 at 18:07 +0800, Philipp Zabel wrote:
 > Linux-mediatek mailing list
 > Linux-mediatek@lists.infradead.org
 > http://lists.infradead.org/mailman/listinfo/linux-mediatek
-
 
 _______________________________________________
 Alsa-devel mailing list
