@@ -2,59 +2,106 @@ Return-Path: <SRS0=OACP=ZY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA736C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 07:50:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81CDAC432C0
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 09:30:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48CD021774
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 07:50:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9012B2070B
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 09:30:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dGMAGz2S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48CD021774
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mYvSZ7Gm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="nb7aZeFO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9012B2070B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3394C15E4;
-	Mon,  2 Dec 2019 08:49:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3394C15E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id B820B886;
+	Mon,  2 Dec 2019 10:30:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B820B886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575273047;
-	bh=y3A6U6F+N5kPFvGmA2u30IuwNefVoFHViLeCVlbRiU8=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1575279051;
+	bh=mBY/BMR1Ch1CxqZWJTg35BkIzxZxTUGtVXgdABfNnso=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=dGMAGz2Ss1AUr8c7AkBay2LzeWYTodWhERs3vqX8mzpJ6h7p5bMIIypRAmXIoP7BW
-	 fPOQzhQyy5M2NvnzPZnjA5yy1ivRvrljqgNUYUNeEQpRdithMfV1x0mN4ZQm1Z07vv
-	 5JeNZ4G/FLyHyubRpS3MVIZQIc/2zm18Wg0I5MVQ=
+	b=mYvSZ7Gmwvv54O4LRFnkd42VFcG2KAt2HEJaI/+RW1Qi5Gghr0FLUIwyrMoYjA9vo
+	 p0K+VEPhVurFInGq6zcTxPvlQJ/QnnRg/pYmAvzC3AIiCdz1nBBd+Lt3GS5RSoHpvM
+	 rvpfUZspA18HvwRrqRY7tFOdbzDHd0HteqcrkS90=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2C53F800F0;
-	Mon,  2 Dec 2019 08:49:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07F7DF801D9;
+	Mon,  2 Dec 2019 10:30:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E1AAF80214; Mon,  2 Dec 2019 08:49:54 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 0F6B6F80214; Mon,  2 Dec 2019 10:29:56 +0100 (CET)
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2BA2F800F0
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2019 08:49:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2BA2F800F0
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 04C38B14A
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2019 07:49:51 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Mon,  2 Dec 2019 08:49:47 +0100
-Message-Id: <20191202074947.1617-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: hda: Modify stream stripe mask only when
-	needed
+ by alsa1.perex.cz (Postfix) with ESMTPS id 150E1F800F0
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2019 10:29:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 150E1F800F0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="nb7aZeFO"
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+ by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB29T1Je005064;
+ Mon, 2 Dec 2019 09:29:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=PTgvjzETagtLgHnhLzrl4n7RKdO+iUiL28eU2m4aAyw=;
+ b=nb7aZeFOitP8GUCESSZGpTfAI6acxBxWWE5t0vNmh+MidiekP8GDOzVVEIjBq9u+lYju
+ 7zNmcWeuHiusdRR4NDz9zeT8Or+ahShcTK2668ujTOmpkuy7yi6KRxPas7Bb2ydG16ex
+ M0JETX8Rz4G8eisCre6C2+29VghDVWkhWN/dtd7jxvspg+jc3A0ng5hDtMrzaXexAbOv
+ waU0ExARD3Q+Ha86FRU7u4NN0jkTrKbuZDosxryasr1MEUo5HshI1LXDqKZw8wbYYqtD
+ u3AjZazPilIwouxvL53nc+12V1kLcsrKfI0DBJzX0BCqRDSBqEBVDPZiFTxSuxkFn3yz nw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2130.oracle.com with ESMTP id 2wkfutxq7a-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 02 Dec 2019 09:29:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB29SdYk171048;
+ Mon, 2 Dec 2019 09:29:46 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by userp3030.oracle.com with ESMTP id 2wm1w23kgh-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 02 Dec 2019 09:29:46 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xB29Tfg5002021;
+ Mon, 2 Dec 2019 09:29:45 GMT
+Received: from kili.mountain (/129.205.23.165)
+ by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Mon, 02 Dec 2019 01:29:40 -0800
+Date: Mon, 2 Dec 2019 12:29:26 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: l.stach@pengutronix.de
+Message-ID: <20191202092753.vmhb6l2d2pe7wwkk@kili.mountain>
+MIME-Version: 1.0
+Content-Disposition: inline
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9458
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1
+ malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=908
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912020086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9458
+ signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=971 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912020086
+Cc: alsa-devel@alsa-project.org
+Subject: [alsa-devel] [bug report] ASoC: tlv320aic31xx: configure output
+ common-mode voltage
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,107 +114,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent in HD-audio stream management for changing the stripe
-control seems causing a regression on some platforms.  The stripe
-control is currently used only by HDMI codec, and applying the stripe
-mask unconditionally may lead to scratchy and static noises as seen on
-some MacBooks.
+Hello Lucas Stach,
 
-For addressing the regression, this patch changes the stream
-management code to apply the stripe mask conditionally only when the
-codec driver requested.
+The patch e48fdb53bd1f: "ASoC: tlv320aic31xx: configure output
+common-mode voltage" from Nov 18, 2019, leads to the following static
+checker warning:
 
-Fixes: 9b6f7e7a296e ("ALSA: hda: program stripe bits for controller")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204477
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/hdaudio.h    |  1 +
- sound/hda/hdac_stream.c    | 19 ++++++++++++-------
- sound/pci/hda/patch_hdmi.c |  5 +++++
- 3 files changed, 18 insertions(+), 7 deletions(-)
+	sound/soc/codecs/tlv320aic31xx.c:1519 aic31xx_configure_ocmv()
+	error: uninitialized symbol 'value'.
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index b260c5fd2337..e05b95e83d5a 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -493,6 +493,7 @@ struct hdac_stream {
- 	bool prepared:1;
- 	bool no_period_wakeup:1;
- 	bool locked:1;
-+	bool stripe:1;			/* apply stripe control */
- 
- 	/* timestamp */
- 	unsigned long start_wallclk;	/* start + minimum wallclk */
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index d8fe7ff0cd58..f9707fb05efe 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -96,12 +96,14 @@ void snd_hdac_stream_start(struct hdac_stream *azx_dev, bool fresh_start)
- 			      1 << azx_dev->index,
- 			      1 << azx_dev->index);
- 	/* set stripe control */
--	if (azx_dev->substream)
--		stripe_ctl = snd_hdac_get_stream_stripe_ctl(bus, azx_dev->substream);
--	else
--		stripe_ctl = 0;
--	snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, SD_CTL_STRIPE_MASK,
--				stripe_ctl);
-+	if (azx_dev->stripe) {
-+		if (azx_dev->substream)
-+			stripe_ctl = snd_hdac_get_stream_stripe_ctl(bus, azx_dev->substream);
-+		else
-+			stripe_ctl = 0;
-+		snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, SD_CTL_STRIPE_MASK,
-+					stripe_ctl);
-+	}
- 	/* set DMA start and interrupt mask */
- 	snd_hdac_stream_updateb(azx_dev, SD_CTL,
- 				0, SD_CTL_DMA_START | SD_INT_MASK);
-@@ -118,7 +120,10 @@ void snd_hdac_stream_clear(struct hdac_stream *azx_dev)
- 	snd_hdac_stream_updateb(azx_dev, SD_CTL,
- 				SD_CTL_DMA_START | SD_INT_MASK, 0);
- 	snd_hdac_stream_writeb(azx_dev, SD_STS, SD_INT_MASK); /* to be sure */
--	snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, SD_CTL_STRIPE_MASK, 0);
-+	if (azx_dev->stripe) {
-+		snd_hdac_stream_updateb(azx_dev, SD_CTL_3B, SD_CTL_STRIPE_MASK, 0);
-+		azx_dev->stripe = 0;
-+	}
- 	azx_dev->running = false;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_clear);
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 0032bba8cc9d..ed4e98a1057a 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -32,6 +32,7 @@
- #include <sound/hda_codec.h>
- #include "hda_local.h"
- #include "hda_jack.h"
-+#include "hda_controller.h"
- 
- static bool static_hdmi_pcm;
- module_param(static_hdmi_pcm, bool, 0644);
-@@ -1249,6 +1250,10 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 	per_pin->cvt_nid = per_cvt->cvt_nid;
- 	hinfo->nid = per_cvt->cvt_nid;
- 
-+	/* flip stripe flag for the assigned stream if supported */
-+	if (get_wcaps(codec, per_cvt->cvt_nid) & AC_WCAP_STRIPE)
-+		azx_stream(get_azx_dev(substream))->stripe = 1;
-+
- 	snd_hda_set_dev_select(codec, per_pin->pin_nid, per_pin->dev_id);
- 	snd_hda_codec_write_cache(codec, per_pin->pin_nid, 0,
- 			    AC_VERB_SET_CONNECT_SEL,
--- 
-2.16.4
+sound/soc/codecs/tlv320aic31xx.c
+  1510  static void aic31xx_configure_ocmv(struct aic31xx_priv *priv)
+  1511  {
+  1512          struct device *dev = priv->dev;
+  1513          int dvdd, avdd;
+  1514          u32 value;
+  1515  
+  1516          if (dev->fwnode &&
+  1517              fwnode_property_read_u32(dev->fwnode, "ai31xx-ocmv", &value)) {
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+This test seems reversed.  If fwnode_property_read_u32() fails then
+"value" can be uninitialized.
 
+  1518                  /* OCMV setting is forced by DT */
+  1519                  if (value <= 3) {
+                            ^^^^^^^^^^
+
+  1520                          priv->ocmv = value;
+  1521                          return;
+  1522                  }
+  1523          }
+  1524  
+  1525          avdd = regulator_get_voltage(priv->supplies[3].consumer);
+  1526          dvdd = regulator_get_voltage(priv->supplies[5].consumer);
+  1527  
+
+regards,
+dan carpenter
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
