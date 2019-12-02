@@ -2,81 +2,74 @@ Return-Path: <SRS0=OACP=ZY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECA13C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 17:39:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B9DAC432C0
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 17:41:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3D4D20865
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 17:39:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB28620684
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 17:41:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cxg20RH9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3D4D20865
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V5r6fXyY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB28620684
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A82DC84A;
-	Mon,  2 Dec 2019 18:38:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A82DC84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECCF91657;
+	Mon,  2 Dec 2019 18:40:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECCF91657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575308378;
-	bh=E+5goV+ysdJ+VxLou/muJW4BA/bhwXXl3FwIIeGrzyk=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1575308489;
+	bh=CcdiN9QikojdsfLHJ5jpm4Dpg3bHwfpINqIsSUwm2E8=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cxg20RH9dfWoj2BS0yxNUr+PdOAp5lTku2jXSA5iCarmgbjKp+49YDm+u9OB+eQny
-	 sOs/YyOMOwBmYQBMC8PRww3kzTFklCBoy9oEST3v4JPGc+d4dyM0dyB2FcofNqXQcW
-	 vS+Lg7V+PleUyIZekvAk1RWS1uy9rc4/5Py5QotI=
+	b=V5r6fXyY2n0OtHReAvr3sJAIGIeflMl1N/U+7+UhtuM0173mxZJMtTiBazUU0FQJR
+	 Ex4zRuUCtac+AfFiNnkU7gONR7IxQKZZLoTf9jE3sgd/T8Ya5YEbLmrBYLINbPwdyG
+	 p14gsTlFPJO2PVnq+5X69tQjIlv7/ClujbGv+d+I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D444F800B4;
-	Mon,  2 Dec 2019 18:38:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 507BFF801D9;
+	Mon,  2 Dec 2019 18:40:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B852EF80214; Mon,  2 Dec 2019 18:38:45 +0100 (CET)
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 03545F80214; Mon,  2 Dec 2019 18:40:35 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62F8DF800B4
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2019 18:38:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62F8DF800B4
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
- by smtp1.de.adit-jv.com (Postfix) with ESMTP id F35B03C0597;
- Mon,  2 Dec 2019 18:38:36 +0100 (CET)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
- by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id LZ4Jx6L_J6h4; Mon,  2 Dec 2019 18:38:30 +0100 (CET)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 648993C003B;
- Mon,  2 Dec 2019 18:38:30 +0100 (CET)
-Received: from vmlxhi-102.adit-jv.com (10.72.93.184) by HI2EXCH01.adit-jv.com
- (10.72.92.24) with Microsoft SMTP Server (TLS) id 14.3.468.0;
- Mon, 2 Dec 2019 18:38:30 +0100
-Date: Mon, 2 Dec 2019 18:38:27 +0100
-From: Eugeniu Rosca <erosca@de.adit-jv.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Message-ID: <20191202173827.GA13630@vmlxhi-102.adit-jv.com>
-References: <20191202155834.22582-1-geert+renesas@glider.be>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 170CDF801D9
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2019 18:40:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 170CDF801D9
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 02 Dec 2019 09:40:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,270,1571727600"; d="scan'208";a="208164894"
+Received: from svedurlx-mobl.amr.corp.intel.com (HELO [10.251.129.241])
+ ([10.251.129.241])
+ by fmsmga008.fm.intel.com with ESMTP; 02 Dec 2019 09:40:24 -0800
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <877e3og50x.wl-kuninori.morimoto.gx@renesas.com>
+ <87pnhgeqc2.wl-kuninori.morimoto.gx@renesas.com>
+ <8b7a2bc1-6d89-ea18-0816-70448cbf9cb0@linux.intel.com>
+ <8736e93jd8.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <dd007720-d517-c457-5000-be8f64d4fd5f@linux.intel.com>
+Date: Mon, 2 Dec 2019 11:20:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191202155834.22582-1-geert+renesas@glider.be>
-User-Agent: Mutt/1.12.1+40 (7f8642d4ee82) (2019-06-28)
-X-Originating-IP: [10.72.93.184]
-Cc: Nilkanth Ahirrao <external.anilkanth@jp.adit-jv.com>,
- alsa-devel@alsa-project.org, Eugeniu Rosca <erosca@de.adit-jv.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Eugeniu Rosca <roscaeugeniu@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org,
- Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rsnd: Calculate DALIGN inversion at
-	run-time
+In-Reply-To: <8736e93jd8.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 12/15] ASoC: soc-core: add missing
+ return value check for soc_link_init()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,104 +82,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Geert,
 
-On Mon, Dec 02, 2019 at 04:58:34PM +0100, Geert Uytterhoeven wrote:
-> There is no need to store the inverted DALIGN values in the table, as
-> they can easily be calculated at run-time.  This also protects against
-> the introduction of inconsistencies between normal and inverted values
-> by a future table modification.
+
+On 11/27/19 12:48 AM, Kuninori Morimoto wrote:
 > 
-> Reorder the two subexpressions in the AND check, to perform the least
-> expensive check first.
+> Hi Pierre-Louis
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
-
-> ---
-> Compile-tested only.
+>>> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+>>> index 79a4753..bdae48e 100644
+>>> --- a/sound/soc/soc-core.c
+>>> +++ b/sound/soc/soc-core.c
+>>> @@ -1983,8 +1983,11 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
+>>>    		goto probe_end;
+>>>    	}
+>>>    -	for_each_card_rtds(card, rtd)
+>>> -		soc_link_init(card, rtd);
+>>> +	for_each_card_rtds(card, rtd) {
+>>> +		ret = soc_link_init(card, rtd);
+>>> +		if (ret < 0)
+>>> +			goto probe_end;
+>>> +	}
+>>
+>> Morimoto-san, this patch proves very useful to avoid a kernel oops
+>> when a dailink init fails, but I still see a warning when cleaning-up.
+>>
+>> I was experimenting with a topology file that wasn't complete and came
+>> across the warning below, would you have any ideas/recommendations on
+>> what might be missing? I am running out of time this week so thought I
+>> would ask, in case this rings a bell.
+>>
+>> Thanks!
+>>
+>> [   21.098662] bytcr_rt5640 bytcr_rt5640: ASoC: no source widget found
+>> for modem_out
+>> [   21.098677] bytcr_rt5640 bytcr_rt5640: ASoC: Failed to add route
+>> modem_out -> direct -> ssp0 Tx
+>> [   21.098694] bytcr_rt5640 bytcr_rt5640: ASoC: no sink widget found
+>> for modem_in
+>> [   21.098703] bytcr_rt5640 bytcr_rt5640: ASoC: Failed to add route
+>> ssp0 Rx -> direct -> modem_in
+>> [   21.098732] bytcr_rt5640 bytcr_rt5640: ASoC: failed to init
+>> SSP2-Codec: -19
 > 
-> Interestingly, this decreases code size on arm64, but increases on arm32
-> (both gcc version 7.4.0 (Ubuntu/Linaro 7.4.0-1ubuntu1~18.04.1)).
+> Do you mean, it could save you from Oops, but you still have warning ?
+
+Correct.
+
 > 
-> arm32:
+> It seems soc-dapm::snd_soc_dapm_add_routes() failed.
+> Your kernel is missing widget route/path ?
+> Or, sound card driver has some issue ?
 > 
->        text	   data	    bss	    dec	    hex	filename
->       16186	    276	     84	  16546	   40a2	sound/soc/sh/rcar/core.o.orig
->       16194	    276	     84	  16554	   40aa	sound/soc/sh/rcar/core.o
-> 
-> arm64:
-> 
->        text	   data	    bss	    dec	    hex	filename
->       17426	    392	    104	  17922	   4602	sound/soc/sh/rcar/core.o.orig
->       17414	    392	    104	  17910	   45f6	sound/soc/sh/rcar/core.o
-> ---
->  sound/soc/sh/rcar/core.c | 31 +++++++++++++------------------
+> I have been faced this error many times.
+> I don't remember detail, but, if my memory was correct,
+> it was always card driver setup timing, or missing something, in my case.
 
-jFTR, using ARM's aarch64 gcc-8.3-2019.03 and v5.4-10271-g596cf45cbf6e:
-
-$ size sound/soc/sh/rcar/core.o.before sound/soc/sh/rcar/core.o.after
-   text	   data	    bss	    dec	    hex	filename
-  21433	    380	     88	  21901	   558d	sound/soc/sh/rcar/core.o.before
-  21505	    380	     88	  21973	   55d5	sound/soc/sh/rcar/core.o.after
-
->  1 file changed, 13 insertions(+), 18 deletions(-)
-> 
-> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-> index 399dc6e9bde5b042..d20f03dfdee66643 100644
-> --- a/sound/soc/sh/rcar/core.c
-> +++ b/sound/soc/sh/rcar/core.c
-> @@ -376,20 +376,15 @@ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
->   */
->  u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
->  {
-> -	static const u32 dalign_values[8][2] = {
-> -		{0x76543210, 0x67452301},
-> -		{0x00000032, 0x00000023},
-> -		{0x00007654, 0x00006745},
-> -		{0x00000076, 0x00000067},
-> -		{0xfedcba98, 0xefcdab89},
-> -		{0x000000ba, 0x000000ab},
-> -		{0x0000fedc, 0x0000efcd},
-> -		{0x000000fe, 0x000000ef},
-> +	static const u32 dalign_values[8] = {
-> +		0x76543210, 0x00000032, 0x00007654, 0x00000076,
-> +		0xfedcba98, 0x000000ba, 0x0000fedc, 0x000000fe,
-
-FWIW, using below test procedure, I can reconstruct the original
-two-dimensional dalign_values[8][2] array on the host:
-
-#include <stdio.h>
-#include <stdint.h>
-
-typedef uint32_t u32;
-
-void main(void)
-{
-	u32 dalign, i;
-
-	static const u32 dalign_values[8] = {
-		0x76543210, 0x00000032, 0x00007654, 0x00000076,
-		0xfedcba98, 0x000000ba, 0x0000fedc, 0x000000fe,
-	};
-
-	for (i = 0; i < 8; i++) {
-		u32 keep = dalign = dalign_values[i];
-		dalign = (dalign & 0xf0f0f0f0) >> 4 |
-			 (dalign & 0x0f0f0f0f) << 4;
-		printf("{0x%08x, 0x%08x},\n", keep, dalign);
-	}
-}
-
--- 
-Best Regards,
-Eugeniu
+In this case it's a bad topology that does not contain widgets that the 
+machine driver uses. Still that should be handled gracefully without 
+warnings.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
