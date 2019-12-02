@@ -2,95 +2,71 @@ Return-Path: <SRS0=OACP=ZY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78AB8C432C0
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 17:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5710C432C0
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 20:40:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 069E620637
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 17:51:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D0F3D2073C
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Dec 2019 20:40:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i54pFu/9";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="Of/kzTfg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="Of/kzTfg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 069E620637
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=akkea.ca
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q/ABZ9v8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0F3D2073C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FF8B166F;
-	Mon,  2 Dec 2019 18:50:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FF8B166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B09884A;
+	Mon,  2 Dec 2019 21:39:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B09884A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575309079;
-	bh=JH1bHL0hZYMtdafFVvOEcgmJICaT1Kon4Ym9dbyAA9E=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1575319231;
+	bh=5J0vG4qxw2U2jBcbsJygYx4eoHh6QTOLj3pbKTOB17k=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i54pFu/96BQuPKPlD/N+c4ucugIyeIY4c96PsE08j+d+VZ9bYAZbHdIzv0lgY7ZaX
-	 3ajdgtK0fH0q80usLU5rNRgUj03USyrLTG7qKjdbweetzTwT0SGLhFeNUSYECt6ZES
-	 eQryJnM46cW9YCofnjRcCW7hXZPqbzvH5QK3+hR8=
+	b=Q/ABZ9v82hl6G5hSSPGNpaxzfoyVs9S2ugtvpKSmYuFESqTE8wjvz47UAySODMbs+
+	 lLqYls+1nfLZiIUm8RGHpKc8pbNUsOAYoup4iznuHz3DPSeYi+LpAAybpE5blXJodJ
+	 ysrmEaqDW8ciSsdpeWCaccASS6BWd7/m8Gxry/no=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 703E3F8023F;
-	Mon,  2 Dec 2019 18:48:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F278F801D9;
+	Mon,  2 Dec 2019 21:39:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 555C6F8021D; Mon,  2 Dec 2019 18:48:48 +0100 (CET)
-Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id DD961F80214; Mon,  2 Dec 2019 21:39:38 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3221F801D9
- for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2019 18:48:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3221F801D9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
- header.b="Of/kzTfg"; 
- dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
- header.b="Of/kzTfg"
-Received: from localhost (localhost [127.0.0.1])
- by node.akkea.ca (Postfix) with ESMTP id AB3454E201A;
- Mon,  2 Dec 2019 17:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
- t=1575308921; bh=G5vaGCDrjN3o6pi2NVpdKXh0OAe+GAhoowcjoaH2b54=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=Of/kzTfgYvw4remviMNGT6ec9GPUDfmztvI21zCw3Yty2/9Zhj0MhTDBj6guJDf6k
- vn1pJbt3kKR8OaPp9ufsybizx73RazGUnF3IYFs4bJ26PH/SS7Zu8rHjW4ge5L0shz
- mr2gYYt5B+Q6Tsbsl4oqm7l5HT5DVqmdDiBhd8qU=
-X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
-Received: from node.akkea.ca ([127.0.0.1])
- by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id qiB4KwjmIXlp; Mon,  2 Dec 2019 17:48:41 +0000 (UTC)
-Received: from thinkpad-tablet.cg.shawcable.net
- (S0106905851b613e9.cg.shawcable.net [70.77.244.40])
- by node.akkea.ca (Postfix) with ESMTPSA id 904B64E2006;
- Mon,  2 Dec 2019 17:48:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
- t=1575308921; bh=G5vaGCDrjN3o6pi2NVpdKXh0OAe+GAhoowcjoaH2b54=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=Of/kzTfgYvw4remviMNGT6ec9GPUDfmztvI21zCw3Yty2/9Zhj0MhTDBj6guJDf6k
- vn1pJbt3kKR8OaPp9ufsybizx73RazGUnF3IYFs4bJ26PH/SS7Zu8rHjW4ge5L0shz
- mr2gYYt5B+Q6Tsbsl4oqm7l5HT5DVqmdDiBhd8qU=
-From: "Angus Ainslie (Purism)" <angus@akkea.ca>
-To: kernel@puri.sm
-Date: Mon,  2 Dec 2019 10:48:30 -0700
-Message-Id: <20191202174831.13638-2-angus@akkea.ca>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191202174831.13638-1-angus@akkea.ca>
-References: <20191202174831.13638-1-angus@akkea.ca>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- "Angus Ainslie \(Purism\)" <angus@akkea.ca>, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Enrico Weigelt <info@metux.net>, Allison Randal <allison@lohutok.net>
-Subject: [alsa-devel] [PATCH 1/2] sound: codecs: gtm601: add Broadmobi bm818
-	sound profile
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05283F800F0
+ for <alsa-devel@alsa-project.org>; Mon,  2 Dec 2019 21:39:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05283F800F0
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 02 Dec 2019 12:39:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,270,1571727600"; d="scan'208";a="204709999"
+Received: from rniessen-mobl3.amr.corp.intel.com (HELO [10.251.5.154])
+ ([10.251.5.154])
+ by orsmga008.jf.intel.com with ESMTP; 02 Dec 2019 12:39:31 -0800
+To: alsa-devel@alsa-project.org
+References: <20191126142815.21856-1-pierre-louis.bossart@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <d86b3869-274c-e96e-69d6-9122dc044ae3@linux.intel.com>
+Date: Mon, 2 Dec 2019 14:39:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <20191126142815.21856-1-pierre-louis.bossart@linux.intel.com>
+Content-Language: en-US
+Cc: tiwai@suse.de, broonie@kernel.org
+Subject: Re: [alsa-devel] [PATCH 00/10] ASoC: SOF: initial cleanup for DT
+ and multi-client support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,82 +79,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Broadmobi bm818 uses stereo sound at 48Khz sample rate
 
-Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
----
- sound/soc/codecs/gtm601.c | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+> 
+> Daniel Baluta (2):
+>    ASoC: SOF: Make creation of machine device from SOF core optional
 
-diff --git a/sound/soc/codecs/gtm601.c b/sound/soc/codecs/gtm601.c
-index d454294c8d06..302569bc46ff 100644
---- a/sound/soc/codecs/gtm601.c
-+++ b/sound/soc/codecs/gtm601.c
-@@ -37,7 +37,7 @@ static struct snd_soc_dai_driver gtm601_dai = {
- 		.channels_max = 1,
- 		.rates = SNDRV_PCM_RATE_8000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--		},
-+	},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 1,
-@@ -47,6 +47,24 @@ static struct snd_soc_dai_driver gtm601_dai = {
- 	},
- };
- 
-+static struct snd_soc_dai_driver bm818_dai = {
-+	.name = "bm818",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+};
-+
- static const struct snd_soc_component_driver soc_component_dev_gtm601 = {
- 	.dapm_widgets		= gtm601_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(gtm601_dapm_widgets),
-@@ -60,13 +78,20 @@ static const struct snd_soc_component_driver soc_component_dev_gtm601 = {
- 
- static int gtm601_platform_probe(struct platform_device *pdev)
- {
-+	struct device_node *np = pdev->dev.of_node;
-+	struct snd_soc_dai_driver *dai_driver = &gtm601_dai;
-+
-+	if (np && of_device_is_compatible(np, "broadmobi,bm818"))
-+		dai_driver = &bm818_dai;
-+
- 	return devm_snd_soc_register_component(&pdev->dev,
--			&soc_component_dev_gtm601, &gtm601_dai, 1);
-+			&soc_component_dev_gtm601, dai_driver, 1);
- }
- 
- #if defined(CONFIG_OF)
- static const struct of_device_id gtm601_codec_of_match[] = {
- 	{ .compatible = "option,gtm601", },
-+	{ .compatible = "broadmobi,bm818", },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, gtm601_codec_of_match);
--- 
-2.17.1
+This patch conflicts with Jaroslav's "[PATCH] ASoC: intel/skl/hda - 
+export number of digital microphones via control components"
 
+I will resubmit a v2 when Jaroslav's patches are available in Mark's 
+tree. For SOF development Jaroslav's changes were already applied and 
+the conflict solved already.
+
+>    ASoC: SOF: Remove unused drv_name in sof_pdata
+> 
+> Ranjani Sridharan (8):
+>    ASoC: SOF: topology: remove snd_sof_init_topology()
+>    ASoC: SOF: core: modify the signature for snd_sof_create_page_table
+>    ASoC: SOF: core: move check for runtime callbacks to core
+>    ASoC: SOF: Introduce default_fw_filename member in sof_dev_desc
+>    ASoC: SOF: partition audio-related parts from SOF core
+>    ASoC: SOF: intel: hda: Modify signature for hda_codec_probe_bus()
+>    ASoC: SOF: remove nocodec_fw_filename
+>    ASoC: SOF: nocodec: Amend arguments for sof_nocodec_setup()
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
