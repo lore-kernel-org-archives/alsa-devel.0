@@ -2,66 +2,67 @@ Return-Path: <SRS0=OCx8=ZZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC18EC432C3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 06:47:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B126C33C9A
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 07:36:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0680820684
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 06:47:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D8F92068E
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 07:36:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qNEJqAb+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0680820684
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mazXIwwA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D8F92068E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF3DE83E;
-	Tue,  3 Dec 2019 07:46:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF3DE83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8025486F;
+	Tue,  3 Dec 2019 08:35:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8025486F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575355627;
-	bh=pBFjTVDo8GUmc3Ny6q2ynucXWAzpqIrJVY183akvhAo=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qNEJqAb+P+saAsulwib6NGBM4eODiPKzfvQln7dgkV0qVMNleZ85b8OFB+nMCYdgW
-	 PRt/rFPXvkhTh9ltH1HZvQ5hgNhWfouqNuLNnhoiYnFBXmeeMjv/bB6bhwOT4LIi05
-	 uB5Y4jF+PQO5iZOR0xLTmcnlJ2iLDWWqNaTZZRE4=
+	s=default; t=1575358590;
+	bh=Kue/0l66TdfLTYFnuijJq+3vidf1KUN2rJp+RgsSEiU=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mazXIwwA1Yhde7GyDDMmHnfR67wfeuG2PxXBNjX/qAwyl+uK5B1ATyG1XhzAZErB/
+	 gVRlGbAoj/DdILKGfUvUH+xtjZM6iuoVzfkGcZo8nmqpVZwW9ZNfF7Xjj07jqFK2Ay
+	 yUjf87cuivkhy6ki8Wafx9z8qGSX10WkYbT7RIcs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 475B5F8015A;
-	Tue,  3 Dec 2019 07:46:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CA2DF800B4;
+	Tue,  3 Dec 2019 08:35:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF599F80227; Tue,  3 Dec 2019 07:46:14 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A9E85F80227; Tue,  3 Dec 2019 08:35:36 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86F7FF800B4
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 07:46:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86F7FF800B4
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 7A216AC18;
- Tue,  3 Dec 2019 06:46:07 +0000 (UTC)
-Date: Tue, 03 Dec 2019 07:46:07 +0100
-Message-ID: <s5h7e3dhpow.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Curtis Malainey <cujomalainey@chromium.org>
-In-Reply-To: <20191202224752.52039-1-cujomalainey@chromium.org>
-References: <20191202224752.52039-1-cujomalainey@chromium.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: core: Init pcm runtime work early to
-	avoid warnings
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08508F800B4
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 08:35:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08508F800B4
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 02 Dec 2019 23:35:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,272,1571727600"; d="scan'208";a="235778260"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+ by fmsmga004.fm.intel.com with ESMTP; 02 Dec 2019 23:35:27 -0800
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Date: Tue,  3 Dec 2019 15:31:05 +0800
+Message-Id: <1575358265-17905-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
+Cc: Support Opensource <support.opensource@diasemi.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Brent Lu <brent.lu@intel.com>
+Subject: [alsa-devel] [PATCH] ASoC: da7219: remove SRM lock check retry
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,117 +75,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 02 Dec 2019 23:47:52 +0100,
-Curtis Malainey wrote:
-> 
-> There are cases where we fail before we reach soc_new_pcm which would
-> init the workqueue. When we fail we attempt to flush the queue which
-> generates warnings from the workqueue subsystem when we have not inited
-> the queue. Solution is to use a proxy function to get around this issue.
-> 
-> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> ---
->  include/sound/soc.h  |  1 +
->  sound/soc/soc-core.c | 10 ++++++++++
->  sound/soc/soc-pcm.c  | 11 ++++-------
->  3 files changed, 15 insertions(+), 7 deletions(-)
+For platforms not able to provide WCLK in the PREPARED runtime state, it
+takes 400ms for codec driver to print the message "SRM failed to lock" in
+the da7219_dai_event() function which is called when DAPM widgets are
+powering up. The latency penalty to audio input/output is too much so the
+retry (8 times) and delay (50ms each retry) are removed.
 
-Forgot the change in soc-compress.c?
+Another reason is current Cold output latency requirement in Android CDD is
+500ms but will be reduced to 200ms for 2021 platforms. With the 400ms
+latency it would be difficult to pass the Android CTS test.
 
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/codecs/da7219.c | 3 ++-
+ sound/soc/codecs/da7219.h | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-thanks,
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index f83a6ea..042e701 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -833,7 +833,8 @@ static int da7219_dai_event(struct snd_soc_dapm_widget *w,
+ 				srm_lock = true;
+ 			} else {
+ 				++i;
+-				msleep(50);
++				if (i < DA7219_SRM_CHECK_RETRIES)
++					msleep(50);
+ 			}
+ 		} while ((i < DA7219_SRM_CHECK_RETRIES) && (!srm_lock));
+ 
+diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
+index 88b67fe..3149986 100644
+--- a/sound/soc/codecs/da7219.h
++++ b/sound/soc/codecs/da7219.h
+@@ -770,7 +770,7 @@
+ #define DA7219_PLL_INDIV_36_TO_54_MHZ_VAL	16
+ 
+ /* SRM */
+-#define DA7219_SRM_CHECK_RETRIES	8
++#define DA7219_SRM_CHECK_RETRIES	1
+ 
+ /* System Controller */
+ #define DA7219_SYS_STAT_CHECK_RETRIES	6
+-- 
+2.7.4
 
-Takashi
-
-
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index c28a1ed5e8df9..2628967998264 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -1150,6 +1150,7 @@ struct snd_soc_pcm_runtime {
->  	unsigned int num_codecs;
->  
->  	struct delayed_work delayed_work;
-> +	void (*close_delayed_work_func)(struct snd_soc_pcm_runtime *rtd);
->  #ifdef CONFIG_DEBUG_FS
->  	struct dentry *debugfs_dpcm_root;
->  #endif
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 062653ab03a37..0e2e628302f1d 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -435,6 +435,15 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
->  	device_unregister(rtd->dev);
->  }
->  
-> +static void close_delayed_work(struct work_struct *work) {
-> +	struct snd_soc_pcm_runtime *rtd =
-> +			container_of(work, struct snd_soc_pcm_runtime,
-> +				     delayed_work.work);
-> +
-> +	if (rtd->close_delayed_work_func)
-> +		rtd->close_delayed_work_func(rtd);
-> +}
-> +
->  static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
->  	struct snd_soc_card *card, struct snd_soc_dai_link *dai_link)
->  {
-> @@ -470,6 +479,7 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
->  
->  	rtd->dev = dev;
->  	dev_set_drvdata(dev, rtd);
-> +	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
->  
->  	/*
->  	 * for rtd->codec_dais
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 01eb8700c3de5..b78f6ff2b1d3f 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -637,10 +637,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
->   * This is to ensure there are no pops or clicks in between any music tracks
->   * due to DAPM power cycling.
->   */
-> -static void close_delayed_work(struct work_struct *work)
-> +static void close_delayed_work(struct snd_soc_pcm_runtime *rtd)
->  {
-> -	struct snd_soc_pcm_runtime *rtd =
-> -			container_of(work, struct snd_soc_pcm_runtime, delayed_work.work);
->  	struct snd_soc_dai *codec_dai = rtd->codec_dais[0];
->  
->  	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
-> @@ -660,7 +658,7 @@ static void close_delayed_work(struct work_struct *work)
->  	mutex_unlock(&rtd->card->pcm_mutex);
->  }
->  
-> -static void codec2codec_close_delayed_work(struct work_struct *work)
-> +static void codec2codec_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
->  {
->  	/*
->  	 * Currently nothing to do for c2c links
-> @@ -2974,10 +2972,9 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
->  
->  	/* DAPM dai link stream work */
->  	if (rtd->dai_link->params)
-> -		INIT_DELAYED_WORK(&rtd->delayed_work,
-> -				  codec2codec_close_delayed_work);
-> +		rtd->close_delayed_work_func = codec2codec_close_delayed_work;
->  	else
-> -		INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
-> +		rtd->close_delayed_work_func = close_delayed_work;
->  
->  	pcm->nonatomic = rtd->dai_link->nonatomic;
->  	rtd->pcm = pcm;
-> -- 
-> 2.24.0.393.g34dc348eaf-goog
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
