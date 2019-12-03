@@ -2,101 +2,79 @@ Return-Path: <SRS0=OCx8=ZZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC2F2C432C0
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 11:14:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9F99C432C0
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 12:52:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9DC32073B
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 11:14:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADCC72070A
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 12:52:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PZU+RQ2m";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g7RcBsG1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9DC32073B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qEt69NCH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="dfQm0IzO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADCC72070A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3744846;
-	Tue,  3 Dec 2019 12:13:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3744846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57B38846;
+	Tue,  3 Dec 2019 13:51:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57B38846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575371653;
-	bh=wZoXE2lfd6E8aZXAlqwYFS/u7UQhSmQKsBPD/H9C0P8=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PZU+RQ2mF2AnjRBZ4MooLEFwPW/BVuJGQGr1aEVi44tH6ph2rwUw4yeZU6FGO1ngc
-	 edWcft3eYBIb5R74xzOCtWSUzYS/LA/MD99GpbTVZXffnr1+zP312RHdZJAVnJRjEg
-	 1bnbdBdcA1UEiFkTFRYk6vSjQqASra4wReItmY14=
+	s=default; t=1575377569;
+	bh=cXoBW+QWd5joALsUiJJC4t1ejFFt2yvwJ/CdezNSOqE=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qEt69NCHPKCnRnKjWb6V3wIRx3RZDpu3C4gAmcdAZ3Q92X97/veoUUEbiHHKhVzSU
+	 0njg7SZlBObq/1T1QGWWD4lN7wN8pOT/mabcta9yjyL/7qK0Oakksw8HPPkRriWRlq
+	 Lwek9wCAhUHSubOv4kIlFvf7fcidb25Q0dhuu2sc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 408ABF8015A;
-	Tue,  3 Dec 2019 12:13:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EC88F8015A;
+	Tue,  3 Dec 2019 13:51:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADEDFF80227; Tue,  3 Dec 2019 12:13:21 +0100 (CET)
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com
- [IPv6:2607:f8b0:4864:20::1041])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 802ECF80227; Tue,  3 Dec 2019 13:51:56 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30C92F800F0
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 12:13:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30C92F800F0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="g7RcBsG1"
-Received: by mail-pj1-x1041.google.com with SMTP id z21so1376666pjq.13
- for <alsa-devel@alsa-project.org>; Tue, 03 Dec 2019 03:13:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=PPxVVC8nLDBEci1WSeW2S69uGVw9UleHZ5a7bu0I1Xs=;
- b=g7RcBsG1I43aqXOgX8NNWXdzwyKNnQzBaNigzS3hH9D+dPCt1yXrXC8KBQAxmAGw1V
- xIVzEZChlfDG+nQak288bYsUyD9FbjuWB5Hzwm9gi3Sc7px/7s/hrq5rBogS1I/+NkHs
- YlJ/+VAmQtSSMduDkdWU0dBpiA9oXDKOYfzFFxYwh8rKlAwK9S0R+nzfs0I5JMyJkcia
- VKZR8p9/KzWzukCGkgsTulEh7Q+hcEUGvxxswb3M63yMSulPhT32jXbFavKL4bQwnGny
- wl9QyR/fQTj4HCWqeF7iY3iuOaH5dRvExDdcoN2F9oeNqVKE+tn2djXq8qI967rtQEFd
- 9lHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=PPxVVC8nLDBEci1WSeW2S69uGVw9UleHZ5a7bu0I1Xs=;
- b=V962TzRDKsrco0jep8j3hGgAZppfFP5XkGUGPluSL7yFx67aNBkCUYJXik7MHJ9XuT
- qU7CMuiXPeZb5nb08uyO7nY4ZNf++zxswQpZdOwAKK7E0kY5qGi7rEj6P7sZaAAaYLVI
- Kt/GcirXm/Rq/ABAv7IzzoMygAnh5x5AAQ2WKQjtwPe09GfYAvfAURa3mOsmM805ammz
- tzUUsQRupxkcLaz2zKa8cgf0ufxBhu3HDtjMGL8kQipLP77H3ouXGwqN1E3igQ/WSDzQ
- pcMqgeRm+4BVWAp80BQNTryIADxwehlZLYq/dK4CTzTIPBm7AFeL1Hp1g2yz5EaP7i2c
- VD/g==
-X-Gm-Message-State: APjAAAVjuVWGC6IKzwYP1vk8Oo0OW5hrzZxBJDg9VyhSpz7s689tCxgJ
- v16qRmh0M0ZnJwth/xR0tn4=
-X-Google-Smtp-Source: APXvYqwVXNPxflvrN2v14hE+cqab22DeGQaHc2v2d7g8tdd1ATtAmfxDtIDe+nffB7gaEjuEQcQb5w==
-X-Received: by 2002:a17:902:9692:: with SMTP id
- n18mr4397865plp.152.1575371596975; 
- Tue, 03 Dec 2019 03:13:16 -0800 (PST)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
- by smtp.gmail.com with ESMTPSA id p5sm3160077pgj.63.2019.12.03.03.13.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 Dec 2019 03:13:16 -0800 (PST)
-From: Chuhong Yuan <hslester96@gmail.com>
-To: 
-Date: Tue,  3 Dec 2019 19:13:03 +0800
-Message-Id: <20191203111303.12933-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.24.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0F6CF800B4
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 13:51:53 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id D183DA003F;
+ Tue,  3 Dec 2019 11:23:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz D183DA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1575368590; bh=5yqSg5EBHxrtkRyGUm7dmt4fb/W4TQdkXFCUEubu3Zs=;
+ h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
+ b=dfQm0IzOanmGxePf0UeuDaesw45wpAnUvtpOHriVZTa/mWtlSdbZpf5Iyh2J/v6dY
+ xt1gf8RvlW80R5xPrZzDKxAvzovjvC/kZtrrtUUx52pwCmM4T1FTV2Mt2R/aE7OeTQ
+ eg1BRvkUxOnrXrZzisdDO1SAZI/kxzIwXxs2VnZM=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue,  3 Dec 2019 11:23:08 +0100 (CET)
+To: Vinod Koul <vkoul@kernel.org>
+References: <20191119112625.GD82508@vkoul-mobl>
+ <20191119124302.GE82508@vkoul-mobl>
+ <85e86218-6766-82a9-059c-c4a169178c26@perex.cz>
+ <20191203101203.GZ82508@vkoul-mobl>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <89f264dd-e020-4d75-b6ac-e98893923e0a@perex.cz>
+Date: Tue, 3 Dec 2019 11:23:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- Takashi Iwai <tiwai@suse.com>, Chuhong Yuan <hslester96@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH resend] ASoC: fsl_audmix: add missed
-	pm_runtime_disable
+In-Reply-To: <20191203101203.GZ82508@vkoul-mobl>
+Content-Language: en-US
+Cc: ALSA development <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] [ANNOUNCE] fcplay: compressed audio test utility
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,58 +87,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver forgets to call pm_runtime_disable in probe failure
-and remove.
-Add the missed calls to fix it.
+Dne 03. 12. 19 v 11:12 Vinod Koul napsal(a):
+> On 26-11-19, 11:27, Jaroslav Kysela wrote:
+>> Dne 19. 11. 19 v 13:43 Vinod Koul napsal(a):
+>>> On 19-11-19, 16:56, Vinod Koul wrote:
+>>>> Hello,
+>>>>
+>>>> I have forked the cplay test app into fcplay which is a different repo
+>>>> [1] licensed as LGPLv2.1. The reason for fork was me getting sick of
+>>>> seeing the tool miss sync word for mp3 and no support for other formats
+>>>> which I wanted to test. But I was lazy to start exploring all media
+>>>> formats and write a parser for them so I have used libavcodec to the job
+>>>> for me which is GPL.
+>>>>
+>>>> The fcplay links to libavcodec to get compressed audio parameters and
+>>>> then uses tinycompress to send data to sound card.
+>>>>
+>>>> It supports mp3 (no more complaints about sync words) and Flac. I will
+>>>> add more formats, wma etc are in the list along with gapless audio
+>>>> playback and support for new changes coming to gapless audio playback
+>>>> as discussed in audio meeting at Lyon.
+>>>>
+>>>> As usual patches are welcome.
+>>>>
+>>>> Jaroslav, can we add to alsa-project github as well?
+>>>
+>>> Here is the missing link!
+>>>
+>>> [1]: git@github.com:vinodkoul/fcplay.git
+>>> https://github.com/vinodkoul/fcplay/
+>>
+>> I would probably add this to the tinycompress package, too. The mixed
+>> licence is not an issue, I think.
+> 
+> That depends on who you talk to :-) Some folks seem to be averse to
+> anything *GPL*! so adding this to tinycompress can have issues for them.
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
- sound/soc/fsl/fsl_audmix.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+I mean that you can add a new tool to tinycompress with the LGPL-only licence. 
+It depends on the packager/user if he/she accepts it. So, dual BSD/LGPL 
+licence by default and LGPL-only to fcplay. You may place this tool to 
+src/utils-lgpl directory or so.
 
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-index a1db1bce330f..5faecbeb5497 100644
---- a/sound/soc/fsl/fsl_audmix.c
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -505,15 +505,20 @@ static int fsl_audmix_probe(struct platform_device *pdev)
- 					      ARRAY_SIZE(fsl_audmix_dai));
- 	if (ret) {
- 		dev_err(dev, "failed to register ASoC DAI\n");
--		return ret;
-+		goto err_disable_pm;
- 	}
- 
- 	priv->pdev = platform_device_register_data(dev, mdrv, 0, NULL, 0);
- 	if (IS_ERR(priv->pdev)) {
- 		ret = PTR_ERR(priv->pdev);
- 		dev_err(dev, "failed to register platform %s: %d\n", mdrv, ret);
-+		goto err_disable_pm;
- 	}
- 
-+	return 0;
-+
-+err_disable_pm:
-+	pm_runtime_disable(dev);
- 	return ret;
- }
- 
-@@ -521,6 +526,8 @@ static int fsl_audmix_remove(struct platform_device *pdev)
- {
- 	struct fsl_audmix *priv = dev_get_drvdata(&pdev->dev);
- 
-+	pm_runtime_disable(&pdev->dev);
-+
- 	if (priv->pdev)
- 		platform_device_unregister(priv->pdev);
- 
+				Jaroslav
+
 -- 
-2.24.0
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
