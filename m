@@ -2,89 +2,87 @@ Return-Path: <SRS0=OCx8=ZZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70A82C432C0
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 14:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33F64C432C3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 14:35:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBFAC20659
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 14:33:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AE89220659
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 14:35:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FHxHuHSE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="egqYvhOE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBFAC20659
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DV/2fuMb";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="NZgDZvai";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="NZgDZvai"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE89220659
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=akkea.ca
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C60884A;
-	Tue,  3 Dec 2019 15:32:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C60884A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A7911616;
+	Tue,  3 Dec 2019 15:34:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A7911616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575383581;
-	bh=yfT40LYG54GnVGa200m0qBfpmKihY9mns33W6bzJ7zc=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1575383712;
+	bh=LStnfK9d4QG5eCGm+2LmPmWbOFc8p47N8EItM4/t/V8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FHxHuHSE7mHM4KJg1rSRXwURsdL5bQ3gNpAukKUGMjkWJ8z0J76cbbx0VPEUbsQwo
-	 FTfjaG+T1YSa/+Z24jcosvugf98dkwNZo9HRuCxRMIcQwblLv5kYDvEEPcfUn5J0gx
-	 VXjj0mCTsbhgSVT/CJRskW0ll9/cdjoBRb+8i3SY=
+	b=DV/2fuMba+R/QpkK3lI55Yhcdo49Imz+q8lkJLryY6WNruFCnCX/5vB2h9+SFUqCV
+	 5OHcnCUBCEbzq2r9dECaMdOnopweAMqq4gkz779g4Sx3IvxOakU/dkzOyB7KbTu5gf
+	 tgzFR0c3B5roX4Qyz7gRW4OlWWGGal7eYGuUWE+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96206F8015A;
-	Tue,  3 Dec 2019 15:32:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88CC8F800B4;
+	Tue,  3 Dec 2019 15:34:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEFFAF80227; Tue,  3 Dec 2019 15:32:08 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 29A57F800B4; Tue,  3 Dec 2019 15:34:20 +0100 (CET)
+Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58082F800ED
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 15:32:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58082F800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CB7CF800ED
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 15:34:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CB7CF800ED
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="egqYvhOE"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=lHp+myS6pf4Jfc7A7zQQjP81X0wvMHMx0CwGmN1oWK0=; b=egqYvhOEsxCp5bOxO2pnJLKuL
- ftuVLFeE1d5MsyaRITrv3FZ+fkI3ZWV0QwMMVogTy6OGYULANmJ0rt3JYeBXul2zFPwlwwTAPxwKv
- FGu0H5HTmkIPyfOqt4xRQqFIB8MStA3U3DlyKGEhp1SKJUP+8NODfTKF7N+xlRQ7kuN90=;
-Received: from fw-tnat-cam1.arm.com ([217.140.106.49]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ic9Df-0002kh-GP; Tue, 03 Dec 2019 14:32:03 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 36491D002FA; Tue,  3 Dec 2019 14:32:03 +0000 (GMT)
-Date: Tue, 3 Dec 2019 14:32:03 +0000
-From: Mark Brown <broonie@kernel.org>
-To: "Angus Ainslie (Purism)" <angus@akkea.ca>
-Message-ID: <20191203143203.GK1998@sirena.org.uk>
-Mail-Followup-To: "Angus Ainslie (Purism)" <angus@akkea.ca>, kernel@puri.sm,
- Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Allison Randal <allison@lohutok.net>,
- Kate Stewart <kstewart@linuxfoundation.org>,
- Enrico Weigelt <info@metux.net>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20191202174831.13638-1-angus@akkea.ca>
- <20191202174831.13638-2-angus@akkea.ca>
+ dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
+ header.b="NZgDZvai"; 
+ dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
+ header.b="NZgDZvai"
+Received: from localhost (localhost [127.0.0.1])
+ by node.akkea.ca (Postfix) with ESMTP id 7A4D94E200E;
+ Tue,  3 Dec 2019 14:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+ t=1575383653; bh=9EZCdQydtdvIE92/1ypyPqXdksi6OLhJTwPHjark2o0=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References;
+ b=NZgDZvaiITTRZLJm2hjTVrCkq4j07CdwftQQbzBYnVAXprfU/9TW/LjA6MMacJlWd
+ PPBL+EZnswgGUZEsPVg0YE0tqz2On/Tt3coap5qPzZ7ShrW4hQewVW02Pnvq99uEt8
+ AgwTldO/UJIXcQOvnCIQ0Qw7ghGGZp/FpIsApZMc=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+ by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id zHo31eXuCngz; Tue,  3 Dec 2019 14:34:13 +0000 (UTC)
+Received: from www.akkea.ca (node.akkea.ca [192.155.83.177])
+ by node.akkea.ca (Postfix) with ESMTPSA id 152094E2003;
+ Tue,  3 Dec 2019 14:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+ t=1575383653; bh=9EZCdQydtdvIE92/1ypyPqXdksi6OLhJTwPHjark2o0=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References;
+ b=NZgDZvaiITTRZLJm2hjTVrCkq4j07CdwftQQbzBYnVAXprfU/9TW/LjA6MMacJlWd
+ PPBL+EZnswgGUZEsPVg0YE0tqz2On/Tt3coap5qPzZ7ShrW4hQewVW02Pnvq99uEt8
+ AgwTldO/UJIXcQOvnCIQ0Qw7ghGGZp/FpIsApZMc=
 MIME-Version: 1.0
-In-Reply-To: <20191202174831.13638-2-angus@akkea.ca>
-X-Cookie: Cleanliness is next to impossible.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date: Tue, 03 Dec 2019 07:34:13 -0700
+From: Angus Ainslie <angus@akkea.ca>
+To: "Angus Ainslie (Purism)" <angus@akkea.ca>
+In-Reply-To: <20191203142759.GJ1998@sirena.org.uk>
+References: <20191202174831.13638-1-angus@akkea.ca>
+ <20191203142759.GJ1998@sirena.org.uk>
+Message-ID: <49c981e5419bbcedd271216350b4e777@akkea.ca>
+X-Sender: angus@akkea.ca
+User-Agent: Roundcube Webmail/1.3.6
 Cc: Mark Rutland <mark.rutland@arm.com>,
  Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org,
  kernel@puri.sm, Liam Girdwood <lgirdwood@gmail.com>,
@@ -92,8 +90,7 @@ Cc: Mark Rutland <mark.rutland@arm.com>,
  devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
  Thomas Gleixner <tglx@linutronix.de>, Enrico Weigelt <info@metux.net>,
  Allison Randal <allison@lohutok.net>
-Subject: Re: [alsa-devel] [PATCH 1/2] sound: codecs: gtm601: add Broadmobi
- bm818 sound profile
+Subject: Re: [alsa-devel] [PATCH 0/2] Add the broadmobi BM818
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,65 +103,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2213508423534772457=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark,
 
---===============2213508423534772457==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YZQs1kEQY307C4ut"
-Content-Disposition: inline
+On 2019-12-03 07:27, Mark Brown wrote:
+> On Mon, Dec 02, 2019 at 10:48:29AM -0700, Angus Ainslie (Purism) wrote:
+> 
+>>   sound: codecs: gtm601: add Broadmobi bm818 sound profile
+>>   ASoC: gtm601: add the broadmobi interface
+> 
+> These subject styles don't even agree with each other :( - please
+> try to be consistent with the style for the subsystem (the latter
+> one matches, the first one doesn't).
+> 
 
+Ok I'll fix that. I pulled those out of previous commit messages of 
+those files.
 
---YZQs1kEQY307C4ut
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Please also try to think about your CC lists when sending
+> patches, try to understand why everyone you're sending them to is
+> getting a copy - kernel maintainers get a lot of mail and sending
+> not obviously relevant patches to random people adds to that.
 
-On Mon, Dec 02, 2019 at 10:48:30AM -0700, Angus Ainslie (Purism) wrote:
+I used the output of ./scripts/get_maintainer.pl . Is that not the 
+correct way to generate the CC list ?
 
-> +	if (np && of_device_is_compatible(np, "broadmobi,bm818"))
-> +		dai_driver = &bm818_dai;
-
-Rather than having a tree of these it'd be better if...
-
->  #if defined(CONFIG_OF)
->  static const struct of_device_id gtm601_codec_of_match[] = {
->  	{ .compatible = "option,gtm601", },
-> +	{ .compatible = "broadmobi,bm818", },
->  	{},
->  };
-
-...this used the data you can provide along with the of_match as
-the dai_driver so the probe function doesn't have to know about
-the individual variants.
-
---YZQs1kEQY307C4ut
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3mceIACgkQJNaLcl1U
-h9D6eQf/T/YMXLxjUSaHDNc3AzKq7rmVZaiaaG+DgfkilPDOorbOBrcpI9of4xTG
-59U9JeM9TLU3DNyTPO1aTK37vDTDq8y3wmkw5H2IRqldu46zxbSPqwzkeHdwBdNZ
-XPWhtvtg1pcAfPR3hqSvKQOk5+rKWDQxXthiVH5sukuB+p4kavijAnJWamv+D7QU
-LrSnZB9IQP17L2CfxVSKXouPphsnvD7sd8f/H+iElMtzDvYBB4iTFcnIBhpa9v6K
-rbR2dFgEc+egWZCVY+OVeFh/NGRDTu9CgcLz+D7rkivTNXjcbmoUCQ9ijEEF/sRk
-fdjT/0UJKPykUJvMEDbsmafVaq4J5g==
-=XMui
------END PGP SIGNATURE-----
-
---YZQs1kEQY307C4ut--
-
---===============2213508423534772457==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Thanks
+Angus
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2213508423534772457==--
