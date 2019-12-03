@@ -2,67 +2,63 @@ Return-Path: <SRS0=OCx8=ZZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF748C432C0
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 00:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A15CC432C0
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 00:55:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 115502071E
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 00:42:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A75A220656
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 00:55:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sxjiuBXZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 115502071E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ea6uiDUo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A75A220656
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA74A84D;
-	Tue,  3 Dec 2019 01:41:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA74A84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E073684C;
+	Tue,  3 Dec 2019 01:54:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E073684C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575333754;
-	bh=FvHZVFlrJbKoQt0fpEi5shKtFWY/zzMBf8ylBhMz2b0=;
+	s=default; t=1575334504;
+	bh=hvNuaEgF3b36jInaa876pWg3gj1lUcIcKNAQ+4bziGE=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sxjiuBXZ/Po6SEjPDh1rJDH56PrnM3QwM22FLjVmZT3knHVg8QuRIuRXzx9L47x3C
-	 TKRIhdPtp+0JdH7lFykVddipebnd6iMcckKdmFfY+k3qHcgdKDny2GmQA3O8PnCfje
-	 DRbeoZB0py2ftT21YVRlRU3AQ5Ahg7wNy2mhdJZU=
+	b=ea6uiDUoqzo4ZMYSMvvLy9RpbBIjPbuOLzSc/HrsVblpkQuTBir/mNgPoX8NMcO/g
+	 fNrml0JJn0cZQR/c7NZlhfwrFjluRW+SucX7XbHXm0imgCkYqWfj68suzxWXX/QOO5
+	 Rz6CnZ4hubqyT3WSY9ut0ajeXusjeg/9txQiYNQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4632DF80090;
-	Tue,  3 Dec 2019 01:41:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 766CCF801D9;
+	Tue,  3 Dec 2019 01:54:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 353E3F80214; Tue,  3 Dec 2019 01:41:42 +0100 (CET)
+ id 34E8FF80214; Tue,  3 Dec 2019 01:54:12 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BE5A7F80090
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 01:41:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE5A7F80090
-Date: 03 Dec 2019 09:41:33 +0900
-X-IronPort-AV: E=Sophos;i="5.69,270,1571670000"; d="scan'208";a="33061499"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 03 Dec 2019 09:41:33 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 6DAF8F800F0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 01:54:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DAF8F800F0
+Date: 03 Dec 2019 09:54:05 +0900
+X-IronPort-AV: E=Sophos;i="5.69,270,1571670000"; d="scan'208";a="33062717"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 03 Dec 2019 09:54:05 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E576D40037D5;
- Tue,  3 Dec 2019 09:41:32 +0900 (JST)
-Message-ID: <87a78adyv7.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 52BFD414C59F;
+ Tue,  3 Dec 2019 09:54:05 +0900 (JST)
+Message-ID: <878snudyaa.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-In-Reply-To: <20191202155834.22582-1-geert+renesas@glider.be>
-References: <20191202155834.22582-1-geert+renesas@glider.be>
+To: Michael Walle <michael@walle.cc>
+In-Reply-To: <0d5be3b17e26de6bda1c65a1b853ad20@walle.cc>
+References: <0d5be3b17e26de6bda1c65a1b853ad20@walle.cc>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: alsa-devel@alsa-project.org, Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Eugeniu Rosca <erosca@de.adit-jv.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rsnd: Calculate DALIGN inversion at
-	run-time
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] simple card, asymetrical configuration
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,21 +77,69 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+Hi Michael
 
-> There is no need to store the inverted DALIGN values in the table, as
-> they can easily be calculated at run-time.  This also protects against
-> the introduction of inconsistencies between normal and inverted values
-> by a future table modification.
+> sound {
+> 	compatible = "simple-audio-card";
+> 	simple-audio-card,format = "i2s";
+> [snip]
+> 	simple-audio-card,bitclock-master = <&dailink0_master>;
+> 	simple-audio-card,frame-master = <&dailink0_master>;
 > 
-> Reorder the two subexpressions in the AND check, to perform the least
-> expensive check first.
+> 	simple-audio-card,cpu@0 {
+> 		sound-dai = <&sai6>;
+> 	};
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
+> 	simple-audio-card,cpu@1 {
+> 		sound-dai = <&sai5>;
+> 	};
+> 
+> 	dailink0_master: simple-audio-card,codec {
+> 		sound-dai = <&wm8904>;
+> 	};
+> };
+> 
+> Just for the background, I have hardware with the LS1028A which only
+> have unidirectional SAIs. But two of those SAIs (one for playback and
+> one for capture) are connected to one codec (with a shared bit and
+> frame clock).
+> 
+> So I thought the example in the simple-card bindings makes sense for
+> my case. Although I don't really know what "(Mixing)" means.
+> 
+> Nevertheless, using the fragment above, the kernel oopses or fails to
+> probe the hardware. I've traced that back to the following:
+>  - the count is correct: the kernel reports "link 2, dais 3, ccnf
+> 0". please note the 3 dais here.
+>  - but simple_dai_link_of() will always "allocate" two dais from the
+> pool:
+> 
+>         cpu_dai                 =
+>         dai_props->cpu_dai      = &priv->dais[li->dais++];
+>         codec_dai               =
+>         dai_props->codec_dai    = &priv->dais[li->dais++];
+> 
+> While this still works for the first link, the second one will fail
+> because codec_dai will not be valid.
+> 
+> Btw, converting that to two explicit dai-link nodes, the dai count
+> will be 4 and it will work.
+> 
+> Is my use case correct or should I use the two explicit dai-link
+> nodes? But in any case there seems to be a bug in simple-card.
 
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+I guess you want to use "simple-scu-audio-card"
+instead of "simple-audio-card" in this case ?
 
+	sound {
+-		compatible = "simple-audio-card";
++		compatible = "simple-scu-audio-card";
+
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
