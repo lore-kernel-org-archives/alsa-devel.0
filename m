@@ -2,75 +2,92 @@ Return-Path: <SRS0=OCx8=ZZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B8CDC432C3
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 20:39:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CF20C432C3
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 20:44:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17B2020833
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 20:39:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EB8A12080F
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Dec 2019 20:44:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="juSbzckX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="etLKpf+I"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17B2020833
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DWDXcmjZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="URJ0GdbW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB8A12080F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9C72165D;
-	Tue,  3 Dec 2019 21:38:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9C72165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48226165F;
+	Tue,  3 Dec 2019 21:43:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48226165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575405555;
-	bh=4ZkLQORlBG5N9WWrsR+e+wrdHR8QGJ6WoMZk7C0RGAE=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1575405877;
+	bh=zoMWgTfRo196Q344RsdieSEUL6TNuVv6LpEZCeADCvs=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=juSbzckXI/f1au707Z655aYAfmbwNR7RJ2DB9GSCfthnVRWsb+lK4OdDeNeNUz1EB
-	 EWeHwmY+kyx4ptAPU07+GhjCcuWKkUYuMHx2fqv4Wt1qRvs9zdhRojJ/ckJTjhIqtz
-	 aO+Po7ZBkC8yUrghQ3EQ6ooVUUJyHFrKiNVuUybM=
+	b=DWDXcmjZNXvZZrGXqjmvf5UcE0XGC9qnWlyW+7LbHcJH40NDUAMdMtWJBonZ0Zd2j
+	 57/xiWSpdhU5gYOuUbXn5WKKnLDBHXtrUecKGw1rDFhUZ37FD2HSuxy+eVb2FTxl5c
+	 VTU+r7eYFbIAFu1N9Qp3U6jfWNZcF4PZ0LAU5Rk8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35420F800B4;
-	Tue,  3 Dec 2019 21:38:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF61EF800F0;
+	Tue,  3 Dec 2019 21:43:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C469AF8015A; Tue,  3 Dec 2019 21:38:23 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 049A8F800B4
- for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 21:38:19 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id F3847A0046;
- Tue,  3 Dec 2019 21:38:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz F3847A0046
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1575405499; bh=s5AYxxxGwDmEpDv9bhteI55uSmCgeCwWVjtnQuxIM0o=;
- h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
- b=etLKpf+I+fewMeeBmwhac4c+L+Id0YaMdVwMeZjDALoUwuPxzcz0Iqi3UfHxVDVOI
- g5CvYCav9euRayqUy3Hy7RYUGdXT/g9YXI4mxoiVX/RfnSeMZZXDmWPYvoDaNFNqq4
- 7Zdu1M9+Jx1G0qQWpp0Rd6fqCz4GqqFyukuAMM/8=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ id BD9DFF8015A; Tue,  3 Dec 2019 21:43:45 +0100 (CET)
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com
+ [IPv6:2607:f8b0:4864:20::f43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue,  3 Dec 2019 21:38:16 +0100 (CET)
-To: Giovanni Harting <539@idlegandalf.com>
-References: <822e0fa2-3075-7447-8c37-34dbe4e211b9@idlegandalf.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <c1a88f61-7691-a947-0857-bf0a0cee4c50@perex.cz>
-Date: Tue, 3 Dec 2019 21:38:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C47E8F800B4
+ for <alsa-devel@alsa-project.org>; Tue,  3 Dec 2019 21:43:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C47E8F800B4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="URJ0GdbW"
+Received: by mail-qv1-xf43.google.com with SMTP id b18so2163585qvy.3
+ for <alsa-devel@alsa-project.org>; Tue, 03 Dec 2019 12:43:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=NTs4mMuCkVgNMcWVN7CkShBFgDZXH20YBZaHdHma1/Q=;
+ b=URJ0GdbWBA17jxox9K3a8f66G97DAKSsUzNjn6YFeGB1ShQO3Ghy7sgFxB9O/8KDrm
+ 9fvxYUg35M3l7y0GpFXlIRtmED2bynLaT5OukcosyJi2vibsgg/g1aJI7tGOiMuaYGWH
+ 82Me4DUgKnCgwH1RZ1NFizmtvivVZaBx0sT0EqIwKTTLhfzDjuvxApx4OWHiO0t479ki
+ 4mFqOQpTLLHkO89sFxVrFK7k2O9nIaOw0eLZpE6+Ralv/KXYXjlbUqPrjOZ9Xjx6ewqK
+ wsna4zQoxMO2IQCEUpWra7gXEMvfErbKqjUx52D/DWNINrxNdDKueUpByrsm2SLONZkF
+ 2PYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=NTs4mMuCkVgNMcWVN7CkShBFgDZXH20YBZaHdHma1/Q=;
+ b=M3vyIDUUw+dhoNPxY98fKe0+GkIPZHM9iGs2mmHlVycCqJCfj7AB+nfL/5jUdJDtbT
+ kPcI9dvVp1JUkcG/AzXvBjS/bO03A/CeVFlTffnqBc0HggGvKEUvbDYhRp6Pk9rcnf3f
+ WGrTKFX/6VXSq4RAOqliIYIUsnluoKxD7blGhSpdS8R4AbXeU3V/V1rjYo8Wilxt/bvZ
+ Kym9YdL9M11nUpAm4LdXNjwNWIlP+2Xigm06B4Hn0EpkXk6ktGjStLsBP0VeD6+Z4I4E
+ tw2i8AVx8JgYRyYyL44zAhlW4UqK7IKmf5j8pq8g8ekyk/XzkugbxUnkD4zTlSV31Rx3
+ 3MJA==
+X-Gm-Message-State: APjAAAUVeWZ20sKhL3zNINU2/8ZYWHrMuDSK/WXK3Vj/xJ9CANgjgauI
+ f+Qi+N5Y2SFap8r7UWxl6vOJNwW6qx6rznfthZL4dg==
+X-Google-Smtp-Source: APXvYqwgOe3MUxBsH7R5w7eRYl5HKQayA0O+rXnZufNmnV9p47SelUhlQDPEi/XUJpjmlwO/h690lu/eT4lLGTCPyRY=
+X-Received: by 2002:ad4:4c42:: with SMTP id cs2mr6861888qvb.198.1575405820279; 
+ Tue, 03 Dec 2019 12:43:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <822e0fa2-3075-7447-8c37-34dbe4e211b9@idlegandalf.com>
-Content-Language: en-US
-Cc: ALSA development <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] a52 plugin + ffmpeg with libswresample
+References: <CAOReqxjFaWhYCzzyZ90Pc5EvzUky6kCYqakz2XBwSOii9d3maA@mail.gmail.com>
+ <6b310509-212e-b887-5e3a-483a740d2d1c@ab3.no>
+In-Reply-To: <6b310509-212e-b887-5e3a-483a740d2d1c@ab3.no>
+From: Curtis Malainey <cujomalainey@google.com>
+Date: Tue, 3 Dec 2019 12:43:28 -0800
+Message-ID: <CAOReqxj3P4Kvf5YwTXoEzHd9hURBOP4ySEjURsO7LjK+vbpQTw@mail.gmail.com>
+To: =?UTF-8?Q?Mads_L=C3=B8nsethagen?= <mads@ab3.no>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
+Subject: Re: [alsa-devel] Headset button mapping in the kernel
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,46 +100,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 03. 12. 19 v 21:12 Giovanni Harting napsal(a):
-> Hello,
-> 
-> I'm working on restoring functionality to the a52 plugin.
-> ALSA build with ffmpeg without (deprecated) libavresample does not build
-> this plugin, since libavresample is missing. Archlinux for example does
-> not build with libavresample anymore [1], therefore a52 is missing in
-> alsa-plugins builds since that change happened.
-> 
-> I ported rate-lav to libswresample, which seems to work well after a
-> month of daily use.
-> 
-> The oddity is that a config file (asoundrc, [2]), that worked fine with
-> alsa-lib 1.1.6, does not work with 1.1.7+. I could not find a change
-> that causes this.
-> 
-> I traced it down to _snd_pcm_rate_open() in pcm/pcm_rate.c, where
-> keywords from within pcm {} are passed into, where it fails with
-> "Unknown field card" (for example).
-> 
-> I worked around it by filtering out all keywords [3], but that feels a
-> little unclean. Is there a proper way to fix this? I'm not familiar with
-> ALSA's config parsing.
-> 
-> I'll submit patches for both once I figured out how to fix this.
-
-Show us the code (for example via github or so) to look what you're trying to 
-do. It seems that the configuration parser in the plugin is broken.
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVGh1LCBOb3YgMjgsIDIwMTkgYXQgMToxMyBBTSBNYWRzIEzDuG5zZXRoYWdlbiA8bWFkc0Bh
+YjMubm8+IHdyb3RlOgoKPiBPbiAyNS4xMS4yMDE5IDIwOjI1LCBDdXJ0aXMgTWFsYWluZXkgd3Jv
+dGU6Cj4gPiBIZWxsbyBBTFNBIERldnMsCj4gPgo+ID4gSSBhbSBsb29raW5nIHRvIGdldCBzb21l
+IGZlZWRiYWNrL2lkZWFzIG9uIGEgcG9zc2libGUgY2hhbmdlIHRvCj4gPiBoZWFkc2V0IGJ1dHRv
+biBtYXBwaW5nLiBMb2NhbGx5IHdlIGFyZSBjYXJyeWluZyBwYXRjaGVzIHRoYXQgaW1wbGVtZW50
+Cj4gPiB0aGUgbWFwcGluZ3MgaW4gdGhlIG1hY2hpbmUgZHJpdmVyICh3aGljaCB3ZSB1bmRlcnN0
+YW5kIHlvdSBkbyBub3QKPiA+IHdhbnQgdXBzdHJlYW0uKSBXZSBhcmUgbG9va2luZyB0byBzZWUg
+aWYgd2UgY2FuIGFkZCBhIG5ldyBBUEkKPiA+IChzb21ldGhpbmcgbGlrZSBhIHN5c2ZzIHBhdGgg
+cG90ZW50aWFsbHkpIHRvIGhhdmUgdXNlcnNwYWNlIHBhc3MgaW4KPiA+IHRoZSBtYXBwaW5nLCBp
+ZiBpdCBjaG9vc2VzIHRvLCBzbyB0aGUgbWFwcGluZyBjYW4gc3RpbGwgYmUgZG9uZSBpbiB0aGUK
+PiA+IGtlcm5lbC4gVGhhdCB3YXkgd2UgY2FuIGNhcnJ5IGp1c3QgdGhlIGNvbmZpZyBsb2NhbGx5
+IGFuZCByZW1vdmUgc29tZQo+ID4gb2YgdGhlIGtlcm5lbCBwYXRjaGVzIHdlIGFyZSBjYXJyeWlu
+ZyBsb2NhbGx5LiBUaGFua3MuCj4gPgo+ID4gQ3VydGlzCj4gPgo+Cj4gSGkgTWFkcywKCkFwb2xv
+Z2llcywgYXBwYXJlbnRseSBteSBzcGFtIGZpbHRlciBncmFiYmVkIHlvdXIgZW1haWwgZnJvbSBt
+ZSAoYmFjayB0bwphZGp1c3RpbmcgdGhlIHJ1bGVzLikKCj4gU29ycnkgZm9yIHRoZSB0b3AgcG9z
+dGluZyBpbiBteSBsYXN0IG1haWwuCj4KPiBJIGp1c3Qgd29uZGVyZWQsIGRvIHRoaXMgaGF2ZSBh
+bnl0aGluZyB0byBkbyB3aXRoIGhlYWRwaG9uZXMgdGhhdCBoYXMKPiBwaHlzaWNhbCBidXR0b25z
+IG9uIHRoZSBoZWFkcGhvbmUgd2lyZSBpdHNlbGY/IEUuZyB0aGUgQm9zZSBRQzI1IGlzIGEKPiBw
+YWlyIG9mIGhlYWRwaG9uZXMgdGhhdCBoYXMgZm91ciBidXR0b25zIG9uIHRoZSB3aXJlLCBhbmQg
+YXMgZmFyIGFzIEkKPiBjYW4gc2VlIHRoZXJlJ3Mgbm8gd2F5IG9mIGdldHRpbmcgdGhvc2UgYnV0
+dG9ucyB0byB3b3JrIGluIHZhbmlsbGEgTGludXgKPiBmb3Igbm93LCBidXQgaXQgd29ya3MgaW4g
+QW5kcm9pZCBhbmQgV2luZG93cyAxMC4KPgoKTm8gdGhpcyBpcyByZWxhdGVkIHRvIENocm9tZU9T
+IGRldmljZSBoZWFkc2V0IGJ1dHRvbiBtYXBwaW5nLCBidXQgaG9wZWZ1bGx5CmFuZHJvaWQgd2ls
+bCBwaWNrIHRoaXMgdXAgYXMgd2VsbC4KWWVzLCB0aGVzZSBidXR0b25zIGFyZSB0aGUgb25lcyBJ
+IGFtIGRpc2N1c3NpbmcuIEN1cnJlbnRseSBpbiBDaHJvbWVPUyAoYW5kCmxpa2VseSBpbiBBbmRy
+b2lkIGFzIHdlbGwpIHdlIGNhcnJ5IHBhdGNoZXMgc3VjaCBhcwpodHRwczovL2Nocm9taXVtLXJl
+dmlldy5nb29nbGVzb3VyY2UuY29tL2MvY2hyb21pdW1vcy90aGlyZF9wYXJ0eS9rZXJuZWwvKy8x
+MDMzNDY1LwpJdCBhcHBlYXJzIHNvbWUgaGF2ZSBzdGFydGVkIGxhbmRpbmcKdXBzdHJlYW0gYWUw
+OWE0NzgzYjljYWY5MzA3ZjMwM2VmMDM5ZjgyOTdjZTAzNzFmZSAoIkFTb0M6IEludGVsOiBIZWFk
+c2V0CmJ1dHRvbiBzdXBwb3J0IGluIGthYnlsYWtlIG1hY2hpbmUgZHJpdmVyIikgYnV0IGl0IHdv
+dWxkIGJlIGdyZWF0IGlmIHdlIGhhZAphIHdheSBmb3IgdXNlcnNwYWNlIHRvIGNvbmZpZ3VyZSB0
+aGVzZSBidXR0b25zIHNpbWlsYXIgdG8gaG93IHdlIGhhbmRsZQpVQ01zLgoKSSBhc2tlZCBhYm91
+dCB0aGlzIG9uIHRoaXMgbWFpbGluZyBsaXN0IGJlZm9yZVsxXSwgYmVjYXVzZSBJIGRvbid0IGV2
+ZW4KPiBrbm93IHdoaWNoIGNvbXBvbmVudCBzaG91bGQgYmUgcmVzcG9uc2libGUgZm9yIGdlbmVy
+YXRpbmcgYnV0dG9uIGV2ZW50cy4KPiBTaG91bGQgaXQgaGF2ZSBhbnl0aGluZyB0byBkbyB3aXRo
+IGFsc2E/IElzIHRoZSBidXR0b24gbWFwcGluZyB5b3UncmUKPiBhc2tpbmcgYWJvdXQgaGVyZSBh
+Ym91dCB0aGUgc2FtZSB0aGluZz8gRG8gYW55b25lIGtub3cgaG93IG9uZSBzaG91bGQgZ28KPiBh
+Ym91dCBzdXBwb3J0aW5nIHRoZXNlIGtpbmQgb2YgYnV0dG9uIGV2ZW50cyBvbiBkZXNrdG9wIExp
+bnV4Pwo+Cj4gVGhpcyBwcm9qZWN0IHdpbGwgaGF2ZSB0byBiZSB0aWVkIHRvIEFMU0EgaW4gc29t
+ZSBmYXNoaW9uIChhcyB5b3UgY2FuIHNlZQppdCBpcyB0aWVkIHRvIHRoZSBqYWNrIHdoaWNoIGlz
+IGFuIEFMU0EgY29uY2VwdCksIGJ1dCBJIHN0aWxsIGhhdmUgdG8gZG8KdGhlIGRlc2lnbiBkb2Nz
+LiBJbiB0aGVvcnksIHRoaXMgd2lsbCBlbmFibGUgdmFuaWxsYSBsaW51eCB0byBiZSBjb25maWd1
+cmVkCmZvciBhbnkgaGVhZHNldCBidXR0b25zIG9uY2UgZG9uZS4KCj4gLSBNYWRzCj4KPiBbMV0K
+Pgo+IGh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVs
+LzIwMTktT2N0b2Jlci8xNTc3MDIuaHRtbAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
