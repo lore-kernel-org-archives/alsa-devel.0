@@ -7,74 +7,67 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 536E3C43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71352C43603
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:02:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D9332073B
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:02:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E1ACF207DD
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:02:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZLq3htiz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D9332073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UI8h9dnB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1ACF207DD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 386521664;
-	Wed,  4 Dec 2019 21:01:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 386521664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A15A1674;
+	Wed,  4 Dec 2019 21:02:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A15A1674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575489722;
-	bh=KvvRrcZD/g0tiGiragpgJ/BHLQBF+t/7bcZjeG5ljwo=;
+	s=default; t=1575489776;
+	bh=2MeLfErBuFLNcZ3g40nmln5WtyW4OC47cCR/KpjtPwg=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZLq3htizL0ZJ+3KTB5kMZQ+VP41w/3qGNYWhPFr3rp+1ylaZmv0FCUHMmMFtxrb0Q
-	 be6e4kZ0LRRQM7ONmDKDx6RnO/m0DUfabfsnxL/+quf/jRh6uvMXRA1Kyhlih+HquG
-	 wtzGcVp0CCFqqQ6hZ+Vt5xh3ZAYg6gtq9eUB1wEo=
+	b=UI8h9dnBlz+0DkLSWY9ZBFqJZVP35zxdtWZ23VvEJQjypTz/PwIuQ0T7NpsCDUt8c
+	 HU1Vn+ww9Jlh1B+WWzkrftiI9GbNcxDv1tcUEtCorzjNWGHRmEnrMVCSWMLOHUKkjZ
+	 P/dJNwSLYUt1cwwLcpTt6U1rmIEIKBPa/uzRabWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7790F801D9;
-	Wed,  4 Dec 2019 21:01:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E90CFF80217;
+	Wed,  4 Dec 2019 21:01:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD926F801EC; Wed,  4 Dec 2019 21:01:06 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id D531DF800F0; Wed,  4 Dec 2019 21:01:29 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10243F800F0
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 21:00:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10243F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA206F800F0
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 21:01:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA206F800F0
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Dec 2019 12:00:55 -0800
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 04 Dec 2019 12:01:23 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,278,1571727600"; d="scan'208";a="236407731"
+X-IronPort-AV: E=Sophos;i="5.69,278,1571727600"; d="scan'208";a="411382170"
 Received: from jcourage-mobl.amr.corp.intel.com (HELO [10.251.152.230])
  ([10.251.152.230])
- by fmsmga004.fm.intel.com with ESMTP; 04 Dec 2019 12:00:54 -0800
-To: Colin King <colin.king@canonical.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, alsa-devel@alsa-project.org,
- linux-arm-kernel@lists.infradead.org
-References: <20191204124816.1415359-1-colin.king@canonical.com>
+ by fmsmga005.fm.intel.com with ESMTP; 04 Dec 2019 12:01:23 -0800
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+References: <20191204151454.21643-1-tiwai@suse.de>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <33fec540-e97b-25e7-83af-575f19d829d2@linux.intel.com>
-Date: Wed, 4 Dec 2019 13:13:45 -0600
+Message-ID: <5342d6cc-bdc4-f62c-77b4-a433ec8372d4@linux.intel.com>
+Date: Wed, 4 Dec 2019 13:23:36 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.1
 MIME-Version: 1.0
-In-Reply-To: <20191204124816.1415359-1-colin.king@canonical.com>
+In-Reply-To: <20191204151454.21643-1-tiwai@suse.de>
 Content-Language: en-US
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: imx8: fix memory allocation
- failure check on priv->pd_dev
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: core: Fix access to uninitialized
+ list heads
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,37 +87,56 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 12/4/19 6:48 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 12/4/19 9:14 AM, Takashi Iwai wrote:
+> The error path of soc_new_pcm_runtime() invokes soc_free_pcm_runtime()
+> that may cause a few problems.  First off, it calls list_del() for
+> rtd->list that may not be initialized.  Similarly,
+> snd_soc_pcm_component_free() traverses over the component list that
+> may not be initialized, either.  Such access to the uninitialized list
+> head would lead to either a BUG_ON() or a memory corruption.
 > 
-> The memory allocation failure check for priv->pd_dev is incorrectly
-> pointer checking priv instead of priv->pd_dev. Fix this.
+> This patch fixes the access to uninitialized list heads by
+> initializing the list heads properly at the beginning before those
+> error paths.
 > 
-> Addresses-Coverity: ("Logically dead code")
-> Fixes: 202acc565a1f ("ASoC: SOF: imx: Add i.MX8 HW support")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Thanks Colin
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 > ---
->   sound/soc/sof/imx/imx8.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   sound/soc/soc-core.c | 12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-> index cfefcfd92798..9d926b1df0d7 100644
-> --- a/sound/soc/sof/imx/imx8.c
-> +++ b/sound/soc/sof/imx/imx8.c
-> @@ -209,7 +209,7 @@ static int imx8_probe(struct snd_sof_dev *sdev)
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 0e2e628302f1..726e5de850c4 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -478,6 +478,12 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+>   		goto free_rtd;
 >   
->   	priv->pd_dev = devm_kmalloc_array(&pdev->dev, priv->num_domains,
->   					  sizeof(*priv->pd_dev), GFP_KERNEL);
-> -	if (!priv)
-> +	if (!priv->pd_dev)
->   		return -ENOMEM;
+>   	rtd->dev = dev;
+> +	INIT_LIST_HEAD(&rtd->list);
+> +	INIT_LIST_HEAD(&rtd->component_list);
+> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
+> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
+> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
+> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
+>   	dev_set_drvdata(dev, rtd);
+>   	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
 >   
->   	priv->link = devm_kmalloc_array(&pdev->dev, priv->num_domains,
+> @@ -493,12 +499,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+>   	/*
+>   	 * rtd remaining settings
+>   	 */
+> -	INIT_LIST_HEAD(&rtd->component_list);
+> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
+> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
+> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
+> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
+> -
+>   	rtd->card = card;
+>   	rtd->dai_link = dai_link;
+>   	if (!rtd->dai_link->ops)
 > 
 _______________________________________________
 Alsa-devel mailing list
