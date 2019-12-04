@@ -7,65 +7,55 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EF48C43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 15:15:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D7A4C43603
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 15:16:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A6B62081B
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 15:15:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C3A5A2081B
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 15:16:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IvyUZlyB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A6B62081B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BgQ47hn2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3A5A2081B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 144411668;
-	Wed,  4 Dec 2019 16:14:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 144411668
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9C1B1682;
+	Wed,  4 Dec 2019 16:15:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9C1B1682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575472506;
-	bh=hdsgQx6iycO96tEJu3hk9Q9lw8LSMxbneqFXcCHR3us=;
+	s=default; t=1575472566;
+	bh=zZ6YRw5EwWbFWK6z5mipLUy1YF+s/XGKd52/jEPNWh8=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=IvyUZlyBTqbeDAKAH7jM17mv0htvpvDTTy0ybG7fSjrt0I5WZlGHGmvyjmXL04fI+
-	 BrFZ1l0HUjSn2whxYcSaPjA+dFeqwDlZXDAnlM6d+SUPGTpq4MSot8EVhZoyGrK3W/
-	 OxCLhPjPW465P9FWnAvPXI4r6UE5Axf1FfVZ/dGU=
+	b=BgQ47hn2JPay3ap+O0nNmx/knTiOcr+SojE3TCmm0KOn1Uler7/ZBkzffR7soAVI4
+	 uVS2DIgGsSv7bbr0GrtZaULk5XdKG4FiKwg9PoJVkDLmkYaXR/WqQfP8XlxVl94ju7
+	 xVUTJ8Y6/SYqvqSQuaXWViEVG/24gSeGxZ54cOiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86B29F801D9;
-	Wed,  4 Dec 2019 16:14:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8655AF8023E;
+	Wed,  4 Dec 2019 16:15:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2072F801EC; Wed,  4 Dec 2019 16:14:13 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DF0D0F80240; Wed,  4 Dec 2019 16:15:00 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C957F8010F
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 16:14:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C957F8010F
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 287A42011F5;
- Wed,  4 Dec 2019 16:14:09 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com
- [134.27.226.22])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1C4F62011ED;
- Wed,  4 Dec 2019 16:14:09 +0100 (CET)
-Received: from fsr-ub1864-103.ro-buh02.nxp.com
- (fsr-ub1864-103.ea.freescale.net [10.171.82.17])
- by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 89D92205C5;
- Wed,  4 Dec 2019 16:14:08 +0100 (CET)
-From: Daniel Baluta <daniel.baluta@nxp.com>
-To: broonie@kernel.org,
-	lgirdwood@gmail.com
-Date: Wed,  4 Dec 2019 17:13:33 +0200
-Message-Id: <20191204151333.26625-1-daniel.baluta@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Daniel Baluta <daniel.baluta@nxp.com>, tiwai@suse.com
-Subject: [alsa-devel] [PATCH] ASoC: soc-core: Set dpcm_playback /
-	dpcm_capture
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D31CF800B4
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 16:14:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D31CF800B4
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 47836ACB8;
+ Wed,  4 Dec 2019 15:14:57 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Date: Wed,  4 Dec 2019 16:14:54 +0100
+Message-Id: <20191204151454.21643-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH] ASoC: core: Fix access to uninitialized list
+	heads
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,33 +74,54 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When converting a normal link to a DPCM link we need
-to set dpcm_playback / dpcm_capture otherwise playback/capture
-streams will not be created resulting in errors like this:
+The error path of soc_new_pcm_runtime() invokes soc_free_pcm_runtime()
+that may cause a few problems.  First off, it calls list_del() for
+rtd->list that may not be initialized.  Similarly,
+snd_soc_pcm_component_free() traverses over the component list that
+may not be initialized, either.  Such access to the uninitialized list
+head would lead to either a BUG_ON() or a memory corruption.
 
-[   36.039111]  sai1-wm8960-hifi: ASoC: no backend playback stream
+This patch fixes the access to uninitialized list heads by
+initializing the list heads properly at the beginning before those
+error paths.
 
-Fixes: a655de808cbde ("ASoC: core: Allow topology to override machine driver FE DAI link config")
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/soc-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/soc-core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 977a7bfad519..f89cf9d0860c 100644
+index 0e2e628302f1..726e5de850c4 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1872,6 +1872,8 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+@@ -478,6 +478,12 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 		goto free_rtd;
  
- 			/* convert non BE into BE */
- 			dai_link->no_pcm = 1;
-+			dai_link->dpcm_playback = 1;
-+			dai_link->dpcm_capture = 1;
+ 	rtd->dev = dev;
++	INIT_LIST_HEAD(&rtd->list);
++	INIT_LIST_HEAD(&rtd->component_list);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
+ 	dev_set_drvdata(dev, rtd);
+ 	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
  
- 			/* override any BE fixups */
- 			dai_link->be_hw_params_fixup =
+@@ -493,12 +499,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 	/*
+ 	 * rtd remaining settings
+ 	 */
+-	INIT_LIST_HEAD(&rtd->component_list);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
+-
+ 	rtd->card = card;
+ 	rtd->dai_link = dai_link;
+ 	if (!rtd->dai_link->ops)
 -- 
-2.17.1
+2.16.4
 
 _______________________________________________
 Alsa-devel mailing list
