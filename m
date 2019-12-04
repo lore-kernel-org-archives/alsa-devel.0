@@ -2,71 +2,67 @@ Return-Path: <SRS0=elh7=Z2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 495CCC43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:17:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06792C43603
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:18:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C538F2077B
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:17:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B90C2073C
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:18:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b9x3+WAI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C538F2077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NZtAF9T1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B90C2073C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D98C1667;
-	Wed,  4 Dec 2019 22:16:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D98C1667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B925166A;
+	Wed,  4 Dec 2019 22:17:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B925166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575494235;
-	bh=/QZo5z7y/l6cNRKFDXwkqXDtXRd7LlxhMSWkYP1ccnU=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=b9x3+WAIE9WMRq0YPfx9avd6x0bq/dL2N12dv/pLiy93ZD23CSK07YGqqWDQrd+6O
-	 0uGInatbB4FHE0FoI6F0iQrni2r25MF2/oYQMuMInUImK9O1dLtTKgVypREqeBP4e3
-	 bEt75yIkRl3BhKZsAAeDnrxCJOVmXTQFfj8oBJw8=
+	s=default; t=1575494288;
+	bh=wOfpBTlaZcQPXCnuy3VLvrUfOWnagcnPKZkZOdbpAeU=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NZtAF9T1MUwG+wMQgk4ux+ZpLeW/iqwvAGpn4sc7thD9KYQjHqMg5I9jZQuAwhLAl
+	 b6jtmApAN9sDJKSccrIGt94cl1a7oAP5soU0/YvGEzlAxd2w6U8CxUHx/0uTHdXHe9
+	 gAh5YcYzs9YlC4ct/CVcIBJGqpFhPfawB5MnEaVE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78642F80218;
-	Wed,  4 Dec 2019 22:16:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A6F5F80240;
+	Wed,  4 Dec 2019 22:16:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 973F4F80233; Wed,  4 Dec 2019 22:16:19 +0100 (CET)
+ id 8ED57F80214; Wed,  4 Dec 2019 22:16:17 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F738F801EC
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 22:16:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F738F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 124DEF800B4
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 22:16:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 124DEF800B4
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Dec 2019 13:16:12 -0800
+ 04 Dec 2019 13:16:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,278,1571727600"; d="scan'208";a="223378548"
+X-IronPort-AV: E=Sophos;i="5.69,278,1571727600"; d="scan'208";a="223378542"
 Received: from rgolani-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.153.236])
- by orsmga002.jf.intel.com with ESMTP; 04 Dec 2019 13:16:11 -0800
+ by orsmga002.jf.intel.com with ESMTP; 04 Dec 2019 13:16:09 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed,  4 Dec 2019 15:15:45 -0600
-Message-Id: <20191204211556.12671-3-pierre-louis.bossart@linux.intel.com>
+Date: Wed,  4 Dec 2019 15:15:43 -0600
+Message-Id: <20191204211556.12671-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191204211556.12671-1-pierre-louis.bossart@linux.intel.com>
-References: <20191204211556.12671-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 02/13] ASoC: Intel - use control components
-	to describe card config
+Subject: [alsa-devel] [PATCH v2 00/13] ASoC: SOF: initial cleanup for DT and
+	multi-client support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,123 +80,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jaroslav Kysela <perex@perex.cz>
+This series does not add new functionality but introduces a better
+code partition to support machine drivers in Device Tree, as well as a
+'componentization' of the PCM/topology parts needed for multi-client
+support.
 
-Use the control interface (field 'components' in the info structure)
-to pass the I/O configuration details. The goal is to replace
-the card long name with this.
+This cleanup was merged in the SOF tree and tested extensively with no
+regressions identified. Thanks Ranjani and Daniel for combining your
+proposals in a single change.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bytcht_es8316.c |  9 ++++++++-
- sound/soc/intel/boards/bytcr_rt5640.c  |  6 ++++++
- sound/soc/intel/boards/bytcr_rt5651.c  | 18 +++++++++++-------
- 3 files changed, 25 insertions(+), 8 deletions(-)
+Changes since v1:
+Rebased on top of Jaroslav's HDaudio changes (added in this series as
+discussed with Mark)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 46612331f5ea..efa33f30dcac 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -361,6 +361,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
- /* SoC card */
- static char codec_name[SND_ACPI_I2C_ID_LEN];
- static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
-+static char components_string[32]; /* = "cfg-spk:* cfg-mic:* */
- 
- static int byt_cht_es8316_suspend(struct snd_soc_card *card)
- {
-@@ -572,11 +573,17 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	/* register the soc card */
-+	snprintf(components_string, sizeof(components_string),
-+		 "cfg-spk:%s cfg-mic:%s",
-+		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "1" : "2",
-+		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
-+	byt_cht_es8316_card.components = components_string;
- 	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
- 		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
- 		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
- 	byt_cht_es8316_card.long_name = long_name;
-+
-+	/* register the soc card */
- 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
- 
- 	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index dd2b5ad08659..7bc6d3cec94c 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1083,6 +1083,7 @@ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
- static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
-+static char byt_rt5640_components[32]; /* = "cfg-spk:* cfg-mic:*" */
- 
- static int byt_rt5640_suspend(struct snd_soc_card *card)
- {
-@@ -1305,6 +1306,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
-+		 "cfg-spk:%s cfg-mic:%s",
-+		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
-+		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
-+	byt_rt5640_card.components = byt_rt5640_components;
- 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
- 		 "bytcr-rt5640-%s-spk-%s-mic",
- 		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 4606f6f582d6..80a5674ddb1b 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -798,6 +798,7 @@ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
- static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
-+static char byt_rt5651_components[50]; /* = "cfg-spk:* cfg-mic:*" */
- 
- static int byt_rt5651_suspend(struct snd_soc_card *card)
- {
-@@ -876,7 +877,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	const char *platform_name;
- 	struct acpi_device *adev;
- 	struct device *codec_dev;
--	const char *hp_swapped;
- 	bool is_bytcr = false;
- 	int ret_val = 0;
- 	int dai_index = 0;
-@@ -1080,16 +1080,20 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED)
--		hp_swapped = "-hp-swapped";
--	else
--		hp_swapped = "";
--
-+	snprintf(byt_rt5651_components, sizeof(byt_rt5651_components),
-+		 "cfg-spk:%s cfg-mic:%s%s",
-+		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ? "1" : "2",
-+		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
-+		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
-+			" cfg-hp:lrswap" : "");
-+	byt_rt5651_card.components = byt_rt5651_components;
- 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
- 		 "bytcr-rt5651-%s-spk-%s-mic%s",
- 		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
- 			"mono" : "stereo",
--		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
-+		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
-+		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
-+			"-hp-swapped" : "");
- 	byt_rt5651_card.long_name = byt_rt5651_long_name;
- 
- 	/* override plaform name, if required */
+Daniel Baluta (2):
+  ASoC: SOF: Make creation of machine device from SOF core optional
+  ASoC: SOF: Remove unused drv_name in sof_pdata
+
+Jaroslav Kysela (3):
+  ASoC: intel/skl/hda - export number of digital microphones via control
+    components
+  ASoC: Intel - use control components to describe card config
+  ASoC: Intel - do not describe I/O configuration in the long card name
+
+Ranjani Sridharan (8):
+  ASoC: SOF: topology: remove snd_sof_init_topology()
+  ASoC: SOF: core: modify the signature for snd_sof_create_page_table
+  ASoC: SOF: core: move check for runtime callbacks to core
+  ASoC: SOF: Introduce default_fw_filename member in sof_dev_desc
+  ASoC: SOF: partition audio-related parts from SOF core
+  ASoC: SOF: intel: hda: Modify signature for hda_codec_probe_bus()
+  ASoC: SOF: remove nocodec_fw_filename
+  ASoC: SOF: nocodec: Amend arguments for sof_nocodec_setup()
+
+ include/sound/sof.h                          |   8 +-
+ sound/soc/intel/boards/Kconfig               |  13 +
+ sound/soc/intel/boards/bytcht_es8316.c       |  13 +-
+ sound/soc/intel/boards/bytcr_rt5640.c        |  10 +
+ sound/soc/intel/boards/bytcr_rt5651.c        |  22 +-
+ sound/soc/intel/boards/skl_hda_dsp_generic.c |   8 +
+ sound/soc/sof/Makefile                       |   2 +-
+ sound/soc/sof/control.c                      |  55 +--
+ sound/soc/sof/core.c                         | 244 +---------
+ sound/soc/sof/intel/apl.c                    |   7 +
+ sound/soc/sof/intel/bdw.c                    |  33 ++
+ sound/soc/sof/intel/byt.c                    |  45 ++
+ sound/soc/sof/intel/cnl.c                    |   7 +
+ sound/soc/sof/intel/hda-codec.c              |  16 +-
+ sound/soc/sof/intel/hda-dai.c                |   1 +
+ sound/soc/sof/intel/hda-pcm.c                |   4 +-
+ sound/soc/sof/intel/hda-stream.c             |   1 +
+ sound/soc/sof/intel/hda.c                    | 228 ++++++----
+ sound/soc/sof/intel/hda.h                    |   8 +-
+ sound/soc/sof/ipc.c                          |  16 +-
+ sound/soc/sof/nocodec.c                      |  12 -
+ sound/soc/sof/ops.h                          |  34 ++
+ sound/soc/sof/pcm.c                          | 131 +++---
+ sound/soc/sof/pm.c                           | 219 +--------
+ sound/soc/sof/sof-acpi-dev.c                 |  39 +-
+ sound/soc/sof/sof-audio.c                    | 445 +++++++++++++++++++
+ sound/soc/sof/sof-audio.h                    | 211 +++++++++
+ sound/soc/sof/sof-of-dev.c                   |  24 +-
+ sound/soc/sof/sof-pci-dev.c                  |  47 +-
+ sound/soc/sof/sof-priv.h                     | 202 +--------
+ sound/soc/sof/topology.c                     | 374 ++++++++--------
+ sound/soc/sof/trace.c                        |   4 +-
+ sound/soc/sof/utils.c                        |  60 +++
+ 33 files changed, 1380 insertions(+), 1163 deletions(-)
+ create mode 100644 sound/soc/sof/sof-audio.c
+ create mode 100644 sound/soc/sof/sof-audio.h
+
 -- 
 2.20.1
 
