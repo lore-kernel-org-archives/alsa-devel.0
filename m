@@ -2,66 +2,70 @@ Return-Path: <SRS0=elh7=Z2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A75FC43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 14:51:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EF48C43603
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 15:15:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFB83206DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 14:51:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1A6B62081B
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 15:15:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jh34AGss"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFB83206DF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IvyUZlyB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A6B62081B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC8A3166A;
-	Wed,  4 Dec 2019 15:51:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC8A3166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 144411668;
+	Wed,  4 Dec 2019 16:14:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 144411668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575471115;
-	bh=Amwkm/Wo5vA2kyT65twu2Enmae5cXqR4Yht2ERla7GI=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jh34AGssGO8dbaGPaitLGE3iV2g81QoY1AJxAe3hNOQ8Hfe/3TOijdtJ52Ve+qK9W
-	 Q+HuWld8mDFB8miFqDk1BD1JaCx3vP1bAythnE1oKfB9ZVFzhKaDU0fcoE3gegcLh+
-	 leinkS588NcbYX8bgFXQYhxQko/++NcTYJyLf1HY=
+	s=default; t=1575472506;
+	bh=hdsgQx6iycO96tEJu3hk9Q9lw8LSMxbneqFXcCHR3us=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=IvyUZlyBTqbeDAKAH7jM17mv0htvpvDTTy0ybG7fSjrt0I5WZlGHGmvyjmXL04fI+
+	 BrFZ1l0HUjSn2whxYcSaPjA+dFeqwDlZXDAnlM6d+SUPGTpq4MSot8EVhZoyGrK3W/
+	 OxCLhPjPW465P9FWnAvPXI4r6UE5Axf1FfVZ/dGU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85882F801D9;
-	Wed,  4 Dec 2019 15:51:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86B29F801D9;
+	Wed,  4 Dec 2019 16:14:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24233F80214; Wed,  4 Dec 2019 15:51:03 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C2072F801EC; Wed,  4 Dec 2019 16:14:13 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B8FCF8010F
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 15:50:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B8FCF8010F
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 6A833AECA;
- Wed,  4 Dec 2019 14:50:58 +0000 (UTC)
-Date: Wed, 04 Dec 2019 15:50:58 +0100
-Message-ID: <s5hlfrskuul.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: syzbot <syzbot+f153bde47a62e0b05f83@syzkaller.appspotmail.com>
-In-Reply-To: <000000000000055ac40598dc8d46@google.com>
-References: <000000000000055ac40598dc8d46@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com,
- syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] KASAN: slab-out-of-bounds Read in linear_transfer
-	(3)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C957F8010F
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 16:14:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C957F8010F
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 287A42011F5;
+ Wed,  4 Dec 2019 16:14:09 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com
+ [134.27.226.22])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1C4F62011ED;
+ Wed,  4 Dec 2019 16:14:09 +0100 (CET)
+Received: from fsr-ub1864-103.ro-buh02.nxp.com
+ (fsr-ub1864-103.ea.freescale.net [10.171.82.17])
+ by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 89D92205C5;
+ Wed,  4 Dec 2019 16:14:08 +0100 (CET)
+From: Daniel Baluta <daniel.baluta@nxp.com>
+To: broonie@kernel.org,
+	lgirdwood@gmail.com
+Date: Wed,  4 Dec 2019 17:13:33 +0200
+Message-Id: <20191204151333.26625-1-daniel.baluta@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Daniel Baluta <daniel.baluta@nxp.com>, tiwai@suse.com
+Subject: [alsa-devel] [PATCH] ASoC: soc-core: Set dpcm_playback /
+	dpcm_capture
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,45 +78,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 04 Dec 2019 09:25:09 +0100,
-syzbot wrote:
-> 
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    76bb8b05 Merge tag 'kbuild-v5.5' of git://git.kernel.org/p..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1416a90ee00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=dd226651cb0f364b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f153bde47a62e0b05f83
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10fe9e41e00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1522042ae00000
-> 
-> The bug was bisected to:
-> 
-> commit 65766ee0bf7fe8b3be80e2e1c3ef54ad59b29476
-> Author: Takashi Iwai <tiwai@suse.de>
-> Date:   Fri Nov 9 10:59:45 2018 +0000
-> 
->     ALSA: oss: Use kvzalloc() for local buffer allocations
+When converting a normal link to a DPCM link we need
+to set dpcm_playback / dpcm_capture otherwise playback/capture
+streams will not be created resulting in errors like this:
 
-FYI, this bisection result is bogus; before this commit, the buffer
-was allocated via vmalloc and KASAN check was skipped.  Now with
-kvmalloc(), it goes with kmalloc which has a proper check, and the
-problem surfaced since this commit.
+[   36.039111]  sai1-wm8960-hifi: ASoC: no backend playback stream
 
-The real culprit is a potential buffer overflow in the OSS plugin
-chain.  I submitted the fix patch now.
+Fixes: a655de808cbde ("ASoC: core: Allow topology to override machine driver FE DAI link config")
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 977a7bfad519..f89cf9d0860c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1872,6 +1872,8 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ 
+ 			/* convert non BE into BE */
+ 			dai_link->no_pcm = 1;
++			dai_link->dpcm_playback = 1;
++			dai_link->dpcm_capture = 1;
+ 
+ 			/* override any BE fixups */
+ 			dai_link->be_hw_params_fixup =
+-- 
+2.17.1
 
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
