@@ -2,99 +2,76 @@ Return-Path: <SRS0=elh7=Z2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1CC8C43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 08:29:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98170C43603
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 09:11:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ABAD920637
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 08:29:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6549D206DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 09:11:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cXgTbPIb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gvBjg1YJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABAD920637
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nr2vASY/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="X/VcJ7jZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6549D206DB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C0C71612;
-	Wed,  4 Dec 2019 09:28:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C0C71612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19C841607;
+	Wed,  4 Dec 2019 10:10:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19C841607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575448167;
-	bh=3yzgODmvRkdchu9sR8TJaxrWex9mqDS2oQj6WYOwMxg=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1575450707;
+	bh=1WaQ9ue8iE7zj5G8FfUXJix/5nYXBrWhwnNZScZfI54=;
+	h=To:References:From:Date:In-Reply-To:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cXgTbPIbVHX9u6bSRmqzGWSjcaLdN9NEzly8dMwBuqHFRVhtH6++cP8opgV9iqiF6
-	 kO4uNckuAgLZzULxEEYVlQElzQ6Pur9io9WUvz0WnidzDwwhrv1PqfXS9nHJqj7h2R
-	 EPVBB7wVh0exxpfEkG2YthGKlEE7EwkbprojPrQM=
+	b=nr2vASY/bQylQlmByEcH83B0I+EfS59JXtWowNbBviLRb1F1WmHwcdY/G4UzAHLfe
+	 bfTorDj6AQEzTWfGhqn7OsmOnAMLK2ETo9N29fOGAHi8YX1aMAjUOcWLSapymxPQud
+	 0LPvA4tlqOuTaUneEHMIKRYwaoLy9jcxRtcUfKbw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3793F801D9;
-	Wed,  4 Dec 2019 09:28:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9127CF800B4;
+	Wed,  4 Dec 2019 10:10:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A00C1F801EC; Wed,  4 Dec 2019 09:28:33 +0100 (CET)
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com
- [IPv6:2607:f8b0:4864:20::843])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 20A45F801EC; Wed,  4 Dec 2019 10:10:55 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9797BF800F0
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 09:28:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9797BF800F0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="gvBjg1YJ"
-Received: by mail-qt1-x843.google.com with SMTP id v2so6899515qtv.8
- for <alsa-devel@alsa-project.org>; Wed, 04 Dec 2019 00:28:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=uCZKNDAWGqV6WX7WGX2zLuCaauh33mKw/9lBmVTJ0ho=;
- b=gvBjg1YJe/IrgjhMS9JhufqyINkwEbIy+RWFYHR8NZAu2kCC5HDcADIa9KOonJVUMh
- x7npQ2M1Gwtzb01zbPcFN1d4+1KPuGhN7931x+ADgxvT34FpDGlSRmRTWzKDgOgXXFZE
- yW4H9qRNanJnl1JyGi5SuSKkGCbT/3MFLiuLhzleGytWEbahqN2qHO/Ttikp4/rhPLVX
- MFgI2W3MZsQ8Bg2XD/YSh30Yl3ktzvucbKdheQMnZDcOiwr4GddhWIHvVnsENi0TGRXD
- 6UV8U7GFZdjRzKAjddqxcWGaxBxUQ+rTHYcacIHRLMig57fygCtyIb8nGXoTTddswSIW
- Fp5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=uCZKNDAWGqV6WX7WGX2zLuCaauh33mKw/9lBmVTJ0ho=;
- b=qaBfiveQMdsnPlHlWXGOB3xRByOPGPuhR3n67HzRLbiEsUvIE2AcvCyv5BlshEt2gC
- Sfi69MqjKCRLOZzSaDH6odPvA/kK+lQxKJEyrWWgkbMX9XxsJwcM3t3KVa3WEbqmP52w
- egx6em4woraky15o9lVnFbWdkpbG61IoTfCf9HUI2VaQnnvN6qpsgn/7bSVOFzaOuJON
- LvJGq36F5GZMAAdOIkqkJKi7d9UO05W35PU+90IrjMYjygAJCP0V9Zrpk+5K1kwGjU/g
- wjUFV35eUZ1EZ6UUlL+TKpjgkXFYEqlvj7M/fjnR8W/WxwKOgzoGvEqLXbBZ3RteAftJ
- z9Zg==
-X-Gm-Message-State: APjAAAUV/ZsgxPtfrSbB3wJRz6FxUaqaakEDrn6wvwwqm3sETQiANvb2
- qaJ2lI6sc7BlACDdTyVmc6yFx7jToqQ/WLDe4lg=
-X-Google-Smtp-Source: APXvYqy42lrbvBO0PxmylNsnUOfkNboxvBZlj0DuNVhD+5LgfpHEOmahKkd9pLCkOj8ycJdUS1RZFPe6vl3a7cNcC9M=
-X-Received: by 2002:ac8:7652:: with SMTP id i18mr1580423qtr.292.1575448108482; 
- Wed, 04 Dec 2019 00:28:28 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83A91F800B4
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 10:10:52 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A38FFA0046;
+ Wed,  4 Dec 2019 10:10:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A38FFA0046
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1575450651; bh=os9zWSsog2dQj519rttkiDhfkBMkhYLsoYmcu0gi8Uo=;
+ h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+ b=X/VcJ7jZF3NQEHTu2tsdj/OcZj4d1KCIsnq7EVVouGnow8v4cNJlEpwS4f7Mm95ZC
+ t8R1dCWaWI2ohVZd2jcje6yZtZRHOnH4+N+IBhJfhh29ItP4kGZLYrZlYtmmLZT86X
+ /vb3VNPmnI9QynQMuxaWsOwTkOpskA0ZTEqGDurI=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed,  4 Dec 2019 10:10:49 +0100 (CET)
+To: alsa-devel@alsa-project.org
+References: <20191201080449.GA408@workstation>
+ <20191204003339.GA2876@workstation>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <d0172374-857c-7663-1afc-acaf1a5d023d@perex.cz>
+Date: Wed, 4 Dec 2019 10:10:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-References: <45ef9ee8c6265743a9c30d8e4d9dcbac1ee3aabe.1575286886.git.shengjiu.wang@nxp.com>
- <CAOMZO5AXnw7QDdfKkZ+FBwuWWvr+t0rRsHQ4muW-T00he2f73Q@mail.gmail.com>
-In-Reply-To: <CAOMZO5AXnw7QDdfKkZ+FBwuWWvr+t0rRsHQ4muW-T00he2f73Q@mail.gmail.com>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Wed, 4 Dec 2019 16:28:17 +0800
-Message-ID: <CAA+D8AN-UrAyixp+cOw3h=V7xLfCNQRB0XDhxCeYAmnZo9UWBw@mail.gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [alsa-devel] [PATCH v4 1/2] ASoC: dt-bindings: fsl_asrc: add
- compatible string for imx8qm & imx8qxp
+In-Reply-To: <20191204003339.GA2876@workstation>
+Content-Language: en-US
+Subject: Re: [alsa-devel] Restart alsa-gi project as alsa-gobject project
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,27 +84,107 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi
+Dne 04. 12. 19 v 1:33 Takashi Sakamoto napsal(a):
+> Hi Jaroslav,
+> 
+> On Sun, Dec 01, 2019 at 05:04:50PM +0900, Takashi Sakamoto wrote:
+>> Since Audio Mini Conference 2018, I continued to work for alsa-gi[1] in
+>> my local to integrate toward better I/O libraries. However I realized
+>> that its basic design includes some disadvantages to produce useful APIs.
+>>
+>> I rethink the design and realize it better to wrap each of structures
+>> in <sound/asound.h> simply. Then, I restart it as alsa-gobject[2].
+>> At present, master branch includes a library, `libalsactl0` for the
+>> most of I/O features in ALSA control interface, which is compatible with
+>> GObject mechanism and GObject introspection.
+>>
+>> Jaroslav, would you please delete the alsa-gi repository and fork
+>> the master branch from my alsa-gobject repository, then apply enough
+>> configurations to the new repository?
+>>
+>>
+>> My repository includes four branches as well for ALSA
+>> hwdep/rawmidi/timer/seq interfaces. The most of features in each
+>> interface is already available via included libraries but under heavy
+>> development.
+>>
+>> I already start to test them with Python 3 (PyGObject) and they seem
+>> work well. I also test them with Rust bindings generated by gtk-rs/gir[3]
+>> tool. Near future I also publish Rust crates for further convenience.
+>>
+>>
+>> For your interests, this Python 3 script is a sample to listen one
+>> event from ALSA control character device. This simple program is not
+>> terminated voluntarily or by sending UNIX signal, thus please generate
+>> control event by alsamixer or amixer:
+>>
+>> ```
+>> #!/usr/bin/env python3
+>>
+>> import gi
+>> gi.require_version('GLib', '2.0')
+>> gi.require_version('ALSACtl', '0.0')
+>> from gi.repository import GLib, ALSACtl
+>>
+>> class MyCard(ALSACtl.Card):
+>>      def __init__(self, card_id, ctx, dispatcher):
+>>          super().__init__()
+>>          self.open(card_id)
+>>
+>>          self.create_source().attach(ctx)
+>>
+>>          self.__dispatcher = dispatcher
+>>
+>>      def do_handle_disconnection(self):
+>>          self.__dispatcher.quit()
+>>
+>>      def do_handle_elem_event(self, elem_id, events):
+>>          # Print the first event and quit event loop.
+>>          print(elem_id.get_iface().value_nick,
+>>                elem_id.get_device_id(), elem_id.get_subdevice_id(),
+>>                elem_id.get_name(), elem_id.get_index(),
+>>                events.value_nicks)
+>>          self.__dispatcher.quit()
+>>
+>>
+>> ctx = GLib.MainContext.new()
+>> dispatcher = GLib.MainLoop.new(ctx, False)
+>> card = MyCard(0, ctx, dispatcher)
+>>
+>> dispatcher.run()
+>> ```
+>>
+>> [1] https://github.com/alsa-project/alsa-gi
+>> [2] https://github.com/takaswie/alsa-gobject
+>> [3] https://github.com/gtk-rs/gir
+> 
+> Would I expect your arrangement for this project, or should I continue
+> to develop it apart from alsa-project?
 
-On Mon, Dec 2, 2019 at 8:58 PM Fabio Estevam <festevam@gmail.com> wrote:
->
-> On Mon, Dec 2, 2019 at 8:56 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> > -  - compatible         : Contains "fsl,imx35-asrc" or "fsl,imx53-asrc".
-> > +  - compatible         : Contains "fsl,imx35-asrc", "fsl,imx53-asrc",
-> > +                         "fsl,imx8qm-asrc", "fsl,imx8qxp-asrc"
->
-> You missed the word "or" as in the original binding.
+You're the only developer for this thus I'll shift the repos in the ALSA 
+project on github. You should also write to README that this project is not 
+using alsa-lib, thus the extra abstraction interfaces from alsa-lib cannot be 
+used. Or do you plan to build gobjects on top of alsa-lib, too?
 
-will update it in v5.
+				Thanks,
+					Jaroslav
 
-Best regards
-Wang Shengjiu
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto
+> 
+
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
