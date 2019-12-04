@@ -2,72 +2,68 @@ Return-Path: <SRS0=elh7=Z2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71352C43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 267C7C43603
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:06:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E1ACF207DD
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 20:02:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 374CA2077B
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 21:06:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UI8h9dnB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E1ACF207DD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pmJx8nZF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 374CA2077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A15A1674;
-	Wed,  4 Dec 2019 21:02:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A15A1674
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAD0F1666;
+	Wed,  4 Dec 2019 22:05:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAD0F1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575489776;
-	bh=2MeLfErBuFLNcZ3g40nmln5WtyW4OC47cCR/KpjtPwg=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UI8h9dnBlz+0DkLSWY9ZBFqJZVP35zxdtWZ23VvEJQjypTz/PwIuQ0T7NpsCDUt8c
-	 HU1Vn+ww9Jlh1B+WWzkrftiI9GbNcxDv1tcUEtCorzjNWGHRmEnrMVCSWMLOHUKkjZ
-	 P/dJNwSLYUt1cwwLcpTt6U1rmIEIKBPa/uzRabWc=
+	s=default; t=1575493572;
+	bh=X58DpMGSAEexSsUl9g4jXdUGWqM7cgmjjvHI7IWmh8c=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pmJx8nZFZ3RpNnbgGHk2o8th1vVE4gsf3GFw+weu0bcuoiJcQkgAgDwTFbVvYqCMl
+	 noghf+2OSPsKyZwKr8eIwG+JRD3si+EEw4t5pTXOC6Ukoi+qV+GraJoqi9prYg8flk
+	 o1LXxSxrh7xK5botKOGoJFmcJpA4pNo2PqqVYBWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E90CFF80217;
-	Wed,  4 Dec 2019 21:01:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8399F80214;
+	Wed,  4 Dec 2019 22:05:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D531DF800F0; Wed,  4 Dec 2019 21:01:29 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 38E01F80214; Wed,  4 Dec 2019 22:05:13 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA206F800F0
- for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 21:01:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA206F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E4CEF800F0
+ for <alsa-devel@alsa-project.org>; Wed,  4 Dec 2019 22:05:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E4CEF800F0
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 04 Dec 2019 12:01:23 -0800
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 04 Dec 2019 13:05:03 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,278,1571727600"; d="scan'208";a="411382170"
-Received: from jcourage-mobl.amr.corp.intel.com (HELO [10.251.152.230])
- ([10.251.152.230])
- by fmsmga005.fm.intel.com with ESMTP; 04 Dec 2019 12:01:23 -0800
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-References: <20191204151454.21643-1-tiwai@suse.de>
+X-IronPort-AV: E=Sophos;i="5.69,278,1571727600"; d="scan'208";a="208958073"
+Received: from rgolani-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.251.153.236])
+ by fmsmga007.fm.intel.com with ESMTP; 04 Dec 2019 13:05:02 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5342d6cc-bdc4-f62c-77b4-a433ec8372d4@linux.intel.com>
-Date: Wed, 4 Dec 2019 13:23:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+To: alsa-devel@alsa-project.org
+Date: Wed,  4 Dec 2019 15:04:44 -0600
+Message-Id: <20191204210447.11701-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20191204151454.21643-1-tiwai@suse.de>
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: core: Fix access to uninitialized
- list heads
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [alsa-devel] [PATCH 0/3] ASoC: SOF: fixes for kernel
+	oopses/use-after-free
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,64 +76,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+More stability fixes for corner cases.
 
+It wasn't straightforward to add a Fixes tag for the two Intel
+patches, it's likely issues that can be applied to 5.3, possibly
+earlier. For Dragos' patch Ranjani mentioned this may be due to
+da704f26ba376 ('ASoC: soc-core: merge snd_soc_remove_dai_link() and
+soc_unbind_dai_link()'), but Morimoto-san may need to confirm.
 
-On 12/4/19 9:14 AM, Takashi Iwai wrote:
-> The error path of soc_new_pcm_runtime() invokes soc_free_pcm_runtime()
-> that may cause a few problems.  First off, it calls list_del() for
-> rtd->list that may not be initialized.  Similarly,
-> snd_soc_pcm_component_free() traverses over the component list that
-> may not be initialized, either.  Such access to the uninitialized list
-> head would lead to either a BUG_ON() or a memory corruption.
-> 
-> This patch fixes the access to uninitialized list heads by
-> initializing the list heads properly at the beginning before those
-> error paths.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Dragos Tarcatu (1):
+  ASoC: topology: Prevent use-after-free in snd_soc_get_pcm_runtime()
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Kai Vehmanen (1):
+  ASoC: SOF: fix fault at driver unload after failed probe
 
-> ---
->   sound/soc/soc-core.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 0e2e628302f1..726e5de850c4 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -478,6 +478,12 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
->   		goto free_rtd;
->   
->   	rtd->dev = dev;
-> +	INIT_LIST_HEAD(&rtd->list);
-> +	INIT_LIST_HEAD(&rtd->component_list);
-> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
-> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
-> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
-> +	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
->   	dev_set_drvdata(dev, rtd);
->   	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
->   
-> @@ -493,12 +499,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
->   	/*
->   	 * rtd remaining settings
->   	 */
-> -	INIT_LIST_HEAD(&rtd->component_list);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
-> -	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
-> -
->   	rtd->card = card;
->   	rtd->dai_link = dai_link;
->   	if (!rtd->dai_link->ops)
-> 
+Pierre-Louis Bossart (1):
+  ASoC: SOF: Intel: hda: hda-dai: fix oops on hda_link .hw_free
+
+ sound/soc/soc-topology.c      |  6 +++---
+ sound/soc/sof/intel/hda-dai.c | 11 +++++++++--
+ sound/soc/sof/ipc.c           |  3 +++
+ 3 files changed, 15 insertions(+), 5 deletions(-)
+
+-- 
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
