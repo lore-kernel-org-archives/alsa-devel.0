@@ -7,56 +7,52 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D301C43603
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:23:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE5A1C43603
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:24:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBA662464F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:23:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 580EE2464F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:24:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XMAYT6IV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBA662464F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T/+3Sdxb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 580EE2464F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zonque.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38D2E1677;
-	Thu,  5 Dec 2019 10:22:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38D2E1677
+	by alsa0.perex.cz (Postfix) with ESMTPS id A29561676;
+	Thu,  5 Dec 2019 10:23:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A29561676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575537809;
-	bh=J9wSr8144pCiOeS9DZQ//GK73IimkuPsPA1k5Xv1Suo=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XMAYT6IVR9a0xhcEGWTWPdy6DvXiP4C1AWNxf7E0RT9NhvpY4dUTYya2AsoWuXYMu
-	 3tW4aJlYH4fUiFHCR387dL6Tiipn4WUBVxwx08quxBuPWAu9Y8Ts0SqsY8yWKstcSh
-	 p4tWqSD37U+uSFCczKqff1viN4EDQlYmgDfy6f54=
+	s=default; t=1575537853;
+	bh=lOYQJjhYSIdTJelylqGIChSSL3Ul9JESRtq7hqtAVxk=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=T/+3SdxbVm0HukDsyqRlppFk+2BXqyKQ/yFiRvJfZCiPZsKtfm2/dhjiwlGomnsaz
+	 4jUNyZvrCeEBiyBzZ9gHwgXtqWszAHU7qz1IyFY/c0xCQrEQwqtihQmPFJFz5A5pp7
+	 tyzY1U/xve88TC05A2GSp4Kdw/gwghULGoPWMz+I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56485F801F8;
-	Thu,  5 Dec 2019 10:21:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A649DF80256;
+	Thu,  5 Dec 2019 10:21:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7D67F80252; Thu,  5 Dec 2019 10:21:40 +0100 (CET)
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa1.perex.cz (Postfix) with ESMTP id 6D712F8023E
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 10:21:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D712F8023E
+ id 51DF3F80252; Thu,  5 Dec 2019 10:21:43 +0100 (CET)
+Received: from mail.bugwerft.de (mail.bugwerft.de [IPv6:2a03:6000:1011::59])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9FDE4F80228
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 10:21:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FDE4F80228
 Received: from zenbar.localdomain (unknown [194.162.236.226])
- by mail.bugwerft.de (Postfix) with ESMTPSA id 7976B2E4FA6;
+ by mail.bugwerft.de (Postfix) with ESMTPSA id 13F672E4FA3;
  Thu,  5 Dec 2019 09:15:26 +0000 (UTC)
 From: Daniel Mack <daniel@zonque.org>
 To: alsa-devel@alsa-project.org
-Date: Thu,  5 Dec 2019 10:21:29 +0100
-Message-Id: <20191205092129.692520-2-daniel@zonque.org>
+Date: Thu,  5 Dec 2019 10:21:28 +0100
+Message-Id: <20191205092129.692520-1-daniel@zonque.org>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191205092129.692520-1-daniel@zonque.org>
-References: <20191205092129.692520-1-daniel@zonque.org>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org, Daniel Mack <daniel@zonque.org>
-Subject: [alsa-devel] [PATCH v2 2/2] ASoC: simple-card: add support for
-	codec-to-codec links
+Subject: [alsa-devel] [PATCH v2 1/2] ALSA: core: add snd_pcm_format_by_name()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,146 +70,62 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-DAI links in ASoC can be turned into codec-to-codec links by populating
-the .params field. This patch adds support for this to the simple-card
-driver and exposes the feature via three new device-tree properties that
-configure the pcm format, the sampling rate and the channel count.
+Add a new function to look up PCM format codes by name. This can be used
+by ASoC drivers to look up formats through device-tree properties, for
+instance.
 
 Signed-off-by: Daniel Mack <daniel@zonque.org>
 ---
- .../devicetree/bindings/sound/simple-card.txt | 10 ++++++
- include/sound/simple_card_utils.h             |  6 +++-
- sound/soc/generic/simple-card-utils.c         | 34 +++++++++++++++++++
- sound/soc/generic/simple-card.c               | 19 +++++++++++
- 4 files changed, 68 insertions(+), 1 deletion(-)
+ include/sound/pcm.h |  1 +
+ sound/core/pcm.c    | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index 79954cd6e37b..13f0c0da8b53 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -27,6 +27,16 @@ Optional properties:
- - simple-audio-card,pin-switches	: List of strings containing the widget names for
- 					  which pin switches must be created.
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 8a89fa6fdd5e..1bfde6f2f180 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1339,6 +1339,7 @@ static inline void snd_pcm_limit_isa_dma_size(int dma, size_t *max)
+ 					 (IEC958_AES3_CON_FS_48000<<24))
  
-+Optional dai-link properies for CODEC-to-CODEC links:
-+
-+- codec-to-codec-format			: Format to configure
-+					  "s16_le"; "s24_le", "s32_le", ...
-+- codec-to-codec-rate			: Sample rate to configure
-+- codec-to-codec-channels		: Number of channels to configure
-+
-+Note that for a CODEC-to-CODEC link to be activated, you also need to provide a
-+valid DAPM path that connects the two components.
-+
- Optional subnodes:
+ const char *snd_pcm_format_name(snd_pcm_format_t format);
++int snd_pcm_format_by_name(const char *name, snd_pcm_format_t *format);
  
- - simple-audio-card,dai-link		: Container for dai-link level
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index bbdd1542d6f1..a170f0656c1f 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -48,6 +48,7 @@ struct asoc_simple_priv {
- 		struct snd_soc_dai_link_component platforms;
- 		struct asoc_simple_data adata;
- 		struct snd_soc_codec_conf *codec_conf;
-+		struct snd_soc_pcm_stream c2c_params;
- 		unsigned int mclk_fs;
- 	} *dai_props;
- 	struct asoc_simple_jack hp_jack;
-@@ -121,7 +122,10 @@ void asoc_simple_convert_fixup(struct asoc_simple_data *data,
- void asoc_simple_parse_convert(struct device *dev,
- 			       struct device_node *np, char *prefix,
- 			       struct asoc_simple_data *data);
--
-+void asoc_simple_parse_c2c_params(struct device *dev,
-+				  struct device_node *np,
-+				  char *prefix,
-+				  struct snd_soc_pcm_stream *dest);
- int asoc_simple_parse_routing(struct snd_soc_card *card,
- 				      char *prefix);
- int asoc_simple_parse_widgets(struct snd_soc_card *card,
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 9b794775df53..73e09b790040 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -52,6 +52,40 @@ void asoc_simple_parse_convert(struct device *dev,
+ /**
+  * snd_pcm_stream_str - Get a string naming the direction of a stream
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 9a72d641743d..c02d8df4f92b 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -225,6 +225,29 @@ const char *snd_pcm_format_name(snd_pcm_format_t format)
  }
- EXPORT_SYMBOL_GPL(asoc_simple_parse_convert);
+ EXPORT_SYMBOL_GPL(snd_pcm_format_name);
  
-+void asoc_simple_parse_c2c_params(struct device *dev,
-+				  struct device_node *np,
-+				  char *prefix,
-+				  struct snd_soc_pcm_stream *dest)
++/**
++ * snd_pcm_format_by_name - Return the PCM format code for the given name
++ * @name: PCM format name ('S16_LE', 'S24_3LE', ...)
++ * @format: Pointer to returned PCM format code
++ *
++ * The string comparison is done in a case-insensitive way.
++ *
++ * Return: 0 on success, or -ENOENT if the given format is not valid.
++ */
++int snd_pcm_format_by_name(const char *name, snd_pcm_format_t *format)
 +{
-+	unsigned int rate, channels;
-+	const char *format_string;
-+	snd_pcm_format_t format;
-+	char prop[128];
-+	int ret;
++	int i;
 +
-+	if (!prefix)
-+		prefix = "";
-+
-+	snprintf(prop, sizeof(prop), "%s%s", prefix, "codec-to-codec-rate");
-+	of_property_read_u32(np, prop, &rate);
-+
-+	snprintf(prop, sizeof(prop), "%s%s", prefix, "codec-to-codec-channels");
-+	of_property_read_u32(np, prop, &channels);
-+
-+	snprintf(prop, sizeof(prop), "%s%s", prefix, "codec-to-codec-format");
-+	if (!of_property_read_string(np, prop, &format_string)) {
-+		ret = snd_pcm_format_by_name(format_string, &format);
-+		if (ret == 0) {
-+			dest->formats = 1ULL << format;
-+			dest->channels_min = dest->channels_max = channels;
-+			dest->rate_min = dest->rate_max = rate;
-+		} else {
-+			dev_err(dev, "unknown dai format %s\n", format_string);
++	for (i = 0; i < ARRAY_SIZE(snd_pcm_format_names); i++)
++		if (strcasecmp(name, snd_pcm_format_names[i]) == 0) {
++			*format = i;
++			return 0;
 +		}
-+	}
++
++	return -ENOENT;
 +}
-+EXPORT_SYMBOL_GPL(asoc_simple_parse_c2c_params);
++EXPORT_SYMBOL_GPL(snd_pcm_format_by_name);
 +
- int asoc_simple_parse_daifmt(struct device *dev,
- 			     struct device_node *node,
- 			     struct device_node *codec,
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index cbda6455d9c7..2aab1c9ebc4a 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -94,6 +94,21 @@ static void simple_parse_convert(struct device *dev,
- 	of_node_put(node);
- }
+ #ifdef CONFIG_SND_VERBOSE_PROCFS
  
-+static void simple_parse_c2c_params(struct device *dev,
-+				    struct device_node *np,
-+				    struct snd_soc_pcm_stream *dest)
-+{
-+	struct device_node *top = dev->of_node;
-+	struct device_node *node = of_get_parent(np);
-+
-+	asoc_simple_parse_c2c_params(dev, top,  PREFIX, dest);
-+	asoc_simple_parse_c2c_params(dev, node, PREFIX, dest);
-+	asoc_simple_parse_c2c_params(dev, node, NULL,   dest);
-+	asoc_simple_parse_c2c_params(dev, np,   NULL,   dest);
-+
-+	of_node_put(node);
-+}
-+
- static void simple_parse_mclk_fs(struct device_node *top,
- 				 struct device_node *cpu,
- 				 struct device_node *codec,
-@@ -334,6 +349,10 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
- 	dai_link->ops = &simple_ops;
- 	dai_link->init = asoc_simple_dai_init;
- 
-+	simple_parse_c2c_params(dev, node, &dai_props->c2c_params);
-+	if (dai_props->c2c_params.formats != 0)
-+		dai_link->params = &dai_props->c2c_params;
-+
- 	asoc_simple_canonicalize_cpu(dai_link, single_cpu);
- 	asoc_simple_canonicalize_platform(dai_link);
- 
+ #define STATE(v) [SNDRV_PCM_STATE_##v] = #v
 -- 
 2.23.0
 
