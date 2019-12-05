@@ -1,4 +1,4 @@
-Return-Path: <SRS0=elh7=Z2=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=LzfN=Z3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,92 +6,63 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66AD9C43603
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 23:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42189C43603
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 00:12:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 74CC62073C
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Dec 2019 23:30:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 50501214B2
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 00:12:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Do0tec3q";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="kvYXtn4p"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74CC62073C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="efvPfEp1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50501214B2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24BF682E;
-	Thu,  5 Dec 2019 00:29:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24BF682E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA3E51615;
+	Thu,  5 Dec 2019 01:11:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA3E51615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575502229;
-	bh=1JQoOAUk7JE1sZcavZgC61HyVtxEZukrJSPi3bhPbsE=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1575504759;
+	bh=nqJ/VyjnnboxCVY8KvxqeXpA0TIuwOlln5aSAEkfgFk=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Do0tec3q2ZexDChBhmj+XuX11GH5z/ddERQZAq63N5Yr5gsgwRmBodrIruG68fnln
-	 9F5WKv6RVJ54j/1NY4q2EdSpXgVxEJpoojXOq5W1UYvRVStstmdwnJgoeBxO8K/GeU
-	 ZXyjlhhy8Kk7Vg7KzxGHOcPIoEpevs9rlhcZaMHo=
+	b=efvPfEp1vfBscSIiACTZ+awznUwPBDKYfHQDMAR5OYLty8e8KKAvIyIjE432iunRr
+	 Vxh7RZVztIyBT4GuLtGjI45DedgbMDBvBTrKK9VHvp4GlupHf70X4BL7SCwNZ1fiZf
+	 imJpVVS2/72DWyomMxSBjoHVI1f8kfv6GdyElrWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95F14F800B4;
-	Thu,  5 Dec 2019 00:29:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 520A0F8010F;
+	Thu,  5 Dec 2019 01:11:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A3A0F801EC; Thu,  5 Dec 2019 00:29:35 +0100 (CET)
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
- [IPv6:2607:f8b0:4864:20::d42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBEE6F800B4
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 00:29:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBEE6F800B4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="kvYXtn4p"
-Received: by mail-io1-xd42.google.com with SMTP id i11so1513640iol.13
- for <alsa-devel@alsa-project.org>; Wed, 04 Dec 2019 15:29:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=RRvx3NBCRW7H3nfKt+ATQ5trxxtCYotjD7A52bp3YvE=;
- b=kvYXtn4pJrKiwjNP4EH0RFGVWcxNK/ClNy1lQyj4yNJOjZdx1vikE+uOcx/jc/tqi5
- EWOT9eFgYG9Iy/r/onp60sVjDhyu/yqm+AC3hWVydUmcPNTNleZ4CHFMi9guskUSq93t
- u3nz4lGlPFAtDs+n52ixmx9Kuwz/RlfpVRlNMp8UcO2OupJ0QSoO5h0+x51yFNGwzshW
- U8VbL8C0LnU1VHs2jcbvSjpSalPqYejze9hblsj1DAnVQ+xSj+idnITeKYb1D1mWXNSw
- YJ7SSdA9sWND+YI0Zls1eCADAaDz4LuGSxxaKJCwQU+pvRB+7orsFxjRZQUPhay39yoI
- Yydw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=RRvx3NBCRW7H3nfKt+ATQ5trxxtCYotjD7A52bp3YvE=;
- b=N7uf+AVlRoKqP4QBtv1Hluu94iyBxWfeOfCQ6KFt2DUsU9rSKTrdK0I2jUzikUplJX
- Po91aPhuYNWvLrXgRI58p4KXKs1B93DZvqYuMK8mbnm8iSU1UdrXhCaryrhjoepxsO+u
- 6XPvbAFh9jzB4Nvo2cKm0NeRQM97WBcPTvU4rnDWjdl5eUrbgYceV0DrpGXRh1SXFCGw
- z+ewBWATc3BGCwoI4lSjowPNzv5KcQqugyuW8Qw8n9cIHMkE0pOe+42RAm2hTWLIZiZF
- U8DWw0BgU7MFZZOYb7zHleHplp44X6VLM8c8mwDlO1Pl9SzSQDS6UN6/hOcwe5Rq5f8t
- pqUA==
-X-Gm-Message-State: APjAAAV6YaTS1DgSNB7d/gWbD38WQZ4fPI+++qu+9RHLW1vu7/ylXSgo
- 7xcItyxy/tXFY2roe/ASRNk+0WAQjCaJ3S1++8lhrw==
-X-Google-Smtp-Source: APXvYqwjNrJKxK+w6PYSwK92AlpyKx9m0AOOVLTfkIiaw56cHw21U5ocVBeG2AD7BhA2IgG5gqt+9DQlVeGcpPe8MUs=
-X-Received: by 2002:a02:7f54:: with SMTP id r81mr5632654jac.121.1575502168219; 
- Wed, 04 Dec 2019 15:29:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20191204151333.26625-1-daniel.baluta@nxp.com>
-In-Reply-To: <20191204151333.26625-1-daniel.baluta@nxp.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Wed, 4 Dec 2019 15:29:16 -0800
-Message-ID: <CAFQqKeXG3ihj67L+KgKZW=Cp6ipJC18wUVci3hGTMutBv4boZw@mail.gmail.com>
-To: Daniel Baluta <daniel.baluta@nxp.com>, 
- Pierre-louis Bossart <pierre-louis.bossart@intel.com>, 
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: soc-core: Set dpcm_playback /
-	dpcm_capture
+ id DE692F801EC; Thu,  5 Dec 2019 01:11:46 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0F920F8010F
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 01:11:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F920F8010F
+Date: 05 Dec 2019 09:11:37 +0900
+X-IronPort-AV: E=Sophos;i="5.69,279,1571670000"; d="scan'208";a="33273957"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 05 Dec 2019 09:11:37 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id E572E4114C09;
+ Thu,  5 Dec 2019 09:11:37 +0900 (JST)
+Message-ID: <87d0d3bphi.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191204210447.11701-4-pierre-louis.bossart@linux.intel.com>
+References: <20191204210447.11701-1-pierre-louis.bossart@linux.intel.com>
+ <20191204210447.11701-4-pierre-louis.bossart@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: tiwai@suse.de, Dragos Tarcatu <dragos_tarcatu@mentor.com>,
+ alsa-devel@alsa-project.org, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 3/3] ASoC: topology: Prevent use-after-free
+	in snd_soc_get_pcm_runtime()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,54 +80,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 4, 2019 at 7:16 AM Daniel Baluta <daniel.baluta@nxp.com> wrote:
 
-> When converting a normal link to a DPCM link we need
-> to set dpcm_playback / dpcm_capture otherwise playback/capture
-> streams will not be created resulting in errors like this:
->
-> [   36.039111]  sai1-wm8960-hifi: ASoC: no backend playback stream
->
-> Fixes: a655de808cbde ("ASoC: core: Allow topology to override machine
-> driver FE DAI link config")
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Hi
+
+> From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+> 
+> remove_link() is currently calling snd_soc_remove_dai_link() after
+> it has already freed the memory for the link name. But this is later
+> read from snd_soc_get_pcm_runtime() causing a KASAN use-after-free
+> warning. Reorder the cleanups to fix this issue.
+> 
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  sound/soc/soc-core.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 977a7bfad519..f89cf9d0860c 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1872,6 +1872,8 @@ static void soc_check_tplg_fes(struct snd_soc_card
-> *card)
->
->                         /* convert non BE into BE */
->                         dai_link->no_pcm = 1;
-> +                       dai_link->dpcm_playback = 1;
-> +                       dai_link->dpcm_capture = 1;
->
-Hi Daniel,
+>  sound/soc/soc-topology.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 81d2af000a5c..248530d028a6 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -548,12 +548,12 @@ static void remove_link(struct snd_soc_component *comp,
+>  	if (dobj->ops && dobj->ops->link_unload)
+>  		dobj->ops->link_unload(comp, dobj);
+>  
+> +	list_del(&dobj->list);
+> +	snd_soc_remove_dai_link(comp->card, link);
+> +
+>  	kfree(link->name);
+>  	kfree(link->stream_name);
+>  	kfree(link->cpus->dai_name);
+> -
+> -	list_del(&dobj->list);
+> -	snd_soc_remove_dai_link(comp->card, link);
+>  	kfree(link);
+>  }
 
-Typically, for Intel platforms, this information comes from the machine
-driver and there are some DAI links that have either playback or capture
-set. But this change would set both for all DAI links.
-Not sure if this is the right thing to do.
+Yeah, indeed this is needed, I think.
 
-Thanks,
-Ranjani
+Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
->
->                         /* override any BE fixups */
->                         dai_link->be_hw_params_fixup =
-> --
-> 2.17.1
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
