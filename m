@@ -2,95 +2,55 @@ Return-Path: <SRS0=LzfN=Z3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5AC5C43603
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 08:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B593EC43603
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:09:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E400D24249
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 08:44:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CB55024648
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:09:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SGYSw/lg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2VSti3x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E400D24249
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Erkc9RoL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB55024648
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6234165E;
-	Thu,  5 Dec 2019 09:44:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6234165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61804165F;
+	Thu,  5 Dec 2019 10:08:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61804165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575535496;
-	bh=+asvy3zR9la2+sz5/5YZ9uK4awG6uyAmOHCSrCZitmg=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1575536978;
+	bh=XJUMdXzY96BFnId1Pu0zmv9uhocn5H/oVDW4JZn1i7E=;
+	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SGYSw/lgs38hbJyH7mJru/xsBf9+PJ5tT9N8rE3rXXGS6z52kHkWBMpbvxpZwiwTJ
-	 JNSKqes5q+crCdxIvYy1fG2eFmanSlbs4EAMmi93qtcIfeCz81iijZ2HWFLHcTqATx
-	 K3igB0gG/URhQgYJvMyBgUkSxNGJ3Q/iI6HT0iYI=
+	b=Erkc9RoLDuSHNf5qPgVJeprGw8F07zM2ymFuB2NoVdezgPb7R6kRjU9eOHXidhKpw
+	 meQwahFx7jUpaQwqiT7Q6y+cCLXd0nwJfV3rXMOseBV4Sef9FYvYyk3+iQfHXlz6+m
+	 +0VEjIFlD7gaeNEoTfSpadhrT8OVKq1nooBvSf9k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55355F8015A;
-	Thu,  5 Dec 2019 09:44:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB38BF8015A;
+	Thu,  5 Dec 2019 10:08:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63A15F800B4; Thu,  5 Dec 2019 09:44:03 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3845DF800B4
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 09:43:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3845DF800B4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="U2VSti3x"
-Received: by mail-wm1-x344.google.com with SMTP id t14so2647009wmi.5
- for <alsa-devel@alsa-project.org>; Thu, 05 Dec 2019 00:43:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=lU1EvzM/eLD0n0vZaZM7AMkwMVY8sZSz0h3WsdV8t0E=;
- b=U2VSti3xVYS3TZPRfEbXKHUduQrzXSc5f+w1SuhjId7MWQwy7oOm4AD/MgMfRrvBTD
- 8BVTycGLuJp8sE6OQ+FG0TCjsXTjRI964j4m5fup+dxVQ1Mlsa/+9p6kWM4HQEUnLUPB
- jDoOpTvvmLrggMmDLQIrbrpt5LlAn6GbQjyJzvu+gdCJX+gp30vQL38CMQoJbw+vSUBh
- vzqWSDfZ60M9svZzy8bab7AWE7X0RDQRXDUrvfoAx35v2NKnCNG3v2WH50/J0oJuj6Vy
- N0t0vFI5R42CNnD2QpW2oIE8fwT3iMnetrtWzEp9GEPetG4/UuqNqfJVlZQZR3k3ONod
- jj8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=lU1EvzM/eLD0n0vZaZM7AMkwMVY8sZSz0h3WsdV8t0E=;
- b=G1j7xszm8WAg03QBAT/YilbZwdwW2hO7iqhuyRb0Htq6O/stqzu+xI7D8LyqQ4mJXw
- uuYBUq/xi1k9Csx48BaoDxkOunoIdzgq3rnp2S/0GXySDQ3XzuYopxQBv8wXsEdJoru2
- UH4Md5+ZF9KfUjzGZ45UfRk/QXv46WAvxC781O7A67fkMw5ZPWJWPXYi6Dx0ecFfXhN/
- Rv+Rl70EBjO0cxDQM1veoD2itStPQI5bXfh1ql7aDBNhsOxGQPb2OAJqx3/CNDWnQBff
- OAMaDl9nJxNc0okJdaWOGnleKB/W+syGuyuWzLB7hGW1niCPnlsZeS9g5OYFkMFfdrr5
- P7Yw==
-X-Gm-Message-State: APjAAAVAwldlh20nhbyTkpifRQZXvDGi0/KTAfIKkg/yOT9b3/PCY3tm
- TmuOZ33W2OeoCBMEUa3MA2flKwd3SDQ1aZX55OM=
-X-Google-Smtp-Source: APXvYqzHaKRUEfbiAOswMp49ewBcixg21LL6YP05PzNudQhdouGxpQM6W2U/QiJNtYTg+vZqQcCAgBCV7oa+geJPtRg=
-X-Received: by 2002:a1c:4944:: with SMTP id w65mr3776661wma.39.1575535439089; 
- Thu, 05 Dec 2019 00:43:59 -0800 (PST)
+ id ED008F801F8; Thu,  5 Dec 2019 10:08:45 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3FE32F800B4
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 10:08:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FE32F800B4
 MIME-Version: 1.0
-References: <20191128223802.18228-1-michael@walle.cc>
-In-Reply-To: <20191128223802.18228-1-michael@walle.cc>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Thu, 5 Dec 2019 10:43:46 +0200
-Message-ID: <CAEnQRZCnQAUVowOJw5aPe9rYWU5DKR4bFbmQLYV2BzYqOhRJmQ@mail.gmail.com>
-To: Michael Walle <michael@walle.cc>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Takashi Iwai <tiwai@suse.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_sai: add IRQF_SHARED
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1575536922572119951-webhooks-bot@alsa-project.org>
+References: <1575536922572119951-webhooks-bot@alsa-project.org>
+Message-Id: <20191205090845.ED008F801F8@alsa1.perex.cz>
+Date: Thu,  5 Dec 2019 10:08:45 +0100 (CET)
+Subject: [alsa-devel] fcplay: initial addition
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,23 +68,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Nov 29, 2019 at 12:40 AM Michael Walle <michael@walle.cc> wrote:
->
-> The LS1028A SoC uses the same interrupt line for adjacent SAIs. Use
-> IRQF_SHARED to be able to use these SAIs simultaneously.
+alsa-project/tinycompress pull request #3 was opened from vinodkoul:
 
-Hi Michael,
+This tool was forked from tinycompress cplay. The fork was required due
+to this linking against libavcodec which is GPL. This uses libav APIs to
+parse the compressed files and send the audio stream to compressed
+device using tinycompress APIs
 
-Thanks for the patch. We have a similar change inside our internal tree
-(it is on my long TODO list to upstream :D).
+Right now it supports only playback on MP3 (no problems now not finding
+sync word) and flac files.
 
-We add the shared flag conditionally on a dts property.
+Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Do you think it is a good idea to always add shared flag? I'm thinking
-on SAI IP integrations where the interrupt is edge triggered.
-
-AFAIK edge triggered interrupts do not get along very well
-with sharing an interrupt line.
+Request URL   : https://github.com/alsa-project/tinycompress/pull/3
+Patch URL     : https://github.com/alsa-project/tinycompress/pull/3.patch
+Repository URL: https://github.com/alsa-project/tinycompress
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
