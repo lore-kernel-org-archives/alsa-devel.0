@@ -2,57 +2,97 @@ Return-Path: <SRS0=LzfN=Z3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE5A1C43603
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44304C43603
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:46:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 580EE2464F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:24:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7B9FA2464F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Dec 2019 09:46:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T/+3Sdxb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 580EE2464F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zonque.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qGLUO/Rw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A/uquqn7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B9FA2464F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A29561676;
-	Thu,  5 Dec 2019 10:23:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A29561676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B20A1654;
+	Thu,  5 Dec 2019 10:45:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B20A1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575537853;
-	bh=lOYQJjhYSIdTJelylqGIChSSL3Ul9JESRtq7hqtAVxk=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=T/+3SdxbVm0HukDsyqRlppFk+2BXqyKQ/yFiRvJfZCiPZsKtfm2/dhjiwlGomnsaz
-	 4jUNyZvrCeEBiyBzZ9gHwgXtqWszAHU7qz1IyFY/c0xCQrEQwqtihQmPFJFz5A5pp7
-	 tyzY1U/xve88TC05A2GSp4Kdw/gwghULGoPWMz+I=
+	s=default; t=1575539199;
+	bh=7aLdWrG3EiyoimNWqBpRV53fg7vlKMNmwwqOca4RNYg=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qGLUO/RwN9rZzucjDV2uyWz2YrHX8FUefInwc+exnNKTJOSQrq4lFYO3C7MlhMppz
+	 2Wk0k3ygV+dj6TGYi1vCvqyAcNncMzahaGun/mcPSZh7QtMphwE10ydSgeRP6XM5ij
+	 e7bx2a4YtlLpRGfItlfIz9N7d7pDQ1CD5UKB7jG0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A649DF80256;
-	Thu,  5 Dec 2019 10:21:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A13C3F8015A;
+	Thu,  5 Dec 2019 10:45:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51DF3F80252; Thu,  5 Dec 2019 10:21:43 +0100 (CET)
-Received: from mail.bugwerft.de (mail.bugwerft.de [IPv6:2a03:6000:1011::59])
- by alsa1.perex.cz (Postfix) with ESMTP id 9FDE4F80228
- for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 10:21:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FDE4F80228
-Received: from zenbar.localdomain (unknown [194.162.236.226])
- by mail.bugwerft.de (Postfix) with ESMTPSA id 13F672E4FA3;
- Thu,  5 Dec 2019 09:15:26 +0000 (UTC)
-From: Daniel Mack <daniel@zonque.org>
-To: alsa-devel@alsa-project.org
-Date: Thu,  5 Dec 2019 10:21:28 +0100
-Message-Id: <20191205092129.692520-1-daniel@zonque.org>
-X-Mailer: git-send-email 2.23.0
+ id 2E826F801F8; Thu,  5 Dec 2019 10:45:46 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F283AF800B4
+ for <alsa-devel@alsa-project.org>; Thu,  5 Dec 2019 10:45:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F283AF800B4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="A/uquqn7"
+Received: by mail-wm1-x341.google.com with SMTP id g206so2889686wme.1
+ for <alsa-devel@alsa-project.org>; Thu, 05 Dec 2019 01:45:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=IAHAPcfNyYPZewTfBhsG7qwba+YQCk2356CRIqll3K8=;
+ b=A/uquqn7fzUQpqmYGO+PEXKF1NoPRxYMZ0y2sW+aDKN2NiVkv7K16K/R63JFJt3fdo
+ PAqzhlml/ixjVKxynF0FGEbQBpjyn/orMffUA7RtohOKEsDFu0I2e/m4o3RSxCMcHRPl
+ WxFBf9N9tp3la/OS19JL1VNiHJKI3y4h+yBPMpEsRQkJuXKF10bWuSYlx8+xHkw3mGwu
+ CgsV630jVK1HXVfmmOrNxjhvEIF/6CNZuTECWJ6ux4arJzFKOk9C+ztBFKrFZ5gFiQkG
+ qHjrP2okiVzBNHwpyOOJH+7tZvfC46DiMArQ1geFD4nelFOWtjAoXRxpDUIjaPrhLngI
+ kI9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=IAHAPcfNyYPZewTfBhsG7qwba+YQCk2356CRIqll3K8=;
+ b=bgkhjjR58GLCJYVE7z9S0jDUyjDc/OTCoqyNIFpubWXnufFC43YxOLNouIYeATHjWO
+ F8sww1SmJEFU0x2SypWG6L0StGlEcBgwLxIPnEvaAm2dLO7PYwe7LlzPBRTJpZCJADbY
+ ws7DFgE1l791o1oVIXsSI9UvizuApV6L3qvT8Ra3JKQurv/pd+2EjJlBWLevQ422lWuz
+ KkvMi049p+0ZjLtUbTqgj3dUXA7GvvmUTzYlQilGthx0H/mcqgwyJa9YgWgE7CCjsei4
+ V5UyAtCRxXN2cPx+FYy4Cd+FjkJ/kegJCx6d8lR5ULc0bCC1y7/0Ve6FjZuE2g/5BuCl
+ ey5g==
+X-Gm-Message-State: APjAAAUOgEFHwucZKYrix1EVFg2k6JCQp5tXPZSgFv0yAvjuhQY3uQMq
+ HBb3lYHhApppEMz+szmEaYoIsSUYZy2lOL1BVEg=
+X-Google-Smtp-Source: APXvYqwcYRc0fuaLRFVleqfgSmiyl3I2fPNK6AKFa5K8/dfNSEFtx+axt8WpebIoZlIVYXmSl6OmkUOLn9wJyytUYes=
+X-Received: by 2002:a1c:4944:: with SMTP id w65mr4047032wma.39.1575539141872; 
+ Thu, 05 Dec 2019 01:45:41 -0800 (PST)
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org, Daniel Mack <daniel@zonque.org>
-Subject: [alsa-devel] [PATCH v2 1/2] ALSA: core: add snd_pcm_format_by_name()
+References: <20191128223802.18228-1-michael@walle.cc>
+ <CAEnQRZCnQAUVowOJw5aPe9rYWU5DKR4bFbmQLYV2BzYqOhRJmQ@mail.gmail.com>
+ <a5accae02f840f7e25099c2ccd7b02ff@walle.cc>
+In-Reply-To: <a5accae02f840f7e25099c2ccd7b02ff@walle.cc>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Thu, 5 Dec 2019 11:45:30 +0200
+Message-ID: <CAEnQRZBm2=BrQ2VQW6ZNYSshNi_90-RdHKCYbtXi0=u3oxG3SA@mail.gmail.com>
+To: Michael Walle <michael@walle.cc>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_sai: add IRQF_SHARED
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,65 +110,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a new function to look up PCM format codes by name. This can be used
-by ASoC drivers to look up formats through device-tree properties, for
-instance.
+On Thu, Dec 5, 2019 at 11:18 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Hi Daniel,
+>
+> Am 2019-12-05 09:43, schrieb Daniel Baluta:
+> > On Fri, Nov 29, 2019 at 12:40 AM Michael Walle <michael@walle.cc>
+> > wrote:
+> >>
+> >> The LS1028A SoC uses the same interrupt line for adjacent SAIs. Use
+> >> IRQF_SHARED to be able to use these SAIs simultaneously.
+> >
+> > Hi Michael,
+> >
+> > Thanks for the patch. We have a similar change inside our internal tree
+> > (it is on my long TODO list to upstream :D).
+> >
+> > We add the shared flag conditionally on a dts property.
+> >
+> > Do you think it is a good idea to always add shared flag? I'm thinking
+> > on SAI IP integrations where the interrupt is edge triggered.
+>
+> Mhh, I don't really get the point to make the flag conditionally. If
+> there is only one user, the flag won't hurt, correct?
+>
+> If there are two users, we need the flag anyway.
+>
+> > AFAIK edge triggered interrupts do not get along very well
+> > with sharing an interrupt line.
+>
+> So in that case you shouldn't use shared edge triggered interrupts in
+> the
+> SoC in the first place, I guess.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- include/sound/pcm.h |  1 +
- sound/core/pcm.c    | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+I think you make a good point. I was thinking that it would hurt the single
+user case. But it is fine.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 8a89fa6fdd5e..1bfde6f2f180 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -1339,6 +1339,7 @@ static inline void snd_pcm_limit_isa_dma_size(int dma, size_t *max)
- 					 (IEC958_AES3_CON_FS_48000<<24))
- 
- const char *snd_pcm_format_name(snd_pcm_format_t format);
-+int snd_pcm_format_by_name(const char *name, snd_pcm_format_t *format);
- 
- /**
-  * snd_pcm_stream_str - Get a string naming the direction of a stream
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 9a72d641743d..c02d8df4f92b 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -225,6 +225,29 @@ const char *snd_pcm_format_name(snd_pcm_format_t format)
- }
- EXPORT_SYMBOL_GPL(snd_pcm_format_name);
- 
-+/**
-+ * snd_pcm_format_by_name - Return the PCM format code for the given name
-+ * @name: PCM format name ('S16_LE', 'S24_3LE', ...)
-+ * @format: Pointer to returned PCM format code
-+ *
-+ * The string comparison is done in a case-insensitive way.
-+ *
-+ * Return: 0 on success, or -ENOENT if the given format is not valid.
-+ */
-+int snd_pcm_format_by_name(const char *name, snd_pcm_format_t *format)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_pcm_format_names); i++)
-+		if (strcasecmp(name, snd_pcm_format_names[i]) == 0) {
-+			*format = i;
-+			return 0;
-+		}
-+
-+	return -ENOENT;
-+}
-+EXPORT_SYMBOL_GPL(snd_pcm_format_by_name);
-+
- #ifdef CONFIG_SND_VERBOSE_PROCFS
- 
- #define STATE(v) [SNDRV_PCM_STATE_##v] = #v
--- 
-2.23.0
+Thanks for the patch.
 
+Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
