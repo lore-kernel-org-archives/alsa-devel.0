@@ -2,99 +2,85 @@ Return-Path: <SRS0=9ZFY=Z4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64968C43603
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Dec 2019 10:36:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0009AC43603
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Dec 2019 15:32:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DED4224659
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Dec 2019 10:36:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0FE1B2466E
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Dec 2019 15:32:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nQcvGOcm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="oZC+Mg3x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DED4224659
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MzFnO8fY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FE1B2466E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22C0C1695;
-	Fri,  6 Dec 2019 11:36:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C0C1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99C621670;
+	Fri,  6 Dec 2019 16:31:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99C621670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575628614;
-	bh=rBoZD88SA1/OJdT+mLaTfLFTbsKIxrqoP/Lht9wxb+c=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nQcvGOcm7jyFDGgYLn+vkz+1OfQ6476L4KwmPZyVyw48NmxautoOyKLh9+qVony1/
-	 xXRM0GXmO+N0J7N6uV89ojqAXKAOPA1qoyhducrT8MRq7SfvZVL+iUgD8DAdW4Gf4N
-	 9CwtA1jEZDm9Hv7Fq9snMMEpdTFbJakBhcxzN2LM=
+	s=default; t=1575646343;
+	bh=wvaMnpg7oZO5kPPRf3WuP8ciGLJBNbxHYbtti5s0NNo=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MzFnO8fYJ4UBK1I5DpjLuK02v0ofut9+whP9PLSXFen/fMBvS7N7nwyOlnxf/xKra
+	 lCLl8U1HEn1AVQwKXLPtKMnfrrFKgBTZ/p8V2J1IZFdI/JU1tbUzOOqx1WoZSe0JZV
+	 ukp0I8VkQxYtXlM4upo3ZQQQX0W5Mgv3A2zcjR7g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE57AF801EC;
-	Fri,  6 Dec 2019 11:36:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05375F801D9;
+	Fri,  6 Dec 2019 16:31:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77D40F80135; Fri,  6 Dec 2019 11:35:58 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 340D4F801EC; Fri,  6 Dec 2019 16:31:31 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AA2EF80135
- for <alsa-devel@alsa-project.org>; Fri,  6 Dec 2019 11:35:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AA2EF80135
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="oZC+Mg3x"
-Received: by mail-wr1-x444.google.com with SMTP id q10so7166267wrm.11
- for <alsa-devel@alsa-project.org>; Fri, 06 Dec 2019 02:35:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2P76kSoNDGNNbqOJn2kSGms/jkHQIG00/8B7zZ9IAWc=;
- b=oZC+Mg3xodxXWHIkXMzl5MjCHXgHGP4BTZlEj8wbkkQKrb/xTAZz2TcgxnPz/8M8Ap
- SEVGG0mDu5DnWf8GLyFVlv6oV5oWGyAdn89M1wQTHdjQ0aBd0UHL8VE6vlwJu9lIrQsI
- IHEs5lBcbWtd66Zi1dpKu6KPBp8rTTQyW/0LSAUEUts5pg5tJQ3SJryqgWnpN0xxKaNY
- 8awbJssV2Vk6/v9/6qOjuAPxok8m1mCzS66eaw5hBVwaHJNYSnntdObS/5Op3AiyHbSu
- 4DPDUt5Bw+Dcqzr7sya9ODOXyLswtKpQIvCxPTS8lkAZfIPF5WWNJp9urxJbiuJRQGhS
- q8hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2P76kSoNDGNNbqOJn2kSGms/jkHQIG00/8B7zZ9IAWc=;
- b=BaLsY8ZE1yaF+sJC2LMwBkkpo9tRKIxBQET7H64GsfhhFRJJG8SvZKnBXhBRTy0Kjt
- 4uGlOfpm7Rj+W362yeLOjXG8nSSumaRDJjf0MMmccBZuyN5tBT9fMAqLJ6HkfQpOBbx5
- jFO34GkZSx5gEcj6n7pCt0/W1juu8Nern1m/3FKAd5dOTc8+vcyaA4AWys5Z3YlYD2O3
- IgyAVRgaB+UbjH14aZ/aHKP+c//rGgojXviXgMWti8FlZ6JT9UnCUttK6eZcK3pPJxJR
- bNpRX2+p5/p/12tRj3ZbUxZnCwhv381LW8JLL0NCha5AKNKVyYUU0RdzlqJTNlMJJZGc
- wUrg==
-X-Gm-Message-State: APjAAAVeVZ/+m1Y6V5muFXtboLXrJdvx/nROV0Mvr8LEuS97ZL2DVBrr
- 1uK7r9TzVr5fLqrTaDXn43C/Iw==
-X-Google-Smtp-Source: APXvYqzpCEq7FRqzkGxefVAfwg3KvzY5JopYcmnzxXZT1FNThv71oz7fGU1opXocQjbae72vvyU62Q==
-X-Received: by 2002:a5d:404b:: with SMTP id w11mr15822520wrp.171.1575628551056; 
- Fri, 06 Dec 2019 02:35:51 -0800 (PST)
-Received: from starbuck.baylibre.local
- (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
- by smtp.googlemail.com with ESMTPSA id n14sm2164013wmk.0.2019.12.06.02.35.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 06 Dec 2019 02:35:50 -0800 (PST)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Date: Fri,  6 Dec 2019 11:35:42 +0100
-Message-Id: <20191206103542.485224-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.23.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA346F80135
+ for <alsa-devel@alsa-project.org>; Fri,  6 Dec 2019 16:31:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA346F80135
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 06 Dec 2019 07:31:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,285,1571727600"; d="scan'208";a="202133446"
+Received: from ooparaji-mobl1.amr.corp.intel.com (HELO [10.254.45.27])
+ ([10.254.45.27])
+ by orsmga007.jf.intel.com with ESMTP; 06 Dec 2019 07:31:20 -0800
+To: Curtis Malainey <cujomalainey@chromium.org>, alsa-devel@alsa-project.org
+References: <20191206013413.237576-1-cujomalainey@chromium.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <30321a90-a6fa-4f25-c02a-24ac9aa69709@linux.intel.com>
+Date: Fri, 6 Dec 2019 09:31:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Jerome Brunet <jbrunet@baylibre.com>
-Subject: [alsa-devel] [PATCH v2] ASoC: hdmi-codec: re-introduce mutex
-	locking again
+In-Reply-To: <20191206013413.237576-1-cujomalainey@chromium.org>
+Content-Language: en-US
+Cc: Hui Wang <hui.wang@canonical.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Alexios Zavras <alexios.zavras@intel.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Ben Zhang <benzh@chromium.org>, Mac Chiang <mac.chiang@intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Naveen Manohar <naveen.m@intel.com>,
+ Sathya Prakash M R <sathya.prakash.m.r@intel.com>,
+ Bard Liao <bardliao@realtek.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Jon Flatley <jflat@chromium.org>, Bard liao <yung-chuan.liao@linux.intel.com>,
+ Jenny TC <jenny.tc@intel.com>
+Subject: Re: [alsa-devel] [PATCH v3] ASoC: intel: Add Broadwell rt5650
+	machine driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,105 +93,440 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The dai codec needs to ensure that on one dai is used at any time.
-This is currently protected by bit atomic operation. With this change,
-it done with a mutex instead.
 
-This change is not about functionality or efficiency. It is done with
-the hope that it help maintainability in the future.
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/codecs/hdmi-codec.c | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+On 12/5/19 7:34 PM, Curtis Malainey wrote:
+> From: Ben Zhang <benzh@chromium.org>
+> 
+> Add machine driver for Broadwell + rt5650.
+> 
+> Signed-off-by: Bard Liao <bardliao@realtek.com>
+> Signed-off-by: Ben Zhang <benzh@chromium.org>
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+> Signed-off-by: Jon Flatley <jflat@chromium.org>
+> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index f8b5b960e597..543363102d03 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -274,7 +274,8 @@ struct hdmi_codec_priv {
- 	uint8_t eld[MAX_ELD_BYTES];
- 	struct snd_pcm_chmap *chmap_info;
- 	unsigned int chmap_idx;
--	unsigned long busy;
-+	struct mutex lock;
-+	bool busy;
- 	struct snd_soc_jack *jack;
- 	unsigned int jack_status;
- };
-@@ -390,9 +391,10 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 	int ret = 0;
- 
--	ret = test_and_set_bit(0, &hcp->busy);
--	if (ret) {
-+	mutex_lock(&hcp->lock);
-+	if (hcp->busy) {
- 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
-+		mutex_unlock(&hcp->lock);
- 		return -EINVAL;
- 	}
- 
-@@ -405,21 +407,21 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	if (hcp->hcd.ops->get_eld) {
- 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->hcd.data,
- 					    hcp->eld, sizeof(hcp->eld));
-+		if (ret)
-+			goto err;
-+
-+		ret = snd_pcm_hw_constraint_eld(substream->runtime, hcp->eld);
-+		if (ret)
-+			goto err;
- 
--		if (!ret) {
--			ret = snd_pcm_hw_constraint_eld(substream->runtime,
--							hcp->eld);
--			if (ret)
--				goto err;
--		}
- 		/* Select chmap supported */
- 		hdmi_codec_eld_chmap(hcp);
- 	}
--	return 0;
-+
-+	hcp->busy = true;
- 
- err:
--	/* Release the exclusive lock on error */
--	clear_bit(0, &hcp->busy);
-+	mutex_unlock(&hcp->lock);
- 	return ret;
- }
- 
-@@ -431,7 +433,9 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
- 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
- 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
- 
--	clear_bit(0, &hcp->busy);
-+	mutex_lock(&hcp->lock);
-+	hcp->busy = false;
-+	mutex_unlock(&hcp->lock);
- }
- 
- static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
-@@ -811,6 +815,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	hcp->hcd = *hcd;
-+	mutex_init(&hcp->lock);
-+
- 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
- 	if (!daidrv)
- 		return -ENOMEM;
--- 
-2.23.0
+sounds good, but it'd be nice to fix the Sparse warning below
 
+bdw-rt5650.c:102:37: warning: incorrect type in argument 2 (different 
+base types)
+bdw-rt5650.c:102:37:    expected unsigned int val
+bdw-rt5650.c:102:37:    got restricted snd_pcm_format_t [usertype]
+
+We introduced a new function to deal with this, can't recall off the top 
+of my head.
+
+> ---
+> v2 (Curtis):
+> * Addressed Pierre's comments
+>    * Added SOF dependencies
+>    * Added platform override
+>    * Fixed Kconfig
+> * Moved to devm register
+> 
+> v3:
+> * Removed THIS_MODULE
+> * Added PM Ops
+> 
+>   sound/soc/intel/boards/Kconfig                |  12 +
+>   sound/soc/intel/boards/Makefile               |   2 +
+>   sound/soc/intel/boards/bdw-rt5650.c           | 319 ++++++++++++++++++
+>   .../common/soc-acpi-intel-hsw-bdw-match.c     |   7 +
+>   4 files changed, 340 insertions(+)
+>   create mode 100644 sound/soc/intel/boards/bdw-rt5650.c
+> 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index 6c9fd9ad566ed..de613ae5052bf 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -31,6 +31,18 @@ endif ## SND_SOC_INTEL_HASWELL
+>   
+>   if SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
+>   
+> +config SND_SOC_INTEL_BDW_RT5650_MACH
+> +	tristate "Broadwell with RT5650 codec"
+> +	depends on I2C
+> +	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
+> +	depends on X86_INTEL_LPSS || COMPILE_TEST
+> +	select SND_SOC_RT5645
+> +	help
+> +	  This adds the ASoC machine driver for Intel Broadwell platforms with
+> +	  the RT5650 codec.
+> +	  Say Y if you have such a device.
+> +	  If unsure select "N".
+> +
+>   config SND_SOC_INTEL_BDW_RT5677_MACH
+>   	tristate "Broadwell with RT5677 codec"
+>   	depends on I2C
+> diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+> index ba1aa89db09d5..4efb3689503f8 100644
+> --- a/sound/soc/intel/boards/Makefile
+> +++ b/sound/soc/intel/boards/Makefile
+> @@ -2,6 +2,7 @@
+>   snd-soc-sst-haswell-objs := haswell.o
+>   snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
+>   snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
+> +snd-soc-sst-bdw-rt5650-mach-objs := bdw-rt5650.o
+>   snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
+>   snd-soc-sst-broadwell-objs := broadwell.o
+>   snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o hda_dsp_common.o
+> @@ -37,6 +38,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON) += snd-soc-sst-bxt-da721
+>   obj-$(CONFIG_SND_SOC_INTEL_BXT_RT298_MACH) += snd-soc-sst-bxt-rt298.o
+>   obj-$(CONFIG_SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH) += snd-soc-sst-glk-rt5682_max98357a.o
+>   obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
+> +obj-$(CONFIG_SND_SOC_INTEL_BDW_RT5650_MACH) += snd-soc-sst-bdw-rt5650-mach.o
+>   obj-$(CONFIG_SND_SOC_INTEL_BDW_RT5677_MACH) += snd-soc-sst-bdw-rt5677-mach.o
+>   obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH) += snd-soc-sst-bytcr-rt5640.o
+>   obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5651_MACH) += snd-soc-sst-bytcr-rt5651.o
+> diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+> new file mode 100644
+> index 0000000000000..274b21680d624
+> --- /dev/null
+> +++ b/sound/soc/intel/boards/bdw-rt5650.c
+> @@ -0,0 +1,319 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * ASoC machine driver for Intel Broadwell platforms with RT5650 codec
+> + *
+> + * Copyright 2019, The Chromium OS Authors.  All rights reserved.
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/core.h>
+> +#include <sound/jack.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include <sound/soc-acpi.h>
+> +
+> +#include "../common/sst-dsp.h"
+> +#include "../haswell/sst-haswell-ipc.h"
+> +
+> +#include "../../codecs/rt5645.h"
+> +
+> +struct bdw_rt5650_priv {
+> +	struct gpio_desc *gpio_hp_en;
+> +	struct snd_soc_component *component;
+> +};
+> +
+> +static const struct snd_soc_dapm_widget bdw_rt5650_widgets[] = {
+> +	SND_SOC_DAPM_HP("Headphone", NULL),
+> +	SND_SOC_DAPM_SPK("Speaker", NULL),
+> +	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+> +	SND_SOC_DAPM_MIC("DMIC Pair1", NULL),
+> +	SND_SOC_DAPM_MIC("DMIC Pair2", NULL),
+> +};
+> +
+> +static const struct snd_soc_dapm_route bdw_rt5650_map[] = {
+> +	/* Speakers */
+> +	{"Speaker", NULL, "SPOL"},
+> +	{"Speaker", NULL, "SPOR"},
+> +
+> +	/* Headset jack connectors */
+> +	{"Headphone", NULL, "HPOL"},
+> +	{"Headphone", NULL, "HPOR"},
+> +	{"IN1P", NULL, "Headset Mic"},
+> +	{"IN1N", NULL, "Headset Mic"},
+> +
+> +	/* Digital MICs
+> +	 * DMIC Pair1 are the two DMICs connected on the DMICN1 connector.
+> +	 * DMIC Pair2 are the two DMICs connected on the DMICN2 connector.
+> +	 * Facing the camera, DMIC Pair1 are on the left side, DMIC Pair2
+> +	 * are on the right side.
+> +	 */
+> +	{"DMIC L1", NULL, "DMIC Pair1"},
+> +	{"DMIC R1", NULL, "DMIC Pair1"},
+> +	{"DMIC L2", NULL, "DMIC Pair2"},
+> +	{"DMIC R2", NULL, "DMIC Pair2"},
+> +
+> +	/* CODEC BE connections */
+> +	{"SSP0 CODEC IN", NULL, "AIF1 Capture"},
+> +	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
+> +};
+> +
+> +static const struct snd_kcontrol_new bdw_rt5650_controls[] = {
+> +	SOC_DAPM_PIN_SWITCH("Speaker"),
+> +	SOC_DAPM_PIN_SWITCH("Headphone"),
+> +	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+> +	SOC_DAPM_PIN_SWITCH("DMIC Pair1"),
+> +	SOC_DAPM_PIN_SWITCH("DMIC Pair2"),
+> +};
+> +
+> +
+> +static struct snd_soc_jack headphone_jack;
+> +static struct snd_soc_jack mic_jack;
+> +
+> +static struct snd_soc_jack_pin headphone_jack_pin = {
+> +	.pin	= "Headphone",
+> +	.mask	= SND_JACK_HEADPHONE,
+> +};
+> +
+> +static struct snd_soc_jack_pin mic_jack_pin = {
+> +	.pin	= "Headset Mic",
+> +	.mask	= SND_JACK_MICROPHONE,
+> +};
+> +
+> +static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+> +			struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_interval *rate = hw_param_interval(params,
+> +			SNDRV_PCM_HW_PARAM_RATE);
+> +	struct snd_interval *channels = hw_param_interval(params,
+> +						SNDRV_PCM_HW_PARAM_CHANNELS);
+> +
+> +	/* The ADSP will covert the FE rate to 48k, max 4-channels */
+> +	rate->min = rate->max = 48000;
+> +	channels->min = 2;
+> +	channels->max = 4;
+> +
+> +	/* set SSP0 to 24 bit */
+> +	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+> +				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+> +				    SNDRV_PCM_FORMAT_S24_LE);
+> +	return 0;
+> +}
+> +
+> +static int bdw_rt5650_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +	int ret;
+> +
+> +	/* Workaround: set codec PLL to 19.2MHz that PLL source is
+> +	 * from MCLK(24MHz) to conform 2.4MHz DMIC clock.
+> +	 */
+> +	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5645_PLL1_S_MCLK,
+> +		24000000, 19200000);
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* The actual MCLK freq is 24MHz. The codec is told that MCLK is
+> +	 * 24.576MHz to satisfy the requirement of rl6231_get_clk_info.
+> +	 * ASRC is enabled on AD and DA filters to ensure good audio quality.
+> +	 */
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, RT5645_SCLK_S_PLL1, 24576000,
+> +		SND_SOC_CLOCK_IN);
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
+> +		return ret;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static struct snd_soc_ops bdw_rt5650_ops = {
+> +	.hw_params = bdw_rt5650_hw_params,
+> +};
+> +
+> +#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
+> +static int bdw_rt5650_rtd_init(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
+> +	struct sst_pdata *pdata = dev_get_platdata(component->dev);
+> +	struct sst_hsw *broadwell = pdata->dsp;
+> +	int ret;
+> +
+> +	/* Set ADSP SSP port settings
+> +	 * clock_divider = 4 means BCLK = MCLK/5 = 24MHz/5 = 4.8MHz
+> +	 */
+> +	ret = sst_hsw_device_set_config(broadwell, SST_HSW_DEVICE_SSP_0,
+> +		SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
+> +		SST_HSW_DEVICE_TDM_CLOCK_MASTER, 4);
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "error: failed to set device config\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+> +static int bdw_rt5650_init(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +	struct bdw_rt5650_priv *bdw_rt5650 =
+> +		snd_soc_card_get_drvdata(rtd->card);
+> +	struct snd_soc_component *component = rtd->codec_dai->component;
+> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> +	int ret;
+> +
+> +	/* Enable codec ASRC function for Stereo DAC/Stereo1 ADC/DMIC/I2S1.
+> +	 * The ASRC clock source is clk_i2s1_asrc.
+> +	 */
+> +	rt5645_sel_asrc_clk_src(component,
+> +				RT5645_DA_STEREO_FILTER |
+> +				RT5645_DA_MONO_L_FILTER |
+> +				RT5645_DA_MONO_R_FILTER |
+> +				RT5645_AD_STEREO_FILTER |
+> +				RT5645_AD_MONO_L_FILTER |
+> +				RT5645_AD_MONO_R_FILTER,
+> +				RT5645_CLK_SEL_I2S1_ASRC);
+> +
+> +	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+> +	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
+> +
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* Create and initialize headphone jack */
+> +	if (snd_soc_card_jack_new(rtd->card, "Headphone Jack",
+> +			SND_JACK_HEADPHONE, &headphone_jack,
+> +			&headphone_jack_pin, 1)) {
+> +		dev_err(component->dev, "Can't create headphone jack\n");
+> +	}
+> +
+> +	/* Create and initialize mic jack */
+> +	if (snd_soc_card_jack_new(rtd->card, "Mic Jack", SND_JACK_MICROPHONE,
+> +			&mic_jack, &mic_jack_pin, 1)) {
+> +		dev_err(component->dev, "Can't create mic jack\n");
+> +	}
+> +
+> +	rt5645_set_jack_detect(component, &headphone_jack, &mic_jack, NULL);
+> +
+> +	bdw_rt5650->component = component;
+> +
+> +	return 0;
+> +}
+> +
+> +/* broadwell digital audio interface glue - connects codec <--> CPU */
+> +SND_SOC_DAILINK_DEF(dummy,
+> +	DAILINK_COMP_ARRAY(COMP_DUMMY()));
+> +
+> +SND_SOC_DAILINK_DEF(fe,
+> +	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
+> +
+> +SND_SOC_DAILINK_DEF(platform,
+> +	DAILINK_COMP_ARRAY(COMP_PLATFORM("haswell-pcm-audio")));
+> +
+> +SND_SOC_DAILINK_DEF(be,
+> +	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5650:00", "rt5645-aif1")));
+> +
+> +static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+> +	/* Front End DAI links */
+> +	{
+> +		.name = "System PCM",
+> +		.stream_name = "System Playback",
+> +		.dynamic = 1,
+> +#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
+> +		.init = bdw_rt5650_rtd_init,
+> +#endif
+> +		.trigger = {
+> +			SND_SOC_DPCM_TRIGGER_POST,
+> +			SND_SOC_DPCM_TRIGGER_POST
+> +		},
+> +		.dpcm_playback = 1,
+> +		.dpcm_capture = 1,
+> +		SND_SOC_DAILINK_REG(fe, dummy, platform),
+> +	},
+> +
+> +	/* Back End DAI links */
+> +	{
+> +		/* SSP0 - Codec */
+> +		.name = "Codec",
+> +		.id = 0,
+> +		.no_pcm = 1,
+> +		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
+> +			SND_SOC_DAIFMT_CBS_CFS,
+> +		.ignore_suspend = 1,
+> +		.ignore_pmdown_time = 1,
+> +		.be_hw_params_fixup = broadwell_ssp0_fixup,
+> +		.ops = &bdw_rt5650_ops,
+> +		.dpcm_playback = 1,
+> +		.dpcm_capture = 1,
+> +		.init = bdw_rt5650_init,
+> +		SND_SOC_DAILINK_REG(dummy, be, dummy),
+> +	},
+> +};
+> +
+> +/* ASoC machine driver for Broadwell DSP + RT5650 */
+> +static struct snd_soc_card bdw_rt5650_card = {
+> +	.name = "bdw-rt5650",
+> +	.owner = THIS_MODULE,
+> +	.dai_link = bdw_rt5650_dais,
+> +	.num_links = ARRAY_SIZE(bdw_rt5650_dais),
+> +	.dapm_widgets = bdw_rt5650_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(bdw_rt5650_widgets),
+> +	.dapm_routes = bdw_rt5650_map,
+> +	.num_dapm_routes = ARRAY_SIZE(bdw_rt5650_map),
+> +	.controls = bdw_rt5650_controls,
+> +	.num_controls = ARRAY_SIZE(bdw_rt5650_controls),
+> +	.fully_routed = true,
+> +};
+> +
+> +static int bdw_rt5650_probe(struct platform_device *pdev)
+> +{
+> +	struct bdw_rt5650_priv *bdw_rt5650;
+> +	struct snd_soc_acpi_mach *mach;
+> +	int ret;
+> +
+> +	bdw_rt5650_card.dev = &pdev->dev;
+> +
+> +	/* Allocate driver private struct */
+> +	bdw_rt5650 = devm_kzalloc(&pdev->dev, sizeof(struct bdw_rt5650_priv),
+> +		GFP_KERNEL);
+> +	if (!bdw_rt5650)
+> +		return -ENOMEM;
+> +
+> +	/* override plaform name, if required */
+> +	mach = (&pdev->dev)->platform_data;
+> +	ret = snd_soc_fixup_dai_links_platform_name(&bdw_rt5650_card,
+> +						    mach->mach_params.platform);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	snd_soc_card_set_drvdata(&bdw_rt5650_card, bdw_rt5650);
+> +
+> +	return devm_snd_soc_register_card(&pdev->dev, &bdw_rt5650_card);
+> +}
+> +
+> +static struct platform_driver bdw_rt5650_audio = {
+> +	.probe = bdw_rt5650_probe,
+> +	.driver = {
+> +		.name = "bdw-rt5650",
+> +		.pm = &snd_soc_pm_ops,
+> +	},
+> +};
+> +
+> +module_platform_driver(bdw_rt5650_audio)
+> +
+> +/* Module information */
+> +MODULE_AUTHOR("Ben Zhang <benzh@chromium.org>");
+> +MODULE_DESCRIPTION("Intel Broadwell RT5650 machine driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:bdw-rt5650");
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+> index 34eb0baaa9517..35958553652ec 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+> @@ -29,6 +29,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
+>   		.sof_fw_filename = "sof-bdw.ri",
+>   		.sof_tplg_filename = "sof-bdw-rt286.tplg",
+>   	},
+> +	{
+> +		.id = "10EC5650",
+> +		.drv_name = "bdw-rt5650",
+> +		.fw_filename = "intel/IntcSST2.bin",
+> +		.sof_fw_filename = "sof-bdw.ri",
+> +		.sof_tplg_filename = "sof-bdw-rt5650.tplg",
+> +	},
+>   	{
+>   		.id = "RT5677CE",
+>   		.drv_name = "bdw-rt5677",
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
