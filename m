@@ -3,65 +3,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BE79C43603
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Dec 2019 08:46:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14803C43603
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Dec 2019 08:49:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B98920700
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Dec 2019 08:46:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 829EC20637
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Dec 2019 08:49:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ohgUnsl1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B98920700
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JPsXikV9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 829EC20637
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4686A825;
-	Sun,  8 Dec 2019 09:45:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4686A825
+	by alsa0.perex.cz (Postfix) with ESMTPS id CABBA825;
+	Sun,  8 Dec 2019 09:48:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CABBA825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575794806;
-	bh=VIkptO/iTvAJEyBBmaCbthanspHaVT3BCOL9wMidkCI=;
+	s=default; t=1575794948;
+	bh=pLYlpKYCrtxLtYeYv1IpuQtRh6g9Spnqx53S6Nv0tT4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ohgUnsl1LClE8+7t6ujMg49ckz/pRtef2cAC+s1XDpHXofH0vSMIxDS3FY2oAGbHx
-	 5xbsQqqM2z4ypHRGj2h3x0EP4Wkv1RpIgtv5hMv8I21J8+84T27aoz4IrqlgYMTjPv
-	 xcUmX888vV7EXP3iT2Wip7Far5XDA2dpTF4890SM=
+	b=JPsXikV9sUioteBr1fNiB5sB+BLA+1BklMVQ2DUrfz9xLHdVaEDg61N2AB9RI6ylq
+	 X2xFNEc/W+IKTBLJg3nbcfuO4m4u1hFZOoHRPkzs+c7cnBVzaBWN6fm5GIpA1qTM5R
+	 VOZDBSXQk6PgxiKoZFzkAbxaEcNgXshDOvaxQHew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2C37F801D8;
-	Sun,  8 Dec 2019 09:45:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BA9DF8011E;
+	Sun,  8 Dec 2019 09:48:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57372F80217; Sun,  8 Dec 2019 09:45:53 +0100 (CET)
+ id 1000EF80217; Sun,  8 Dec 2019 09:48:15 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 684DAF800C4
- for <alsa-devel@alsa-project.org>; Sun,  8 Dec 2019 09:45:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 684DAF800C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56562F8011E
+ for <alsa-devel@alsa-project.org>; Sun,  8 Dec 2019 09:48:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56562F8011E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 15AA8ABC4;
- Sun,  8 Dec 2019 08:45:49 +0000 (UTC)
-Date: Sun, 08 Dec 2019 09:45:48 +0100
-Message-ID: <s5h4kybciir.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id AAB74ABC4;
+ Sun,  8 Dec 2019 08:48:11 +0000 (UTC)
+Date: Sun, 08 Dec 2019 09:48:11 +0100
+Message-ID: <s5h36dvcies.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Klaus Ethgen <Klaus@ethgen.ch>
-In-Reply-To: <20191207200643.GA10092@ikki.ethgen.ch>
-References: <20191202184759.GB29478@ikki.ethgen.ch>
- <s5hy2vsjbm3.wl-tiwai@suse.de>
- <20191207200643.GA10092@ikki.ethgen.ch>
+To: Olof Johansson <olof@lixom.net>
+In-Reply-To: <20191207224953.25944-1-olof@lixom.net>
+References: <20191207224953.25944-1-olof@lixom.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] CPU hook snd_hda_intel
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: echoaudio: simplify get_audio_levels
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,137 +78,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 07 Dec 2019 21:06:43 +0100,
-Klaus Ethgen wrote:
+On Sat, 07 Dec 2019 23:49:53 +0100,
+Olof Johansson wrote:
 > 
-> Hi Takashi,
+> The loop optimizer seems to go astray here, and produces some warnings
+> that don't seem valid.
 > 
-> Am Mi den  4. Dez 2019 um 17:31 schrieb Takashi Iwai:
-> > I guess checking the perf output would give you more clue, e.g. which
-> > function is hogging the CPU.  Without such information, it's very hard
-> > to diagnose...
+> Still, the code can be simplified -- just clear the whole array at the
+> beginning, and fill in whatever values are valid on the platform.
 > 
-> No problem, I just had the problem today again.
+> Warnings before this change (GCC 8.2.0 ARM allmodconfig):
 > 
-> Find attached the perf output of the relevant event handler.
+> In file included from ../sound/pci/echoaudio/gina24.c:115:
+> ../sound/pci/echoaudio/echoaudio.c: In function 'snd_echo_vumeters_get':
+> ../sound/pci/echoaudio/echoaudio_dsp.c:647:9: warning: iteration 1073741824 invokes undefined behavior [-Waggressive-loop-optimizations]
+> In file included from ../sound/pci/echoaudio/layla24.c:112:
+> ../sound/pci/echoaudio/echoaudio.c: In function 'snd_echo_vumeters_get':
+> ../sound/pci/echoaudio/echoaudio_dsp.c:658:9: warning: iteration 1073741824 invokes undefined behavior [-Waggressive-loop-optimizations]
+> ../sound/pci/echoaudio/echoaudio_dsp.c:647:9: warning: iteration 1073741824 invokes undefined behavior [-Waggressive-loop-optimizations]
+> 
+> Signed-off-by: Olof Johansson <olof@lixom.net>
 
-Thanks.  So it seems wasting in the busy loop for waiting for the
-response from the codec.
-
-How about a patch below?  It's untested, might break things, but at
-least avoiding a busy loop.
-
-BTW, if your machine is Coffeelake or Cannonlake, this patch wont'
-work on the old branch because of forced polling mode.  It was removed
-in 5.5-rc1, so please test with Linus tree at best.
+Applied now, thanks.
 
 
 Takashi
-
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -317,6 +317,7 @@ struct hdac_bus {
- 	struct hdac_rb corb;
- 	struct hdac_rb rirb;
- 	unsigned int last_cmd[HDA_MAX_CODECS];	/* last sent command */
-+	wait_queue_head_t rirb_waitq;
- 
- 	/* CORB/RIRB and position buffers */
- 	struct snd_dma_buffer rb;
-diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 8f19876244eb..5eb58fce5353 100644
---- a/sound/hda/hdac_bus.c
-+++ b/sound/hda/hdac_bus.c
-@@ -43,6 +43,7 @@ int snd_hdac_bus_init(struct hdac_bus *bus, struct device *dev,
- 	mutex_init(&bus->cmd_mutex);
- 	mutex_init(&bus->lock);
- 	INIT_LIST_HEAD(&bus->hlink_list);
-+	init_waitqueue_head(&bus->rirb_waitq);
- 	bus->irq = -1;
- 	return 0;
- }
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 7e7be8e4dcf9..cd8fa9aa599d 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -216,6 +216,9 @@ void snd_hdac_bus_update_rirb(struct hdac_bus *bus)
- 		else if (bus->rirb.cmds[addr]) {
- 			bus->rirb.res[addr] = res;
- 			bus->rirb.cmds[addr]--;
-+			if (!bus->rirb.cmds[addr] &&
-+			    waitqueue_active(&bus->rirb_waitq))
-+				wake_up(&bus->rirb_waitq);
- 		} else {
- 			dev_err_ratelimited(bus->dev,
- 				"spurious response %#x:%#x, last cmd=%#08x\n",
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 2f3b7a35f2d9..56cafd12fa8a 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -792,21 +792,25 @@ static int azx_rirb_get_response(struct hdac_bus *bus, unsigned int addr,
- 	struct hda_bus *hbus = &chip->bus;
- 	unsigned long timeout;
- 	unsigned long loopcounter;
--	int do_poll = 0;
-+	wait_queue_entry_t wait;
- 	bool warned = false;
- 
-+	init_wait_entry(&wait, 0);
-  again:
- 	timeout = jiffies + msecs_to_jiffies(1000);
- 
- 	for (loopcounter = 0;; loopcounter++) {
- 		spin_lock_irq(&bus->reg_lock);
--		if (bus->polling_mode || do_poll)
-+		if (!bus->polling_mode)
-+			prepare_to_wait(&bus->rirb_waitq, &wait,
-+					TASK_UNINTERRUPTIBLE);
-+		if (bus->polling_mode)
- 			snd_hdac_bus_update_rirb(bus);
- 		if (!bus->rirb.cmds[addr]) {
--			if (!do_poll)
--				bus->poll_count = 0;
- 			if (res)
- 				*res = bus->rirb.res[addr]; /* the last value */
-+			if (!bus->polling_mode)
-+				finish_wait(&bus->rirb_waitq, &wait);
- 			spin_unlock_irq(&bus->reg_lock);
- 			return 0;
- 		}
-@@ -814,7 +818,9 @@ static int azx_rirb_get_response(struct hdac_bus *bus, unsigned int addr,
- 		if (time_after(jiffies, timeout))
- 			break;
- #define LOOP_COUNT_MAX	3000
--		if (hbus->needs_damn_long_delay ||
-+		if (!bus->polling_mode) {
-+			schedule_timeout(msecs_to_jiffies(2));
-+		} else if (hbus->needs_damn_long_delay ||
- 		    loopcounter > LOOP_COUNT_MAX) {
- 			if (loopcounter > LOOP_COUNT_MAX && !warned) {
- 				dev_dbg_ratelimited(chip->card->dev,
-@@ -829,19 +835,12 @@ static int azx_rirb_get_response(struct hdac_bus *bus, unsigned int addr,
- 		}
- 	}
- 
-+	if (!bus->polling_mode)
-+		finish_wait(&bus->rirb_waitq, &wait);
-+
- 	if (hbus->no_response_fallback)
- 		return -EIO;
- 
--	if (!bus->polling_mode && bus->poll_count < 2) {
--		dev_dbg(chip->card->dev,
--			"azx_get_response timeout, polling the codec once: last cmd=0x%08x\n",
--			bus->last_cmd[addr]);
--		do_poll = 1;
--		bus->poll_count++;
--		goto again;
--	}
--
--
- 	if (!bus->polling_mode) {
- 		dev_warn(chip->card->dev,
- 			 "azx_get_response timeout, switching to polling mode: last cmd=0x%08x\n",
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
