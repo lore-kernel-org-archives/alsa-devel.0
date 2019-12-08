@@ -1,95 +1,76 @@
-Return-Path: <SRS0=8u/3=Z5=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=1goX=Z6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ED5AC43603
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Dec 2019 22:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16969C43603
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Dec 2019 06:41:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E4ED206DF
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Dec 2019 22:51:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1943D206D6
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Dec 2019 06:40:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LhrSN6PF";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lixom-net.20150623.gappssmtp.com header.i=@lixom-net.20150623.gappssmtp.com header.b="DwhmzTgc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E4ED206DF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lixom.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GVIULn7B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1943D206D6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14767886;
-	Sat,  7 Dec 2019 23:50:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14767886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6ECE615F8;
+	Sun,  8 Dec 2019 07:40:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ECE615F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575759059;
-	bh=xjbhafPc0BkWLpWgdkpicBNvC+NDK46kqTLbMYHFa1c=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LhrSN6PF9u96EUpX1C/32wCKhdzK545qaUnow8y6bicm9kp10p4Nex4tgM9/dckxR
-	 hJZsLrR87/EdaPUKdVVPPUilNgh+DRbWl54hxOtyZafq9ho72nYV47YSJ+FpJsBFSC
-	 ZH4K/nNmdIB+/QdtkAJlNDlQhK+Q0ta+ISS8gbYM=
+	s=default; t=1575787257;
+	bh=Q5st93JBsnGWr1tkQyFE7XBAStSva2/VXS25ydd4iOE=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GVIULn7BjLT88KWV3q8pbkpSOhvJg+KWtK2O8amnYftMibevV/gBdAgM0GPyxkwFx
+	 5nHHpw55ljAA/8Lfdx5ijUNP/eWSb3U3Pxqc0KjSTYVZaamHCGWEBFIzgA0rWccNKW
+	 8dxATLfqxThJggq8HCGL4npHIi24ZaF45VRM6gZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77882F80108;
-	Sat,  7 Dec 2019 23:50:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBC0AF801D8;
+	Sun,  8 Dec 2019 07:40:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA5EAF801F7; Sat,  7 Dec 2019 23:50:06 +0100 (CET)
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com
- [IPv6:2607:f8b0:4864:20::544])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1F008F80217; Sun,  8 Dec 2019 07:40:04 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69949F80108
- for <alsa-devel@alsa-project.org>; Sat,  7 Dec 2019 23:50:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69949F80108
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=lixom-net.20150623.gappssmtp.com
- header.i=@lixom-net.20150623.gappssmtp.com header.b="DwhmzTgc"
-Received: by mail-pg1-x544.google.com with SMTP id x7so5151434pgl.11
- for <alsa-devel@alsa-project.org>; Sat, 07 Dec 2019 14:50:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=lixom-net.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id;
- bh=lL+1PRskYMs2R8IhafHrkXHNGmWtEsk3V5MLoBd8+zY=;
- b=DwhmzTgcKmnOBPVF0IjpaSQlVwQ4sIrkmeLbE3VWvbZ97Tkj0feHuKEpNuI0VsvcSD
- KaA6vhX0ftaetj1cNLOJN6vBeWR+t3PqP6r6HGxlDpdQwnoIAO+VcY/fT4o+v8wpQaER
- WVBnWDGG82IuOKQDh7VsUblhCG44KUfpdiGPfPMKDAzmThmKScGWDvs8MAI4l1ep33WP
- ty6SDX5JzDO3+dkxfieBloSXg3wg5uJ5tW4OcDfpsZE/E41kef6PxCewCvQdmz+Lm+dL
- 0zVtmLx191aByueJrGeEjyxQT/YwUF2Fl8lV7QdFXIStWJLKfxM2OSTx8CddO6iyYpap
- XkTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=lL+1PRskYMs2R8IhafHrkXHNGmWtEsk3V5MLoBd8+zY=;
- b=YZk6SeTscf+4n+e2+1exylT2q4Cal+B1dV4f+geFt6lzmwqGiLlSM8+Z2Ai6xM78Qd
- yT4IjM4qT6V7cnMRbOGeAhrqqCnglzZ+ePk1NZn0p0ZAy520DL/jeqL2BEssyB9gU3wz
- oYFlbZVUqsA3DsEG8IPIw/u8I1qGKhQxdqPGpIbet7SVwbW0Ge68Iit+pdwTV8pL4ieP
- 7X5DQDtj1QABpapGJ335Xy6/DIVOpoH3Qi44jndPhheb/BBe1h/LHjQv3UScKKbfR4OG
- vVKR1TfWyEPi7bhps1M7ggHW39GNlnJjVz5OV7IBCTrsassTOUsFXs6Opaqk97G7ZLum
- mKoQ==
-X-Gm-Message-State: APjAAAVE74CSLv3KERlPq158iGsGQNKnyp4kTwGf1gBceTQ+99Cd8OTk
- e1YcHIP8zmYOmDUAnYupAyWiYw==
-X-Google-Smtp-Source: APXvYqwGQDo739d6dIOpL5JSCvp4GW1cBrkgeXp/wmM8/PMERqSFA/jOs/yhBO6I0yrKn0/7RPqhQw==
-X-Received: by 2002:a63:5221:: with SMTP id g33mr11340616pgb.68.1575759000761; 
- Sat, 07 Dec 2019 14:50:00 -0800 (PST)
-Received: from rip.lixom.net (99-152-116-91.lightspeed.sntcca.sbcglobal.net.
- [99.152.116.91])
- by smtp.gmail.com with ESMTPSA id s11sm19995747pgo.85.2019.12.07.14.49.59
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 07 Dec 2019 14:49:59 -0800 (PST)
-From: Olof Johansson <olof@lixom.net>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Date: Sat,  7 Dec 2019 14:49:53 -0800
-Message-Id: <20191207224953.25944-1-olof@lixom.net>
-X-Mailer: git-send-email 2.11.0
-Cc: Olof Johansson <olof@lixom.net>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ALSA: echoaudio: simplify get_audio_levels
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2200F800C7
+ for <alsa-devel@alsa-project.org>; Sun,  8 Dec 2019 07:39:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2200F800C7
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 07 Dec 2019 22:39:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,291,1571727600"; d="scan'208";a="206567514"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+ by orsmga008.jf.intel.com with ESMTP; 07 Dec 2019 22:39:51 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+ (envelope-from <lkp@intel.com>)
+ id 1idqER-0008pg-8W; Sun, 08 Dec 2019 14:39:51 +0800
+Date: Sun, 8 Dec 2019 14:39:16 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Daniel Mack <daniel@zonque.org>
+Message-ID: <201912081414.jnn8qiwO%lkp@intel.com>
+References: <20191205092129.692520-1-daniel@zonque.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191205092129.692520-1-daniel@zonque.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org,
+ kbuild-all@lists.01.org, Daniel Mack <daniel@zonque.org>
+Subject: Re: [alsa-devel] [PATCH v2 1/2] ALSA: core: add
+ snd_pcm_format_by_name()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,84 +83,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The loop optimizer seems to go astray here, and produces some warnings
-that don't seem valid.
+Hi Daniel,
 
-Still, the code can be simplified -- just clear the whole array at the
-beginning, and fill in whatever values are valid on the platform.
+I love your patch! Perhaps something to improve:
 
-Warnings before this change (GCC 8.2.0 ARM allmodconfig):
+[auto build test WARNING on sound/for-next]
+[also build test WARNING on asoc/for-next v5.4 next-20191207]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
 
-In file included from ../sound/pci/echoaudio/gina24.c:115:
-../sound/pci/echoaudio/echoaudio.c: In function 'snd_echo_vumeters_get':
-../sound/pci/echoaudio/echoaudio_dsp.c:647:9: warning: iteration 1073741824 invokes undefined behavior [-Waggressive-loop-optimizations]
-In file included from ../sound/pci/echoaudio/layla24.c:112:
-../sound/pci/echoaudio/echoaudio.c: In function 'snd_echo_vumeters_get':
-../sound/pci/echoaudio/echoaudio_dsp.c:658:9: warning: iteration 1073741824 invokes undefined behavior [-Waggressive-loop-optimizations]
-../sound/pci/echoaudio/echoaudio_dsp.c:647:9: warning: iteration 1073741824 invokes undefined behavior [-Waggressive-loop-optimizations]
+url:    https://github.com/0day-ci/linux/commits/Daniel-Mack/ALSA-core-add-snd_pcm_format_by_name/20191207-084912
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-91-g817270f-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-Signed-off-by: Olof Johansson <olof@lixom.net>
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> sound/core/pcm.c:243:33: sparse: sparse: incorrect type in assignment (different base types) @@    expected restricted snd_pcm_format_t [usertype] @@    got t_t [usertype] @@
+>> sound/core/pcm.c:243:33: sparse:    expected restricted snd_pcm_format_t [usertype]
+>> sound/core/pcm.c:243:33: sparse:    got int [assigned] i
+   sound/core/pcm.c:1022:9: sparse: sparse: context imbalance in 'snd_pcm_detach_substream' - different lock contexts for basic block
+
+vim +243 sound/core/pcm.c
+
+   227	
+   228	/**
+   229	 * snd_pcm_format_by_name - Return the PCM format code for the given name
+   230	 * @name: PCM format name ('S16_LE', 'S24_3LE', ...)
+   231	 * @format: Pointer to returned PCM format code
+   232	 *
+   233	 * The string comparison is done in a case-insensitive way.
+   234	 *
+   235	 * Return: 0 on success, or -ENOENT if the given format is not valid.
+   236	 */
+   237	int snd_pcm_format_by_name(const char *name, snd_pcm_format_t *format)
+   238	{
+   239		int i;
+   240	
+   241		for (i = 0; i < ARRAY_SIZE(snd_pcm_format_names); i++)
+   242			if (strcasecmp(name, snd_pcm_format_names[i]) == 0) {
+ > 243				*format = i;
+   244				return 0;
+   245			}
+   246	
+   247		return -ENOENT;
+   248	}
+   249	EXPORT_SYMBOL_GPL(snd_pcm_format_by_name);
+   250	
+
 ---
- sound/pci/echoaudio/echoaudio_dsp.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/sound/pci/echoaudio/echoaudio_dsp.c b/sound/pci/echoaudio/echoaudio_dsp.c
-index 50d4a87a6bb34..f02f5b1568dee 100644
---- a/sound/pci/echoaudio/echoaudio_dsp.c
-+++ b/sound/pci/echoaudio/echoaudio_dsp.c
-@@ -635,36 +635,30 @@ This function assumes there are no more than 16 in/out busses or pipes
- Meters is an array [3][16][2] of long. */
- static void get_audio_meters(struct echoaudio *chip, long *meters)
- {
--	int i, m, n;
-+	unsigned int i, m, n;
- 
--	m = 0;
--	n = 0;
--	for (i = 0; i < num_busses_out(chip); i++, m++) {
-+	for (i = 0 ; i < 96; i++)
-+		meters[i] = 0;
-+
-+	for (m = 0, n = 0, i = 0; i < num_busses_out(chip); i++, m++) {
- 		meters[n++] = chip->comm_page->vu_meter[m];
- 		meters[n++] = chip->comm_page->peak_meter[m];
- 	}
--	for (; n < 32; n++)
--		meters[n] = 0;
- 
- #ifdef ECHOCARD_ECHO3G
- 	m = E3G_MAX_OUTPUTS;	/* Skip unused meters */
- #endif
- 
--	for (i = 0; i < num_busses_in(chip); i++, m++) {
-+	for (n = 32, i = 0; i < num_busses_in(chip); i++, m++) {
- 		meters[n++] = chip->comm_page->vu_meter[m];
- 		meters[n++] = chip->comm_page->peak_meter[m];
- 	}
--	for (; n < 64; n++)
--		meters[n] = 0;
--
- #ifdef ECHOCARD_HAS_VMIXER
--	for (i = 0; i < num_pipes_out(chip); i++, m++) {
-+	for (n = 64, i = 0; i < num_pipes_out(chip); i++, m++) {
- 		meters[n++] = chip->comm_page->vu_meter[m];
- 		meters[n++] = chip->comm_page->peak_meter[m];
- 	}
- #endif
--	for (; n < 96; n++)
--		meters[n] = 0;
- }
- 
- 
--- 
-2.11.0
-
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
