@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6273C43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86AC6C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:55:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F08024683
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:54:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0CFFA2072D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:55:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D4Y7fjq8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F08024683
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="St4dTYfn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CFFA2072D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F4F71668;
-	Mon,  9 Dec 2019 10:53:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F4F71668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 496701661;
+	Mon,  9 Dec 2019 10:54:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 496701661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575885262;
-	bh=F9Rl7ew5Z6wPxsdbT76MQYDVssTgw5MEP36YYDX9An4=;
+	s=default; t=1575885305;
+	bh=UzdeI2o6R+IvywT+4W1Q52keXtNdCVlHom60r/0L/uI=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D4Y7fjq8JMwtI+mESmI5J09QGtYDH3KHsXcuhYZIL80vXUoxUMtkxtufrkR+HJekK
-	 8lXctP0R/cPzojp9nfzbrO0J1GXUKJw5VO8NIxthBv3IaFYKpvyzj9av17IKBvB5r4
-	 z4xBK4+JqS5tHTNuehnTD/53mc9ddihEthuwHG5Y=
+	b=St4dTYfn2oWa+TqKAHxAO4wSjBpA+GXJWRY3/NlA6ivgsGg7u8J6udGfRbAeCAa7j
+	 nlxfiuQ7wnh0PpLHDjUavdGOvGr9zwImraEFNdh2N1nrFX2x+2Hj/KTyHutBS9tjnZ
+	 cZitbb2qyYkACmFepiLLeYiFB8VDMQA/ozPqOq4k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD0C3F80258;
-	Mon,  9 Dec 2019 10:50:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BD87F80328;
+	Mon,  9 Dec 2019 10:50:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A67AF802F7; Mon,  9 Dec 2019 10:49:59 +0100 (CET)
+ id 4CE33F800C4; Mon,  9 Dec 2019 10:49:59 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5FB17F8023E
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FB17F8023E
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2465F800C4
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2465F800C4
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 66029B28D
+ by mx1.suse.de (Postfix) with ESMTP id 7FC34B29D
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:46 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:48:34 +0100
-Message-Id: <20191209094943.14984-3-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:48:36 +0100
+Message-Id: <20191209094943.14984-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 02/71] ALSA: aaci: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 04/71] ALSA: aloop: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,89 +77,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Clean up the driver with the new managed buffer allocation API.
-The superfluous snd_pcm_lib_malloc_pages() and
-snd_pcm_lib_free_pages() calls are dropped, and the if block is
-flattened accordingly.
+The hw_params callback became superfluous and got dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/arm/aaci.c | 40 +++++++++++++++-------------------------
- 1 file changed, 15 insertions(+), 25 deletions(-)
+ sound/drivers/aloop.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index b5399b0090a7..1e9ea0fe4f49 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -483,11 +483,6 @@ static int aaci_pcm_hw_free(struct snd_pcm_substream *substream)
- 		snd_ac97_pcm_close(aacirun->pcm);
- 	aacirun->pcm_open = 0;
- 
--	/*
--	 * Clear out the DMA and any allocated buffers.
--	 */
--	snd_pcm_lib_free_pages(substream);
--
- 	return 0;
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 6bb46423f5ae..104fb738cf48 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -905,12 +905,6 @@ static void loopback_runtime_free(struct snd_pcm_runtime *runtime)
+ 	kfree(dpcm);
  }
  
-@@ -502,6 +497,7 @@ static int aaci_pcm_hw_params(struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params)
+-static int loopback_hw_params(struct snd_pcm_substream *substream,
+-			      struct snd_pcm_hw_params *params)
+-{
+-	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-}
+-
+ static int loopback_hw_free(struct snd_pcm_substream *substream)
  {
- 	struct aaci_runtime *aacirun = substream->runtime->private_data;
-+	struct aaci *aaci = substream->private_data;
- 	unsigned int channels = params_channels(params);
- 	unsigned int rate = params_rate(params);
- 	int dbl = rate > 48000;
-@@ -517,25 +513,19 @@ static int aaci_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (dbl && channels != 2)
- 		return -EINVAL;
- 
--	err = snd_pcm_lib_malloc_pages(substream,
--				       params_buffer_bytes(params));
--	if (err >= 0) {
--		struct aaci *aaci = substream->private_data;
-+	err = snd_ac97_pcm_open(aacirun->pcm, rate, channels,
-+				aacirun->pcm->r[dbl].slots);
- 
--		err = snd_ac97_pcm_open(aacirun->pcm, rate, channels,
--					aacirun->pcm->r[dbl].slots);
-+	aacirun->pcm_open = err == 0;
-+	aacirun->cr = CR_FEN | CR_COMPACT | CR_SZ16;
-+	aacirun->cr |= channels_to_slotmask[channels + dbl * 2];
- 
--		aacirun->pcm_open = err == 0;
--		aacirun->cr = CR_FEN | CR_COMPACT | CR_SZ16;
--		aacirun->cr |= channels_to_slotmask[channels + dbl * 2];
--
--		/*
--		 * fifo_bytes is the number of bytes we transfer to/from
--		 * the FIFO, including padding.  So that's x4.  As we're
--		 * in compact mode, the FIFO is half the size.
--		 */
--		aacirun->fifo_bytes = aaci->fifo_depth * 4 / 2;
--	}
-+	/*
-+	 * fifo_bytes is the number of bytes we transfer to/from
-+	 * the FIFO, including padding.  So that's x4.  As we're
-+	 * in compact mode, the FIFO is half the size.
-+	 */
-+	aacirun->fifo_bytes = aaci->fifo_depth * 4 / 2;
- 
- 	return err;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -920,7 +914,7 @@ static int loopback_hw_free(struct snd_pcm_substream *substream)
+ 	mutex_lock(&dpcm->loopback->cable_lock);
+ 	cable->valid &= ~(1 << substream->stream);
+ 	mutex_unlock(&dpcm->loopback->cable_lock);
+-	return snd_pcm_lib_free_pages(substream);
++	return 0;
  }
-@@ -937,9 +927,9 @@ static int aaci_init_pcm(struct aaci *aaci)
  
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &aaci_playback_ops);
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &aaci_capture_ops);
--		snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--						      aaci->card->dev,
--						      0, 64 * 1024);
-+		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
-+					       aaci->card->dev,
-+					       0, 64 * 1024);
- 	}
+ static unsigned int get_cable_index(struct snd_pcm_substream *substream)
+@@ -1306,7 +1300,6 @@ static const struct snd_pcm_ops loopback_pcm_ops = {
+ 	.open =		loopback_open,
+ 	.close =	loopback_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	loopback_hw_params,
+ 	.hw_free =	loopback_hw_free,
+ 	.prepare =	loopback_prepare,
+ 	.trigger =	loopback_trigger,
+@@ -1325,8 +1318,7 @@ static int loopback_pcm_new(struct loopback *loopback,
+ 		return err;
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &loopback_pcm_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &loopback_pcm_ops);
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
+-					      NULL, 0, 0);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC, NULL, 0, 0);
  
- 	return ret;
+ 	pcm->private_data = loopback;
+ 	pcm->info_flags = 0;
 -- 
 2.16.4
 
