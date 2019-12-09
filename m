@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E622DC43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:12:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0DDAC43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:13:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C19120637
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:12:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 403B9206D5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:13:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NOC8JkCe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C19120637
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZVmq98k6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 403B9206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6716F16B5;
-	Mon,  9 Dec 2019 11:11:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6716F16B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4348316B3;
+	Mon,  9 Dec 2019 11:12:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4348316B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575886354;
-	bh=YDMhH401+HMK5bU+yWGU8QJDiUpaqgHkry2tLzNiJWQ=;
+	s=default; t=1575886395;
+	bh=yKgE09FMcGBltSxxUEz4O2IrubUK1OoRvs06nGUqlR4=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NOC8JkCec8n/AhLCQq8iRYAp3+RpL8YOCjP6KvWun4U5/9+ulZvkpCg/BD2a+NMqC
-	 SpXxxT4Q4al1YrQ/iHowwCsepAu+LxsGQ1Po95fWxVDteYnnQkNsSOaPMibNvOQ5L6
-	 riKkZ8K+TOAu43KwlVsRJuSn1UH7gMzMDF3O3w7E=
+	b=ZVmq98k6CFP4WOZX6ped8AR0jepFcKGowSCkt0YVFSoPU5/lYQyNK/i67+oPtNT6E
+	 Q9qC/eQHUZfj+cpDmyVwOvMF4c7tassl7huySR2+B6l7wSj2jpQBRgSd0iWE2KtORQ
+	 ji8E7wqqbhABfBhGlKO6HFk9n9Juc7FTAWGo0fP8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3DCFF803CF;
-	Mon,  9 Dec 2019 10:51:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28E62F803DE;
+	Mon,  9 Dec 2019 10:51:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD4E6F80349; Mon,  9 Dec 2019 10:50:44 +0100 (CET)
+ id 64206F8034A; Mon,  9 Dec 2019 10:50:46 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9C90F80273
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9C90F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8E88F8027B
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8E88F8027B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id BE4FAB2C0
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:47 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 05781B2C5
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:48 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:48:59 +0100
-Message-Id: <20191209094943.14984-28-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:49:04 +0100
+Message-Id: <20191209094943.14984-33-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 27/71] ALSA: azt3328: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 32/71] ALSA: cs5535: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,90 +77,51 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Clean up the driver with the new managed buffer allocation API.
-The hw_params and hw_free callbacks became superfluous and got
-dropped.
+The superfluous snd_pcm_lib_malloc_pages() and
+snd_pcm_lib_free_pages() calls are dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/azt3328.c | 30 ++++--------------------------
- 1 file changed, 4 insertions(+), 26 deletions(-)
+ sound/pci/cs5535audio/cs5535audio_pcm.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
-index f475370faaaa..5fac2d60ba2d 100644
---- a/sound/pci/azt3328.c
-+++ b/sound/pci/azt3328.c
-@@ -1205,20 +1205,6 @@ snd_azf3328_mixer_new(struct snd_azf3328 *chip)
+diff --git a/sound/pci/cs5535audio/cs5535audio_pcm.c b/sound/pci/cs5535audio/cs5535audio_pcm.c
+index 4642e5384e83..0b2a23c6d277 100644
+--- a/sound/pci/cs5535audio/cs5535audio_pcm.c
++++ b/sound/pci/cs5535audio/cs5535audio_pcm.c
+@@ -236,10 +236,6 @@ static int snd_cs5535audio_hw_params(struct snd_pcm_substream *substream,
+ 	struct cs5535audio_dma *dma = substream->runtime->private_data;
+ 	int err;
+ 
+-	err = snd_pcm_lib_malloc_pages(substream,
+-					params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		return err;
+ 	dma->buf_addr = substream->runtime->dma_addr;
+ 	dma->buf_bytes = params_buffer_bytes(hw_params);
+ 
+@@ -267,7 +263,7 @@ static int snd_cs5535audio_hw_free(struct snd_pcm_substream *substream)
+ 		dma->pcm_open_flag = 0;
+ 	}
+ 	cs5535audio_clear_dma_packets(cs5535au, dma, substream);
+-	return snd_pcm_lib_free_pages(substream);
++	return 0;
  }
- #endif /* AZF_USE_AC97_LAYER */
  
--static int
--snd_azf3328_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *hw_params)
--{
--	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
--}
--
--static int
--snd_azf3328_hw_free(struct snd_pcm_substream *substream)
--{
--	snd_pcm_lib_free_pages(substream);
--	return 0;
--}
--
- static void
- snd_azf3328_codec_setfmt(struct snd_azf3328_codec_data *codec,
- 			       enum azf_freq_t bitrate,
-@@ -2080,8 +2066,6 @@ static const struct snd_pcm_ops snd_azf3328_playback_ops = {
- 	.open =		snd_azf3328_pcm_playback_open,
- 	.close =	snd_azf3328_pcm_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	snd_azf3328_hw_params,
--	.hw_free =	snd_azf3328_hw_free,
- 	.prepare =	snd_azf3328_pcm_prepare,
- 	.trigger =	snd_azf3328_pcm_trigger,
- 	.pointer =	snd_azf3328_pcm_pointer
-@@ -2091,8 +2075,6 @@ static const struct snd_pcm_ops snd_azf3328_capture_ops = {
- 	.open =		snd_azf3328_pcm_capture_open,
- 	.close =	snd_azf3328_pcm_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	snd_azf3328_hw_params,
--	.hw_free =	snd_azf3328_hw_free,
- 	.prepare =	snd_azf3328_pcm_prepare,
- 	.trigger =	snd_azf3328_pcm_trigger,
- 	.pointer =	snd_azf3328_pcm_pointer
-@@ -2102,8 +2084,6 @@ static const struct snd_pcm_ops snd_azf3328_i2s_out_ops = {
- 	.open =		snd_azf3328_pcm_i2s_out_open,
- 	.close =	snd_azf3328_pcm_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	snd_azf3328_hw_params,
--	.hw_free =	snd_azf3328_hw_free,
- 	.prepare =	snd_azf3328_pcm_prepare,
- 	.trigger =	snd_azf3328_pcm_trigger,
- 	.pointer =	snd_azf3328_pcm_pointer
-@@ -2134,9 +2114,8 @@ snd_azf3328_pcm(struct snd_azf3328 *chip)
- 	chip->pcm[AZF_CODEC_PLAYBACK] = pcm;
- 	chip->pcm[AZF_CODEC_CAPTURE] = pcm;
+ static int snd_cs5535audio_playback_prepare(struct snd_pcm_substream *substream)
+@@ -431,9 +427,9 @@ int snd_cs5535audio_pcm(struct cs5535audio *cs5535au)
+ 	pcm->info_flags = 0;
+ 	strcpy(pcm->name, "CS5535 Audio");
  
 -	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--					      &chip->pci->dev,
--					      64*1024, 64*1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV, &chip->pci->dev,
-+				       64*1024, 64*1024);
- 
- 	err = snd_pcm_new(chip->card, "AZF3328 I2S OUT", AZF_PCMDEV_I2S_OUT,
- 								1, 0, &pcm);
-@@ -2150,9 +2129,8 @@ snd_azf3328_pcm(struct snd_azf3328 *chip)
- 	strcpy(pcm->name, chip->card->shortname);
- 	chip->pcm[AZF_CODEC_I2S_OUT] = pcm;
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--					      &chip->pci->dev,
--					      64*1024, 64*1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV, &chip->pci->dev,
-+				       64*1024, 64*1024);
+-					      &cs5535au->pci->dev,
+-					      64*1024, 128*1024);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++				       &cs5535au->pci->dev,
++				       64*1024, 128*1024);
+ 	cs5535au->pcm = pcm;
  
  	return 0;
- }
 -- 
 2.16.4
 
