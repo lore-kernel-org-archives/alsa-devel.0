@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F43C2D0C6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FF53C2D0C9
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72B5624680
+	by mail.kernel.org (Postfix) with ESMTPS id 7A21D24684
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uVj57sV5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72B5624680
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a1Tka2TB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A21D24684
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5FE016D0;
-	Mon,  9 Dec 2019 20:16:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5FE016D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19F9416A8;
+	Mon,  9 Dec 2019 20:08:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19F9416A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575919027;
-	bh=wAsuSWTxxO1vOjRQ/kBRsPlu0DgM19SOluL9XnvqMWI=;
+	s=default; t=1575918530;
+	bh=Nj1SvI4KlFjxLuzkGrcekd/L18VB1XGTzNSmNn28084=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=uVj57sV5+9vxKH2o/BdwnaTX/2pzrtkeRyFbub0VfthGs1eeFEEENP0xc/zRMUnC6
-	 4jx93Buqfd7ZhIR7kvqzLY0pfpuNlyZwtGc7V1HinzuDlTz/3j10A+id201lG8pczg
-	 t05MBCAWDgK6BhHKTZK+oGmgcvIDYCf/ILP1fwuk=
+	b=a1Tka2TBnegY3V60LgfPt9zaXVG448C0PydfbAEdE+5dE3WmHTyEPrbRRsT7NSo7O
+	 iDq33xRVUdCBK1cyPFVtwuZN89J5Z/NO3jU70d9jgM+Ln3nIDVnbyoQgAUE3e4aasP
+	 GilUzyrk3hrgwYCfwsIrT4iE28XoKFqiR352d84Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AE68F80385;
-	Mon,  9 Dec 2019 19:59:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98F79F80307;
+	Mon,  9 Dec 2019 19:59:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2F04F80349; Mon,  9 Dec 2019 19:59:44 +0100 (CET)
+ id 35DADF802C3; Mon,  9 Dec 2019 19:59:13 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C7FBBF8033F
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7FBBF8033F
+ by alsa1.perex.cz (Postfix) with ESMTP id DD70AF802A0
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD70AF802A0
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D63B911B3;
- Mon,  9 Dec 2019 10:59:38 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B4B311D4;
+ Mon,  9 Dec 2019 10:59:08 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56DED3F6CF;
- Mon,  9 Dec 2019 10:59:38 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:59:36 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B7B63F6CF;
+ Mon,  9 Dec 2019 10:59:07 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:59:06 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191126145304.24204-4-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191126145304.24204-4-pierre-louis.bossart@linux.intel.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20191206103542.485224-1-jbrunet@baylibre.com>
+Message-Id: <applied-20191206103542.485224-1-jbrunet@baylibre.com>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: hdac_hdmi: Drop support for Icelake" to
-	the asoc tree
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] Applied "ASoC: hdmi-codec: re-introduce mutex locking
+	again" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: hdac_hdmi: Drop support for Icelake
+   ASoC: hdmi-codec: re-introduce mutex locking again
 
 has been applied to the asoc tree at
 
@@ -102,143 +102,104 @@ to this mail.
 Thanks,
 Mark
 
-From 573892b6e66114898a1e3838c74603dba6bf0fbc Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Tue, 26 Nov 2019 08:53:04 -0600
-Subject: [PATCH] ASoC: hdac_hdmi: Drop support for Icelake
+From 1442842952ccfe4178602c7a8459ac2ecb9d9e1a Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Fri, 6 Dec 2019 11:35:42 +0100
+Subject: [PATCH] ASoC: hdmi-codec: re-introduce mutex locking again
 
-This reverts commit 019033c854a2 ("ASoC: Intel: hdac_hdmi:
-add Icelake support").
+The dai codec needs to ensure that on one dai is used at any time.
+This is currently protected by bit atomic operation. With this change,
+it done with a mutex instead.
 
-Icelake HDMI audio is supported by the HDMI codec driver,
-which can be used both in non-DSP (legacy HDA) and with
-DSP (SOF) configurations.
+This change is not about functionality or efficiency. It is done with
+the hope that it help maintainability in the future.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191126145304.24204-4-pierre-louis.bossart@linux.intel.com
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20191206103542.485224-1-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 63 ++++++------------------------------
- 1 file changed, 9 insertions(+), 54 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 18c173e6a13b..e6558475e006 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -115,16 +115,8 @@ struct hdac_hdmi_dai_port_map {
- 	struct hdac_hdmi_cvt *cvt;
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index f8b5b960e597..543363102d03 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -274,7 +274,8 @@ struct hdmi_codec_priv {
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
+-	unsigned long busy;
++	struct mutex lock;
++	bool busy;
+ 	struct snd_soc_jack *jack;
+ 	unsigned int jack_status;
  };
+@@ -390,9 +391,10 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
  
--/*
-- * pin to port mapping table where the value indicate the pin number and
-- * the index indicate the port number with 1 base.
-- */
--static const int icl_pin2port_map[] = {0x4, 0x6, 0x8, 0xa, 0xb};
--
- struct hdac_hdmi_drv_data {
- 	unsigned int vendor_nid;
--	const int *port_map; /* pin to port mapping table */
--	int port_num;
- };
+-	ret = test_and_set_bit(0, &hcp->busy);
+-	if (ret) {
++	mutex_lock(&hcp->lock);
++	if (hcp->busy) {
+ 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
++		mutex_unlock(&hcp->lock);
+ 		return -EINVAL;
+ 	}
  
- struct hdac_hdmi_priv {
-@@ -1374,12 +1366,11 @@ static int hdac_hdmi_add_pin(struct hdac_device *hdev, hda_nid_t nid)
- 	return 0;
- }
- 
--#define INTEL_VENDOR_NID_0x2 0x02
--#define INTEL_VENDOR_NID_0x8 0x08
--#define INTEL_VENDOR_NID_0xb 0x0b
-+#define INTEL_VENDOR_NID 0x08
-+#define INTEL_GLK_VENDOR_NID 0x0b
- #define INTEL_GET_VENDOR_VERB 0xf81
- #define INTEL_SET_VENDOR_VERB 0x781
--#define INTEL_EN_DP12		0x02 /* enable DP 1.2 features */
-+#define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
- #define INTEL_EN_ALL_PIN_CVTS	0x01 /* enable 2nd & 3rd pins and convertors */
- 
- static void hdac_hdmi_skl_enable_all_pins(struct hdac_device *hdev)
-@@ -1566,26 +1557,7 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_device *hdev,
- 
- static int hdac_hdmi_pin2port(void *aptr, int pin)
- {
--	struct hdac_device *hdev = aptr;
--	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
--	const int *map = hdmi->drv_data->port_map;
--	int i;
--
--	if (!hdmi->drv_data->port_num)
--		return pin - 4; /* map NID 0x05 -> port #1 */
--
--	/*
--	 * looking for the pin number in the mapping table and return
--	 * the index which indicate the port number
--	 */
--	for (i = 0; i < hdmi->drv_data->port_num; i++) {
--		if (pin == map[i])
--			return i + 1;
--	}
--
--	/* return -1 if pin number exceeds our expectation */
--	dev_err(&hdev->dev, "Can't find the port for pin %d\n", pin);
--	return -1;
-+	return pin - 4; /* map NID 0x05 -> port #1 */
- }
- 
- static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
-@@ -1596,18 +1568,9 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
- 	struct hdac_hdmi_port *hport = NULL;
- 	struct snd_soc_component *component = hdmi->component;
- 	int i;
--	hda_nid_t pin_nid;
--
--	if (!hdmi->drv_data->port_num) {
--		/* for legacy platforms */
--		pin_nid = port + 0x04;
--	} else if (port < hdmi->drv_data->port_num) {
--		/* get pin number from the pin2port mapping table */
--		pin_nid = hdmi->drv_data->port_map[port - 1];
--	} else {
--		dev_err(&hdev->dev, "Can't find the pin for port %d\n", port);
--		return;
--	}
+@@ -405,21 +407,21 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 	if (hcp->hcd.ops->get_eld) {
+ 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->hcd.data,
+ 					    hcp->eld, sizeof(hcp->eld));
++		if (ret)
++			goto err;
 +
-+	/* Don't know how this mapping is derived */
-+	hda_nid_t pin_nid = port + 0x04;
++		ret = snd_pcm_hw_constraint_eld(substream->runtime, hcp->eld);
++		if (ret)
++			goto err;
  
- 	dev_dbg(&hdev->dev, "%s: for pin:%d port=%d\n", __func__,
- 							pin_nid, pipe);
-@@ -2025,18 +1988,12 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdev, int pcm_idx)
- 	return port->eld.info.spk_alloc;
+-		if (!ret) {
+-			ret = snd_pcm_hw_constraint_eld(substream->runtime,
+-							hcp->eld);
+-			if (ret)
+-				goto err;
+-		}
+ 		/* Select chmap supported */
+ 		hdmi_codec_eld_chmap(hcp);
+ 	}
+-	return 0;
++
++	hcp->busy = true;
+ 
+ err:
+-	/* Release the exclusive lock on error */
+-	clear_bit(0, &hcp->busy);
++	mutex_unlock(&hcp->lock);
+ 	return ret;
  }
  
--static struct hdac_hdmi_drv_data intel_icl_drv_data  = {
--	.vendor_nid = INTEL_VENDOR_NID_0x2,
--	.port_map = icl_pin2port_map,
--	.port_num = ARRAY_SIZE(icl_pin2port_map),
--};
--
- static struct hdac_hdmi_drv_data intel_glk_drv_data  = {
--	.vendor_nid = INTEL_VENDOR_NID_0xb,
-+	.vendor_nid = INTEL_GLK_VENDOR_NID,
- };
+@@ -431,7 +433,9 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+ 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+ 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
  
- static struct hdac_hdmi_drv_data intel_drv_data  = {
--	.vendor_nid = INTEL_VENDOR_NID_0x8,
-+	.vendor_nid = INTEL_VENDOR_NID,
- };
+-	clear_bit(0, &hcp->busy);
++	mutex_lock(&hcp->lock);
++	hcp->busy = false;
++	mutex_unlock(&hcp->lock);
+ }
  
- static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
-@@ -2216,8 +2173,6 @@ static const struct hda_device_id hdmi_list[] = {
- 						   &intel_glk_drv_data),
- 	HDA_CODEC_EXT_ENTRY(0x8086280d, 0x100000, "Geminilake HDMI",
- 						   &intel_glk_drv_data),
--	HDA_CODEC_EXT_ENTRY(0x8086280f, 0x100000, "Icelake HDMI",
--						   &intel_icl_drv_data),
- 	{}
- };
+ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+@@ -811,6 +815,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
+ 	hcp->hcd = *hcd;
++	mutex_init(&hcp->lock);
++
+ 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
+ 	if (!daidrv)
+ 		return -ENOMEM;
 -- 
 2.20.1
 
