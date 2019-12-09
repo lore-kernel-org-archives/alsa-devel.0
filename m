@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD858C2BD09
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6EECC00454
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47766214AF
+	by mail.kernel.org (Postfix) with ESMTPS id 406962080D
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RAHjHRUZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47766214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dydtrXZe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 406962080D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 664101669;
-	Mon,  9 Dec 2019 20:01:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 664101669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6473616E8;
+	Mon,  9 Dec 2019 20:17:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6473616E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575918121;
-	bh=WZITaSV2lacziK9VWAN5e6r7Gs0ktGI6aBgioDRDeOQ=;
+	s=default; t=1575919105;
+	bh=q5qzqwje0ONZB91AOd6h1ig4rd9pg5/XfTeCdc+r7sY=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=RAHjHRUZqsYD6w9uMxof/vbvGeGGfWi3HdKZohOZ8xgniGqRyWKFTaDc02kGs/OmG
-	 zfW3Ip8I/OMr+E1dG8uFJ1Wm5VkrvAa9Kj6fbYZWj4tUoi7Am1KgzcN+ZLBMHhjolp
-	 pMcRsBECPW0WM3dB+YlCcVn7bAfe5vdoErGF4yh0=
+	b=dydtrXZeoZtqRnzDqNtnLv1kclAqQgxj1Qp8XGQc8XDbzfYg8Ig+APzRM1a9uLyUM
+	 d9d/jFpaY0Dtdv1TBBT/3LvLqL64M+YF2liZA1jmu2ff/TFhvc5tt3Hid5Q/s2wKod
+	 4LbjKnr6Vig+z7AGfpSrYsyHWqd101oEW9SyWMCw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE828F80245;
-	Mon,  9 Dec 2019 19:58:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99D96F803CC;
+	Mon,  9 Dec 2019 20:00:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF061F80260; Mon,  9 Dec 2019 19:58:51 +0100 (CET)
+ id D7DA9F8034D; Mon,  9 Dec 2019 19:59:47 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7222CF80234
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:58:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7222CF80234
+ by alsa1.perex.cz (Postfix) with ESMTP id 5FCA2F80346
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FCA2F80346
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8AFE1045;
- Mon,  9 Dec 2019 10:58:45 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBC8D1396;
+ Mon,  9 Dec 2019 10:59:43 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 580213F6CF;
- Mon,  9 Dec 2019 10:58:45 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:58:43 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C5763F6CF;
+ Mon,  9 Dec 2019 10:59:43 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:59:41 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20191204211556.12671-10-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191204211556.12671-10-pierre-louis.bossart@linux.intel.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20191126145304.24204-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191126145304.24204-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: intel: hda: Modify signature for
-	hda_codec_probe_bus()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: make common HDMI driver
+	default" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: intel: hda: Modify signature for hda_codec_probe_bus()
+   ASoC: SOF: Intel: make common HDMI driver default
 
 has been applied to the asoc tree at
 
@@ -102,114 +102,34 @@ to this mail.
 Thanks,
 Mark
 
-From 80acdd4f8ff763183dc1cd7f1cd31db9eaaecdc8 Mon Sep 17 00:00:00 2001
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Wed, 4 Dec 2019 15:15:52 -0600
-Subject: [PATCH] ASoC: SOF: intel: hda: Modify signature for
- hda_codec_probe_bus()
+From 179d5811c2fcadf3f07032bb76ed47c59b91ce1d Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Tue, 26 Nov 2019 08:53:02 -0600
+Subject: [PATCH] ASoC: SOF: Intel: make common HDMI driver default
 
-The machine driver selection for HDA platforms will be
-consolidated and moved out of the SOF DSP
-probe callback. In preparation for that, modify the
-signature for hda_codec_probe_bus() to pass the
-hda_codec_use_common_hdmi as a variable while probing the
-HDA codecs.
+Use the common HDMI driver by default if the codec driver is
+selected in kernel build.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191204211556.12671-10-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191126145304.24204-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-codec.c | 16 ++++++----------
- sound/soc/sof/intel/hda.c       |  2 +-
- sound/soc/sof/intel/hda.h       |  3 ++-
- 3 files changed, 9 insertions(+), 12 deletions(-)
+ sound/soc/sof/intel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index 827f84a0722e..65761e095184 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -80,12 +80,11 @@ EXPORT_SYMBOL(hda_codec_jack_wake_enable);
- EXPORT_SYMBOL(hda_codec_jack_check);
- 
- /* probe individual codec */
--static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
-+static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
-+			   bool hda_codec_use_common_hdmi)
- {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
- 	struct hdac_hda_priv *hda_priv;
--	struct snd_soc_acpi_mach_params *mach_params = NULL;
--	struct snd_sof_pdata *pdata = sdev->pdata;
- #endif
- 	struct hda_bus *hbus = sof_to_hbus(sdev);
- 	struct hdac_device *hdev;
-@@ -115,10 +114,6 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 	if (ret < 0)
- 		return ret;
- 
--	if (pdata->machine)
--		mach_params = (struct snd_soc_acpi_mach_params *)
--			&pdata->machine->mach_params;
--
- 	if ((resp & 0xFFFF0000) == IDISP_VID_INTEL)
- 		hda_priv->need_display_power = true;
- 
-@@ -126,7 +121,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- 	 * if common HDMI codec driver is not used, codec load
- 	 * is skipped here and hdac_hdmi is used instead
- 	 */
--	if ((mach_params && mach_params->common_hdmi_codec_drv) ||
-+	if (hda_codec_use_common_hdmi ||
- 	    (resp & 0xFFFF0000) != IDISP_VID_INTEL) {
- 		hdev->type = HDA_DEV_LEGACY;
- 		hda_codec_load_module(&hda_priv->codec);
-@@ -145,7 +140,8 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
- }
- 
- /* Codec initialization */
--int hda_codec_probe_bus(struct snd_sof_dev *sdev)
-+int hda_codec_probe_bus(struct snd_sof_dev *sdev,
-+			bool hda_codec_use_common_hdmi)
- {
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	int i, ret;
-@@ -156,7 +152,7 @@ int hda_codec_probe_bus(struct snd_sof_dev *sdev)
- 		if (!(bus->codec_mask & (1 << i)))
- 			continue;
- 
--		ret = hda_codec_probe(sdev, i);
-+		ret = hda_codec_probe(sdev, i, hda_codec_use_common_hdmi);
- 		if (ret < 0) {
- 			dev_err(bus->dev, "error: codec #%d probe error, ret: %d\n",
- 				i, ret);
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 98512a338748..bfdb817b3780 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -476,7 +476,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 	}
- 
- 	/* create codec instances */
--	hda_codec_probe_bus(sdev);
-+	hda_codec_probe_bus(sdev, hda_codec_use_common_hdmi);
- 
- 	hda_codec_i915_put(sdev);
- 
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 63df888dddb6..4a6f76572658 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -575,7 +575,8 @@ void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev);
- /*
-  * HDA Codec operations.
-  */
--int hda_codec_probe_bus(struct snd_sof_dev *sdev);
-+int hda_codec_probe_bus(struct snd_sof_dev *sdev,
-+			bool hda_codec_use_common_hdmi);
- void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev);
- void hda_codec_jack_check(struct snd_sof_dev *sdev);
- 
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index cc09bb606f7d..56a837d2cb95 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -319,6 +319,7 @@ config SND_SOC_SOF_HDA_COMMON_HDMI_CODEC
+ 	bool "SOF common HDA HDMI codec driver"
+ 	depends on SND_SOC_SOF_HDA_LINK
+ 	depends on SND_HDA_CODEC_HDMI
++	default SND_HDA_CODEC_HDMI
+ 	help
+ 	  This adds support for HDMI audio by using the common HDA
+ 	  HDMI/DisplayPort codec driver.
 -- 
 2.20.1
 
