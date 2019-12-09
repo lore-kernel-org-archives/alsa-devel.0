@@ -2,117 +2,62 @@ Return-Path: <SRS0=FS4p=Z7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A532C43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:24:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68657C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:25:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 899B820866
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:24:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DFE9F207FD
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:25:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ei15MfC8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m2e3DVoJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 899B820866
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rrUsTY71"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFE9F207FD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE99116C7;
-	Mon,  9 Dec 2019 11:23:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE99116C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D1FE16D9;
+	Mon,  9 Dec 2019 11:24:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D1FE16D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575887061;
-	bh=wT5RG8Ifaq1UNAYDsBIAI7kTJ+xZJIq3CFMOwi5D1l0=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1575887112;
+	bh=RsbrBaU3jMWUkAJI8FlgU3+lpSiPjyIe/t/tDnM7y7o=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ei15MfC8SMEEy0U5CLUw+bN/OJWIjaPnoGr0fbqlk/3ewacwejAr7AVjwTlxD/eCw
-	 rgCZoLMtn/NKhKbkk6iHLlVDT5o/3gpLasvTvFMqd3CKUws5t1d2oztfeKBcGTCHIT
-	 kdFHTEcf7gyZNi4DXHc3MVOaPkbyjVwgwF0KM/LA=
+	b=rrUsTY71znczPhpIICcLILFHFFdVOA6LQdo/VOSzDvSgFIxRVS+85nXEFK+25xo+a
+	 1mlvpeAR5SfMDWEyam1hIlzolkYEuwvk7HXHynPZDebkcxPsgtD8EJOoGiH8xDAdDQ
+	 4UiR7fLVIggz/DxAPH1cSIL06jE4oAmgkxKnjz/Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1227F804D7;
-	Mon,  9 Dec 2019 10:52:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93F0AF804DF;
+	Mon,  9 Dec 2019 10:52:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4124EF801F7; Sun,  8 Dec 2019 00:25:00 +0100 (CET)
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com
- [IPv6:2a00:1450:4864:20::243])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8EABFF8035E; Mon,  9 Dec 2019 10:50:56 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0851F80108
- for <alsa-devel@alsa-project.org>; Sun,  8 Dec 2019 00:24:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0851F80108
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="m2e3DVoJ"
-Received: by mail-lj1-x243.google.com with SMTP id 21so11582431ljr.0
- for <alsa-devel@alsa-project.org>; Sat, 07 Dec 2019 15:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=UYYclqI+qbEWxgjHzSQw1mRE8Z+HNZO1kpO5Dr5T5Zo=;
- b=m2e3DVoJEoIDL+VUAjilEa45HADkdtPQ5yqtDXIeKD7IyMxe7/l2p2UTMdO/G5ZSMh
- JV36MAs5NUacLjejDjRHiL0axTSr/l8rtQHgIJuPKBq+XXvn/lUFY5RhMhWjemyBinTW
- Fj0+9DwxlchlD2NRJ9WShFXNHXwrm1QW+DbAIx0sBwT7H4QM/slfpRGTbL79Oa7+bnFC
- T/DkK5f9SCOVtQa4cm87GQ1blSqIogDXcGdoZtTh6c2eQzNKdG0Q/fiKwH4qsx1BaPpH
- 3bbQlJ3G8WFeqPWU8uCcaksknWRyWBhapQjk/AfaQbxsfrbtluK4FDXqq8BOK9nYQKrZ
- aI3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=UYYclqI+qbEWxgjHzSQw1mRE8Z+HNZO1kpO5Dr5T5Zo=;
- b=rhyM1KaTUNWhEZoTHvNpvVlD2p5iPV1GD9KKZ35Pz0EEOFrLiVo6phL6wp5eA0+F2O
- 16OZkqHvrGFerGInEeaHCINfFipnVIHrtM9OVs55t8XQd7kQmKg5yqLSbQ+CIFEJHqhV
- Kac+ZbE3+p814DHBs20MFGFtoGjALuqeXB7DLWrdrkiz/lY9ZoOVtPeovR4TK+BJ0vWw
- JBdib5D0gO+gdZsC89ePQoCgpmQAPwRdZJPAUAMzc5dgdr/SmFB3fx5yq3SSzkOpwc9Y
- XPzmqbx8YX1GkPgsBpwiuKPKAHEECxIFMPlklKEajpNKERwLyXHrosE0wH9/e4IWB090
- jjbA==
-X-Gm-Message-State: APjAAAXqFbdq2dW4Z1sNv9M9CmFRaOYcgrEqkJuuyJcVR15ykAceKprx
- qmQ4GrmvmlWgiZSlICYUPuNDoRBa
-X-Google-Smtp-Source: APXvYqyhVxrvLXBCuvNVTxG/3XJJJA+cgc3K90h56oHZ1wvKmB/jS+aOEEXAQQRzF0rA1zwaXQqVmA==
-X-Received: by 2002:a2e:9bd9:: with SMTP id w25mr10729689ljj.212.1575761095167; 
- Sat, 07 Dec 2019 15:24:55 -0800 (PST)
-Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
- [79.139.233.37])
- by smtp.googlemail.com with ESMTPSA id p26sm8604243lfh.64.2019.12.07.15.24.53
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 07 Dec 2019 15:24:54 -0800 (PST)
-To: Sowjanya Komatineni <skomatineni@nvidia.com>, thierry.reding@gmail.com,
- jonathanh@nvidia.com, mperttunen@nvidia.com, gregkh@linuxfoundation.org,
- sboyd@kernel.org, tglx@linutronix.de, robh+dt@kernel.org,
- mark.rutland@arm.com
-References: <1575600535-26877-1-git-send-email-skomatineni@nvidia.com>
- <1575600535-26877-7-git-send-email-skomatineni@nvidia.com>
- <3880aa15-c47a-5ab2-dd39-e8a47f6a3d6a@gmail.com>
- <e342a6e7-f213-53b4-1388-23cf61cf6fbb@gmail.com>
- <5938df22-2474-3950-fc33-3e19cbf3da9c@gmail.com>
- <c81ccd45-781e-0fce-4f20-65281b8c6119@nvidia.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f8188f0d-ec7e-7d4a-f977-16273b594838@gmail.com>
-Date: Sun, 8 Dec 2019 02:24:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <c81ccd45-781e-0fce-4f20-65281b8c6119@nvidia.com>
-Content-Language: en-US
-X-Mailman-Approved-At: Mon, 09 Dec 2019 10:51:21 +0100
-Cc: alsa-devel@alsa-project.org, pgaikwad@nvidia.com, spujar@nvidia.com,
- linux-kernel@vger.kernel.org, josephl@nvidia.com, linux-clk@vger.kernel.org,
- arnd@arndb.de, daniel.lezcano@linaro.org, krzk@kernel.org,
- mturquette@baylibre.com, devicetree@vger.kernel.org, mmaddireddy@nvidia.com,
- markz@nvidia.com, alexios.zavras@intel.com, broonie@kernel.org,
- linux-tegra@vger.kernel.org, horms+renesas@verge.net.au, tiwai@suse.com,
- allison@lohutok.net, pdeschrijver@nvidia.com, lgirdwood@gmail.com,
- vidyas@nvidia.com, Jisheng.Zhang@synaptics.com
-Subject: Re: [alsa-devel] [PATCH v3 06/15] clk: tegra: Remove
- tegra_pmc_clk_init along with clk ids
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81122F8028D
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81122F8028D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 4B163B2CB
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:48 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Mon,  9 Dec 2019 10:49:09 +0100
+Message-Id: <20191209094943.14984-38-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
+References: <20191209094943.14984-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 5.6 37/71] ALSA: ens137x: Use managed buffer
+	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,53 +70,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MDcuMTIuMjAxOSAyMjozNSwgU293amFueWEgS29tYXRpbmVuaSDQv9C40YjQtdGCOgo+IAo+IE9u
-IDEyLzcvMTkgNzowNCBBTSwgRG1pdHJ5IE9zaXBlbmtvIHdyb3RlOgo+PiAwNy4xMi4yMDE5IDE3
-OjQzLCBEbWl0cnkgT3NpcGVua28g0L/QuNGI0LXRgjoKPj4+IDA3LjEyLjIwMTkgMTc6MzMsIERt
-aXRyeSBPc2lwZW5rbyDQv9C40YjQtdGCOgo+Pj4+IDA2LjEyLjIwMTkgMDU6NDgsIFNvd2phbnlh
-IEtvbWF0aW5lbmkg0L/QuNGI0LXRgjoKPj4+Pj4gQ3VycmVudCBUZWdyYSBjbG9jayBkcml2ZXIg
-cmVnaXN0ZXJzIFBNQyBjbG9ja3MgY2xrX291dF8xLCBjbGtfb3V0XzIsCj4+Pj4+IGNsa19vdXRf
-MyBhbmQgYmxpbmsgb3V0cHV0IGluIHRlZ3JhX3BtY19pbml0KCkgd2hpY2ggZG9lcyBkaXJlY3Qg
-VGVncmEKPj4+Pj4gUE1DIGFjY2VzcyBkdXJpbmcgY2xrX29wcyBhbmQgdGhlc2UgUE1DIHJlZ2lz
-dGVyIHJlYWQgYW5kIHdyaXRlIGFjY2Vzcwo+Pj4+PiB3aWxsIG5vdCBoYXBwZW4gd2hlbiBQTUMg
-aXMgaW4gc2VjdXJlIG1vZGUuCj4+Pj4+Cj4+Pj4+IEFueSBkaXJlY3QgUE1DIHJlZ2lzdGVyIGFj
-Y2VzcyBmcm9tIG5vbi1zZWN1cmUgd29ybGQgd2lsbCBub3QgZ28KPj4+Pj4gdGhyb3VnaCBhbmQg
-YWxsIHRoZSBQTUMgY2xvY2tzIGFuZCBibGluayBjb250cm9sIGFyZSBkb25lIGluIFRlZ3JhIFBN
-Qwo+Pj4+PiBkcml2ZXIgd2l0aCBQTUMgYXMgY2xvY2sgcHJvdmlkZXIuCj4+Pj4+Cj4+Pj4+IFRo
-aXMgcGF0Y2ggcmVtb3ZlcyB0ZWdyYV9wbWNfY2xrX2luaXQgYWxvbmcgd2l0aCBjb3JyZXNwb25k
-aW5nIGNsayBpZHMKPj4+Pj4gZnJvbSBUZWdyYSBjbG9jayBkcml2ZXIuCj4+Pj4+Cj4+Pj4+IFNp
-Z25lZC1vZmYtYnk6IFNvd2phbnlhIEtvbWF0aW5lbmkgPHNrb21hdGluZW5pQG52aWRpYS5jb20+
-Cj4+Pj4+IC0tLQo+Pj4+IFtzbmlwXQo+Pj4+Cj4+Pj4+IEBAIC0xMjMwLDkgKzEyMjIsNiBAQCBz
-dGF0aWMgc3RydWN0IHRlZ3JhX2Nsa19pbml0X3RhYmxlCj4+Pj4+IGluaXRfdGFibGVbXSBfX2lu
-aXRkYXRhID0gewo+Pj4+PiDCoMKgwqDCoMKgIHsgVEVHUkEzMF9DTEtfUExMX0EsIFRFR1JBMzBf
-Q0xLX0NMS19NQVgsIDU2NDQ4MDAwMCwgMSB9LAo+Pj4+PiDCoMKgwqDCoMKgIHsgVEVHUkEzMF9D
-TEtfUExMX0FfT1VUMCwgVEVHUkEzMF9DTEtfQ0xLX01BWCwgMTEyODk2MDAsIDEgfSwKPj4+Pj4g
-wqDCoMKgwqDCoCB7IFRFR1JBMzBfQ0xLX0VYVEVSTjEsIFRFR1JBMzBfQ0xLX1BMTF9BX09VVDAs
-IDAsIDEgfSwKPj4+PiBQZXJoYXBzIHRoZXNlIGNsb2NrcyBkbyBub3QgbmVlZCB0byBiZSBhbHdh
-eXMtZW5hYmxlZD8KPj4+Pgo+Pj4+IFtzbmlwXQo+Pj4+Cj4+PiBBbHNvLCBFWFRFUk4xIHBhcmVu
-dCBjb25maWd1cmF0aW9uIHNob3VsZCBiZSBtb3ZlZCB0byB0aGUgYXVkaW8KPj4+IGRyaXZlci9k
-ZXZpY2UtdHJlZSBhcyB3ZWxsLgo+PiBBaCwgSSBtaXNzZWQgdGhhdCBpdCdzIGRvbmUgaW4gdGhl
-IHBhdGNoICMxMC4KPiBZZXMgaXRzIGRvbmUgaW4gUGF0Y2gjMTAKPj4KPj4+IE1heWJlIGl0IGV2
-ZW4gbWFrZXMgc2Vuc2UgdG8gbW92ZSB0aGUgd2hvbGUgY29uZmlndXJhdGlvbiwgaW5jbHVkaW5n
-Cj4+PiBQTExBLiBJIGRvbid0IHNlZSB3aHkgY2xrIGRyaXZlciBuZWVkIHRvIGRvIHNvbWV0aGlu
-ZyBmb3IgdGhlIGF1ZGlvCj4+PiBkcml2ZXIuCj4gCj4gQ3VycmVudCBBU29DIGRyaXZlciBhbHJl
-YWR5IHRha2VzIGNhcmUgb2YgUExMQSByYXRlIGFuZCBlbmFibGVzLgo+IAo+IFNvIFBMTEEgaW5p
-dCBjYW4gYmUgcmVtb3ZlZCBmcm9tIGNsb2NrIGRyaXZlciB0b28uIEkgZGlkbid0IHdlbnQgdGhy
-b3VnaAo+IGNvbXBsZXRlIGF1ZGlvIGRyaXZlciB0byBiZSBjb25maWRlbnQgdG8gcmVtb3ZlIHRo
-aXMuCj4gCj4gQnV0IFBMTEEgaXMgbmVlZGVkIGZvciBpMnMgY2xvY2sgYWxzbyBhbmQgY3VycmVu
-dGx5IEkyUyBkcml2ZXIgdGFrZXMKPiBjYXJlIG9mIG9ubHkgSTJTIGNsb2NrIHJhdGUgdXNpbmcg
-UExMQSBhcyBwYXJlbnQgc2V0IGJ5IGNsb2NrIGRyaXZlciBhbmQKPiBjbG9jayBkcml2ZXIgZW5h
-YmxlcyBQTExBIGVhcmxpZXIgdG8gaGF2ZSBpdCByZWFkeSBieSB0aGUgdGltZSBib3RoIEkyUwo+
-IGRyaXZlciBhbmQgQVNvQyBkcml2ZXIgLgpJMlMgY291bGQgdXNlIGFzc2lnbmVkLWNsb2Nrcywg
-YnV0IHByb2JhYmx5IGl0J3Mgbm90IHJlYWxseSBuZWNlc3NhcnkKYW5kIHByZWRlZmluZWQgY29u
-ZmlndXJhdGlvbiBpbiB0aGUgY2xrIGRyaXZlciBpcyBnb29kIGVub3VnaC4KCkF0IGxlYXN0IFBM
-TEEgZG9lc24ndCBuZWVkIHRvIGJlIGFsd2F5cy1lbmFibGVkIHNpbmNlIGF1ZGlvIGRyaXZlcnMK
-ZW5hYmxlIGl0IHdoZW4gbmVjZXNzYXJ5LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+Clean up the driver with the new managed buffer allocation API.
+The hw_params and hw_free callbacks became superfluous and got
+dropped.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/ens1370.c | 27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
+
+diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
+index 0499dc863202..19d8238e130c 100644
+--- a/sound/pci/ens1370.c
++++ b/sound/pci/ens1370.c
+@@ -856,17 +856,6 @@ static int snd_ensoniq_trigger(struct snd_pcm_substream *substream, int cmd)
+  *  PCM part
+  */
+ 
+-static int snd_ensoniq_hw_params(struct snd_pcm_substream *substream,
+-				 struct snd_pcm_hw_params *hw_params)
+-{
+-	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+-}
+-
+-static int snd_ensoniq_hw_free(struct snd_pcm_substream *substream)
+-{
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+ static int snd_ensoniq_playback1_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct ensoniq *ensoniq = snd_pcm_substream_chip(substream);
+@@ -1216,8 +1205,6 @@ static const struct snd_pcm_ops snd_ensoniq_playback1_ops = {
+ 	.open =		snd_ensoniq_playback1_open,
+ 	.close =	snd_ensoniq_playback1_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	snd_ensoniq_hw_params,
+-	.hw_free =	snd_ensoniq_hw_free,
+ 	.prepare =	snd_ensoniq_playback1_prepare,
+ 	.trigger =	snd_ensoniq_trigger,
+ 	.pointer =	snd_ensoniq_playback1_pointer,
+@@ -1227,8 +1214,6 @@ static const struct snd_pcm_ops snd_ensoniq_playback2_ops = {
+ 	.open =		snd_ensoniq_playback2_open,
+ 	.close =	snd_ensoniq_playback2_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	snd_ensoniq_hw_params,
+-	.hw_free =	snd_ensoniq_hw_free,
+ 	.prepare =	snd_ensoniq_playback2_prepare,
+ 	.trigger =	snd_ensoniq_trigger,
+ 	.pointer =	snd_ensoniq_playback2_pointer,
+@@ -1238,8 +1223,6 @@ static const struct snd_pcm_ops snd_ensoniq_capture_ops = {
+ 	.open =		snd_ensoniq_capture_open,
+ 	.close =	snd_ensoniq_capture_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	snd_ensoniq_hw_params,
+-	.hw_free =	snd_ensoniq_hw_free,
+ 	.prepare =	snd_ensoniq_capture_prepare,
+ 	.trigger =	snd_ensoniq_trigger,
+ 	.pointer =	snd_ensoniq_capture_pointer,
+@@ -1274,9 +1257,8 @@ static int snd_ensoniq_pcm(struct ensoniq *ensoniq, int device)
+ 	strcpy(pcm->name, CHIP_NAME " DAC2/ADC");
+ 	ensoniq->pcm1 = pcm;
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      &ensoniq->pci->dev,
+-					      64*1024, 128*1024);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++				       &ensoniq->pci->dev, 64*1024, 128*1024);
+ 
+ #ifdef CHIP1370
+ 	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+@@ -1307,9 +1289,8 @@ static int snd_ensoniq_pcm2(struct ensoniq *ensoniq, int device)
+ 	strcpy(pcm->name, CHIP_NAME " DAC1");
+ 	ensoniq->pcm2 = pcm;
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      &ensoniq->pci->dev,
+-					      64*1024, 128*1024);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++				       &ensoniq->pci->dev, 64*1024, 128*1024);
+ 
+ #ifdef CHIP1370
+ 	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+-- 
+2.16.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
