@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 470DAC43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 23:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95761C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 23:59:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7BCA20721
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 23:58:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B94F20721
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 23:59:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S0VdWYEw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7BCA20721
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j44Sil3K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B94F20721
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 085111664;
-	Tue, 10 Dec 2019 00:58:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 085111664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D944166B;
+	Tue, 10 Dec 2019 00:58:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D944166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575935938;
-	bh=I8JVCpXzQYPtcGOQsqtMrjfTrLARqxcEMhmI6z6sxkI=;
+	s=default; t=1575935959;
+	bh=SfPhqGSKOEZGeeyjANQgCzH9o9Qr9LXTrfGu/836hVo=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S0VdWYEwOOcsaaCeSHkPYq7oS7XD3jAvPfM1qt98hdWe9B5GIyc1oGrQpYBmwc1WV
-	 ywRxAPybkPPT7fDwZyBTBountQmN/PMpbVvLS/ppU5pXwwMidjA283jvNEBK2qGY75
-	 1mdnV8ITE/ZwTLNTHLyJMrE9lD3vJwlFv7bf0M9E=
+	b=j44Sil3KppgFVy6jgA/zod3IrmmqW88w3a1qrWQnIPVxRUvZ74Pbitc4uoc9kSllJ
+	 zD5C38M6vs+0JbUZ6tsdhSvYuE83zJVQ/3g8nBE8wjbaXkd0UX7ltLNHEGpyHWuvVp
+	 XENH4GGyNQIwTOlPzf+j9jVv4Vz2O7w6uGxVNC8M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F266AF80271;
-	Tue, 10 Dec 2019 00:55:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC619F8025F;
+	Tue, 10 Dec 2019 00:55:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F9FFF8025A; Tue, 10 Dec 2019 00:55:40 +0100 (CET)
+ id F2B7DF8025A; Tue, 10 Dec 2019 00:55:40 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0FB1F801F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29FFFF8023E
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 00:55:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0FB1F801F4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29FFFF8023E
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2019 15:55:32 -0800
+ 09 Dec 2019 15:55:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="210273620"
+X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="210273638"
 Received: from bbower-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.65.172])
- by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2019 15:55:31 -0800
+ by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2019 15:55:33 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 17:55:11 -0600
-Message-Id: <20191209235520.18727-4-pierre-louis.bossart@linux.intel.com>
+Date: Mon,  9 Dec 2019 17:55:12 -0600
+Message-Id: <20191209235520.18727-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191209235520.18727-1-pierre-louis.bossart@linux.intel.com>
 References: <20191209235520.18727-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v4 03/11] soundwire: sdw_slave: add
-	initialization_complete definition
+Subject: [alsa-devel] [PATCH v4 04/11] soundwire: sdw_slave: track
+	unattach_request to handle all init sequences
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,50 +89,67 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Slave drivers may have different ways of handling their settings, with
-or without regmap.
+The Slave device initialization can be split in 4 different cases:
 
-During the integration of codec drivers, done in partnership between
-Intel and Realtek, it became desirable to implement a predictable
-order between low-level initializations performed in .update_status()
-(invoked by an interrupt thread) and the settings restored in the
-resume steps (invoked by the PM core).
+1. Master-initiated hardware reset, system suspend-resume and
+pm_runtime based on clock-stop mode1. To avoid timeouts and a bad
+audio experience, the Slave device resume operations need to wait for
+the Slave device to be re-enumerated and its settings restored.
 
-This patch builds on the previous solution to wait for the Slave
-device to be fully enumerated. The complete() in this case is signaled
-not before the .update_status() is called, but after .update_status()
-returns. Without this patch, the settings were not properly restored,
-leading to timing-dependent 'no sound after resume' or 'no headset
-detected after resume' bug reports.
+2. Exit from clock-stop mode0. In this case, the Slave device is
+required to remain enumerated and its context preserved while the
+clock is stopped, so no re-initialization or wait_for_completion() is
+necessary.
 
-Depending on how initialization is handled, a Slave device driver may
-wait for enumeration_complete, or for initialization_complete, both
-are valid synchronization points. They are initialized at the same
-time, they only differ on when complete() is invoked.
+3. Slave-initiated pm_runtime D3 transition. With the parent child
+relationship, it is possible that a Slave device becomes 'suspended'
+while its parent is still 'active' with the bus clock still
+toggling. In this case, during the pm_runtime resume operation, there
+is no need to wait for any settings to be restored.
+
+4. Slave reset (sync loss or implementation-defined). In that case the
+bus remains operational and the Slave device will be re-initialized
+when it becomes ATTACHED again.
+
+In previous patches, we suggested the use of wait_for_completion() to
+deal with the case #1, but case #2 and #3 do not need any wait.
+
+To account for those differences, this patch adds an unattach_request
+field. The field is explicitly set by the Master for the case #1, and
+if non-zero the Slave device shall wait on resume. In all other cases,
+the Slave resume operations can proceed without wait.
+
+The only request tracked so far is Master HardReset, but the request
+is declared as a bit mask for future extensions (if needed). The
+definition for this value is added in bus.h and does not need to be
+exposed in sdw.h
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/linux/soundwire/sdw.h | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/soundwire/sdw.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 3fa8d875b16b..ed42cd79eab7 100644
+index ed42cd79eab7..b7c9eca4332a 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -554,6 +554,8 @@ struct sdw_slave_ops {
-  * @enumeration_complete: completion utility to control potential races
-  * on startup between device enumeration and read/write access to the
+@@ -556,6 +556,11 @@ struct sdw_slave_ops {
   * Slave device
-+ * @initialization_complete: completion utility to control potential races
-+ * on startup between device enumeration and settings being restored
+  * @initialization_complete: completion utility to control potential races
+  * on startup between device enumeration and settings being restored
++ * @unattach_request: mask field to keep track why the Slave re-attached and
++ * was re-initialized. This is useful to deal with potential race conditions
++ * between the Master suspending and the codec resuming, and make sure that
++ * when the Master triggered a reset the Slave is properly enumerated and
++ * initialized
   */
  struct sdw_slave {
  	struct sdw_slave_id id;
-@@ -571,6 +573,7 @@ struct sdw_slave {
- 	bool probed;
+@@ -574,6 +579,7 @@ struct sdw_slave {
  	struct completion probe_complete;
  	struct completion enumeration_complete;
-+	struct completion initialization_complete;
+ 	struct completion initialization_complete;
++	u32 unattach_request;
  };
  
  #define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
