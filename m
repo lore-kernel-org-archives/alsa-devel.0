@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA2F9C2D0C4
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18451C2D0C5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 574442465C
+	by mail.kernel.org (Postfix) with ESMTPS id 7DF6B24686
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZMCJsvsH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 574442465C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kPCqnGaZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DF6B24686
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6532D1676;
-	Mon,  9 Dec 2019 20:10:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6532D1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 125EE1672;
+	Mon,  9 Dec 2019 20:06:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 125EE1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575918658;
-	bh=f2esNWrt8xFhpUK4lswo8I+Jjg8Xhm3ShrcHaDwvoVQ=;
+	s=default; t=1575918454;
+	bh=Sqf3t5FXxBoPU0YSix+jyMMiQ1bpP3bciagFIV69Xps=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ZMCJsvsHBYUEGfEDIoupxAaRZ60GPJSJUqVw/d1NVWP7DcuipJ346eudCMXyMxLso
-	 MF5XsJGWPE4iWc2pOEOFxEQaFECmeb/4Un9kc3BDERkA9MOeywni/pcx/nqLc1wUwl
-	 I6/6jguaSIvx7taeHbW9SViKh3bJ9DnO6Z86Os/Q=
+	b=kPCqnGaZoMMvkqOSWotJotZSNOS1Slek98mwIFinkkmn4TdzMQNWBrq+4iCG4hUJp
+	 svzd1EybWkL6QkPlFIL9blvRyfs5X8iAH6GtVm+S6MmlD3dPz/yOBJKRBJunLaht7m
+	 Njwh2Hay6K8ewtVEx9M7uYHj4o3LcNTxphU2eYHo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5694DF802FB;
-	Mon,  9 Dec 2019 19:59:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70778F802F7;
+	Mon,  9 Dec 2019 19:59:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23886F80304; Mon,  9 Dec 2019 19:59:22 +0100 (CET)
+ id 36959F8029B; Mon,  9 Dec 2019 19:59:09 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 801C2F802EB
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 801C2F802EB
+ by alsa1.perex.cz (Postfix) with ESMTP id 4231BF8028E
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4231BF8028E
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0AAD11D4;
- Mon,  9 Dec 2019 10:59:15 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B848511D4;
+ Mon,  9 Dec 2019 10:59:03 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FFFE3F6CF;
- Mon,  9 Dec 2019 10:59:15 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:59:13 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37E293F6CF;
+ Mon,  9 Dec 2019 10:59:03 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:59:01 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-In-Reply-To: <20191204192005.31210-1-peter.ujfalusi@ti.com>
-Message-Id: <applied-20191204192005.31210-1-peter.ujfalusi@ti.com>
+To: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20191204211556.12671-3-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191204211556.12671-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- lgirdwood@gmail.com
-Subject: [alsa-devel] Applied "ASoC: ti: davinci-mcasp: Improve the sysclk
-	selection" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: Intel - use control components to
+	describe card config" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: ti: davinci-mcasp: Improve the sysclk selection
+   ASoC: Intel - use control components to describe card config
 
 has been applied to the asoc tree at
 
@@ -102,97 +102,128 @@ to this mail.
 Thanks,
 Mark
 
-From 253f584a0699d12a90bde9d524d499a921cc7827 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Wed, 4 Dec 2019 21:20:05 +0200
-Subject: [PATCH] ASoC: ti: davinci-mcasp: Improve the sysclk selection
+From 0d5c8187562848b619a35f2ffc5e18ce703e9f3d Mon Sep 17 00:00:00 2001
+From: Jaroslav Kysela <perex@perex.cz>
+Date: Wed, 4 Dec 2019 15:15:45 -0600
+Subject: [PATCH] ASoC: Intel - use control components to describe card config
 
-When McASP is master the bclk can be generated from two main source:
-AUXCLK: functional clock for McASP or
-AHCLK: from external source or internal mux in dra7x family
+Use the control interface (field 'components' in the info structure)
+to pass the I/O configuration details. The goal is to replace
+the card long name with this.
 
-With this patch it is possible to select between the two source. The patch
-is not breaking existing machine drivers since historically the clk_id was
-ignored and left as 0 in all cases.
-
-When output clock is configured - which can be only the AHCLK, we select
-the AUXCLK as source for the internal HCLK. In this case the HCLK rate is
-the same as the output clock.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/20191204192005.31210-1-peter.ujfalusi@ti.com
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20191204211556.12671-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/davinci-mcasp.c | 35 ++++++++++++++++++++++++++++-------
- sound/soc/ti/davinci-mcasp.h |  4 ++++
- 2 files changed, 32 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c |  9 ++++++++-
+ sound/soc/intel/boards/bytcr_rt5640.c  |  6 ++++++
+ sound/soc/intel/boards/bytcr_rt5651.c  | 18 +++++++++++-------
+ 3 files changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index 8e5371801d88..e1e937eb1dc1 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -664,18 +664,39 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 46612331f5ea..efa33f30dcac 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -361,6 +361,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
+ /* SoC card */
+ static char codec_name[SND_ACPI_I2C_ID_LEN];
+ static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
++static char components_string[32]; /* = "cfg-spk:* cfg-mic:* */
  
- 	pm_runtime_get_sync(mcasp->dev);
--	if (dir == SND_SOC_CLOCK_OUT) {
-+
-+	if (dir == SND_SOC_CLOCK_IN) {
-+		switch (clk_id) {
-+		case MCASP_CLK_HCLK_AHCLK:
-+			mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
-+				       AHCLKXE);
-+			mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
-+				       AHCLKRE);
-+			clear_bit(PIN_BIT_AHCLKX, &mcasp->pdir);
-+			break;
-+		case MCASP_CLK_HCLK_AUXCLK:
-+			mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG,
-+				       AHCLKXE);
-+			mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG,
-+				       AHCLKRE);
-+			set_bit(PIN_BIT_AHCLKX, &mcasp->pdir);
-+			break;
-+		default:
-+			dev_err(mcasp->dev, "Invalid clk id: %d\n", clk_id);
-+			goto out;
-+		}
-+	} else {
-+		/* Select AUXCLK as HCLK */
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
- 		mcasp_set_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
- 		set_bit(PIN_BIT_AHCLKX, &mcasp->pdir);
--	} else {
--		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKXCTL_REG, AHCLKXE);
--		mcasp_clr_bits(mcasp, DAVINCI_MCASP_AHCLKRCTL_REG, AHCLKRE);
--		clear_bit(PIN_BIT_AHCLKX, &mcasp->pdir);
+ static int byt_cht_es8316_suspend(struct snd_soc_card *card)
+ {
+@@ -572,11 +573,17 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		}
  	}
--
-+	/*
-+	 * When AHCLK X/R is selected to be output it means that the HCLK is
-+	 * the same clock - coming via AUXCLK.
-+	 */
- 	mcasp->sysclk_freq = freq;
--
-+out:
- 	pm_runtime_put(mcasp->dev);
- 	return 0;
- }
-diff --git a/sound/soc/ti/davinci-mcasp.h b/sound/soc/ti/davinci-mcasp.h
-index bc705d6ca48b..5de2b8a31061 100644
---- a/sound/soc/ti/davinci-mcasp.h
-+++ b/sound/soc/ti/davinci-mcasp.h
-@@ -295,6 +295,10 @@
- #define NUMEVT(x)	(((x) & 0xFF) << 8)
- #define NUMDMA_MASK	(0xFF)
  
-+/* Source of High-frequency transmit/receive clock */
-+#define MCASP_CLK_HCLK_AHCLK		0 /* AHCLKX/R */
-+#define MCASP_CLK_HCLK_AUXCLK		1 /* Internal functional clock */
+-	/* register the soc card */
++	snprintf(components_string, sizeof(components_string),
++		 "cfg-spk:%s cfg-mic:%s",
++		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "1" : "2",
++		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
++	byt_cht_es8316_card.components = components_string;
+ 	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
+ 		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
+ 		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
+ 	byt_cht_es8316_card.long_name = long_name;
 +
- /* clock divider IDs */
- #define MCASP_CLKDIV_AUXCLK		0 /* HCLK divider from AUXCLK */
- #define MCASP_CLKDIV_BCLK		1 /* BCLK divider from HCLK */
++	/* register the soc card */
+ 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
+ 
+ 	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index dd2b5ad08659..7bc6d3cec94c 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1083,6 +1083,7 @@ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
++static char byt_rt5640_components[32]; /* = "cfg-spk:* cfg-mic:*" */
+ 
+ static int byt_rt5640_suspend(struct snd_soc_card *card)
+ {
+@@ -1305,6 +1306,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
++		 "cfg-spk:%s cfg-mic:%s",
++		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
++		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
++	byt_rt5640_card.components = byt_rt5640_components;
+ 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
+ 		 "bytcr-rt5640-%s-spk-%s-mic",
+ 		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 4606f6f582d6..80a5674ddb1b 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -798,6 +798,7 @@ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+ static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
++static char byt_rt5651_components[50]; /* = "cfg-spk:* cfg-mic:*" */
+ 
+ static int byt_rt5651_suspend(struct snd_soc_card *card)
+ {
+@@ -876,7 +877,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+ 	struct device *codec_dev;
+-	const char *hp_swapped;
+ 	bool is_bytcr = false;
+ 	int ret_val = 0;
+ 	int dai_index = 0;
+@@ -1080,16 +1080,20 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED)
+-		hp_swapped = "-hp-swapped";
+-	else
+-		hp_swapped = "";
+-
++	snprintf(byt_rt5651_components, sizeof(byt_rt5651_components),
++		 "cfg-spk:%s cfg-mic:%s%s",
++		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ? "1" : "2",
++		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
++		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
++			" cfg-hp:lrswap" : "");
++	byt_rt5651_card.components = byt_rt5651_components;
+ 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
+ 		 "bytcr-rt5651-%s-spk-%s-mic%s",
+ 		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
+ 			"mono" : "stereo",
+-		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
++		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
++		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
++			"-hp-swapped" : "");
+ 	byt_rt5651_card.long_name = byt_rt5651_long_name;
+ 
+ 	/* override plaform name, if required */
 -- 
 2.20.1
 
