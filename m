@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB85FC43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF238C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:53:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6410924684
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:52:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C0E72072D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 09:53:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="szf5P884"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6410924684
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QWHyYpmd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C0E72072D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A3D71674;
-	Mon,  9 Dec 2019 10:51:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A3D71674
+	by alsa0.perex.cz (Postfix) with ESMTPS id A05EF86F;
+	Mon,  9 Dec 2019 10:52:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A05EF86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575885152;
-	bh=efEHH1TyVhB1SchTShoxbJo1BvUfNZE5rj6ZIpLeMA0=;
+	s=default; t=1575885194;
+	bh=exbhED0YWB9u+09jFiZa3x/F4FL6OGdjVci+k9Tl/3k=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=szf5P884gzTOwGUhubJODgd/xzazESUaCX5dvmnfPUjLDtkI47fDdHRhR0RwKrAYj
-	 qW65KuQDGsY2YTdjSDQfbU5eZZju29TM5FlmcTThm6XhwOYe8O4BBNXa0p0GFB4NuM
-	 qxX/1z8r4zXCSHOL2PJBbkJWG0roHrqg0kZ0QS5k=
+	b=QWHyYpmd9xTJPBjFnWpcqk0LhhhCpSMjCglkPgCOmqxkFlMZ0ptnwTl87nIrU/7OO
+	 7oI71OvsOUPibnqBwHEOPIryfBO1RYUz0UgFsPQMdFhdH5KvwU3K65JmXSYYst4l0t
+	 kLyxHQdQ1r/7WZBY/c4baW6H5qU/m821wUa8WcPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DF4CF802FE;
-	Mon,  9 Dec 2019 10:50:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EECEF80240;
+	Mon,  9 Dec 2019 10:50:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54F13F802E2; Mon,  9 Dec 2019 10:49:55 +0100 (CET)
+ id 73665F802F7; Mon,  9 Dec 2019 10:49:58 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BE1BF80234
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BE1BF80234
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF238F80245
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF238F80245
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 53B10B287
+ by mx1.suse.de (Postfix) with ESMTP id B2DA5B2A0
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:46 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:48:33 +0100
-Message-Id: <20191209094943.14984-2-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:48:40 +0100
+Message-Id: <20191209094943.14984-9-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 01/71] ALSA: aoa: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 08/71] ALSA: vx: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,63 +77,73 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Clean up the driver with the new managed buffer allocation API.
-The hw_params callbacks became superfluous and got dropped.
+The hw_params and hw_free callbacks became superfluous and got
+dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/aoa/soundbus/i2sbus/pcm.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ sound/drivers/vx/vx_pcm.c | 27 +++------------------------
+ 1 file changed, 3 insertions(+), 24 deletions(-)
 
-diff --git a/sound/aoa/soundbus/i2sbus/pcm.c b/sound/aoa/soundbus/i2sbus/pcm.c
-index a94e4023fadf..44397e72c868 100644
---- a/sound/aoa/soundbus/i2sbus/pcm.c
-+++ b/sound/aoa/soundbus/i2sbus/pcm.c
-@@ -294,12 +294,6 @@ void i2sbus_wait_for_stop_both(struct i2sbus_dev *i2sdev)
+diff --git a/sound/drivers/vx/vx_pcm.c b/sound/drivers/vx/vx_pcm.c
+index f17e0a76c73c..615e8b2b85f6 100644
+--- a/sound/drivers/vx/vx_pcm.c
++++ b/sound/drivers/vx/vx_pcm.c
+@@ -772,23 +772,6 @@ static snd_pcm_uframes_t vx_pcm_playback_pointer(struct snd_pcm_substream *subs)
+ 	return pipe->position;
  }
- #endif
  
--static int i2sbus_hw_params(struct snd_pcm_substream *substream,
--			    struct snd_pcm_hw_params *params)
+-/*
+- * vx_pcm_hw_params - hw_params callback for playback and capture
+- */
+-static int vx_pcm_hw_params(struct snd_pcm_substream *subs,
+-				     struct snd_pcm_hw_params *hw_params)
 -{
--	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-	return snd_pcm_lib_malloc_pages(subs, params_buffer_bytes(hw_params));
 -}
 -
- static inline int i2sbus_hw_free(struct snd_pcm_substream *substream, int in)
- {
- 	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
-@@ -308,7 +302,6 @@ static inline int i2sbus_hw_free(struct snd_pcm_substream *substream, int in)
- 	get_pcm_info(i2sdev, in, &pi, NULL);
- 	if (pi->dbdma_ring.stopping)
- 		i2sbus_wait_for_stop(i2sdev, pi);
--	snd_pcm_lib_free_pages(substream);
- 	return 0;
- }
- 
-@@ -781,7 +774,6 @@ static const struct snd_pcm_ops i2sbus_playback_ops = {
- 	.open =		i2sbus_playback_open,
- 	.close =	i2sbus_playback_close,
+-/*
+- * vx_pcm_hw_free - hw_free callback for playback and capture
+- */
+-static int vx_pcm_hw_free(struct snd_pcm_substream *subs)
+-{
+-	return snd_pcm_lib_free_pages(subs);
+-}
+-
+ /*
+  * vx_pcm_prepare - prepare callback for playback and capture
+  */
+@@ -861,8 +844,6 @@ static const struct snd_pcm_ops vx_pcm_playback_ops = {
+ 	.open =		vx_pcm_playback_open,
+ 	.close =	vx_pcm_playback_close,
  	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	i2sbus_hw_params,
- 	.hw_free =	i2sbus_playback_hw_free,
- 	.prepare =	i2sbus_playback_prepare,
- 	.trigger =	i2sbus_playback_trigger,
-@@ -851,7 +843,6 @@ static const struct snd_pcm_ops i2sbus_record_ops = {
- 	.open =		i2sbus_record_open,
- 	.close =	i2sbus_record_close,
+-	.hw_params =	vx_pcm_hw_params,
+-	.hw_free =	vx_pcm_hw_free,
+ 	.prepare =	vx_pcm_prepare,
+ 	.trigger =	vx_pcm_trigger,
+ 	.pointer =	vx_pcm_playback_pointer,
+@@ -1081,8 +1062,6 @@ static const struct snd_pcm_ops vx_pcm_capture_ops = {
+ 	.open =		vx_pcm_capture_open,
+ 	.close =	vx_pcm_capture_close,
  	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	i2sbus_hw_params,
- 	.hw_free =	i2sbus_record_hw_free,
- 	.prepare =	i2sbus_record_prepare,
- 	.trigger =	i2sbus_record_trigger,
-@@ -1026,7 +1017,7 @@ i2sbus_attach_codec(struct soundbus_dev *dev, struct snd_card *card,
- 	dev->pcm->private_free = i2sbus_private_free;
+-	.hw_params =	vx_pcm_hw_params,
+-	.hw_free =	vx_pcm_hw_free,
+ 	.prepare =	vx_pcm_prepare,
+ 	.trigger =	vx_pcm_trigger,
+ 	.pointer =	vx_pcm_capture_pointer,
+@@ -1230,9 +1209,9 @@ int snd_vx_pcm_new(struct vx_core *chip)
+ 			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &vx_pcm_playback_ops);
+ 		if (ins)
+ 			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &vx_pcm_capture_ops);
+-		snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
+-						      snd_dma_continuous_data(GFP_KERNEL | GFP_DMA32),
+-						      0, 0);
++		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
++					       snd_dma_continuous_data(GFP_KERNEL | GFP_DMA32),
++					       0, 0);
  
- 	/* well, we really should support scatter/gather DMA */
--	snd_pcm_lib_preallocate_pages_for_all(
-+	snd_pcm_set_managed_buffer_all(
- 		dev->pcm, SNDRV_DMA_TYPE_DEV,
- 		&macio_get_pci_dev(i2sdev->macio)->dev,
- 		64 * 1024, 64 * 1024);
+ 		pcm->private_data = chip;
+ 		pcm->private_free = snd_vx_pcm_free;
 -- 
 2.16.4
 
