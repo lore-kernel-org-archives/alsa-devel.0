@@ -2,63 +2,61 @@ Return-Path: <SRS0=FS4p=Z7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A357C3F68F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 883B7C00454
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:41:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05B88214AF
+	by mail.kernel.org (Postfix) with ESMTPS id 02B8C2080D
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:41:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VwIBixhX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05B88214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PsBEulSQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02B8C2080D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7D48167B;
-	Mon,  9 Dec 2019 20:02:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7D48167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4D0D1685;
+	Mon,  9 Dec 2019 20:04:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4D0D1685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575918201;
-	bh=jgSCgxkTD/6OkafSrC0MNWKI9Cy49KVy8J+0FJuzwB0=;
+	s=default; t=1575918323;
+	bh=dEbCrB1fy6hnjX5GhIFC7I2UeHmLT7zM4/P+3wlXqT4=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=VwIBixhXxi3UnUTXrFr1zkLtCRJGFWi+6iKp/1uX+kCHCSurvfwCZXOO53LXq+FwT
-	 7qWIVpQzit5RAviCtrwEvrZZCPa4wrfyEbstfM1reNF0KT42hp/BdGtSuRDcUZtY9W
-	 DP81YdQThOy4dKlR8qY7PGChyFj4PwplKzKah7Zk=
+	b=PsBEulSQ6ITfJTdlqkeACx/FQAlOHl24yhre6nZOMEJHRRnb8sFvTaJ3LIbrEm/1I
+	 l1g+Fee5HseF5cSpBjPqVvnyI+ZfAJohuQhtuX771+5ZCt2VHQNZitsbCfFwGEd0hh
+	 WjglAwA7INarJBNNt/WVEpZDM3LxdStsTTIZ15w0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7ACC6F80271;
-	Mon,  9 Dec 2019 19:58:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D027DF8029B;
+	Mon,  9 Dec 2019 19:59:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78575F80274; Mon,  9 Dec 2019 19:58:57 +0100 (CET)
+ id 2BFBAF8028E; Mon,  9 Dec 2019 19:59:04 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 33663F80265
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:58:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33663F80265
+ by alsa1.perex.cz (Postfix) with ESMTP id 9884CF8028B
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:58:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9884CF8028B
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A00B1045;
- Mon,  9 Dec 2019 10:58:51 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBAEE1045;
+ Mon,  9 Dec 2019 10:58:58 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E98893F6CF;
- Mon,  9 Dec 2019 10:58:50 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:58:49 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C6653F6CF;
+ Mon,  9 Dec 2019 10:58:58 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:58:56 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20191204211556.12671-8-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191204211556.12671-8-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191204211556.12671-5-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191204211556.12671-5-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Daniel Baluta <daniel.baluta@nxp.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: Introduce default_fw_filename
-	member in sof_dev_desc" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: topology: remove
+	snd_sof_init_topology()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Introduce default_fw_filename member in sof_dev_desc
+   ASoC: SOF: topology: remove snd_sof_init_topology()
 
 has been applied to the asoc tree at
 
@@ -104,180 +102,55 @@ to this mail.
 Thanks,
 Mark
 
-From 03eec9b4eb897dde5985579508c978e7a29052bd Mon Sep 17 00:00:00 2001
+From 78fd4ffd75eed354c1c8b567dd0b384053c933da Mon Sep 17 00:00:00 2001
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Wed, 4 Dec 2019 15:15:50 -0600
-Subject: [PATCH] ASoC: SOF: Introduce default_fw_filename member in
- sof_dev_desc
+Date: Wed, 4 Dec 2019 15:15:47 -0600
+Subject: [PATCH] ASoC: SOF: topology: remove snd_sof_init_topology()
 
-Currently the FW filename is obtained from the ACPI matching
-table when determining which machine driver to use. In
-preparation for making the machine driver ACPI match optional
-for Device Tree platforms and moving the machine driver selection
-out of the SOF core, this patch introduces the default_fw_filename
-member in struct sof_dev_desc.
-
-Once the machine driver selection is moved out of SOF core,
-the nocodec_fw_filename will become obsolete and will be removed.
+Remove snd_sof_init_topology() as it is never used.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191204211556.12671-8-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191204211556.12671-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sof.h          | 3 +++
- sound/soc/sof/sof-acpi-dev.c | 5 +++++
- sound/soc/sof/sof-of-dev.c   | 1 +
- sound/soc/sof/sof-pci-dev.c  | 9 +++++++++
- 4 files changed, 18 insertions(+)
+ sound/soc/sof/sof-priv.h | 2 --
+ sound/soc/sof/topology.c | 9 ---------
+ 2 files changed, 11 deletions(-)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 479101736ee0..1723478db4a2 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -91,6 +91,9 @@ struct sof_dev_desc {
- 	const char *default_fw_path;
- 	const char *default_tplg_path;
- 
-+	/* default firmware name */
-+	const char *default_fw_filename;
-+
- 	const struct snd_sof_dsp_ops *ops;
- 	const struct sof_arch_ops *arch_ops;
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index c7c2c70ee4d0..31f0eb31598a 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -585,8 +585,6 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_ipc *ipc,
+  * There is no snd_sof_free_topology since topology components will
+  * be freed by snd_soc_unregister_component,
+  */
+-int snd_sof_init_topology(struct snd_sof_dev *sdev,
+-			  struct snd_soc_tplg_ops *ops);
+ int snd_sof_load_topology(struct snd_sof_dev *sdev, const char *file);
+ int snd_sof_complete_pipeline(struct snd_sof_dev *sdev,
+ 			      struct snd_sof_widget *swidget);
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index d82ab981e840..b8701d3407ad 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -3463,15 +3463,6 @@ static struct snd_soc_tplg_ops sof_tplg_ops = {
+ 	.bytes_ext_ops_count	= ARRAY_SIZE(sof_bytes_ext_ops),
  };
-diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
-index df318f50dd0b..22e13ef09811 100644
---- a/sound/soc/sof/sof-acpi-dev.c
-+++ b/sound/soc/sof/sof-acpi-dev.c
-@@ -45,6 +45,7 @@ static const struct sof_dev_desc sof_acpi_haswell_desc = {
- 	.chip_info = &hsw_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-hsw.ri",
- 	.nocodec_fw_filename = "sof-hsw.ri",
- 	.nocodec_tplg_filename = "sof-hsw-nocodec.tplg",
- 	.ops = &sof_hsw_ops,
-@@ -62,6 +63,7 @@ static const struct sof_dev_desc sof_acpi_broadwell_desc = {
- 	.chip_info = &bdw_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-bdw.ri",
- 	.nocodec_fw_filename = "sof-bdw.ri",
- 	.nocodec_tplg_filename = "sof-bdw-nocodec.tplg",
- 	.ops = &sof_bdw_ops,
-@@ -81,6 +83,7 @@ static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
- 	.chip_info = &byt_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-byt.ri",
- 	.nocodec_fw_filename = "sof-byt.ri",
- 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
- 	.ops = &sof_byt_ops,
-@@ -96,6 +99,7 @@ static const struct sof_dev_desc sof_acpi_baytrail_desc = {
- 	.chip_info = &byt_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-byt.ri",
- 	.nocodec_fw_filename = "sof-byt.ri",
- 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
- 	.ops = &sof_byt_ops,
-@@ -111,6 +115,7 @@ static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
- 	.chip_info = &cht_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cht.ri",
- 	.nocodec_fw_filename = "sof-cht.ri",
- 	.nocodec_tplg_filename = "sof-cht-nocodec.tplg",
- 	.ops = &sof_cht_ops,
-diff --git a/sound/soc/sof/sof-of-dev.c b/sound/soc/sof/sof-of-dev.c
-index 28a9692974e5..81deb5582d77 100644
---- a/sound/soc/sof/sof-of-dev.c
-+++ b/sound/soc/sof/sof-of-dev.c
-@@ -19,6 +19,7 @@ extern struct snd_sof_dsp_ops sof_imx8_ops;
- static struct sof_dev_desc sof_of_imx8qxp_desc = {
- 	.default_fw_path = "imx/sof",
- 	.default_tplg_path = "imx/sof-tplg",
-+	.default_fw_filename = "sof-imx8.ri",
- 	.nocodec_fw_filename = "sof-imx8.ri",
- 	.nocodec_tplg_filename = "sof-imx8-nocodec.tplg",
- 	.ops = &sof_imx8_ops,
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index bbeffd932de7..046bd57657ca 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -47,6 +47,7 @@ static const struct sof_dev_desc bxt_desc = {
- 	.chip_info = &apl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-apl.ri",
- 	.nocodec_fw_filename = "sof-apl.ri",
- 	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
- 	.ops = &sof_apl_ops,
-@@ -65,6 +66,7 @@ static const struct sof_dev_desc glk_desc = {
- 	.chip_info = &apl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-glk.ri",
- 	.nocodec_fw_filename = "sof-glk.ri",
- 	.nocodec_tplg_filename = "sof-glk-nocodec.tplg",
- 	.ops = &sof_apl_ops,
-@@ -93,6 +95,7 @@ static const struct sof_dev_desc tng_desc = {
- 	.chip_info = &tng_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-byt.ri",
- 	.nocodec_fw_filename = "sof-byt.ri",
- 	.nocodec_tplg_filename = "sof-byt.tplg",
- 	.ops = &sof_tng_ops,
-@@ -111,6 +114,7 @@ static const struct sof_dev_desc cnl_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cnl.ri",
- 	.nocodec_fw_filename = "sof-cnl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -129,6 +133,7 @@ static const struct sof_dev_desc cfl_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cfl.ri",
- 	.nocodec_fw_filename = "sof-cfl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -149,6 +154,7 @@ static const struct sof_dev_desc cml_desc = {
- 	.chip_info = &cnl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-cml.ri",
- 	.nocodec_fw_filename = "sof-cml.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -167,6 +173,7 @@ static const struct sof_dev_desc icl_desc = {
- 	.chip_info = &icl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-icl.ri",
- 	.nocodec_fw_filename = "sof-icl.ri",
- 	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -185,6 +192,7 @@ static const struct sof_dev_desc tgl_desc = {
- 	.chip_info = &tgl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-tgl.ri",
- 	.nocodec_fw_filename = "sof-tgl.ri",
- 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -203,6 +211,7 @@ static const struct sof_dev_desc ehl_desc = {
- 	.chip_info = &ehl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-ehl.ri",
- 	.nocodec_fw_filename = "sof-ehl.ri",
- 	.nocodec_tplg_filename = "sof-ehl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
+ 
+-int snd_sof_init_topology(struct snd_sof_dev *sdev,
+-			  struct snd_soc_tplg_ops *ops)
+-{
+-	/* TODO: support linked list of topologies */
+-	sdev->tplg_ops = ops;
+-	return 0;
+-}
+-EXPORT_SYMBOL(snd_sof_init_topology);
+-
+ int snd_sof_load_topology(struct snd_sof_dev *sdev, const char *file)
+ {
+ 	const struct firmware *fw;
 -- 
 2.20.1
 
