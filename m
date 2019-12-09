@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18451C2D0C5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16765C3E8AD
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DF6B24686
+	by mail.kernel.org (Postfix) with ESMTPS id 81DE724687
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kPCqnGaZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DF6B24686
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="My6+lWGf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81DE724687
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 125EE1672;
-	Mon,  9 Dec 2019 20:06:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 125EE1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0981016AB;
+	Mon,  9 Dec 2019 20:08:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0981016AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575918454;
-	bh=Sqf3t5FXxBoPU0YSix+jyMMiQ1bpP3bciagFIV69Xps=;
+	s=default; t=1575918570;
+	bh=o8ZCBkYki/RECKAmi4BLPSTOD5q4oQHAUpViCyD5GSA=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=kPCqnGaZoMMvkqOSWotJotZSNOS1Slek98mwIFinkkmn4TdzMQNWBrq+4iCG4hUJp
-	 svzd1EybWkL6QkPlFIL9blvRyfs5X8iAH6GtVm+S6MmlD3dPz/yOBJKRBJunLaht7m
-	 Njwh2Hay6K8ewtVEx9M7uYHj4o3LcNTxphU2eYHo=
+	b=My6+lWGf1RfeBBoyeK9kJDVPcV59VPb+OSDjFkgyOQPVne7lcLscvyKMXKA/EM59D
+	 vgENYvJYCDWsdBhZ0ZoyqmOFdMrxEJze8IZt5fr0Kghzpmabt2Tuzn66uSCiKxlqSh
+	 994fx+S7PtimOFRo9V0VqwOOLjI4KLSFrwiXOOWM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70778F802F7;
-	Mon,  9 Dec 2019 19:59:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C46DF80304;
+	Mon,  9 Dec 2019 19:59:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36959F8029B; Mon,  9 Dec 2019 19:59:09 +0100 (CET)
+ id 7A70AF802E8; Mon,  9 Dec 2019 19:59:15 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4231BF8028E
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4231BF8028E
+ by alsa1.perex.cz (Postfix) with ESMTP id EDEBEF802BC
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDEBEF802BC
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B848511D4;
- Mon,  9 Dec 2019 10:59:03 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1472513A1;
+ Mon,  9 Dec 2019 10:59:11 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37E293F6CF;
- Mon,  9 Dec 2019 10:59:03 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:59:01 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 88FDE3F6CF;
+ Mon,  9 Dec 2019 10:59:10 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:59:09 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20191204211556.12671-3-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191204211556.12671-3-pierre-louis.bossart@linux.intel.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <2215ee04-e870-5eea-a00c-9a5caf06faae@infradead.org>
+Message-Id: <applied-2215ee04-e870-5eea-a00c-9a5caf06faae@infradead.org>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel - use control components to
-	describe card config" to the asoc tree
+Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: [alsa-devel] Applied "ASoC: fix soc-core.c kernel-doc warning" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel - use control components to describe card config
+   ASoC: fix soc-core.c kernel-doc warning
 
 has been applied to the asoc tree at
 
@@ -102,128 +103,39 @@ to this mail.
 Thanks,
 Mark
 
-From 0d5c8187562848b619a35f2ffc5e18ce703e9f3d Mon Sep 17 00:00:00 2001
-From: Jaroslav Kysela <perex@perex.cz>
-Date: Wed, 4 Dec 2019 15:15:45 -0600
-Subject: [PATCH] ASoC: Intel - use control components to describe card config
+From bc9a665581b3c6c82c9220a47f6573b49ce2df0b Mon Sep 17 00:00:00 2001
+From: Randy Dunlap <rdunlap@infradead.org>
+Date: Sun, 8 Dec 2019 20:37:04 -0800
+Subject: [PATCH] ASoC: fix soc-core.c kernel-doc warning
 
-Use the control interface (field 'components' in the info structure)
-to pass the I/O configuration details. The goal is to replace
-the card long name with this.
+Fix a kernel-doc warning in soc-core.c by adding notation for
+@legacy_dai_naming.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+../sound/soc/soc-core.c:2509: warning: Function parameter or member 'legacy_dai_naming' not described in 'snd_soc_register_dai'
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20191204211556.12671-3-pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org
+Link: https://lore.kernel.org/r/2215ee04-e870-5eea-a00c-9a5caf06faae@infradead.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c |  9 ++++++++-
- sound/soc/intel/boards/bytcr_rt5640.c  |  6 ++++++
- sound/soc/intel/boards/bytcr_rt5651.c  | 18 +++++++++++-------
- 3 files changed, 25 insertions(+), 8 deletions(-)
+ sound/soc/soc-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 46612331f5ea..efa33f30dcac 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -361,6 +361,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
- /* SoC card */
- static char codec_name[SND_ACPI_I2C_ID_LEN];
- static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
-+static char components_string[32]; /* = "cfg-spk:* cfg-mic:* */
- 
- static int byt_cht_es8316_suspend(struct snd_soc_card *card)
- {
-@@ -572,11 +573,17 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	/* register the soc card */
-+	snprintf(components_string, sizeof(components_string),
-+		 "cfg-spk:%s cfg-mic:%s",
-+		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "1" : "2",
-+		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
-+	byt_cht_es8316_card.components = components_string;
- 	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
- 		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
- 		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
- 	byt_cht_es8316_card.long_name = long_name;
-+
-+	/* register the soc card */
- 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
- 
- 	ret = devm_snd_soc_register_card(dev, &byt_cht_es8316_card);
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index dd2b5ad08659..7bc6d3cec94c 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1083,6 +1083,7 @@ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
- static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
-+static char byt_rt5640_components[32]; /* = "cfg-spk:* cfg-mic:*" */
- 
- static int byt_rt5640_suspend(struct snd_soc_card *card)
- {
-@@ -1305,6 +1306,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
-+		 "cfg-spk:%s cfg-mic:%s",
-+		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
-+		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
-+	byt_rt5640_card.components = byt_rt5640_components;
- 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
- 		 "bytcr-rt5640-%s-spk-%s-mic",
- 		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 4606f6f582d6..80a5674ddb1b 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -798,6 +798,7 @@ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
- static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
-+static char byt_rt5651_components[50]; /* = "cfg-spk:* cfg-mic:*" */
- 
- static int byt_rt5651_suspend(struct snd_soc_card *card)
- {
-@@ -876,7 +877,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	const char *platform_name;
- 	struct acpi_device *adev;
- 	struct device *codec_dev;
--	const char *hp_swapped;
- 	bool is_bytcr = false;
- 	int ret_val = 0;
- 	int dai_index = 0;
-@@ -1080,16 +1080,20 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED)
--		hp_swapped = "-hp-swapped";
--	else
--		hp_swapped = "";
--
-+	snprintf(byt_rt5651_components, sizeof(byt_rt5651_components),
-+		 "cfg-spk:%s cfg-mic:%s%s",
-+		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ? "1" : "2",
-+		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
-+		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
-+			" cfg-hp:lrswap" : "");
-+	byt_rt5651_card.components = byt_rt5651_components;
- 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
- 		 "bytcr-rt5651-%s-spk-%s-mic%s",
- 		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
- 			"mono" : "stereo",
--		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
-+		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
-+		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
-+			"-hp-swapped" : "");
- 	byt_rt5651_card.long_name = byt_rt5651_long_name;
- 
- 	/* override plaform name, if required */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 062653ab03a3..1a362a799dbb 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2498,6 +2498,8 @@ EXPORT_SYMBOL_GPL(snd_soc_unregister_dai);
+  *
+  * @component: The component the DAIs are registered for
+  * @dai_drv: DAI driver to use for the DAI
++ * @legacy_dai_naming: if %true, use legacy single-name format;
++ * 	if %false, use multiple-name format;
+  *
+  * Topology can use this API to register DAIs when probing a component.
+  * These DAIs's widgets will be freed in the card cleanup and the DAIs
 -- 
 2.20.1
 
