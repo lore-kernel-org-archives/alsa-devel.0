@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06264C43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06EFBC3F68F
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:36:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA212206D5
+	by mail.kernel.org (Postfix) with ESMTPS id DA4662077B
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:36:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BJm/Fu/7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA212206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XGTEkIAR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA4662077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 819291662;
-	Mon,  9 Dec 2019 19:59:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 819291662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 486A616BC;
+	Mon,  9 Dec 2019 20:11:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 486A616BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575918029;
-	bh=VNPHqC0NpKNnjSwPDqmbq2be0OABlTm4oRQI6+TW7Ic=;
+	s=default; t=1575918732;
+	bh=30Nm2kIaJPRnBVDcPyIXNB8pwp/au6W/PbYFKu0GeOU=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=BJm/Fu/7BjRsWL0Evg4O+AcGsluPjASMVJYJutF4DL3+iy9nCt0MwskrpbDlaA0s2
-	 E6aA6BVYvea1T0F7BgLCFDE5We411VyLY1O0GltT5vWPhTku4/pcpm2uJVbaENXXmN
-	 /m2EasECZbMsyVorDQrgvzqB10yTO1oWJwxN0IRg=
+	b=XGTEkIAR3o0AUTo+wm6vKIsiAtbTH+0TINnNKX/8a0ghqA8BWKTmgLZKrDSFAduIA
+	 itaFry2uTpOWA+GX/xo/Awrj97GnXN3WBIhVUtpcrbQTfC5e0/sgyR2JFWqAYy8J7t
+	 pI5/zAuxYO/z+9zlWlL1N2fXvLMh8fKoThrQKqnI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CACFF80254;
-	Mon,  9 Dec 2019 19:58:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2CFDF80345;
+	Mon,  9 Dec 2019 19:59:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF7A2F800C4; Mon,  9 Dec 2019 19:58:42 +0100 (CET)
+ id 290BEF80316; Mon,  9 Dec 2019 19:59:27 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BFA32F8011E
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:58:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFA32F8011E
+ by alsa1.perex.cz (Postfix) with ESMTP id 00CB6F80303
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00CB6F80303
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5838B1045;
- Mon,  9 Dec 2019 10:58:38 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9D79328;
+ Mon,  9 Dec 2019 10:59:20 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD5653F6CF;
- Mon,  9 Dec 2019 10:58:37 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:58:36 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6653F3F6CF;
+ Mon,  9 Dec 2019 10:59:20 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:59:18 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Baluta <daniel.baluta@nxp.com>
-In-Reply-To: <20191204211556.12671-13-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191204211556.12671-13-pierre-louis.bossart@linux.intel.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+In-Reply-To: <20191202155834.22582-1-geert+renesas@glider.be>
+Message-Id: <applied-20191202155834.22582-1-geert+renesas@glider.be>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: Remove unused drv_name in
-	sof_pdata" to the asoc tree
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Takashi Iwai <tiwai@suse.com>, Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: [alsa-devel] Applied "ASoC: rsnd: Calculate DALIGN inversion at
+	run-time" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +80,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Remove unused drv_name in sof_pdata
+   ASoC: rsnd: Calculate DALIGN inversion at run-time
 
 has been applied to the asoc tree at
 
@@ -103,49 +105,82 @@ to this mail.
 Thanks,
 Mark
 
-From 5ad1cece81db9b389526499ae2e784013c85f136 Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Wed, 4 Dec 2019 15:15:55 -0600
-Subject: [PATCH] ASoC: SOF: Remove unused drv_name in sof_pdata
+From 49df1e3925824cf44e590daac635974270185841 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Mon, 2 Dec 2019 16:58:34 +0100
+Subject: [PATCH] ASoC: rsnd: Calculate DALIGN inversion at run-time
 
-This field is only set but never used. Let's remove
-it to make code cleaner.
+There is no need to store the inverted DALIGN values in the table, as
+they can easily be calculated at run-time.  This also protects against
+the introduction of inconsistencies between normal and inverted values
+by a future table modification.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191204211556.12671-13-pierre-louis.bossart@linux.intel.com
+Reorder the two subexpressions in the AND check, to perform the least
+expensive check first.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20191202155834.22582-1-geert+renesas@glider.be
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sof.h     | 1 -
- sound/soc/sof/nocodec.c | 2 --
- 2 files changed, 3 deletions(-)
+ sound/soc/sh/rcar/core.c | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 98a757d3a67d..96625355aa94 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -22,7 +22,6 @@ struct snd_sof_dsp_ops;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 399dc6e9bde5..d20f03dfdee6 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -376,20 +376,15 @@ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
   */
- struct snd_sof_pdata {
- 	const struct firmware *fw;
--	const char *drv_name;
- 	const char *name;
- 	const char *platform;
+ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ {
+-	static const u32 dalign_values[8][2] = {
+-		{0x76543210, 0x67452301},
+-		{0x00000032, 0x00000023},
+-		{0x00007654, 0x00006745},
+-		{0x00000076, 0x00000067},
+-		{0xfedcba98, 0xefcdab89},
+-		{0x000000ba, 0x000000ab},
+-		{0x0000fedc, 0x0000efcd},
+-		{0x000000fe, 0x000000ef},
++	static const u32 dalign_values[8] = {
++		0x76543210, 0x00000032, 0x00007654, 0x00000076,
++		0xfedcba98, 0x000000ba, 0x0000fedc, 0x000000fe,
+ 	};
+-	int id = 0, inv;
++	int id = 0;
+ 	struct rsnd_mod *ssiu = rsnd_io_to_mod_ssiu(io);
+ 	struct rsnd_mod *target;
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++	u32 dalign;
  
-diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
-index 0a2167f19f25..56d887545da3 100644
---- a/sound/soc/sof/nocodec.c
-+++ b/sound/soc/sof/nocodec.c
-@@ -74,8 +74,6 @@ int sof_nocodec_setup(struct device *dev,
- 	if (!mach)
- 		return -EINVAL;
+ 	/*
+ 	 * *Hardware* L/R and *Software* L/R are inverted for 16bit data.
+@@ -425,15 +420,15 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	if (mod == ssiu)
+ 		id = rsnd_mod_id_sub(mod);
  
--	sof_pdata->drv_name = "sof-nocodec";
--
- 	mach->drv_name = "sof-nocodec";
- 	sof_pdata->tplg_filename = desc->nocodec_tplg_filename;
+-	/* Non target mod or non 16bit needs normal DALIGN */
+-	if ((snd_pcm_format_width(runtime->format) != 16) ||
+-	    (mod != target))
+-		inv = 0;
+-	/* Target mod needs inverted DALIGN when 16bit */
+-	else
+-		inv = 1;
++	dalign = dalign_values[id];
++
++	if (mod == target && snd_pcm_format_width(runtime->format) == 16) {
++		/* Target mod needs inverted DALIGN when 16bit */
++		dalign = (dalign & 0xf0f0f0f0) >> 4 |
++			 (dalign & 0x0f0f0f0f) << 4;
++	}
  
+-	return dalign_values[id][inv];
++	return dalign;
+ }
+ 
+ u32 rsnd_get_busif_shift(struct rsnd_dai_stream *io, struct rsnd_mod *mod)
 -- 
 2.20.1
 
