@@ -6,62 +6,63 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCD7EC43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:23:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04EACC43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:25:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 673C520692
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:23:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 845C22077B
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:25:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YU9pHuYr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 673C520692
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NF+JOWdI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 845C22077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83EB21657;
-	Mon,  9 Dec 2019 17:22:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83EB21657
+	by alsa0.perex.cz (Postfix) with ESMTPS id E823515F9;
+	Mon,  9 Dec 2019 17:24:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E823515F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575908613;
-	bh=s+he4v7QIbP32xVX3/QyusbT8+KIm+6Ivbzw0gZJDbI=;
+	s=default; t=1575908717;
+	bh=YlcbcuImJcHuggXOEV5fjJP2UZxg9yqdQ60dE/vDZvw=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YU9pHuYr9ZkSXxfOxKOUB6lMri3j/EyMHyx95L0wQ8ofGRQyVY9k3ufTRUnOk5HTh
-	 9hpZuOhJditpy1tCIscnrMWx9A/Ms88gfuP0GzbN6Ybb+aZ+4tFhpTjicPxuOh0b0a
-	 s4dwBsAnim743tPVoj2pxjusSAflVn8jNywxGehg=
+	b=NF+JOWdIwMlQ0mKqc+V+noluWECGKeaA4XdkG/mxw5yjYGVVRjLqsehqdEuRuHiGT
+	 lWeOEsNUSW5yaR9yAEutZ1GPyekWV1ZJsAZluP9/MEiZiOBnqcKJ/uqiWksmcyoOCV
+	 VknCZ79LYxmD6XZ5G/O7zXGaCDyvBXNjCzgIZ6LU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F35E0F80234;
-	Mon,  9 Dec 2019 17:22:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57AD3F800C4;
+	Mon,  9 Dec 2019 17:24:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C925F8023F; Mon,  9 Dec 2019 17:22:41 +0100 (CET)
+ id 2B838F80234; Mon,  9 Dec 2019 17:24:25 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D31B4F800C4
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 17:22:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D31B4F800C4
+ by alsa1.perex.cz (Postfix) with ESMTP id 1CF0AF8011E
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 17:24:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CF0AF8011E
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 909FF1FB;
- Mon,  9 Dec 2019 08:22:36 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 188571FB;
+ Mon,  9 Dec 2019 08:24:20 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D5E63F718;
- Mon,  9 Dec 2019 08:22:35 -0800 (PST)
-Date: Mon, 9 Dec 2019 16:22:34 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AFA53F718;
+ Mon,  9 Dec 2019 08:24:19 -0800 (PST)
+Date: Mon, 9 Dec 2019 16:24:17 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Chuhong Yuan <hslester96@gmail.com>
-Message-ID: <20191209162234.GC5483@sirena.org.uk>
-References: <20191206075146.18011-1-hslester96@gmail.com>
+Message-ID: <20191209162417.GD5483@sirena.org.uk>
+References: <20191206075209.18068-1-hslester96@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20191206075146.18011-1-hslester96@gmail.com>
+In-Reply-To: <20191206075209.18068-1-hslester96@gmail.com>
 X-Cookie: We read to say that we have read.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Brian Austin <brian.austin@cirrus.com>,
- Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: cs35l32: add missed
- regulator_bulk_disable in remove
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>,
+ James Schulman <james.schulman@cirrus.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: cs42l42: add missed
+ regulator_bulk_disable in remove and fix probe failure
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,54 +75,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4849470410604287614=="
+Content-Type: multipart/mixed; boundary="===============7709762418748053099=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============4849470410604287614==
+--===============7709762418748053099==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CblX+4bnyfN0pR09"
+	protocol="application/pgp-signature"; boundary="ieNMXl1Fr3cevapt"
 Content-Disposition: inline
 
 
---CblX+4bnyfN0pR09
+--ieNMXl1Fr3cevapt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 06, 2019 at 03:51:46PM +0800, Chuhong Yuan wrote:
+On Fri, Dec 06, 2019 at 03:52:09PM +0800, Chuhong Yuan wrote:
+> The driver forgets to call regulator_bulk_disable() in remove like that
+> in probe failure.
+> Besides, some failed branches in probe do not handle failure correctly.
+> Add the missed call and revise wrong direct returns to fix it.
 
-> @@ -501,6 +501,8 @@ static int cs35l32_i2c_remove(struct i2c_client *i2c_=
-client)
->  	/* Hold down reset */
->  	gpiod_set_value_cansleep(cs35l32->reset_gpio, 0);
-> =20
-> +	regulator_bulk_disable(ARRAY_SIZE(cs35l32->supplies),
-> +			       cs35l32->supplies);
+Same issue with runtime PM here. =20
 
-This is a similar situation to the one Charles pointed out - the driver
-is using runtime PM to manage the regulators so unless the device is
-active when removed the regulators won't be enabled.
+Also please submit one patch per change, each with a clear changelog, as
+covered in SubmittingPatches.  This makes it much easier to review
+things since it's easier to tell if the patch does what it was intended
+to do.  When splitting patches up git gui can be helpful, you can stage
+and unstage individual lines by right clicking on them.
 
---CblX+4bnyfN0pR09
+--ieNMXl1Fr3cevapt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3udMkACgkQJNaLcl1U
-h9AU4Qf9H2kZfcwmeY5MnJNJT2wlY1Tz0Bn4avIuaWh6VHTc2FK9mHpLixpWBCeL
-lviOMF4oPXUBhG28OeW33WoWQ2ZYPKyUFEZqRAmy/UYFFRhk8yJHjtrgwcD3GrGz
-bFNKyeixLFD2s1a+P6mlTotWCHm3coCexdV3PnvdstSIIgyCPm/NmnRZ42jNhlQ/
-7VA4R1z6bX5K8yux74SO+QH43m4Zveh+52BMT//oC72pspDAy6KwmgVnYDmfWiY4
-wWTYSoH3R7Ol4BUcv0VqV5laqa8vZ/rcFpOOUPxFXbdRVPVCGyL6oJinOzd5t//I
-40Zl4lBKeSRR15moeKPfk7fWu3R/cQ==
-=FYnw
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3udTEACgkQJNaLcl1U
+h9Bqbgf9GTYhOs7Nn3KkyBrYfs9NAQYMhCp8xOVquBih5sU9TwD7H0AG8fXJH2Eu
+p8jFyERHbkF5DMeHKeP/hzl67ozizN+Iy4JS1DeBMlskvgX1Bu3B465+/MVFREbA
+ivJEXS9KlF8BXHjFiy512SvsxYjtcdq8sYsO6SNi+yGDd1dGxYfXefVolMkapckR
+FbJ/hWFj+xJl7x9fEcoi1JeowSVu6Pg03UmoyA2B00pLA1DUR8nxbHCV/oHfK8GV
+631fB7i6WCh9OdI2pZqE9xVgHPjnbctVoV5S9K5B0nqabr+2gA5yLHHBY5bqz4DH
+otFYGNuL1eFWPBSiNsVG8Q6Ex7tEfA==
+=ZgZ0
 -----END PGP SIGNATURE-----
 
---CblX+4bnyfN0pR09--
+--ieNMXl1Fr3cevapt--
 
---===============4849470410604287614==
+--===============7709762418748053099==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -132,4 +133,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============4849470410604287614==--
+--===============7709762418748053099==--
