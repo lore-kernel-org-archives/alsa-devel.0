@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78902C43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:37:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06DC2C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:38:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 021ED2073D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:37:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8707D2073D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:38:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pxm9r+Z1"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 021ED2073D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EfpNKWTO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8707D2073D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F53916F5;
-	Mon,  9 Dec 2019 11:36:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F53916F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3FD316F6;
+	Mon,  9 Dec 2019 11:37:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3FD316F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575887868;
-	bh=f7oIGKDsQLa4LghGHk9U0VyFSbozr70fIkfJQX3efDI=;
+	s=default; t=1575887907;
+	bh=+MTKAuv2f17G7jfuGT5RxobePnOnFugurAt1unCjxN8=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pxm9r+Z1MzlXL3OfkpZaCHHn4qSbwug2m6nLRcMnOu9/TJuSwp0rvxMBi9tp8BmNK
-	 FJIsPaeM7YRdz6ooNYiJmMItHE9tkq99dlT/PAomIVJc+9+Am+c2g9QLWtCp7iU/1h
-	 TkcCvG523l/A8KoHNeSdfVxPw3+8kqD2kzJolKMM=
+	b=EfpNKWTOGnbCs0C5FZJlFLjMHu1AHFw0laaEAWX1GiNVUIxloyZUdQlHKxdlRWOMB
+	 kIoR6vukdM9hg6taXK5sEQfXH3NQQpFkkshEYNZ+VRTdfgSRKwtF7s8cJGThlfhuar
+	 CJYVVh4tFUs4b8DzwYNAheNP/j/W8wxACcD0I6R8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C46FF805EE;
-	Mon,  9 Dec 2019 10:52:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2794F805F3;
+	Mon,  9 Dec 2019 10:52:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18E12F8029B; Mon,  9 Dec 2019 10:51:26 +0100 (CET)
+ id 62F38F80390; Mon,  9 Dec 2019 10:51:28 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA86EF8029B
+ by alsa1.perex.cz (Postfix) with ESMTPS id C75BCF802A8
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA86EF8029B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C75BCF802A8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 20DE2B2D9
+ by mx1.suse.de (Postfix) with ESMTP id 68D34B2E0
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:49 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:49:26 +0100
-Message-Id: <20191209094943.14984-55-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:49:32 +0100
+Message-Id: <20191209094943.14984-61-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 54/71] ALSA: trident: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 60/71] ALSA: aica: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,120 +77,68 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Clean up the driver with the new managed buffer allocation API.
-The superfluous snd_pcm_lib_malloc_pages() and
-snd_pcm_lib_free_pages() calls are dropped.
+The hw_params and hw_free callbacks became superfluous and got
+dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/trident/trident_main.c | 49 ++++++++++++++++------------------------
- 1 file changed, 19 insertions(+), 30 deletions(-)
+ sound/sh/aica.c | 29 +++++------------------------
+ 1 file changed, 5 insertions(+), 24 deletions(-)
 
-diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
-index 07022c0dad40..93789069e78f 100644
---- a/sound/pci/trident/trident_main.c
-+++ b/sound/pci/trident/trident_main.c
-@@ -808,12 +808,9 @@ static int snd_trident_allocate_pcm_mem(struct snd_pcm_substream *substream,
- 	struct snd_trident *trident = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_trident_voice *voice = runtime->private_data;
--	int err;
+diff --git a/sound/sh/aica.c b/sound/sh/aica.c
+index bf1fb0d8a930..8ff88d71439e 100644
+--- a/sound/sh/aica.c
++++ b/sound/sh/aica.c
+@@ -363,23 +363,6 @@ static int snd_aicapcm_pcm_close(struct snd_pcm_substream
+ 	return 0;
+ }
  
--	if ((err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params))) < 0)
--		return err;
- 	if (trident->tlb.entries) {
--		if (err > 0) { /* change */
-+		if (runtime->buffer_changed) {
- 			if (voice->memblk)
- 				snd_trident_free_pages(trident, voice->memblk);
- 			voice->memblk = snd_trident_alloc_pages(trident, substream);
-@@ -911,7 +908,6 @@ static int snd_trident_hw_free(struct snd_pcm_substream *substream)
- 			voice->memblk = NULL;
- 		}
- 	}
--	snd_pcm_lib_free_pages(substream);
- 	if (evoice != NULL) {
- 		snd_trident_free_voice(trident, evoice);
- 		voice->extra = NULL;
-@@ -1128,11 +1124,6 @@ static int snd_trident_capture_prepare(struct snd_pcm_substream *substream)
- static int snd_trident_si7018_capture_hw_params(struct snd_pcm_substream *substream,
- 						struct snd_pcm_hw_params *hw_params)
+-static int snd_aicapcm_pcm_hw_free(struct snd_pcm_substream
+-				   *substream)
+-{
+-	/* Free the DMA buffer */
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+-static int snd_aicapcm_pcm_hw_params(struct snd_pcm_substream
+-				     *substream, struct snd_pcm_hw_params
+-				     *hw_params)
+-{
+-	/* Allocate a DMA buffer using ALSA built-ins */
+-	return
+-	    snd_pcm_lib_malloc_pages(substream,
+-				     params_buffer_bytes(hw_params));
+-}
+-
+ static int snd_aicapcm_pcm_prepare(struct snd_pcm_substream
+ 				   *substream)
  {
--	int err;
--
--	if ((err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params))) < 0)
--		return err;
--
- 	return snd_trident_allocate_evoice(substream, hw_params);
- }
- 
-@@ -1154,7 +1145,6 @@ static int snd_trident_si7018_capture_hw_free(struct snd_pcm_substream *substrea
- 	struct snd_trident_voice *voice = runtime->private_data;
- 	struct snd_trident_voice *evoice = voice ? voice->extra : NULL;
- 
--	snd_pcm_lib_free_pages(substream);
- 	if (evoice != NULL) {
- 		snd_trident_free_voice(trident, evoice);
- 		voice->extra = NULL;
-@@ -2183,17 +2173,17 @@ int snd_trident_pcm(struct snd_trident *trident, int device)
- 	if (trident->tlb.entries) {
- 		struct snd_pcm_substream *substream;
- 		for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; substream; substream = substream->next)
--			snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV_SG,
--						      &trident->pci->dev,
--						      64*1024, 128*1024);
--		snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream,
--					      SNDRV_DMA_TYPE_DEV,
--					      &trident->pci->dev,
--					      64*1024, 128*1024);
-+			snd_pcm_set_managed_buffer(substream, SNDRV_DMA_TYPE_DEV_SG,
-+						   &trident->pci->dev,
-+						   64*1024, 128*1024);
-+		snd_pcm_set_managed_buffer(pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream,
-+					   SNDRV_DMA_TYPE_DEV,
-+					   &trident->pci->dev,
-+					   64*1024, 128*1024);
- 	} else {
--		snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--						      &trident->pci->dev,
--						      64*1024, 128*1024);
-+		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
-+					       &trident->pci->dev,
-+					       64*1024, 128*1024);
- 	}
- 
- 	return 0;
-@@ -2242,13 +2232,13 @@ int snd_trident_foldback_pcm(struct snd_trident *trident, int device)
- 	trident->foldback = foldback;
- 
- 	if (trident->tlb.entries)
--		snd_pcm_lib_preallocate_pages_for_all(foldback, SNDRV_DMA_TYPE_DEV_SG,
--						      &trident->pci->dev,
--						      0, 128*1024);
-+		snd_pcm_set_managed_buffer_all(foldback, SNDRV_DMA_TYPE_DEV_SG,
-+					       &trident->pci->dev,
-+					       0, 128*1024);
- 	else
--		snd_pcm_lib_preallocate_pages_for_all(foldback, SNDRV_DMA_TYPE_DEV,
--						      &trident->pci->dev,
--						      64*1024, 128*1024);
-+		snd_pcm_set_managed_buffer_all(foldback, SNDRV_DMA_TYPE_DEV,
-+					       &trident->pci->dev,
-+					       64*1024, 128*1024);
- 
+@@ -417,8 +400,6 @@ static const struct snd_pcm_ops snd_aicapcm_playback_ops = {
+ 	.open = snd_aicapcm_pcm_open,
+ 	.close = snd_aicapcm_pcm_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+-	.hw_params = snd_aicapcm_pcm_hw_params,
+-	.hw_free = snd_aicapcm_pcm_hw_free,
+ 	.prepare = snd_aicapcm_pcm_prepare,
+ 	.trigger = snd_aicapcm_pcm_trigger,
+ 	.pointer = snd_aicapcm_pcm_pointer,
+@@ -441,11 +422,11 @@ static int __init snd_aicapcmchip(struct snd_card_aica
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+ 			&snd_aicapcm_playback_ops);
+ 	/* Allocate the DMA buffers */
+-	snd_pcm_lib_preallocate_pages_for_all(pcm,
+-					      SNDRV_DMA_TYPE_CONTINUOUS,
+-					      NULL,
+-					      AICA_BUFFER_SIZE,
+-					      AICA_BUFFER_SIZE);
++	snd_pcm_set_managed_buffer_all(pcm,
++				       SNDRV_DMA_TYPE_CONTINUOUS,
++				       NULL,
++				       AICA_BUFFER_SIZE,
++				       AICA_BUFFER_SIZE);
  	return 0;
  }
-@@ -2282,9 +2272,8 @@ int snd_trident_spdif_pcm(struct snd_trident *trident, int device)
- 	strcpy(spdif->name, "Trident 4DWave IEC958");
- 	trident->spdif = spdif;
  
--	snd_pcm_lib_preallocate_pages_for_all(spdif, SNDRV_DMA_TYPE_DEV,
--					      &trident->pci->dev,
--					      64*1024, 128*1024);
-+	snd_pcm_set_managed_buffer_all(spdif, SNDRV_DMA_TYPE_DEV,
-+				       &trident->pci->dev, 64*1024, 128*1024);
- 
- 	return 0;
- }
 -- 
 2.16.4
 
