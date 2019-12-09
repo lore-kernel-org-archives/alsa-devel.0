@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3FCCC43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 342AAC43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:15:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D0B32077B
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:15:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B4EA2207FF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:15:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qwor6IFX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D0B32077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OVjKjXA+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4EA2207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73E281696;
-	Mon,  9 Dec 2019 11:14:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73E281696
+	by alsa0.perex.cz (Postfix) with ESMTPS id D654116BE;
+	Mon,  9 Dec 2019 11:15:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D654116BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575886512;
-	bh=cnEpcbxi2Z/n2+UrAa5bY8I1DEN6lb2SMmicgU2DYxI=;
+	s=default; t=1575886554;
+	bh=LO4euC1WXlLReqyaS7pYkz1+BIeJHkfZeWZFOauAe6U=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qwor6IFXHxNPjjQisQks21ZG7WJsgvMJd4uZIkBaz2VtB6Gacs/AX2h3a2uFLlojn
-	 QmccIoOz8pP/EARi9Gxjl18BMCDKQIGL9k2tVtji+rdFsOjsPb1Aho/jEPy+IKDwyF
-	 E8AlAOa6zSvbtpXO0kayfngZvYImrFHcaAYEefKY=
+	b=OVjKjXA+Y3UQkWZD0kcmoT1oMqvFh+pdQNqXBYf6x+Jq8Ft2sVkMzmY2grOKLgfAa
+	 BiKIBBfK+7T2a895UbJ3/aZhgkTNauaXITBEFuKTKrGCgYiJ03gAxcUK8UK5EH6Uoy
+	 uWpaX6jptVdkaihboQcxdbzEKWYCMPBMAzOaecPo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28035F80405;
-	Mon,  9 Dec 2019 10:52:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C233F80429;
+	Mon,  9 Dec 2019 10:52:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81D4DF8034B; Mon,  9 Dec 2019 10:50:52 +0100 (CET)
+ id A494FF8034A; Mon,  9 Dec 2019 10:50:53 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E23EF8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50E50F8028A
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E23EF8028B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50E50F8028A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2E5BCB2C7
+ by mx1.suse.de (Postfix) with ESMTP id 3C91DB2CA
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:48 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:49:07 +0100
-Message-Id: <20191209094943.14984-36-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:49:08 +0100
+Message-Id: <20191209094943.14984-37-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 35/71] ALSA: emu10k1x: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 36/71] ALSA: emu10k1: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,68 +77,228 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Clean up the driver with the new managed buffer allocation API.
-The superfluous snd_pcm_lib_malloc_pages() and
-snd_pcm_lib_free_pages() calls are dropped.
+The normal playback streams need a workaround for the aligned buffer,
+and cannot apply the straight snd_pcm_lib_malloc() stuff, so they
+remain untouched, while other streams are converted to the new managed
+mode.
+
+Most of hw_params and hw_free callbacks became superfluous and got
+dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/emu10k1/emu10k1x.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ sound/pci/emu10k1/emupcm.c | 41 +++++++--------------------------------
+ sound/pci/emu10k1/p16v.c   | 48 +++++++---------------------------------------
+ 2 files changed, 14 insertions(+), 75 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
-index 241b4a0631ab..ef34fe711813 100644
---- a/sound/pci/emu10k1/emu10k1x.c
-+++ b/sound/pci/emu10k1/emu10k1x.c
-@@ -411,8 +411,7 @@ static int snd_emu10k1x_pcm_hw_params(struct snd_pcm_substream *substream,
- 		epcm->voice->epcm = epcm;
- 	}
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 9a8cf3c7dd67..3a68148f6ecf 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -569,17 +569,6 @@ static const struct snd_pcm_hardware snd_emu10k1_efx_playback =
+ 	.fifo_size =		0,
+ };
  
--	return snd_pcm_lib_malloc_pages(substream,
--					params_buffer_bytes(hw_params));
-+	return 0;
- }
- 
- /* hw_free callback */
-@@ -432,7 +431,7 @@ static int snd_emu10k1x_pcm_hw_free(struct snd_pcm_substream *substream)
- 		epcm->voice = NULL;
- 	}
- 
+-static int snd_emu10k1_capture_hw_params(struct snd_pcm_substream *substream,
+-					 struct snd_pcm_hw_params *hw_params)
+-{
+-	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+-}
+-
+-static int snd_emu10k1_capture_hw_free(struct snd_pcm_substream *substream)
+-{
 -	return snd_pcm_lib_free_pages(substream);
-+	return 0;
- }
- 
- /* prepare callback */
-@@ -594,8 +593,7 @@ static int snd_emu10k1x_pcm_hw_params_capture(struct snd_pcm_substream *substrea
- 		epcm->voice->use = 1;
- 	}
- 
--	return snd_pcm_lib_malloc_pages(substream,
--					params_buffer_bytes(hw_params));
-+	return 0;
- }
- 
- /* hw_free callback */
-@@ -615,7 +613,7 @@ static int snd_emu10k1x_pcm_hw_free_capture(struct snd_pcm_substream *substream)
- 		epcm->voice = NULL;
- 	}
- 
--	return snd_pcm_lib_free_pages(substream);
-+	return 0;
- }
- 
- /* prepare capture callback */
-@@ -876,9 +874,8 @@ static int snd_emu10k1x_pcm(struct emu10k1x *emu, int device)
- 	}
+-}
+-
+ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
+@@ -1372,8 +1361,6 @@ static const struct snd_pcm_ops snd_emu10k1_capture_ops = {
+ 	.open =			snd_emu10k1_capture_open,
+ 	.close =		snd_emu10k1_capture_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+-	.hw_params =		snd_emu10k1_capture_hw_params,
+-	.hw_free =		snd_emu10k1_capture_hw_free,
+ 	.prepare =		snd_emu10k1_capture_prepare,
+ 	.trigger =		snd_emu10k1_capture_trigger,
+ 	.pointer =		snd_emu10k1_capture_pointer,
+@@ -1410,15 +1397,15 @@ int snd_emu10k1_pcm(struct snd_emu10k1 *emu, int device)
+ 	strcpy(pcm->name, "ADC Capture/Standard PCM Playback");
  	emu->pcm = pcm;
+ 
++	/* playback substream can't use managed buffers due to alignment */
+ 	for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; substream; substream = substream->next)
+ 		snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV_SG,
+ 					      &emu->pci->dev,
+ 					      64*1024, 64*1024);
+ 
+ 	for (substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream; substream; substream = substream->next)
+-		snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV,
+-					      &emu->pci->dev,
+-					      64*1024, 64*1024);
++		snd_pcm_set_managed_buffer(substream, SNDRV_DMA_TYPE_DEV,
++					   &emu->pci->dev, 64*1024, 64*1024);
+ 
+ 	return 0;
+ }
+@@ -1454,8 +1441,6 @@ static const struct snd_pcm_ops snd_emu10k1_capture_mic_ops = {
+ 	.open =			snd_emu10k1_capture_mic_open,
+ 	.close =		snd_emu10k1_capture_mic_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+-	.hw_params =		snd_emu10k1_capture_hw_params,
+-	.hw_free =		snd_emu10k1_capture_hw_free,
+ 	.prepare =		snd_emu10k1_capture_prepare,
+ 	.trigger =		snd_emu10k1_capture_trigger,
+ 	.pointer =		snd_emu10k1_capture_pointer,
+@@ -1477,9 +1462,8 @@ int snd_emu10k1_pcm_mic(struct snd_emu10k1 *emu, int device)
+ 	strcpy(pcm->name, "Mic Capture");
+ 	emu->pcm_mic = pcm;
  
 -	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
 -					      &emu->pci->dev,
--					      32*1024, 32*1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
-+				       &emu->pci->dev, 32*1024, 32*1024);
-   
- 	return snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK, map, 2,
- 				     1 << 2, NULL);
+-					      64*1024, 64*1024);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV, &emu->pci->dev,
++				       64*1024, 64*1024);
+ 
+ 	return 0;
+ }
+@@ -1551,8 +1535,6 @@ static const struct snd_pcm_ops snd_emu10k1_capture_efx_ops = {
+ 	.open =			snd_emu10k1_capture_efx_open,
+ 	.close =		snd_emu10k1_capture_efx_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+-	.hw_params =		snd_emu10k1_capture_hw_params,
+-	.hw_free =		snd_emu10k1_capture_hw_free,
+ 	.prepare =		snd_emu10k1_capture_prepare,
+ 	.trigger =		snd_emu10k1_capture_trigger,
+ 	.pointer =		snd_emu10k1_capture_pointer,
+@@ -1633,12 +1615,6 @@ static int snd_emu10k1_fx8010_playback_transfer(struct snd_pcm_substream *substr
+ 						  fx8010_pb_trans_copy);
+ }
+ 
+-static int snd_emu10k1_fx8010_playback_hw_params(struct snd_pcm_substream *substream,
+-						 struct snd_pcm_hw_params *hw_params)
+-{
+-	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+-}
+-
+ static int snd_emu10k1_fx8010_playback_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
+@@ -1647,7 +1623,6 @@ static int snd_emu10k1_fx8010_playback_hw_free(struct snd_pcm_substream *substre
+ 
+ 	for (i = 0; i < pcm->channels; i++)
+ 		snd_emu10k1_ptr_write(emu, TANKMEMADDRREGBASE + 0x80 + pcm->etram[i], 0, 0);
+-	snd_pcm_lib_free_pages(substream);
+ 	return 0;
+ }
+ 
+@@ -1793,7 +1768,6 @@ static const struct snd_pcm_ops snd_emu10k1_fx8010_playback_ops = {
+ 	.open =			snd_emu10k1_fx8010_playback_open,
+ 	.close =		snd_emu10k1_fx8010_playback_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+-	.hw_params =		snd_emu10k1_fx8010_playback_hw_params,
+ 	.hw_free =		snd_emu10k1_fx8010_playback_hw_free,
+ 	.prepare =		snd_emu10k1_fx8010_playback_prepare,
+ 	.trigger =		snd_emu10k1_fx8010_playback_trigger,
+@@ -1852,9 +1826,8 @@ int snd_emu10k1_pcm_efx(struct snd_emu10k1 *emu, int device)
+ 	if (err < 0)
+ 		return err;
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      &emu->pci->dev,
+-					      64*1024, 64*1024);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV, &emu->pci->dev,
++				       64*1024, 64*1024);
+ 
+ 	return 0;
+ }
+diff --git a/sound/pci/emu10k1/p16v.c b/sound/pci/emu10k1/p16v.c
+index ab8876855989..2263db4c954b 100644
+--- a/sound/pci/emu10k1/p16v.c
++++ b/sound/pci/emu10k1/p16v.c
+@@ -282,36 +282,6 @@ static int snd_p16v_pcm_open_capture(struct snd_pcm_substream *substream)
+ 	return snd_p16v_pcm_open_capture_channel(substream, 0);
+ }
+ 
+-/* hw_params callback */
+-static int snd_p16v_pcm_hw_params_playback(struct snd_pcm_substream *substream,
+-				      struct snd_pcm_hw_params *hw_params)
+-{
+-	return snd_pcm_lib_malloc_pages(substream,
+-					params_buffer_bytes(hw_params));
+-}
+-
+-/* hw_params callback */
+-static int snd_p16v_pcm_hw_params_capture(struct snd_pcm_substream *substream,
+-				      struct snd_pcm_hw_params *hw_params)
+-{
+-	return snd_pcm_lib_malloc_pages(substream,
+-					params_buffer_bytes(hw_params));
+-}
+-
+-
+-/* hw_free callback */
+-static int snd_p16v_pcm_hw_free_playback(struct snd_pcm_substream *substream)
+-{
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+-/* hw_free callback */
+-static int snd_p16v_pcm_hw_free_capture(struct snd_pcm_substream *substream)
+-{
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+-
+ /* prepare playback callback */
+ static int snd_p16v_pcm_prepare_playback(struct snd_pcm_substream *substream)
+ {
+@@ -583,8 +553,6 @@ static const struct snd_pcm_ops snd_p16v_playback_front_ops = {
+ 	.open =        snd_p16v_pcm_open_playback_front,
+ 	.close =       snd_p16v_pcm_close_playback,
+ 	.ioctl =       snd_pcm_lib_ioctl,
+-	.hw_params =   snd_p16v_pcm_hw_params_playback,
+-	.hw_free =     snd_p16v_pcm_hw_free_playback,
+ 	.prepare =     snd_p16v_pcm_prepare_playback,
+ 	.trigger =     snd_p16v_pcm_trigger_playback,
+ 	.pointer =     snd_p16v_pcm_pointer_playback,
+@@ -594,8 +562,6 @@ static const struct snd_pcm_ops snd_p16v_capture_ops = {
+ 	.open =        snd_p16v_pcm_open_capture,
+ 	.close =       snd_p16v_pcm_close_capture,
+ 	.ioctl =       snd_pcm_lib_ioctl,
+-	.hw_params =   snd_p16v_pcm_hw_params_capture,
+-	.hw_free =     snd_p16v_pcm_hw_free_capture,
+ 	.prepare =     snd_p16v_pcm_prepare_capture,
+ 	.trigger =     snd_p16v_pcm_trigger_capture,
+ 	.pointer =     snd_p16v_pcm_pointer_capture,
+@@ -642,10 +608,10 @@ int snd_p16v_pcm(struct snd_emu10k1 *emu, int device)
+ 	for(substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; 
+ 	    substream; 
+ 	    substream = substream->next) {
+-		snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV,
+-					      &emu->pci->dev,
+-					      (65536 - 64) * 8,
+-					      (65536 - 64) * 8);
++		snd_pcm_set_managed_buffer(substream, SNDRV_DMA_TYPE_DEV,
++					   &emu->pci->dev,
++					   (65536 - 64) * 8,
++					   (65536 - 64) * 8);
+ 		/*
+ 		dev_dbg(emu->card->dev,
+ 			   "preallocate playback substream: err=%d\n", err);
+@@ -655,9 +621,9 @@ int snd_p16v_pcm(struct snd_emu10k1 *emu, int device)
+ 	for (substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream; 
+ 	      substream; 
+ 	      substream = substream->next) {
+-		snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV,
+-					      &emu->pci->dev,
+-					      65536 - 64, 65536 - 64);
++		snd_pcm_set_managed_buffer(substream, SNDRV_DMA_TYPE_DEV,
++					   &emu->pci->dev,
++					   65536 - 64, 65536 - 64);
+ 		/*
+ 		dev_dbg(emu->card->dev,
+ 			   "preallocate capture substream: err=%d\n", err);
 -- 
 2.16.4
 
