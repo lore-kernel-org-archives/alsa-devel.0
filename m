@@ -2,76 +2,116 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D4D9C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:29:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64287C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:30:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B67220637
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:29:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E05A120637
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:30:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="etSX+WLH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B67220637
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tJt6YFDQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oZPp2x0K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E05A120637
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1FDB1692;
-	Tue, 10 Dec 2019 07:28:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1FDB1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 235AB16A4;
+	Tue, 10 Dec 2019 07:29:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 235AB16A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575959367;
-	bh=iELEyAZEx9+sjLR/oeXqXnmJuI1nFUO9xLLuE5j7u6E=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1575959403;
+	bh=o1c7hwD122g8+1JAf23hHm9vL0s9BEUyG2UeVg688ms=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=etSX+WLHvpg4caqPFGm6kdR4dLwYB9TF2fm3HcHvdxZi3nWHLw9fwaHcodM5qqxQN
-	 MnQ36W+d58HVmFYNZMhDNVipYiEj/93ikhSkP341HKtLpJobUWUMx7fxZgb3vo/P2r
-	 qU4GEjNfOSC4APhner5bLsj0M7cG7pBJKQZLOVXA=
+	b=tJt6YFDQTX7lWDdpi2gPYez09y8tK+x0X6xmFw2TOY7rO5xdUcrD4gOqH03An5U79
+	 XPLTvWRIJqmAnotzILr7JAibDBCv3vq6fZq/LpPlMhE2dkRU+o2VIqTW7rko9zvoCp
+	 ZMce+OKu/WKa4Te+wEqaC1r16tWeVaVESAKwYdlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BB29F8020C;
-	Tue, 10 Dec 2019 07:28:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEF67F8024A;
+	Tue, 10 Dec 2019 07:28:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D7D2F80234; Mon,  9 Dec 2019 17:40:34 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7F37CF8011E
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 17:40:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F37CF8011E
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1C7B1045;
- Mon,  9 Dec 2019 08:40:29 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E38B23F718;
- Mon,  9 Dec 2019 08:40:28 -0800 (PST)
-Date: Mon, 9 Dec 2019 16:40:27 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <20191209164027.GG5483@sirena.org.uk>
+ id C5C26F80234; Mon,  9 Dec 2019 21:06:48 +0100 (CET)
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com
+ [IPv6:2a00:1450:4864:20::144])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52FB8F800C4
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 21:06:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52FB8F800C4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="oZPp2x0K"
+Received: by mail-lf1-x144.google.com with SMTP id n12so11758714lfe.3
+ for <alsa-devel@alsa-project.org>; Mon, 09 Dec 2019 12:06:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=u/GIJzR3wCJLmedQ7wGRBS+zeddea2lYVEojwPiD6Yg=;
+ b=oZPp2x0KYxbPwBtd9Bz9vftSNS82Y5FinyxDJCnDx2uNsfnPkXAhPTKTe3j4NpZ5Cs
+ p+KWi1//D2a/TJnpwe1IwmXq2bCL3BtSOBGNOuWrixen25yxv/VrPaYzpSiDDazdKx8C
+ hRvR8g73NRKSpNSRjkvDUYbmEmap789FiQBh2AhZFR7Ec+BkGxl/DOIroAUK6KU/p5up
+ lHYK0ov6a5WB8dy1k59kJR0Dc7T2F60lRib16DTSmBGXL/u3p+JIFivbd7mcJDUe4i4p
+ EgiIB9X4QPwJZUoDNjWyeq30+2Oz1n3+BGLsplQPOhkESvwZawjHzJJsiqjNL/saRKXl
+ s9mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=u/GIJzR3wCJLmedQ7wGRBS+zeddea2lYVEojwPiD6Yg=;
+ b=E20DP+YwT5tRRkw1yLdfirwX7e/HqzXiKBrW6XD3uR1WJVQQHjKnxCwDnJkiBTkTvE
+ UkNiXn+RFbKgcEeC739iv5eDQyN/amLcvPq1GBD3CnVWZw9C88o5YlBsWKgxqbCiIFPV
+ jvanNCxs+nB6xvX/bc9DjlGNMa6gbMfQs9FtprLlFaJvf3EgrY9Mxii8NJu/jF+6rkmV
+ AwsnHzRrqi53iagFtc9XjLQCZS/JZ0Msh4xbfOgd/nIKcNLWCeRnoFIXAmfzxRuN4DGq
+ QO7M2cL7wZ0kb3Ib2zLC44qbOPyO4ZcvDiKE+J7/Zk8D2k21LC+VJIx1rYtiLM1bXNEU
+ 3w1Q==
+X-Gm-Message-State: APjAAAXa7cKZkWbOQ7loS/Q+gC4l0tyGSH7je3Y22ifSfl+q0dlWihzG
+ 7B2J82YdTlTmT7O/oBpPvkAl71il
+X-Google-Smtp-Source: APXvYqzr/+Nhv/yjlchThUWzU8Ials6Sj/mgzcKHAB5uF8w2Nk+cbzB9kVAwf3QSc6wMaPML/Ctokw==
+X-Received: by 2002:a19:784:: with SMTP id 126mr10095957lfh.191.1575922003500; 
+ Mon, 09 Dec 2019 12:06:43 -0800 (PST)
+Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
+ [79.139.233.37])
+ by smtp.googlemail.com with ESMTPSA id m11sm202649lfj.89.2019.12.09.12.06.41
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 09 Dec 2019 12:06:42 -0800 (PST)
+To: Sowjanya Komatineni <skomatineni@nvidia.com>, thierry.reding@gmail.com,
+ jonathanh@nvidia.com, mperttunen@nvidia.com, gregkh@linuxfoundation.org,
+ sboyd@kernel.org, tglx@linutronix.de, robh+dt@kernel.org,
+ mark.rutland@arm.com
 References: <1575600535-26877-1-git-send-email-skomatineni@nvidia.com>
- <1575600535-26877-10-git-send-email-skomatineni@nvidia.com>
+ <1575600535-26877-9-git-send-email-skomatineni@nvidia.com>
+ <0ce2e83b-800c-da1e-7a3c-3cf1427cfe20@gmail.com>
+ <2eeceabe-b5f0-6f9e-ff8c-4ac6167b7cc3@nvidia.com>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5d26e32c-a346-4d42-9872-840964512144@gmail.com>
+Date: Mon, 9 Dec 2019 23:06:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <1575600535-26877-10-git-send-email-skomatineni@nvidia.com>
-X-Cookie: We read to say that we have read.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <2eeceabe-b5f0-6f9e-ff8c-4ac6167b7cc3@nvidia.com>
+Content-Language: en-US
 X-Mailman-Approved-At: Tue, 10 Dec 2019 07:28:27 +0100
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, pgaikwad@nvidia.com,
- lgirdwood@gmail.com, mturquette@baylibre.com, mperttunen@nvidia.com,
- thierry.reding@gmail.com, josephl@nvidia.com, digetx@gmail.com,
- linux-clk@vger.kernel.org, mmaddireddy@nvidia.com, daniel.lezcano@linaro.org,
- krzk@kernel.org, jonathanh@nvidia.com, spujar@nvidia.com,
- devicetree@vger.kernel.org, arnd@arndb.de, markz@nvidia.com,
- alexios.zavras@intel.com, robh+dt@kernel.org, tiwai@suse.com,
- linux-tegra@vger.kernel.org, horms+renesas@verge.net.au, tglx@linutronix.de,
- allison@lohutok.net, sboyd@kernel.org, gregkh@linuxfoundation.org,
- pdeschrijver@nvidia.com, linux-kernel@vger.kernel.org, vidyas@nvidia.com,
- Jisheng.Zhang@synaptics.com
-Subject: Re: [alsa-devel] [PATCH v3 09/15] ASoC: tegra: Add fallback for
-	audio mclk
+Cc: alsa-devel@alsa-project.org, pgaikwad@nvidia.com, spujar@nvidia.com,
+ linux-kernel@vger.kernel.org, josephl@nvidia.com, linux-clk@vger.kernel.org,
+ arnd@arndb.de, daniel.lezcano@linaro.org, krzk@kernel.org,
+ mturquette@baylibre.com, devicetree@vger.kernel.org, mmaddireddy@nvidia.com,
+ markz@nvidia.com, alexios.zavras@intel.com, broonie@kernel.org,
+ linux-tegra@vger.kernel.org, horms+renesas@verge.net.au, tiwai@suse.com,
+ allison@lohutok.net, pdeschrijver@nvidia.com, lgirdwood@gmail.com,
+ vidyas@nvidia.com, Jisheng.Zhang@synaptics.com
+Subject: Re: [alsa-devel] [PATCH v3 08/15] ASoC: tegra: Add audio mclk
+ control through clk_out_1 and extern1
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,63 +124,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9109763122779485353=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---===============9109763122779485353==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UKNXkkdQCYZ6W5l3"
-Content-Disposition: inline
-
-
---UKNXkkdQCYZ6W5l3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Dec 05, 2019 at 06:48:49PM -0800, Sowjanya Komatineni wrote:
-> mclk is from clk_out_1 which is part of Tegra PMC block and pmc clocks
-> are moved to Tegra PMC driver with pmc as clock provider and using pmc
-> clock ids.
->=20
-> New device tree uses clk_out_1 from pmc clock provider.
->=20
-> So, this patch adds fallback to extern1 in case of retrieving mclk fails
-> to be backward compatible of new device tree with older kernels.
->=20
-> Cc: stable@vger.kernel.org
-
-Why would this need to be a stable fix?  Presumably people with stable
-kernels are using the old device tree anyway?
-
---UKNXkkdQCYZ6W5l3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3uePoACgkQJNaLcl1U
-h9D66wf9EtL0BmittcbTOCbTdEmV+6j2kRHf90+8kREBk+po5Zgw/f04NXW1VR/o
-kLtbsSNRWvW6HVGcWiKcNfqwBnq6P5mb2ufc9OsvjWAKJJNBnZxF2AacAn7/I2my
-ck6qGzJj4X70Xdt+KkhdTorKJX8PdX3Az9abC77DTq8cH2kbWt/domujEXrR/36g
-XCAXHpj+Id9dTLaqKz8z0ZhYsZlzaaW+QTJ12Ocuayna4rF/JB/P0n94rSjBVSVG
-ozfOhg7YYn9Q0NaGtjX7tUNX6vSF48kHKfrhfMIEDtkidq3AogcQACno8rg4amIL
-EhtifDhVUKFWuXliJGz3WveE8/2MrA==
-=CHYQ
------END PGP SIGNATURE-----
-
---UKNXkkdQCYZ6W5l3--
-
---===============9109763122779485353==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============9109763122779485353==--
+MDcuMTIuMjAxOSAyMjoyMCwgU293amFueWEgS29tYXRpbmVuaSDQv9C40YjQtdGCOgo+IAo+IE9u
+IDEyLzcvMTkgNjo1OCBBTSwgRG1pdHJ5IE9zaXBlbmtvIHdyb3RlOgo+PiAwNi4xMi4yMDE5IDA1
+OjQ4LCBTb3dqYW55YSBLb21hdGluZW5pINC/0LjRiNC10YI6Cj4+PiBDdXJyZW50IEFTb0MgZHJp
+dmVyIHVzZXMgZXh0ZXJuMSBhcyBjZGV2MSBjbG9jayBmcm9tIFRlZ3JhMzAgb253YXJkcwo+Pj4g
+dGhyb3VnaCBkZXZpY2UgdHJlZS4KPj4+Cj4+PiBBY3R1YWwgYXVkaW8gbWNsayBpcyBjbGtfb3V0
+XzEgYW5kIHRvIHVzZSBQTExBIGZvciBtY2xrIHJhdGUgY29udHJvbCwKPj4+IG5lZWQgdG8gY2xr
+X291dF8xX211eCBwYXJlbnQgdG8gZXh0ZXJuMSBhbmQgZXh0ZXJuMSBwYXJlbnQgdG8gUExMQV9P
+VVQwLgo+Pj4KPj4+IEN1cnJlbnRseSBUZWdyYSBjbG9jayBkcml2ZXIgaW5pdCBzZXRzIHRoZSBw
+YXJlbnRzIGFuZCBlbmFibGVzIGJvdGgKPj4+IGNsa19vdXRfMSBhbmQgZXh0ZXJuMSBjbG9ja3Mu
+IEJ1dCB0aGVzZSBjbG9ja3MgcGFyZW50IGFuZCBlbmFibGVzIHNob3VsZAo+Pj4gYmUgY29udHJv
+bGxlZCBieSBBU29DIGRyaXZlci4KPj4+Cj4+PiBDbG9jayBwYXJlbnRzIGNhbiBiZSBzcGVjaWZp
+ZWQgaW4gZGV2aWNlIHRyZWUgdXNpbmcgYXNzaWduZWQtY2xvY2tzCj4+PiBhbmQgYXNzaWduZWQt
+Y2xvY2stcGFyZW50cy4KPj4+Cj4+PiBUbyBlbmFibGUgYXVkaW8gbWNsaywgYm90aCBjbGtfb3V0
+XzEgYW5kIGV4dGVybjEgY2xvY2tzIG5lZWQgdG8gYmUKPj4+IGVuYWJsZWQuCj4+Pgo+Pj4gVGhp
+cyBwYXRjaCBjb25maWd1cmVzIHBhcmVudHMgZm9yIGNsa19vdXRfMSBhbmQgZXh0ZXJuMSBjbG9j
+a3MgaWYgZGV2aWNlCj4+PiB0cmVlIGRvZXMgbm90IHNwZWNpZnkgY2xvY2sgcGFyZW50cyBpbm9y
+ZGVyIHRvIHN1cHBvcnQgb2xkIGRldmljZSB0cmVlCj4+PiBhbmQgY29udHJvbHMgbWNsayB1c2lu
+ZyBib3RoIGNsa19vdXRfMSBhbmQgZXh0ZXJuMSBjbG9ja3MuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1i
+eTogU293amFueWEgS29tYXRpbmVuaSA8c2tvbWF0aW5lbmlAbnZpZGlhLmNvbT4KPj4+IC0tLQo+
+Pj4gwqAgc291bmQvc29jL3RlZ3JhL3RlZ3JhX2Fzb2NfdXRpbHMuYyB8IDY2Cj4+PiArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+Pj4gwqAgc291bmQvc29jL3RlZ3JhL3Rl
+Z3JhX2Fzb2NfdXRpbHMuaCB8wqAgMSArCj4+PiDCoCAyIGZpbGVzIGNoYW5nZWQsIDY3IGluc2Vy
+dGlvbnMoKykKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3RlZ3JhL3RlZ3JhX2Fzb2Nf
+dXRpbHMuYwo+Pj4gYi9zb3VuZC9zb2MvdGVncmEvdGVncmFfYXNvY191dGlscy5jCj4+PiBpbmRl
+eCA1MzZhNTc4ZTk1MTIuLjhlM2EzNzQwZGY3YyAxMDA2NDQKPj4+IC0tLSBhL3NvdW5kL3NvYy90
+ZWdyYS90ZWdyYV9hc29jX3V0aWxzLmMKPj4+ICsrKyBiL3NvdW5kL3NvYy90ZWdyYS90ZWdyYV9h
+c29jX3V0aWxzLmMKPj4+IEBAIC02MCw2ICs2MCw3IEBAIGludCB0ZWdyYV9hc29jX3V0aWxzX3Nl
+dF9yYXRlKHN0cnVjdAo+Pj4gdGVncmFfYXNvY191dGlsc19kYXRhICpkYXRhLCBpbnQgc3JhdGUs
+Cj4+PiDCoMKgwqDCoMKgIGRhdGEtPnNldF9tY2xrID0gMDsKPj4+IMKgIMKgwqDCoMKgwqAgY2xr
+X2Rpc2FibGVfdW5wcmVwYXJlKGRhdGEtPmNsa19jZGV2MSk7Cj4+PiArwqDCoMKgIGNsa19kaXNh
+YmxlX3VucHJlcGFyZShkYXRhLT5jbGtfZXh0ZXJuMSk7Cj4+PiDCoMKgwqDCoMKgIGNsa19kaXNh
+YmxlX3VucHJlcGFyZShkYXRhLT5jbGtfcGxsX2Ffb3V0MCk7Cj4+PiDCoMKgwqDCoMKgIGNsa19k
+aXNhYmxlX3VucHJlcGFyZShkYXRhLT5jbGtfcGxsX2EpOwo+Pj4gwqAgQEAgLTg5LDYgKzkwLDE0
+IEBAIGludCB0ZWdyYV9hc29jX3V0aWxzX3NldF9yYXRlKHN0cnVjdAo+Pj4gdGVncmFfYXNvY191
+dGlsc19kYXRhICpkYXRhLCBpbnQgc3JhdGUsCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJu
+IGVycjsKPj4+IMKgwqDCoMKgwqAgfQo+Pj4gwqAgK8KgwqDCoCBpZiAoIUlTX0VSUl9PUl9OVUxM
+KGRhdGEtPmNsa19leHRlcm4xKSkgewo+Pj4gK8KgwqDCoMKgwqDCoMKgIGVyciA9IGNsa19wcmVw
+YXJlX2VuYWJsZShkYXRhLT5jbGtfZXh0ZXJuMSk7Cj4+PiArwqDCoMKgwqDCoMKgwqAgaWYgKGVy
+cikgewo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2X2VycihkYXRhLT5kZXYsICJDYW4n
+dCBlbmFibGUgZXh0ZXJuMTogJWRcbiIsIGVycik7Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCByZXR1cm4gZXJyOwo+Pj4gK8KgwqDCoMKgwqDCoMKgIH0KPj4+ICvCoMKgwqAgfQo+Pj4gKwo+
+Pj4gwqDCoMKgwqDCoCBlcnIgPSBjbGtfcHJlcGFyZV9lbmFibGUoZGF0YS0+Y2xrX2NkZXYxKTsK
+Pj4+IMKgwqDCoMKgwqAgaWYgKGVycikgewo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGRldl9lcnIo
+ZGF0YS0+ZGV2LCAiQ2FuJ3QgZW5hYmxlIGNkZXYxOiAlZFxuIiwgZXJyKTsKPj4+IEBAIC0xMDks
+NiArMTE4LDcgQEAgaW50IHRlZ3JhX2Fzb2NfdXRpbHNfc2V0X2FjOTdfcmF0ZShzdHJ1Y3QKPj4+
+IHRlZ3JhX2Fzb2NfdXRpbHNfZGF0YSAqZGF0YSkKPj4+IMKgwqDCoMKgwqAgaW50IGVycjsKPj4+
+IMKgIMKgwqDCoMKgwqAgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGRhdGEtPmNsa19jZGV2MSk7Cj4+
+PiArwqDCoMKgIGNsa19kaXNhYmxlX3VucHJlcGFyZShkYXRhLT5jbGtfZXh0ZXJuMSk7Cj4+PiDC
+oMKgwqDCoMKgIGNsa19kaXNhYmxlX3VucHJlcGFyZShkYXRhLT5jbGtfcGxsX2Ffb3V0MCk7Cj4+
+PiDCoMKgwqDCoMKgIGNsa19kaXNhYmxlX3VucHJlcGFyZShkYXRhLT5jbGtfcGxsX2EpOwo+Pj4g
+wqAgQEAgLTE0Miw2ICsxNTIsMTQgQEAgaW50IHRlZ3JhX2Fzb2NfdXRpbHNfc2V0X2FjOTdfcmF0
+ZShzdHJ1Y3QKPj4+IHRlZ3JhX2Fzb2NfdXRpbHNfZGF0YSAqZGF0YSkKPj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoCByZXR1cm4gZXJyOwo+Pj4gwqDCoMKgwqDCoCB9Cj4+PiDCoCArwqDCoMKgIGlmICgh
+SVNfRVJSX09SX05VTEwoZGF0YS0+Y2xrX2V4dGVybjEpKSB7Cj4+PiArwqDCoMKgwqDCoMKgwqAg
+ZXJyID0gY2xrX3ByZXBhcmVfZW5hYmxlKGRhdGEtPmNsa19leHRlcm4xKTsKPj4+ICvCoMKgwqDC
+oMKgwqDCoCBpZiAoZXJyKSB7Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZfZXJyKGRh
+dGEtPmRldiwgIkNhbid0IGVuYWJsZSBleHRlcm4xOiAlZFxuIiwgZXJyKTsKPj4+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIHJldHVybiBlcnI7Cj4+PiArwqDCoMKgwqDCoMKgwqAgfQo+Pj4gK8Kg
+wqDCoCB9Cj4+IFdoeSB0aGlzIGlzIG5lZWRlZCBnaXZlbiB0aGF0IGNsa19leHRlcm4xIGlzIGVp
+dGhlciBhIGNoaWxkIG9mIE1DTEsgb3IKPj4gTUNMSyBpdHNlbGYgKG9uIFQyMCk/IFRoZSBjaGls
+ZCBjbG9ja3MgYXJlIGVuYWJsZWQgd2hlbiB0aGUgcGFyZW50IGlzCj4+IGVuYWJsZWQuCj4gCj4g
+Rm9yIFQzMCBhbmQgbGF0ZXIsIGNsa19leHRlcm4xIGlzIG9uZSBvZiB0aGUgc291cmNlIGZvciBj
+bGtfb3V0XzFfbXV4Lgo+IGNsa19leHRlcm4xIGlzIGluIENBUiBhbmQgaXQgaGFzIGl0cyBvd24g
+Z2F0ZSBhbmQgbXV4Lgo+IAo+IEFzIGF1ZGlvIG1jbGsgcmVsYXRlZCBjbG9ja3MgKGNsa19vdXRf
+MSwgY2xrX291dF8xX211eCwgYW5kIGV4dGVybjEpIGFyZQo+IG1vdmVkIGludG8gQVNvQyBkcml2
+ZXIgZnJvbSBjbG9jayBkcml2ZXIKPiAKPiBuZWVkIHRvIGVuYWJsZSBleHRlcm4xIGdhdGUgYXMg
+d2VsbCBhbG9uZyB3aXRoIGNsa19vdXQxIGZvciBUMzAgdGhyb3VnaAo+IFQyMTAuCj4gCj4gSnVz
+dCBGWUksIGV4dGVybjEgZW5hYmxlIGhlcmUgaGFwcGVucyBvbmx5IHdoZW4gZGF0YS0+Y2xrX2V4
+dGVybjEgaXMKPiBhdmFpbGFibGUgd2hpY2ggaXMgZm9yIFQzMCBvbndhcmRzLgoKY2xrX291dF8x
+IGlzIHRoZSBwYXJlbnQgb2YgZXh0ZXJuMSwgdGh1cyBleHRlcm4xIGlzIGVuYWJsZWQgYnkgdGhl
+IGNsawpjb3JlIHdoZW5ldmVyIGNsa19vdXRfMSBpcyBlbmFibGVkIGJlY2F1c2UgZGF0YS0+Y2xr
+X2NkZXYxPWNsa19vdXRfMS4gQW4KSSBtaXNzaW5nIHNvbWV0aGluZz8KCltzbmlwXQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
