@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB6C5C43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C916C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:36:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54FDD207FD
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:35:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C81222073D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:36:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tyz4RbCM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54FDD207FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a5WI/adu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C81222073D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 939D416E2;
-	Mon,  9 Dec 2019 11:34:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 939D416E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1517016F3;
+	Mon,  9 Dec 2019 11:35:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1517016F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575887749;
-	bh=J1yvnbm0//H1ZgJOxPYvZu/OfX9XHew9sbYm+jL7OeU=;
+	s=default; t=1575887788;
+	bh=qq8MDwnw0yB4E0SjX3jbKLiWP0XHCjbZbkzS6uDudMY=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tyz4RbCMn96ka2LeLvygsci8NeWW7CBkefd2RgeIRgi8ieXIVNDZtDENzXQLnUBrj
-	 8iGtQ2IbIbW9y+XFQIaJjjtQ+nKT+XNL4PP+6Bkr8KAI/HaZ6iTpXQMNitQHAEKmO5
-	 CElDEzR0mgJ5G2P4FPh4FcpUW1W8zu0TuCPHEIfQ=
+	b=a5WI/aduik5f0yFBtkyg/HqBj6owYTB0NtRJn4onOEkXAx0ob5x6oPL/ZXG2E84/l
+	 V1rJu/2bFX8kMrR7wztk3Q7xF7xjeO8My+gmHxo88NdY+ACDDLFx1ISQST68FubPYM
+	 SJhioH7pAj2yK1XiwqFJTRla013prlvCfaEnO+q0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A15E8F805D9;
-	Mon,  9 Dec 2019 10:52:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8F94F805E3;
+	Mon,  9 Dec 2019 10:52:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D140EF8037E; Mon,  9 Dec 2019 10:51:21 +0100 (CET)
+ id 0F696F8038C; Mon,  9 Dec 2019 10:51:23 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67E95F802BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E3E4F802C3
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67E95F802BC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E3E4F802C3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2E088B2DA
+ by mx1.suse.de (Postfix) with ESMTP id 4E395B2DE
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:49 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:49:27 +0100
-Message-Id: <20191209094943.14984-56-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:49:30 +0100
+Message-Id: <20191209094943.14984-59-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 55/71] ALSA: via82xx: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 58/71] ALSA: pmac: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -76,149 +76,75 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean up the drivers with the new managed buffer allocation API.
-The superfluous snd_pcm_lib_malloc_pages() and
-snd_pcm_lib_free_pages() calls are dropped.
+Clean up the driver with the new managed buffer allocation API.
+The hw_params and hw_free callbacks became superfluous and got
+dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/via82xx.c       | 45 ++++++++++++++++++---------------------------
- sound/pci/via82xx_modem.c |  9 ++-------
- 2 files changed, 20 insertions(+), 34 deletions(-)
+ sound/ppc/pmac.c | 28 +++-------------------------
+ 1 file changed, 3 insertions(+), 25 deletions(-)
 
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index 30c817b6b635..d116f32096c1 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -919,18 +919,10 @@ static int snd_via82xx_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct via82xx *chip = snd_pcm_substream_chip(substream);
- 	struct viadev *viadev = substream->runtime->private_data;
--	int err;
+diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
+index 1b11e53f6a62..1629f91d7ae2 100644
+--- a/sound/ppc/pmac.c
++++ b/sound/ppc/pmac.c
+@@ -107,24 +107,6 @@ static inline int another_stream(int stream)
+ 		SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+ }
  
--	err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
--	if (err < 0)
--		return err;
--	err = build_via_table(viadev, substream, chip->pci,
--			      params_periods(hw_params),
--			      params_period_bytes(hw_params));
--	if (err < 0)
--		return err;
+-/*
+- * allocate buffers
+- */
+-static int snd_pmac_pcm_hw_params(struct snd_pcm_substream *subs,
+-				  struct snd_pcm_hw_params *hw_params)
+-{
+-	return snd_pcm_lib_malloc_pages(subs, params_buffer_bytes(hw_params));
+-}
 -
+-/*
+- * release buffers
+- */
+-static int snd_pmac_pcm_hw_free(struct snd_pcm_substream *subs)
+-{
+-	snd_pcm_lib_free_pages(subs);
 -	return 0;
-+	return build_via_table(viadev, substream, chip->pci,
-+			       params_periods(hw_params),
-+			       params_period_bytes(hw_params));
- }
- 
+-}
+-
  /*
-@@ -943,7 +935,6 @@ static int snd_via82xx_hw_free(struct snd_pcm_substream *substream)
- 	struct viadev *viadev = substream->runtime->private_data;
+  * get a stream of the opposite direction
+  */
+@@ -672,8 +654,6 @@ static const struct snd_pcm_ops snd_pmac_playback_ops = {
+ 	.open =		snd_pmac_playback_open,
+ 	.close =	snd_pmac_playback_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	snd_pmac_pcm_hw_params,
+-	.hw_free =	snd_pmac_pcm_hw_free,
+ 	.prepare =	snd_pmac_playback_prepare,
+ 	.trigger =	snd_pmac_playback_trigger,
+ 	.pointer =	snd_pmac_playback_pointer,
+@@ -683,8 +663,6 @@ static const struct snd_pcm_ops snd_pmac_capture_ops = {
+ 	.open =		snd_pmac_capture_open,
+ 	.close =	snd_pmac_capture_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	snd_pmac_pcm_hw_params,
+-	.hw_free =	snd_pmac_pcm_hw_free,
+ 	.prepare =	snd_pmac_capture_prepare,
+ 	.trigger =	snd_pmac_capture_trigger,
+ 	.pointer =	snd_pmac_capture_pointer,
+@@ -721,9 +699,9 @@ int snd_pmac_pcm_new(struct snd_pmac *chip)
+ 	chip->capture.cur_freqs = chip->freqs_ok;
  
- 	clean_via_table(viadev, substream, chip->pci);
--	snd_pcm_lib_free_pages(substream);
+ 	/* preallocate 64k buffer */
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      &chip->pdev->dev,
+-					      64 * 1024, 64 * 1024);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++				       &chip->pdev->dev,
++				       64 * 1024, 64 * 1024);
+ 
  	return 0;
  }
- 
-@@ -1453,9 +1444,9 @@ static int snd_via8233_pcm_new(struct via82xx *chip)
- 	/* capture */
- 	init_viadev(chip, chip->capture_devno, VIA_REG_CAPTURE_8233_STATUS, 6, 1);
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
--					      &chip->pci->dev,
--					      64*1024, VIA_MAX_BUFSIZE);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
-+				       &chip->pci->dev,
-+				       64*1024, VIA_MAX_BUFSIZE);
- 
- 	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
- 				     snd_pcm_std_chmaps, 2, 0,
-@@ -1477,9 +1468,9 @@ static int snd_via8233_pcm_new(struct via82xx *chip)
- 	/* set up capture */
- 	init_viadev(chip, chip->capture_devno + 1, VIA_REG_CAPTURE_8233_STATUS + 0x10, 7, 1);
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
--					      &chip->pci->dev,
--					      64*1024, VIA_MAX_BUFSIZE);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
-+				       &chip->pci->dev,
-+				       64*1024, VIA_MAX_BUFSIZE);
- 
- 	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
- 				     snd_pcm_alt_chmaps, 6, 0,
-@@ -1520,9 +1511,9 @@ static int snd_via8233a_pcm_new(struct via82xx *chip)
- 	/* capture */
- 	init_viadev(chip, chip->capture_devno, VIA_REG_CAPTURE_8233_STATUS, 6, 1);
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
--					      &chip->pci->dev,
--					      64*1024, VIA_MAX_BUFSIZE);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
-+				       &chip->pci->dev,
-+				       64*1024, VIA_MAX_BUFSIZE);
- 
- 	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
- 				     snd_pcm_alt_chmaps, 6, 0,
-@@ -1546,9 +1537,9 @@ static int snd_via8233a_pcm_new(struct via82xx *chip)
- 	/* set up playback */
- 	init_viadev(chip, chip->playback_devno, 0x30, 3, 0);
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
--					      &chip->pci->dev,
--					      64*1024, VIA_MAX_BUFSIZE);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
-+				       &chip->pci->dev,
-+				       64*1024, VIA_MAX_BUFSIZE);
- 	return 0;
- }
- 
-@@ -1576,9 +1567,9 @@ static int snd_via686_pcm_new(struct via82xx *chip)
- 	init_viadev(chip, 0, VIA_REG_PLAYBACK_STATUS, 0, 0);
- 	init_viadev(chip, 1, VIA_REG_CAPTURE_STATUS, 0, 1);
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
--					      &chip->pci->dev,
--					      64*1024, VIA_MAX_BUFSIZE);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
-+				       &chip->pci->dev,
-+				       64*1024, VIA_MAX_BUFSIZE);
- 	return 0;
- }
- 
-diff --git a/sound/pci/via82xx_modem.c b/sound/pci/via82xx_modem.c
-index 0edb9ea6e8a6..22eaa9216598 100644
---- a/sound/pci/via82xx_modem.c
-+++ b/sound/pci/via82xx_modem.c
-@@ -642,9 +642,6 @@ static int snd_via82xx_hw_params(struct snd_pcm_substream *substream,
- 	struct viadev *viadev = substream->runtime->private_data;
- 	int err;
- 
--	err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
--	if (err < 0)
--		return err;
- 	err = build_via_table(viadev, substream, chip->pci,
- 			      params_periods(hw_params),
- 			      params_period_bytes(hw_params));
-@@ -667,7 +664,6 @@ static int snd_via82xx_hw_free(struct snd_pcm_substream *substream)
- 	struct viadev *viadev = substream->runtime->private_data;
- 
- 	clean_via_table(viadev, substream, chip->pci);
--	snd_pcm_lib_free_pages(substream);
- 	return 0;
- }
- 
-@@ -849,9 +845,8 @@ static int snd_via686_pcm_new(struct via82xx_modem *chip)
- 	init_viadev(chip, 0, VIA_REG_MO_STATUS, 0);
- 	init_viadev(chip, 1, VIA_REG_MI_STATUS, 1);
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
--					      &chip->pci->dev,
--					      64*1024, 128*1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
-+				       &chip->pci->dev, 64*1024, 128*1024);
- 	return 0;
- }
- 
 -- 
 2.16.4
 
