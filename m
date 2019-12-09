@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1CEBC43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:41:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61049C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:41:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B6F5207FF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:41:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DEC66207FF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:41:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FNDM9mLR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B6F5207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LDQPyU0Q"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEC66207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2B2914E;
-	Mon,  9 Dec 2019 11:40:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2B2914E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 320D116CB;
+	Mon,  9 Dec 2019 11:41:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 320D116CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575888060;
-	bh=/ai+peOLrOK3yMCQQf7IZEb7se2ROAOw4TlIHJ2Porg=;
+	s=default; t=1575888111;
+	bh=+AU2iNNX00Qq7tzk0H+riBK7ngD5KMAZUiDybWB4dhY=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FNDM9mLRHmhF6kzBUwFDK/mSNswS/C5mFVbVGX/AN3aL29TOnSq1H+0I9lIy0QQz6
-	 RNWAbl5AgbIuO/Jx5dwDCGbAgMb/6GPAOHhS8c9seRCaVg6PoJdirXXD0RUXfp3r1M
-	 lzqHCysJ1NgGD0w4gD8M1cWOVTS2+1LS6JSSI0X0=
+	b=LDQPyU0QUkAaHcjPNOT0gMWeOCSmDR+ChSNhGmxO9s/+C77TTxxwkvYi/6g1+Vb+N
+	 fbs+s1yWtc42e0UD0YIsoEzirX5fmtTgmoSPdHZGdB/sVtI8G+N7OhDijRs2G9jksQ
+	 6OeM39fEnlBL3EQB2497hiHF9gWv/bJvUcxJsUh4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27BD0F80634;
-	Mon,  9 Dec 2019 10:52:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD6B1F80642;
+	Mon,  9 Dec 2019 10:52:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C6ADF803AE; Mon,  9 Dec 2019 10:51:34 +0100 (CET)
+ id E59CCF803B0; Mon,  9 Dec 2019 10:51:36 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11F70F802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FCBCF802E1
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11F70F802DB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FCBCF802E1
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 83C81B2E2
+ by mx1.suse.de (Postfix) with ESMTP id B096CB2E7
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:49 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:49:34 +0100
-Message-Id: <20191209094943.14984-63-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:49:38 +0100
+Message-Id: <20191209094943.14984-67-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 62/71] ALSA: sparc: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 66/71] ALSA: hiface: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -76,160 +76,57 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean up the drivers with the new managed buffer allocation API.
-The hw_params and hw_free callbacks became superfluous and dropped.
+Clean up the driver with the new managed buffer allocation API.
+The hw_params and hw_free callbacks became superfluous and got
+dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/sparc/amd7930.c | 20 ++------------------
- sound/sparc/cs4231.c  | 17 ++---------------
- sound/sparc/dbri.c    | 13 +++----------
- 3 files changed, 7 insertions(+), 43 deletions(-)
+ sound/usb/hiface/pcm.c | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
 
-diff --git a/sound/sparc/amd7930.c b/sound/sparc/amd7930.c
-index d4b8ccc61dc2..d39973605cca 100644
---- a/sound/sparc/amd7930.c
-+++ b/sound/sparc/amd7930.c
-@@ -723,23 +723,10 @@ static int snd_amd7930_capture_close(struct snd_pcm_substream *substream)
+diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
+index e0de71917274..cc0639a1b419 100644
+--- a/sound/usb/hiface/pcm.c
++++ b/sound/usb/hiface/pcm.c
+@@ -415,18 +415,6 @@ static int hiface_pcm_close(struct snd_pcm_substream *alsa_sub)
  	return 0;
  }
  
--static int snd_amd7930_hw_params(struct snd_pcm_substream *substream,
--				    struct snd_pcm_hw_params *hw_params)
+-static int hiface_pcm_hw_params(struct snd_pcm_substream *alsa_sub,
+-				struct snd_pcm_hw_params *hw_params)
 -{
--	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+-	return snd_pcm_lib_malloc_pages(alsa_sub,
+-					params_buffer_bytes(hw_params));
 -}
 -
--static int snd_amd7930_hw_free(struct snd_pcm_substream *substream)
+-static int hiface_pcm_hw_free(struct snd_pcm_substream *alsa_sub)
 -{
--	return snd_pcm_lib_free_pages(substream);
+-	return snd_pcm_lib_free_pages(alsa_sub);
 -}
 -
- static const struct snd_pcm_ops snd_amd7930_playback_ops = {
- 	.open		=	snd_amd7930_playback_open,
- 	.close		=	snd_amd7930_playback_close,
- 	.ioctl		=	snd_pcm_lib_ioctl,
--	.hw_params	=	snd_amd7930_hw_params,
--	.hw_free	=	snd_amd7930_hw_free,
- 	.prepare	=	snd_amd7930_playback_prepare,
- 	.trigger	=	snd_amd7930_playback_trigger,
- 	.pointer	=	snd_amd7930_playback_pointer,
-@@ -749,8 +736,6 @@ static const struct snd_pcm_ops snd_amd7930_capture_ops = {
- 	.open		=	snd_amd7930_capture_open,
- 	.close		=	snd_amd7930_capture_close,
- 	.ioctl		=	snd_pcm_lib_ioctl,
--	.hw_params	=	snd_amd7930_hw_params,
--	.hw_free	=	snd_amd7930_hw_free,
- 	.prepare	=	snd_amd7930_capture_prepare,
- 	.trigger	=	snd_amd7930_capture_trigger,
- 	.pointer	=	snd_amd7930_capture_pointer,
-@@ -776,9 +761,8 @@ static int snd_amd7930_pcm(struct snd_amd7930 *amd)
- 	strcpy(pcm->name, amd->card->shortname);
- 	amd->pcm = pcm;
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
--					      NULL,
--					      64*1024, 64*1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
-+				       NULL, 64*1024, 64*1024);
- 
- 	return 0;
- }
-diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
-index 138841e0f2ae..874da942b662 100644
---- a/sound/sparc/cs4231.c
-+++ b/sound/sparc/cs4231.c
-@@ -889,12 +889,7 @@ static int snd_cs4231_playback_hw_params(struct snd_pcm_substream *substream,
+ static int hiface_pcm_prepare(struct snd_pcm_substream *alsa_sub)
  {
- 	struct snd_cs4231 *chip = snd_pcm_substream_chip(substream);
- 	unsigned char new_pdfr;
--	int err;
+ 	struct pcm_runtime *rt = snd_pcm_substream_chip(alsa_sub);
+@@ -513,8 +501,6 @@ static const struct snd_pcm_ops pcm_ops = {
+ 	.open = hiface_pcm_open,
+ 	.close = hiface_pcm_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+-	.hw_params = hiface_pcm_hw_params,
+-	.hw_free = hiface_pcm_hw_free,
+ 	.prepare = hiface_pcm_prepare,
+ 	.trigger = hiface_pcm_trigger,
+ 	.pointer = hiface_pcm_pointer,
+@@ -613,8 +599,8 @@ int hiface_pcm_init(struct hiface_chip *chip, u8 extra_freq)
  
--	err = snd_pcm_lib_malloc_pages(substream,
--					params_buffer_bytes(hw_params));
--	if (err < 0)
--		return err;
- 	new_pdfr = snd_cs4231_get_format(chip, params_format(hw_params),
- 					 params_channels(hw_params)) |
- 		snd_cs4231_get_rate(params_rate(hw_params));
-@@ -933,12 +928,7 @@ static int snd_cs4231_capture_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_cs4231 *chip = snd_pcm_substream_chip(substream);
- 	unsigned char new_cdfr;
--	int err;
+ 	strlcpy(pcm->name, "USB-SPDIF Audio", sizeof(pcm->name));
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_ops);
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
+-					      NULL, 0, 0);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
++				       NULL, 0, 0);
  
--	err = snd_pcm_lib_malloc_pages(substream,
--					params_buffer_bytes(hw_params));
--	if (err < 0)
--		return err;
- 	new_cdfr = snd_cs4231_get_format(chip, params_format(hw_params),
- 					 params_channels(hw_params)) |
- 		snd_cs4231_get_rate(params_rate(hw_params));
-@@ -1205,7 +1195,6 @@ static const struct snd_pcm_ops snd_cs4231_playback_ops = {
- 	.close		=	snd_cs4231_playback_close,
- 	.ioctl		=	snd_pcm_lib_ioctl,
- 	.hw_params	=	snd_cs4231_playback_hw_params,
--	.hw_free	=	snd_pcm_lib_free_pages,
- 	.prepare	=	snd_cs4231_playback_prepare,
- 	.trigger	=	snd_cs4231_trigger,
- 	.pointer	=	snd_cs4231_playback_pointer,
-@@ -1216,7 +1205,6 @@ static const struct snd_pcm_ops snd_cs4231_capture_ops = {
- 	.close		=	snd_cs4231_capture_close,
- 	.ioctl		=	snd_pcm_lib_ioctl,
- 	.hw_params	=	snd_cs4231_capture_hw_params,
--	.hw_free	=	snd_pcm_lib_free_pages,
- 	.prepare	=	snd_cs4231_capture_prepare,
- 	.trigger	=	snd_cs4231_trigger,
- 	.pointer	=	snd_cs4231_capture_pointer,
-@@ -1242,9 +1230,8 @@ static int snd_cs4231_pcm(struct snd_card *card)
- 	pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
- 	strcpy(pcm->name, "CS4231");
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--					      &chip->op->dev,
--					      64 * 1024, 128 * 1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
-+				       &chip->op->dev, 64 * 1024, 128 * 1024);
- 
- 	chip->pcm = pcm;
- 
-diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
-index 4911103421ff..315d5a04a33e 100644
---- a/sound/sparc/dbri.c
-+++ b/sound/sparc/dbri.c
-@@ -2099,12 +2099,6 @@ static int snd_dbri_hw_params(struct snd_pcm_substream *substream,
- 	if (ret != 0)
- 		return ret;
- 
--	if ((ret = snd_pcm_lib_malloc_pages(substream,
--				params_buffer_bytes(hw_params))) < 0) {
--		printk(KERN_ERR "malloc_pages failed with %d\n", ret);
--		return ret;
--	}
--
- 	/* hw_params can get called multiple times. Only map the DMA once.
- 	 */
- 	if (info->dvma_buffer == 0) {
-@@ -2151,7 +2145,7 @@ static int snd_dbri_hw_free(struct snd_pcm_substream *substream)
- 		info->pipe = -1;
- 	}
- 
--	return snd_pcm_lib_free_pages(substream);
-+	return 0;
- }
- 
- static int snd_dbri_prepare(struct snd_pcm_substream *substream)
-@@ -2248,9 +2242,8 @@ static int snd_dbri_pcm(struct snd_card *card)
- 	pcm->info_flags = 0;
- 	strcpy(pcm->name, card->shortname);
- 
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
--					      NULL,
--					      64 * 1024, 64 * 1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
-+				       NULL, 64 * 1024, 64 * 1024);
- 	return 0;
- }
+ 	rt->instance = pcm;
  
 -- 
 2.16.4
