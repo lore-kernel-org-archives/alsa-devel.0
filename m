@@ -2,65 +2,66 @@ Return-Path: <SRS0=FS4p=Z7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03276C43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68B33C43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:34:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 750E72077B
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:26:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3D9620692
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 16:34:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nw3V/Xlt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 750E72077B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F3uXEdBp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3D9620692
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 487911664;
-	Mon,  9 Dec 2019 17:25:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 487911664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E4F3822;
+	Mon,  9 Dec 2019 17:33:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E4F3822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575908771;
-	bh=NffLSKOJWWxFwnzNpKdnP14p/00V8ue2l1V+ztUax6M=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1575909286;
+	bh=uz+B/QgKOz3Xj/lWldBo7JTlm1ywFzCQw27ryIyWMA8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nw3V/XltnAcu1DF+cVGbXB48bj4cFOOmLF4QpuYD1S2vSIYt2DiC56nEiAjwegVEq
-	 kt8Hq41xbWS0bZofZG3VhKN+rtqQi+I3LWAWo9DDNB79u2xXuBxxdQllRJROYsq0Or
-	 irq10gW84cAnTAyiSYg0WIonygBWwYNdVlTjt/Rw=
+	b=F3uXEdBpC9Z/tFgqNJkEcPHeX4CANurEo9AiwIXf17CsQVMrlDc4ne5BVvzekg0vw
+	 fPvekdNAkJUo3jVdNhehVyxRNqOCy6Y0/aT1C+b8GTZ9pY/5ZB+9d/kzuzVR7N1Cr8
+	 1Bx1uQOUavPmmX5eRbuj+ae3cGVAyaapOz4HgOUw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98574F8011E;
-	Mon,  9 Dec 2019 17:25:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 895A9F801F4;
+	Mon,  9 Dec 2019 17:33:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB847F8011E; Mon,  9 Dec 2019 17:25:10 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C5A99F8011E
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 17:25:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5A99F8011E
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 627321FB;
- Mon,  9 Dec 2019 08:25:06 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D73783F718;
- Mon,  9 Dec 2019 08:25:05 -0800 (PST)
-Date: Mon, 9 Dec 2019 16:25:04 +0000
-From: Mark Brown <broonie@kernel.org>
+ id A4BB9F80234; Mon,  9 Dec 2019 17:33:53 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E984F8011E
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 17:33:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E984F8011E
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 80CF4AC2C;
+ Mon,  9 Dec 2019 16:33:48 +0000 (UTC)
+Date: Mon, 09 Dec 2019 17:33:48 +0100
+Message-ID: <s5hv9qpcvbn.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
 To: Chuhong Yuan <hslester96@gmail.com>
-Message-ID: <20191209162504.GE5483@sirena.org.uk>
-References: <20191206075239.18125-1-hslester96@gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <20191206075239.18125-1-hslester96@gmail.com>
-X-Cookie: We read to say that we have read.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191209162119.14820-1-hslester96@gmail.com>
+References: <20191209162119.14820-1-hslester96@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: tas2552: add missed
- regulator_bulk_disable in remove
+ Takashi Iwai <tiwai@suse.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda/ca0132 - add missed
+	snd_hda_gen_parse_auto_config
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,54 +74,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0917802419759842077=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 09 Dec 2019 17:21:19 +0100,
+Chuhong Yuan wrote:
+> 
+> It is found that all usages of snd_hda_parse_pin_defcfg() are followed
+> with snd_hda_gen_parse_auto_config() except here.
+> This should be a miss and needs to add the missed call.
 
---===============0917802419759842077==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RpqchZ26BWispMcB"
-Content-Disposition: inline
+No, this will break things badly.
+
+CA0132 codec driver has own configurator, and the pincfg parser is
+called there because the initialization function requires the pincfg
+information for the digital audio pins.
 
 
---RpqchZ26BWispMcB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thanks,
 
-On Fri, Dec 06, 2019 at 03:52:39PM +0800, Chuhong Yuan wrote:
-> The driver forgets to call regulator_bulk_disable() in remove like that
-> in probe failure.
-> Add the missed call to fix it.
+Takashi
 
-Another runtime PM interaction here.
 
---RpqchZ26BWispMcB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3udV8ACgkQJNaLcl1U
-h9C0oAf7Bcr/KwDFz16ZGoRZQwalSCIYDkriphNjueah8hpKRCYaRMf4czOgFyiS
-U7qICXScZ/vId7Fo6DYTIXtGVJKWAwMwiOC7nK2ZXdXZx8WMEhjb2KTyKX7Xnu2c
-VcPJtml9iR0uzb9VZKUO3tOMTRXCDmhtVV/DwYQljgCEuL+cn77eMBIUkqFDieRM
-rYP8Lvuxcrr8nyLXFs4MUupBTJoyRyTTyy4ShyXWndSL/ZbcfihvJbMCF3d0wTe1
-PTKK/rjPqtCpkve3ogT+niLty0w1LVyWA8XglaNtHsN48n/nRjEPjUOciJISsobK
-CLvOieHHXYcbemR9R044Yt/7k0qKZg==
-=gdxw
------END PGP SIGNATURE-----
-
---RpqchZ26BWispMcB--
-
---===============0917802419759842077==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+> 
+> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> ---
+>  sound/pci/hda/patch_ca0132.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+> index b7a1abb3e231..ea1187a13241 100644
+> --- a/sound/pci/hda/patch_ca0132.c
+> +++ b/sound/pci/hda/patch_ca0132.c
+> @@ -24,6 +24,7 @@
+>  #include "hda_local.h"
+>  #include "hda_auto_parser.h"
+>  #include "hda_jack.h"
+> +#include "hda_generic.h"
+>  
+>  #include "ca0132_regs.h"
+>  
+> @@ -8844,6 +8845,10 @@ static int patch_ca0132(struct hda_codec *codec)
+>  	if (err < 0)
+>  		goto error;
+>  
+> +	err = snd_hda_gen_parse_auto_config(codec, &spec->autocfg);
+> +	if (err < 0)
+> +		goto error;
+> +
+>  	return 0;
+>  
+>   error:
+> -- 
+> 2.24.0
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0917802419759842077==--
