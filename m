@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C916C43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:36:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8278DC43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:37:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C81222073D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:36:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E7F3207FF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 10:37:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a5WI/adu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C81222073D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WBFcCMbK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E7F3207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1517016F3;
-	Mon,  9 Dec 2019 11:35:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1517016F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CB7F16E9;
+	Mon,  9 Dec 2019 11:36:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CB7F16E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575887788;
-	bh=qq8MDwnw0yB4E0SjX3jbKLiWP0XHCjbZbkzS6uDudMY=;
+	s=default; t=1575887827;
+	bh=sAfa8KQbZFYoKuJykNZ/4vpu21Lk/cxk06XKcnkWOoI=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a5WI/aduik5f0yFBtkyg/HqBj6owYTB0NtRJn4onOEkXAx0ob5x6oPL/ZXG2E84/l
-	 V1rJu/2bFX8kMrR7wztk3Q7xF7xjeO8My+gmHxo88NdY+ACDDLFx1ISQST68FubPYM
-	 SJhioH7pAj2yK1XiwqFJTRla013prlvCfaEnO+q0=
+	b=WBFcCMbKClkuSF91Ty+hlSIvYY3ZsAinSU+aSNGUd5c0bfxNFGiSanT/+hX8irC/Z
+	 yHueFxxxvIgNDxLMfjanuq+diQQg1pdV9Q66KRNcZHQTS7PyfxRIE7xRPQId74727K
+	 IU0BXQ+z10t/UHUzI+xfPMUYr0f9SwQWDWx5bT2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8F94F805E3;
-	Mon,  9 Dec 2019 10:52:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B7D8F805EA;
+	Mon,  9 Dec 2019 10:52:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F696F8038C; Mon,  9 Dec 2019 10:51:23 +0100 (CET)
+ id BAD9BF80385; Mon,  9 Dec 2019 10:51:23 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E3E4F802C3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E31AF802C2
  for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 10:49:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E3E4F802C3
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E31AF802C2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 4E395B2DE
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:49 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id EA422B2D5
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 09:49:48 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 10:49:30 +0100
-Message-Id: <20191209094943.14984-59-tiwai@suse.de>
+Date: Mon,  9 Dec 2019 10:49:23 +0100
+Message-Id: <20191209094943.14984-52-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191209094943.14984-1-tiwai@suse.de>
 References: <20191209094943.14984-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 5.6 58/71] ALSA: pmac: Use managed buffer
+Subject: [alsa-devel] [PATCH 5.6 51/71] ALSA: rme32: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,74 +77,115 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Clean up the driver with the new managed buffer allocation API.
-The hw_params and hw_free callbacks became superfluous and got
-dropped.
+The hw_free callback became superfluous and got dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/ppc/pmac.c | 28 +++-------------------------
- 1 file changed, 3 insertions(+), 25 deletions(-)
+ sound/pci/rme32.c | 35 +++++++----------------------------
+ 1 file changed, 7 insertions(+), 28 deletions(-)
 
-diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
-index 1b11e53f6a62..1629f91d7ae2 100644
---- a/sound/ppc/pmac.c
-+++ b/sound/ppc/pmac.c
-@@ -107,24 +107,6 @@ static inline int another_stream(int stream)
- 		SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
- }
+diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
+index 58a4b8df25d4..aab47e5d96dc 100644
+--- a/sound/pci/rme32.c
++++ b/sound/pci/rme32.c
+@@ -662,11 +662,7 @@ snd_rme32_playback_hw_params(struct snd_pcm_substream *substream,
+ 	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
  
--/*
-- * allocate buffers
-- */
--static int snd_pmac_pcm_hw_params(struct snd_pcm_substream *subs,
--				  struct snd_pcm_hw_params *hw_params)
--{
--	return snd_pcm_lib_malloc_pages(subs, params_buffer_bytes(hw_params));
--}
--
--/*
-- * release buffers
-- */
--static int snd_pmac_pcm_hw_free(struct snd_pcm_substream *subs)
--{
--	snd_pcm_lib_free_pages(subs);
--	return 0;
--}
--
- /*
-  * get a stream of the opposite direction
-  */
-@@ -672,8 +654,6 @@ static const struct snd_pcm_ops snd_pmac_playback_ops = {
- 	.open =		snd_pmac_playback_open,
- 	.close =	snd_pmac_playback_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	snd_pmac_pcm_hw_params,
--	.hw_free =	snd_pmac_pcm_hw_free,
- 	.prepare =	snd_pmac_playback_prepare,
- 	.trigger =	snd_pmac_playback_trigger,
- 	.pointer =	snd_pmac_playback_pointer,
-@@ -683,8 +663,6 @@ static const struct snd_pcm_ops snd_pmac_capture_ops = {
- 	.open =		snd_pmac_capture_open,
- 	.close =	snd_pmac_capture_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
--	.hw_params =	snd_pmac_pcm_hw_params,
--	.hw_free =	snd_pmac_pcm_hw_free,
- 	.prepare =	snd_pmac_capture_prepare,
- 	.trigger =	snd_pmac_capture_trigger,
- 	.pointer =	snd_pmac_capture_pointer,
-@@ -721,9 +699,9 @@ int snd_pmac_pcm_new(struct snd_pmac *chip)
- 	chip->capture.cur_freqs = chip->freqs_ok;
+-	if (rme32->fullduplex_mode) {
+-		err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-		if (err < 0)
+-			return err;
+-	} else {
++	if (!rme32->fullduplex_mode) {
+ 		runtime->dma_area = (void __force *)(rme32->iobase +
+ 						     RME32_IO_DATA_BUFFER);
+ 		runtime->dma_addr = rme32->port + RME32_IO_DATA_BUFFER;
+@@ -717,11 +713,7 @@ snd_rme32_capture_hw_params(struct snd_pcm_substream *substream,
+ 	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
  
- 	/* preallocate 64k buffer */
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--					      &chip->pdev->dev,
--					      64 * 1024, 64 * 1024);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
-+				       &chip->pdev->dev,
-+				       64 * 1024, 64 * 1024);
- 
+-	if (rme32->fullduplex_mode) {
+-		err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-		if (err < 0)
+-			return err;
+-	} else {
++	if (!rme32->fullduplex_mode) {
+ 		runtime->dma_area = (void __force *)rme32->iobase +
+ 					RME32_IO_DATA_BUFFER;
+ 		runtime->dma_addr = rme32->port + RME32_IO_DATA_BUFFER;
+@@ -771,14 +763,6 @@ snd_rme32_capture_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
+ 
+-static int snd_rme32_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
+-	if (! rme32->fullduplex_mode)
+-		return 0;
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+ static void snd_rme32_pcm_start(struct rme32 * rme32, int from_pause)
+ {
+ 	if (!from_pause) {
+@@ -1195,7 +1179,6 @@ static const struct snd_pcm_ops snd_rme32_playback_spdif_ops = {
+ 	.close =	snd_rme32_playback_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	snd_rme32_playback_hw_params,
+-	.hw_free =	snd_rme32_pcm_hw_free,
+ 	.prepare =	snd_rme32_playback_prepare,
+ 	.trigger =	snd_rme32_pcm_trigger,
+ 	.pointer =	snd_rme32_playback_pointer,
+@@ -1210,7 +1193,6 @@ static const struct snd_pcm_ops snd_rme32_capture_spdif_ops = {
+ 	.close =	snd_rme32_capture_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	snd_rme32_capture_hw_params,
+-	.hw_free =	snd_rme32_pcm_hw_free,
+ 	.prepare =	snd_rme32_capture_prepare,
+ 	.trigger =	snd_rme32_pcm_trigger,
+ 	.pointer =	snd_rme32_capture_pointer,
+@@ -1252,7 +1234,6 @@ static const struct snd_pcm_ops snd_rme32_playback_spdif_fd_ops = {
+ 	.close =	snd_rme32_playback_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	snd_rme32_playback_hw_params,
+-	.hw_free =	snd_rme32_pcm_hw_free,
+ 	.prepare =	snd_rme32_playback_prepare,
+ 	.trigger =	snd_rme32_pcm_trigger,
+ 	.pointer =	snd_rme32_playback_fd_pointer,
+@@ -1264,7 +1245,6 @@ static const struct snd_pcm_ops snd_rme32_capture_spdif_fd_ops = {
+ 	.close =	snd_rme32_capture_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	snd_rme32_capture_hw_params,
+-	.hw_free =	snd_rme32_pcm_hw_free,
+ 	.prepare =	snd_rme32_capture_prepare,
+ 	.trigger =	snd_rme32_pcm_trigger,
+ 	.pointer =	snd_rme32_capture_fd_pointer,
+@@ -1374,9 +1354,8 @@ static int snd_rme32_create(struct rme32 *rme32)
+ 				&snd_rme32_playback_spdif_fd_ops);
+ 		snd_pcm_set_ops(rme32->spdif_pcm, SNDRV_PCM_STREAM_CAPTURE,
+ 				&snd_rme32_capture_spdif_fd_ops);
+-		snd_pcm_lib_preallocate_pages_for_all(rme32->spdif_pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+-						      NULL,
+-						      0, RME32_MID_BUFFER_SIZE);
++		snd_pcm_set_managed_buffer_all(rme32->spdif_pcm, SNDRV_DMA_TYPE_CONTINUOUS,
++					       NULL, 0, RME32_MID_BUFFER_SIZE);
+ 		rme32->spdif_pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
+ 	} else {
+ 		snd_pcm_set_ops(rme32->spdif_pcm, SNDRV_PCM_STREAM_PLAYBACK,
+@@ -1406,9 +1385,9 @@ static int snd_rme32_create(struct rme32 *rme32)
+ 					&snd_rme32_playback_adat_fd_ops);
+ 			snd_pcm_set_ops(rme32->adat_pcm, SNDRV_PCM_STREAM_CAPTURE, 
+ 					&snd_rme32_capture_adat_fd_ops);
+-			snd_pcm_lib_preallocate_pages_for_all(rme32->adat_pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+-							      NULL,
+-							      0, RME32_MID_BUFFER_SIZE);
++			snd_pcm_set_managed_buffer_all(rme32->adat_pcm, SNDRV_DMA_TYPE_CONTINUOUS,
++						       NULL,
++						       0, RME32_MID_BUFFER_SIZE);
+ 			rme32->adat_pcm->info_flags = SNDRV_PCM_INFO_JOINT_DUPLEX;
+ 		} else {
+ 			snd_pcm_set_ops(rme32->adat_pcm, SNDRV_PCM_STREAM_PLAYBACK, 
 -- 
 2.16.4
 
