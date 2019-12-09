@@ -2,67 +2,68 @@ Return-Path: <SRS0=FS4p=Z7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D517FC43603
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 06:58:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF3BC43603
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 07:11:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6074720726
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 06:58:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E3A9206D3
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 07:11:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ELOFy5PB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6074720726
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ad8j97D4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E3A9206D3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5710586F;
-	Mon,  9 Dec 2019 07:57:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5710586F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3338C86F;
+	Mon,  9 Dec 2019 08:10:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3338C86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575874688;
-	bh=d2q57k8uP0Sarns8o+N/ujI/FM5JaNTByT2bgei5jVw=;
+	s=default; t=1575875470;
+	bh=va4CstaRA8o/ypYQKQpibonqUh4HNfR4shgeS1lOsa0=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ELOFy5PBc8vLH3Mmh3syzXs+F0J6JNAf19KWDZLMKWTRytpZVY9EGeAdniWly3SX5
-	 jVJrFk9vTW6qbOqauytwyUw6AT4eCZ5/eW5BBNjnbr+Od3vrwerw0ngQ/j/Nbu9tOR
-	 IeyjXG5nCTD4AYz1aA4dkdLKW6EviwaZOlkFWmEw=
+	b=ad8j97D4jlFVsfuICh2BMTZaiVjaM5g8OSJj44V1/Bk6PGH0oGDRjInUCUubMLTQO
+	 4Wk79Q2ZzHuLHJslRCiWs4tTSqZoqqG+abEgxiBbv4cGL+FRYdtZtv6Gt+OTrWjRNl
+	 rsOq3pGnc34aEeRnP91EQi4H1P0PTgFen4qOr4rI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1274F801F4;
-	Mon,  9 Dec 2019 07:57:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 851DFF801F4;
+	Mon,  9 Dec 2019 08:10:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0E6FF80234; Mon,  9 Dec 2019 07:57:15 +0100 (CET)
+ id 36971F80234; Mon,  9 Dec 2019 08:10:18 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07831F8011E
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 07:57:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07831F8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 063E1F8011E
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 08:10:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 063E1F8011E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 64314AD49;
- Mon,  9 Dec 2019 06:57:11 +0000 (UTC)
-Date: Mon, 09 Dec 2019 07:57:11 +0100
-Message-ID: <s5hpngyasvs.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id A2D1EBB0C;
+ Mon,  9 Dec 2019 07:10:09 +0000 (UTC)
+Date: Mon, 09 Dec 2019 08:10:08 +0100
+Message-ID: <s5hmuc2asa7.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
-In-Reply-To: <e2d1e8dd-85aa-4d1a-ad8e-347dcc294404@www.fastmail.com>
-References: <20191208232226.6685-1-o-takashi@sakamocchi.jp>
- <e2d1e8dd-85aa-4d1a-ad8e-347dcc294404@www.fastmail.com>
+To: Klaus Ethgen <Klaus@ethgen.ch>
+In-Reply-To: <20191208173127.GE4433@ikki.ethgen.ch>
+References: <20191202184759.GB29478@ikki.ethgen.ch>
+ <s5hy2vsjbm3.wl-tiwai@suse.de>
+ <20191207200643.GA10092@ikki.ethgen.ch>
+ <s5h4kybciir.wl-tiwai@suse.de>
+ <20191208173127.GE4433@ikki.ethgen.ch>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>,
- kbuild test robot <lkp@intel.com>, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [alsa-devel] [PATCH] firewire-motu: fix double
-	unlocked	'motu->mutex'
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] CPU hook snd_hda_intel
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,69 +81,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 09 Dec 2019 03:51:24 +0100,
-Takashi Sakamoto wrote:
+On Sun, 08 Dec 2019 18:31:27 +0100,
+Klaus Ethgen wrote:
 > 
-> Oops. I forgot to add 'ALSA: ' prefix to the subject line. I'm sorry but would I
-> request maintainers to add it when applying...
+> Hi Takashi,
+> 
+> Am So den  8. Dez 2019 um  9:45 schrieb Takashi Iwai:
+> > On Sat, 07 Dec 2019 21:06:43 +0100,
+> > > Find attached the perf output of the relevant event handler.
+> > 
+> > Thanks.  So it seems wasting in the busy loop for waiting for the
+> > response from the codec.
+> > 
+> > How about a patch below?  It's untested, might break things, but at
+> > least avoiding a busy loop.
+> 
+> I'll give it a try. Kernel is compiling right now. It might be hard to
+> see if the patch is working but I suppose that it do when I don't have
+> that trouble within a week or so.
+> 
+> > BTW, if your machine is Coffeelake or Cannonlake, this patch wont'
+> > work on the old branch because of forced polling mode.  It was removed
+> > in 5.5-rc1, so please test with Linus tree at best.
+> 
+> I hardly have such new Architectures on that laptop. It is a lenovo x61s
+> so it is from latest 2009. It has a Intel Core 2 Duo LV (Merom). :-)
 
-Don't worry, applied it now with the correction.
+OK, then could you give alsa-info.sh output, at least?
+Run the script with --no-upload option and attach the output.
+
+Basically my patch should improve a lot for Nvidia codecs, not only
+about the CPU time reduction, and it'd be worth for merging to
+upstream.  OTOH, it's a change at the very core part, so it needs more
+testing, so it's likely for 5.6.
 
 
 thanks,
 
 Takashi
-
-> 
-> On Mon, Dec 9, 2019, at 08:22, Takashi Sakamoto wrote:
-> > Mutex is doubly unlocked in some error path of pcm.open. This commit fixes
-> > ALSA firewire-motu driver in Linux kernel v5.5.
-> > 
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Fixes: 3fd80b200388 ("ALSA: firewire-motu: use the same size of period 
-> > for PCM substream in AMDTP streams")
-> > Fixes: 0f5482e7875b ("ALSA: firewire-motu: share PCM buffer size for 
-> > both direction")
-> > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> > ---
-> >  sound/firewire/motu/motu-pcm.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
-> > index 349b4d09e84f..005970931030 100644
-> > --- a/sound/firewire/motu/motu-pcm.c
-> > +++ b/sound/firewire/motu/motu-pcm.c
-> > @@ -177,18 +177,14 @@ static int pcm_open(struct snd_pcm_substream *substream)
-> >  			err = snd_pcm_hw_constraint_minmax(substream->runtime,
-> >  					SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
-> >  					frames_per_period, frames_per_period);
-> > -			if (err < 0) {
-> > -				mutex_unlock(&motu->mutex);
-> > +			if (err < 0)
-> >  				goto err_locked;
-> > -			}
-> >  
-> >  			err = snd_pcm_hw_constraint_minmax(substream->runtime,
-> >  					SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
-> >  					frames_per_buffer, frames_per_buffer);
-> > -			if (err < 0) {
-> > -				mutex_unlock(&motu->mutex);
-> > +			if (err < 0)
-> >  				goto err_locked;
-> > -			}
-> >  		}
-> >  	}
-> >  
-> > -- 
-> > 2.20.1
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
