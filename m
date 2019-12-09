@@ -2,61 +2,63 @@ Return-Path: <SRS0=FS4p=Z7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41896C43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A357C3F68F
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:41:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF265206E0
+	by mail.kernel.org (Postfix) with ESMTPS id 05B88214AF
 	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:41:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SkpAeJ9d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF265206E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VwIBixhX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05B88214AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 864C2168F;
-	Mon,  9 Dec 2019 20:03:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 864C2168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7D48167B;
+	Mon,  9 Dec 2019 20:02:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7D48167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575918235;
-	bh=Vtua8lvwUAEa6maCh9sJIEqJtkqcrdVqBB0E7OqmA3U=;
+	s=default; t=1575918201;
+	bh=jgSCgxkTD/6OkafSrC0MNWKI9Cy49KVy8J+0FJuzwB0=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=SkpAeJ9dvnDTln3Cdm/s7L8cj+mYgPqswt75jtMMYe1Bg1MfKmjt0NQ/jlx8VDR+E
-	 SO+LKLCrR8T1KaQEEMN1Y4hreyJPPlcbZ1LjtKGwFM8OVaS0bOzPLzrRPpbxIj2aeN
-	 q/FpBcxVZit4T+JfX7pzQDFdG1Ey/sY4APnfJrP4=
+	b=VwIBixhXxi3UnUTXrFr1zkLtCRJGFWi+6iKp/1uX+kCHCSurvfwCZXOO53LXq+FwT
+	 7qWIVpQzit5RAviCtrwEvrZZCPa4wrfyEbstfM1reNF0KT42hp/BdGtSuRDcUZtY9W
+	 DP81YdQThOy4dKlR8qY7PGChyFj4PwplKzKah7Zk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9480EF8027B;
-	Mon,  9 Dec 2019 19:59:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7ACC6F80271;
+	Mon,  9 Dec 2019 19:58:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F015EF8028E; Mon,  9 Dec 2019 19:59:02 +0100 (CET)
+ id 78575F80274; Mon,  9 Dec 2019 19:58:57 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4725BF80276
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:58:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4725BF80276
+ by alsa1.perex.cz (Postfix) with ESMTP id 33663F80265
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:58:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33663F80265
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60A451045;
- Mon,  9 Dec 2019 10:58:56 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A00B1045;
+ Mon,  9 Dec 2019 10:58:51 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2FC03F6CF;
- Mon,  9 Dec 2019 10:58:55 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:58:54 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E98893F6CF;
+ Mon,  9 Dec 2019 10:58:50 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:58:49 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20191204211556.12671-6-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191204211556.12671-6-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191204211556.12671-8-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191204211556.12671-8-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: core: modify the signature for
-	snd_sof_create_page_table" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Introduce default_fw_filename
+	member in sof_dev_desc" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +79,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: core: modify the signature for snd_sof_create_page_table
+   ASoC: SOF: Introduce default_fw_filename member in sof_dev_desc
 
 has been applied to the asoc tree at
 
@@ -102,223 +104,180 @@ to this mail.
 Thanks,
 Mark
 
-From 3e62579436c6a7fc35de7318e6c5f495b8d0046c Mon Sep 17 00:00:00 2001
+From 03eec9b4eb897dde5985579508c978e7a29052bd Mon Sep 17 00:00:00 2001
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Date: Wed, 4 Dec 2019 15:15:48 -0600
-Subject: [PATCH] ASoC: SOF: core: modify the signature for
- snd_sof_create_page_table
+Date: Wed, 4 Dec 2019 15:15:50 -0600
+Subject: [PATCH] ASoC: SOF: Introduce default_fw_filename member in
+ sof_dev_desc
 
-Modify the signature for snd_sof_create_page_table to
-take struct device pointer as an argument instead of
-struct snd_sof_dev as this will be used by both the SOF
-core device and its clients. Also, move the definition
-out of core.c to utils.c.
+Currently the FW filename is obtained from the ACPI matching
+table when determining which machine driver to use. In
+preparation for making the machine driver ACPI match optional
+for Device Tree platforms and moving the machine driver selection
+out of the SOF core, this patch introduces the default_fw_filename
+member in struct sof_dev_desc.
+
+Once the machine driver selection is moved out of SOF core,
+the nocodec_fw_filename will become obsolete and will be removed.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191204211556.12671-6-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191204211556.12671-8-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/core.c     | 59 ---------------------------------------
- sound/soc/sof/pcm.c      |  2 +-
- sound/soc/sof/sof-priv.h |  2 +-
- sound/soc/sof/trace.c    |  4 +--
- sound/soc/sof/utils.c    | 60 ++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 64 insertions(+), 63 deletions(-)
+ include/sound/sof.h          | 3 +++
+ sound/soc/sof/sof-acpi-dev.c | 5 +++++
+ sound/soc/sof/sof-of-dev.c   | 1 +
+ sound/soc/sof/sof-pci-dev.c  | 9 +++++++++
+ 4 files changed, 18 insertions(+)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 805918d3bcc0..6a7f342203e9 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -10,7 +10,6 @@
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index 479101736ee0..1723478db4a2 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -91,6 +91,9 @@ struct sof_dev_desc {
+ 	const char *default_fw_path;
+ 	const char *default_tplg_path;
  
- #include <linux/firmware.h>
- #include <linux/module.h>
--#include <asm/unaligned.h>
- #include <sound/soc.h>
- #include <sound/sof.h>
- #include "sof-priv.h"
-@@ -213,64 +212,6 @@ void snd_sof_get_status(struct snd_sof_dev *sdev, u32 panic_code,
- }
- EXPORT_SYMBOL(snd_sof_get_status);
- 
--/*
-- * Generic buffer page table creation.
-- * Take the each physical page address and drop the least significant unused
-- * bits from each (based on PAGE_SIZE). Then pack valid page address bits
-- * into compressed page table.
-- */
--
--int snd_sof_create_page_table(struct snd_sof_dev *sdev,
--			      struct snd_dma_buffer *dmab,
--			      unsigned char *page_table, size_t size)
--{
--	int i, pages;
--
--	pages = snd_sgbuf_aligned_pages(size);
--
--	dev_dbg(sdev->dev, "generating page table for %p size 0x%zx pages %d\n",
--		dmab->area, size, pages);
--
--	for (i = 0; i < pages; i++) {
--		/*
--		 * The number of valid address bits for each page is 20.
--		 * idx determines the byte position within page_table
--		 * where the current page's address is stored
--		 * in the compressed page_table.
--		 * This can be calculated by multiplying the page number by 2.5.
--		 */
--		u32 idx = (5 * i) >> 1;
--		u32 pfn = snd_sgbuf_get_addr(dmab, i * PAGE_SIZE) >> PAGE_SHIFT;
--		u8 *pg_table;
--
--		dev_vdbg(sdev->dev, "pfn i %i idx %d pfn %x\n", i, idx, pfn);
--
--		pg_table = (u8 *)(page_table + idx);
--
--		/*
--		 * pagetable compression:
--		 * byte 0     byte 1     byte 2     byte 3     byte 4     byte 5
--		 * ___________pfn 0__________ __________pfn 1___________  _pfn 2...
--		 * .... ....  .... ....  .... ....  .... ....  .... ....  ....
--		 * It is created by:
--		 * 1. set current location to 0, PFN index i to 0
--		 * 2. put pfn[i] at current location in Little Endian byte order
--		 * 3. calculate an intermediate value as
--		 *    x = (pfn[i+1] << 4) | (pfn[i] & 0xf)
--		 * 4. put x at offset (current location + 2) in LE byte order
--		 * 5. increment current location by 5 bytes, increment i by 2
--		 * 6. continue to (2)
--		 */
--		if (i & 1)
--			put_unaligned_le32((pg_table[0] & 0xf) | pfn << 4,
--					   pg_table);
--		else
--			put_unaligned_le32(pfn, pg_table);
--	}
--
--	return pages;
--}
--
- /*
-  * SOF Driver enumeration.
-  */
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 549238a98b2a..9fd73ef08904 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -33,7 +33,7 @@ static int create_page_table(struct snd_soc_component *component,
- 	if (!spcm)
- 		return -EINVAL;
- 
--	return snd_sof_create_page_table(sdev, dmab,
-+	return snd_sof_create_page_table(sdev->dev, dmab,
- 		spcm->stream[stream].page_table.area, size);
- }
- 
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 31f0eb31598a..18dd832f2053 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -499,7 +499,7 @@ int snd_sof_set_d0_substate(struct snd_sof_dev *sdev,
- 
- void snd_sof_new_platform_drv(struct snd_sof_dev *sdev);
- 
--int snd_sof_create_page_table(struct snd_sof_dev *sdev,
-+int snd_sof_create_page_table(struct device *dev,
- 			      struct snd_dma_buffer *dmab,
- 			      unsigned char *page_table, size_t size);
- 
-diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
-index b0e4556c8536..4bb65030819d 100644
---- a/sound/soc/sof/trace.c
-+++ b/sound/soc/sof/trace.c
-@@ -250,8 +250,8 @@ int snd_sof_init_trace(struct snd_sof_dev *sdev)
- 	}
- 
- 	/* create compressed page table for audio firmware */
--	ret = snd_sof_create_page_table(sdev, &sdev->dmatb, sdev->dmatp.area,
--					sdev->dmatb.bytes);
-+	ret = snd_sof_create_page_table(sdev->dev, &sdev->dmatb,
-+					sdev->dmatp.area, sdev->dmatb.bytes);
- 	if (ret < 0)
- 		goto table_err;
- 
-diff --git a/sound/soc/sof/utils.c b/sound/soc/sof/utils.c
-index 2ac4c3da0320..9831eb57df6c 100644
---- a/sound/soc/sof/utils.c
-+++ b/sound/soc/sof/utils.c
-@@ -10,6 +10,7 @@
- 
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/platform_device.h>
-+#include <asm/unaligned.h>
- #include <sound/soc.h>
- #include <sound/sof.h>
- #include "sof-priv.h"
-@@ -110,3 +111,62 @@ void sof_block_read(struct snd_sof_dev *sdev, u32 bar, u32 offset, void *dest,
- 	memcpy_fromio(dest, src, size);
- }
- EXPORT_SYMBOL(sof_block_read);
++	/* default firmware name */
++	const char *default_fw_filename;
 +
-+/*
-+ * Generic buffer page table creation.
-+ * Take the each physical page address and drop the least significant unused
-+ * bits from each (based on PAGE_SIZE). Then pack valid page address bits
-+ * into compressed page table.
-+ */
-+
-+int snd_sof_create_page_table(struct device *dev,
-+			      struct snd_dma_buffer *dmab,
-+			      unsigned char *page_table, size_t size)
-+{
-+	int i, pages;
-+
-+	pages = snd_sgbuf_aligned_pages(size);
-+
-+	dev_dbg(dev, "generating page table for %p size 0x%zx pages %d\n",
-+		dmab->area, size, pages);
-+
-+	for (i = 0; i < pages; i++) {
-+		/*
-+		 * The number of valid address bits for each page is 20.
-+		 * idx determines the byte position within page_table
-+		 * where the current page's address is stored
-+		 * in the compressed page_table.
-+		 * This can be calculated by multiplying the page number by 2.5.
-+		 */
-+		u32 idx = (5 * i) >> 1;
-+		u32 pfn = snd_sgbuf_get_addr(dmab, i * PAGE_SIZE) >> PAGE_SHIFT;
-+		u8 *pg_table;
-+
-+		dev_vdbg(dev, "pfn i %i idx %d pfn %x\n", i, idx, pfn);
-+
-+		pg_table = (u8 *)(page_table + idx);
-+
-+		/*
-+		 * pagetable compression:
-+		 * byte 0     byte 1     byte 2     byte 3     byte 4     byte 5
-+		 * ___________pfn 0__________ __________pfn 1___________  _pfn 2...
-+		 * .... ....  .... ....  .... ....  .... ....  .... ....  ....
-+		 * It is created by:
-+		 * 1. set current location to 0, PFN index i to 0
-+		 * 2. put pfn[i] at current location in Little Endian byte order
-+		 * 3. calculate an intermediate value as
-+		 *    x = (pfn[i+1] << 4) | (pfn[i] & 0xf)
-+		 * 4. put x at offset (current location + 2) in LE byte order
-+		 * 5. increment current location by 5 bytes, increment i by 2
-+		 * 6. continue to (2)
-+		 */
-+		if (i & 1)
-+			put_unaligned_le32((pg_table[0] & 0xf) | pfn << 4,
-+					   pg_table);
-+		else
-+			put_unaligned_le32(pfn, pg_table);
-+	}
-+
-+	return pages;
-+}
-+EXPORT_SYMBOL(snd_sof_create_page_table);
+ 	const struct snd_sof_dsp_ops *ops;
+ 	const struct sof_arch_ops *arch_ops;
+ };
+diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
+index df318f50dd0b..22e13ef09811 100644
+--- a/sound/soc/sof/sof-acpi-dev.c
++++ b/sound/soc/sof/sof-acpi-dev.c
+@@ -45,6 +45,7 @@ static const struct sof_dev_desc sof_acpi_haswell_desc = {
+ 	.chip_info = &hsw_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-hsw.ri",
+ 	.nocodec_fw_filename = "sof-hsw.ri",
+ 	.nocodec_tplg_filename = "sof-hsw-nocodec.tplg",
+ 	.ops = &sof_hsw_ops,
+@@ -62,6 +63,7 @@ static const struct sof_dev_desc sof_acpi_broadwell_desc = {
+ 	.chip_info = &bdw_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-bdw.ri",
+ 	.nocodec_fw_filename = "sof-bdw.ri",
+ 	.nocodec_tplg_filename = "sof-bdw-nocodec.tplg",
+ 	.ops = &sof_bdw_ops,
+@@ -81,6 +83,7 @@ static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
+ 	.chip_info = &byt_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-byt.ri",
+ 	.nocodec_fw_filename = "sof-byt.ri",
+ 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
+ 	.ops = &sof_byt_ops,
+@@ -96,6 +99,7 @@ static const struct sof_dev_desc sof_acpi_baytrail_desc = {
+ 	.chip_info = &byt_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-byt.ri",
+ 	.nocodec_fw_filename = "sof-byt.ri",
+ 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
+ 	.ops = &sof_byt_ops,
+@@ -111,6 +115,7 @@ static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
+ 	.chip_info = &cht_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-cht.ri",
+ 	.nocodec_fw_filename = "sof-cht.ri",
+ 	.nocodec_tplg_filename = "sof-cht-nocodec.tplg",
+ 	.ops = &sof_cht_ops,
+diff --git a/sound/soc/sof/sof-of-dev.c b/sound/soc/sof/sof-of-dev.c
+index 28a9692974e5..81deb5582d77 100644
+--- a/sound/soc/sof/sof-of-dev.c
++++ b/sound/soc/sof/sof-of-dev.c
+@@ -19,6 +19,7 @@ extern struct snd_sof_dsp_ops sof_imx8_ops;
+ static struct sof_dev_desc sof_of_imx8qxp_desc = {
+ 	.default_fw_path = "imx/sof",
+ 	.default_tplg_path = "imx/sof-tplg",
++	.default_fw_filename = "sof-imx8.ri",
+ 	.nocodec_fw_filename = "sof-imx8.ri",
+ 	.nocodec_tplg_filename = "sof-imx8-nocodec.tplg",
+ 	.ops = &sof_imx8_ops,
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index bbeffd932de7..046bd57657ca 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -47,6 +47,7 @@ static const struct sof_dev_desc bxt_desc = {
+ 	.chip_info = &apl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-apl.ri",
+ 	.nocodec_fw_filename = "sof-apl.ri",
+ 	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
+ 	.ops = &sof_apl_ops,
+@@ -65,6 +66,7 @@ static const struct sof_dev_desc glk_desc = {
+ 	.chip_info = &apl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-glk.ri",
+ 	.nocodec_fw_filename = "sof-glk.ri",
+ 	.nocodec_tplg_filename = "sof-glk-nocodec.tplg",
+ 	.ops = &sof_apl_ops,
+@@ -93,6 +95,7 @@ static const struct sof_dev_desc tng_desc = {
+ 	.chip_info = &tng_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-byt.ri",
+ 	.nocodec_fw_filename = "sof-byt.ri",
+ 	.nocodec_tplg_filename = "sof-byt.tplg",
+ 	.ops = &sof_tng_ops,
+@@ -111,6 +114,7 @@ static const struct sof_dev_desc cnl_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-cnl.ri",
+ 	.nocodec_fw_filename = "sof-cnl.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+@@ -129,6 +133,7 @@ static const struct sof_dev_desc cfl_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-cfl.ri",
+ 	.nocodec_fw_filename = "sof-cfl.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+@@ -149,6 +154,7 @@ static const struct sof_dev_desc cml_desc = {
+ 	.chip_info = &cnl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-cml.ri",
+ 	.nocodec_fw_filename = "sof-cml.ri",
+ 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+@@ -167,6 +173,7 @@ static const struct sof_dev_desc icl_desc = {
+ 	.chip_info = &icl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-icl.ri",
+ 	.nocodec_fw_filename = "sof-icl.ri",
+ 	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+@@ -185,6 +192,7 @@ static const struct sof_dev_desc tgl_desc = {
+ 	.chip_info = &tgl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-tgl.ri",
+ 	.nocodec_fw_filename = "sof-tgl.ri",
+ 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+@@ -203,6 +211,7 @@ static const struct sof_dev_desc ehl_desc = {
+ 	.chip_info = &ehl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-ehl.ri",
+ 	.nocodec_fw_filename = "sof-ehl.ri",
+ 	.nocodec_tplg_filename = "sof-ehl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
 -- 
 2.20.1
 
