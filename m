@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FF53C2D0C9
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AB7CC3F68F
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:31:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A21D24684
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:26:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE4832077B
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Dec 2019 19:31:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a1Tka2TB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A21D24684
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ltPmaZo4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE4832077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19F9416A8;
-	Mon,  9 Dec 2019 20:08:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19F9416A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 909051670;
+	Mon,  9 Dec 2019 20:06:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 909051670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575918530;
-	bh=Nj1SvI4KlFjxLuzkGrcekd/L18VB1XGTzNSmNn28084=;
+	s=default; t=1575918415;
+	bh=+F+JUy7UVK9pGXzVQzB+I4+yJ0m6doNAkv2tuqc0hnE=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=a1Tka2TBnegY3V60LgfPt9zaXVG448C0PydfbAEdE+5dE3WmHTyEPrbRRsT7NSo7O
-	 iDq33xRVUdCBK1cyPFVtwuZN89J5Z/NO3jU70d9jgM+Ln3nIDVnbyoQgAUE3e4aasP
-	 GilUzyrk3hrgwYCfwsIrT4iE28XoKFqiR352d84Q=
+	b=ltPmaZo4sWQkP5n61EcRPDj0FmuuRHpm28icyB7Xb3acZMIeSLNwQy2UKcG70ioO6
+	 YDpcgaCXOGWvQ9hBPmZaSIJT67ucfW1H7YiZEQAyJqWfSBgYF3cErxbx37K6FFZegb
+	 oAYz5kYRKcdFx0e7Wi44x6bADONQHyhMRffka2Lo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98F79F80307;
-	Mon,  9 Dec 2019 19:59:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCD80F802E8;
+	Mon,  9 Dec 2019 19:59:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35DADF802C3; Mon,  9 Dec 2019 19:59:13 +0100 (CET)
+ id 56828F80276; Mon,  9 Dec 2019 19:59:08 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id DD70AF802A0
- for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD70AF802A0
+ by alsa1.perex.cz (Postfix) with ESMTP id 334F1F80276
+ for <alsa-devel@alsa-project.org>; Mon,  9 Dec 2019 19:59:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 334F1F80276
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B4B311D4;
- Mon,  9 Dec 2019 10:59:08 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 492D211B3;
+ Mon,  9 Dec 2019 10:59:01 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B7B63F6CF;
- Mon,  9 Dec 2019 10:59:07 -0800 (PST)
-Date: Mon, 09 Dec 2019 18:59:06 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB7AA3F6CF;
+ Mon,  9 Dec 2019 10:59:00 -0800 (PST)
+Date: Mon, 09 Dec 2019 18:58:59 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-In-Reply-To: <20191206103542.485224-1-jbrunet@baylibre.com>
-Message-Id: <applied-20191206103542.485224-1-jbrunet@baylibre.com>
+To: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20191204211556.12671-4-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191204211556.12671-4-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [alsa-devel] Applied "ASoC: hdmi-codec: re-introduce mutex locking
-	again" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: Intel - do not describe I/O
+	configuration in the long card name" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: hdmi-codec: re-introduce mutex locking again
+   ASoC: Intel - do not describe I/O configuration in the long card name
 
 has been applied to the asoc tree at
 
@@ -102,104 +102,138 @@ to this mail.
 Thanks,
 Mark
 
-From 1442842952ccfe4178602c7a8459ac2ecb9d9e1a Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Fri, 6 Dec 2019 11:35:42 +0100
-Subject: [PATCH] ASoC: hdmi-codec: re-introduce mutex locking again
+From b5706f8ec29fb461571d25e3e813ede121fe31cd Mon Sep 17 00:00:00 2001
+From: Jaroslav Kysela <perex@perex.cz>
+Date: Wed, 4 Dec 2019 15:15:46 -0600
+Subject: [PATCH] ASoC: Intel - do not describe I/O configuration in the long
+ card name
 
-The dai codec needs to ensure that on one dai is used at any time.
-This is currently protected by bit atomic operation. With this change,
-it done with a mutex instead.
+The long card name might be used in GUI. This information should be hidden.
 
-This change is not about functionality or efficiency. It is done with
-the hope that it help maintainability in the future.
+Add CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES configuration option.
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20191206103542.485224-1-jbrunet@baylibre.com
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20191204211556.12671-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+ sound/soc/intel/boards/Kconfig         | 13 +++++++++++++
+ sound/soc/intel/boards/bytcht_es8316.c |  4 ++++
+ sound/soc/intel/boards/bytcr_rt5640.c  |  4 ++++
+ sound/soc/intel/boards/bytcr_rt5651.c  |  4 ++++
+ 4 files changed, 25 insertions(+)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index f8b5b960e597..543363102d03 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -274,7 +274,8 @@ struct hdmi_codec_priv {
- 	uint8_t eld[MAX_ELD_BYTES];
- 	struct snd_pcm_chmap *chmap_info;
- 	unsigned int chmap_idx;
--	unsigned long busy;
-+	struct mutex lock;
-+	bool busy;
- 	struct snd_soc_jack *jack;
- 	unsigned int jack_status;
- };
-@@ -390,9 +391,10 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
- 	int ret = 0;
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 575064b315ef..a8d71b5ed41e 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -13,6 +13,19 @@ menuconfig SND_SOC_INTEL_MACH
  
--	ret = test_and_set_bit(0, &hcp->busy);
--	if (ret) {
-+	mutex_lock(&hcp->lock);
-+	if (hcp->busy) {
- 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
-+		mutex_unlock(&hcp->lock);
- 		return -EINVAL;
- 	}
+ if SND_SOC_INTEL_MACH
  
-@@ -405,21 +407,21 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
- 	if (hcp->hcd.ops->get_eld) {
- 		ret = hcp->hcd.ops->get_eld(dai->dev->parent, hcp->hcd.data,
- 					    hcp->eld, sizeof(hcp->eld));
-+		if (ret)
-+			goto err;
++config SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES
++	bool "Use more user friendly long card names"
++	help
++	  Some drivers report the I/O configuration to userspace through the
++	  soundcard's long card name in the control user space AP. An unfortunate
++	  side effect is that this long name may also be used by the GUI,
++	  confusing users with information they don't need.
++	  This option prevents the long name from being modified, and the I/O
++	  configuration will be provided through a different component interface.
++	  Select Y if userspace like UCM (Use Case Manager) uses the component
++	  interface.
++	  If unsure select N.
 +
-+		ret = snd_pcm_hw_constraint_eld(substream->runtime, hcp->eld);
-+		if (ret)
-+			goto err;
+ if SND_SOC_INTEL_HASWELL
  
--		if (!ret) {
--			ret = snd_pcm_hw_constraint_eld(substream->runtime,
--							hcp->eld);
--			if (ret)
--				goto err;
--		}
- 		/* Select chmap supported */
- 		hdmi_codec_eld_chmap(hcp);
- 	}
--	return 0;
-+
-+	hcp->busy = true;
+ config SND_SOC_INTEL_HASWELL_MACH
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index efa33f30dcac..12a1c5255484 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -360,7 +360,9 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
  
- err:
--	/* Release the exclusive lock on error */
--	clear_bit(0, &hcp->busy);
-+	mutex_unlock(&hcp->lock);
- 	return ret;
- }
+ /* SoC card */
+ static char codec_name[SND_ACPI_I2C_ID_LEN];
++#if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ static char long_name[50]; /* = "bytcht-es8316-*-spk-*-mic" */
++#endif
+ static char components_string[32]; /* = "cfg-spk:* cfg-mic:* */
  
-@@ -431,7 +433,9 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
- 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
- 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
+ static int byt_cht_es8316_suspend(struct snd_soc_card *card)
+@@ -578,10 +580,12 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "1" : "2",
+ 		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
+ 	byt_cht_es8316_card.components = components_string;
++#if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ 	snprintf(long_name, sizeof(long_name), "bytcht-es8316-%s-spk-%s-mic",
+ 		 (quirk & BYT_CHT_ES8316_MONO_SPEAKER) ? "mono" : "stereo",
+ 		 mic_name[BYT_CHT_ES8316_MAP(quirk)]);
+ 	byt_cht_es8316_card.long_name = long_name;
++#endif
  
--	clear_bit(0, &hcp->busy);
-+	mutex_lock(&hcp->lock);
-+	hcp->busy = false;
-+	mutex_unlock(&hcp->lock);
- }
+ 	/* register the soc card */
+ 	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 7bc6d3cec94c..648fcc1d07b5 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1082,7 +1082,9 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
++#if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
++#endif
+ static char byt_rt5640_components[32]; /* = "cfg-spk:* cfg-mic:*" */
  
- static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
-@@ -811,6 +815,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+ static int byt_rt5640_suspend(struct snd_soc_card *card)
+@@ -1311,12 +1313,14 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
+ 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
+ 	byt_rt5640_card.components = byt_rt5640_components;
++#if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
+ 		 "bytcr-rt5640-%s-spk-%s-mic",
+ 		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
+ 			"mono" : "stereo",
+ 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
+ 	byt_rt5640_card.long_name = byt_rt5640_long_name;
++#endif
  
- 	hcp->hcd = *hcd;
-+	mutex_init(&hcp->lock);
-+
- 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
- 	if (!daidrv)
- 		return -ENOMEM;
+ 	/* override plaform name, if required */
+ 	platform_name = mach->mach_params.platform;
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 80a5674ddb1b..c0d322a859f7 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -797,7 +797,9 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+ static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
++#if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
++#endif
+ static char byt_rt5651_components[50]; /* = "cfg-spk:* cfg-mic:*" */
+ 
+ static int byt_rt5651_suspend(struct snd_soc_card *card)
+@@ -1087,6 +1089,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
+ 			" cfg-hp:lrswap" : "");
+ 	byt_rt5651_card.components = byt_rt5651_components;
++#if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
+ 		 "bytcr-rt5651-%s-spk-%s-mic%s",
+ 		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
+@@ -1095,6 +1098,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		 (byt_rt5651_quirk & BYT_RT5651_HP_LR_SWAPPED) ?
+ 			"-hp-swapped" : "");
+ 	byt_rt5651_card.long_name = byt_rt5651_long_name;
++#endif
+ 
+ 	/* override plaform name, if required */
+ 	platform_name = mach->mach_params.platform;
 -- 
 2.20.1
 
