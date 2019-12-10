@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F1D8C2D0C6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9169FC2D0C9
 	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:21:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1357424655
+	by mail.kernel.org (Postfix) with ESMTPS id 0AC2324654
 	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:21:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iiZruSj3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1357424655
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nfai6bOB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AC2324654
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74AC81747;
-	Tue, 10 Dec 2019 08:03:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74AC81747
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75FAE1733;
+	Tue, 10 Dec 2019 08:02:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75FAE1733
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575961488;
-	bh=+kcT/PrPP5Ett1Q1nDGR4gPEEOJWh15N7MyZ5/vEn5Q=;
+	s=default; t=1575961410;
+	bh=WJS0wJF0wbBfn0AFLuelv105kRQNNrKv23ItxzX1HaE=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iiZruSj37Tl12LA3Xx8S0IlvgTqWV3As6J4itqjFpzHEugayeQyRZPOiLDiflYav6
-	 vRTk3ho8wxUITPmofUemgTuexX57g+2QgmS4cy7McNaHZKWfOTFliIkiLGKM+d8B8o
-	 FKf0ea/kI3QzO3BJNeNY+gidtFy3Aqip2+8JL9JM=
+	b=nfai6bOB411xg2uF2IJlUPXiHdzBHQFLCU1AP515zq2ZX+/iIbdz6UaLQ4Vxvt/S4
+	 SDUgNnT8mf33WWxcfaMfHv3U9pSP7BYlkYd2ybzJe9+sWwycPyuVy4EOjFDxMsJu5I
+	 aNRnhD9qDQKql6Zt1Q2Pljf5c1jAAEBzLYpUPhS4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC56DF80474;
-	Tue, 10 Dec 2019 07:37:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9C96F8045E;
+	Tue, 10 Dec 2019 07:37:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29160F8034A; Tue, 10 Dec 2019 07:36:34 +0100 (CET)
+ id 8BE87F80349; Tue, 10 Dec 2019 07:36:32 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE4B6F8028F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A580F8028A
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:35:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE4B6F8028F
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A580F8028A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 71BD7B318
+ by mx1.suse.de (Postfix) with ESMTP id 3EBE6AF87
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:35:01 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:34:45 +0100
-Message-Id: <20191210063454.31603-47-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 07:34:41 +0100
+Message-Id: <20191210063454.31603-43-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210063454.31603-1-tiwai@suse.de>
 References: <20191210063454.31603-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 46/55] ALSA: sb: Support PCM sync_stop
+Subject: [alsa-devel] [PATCH 42/55] ALSA: gus: Support PCM sync_stop
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,21 +81,49 @@ operation.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/sb/sb_common.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/isa/gus/gus_main.c  | 1 +
+ sound/isa/gus/gusmax.c    | 3 ++-
+ sound/isa/gus/interwave.c | 1 +
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/isa/sb/sb_common.c b/sound/isa/sb/sb_common.c
-index ff031d670400..4aaf9ab82afe 100644
---- a/sound/isa/sb/sb_common.c
-+++ b/sound/isa/sb/sb_common.c
-@@ -233,6 +233,7 @@ int snd_sbdsp_create(struct snd_card *card,
+diff --git a/sound/isa/gus/gus_main.c b/sound/isa/gus/gus_main.c
+index af6b4d89d695..9f94b5f3b029 100644
+--- a/sound/isa/gus/gus_main.c
++++ b/sound/isa/gus/gus_main.c
+@@ -181,6 +181,7 @@ int snd_gus_create(struct snd_card *card,
  		return -EBUSY;
  	}
- 	chip->irq = irq;
-+	card->sync_irq = chip->irq;
+ 	gus->gf1.irq = irq;
++	card->sync_irq = irq;
+ 	if (request_dma(dma1, "GUS - 1")) {
+ 		snd_printk(KERN_ERR "gus: can't grab DMA1 %d\n", dma1);
+ 		snd_gus_free(gus);
+diff --git a/sound/isa/gus/gusmax.c b/sound/isa/gus/gusmax.c
+index 53eca205f870..efe576625f48 100644
+--- a/sound/isa/gus/gusmax.c
++++ b/sound/isa/gus/gusmax.c
+@@ -282,7 +282,8 @@ static int snd_gusmax_probe(struct device *pdev, unsigned int dev)
+ 		goto _err;
+ 	}
+ 	maxcard->irq = xirq;
+-	
++	card->sync_irq = maxcard->irq;
++
+ 	err = snd_wss_create(card,
+ 			     gus->gf1.port + 0x10c, -1, xirq,
+ 			     xdma2 < 0 ? xdma1 : xdma2, xdma1,
+diff --git a/sound/isa/gus/interwave.c b/sound/isa/gus/interwave.c
+index bc006dcf8de3..5cd4aa477ba7 100644
+--- a/sound/isa/gus/interwave.c
++++ b/sound/isa/gus/interwave.c
+@@ -667,6 +667,7 @@ static int snd_interwave_probe(struct snd_card *card, int dev)
+ 		return -EBUSY;
+ 	}
+ 	iwcard->irq = xirq;
++	card->sync_irq = iwcard->irq;
  
- 	if (hardware == SB_HW_ALS4000)
- 		goto __skip_allocation;
+ 	err = snd_wss_create(card,
+ 			     gus->gf1.port + 0x10c, -1, xirq,
 -- 
 2.16.4
 
