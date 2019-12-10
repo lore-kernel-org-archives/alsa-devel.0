@@ -6,78 +6,76 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01EDDC2D0C5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A890C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:36:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C87F2073B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:35:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA03B206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:36:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Esi/95it";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aOXol1qY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C87F2073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="un4y8XmT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="RAcNrd63"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA03B206D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D27E1616;
-	Tue, 10 Dec 2019 22:35:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D27E1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A72D1667;
+	Tue, 10 Dec 2019 22:35:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A72D1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576013755;
-	bh=Pc5s4708737O7NemRkvU2yQoz00GKhF/ryEOXdjHFRA=;
+	s=default; t=1576013809;
+	bh=hnuZLNF5mpJCMCjG1oV4wYrWRV4SUxgXEtsoZtkCIg0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Esi/95itygdU/YHVwkrP10zfJEWQNettB0DREq1dBDijHjsnUEPngZrtY9drETMdk
-	 YdlujYG/lZWVCOtypPX8Nt/il25cKJ/yelxLuajGJqCkkUmvIyoaVe01VISnJYkkAO
-	 sq3Y5yr0NyUfg2ji6yqKMw748gQ1hhhW+BD5bcE0=
+	b=un4y8XmTq8sgjXuIA+f3Cu2/bclXFn8dbmueBz4g7v+Ad0+a9BY6AgQDZRj411Fau
+	 c0r+Gx+FYE9OPeCuiqWF++TvJ2YJOw2bExO2kdMsIO5MSCZLoBbpyFwRW7G2RgIkJ0
+	 Iy5Lw/7x/F/C7zVzJkylRusowLZ2Jwzf4RcsNn+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7FDAF80249;
-	Tue, 10 Dec 2019 22:34:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C14F2F8025E;
+	Tue, 10 Dec 2019 22:34:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58011F80252; Tue, 10 Dec 2019 22:34:12 +0100 (CET)
+ id 4C5F3F80260; Tue, 10 Dec 2019 22:34:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65F97F800F3
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:34:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65F97F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6915F80259
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:34:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6915F80259
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aOXol1qY"
+ header.b="RAcNrd63"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3F78A208C3;
- Tue, 10 Dec 2019 21:34:06 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 82CBB205C9;
+ Tue, 10 Dec 2019 21:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576013647;
- bh=UtT9m3SV8Nl59iqRpAiuZx2MjM2XWgzYpBKXjgJDrGE=;
+ s=default; t=1576013669;
+ bh=7qQErm/WS5u9h7eoRBUCjzqu/qI6ZlHFCNjjr0JoKhw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=aOXol1qYm96HQn7dHnGAkEeUZf7pHc0EPlZSChHW0KyK2NaJWq1SP2bUwW8W5pFQD
- 90wbuNTSO46XBIex7j16+1n1pOJW7j2iLURh3lext2EEIEku1GCdj4mMovAle8QCrE
- Grj70pgD7QDg7O+Sy9puKWzkVHf7D0SlxbZxg6lU=
+ b=RAcNrd63bo3r4nrxFKIksgCV+/4pSlGwsJAlZv4Aqd+H+8S+GsPRhhVQhTnmQa2bs
+ jmfgxZ4+tQxlmqKmQbUeAk0CbhAMMVbhM75hmgInGM1QPZxn6KS8+XmZiBe03bCZf7
+ AKxzkXdbpt2x2zn+fmRPh59/LEwcsLFw1ZVbBOeU=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Tue, 10 Dec 2019 16:30:50 -0500
-Message-Id: <20191210213221.11921-86-sashal@kernel.org>
+Date: Tue, 10 Dec 2019 16:31:10 -0500
+Message-Id: <20191210213221.11921-106-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210213221.11921-1-sashal@kernel.org>
 References: <20191210213221.11921-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 086/177] ALSA: hda/hdmi -
-	implement mst_no_extra_pcms flag
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 106/177] ALSA: timer: Limit max
+	amount of slave instances
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,90 +93,68 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 2a2edfbbfee47947dd05f5860c66c0e80ee5e09d ]
+[ Upstream commit fdea53fe5de532969a332d6e5e727f2ad8bf084d ]
 
-To support the DP-MST multiple streams via single connector feature,
-the HDMI driver was extended with the concept of backup PCMs. See
-commit 9152085defb6 ("ALSA: hda - add DP MST audio support").
+The fuzzer tries to open the timer instances as much as possible, and
+this may cause a system hiccup easily.  We've already introduced the
+cap for the max number of available instances for the h/w timers, and
+we should put such a limit also to the slave timers, too.
 
-This implementation works fine with snd_hda_intel.c as PCM topology
-is fully managed within the single driver.
+This patch introduces the limit to the multiple opened slave timers.
+The upper limit is hard-coded to 1000 for now, which should suffice
+for any practical usages up to now.
 
-When the HDA codec driver is used from ASoC components, the concept
-of backup PCMs no longer fits. For ASoC topologies, the physical
-HDMI converters are presented as backend DAIs and these should match
-with hardware capabilities. The ASoC topology may define arbitrary
-PCMs (i.e. frontend DAIs) and have processing elements before eventual
-routing to the HDMI BE DAIs. With backup PCMs, the link between
-FE and BE DAIs would become dynamic and change when monitors are
-(un)plugged. This would lead to modifying the topology every time
-hotplug events happen, which is not currently possible in ASoC and
-there does not seem to be any obvious benefits from this design.
-
-To overcome above problems and enable the HDMI driver to be used
-from ASoC, this patch adds a new mode (mst_no_extra_pcms flags) to
-patch_hdmi.c. In this mode, the codec driver does not assume
-the backup PCMs to be created.
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191029134017.18901-2-kai.vehmanen@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20191106154257.5853-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_codec.h  |  1 +
- sound/pci/hda/patch_hdmi.c | 19 ++++++++++++++-----
- 2 files changed, 15 insertions(+), 5 deletions(-)
+ sound/core/timer.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 2003403ce1c82..199927694aeff 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -262,6 +262,7 @@ struct hda_codec {
- 	unsigned int force_pin_prefix:1; /* Add location prefix */
- 	unsigned int link_down_at_suspend:1; /* link down at runtime suspend */
- 	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
-+	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 86a31e69fc7d9..b5dc51030316a 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -88,6 +88,9 @@ static LIST_HEAD(snd_timer_slave_list);
+ /* lock for slave active lists */
+ static DEFINE_SPINLOCK(slave_active_lock);
  
- #ifdef CONFIG_PM
- 	unsigned long power_on_acct;
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index c827a2a89cc3d..9d5e3c8d62b93 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2063,15 +2063,24 @@ static bool is_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
- static int generic_hdmi_build_pcms(struct hda_codec *codec)
- {
- 	struct hdmi_spec *spec = codec->spec;
--	int idx;
-+	int idx, pcm_num;
++#define MAX_SLAVE_INSTANCES	1000
++static int num_slaves;
++
+ static DEFINE_MUTEX(register_mutex);
  
- 	/*
- 	 * for non-mst mode, pcm number is the same as before
--	 * for DP MST mode, pcm number is (nid number + dev_num - 1)
--	 *  dev_num is the device entry number in a pin
--	 *
-+	 * for DP MST mode without extra PCM, pcm number is same
-+	 * for DP MST mode with extra PCMs, pcm number is
-+	 *  (nid number + dev_num - 1)
-+	 * dev_num is the device entry number in a pin
- 	 */
--	for (idx = 0; idx < spec->num_nids + spec->dev_num - 1; idx++) {
-+
-+	if (codec->mst_no_extra_pcms)
-+		pcm_num = spec->num_nids;
-+	else
-+		pcm_num = spec->num_nids + spec->dev_num - 1;
-+
-+	codec_dbg(codec, "hdmi: pcm_num set to %d\n", pcm_num);
-+
-+	for (idx = 0; idx < pcm_num; idx++) {
- 		struct hda_pcm *info;
- 		struct hda_pcm_stream *pstr;
+ static int snd_timer_free(struct snd_timer *timer);
+@@ -266,6 +269,10 @@ int snd_timer_open(struct snd_timer_instance **ti,
+ 			err = -EINVAL;
+ 			goto unlock;
+ 		}
++		if (num_slaves >= MAX_SLAVE_INSTANCES) {
++			err = -EBUSY;
++			goto unlock;
++		}
+ 		timeri = snd_timer_instance_new(owner, NULL);
+ 		if (!timeri) {
+ 			err = -ENOMEM;
+@@ -275,6 +282,7 @@ int snd_timer_open(struct snd_timer_instance **ti,
+ 		timeri->slave_id = tid->device;
+ 		timeri->flags |= SNDRV_TIMER_IFLG_SLAVE;
+ 		list_add_tail(&timeri->open_list, &snd_timer_slave_list);
++		num_slaves++;
+ 		err = snd_timer_check_slave(timeri);
+ 		if (err < 0) {
+ 			snd_timer_close_locked(timeri, &card_dev_to_put);
+@@ -364,6 +372,8 @@ static int snd_timer_close_locked(struct snd_timer_instance *timeri,
+ 	struct snd_timer_instance *slave, *tmp;
  
+ 	list_del(&timeri->open_list);
++	if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE)
++		num_slaves--;
+ 
+ 	/* force to stop the timer */
+ 	snd_timer_stop(timeri);
 -- 
 2.20.1
 
