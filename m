@@ -2,61 +2,95 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07DD3C47409
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9D99C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 09:11:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6134C2073B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:31:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C762F206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 09:11:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J2O9A2Ib"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6134C2073B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n3BqRzW3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G3Ih9QEP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C762F206E0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB8FB16F6;
-	Tue, 10 Dec 2019 07:54:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB8FB16F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F8C5843;
+	Tue, 10 Dec 2019 10:10:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F8C5843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575960898;
-	bh=BxryL1YmToeWrzUFzvSwk65fpMTQJxHXsXV9kOpMSkk=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=J2O9A2IbTtRxqmSzz4yANs3tAuPrPz/O8VNyLs0u8h5Uhaj9QYCULHWvCSonKojSk
-	 np0ypBiViyNsKntcaIlmOL9de6emmAxrF2u4Z37YxZNAISoeW3ra2J0MRz5GpC89Jg
-	 XNTsNag2W2dGMOhxbHBO4xRxLoHAqGqLvdPN+kDo=
+	s=default; t=1575969108;
+	bh=L2VzLtar9rm0nn5PwGBDh56j4XQGzPs5BxGJcV+qv1A=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=n3BqRzW3N0Tar6rUgOjrL05DxUqNqG7DGCJLPYKrwBsJo4I3hXmzkIg8PeCF+rzVH
+	 p5xvdG3jddhMPcfX1Yddgp6xA6NRZWv/8kX3Z1F6GK4zegyDDY/FDs05JwLcmSdvD+
+	 uWDOQmCCrDe+t+tj3r/3QtmfMgJrMSIdWY/6tM9A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A2B0F80384;
-	Tue, 10 Dec 2019 07:37:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 803EFF80217;
+	Tue, 10 Dec 2019 10:10:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 007E1F80331; Tue, 10 Dec 2019 07:36:06 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 88D96F80248; Tue, 10 Dec 2019 10:10:55 +0100 (CET)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
+ [IPv6:2607:f8b0:4864:20::102b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5CD4F8026F
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:35:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5CD4F8026F
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id B2286B2F3
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:35:00 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 28903F800F3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 10:10:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28903F800F3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="G3Ih9QEP"
+Received: by mail-pj1-x102b.google.com with SMTP id ca19so7149612pjb.8
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:10:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=iAka9PCMzUV/Go882dsW2XBzBH2WGkc6IRilMYRAjgo=;
+ b=G3Ih9QEPSbEpVAuWFDLlWEsfT7xtnE3GtpH4yX+kxJdRtzEcm9l30AMSDOWAhZgbes
+ cz9uOWicu+fWi2cwBTRKulbfqOdN0RCaz4+yRO09mjfSyZTf7vBGNtx8D1WV9REh72eR
+ dq1bPKuXCa0i5isedk6GFqZMRSaP+/QHwGj/axfkpXzhm8vvVVJZT291PRQfPXya8Uhp
+ xdaXQphaMVa5jTfp10inWB8dzJuT8fSvPlAShCF8NWU+rTtisSi7td3E8CI9E2DPO15a
+ AszQI7gW9CBgNzCDi1GM+/aN62TwM1mcr2IJVWezK7tBBtJfCWvCJeJXxIy6aM22mBqY
+ nIDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=iAka9PCMzUV/Go882dsW2XBzBH2WGkc6IRilMYRAjgo=;
+ b=q6okBgss8B7CrTCmNhG1GIa7sLLIq7Kl2hu0oNVCbxoZOjpvqY5Fe56z2HJHvK49m4
+ sXu0d+fWsi1VTelS9J/Gci56GG+Ab4cUjP4Php2xRijiFEc/Bzw8JsuhmhvplN90QyKD
+ TXWyBlsn4GCjXZDgpqhXGZr9h3ZkXxEb/WQZRMFVpaudB04hiZSGD5ra9Xe5hmgLF3Vv
+ xXa6IpgMYsk5T71YJlXUQQL1p+vRX1/iHJzf+hO1O5ykIt661c8jVte0PwqhStKuldgl
+ TTKRZeYOWu1iLiVVyxPAE4fQQ8puP8kyqHHrtOIj9qtvedDRALPvE4oeg+h+JTsfxh3H
+ TTnA==
+X-Gm-Message-State: APjAAAWRhnvsVDdBynZ1blX1yP49PAe4xzFwVnkeDwSGWNkwctzybFqi
+ Tg7IbrDlrrsK5H7ObKB30v961urwddo=
+X-Google-Smtp-Source: APXvYqx52rM2c19cP0n4NS72e9CFFlckMO2mFJo84WTv4/lNLGYAnujm1oBJTMo+3EqCY8zpKy7Sfw==
+X-Received: by 2002:a17:90a:a004:: with SMTP id
+ q4mr4228578pjp.106.1575969049469; 
+ Tue, 10 Dec 2019 01:10:49 -0800 (PST)
+Received: from localhost.localdomain ([69.42.0.214])
+ by smtp.gmail.com with ESMTPSA id d14sm2140551pjz.12.2019.12.10.01.10.48
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 10 Dec 2019 01:10:48 -0800 (PST)
+From: Rosen Penev <rosenp@gmail.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:34:31 +0100
-Message-Id: <20191210063454.31603-33-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191210063454.31603-1-tiwai@suse.de>
-References: <20191210063454.31603-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 32/55] ALSA: rme96: Support PCM sync_stop
+Date: Tue, 10 Dec 2019 01:10:45 -0800
+Message-Id: <20191210091047.143081-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Subject: [alsa-devel] [PATCH 1/3] treewide: Fix -Wformat=2 warnings
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,35 +103,239 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver invokes snd_pcm_period_elapsed() simply from the interrupt
-handler.  Set card->sync_irq for enabling the missing sync_stop PCM
-operation.
+Allows the compiler to check these formats at compile time.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixed several such warnings.
+
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
 ---
- sound/pci/rme96.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/use-case.h     | 1 +
+ src/error.c            | 2 ++
+ src/input.c            | 6 ++++--
+ src/output.c           | 6 ++++--
+ src/pcm/pcm.c          | 4 ++--
+ src/pcm/pcm_direct.c   | 2 +-
+ src/pcm/pcm_file.c     | 6 +++---
+ src/topology/builder.c | 3 ++-
+ src/ucm/ucm_local.h    | 2 ++
+ 9 files changed, 21 insertions(+), 11 deletions(-)
 
-diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
-index f52195791a8b..537381632be7 100644
---- a/sound/pci/rme96.c
-+++ b/sound/pci/rme96.c
-@@ -1629,6 +1629,7 @@ snd_rme96_create(struct rme96 *rme96)
- 		return -EBUSY;
- 	}
- 	rme96->irq = pci->irq;
-+	rme96->card->sync_irq = rme96->irq;
+diff --git a/include/use-case.h b/include/use-case.h
+index 2efcb4d8..3f0cf58e 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -188,6 +188,7 @@ typedef struct snd_use_case_mgr snd_use_case_mgr_t;
+  * \param ... Optional arguments for sprintf like format
+  * \return Allocated string identifier or NULL on error
+  */
++__attribute__((format(printf, 1, 2)))
+ char *snd_use_case_identifier(const char *fmt, ...);
  
- 	/* read the card's revision number */
- 	pci_read_config_byte(pci, 8, &rme96->rev);	
+ /**
+diff --git a/src/error.c b/src/error.c
+index 2e617f87..ad281411 100644
+--- a/src/error.c
++++ b/src/error.c
+@@ -95,6 +95,7 @@ snd_local_error_handler_t snd_lib_error_set_local(snd_local_error_handler_t func
+  * \ref snd_lib_error_set_local, it is called. Otherwise, prints the error
+  * message including location to \c stderr.
+  */
++__attribute__((format(printf, 5, 6)))
+ static void snd_lib_error_default(const char *file, int line, const char *function, int err, const char *fmt, ...)
+ {
+ 	va_list arg;
+@@ -149,6 +150,7 @@ const char *snd_asoundlib_version(void)
+ /*
+  * internal error handling
+  */
++__attribute__((format(printf, 5, 6)))
+ static void snd_err_msg_default(const char *file, int line, const char *function, int err, const char *fmt, ...)
+ {
+ 	va_list arg;
+diff --git a/src/input.c b/src/input.c
+index 35324f1f..c204fe7b 100644
+--- a/src/input.c
++++ b/src/input.c
+@@ -132,6 +132,7 @@ static int snd_input_stdio_close(snd_input_t *input ATTRIBUTE_UNUSED)
+ 	return 0;
+ }
+ 
++__attribute__((format(scanf, 2, 0)))
+ static int snd_input_stdio_scan(snd_input_t *input, const char *format, va_list args)
+ {
+ 	snd_input_stdio_t *stdio = input->private_data;
+@@ -144,7 +145,7 @@ static char *snd_input_stdio_gets(snd_input_t *input, char *str, size_t size)
+ 	snd_input_stdio_t *stdio = input->private_data;
+ 	return fgets(str, (int) size, stdio->fp);
+ }
+-			
++
+ static int snd_input_stdio_getc(snd_input_t *input)
+ {
+ 	snd_input_stdio_t *stdio = input->private_data;
+@@ -236,6 +237,7 @@ static int snd_input_buffer_close(snd_input_t *input)
+ 	return 0;
+ }
+ 
++__attribute__((format(scanf, 2, 0)))
+ static int snd_input_buffer_scan(snd_input_t *input, const char *format, va_list args)
+ {
+ 	snd_input_buffer_t *buffer = input->private_data;
+@@ -262,7 +264,7 @@ static char *snd_input_buffer_gets(snd_input_t *input, char *str, size_t size)
+ 	*str = '\0';
+ 	return str;
+ }
+-			
++
+ static int snd_input_buffer_getc(snd_input_t *input)
+ {
+ 	snd_input_buffer_t *buffer = input->private_data;
+diff --git a/src/output.c b/src/output.c
+index 7e3a91b3..935ab003 100644
+--- a/src/output.c
++++ b/src/output.c
+@@ -141,6 +141,7 @@ static int snd_output_stdio_close(snd_output_t *output)
+ 	return 0;
+ }
+ 
++__attribute__((format(printf, 2, 0)))
+ static int snd_output_stdio_print(snd_output_t *output, const char *format, va_list args)
+ {
+ 	snd_output_stdio_t *stdio = output->private_data;
+@@ -152,7 +153,7 @@ static int snd_output_stdio_puts(snd_output_t *output, const char *str)
+ 	snd_output_stdio_t *stdio = output->private_data;
+ 	return fputs(str, stdio->fp);
+ }
+-			
++
+ static int snd_output_stdio_putc(snd_output_t *output, int c)
+ {
+ 	snd_output_stdio_t *stdio = output->private_data;
+@@ -268,6 +269,7 @@ static int snd_output_buffer_need(snd_output_t *output, size_t size)
+ 	return buffer->alloc - buffer->size;
+ }
+ 
++__attribute__((format(printf, 2, 0)))
+ static int snd_output_buffer_print(snd_output_t *output, const char *format, va_list args)
+ {
+ 	snd_output_buffer_t *buffer = output->private_data;
+@@ -304,7 +306,7 @@ static int snd_output_buffer_puts(snd_output_t *output, const char *str)
+ 	buffer->size += size;
+ 	return size;
+ }
+-			
++
+ static int snd_output_buffer_putc(snd_output_t *output, int c)
+ {
+ 	snd_output_buffer_t *buffer = output->private_data;
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 1064044c..09dfe967 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -8241,7 +8241,7 @@ int snd_pcm_chmap_print(const snd_pcm_chmap_t *map, size_t maxlen, char *buf)
+ 				return -ENOMEM;
+ 		}
+ 		if (map->pos[i] & SND_CHMAP_DRIVER_SPEC)
+-			len += snprintf(buf + len, maxlen - len, "%d", p);
++			len += snprintf(buf + len, maxlen - len, "%u", p);
+ 		else {
+ 			const char *name = chmap_names[p];
+ 			if (name)
+@@ -8249,7 +8249,7 @@ int snd_pcm_chmap_print(const snd_pcm_chmap_t *map, size_t maxlen, char *buf)
+ 						"%s", name);
+ 			else
+ 				len += snprintf(buf + len, maxlen - len,
+-						"Ch%d", p);
++						"Ch%u", p);
+ 		}
+ 		if (len >= maxlen)
+ 			return -ENOMEM;
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 54d99005..719e1692 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -1406,7 +1406,7 @@ int snd_pcm_direct_initialize_poll_fd(snd_pcm_direct_t *dmix)
+ 		SNDERR("unable to info for slave pcm");
+ 		return ret;
+ 	}
+-	sprintf(name, "hw:CLASS=%i,SCLASS=0,CARD=%i,DEV=%i,SUBDEV=%i",
++	sprintf(name, "hw:CLASS=%i,SCLASS=0,CARD=%i,DEV=%u,SUBDEV=%u",
+ 		(int)SND_TIMER_CLASS_PCM,
+ 		snd_pcm_info_get_card(&info),
+ 		snd_pcm_info_get_device(&info),
+diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
+index a02b2dc0..c874e863 100644
+--- a/src/pcm/pcm_file.c
++++ b/src/pcm/pcm_file.c
+@@ -155,7 +155,7 @@ static int snd_pcm_file_replace_fname(snd_pcm_file_t *file, char **new_fname_p)
+ 			 next char */
+ 			switch (*(++old_index_ch)) {
+ 			case RATE_KEY:
+-				snprintf(value, sizeof(value), "%d",
++				snprintf(value, sizeof(value), "%u",
+ 						pcm->rate);
+ 				err = snd_pcm_file_append_value(&new_fname,
+ 					&new_index_ch, &new_len, value);
+@@ -164,7 +164,7 @@ static int snd_pcm_file_replace_fname(snd_pcm_file_t *file, char **new_fname_p)
+ 				break;
+ 
+ 			case CHANNELS_KEY:
+-				snprintf(value, sizeof(value), "%d",
++				snprintf(value, sizeof(value), "%u",
+ 						pcm->channels);
+ 				err = snd_pcm_file_append_value(&new_fname,
+ 					&new_index_ch, &new_len, value);
+@@ -173,7 +173,7 @@ static int snd_pcm_file_replace_fname(snd_pcm_file_t *file, char **new_fname_p)
+ 				break;
+ 
+ 			case BWIDTH_KEY:
+-				snprintf(value, sizeof(value), "%d",
++				snprintf(value, sizeof(value), "%u",
+ 					pcm->frame_bits/pcm->channels);
+ 				err = snd_pcm_file_append_value(&new_fname,
+ 						&new_index_ch, &new_len, value);
+diff --git a/src/topology/builder.c b/src/topology/builder.c
+index 5ae3ae89..3adbad45 100644
+--- a/src/topology/builder.c
++++ b/src/topology/builder.c
+@@ -21,6 +21,7 @@
+ #include "tplg_local.h"
+ 
+ /* verbose output detailing each object size and file position */
++__attribute__((format(printf, 2, 3)))
+ static void verbose(snd_tplg_t *tplg, const char *fmt, ...)
+ {
+ 	int offset;
+@@ -244,7 +245,7 @@ static int write_manifest_data(snd_tplg_t *tplg)
+ 		return ret;
+ 	}
+ 
+-	verbose(tplg, "manifest : write %d bytes\n", sizeof(tplg->manifest));
++	verbose(tplg, "manifest : write %zu bytes\n", sizeof(tplg->manifest));
+ 	ret = write(tplg->out_fd, &tplg->manifest, sizeof(tplg->manifest));
+ 	if (ret < 0) {
+ 		SNDERR("error: failed to write manifest %d\n", ret);
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index ba961507..696a60dc 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -246,7 +246,9 @@ struct snd_use_case_mgr {
+ #define uc_dbg(fmt, arg...) do { } while (0)
+ #endif
+ 
++__attribute__((format(printf, 1, 2)))
+ void uc_mgr_error(const char *fmt, ...);
++__attribute__((format(printf, 1, 2)))
+ void uc_mgr_stdout(const char *fmt, ...);
+ 
+ int uc_mgr_config_load(int format, const char *file, snd_config_t **cfg);
 -- 
-2.16.4
+2.23.0
 
 _______________________________________________
 Alsa-devel mailing list
