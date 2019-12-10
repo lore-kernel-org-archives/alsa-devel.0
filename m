@@ -7,59 +7,63 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAA6DC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:09:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19894C00454
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:09:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A71F2073B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:09:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D7C1207FF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:09:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mVaV3g7z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A71F2073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gdfi/vV5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D7C1207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91AA21669;
-	Tue, 10 Dec 2019 15:08:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91AA21669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0393F1694;
+	Tue, 10 Dec 2019 15:08:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0393F1694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575986940;
-	bh=/JxQugzsF8S4bEHHnRp1CnUyW/5oQYShKFVEh9kebTs=;
+	s=default; t=1575986976;
+	bh=W7DzF0xxwOqxIzhmorEgHBkRDq9KALuQ4uOAwAMQ0q8=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mVaV3g7zAceGMYis+o5qwwzRLRIqmxQs/74pw8q1ZOvP4E8fKzZZyTaUEBAjqSh/q
-	 S0/L9FgKKIM6GTqqdzqdoMIYKPfh5I5613toXPxYyLsKsrMxu58U7c62Qj4r+TVRhY
-	 4T0YKKYtsSKRc+pmGdAm6rnGLBpwbRHnuwpWKsto=
+	b=gdfi/vV5+4WdV2itQoJYYx38OU9hBGUY4rE99ePt/nL426yv58PrsA6Dg9yscDHvT
+	 m53NFnqUmqTwC6qsEFgLfdHfa59k4c3NgdQIoYPCncJanjFvKcd5oQvXebcVX2rIca
+	 JAow6YFtfqGbXmskVT76deWRaBixcZ+76BWVHkhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BA7FF802FB;
-	Tue, 10 Dec 2019 14:59:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 629FEF80304;
+	Tue, 10 Dec 2019 14:59:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54D0EF8027B; Tue, 10 Dec 2019 14:59:23 +0100 (CET)
+ id AD827F8027B; Tue, 10 Dec 2019 14:59:23 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72E9EF8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54882F80259
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 14:59:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72E9EF8025A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54882F80259
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 18955AFFE;
+ by mx1.suse.de (Postfix) with ESMTP id 41898B1B2;
  Tue, 10 Dec 2019 13:59:00 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: linux-media@vger.kernel.org
-Date: Tue, 10 Dec 2019 14:58:44 +0100
-Message-Id: <20191210135849.15607-10-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 14:58:49 +0100
+Message-Id: <20191210135849.15607-15-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210135849.15607-1-tiwai@suse.de>
 References: <20191210135849.15607-1-tiwai@suse.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
- alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: [alsa-devel] [PATCH for-5.6 09/14] media: go7007: Clean up ALSA PCM
-	API usages
+Cc: alsa-devel@alsa-project.org, Anton Sviridenko <anton@corp.bluecherry.net>,
+ Takashi Iwai <tiwai@suse.de>, Andrey Utkin <andrey.utkin@corp.bluecherry.net>,
+ Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Ismael Luceno <ismael@iodev.co.uk>
+Subject: [alsa-devel] [PATCH for-5.6 14/14] media: Drop superfluous ioctl
+	PCM ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,87 +82,163 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With the recent change in ALSA PCM core, the whole open-coded vmalloc
-buffer handling in this driver can be dropped by replacing with the
-managed buffer allocation.
+PCM core deals the empty ioctl field now as default.
+Let's kill the redundant lines.
 
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Bluecherry Maintainers <maintainers@bluecherrydvr.com>
+Cc: Anton Sviridenko <anton@corp.bluecherry.net>
+Cc: Andrey Utkin <andrey.utkin@corp.bluecherry.net>
+Cc: Ismael Luceno <ismael@iodev.co.uk>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/media/usb/go7007/snd-go7007.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+ drivers/media/pci/cx23885/cx23885-alsa.c   | 1 -
+ drivers/media/pci/cx25821/cx25821-alsa.c   | 1 -
+ drivers/media/pci/cx88/cx88-alsa.c         | 1 -
+ drivers/media/pci/saa7134/saa7134-alsa.c   | 1 -
+ drivers/media/pci/solo6x10/solo6x10-g723.c | 1 -
+ drivers/media/pci/tw686x/tw686x-audio.c    | 1 -
+ drivers/media/usb/cx231xx/cx231xx-audio.c  | 1 -
+ drivers/media/usb/em28xx/em28xx-audio.c    | 1 -
+ drivers/media/usb/go7007/snd-go7007.c      | 1 -
+ drivers/media/usb/tm6000/tm6000-alsa.c     | 1 -
+ drivers/media/usb/usbtv/usbtv-audio.c      | 1 -
+ 11 files changed, 11 deletions(-)
 
+diff --git a/drivers/media/pci/cx23885/cx23885-alsa.c b/drivers/media/pci/cx23885/cx23885-alsa.c
+index a8e980c6dacb..df44ed7393a0 100644
+--- a/drivers/media/pci/cx23885/cx23885-alsa.c
++++ b/drivers/media/pci/cx23885/cx23885-alsa.c
+@@ -495,7 +495,6 @@ static struct page *snd_cx23885_page(struct snd_pcm_substream *substream,
+ static const struct snd_pcm_ops snd_cx23885_pcm_ops = {
+ 	.open = snd_cx23885_pcm_open,
+ 	.close = snd_cx23885_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.hw_params = snd_cx23885_hw_params,
+ 	.hw_free = snd_cx23885_hw_free,
+ 	.prepare = snd_cx23885_prepare,
+diff --git a/drivers/media/pci/cx25821/cx25821-alsa.c b/drivers/media/pci/cx25821/cx25821-alsa.c
+index c2f2d7c782c7..301616426d8a 100644
+--- a/drivers/media/pci/cx25821/cx25821-alsa.c
++++ b/drivers/media/pci/cx25821/cx25821-alsa.c
+@@ -639,7 +639,6 @@ static struct page *snd_cx25821_page(struct snd_pcm_substream *substream,
+ static const struct snd_pcm_ops snd_cx25821_pcm_ops = {
+ 	.open = snd_cx25821_pcm_open,
+ 	.close = snd_cx25821_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.hw_params = snd_cx25821_hw_params,
+ 	.hw_free = snd_cx25821_hw_free,
+ 	.prepare = snd_cx25821_prepare,
+diff --git a/drivers/media/pci/cx88/cx88-alsa.c b/drivers/media/pci/cx88/cx88-alsa.c
+index e1e71ae293ed..7d7aceecc985 100644
+--- a/drivers/media/pci/cx88/cx88-alsa.c
++++ b/drivers/media/pci/cx88/cx88-alsa.c
+@@ -585,7 +585,6 @@ static struct page *snd_cx88_page(struct snd_pcm_substream *substream,
+ static const struct snd_pcm_ops snd_cx88_pcm_ops = {
+ 	.open = snd_cx88_pcm_open,
+ 	.close = snd_cx88_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.hw_params = snd_cx88_hw_params,
+ 	.hw_free = snd_cx88_hw_free,
+ 	.prepare = snd_cx88_prepare,
+diff --git a/drivers/media/pci/saa7134/saa7134-alsa.c b/drivers/media/pci/saa7134/saa7134-alsa.c
+index 0385127dd7ff..544ca57eee75 100644
+--- a/drivers/media/pci/saa7134/saa7134-alsa.c
++++ b/drivers/media/pci/saa7134/saa7134-alsa.c
+@@ -865,7 +865,6 @@ static struct page *snd_card_saa7134_page(struct snd_pcm_substream *substream,
+ static const struct snd_pcm_ops snd_card_saa7134_capture_ops = {
+ 	.open =			snd_card_saa7134_capture_open,
+ 	.close =		snd_card_saa7134_capture_close,
+-	.ioctl =		snd_pcm_lib_ioctl,
+ 	.hw_params =		snd_card_saa7134_hw_params,
+ 	.hw_free =		snd_card_saa7134_hw_free,
+ 	.prepare =		snd_card_saa7134_capture_prepare,
+diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
+index ca349d447610..d6d16e8fd997 100644
+--- a/drivers/media/pci/solo6x10/solo6x10-g723.c
++++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
+@@ -259,7 +259,6 @@ static int snd_solo_pcm_copy_kernel(struct snd_pcm_substream *ss, int channel,
+ static const struct snd_pcm_ops snd_solo_pcm_ops = {
+ 	.open = snd_solo_pcm_open,
+ 	.close = snd_solo_pcm_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.prepare = snd_solo_pcm_prepare,
+ 	.trigger = snd_solo_pcm_trigger,
+ 	.pointer = snd_solo_pcm_pointer,
+diff --git a/drivers/media/pci/tw686x/tw686x-audio.c b/drivers/media/pci/tw686x/tw686x-audio.c
+index f5065c72bb28..54144e23a487 100644
+--- a/drivers/media/pci/tw686x/tw686x-audio.c
++++ b/drivers/media/pci/tw686x/tw686x-audio.c
+@@ -258,7 +258,6 @@ static snd_pcm_uframes_t tw686x_pcm_pointer(struct snd_pcm_substream *ss)
+ static const struct snd_pcm_ops tw686x_pcm_ops = {
+ 	.open = tw686x_pcm_open,
+ 	.close = tw686x_pcm_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.prepare = tw686x_pcm_prepare,
+ 	.trigger = tw686x_pcm_trigger,
+ 	.pointer = tw686x_pcm_pointer,
+diff --git a/drivers/media/usb/cx231xx/cx231xx-audio.c b/drivers/media/usb/cx231xx/cx231xx-audio.c
+index d46efea53370..de42db6f6ad1 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-audio.c
++++ b/drivers/media/usb/cx231xx/cx231xx-audio.c
+@@ -551,7 +551,6 @@ static snd_pcm_uframes_t snd_cx231xx_capture_pointer(struct snd_pcm_substream
+ static const struct snd_pcm_ops snd_cx231xx_pcm_capture = {
+ 	.open = snd_cx231xx_capture_open,
+ 	.close = snd_cx231xx_pcm_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.prepare = snd_cx231xx_prepare,
+ 	.trigger = snd_cx231xx_capture_trigger,
+ 	.pointer = snd_cx231xx_capture_pointer,
+diff --git a/drivers/media/usb/em28xx/em28xx-audio.c b/drivers/media/usb/em28xx/em28xx-audio.c
+index a5215fb1d36a..6833b5bfe293 100644
+--- a/drivers/media/usb/em28xx/em28xx-audio.c
++++ b/drivers/media/usb/em28xx/em28xx-audio.c
+@@ -626,7 +626,6 @@ static int em28xx_cvol_new(struct snd_card *card, struct em28xx *dev,
+ static const struct snd_pcm_ops snd_em28xx_pcm_capture = {
+ 	.open      = snd_em28xx_capture_open,
+ 	.close     = snd_em28xx_pcm_close,
+-	.ioctl     = snd_pcm_lib_ioctl,
+ 	.prepare   = snd_em28xx_prepare,
+ 	.trigger   = snd_em28xx_capture_trigger,
+ 	.pointer   = snd_em28xx_capture_pointer,
 diff --git a/drivers/media/usb/go7007/snd-go7007.c b/drivers/media/usb/go7007/snd-go7007.c
-index b05fa227ffb2..40dbf081ef6b 100644
+index 40dbf081ef6b..ae27e988e578 100644
 --- a/drivers/media/usb/go7007/snd-go7007.c
 +++ b/drivers/media/usb/go7007/snd-go7007.c
-@@ -9,7 +9,6 @@
- #include <linux/spinlock.h>
- #include <linux/delay.h>
- #include <linux/sched.h>
--#include <linux/vmalloc.h>
- #include <linux/time.h>
- #include <linux/mm.h>
- #include <linux/i2c.h>
-@@ -100,16 +99,7 @@ static int go7007_snd_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *hw_params)
- {
- 	struct go7007 *go = snd_pcm_substream_chip(substream);
--	unsigned int bytes;
--
--	bytes = params_buffer_bytes(hw_params);
--	if (substream->runtime->dma_bytes > 0)
--		vfree(substream->runtime->dma_area);
--	substream->runtime->dma_bytes = 0;
--	substream->runtime->dma_area = vmalloc(bytes);
--	if (substream->runtime->dma_area == NULL)
--		return -ENOMEM;
--	substream->runtime->dma_bytes = bytes;
-+
- 	go->audio_deliver = parse_audio_stream_data;
- 	return 0;
- }
-@@ -119,9 +109,6 @@ static int go7007_snd_hw_free(struct snd_pcm_substream *substream)
- 	struct go7007 *go = snd_pcm_substream_chip(substream);
- 
- 	go->audio_deliver = NULL;
--	if (substream->runtime->dma_bytes > 0)
--		vfree(substream->runtime->dma_area);
--	substream->runtime->dma_bytes = 0;
- 	return 0;
- }
- 
-@@ -185,12 +172,6 @@ static snd_pcm_uframes_t go7007_snd_pcm_pointer(struct snd_pcm_substream *substr
- 	return gosnd->hw_ptr;
- }
- 
--static struct page *go7007_snd_pcm_page(struct snd_pcm_substream *substream,
--					unsigned long offset)
--{
--	return vmalloc_to_page(substream->runtime->dma_area + offset);
--}
--
+@@ -175,7 +175,6 @@ static snd_pcm_uframes_t go7007_snd_pcm_pointer(struct snd_pcm_substream *substr
  static const struct snd_pcm_ops go7007_snd_capture_ops = {
  	.open		= go7007_snd_capture_open,
  	.close		= go7007_snd_capture_close,
-@@ -200,7 +181,6 @@ static const struct snd_pcm_ops go7007_snd_capture_ops = {
+-	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= go7007_snd_hw_params,
+ 	.hw_free	= go7007_snd_hw_free,
  	.prepare	= go7007_snd_pcm_prepare,
- 	.trigger	= go7007_snd_pcm_trigger,
- 	.pointer	= go7007_snd_pcm_pointer,
--	.page		= go7007_snd_pcm_page,
- };
- 
- static int go7007_snd_free(struct snd_device *device)
-@@ -260,6 +240,8 @@ int go7007_snd_init(struct go7007 *go)
- 	gosnd->pcm->private_data = go;
- 	snd_pcm_set_ops(gosnd->pcm, SNDRV_PCM_STREAM_CAPTURE,
- 			&go7007_snd_capture_ops);
-+	snd_pcm_set_managed_buffer_all(gosnd->pcm, SNDRV_DMA_TYPE_VMALLOC,
-+				       NULL, 0, 0);
- 
- 	ret = snd_card_register(gosnd->card);
- 	if (ret < 0) {
+diff --git a/drivers/media/usb/tm6000/tm6000-alsa.c b/drivers/media/usb/tm6000/tm6000-alsa.c
+index 2bfa5abc1b49..c26a0ff60a64 100644
+--- a/drivers/media/usb/tm6000/tm6000-alsa.c
++++ b/drivers/media/usb/tm6000/tm6000-alsa.c
+@@ -306,7 +306,6 @@ static snd_pcm_uframes_t snd_tm6000_pointer(struct snd_pcm_substream *substream)
+ static const struct snd_pcm_ops snd_tm6000_pcm_ops = {
+ 	.open = snd_tm6000_pcm_open,
+ 	.close = snd_tm6000_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.prepare = snd_tm6000_prepare,
+ 	.trigger = snd_tm6000_card_trigger,
+ 	.pointer = snd_tm6000_pointer,
+diff --git a/drivers/media/usb/usbtv/usbtv-audio.c b/drivers/media/usb/usbtv/usbtv-audio.c
+index b27009875758..b57e94fb1977 100644
+--- a/drivers/media/usb/usbtv/usbtv-audio.c
++++ b/drivers/media/usb/usbtv/usbtv-audio.c
+@@ -312,7 +312,6 @@ static snd_pcm_uframes_t snd_usbtv_pointer(struct snd_pcm_substream *substream)
+ static const struct snd_pcm_ops snd_usbtv_pcm_ops = {
+ 	.open = snd_usbtv_pcm_open,
+ 	.close = snd_usbtv_pcm_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.prepare = snd_usbtv_prepare,
+ 	.trigger = snd_usbtv_card_trigger,
+ 	.pointer = snd_usbtv_pointer,
 -- 
 2.16.4
 
