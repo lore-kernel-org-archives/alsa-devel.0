@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39FD7C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:31:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0C4AC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:32:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD00C20836
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:31:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4ACE7207FF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:32:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KR6Ed/CV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD00C20836
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WCSV/734"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4ACE7207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A01316B4;
-	Tue, 10 Dec 2019 15:30:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A01316B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA08916A2;
+	Tue, 10 Dec 2019 15:31:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA08916A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575988298;
-	bh=Gf5MDj7TRvYzFKKuFjEcXo2s6nAkusl4MRxd1+Jnq3M=;
+	s=default; t=1575988341;
+	bh=SPgvFIKmVpw/pKQnExDSqy6xVxXSd4NwOCs5gH6mYgA=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KR6Ed/CVPWI6IaaofDJArh3bfCgDHQH/1IHO9fDMk6DB7nNc9nvG/vILKcEfe8Tn7
-	 lrVbJYHVNXaXfhCPJ62BXUrJHsST5bLPExSx6SQQK8kEOpA0Ykyaos1BvN+3w0sryw
-	 +gOsGbcpcAoEF1ym99g+UjAloj0mah9Hl5rNRkzw=
+	b=WCSV/734PXue64JCQKC+gYoHMxQ4zKR/9tfgkBCuBu2N+vln/jfTrCDl4OYYeJ0Mi
+	 35ex6v+FoG7LvrUc4DbILTiVlPTpLWJdQ5+583LBYR6TOi+D5H+pjkKaOur49U4red
+	 dq2Zsv3H3IwB2j+b+Q7zbjrBH9ypXGib/2oSIkEU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A242F80252;
-	Tue, 10 Dec 2019 15:26:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23EADF8025E;
+	Tue, 10 Dec 2019 15:26:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D93DF80279; Tue, 10 Dec 2019 15:26:40 +0100 (CET)
+ id 6D7BBF8027B; Tue, 10 Dec 2019 15:26:40 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09B0AF80249
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09B0AF80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id C032AF800F3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C032AF800F3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 23073B1FF;
- Tue, 10 Dec 2019 14:26:26 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id BD7EBB1DB;
+ Tue, 10 Dec 2019 14:26:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Date: Tue, 10 Dec 2019 15:26:00 +0100
-Message-Id: <20191210142614.19405-10-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 15:25:55 +0100
+Message-Id: <20191210142614.19405-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210142614.19405-1-tiwai@suse.de>
 References: <20191210142614.19405-1-tiwai@suse.de>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH for-5.6 09/23] ASoC: siu_pcm: Use managed
+Subject: [alsa-devel] [PATCH for-5.6 04/23] ASoC: mediatek: Use managed
 	buffer allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,79 +77,164 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean up the driver with the new managed buffer allocation API.
-The hw_params and hw_free callbacks became superfluous (the rest were
-only debug prints) and got dropped.
+Clean up the drivers with the new managed buffer allocation API.
+The superfluous snd_pcm_lib_malloc_pages() and
+snd_pcm_lib_free_pages() calls are dropped, as well as the superfluous
+snd_pcm_lib_preallocate_free_for_all() call.  As of the result,
+hw_free and pcm_destruct ops became empty and got removed.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sh/siu_pcm.c | 39 +--------------------------------------
- 1 file changed, 1 insertion(+), 38 deletions(-)
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c          | 14 +-------------
+ sound/soc/mediatek/common/mtk-afe-fe-dai.h          |  2 --
+ sound/soc/mediatek/common/mtk-afe-platform-driver.c | 12 ++----------
+ sound/soc/mediatek/common/mtk-afe-platform-driver.h |  2 --
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c          |  2 --
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c          |  1 -
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c          |  1 -
+ 7 files changed, 3 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index a5e21e554da2..65637ad93630 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -281,41 +281,6 @@ static int siu_pcm_stmread_stop(struct siu_port *port_info)
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+index 10ea4fdbeb1e..f3af396da392 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -122,11 +122,7 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
+ 	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
+ 	int msb_at_bit33 = 0;
+-	int ret, fs = 0;
+-
+-	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-	if (ret < 0)
+-		return ret;
++	int fs = 0;
+ 
+ 	msb_at_bit33 = upper_32_bits(substream->runtime->dma_addr) ? 1 : 0;
+ 	memif->phys_buf_addr = lower_32_bits(substream->runtime->dma_addr);
+@@ -169,13 +165,6 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
+ }
+ EXPORT_SYMBOL_GPL(mtk_afe_fe_hw_params);
+ 
+-int mtk_afe_fe_hw_free(struct snd_pcm_substream *substream,
+-		       struct snd_soc_dai *dai)
+-{
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-EXPORT_SYMBOL_GPL(mtk_afe_fe_hw_free);
+-
+ int mtk_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		       struct snd_soc_dai *dai)
+ {
+@@ -275,7 +264,6 @@ const struct snd_soc_dai_ops mtk_afe_fe_ops = {
+ 	.startup	= mtk_afe_fe_startup,
+ 	.shutdown	= mtk_afe_fe_shutdown,
+ 	.hw_params	= mtk_afe_fe_hw_params,
+-	.hw_free	= mtk_afe_fe_hw_free,
+ 	.prepare	= mtk_afe_fe_prepare,
+ 	.trigger	= mtk_afe_fe_trigger,
+ };
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.h b/sound/soc/mediatek/common/mtk-afe-fe-dai.h
+index 55074fb9861a..5263690e225d 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.h
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.h
+@@ -20,8 +20,6 @@ void mtk_afe_fe_shutdown(struct snd_pcm_substream *substream,
+ int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *params,
+ 			 struct snd_soc_dai *dai);
+-int mtk_afe_fe_hw_free(struct snd_pcm_substream *substream,
+-		       struct snd_soc_dai *dai);
+ int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
+ 		       struct snd_soc_dai *dai);
+ int mtk_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+index b6624d8d084b..719d43bb0b8f 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -120,25 +120,17 @@ int mtk_afe_pcm_new(struct snd_soc_component *component,
+ 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+ 
+ 	size = afe->mtk_afe_hardware->buffer_bytes_max;
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      afe->dev, size, size);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++				       afe->dev, size, size);
  	return 0;
  }
+ EXPORT_SYMBOL_GPL(mtk_afe_pcm_new);
  
--static int siu_pcm_hw_params(struct snd_soc_component *component,
--			     struct snd_pcm_substream *ss,
--			     struct snd_pcm_hw_params *hw_params)
+-void mtk_afe_pcm_free(struct snd_soc_component *component,
+-		      struct snd_pcm *pcm)
 -{
--	struct siu_info *info = siu_i2s_data;
--	struct device *dev = ss->pcm->card->dev;
--	int ret;
--
--	dev_dbg(dev, "%s: port=%d\n", __func__, info->port_id);
--
--	ret = snd_pcm_lib_malloc_pages(ss, params_buffer_bytes(hw_params));
--	if (ret < 0)
--		dev_err(dev, "snd_pcm_lib_malloc_pages() failed\n");
--
--	return ret;
+-	snd_pcm_lib_preallocate_free_for_all(pcm);
 -}
+-EXPORT_SYMBOL_GPL(mtk_afe_pcm_free);
 -
--static int siu_pcm_hw_free(struct snd_soc_component *component,
--			   struct snd_pcm_substream *ss)
--{
--	struct siu_info *info = siu_i2s_data;
--	struct siu_port	*port_info = siu_port_info(ss);
--	struct device *dev = ss->pcm->card->dev;
--	struct siu_stream *siu_stream;
--
--	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		siu_stream = &port_info->playback;
--	else
--		siu_stream = &port_info->capture;
--
--	dev_dbg(dev, "%s: port=%d\n", __func__, info->port_id);
--
--	return snd_pcm_lib_free_pages(ss);
--}
--
- static bool filter(struct dma_chan *chan, void *slave)
- {
- 	struct sh_dmae_slave *param = slave;
-@@ -548,7 +513,7 @@ static int siu_pcm_new(struct snd_soc_component *component,
- 		if (ret < 0)
- 			return ret;
- 
--		snd_pcm_lib_preallocate_pages_for_all(pcm,
-+		snd_pcm_set_managed_buffer_all(pcm,
- 				SNDRV_DMA_TYPE_DEV, card->dev,
- 				SIU_BUFFER_BYTES_MAX, SIU_BUFFER_BYTES_MAX);
- 
-@@ -584,8 +549,6 @@ struct const snd_soc_component_driver siu_component = {
- 	.open		= siu_pcm_open,
- 	.close		= siu_pcm_close,
+ const struct snd_soc_component_driver mtk_afe_pcm_platform = {
+ 	.name		= AFE_PCM_NAME,
  	.ioctl		= snd_soc_pcm_lib_ioctl,
--	.hw_params	= siu_pcm_hw_params,
--	.hw_free	= siu_pcm_hw_free,
- 	.prepare	= siu_pcm_prepare,
- 	.trigger	= siu_pcm_trigger,
- 	.pointer	= siu_pcm_pointer_dma,
+ 	.pointer	= mtk_afe_pcm_pointer,
+ 	.pcm_construct	= mtk_afe_pcm_new,
+-	.pcm_destruct	= mtk_afe_pcm_free,
+ };
+ EXPORT_SYMBOL_GPL(mtk_afe_pcm_platform);
+ 
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.h b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
+index e550d11568c3..fcc923b88f12 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.h
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
+@@ -21,8 +21,6 @@ snd_pcm_uframes_t mtk_afe_pcm_pointer(struct snd_soc_component *component,
+ 				      struct snd_pcm_substream *substream);
+ int mtk_afe_pcm_new(struct snd_soc_component *component,
+ 		    struct snd_soc_pcm_runtime *rtd);
+-void mtk_afe_pcm_free(struct snd_soc_component *component,
+-		      struct snd_pcm *pcm);
+ 
+ int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe);
+ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component);
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index 76502ba261c8..7318d452b764 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -515,7 +515,6 @@ static const struct snd_soc_dai_ops mt2701_single_memif_dai_ops = {
+ 	.startup	= mt2701_simple_fe_startup,
+ 	.shutdown	= mtk_afe_fe_shutdown,
+ 	.hw_params	= mt2701_simple_fe_hw_params,
+-	.hw_free	= mtk_afe_fe_hw_free,
+ 	.prepare	= mtk_afe_fe_prepare,
+ 	.trigger	= mtk_afe_fe_trigger,
+ };
+@@ -524,7 +523,6 @@ static const struct snd_soc_dai_ops mt2701_dlm_memif_dai_ops = {
+ 	.startup	= mt2701_dlm_fe_startup,
+ 	.shutdown	= mt2701_dlm_fe_shutdown,
+ 	.hw_params	= mt2701_dlm_fe_hw_params,
+-	.hw_free	= mtk_afe_fe_hw_free,
+ 	.prepare	= mtk_afe_fe_prepare,
+ 	.trigger	= mt2701_dlm_fe_trigger,
+ };
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index 033c07fb599c..0743c699d8c1 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -715,7 +715,6 @@ static const struct snd_soc_component_driver mt6797_afe_component = {
+ 	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.pointer	= mtk_afe_pcm_pointer,
+ 	.pcm_construct	= mtk_afe_pcm_new,
+-	.pcm_destruct	= mtk_afe_pcm_free,
+ };
+ 
+ static int mt6797_dai_memif_register(struct mtk_base_afe *afe)
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 76af09d8f1af..6b5f407de3d0 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -1053,7 +1053,6 @@ static const struct snd_soc_component_driver mt8183_afe_component = {
+ 	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.pointer	= mtk_afe_pcm_pointer,
+ 	.pcm_construct	= mtk_afe_pcm_new,
+-	.pcm_destruct	= mtk_afe_pcm_free,
+ };
+ 
+ static int mt8183_dai_memif_register(struct mtk_base_afe *afe)
 -- 
 2.16.4
 
