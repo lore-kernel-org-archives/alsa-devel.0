@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAE55C2D0C7
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD9E1C2D0C8
 	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:16:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 504C320663
+	by mail.kernel.org (Postfix) with ESMTPS id 63C7A214AF
 	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:16:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vnxuYmkY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 504C320663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cw4TXvp3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63C7A214AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBBF516DE;
-	Tue, 10 Dec 2019 07:51:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBBF516DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6A731752;
+	Tue, 10 Dec 2019 08:05:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6A731752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575960731;
-	bh=KMzqU5api8Mx2t6NsrYsu5PlEMvU1ITRSe2mV5WuGpo=;
+	s=default; t=1575961567;
+	bh=wEZs2bcyuc4tdh7vIYNWdkjB1aq0nvk9r8mbC9esg5o=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vnxuYmkYOnAqyhueBNlXefhG8JvNkJYkeUX/owql3kAEq5HIKndd65icLvNwH7dw/
-	 xYYbQ/MPVWb1iTOuu9UOLpH8SpH4jy8z6YVu62DvAK4nHtlv08Uu5p8RkugNLCDlGI
-	 IZFIUuDCOCbZXnxolm1skg/IRKBT/skfR5PYm1WY=
+	b=cw4TXvp3wvbg9z/bKEGnyb0VIZJkdmRI14SHK4alzxTD2g7Ike9mN4NURvuIHdZFW
+	 cWzP17Ow2IKDxc4aOmE5JNNRaDKv1TADDLwC+YNRKQEeEYM7AEUCAVD5W5jBndhsE8
+	 CwqDvzPSrcktc09g7Cv01ulkQ6DbPWJ9oR418m/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96BBAF802BC;
-	Tue, 10 Dec 2019 07:36:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6F1BF80482;
+	Tue, 10 Dec 2019 07:37:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED664F80317; Tue, 10 Dec 2019 07:35:54 +0100 (CET)
+ id 190FDF8034E; Tue, 10 Dec 2019 07:36:41 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80BE0F80269
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:35:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80BE0F80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1157EF80290
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:35:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1157EF80290
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id DF6ECB1F6
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:34:59 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id CDAB6B31D
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:35:01 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:34:15 +0100
-Message-Id: <20191210063454.31603-17-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 07:34:51 +0100
+Message-Id: <20191210063454.31603-53-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210063454.31603-1-tiwai@suse.de>
 References: <20191210063454.31603-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 16/55] ALSA: emu10k1: Support PCM sync_stop
+Subject: [alsa-devel] [PATCH 52/55] ALSA: vx222: Support PCM sync_stop
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,40 +75,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver invokes snd_pcm_period_elapsed() simply from the interrupt
-handler.  Set card->sync_irq for enabling the missing sync_stop PCM
-operation.
+The driver invokes snd_pcm_period_elapsed() simply from the threaded
+interrupt handler.  Set card->sync_irq for enabling the missing
+sync_stop PCM operation.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/emu10k1/emu10k1_main.c | 1 +
- sound/pci/emu10k1/emu10k1x.c     | 1 +
- 2 files changed, 2 insertions(+)
+ sound/pci/vx222/vx222.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 8c1e968b9c96..65e9ec94b807 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1984,6 +1984,7 @@ int snd_emu10k1_create(struct snd_card *card,
- 		goto error;
- 	}
- 	emu->irq = pci->irq;
-+	card->sync_irq = emu->irq;
- 
- 	/*
- 	 *  Init to 0x02109204 :
-diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
-index 19fc74e94727..6467142ec460 100644
---- a/sound/pci/emu10k1/emu10k1x.c
-+++ b/sound/pci/emu10k1/emu10k1x.c
-@@ -930,6 +930,7 @@ static int snd_emu10k1x_create(struct snd_card *card,
+diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
+index b502c2403a02..bc451224df16 100644
+--- a/sound/pci/vx222/vx222.c
++++ b/sound/pci/vx222/vx222.c
+@@ -163,6 +163,7 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
  		return -EBUSY;
  	}
  	chip->irq = pci->irq;
 +	card->sync_irq = chip->irq;
-   
- 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
- 				4 * 1024, &chip->dma_buffer) < 0) {
+ 
+ 	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+ 		snd_vx222_free(chip);
 -- 
 2.16.4
 
