@@ -2,55 +2,56 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAA57C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1962C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:37:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63DAB206D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:37:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AEA2206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:37:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fdkzOQU/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63DAB206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pEntwMZZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AEA2206E0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 986521654;
-	Tue, 10 Dec 2019 01:36:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 986521654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50BD215E0;
+	Tue, 10 Dec 2019 01:36:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50BD215E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575938225;
-	bh=1r7ZIphMwpLg2bV/3W+ysClfIUGbgQunpm1KreOND6E=;
+	s=default; t=1575938255;
+	bh=0wsVPPHKRYzpWazmuXJFfWhnD5cWUy4kvS1ab8JTIMw=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fdkzOQU/+Gr0jkzEmLLIq++uhHzDZ8GjeK7NkJSfPYnpfJGzRSk8QVQ/5tzNXGytq
-	 SPyS2C2P/MkSVTFCUX2pPlj55qa8O8db/3X4SsoYSTVB+9EUq1vwjtBsO334DRnVxv
-	 2feGgOrup6ucbWADlv9KtkaEzb7MbolJyIFfdaJQ=
+	b=pEntwMZZjgyUuO9F3CqQ9ka1O0g4dopLk/fLxtXWLWHk+AxKIAyV1xPwl9LFQeFH9
+	 OAKFqMkPqN1K5ZMoZnOCXkSaJbeYd+IB2OLUn6A/03zfEVRdUHhEfAbM8EJWA587NY
+	 gJO4RbRBNkQsiS/QQyF6E/IRJ0mb26yIPHXWi2Rs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B33F2F8025E;
-	Tue, 10 Dec 2019 01:34:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0460FF80269;
+	Tue, 10 Dec 2019 01:34:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40452F80258; Tue, 10 Dec 2019 01:34:06 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8DB85F80258
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:34:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DB85F80258
-Date: 10 Dec 2019 09:34:01 +0900
-X-IronPort-AV: E=Sophos;i="5.69,297,1571670000"; d="scan'208";a="33717412"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 10 Dec 2019 09:34:01 +0900
+ id E5AEFF80269; Tue, 10 Dec 2019 01:34:15 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id AC952F80266
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:34:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC952F80266
+Date: 10 Dec 2019 09:34:08 +0900
+X-IronPort-AV: E=Sophos;i="5.69,297,1571670000"; d="scan'208";a="33933653"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 10 Dec 2019 09:34:08 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1EA5640031D2;
- Tue, 10 Dec 2019 09:34:01 +0900 (JST)
-Message-ID: <87blshyq6e.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DB31840F8FCA;
+ Tue, 10 Dec 2019 09:34:08 +0900 (JST)
+Message-ID: <87a781yq67.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,8 +60,8 @@ References: <87h829yqbr.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 04/15][resend] ASoC: soc-core: move
-	snd_soc_get_pcm_runtime()
+Subject: [alsa-devel] [PATCH 05/15][resend] ASoC: soc-core: find rtd via
+	dai_link pointer at snd_soc_get_pcm_runtime()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,67 +79,309 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch moves snd_soc_get_pcm_runtime() next to
-snd_soc_get_dai_substream().
-This is prepare for snd_soc_get_pcm_runtime() cleanup.
+Current snd_soc_get_pcm_runtime() is finding rtd by checking dai_link
+name. But, it is strange and waste of CPU power, because its user want
+to get from rtd from dai_link, not from dai_link name.
+This patch find rtd via dai_link pointer instead of its name.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/soc-core.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ include/sound/soc.h            |  2 +-
+ sound/soc/fsl/fsl-asoc-card.c  |  2 +-
+ sound/soc/pxa/mioa701_wm9713.c |  2 +-
+ sound/soc/samsung/bells.c      | 12 ++++++------
+ sound/soc/samsung/littlemill.c | 10 +++++-----
+ sound/soc/samsung/snow.c       |  2 +-
+ sound/soc/samsung/speyside.c   |  4 ++--
+ sound/soc/samsung/tm2_wm5110.c |  6 +++---
+ sound/soc/samsung/tobermory.c  |  6 +++---
+ sound/soc/soc-core.c           |  8 ++++----
+ sound/soc/tegra/tegra_wm8903.c |  2 +-
+ 11 files changed, 28 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d6118cf..0081b65 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -391,6 +391,21 @@ EXPORT_SYMBOL_GPL(snd_soc_lookup_component);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 68ec5a0..40c2a67 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -465,7 +465,7 @@ static inline int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ void snd_soc_disconnect_sync(struct device *dev);
  
- static const struct snd_soc_ops null_snd_soc_ops;
+ struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
+-		const char *dai_link);
++				struct snd_soc_dai_link *dai_link);
  
-+struct snd_soc_pcm_runtime
-+*snd_soc_get_pcm_runtime(struct snd_soc_card *card,
-+			 const char *dai_link)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
-+
-+	for_each_card_rtds(card, rtd) {
-+		if (!strcmp(rtd->dai_link->name, dai_link))
-+			return rtd;
-+	}
-+	dev_dbg(card->dev, "ASoC: failed to find rtd %s\n", dai_link);
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_get_pcm_runtime);
-+
- static void soc_release_rtd_dev(struct device *dev)
- {
- 	/* "dev" means "rtd->dev" */
-@@ -491,20 +506,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	return NULL;
+ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd);
+ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream);
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 39ea9bd..9ce55fe 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -256,7 +256,7 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
+ 	unsigned int pll_out;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	codec_dai = rtd->codec_dai;
+ 	if (dapm->dev != codec_dai->dev)
+ 		return 0;
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 129eb52..76e054d 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -72,7 +72,7 @@ static int rear_amp_event(struct snd_soc_dapm_widget *widget,
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_component *component;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	component = rtd->codec_dai->component;
+ 	return rear_amp_power(component, SND_SOC_DAPM_EVENT_ON(event));
  }
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index b60b226..58d8a81 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -59,7 +59,7 @@ static int bells_set_bias_level(struct snd_soc_card *card,
+ 	struct bells_drvdata *bells = card->drvdata;
+ 	int ret;
  
--struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
--		const char *dai_link)
--{
--	struct snd_soc_pcm_runtime *rtd;
--
--	for_each_card_rtds(card, rtd) {
--		if (!strcmp(rtd->dai_link->name, dai_link))
--			return rtd;
--	}
--	dev_dbg(card->dev, "ASoC: failed to find rtd %s\n", dai_link);
--	return NULL;
--}
--EXPORT_SYMBOL_GPL(snd_soc_get_pcm_runtime);
--
- static void snd_soc_flush_all_delayed_work(struct snd_soc_card *card)
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_DSP_CODEC].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[DAI_DSP_CODEC]);
+ 	codec_dai = rtd->codec_dai;
+ 	component = codec_dai->component;
+ 
+@@ -105,7 +105,7 @@ static int bells_set_bias_level_post(struct snd_soc_card *card,
+ 	struct bells_drvdata *bells = card->drvdata;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_DSP_CODEC].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[DAI_DSP_CODEC]);
+ 	codec_dai = rtd->codec_dai;
+ 	component = codec_dai->component;
+ 
+@@ -151,10 +151,10 @@ static int bells_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_dai *wm9081_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_AP_DSP].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[DAI_AP_DSP]);
+ 	wm0010 = rtd->codec_dai->component;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_DSP_CODEC].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[DAI_DSP_CODEC]);
+ 	component = rtd->codec_dai->component;
+ 	aif1_dai = rtd->codec_dai;
+ 
+@@ -194,7 +194,7 @@ static int bells_late_probe(struct snd_soc_card *card)
+ 		return ret;
+ 	}
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_CODEC_CP].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[DAI_CODEC_CP]);
+ 	aif2_dai = rtd->cpu_dai;
+ 
+ 	ret = snd_soc_dai_set_sysclk(aif2_dai, ARIZONA_CLK_ASYNCCLK, 0, 0);
+@@ -206,7 +206,7 @@ static int bells_late_probe(struct snd_soc_card *card)
+ 	if (card->num_rtd == DAI_CODEC_SUB)
+ 		return 0;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[DAI_CODEC_SUB].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[DAI_CODEC_SUB]);
+ 	aif3_dai = rtd->cpu_dai;
+ 	wm9081_dai = rtd->codec_dai;
+ 
+diff --git a/sound/soc/samsung/littlemill.c b/sound/soc/samsung/littlemill.c
+index 6132cee..59904f4 100644
+--- a/sound/soc/samsung/littlemill.c
++++ b/sound/soc/samsung/littlemill.c
+@@ -22,7 +22,7 @@ static int littlemill_set_bias_level(struct snd_soc_card *card,
+ 	struct snd_soc_dai *aif1_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	aif1_dai = rtd->codec_dai;
+ 
+ 	if (dapm->dev != aif1_dai->dev)
+@@ -69,7 +69,7 @@ static int littlemill_set_bias_level_post(struct snd_soc_card *card,
+ 	struct snd_soc_dai *aif1_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	aif1_dai = rtd->codec_dai;
+ 
+ 	if (dapm->dev != aif1_dai->dev)
+@@ -180,7 +180,7 @@ static int bbclk_ev(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_dai *aif2_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[1]);
+ 	aif2_dai = rtd->cpu_dai;
+ 
+ 	switch (event) {
+@@ -263,11 +263,11 @@ static int littlemill_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_dai *aif2_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	component = rtd->codec_dai->component;
+ 	aif1_dai = rtd->codec_dai;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[1]);
+ 	aif2_dai = rtd->cpu_dai;
+ 
+ 	ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_MCLK2,
+diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
+index 8ea7799..f075aae 100644
+--- a/sound/soc/samsung/snow.c
++++ b/sound/soc/samsung/snow.c
+@@ -106,7 +106,7 @@ static int snow_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai *codec_dai;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 
+ 	/* In the multi-codec case codec_dais 0 is MAX98095 and 1 is HDMI. */
+ 	if (rtd->num_codecs > 1)
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index 9e58cbe..5ccdfe0 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -24,7 +24,7 @@ static int speyside_set_bias_level(struct snd_soc_card *card,
+ 	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[1]);
+ 	codec_dai = rtd->codec_dai;
+ 
+ 	if (dapm->dev != codec_dai->dev)
+@@ -60,7 +60,7 @@ static int speyside_set_bias_level_post(struct snd_soc_card *card,
+ 	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[1].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[1]);
+ 	codec_dai = rtd->codec_dai;
+ 
+ 	if (dapm->dev != codec_dai->dev)
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+index bb9910d..10ff14b8 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -282,7 +282,7 @@ static int tm2_set_bias_level(struct snd_soc_card *card,
  {
  	struct snd_soc_pcm_runtime *rtd;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 
+ 	if (dapm->dev != rtd->codec_dai->dev)
+ 		return 0;
+@@ -314,7 +314,7 @@ static int tm2_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_dai *aif2_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[TM2_DAI_AIF1].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[TM2_DAI_AIF1]);
+ 	aif1_dai = rtd->codec_dai;
+ 	priv->component = rtd->codec_dai->component;
+ 
+@@ -324,7 +324,7 @@ static int tm2_late_probe(struct snd_soc_card *card)
+ 		return ret;
+ 	}
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[TM2_DAI_AIF2].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[TM2_DAI_AIF2]);
+ 	aif2_dai = rtd->codec_dai;
+ 
+ 	ret = snd_soc_dai_set_sysclk(aif2_dai, ARIZONA_CLK_ASYNCCLK, 0, 0);
+diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
+index ef51f28..fdce28c 100644
+--- a/sound/soc/samsung/tobermory.c
++++ b/sound/soc/samsung/tobermory.c
+@@ -22,7 +22,7 @@ static int tobermory_set_bias_level(struct snd_soc_card *card,
+ 	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	codec_dai = rtd->codec_dai;
+ 
+ 	if (dapm->dev != codec_dai->dev)
+@@ -65,7 +65,7 @@ static int tobermory_set_bias_level_post(struct snd_soc_card *card,
+ 	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	codec_dai = rtd->codec_dai;
+ 
+ 	if (dapm->dev != codec_dai->dev)
+@@ -180,7 +180,7 @@ static int tobermory_late_probe(struct snd_soc_card *card)
+ 	struct snd_soc_dai *codec_dai;
+ 	int ret;
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++	rtd = snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	component = rtd->codec_dai->component;
+ 	codec_dai = rtd->codec_dai;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 0081b65..3373615 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -393,15 +393,15 @@ static const struct snd_soc_ops null_snd_soc_ops;
+ 
+ struct snd_soc_pcm_runtime
+ *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
+-			 const char *dai_link)
++			 struct snd_soc_dai_link *dai_link)
+ {
+ 	struct snd_soc_pcm_runtime *rtd;
+ 
+ 	for_each_card_rtds(card, rtd) {
+-		if (!strcmp(rtd->dai_link->name, dai_link))
++		if (rtd->dai_link == dai_link)
+ 			return rtd;
+ 	}
+-	dev_dbg(card->dev, "ASoC: failed to find rtd %s\n", dai_link);
++	dev_dbg(card->dev, "ASoC: failed to find rtd %s\n", dai_link->name);
+ 	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_get_pcm_runtime);
+@@ -1064,7 +1064,7 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 	if (card->remove_dai_link)
+ 		card->remove_dai_link(card, dai_link);
+ 
+-	rtd = snd_soc_get_pcm_runtime(card, dai_link->name);
++	rtd = snd_soc_get_pcm_runtime(card, dai_link);
+ 	if (rtd)
+ 		soc_free_pcm_runtime(rtd);
+ }
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index 6211dfd..f08d348 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -186,7 +186,7 @@ static int tegra_wm8903_init(struct snd_soc_pcm_runtime *rtd)
+ static int tegra_wm8903_remove(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *rtd =
+-		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
++		snd_soc_get_pcm_runtime(card, &card->dai_link[0]);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_component *component = codec_dai->component;
+ 
 -- 
 2.7.4
 
