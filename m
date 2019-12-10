@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E75C6C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:14:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21ADAC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:15:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67EFB206D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:14:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A06F7206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:15:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BIPTKEcP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 67EFB206D5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q2LaEo81"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A06F7206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC7071671;
-	Tue, 10 Dec 2019 07:13:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC7071671
+	by alsa0.perex.cz (Postfix) with ESMTPS id B53701654;
+	Tue, 10 Dec 2019 07:14:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B53701654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575958474;
-	bh=S3YoXji4yTxRV4BKR1E3EzvmP1m9Yo2vbw7/M/CT+q0=;
+	s=default; t=1575958520;
+	bh=K7ljatrVyTGvgdSAQzpFu3vBYsxInyS4oBfoC51vED0=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BIPTKEcPxk112s4nBUj/Rq3H8cZmNiM7Uwr5yMaPsS31GxbOrSNIyA3GC0V3+co9j
-	 4JAXnyH7jlsSFMDCrbqzTSQ/OKsIJkI+odIqJS5jhuVTS7endI4i6n/FQO/QPO+bhj
-	 CzqU3osa0wKyAdzq7wVFOYeorSloBND0JqusvFus=
+	b=q2LaEo81gVMhktd8PdVKn2XFFwHhgdE1ihQF7xIS1AS71ohaBKNY018lZWSIKDINk
+	 BmZ/j0A2EkYduvz6Y2a2ng0O1hXhv0ElUN0Z3ghHy/CfagqJ4QBVFy+oDcNnVCj2cr
+	 Reg1PbSqVvtbW4usiipv4S99mIWYx0GQFiFXQEn0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E213F80248;
-	Tue, 10 Dec 2019 07:12:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD836F8027B;
+	Tue, 10 Dec 2019 07:12:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9C3FF80277; Tue, 10 Dec 2019 07:12:10 +0100 (CET)
+ id E842EF80277; Tue, 10 Dec 2019 07:12:11 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 907F2F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8192F8011E
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:11:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 907F2F800F3
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8192F8011E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 7BA58B1B7
+ by mx1.suse.de (Postfix) with ESMTP id 7DA11B1BA
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:11:51 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:11:23 +0100
-Message-Id: <20191210061145.24641-2-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 07:11:24 +0100
+Message-Id: <20191210061145.24641-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210061145.24641-1-tiwai@suse.de>
 References: <20191210061145.24641-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 01/23] ALSA: aoa: Drop superfluous ioctl PCM ops
+Subject: [alsa-devel] [PATCH 02/23] ALSA: arm: Drop superfluous ioctl PCM ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,29 +80,42 @@ Let's kill the redundant lines.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/aoa/soundbus/i2sbus/pcm.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/arm/aaci.c        | 2 --
+ sound/arm/pxa2xx-ac97.c | 1 -
+ 2 files changed, 3 deletions(-)
 
-diff --git a/sound/aoa/soundbus/i2sbus/pcm.c b/sound/aoa/soundbus/i2sbus/pcm.c
-index 44397e72c868..d350dbd24305 100644
---- a/sound/aoa/soundbus/i2sbus/pcm.c
-+++ b/sound/aoa/soundbus/i2sbus/pcm.c
-@@ -773,7 +773,6 @@ static snd_pcm_uframes_t i2sbus_playback_pointer(struct snd_pcm_substream
- static const struct snd_pcm_ops i2sbus_playback_ops = {
- 	.open =		i2sbus_playback_open,
- 	.close =	i2sbus_playback_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_free =	i2sbus_playback_hw_free,
- 	.prepare =	i2sbus_playback_prepare,
- 	.trigger =	i2sbus_playback_trigger,
-@@ -842,7 +841,6 @@ static snd_pcm_uframes_t i2sbus_record_pointer(struct snd_pcm_substream
- static const struct snd_pcm_ops i2sbus_record_ops = {
- 	.open =		i2sbus_record_open,
- 	.close =	i2sbus_record_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_free =	i2sbus_record_hw_free,
- 	.prepare =	i2sbus_record_prepare,
- 	.trigger =	i2sbus_record_trigger,
+diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
+index 1e9ea0fe4f49..d1b5dbcd9e87 100644
+--- a/sound/arm/aaci.c
++++ b/sound/arm/aaci.c
+@@ -625,7 +625,6 @@ static int aaci_pcm_playback_trigger(struct snd_pcm_substream *substream, int cm
+ static const struct snd_pcm_ops aaci_playback_ops = {
+ 	.open		= aaci_pcm_open,
+ 	.close		= aaci_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= aaci_pcm_hw_params,
+ 	.hw_free	= aaci_pcm_hw_free,
+ 	.prepare	= aaci_pcm_prepare,
+@@ -728,7 +727,6 @@ static int aaci_pcm_capture_prepare(struct snd_pcm_substream *substream)
+ static const struct snd_pcm_ops aaci_capture_ops = {
+ 	.open		= aaci_pcm_open,
+ 	.close		= aaci_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= aaci_pcm_hw_params,
+ 	.hw_free	= aaci_pcm_hw_free,
+ 	.prepare	= aaci_pcm_capture_prepare,
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index acfaf1d4ec25..08ae55166890 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -173,7 +173,6 @@ static SIMPLE_DEV_PM_OPS(pxa2xx_ac97_pm_ops, pxa2xx_ac97_suspend, pxa2xx_ac97_re
+ static const struct snd_pcm_ops pxa2xx_ac97_pcm_ops = {
+ 	.open		= pxa2xx_ac97_pcm_open,
+ 	.close		= pxa2xx_ac97_pcm_close,
+-	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= pxa2xx_pcm_hw_params,
+ 	.hw_free	= pxa2xx_pcm_hw_free,
+ 	.prepare	= pxa2xx_ac97_pcm_prepare,
 -- 
 2.16.4
 
