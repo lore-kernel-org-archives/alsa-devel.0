@@ -7,65 +7,67 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 694ACC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:42 +0000 (UTC)
-Received: from alsa0.perex.cz (unknown [77.48.224.243])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CBBBC3F68F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 01:01:44 +0000 (UTC)
+Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD88B207FF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD88B207FF
+	by mail.kernel.org (Postfix) with ESMTPS id 76B0A20838
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 01:01:43 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MFawaiFM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76B0A20838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF28C1657;
-	Tue, 10 Dec 2019 01:52:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF28C1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05B1B1678;
+	Tue, 10 Dec 2019 01:53:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05B1B1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575939220;
-	bh=2nFjlohJoxS9DPeMj3cVLXCFJmnZ/wgih4V+01tmG3U=;
+	s=default; t=1575939262;
+	bh=F12uQdua6etxN9+PS3UVpcyXr5uZtxWi1CSLuVoN0Qc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RIsmhCODUeYK6i96QmcSdip6ifzNuKrsB/5rsgdbmZW5b7/Ib0Il/dS0otHH0388R
-	 MmjnDW2ASDHm0lO6Cn1/wVBURliMcyncCPWqtemaqGyF64TxQ77pkehOub/cRYEGFj
-	 5EUg8PxvYasroHCYtTJ3U7piQN5VyxAxc3mg5rUs=
+	b=MFawaiFMzhLpB7gdayG4XWD3i7FdiUjVQNKp0744ZmjZaEJJPEV9/PNyRdGSRumkY
+	 2e+bRdnl31YZv5v0w79XquEEeHkd3RkhaKpYBcXBjMt0I2+BobzTKpCjjFGs59Pu+U
+	 EDECT30w6xbvHucnaQ5KpUu6YN1NGXv+a/MgbXn8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1D91F80278;
-	Tue, 10 Dec 2019 01:49:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24C6FF8028A;
+	Tue, 10 Dec 2019 01:49:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6773F80264; Tue, 10 Dec 2019 01:49:19 +0100 (CET)
+ id 6D204F80260; Tue, 10 Dec 2019 01:49:20 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C2FEF8023E
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C2FEF8023E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D043F800C4
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D043F800C4
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2019 16:49:06 -0800
+ 09 Dec 2019 16:49:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398950"
+X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398963"
 Received: from sneuhier-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.188.78])
- by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:05 -0800
+ by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:08 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 18:48:49 -0600
-Message-Id: <20191210004854.16845-4-pierre-louis.bossart@linux.intel.com>
+Date: Mon,  9 Dec 2019 18:48:52 -0600
+Message-Id: <20191210004854.16845-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 References: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, Karol Trzcinski <karolx.trzcinski@linux.intel.com>,
- broonie@kernel.org, Bartosz Kokoszko <bartoszx.kokoszko@linux.intel.com>,
+Cc: tiwai@suse.de, Curtis Malainey <cujomalainey@chromium.org>,
+ broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 3/8] ASoC: SOF: loader: fix
-	snd_sof_fw_parse_ext_data
+Subject: [alsa-devel] [PATCH 6/8] ASoC: SOF: Intel: split cht and byt debug
+	window sizes
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,52 +85,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+From: Curtis Malainey <cujomalainey@chromium.org>
 
-An error occurs during parsing more than one ext_data from the mailbox, because
-of invalid data offset handling. Fix by removing the incorrect duplicate
-increment of the offset.
+Turns out SSP 3-5 are only available on cht, to avoid dumping on
+undefined registers let's split the definition.
 
-The return value is also reset in the switch case. This does not change the
-behavior but improves readability - there is no longer a need to check what the
-return value of get_ext_windows is.
-
-Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
-Signed-off-by: Bartosz Kokoszko <bartoszx.kokoszko@linux.intel.com>
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/loader.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/byt.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index a041adf0669d..432d12bd4937 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -50,8 +50,7 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index b3a40d9ef7ce..d0db581348af 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -25,7 +25,8 @@
+ #define DRAM_OFFSET		0x100000
+ #define DRAM_SIZE		(160 * 1024)
+ #define SHIM_OFFSET		0x140000
+-#define SHIM_SIZE		0x100
++#define SHIM_SIZE_BYT		0x100
++#define SHIM_SIZE_CHT		0x118
+ #define MBOX_OFFSET		0x144000
+ #define MBOX_SIZE		0x1000
+ #define EXCEPT_OFFSET		0x800
+@@ -76,7 +77,7 @@ static const struct snd_sof_debugfs_map byt_debugfs[] = {
+ 	 SOF_DEBUGFS_ACCESS_D0_ONLY},
+ 	{"dram", BYT_DSP_BAR, DRAM_OFFSET, DRAM_SIZE,
+ 	 SOF_DEBUGFS_ACCESS_D0_ONLY},
+-	{"shim", BYT_DSP_BAR, SHIM_OFFSET, SHIM_SIZE,
++	{"shim", BYT_DSP_BAR, SHIM_OFFSET, SHIM_SIZE_BYT,
+ 	 SOF_DEBUGFS_ACCESS_ALWAYS},
+ };
  
- 	while (ext_hdr->hdr.cmd == SOF_IPC_FW_READY) {
- 		/* read in ext structure */
--		offset += sizeof(*ext_hdr);
--		snd_sof_dsp_block_read(sdev, bar, offset,
-+		snd_sof_dsp_block_read(sdev, bar, offset + sizeof(*ext_hdr),
- 				   (void *)((u8 *)ext_data + sizeof(*ext_hdr)),
- 				   ext_hdr->hdr.size - sizeof(*ext_hdr));
- 
-@@ -61,6 +60,7 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
- 		/* process structure data */
- 		switch (ext_hdr->type) {
- 		case SOF_IPC_EXT_DMA_BUFFER:
-+			ret = 0;
- 			break;
- 		case SOF_IPC_EXT_WINDOW:
- 			ret = get_ext_windows(sdev, ext_hdr);
-@@ -68,6 +68,7 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
- 		default:
- 			dev_warn(sdev->dev, "warning: unknown ext header type %d size 0x%x\n",
- 				 ext_hdr->type, ext_hdr->hdr.size);
-+			ret = 0;
- 			break;
- 		}
+@@ -103,7 +104,7 @@ static const struct snd_sof_debugfs_map cht_debugfs[] = {
+ 	 SOF_DEBUGFS_ACCESS_D0_ONLY},
+ 	{"dram", BYT_DSP_BAR, DRAM_OFFSET, DRAM_SIZE,
+ 	 SOF_DEBUGFS_ACCESS_D0_ONLY},
+-	{"shim", BYT_DSP_BAR, SHIM_OFFSET, SHIM_SIZE,
++	{"shim", BYT_DSP_BAR, SHIM_OFFSET, SHIM_SIZE_CHT,
+ 	 SOF_DEBUGFS_ACCESS_ALWAYS},
+ };
  
 -- 
 2.20.1
