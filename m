@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40491C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C8AEC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:52:38 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFB2320726
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:51:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFB2320726
+	by mail.kernel.org (Postfix) with ESMTPS id 122EA20637
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:52:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 122EA20637
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C7C31694;
-	Tue, 10 Dec 2019 01:50:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C7C31694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6101C1657;
+	Tue, 10 Dec 2019 01:51:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6101C1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575939104;
-	bh=RNBrZpRc4Kxm62R/fXqEtQQqr36SZDVA2Ocv/Pwq9ic=;
+	s=default; t=1575939156;
+	bh=A9d3v2+1TxQU8eipygbnT5TjSuOikCN9dLM2waYAunQ=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h6y/t83DmBYLIZkv2JyHWnM+1jxeYmFKCKLd+fSEMLHKaEmt32JjtMyPWzEaYlUgK
-	 THCL3AAZsXNl6JNfNnTYFLD/VQimdWWUwb4wrk7CrkIt6FKIWZ/kz+X94tzk1Pljs8
-	 BzPbl5StGaIIiqt/g205FrYwtWzlYPwu8rUN5yfU=
+	b=MqTUmSVWQB3vvoRaAPT4khVoXB49bS0X/Eri6ScSrJ8PNseRxLMtZqS4XsHJ2lQBh
+	 s9XX3Amjo7NojYvtaKFWy/oZWR9AFxDgOXCgsaAtXKO8gHh28VH/HljrWLwQBV8oxS
+	 OVbQgXukWC0yl+LrvytNhATAqyMD2XF0nf3tnoaA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC79DF80257;
-	Tue, 10 Dec 2019 01:49:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9334F80268;
+	Tue, 10 Dec 2019 01:49:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DE4BF80255; Tue, 10 Dec 2019 01:49:12 +0100 (CET)
+ id 616FCF80256; Tue, 10 Dec 2019 01:49:13 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3811AF801F4
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3811AF801F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83AAAF8011E
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83AAAF8011E
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2019 16:49:05 -0800
+ 09 Dec 2019 16:49:07 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398948"
+X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398956"
 Received: from sneuhier-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.188.78])
- by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:05 -0800
+ by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:06 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 18:48:48 -0600
-Message-Id: <20191210004854.16845-3-pierre-louis.bossart@linux.intel.com>
+Date: Mon,  9 Dec 2019 18:48:50 -0600
+Message-Id: <20191210004854.16845-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 References: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, Karol Trzcinski <karolx.trzcinski@linux.intel.com>,
+Cc: tiwai@suse.de, Slawomir Blauciak <slawomir.blauciak@linux.intel.com>,
  broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 2/8] ASoC: SOF: loader:
-	snd_sof_fw_parse_ext_data log warning on unknown header
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: [alsa-devel] [PATCH 4/8] ASoC: SOF: ipc: channel map structures
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,30 +83,86 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+From: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
 
-Added warning log when found some unknown FW boot ext header,
-to improve debuggability.
+This change adds stream map and channel map structures
+used for channel re-routing and stream aggregation.
 
-Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+Signed-off-by: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/loader.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/sound/sof/channel_map.h | 61 +++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 include/sound/sof/channel_map.h
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 9a9a381a908d..a041adf0669d 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -66,6 +66,8 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
- 			ret = get_ext_windows(sdev, ext_hdr);
- 			break;
- 		default:
-+			dev_warn(sdev->dev, "warning: unknown ext header type %d size 0x%x\n",
-+				 ext_hdr->type, ext_hdr->hdr.size);
- 			break;
- 		}
- 
+diff --git a/include/sound/sof/channel_map.h b/include/sound/sof/channel_map.h
+new file mode 100644
+index 000000000000..21044eb5f377
+--- /dev/null
++++ b/include/sound/sof/channel_map.h
+@@ -0,0 +1,61 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2019 Intel Corporation. All rights reserved.
++ */
++
++#ifndef __IPC_CHANNEL_MAP_H__
++#define __IPC_CHANNEL_MAP_H__
++
++#include <uapi/sound/sof/header.h>
++#include <sound/sof/header.h>
++
++/**
++ * \brief Channel map, specifies transformation of one-to-many or many-to-one.
++ *
++ * In case of one-to-many specifies how the output channels are computed out of
++ * a single source channel,
++ * in case of many-to-one specifies how a single target channel is computed
++ * from a multichannel input stream.
++ *
++ * Channel index specifies position of the channel in the stream on the 'one'
++ * side.
++ *
++ * Ext ID is the identifier of external part of the transformation. Depending
++ * on the context, it may be pipeline ID, dai ID, ...
++ *
++ * Channel mask describes which channels are taken into account on the "many"
++ * side. Bit[i] set to 1 means that i-th channel is used for computation
++ * (either as source or as a target).
++ *
++ * Channel mask is followed by array of coefficients in Q2.30 format,
++ * one per each channel set in the mask (left to right, LS bit set in the
++ * mask corresponds to ch_coeffs[0]).
++ */
++struct sof_ipc_channel_map {
++	uint32_t ch_index;
++	uint32_t ext_id;
++	uint32_t ch_mask;
++	uint32_t reserved;
++	int32_t ch_coeffs[0];
++} __packed;
++
++/**
++ * \brief Complete map for each channel of a multichannel stream.
++ *
++ * num_ch_map Specifies number of items in the ch_map.
++ * More than one transformation per a single channel is allowed (in case
++ * multiple external entities are transformed).
++ * A channel may be skipped in the transformation list, then it is filled
++ * with 0's by the transformation function.
++ */
++struct sof_ipc_stream_map {
++	struct sof_ipc_cmd_hdr hdr;
++	uint32_t num_ch_map;
++	uint32_t reserved[3];
++	struct sof_ipc_channel_map ch_map[0];
++} __packed;
++
++#endif /* __IPC_CHANNEL_MAP_H__ */
 -- 
 2.20.1
 
