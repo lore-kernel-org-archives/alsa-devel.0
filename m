@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27AC0C3F68F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78D32C2D0BF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A69A120838
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06C72205C9
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hYFMPuM5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lj0/NiLS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A69A120838
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RRSqFMhk";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CxX7crp+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06C72205C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA0781677;
-	Tue, 10 Dec 2019 22:14:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA0781677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44EDC166E;
+	Tue, 10 Dec 2019 22:15:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44EDC166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576012523;
-	bh=EphtdiREBaRQNddQLYX+Cp4hESW7pQgws/ZHEJgSp9M=;
+	s=default; t=1576012556;
+	bh=HkKOe0gZW8pqU9G8Ntlzl4dOJSFW+IAiCnelzba1BIk=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hYFMPuM5ESr6XRmcQk8rwfr6aIgEJbXS0oajrGrcKM/LU63tXsBTHwAOdv3uGC+td
-	 aFXv0a3jRUMyPH+wkA8/JHCVQP6aUb1r/TE11sI5gp3tmeWbfl8IAYUh+v3bOlJ6sD
-	 uBSk1zdtdgkpL9336KofhIq61O+6xoVBzOO5z3GI=
+	b=RRSqFMhkf9sqGxqsOkXpppR2g8j1Of4FWLo+WyEHoNAhtKitWcKXcflWfRm+byFuC
+	 kftdr6HYpJSYMJ91pP2udMLKst5MWbDDXtR+y8DseVAKO2Ml8tuZxFJZH267I+YdEo
+	 mTX07ENQk6YzpIwXFY1B3gfOYnesBwkTzNhRgnMU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0605F8028A;
-	Tue, 10 Dec 2019 22:11:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEF3FF8024A;
+	Tue, 10 Dec 2019 22:12:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F695F8028D; Tue, 10 Dec 2019 22:11:13 +0100 (CET)
+ id B7746F80254; Tue, 10 Dec 2019 22:12:04 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BADB1F8027C
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:11:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BADB1F8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42B3DF800F3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:12:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42B3DF800F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Lj0/NiLS"
+ header.b="CxX7crp+"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 88910246B4;
- Tue, 10 Dec 2019 21:11:08 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E848E246B5;
+ Tue, 10 Dec 2019 21:11:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576012269;
- bh=YOT1hA51aMRKWyCNb+udBQWOOUeijBNCDYNvULjusP4=;
+ s=default; t=1576012319;
+ bh=UMpGuVvlVQ1bxIgcuXYUIwPC5nEb2CXC5Q+/LiSkbro=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Lj0/NiLSu86zH92anVEYeDN1YWA7R13ejRVp1pRtvDvj6w3QCDR0Kc5b4UH0i7M8K
- MUC5fRIVMhilKUgS/myL/UdBqwgzasHvVa+j+MGTVvNN2+Ww0IB+Uob9OiUJOT3u6q
- Wj1pFc1CIgsXC9NlCPezVvT1H3RqeZdDFJd3FrzA=
+ b=CxX7crp+LKl5/IqWMeJoJ7Colkkjh5uR1s2p58ms3fZd0jY0121DYCts40CoxSLgh
+ w3O33Yhyu2swX7j8uuW475Dmk7lZg4fsKbr/nBCx5FO/nRgJqHnFVLI+lqCdBnA0LO
+ KmIVSkywFuCKwVa1GdADG3Ahv3m4YNV2qyk13HVQ=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Tue, 10 Dec 2019 16:05:19 -0500
-Message-Id: <20191210210735.9077-175-sashal@kernel.org>
+Date: Tue, 10 Dec 2019 16:05:58 -0500
+Message-Id: <20191210210735.9077-214-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+Cc: Sasha Levin <sashal@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 214/350] ALSA: timer: Limit max
-	amount of slave instances
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 253/350] soundwire: intel: fix
+	PDI/stream mapping for Bulk
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,68 +94,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit fdea53fe5de532969a332d6e5e727f2ad8bf084d ]
+[ Upstream commit c134f914e9f55b7817e2bae625ec0e5f1379f7cd ]
 
-The fuzzer tries to open the timer instances as much as possible, and
-this may cause a system hiccup easily.  We've already introduced the
-cap for the max number of available instances for the h/w timers, and
-we should put such a limit also to the slave timers, too.
+The previous formula is incorrect for PDI0/1, the mapping is not
+linear but has a discontinuity between PDI1 and PDI2.
 
-This patch introduces the limit to the multiple opened slave timers.
-The upper limit is hard-coded to 1000 for now, which should suffice
-for any practical usages up to now.
+This change has no effect on PCM PDIs (same mapping).
 
-Link: https://lore.kernel.org/r/20191106154257.5853-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191022232948.17156-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/timer.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/soundwire/intel.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 59ae21b0bb936..013f0e69ff0f7 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -74,6 +74,9 @@ static LIST_HEAD(snd_timer_slave_list);
- /* lock for slave active lists */
- static DEFINE_SPINLOCK(slave_active_lock);
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 13c54eac0cc3e..d1839707128a8 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -479,7 +479,10 @@ intel_pdi_shim_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
+ 	unsigned int link_id = sdw->instance;
+ 	int pdi_conf = 0;
  
-+#define MAX_SLAVE_INSTANCES	1000
-+static int num_slaves;
-+
- static DEFINE_MUTEX(register_mutex);
+-	pdi->intel_alh_id = (link_id * 16) + pdi->num + 5;
++	/* the Bulk and PCM streams are not contiguous */
++	pdi->intel_alh_id = (link_id * 16) + pdi->num + 3;
++	if (pdi->num >= 2)
++		pdi->intel_alh_id += 2;
  
- static int snd_timer_free(struct snd_timer *timer);
-@@ -252,6 +255,10 @@ int snd_timer_open(struct snd_timer_instance **ti,
- 			err = -EINVAL;
- 			goto unlock;
- 		}
-+		if (num_slaves >= MAX_SLAVE_INSTANCES) {
-+			err = -EBUSY;
-+			goto unlock;
-+		}
- 		timeri = snd_timer_instance_new(owner, NULL);
- 		if (!timeri) {
- 			err = -ENOMEM;
-@@ -261,6 +268,7 @@ int snd_timer_open(struct snd_timer_instance **ti,
- 		timeri->slave_id = tid->device;
- 		timeri->flags |= SNDRV_TIMER_IFLG_SLAVE;
- 		list_add_tail(&timeri->open_list, &snd_timer_slave_list);
-+		num_slaves++;
- 		err = snd_timer_check_slave(timeri);
- 		if (err < 0) {
- 			snd_timer_close_locked(timeri, &card_dev_to_put);
-@@ -356,6 +364,8 @@ static int snd_timer_close_locked(struct snd_timer_instance *timeri,
- 	}
+ 	/*
+ 	 * Program stream parameters to stream SHIM register
+@@ -508,7 +511,10 @@ intel_pdi_alh_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
+ 	unsigned int link_id = sdw->instance;
+ 	unsigned int conf;
  
- 	list_del(&timeri->open_list);
-+	if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE)
-+		num_slaves--;
+-	pdi->intel_alh_id = (link_id * 16) + pdi->num + 5;
++	/* the Bulk and PCM streams are not contiguous */
++	pdi->intel_alh_id = (link_id * 16) + pdi->num + 3;
++	if (pdi->num >= 2)
++		pdi->intel_alh_id += 2;
  
- 	/* force to stop the timer */
- 	snd_timer_stop(timeri);
+ 	/* Program Stream config ALH register */
+ 	conf = intel_readl(alh, SDW_ALH_STRMZCFG(pdi->intel_alh_id));
 -- 
 2.20.1
 
