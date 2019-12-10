@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8D5AC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:30:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 383A7C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:30:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4744920836
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:30:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BB69520836
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:30:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PGY84y6l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4744920836
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RM58vhPE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB69520836
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9597C16B2;
-	Tue, 10 Dec 2019 15:29:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9597C16B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22E3B16B5;
+	Tue, 10 Dec 2019 15:30:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22E3B16B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575988217;
-	bh=Spy85HpQAhgd32PqRiQ0R9p6vfunFDCqLT6/QsEbzVE=;
+	s=default; t=1575988251;
+	bh=qhwgi0YTDow1RIViroQtXFR6CRDMAg2PwoWx8mXZSU0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PGY84y6lGTjcVym3eVsTZUO9G/HfGRqip03VsVcIyIx4vWJVy0FUY+s+7RDfzaFBD
-	 WXK0VedtC/nPGph1LfxENL3md3ux4SCB7S9uwy2A8cp7TxHETlsL81XCG57TDyZiEb
-	 XozfG+FiM6vzP42t3vo1M8de8kCpR9BUgGpm4Oi8=
+	b=RM58vhPEKZ92Da+jJmGNXf5vjNdEyWkC1UyBQj/ygMwQ/0boZALVbLczMIg+2dwWV
+	 uN2uPZzGmXknH1xTbBQ1JCxs8mB5TVezGNLX3yNGWKfMN9OsC5P5OnJk2N2ig7lVsl
+	 Ob38iDfBw0SvIbpRAAH+BGVKI7B/mRqzU7O8pOms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9373F8028A;
-	Tue, 10 Dec 2019 15:26:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 140E6F80254;
+	Tue, 10 Dec 2019 15:26:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C907FF80279; Tue, 10 Dec 2019 15:26:37 +0100 (CET)
+ id 80F7DF80278; Tue, 10 Dec 2019 15:26:38 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2902F8024A
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2902F8024A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 915EEF801D8
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 915EEF801D8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id E29A6AD9F;
+ by mx1.suse.de (Postfix) with ESMTP id AE9B7B178;
  Tue, 10 Dec 2019 14:26:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Date: Tue, 10 Dec 2019 15:25:57 +0100
-Message-Id: <20191210142614.19405-7-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 15:25:53 +0100
+Message-Id: <20191210142614.19405-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210142614.19405-1-tiwai@suse.de>
 References: <20191210142614.19405-1-tiwai@suse.de>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH for-5.6 06/23] ASoC: dma-sh7760: Use managed
-	buffer allocation
+Subject: [alsa-devel] [PATCH for-5.6 02/23] ASoC: au1x: Use managed buffer
+	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,55 +83,103 @@ snd_pcm_lib_free_pages() calls are dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sh/dma-sh7760.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ sound/soc/au1x/dbdma2.c | 14 +-------------
+ sound/soc/au1x/dma.c    | 21 ++++++---------------
+ 2 files changed, 7 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
-index 2b0eca02a8b9..4d0f2f738ffa 100644
---- a/sound/soc/sh/dma-sh7760.c
-+++ b/sound/soc/sh/dma-sh7760.c
-@@ -179,11 +179,6 @@ static int camelot_hw_params(struct snd_soc_component *component,
- 	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
- 	int ret;
+diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
+index 4553108ec92a..b2c0a0d8a407 100644
+--- a/sound/soc/au1x/dbdma2.c
++++ b/sound/soc/au1x/dbdma2.c
+@@ -197,10 +197,6 @@ static int au1xpsc_pcm_hw_params(struct snd_soc_component *component,
+ 	struct au1xpsc_audio_dmadata *pcd;
+ 	int stype, ret;
  
--	ret = snd_pcm_lib_malloc_pages(substream,
--				       params_buffer_bytes(hw_params));
+-	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
 -	if (ret < 0)
--		return ret;
+-		goto out;
 -
- 	if (recv) {
- 		cam->rx_period_size = params_period_bytes(hw_params);
- 		cam->rx_period = 0;
-@@ -194,12 +189,6 @@ static int camelot_hw_params(struct snd_soc_component *component,
- 	return 0;
+ 	stype = substream->stream;
+ 	pcd = to_dmadata(substream, component);
+ 
+@@ -232,13 +228,6 @@ static int au1xpsc_pcm_hw_params(struct snd_soc_component *component,
+ 	return ret;
  }
  
--static int camelot_hw_free(struct snd_soc_component *component,
--			   struct snd_pcm_substream *substream)
+-static int au1xpsc_pcm_hw_free(struct snd_soc_component *component,
+-			       struct snd_pcm_substream *substream)
 -{
--	return snd_pcm_lib_free_pages(substream);
+-	snd_pcm_lib_free_pages(substream);
+-	return 0;
 -}
 -
- static int camelot_prepare(struct snd_soc_component *component,
- 			   struct snd_pcm_substream *substream)
+ static int au1xpsc_pcm_prepare(struct snd_soc_component *component,
+ 			       struct snd_pcm_substream *substream)
  {
-@@ -307,7 +296,7 @@ static int camelot_pcm_new(struct snd_soc_component *component,
- 	/* dont use SNDRV_DMA_TYPE_DEV, since it will oops the SH kernel
- 	 * in MMAP mode (i.e. aplay -M)
- 	 */
--	snd_pcm_lib_preallocate_pages_for_all(pcm,
-+	snd_pcm_set_managed_buffer_all(pcm,
- 		SNDRV_DMA_TYPE_CONTINUOUS,
- 		NULL,
- 		DMABRG_PREALLOC_BUFFER,	DMABRG_PREALLOC_BUFFER_MAX);
-@@ -320,7 +309,6 @@ static const struct snd_soc_component_driver sh7760_soc_component = {
- 	.close		= camelot_pcm_close,
+@@ -315,7 +304,7 @@ static int au1xpsc_pcm_new(struct snd_soc_component *component,
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 		card->dev, AU1XPSC_BUFFER_MIN_BYTES, (4096 * 1024) - 1);
+ 
+ 	return 0;
+@@ -328,7 +317,6 @@ static struct snd_soc_component_driver au1xpsc_soc_component = {
+ 	.close		= au1xpsc_pcm_close,
  	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= camelot_hw_params,
--	.hw_free	= camelot_hw_free,
- 	.prepare	= camelot_prepare,
- 	.trigger	= camelot_trigger,
- 	.pointer	= camelot_pos,
+ 	.hw_params	= au1xpsc_pcm_hw_params,
+-	.hw_free	= au1xpsc_pcm_hw_free,
+ 	.prepare	= au1xpsc_pcm_prepare,
+ 	.trigger	= au1xpsc_pcm_trigger,
+ 	.pointer	= au1xpsc_pcm_pointer,
+diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+index 054dfda89d3e..037f4a98fb76 100644
+--- a/sound/soc/au1x/dma.c
++++ b/sound/soc/au1x/dma.c
+@@ -231,19 +231,10 @@ static int alchemy_pcm_hw_params(struct snd_soc_component *component,
+ 				 struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct audio_stream *stream = ss_to_as(substream, component);
+-	int err;
+-
+-	err = snd_pcm_lib_malloc_pages(substream,
+-				       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		return err;
+-	err = au1000_setup_dma_link(stream,
+-				    params_period_bytes(hw_params),
+-				    params_periods(hw_params));
+-	if (err)
+-		snd_pcm_lib_free_pages(substream);
+ 
+-	return err;
++	return au1000_setup_dma_link(stream,
++				     params_period_bytes(hw_params),
++				     params_periods(hw_params));
+ }
+ 
+ static int alchemy_pcm_hw_free(struct snd_soc_component *component,
+@@ -251,7 +242,7 @@ static int alchemy_pcm_hw_free(struct snd_soc_component *component,
+ {
+ 	struct audio_stream *stream = ss_to_as(substream, component);
+ 	au1000_release_dma_link(stream);
+-	return snd_pcm_lib_free_pages(substream);
++	return 0;
+ }
+ 
+ static int alchemy_pcm_trigger(struct snd_soc_component *component,
+@@ -292,8 +283,8 @@ static int alchemy_pcm_new(struct snd_soc_component *component,
+ {
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+-					      NULL, 65536, (4096 * 1024) - 1);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
++				       NULL, 65536, (4096 * 1024) - 1);
+ 
+ 	return 0;
+ }
 -- 
 2.16.4
 
