@@ -2,97 +2,58 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5C46C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 01:33:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D93EC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:12:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 408E420409
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 01:33:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 88AC9206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:12:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WXatRHQU";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bc1Zhe8i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 408E420409
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TUqeqzgy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88AC9206E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 878D910E;
-	Tue, 10 Dec 2019 02:32:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 878D910E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B144843;
+	Tue, 10 Dec 2019 07:12:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B144843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575941599;
-	bh=bNwUO3UHsD2JLvP84ikF3A6E7gL/t9g+lyOVEN6KAlg=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WXatRHQUD+E2/3rktNWFvAUJUhLy96ARK9A5PYmdTTCgyO10az80oyDLEnFKQntr9
-	 L0hlLW7xRnbVLiMp1wU6OtNixG7E64wUokLJ8z6+mIjz2oTPgTuHz6otyWhswzSco2
-	 QJqX2SzM072ZtEEU6JxRZD5wacVpOZvNwxyZri78=
+	s=default; t=1575958373;
+	bh=VZOQ1/kzCfYmHcrjzSZwigIJOWkT+TO5/1pvaRx2Tps=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TUqeqzgyhBFeLbY5iVzxJwCDz7WDAw7uC7PBY3Pk9Q9ggJFF3cDMUEUgzi1nuCr3t
+	 +cvdKAvhy0DDxE/lwsA3IVdgLYBSZd2+p1LCHQQ1rTdYw1shcMkYBwteTyMOKkiRon
+	 mfsQ79mWRObGT2/eJjzenNXM3O8DAJTV6vltDawQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B5CDF801F4;
-	Tue, 10 Dec 2019 02:32:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18CDFF8026F;
+	Tue, 10 Dec 2019 07:12:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB64EF80234; Tue, 10 Dec 2019 02:32:26 +0100 (CET)
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com
- [IPv6:2a00:1450:4864:20::544])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 422E9F80271; Tue, 10 Dec 2019 07:11:59 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96281F800E1
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 02:32:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96281F800E1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="bc1Zhe8i"
-Received: by mail-ed1-x544.google.com with SMTP id j17so14514193edp.3
- for <alsa-devel@alsa-project.org>; Mon, 09 Dec 2019 17:32:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=UqpJfCF3D37VJfuOPskNhpW2JeHH9pFB4KOKdtTwdyQ=;
- b=bc1Zhe8iLIdRObEFSjlQQuOohVLEC8vKyYzA1AhMpnkg23ydBYOsTXGqxbFY2BnzZv
- sDJHcRuH1dvhGlYTlPEewsWKTo2ey87r/5x/TgaLjuTIdd98v3lyMyQ90PqM1ccoTEXM
- ez06WR/C+KGLRP5Kkh2nSd12PRi9jGaxnX7Q65kagz5nGUJxFc2j2cf33vOdjVgwCtsE
- SdeC3hWh4UqeV4QiaW7rfTJYI+mlbJ8V/4J7YDVC/EL4JK8XOZISzqQhgtbulLgWi+Ph
- X2sZAh3bFx7U1xwuf4u4XDsMeHYLQ4WXI/dOF2/7VmXvL9NXOo4AS3FMruNACmkup0PA
- LJYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=UqpJfCF3D37VJfuOPskNhpW2JeHH9pFB4KOKdtTwdyQ=;
- b=iq9pn1Lp+EVbbqjVtgjvWPIGEPetmLGHKsmp/ceIv9wn3kryVjmrVeSVLV0+Sn9ES6
- bv6RtHltr2xBq/rnE3vLVvQ46Z1+t8n3/nhtfJbTT2oi+GNRNk1fc/ATXvuitQ9RPoGd
- 6mwW3SSerPmkJiHIRQ927zSt4nUCmNkS4vjvrhwsp+7Em1dPJdxP80WTOfBx/vftmmiB
- TbDK/OGsetO4pMf5zOJkYtQhNiFj9CjkzQEM+mU6+j6EVxdnn5ebfGoPOy5che3b/PtI
- dsNoGAgMVjEXZV3jDX5Dhg4H1irg53BVyCtt6GStHElUpzsONCISI6tRE8D6j84IoPwN
- nK6g==
-X-Gm-Message-State: APjAAAUULyAW2OQbcR7YjHufc+1GzlB6BYCM4W7JDO0sG3U68EXSRtx+
- dn40SW/pxXDAWAYrZqKgHMf1KGSXIwqhFHVWA5w=
-X-Google-Smtp-Source: APXvYqzoQKcEO+//0TtUd5SF6PyfOZAfzGEaD7PMtndDhtaaPIzXRivESHfO0JOWC2PfFXQDLLBG/Nu+5s9k46RmiOs=
-X-Received: by 2002:aa7:d345:: with SMTP id m5mr36626481edr.149.1575941542654; 
- Mon, 09 Dec 2019 17:32:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20191206075209.18068-1-hslester96@gmail.com>
- <20191209162417.GD5483@sirena.org.uk>
- <CANhBUQ0zwQG-=C12v02cf5kfvJba=5_=0JkZA45DDhxOzTBY6A@mail.gmail.com>
- <20191209170030.GH5483@sirena.org.uk>
-In-Reply-To: <20191209170030.GH5483@sirena.org.uk>
-From: Chuhong Yuan <hslester96@gmail.com>
-Date: Tue, 10 Dec 2019 09:32:12 +0800
-Message-ID: <CANhBUQ0-jEG2W=sby1SyPphxK3CSPinFF5zkLq9jsKCZM5hYjw@mail.gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>,
- James Schulman <james.schulman@cirrus.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: cs42l42: add missed
- regulator_bulk_disable in remove and fix probe failure
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95BC4F8020C
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:11:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95BC4F8020C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 76EE8B1AD
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:11:51 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Tue, 10 Dec 2019 07:11:22 +0100
+Message-Id: <20191210061145.24641-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Subject: [alsa-devel] [PATCH 00/23] ALSA: Drop superfluous ioctl PCM ops
+	(for 5.6)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,35 +66,154 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Dec 10, 2019 at 1:00 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Dec 10, 2019 at 12:52:30AM +0800, Chuhong Yuan wrote:
->
-> > I have a question that what if CONFIG_PM is not defined?
-> > Since I have met runtime PM before in the patch
-> > a31eda65ba21 ("net: fec: fix clock count mis-match").
-> > I learned there that in some cases CONFIG_PM is not defined so runtime PM
-> > cannot take effect.
-> > Therefore, undo operations should still exist in remove functions.
->
-> There's also the case where runtime PM is there and the device is active
-> at suspend - it's not that there isn't a problem, it's that we can't
-> unconditionally do a disable because we don't know if there was a
-> matching enable.  It'll need to be conditional on the runtime PM state.
+Hi,
 
-How about adding a check like #ifndef CONFIG_PM?
-I use this in an old version of the mentioned patch.
-However, that is not accepted since it seems not symmetric with enable
-in the probe.
-But I don't find an explicit runtime PM call in the probe here so the
-revision pattern of
-("net: fec: fix clock count mis-match") seems not applicable.
-So I think adding a check is acceptable here, at least it solves the problem.
+this is another series of patches targeted to 5.6 kernel.
+This one is applied on top of the previous series for managed
+allocation, and again specific to non-ASoC drivers in sound/*.
+For ASoC and other subsystems, another patchset will be submitted
+later.
+
+The changes are pretty simple, just removing the snd_pcm_lib_ioctl
+entries that became superfluous.
+
+
+Takashi
+
+===
+
+Takashi Iwai (23):
+  ALSA: aoa: Drop superfluous ioctl PCM ops
+  ALSA: arm: Drop superfluous ioctl PCM ops
+  ALSA: atmel: Drop superfluous ioctl PCM ops
+  ALSA: drivers: Drop superfluous ioctl PCM ops
+  ALSA: firewire: Drop superfluous ioctl PCM ops
+  ALSA: es1688: Drop superfluous ioctl PCM ops
+  ALSA: isa: Drop superfluous ioctl PCM ops
+  ALSA: mips: Drop superfluous ioctl PCM ops
+  ALSA: parisc: Drop superfluous ioctl PCM ops
+  ALSA: intel8x0: Drop superfluous ioctl PCM ops
+  ALSA: via82xx: Drop superfluous ioctl PCM ops
+  ALSA: atiixp: Drop superfluous ioctl PCM ops
+  ALSA: asihpi: Drop superfluous ioctl PCM ops
+  ALSA: trident: Drop superfluous ioctl PCM ops
+  ALSA: pci: Drop superfluous ioctl PCM ops
+  ALSA: pcmcia: Drop superfluous ioctl PCM ops
+  ALSA: ppc: Drop superfluous ioctl PCM ops
+  ALSA: sh: Drop superfluous ioctl PCM ops
+  ALSA: sparc: Drop superfluous ioctl PCM ops
+  ALSA: spi: Drop superfluous ioctl PCM ops
+  ALSA: usb: Drop superfluous ioctl PCM ops
+  ALSA: x86: Drop superfluous ioctl PCM ops
+  ALSA: xen: Drop superfluous ioctl PCM ops
+
+ sound/aoa/soundbus/i2sbus/pcm.c          |  2 --
+ sound/arm/aaci.c                         |  2 --
+ sound/arm/pxa2xx-ac97.c                  |  1 -
+ sound/atmel/ac97c.c                      |  2 --
+ sound/drivers/aloop.c                    |  1 -
+ sound/drivers/dummy.c                    |  2 --
+ sound/drivers/ml403-ac97cr.c             |  2 --
+ sound/drivers/pcsp/pcsp_lib.c            |  1 -
+ sound/drivers/vx/vx_pcm.c                |  2 --
+ sound/firewire/bebob/bebob_pcm.c         |  2 --
+ sound/firewire/dice/dice-pcm.c           |  2 --
+ sound/firewire/digi00x/digi00x-pcm.c     |  2 --
+ sound/firewire/fireface/ff-pcm.c         |  2 --
+ sound/firewire/fireworks/fireworks_pcm.c |  2 --
+ sound/firewire/isight.c                  |  1 -
+ sound/firewire/motu/motu-pcm.c           |  2 --
+ sound/firewire/oxfw/oxfw-pcm.c           |  2 --
+ sound/firewire/tascam/tascam-pcm.c       |  2 --
+ sound/isa/ad1816a/ad1816a_lib.c          |  2 --
+ sound/isa/es1688/es1688_lib.c            |  8 --------
+ sound/isa/es18xx.c                       |  2 --
+ sound/isa/gus/gus_pcm.c                  |  2 --
+ sound/isa/msnd/msnd.c                    |  2 --
+ sound/isa/sb/emu8000_pcm.c               |  1 -
+ sound/isa/sb/sb16_main.c                 |  2 --
+ sound/isa/sb/sb8_main.c                  |  2 --
+ sound/isa/wss/wss_lib.c                  |  2 --
+ sound/mips/hal2.c                        |  2 --
+ sound/mips/sgio2audio.c                  |  3 ---
+ sound/parisc/harmony.c                   |  2 --
+ sound/pci/ad1889.c                       |  2 --
+ sound/pci/ali5451/ali5451.c              |  4 ----
+ sound/pci/als300.c                       |  2 --
+ sound/pci/als4000.c                      |  2 --
+ sound/pci/asihpi/asihpi.c                | 17 -----------------
+ sound/pci/atiixp.c                       |  3 ---
+ sound/pci/atiixp_modem.c                 |  2 --
+ sound/pci/au88x0/au88x0_pcm.c            |  1 -
+ sound/pci/aw2/aw2-alsa.c                 |  2 --
+ sound/pci/azt3328.c                      |  3 ---
+ sound/pci/bt87x.c                        |  1 -
+ sound/pci/ca0106/ca0106_main.c           |  8 --------
+ sound/pci/cmipci.c                       |  5 -----
+ sound/pci/cs4281.c                       |  2 --
+ sound/pci/cs46xx/cs46xx_lib.c            | 10 ----------
+ sound/pci/cs5535audio/cs5535audio_pcm.c  |  2 --
+ sound/pci/ctxfi/ctpcm.c                  |  2 --
+ sound/pci/echoaudio/echoaudio.c          |  4 ----
+ sound/pci/emu10k1/emu10k1x.c             |  2 --
+ sound/pci/emu10k1/emupcm.c               |  6 ------
+ sound/pci/emu10k1/p16v.c                 |  2 --
+ sound/pci/ens1370.c                      |  3 ---
+ sound/pci/es1938.c                       |  2 --
+ sound/pci/es1968.c                       |  2 --
+ sound/pci/fm801.c                        |  2 --
+ sound/pci/hda/hda_controller.c           |  1 -
+ sound/pci/ice1712/ice1712.c              |  5 -----
+ sound/pci/ice1712/ice1724.c              |  5 -----
+ sound/pci/intel8x0.c                     | 12 ------------
+ sound/pci/intel8x0m.c                    |  2 --
+ sound/pci/lola/lola_pcm.c                |  1 -
+ sound/pci/lx6464es/lx6464es.c            |  2 --
+ sound/pci/maestro3.c                     |  2 --
+ sound/pci/mixart/mixart.c                |  2 --
+ sound/pci/nm256/nm256.c                  |  2 --
+ sound/pci/oxygen/oxygen_pcm.c            |  6 ------
+ sound/pci/pcxhr/pcxhr.c                  |  1 -
+ sound/pci/riptide/riptide.c              |  2 --
+ sound/pci/rme32.c                        |  8 --------
+ sound/pci/rme96.c                        |  4 ----
+ sound/pci/sis7019.c                      |  2 --
+ sound/pci/sonicvibes.c                   |  2 --
+ sound/pci/trident/trident_main.c         | 31 -------------------------------
+ sound/pci/via82xx.c                      |  5 -----
+ sound/pci/via82xx_modem.c                |  2 --
+ sound/pci/ymfpci/ymfpci_main.c           |  5 -----
+ sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c   |  1 -
+ sound/ppc/pmac.c                         |  2 --
+ sound/ppc/snd_ps3.c                      |  1 -
+ sound/sh/aica.c                          |  1 -
+ sound/sh/sh_dac_audio.c                  |  1 -
+ sound/sparc/amd7930.c                    |  2 --
+ sound/sparc/cs4231.c                     |  2 --
+ sound/sparc/dbri.c                       |  1 -
+ sound/spi/at73c213.c                     |  1 -
+ sound/usb/6fire/pcm.c                    |  1 -
+ sound/usb/caiaq/audio.c                  |  1 -
+ sound/usb/hiface/pcm.c                   |  1 -
+ sound/usb/line6/capture.c                |  1 -
+ sound/usb/line6/playback.c               |  1 -
+ sound/usb/misc/ua101.c                   |  2 --
+ sound/usb/pcm.c                          |  2 --
+ sound/usb/usx2y/usbusx2yaudio.c          |  1 -
+ sound/usb/usx2y/usx2yhwdeppcm.c          |  1 -
+ sound/x86/intel_hdmi_audio.c             |  1 -
+ sound/xen/xen_snd_front_alsa.c           |  2 --
+ 96 files changed, 281 deletions(-)
+
+-- 
+2.16.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
