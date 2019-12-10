@@ -2,72 +2,65 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C448CC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 13:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1352C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:00:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCC6F20828
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 13:51:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DE6F20828
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:00:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qHljX/jt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCC6F20828
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BoidrK7R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DE6F20828
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E14EA165F;
-	Tue, 10 Dec 2019 14:50:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E14EA165F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70A61165F;
+	Tue, 10 Dec 2019 14:59:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70A61165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575985859;
-	bh=WeFT1c8rClhxpD+D1dK2GsJ86y8l2CNldkfpxCurPJw=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1575986398;
+	bh=hdybu9OO1JIXvVEwSyQnHcP4IQuiLOfzGFhRARMAeak=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qHljX/jt97aD2SiUudV7EvCn3QqY3LD3byA4maaKn//ElkqXkwysqzjFLjiFNshl2
-	 mUsXyC8Kg1yrMlmb+vI563O8ne+QDdPAOtiik+SczEoT6KBYpPkAOC4DLCBWwO76mK
-	 R/o51eo980cJ7pTLSNra6zKeLHt9v6C7RV8rvDIU=
+	b=BoidrK7RdcUzUahdOe2eaEtRQdUNjuU5SDjmXej3/xKOg9liqNp6CMBxQv/ofyxA1
+	 l6lp4JeTAM6MplbhlZBFPbMixh94lU3ygZ+N4Fb3qLMCddzPMoIb+B68UF9zL8voYm
+	 wvQJGSUCgShA8+wwGFhvZOJCe3s4iMa6AnPLrWHQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B22DF8011E;
-	Tue, 10 Dec 2019 14:50:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FA80F80256;
+	Tue, 10 Dec 2019 14:59:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 612F0F801D8; Tue, 10 Dec 2019 14:50:06 +0100 (CET)
+ id 254EDF800B4; Tue, 10 Dec 2019 14:59:04 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBDABF800B4
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 14:50:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBDABF800B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EDFCF800F3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 14:59:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EDFCF800F3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id DD710AD6C;
- Tue, 10 Dec 2019 13:50:00 +0000 (UTC)
-Date: Tue, 10 Dec 2019 14:50:00 +0100
-Message-ID: <s5hy2vkwarb.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id 09A8CAEAB;
+ Tue, 10 Dec 2019 13:59:00 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
-In-Reply-To: <PSXP216MB0438D2E81B187B3B2124FEBB805B0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
-References: <PSXP216MB0438BFEAA0617283A834E11580580@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
- <77aa6c01aefe1ebc4004e87b0bc714f2759f15c4.1575985006.git.lukas@wunner.de>
- <PSXP216MB0438D2E81B187B3B2124FEBB805B0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <helgaas@kernel.org>,
- Alex Deucher <alexander.deucher@amd.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda/hdmi - Fix duplicate unref of
-	pci_dev
+To: linux-media@vger.kernel.org
+Date: Tue, 10 Dec 2019 14:58:41 +0100
+Message-Id: <20191210135849.15607-7-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20191210135849.15607-1-tiwai@suse.de>
+References: <20191210135849.15607-1-tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ Andy Walls <awalls@md.metrocast.net>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: [alsa-devel] [PATCH for-5.6 06/14] media: ivtv: Clean up ALSA PCM
+	API usages
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,64 +73,128 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 10 Dec 2019 14:47:28 +0100,
-Nicholas Johnson wrote:
-> 
-> On Tue, Dec 10, 2019 at 02:39:50PM +0100, Lukas Wunner wrote:
-> > Nicholas Johnson reports a null pointer deref as well as a refcount
-> > underflow upon hot-removal of a Thunderbolt-attached AMD eGPU.
-> > He's bisected the issue down to commit 586bc4aab878 ("ALSA: hda/hdmi -
-> > fix vgaswitcheroo detection for AMD").
-> > 
-> > The commit iterates over PCI devices using pci_get_class() and
-> > unreferences each device found, even though pci_get_class()
-> > subsequently unreferences the device as well.  Fix it.
-> > 
-> > Fixes: 586bc4aab878 ("ALSA: hda/hdmi - fix vgaswitcheroo detection for AMD")
-> > Link: https://lore.kernel.org/r/PSXP216MB0438BFEAA0617283A834E11580580@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM/
-> > Reported-and-tested-by: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
-> > Signed-off-by: Lukas Wunner <lukas@wunner.de>
-> > Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > Cc: Alexander Deucher <alexander.deucher@amd.com>
-> > Cc: Bjorn Helgaas <helgaas@kernel.org>
-> > ---
-> >  sound/pci/hda/hda_intel.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > index 35b4526f0d28..b856b89378ac 100644
-> > --- a/sound/pci/hda/hda_intel.c
-> > +++ b/sound/pci/hda/hda_intel.c
-> > @@ -1419,7 +1419,6 @@ static bool atpx_present(void)
-> >  				return true;
-> >  			}
-> >  		}
-> > -		pci_dev_put(pdev);
-> >  	}
-> >  	return false;
-> >  }
-> > -- 
-> > 2.24.0
-> > 
-> Extremely fast turnaround from bisect to patch.
-> 
-> If you want the bugzilla.kernel.org report then I can do that ASAP, but 
-> I feel that it is redundant now.
+With the recent  change in ALSA PCM core, the whole open-coded vmalloc
+buffer handling in this driver can be dropped by replacing with the
+managed buffer allocation.
 
-We have now Link tag to track the ML archive, so it should suffice, I
-suppose.
+Cc: Andy Walls <awalls@md.metrocast.net>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/media/pci/ivtv/ivtv-alsa-pcm.c | 63 +---------------------------------
+ 1 file changed, 1 insertion(+), 62 deletions(-)
 
-> Thank you for handling my bug report.
+diff --git a/drivers/media/pci/ivtv/ivtv-alsa-pcm.c b/drivers/media/pci/ivtv/ivtv-alsa-pcm.c
+index 9e6019a159f4..cb281ce089f9 100644
+--- a/drivers/media/pci/ivtv/ivtv-alsa-pcm.c
++++ b/drivers/media/pci/ivtv/ivtv-alsa-pcm.c
+@@ -16,8 +16,6 @@
+ #include "ivtv-alsa.h"
+ #include "ivtv-alsa-pcm.h"
+ 
+-#include <linux/vmalloc.h>
+-
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ 
+@@ -218,55 +216,6 @@ static int snd_ivtv_pcm_ioctl(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-
+-static int snd_pcm_alloc_vmalloc_buffer(struct snd_pcm_substream *subs,
+-					size_t size)
+-{
+-	struct snd_pcm_runtime *runtime = subs->runtime;
+-
+-	dprintk("Allocating vbuffer\n");
+-	if (runtime->dma_area) {
+-		if (runtime->dma_bytes > size)
+-			return 0;
+-
+-		vfree(runtime->dma_area);
+-	}
+-	runtime->dma_area = vmalloc(size);
+-	if (!runtime->dma_area)
+-		return -ENOMEM;
+-
+-	runtime->dma_bytes = size;
+-
+-	return 0;
+-}
+-
+-static int snd_ivtv_pcm_hw_params(struct snd_pcm_substream *substream,
+-			 struct snd_pcm_hw_params *params)
+-{
+-	dprintk("%s called\n", __func__);
+-
+-	return snd_pcm_alloc_vmalloc_buffer(substream,
+-					   params_buffer_bytes(params));
+-}
+-
+-static int snd_ivtv_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_ivtv_card *itvsc = snd_pcm_substream_chip(substream);
+-	unsigned long flags;
+-	unsigned char *dma_area = NULL;
+-
+-	spin_lock_irqsave(&itvsc->slock, flags);
+-	if (substream->runtime->dma_area) {
+-		dprintk("freeing pcm capture region\n");
+-		dma_area = substream->runtime->dma_area;
+-		substream->runtime->dma_area = NULL;
+-	}
+-	spin_unlock_irqrestore(&itvsc->slock, flags);
+-	vfree(dma_area);
+-
+-	return 0;
+-}
+-
+ static int snd_ivtv_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_ivtv_card *itvsc = snd_pcm_substream_chip(substream);
+@@ -296,24 +245,13 @@ snd_pcm_uframes_t snd_ivtv_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return hwptr_done;
+ }
+ 
+-static struct page *snd_pcm_get_vmalloc_page(struct snd_pcm_substream *subs,
+-					     unsigned long offset)
+-{
+-	void *pageptr = subs->runtime->dma_area + offset;
+-
+-	return vmalloc_to_page(pageptr);
+-}
+-
+ static const struct snd_pcm_ops snd_ivtv_pcm_capture_ops = {
+ 	.open		= snd_ivtv_pcm_capture_open,
+ 	.close		= snd_ivtv_pcm_capture_close,
+ 	.ioctl		= snd_ivtv_pcm_ioctl,
+-	.hw_params	= snd_ivtv_pcm_hw_params,
+-	.hw_free	= snd_ivtv_pcm_hw_free,
+ 	.prepare	= snd_ivtv_pcm_prepare,
+ 	.trigger	= snd_ivtv_pcm_trigger,
+ 	.pointer	= snd_ivtv_pcm_pointer,
+-	.page		= snd_pcm_get_vmalloc_page,
+ };
+ 
+ int snd_ivtv_pcm_create(struct snd_ivtv_card *itvsc)
+@@ -339,6 +277,7 @@ int snd_ivtv_pcm_create(struct snd_ivtv_card *itvsc)
+ 
+ 	snd_pcm_set_ops(sp, SNDRV_PCM_STREAM_CAPTURE,
+ 			&snd_ivtv_pcm_capture_ops);
++	snd_pcm_set_managed_buffer_all(sp, SNDRV_DMA_TYPE_VMALLOC, NULL, 0, 0);
+ 	sp->info_flags = 0;
+ 	sp->private_data = itvsc;
+ 	strscpy(sp->name, itv->card_name, sizeof(sp->name));
+-- 
+2.16.4
 
-And thank you for your quick testing.
-
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
