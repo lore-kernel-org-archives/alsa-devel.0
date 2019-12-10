@@ -6,66 +6,66 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05784C2D0BF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A30B3C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:41:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8470A20637
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:40:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C27A2073B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:41:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZCFwMrO/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgWk4eXa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8470A20637
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZTd/dItP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="aTYmBaHM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C27A2073B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5E531667;
-	Tue, 10 Dec 2019 22:39:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5E531667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75949166D;
+	Tue, 10 Dec 2019 22:40:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75949166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576014048;
-	bh=1QbB87wIU7g4+y3KFTVwE8YjlXhSDR1OxfwKQuouY1E=;
+	s=default; t=1576014076;
+	bh=oOOOD70CH89fyAtwgwHgtIAIEMuCGXQPjAavhBTgFb4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZCFwMrO/Lkqbgo6Z+/NUTAEMRP4r/wrWOf3MVxiCloiLj2MywdqbA9JcvBrLe10Yg
-	 sLq7nbmjYU8Y/A9q9H3kae9xnfY24aDf9zs1PotzC+SgTCuiJmhU6Y46C4W6PUXFr/
-	 BZyE7pUAISnw8jctm3S85fy1IVY2qsV8+Qcr7A4k=
+	b=ZTd/dItPzh+HyOhLHkGW/NPMD21X4KwJ0bp2Go7MgVbtVrpUgYue4PthjP7ath8Ky
+	 JYCjaWk9sRUsO2FpuQytsYFRXfj/v7CFbRQNXiGv8vOYH08Dk00KyhLpwkGpPTDrF8
+	 nY3INI/NZYM83lpj1EBI1IpLjd3ouWfLHELTiOew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECB0DF80292;
-	Tue, 10 Dec 2019 22:35:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C01AFF802A0;
+	Tue, 10 Dec 2019 22:35:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A12BBF80291; Tue, 10 Dec 2019 22:35:40 +0100 (CET)
+ id A3DECF802A0; Tue, 10 Dec 2019 22:35:42 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3059F8028B
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:35:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3059F8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14425F8028D
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:35:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14425F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FgWk4eXa"
+ header.b="aTYmBaHM"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id ACE1C24653;
- Tue, 10 Dec 2019 21:35:35 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DC3B52465C;
+ Tue, 10 Dec 2019 21:35:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576013736;
- bh=xcQmC0IgbKiXPgAFyLbz7jOycLcIgPwmOhouBbiyry4=;
+ s=default; t=1576013737;
+ bh=63LUu6LyMFY3U2I+028HHw3AyRetmSe2Ru2XoijVS+8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FgWk4eXayTg2j0zoEV0fYlGu2Pnq6EbS8TxvjG5IJ7BOtRyE0Rd34gIuuQzNkngOA
- PPiw0IFsncwPbe4d6YVhdfgt1v7L06HUE1A1qn36QZLWtjn1OyhTnyE4BTFfIl2B4Z
- r3CjgZeadFA6AYHNpMPOyZ3cU4Am1DdFgLoKMq14=
+ b=aTYmBaHMxyvt8secSJR0/sEfKSwW+k3xN2v4Lsx34MtLxZrr9KOIXlB0npPzlb1wB
+ R3E7GbRI+5N0czQ5+0V8iXPGVKiNKsca8h48hsTUiKmgXmBZUwr1vAQiF0uBi5sASH
+ DxETa19pLAJa11k/UiXC32BjlJ8gqfgtjlgU72WQ=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Tue, 10 Dec 2019 16:32:04 -0500
-Message-Id: <20191210213221.11921-160-sashal@kernel.org>
+Date: Tue, 10 Dec 2019 16:32:05 -0500
+Message-Id: <20191210213221.11921-161-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210213221.11921-1-sashal@kernel.org>
 References: <20191210213221.11921-1-sashal@kernel.org>
@@ -73,10 +73,11 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- Chuhong Yuan <hslester96@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 160/177] ASoC: wm5100: add missed
-	pm_runtime_disable
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 161/177] ASoC: Intel:
+	bytcr_rt5640: Update quirk for Acer Switch 10 SW5-012 2-in-1
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,43 +95,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit b1176bbb70866f24099cd2720283c7219fb4a81c ]
+[ Upstream commit 0bb887709eb16bdc4b5baddd8337abf3de72917f ]
 
-The driver forgets to call pm_runtime_disable in remove and
-probe failure.
-Add the calls to fix it.
+When the Acer Switch 10 SW5-012 quirk was added we did not have
+jack-detection support yet; and the builtin microphone selection of
+the original quirk is wrong too.
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20191118073707.28298-1-hslester96@gmail.com
+Fix the microphone-input quirk and add jack-detection info so that the
+internal-microphone and headphone/set jack on the Switch 10 work properly.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191119145138.59162-1-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm5100.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index ba89d9d711f76..b793701aafcda 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -2620,6 +2620,7 @@ static int wm5100_i2c_probe(struct i2c_client *i2c,
- 	return ret;
- 
- err_reset:
-+	pm_runtime_disable(&i2c->dev);
- 	if (i2c->irq)
- 		free_irq(i2c->irq, wm5100);
- 	wm5100_free_gpio(i2c);
-@@ -2643,6 +2644,7 @@ static int wm5100_i2c_remove(struct i2c_client *i2c)
- {
- 	struct wm5100_priv *wm5100 = i2c_get_clientdata(i2c);
- 
-+	pm_runtime_disable(&i2c->dev);
- 	if (i2c->irq)
- 		free_irq(i2c->irq, wm5100);
- 	wm5100_free_gpio(i2c);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index b6dc524830b21..6acd5dd599dc4 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -414,10 +414,12 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
+ 		},
+-		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+-						 BYT_RT5640_MCLK_EN |
+-						 BYT_RT5640_SSP0_AIF1),
+-
++		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
+ 	},
+ 	{
+ 		.matches = {
 -- 
 2.20.1
 
