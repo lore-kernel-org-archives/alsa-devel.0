@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE0A2C3F68F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05AB4C2D0C5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:16:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB5F720726
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:16:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7F44A2073D
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 07:16:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dTYfU7f7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB5F720726
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H0Ho7Jtr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F44A2073D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AE1D175A;
-	Tue, 10 Dec 2019 08:06:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AE1D175A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92A00174C;
+	Tue, 10 Dec 2019 08:05:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92A00174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575961647;
-	bh=ogVzhqKqbBOExP1nl/BGhmmKVjysJ1FFacmDuE1liSk=;
+	s=default; t=1575961608;
+	bh=hxap7a2pjaW9snM1aLd/AYSZmf0iuE2RSCx0mGrgtY8=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dTYfU7f7DbBNG4bQo6OWjkMh6usuTVHkHSVd/vGRtmkCt+2GiRUs3cI6ZgGJx4oqn
-	 aTjJw4zJt80omifHkt3UbcS34dTuBr5nJ4bs/6h9x2YOGc5H0MD3qHpb4raJTt4asW
-	 OfB8KLxF3ObaBUEw4qrIIKMWo4YVblr8kxcvqs1o=
+	b=H0Ho7JtrGpxgAoGPpnEudhkVgyeDbaWLSEiB3FzJyDZzG5D6h20YGm6SxSDUYC9dr
+	 CzzE6HN8rfhUOXdJubvWgUQy1CZkrUV7bdbDBHpTe2Tv3Efl0fQ/3XWytuvOzZDeFa
+	 A6UyWRiqA3PJBZj0XAVf7qxzG6X8wzPLo3RQm+aA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 947C9F804AB;
-	Tue, 10 Dec 2019 07:37:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8D6AF8049D;
+	Tue, 10 Dec 2019 07:37:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CCA8F8034E; Tue, 10 Dec 2019 07:36:44 +0100 (CET)
+ id 38505F8034D; Tue, 10 Dec 2019 07:36:41 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F459F80299
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:35:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F459F80299
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27D4DF8029A
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:35:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27D4DF8029A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 5989AB317
+ by mx1.suse.de (Postfix) with ESMTP id A5092B31B
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:35:01 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:34:43 +0100
-Message-Id: <20191210063454.31603-45-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 07:34:49 +0100
+Message-Id: <20191210063454.31603-51-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210063454.31603-1-tiwai@suse.de>
 References: <20191210063454.31603-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 44/55] ALSA: opl3sa2: Support PCM sync_stop
+Subject: [alsa-devel] [PATCH 50/55] ALSA: mixart: Support PCM sync_stop
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,27 +75,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver invokes snd_pcm_period_elapsed() simply from the interrupt
-handler.  Set card->sync_irq for enabling the missing sync_stop PCM
-operation.
+The driver invokes snd_pcm_period_elapsed() simply from the threaded
+interrupt handler.  Set card->sync_irq for enabling the missing
+sync_stop PCM operation.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/opl3sa2.c | 1 +
+ sound/pci/mixart/mixart.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/isa/opl3sa2.c b/sound/isa/opl3sa2.c
-index 941d0bd5460b..6d19ab458291 100644
---- a/sound/isa/opl3sa2.c
-+++ b/sound/isa/opl3sa2.c
-@@ -659,6 +659,7 @@ static int snd_opl3sa2_probe(struct snd_card *card, int dev)
- 		return -ENODEV;
- 	}
- 	chip->irq = xirq;
-+	card->sync_irq = chip->irq;
- 	err = snd_wss_create(card,
- 			     wss_port[dev] + 4, -1,
- 			     xirq, xdma1, xdma2,
+diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
+index 05e2c8ea8480..18124bd97d80 100644
+--- a/sound/pci/mixart/mixart.c
++++ b/sound/pci/mixart/mixart.c
+@@ -1041,6 +1041,7 @@ static int snd_mixart_create(struct mixart_mgr *mgr, struct snd_card *card, int
+ 	chip->card = card;
+ 	chip->chip_idx = idx;
+ 	chip->mgr = mgr;
++	card->sync_irq = mgr->irq;
+ 
+ 	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+ 		snd_mixart_chip_free(chip);
 -- 
 2.16.4
 
