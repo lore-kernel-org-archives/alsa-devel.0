@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AB53C43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51C74C2BD09
 	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 01:01:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AA2A214AF
+	by mail.kernel.org (Postfix) with ESMTPS id 519A92080D
 	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 01:01:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CTgpfpY+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AA2A214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RImxbq2L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 519A92080D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8F261676;
-	Tue, 10 Dec 2019 01:54:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8F261676
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3EDE1687;
+	Tue, 10 Dec 2019 01:54:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3EDE1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575939310;
-	bh=a62rvLtIWiWnVImmZaR5jsL5O0UPFQL0kJvJ7e8vMHg=;
+	s=default; t=1575939350;
+	bh=T4x2K4RhuP+FWCrtkbESnqDQwoiTzjan5Q83ANHSx+E=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CTgpfpY+ci7rQX/RL2l2ftei8zXGR/vQt60N7E1XTf4bTwldpNi4WrZAupfYONg9S
-	 4JzP4r+uiAvLfiW1GEHl2TL9edEnlgDr7rXeh6fnpRf4Vn+dOGFFLXZak3bEEHDGeO
-	 xMtcEGSFZTkkx2Hu6IL+qLOfOiPyFaky1M0Nu4fk=
+	b=RImxbq2Lo7M9Dq3GbbZgU832XhAbjxQ6SPyzpdLPQOzDxM68H163Dvx+i25OLBfz1
+	 Wgl90DBW1cOrSM5a1Ly9kDYdXwguw8oB/JMEoy9aMpN865gMvQVl9SDj5dniFxh1Hz
+	 KrPLzf/h1h4dtLki1jcsebBFJDsFuXE7ZiDUGPjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CF35F8028F;
-	Tue, 10 Dec 2019 01:49:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7210BF8029A;
+	Tue, 10 Dec 2019 01:49:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9225FF8025F; Tue, 10 Dec 2019 01:49:20 +0100 (CET)
+ id 52251F8023E; Tue, 10 Dec 2019 01:49:21 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20A76F80234
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20A76F80234
+ by alsa1.perex.cz (Postfix) with ESMTPS id 186D8F80254
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 186D8F80254
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2019 16:49:08 -0800
+ 09 Dec 2019 16:49:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398960"
+X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398977"
 Received: from sneuhier-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.188.78])
- by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:07 -0800
+ by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:10 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 18:48:51 -0600
-Message-Id: <20191210004854.16845-6-pierre-louis.bossart@linux.intel.com>
+Date: Mon,  9 Dec 2019 18:48:54 -0600
+Message-Id: <20191210004854.16845-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 References: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] [PATCH 5/8] ASoC: SOF: Intel: add codec_mask module
-	parameter
+Cc: tiwai@suse.de, Amery Song <chao.song@intel.com>, broonie@kernel.org,
+ Keyon Jie <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH 8/8] ASoC: Intel: common: work-around incorrect
+	ACPI HID for CML boards
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,57 +85,99 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Amery Song <chao.song@intel.com>
 
-Add a module parameter 'codec_mask' to filter out unwanted
-HDA codecs from driver probe. E.g. on most systems,
-codec_mask=4 will limit to HDMI audio and exclude any
-external HDA codecs.
+On CML boards with the RT5682 headset codec and RT1011 speaker
+amplifier, the platform firmware exposes three ACPI HIDs
+(10EC5682, 10EC1011 and MX98357A). The last HID is a mistake in
+DSDT tables, which causes the wrong machine driver to be loaded.
 
-Similar to 'probe_mask' module parameter of snd-hda-intel.
+This patch changes the key used to identify boards and changes the
+order of entries in the table to load the correct machine driver.
+The order does matter and should not be modified to work-around this
+firmware issue.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Amery Song <chao.song@intel.com>
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ .../intel/common/soc-acpi-intel-cml-match.c   | 41 +++++++++++--------
+ 1 file changed, 24 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
-index df1909e1d950..871b71a15a63 100644
---- a/sound/soc/sof/intel/hda-ctrl.c
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -15,11 +15,18 @@
-  * Hardware interface for generic Intel audio DSP HDA IP
-  */
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+index 5d08ae066738..fb9ba8819706 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
+@@ -9,45 +9,52 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
-+#include <linux/module.h>
- #include <sound/hdaudio_ext.h>
- #include <sound/hda_register.h>
- #include "../ops.h"
- #include "hda.h"
+-static struct snd_soc_acpi_codecs cml_codecs = {
++static struct snd_soc_acpi_codecs rt1011_spk_codecs = {
+ 	.num_codecs = 1,
+-	.codecs = {"10EC5682"}
++	.codecs = {"10EC1011"}
+ };
  
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+static int hda_codec_mask = -1;
-+module_param_named(codec_mask, hda_codec_mask, int, 0444);
-+MODULE_PARM_DESC(codec_mask, "SOF HDA codec mask for probing");
-+#endif
-+
- /*
-  * HDA Operations.
-  */
-@@ -206,6 +213,12 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- 		bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
- 		dev_dbg(bus->dev, "codec_mask = 0x%lx\n", bus->codec_mask);
- 	}
-+
-+	if (hda_codec_mask != -1) {
-+		bus->codec_mask &= hda_codec_mask;
-+		dev_dbg(bus->dev, "filtered codec_mask = 0x%lx\n",
-+			bus->codec_mask);
-+	}
- #endif
+-static struct snd_soc_acpi_codecs cml_spk_codecs = {
++static struct snd_soc_acpi_codecs max98357a_spk_codecs = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98357A"}
+ };
  
- 	/* clear stream status */
++/*
++ * The order of the three entries with .id = "10EC5682" matters
++ * here, because DSDT tables expose an ACPI HID for the MAX98357A
++ * speaker amplifier which is not populated on the board.
++ */
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
+ 	{
+-		.id = "DLGS7219",
+-		.drv_name = "cml_da7219_max98357a",
+-		.quirk_data = &cml_spk_codecs,
++		.id = "10EC5682",
++		.drv_name = "cml_rt1011_rt5682",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rt1011_spk_codecs,
+ 		.sof_fw_filename = "sof-cml.ri",
+-		.sof_tplg_filename = "sof-cml-da7219-max98357a.tplg",
++		.sof_tplg_filename = "sof-cml-rt1011-rt5682.tplg",
+ 	},
+ 	{
+-		.id = "MX98357A",
++		.id = "10EC5682",
+ 		.drv_name = "sof_rt5682",
+-		.quirk_data = &cml_codecs,
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &max98357a_spk_codecs,
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-rt5682-max98357a.tplg",
+ 	},
+-	{
+-		.id = "10EC1011",
+-		.drv_name = "cml_rt1011_rt5682",
+-		.quirk_data = &cml_codecs,
+-		.sof_fw_filename = "sof-cml.ri",
+-		.sof_tplg_filename = "sof-cml-rt1011-rt5682.tplg",
+-	},
+ 	{
+ 		.id = "10EC5682",
+ 		.drv_name = "sof_rt5682",
+ 		.sof_fw_filename = "sof-cml.ri",
+ 		.sof_tplg_filename = "sof-cml-rt5682.tplg",
+ 	},
+-
++	{
++		.id = "DLGS7219",
++		.drv_name = "cml_da7219_max98357a",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &max98357a_spk_codecs,
++		.sof_fw_filename = "sof-cml.ri",
++		.sof_tplg_filename = "sof-cml-da7219-max98357a.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cml_machines);
 -- 
 2.20.1
 
