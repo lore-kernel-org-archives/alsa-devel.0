@@ -3,66 +3,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAE03C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:59:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3683C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 16:11:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01BC92053B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:59:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B77920828
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 16:11:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jYzobbCa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01BC92053B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sKKfUlyE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B77920828
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E4321668;
-	Tue, 10 Dec 2019 16:58:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E4321668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 601AB1672;
+	Tue, 10 Dec 2019 17:10:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 601AB1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575993573;
-	bh=8vcSN6qDt2cLCO12AuNMZEse6quXRSblL/r3nA/dWxk=;
+	s=default; t=1575994298;
+	bh=Asg0nNQFAaKrdWwnz3Wp2a7Vy7IBe4Z7BaSeDyQ6ESE=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jYzobbCaNrHcOdrYoxxYhy89/riU7Nx99G/eLAjb3hA9H39/BgUXK44vPwASvyfVH
-	 AyRVA6URFF0slGYej1ssUPgKmn8w0qivLFLUol0bcc8ym2qD84ly7AolKw4UiA5Q6W
-	 AnMyzAZI8dj0GjtN9S2iIz3x6uzYkdS9a6EdiwBw=
+	b=sKKfUlyE4c3+SE5JQrk/Wt50R1mEQHyOSGRa1B5p1gklZkXjC1UikBK0IndpJLuLL
+	 3tYkT8CHVJQZg7kK6fRVEStGJMOlnPi18ezgJ3qqvlFkf+qvRCILFYgU2VjJfJ5CqO
+	 D9xut0VE5bsEu2HjLVSptkabpKOBbiUwU01l/ZGc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F945F800B4;
-	Tue, 10 Dec 2019 16:58:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C86B5F801D8;
+	Tue, 10 Dec 2019 17:10:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD8BBF8020C; Tue, 10 Dec 2019 16:58:41 +0100 (CET)
+ id 5C997F8020C; Tue, 10 Dec 2019 17:10:46 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 827E5F800B4
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 16:58:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 827E5F800B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9302F800B4
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 17:10:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9302F800B4
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 6608EACEF;
- Tue, 10 Dec 2019 15:58:37 +0000 (UTC)
-Date: Tue, 10 Dec 2019 16:58:37 +0100
-Message-ID: <s5h5ziow4sy.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id CF0E5B089;
+ Tue, 10 Dec 2019 16:10:41 +0000 (UTC)
+Date: Tue, 10 Dec 2019 17:10:40 +0100
+Message-ID: <s5h4ky8w48v.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-In-Reply-To: <20191210154927.GA31637@workstation>
-References: <20191210061145.24641-1-tiwai@suse.de>
- <20191210061145.24641-6-tiwai@suse.de>
- <20191210154927.GA31637@workstation>
+To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+In-Reply-To: <MWHPR12MB1358449C677259C848AAB11EF75B0@MWHPR12MB1358.namprd12.prod.outlook.com>
+References: <PSXP216MB0438BFEAA0617283A834E11580580@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <77aa6c01aefe1ebc4004e87b0bc714f2759f15c4.1575985006.git.lukas@wunner.de>
+ <MWHPR12MB1358AEEBD730A4EDA78894E6F75B0@MWHPR12MB1358.namprd12.prod.outlook.com>
+ <20191210154649.o3vsqzrtofhvcjrl@wunner.de>
+ <MWHPR12MB1358449C677259C848AAB11EF75B0@MWHPR12MB1358.namprd12.prod.outlook.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH 05/23] ALSA: firewire: Drop superfluous
-	ioctl PCM ops
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <helgaas@kernel.org>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda/hdmi - Fix duplicate unref of
+	pci_dev
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,57 +87,71 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 10 Dec 2019 16:49:28 +0100,
-Takashi Sakamoto wrote:
+On Tue, 10 Dec 2019 16:53:20 +0100,
+Deucher, Alexander wrote:
 > 
-> Hi,
+> > -----Original Message-----
+> > From: Lukas Wunner <lukas@wunner.de>
+> > Sent: Tuesday, December 10, 2019 10:47 AM
+> > To: Deucher, Alexander <Alexander.Deucher@amd.com>
+> > Cc: Takashi Iwai <tiwai@suse.de>; Jaroslav Kysela <perex@perex.cz>; Mika
+> > Westerberg <mika.westerberg@linux.intel.com>; Bjorn Helgaas
+> > <helgaas@kernel.org>; Nicholas Johnson <nicholas.johnson-
+> > opensource@outlook.com.au>; alsa-devel@alsa-project.org; linux-
+> > kernel@vger.kernel.org; linux-pci@vger.kernel.org
+> > Subject: Re: [PATCH] ALSA: hda/hdmi - Fix duplicate unref of pci_dev
+> > 
+> > On Tue, Dec 10, 2019 at 03:34:27PM +0000, Deucher, Alexander wrote:
+> > > > Nicholas Johnson reports a null pointer deref as well as a refcount
+> > > > underflow upon hot-removal of a Thunderbolt-attached AMD eGPU.
+> > > > He's bisected the issue down to commit 586bc4aab878 ("ALSA: hda/hdmi
+> > > > - fix vgaswitcheroo detection for AMD").
+> > > >
+> > > > The commit iterates over PCI devices using pci_get_class() and
+> > > > unreferences each device found, even though pci_get_class()
+> > > > subsequently unreferences the device as well.  Fix it.
+> > >
+> > > The pci_dev_put() a few lines above should probably be dropped as well.
+> > 
+> > That one looks fine to me.  The refcount is already increased in the caller
+> > get_bound_vga() via pci_get_domain_bus_and_slot() and it's increased
+> > again in atpx_present() via pci_get_class().  It needs to be decremented in
+> > atpx_present() to avoid leaking a ref.
 > 
-> On Tue, Dec 10, 2019 at 07:11:27AM +0100, Takashi Iwai wrote:
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > ---
-> >  sound/firewire/bebob/bebob_pcm.c         | 2 --
-> >  sound/firewire/dice/dice-pcm.c           | 2 --
-> >  sound/firewire/digi00x/digi00x-pcm.c     | 2 --
-> >  sound/firewire/fireface/ff-pcm.c         | 2 --
-> >  sound/firewire/fireworks/fireworks_pcm.c | 2 --
-> >  sound/firewire/isight.c                  | 1 -
-> >  sound/firewire/motu/motu-pcm.c           | 2 --
-> >  sound/firewire/oxfw/oxfw-pcm.c           | 2 --
-> >  sound/firewire/tascam/tascam-pcm.c       | 2 --
-> >  9 files changed, 17 deletions(-)
-> 
-> I understand that this patch is based on the below commit:
->  * fc033cbf6fb7("ALSA: pcm: Allow NULL ioctl ops")[1]
-> 
-> All of the changes are fine to me.
-> 
-> Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> 
-> [1] https://mailman.alsa-project.org/pipermail/alsa-devel/2019-November/158692.html 
+> I'm not following.  This is part of the same loop as the one you removed.  All we are doing is checking whether the ATPX method exists or not om the platform.  The pdev may not be the same one as the one in pci_get_domain_bus_and_slot().  The APTX method in the APU's ACPI namespace, not the dGPUs.
 
-Thanks.  It's good idea to put the background information.  I'll add
-it to the changelog.
-
-Actually I seem to have forgotten to fill the changelog text in this
-commit.  Below is the revised patch to be committed.
+Well, the tricky part is that pci_get_class() itself does
+unrefeference the old object and reference the new object (if found).
+At the end of the loop, nothing is referenced, so it's fine.
+OTOH, if you go out of the loop in the middle, you're still keeping
+the pdev object reference, so you need to manually unreference it.
 
 
 Takashi
 
--- 8< --
-Subject: [PATCH] ALSA: firewire: Drop superfluous ioctl PCM ops
-
-All the PCM ioctl ops of ALSA FireWire drivers do nothing but calling
-the default handler.
-
-Now PCM core accepts NULL as the default ioctl ops(*), so let's drop
-altogether.
-
-(*) commit fc033cbf6fb7 ("ALSA: pcm: Allow NULL ioctl ops")
-
-Acked-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20191210061145.24641-6-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
+> Alex
+> 
+> > 
+> > Thanks,
+> > 
+> > Lukas
+> > 
+> > > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > > > index 35b4526f0d28..b856b89378ac 100644
+> > > > --- a/sound/pci/hda/hda_intel.c
+> > > > +++ b/sound/pci/hda/hda_intel.c
+> > > > @@ -1419,7 +1419,6 @@ static bool atpx_present(void)
+> > > >  				return true;
+> > > >  			}
+> > > >  		}
+> > > > -		pci_dev_put(pdev);
+> > > >  	}
+> > > >  	return false;
+> > > >  }
+> > > > --
+> > > > 2.24.0
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
