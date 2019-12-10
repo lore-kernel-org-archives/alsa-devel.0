@@ -6,56 +6,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43627C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 13:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01571C2D0BF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 13:25:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6E54214AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 13:24:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8662D2077B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 13:25:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IfNKPol3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6E54214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IzLRCWTc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8662D2077B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 999421667;
-	Tue, 10 Dec 2019 14:23:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 999421667
+	by alsa0.perex.cz (Postfix) with ESMTPS id D233C1661;
+	Tue, 10 Dec 2019 14:24:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D233C1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575984264;
-	bh=RkMqUPOxDjyOhSjdK6RSTakUPvOOzijOeA3A91eP8pQ=;
+	s=default; t=1575984312;
+	bh=d3jqs+f5RXWz3xIAOLgmWsbd8qRj9sZT3AAu8vhUPhk=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=IfNKPol3qf4k69la1mNwYvwsf66spZK37Or940FqqGn+pMXSY07huWnrSxOV9Ew28
-	 oFjtcYLVDaYfNkfHa++G1nrpplITFKuj5uHSQCrUVAGA5Rvm1CTUyHiSsy8Jt9xv4g
-	 1PSPgX6ba9GF+yVDP14vq1UR+uz5dYUHbxXVap7M=
+	b=IzLRCWTcctFALgzEadBpY2fCU8nNvZFi4+h3fFiuK49uAwpM5DAgaI1YyGew0LvM8
+	 idEobzbxbkeMBBJdUYoGNon6fUUIRKQRG78qWM1HCHKnq3M31c5GHxbn/wla2krsz2
+	 kQQIidEHQhi9ds9neRuV+t4n2gVpbxwKO6thmeUA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0546F800F3;
-	Tue, 10 Dec 2019 14:22:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F9E9F80258;
+	Tue, 10 Dec 2019 14:22:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F17C0F80217; Tue, 10 Dec 2019 14:22:38 +0100 (CET)
+ id 3E2E0F800F3; Tue, 10 Dec 2019 14:22:42 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6D84EF800F3
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 14:22:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D84EF800F3
+ by alsa1.perex.cz (Postfix) with ESMTP id 8693CF800F3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 14:22:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8693CF800F3
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07AA0328;
- Tue, 10 Dec 2019 05:22:32 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58260113E;
+ Tue, 10 Dec 2019 05:22:37 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BE993F52E;
- Tue, 10 Dec 2019 05:22:31 -0800 (PST)
-Date: Tue, 10 Dec 2019 13:22:29 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCDF63F52E;
+ Tue, 10 Dec 2019 05:22:36 -0800 (PST)
+Date: Tue, 10 Dec 2019 13:22:35 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191210004854.16845-8-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191210004854.16845-8-pierre-louis.bossart@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wob5xbkn.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-87wob5xbkn.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: byt: fixup topology
-	filename for BYT-CR" to the asoc tree
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: soc-core: soc_set_name_prefix(): tidyup
+	loop condition" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: byt: fixup topology filename for BYT-CR
+   ASoC: soc-core: soc_set_name_prefix(): tidyup loop condition
 
 has been applied to the asoc tree at
 
@@ -101,103 +102,42 @@ to this mail.
 Thanks,
 Mark
 
-From 2aae447a4c100d2a7b7cae26b1df8b329e730d8b Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 9 Dec 2019 18:48:53 -0600
-Subject: [PATCH] ASoC: SOF: Intel: byt: fixup topology filename for BYT-CR
+From 4702f99148dae94b00bcb7bbba6cd9ca01651e69 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 10 Dec 2019 09:34:48 +0900
+Subject: [PATCH] ASoC: soc-core: soc_set_name_prefix(): tidyup loop condition
 
-On Baytrail-CR, SSP0 needs to be used instead of SSP2.  The
-substitution is assumed to be done in the topology file.
+Current soc_set_name_prefix() for loop is checking both codec_conf
+pointer and its number
 
-When Baytrail-CR is detected, add -ssp0 suffix to the topology file
-name so that the topology code picks up the correct file.
+	for (...; i < card->num_configs && card->codec_conf; ...)
 
-Tested on Asus T100TAF
+But, if card->num_configs exists but card->codec_conf was NULL,
+it is just bug.
+This patch cleanups for loop condition.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191210004854.16845-8-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/87wob5xbkn.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/byt.c | 47 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 2f5db1a8c701..ec6ca863243c 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -18,6 +18,7 @@
- #include "../ops.h"
- #include "shim.h"
- #include "../sof-audio.h"
-+#include "../../intel/common/soc-intel-quirks.h"
- 
- /* DSP memories */
- #define IRAM_OFFSET		0x0C0000
-@@ -383,11 +384,37 @@ static int byt_reset(struct snd_sof_dev *sdev)
- 	return 0;
- }
- 
-+static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
-+				   const char *sof_tplg_filename,
-+				   const char *ssp_str)
-+{
-+	const char *tplg_filename = NULL;
-+	char *filename;
-+	char *split_ext;
-+
-+	filename = devm_kstrdup(sdev->dev, sof_tplg_filename, GFP_KERNEL);
-+	if (!filename)
-+		return NULL;
-+
-+	/* this assumes a .tplg extension */
-+	split_ext = strsep(&filename, ".");
-+	if (split_ext) {
-+		tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+					       "%s-%s.tplg",
-+					       split_ext, ssp_str);
-+		if (!tplg_filename)
-+			return NULL;
-+	}
-+	return tplg_filename;
-+}
-+
- static void byt_machine_select(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d18e30ec5a12..a483f6fc50a0 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1211,7 +1211,7 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
  {
- 	struct snd_sof_pdata *sof_pdata = sdev->pdata;
- 	const struct sof_dev_desc *desc = sof_pdata->desc;
- 	struct snd_soc_acpi_mach *mach;
-+	struct platform_device *pdev;
-+	const char *tplg_filename;
+ 	int i;
  
- 	mach = snd_soc_acpi_find_machine(desc->machines);
- 	if (!mach) {
-@@ -395,7 +422,25 @@ static void byt_machine_select(struct snd_sof_dev *sdev)
- 		return;
- 	}
+-	for (i = 0; i < card->num_configs && card->codec_conf; i++) {
++	for (i = 0; i < card->num_configs; i++) {
+ 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
+ 		struct device_node *of_node = soc_component_to_node(component);
  
--	sof_pdata->tplg_filename = mach->sof_tplg_filename;
-+	pdev = to_platform_device(sdev->dev);
-+	if (soc_intel_is_byt_cr(pdev)) {
-+		dev_dbg(sdev->dev,
-+			"BYT-CR detected, SSP0 used instead of SSP2\n");
-+
-+		tplg_filename = fixup_tplg_name(sdev,
-+						mach->sof_tplg_filename,
-+						"ssp0");
-+	} else {
-+		tplg_filename = mach->sof_tplg_filename;
-+	}
-+
-+	if (!tplg_filename) {
-+		dev_dbg(sdev->dev,
-+			"error: no topology filename\n");
-+		return;
-+	}
-+
-+	sof_pdata->tplg_filename = tplg_filename;
- 	mach->mach_params.acpi_ipc_irq_index = desc->irqindex_host_ipc;
- 	sof_pdata->machine = mach;
- }
 -- 
 2.20.1
 
