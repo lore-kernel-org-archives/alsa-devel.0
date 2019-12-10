@@ -6,78 +6,76 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE74CC2D0BF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:14:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27AC0C3F68F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 371AE214AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:14:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A69A120838
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ekhoNVfm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="F3330VBD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 371AE214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hYFMPuM5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lj0/NiLS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A69A120838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7175310E;
-	Tue, 10 Dec 2019 22:13:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7175310E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA0781677;
+	Tue, 10 Dec 2019 22:14:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA0781677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576012481;
-	bh=Pl1y9xp9a7IsTbWewUu60PZ9ClyBeky35L/NIAp64qc=;
+	s=default; t=1576012523;
+	bh=EphtdiREBaRQNddQLYX+Cp4hESW7pQgws/ZHEJgSp9M=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ekhoNVfmbvdCoPp08VJ4bIH2g/q0DX0nxykgC5499m6o4PKolcZlzv717ILjhnSFc
-	 AJGDNNa/nCZ0Kc+A4YfWPaDtgCwKwn00RFnNt59LZrCFAczS7TAVKf8Jp6TWPspl7Y
-	 LVJeYgjHK0mFltsgrdeeJ93BMafa3BRFx/0gH7QE=
+	b=hYFMPuM5ESr6XRmcQk8rwfr6aIgEJbXS0oajrGrcKM/LU63tXsBTHwAOdv3uGC+td
+	 aFXv0a3jRUMyPH+wkA8/JHCVQP6aUb1r/TE11sI5gp3tmeWbfl8IAYUh+v3bOlJ6sD
+	 uBSk1zdtdgkpL9336KofhIq61O+6xoVBzOO5z3GI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DEEAF8027B;
-	Tue, 10 Dec 2019 22:11:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0605F8028A;
+	Tue, 10 Dec 2019 22:11:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F131F8027C; Tue, 10 Dec 2019 22:11:07 +0100 (CET)
+ id 9F695F8028D; Tue, 10 Dec 2019 22:11:13 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C522F80277
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:11:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C522F80277
+ by alsa1.perex.cz (Postfix) with ESMTPS id BADB1F8027C
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:11:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BADB1F8027C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="F3330VBD"
+ header.b="Lj0/NiLS"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2B407246A8;
- Tue, 10 Dec 2019 21:11:02 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 88910246B4;
+ Tue, 10 Dec 2019 21:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576012262;
- bh=nuqvFH6o9KTF0TEHIY1C0M5A+8Bghp+L12mrY80vDl4=;
+ s=default; t=1576012269;
+ bh=YOT1hA51aMRKWyCNb+udBQWOOUeijBNCDYNvULjusP4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=F3330VBDkI55YiODWR+yShfqNpLluAq4hcmmm3w9S3K4+PDSm4Ndz4Dwy1BiT/EXG
- J0xgg66YM3vBX08sb4pX7F9gPCbwqYx08rpsCyFp2VTvBHVxLqf5CfqNj1I243THn4
- 1aaEJu9zBVHdh/dyJKxrwTpAn9gFNppqUR3mrqvg=
+ b=Lj0/NiLSu86zH92anVEYeDN1YWA7R13ejRVp1pRtvDvj6w3QCDR0Kc5b4UH0i7M8K
+ MUC5fRIVMhilKUgS/myL/UdBqwgzasHvVa+j+MGTVvNN2+Ww0IB+Uob9OiUJOT3u6q
+ Wj1pFc1CIgsXC9NlCPezVvT1H3RqeZdDFJd3FrzA=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Tue, 10 Dec 2019 16:05:13 -0500
-Message-Id: <20191210210735.9077-169-sashal@kernel.org>
+Date: Tue, 10 Dec 2019 16:05:19 -0500
+Message-Id: <20191210210735.9077-175-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 208/350] ASoC: SOF: topology: set
-	trigger order for FE DAI link
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 214/350] ALSA: timer: Limit max
+	amount of slave instances
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,38 +93,68 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 5eee2b3f60065a2530d13f28e771be48b989eb4c ]
+[ Upstream commit fdea53fe5de532969a332d6e5e727f2ad8bf084d ]
 
-Set trigger order for FE DAI links to SND_SOC_DPCM_TRIGGER_POST
-to trigger the BE DAI's before the FE DAI's. This prevents the
-xruns seen on playback pipelines using the link DMA.
+The fuzzer tries to open the timer instances as much as possible, and
+this may cause a system hiccup easily.  We've already introduced the
+cap for the max number of available instances for the h/w timers, and
+we should put such a limit also to the slave timers, too.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191104224812.3393-3-ranjani.sridharan@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This patch introduces the limit to the multiple opened slave timers.
+The upper limit is hard-coded to 1000 for now, which should suffice
+for any practical usages up to now.
+
+Link: https://lore.kernel.org/r/20191106154257.5853-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/topology.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/core/timer.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 4452594c2e17a..fa299e0781561 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2828,6 +2828,10 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
- 	if (!link->no_pcm) {
- 		link->nonatomic = true;
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 59ae21b0bb936..013f0e69ff0f7 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -74,6 +74,9 @@ static LIST_HEAD(snd_timer_slave_list);
+ /* lock for slave active lists */
+ static DEFINE_SPINLOCK(slave_active_lock);
  
-+		/* set trigger order */
-+		link->trigger[0] = SND_SOC_DPCM_TRIGGER_POST;
-+		link->trigger[1] = SND_SOC_DPCM_TRIGGER_POST;
++#define MAX_SLAVE_INSTANCES	1000
++static int num_slaves;
 +
- 		/* nothing more to do for FE dai links */
- 		return 0;
+ static DEFINE_MUTEX(register_mutex);
+ 
+ static int snd_timer_free(struct snd_timer *timer);
+@@ -252,6 +255,10 @@ int snd_timer_open(struct snd_timer_instance **ti,
+ 			err = -EINVAL;
+ 			goto unlock;
+ 		}
++		if (num_slaves >= MAX_SLAVE_INSTANCES) {
++			err = -EBUSY;
++			goto unlock;
++		}
+ 		timeri = snd_timer_instance_new(owner, NULL);
+ 		if (!timeri) {
+ 			err = -ENOMEM;
+@@ -261,6 +268,7 @@ int snd_timer_open(struct snd_timer_instance **ti,
+ 		timeri->slave_id = tid->device;
+ 		timeri->flags |= SNDRV_TIMER_IFLG_SLAVE;
+ 		list_add_tail(&timeri->open_list, &snd_timer_slave_list);
++		num_slaves++;
+ 		err = snd_timer_check_slave(timeri);
+ 		if (err < 0) {
+ 			snd_timer_close_locked(timeri, &card_dev_to_put);
+@@ -356,6 +364,8 @@ static int snd_timer_close_locked(struct snd_timer_instance *timeri,
  	}
+ 
+ 	list_del(&timeri->open_list);
++	if (timeri->flags & SNDRV_TIMER_IFLG_SLAVE)
++		num_slaves--;
+ 
+ 	/* force to stop the timer */
+ 	snd_timer_stop(timeri);
 -- 
 2.20.1
 
