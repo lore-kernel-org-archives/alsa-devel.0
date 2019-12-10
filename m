@@ -2,70 +2,64 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0E9AC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:29:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68DADC00454
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:29:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D3AB20836
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:29:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ED17B214AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:29:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cVgxp0eB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D3AB20836
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lbZn6J05"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED17B214AF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9915116A6;
-	Tue, 10 Dec 2019 15:28:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9915116A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29C6016A4;
+	Tue, 10 Dec 2019 15:28:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29C6016A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575988144;
-	bh=ScF1lMIuyoR1neTpyqTbl/Da+4GJePLaGCiLFDG9LsA=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=cVgxp0eB08WIc2gxdPZEJ+TwFM3PNEK1fgV4ojatga4KIjvyrL6LH7iCF6FV+g9fz
-	 YwhP3Lezt+TTv3iYdOpdG1QAEKdIE0DKlkJQY4d/CdW0Yc2jpUT8Bk5gCBi2drymDS
-	 YKUjn0XujPT9Tq7MrxggUvg9nYn2eYM+IVbDAFY0=
+	s=default; t=1575988189;
+	bh=7+oD27s4Rt2Xbwq8CPTf/bKqm2Hn8cGkoUzn033vv20=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lbZn6J05SjyJshBXhrsUywWllNjZ8oPBl+R39Is+JQLLVqSn455gk4DD+2W2KJkEo
+	 ELakByz2zYeCtWpQRhss3C37CMz3opiV8UMBfk8nJMeGFQUcQYpnmbRkpK22GZdFBg
+	 gJiQRiGHlvdEjk/bwC7ftTr2HDBO0rYrBh0ddZS0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 894EBF80277;
-	Tue, 10 Dec 2019 15:26:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27D4FF800F3;
+	Tue, 10 Dec 2019 15:26:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E7B6F80278; Tue, 10 Dec 2019 15:26:35 +0100 (CET)
+ id 5678CF80248; Tue, 10 Dec 2019 15:26:35 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6464FF80217
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6464FF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16F51F80248
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16F51F80248
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 8E985ABC6;
+ by mx1.suse.de (Postfix) with ESMTP id D0C5EB1FE;
  Tue, 10 Dec 2019 14:26:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Date: Tue, 10 Dec 2019 15:25:51 +0100
-Message-Id: <20191210142614.19405-1-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 15:25:56 +0100
+Message-Id: <20191210142614.19405-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Olivier Moysan <olivier.moysan@st.com>, Max Filippov <jcmvbkbc@gmail.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Arnaud Pouliquen <arnaud.pouliquen@st.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Michal Simek <michal.simek@xilinx.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kevin Hilman <khilman@baylibre.com>, Cheng-Yi Chiang <cychiang@chromium.org>,
- Benson Leung <bleung@chromium.org>, Jerome Brunet <jbrunet@baylibre.com>
-Subject: [alsa-devel] [PATCH for-5.6 00/23] ASoC: PCM API updates (part I)
+In-Reply-To: <20191210142614.19405-1-tiwai@suse.de>
+References: <20191210142614.19405-1-tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Kevin Hilman <khilman@baylibre.com>,
+ alsa-devel@alsa-project.org, Jerome Brunet <jbrunet@baylibre.com>
+Subject: [alsa-devel] [PATCH for-5.6 05/23] ASoC: meson: Use managed buffer
+	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,82 +78,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Clean up the driver with the new managed buffer allocation API.
+The superfluous snd_pcm_lib_malloc_pages() and
+snd_pcm_lib_free_pages() calls are dropped.
 
-this is a patch set to adapt the recent PCM API updates to ASoC
-drivers.  This is the first half of the whole changes, just for
-updating the buffer allocation code with the new API.  There should be
-no functional changes.
+Cc: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/meson/axg-fifo.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-The ASoC core changes are already found in 5.5-rc1, so please merge
-these onto 5.5-rc1 or later branch.  Or I can merge through my tree,
-too, just let me know.
-
-
-thanks,
-
-Takashi
-
-===
-
-Takashi Iwai (23):
-  ASoC: amd: Use managed buffer allocation
-  ASoC: au1x: Use managed buffer allocation
-  ASoC: dwc: Use managed buffer allocation
-  ASoC: mediatek: Use managed buffer allocation
-  ASoC: meson: Use managed buffer allocation
-  ASoC: dma-sh7760: Use managed buffer allocation
-  ASoC: fsi: Use managed buffer allocation
-  ASoC: rcar: Use managed buffer allocation
-  ASoC: siu_pcm: Use managed buffer allocation
-  ASoC: generic-dmaengine-pcm: Use managed buffer allocation
-  ASoC: SOF: Use managed buffer allocation
-  ASoC: stm32: Use managed buffer allocation
-  ASoC: txx9: Use managed buffer allocation
-  ASoC: uniphier: Use managed buffer allocation
-  ASoC: xilinx: Use managed buffer allocation
-  ASoC: xtensa: Use managed buffer allocation
-  ASoC: cros_ec_codec: Use managed buffer allocation
-  ASoC: rt5514-spi: Use managed buffer allocation
-  ASoC: rt5677-spi: Use managed buffer allocation
-  ASoC: intel: atom: Use managed buffer allocation
-  ASoC: intel: baytrail: Use managed buffer allocation
-  ASoC: intel: haswell: Use managed buffer allocation
-  ASoC: intel: skylake: Use managed buffer allocation
-
- sound/soc/amd/acp-pcm-dma.c                        | 58 ++++++++--------------
- sound/soc/amd/raven/acp3x-pcm-dma.c                | 30 +++--------
- sound/soc/au1x/dbdma2.c                            | 14 +-----
- sound/soc/au1x/dma.c                               | 21 +++-----
- sound/soc/codecs/cros_ec_codec.c                   |  8 +--
- sound/soc/codecs/rt5514-spi.c                      | 10 ++--
- sound/soc/codecs/rt5677-spi.c                      | 10 ++--
- sound/soc/dwc/dwc-pcm.c                            | 24 +--------
- sound/soc/intel/atom/sst-mfld-platform-pcm.c       | 25 +---------
- sound/soc/intel/baytrail/sst-baytrail-pcm.c        | 19 +------
- sound/soc/intel/haswell/sst-haswell-pcm.c          | 17 +------
- sound/soc/intel/skylake/skl-pcm.c                  | 26 +++-------
- sound/soc/mediatek/common/mtk-afe-fe-dai.c         | 14 +-----
- sound/soc/mediatek/common/mtk-afe-fe-dai.h         |  2 -
- .../soc/mediatek/common/mtk-afe-platform-driver.c  | 12 +----
- .../soc/mediatek/common/mtk-afe-platform-driver.h  |  2 -
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c         |  2 -
- sound/soc/mediatek/mt6797/mt6797-afe-pcm.c         |  1 -
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c         |  1 -
- sound/soc/meson/axg-fifo.c                         | 13 ++---
- sound/soc/sh/dma-sh7760.c                          | 14 +-----
- sound/soc/sh/fsi.c                                 | 18 +------
- sound/soc/sh/rcar/core.c                           | 23 +++------
- sound/soc/sh/siu_pcm.c                             | 39 +--------------
- sound/soc/soc-generic-dmaengine-pcm.c              | 12 +----
- sound/soc/sof/pcm.c                                | 34 ++++---------
- sound/soc/stm/stm32_adfsdm.c                       | 29 +----------
- sound/soc/txx9/txx9aclc.c                          | 14 +-----
- sound/soc/uniphier/aio-dma.c                       | 30 +----------
- sound/soc/xilinx/xlnx_formatter_pcm.c              | 13 +----
- sound/soc/xtensa/xtfpga-i2s.c                      |  9 ++--
- 31 files changed, 93 insertions(+), 451 deletions(-)
-
+diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
+index d6f3eefb8f09..772eda857019 100644
+--- a/sound/soc/meson/axg-fifo.c
++++ b/sound/soc/meson/axg-fifo.c
+@@ -115,11 +115,6 @@ int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
+ 	struct axg_fifo *fifo = axg_fifo_data(ss);
+ 	dma_addr_t end_ptr;
+ 	unsigned int burst_num;
+-	int ret;
+-
+-	ret = snd_pcm_lib_malloc_pages(ss, params_buffer_bytes(params));
+-	if (ret < 0)
+-		return ret;
+ 
+ 	/* Setup dma memory pointers */
+ 	end_ptr = runtime->dma_addr + runtime->dma_bytes - AXG_FIFO_BURST;
+@@ -167,7 +162,7 @@ int axg_fifo_pcm_hw_free(struct snd_soc_component *component,
+ 	regmap_update_bits(fifo->map, FIFO_CTRL0,
+ 			   CTRL0_INT_EN(FIFO_INT_COUNT_REPEAT), 0);
+ 
+-	return snd_pcm_lib_free_pages(ss);
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(axg_fifo_pcm_hw_free);
+ 
+@@ -287,9 +282,9 @@ int axg_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd, unsigned int type)
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	size_t size = axg_fifo_hw.buffer_bytes_max;
+ 
+-	snd_pcm_lib_preallocate_pages(rtd->pcm->streams[type].substream,
+-				      SNDRV_DMA_TYPE_DEV, card->dev,
+-				      size, size);
++	snd_pcm_set_managed_buffer(rtd->pcm->streams[type].substream,
++				   SNDRV_DMA_TYPE_DEV, card->dev,
++				   size, size);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(axg_fifo_pcm_new);
 -- 
 2.16.4
 
