@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CEB4C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92E68C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:37:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 177DB2073B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:36:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2113520637
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:37:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UVM6HZpV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 177DB2073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jIQgbBMl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2113520637
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 642A41677;
-	Tue, 10 Dec 2019 15:35:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642A41677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7546916BA;
+	Tue, 10 Dec 2019 15:36:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7546916BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575988589;
-	bh=Xa237+L5lHBcZazu9OPeAuSniAGpDpcdTnBUG9nheDc=;
+	s=default; t=1575988625;
+	bh=0Gg44kKuUEhysgZ3HfGMoXk3dZ+WMQ3fhvihXcgcMIg=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UVM6HZpV50/TsjygvZqqRErXEGVLvhW7Hhfjp3qvp8EHBXan5DdMh608NyfB9cPwL
-	 GmSvOy7nPsJXu9jg0pMIjfIp/cP6+POtU5QBvNBuy0GBuNt8QpA5wgqokJCTYlDAjj
-	 O2tZ7Ro6qHWDRoERYPt/uaPcy0M9z7AyRvTDq5Bs=
+	b=jIQgbBMlQ8Dz7Dxvj7mVNy/HBqkM+ie+TOQiwf7XcVzTOMcZDPdocOhYxQflBNA4x
+	 u0UyDqrZVLcbB374mpswop7mnWG8kE1TEHPlViwh96dJNJXD0xqo0hOFy0NAfUx6zj
+	 L1uPdJBMecsLjWNZw0Z4dkztoSltuFc1e6y+RVuE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A23C5F802F9;
-	Tue, 10 Dec 2019 15:27:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 273C1F80303;
+	Tue, 10 Dec 2019 15:27:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51A91F8029A; Tue, 10 Dec 2019 15:26:56 +0100 (CET)
+ id 0ACD1F8029A; Tue, 10 Dec 2019 15:26:57 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF509F8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 974DDF80257
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF509F8025E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 974DDF80257
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 771FFB209;
+ by mx1.suse.de (Postfix) with ESMTP id 4E0B2B203;
  Tue, 10 Dec 2019 14:26:26 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Date: Tue, 10 Dec 2019 15:26:06 +0100
-Message-Id: <20191210142614.19405-16-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 15:26:03 +0100
+Message-Id: <20191210142614.19405-13-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210142614.19405-1-tiwai@suse.de>
 References: <20191210142614.19405-1-tiwai@suse.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Michal Simek <michal.simek@xilinx.com>
-Subject: [alsa-devel] [PATCH for-5.6 15/23] ASoC: xilinx: Use managed buffer
+Cc: Takashi Iwai <tiwai@suse.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+ alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>
+Subject: [alsa-devel] [PATCH for-5.6 12/23] ASoC: stm32: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,67 +78,90 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean up the driver with the new managed buffer allocation API.
-The hw_free callback became superfluous and got dropped.
+Clean up the drivers with the new managed buffer allocation API.
+The superfluous snd_pcm_lib_malloc_pages() and
+snd_pcm_lib_free_pages() calls are dropped, as well as the superfluous
+snd_pcm_lib_preallocate_free_for_all() call.  As of the result,
+hw_free and pcm_destruct ops became empty and got removed.
 
-Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Olivier Moysan <olivier.moysan@st.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/xilinx/xlnx_formatter_pcm.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ sound/soc/stm/stm32_adfsdm.c | 29 ++---------------------------
+ 1 file changed, 2 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
-index 296c4caf96a0..f6e30090bdb0 100644
---- a/sound/soc/xilinx/xlnx_formatter_pcm.c
-+++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -426,7 +426,6 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
+diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
+index 81c407da15c5..807fee1eac66 100644
+--- a/sound/soc/stm/stm32_adfsdm.c
++++ b/sound/soc/stm/stm32_adfsdm.c
+@@ -252,7 +252,6 @@ static int stm32_adfsdm_pcm_close(struct snd_soc_component *component,
+ 	struct stm32_adfsdm_priv *priv =
+ 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 
+-	snd_pcm_lib_free_pages(substream);
+ 	priv->substream = NULL;
+ 
+ 	return 0;
+@@ -276,25 +275,13 @@ static int stm32_adfsdm_pcm_hw_params(struct snd_soc_component *component,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct stm32_adfsdm_priv *priv =
+ 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
+-	int ret;
+ 
+-	ret =  snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-	if (ret < 0)
+-		return ret;
+ 	priv->pcm_buff = substream->runtime->dma_area;
+ 
+ 	return iio_channel_cb_set_buffer_watermark(priv->iio_cb,
+ 						   params_period_size(params));
+ }
+ 
+-static int stm32_adfsdm_pcm_hw_free(struct snd_soc_component *component,
+-				    struct snd_pcm_substream *substream)
+-{
+-	snd_pcm_lib_free_pages(substream);
+-
+-	return 0;
+-}
+-
+ static int stm32_adfsdm_pcm_new(struct snd_soc_component *component,
+ 				struct snd_soc_pcm_runtime *rtd)
  {
- 	u32 low, high, active_ch, val, bytes_per_ch, bits_per_sample;
- 	u32 aes_reg1_val, aes_reg2_val;
--	int status;
- 	u64 size;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct xlnx_pcm_stream_param *stream_data = runtime->private_data;
-@@ -450,9 +449,6 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
- 	}
+@@ -303,30 +290,18 @@ static int stm32_adfsdm_pcm_new(struct snd_soc_component *component,
+ 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	unsigned int size = DFSDM_MAX_PERIODS * DFSDM_MAX_PERIOD_SIZE;
  
- 	size = params_buffer_bytes(params);
--	status = snd_pcm_lib_malloc_pages(substream, size);
--	if (status < 0)
--		return status;
- 
- 	stream_data->buffer_size = size;
- 
-@@ -495,12 +491,6 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-					      priv->dev, size, size);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++				       priv->dev, size, size);
  	return 0;
  }
  
--static int xlnx_formatter_pcm_hw_free(struct snd_soc_component *component,
--				      struct snd_pcm_substream *substream)
+-static void stm32_adfsdm_pcm_free(struct snd_soc_component *component,
+-				  struct snd_pcm *pcm)
 -{
--	return snd_pcm_lib_free_pages(substream);
+-	struct snd_pcm_substream *substream;
+-
+-	substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+-	if (substream)
+-		snd_pcm_lib_preallocate_free_for_all(pcm);
 -}
 -
- static int xlnx_formatter_pcm_trigger(struct snd_soc_component *component,
- 				      struct snd_pcm_substream *substream,
- 				      int cmd)
-@@ -532,7 +522,7 @@ static int xlnx_formatter_pcm_trigger(struct snd_soc_component *component,
- static int xlnx_formatter_pcm_new(struct snd_soc_component *component,
- 				  struct snd_soc_pcm_runtime *rtd)
- {
--	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+	snd_pcm_set_managed_buffer_all(rtd->pcm,
- 			SNDRV_DMA_TYPE_DEV, component->dev,
- 			xlnx_pcm_hardware.buffer_bytes_max,
- 			xlnx_pcm_hardware.buffer_bytes_max);
-@@ -545,7 +535,6 @@ static const struct snd_soc_component_driver xlnx_asoc_component = {
- 	.close		= xlnx_formatter_pcm_close,
- 	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= xlnx_formatter_pcm_hw_params,
--	.hw_free	= xlnx_formatter_pcm_hw_free,
- 	.trigger	= xlnx_formatter_pcm_trigger,
- 	.pointer	= xlnx_formatter_pcm_pointer,
- 	.pcm_construct	= xlnx_formatter_pcm_new,
+ static struct snd_soc_component_driver stm32_adfsdm_soc_platform = {
+ 	.open		= stm32_adfsdm_pcm_open,
+ 	.close		= stm32_adfsdm_pcm_close,
+ 	.hw_params	= stm32_adfsdm_pcm_hw_params,
+-	.hw_free	= stm32_adfsdm_pcm_hw_free,
+ 	.trigger	= stm32_adfsdm_trigger,
+ 	.pointer	= stm32_adfsdm_pcm_pointer,
+ 	.pcm_construct	= stm32_adfsdm_pcm_new,
+-	.pcm_destruct	= stm32_adfsdm_pcm_free,
+ };
+ 
+ static const struct of_device_id stm32_adfsdm_of_match[] = {
 -- 
 2.16.4
 
