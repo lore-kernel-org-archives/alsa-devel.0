@@ -2,56 +2,55 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2418C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:43:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B20CAC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:43:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E14F206E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:43:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2F5492077B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:43:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CRVFC+1H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E14F206E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aURUF7w3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F5492077B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0229822;
-	Tue, 10 Dec 2019 01:42:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0229822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49F721677;
+	Tue, 10 Dec 2019 01:43:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49F721677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575938585;
-	bh=ER84ro5/WWiNA7qQfgtkSl6qxO+dnralWxMJ+npWPBI=;
+	s=default; t=1575938630;
+	bh=YboS0gv2w/pE14cpOwXRUlJBZ0DF1B6piee93p1NST4=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CRVFC+1Hjq71ZqKVR8OgwIgvrdPJs2zT5As7Vpr6PLHJLEv+h+CYiIhDnaU5+XZ9e
-	 VjprpFIKqdjwVXNNHRa5tyOCJ0s6V5tFrFSDcUqpz1Y/iOQPwH5p6p7R8jJC9BMQTg
-	 aQMnKjPRLILClwYuyOI/DZ4t8pJ/mBQr38YwyP8s=
+	b=aURUF7w3xFVxMPizqzfCyUd2u5dx4lTDAfEpS88o6o6goXWuB478cqqLsnF/c/GBF
+	 2sLB+IbOi8RCPNZbTlgQ3rAdWzigUVChyGcH6ZHD3mkPDQ3VmDrxW7l806F2LjJXZ4
+	 rcNjAZiES7e6isDs96/TYiy2NfErStmzKfy1obmA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CDA7F802E9;
-	Tue, 10 Dec 2019 01:34:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A426F802F9;
+	Tue, 10 Dec 2019 01:34:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 188B3F802E7; Tue, 10 Dec 2019 01:34:49 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B9571F802DB
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:34:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9571F802DB
-Date: 10 Dec 2019 09:34:44 +0900
-X-IronPort-AV: E=Sophos;i="5.69,297,1571670000"; d="scan'208";a="33717496"
+ id 3E506F802F9; Tue, 10 Dec 2019 01:34:54 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id EDFADF802EC
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:34:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDFADF802EC
+Date: 10 Dec 2019 09:34:48 +0900
+X-IronPort-AV: E=Sophos;i="5.69,297,1571670000"; d="scan'208";a="33933733"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 10 Dec 2019 09:34:44 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 10 Dec 2019 09:34:48 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 473FC40031D2;
- Tue, 10 Dec 2019 09:34:44 +0900 (JST)
-Message-ID: <87y2vlxbkr.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 85D4640031D2;
+ Tue, 10 Dec 2019 09:34:48 +0900 (JST)
+Message-ID: <87wob5xbkn.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -60,8 +59,8 @@ References: <87h829yqbr.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 13/15][resend] ASoC: soc-core: rename
-	soc_link_init() to soc_init_pcm_runtime()
+Subject: [alsa-devel] [PATCH 14/15][resend] ASoC: soc-core:
+	soc_set_name_prefix(): tidyup loop condition
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,41 +80,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc-core is using soc_link_init().
-It sounds like dai_link function, but it is for pcm_runtime.
-This patch renames soc_link_init() to soc_init_pcm_runtime().
+Current soc_set_name_prefix() for loop is checking both codec_conf
+pointer and its number
+
+	for (...; i < card->num_configs && card->codec_conf; ...)
+
+But, if card->num_configs exists but card->codec_conf was NULL,
+it is just bug.
+This patch cleanups for loop condition.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/soc-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bdae48e..6396556 100644
+index 6396556..057c97c 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1123,8 +1123,8 @@ static int soc_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
- 	return 0;
- }
- 
--static int soc_link_init(struct snd_soc_card *card,
--			 struct snd_soc_pcm_runtime *rtd)
-+static int soc_init_pcm_runtime(struct snd_soc_card *card,
-+				struct snd_soc_pcm_runtime *rtd)
+@@ -1211,7 +1211,7 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
  {
- 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-@@ -1984,7 +1984,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 	}
+ 	int i;
  
- 	for_each_card_rtds(card, rtd) {
--		ret = soc_link_init(card, rtd);
-+		ret = soc_init_pcm_runtime(card, rtd);
- 		if (ret < 0)
- 			goto probe_end;
- 	}
+-	for (i = 0; i < card->num_configs && card->codec_conf; i++) {
++	for (i = 0; i < card->num_configs; i++) {
+ 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
+ 		struct device_node *of_node = soc_component_to_node(component);
+ 
 -- 
 2.7.4
 
