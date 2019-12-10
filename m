@@ -2,62 +2,64 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9E0EC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1220FC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:34:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73E022073B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:33:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 955562073B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:34:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qJxxjl7E"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73E022073B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="trx6rVPe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 955562073B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBB9416AD;
-	Tue, 10 Dec 2019 15:32:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBB9416AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01FD716BE;
+	Tue, 10 Dec 2019 15:33:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01FD716BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575988420;
-	bh=Wt4hcvGm+sumrfZTIH3/kz06Of+LvlEtYH5a2sFM0Lk=;
+	s=default; t=1575988454;
+	bh=9S167FEEO47AA0FcCGYbPYoFFObnMthJTuHhsp8m7PY=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qJxxjl7EKLbmbeLLiq/HcewbWMU7nj3ywPTQMYaIXcYUSInltrK0BSiVq+X7OS0tR
-	 R/nmWD40zFmhR04Lseb8cGCo4sIrNwoIXUn0mj9JMX49BgyavjIwGA89ZhJOVjxv41
-	 jLLLWFEHjIEbq5YgrAyqKLPAhBOgUpe+oZJf0kio=
+	b=trx6rVPePzb6pjNVH8zLVpQogR8sjsUB0SPxnPdxN3Jjc+KlOtW4/kmuG6EWhtQza
+	 y2sX5P2IIYSmTeb5WggLdoSOGre1sDQ4ykqWd021Gu6x1soL5oNu2KJUu44G15mhtM
+	 68TGw7bySDuQgv8p/Ay+cTfev70hH11XSWStgqgk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 641DAF802C2;
-	Tue, 10 Dec 2019 15:27:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F467F802DB;
+	Tue, 10 Dec 2019 15:27:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A36C4F8028C; Tue, 10 Dec 2019 15:26:48 +0100 (CET)
+ id 0B60BF8028C; Tue, 10 Dec 2019 15:26:50 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F363F80256
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F363F80256
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22E10F80254
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22E10F80254
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 12FFCB200;
+ by mx1.suse.de (Postfix) with ESMTP id 3E552B202;
  Tue, 10 Dec 2019 14:26:26 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Date: Tue, 10 Dec 2019 15:25:59 +0100
-Message-Id: <20191210142614.19405-9-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 15:26:02 +0100
+Message-Id: <20191210142614.19405-12-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210142614.19405-1-tiwai@suse.de>
 References: <20191210142614.19405-1-tiwai@suse.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH for-5.6 08/23] ASoC: rcar: Use managed buffer
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [alsa-devel] [PATCH for-5.6 11/23] ASoC: SOF: Use managed buffer
 	allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,71 +79,83 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean up the driver with the new managed buffer allocation API.
+Clean up the drivers with the new managed buffer allocation API.
 The superfluous snd_pcm_lib_malloc_pages() and
 snd_pcm_lib_free_pages() calls are dropped.
 
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sh/rcar/core.c | 23 ++++++-----------------
- 1 file changed, 6 insertions(+), 17 deletions(-)
+ sound/soc/sof/pcm.c | 34 ++++++++++------------------------
+ 1 file changed, 10 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 399dc6e9bde5..bb840be5e591 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1223,10 +1223,10 @@ static int rsnd_preallocate_pages(struct snd_soc_pcm_runtime *rtd,
- 	for (substream = rtd->pcm->streams[stream].substream;
- 	     substream;
- 	     substream = substream->next) {
--		snd_pcm_lib_preallocate_pages(substream,
--					      SNDRV_DMA_TYPE_DEV,
--					      dev,
--					      PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
-+		snd_pcm_set_managed_buffer(substream,
-+					   SNDRV_DMA_TYPE_DEV,
-+					   dev,
-+					   PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 549238a98b2a..80081ea42566 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -119,20 +119,8 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
+ 
+ 	memset(&pcm, 0, sizeof(pcm));
+ 
+-	/* allocate audio buffer pages */
+-	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-	if (ret < 0) {
+-		dev_err(sdev->dev, "error: could not allocate %d bytes for PCM %d\n",
+-			params_buffer_bytes(params), spcm->pcm.pcm_id);
+-		return ret;
+-	}
+-	if (ret) {
+-		/*
+-		 * ret == 1 means the buffer is changed
+-		 * create compressed page table for audio firmware
+-		 * ret == 0 means the buffer is not changed
+-		 * so no need to regenerate the page table
+-		 */
++	/* create compressed page table for audio firmware */
++	if (runtime->buffer_changed) {
+ 		ret = create_page_table(component, substream, runtime->dma_area,
+ 					runtime->dma_bytes);
+ 		if (ret < 0)
+@@ -260,8 +248,6 @@ static int sof_pcm_hw_free(struct snd_soc_component *component,
+ 			err = ret;
  	}
+ 
+-	snd_pcm_lib_free_pages(substream);
+-
+ 	cancel_work_sync(&spcm->stream[substream->stream].period_elapsed_work);
+ 
+ 	ret = snd_sof_pcm_platform_hw_free(sdev, substream);
+@@ -594,10 +580,10 @@ static int sof_pcm_new(struct snd_soc_component *component,
+ 	dev_dbg(sdev->dev, "spcm: allocate %s playback DMA buffer size 0x%x max 0x%x\n",
+ 		caps->name, caps->buffer_size_min, caps->buffer_size_max);
+ 
+-	snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
+-				      SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
+-				      le32_to_cpu(caps->buffer_size_min),
+-				      le32_to_cpu(caps->buffer_size_max));
++	snd_pcm_set_managed_buffer(pcm->streams[stream].substream,
++				   SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
++				   le32_to_cpu(caps->buffer_size_min),
++				   le32_to_cpu(caps->buffer_size_max));
+ capture:
+ 	stream = SNDRV_PCM_STREAM_CAPTURE;
+ 
+@@ -611,10 +597,10 @@ static int sof_pcm_new(struct snd_soc_component *component,
+ 	dev_dbg(sdev->dev, "spcm: allocate %s capture DMA buffer size 0x%x max 0x%x\n",
+ 		caps->name, caps->buffer_size_min, caps->buffer_size_max);
+ 
+-	snd_pcm_lib_preallocate_pages(pcm->streams[stream].substream,
+-				      SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
+-				      le32_to_cpu(caps->buffer_size_min),
+-				      le32_to_cpu(caps->buffer_size_max));
++	snd_pcm_set_managed_buffer(pcm->streams[stream].substream,
++				   SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
++				   le32_to_cpu(caps->buffer_size_min),
++				   le32_to_cpu(caps->buffer_size_max));
  
  	return 0;
-@@ -1405,7 +1405,6 @@ static int rsnd_hw_params(struct snd_soc_component *component,
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
- 	struct snd_soc_pcm_runtime *fe = substream->private_data;
--	int ret;
- 
- 	/*
- 	 * rsnd assumes that it might be used under DPCM if user want to use
-@@ -1438,12 +1437,7 @@ static int rsnd_hw_params(struct snd_soc_component *component,
- 			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
- 	}
- 
--	ret = rsnd_dai_call(hw_params, io, substream, hw_params);
--	if (ret)
--		return ret;
--
--	return snd_pcm_lib_malloc_pages(substream,
--					params_buffer_bytes(hw_params));
-+	return rsnd_dai_call(hw_params, io, substream, hw_params);
  }
- 
- static int rsnd_hw_free(struct snd_soc_component *component,
-@@ -1452,13 +1446,8 @@ static int rsnd_hw_free(struct snd_soc_component *component,
- 	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
--	int ret;
--
--	ret = rsnd_dai_call(hw_free, io, substream);
--	if (ret)
--		return ret;
- 
--	return snd_pcm_lib_free_pages(substream);
-+	return rsnd_dai_call(hw_free, io, substream);
- }
- 
- static snd_pcm_uframes_t rsnd_pointer(struct snd_soc_component *component,
 -- 
 2.16.4
 
