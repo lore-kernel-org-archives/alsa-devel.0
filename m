@@ -6,76 +6,78 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24AB1C00454
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:13:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F87EC2D0BF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:14:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5391206EC
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:13:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF22D205C9
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:14:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IHw0Wg5H";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nyASVQNi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5391206EC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="knB6nZqk";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dlbFKKgn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF22D205C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D49BE167B;
-	Tue, 10 Dec 2019 22:12:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D49BE167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AFB01671;
+	Tue, 10 Dec 2019 22:13:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AFB01671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576012401;
-	bh=vGaT4X/CbbO06ApbVVIsuoREQjnR7cayIaMijzC7xVM=;
+	s=default; t=1576012442;
+	bh=viCBgm1TxqZnoDCYDidxbh79bziSubAp+okVcoY4OoE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IHw0Wg5HJ7IV/VrIMxisXfanVcsZv7oCvZxPBjvfzhkBzsK63UduVLV5NfgXpJ9xl
-	 4inO+6hLmFrXmY3QhMfQYNVDweQTf+tfKOogBBtWsIvIVpQACyBFDrVpbqlxuv9l/Y
-	 l6vJFOT9aD68+BIKqYdBxeXQIJrhrPSiz96KU/7s=
+	b=knB6nZqkfre+I1qswMOkiEOo5Mog5WY9HXUcrNPjEpBTTsbG1xOhfTUXkTHUOhrAf
+	 O58ZL5W3BNXqHY5ne7TNOH0SXEm5bue2bAIrlb6FblS8YYAn0n/hI0icvAaLphe7a+
+	 KBZqIFZz50/NBhCXhvRwlh4wlXBthVhvwMtmcNJg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11DEEF8026F;
-	Tue, 10 Dec 2019 22:10:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F404CF80274;
+	Tue, 10 Dec 2019 22:10:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94E2AF80271; Tue, 10 Dec 2019 22:10:52 +0100 (CET)
+ id 8ED56F80273; Tue, 10 Dec 2019 22:10:54 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B081CF80268
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:10:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B081CF80268
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DBD2F80266
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:10:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DBD2F80266
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nyASVQNi"
+ header.b="dlbFKKgn"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C691324680;
- Tue, 10 Dec 2019 21:10:46 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E5C0D246AE;
+ Tue, 10 Dec 2019 21:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576012247;
- bh=rwRuxKl4wtv89HyUaQghbveRZ1eF/vZ80lSEysd1yrE=;
+ s=default; t=1576012249;
+ bh=stqJirSBigCjUNifC1OoMutB1fJmmXeU1I9ydq6AYUs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=nyASVQNiWzYQc+Ng6KrcidsG7svF0H+iMDxF+pxT8UhWFzrkBjxZWYDGDXwjjKhbR
- h03NvsvUdVPfHDqcAxNWIA2pqmb24ZibGjWZfbymA/uYQC27yfWQ8CTcx6WjQjqbq6
- XasLOGciwaDyG14SjFtg23kCalV8DNtS7y8aslLM=
+ b=dlbFKKgn2thnft8UuIIwlYj0GXTEJh2YQtSYCnf+aKbhjhyW9qagx12qytufVjgOD
+ VkMg/oCjnsM+sW+3nYq9VxNqjzswS2vyUi9QQHJJeG6PuHZeHrPNMnxeJv+bq9lesl
+ Jde12IFb8TKLFNHQkNw78PYreD3oqSM+rwjSs/rA=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Tue, 10 Dec 2019 16:05:00 -0500
-Message-Id: <20191210210735.9077-156-sashal@kernel.org>
+Date: Tue, 10 Dec 2019 16:05:02 -0500
+Message-Id: <20191210210735.9077-158-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 195/350] ALSA: pcm: Fix missing
-	check of the new non-cached buffer type
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Arnd Bergmann <arnd@arndb.de>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 197/350] ASoC: SOF: imx: fix
+	reverse CONFIG_SND_SOC_SOF_OF dependency
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,45 +95,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 6111fd2370eecae9f11bfdc08ba097e0b51fcfd3 ]
+[ Upstream commit f9ad75468453b019b92c5296e6a04bf7c37f49e4 ]
 
-The check for the mmap support via hw_support_mmap() function misses
-the case where the device is with SNDRV_DMA_TYPE_DEV_UC, which should
-have been treated equally as SNDRV_DMA_TYPE_DEV.  Let's fix it.
+updated solution to the problem reported with randconfig:
 
-Note that this bug doesn't hit any practical problem, because
-SNDRV_DMA_TYPE_DEV_UC is used only for x86-specific drivers
-(snd-hda-intel and snd-intel8x0) for the specific platforms that need
-the non-cached buffers.  And, on such platforms, hw_support_mmap()
-already returns true in anyway.  That's the reason I didn't put
-Cc-to-stable mark here.  This is only for any theoretical future
-extension.
+CONFIG_SND_SOC_SOF_IMX depends on CONFIG_SND_SOC_SOF, but is in
+turn referenced by the sof-of-dev driver. This creates a reverse
+dependency that manifests in a link error when CONFIG_SND_SOC_SOF_OF
+is built-in but CONFIG_SND_SOC_SOF_IMX=m:
 
-Fixes: 425da159707b ("ALSA: pcm: use dma_can_mmap() to check if a device supports dma_mmap_*")
-Fixes: 42e748a0b325 ("ALSA: memalloc: Add non-cached buffer type")
-Link: https://lore.kernel.org/r/20191104101115.27311-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+sound/soc/sof/sof-of-dev.o:(.data+0x118): undefined reference to `sof_imx8_ops'
+
+use def_trisate to propagate the right settings without select.
+
+Fixes: f4df4e4042b0 ("ASoC: SOF: imx8: Fix COMPILE_TEST error")
+Fixes: 202acc565a1f ("ASoC: SOF: imx: Add i.MX8 HW support")
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191101173045.27099-6-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/pcm_native.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sof/imx/Kconfig | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 91c6ad58729fe..c3a139436ac26 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -222,7 +222,8 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
- 		return false;
+diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+index 5acae75f5750d..71f318bc2c74f 100644
+--- a/sound/soc/sof/imx/Kconfig
++++ b/sound/soc/sof/imx/Kconfig
+@@ -11,8 +11,8 @@ config SND_SOC_SOF_IMX_TOPLEVEL
  
- 	if (substream->ops->mmap ||
--	    substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV)
-+	    (substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV &&
-+	     substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV_UC))
- 		return true;
+ if SND_SOC_SOF_IMX_TOPLEVEL
  
- 	return dma_can_mmap(substream->dma_buffer.dev.dev);
+-config SND_SOC_SOF_IMX8
+-	tristate "SOF support for i.MX8"
++config SND_SOC_SOF_IMX8_SUPPORT
++	bool "SOF support for i.MX8"
+ 	depends on IMX_SCU
+ 	depends on IMX_DSP
+ 	help
+@@ -20,4 +20,8 @@ config SND_SOC_SOF_IMX8
+           Say Y if you have such a device.
+           If unsure select "N".
+ 
++config SND_SOC_SOF_IMX8
++	def_tristate SND_SOC_SOF_OF
++	depends on SND_SOC_SOF_IMX8_SUPPORT
++
+ endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
 -- 
 2.20.1
 
