@@ -6,77 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 955F0C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:16:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E3FBC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:17:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DF58206EC
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:16:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BE9BB205C9
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:17:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kiu69ic1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cvpuciCK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DF58206EC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VJf/wPt/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="mk5P++PJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE9BB205C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 615371677;
-	Tue, 10 Dec 2019 22:15:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 615371677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 112671674;
+	Tue, 10 Dec 2019 22:16:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 112671674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576012598;
-	bh=tn/uyhSBlakvMX888kVWidSSpVqMzimA02sXh17Td8I=;
+	s=default; t=1576012636;
+	bh=kcjHoCxOfF6T8CBGo4GeJgHizbL+PlDbNV82XMBWZV4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Kiu69ic1Pi93fhhlBEWL0KD5b7YdfaTXjVmTwA/F+x3IUBYx2r5SfKMntV93NRjBp
-	 Y4FL3rajgWa4eY7wmhiO2Ml22KrPVY5l/radAIyNoRytoUbCQP87L3vF/UFptVD5Bd
-	 cJI2WCM5O6rLSRZbiC/ER9jHd8g4RWb7PJMkwU0w=
+	b=VJf/wPt/QD3FSRRrTdUK4nhepGEE8fBz63DPU9OzZnLB+zOXytlk++XWrjSjsAi80
+	 5EU/CJbff223SlLOyXJmdmgDnhfrbYklkaCls+YzDK0m2qk62vP1Uqxf/c/AC1RB4p
+	 c0Fl8dXD94wJacmlRZL96j67FMvfjrUJyAdeBAvk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45D93F80252;
-	Tue, 10 Dec 2019 22:12:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0083BF8028F;
+	Tue, 10 Dec 2019 22:12:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A6F9F8028E; Tue, 10 Dec 2019 22:12:21 +0100 (CET)
+ id 42367F8028B; Tue, 10 Dec 2019 22:12:23 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15B12F80252
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:12:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15B12F80252
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30ADBF80252
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:12:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30ADBF80252
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cvpuciCK"
+ header.b="mk5P++PJ"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A6C11246A2;
- Tue, 10 Dec 2019 21:12:12 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 66712246A8;
+ Tue, 10 Dec 2019 21:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576012333;
- bh=cfQ2nqGrWxtGiskZ6WAxffq0rW5Dkzqs5Z9jI+PNfG4=;
+ s=default; t=1576012338;
+ bh=hpI3x1KQBGanvKU3gE981T5ZKcILSbMyCMdBEjfE7jQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cvpuciCK+W/zZi6hXx29PalWWqMFYKVGpJGqt/JxMdHlUr8AijBtwajCdudVrNXlU
- C786ZB4XasfdV88rd9V+3IEYUYvmw9/0biU7D90qqVNzu59n8VXFQO+wjX/5KxVJ9A
- a9tVzLn3D0OXJy/QrAgTbY6iKgluIw7q0PF+dlgg=
+ b=mk5P++PJKfEBPmq2ws3BsSn7k7GxnSKPDZiz6Cz7mWzVAo1Th52Ir7FFYT97rX5aN
+ 8KdsA1DJj/gBfV5+c8o6eUKK4Mc7kizFdmttEUtrqETNXhwy+i0Kl99iHZgFP0v192
+ EzQHiMUc9e2Y9dQX/YF/DrLwMyYZRVltqzhlk3gk=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Tue, 10 Dec 2019 16:06:10 -0500
-Message-Id: <20191210210735.9077-226-sashal@kernel.org>
+Date: Tue, 10 Dec 2019 16:06:14 -0500
+Message-Id: <20191210210735.9077-230-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, Ben Zhang <benzh@chromium.org>,
- Curtis Malainey <cujomalainey@chromium.org>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 265/350] ASoC: rt5677: Mark reg
-	RT5677_PWR_ANLG2 as volatile
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 269/350] ASoC: Intel:
+	kbl_rt5663_rt5514_max98927: Add dmic format constraint
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,41 +94,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ben Zhang <benzh@chromium.org>
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 
-[ Upstream commit eabf424f7b60246c76dcb0ea6f1e83ef9abbeaa6 ]
+[ Upstream commit e2db787bdcb4f2722ecf410168f0583764634e45 ]
 
-The codec dies when RT5677_PWR_ANLG2(MX-64h) is set to 0xACE1
-while it's streaming audio over SPI. The DSP firmware turns
-on PLL2 (MX-64 bit 8) when SPI streaming starts.  However regmap
-does not believe that register can change by itself. When
-BST1 (bit 15) is turned on with regmap_update_bits(), it doesn't
-read the register first before write, so PLL2 power bit is
-cleared by accident.
+On KBL platform, the microphone is attached to external codec(rt5514)
+instead of PCH. However, TDM slot between PCH and codec is 16 bits only.
+In order to avoid setting wrong format, we should add a constraint to
+force to use 16 bits format forever.
 
-Marking MX-64h as volatile in regmap solved the issue.
-
-Signed-off-by: Ben Zhang <benzh@chromium.org>
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Link: https://lore.kernel.org/r/20191106011335.223061-6-cujomalainey@chromium.org
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20190923162940.199580-1-yuhsuan@chromium.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 315a3d39bc091..8bc9450da79cf 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -298,6 +298,7 @@ static bool rt5677_volatile_register(struct device *dev, unsigned int reg)
- 	case RT5677_I2C_MASTER_CTRL7:
- 	case RT5677_I2C_MASTER_CTRL8:
- 	case RT5677_HAP_GENE_CTRL2:
-+	case RT5677_PWR_ANLG2: /* Modified by DSP firmware */
- 	case RT5677_PWR_DSP_ST:
- 	case RT5677_PRIV_DATA:
- 	case RT5677_ASRC_22:
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 74dda8784f1a0..67b276a65a8d2 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -400,6 +400,9 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+ 			dmic_constraints);
+ 
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
++
+ 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+ }
 -- 
 2.20.1
 
