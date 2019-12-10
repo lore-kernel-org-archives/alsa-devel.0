@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4551C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:22:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C613DC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:22:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 719BB20663
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:22:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4EBB0206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:22:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R2eeFKCu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 719BB20663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eW3mRJY+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EBB0206E0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0FED1670;
-	Tue, 10 Dec 2019 07:21:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0FED1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9802915F9;
+	Tue, 10 Dec 2019 07:21:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9802915F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575958920;
-	bh=914XflFVAI4ke2g7QD7Dfzp3yj9hguM3fADq75+1qaE=;
+	s=default; t=1575958953;
+	bh=a4m4dzCOrYoszhB/JcJvo9qlDhe2JJhO9AcKh7J3gxk=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R2eeFKCuJHkfY6Q6r+hrH45TBYONlWLcfyz7EEPvSDiM5nU1eGiHbvfvi6KeE5d2t
-	 DwHA2/jXJvg7TkA/kycrUb7/BTLws6jFCNVjtKRynYqwf224u7H6/FqUI14esAaxiB
-	 /DpvCqu9PmjkqfPw3rrPTItgbU5u5M7/pnhw9yEk=
+	b=eW3mRJY+26rqFIX3F1c8UDjyq3BNo2V+msnSM4SqUeNwnZeELlMuoMrDNIDXhjWAg
+	 vheeH0OSP6H/FgCrL5leXXqJDBPk/TRLS1NICWb1r57pRmRNeKMSdEmLQg3imZlOw/
+	 vM0BcUbX0mRy0qJsDohy+XTF+BCZdPFsvR0x36GY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AAADF802EB;
-	Tue, 10 Dec 2019 07:13:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B974F802FE;
+	Tue, 10 Dec 2019 07:13:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B94DF802A1; Tue, 10 Dec 2019 07:12:44 +0100 (CET)
+ id 6D8D2F802A1; Tue, 10 Dec 2019 07:12:45 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B74EBF80259
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:11:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B74EBF80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F22BF80255
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:11:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F22BF80255
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id EF94FB1DE
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:11:51 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 60DBBB1EF
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:11:52 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:11:33 +0100
-Message-Id: <20191210061145.24641-12-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 07:11:41 +0100
+Message-Id: <20191210061145.24641-20-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210061145.24641-1-tiwai@suse.de>
 References: <20191210061145.24641-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 11/23] ALSA: via82xx: Drop superfluous ioctl
-	PCM ops
+Subject: [alsa-devel] [PATCH 19/23] ALSA: sparc: Drop superfluous ioctl PCM
+	ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,74 +81,63 @@ Let's kill the redundant lines.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/via82xx.c       | 5 -----
- sound/pci/via82xx_modem.c | 2 --
- 2 files changed, 7 deletions(-)
+ sound/sparc/amd7930.c | 2 --
+ sound/sparc/cs4231.c  | 2 --
+ sound/sparc/dbri.c    | 1 -
+ 3 files changed, 5 deletions(-)
 
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index d116f32096c1..3009c26ea8b9 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -1348,7 +1348,6 @@ static int snd_via8233_playback_close(struct snd_pcm_substream *substream)
- static const struct snd_pcm_ops snd_via686_playback_ops = {
- 	.open =		snd_via686_playback_open,
- 	.close =	snd_via82xx_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_params =	snd_via82xx_hw_params,
- 	.hw_free =	snd_via82xx_hw_free,
- 	.prepare =	snd_via686_playback_prepare,
-@@ -1360,7 +1359,6 @@ static const struct snd_pcm_ops snd_via686_playback_ops = {
- static const struct snd_pcm_ops snd_via686_capture_ops = {
- 	.open =		snd_via82xx_capture_open,
- 	.close =	snd_via82xx_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_params =	snd_via82xx_hw_params,
- 	.hw_free =	snd_via82xx_hw_free,
- 	.prepare =	snd_via686_capture_prepare,
-@@ -1372,7 +1370,6 @@ static const struct snd_pcm_ops snd_via686_capture_ops = {
- static const struct snd_pcm_ops snd_via8233_playback_ops = {
- 	.open =		snd_via8233_playback_open,
- 	.close =	snd_via8233_playback_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_params =	snd_via82xx_hw_params,
- 	.hw_free =	snd_via82xx_hw_free,
- 	.prepare =	snd_via8233_playback_prepare,
-@@ -1384,7 +1381,6 @@ static const struct snd_pcm_ops snd_via8233_playback_ops = {
- static const struct snd_pcm_ops snd_via8233_multi_ops = {
- 	.open =		snd_via8233_multi_open,
- 	.close =	snd_via82xx_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_params =	snd_via82xx_hw_params,
- 	.hw_free =	snd_via82xx_hw_free,
- 	.prepare =	snd_via8233_multi_prepare,
-@@ -1396,7 +1392,6 @@ static const struct snd_pcm_ops snd_via8233_multi_ops = {
- static const struct snd_pcm_ops snd_via8233_capture_ops = {
- 	.open =		snd_via82xx_capture_open,
- 	.close =	snd_via82xx_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_params =	snd_via82xx_hw_params,
- 	.hw_free =	snd_via82xx_hw_free,
- 	.prepare =	snd_via8233_capture_prepare,
-diff --git a/sound/pci/via82xx_modem.c b/sound/pci/via82xx_modem.c
-index 22eaa9216598..67614a8311e0 100644
---- a/sound/pci/via82xx_modem.c
-+++ b/sound/pci/via82xx_modem.c
-@@ -791,7 +791,6 @@ static int snd_via82xx_pcm_close(struct snd_pcm_substream *substream)
- static const struct snd_pcm_ops snd_via686_playback_ops = {
- 	.open =		snd_via82xx_playback_open,
- 	.close =	snd_via82xx_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_params =	snd_via82xx_hw_params,
- 	.hw_free =	snd_via82xx_hw_free,
- 	.prepare =	snd_via82xx_pcm_prepare,
-@@ -803,7 +802,6 @@ static const struct snd_pcm_ops snd_via686_playback_ops = {
- static const struct snd_pcm_ops snd_via686_capture_ops = {
- 	.open =		snd_via82xx_capture_open,
- 	.close =	snd_via82xx_pcm_close,
--	.ioctl =	snd_pcm_lib_ioctl,
- 	.hw_params =	snd_via82xx_hw_params,
- 	.hw_free =	snd_via82xx_hw_free,
- 	.prepare =	snd_via82xx_pcm_prepare,
+diff --git a/sound/sparc/amd7930.c b/sound/sparc/amd7930.c
+index d39973605cca..df1b16c97d16 100644
+--- a/sound/sparc/amd7930.c
++++ b/sound/sparc/amd7930.c
+@@ -726,7 +726,6 @@ static int snd_amd7930_capture_close(struct snd_pcm_substream *substream)
+ static const struct snd_pcm_ops snd_amd7930_playback_ops = {
+ 	.open		=	snd_amd7930_playback_open,
+ 	.close		=	snd_amd7930_playback_close,
+-	.ioctl		=	snd_pcm_lib_ioctl,
+ 	.prepare	=	snd_amd7930_playback_prepare,
+ 	.trigger	=	snd_amd7930_playback_trigger,
+ 	.pointer	=	snd_amd7930_playback_pointer,
+@@ -735,7 +734,6 @@ static const struct snd_pcm_ops snd_amd7930_playback_ops = {
+ static const struct snd_pcm_ops snd_amd7930_capture_ops = {
+ 	.open		=	snd_amd7930_capture_open,
+ 	.close		=	snd_amd7930_capture_close,
+-	.ioctl		=	snd_pcm_lib_ioctl,
+ 	.prepare	=	snd_amd7930_capture_prepare,
+ 	.trigger	=	snd_amd7930_capture_trigger,
+ 	.pointer	=	snd_amd7930_capture_pointer,
+diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
+index 874da942b662..1676d44769ad 100644
+--- a/sound/sparc/cs4231.c
++++ b/sound/sparc/cs4231.c
+@@ -1193,7 +1193,6 @@ static int snd_cs4231_capture_close(struct snd_pcm_substream *substream)
+ static const struct snd_pcm_ops snd_cs4231_playback_ops = {
+ 	.open		=	snd_cs4231_playback_open,
+ 	.close		=	snd_cs4231_playback_close,
+-	.ioctl		=	snd_pcm_lib_ioctl,
+ 	.hw_params	=	snd_cs4231_playback_hw_params,
+ 	.prepare	=	snd_cs4231_playback_prepare,
+ 	.trigger	=	snd_cs4231_trigger,
+@@ -1203,7 +1202,6 @@ static const struct snd_pcm_ops snd_cs4231_playback_ops = {
+ static const struct snd_pcm_ops snd_cs4231_capture_ops = {
+ 	.open		=	snd_cs4231_capture_open,
+ 	.close		=	snd_cs4231_capture_close,
+-	.ioctl		=	snd_pcm_lib_ioctl,
+ 	.hw_params	=	snd_cs4231_capture_hw_params,
+ 	.prepare	=	snd_cs4231_capture_prepare,
+ 	.trigger	=	snd_cs4231_trigger,
+diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index 315d5a04a33e..1390a52d6cfd 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -2215,7 +2215,6 @@ static snd_pcm_uframes_t snd_dbri_pointer(struct snd_pcm_substream *substream)
+ static const struct snd_pcm_ops snd_dbri_ops = {
+ 	.open = snd_dbri_open,
+ 	.close = snd_dbri_close,
+-	.ioctl = snd_pcm_lib_ioctl,
+ 	.hw_params = snd_dbri_hw_params,
+ 	.hw_free = snd_dbri_hw_free,
+ 	.prepare = snd_dbri_prepare,
 -- 
 2.16.4
 
