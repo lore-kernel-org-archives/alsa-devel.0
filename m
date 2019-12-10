@@ -2,74 +2,65 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AFD4C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E393C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:21:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B360207FF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:20:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CCDA420637
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:21:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UqOqgCNY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B360207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bbIWO1aT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCDA420637
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFBB11687;
-	Tue, 10 Dec 2019 16:19:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFBB11687
+	by alsa0.perex.cz (Postfix) with ESMTPS id E18A116D0;
+	Tue, 10 Dec 2019 16:03:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E18A116D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575991208;
-	bh=NPWqu6C5pFOB2cqUbqjyHU1HrOqhFXrStfFkZhB791o=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1575990242;
+	bh=kdK0xowsuaWyI7yyq0HqHjkaVCe/BCjR1ntCLzc1mao=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UqOqgCNYYP0VqmZp8n5aITfMHTL2Lz/NrHKjZ/8Wc8hDM9HefRYUcUDdGLpyIOURZ
-	 ja7UAs9Zlx1TEnM98SoHgaed8QpbQLUUZ7mPUeBXU3NA+E14jADltKaJ31Y+0HvYvp
-	 W1hUOsaJgnMRMlxZENQkdvPJhKuhqaoibIHGhORs=
+	b=bbIWO1aTm+Q2xBIG4VDX8hwtIUp2GCP8wjsyHK0ALTVpAycKku/cZ3GMMxhSFg8ur
+	 jSgg56v1RUEqfCbSxQjI9gXk44RWt5Ob7sP1IqX8GdDBucUimB++6Buyqc7ZGcqpJ8
+	 uH25QvuHgStKJUyrxSqwaxBh1S0f6oylxipirdZY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B501F8011E;
-	Tue, 10 Dec 2019 16:19:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D7F3F802E9;
+	Tue, 10 Dec 2019 15:54:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63141F8020C; Tue, 10 Dec 2019 16:19:15 +0100 (CET)
+ id 9FA8AF8029B; Tue, 10 Dec 2019 15:54:39 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60C34F800F3
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 16:19:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60C34F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1919EF800B4
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:54:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1919EF800B4
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 21DC9AE07;
- Tue, 10 Dec 2019 15:19:11 +0000 (UTC)
-Date: Tue, 10 Dec 2019 16:19:11 +0100
-Message-ID: <s5hfthsw6mo.wl-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id BA5A3ACC4;
+ Tue, 10 Dec 2019 14:54:12 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Klaus Ethgen <Klaus@ethgen.ch>
-In-Reply-To: <20191210151036.GB23758@ikki.ethgen.ch>
-References: <20191202184759.GB29478@ikki.ethgen.ch>
- <s5hy2vsjbm3.wl-tiwai@suse.de>
- <20191207200643.GA10092@ikki.ethgen.ch>
- <s5h4kybciir.wl-tiwai@suse.de>
- <20191208173127.GE4433@ikki.ethgen.ch>
- <s5hmuc2asa7.wl-tiwai@suse.de>
- <20191209085716.GA12935@ikki.ethgen.ch>
- <s5h4ky9hmro.wl-tiwai@suse.de>
- <20191210143245.GA30160@ikki.ethgen.ch>
- <s5ho8wgw8an.wl-tiwai@suse.de>
- <20191210151036.GB23758@ikki.ethgen.ch>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] CPU hook snd_hda_intel
+To: Mark Brown <broonie@kernel.org>
+Date: Tue, 10 Dec 2019 15:53:54 +0100
+Message-Id: <20191210145406.21419-12-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20191210145406.21419-1-tiwai@suse.de>
+References: <20191210145406.21419-1-tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>
+Subject: [alsa-devel] [PATCH for-5.6 11/23] ASoC: pxa: Drop superfluous
+	ioctl PCM ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,95 +73,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 10 Dec 2019 16:10:37 +0100,
-Klaus Ethgen wrote:
-> 
-> Hi Takashi,
-> 
-> Am Di den 10. Dez 2019 um 15:43 schrieb Takashi Iwai:
-> > > There is also a issue with a swapper thread in ath9k code but the one
-> > > with the biggest CPU hook is still alsa.
-> > 
-> > Do you see the relevant kernel messages, e.g. switch to polling mode?
-> 
-> Nope.
-> 
-> Here is the relevant logs starting from undocking event up to the sleep
-> that I mentioned fixing the issue:
-....
->    Dec 10 15:33:55 chua kernel: [15488.497441] snd_hdac_bus_update_rirb: 58 callbacks suppressed
->    Dec 10 15:33:55 chua kernel: [15488.497449] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497453] snd_hda_intel 0000:00:1b.0: spurious response 0x7fffffff:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497457] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497461] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497464] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497468] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497471] snd_hda_intel 0000:00:1b.0: spurious response 0x7fffffff:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497475] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497478] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
->    Dec 10 15:33:55 chua kernel: [15488.497481] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
+ASoC PCM core deals the empty ioctl field now as default.
+Let's kill the redundant lines.
 
-OK, these lines look already suspicious.
-The driver gets stuck at executing the same verb and repeated it until
-it gets some result.  This verb is GET_PIN_SENSE to the pin 0x11, as I
-somehow expected.
-However, the pin 0x11 is the headphone pin, and this should work even
-after the undock, but by some reason, it screws up.  Or it might be
-the read of the previous one (that doesn't appear here) that stalls
-the communication.
+Cc: Daniel Mack <daniel@zonque.org>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/pxa/mmp-pcm.c     | 1 -
+ sound/soc/pxa/pxa-ssp.c     | 1 -
+ sound/soc/pxa/pxa2xx-ac97.c | 1 -
+ sound/soc/pxa/pxa2xx-i2s.c  | 1 -
+ sound/soc/pxa/pxa2xx-pcm.c  | 1 -
+ 5 files changed, 5 deletions(-)
 
-> > > Let me add that this time I encountered the issue after taking the
-> > > laptop from the docking station.
-> > 
-> > ... this can be the cause: the hardware doesn't react to the pin jack
-> > sense request for the dock that isn't present any longer.
-> > Or something goes wrong here, repeating, etc.
-> 
-> I think, it might have to do with that as I often use the dock.
-> 
-> However, I think, I even seen the problem after I did a fresh boot far
-> away from the dock.
+diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
+index 54a4c9213e83..287b5da739e5 100644
+--- a/sound/soc/pxa/mmp-pcm.c
++++ b/sound/soc/pxa/mmp-pcm.c
+@@ -225,7 +225,6 @@ static const struct snd_soc_component_driver mmp_soc_component = {
+ 	.name		= DRV_NAME,
+ 	.open		= mmp_pcm_open,
+ 	.close		= mmp_pcm_close,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= mmp_pcm_hw_params,
+ 	.trigger	= mmp_pcm_trigger,
+ 	.pointer	= mmp_pcm_pointer,
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 76fdce54f007..f37ea0fb4f3f 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -873,7 +873,6 @@ static const struct snd_soc_component_driver pxa_ssp_component = {
+ 	.pcm_destruct	= pxa2xx_soc_pcm_free,
+ 	.open		= pxa2xx_soc_pcm_open,
+ 	.close		= pxa2xx_soc_pcm_close,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= pxa2xx_soc_pcm_hw_params,
+ 	.hw_free	= pxa2xx_soc_pcm_hw_free,
+ 	.prepare	= pxa2xx_soc_pcm_prepare,
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 31e81a6f616f..22fe77955c2c 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -208,7 +208,6 @@ static const struct snd_soc_component_driver pxa_ac97_component = {
+ 	.pcm_destruct	= pxa2xx_soc_pcm_free,
+ 	.open		= pxa2xx_soc_pcm_open,
+ 	.close		= pxa2xx_soc_pcm_close,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= pxa2xx_soc_pcm_hw_params,
+ 	.hw_free	= pxa2xx_soc_pcm_hw_free,
+ 	.prepare	= pxa2xx_soc_pcm_prepare,
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index e77d707efde7..d9d366a8df11 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -364,7 +364,6 @@ static const struct snd_soc_component_driver pxa_i2s_component = {
+ 	.pcm_destruct	= pxa2xx_soc_pcm_free,
+ 	.open		= pxa2xx_soc_pcm_open,
+ 	.close		= pxa2xx_soc_pcm_close,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= pxa2xx_soc_pcm_hw_params,
+ 	.hw_free	= pxa2xx_soc_pcm_hw_free,
+ 	.prepare	= pxa2xx_soc_pcm_prepare,
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 07b3455a6f23..2b7839715dd5 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -22,7 +22,6 @@ static const struct snd_soc_component_driver pxa2xx_soc_platform = {
+ 	.pcm_destruct	= pxa2xx_soc_pcm_free,
+ 	.open		= pxa2xx_soc_pcm_open,
+ 	.close		= pxa2xx_soc_pcm_close,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= pxa2xx_soc_pcm_hw_params,
+ 	.hw_free	= pxa2xx_soc_pcm_hw_free,
+ 	.prepare	= pxa2xx_soc_pcm_prepare,
+-- 
+2.16.4
 
-Then it might be a problem of the headphone jack detection in
-general.  It happens at undock because the jack detection is performed
-on all pins.
-
-But, the same is true for the suspend/resume, even for runtime PM, so
-this might hit even more often.  Hmm.
-
-> > > After sending it to sleep and waking it up again, the problem is gone
-> > > (as it often can be solved).
-> > 
-> > So the problem is very likely some flaky hardware response.
-> 
-> Anything you think can be done against that?
-
-Could you try the patch below in addition to the previous one?
-The similar trick was applied to the recent Intel chips for the
-unreliable communications, and the same might work for older chips,
-too.
-
-
-thanks,
-
-Takashi
-
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -282,7 +282,7 @@ enum {
- 
- /* quirks for old Intel chipsets */
- #define AZX_DCAPS_INTEL_ICH \
--	(AZX_DCAPS_OLD_SSYNC | AZX_DCAPS_NO_ALIGN_BUFSIZE)
-+	(AZX_DCAPS_SYNC_WRITE | AZX_DCAPS_OLD_SSYNC | AZX_DCAPS_NO_ALIGN_BUFSIZE)
- 
- /* quirks for Intel PCH */
- #define AZX_DCAPS_INTEL_PCH_BASE \
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
