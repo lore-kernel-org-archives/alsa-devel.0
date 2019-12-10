@@ -2,76 +2,127 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1185AC00454
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:29:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8011C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:35:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C7C6208C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:29:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4160820828
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 15:35:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AV1H5JAU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C7C6208C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ethgen.ch
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="reN+n+fD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="OtG+4jRN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4160820828
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84DD9169D;
-	Tue, 10 Dec 2019 16:28:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84DD9169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9806F1614;
+	Tue, 10 Dec 2019 16:34:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9806F1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575991784;
-	bh=SQyctsErwfbEAKtSADBL7oL2bcX/th4oy5BSk0YdEt0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1575992126;
+	bh=heCyy/sy0THeoImPejmv+STNFwjNZ3jPl4rUeO1kNxw=;
+	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AV1H5JAUpxaufXxbLguJGYuVXhEMYy7JD4Ssr8d71xJtIkpbD238YUvfBr+5feWtH
-	 EKRd7mvauP/7IvqW/5mH+AJ33ttaRCvDJHumD6swHb3nQ0PEkIbAEUll8uraMcizXf
-	 HUrhqDTT4F+YWRerXmkbcbKfXvNfE5URWCznArzU=
+	b=reN+n+fDksKEjzmFLRcjHwwdYl0yvfKb+890qCrNcWxAZyZakdrRikkU/1bwVYixW
+	 irrjgBvm+9d/aHLZT3Vp1n3UIPd5Jr2KcyKOffTlpmpzxuII6wexMqDUtk84D4x8Ja
+	 HkyhTrjNfnCZ9DCUL1DdFsR8VkqeRboBf76hKZvU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEAB2F8011E;
-	Tue, 10 Dec 2019 16:28:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A63CF801D8;
+	Tue, 10 Dec 2019 16:34:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2560AF8020C; Tue, 10 Dec 2019 16:28:51 +0100 (CET)
-Received: from tschil.ethgen.ch (tschil.ethgen.ch [5.9.7.51])
+ id 642CCF8020C; Tue, 10 Dec 2019 16:34:35 +0100 (CET)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D9B7F800B4
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 16:28:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D9B7F800B4
-Received: from [192.168.17.4] (helo=ikki.ket)
- by tschil.ethgen.ch with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <klaus@ethgen.ch>)
- id 1iehRN-000673-Nf; Tue, 10 Dec 2019 16:28:45 +0100
-Received: from klaus by ikki.ket with local (Exim 4.93-RC7)
- (envelope-from <klaus@ethgen.ch>)
- id 1iehRM-0002Kx-Ql; Tue, 10 Dec 2019 16:28:44 +0100
-Date: Tue, 10 Dec 2019 16:28:44 +0100
-From: Klaus Ethgen <Klaus@ethgen.ch>
-To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20191210152844.GC23758@ikki.ethgen.ch>
-References: <20191207200643.GA10092@ikki.ethgen.ch>
- <s5h4kybciir.wl-tiwai@suse.de>
- <20191208173127.GE4433@ikki.ethgen.ch>
- <s5hmuc2asa7.wl-tiwai@suse.de>
- <20191209085716.GA12935@ikki.ethgen.ch>
- <s5h4ky9hmro.wl-tiwai@suse.de>
- <20191210143245.GA30160@ikki.ethgen.ch>
- <s5ho8wgw8an.wl-tiwai@suse.de>
- <20191210151036.GB23758@ikki.ethgen.ch>
- <s5hfthsw6mo.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2289BF800F3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 16:34:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2289BF800F3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
+ header.i=@amdcloud.onmicrosoft.com header.b="OtG+4jRN"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HFywqhqtkuan3OpDSk4j53D4yXr4wi5/FVYHIAXtVL9Rlz0uVB5ky/LEL30d3zxTkHmcSBZgan8dM5kZhj5CHP1auG4sqyKqm9OGMPAFUgXqqbNoUnCAJ19OmOwbcRhG5J+7X1flU0pOvdBEI7YdwC9DWrHzPC0jQ1PL8EEgKl55Y2V0ofWHzX5/rl7MZhlNwZ8wbkzxIV8rouraST/krWWs9adxFMNUFgPf3SATayYFqi8/95z6LegXTAaGoMXCnl4cL66NX/89c9ZbD99jV72GH3euL64yVBPa09Wmva/d0SKzFVSQnQIDBmtGl4cHy7osRIddd+t/gS7BmrN18Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EleMNlWPnGEcQxM7/lvjWRLop0GAmc/hPoYPp6c7Waw=;
+ b=ODoFr5kI/FrobLAxSP+9DAXFMgHf0y3yibjpYMRHZqKxNYydCY33drNhHD8MrZkBo5X26L0r16lwRKOTqD7jKS+DfPEIyckpeVK9Z2gzpV6dR1rRV/GdjohuHkmA3Qllr+B/Z/aokuWBayAtG+2yXp9uCJBRyZFD+Qy7FBNxGxfrW8TGtEK+pMaEVtt9Qt1hCuRDwfdf9MeCVTcibt0fO4DoyA6Yo6IKumdrcn9s1H7nu6QkDgj1nYg5F9eWfrNzjuUrmWs+S0a/ed8qv0qLiM3xpC3J8Nylrh6WwoJNLkwbfH2G/P1q7Q67PGmbp2TUvTW4CpeaEHu197suEGJZpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EleMNlWPnGEcQxM7/lvjWRLop0GAmc/hPoYPp6c7Waw=;
+ b=OtG+4jRNR6jKCbOOUU9LxP8qwqnLLJiM0sM3b7g6J5MPYcP4PEbAfvDTf/xP2fecyShuwLKF0IWVd331a7IakxYxDKpnRNOng2i3jjC/QuHXrnKjmqAt0OBj6BHQvReqNjkcSRCWkrOoIPwnrrptCf/LGb8jUz4eIXQYsVPn7AE=
+Received: from MWHPR12MB1358.namprd12.prod.outlook.com (10.169.203.148) by
+ MWHPR12MB1277.namprd12.prod.outlook.com (10.169.204.144) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2516.12; Tue, 10 Dec 2019 15:34:27 +0000
+Received: from MWHPR12MB1358.namprd12.prod.outlook.com
+ ([fe80::b94d:fcd8:729d:a94f]) by MWHPR12MB1358.namprd12.prod.outlook.com
+ ([fe80::b94d:fcd8:729d:a94f%3]) with mapi id 15.20.2538.012; Tue, 10 Dec 2019
+ 15:34:27 +0000
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To: Lukas Wunner <lukas@wunner.de>, Takashi Iwai <tiwai@suse.de>
+Thread-Topic: [PATCH] ALSA: hda/hdmi - Fix duplicate unref of pci_dev
+Thread-Index: AQHVr19R5YQIlg2NqEC5WtHx1mfv7qezf2rg
+Date: Tue, 10 Dec 2019 15:34:27 +0000
+Message-ID: <MWHPR12MB1358AEEBD730A4EDA78894E6F75B0@MWHPR12MB1358.namprd12.prod.outlook.com>
+References: <PSXP216MB0438BFEAA0617283A834E11580580@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
+ <77aa6c01aefe1ebc4004e87b0bc714f2759f15c4.1575985006.git.lukas@wunner.de>
+In-Reply-To: <77aa6c01aefe1ebc4004e87b0bc714f2759f15c4.1575985006.git.lukas@wunner.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Alexander.Deucher@amd.com; 
+x-originating-ip: [165.204.11.250]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 29d545a7-65a9-42d7-1dc3-08d77d867113
+x-ms-traffictypediagnostic: MWHPR12MB1277:
+x-microsoft-antispam-prvs: <MWHPR12MB12770C7F1A5C42B790521932F75B0@MWHPR12MB1277.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:267;
+x-forefront-prvs: 02475B2A01
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(4636009)(136003)(366004)(39860400002)(346002)(396003)(376002)(13464003)(199004)(189003)(7696005)(5660300002)(53546011)(8676002)(33656002)(9686003)(55016002)(186003)(26005)(71200400001)(76116006)(81156014)(8936002)(66946007)(6506007)(4326008)(66556008)(66476007)(478600001)(52536014)(86362001)(66446008)(966005)(81166006)(45080400002)(316002)(54906003)(64756008)(2906002)(110136005);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:MWHPR12MB1277;
+ H:MWHPR12MB1358.namprd12.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: u6n44VLSDe+iGpx8gueue1lBO1zY8uFp7JZyz3WRas+RHwTQCzWBw5Qm6L+LFKiWIx84SAG1vfSpVLoD5vuAww2pwkgHwRTOistEYtIn/Gn+1+OBiW9qsIfut147xN5IFwjjjFF0c+dUVEPO86wY2N3YfDo1Qu6XicTFJm2J9rmxJFabxufmhfySwACZOmsWjBE3ksgmH51qclprDBTtgMicVguK/EstMbsRAPsRw9GCc81jO34oVXOPQnRJ5c1J2ZEqdN/ibzJYieZlDXWlsTLybf24ui9Vd2JA+q9ZDe6ROzAYR3jSAiwOSrnGJt6WRLR3LPPTVkYATRUrd0hWW9P+PnJB1xoEfoosECEGR8OHVbHrWs0g5zvxxUYpaTcSpXZDaz2qs+CrDwRvslPUprty6uYos5OlqWNrzEM8D0p+QVX+RfJNixqRS3Ebg5CJBVdy9yONy+pmyt6W4olB4FoTqMfvZ899N562RS9bdX6syvxYFaNbxvjWxijyxU/q
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-In-Reply-To: <s5hfthsw6mo.wl-tiwai@suse.de>
-OpenPGP: id=79D0B06F4E20AF1C;
- url=http://www.ethgen.ch/~klaus/79D0B06F4E20AF1C.txt; preference=signencrypt
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] CPU hook snd_hda_intel
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29d545a7-65a9-42d7-1dc3-08d77d867113
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2019 15:34:27.1332 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ybL+Ngih2HbsR6iY/nj+DKS2KwJgv6YGXv2Nv8BCZ0fJteeERd/Dvxdbz9MZdgvfJU+DTlETZsrKQfzFg/WO0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1277
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Bjorn Helgaas <helgaas@kernel.org>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda/hdmi - Fix duplicate unref of
+	pci_dev
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,104 +135,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8856934722317843023=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---===============8856934722317843023==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jousvV0MzM2p6OtC"
-Content-Disposition: inline
-
-
---jousvV0MzM2p6OtC
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-
-Hi Takashi,
-
-Am Di den 10. Dez 2019 um 16:19 schrieb Takashi Iwai:
-> >    Dec 10 15:33:55 chua kernel: [15488.497441] snd_hdac_bus_update_rirb: 58 callbacks suppressed
-> >    Dec 10 15:33:55 chua kernel: [15488.497449] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497453] snd_hda_intel 0000:00:1b.0: spurious response 0x7fffffff:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497457] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497461] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497464] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497468] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497471] snd_hda_intel 0000:00:1b.0: spurious response 0x7fffffff:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497475] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497478] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
-> >    Dec 10 15:33:55 chua kernel: [15488.497481] snd_hda_intel 0000:00:1b.0: spurious response 0x0:0x0, last cmd=0x11f0900
+> -----Original Message-----
+> From: Lukas Wunner <lukas@wunner.de>
+> Sent: Tuesday, December 10, 2019 8:40 AM
+> To: Takashi Iwai <tiwai@suse.de>
+> Cc: Jaroslav Kysela <perex@perex.cz>; Deucher, Alexander
+> <Alexander.Deucher@amd.com>; Mika Westerberg
+> <mika.westerberg@linux.intel.com>; Bjorn Helgaas <helgaas@kernel.org>;
+> Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>; alsa-
+> devel@alsa-project.org; linux-kernel@vger.kernel.org; linux-
+> pci@vger.kernel.org
+> Subject: [PATCH] ALSA: hda/hdmi - Fix duplicate unref of pci_dev
 > 
-> OK, these lines look already suspicious.
-
-These are logged after wakeup as at this position, most of the system
-seems already been sleeping. But it is really just before the sleep.
-
-> The driver gets stuck at executing the same verb and repeated it until
-> it gets some result.  This verb is GET_PIN_SENSE to the pin 0x11, as I
-> somehow expected.
-> However, the pin 0x11 is the headphone pin, and this should work even
-> after the undock, but by some reason, it screws up.  Or it might be
-> the read of the previous one (that doesn't appear here) that stalls
-> the communication.
-[...]
-> Then it might be a problem of the headphone jack detection in
-> general.  It happens at undock because the jack detection is performed
-> on all pins.
-
-I think, I always seen the headphone pin note there. Is it possible to
-disable that detection? Maybe that is not working with that old
-hardware?
-
-> > Anything you think can be done against that?
+> Nicholas Johnson reports a null pointer deref as well as a refcount underflow
+> upon hot-removal of a Thunderbolt-attached AMD eGPU.
+> He's bisected the issue down to commit 586bc4aab878 ("ALSA: hda/hdmi - fix
+> vgaswitcheroo detection for AMD").
 > 
-> Could you try the patch below in addition to the previous one?
-> The similar trick was applied to the recent Intel chips for the
-> unreliable communications, and the same might work for older chips,
-> too.
+> The commit iterates over PCI devices using pci_get_class() and unreferences
+> each device found, even though pci_get_class() subsequently unreferences
+> the device as well.  Fix it.
 
-I'll do and by the same compilation, I'll enable
-CONFIG_SND_HDA_CODEC_ANALOG.
+The pci_dev_put() a few lines above should probably be dropped as well.
 
-Regards
-   Klaus
--- 
-Klaus Ethgen                                       http://www.ethgen.ch/
-pub  4096R/4E20AF1C 2011-05-16            Klaus Ethgen <Klaus@Ethgen.ch>
-Fingerprint: 85D4 CA42 952C 949B 1753  62B3 79D0 B06F 4E20 AF1C
+Alex
 
---jousvV0MzM2p6OtC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Comment: Charset: ISO-8859-1
-
-iQGzBAABCgAdFiEEMWF28vh4/UMJJLQEpnwKsYAZ9qwFAl3vuawACgkQpnwKsYAZ
-9qxG9Qv/U7e21YniDLuKLO0HAcwa+hHk+EKn63WEq2qGgakc9J0IJYeUNvKTtaN5
-gY7XRlOVydM5c+sEQJiLFtZjf+kk65HEn+/zOSwhBz8a1MTvR6Rg5ZS9/Qkwwn6q
-eYlfPlEh8tyiOu8M6tEbhsgG15B78U8ZYN0he7yfgv54gwFj60KyOVeOoElHDMrU
-QMjqqhgKDP93MbIsR/jobo2pfZFhMMbzIKclZaQlzvp6FgzH9mFpNcILfs4b3DYC
-pnPaodNXWHjPm6EuNLJIMfhogsWeQHDaRKDDsV9iN0X4FLgpM0dZxwt3vbyt/qk+
-yWYyWJ4hWctPuxuW+KGgsm7oROQR3DSD9pzN1PTSsjO4R416KqM8A75gMOEuIrtE
-Sy13it8CS1J2MteAZMdkyvDBeKpknPmENW5c6dJsv/FdLjV7ETS8RU8BcV6zMZQz
-imPKE79lxw39qYfazoIVahCUwv08j8l5t9lAQaXoYFoQK3/CSUOOYnCBJQS0Ddb2
-1kZWYXqP
-=tqTR
------END PGP SIGNATURE-----
-
---jousvV0MzM2p6OtC--
-
---===============8856934722317843023==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> 
+> Fixes: 586bc4aab878 ("ALSA: hda/hdmi - fix vgaswitcheroo detection for
+> AMD")
+> Link:
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.
+> kernel.org%2Fr%2FPSXP216MB0438BFEAA0617283A834E11580580%40PSXP2
+> 16MB0438.KORP216.PROD.OUTLOOK.COM%2F&amp;data=02%7C01%7Calex
+> ander.deucher%40amd.com%7C254649b79a6240f3a8aa08d77d76715f%7C3d
+> d8961fe4884e608e11a82d994e183d%7C0%7C0%7C637115819998031934&amp
+> ;sdata=qI%2B%2FJv3Z6pvwN7gQFSnZiP31YUAvd%2BKjo0ZqMERFbYU%3D&a
+> mp;reserved=0
+> Reported-and-tested-by: Nicholas Johnson <nicholas.johnson-
+> opensource@outlook.com.au>
+> Signed-off-by: Lukas Wunner <lukas@wunner.de>
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: Alexander Deucher <alexander.deucher@amd.com>
+> Cc: Bjorn Helgaas <helgaas@kernel.org>
+> ---
+>  sound/pci/hda/hda_intel.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c index
+> 35b4526f0d28..b856b89378ac 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1419,7 +1419,6 @@ static bool atpx_present(void)
+>  				return true;
+>  			}
+>  		}
+> -		pci_dev_put(pdev);
+>  	}
+>  	return false;
+>  }
+> --
+> 2.24.0
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8856934722317843023==--
