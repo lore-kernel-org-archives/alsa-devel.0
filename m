@@ -7,58 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C8EEC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:45:06 +0000 (UTC)
-Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AEBAC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:45:41 +0000 (UTC)
+Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97BC2206E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:45:05 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iFbkBLN2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97BC2206E0
+	by mail.kernel.org (Postfix) with ESMTPS id 9E336206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:45:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E336206E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDE171685;
-	Tue, 10 Dec 2019 01:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDE171685
+	by alsa0.perex.cz (Postfix) with ESMTPS id E33301677;
+	Tue, 10 Dec 2019 01:44:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E33301677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575938704;
-	bh=xBcDpJLvTr+CLsa1Yu+fOAxx9byEoiF0T6OeujTkFR0=;
+	s=default; t=1575938739;
+	bh=7H9ltI1nbxHT3mHxxdpxEQK0VPTPgNW6b/Vxn4MbUVc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iFbkBLN25GKz3yDtjLKrGEhiMCFCczKci3b5wvJaGMNC9QXkdkgH1UFdzw/odyMJL
-	 C521wkwTBrb7gPV+K/RT4BOPCnW6fd2O0ELLtkax98V2lyfFMBkNOmtm43dIoh65eg
-	 lu0cIcVC84gPlHx3P133Pn8lNEITEfxUxf0Bk78E=
+	b=g8+lQpLFYuS6PO7PCLSKHQy7erlIusSdiul+X20uXdt5HoJdRXaKM8a+i8xZg9rA6
+	 hLjUEuwQdEAsH1B6UKotRG0tNwnbh4v7Ja7iIUCJ/pZ9ysUIjGQAuX6s23XABHbbAY
+	 rZvPK+oX6NNZAq6egzcUFqGX9hxsky3yxyJDJaQ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 619D7F800C4;
-	Tue, 10 Dec 2019 01:39:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62BEFF80246;
+	Tue, 10 Dec 2019 01:39:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D46BDF80245; Tue, 10 Dec 2019 01:39:50 +0100 (CET)
+ id DCD6AF80240; Tue, 10 Dec 2019 01:39:51 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6714CF8011E
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:39:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6714CF8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F6ECF800C4
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:39:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F6ECF800C4
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2019 16:39:43 -0800
+ 09 Dec 2019 16:39:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="210284346"
+X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="210284347"
 Received: from sneuhier-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.188.78])
- by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2019 16:39:42 -0800
+ by fmsmga008.fm.intel.com with ESMTP; 09 Dec 2019 16:39:43 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 18:39:38 -0600
-Message-Id: <20191210003939.15752-2-pierre-louis.bossart@linux.intel.com>
+Date: Mon,  9 Dec 2019 18:39:39 -0600
+Message-Id: <20191210003939.15752-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210003939.15752-1-pierre-louis.bossart@linux.intel.com>
 References: <20191210003939.15752-1-pierre-louis.bossart@linux.intel.com>
@@ -66,8 +64,8 @@ MIME-Version: 1.0
 Cc: tiwai@suse.de, Dragos Tarcatu <dragos_tarcatu@mentor.com>,
  broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 1/2] ASoC: topology: Check return value for
-	snd_soc_add_dai_link()
+Subject: [alsa-devel] [PATCH 2/2] ASoC: topology: Check return value for
+	soc_tplg_pcm_create()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,63 +85,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
 
-snd_soc_add_dai_link() might fail. This situation occurs for
-instance in a very specific use case where a PCM device and a
-Back End DAI link are given identical names in the topology.
-When this happens, soc_new_pcm_runtime() fails and then
-snd_soc_add_dai_link() returns -ENOMEM when called from
-soc_tplg_fe_link_create(). Because of that, the link will not
-get added into the card list, so any attempt to remove it later
-ends up in a panic.
+The return value of soc_tplg_pcm_create() is currently not checked
+in soc_tplg_pcm_elems_load(). If an error is to occur there, the
+topology ignores it and continues loading.
 
-Fix that by checking the return status and free the memory in case
-of an error.
+Fix that by checking the status and rejecting the topology on error.
 
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ sound/soc/soc-topology.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 248530d028a6..93ba6778ef27 100644
+index 93ba6778ef27..92e4f4d08bfa 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1933,11 +1933,13 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 	ret = soc_tplg_dai_link_load(tplg, link, NULL);
- 	if (ret < 0) {
- 		dev_err(tplg->comp->dev, "ASoC: FE link loading failed\n");
--		kfree(link->name);
--		kfree(link->stream_name);
--		kfree(link->cpus->dai_name);
--		kfree(link);
--		return ret;
-+		goto err;
-+	}
-+
-+	ret = snd_soc_add_dai_link(tplg->comp->card, link);
-+	if (ret < 0) {
-+		dev_err(tplg->comp->dev, "ASoC: adding FE link failed\n");
-+		goto err;
- 	}
+@@ -2046,6 +2046,7 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 	int size;
+ 	int i;
+ 	bool abi_match;
++	int ret;
  
- 	link->dobj.index = tplg->index;
-@@ -1945,8 +1947,13 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
- 	link->dobj.type = SND_SOC_DOBJ_DAI_LINK;
- 	list_add(&link->dobj.list, &tplg->comp->dobj_list);
+ 	count = le32_to_cpu(hdr->count);
  
--	snd_soc_add_dai_link(tplg->comp->card, link);
- 	return 0;
-+err:
-+	kfree(link->name);
-+	kfree(link->stream_name);
-+	kfree(link->cpus->dai_name);
-+	kfree(link);
-+	return ret;
- }
+@@ -2087,7 +2088,12 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 		}
  
- /* create a FE DAI and DAI link from the PCM object */
+ 		/* create the FE DAIs and DAI links */
+-		soc_tplg_pcm_create(tplg, _pcm);
++		ret = soc_tplg_pcm_create(tplg, _pcm);
++		if (ret < 0) {
++			if (!abi_match)
++				kfree(_pcm);
++			return ret;
++		}
+ 
+ 		/* offset by version-specific struct size and
+ 		 * real priv data size
 -- 
 2.20.1
 
