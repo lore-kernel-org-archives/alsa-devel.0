@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7E55C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8776EC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:16:49 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 295542073B
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:16:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 295542073B
+	by mail.kernel.org (Postfix) with ESMTPS id 13AE22073B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:16:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13AE22073B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ACEF1688;
-	Tue, 10 Dec 2019 15:15:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ACEF1688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B9CE16A1;
+	Tue, 10 Dec 2019 15:15:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B9CE16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575987360;
-	bh=w11rIS3tvzKRS4q9gkDCdJTq3LDKIrexDUNQXgyEuaU=;
+	s=default; t=1575987407;
+	bh=jWlI6VOVp3ym5frBeKSiXSa8EgIeZ0s90qZIGupsGwY=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tdEDD7Ncp2mRfiK/rv+QljXvvLxPFAzJk+bKe3S0dQs5B4xZRNFvyYlrtMPPj4bE+
-	 LO+IBA607Suo3VJfqwR7q8EONzRzSFGiIzr8bUhd+wpbmcD+nYe/g8lOc9wy4Lgy3/
-	 NBcQJ+Id7IJc5Wlei+EjCxK+jjDd9TIGNMCHoke8=
+	b=cRSd0tOag/EMCQJpaJNOGa3oawysC0yjaeQU1FfYGZq3inz0px8YryJnPFxf0o4Vk
+	 BjyFYb08uFZXRZWvs15iB3GPODNjIYVugCTFrCIhmS6cV40avQx9UB6GcZKKfraLsa
+	 fYJMGGKDBluQ1gkO3XAVV3Xl2ygcT1/92uaf0ht8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBCDEF80252;
-	Tue, 10 Dec 2019 15:14:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECB4CF80257;
+	Tue, 10 Dec 2019 15:14:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 857B4F80249; Tue, 10 Dec 2019 15:14:09 +0100 (CET)
+ id B1464F80217; Tue, 10 Dec 2019 15:14:12 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02EFEF800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 329F8F8011E
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:14:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02EFEF800F3
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 329F8F8011E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 26925AF79;
- Tue, 10 Dec 2019 14:14:05 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 007DBAF3B;
+ Tue, 10 Dec 2019 14:14:04 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Tue, 10 Dec 2019 15:13:56 +0100
-Message-Id: <20191210141356.18074-5-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 15:13:54 +0100
+Message-Id: <20191210141356.18074-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210141356.18074-1-tiwai@suse.de>
 References: <20191210141356.18074-1-tiwai@suse.de>
@@ -59,8 +59,8 @@ Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
  Ray Jui <rjui@broadcom.com>, linux-kernel@vger.kernel.org,
  bcm-kernel-feedback-list@broadcom.com,
  Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [alsa-devel] [PATCH for-5.6 4/4] staging: bcm2835-audio: Drop
-	superfluous ioctl PCM ops
+Subject: [alsa-devel] [PATCH for-5.6 2/4] staging: bcm2835-audio: Use
+	managed buffer allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,34 +79,63 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PCM core deals the empty ioctl field now as default.
-Let's kill the redundant lines.
+Clean up the driver with the new managed buffer allocation API.
+The hw_params and hw_free callbacks became superfluous and dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c | 2 --
- 1 file changed, 2 deletions(-)
+ .../staging/vc04_services/bcm2835-audio/bcm2835-pcm.c   | 17 +----------------
+ 1 file changed, 1 insertion(+), 16 deletions(-)
 
 diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
-index 97726b190bc5..33485184a98a 100644
+index 826016c3431a..97726b190bc5 100644
 --- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
 +++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c
-@@ -305,7 +305,6 @@ snd_bcm2835_pcm_pointer(struct snd_pcm_substream *substream)
- static const struct snd_pcm_ops snd_bcm2835_playback_ops = {
+@@ -193,17 +193,6 @@ static int snd_bcm2835_playback_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static int snd_bcm2835_pcm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-}
+-
+-static int snd_bcm2835_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	return snd_pcm_lib_free_pages(substream);
+-}
+-
+ static int snd_bcm2835_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct bcm2835_chip *chip = snd_pcm_substream_chip(substream);
+@@ -317,8 +306,6 @@ static const struct snd_pcm_ops snd_bcm2835_playback_ops = {
  	.open = snd_bcm2835_playback_open,
  	.close = snd_bcm2835_playback_close,
--	.ioctl = snd_pcm_lib_ioctl,
+ 	.ioctl = snd_pcm_lib_ioctl,
+-	.hw_params = snd_bcm2835_pcm_hw_params,
+-	.hw_free = snd_bcm2835_pcm_hw_free,
  	.prepare = snd_bcm2835_pcm_prepare,
  	.trigger = snd_bcm2835_pcm_trigger,
  	.pointer = snd_bcm2835_pcm_pointer,
-@@ -315,7 +314,6 @@ static const struct snd_pcm_ops snd_bcm2835_playback_ops = {
- static const struct snd_pcm_ops snd_bcm2835_playback_spdif_ops = {
+@@ -329,8 +316,6 @@ static const struct snd_pcm_ops snd_bcm2835_playback_spdif_ops = {
  	.open = snd_bcm2835_playback_spdif_open,
  	.close = snd_bcm2835_playback_close,
--	.ioctl = snd_pcm_lib_ioctl,
+ 	.ioctl = snd_pcm_lib_ioctl,
+-	.hw_params = snd_bcm2835_pcm_hw_params,
+-	.hw_free = snd_bcm2835_pcm_hw_free,
  	.prepare = snd_bcm2835_pcm_prepare,
  	.trigger = snd_bcm2835_pcm_trigger,
  	.pointer = snd_bcm2835_pcm_pointer,
+@@ -362,7 +347,7 @@ int snd_bcm2835_new_pcm(struct bcm2835_chip *chip, const char *name,
+ 			spdif ? &snd_bcm2835_playback_spdif_ops :
+ 			&snd_bcm2835_playback_ops);
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 		chip->card->dev, 128 * 1024, 128 * 1024);
+ 
+ 	if (spdif)
 -- 
 2.16.4
 
