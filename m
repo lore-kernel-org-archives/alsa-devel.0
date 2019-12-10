@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5BD3C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:42:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 596E9C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:43:40 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CF47206D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:42:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CF47206D5
+	by mail.kernel.org (Postfix) with ESMTPS id D34FB206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:43:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D34FB206D5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A19831696;
-	Tue, 10 Dec 2019 07:42:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A19831696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20EDC169D;
+	Tue, 10 Dec 2019 07:42:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20EDC169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575960174;
-	bh=0dpSsFts15+SePrbRma2OZMY+dW3M36qVOfCKlvQiL8=;
+	s=default; t=1575960218;
+	bh=tMSwX7KJ3AZq0JGb+Kv53dQ5q9KPhxyrdmgoTe6mWes=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KITS0pOdb1vAiXnbWTh7xNgGpSqLuaDaWJnX7iip2+DKoKoZUos0XQbW1mVf8faEW
-	 DT4Ah0K02f+USe6qT+hss4NUNxySPOfzl7tzLN+qy+PKDJUwYebdXt78ifmBQmvi0K
-	 VhlPOFYYvZQSg7sA5+h9Jw9lcJ681/pX1yDwVrio=
+	b=tXdHss1qoZ+kokLJHS9ukHUB/JHGgSbsyUHhJI8vOqaEagFL4kttVDkVrVJxKlGWw
+	 bkQ7w48Qw4JD4bf0hJTSxS7zfo5ghFTVQ9ZutN5L3CSkqpAGHHmlwpHUetFDoX1p1e
+	 CgOLec9Z7bjz21WAf1x+youI2B7AAeW1n9tMT7FU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 830FBF80271;
-	Tue, 10 Dec 2019 07:35:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A753F80322;
+	Tue, 10 Dec 2019 07:35:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6616F802E3; Tue, 10 Dec 2019 07:35:21 +0100 (CET)
+ id 6330EF80254; Tue, 10 Dec 2019 07:35:22 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C06B0F80255
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18E61F80252
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:35:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C06B0F80255
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E61F80252
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 9F751B1ED
+ by mx1.suse.de (Postfix) with ESMTP id 7AF1DB186
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:34:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:34:10 +0100
-Message-Id: <20191210063454.31603-12-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 07:34:07 +0100
+Message-Id: <20191210063454.31603-9-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210063454.31603-1-tiwai@suse.de>
 References: <20191210063454.31603-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 11/55] ALSA: cs4281: Support PCM sync_stop
+Subject: [alsa-devel] [PATCH 08/55] ALSA: bt87x: Support PCM sync_stop
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,39 +80,23 @@ call.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/cs4281.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/pci/bt87x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/cs4281.c b/sound/pci/cs4281.c
-index 0dcb2d15b560..e7294b9d2cb6 100644
---- a/sound/pci/cs4281.c
-+++ b/sound/pci/cs4281.c
-@@ -1268,9 +1268,6 @@ static int snd_cs4281_free(struct cs4281 *chip)
- {
- 	snd_cs4281_free_gameport(chip);
- 
--	if (chip->irq >= 0)
--		synchronize_irq(chip->irq);
--
- 	/* Mask interrupts */
- 	snd_cs4281_pokeBA0(chip, BA0_HIMR, 0x7fffffff);
- 	/* Stop the DLL Clock logic. */
-@@ -1352,6 +1349,7 @@ static int snd_cs4281_create(struct snd_card *card,
- 		return -ENOMEM;
+diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
+index de4af1ab87c6..2e16604c31ce 100644
+--- a/sound/pci/bt87x.c
++++ b/sound/pci/bt87x.c
+@@ -751,8 +751,8 @@ static int snd_bt87x_create(struct snd_card *card,
+ 		goto fail;
  	}
  	chip->irq = pci->irq;
 +	card->sync_irq = chip->irq;
- 
- 	tmp = snd_cs4281_chip_init(chip);
- 	if (tmp) {
-@@ -1600,7 +1598,6 @@ static int snd_cs4281_chip_init(struct cs4281 *chip)
- 					BA0_HISR_DMA(1) |
- 					BA0_HISR_DMA(2) |
- 					BA0_HISR_DMA(3)));
+ 	pci_set_master(pci);
 -	synchronize_irq(chip->irq);
  
- 	return 0;
- }
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+ 	if (err < 0)
 -- 
 2.16.4
 
