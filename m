@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 426C2C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 897D9C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:39:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8FFE20828
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:38:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C7642077B
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 14:39:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ldP3i6mG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8FFE20828
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YOy6qO6X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C7642077B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE3641691;
-	Tue, 10 Dec 2019 15:37:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE3641691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C3FD169C;
+	Tue, 10 Dec 2019 15:38:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C3FD169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575988707;
-	bh=BFIiXBo9Mt3q6FVJVeyCijR4GOKPxp7Fp5XwZQ334II=;
+	s=default; t=1575988743;
+	bh=wbxn1iB3EmZlYI0GFK0h4CyoIlwDYsAZPyNPTuix0w0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ldP3i6mG/bMyTB6q7FT2txk+Mi28rMQtbt5UW+GlGsnK1DWoTOhpNnNI1sIbJnkA4
-	 DLVjvEr9acsJM+m6g1ym8Mx9uYyFnV3HABTcHR6ddUEFCzI6MrEh+rrBF9Im9n+nY2
-	 /b7fdkr3PQUqXW4CRIzOg1fBRx3Z3YmAZS2vEQN0=
+	b=YOy6qO6XPRO+3PWj0AcE+iraecUFRXKULOYAT2mgbVcz9N6VTfPa4vFYcTAhRGMAK
+	 fKMMJsbMki/MaJE5D2imP+Vb05iQWrekBxI0O/qhDvj3Qd7SOrFZHgN8ozQoTx7QjX
+	 Rd42shda2By+zdVSjme+0dXL1QTnPZNdmYdyIIXI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7DDCF80322;
-	Tue, 10 Dec 2019 15:27:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D38EEF80331;
+	Tue, 10 Dec 2019 15:27:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A56BAF802A0; Tue, 10 Dec 2019 15:26:59 +0100 (CET)
+ id 38AFEF802BD; Tue, 10 Dec 2019 15:27:02 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 570E8F80260
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 570E8F80260
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D71AF80259
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 15:26:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D71AF80259
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 691A2B208;
+ by mx1.suse.de (Postfix) with ESMTP id A267EB21A;
  Tue, 10 Dec 2019 14:26:26 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Date: Tue, 10 Dec 2019 15:26:05 +0100
-Message-Id: <20191210142614.19405-15-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 15:26:09 +0100
+Message-Id: <20191210142614.19405-19-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210142614.19405-1-tiwai@suse.de>
 References: <20191210142614.19405-1-tiwai@suse.de>
-Cc: Takashi Iwai <tiwai@suse.de>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH for-5.6 14/23] ASoC: uniphier: Use managed
+Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>,
+ alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH for-5.6 18/23] ASoC: rt5514-spi: Use managed
 	buffer allocation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -79,77 +79,59 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Clean up the driver with the new managed buffer allocation API.
-The hw_params and hw_free callbacks became superfluous and got
-dropped, as well as the pcm_destruct callback just containing the
-superfluous snd_pcm_lib_preallocate_free_for_all() call.
+The superfluous snd_pcm_lib_malloc_pages() and
+snd_pcm_lib_free_pages() calls are dropped.
 
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/uniphier/aio-dma.c | 30 +-----------------------------
- 1 file changed, 1 insertion(+), 29 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/uniphier/aio-dma.c b/sound/soc/uniphier/aio-dma.c
-index 700d936ed94e..388f4785d93a 100644
---- a/sound/soc/uniphier/aio-dma.c
-+++ b/sound/soc/uniphier/aio-dma.c
-@@ -104,25 +104,6 @@ static int uniphier_aiodma_open(struct snd_soc_component *component,
- 		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 256);
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index f1b7b947ecbd..1a25a3787935 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -215,11 +215,9 @@ static int rt5514_spi_hw_params(struct snd_soc_component *component,
+ {
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
+-	int ret;
+ 	u8 buf[8];
+ 
+ 	mutex_lock(&rt5514_dsp->dma_lock);
+-	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+ 	rt5514_dsp->substream = substream;
+ 	rt5514_dsp->dma_offset = 0;
+ 
+@@ -230,7 +228,7 @@ static int rt5514_spi_hw_params(struct snd_soc_component *component,
+ 
+ 	mutex_unlock(&rt5514_dsp->dma_lock);
+ 
+-	return ret;
++	return 0;
  }
  
--static int uniphier_aiodma_hw_params(struct snd_soc_component *component,
--				     struct snd_pcm_substream *substream,
--				     struct snd_pcm_hw_params *params)
--{
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--	substream->runtime->dma_bytes = params_buffer_bytes(params);
--
--	return 0;
--}
--
--static int uniphier_aiodma_hw_free(struct snd_soc_component *component,
--				   struct snd_pcm_substream *substream)
--{
--	snd_pcm_set_runtime_buffer(substream, NULL);
--	substream->runtime->dma_bytes = 0;
--
--	return 0;
--}
--
- static int uniphier_aiodma_prepare(struct snd_soc_component *component,
- 				   struct snd_pcm_substream *substream)
- {
-@@ -232,30 +213,21 @@ static int uniphier_aiodma_new(struct snd_soc_component *component,
- 	if (ret)
- 		return ret;
+ static int rt5514_spi_hw_free(struct snd_soc_component *component,
+@@ -245,7 +243,7 @@ static int rt5514_spi_hw_free(struct snd_soc_component *component,
  
--	snd_pcm_lib_preallocate_pages_for_all(pcm,
-+	snd_pcm_set_managed_buffer_all(pcm,
- 		SNDRV_DMA_TYPE_DEV, dev,
- 		uniphier_aiodma_hw.buffer_bytes_max,
- 		uniphier_aiodma_hw.buffer_bytes_max);
+ 	cancel_delayed_work_sync(&rt5514_dsp->copy_work);
+ 
+-	return snd_pcm_lib_free_pages(substream);
++	return 0;
+ }
+ 
+ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
+@@ -294,8 +292,8 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ static int rt5514_spi_pcm_new(struct snd_soc_component *component,
+ 			      struct snd_soc_pcm_runtime *rtd)
+ {
+-	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_VMALLOC,
+-					      NULL, 0, 0);
++	snd_pcm_set_managed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_VMALLOC,
++				       NULL, 0, 0);
  	return 0;
  }
- 
--static void uniphier_aiodma_free(struct snd_soc_component *component,
--				 struct snd_pcm *pcm)
--{
--	snd_pcm_lib_preallocate_free_for_all(pcm);
--}
--
- static const struct snd_soc_component_driver uniphier_soc_platform = {
- 	.open		= uniphier_aiodma_open,
- 	.ioctl		= snd_soc_pcm_lib_ioctl,
--	.hw_params	= uniphier_aiodma_hw_params,
--	.hw_free	= uniphier_aiodma_hw_free,
- 	.prepare	= uniphier_aiodma_prepare,
- 	.trigger	= uniphier_aiodma_trigger,
- 	.pointer	= uniphier_aiodma_pointer,
- 	.mmap		= uniphier_aiodma_mmap,
- 	.pcm_construct	= uniphier_aiodma_new,
--	.pcm_destruct	= uniphier_aiodma_free,
- 	.compr_ops	= &uniphier_aio_compr_ops,
- };
  
 -- 
 2.16.4
