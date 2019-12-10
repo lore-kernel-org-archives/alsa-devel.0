@@ -7,64 +7,65 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBAD7C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 694ACC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:42 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E2D820637
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E2D820637
+	by mail.kernel.org (Postfix) with ESMTPS id DD88B207FF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD88B207FF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C41081614;
-	Tue, 10 Dec 2019 01:52:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C41081614
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF28C1657;
+	Tue, 10 Dec 2019 01:52:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF28C1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575939197;
-	bh=NlbFGpxKOenzubCuvgMwOxjqtHcmCgEshkB5HpyyIaQ=;
+	s=default; t=1575939220;
+	bh=2nFjlohJoxS9DPeMj3cVLXCFJmnZ/wgih4V+01tmG3U=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qgWadhPPWJa9LF1s1CHYhpRpzGmKEJ/kLUc1p2pjAz+QVRumGm4TdvD4nSiTtPjgW
-	 LZe2Oq5UdeZDt9tddqvpBCvr2mSvG0jPExR0k+2NKjrQzsx0U7aam5ho/VzqcOWPte
-	 o8maFNT9FAGjsnAL4R1aOTi91vhYAblF+m90chHw=
+	b=RIsmhCODUeYK6i96QmcSdip6ifzNuKrsB/5rsgdbmZW5b7/Ib0Il/dS0otHH0388R
+	 MmjnDW2ASDHm0lO6Cn1/wVBURliMcyncCPWqtemaqGyF64TxQ77pkehOub/cRYEGFj
+	 5EUg8PxvYasroHCYtTJ3U7piQN5VyxAxc3mg5rUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 949FFF8026F;
-	Tue, 10 Dec 2019 01:49:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1D91F80278;
+	Tue, 10 Dec 2019 01:49:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C815FF8025F; Tue, 10 Dec 2019 01:49:18 +0100 (CET)
+ id D6773F80264; Tue, 10 Dec 2019 01:49:19 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99B92F80257
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99B92F80257
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C2FEF8023E
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C2FEF8023E
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2019 16:49:10 -0800
+ 09 Dec 2019 16:49:06 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398965"
+X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398950"
 Received: from sneuhier-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.188.78])
- by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:09 -0800
+ by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:05 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 18:48:53 -0600
-Message-Id: <20191210004854.16845-8-pierre-louis.bossart@linux.intel.com>
+Date: Mon,  9 Dec 2019 18:48:49 -0600
+Message-Id: <20191210004854.16845-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 References: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de, Karol Trzcinski <karolx.trzcinski@linux.intel.com>,
+ broonie@kernel.org, Bartosz Kokoszko <bartoszx.kokoszko@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 7/8] ASoC: SOF: Intel: byt: fixup topology
-	filename for BYT-CR
+Subject: [alsa-devel] [PATCH 3/8] ASoC: SOF: loader: fix
+	snd_sof_fw_parse_ext_data
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,96 +83,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Baytrail-CR, SSP0 needs to be used instead of SSP2.  The
-substitution is assumed to be done in the topology file.
+From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 
-When Baytrail-CR is detected, add -ssp0 suffix to the topology file
-name so that the topology code picks up the correct file.
+An error occurs during parsing more than one ext_data from the mailbox, because
+of invalid data offset handling. Fix by removing the incorrect duplicate
+increment of the offset.
 
-Tested on Asus T100TAF
+The return value is also reset in the switch case. This does not change the
+behavior but improves readability - there is no longer a need to check what the
+return value of get_ext_windows is.
 
+Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+Signed-off-by: Bartosz Kokoszko <bartoszx.kokoszko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/byt.c | 47 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+ sound/soc/sof/loader.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index d0db581348af..d43098a962c0 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -18,6 +18,7 @@
- #include "../ops.h"
- #include "shim.h"
- #include "../sof-audio.h"
-+#include "../../intel/common/soc-intel-quirks.h"
+diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
+index a041adf0669d..432d12bd4937 100644
+--- a/sound/soc/sof/loader.c
++++ b/sound/soc/sof/loader.c
+@@ -50,8 +50,7 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
  
- /* DSP memories */
- #define IRAM_OFFSET		0x0C0000
-@@ -384,11 +385,37 @@ static int byt_reset(struct snd_sof_dev *sdev)
- 	return 0;
- }
+ 	while (ext_hdr->hdr.cmd == SOF_IPC_FW_READY) {
+ 		/* read in ext structure */
+-		offset += sizeof(*ext_hdr);
+-		snd_sof_dsp_block_read(sdev, bar, offset,
++		snd_sof_dsp_block_read(sdev, bar, offset + sizeof(*ext_hdr),
+ 				   (void *)((u8 *)ext_data + sizeof(*ext_hdr)),
+ 				   ext_hdr->hdr.size - sizeof(*ext_hdr));
  
-+static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
-+				   const char *sof_tplg_filename,
-+				   const char *ssp_str)
-+{
-+	const char *tplg_filename = NULL;
-+	char *filename;
-+	char *split_ext;
-+
-+	filename = devm_kstrdup(sdev->dev, sof_tplg_filename, GFP_KERNEL);
-+	if (!filename)
-+		return NULL;
-+
-+	/* this assumes a .tplg extension */
-+	split_ext = strsep(&filename, ".");
-+	if (split_ext) {
-+		tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
-+					       "%s-%s.tplg",
-+					       split_ext, ssp_str);
-+		if (!tplg_filename)
-+			return NULL;
-+	}
-+	return tplg_filename;
-+}
-+
- static void byt_machine_select(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_pdata *sof_pdata = sdev->pdata;
- 	const struct sof_dev_desc *desc = sof_pdata->desc;
- 	struct snd_soc_acpi_mach *mach;
-+	struct platform_device *pdev;
-+	const char *tplg_filename;
+@@ -61,6 +60,7 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
+ 		/* process structure data */
+ 		switch (ext_hdr->type) {
+ 		case SOF_IPC_EXT_DMA_BUFFER:
++			ret = 0;
+ 			break;
+ 		case SOF_IPC_EXT_WINDOW:
+ 			ret = get_ext_windows(sdev, ext_hdr);
+@@ -68,6 +68,7 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
+ 		default:
+ 			dev_warn(sdev->dev, "warning: unknown ext header type %d size 0x%x\n",
+ 				 ext_hdr->type, ext_hdr->hdr.size);
++			ret = 0;
+ 			break;
+ 		}
  
- 	mach = snd_soc_acpi_find_machine(desc->machines);
- 	if (!mach) {
-@@ -396,7 +423,25 @@ static void byt_machine_select(struct snd_sof_dev *sdev)
- 		return;
- 	}
- 
--	sof_pdata->tplg_filename = mach->sof_tplg_filename;
-+	pdev = to_platform_device(sdev->dev);
-+	if (soc_intel_is_byt_cr(pdev)) {
-+		dev_dbg(sdev->dev,
-+			"BYT-CR detected, SSP0 used instead of SSP2\n");
-+
-+		tplg_filename = fixup_tplg_name(sdev,
-+						mach->sof_tplg_filename,
-+						"ssp0");
-+	} else {
-+		tplg_filename = mach->sof_tplg_filename;
-+	}
-+
-+	if (!tplg_filename) {
-+		dev_dbg(sdev->dev,
-+			"error: no topology filename\n");
-+		return;
-+	}
-+
-+	sof_pdata->tplg_filename = tplg_filename;
- 	mach->mach_params.acpi_ipc_irq_index = desc->irqindex_host_ipc;
- 	sof_pdata->machine = mach;
- }
 -- 
 2.20.1
 
