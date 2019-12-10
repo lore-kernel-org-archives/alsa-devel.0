@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 084A6C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:36:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5911C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:36:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ACBFE20637
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:35:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 53F2420652
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 06:36:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hW9flpCv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACBFE20637
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V9KmwpbY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53F2420652
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05A581662;
-	Tue, 10 Dec 2019 07:35:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05A581662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 819911671;
+	Tue, 10 Dec 2019 07:36:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 819911671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575959758;
-	bh=HSQFQTMnFQVqTDkUpJyW6xy1384HgsnmKqGb1mO0Y+Q=;
+	s=default; t=1575959812;
+	bh=XqAPjWW13MtZlTT3jU8QUpIHa5OO6BuQ22IhNDCpvsQ=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hW9flpCv0cHR4O1KI8zQzqxtejWigZBBbvTpa2LD58Tp6IPxYjKaOAJeUrJTPPsbH
-	 d4T2587MV1cSh2W/aIhwlCQCnQsR4ZEbejE3ZAKQuVrHahOUNVrZrU1ReTvXmwrbMa
-	 8RMQC/S77VSp4UhDGjX/ROxsVKsmaVLLxgzjLCuk=
+	b=V9KmwpbYrkF+VDLHtnKiY6D7GiwWwTg1zpJ8SYP55zpk1toB06vHig74ggaKDLspf
+	 bjewYaFCwuiwxyTE4obBVVX+zwxw9MipwjmkzJdEaZNUNRQhD6AkaVS6Q9pQEVWXs4
+	 C6xbNnHuxmEBkaOUOwXBPOQg7CXzXS9KNhR5j/gA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6664BF802A8;
-	Tue, 10 Dec 2019 07:35:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41C71F802C3;
+	Tue, 10 Dec 2019 07:35:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36DAEF8027B; Tue, 10 Dec 2019 07:35:05 +0100 (CET)
+ id 2D14AF8028D; Tue, 10 Dec 2019 07:35:06 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F08E8F800B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0797AF801D8
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 07:34:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F08E8F800B4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0797AF801D8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 39422AF5B
+ by mx1.suse.de (Postfix) with ESMTP id 2CD7CAD1E
  for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 06:34:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Tue, 10 Dec 2019 07:34:02 +0100
-Message-Id: <20191210063454.31603-4-tiwai@suse.de>
+Date: Tue, 10 Dec 2019 07:34:01 +0100
+Message-Id: <20191210063454.31603-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191210063454.31603-1-tiwai@suse.de>
 References: <20191210063454.31603-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 03/55] ALSA: als300: Support PCM sync_stop
+Subject: [alsa-devel] [PATCH 02/55] ALSA: ali5451: Support PCM sync_stop
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,26 +77,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The driver invokes snd_pcm_period_elapsed() simply from the interrupt
 handler.  Set card->sync_irq for enabling the missing sync_stop PCM
-operation.
+operation, as well as removing the superfluous synchronize_irq()
+call.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/als300.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/ali5451/ali5451.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/pci/als300.c b/sound/pci/als300.c
-index 0fb84d1d1dbe..6573a2259cb6 100644
---- a/sound/pci/als300.c
-+++ b/sound/pci/als300.c
-@@ -664,7 +664,7 @@ static int snd_als300_create(struct snd_card *card,
+diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
+index 2cf37670e9a9..9f78cf9e0b47 100644
+--- a/sound/pci/ali5451/ali5451.c
++++ b/sound/pci/ali5451/ali5451.c
+@@ -2026,6 +2026,7 @@ static int snd_ali_resources(struct snd_ali *codec)
  		return -EBUSY;
  	}
- 	chip->irq = pci->irq;
+ 	codec->irq = codec->pci->irq;
++	codec->card->sync_irq = codec->irq;
+ 	dev_dbg(codec->card->dev, "resources allocated.\n");
+ 	return 0;
+ }
+@@ -2099,8 +2100,6 @@ static int snd_ali_create(struct snd_card *card,
+ 		return -EBUSY;
+ 	}
+ 
+-	synchronize_irq(pci->irq);
 -
-+	card->sync_irq = chip->irq;
- 
- 	snd_als300_init(chip);
- 
+ 	codec->synth.chmap = 0;
+ 	codec->synth.chcnt = 0;
+ 	codec->spdif_mask = 0;
 -- 
 2.16.4
 
