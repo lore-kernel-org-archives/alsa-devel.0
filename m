@@ -7,65 +7,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C8AEC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBAD7C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:19 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 122EA20637
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:52:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 122EA20637
+	by mail.kernel.org (Postfix) with ESMTPS id 7E2D820637
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 00:53:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E2D820637
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6101C1657;
-	Tue, 10 Dec 2019 01:51:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6101C1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id C41081614;
+	Tue, 10 Dec 2019 01:52:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C41081614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1575939156;
-	bh=A9d3v2+1TxQU8eipygbnT5TjSuOikCN9dLM2waYAunQ=;
+	s=default; t=1575939197;
+	bh=NlbFGpxKOenzubCuvgMwOxjqtHcmCgEshkB5HpyyIaQ=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MqTUmSVWQB3vvoRaAPT4khVoXB49bS0X/Eri6ScSrJ8PNseRxLMtZqS4XsHJ2lQBh
-	 s9XX3Amjo7NojYvtaKFWy/oZWR9AFxDgOXCgsaAtXKO8gHh28VH/HljrWLwQBV8oxS
-	 OVbQgXukWC0yl+LrvytNhATAqyMD2XF0nf3tnoaA=
+	b=qgWadhPPWJa9LF1s1CHYhpRpzGmKEJ/kLUc1p2pjAz+QVRumGm4TdvD4nSiTtPjgW
+	 LZe2Oq5UdeZDt9tddqvpBCvr2mSvG0jPExR0k+2NKjrQzsx0U7aam5ho/VzqcOWPte
+	 o8maFNT9FAGjsnAL4R1aOTi91vhYAblF+m90chHw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9334F80268;
-	Tue, 10 Dec 2019 01:49:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 949FFF8026F;
+	Tue, 10 Dec 2019 01:49:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 616FCF80256; Tue, 10 Dec 2019 01:49:13 +0100 (CET)
+ id C815FF8025F; Tue, 10 Dec 2019 01:49:18 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83AAAF8011E
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83AAAF8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99B92F80257
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 01:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99B92F80257
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2019 16:49:07 -0800
+ 09 Dec 2019 16:49:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398956"
+X-IronPort-AV: E=Sophos;i="5.69,297,1571727600"; d="scan'208";a="215398965"
 Received: from sneuhier-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.188.78])
- by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:06 -0800
+ by orsmga003.jf.intel.com with ESMTP; 09 Dec 2019 16:49:09 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon,  9 Dec 2019 18:48:50 -0600
-Message-Id: <20191210004854.16845-5-pierre-louis.bossart@linux.intel.com>
+Date: Mon,  9 Dec 2019 18:48:53 -0600
+Message-Id: <20191210004854.16845-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 References: <20191210004854.16845-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, Slawomir Blauciak <slawomir.blauciak@linux.intel.com>,
- broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] [PATCH 4/8] ASoC: SOF: ipc: channel map structures
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH 7/8] ASoC: SOF: Intel: byt: fixup topology
+	filename for BYT-CR
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,86 +82,96 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
+On Baytrail-CR, SSP0 needs to be used instead of SSP2.  The
+substitution is assumed to be done in the topology file.
 
-This change adds stream map and channel map structures
-used for channel re-routing and stream aggregation.
+When Baytrail-CR is detected, add -ssp0 suffix to the topology file
+name so that the topology code picks up the correct file.
 
-Signed-off-by: Slawomir Blauciak <slawomir.blauciak@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Tested on Asus T100TAF
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/channel_map.h | 61 +++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 include/sound/sof/channel_map.h
+ sound/soc/sof/intel/byt.c | 47 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/sof/channel_map.h b/include/sound/sof/channel_map.h
-new file mode 100644
-index 000000000000..21044eb5f377
---- /dev/null
-+++ b/include/sound/sof/channel_map.h
-@@ -0,0 +1,61 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2019 Intel Corporation. All rights reserved.
-+ */
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index d0db581348af..d43098a962c0 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -18,6 +18,7 @@
+ #include "../ops.h"
+ #include "shim.h"
+ #include "../sof-audio.h"
++#include "../../intel/common/soc-intel-quirks.h"
+ 
+ /* DSP memories */
+ #define IRAM_OFFSET		0x0C0000
+@@ -384,11 +385,37 @@ static int byt_reset(struct snd_sof_dev *sdev)
+ 	return 0;
+ }
+ 
++static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
++				   const char *sof_tplg_filename,
++				   const char *ssp_str)
++{
++	const char *tplg_filename = NULL;
++	char *filename;
++	char *split_ext;
 +
-+#ifndef __IPC_CHANNEL_MAP_H__
-+#define __IPC_CHANNEL_MAP_H__
++	filename = devm_kstrdup(sdev->dev, sof_tplg_filename, GFP_KERNEL);
++	if (!filename)
++		return NULL;
 +
-+#include <uapi/sound/sof/header.h>
-+#include <sound/sof/header.h>
++	/* this assumes a .tplg extension */
++	split_ext = strsep(&filename, ".");
++	if (split_ext) {
++		tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
++					       "%s-%s.tplg",
++					       split_ext, ssp_str);
++		if (!tplg_filename)
++			return NULL;
++	}
++	return tplg_filename;
++}
 +
-+/**
-+ * \brief Channel map, specifies transformation of one-to-many or many-to-one.
-+ *
-+ * In case of one-to-many specifies how the output channels are computed out of
-+ * a single source channel,
-+ * in case of many-to-one specifies how a single target channel is computed
-+ * from a multichannel input stream.
-+ *
-+ * Channel index specifies position of the channel in the stream on the 'one'
-+ * side.
-+ *
-+ * Ext ID is the identifier of external part of the transformation. Depending
-+ * on the context, it may be pipeline ID, dai ID, ...
-+ *
-+ * Channel mask describes which channels are taken into account on the "many"
-+ * side. Bit[i] set to 1 means that i-th channel is used for computation
-+ * (either as source or as a target).
-+ *
-+ * Channel mask is followed by array of coefficients in Q2.30 format,
-+ * one per each channel set in the mask (left to right, LS bit set in the
-+ * mask corresponds to ch_coeffs[0]).
-+ */
-+struct sof_ipc_channel_map {
-+	uint32_t ch_index;
-+	uint32_t ext_id;
-+	uint32_t ch_mask;
-+	uint32_t reserved;
-+	int32_t ch_coeffs[0];
-+} __packed;
+ static void byt_machine_select(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_sof_pdata *sof_pdata = sdev->pdata;
+ 	const struct sof_dev_desc *desc = sof_pdata->desc;
+ 	struct snd_soc_acpi_mach *mach;
++	struct platform_device *pdev;
++	const char *tplg_filename;
+ 
+ 	mach = snd_soc_acpi_find_machine(desc->machines);
+ 	if (!mach) {
+@@ -396,7 +423,25 @@ static void byt_machine_select(struct snd_sof_dev *sdev)
+ 		return;
+ 	}
+ 
+-	sof_pdata->tplg_filename = mach->sof_tplg_filename;
++	pdev = to_platform_device(sdev->dev);
++	if (soc_intel_is_byt_cr(pdev)) {
++		dev_dbg(sdev->dev,
++			"BYT-CR detected, SSP0 used instead of SSP2\n");
 +
-+/**
-+ * \brief Complete map for each channel of a multichannel stream.
-+ *
-+ * num_ch_map Specifies number of items in the ch_map.
-+ * More than one transformation per a single channel is allowed (in case
-+ * multiple external entities are transformed).
-+ * A channel may be skipped in the transformation list, then it is filled
-+ * with 0's by the transformation function.
-+ */
-+struct sof_ipc_stream_map {
-+	struct sof_ipc_cmd_hdr hdr;
-+	uint32_t num_ch_map;
-+	uint32_t reserved[3];
-+	struct sof_ipc_channel_map ch_map[0];
-+} __packed;
++		tplg_filename = fixup_tplg_name(sdev,
++						mach->sof_tplg_filename,
++						"ssp0");
++	} else {
++		tplg_filename = mach->sof_tplg_filename;
++	}
 +
-+#endif /* __IPC_CHANNEL_MAP_H__ */
++	if (!tplg_filename) {
++		dev_dbg(sdev->dev,
++			"error: no topology filename\n");
++		return;
++	}
++
++	sof_pdata->tplg_filename = tplg_filename;
+ 	mach->mach_params.acpi_ipc_irq_index = desc->irqindex_host_ipc;
+ 	sof_pdata->machine = mach;
+ }
 -- 
 2.20.1
 
