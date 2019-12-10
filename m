@@ -2,102 +2,80 @@ Return-Path: <SRS0=DqDL=2A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF4B1C2D0BF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CC20C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 22:05:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0597520838
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 21:52:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 87459208C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Dec 2019 22:05:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n/ghSJ/z";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TS/xQCib"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0597520838
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cg6F3GtS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="f9ToxdOv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87459208C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D20B86F;
-	Tue, 10 Dec 2019 22:51:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D20B86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EE1186F;
+	Tue, 10 Dec 2019 23:04:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EE1186F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576014727;
-	bh=UL7PA+Q6h5GGN+AdPF8nDW9U0NAP6W3u3plIpba5PGw=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576015511;
+	bh=XUJAupUehnswaciQZTW1wYas0oKh6lnXsjEcOrt5ebg=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n/ghSJ/zsFyS3yc5+MnPJMFB9Q+hFyoU7xu9YKSkiB6LCKG/4cufSc00Tg/6hiseF
-	 BZj/OeIGZJcOSdQ9dVqTaGS7NC4Lx8Qce4Nj9jCYn3wQ97nj9kZ2peFfP2dDQiKqqM
-	 yWhKdKMkHmvj6uAiFsGyJSCuJGv4ruioIYdPV0aI=
+	b=Cg6F3GtSueFGe8EO8SLecAjnMMmuvg6Yabhfo1u12yWH827ZGCCVUJT8Ldna7c00f
+	 G8zLOwhWqux3zhZk1qF3uCdzS+/CmNfqmY1rTEZkYUiqDx/9yr4pfDangiDh8S2HP+
+	 OoOjtM0QKpKb4BZHAvONS9/w73/tEt/KG9mk4DAw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5432F801D8;
-	Tue, 10 Dec 2019 22:51:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CBEAF801D8;
+	Tue, 10 Dec 2019 23:04:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F2C2F8020C; Tue, 10 Dec 2019 22:51:15 +0100 (CET)
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com
- [IPv6:2607:f8b0:4864:20::444])
+ id 39760F8020C; Tue, 10 Dec 2019 23:04:20 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20BB3F800B4
+ for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 23:04:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20BB3F800B4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="f9ToxdOv"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2862AF800B4
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 22:51:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2862AF800B4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="TS/xQCib"
-Received: by mail-pf1-x444.google.com with SMTP id x185so495504pfc.5
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 13:51:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=OgOPIkLF3tjDFTQA5G2SZ5Icy0gItqp4PdG8ErywjM8=;
- b=TS/xQCibv29+a4IwS81Dvn9gdeeLaYyhN8nJFVTutImfTbVhexWLOttJcsCJUgJt90
- zcwHitUkFtLiuM16PqAZ56mht+ZJGdlq3Qjwymvr1LD1LWSrSu8udhGYxf8ohoGkIMZi
- YSw7pRa5mjQ7QCiEEMgZ7Qnf555ZsLylBd5EuBdebAmaKsSG3QshWIqHbcxZpyd6S7TF
- DaXvuStuhwHc/rLHeCAOaXxAZBhCu3+iPE/4lWJ9vjuIsrurmR7Fy1PvxC/ETOlQ4dyI
- 7u0i+ZMHpWrvJYMBuqQtUyWXlAxGrACEAZ1w9JmjHArlu9VAjDHJsjjnnzY7wGUYX7gu
- WrpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=OgOPIkLF3tjDFTQA5G2SZ5Icy0gItqp4PdG8ErywjM8=;
- b=pKl7sSYAUEBaJFEBJ0nOwW0ToBtX1nkrFlcsH1jlYiCDv8pyFul5YcKf0RarlZCVln
- q4golvVxA79FP2l/dGW/yIsktkTjaAUB1G78Hfk022xqzJ6hrywrK73Wb4s6r3hfXmhD
- mo6HGD+ejQATlDJbl2nlqo5gAAXdXryQZMq2Yk0LL4EyNn8KlgvNHCS7YgS/vF3OhHXr
- KAt3lekrXxfDoJr1qsffotHdIeJCpUM9xPOWN4YdSK7cmimoCs8wAMOrURIffPHoBH37
- iiQ9Sv9jc9QALGLq3pmxI2/w3gyyrnauqhIudnmqZFtlPLVLgqegNWbyCOhDohH8WvQy
- WsVg==
-X-Gm-Message-State: APjAAAVq8DYwXXy/glEUM2lIna9eNVHw2Yx/0LrEdGU5esSwsSxInfvy
- c6nBrOARnquYRoSSY5a19G8=
-X-Google-Smtp-Source: APXvYqzR8kSTntBXhniWtgMF7BAqxSjurFzWj0FfrOTGLrktHZI72TButxd55H+eX7hvtxn3IGItlQ==
-X-Received: by 2002:a63:1e47:: with SMTP id p7mr257602pgm.339.1576014669506;
- Tue, 10 Dec 2019 13:51:09 -0800 (PST)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com.
- [216.228.112.22])
- by smtp.gmail.com with ESMTPSA id m3sm4277198pgp.32.2019.12.10.13.51.08
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 10 Dec 2019 13:51:09 -0800 (PST)
-Date: Tue, 10 Dec 2019 13:47:51 -0800
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20191210214750.GA25987@Asurada-Nvidia.nvidia.com>
-References: <20191210145406.21419-1-tiwai@suse.de>
- <20191210145406.21419-7-tiwai@suse.de>
+ by mail.kernel.org (Postfix) with ESMTPSA id EF2EC22B48;
+ Tue, 10 Dec 2019 22:04:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1576015453;
+ bh=oWHD6SqONwES3CnNPvUBNIsUmyvsseXbpilCLqXF0lI=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=f9ToxdOvJIdK5KifrHkRPvz1aikPhVX0yUHNgcOArlH33ifn0v7ZC7DyaHFhL2gbV
+ tOFygfn20aRZbkTchhelcLEc0oO5CDFzSZX6W8CDMRegy73whBpdyOXeLXed5W6xi0
+ XpA8NUm+fxcVF5EbAiRFHvxXfMLl3MWnDKHWrNHA=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Date: Tue, 10 Dec 2019 17:01:51 -0500
+Message-Id: <20191210220301.13262-60-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191210220301.13262-1-sashal@kernel.org>
+References: <20191210220301.13262-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191210145406.21419-7-tiwai@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>
-Subject: Re: [alsa-devel] [PATCH for-5.6 06/23] ASoC: fsl: Drop superfluous
-	ioctl PCM ops
+X-stable: review
+X-Patchwork-Hint: Ignore
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Chris Wilson <chris@chris-wilson.co.uk>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.14 060/130] ALSA: hda - Fix pending
+	unsol events at shutdown
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,75 +93,62 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Dec 10, 2019 at 03:53:49PM +0100, Takashi Iwai wrote:
-> ASoC PCM core deals the empty ioctl field now as default.
-> Let's kill the redundant lines.
-> 
-> Cc: Timur Tabi <timur@kernel.org>
-> Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+[ Upstream commit ca58f55108fee41d87c9123f85ad4863e5de7f45 ]
 
-> Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/soc/fsl/fsl_asrc_dma.c | 1 -
->  sound/soc/fsl/fsl_dma.c      | 1 -
->  sound/soc/fsl/imx-pcm-fiq.c  | 1 -
->  sound/soc/fsl/mpc5200_dma.c  | 1 -
->  4 files changed, 4 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-> index d6146de9acd2..79d66224c0a8 100644
-> --- a/sound/soc/fsl/fsl_asrc_dma.c
-> +++ b/sound/soc/fsl/fsl_asrc_dma.c
-> @@ -428,7 +428,6 @@ static void fsl_asrc_dma_pcm_free(struct snd_soc_component *component,
->  
->  struct snd_soc_component_driver fsl_asrc_component = {
->  	.name		= DRV_NAME,
-> -	.ioctl		= snd_soc_pcm_lib_ioctl,
->  	.hw_params	= fsl_asrc_dma_hw_params,
->  	.hw_free	= fsl_asrc_dma_hw_free,
->  	.trigger	= fsl_asrc_dma_trigger,
-> diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-> index 2868c4f97cb2..13ae089c1911 100644
-> --- a/sound/soc/fsl/fsl_dma.c
-> +++ b/sound/soc/fsl/fsl_dma.c
-> @@ -903,7 +903,6 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
->  	dma->dai.name = DRV_NAME;
->  	dma->dai.open = fsl_dma_open;
->  	dma->dai.close = fsl_dma_close;
-> -	dma->dai.ioctl = snd_soc_pcm_lib_ioctl;
->  	dma->dai.hw_params = fsl_dma_hw_params;
->  	dma->dai.hw_free = fsl_dma_hw_free;
->  	dma->dai.pointer = fsl_dma_pointer;
-> diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-> index 08131d147983..f20d5b1c3848 100644
-> --- a/sound/soc/fsl/imx-pcm-fiq.c
-> +++ b/sound/soc/fsl/imx-pcm-fiq.c
-> @@ -338,7 +338,6 @@ static void snd_imx_pcm_free(struct snd_soc_component *component,
->  static const struct snd_soc_component_driver imx_soc_component_fiq = {
->  	.open		= snd_imx_open,
->  	.close		= snd_imx_close,
-> -	.ioctl		= snd_soc_pcm_lib_ioctl,
->  	.hw_params	= snd_imx_pcm_hw_params,
->  	.prepare	= snd_imx_pcm_prepare,
->  	.trigger	= snd_imx_pcm_trigger,
-> diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-> index 5237ac96b756..ed7211d744b3 100644
-> --- a/sound/soc/fsl/mpc5200_dma.c
-> +++ b/sound/soc/fsl/mpc5200_dma.c
-> @@ -360,7 +360,6 @@ static const struct snd_soc_component_driver mpc5200_audio_dma_component = {
->  	.open		= psc_dma_open,
->  	.close		= psc_dma_close,
->  	.hw_free	= psc_dma_hw_free,
-> -	.ioctl		= snd_soc_pcm_lib_ioctl,
->  	.pointer	= psc_dma_pointer,
->  	.trigger	= psc_dma_trigger,
->  	.hw_params	= psc_dma_hw_params,
-> -- 
-> 2.16.4
-> 
+This is an alternative fix attemp for the issue reported in the commit
+caa8422d01e9 ("ALSA: hda: Flush interrupts on disabling") that was
+reverted later due to regressions.  Instead of tweaking the hardware
+disablement order and the enforced irq flushing, do calling
+cancel_work_sync() of the unsol work early enough, and explicitly
+ignore the unsol events during the shutdown by checking the
+bus->shutdown flag.
+
+Fixes: caa8422d01e9 ("ALSA: hda: Flush interrupts on disabling")
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Link: https://lore.kernel.org/r/s5h1ruxt9cz.wl-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/pci/hda/hda_bind.c  | 4 ++++
+ sound/pci/hda/hda_intel.c | 3 +++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
+index 8db1890605f60..c175b2cf63f77 100644
+--- a/sound/pci/hda/hda_bind.c
++++ b/sound/pci/hda/hda_bind.c
+@@ -42,6 +42,10 @@ static void hda_codec_unsol_event(struct hdac_device *dev, unsigned int ev)
+ {
+ 	struct hda_codec *codec = container_of(dev, struct hda_codec, core);
+ 
++	/* ignore unsol events during shutdown */
++	if (codec->bus->shutdown)
++		return;
++
+ 	if (codec->patch_ops.unsol_event)
+ 		codec->patch_ops.unsol_event(codec, ev);
+ }
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 96e9b3944b925..890793ad85ca1 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1450,8 +1450,11 @@ static int azx_free(struct azx *chip)
+ static int azx_dev_disconnect(struct snd_device *device)
+ {
+ 	struct azx *chip = device->device_data;
++	struct hdac_bus *bus = azx_bus(chip);
+ 
+ 	chip->bus.shutdown = 1;
++	cancel_work_sync(&bus->unsol_work);
++
+ 	return 0;
+ }
+ 
+-- 
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
