@@ -2,60 +2,80 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08086C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71C12C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 21:21:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87B38208C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:28:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72AD42054F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 21:21:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rVLQDolE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87B38208C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mgGQd36x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72AD42054F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D193A16B2;
-	Wed, 11 Dec 2019 18:28:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D193A16B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A044852;
+	Wed, 11 Dec 2019 22:20:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A044852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576085333;
-	bh=r7KfazuQcb+TpirZCA4K7WHmN6NupSsvZDwHnuRPLq8=;
+	s=default; t=1576099294;
+	bh=lrFv+g7OlMO6lzOGfCTKdC7LRZVbuUhArH/hf+oKXBI=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=rVLQDolEtHEB7H7aZIxPvmGb3vZvJAFLb9UDvHFffmf18SL3d3/WbzZEYUfPhf9BD
-	 Zc74xISKESC8Z8BYR3XriU0oF+lwcqCSND6zFyurKeSeXpzED/tEvNrS8qM3IpIv6/
-	 Y5gvqg51C6m8MTGCxJ0cm3ZtMyw2JFCczKywS8qw=
+	b=mgGQd36xkSdu00MjVziUlgKuqKCgXGxcoXw9KGB0jB0Dd3fJqBAgko3kRB2dsLD5B
+	 gZJRxSDFmlkIii8eNzjVKUnGk2pnrGS/LK0GA6FxCpB252U5LDzLQUJQHoqsAadFWJ
+	 VCTrPVOWYfOghOLIM+WfjEVicmlqDBKuMZVFzgwM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC181F80274;
-	Wed, 11 Dec 2019 18:20:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 655A7F80256;
+	Wed, 11 Dec 2019 22:20:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E1E1F8023E; Wed, 11 Dec 2019 18:20:29 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E0FE4F80256; Wed, 11 Dec 2019 22:20:39 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAD2BF8023E
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 18:20:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAD2BF8023E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3D744AD73;
- Wed, 11 Dec 2019 17:20:21 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Date: Wed, 11 Dec 2019 18:20:18 +0100
-Message-Id: <20191211172019.23206-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH v2 1/2] ASoC: mediatek: Use managed buffer
-	allocation
+ by alsa1.perex.cz (Postfix) with ESMTPS id C195FF800EC
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 22:20:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C195FF800EC
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1Mo7eX-1hvNKe05hz-00pfxP; Wed, 11 Dec 2019 22:20:31 +0100
+From: Arnd Bergmann <arnd@arndb.de>
+To: alsa-devel@alsa-project.org,
+	Takashi Iwai <tiwai@suse.com>
+Date: Wed, 11 Dec 2019 22:20:16 +0100
+Message-Id: <20191211212025.1981822-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
+MIME-Version: 1.0
+X-Provags-ID: V03:K1:EUNjsuCMFvOfLutRxMiDpsrdBNUjEnJY9WYrs7u4SgqHOEMtTQr
+ jKDw6lqSni3FNWrx9XXBtARvrFjizsPEn+nvMSqjRiUsg3ZVQj5wvBXHcHmQM3fA5rPV9if
+ eYFnSj/RbNur4cr2575gxtU+YinZnOGoTz45bXqganXcTY5kaJbKg79OiNzWJmilpZt/dLE
+ PYXDEHBOpgA+AEPnJu4vQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Hf3kE9BGNcs=:p0QD8vySsZB9EGU/RjRvgy
+ xeY3HbWJqQZqGkE1pQaqjDvABo0/GR/Ns+kAzHhWT9ohkisvw9jwxjF6sZ9wRcUDM4QL/M6rM
+ 4NoxYJW/D97waBIuUlIYg40eGtQClNXXw2DSJw+SJg0hIsV1XO/p0OzI77Q/Nc7MEs2HOo70S
+ zG5h+4hLqoTqoarczPc2/KPkhzzsLnVO7oQ53qK9ft6x3R8btAQZOM0PiHNX0iujI7awU/Tfw
+ uovBcm9JPVHTgXdUaLN1hkT+3vEq+bAo8W391fIlE3NyT5vXh3LN3+rbk2GpsISWzb79zYmdD
+ qhnGXrqhBMWfQR1bQEJQ2PWYU3FcRK7oKxU5/PmqekVnAGXQsxWAPFn2Nghnx34ZB6Eewlydb
+ dsz26qSiWhx9fvKomDqcL5B1+rwyK+qpjbNXgigZSJqEL9lI4YNjDC42F+iEKmVa7mzqBT8B8
+ AdJ6pxdnfkmiLb85MNKZwsS+VslP47mB7GIFFG4RjRppllExpjtJ1pw5nRh5Xi1GkoPh88wwW
+ rs537Xk+8pGtALK2lkaLqZ1AlrSCvvJ8UbGq/vkSTYu1GL6d2jp44878OYnXyCfSoktUbhViK
+ Atv/eZo0Bg3k/1xEAsCf7I8W+rjywf7SFmcUKU5/TKDOBZ5SVgtzUaMk5rO3y2qtpOmubyK2k
+ VQZ6Eh6i8ya8+y5rVuFF7tR4mz+9lnzCd/6ZAxApqS8fQqDfLWqMc8nPvoT5RQAp5g5P4Zksh
+ 8jpQuqazHE2imnDdS/oZxBmTPZxpbl/73mlj3zzkTXOPxzrHNSNaSDHMmsCQESSFIL0Y9Qr/M
+ Rj0VVgWLNPsMZHNaeO0Xnr/H7s5w8DJ2An16pLQf+mGx34j07juW+0ak7ghgfZoFpwIsQOoBT
+ isbIYlnWryBuBavmxqYQ==
+Cc: Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Baolin Wang <baolin.wang7@gmail.com>
+Subject: [alsa-devel] [PATCH v7 0/8] Fix year 2038 issue for sound subsystem
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,122 +88,135 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clean up the drivers with the new managed buffer allocation API.
-The superfluous snd_pcm_lib_malloc_pages() and
-snd_pcm_lib_free_pages() calls are dropped, as well as the superfluous
-snd_pcm_lib_preallocate_free_for_all() call.  As of the result,
-hw_free and pcm_destruct ops became empty and got removed.
+This is a series I worked on with Baolin in 2017 and 2018, but we
+never quite managed to finish up the last pieces. During the
+ALSA developer meetup at ELC-E 2018 in Edinburgh, a decision was
+made to go with this approach for keeping best compatibility
+with existing source code, and then I failed to follow up by
+resending the patches.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Now I have patches for all remaining time_t uses in the kernel,
+so it's absolutely time to revisit them. I have done more
+review of the patches myself and found a couple of minor issues
+that I have fixed up, otherwise the series is still the same as
+before.
+
+Conceptually, the idea of these patches is:
+
+- 64-bit applications should see no changes at all, neither
+  compile-time nor run-time.
+
+- 32-bit code compiled with a 64-bit time_t currently
+  does not work with ALSA, and requires kernel changes and/or
+  sound/asound.h changes
+
+- Most 32-bit code using these interfaces will work correctly
+  on a modified kernel, with or without the uapi header changes.
+
+- 32-bit code using SNDRV_TIMER_IOCTL_TREAD requires the
+  updated header file for 64-bit time_t support
+
+- 32-bit i386 user space with 64-bit time_t is broken for
+  SNDRV_PCM_IOCTL_STATUS, SNDRV_RAWMIDI_IOCTL_STATUS and
+  SNDRV_PCM_IOCTL_SYNC_PTR because of i386 alignment. This is also
+  addressed by the updated uapi header.
+
+- PCM mmap is currently supported on native x86 kernels
+  (both 32-bit and 64-bit) but not for compat mode. This series breaks
+  the 32-bit native mmap support for 32-bit time_t, but instead allows
+  it for 64-bit time_t on both native and compat kernels. This seems to
+  be the best trade-off, as mmap support is optional already, and most
+  32-bit code runs in compat mode anyway.
+
+- I've tried to avoid breaking compilation of 32-bit code
+  as much as possible. Anything that does break however is likely code
+  that is already broken on 64-bit time_t and needs source changes to
+  fix them.
+
+I hope I addressed all review comments by now, so please pull this
+for linux-5.6.
+
+A git branch with the same contents is available for testing at [1].
+
+     Arnd
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git y2038-alsa-v7
+[2] https://lore.kernel.org/lkml/CAK8P3a2Os66+iwQYf97qh05W2JP8rmWao8zmKoHiXqVHvyYAJA@mail.gmail.com/T/#m6519cb07cfda08adf1dedea6596bb98892b4d5dc
+
+Changes since v6: (Arnd):
+ - Add a patch to update the API versions
+ - Hide a timespec reference in #ifndef __KERNEL__ to remove the
+   last reference to time_t
+ - Use a more readable way to do padding and describe it in the
+   changelog
+ - Rebase to linux-5.5-rc1, changing include/sound/soc-component.h                   
+   and sound/drivers/aloop.c as needed.
+
+Changes since v5 (Arnd):
+ - Rebased to linux-5.4-rc4
+ - Updated to completely remove timespec and time_t references from alsa
+ - found and fixed a few bugs
+
+Changes since v4 (Baolin):
+ - Add patch 5 to change trigger_tstamp member of struct snd_pcm_runtime.
+ - Add patch 8 to change internal timespec.
+ - Add more explanation in commit message.
+ - Use ktime_get_real_ts64() in patch 6.
+ - Split common code out into a separate function in patch 6.
+ - Fix tu->tread bug in patch 6 and remove #if __BITS_PER_LONG == 64 macro.
+
+Changes since v3:
+ - Move struct snd_pcm_status32 to pcm.h file.
+ - Modify comments and commit message.
+ - Add new patch2 ~ patch6.
+
+Changes since v2:
+ - Renamed all structures to make clear.
+ - Remove CONFIG_X86_X32 macro and introduced new compat_snd_pcm_status64_x86_32.
+
+Changes since v1:
+ - Add one macro for struct snd_pcm_status_32 which only active in 32bits kernel.
+ - Convert pcm_compat.c to use struct snd_pcm_status_64.
+ - Convert pcm_native.c to use struct snd_pcm_status_64.
 ---
- sound/soc/mediatek/common/mtk-afe-fe-dai.c          |  6 +-----
- sound/soc/mediatek/common/mtk-afe-platform-driver.c | 12 ++----------
- sound/soc/mediatek/common/mtk-afe-platform-driver.h |  2 --
- sound/soc/mediatek/mt6797/mt6797-afe-pcm.c          |  1 -
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c          |  1 -
- 5 files changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-index e761cb66be5d..8f314e15ce73 100644
---- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-+++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-@@ -129,10 +129,6 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int rate = params_rate(params);
- 	snd_pcm_format_t format = params_format(params);
- 
--	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
--	if (ret < 0)
--		return ret;
--
- 	if (afe->request_dram_resource)
- 		afe->request_dram_resource(afe->dev);
- 
-@@ -193,7 +189,7 @@ int mtk_afe_fe_hw_free(struct snd_pcm_substream *substream,
- 	if (afe->release_dram_resource)
- 		afe->release_dram_resource(afe->dev);
- 
--	return snd_pcm_lib_free_pages(substream);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(mtk_afe_fe_hw_free);
- 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index b6624d8d084b..719d43bb0b8f 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -120,25 +120,17 @@ int mtk_afe_pcm_new(struct snd_soc_component *component,
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
- 
- 	size = afe->mtk_afe_hardware->buffer_bytes_max;
--	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--					      afe->dev, size, size);
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
-+				       afe->dev, size, size);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mtk_afe_pcm_new);
- 
--void mtk_afe_pcm_free(struct snd_soc_component *component,
--		      struct snd_pcm *pcm)
--{
--	snd_pcm_lib_preallocate_free_for_all(pcm);
--}
--EXPORT_SYMBOL_GPL(mtk_afe_pcm_free);
--
- const struct snd_soc_component_driver mtk_afe_pcm_platform = {
- 	.name		= AFE_PCM_NAME,
- 	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.pointer	= mtk_afe_pcm_pointer,
- 	.pcm_construct	= mtk_afe_pcm_new,
--	.pcm_destruct	= mtk_afe_pcm_free,
- };
- EXPORT_SYMBOL_GPL(mtk_afe_pcm_platform);
- 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.h b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-index e550d11568c3..fcc923b88f12 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-@@ -21,8 +21,6 @@ snd_pcm_uframes_t mtk_afe_pcm_pointer(struct snd_soc_component *component,
- 				      struct snd_pcm_substream *substream);
- int mtk_afe_pcm_new(struct snd_soc_component *component,
- 		    struct snd_soc_pcm_runtime *rtd);
--void mtk_afe_pcm_free(struct snd_soc_component *component,
--		      struct snd_pcm *pcm);
- 
- int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe);
- int mtk_afe_add_sub_dai_control(struct snd_soc_component *component);
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-index 033c07fb599c..0743c699d8c1 100644
---- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-@@ -715,7 +715,6 @@ static const struct snd_soc_component_driver mt6797_afe_component = {
- 	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.pointer	= mtk_afe_pcm_pointer,
- 	.pcm_construct	= mtk_afe_pcm_new,
--	.pcm_destruct	= mtk_afe_pcm_free,
- };
- 
- static int mt6797_dai_memif_register(struct mtk_base_afe *afe)
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index 76af09d8f1af..6b5f407de3d0 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -1053,7 +1053,6 @@ static const struct snd_soc_component_driver mt8183_afe_component = {
- 	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.pointer	= mtk_afe_pcm_pointer,
- 	.pcm_construct	= mtk_afe_pcm_new,
--	.pcm_destruct	= mtk_afe_pcm_free,
- };
- 
- static int mt8183_dai_memif_register(struct mtk_base_afe *afe)
+Arnd Bergmann (3):
+  ALSA: move snd_pcm_ioctl_sync_ptr_compat into pcm_native.c
+  ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
+  ALSA: bump uapi version numbers
+
+Baolin Wang (6):
+  ALSA: Replace timespec with timespec64
+  ALSA: Avoid using timespec for struct snd_timer_status
+  ALSA: Avoid using timespec for struct snd_ctl_elem_value
+  ALSA: Avoid using timespec for struct snd_pcm_status
+  ALSA: Avoid using timespec for struct snd_rawmidi_status
+  ALSA: Avoid using timespec for struct snd_timer_tread
+
+ include/sound/pcm.h               |  74 ++++++--
+ include/sound/soc-component.h     |   4 +-
+ include/sound/timer.h             |   4 +-
+ include/uapi/sound/asound.h       | 145 +++++++++++++--
+ sound/core/pcm.c                  |  12 +-
+ sound/core/pcm_compat.c           | 282 ++++++++----------------------
+ sound/core/pcm_lib.c              |  38 ++--
+ sound/core/pcm_native.c           | 226 +++++++++++++++++++++---
+ sound/core/rawmidi.c              | 132 +++++++++++---
+ sound/core/rawmidi_compat.c       |  87 +++------
+ sound/core/timer.c                | 229 ++++++++++++++++++------
+ sound/core/timer_compat.c         |  62 +------
+ sound/drivers/aloop.c             |   2 +-
+ sound/pci/hda/hda_controller.c    |  10 +-
+ sound/soc/intel/skylake/skl-pcm.c |   4 +-
+ 15 files changed, 817 insertions(+), 494 deletions(-)
+
 -- 
-2.16.4
+2.20.0
 
 _______________________________________________
 Alsa-devel mailing list
