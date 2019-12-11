@@ -2,63 +2,65 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A9FCC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 05:14:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A580C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 06:09:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F21E214AF
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 05:14:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BBCB214AF
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 06:09:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hAuVMZX7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F21E214AF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Debtc8k6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BBCB214AF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A76B486F;
-	Wed, 11 Dec 2019 06:13:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A76B486F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69C1986F;
+	Wed, 11 Dec 2019 07:08:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69C1986F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576041280;
-	bh=iQM968OY1e80AAlFmmRAKjvybr+byUzvy/K1dIW2u68=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hAuVMZX7+oAf1J5qH+qn8Uorb562hlSzdRMhtO0p9hL612WtTMwZmg851CiVw7TkC
-	 SD2DMIVlYmxMOVoltOUv6XRr23qdPNCsy2dKAHWhkzioIjk67G+3ZZsHygF7Ufzz5K
-	 AQVuXWhSOGhq51JMdO5eEgDwTmLIYSpre8MTXJTQ=
+	s=default; t=1576044575;
+	bh=SU89a2z7w/RiVmYCyQioYvqtEGx662TOlym/7JNj1iQ=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Debtc8k6lhBMQPmdTAkkhL8+mZTZlv7n2Twm3Sh6TK4y78gV+cTAb9Itt7/FN+s/6
+	 FIdj9+EER/ZQs7HRQEDONfZFCDjjzpsIKh4ZfcBfe9DzHaooJWqvnqiTSS1ouyAIQD
+	 m/Njz9Ic7YjrtX6Q+baRb+FXsa4L7Lo8YxW2ChGo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6AB1F8019B;
-	Wed, 11 Dec 2019 06:13:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B7BDF800F3;
+	Wed, 11 Dec 2019 07:08:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE59CF801F4; Wed, 11 Dec 2019 06:13:45 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 7F866F800F3; Wed, 11 Dec 2019 07:08:42 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7112CF8011E
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 06:13:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7112CF8011E
-Received: from [125.35.49.90] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1ieuJf-0008C7-PR; Wed, 11 Dec 2019 05:13:40 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Date: Wed, 11 Dec 2019 13:13:21 +0800
-Message-Id: <20191211051321.5883-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.17.1
-Cc: stable@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ALSA: hda/realtek - Line-out jack doesn't work
-	on a Dell AIO
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5692F800F3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 07:08:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5692F800F3
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 9B9DFAEF6;
+ Wed, 11 Dec 2019 06:08:37 +0000 (UTC)
+Date: Wed, 11 Dec 2019 07:08:37 +0100
+Message-ID: <s5ho8wf8kd6.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hui Wang <hui.wang@canonical.com>
+In-Reply-To: <20191211051321.5883-1-hui.wang@canonical.com>
+References: <20191211051321.5883-1-hui.wang@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda/realtek - Line-out jack doesn't
+	work on a Dell AIO
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,52 +73,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After applying the fixup ALC274_FIXUP_DELL_AIO_LINEOUT_VERB, the
-Line-out jack works well. And instead of adding a new set of pin
-definition in the pin_fixup_tbl, we put a more generic matching entry
-in the fallback_pin_fixup_tbl.
+On Wed, 11 Dec 2019 06:13:21 +0100,
+Hui Wang wrote:
+> 
+> After applying the fixup ALC274_FIXUP_DELL_AIO_LINEOUT_VERB, the
+> Line-out jack works well. And instead of adding a new set of pin
+> definition in the pin_fixup_tbl, we put a more generic matching entry
+> in the fallback_pin_fixup_tbl.
+> 
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Applied, thanks.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6d6e34b3b3aa..dbfafee97931 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7643,11 +7643,6 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x1a, 0x90a70130},
- 		{0x1b, 0x90170110},
- 		{0x21, 0x03211020}),
--	SND_HDA_PIN_QUIRK(0x10ec0274, 0x1028, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
--		{0x12, 0xb7a60130},
--		{0x13, 0xb8a61140},
--		{0x16, 0x90170110},
--		{0x21, 0x04211020}),
- 	SND_HDA_PIN_QUIRK(0x10ec0280, 0x103c, "HP", ALC280_FIXUP_HP_GPIO4,
- 		{0x12, 0x90a60130},
- 		{0x14, 0x90170110},
-@@ -7841,6 +7836,9 @@ static const struct snd_hda_pin_quirk alc269_fallback_pin_fixup_tbl[] = {
- 	SND_HDA_PIN_QUIRK(0x10ec0236, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x19, 0x40000000},
- 		{0x1a, 0x40000000}),
-+	SND_HDA_PIN_QUIRK(0x10ec0274, 0x1028, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
-+		{0x19, 0x40000000},
-+		{0x1a, 0x40000000}),
- 	{}
- };
- 
--- 
-2.17.1
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
