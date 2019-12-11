@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D6DFC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:12:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49EEBC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:12:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D95762054F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:12:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA17D21556
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:12:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mf2t31r5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D95762054F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bEensn6/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA17D21556
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36395168F;
-	Wed, 11 Dec 2019 18:11:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36395168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 038FD1660;
+	Wed, 11 Dec 2019 18:11:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 038FD1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576084327;
-	bh=zSZro2l2A9ic8VlIesMCr19/P5LGk+NkB/amOCgJmBE=;
+	s=default; t=1576084363;
+	bh=8noBX9B4/fzk4Z51GLW520jWKNQe98eI7OUFbAHhMRc=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Mf2t31r5mjnhe78Cv0COhWUVsZWDrgT9ETSDLV5YKTe3p+tXMnF/4fJMjzcDish04
-	 xDs232Q08CJ0Evo8TN8Cc0bARZbUdwPVcMbr03jGmxD6wiMlMYfX6UsDNZtakTlrhJ
-	 DUdLnefMhLH5wZQde0MADz/PfSllKtQOtM0hMghg=
+	b=bEensn6/T2Dh8GDgxfI8EuKiR7RG762mF7DbQXvWHJ2zM18F/hepILyH7z169IOWy
+	 7YgO3UyIJHL8FcOT6krZi4Nto82Q6XDav4nYgb+YXJnCTBRvJPIMj9HuZWm4kfUPLX
+	 XB+GSfC0Rw7WAf6f4I3IZsEBMyyms7qTt9oXAqZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA8E2F80391;
-	Wed, 11 Dec 2019 17:54:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED8BEF803AD;
+	Wed, 11 Dec 2019 17:54:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 930F8F8034E; Wed, 11 Dec 2019 17:54:15 +0100 (CET)
+ id 991CEF8036B; Wed, 11 Dec 2019 17:54:18 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 32354F8034C
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32354F8034C
+ by alsa1.perex.cz (Postfix) with ESMTP id 93557F80360
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93557F80360
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9384430E;
- Wed, 11 Dec 2019 08:54:11 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CEE430E;
+ Wed, 11 Dec 2019 08:54:14 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11E653F52E;
- Wed, 11 Dec 2019 08:54:10 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:54:09 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80AFB3F52E;
+ Wed, 11 Dec 2019 08:54:13 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:54:11 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210145406.21419-22-tiwai@suse.de>
-Message-Id: <applied-20191210145406.21419-22-tiwai@suse.de>
+In-Reply-To: <20191210145406.21419-21-tiwai@suse.de>
+Message-Id: <applied-20191210145406.21419-21-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Cc: Max Filippov <jcmvbkbc@gmail.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: xtensa: Drop superfluous ioctl PCM ops"
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Michal Simek <michal.simek@xilinx.com>
+Subject: [alsa-devel] Applied "ASoC: xilinx: Drop superfluous ioctl PCM ops"
 	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: xtensa: Drop superfluous ioctl PCM ops
+   ASoC: xilinx: Drop superfluous ioctl PCM ops
 
 has been applied to the asoc tree at
 
@@ -102,34 +103,34 @@ to this mail.
 Thanks,
 Mark
 
-From 6a8228d07ca022b6099b3a2b1432cdfb94bb36c4 Mon Sep 17 00:00:00 2001
+From 71bfaea3d6d921f4e35e185f7dbd488110e9ce2e Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:54:04 +0100
-Subject: [PATCH] ASoC: xtensa: Drop superfluous ioctl PCM ops
+Date: Tue, 10 Dec 2019 15:54:03 +0100
+Subject: [PATCH] ASoC: xilinx: Drop superfluous ioctl PCM ops
 
 ASoC PCM core deals the empty ioctl field now as default.
 Let's kill the redundant lines.
 
-Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Michal Simek <michal.simek@xilinx.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210145406.21419-22-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210145406.21419-21-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 1 -
+ sound/soc/xilinx/xlnx_formatter_pcm.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index e08f4fee932a..5dae9c8583b7 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -481,7 +481,6 @@ static const struct snd_soc_component_driver xtfpga_i2s_component = {
+diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
+index 296c4caf96a0..14767f507cea 100644
+--- a/sound/soc/xilinx/xlnx_formatter_pcm.c
++++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
+@@ -543,7 +543,6 @@ static const struct snd_soc_component_driver xlnx_asoc_component = {
  	.name		= DRV_NAME,
- 	.open		= xtfpga_pcm_open,
- 	.close		= xtfpga_pcm_close,
+ 	.open		= xlnx_formatter_pcm_open,
+ 	.close		= xlnx_formatter_pcm_close,
 -	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= xtfpga_pcm_hw_params,
- 	.trigger	= xtfpga_pcm_trigger,
- 	.pointer	= xtfpga_pcm_pointer,
+ 	.hw_params	= xlnx_formatter_pcm_hw_params,
+ 	.hw_free	= xlnx_formatter_pcm_hw_free,
+ 	.trigger	= xlnx_formatter_pcm_trigger,
 -- 
 2.20.1
 
