@@ -2,103 +2,68 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BB97C2D0C5
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 11:01:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82AE7C2D0C6
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 11:01:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D1AE2073B
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 11:01:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 102B7214D8
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 11:01:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XphzCvSE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="XYF0uUIP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D1AE2073B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PE3oFKBq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 102B7214D8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF8DB1661;
-	Wed, 11 Dec 2019 12:00:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF8DB1661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28CE3166D;
+	Wed, 11 Dec 2019 12:00:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28CE3166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576062059;
-	bh=hdPvfNo5Qjz0FunPQN4oYDl4k+UwlVykOURoFbVQkfE=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576062107;
+	bh=lbNtBLP5Jh3MGot7TwweGpUdJwfsAnVNkseDFiHpQJc=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XphzCvSElvto6jyGFqN8f80PpwVkaBSi9DNk3NVj4hLiPXZ+H9mfeDRyYyeU9yu2r
-	 0IUOfR0YlsS6x6hToj5sVqkKVTSKKtrjEKpXvTURx4qBejU1QpAWHTabikmvw7x615
-	 ekrlJi0r+qRZKxRLMmpxgHxV1yS4HoVLZrOGCJ+M=
+	b=PE3oFKBqLxuCJfXlCf5DkkKTo2aAsU5P0okWzefIfiueMfbZqhdXTEA6cSltpnVot
+	 08voYhCVsHXThhr039vRAVmv8V7XbMguos48mPbahE5O3HNknZJgr68QIAepjaViRE
+	 qQzel4W2VstDcQ8oBlAUVcg+72jgU7oKp9CQ/gHw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1B01F8019B;
-	Wed, 11 Dec 2019 12:00:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88911F80234;
+	Wed, 11 Dec 2019 12:00:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6270DF80256; Wed, 11 Dec 2019 12:00:06 +0100 (CET)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC052F8011E
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 12:00:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC052F8011E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="XYF0uUIP"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5df0cc260000>; Wed, 11 Dec 2019 02:59:52 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Wed, 11 Dec 2019 02:59:59 -0800
-X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Wed, 11 Dec 2019 02:59:59 -0800
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Dec
- 2019 10:59:57 +0000
-Received: from [10.26.11.206] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Dec
- 2019 10:59:53 +0000
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-References: <20191210195333.648018-1-arnd@arndb.de>
-From: Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <d739240f-aaa6-c310-9c68-16c1a08ce759@nvidia.com>
-Date: Wed, 11 Dec 2019 10:59:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+ id 81CA4F80240; Wed, 11 Dec 2019 12:00:13 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 82914F80234
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 12:00:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82914F80234
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 075D21FB;
+ Wed, 11 Dec 2019 03:00:08 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B8D53F6CF;
+ Wed, 11 Dec 2019 03:00:07 -0800 (PST)
+Date: Wed, 11 Dec 2019 11:00:05 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sasha Levin <sashal@kernel.org>
+Message-ID: <20191211110005.GC3870@sirena.org.uk>
+References: <20191210210735.9077-1-sashal@kernel.org>
+ <20191210210735.9077-158-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20191210195333.648018-1-arnd@arndb.de>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1576061992; bh=MQK8ZVgrVvXj2CCi28ItwK2/xlFo7vqiSDqFxR2ycEA=;
- h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Language:
- Content-Transfer-Encoding;
- b=XYF0uUIPrfVZWGpMaViwy03efYcRVbDgtnOcU0FZmQogsvCRIi7nl5qF7oHsMi1cB
- UR126BMNKqOpTLRdnWGkSTzRk1y76Gg2XyJutGSZDP55Kvi80aBdQ2MWCt2l+Wm0QJ
- EKxVYbjxVxz/Bowr/qYlCXOlVyTcB0405ASX3VXwZJkuLpNzthrWpF8LH4dGkoMbD6
- 2ZCio9eSOkANH2ysYs0lWfvl3zyd8Ck/BoCTPNDZSVOBwAcZTUp01vLexN1vtHDq50
- jhnyS/6aeYyuK7icmpNbnibMOIX9aTAM19weFl61QAtNC+aaUb7XGGeOforRV9Wm11
- FJug7rWvb8ObQ==
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, linux-tegra@vger.kernel.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Ben Zhang <benzh@chromium.org>, Thierry Reding <thierry.reding@gmail.com>,
- linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
- Curtis Malainey <cujomalainey@chromium.org>,
- linux-arm-kernel@lists.infradead.org,
- KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: rt5677: add SPI_MASTER dependency
+In-Reply-To: <20191210210735.9077-158-sashal@kernel.org>
+X-Cookie: NOBODY EXPECTS THE SPANISH INQUISITION!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH AUTOSEL 5.4 197/350] ASoC: SOF: imx: fix
+ reverse CONFIG_SND_SOC_SOF_OF dependency
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,42 +76,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4264598120119052512=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On 10/12/2019 19:52, Arnd Bergmann wrote:
-> When CONFIG_SPI is disabled, the newly added code for the DSP
-> firmware loading fails to link:
-> 
-> ERROR: "rt5677_spi_hotword_detected" [sound/soc/codecs/snd-soc-rt5677.ko] undefined!
-> ERROR: "rt5677_spi_write" [sound/soc/codecs/snd-soc-rt5677.ko] undefined!
+--===============4264598120119052512==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4jXrM3lyYWu4nBt5"
+Content-Disposition: inline
 
-Would it be better if the above functions or the functions that call
-these are conditional on CONFIG_SND_SOC_RT5677_SPI?
 
-> Add a dependency to prevent this configuration.
-> 
-> Note: the does not work with the DT probing, as there is no binding
+--4jXrM3lyYWu4nBt5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Are you missing 'SPI' or something here?
+On Tue, Dec 10, 2019 at 04:05:02PM -0500, Sasha Levin wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>=20
+> [ Upstream commit f9ad75468453b019b92c5296e6a04bf7c37f49e4 ]
+>=20
+> updated solution to the problem reported with randconfig:
+>=20
+> CONFIG_SND_SOC_SOF_IMX depends on CONFIG_SND_SOC_SOF, but is in
+> turn referenced by the sof-of-dev driver. This creates a reverse
+> dependency that manifests in a link error when CONFIG_SND_SOC_SOF_OF
+> is built-in but CONFIG_SND_SOC_SOF_IMX=3Dm:
 
-> for the SPI half of the driver, but nothing seems to be using that
-> with the mainline kernel anyway.
+Are you sure this doesn't depend on any other Kconfig changes?
 
-From a Tegra perspective, given that we don't use SPI in conjunction
-with the rt5677 codec, only I2C so far, I am not sure we should make the
-tegra_rt5677 driver dependent upon it. We should be able to operate
-without the SPI bits enabled.
+--4jXrM3lyYWu4nBt5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cheers
-Jon
+-----BEGIN PGP SIGNATURE-----
 
--- 
-nvpublic
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3wzDQACgkQJNaLcl1U
+h9DlBgf/e35F0BWGMvhT5FNlVpGj/p8IkGszXFooKQx4BsGuvOs6c+gXEwfuEPoR
+7bZ56PB4XPlg7EF84n9F+kj+tkim0Ra+nK1cizh6S40bWn6aL2K181WhXcJx2ECu
+2eF8SEbahQEAHrabJyjQ7Mhzo+GWe3Clt9t+GGZy3ZMfS3gKVR7An7P/T8DzrPx1
+yLyUCKMXuXKIodZTic06E2ZEZYndjaEBNQfR2Dvhm2tNn1pRv7MG0IypgboGu2XH
+NAOHagDVS35dY7ODpkP4fVY15WFK7nIBAUrYTaVt2cSpoeKe+uxBJ4Asfh/YhGdF
+L33+OFWUVb7aKiWfIgqyLv1CHov2gw==
+=l1W0
+-----END PGP SIGNATURE-----
+
+--4jXrM3lyYWu4nBt5--
+
+--===============4264598120119052512==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4264598120119052512==--
