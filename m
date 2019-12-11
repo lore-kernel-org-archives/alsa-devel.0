@@ -2,64 +2,66 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8643FC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:25:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76B5BC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:26:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14180206A5
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:25:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E9D97206A5
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:26:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aC8gqD54"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14180206A5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nrom7zwa"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9D97206A5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3352416B4;
-	Wed, 11 Dec 2019 18:24:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3352416B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44426166A;
+	Wed, 11 Dec 2019 18:25:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44426166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576085145;
-	bh=9fufB00D2BPyRDR3Lim1hUp8lfSu6hlLdrySr4BefOA=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576085180;
+	bh=wkAKBggoWPfVRb0DYM1kASvNm5afmdWe03pPlVQUO7o=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aC8gqD54Bth6/HsdfAod92LjV77vSn8pPspyk//ot4ZjrvivV5WJBg70M7uzUCA3J
-	 6ZHHWaRcUVGPptxM+KqUextO/7ubTZCyuwKWZwmW4dpV7Ms8nanoNx9J5CiXhxuoER
-	 xfQCNZefllavuCpCQafITyVPE2GHup2DFwEJ1RUU=
+	b=nrom7zwaxQz/MqhT81ENUbxW5fcoWxRFMZ/A8ewRq4XK3kIO4c6FPOnfjklA9rf4d
+	 Y9mL312w1QrkIUrpVQy9p5USrjIKaRstRVrjuLCkn0UE80Wti69swXYeZ1NLJXhTxM
+	 1SlPa+8LtogSjYT5ER4s/7pqQKdj0w1WxsCr/hCA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE95AF80256;
-	Wed, 11 Dec 2019 17:57:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86DA3F800EC;
+	Wed, 11 Dec 2019 18:04:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48E72F8025A; Wed, 11 Dec 2019 17:57:44 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 48917F80256
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:57:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48917F80256
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5387F31B;
- Wed, 11 Dec 2019 08:57:40 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5F4C3F52E;
- Wed, 11 Dec 2019 08:57:39 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:57:38 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20191211165738.GG3870@sirena.org.uk>
+ id 4C9BCF80260; Wed, 11 Dec 2019 18:04:34 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED7E2F800EC
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 18:04:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED7E2F800EC
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 83E96AD73;
+ Wed, 11 Dec 2019 17:04:31 +0000 (UTC)
+Date: Wed, 11 Dec 2019 18:04:31 +0100
+Message-ID: <s5h7e32iyjk.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20191211165738.GG3870@sirena.org.uk>
 References: <20191210145406.21419-1-tiwai@suse.de>
  <20191210145406.21419-15-tiwai@suse.de>
  <20191211163418.GE3870@sirena.org.uk>
  <s5ha77yiz4i.wl-tiwai@suse.de>
-MIME-Version: 1.0
-In-Reply-To: <s5ha77yiz4i.wl-tiwai@suse.de>
-X-Cookie: NOBODY EXPECTS THE SPANISH INQUISITION!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ <20191211165738.GG3870@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org
 Subject: Re: [alsa-devel] [PATCH for-5.6 14/23] ASoC: sh: Drop superfluous
 	ioctl PCM ops
@@ -75,62 +77,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2341895289813063892=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 11 Dec 2019 17:57:38 +0100,
+Mark Brown wrote:
+> 
+> On Wed, Dec 11, 2019 at 05:51:57PM +0100, Takashi Iwai wrote:
+> 
+> > Sigh, I had to wait rc1 release so that everything can get synced for
+> > this kind of large API changes, and then one day after the window
+> > close, it's already too late... :-<
+> 
+> People send stuff through the merge window, and if everyone waits for
+> the end before submitting you end up with conflicts still.
 
---===============2341895289813063892==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KR/qxknboQ7+Tpez"
-Content-Disposition: inline
+Yeah, that's a bad habit that people can't wait.
+
+The submission for the next kernel during the merge window isn't
+acceptable for many other subsystems, so I had to wait until rc1
+release.
+
+> > OK, will submit all patches again.  But at the next time I won't split
+> > to two series but in a single queue.  Be prepared.
+> 
+> I've applied most of it - there's only a couple that didn't end up
+> applying at all (IIRC these ones actually got fixed up).
+
+OK, could you give the list of missing patches, so that I don't
+overlook anything?
 
 
---KR/qxknboQ7+Tpez
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thanks,
 
-On Wed, Dec 11, 2019 at 05:51:57PM +0100, Takashi Iwai wrote:
-
-> Sigh, I had to wait rc1 release so that everything can get synced for
-> this kind of large API changes, and then one day after the window
-> close, it's already too late... :-<
-
-People send stuff through the merge window, and if everyone waits for
-the end before submitting you end up with conflicts still.
-
-> OK, will submit all patches again.  But at the next time I won't split
-> to two series but in a single queue.  Be prepared.
-
-I've applied most of it - there's only a couple that didn't end up
-applying at all (IIRC these ones actually got fixed up).
-
---KR/qxknboQ7+Tpez
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3xIAEACgkQJNaLcl1U
-h9BF3Qf+OAqatZ3w1QC0hPhv/X/e3AsWPp0sgVJAba7684I9zWlO3rDxuy56Sh4m
-azXTj4jx1c63PvZqkiu9tyG2hOa8kKT2az4lPxrXg512TL0iPDDTxmOdYz6T2N5T
-IMahgQkAMBUfFUtMC4gKPd8EN6YQnajVQZVbDJJqgZOdVe7LUG37M3ShBK9HGOoN
-u6mQbL4mtvUO5ySAf/61bfUIYjl0dTDk9T9UBEa+zOsdxFtWCa3S6Npvx78DCjsN
-X22R0o0UhpahzODQ3XC3c+rWh9bnAyh/sfGWSbPrnARXuRmWQFw5hl0sDnfrZR9E
-nD4tyFW72IBT7g4F18yHivF6Ht0scQ==
-=BUa0
------END PGP SIGNATURE-----
-
---KR/qxknboQ7+Tpez--
-
---===============2341895289813063892==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2341895289813063892==--
