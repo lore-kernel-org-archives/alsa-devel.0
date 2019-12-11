@@ -2,78 +2,60 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD281C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 14:23:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5004FC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 15:58:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC7EE222C4
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 14:23:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5CF4022B48
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 15:58:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HCYb89yT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC7EE222C4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ROBVTf3B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CF4022B48
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAC891654;
-	Wed, 11 Dec 2019 15:22:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAC891654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28D4A1616;
+	Wed, 11 Dec 2019 16:57:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28D4A1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576074207;
-	bh=D9KmE1ChN5jUj4FnWROAIpXb7sK/IqICjsUpKMhncaU=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HCYb89yTmIsjbMz/pPADEHIl81N6wpVmrUKaNZwPDeB9pX4OQ0YzO11PPujI0u0P4
-	 JVSDzvwwYqHey3RfylD2jb5ZrVocPI4AV2Ew3amgllKefAdvOCH5sIc/0adKLPRbnz
-	 zLpPS+fpjpJRx1uDICdEgA6FqgicfhiRhBG6Cmvw=
+	s=default; t=1576079923;
+	bh=4E7Jc1XjHLdgE2qNgb8Nn6gF2jSfnUw3P74EsXe3XUU=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ROBVTf3BY+ABuX6rZhnMISNz61Wym6SrvTwgKrcyF3Wsuodgup03c2LNo20CHjHV+
+	 W/UWlyxCGzI5er2o9HNmDQ/NcDqBHhiUXXdTh8Mes+e9wjlZ6R1FaCyL1Tb62sDoJE
+	 ivs/ThCXfRsLHgOZWwOf5K8uOOkLksrK1cuatsEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FE4AF8019B;
-	Wed, 11 Dec 2019 15:22:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50EADF8019B;
+	Wed, 11 Dec 2019 16:57:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16FAFF801F4; Wed, 11 Dec 2019 15:22:35 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D4803F801F4; Wed, 11 Dec 2019 16:57:50 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3D14F800F3
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 15:22:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3D14F800F3
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Dec 2019 06:22:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,301,1571727600"; d="scan'208";a="215796782"
-Received: from unknown (HELO pbossart-mac02.local) ([10.254.97.107])
- by orsmga006.jf.intel.com with ESMTP; 11 Dec 2019 06:22:27 -0800
-To: Vinod Koul <vkoul@kernel.org>
-References: <20191209235520.18727-1-pierre-louis.bossart@linux.intel.com>
- <20191209235520.18727-6-pierre-louis.bossart@linux.intel.com>
- <20191211114247.GI2536@vkoul-mobl>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <13e24f85-bf48-cf63-d738-dfb62b28a814@linux.intel.com>
-Date: Wed, 11 Dec 2019 08:22:26 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20191211114247.GI2536@vkoul-mobl>
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 05/11] soundwire: intel: update
- interfaces between ASoC and SoundWire
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C39BF8011E
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 16:57:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C39BF8011E
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id DE87FAD7F;
+ Wed, 11 Dec 2019 15:57:45 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Wed, 11 Dec 2019 16:57:42 +0100
+Message-Id: <20191211155742.3213-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Cc: Lionel Koenig <lionel.koenig@gmail.com>
+Subject: [alsa-devel] [PATCH] ALSA: pcm: Avoid possible info leaks from PCM
+	stream buffers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,51 +68,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 12/11/19 5:42 AM, Vinod Koul wrote:
-> On 09-12-19, 17:55, Pierre-Louis Bossart wrote:
-> 
->> @@ -138,8 +126,6 @@ static struct sdw_intel_ctx
->>   		pdevinfo.name = "int-sdw";
->>   		pdevinfo.id = i;
->>   		pdevinfo.fwnode = acpi_fwnode_handle(adev);
->> -		pdevinfo.data = &link->res;
->> -		pdevinfo.size_data = sizeof(link->res);
->>   
->>   		pdev = platform_device_register_full(&pdevinfo);
->>   		if (IS_ERR(pdev)) {
->> @@ -224,10 +210,8 @@ EXPORT_SYMBOL(sdw_intel_init);
-> 
-> This is still exported
-> 
->>   struct sdw_intel_res {
->> +	int count;
->>   	void __iomem *mmio_base;
->>   	int irq;
->>   	acpi_handle handle;
->>   	struct device *parent;
->>   	const struct sdw_intel_ops *ops;
->> -	void *arg;
->> +	struct device *dev;
->> +	u32 link_mask;
->>   };
->>   
->> -void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res);
-> 
-> But prototype removed, so i think this is a miss in the series, can you
-> fix that up
+The current PCM code doesn't initialize explicitly the buffers
+allocated for PCM streams, hence it might leak some uninitialized
+kernel data or previous stream contents by mmapping or reading the
+buffer before actually starting the stream.
 
-This is updated in a later patch that implements the new interfaces
+Since this is a common problem, this patch simply adds the clearance
+of the buffer data at hw_params callback.  Although this does only
+zero-clear no matter which format is used, which doesn't mean the
+silence for some formats, but it should be OK because the intention is
+just to clear the previous data on the buffer.
 
--EXPORT_SYMBOL(sdw_intel_init);
-+EXPORT_SYMBOL(sdw_intel_acpi_scan);
+Reported-by: Lionel Koenig <lionel.koenig@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
 
-I will fix this but since there is no user for that function there will 
-be no impact.
+This is a revised patch of the previous one
+  20191210130219.27919-1-tiwai@suse.de
+
+ sound/core/pcm_native.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 1fe581167b7b..d083225344a0 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -739,6 +739,10 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	while (runtime->boundary * 2 <= LONG_MAX - runtime->buffer_size)
+ 		runtime->boundary *= 2;
+ 
++	/* clear the buffer for avoiding possible kernel info leaks */
++	if (runtime->dma_area && !substream->ops->copy_user)
++		memset(runtime->dma_area, 0, runtime->dma_bytes);
++
+ 	snd_pcm_timer_resolution_change(substream);
+ 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
+ 
+-- 
+2.16.4
 
 _______________________________________________
 Alsa-devel mailing list
