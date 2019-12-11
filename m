@@ -7,54 +7,58 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21FE8C3F68F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:19:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 107A8C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:20:13 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ACB9120409
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:19:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACB9120409
+	by mail.kernel.org (Postfix) with ESMTPS id 988A52073D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:20:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 988A52073D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F01C9169F;
-	Wed, 11 Dec 2019 18:18:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F01C9169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB696166A;
+	Wed, 11 Dec 2019 18:19:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB696166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576084770;
-	bh=9DlrSJ7XSfy7HSPqsqRIT5sTUwpzzdmJJYtlFZiuNxQ=;
+	s=default; t=1576084811;
+	bh=S8A3UifiEBXtKJbdMDYooXQQUcbW3nPzDdwJ87nUuQ4=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ALA5PbhF0a8rq+6qIaiEsw77MVc1xOyLsYt9M2GTwU1aMTsllEEfdVlzEO4aAQV53
-	 J+Fksn/CVSaFTvbz5b00WRG/Bpdf+mwF9PTMWmqypNQuqlPAZ8IDwaL8DXBkdO23gm
-	 swfFJ2m9pz7C1cCX9nkG29vahvvZ+Ww879JspXJY=
+	b=uVm9HmY+loYRtBYR08oJGmErpPDN1CtHjuwcQgGbF6zMNUEQcamcVyTeKmI1LLa9l
+	 Dre5LdR8TMbKOdNH5jT3k54MddJQnnEtIE5NLm6a8ZLBMA0w9gHPUrD2xw//i4g4uw
+	 ZmFfx2JJCGU3UC5NhwGayWL3u96CTYRxEfXSkYz8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D2B7F80458;
-	Wed, 11 Dec 2019 17:54:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8937F8046D;
+	Wed, 11 Dec 2019 17:54:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CF29F80442; Wed, 11 Dec 2019 17:54:44 +0100 (CET)
+ id 84FB1F80447; Wed, 11 Dec 2019 17:54:47 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E498FF803DF
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E498FF803DF
+ by alsa1.perex.cz (Postfix) with ESMTP id E0859F80429
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0859F80429
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5ED9230E;
- Wed, 11 Dec 2019 08:54:38 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA4C530E;
+ Wed, 11 Dec 2019 08:54:40 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D23793F52E;
- Wed, 11 Dec 2019 08:54:37 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:54:36 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49CD33F52E;
+ Wed, 11 Dec 2019 08:54:40 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:54:38 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210145406.21419-9-tiwai@suse.de>
-Message-Id: <applied-20191210145406.21419-9-tiwai@suse.de>
+In-Reply-To: <20191210145406.21419-8-tiwai@suse.de>
+Message-Id: <applied-20191210145406.21419-8-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: kirkwood: Drop superfluous ioctl PCM
-	ops" to the asoc tree
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: intel: Drop superfluous ioctl PCM ops"
+	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,7 +79,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: kirkwood: Drop superfluous ioctl PCM ops
+   ASoC: intel: Drop superfluous ioctl PCM ops
 
 has been applied to the asoc tree at
 
@@ -100,33 +104,76 @@ to this mail.
 Thanks,
 Mark
 
-From 13fd6f07f5b1cab528271f908df531a49e0bdcde Mon Sep 17 00:00:00 2001
+From aa4708d97e74d161502c9a5bc07532b34e727370 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:53:51 +0100
-Subject: [PATCH] ASoC: kirkwood: Drop superfluous ioctl PCM ops
+Date: Tue, 10 Dec 2019 15:53:50 +0100
+Subject: [PATCH] ASoC: intel: Drop superfluous ioctl PCM ops
 
 ASoC PCM core deals the empty ioctl field now as default.
 Let's kill the redundant lines.
 
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Jie Yang <yang.jie@linux.intel.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210145406.21419-9-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210145406.21419-8-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 1 -
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c  | 1 -
+ sound/soc/intel/haswell/sst-haswell-pcm.c    | 1 -
+ sound/soc/intel/skylake/skl-pcm.c            | 1 -
+ 4 files changed, 4 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index e28fb3449f1d..f882b4003edf 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -316,7 +316,6 @@ const struct snd_soc_component_driver kirkwood_soc_component = {
- 	.name		= DRV_NAME,
- 	.open		= kirkwood_dma_open,
- 	.close		= kirkwood_dma_close,
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index 47e3d1943d7e..607c8f50c3f3 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -705,7 +705,6 @@ static const struct snd_soc_component_driver sst_soc_platform_drv  = {
+ 	.probe		= sst_soc_probe,
+ 	.remove		= sst_soc_remove,
+ 	.open		= sst_soc_open,
 -	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= kirkwood_dma_hw_params,
- 	.hw_free	= kirkwood_dma_hw_free,
- 	.prepare	= kirkwood_dma_prepare,
+ 	.trigger	= sst_soc_trigger,
+ 	.pointer	= sst_soc_pointer,
+ 	.compr_ops	= &sst_platform_compr_ops,
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index 1d780fcc448c..775c3b0b209e 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -373,7 +373,6 @@ static const struct snd_soc_component_driver byt_dai_component = {
+ 	.probe		= sst_byt_pcm_probe,
+ 	.open		= sst_byt_pcm_open,
+ 	.close		= sst_byt_pcm_close,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= sst_byt_pcm_hw_params,
+ 	.hw_free	= sst_byt_pcm_hw_free,
+ 	.trigger	= sst_byt_pcm_trigger,
+diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
+index a3a5bba2fbd9..31fb38067f8f 100644
+--- a/sound/soc/intel/haswell/sst-haswell-pcm.c
++++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
+@@ -1117,7 +1117,6 @@ static const struct snd_soc_component_driver hsw_dai_component = {
+ 	.hw_free	= hsw_pcm_hw_free,
+ 	.trigger	= hsw_pcm_trigger,
+ 	.pointer	= hsw_pcm_pointer,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.pcm_construct	= hsw_pcm_new,
+ 	.controls	= hsw_volume_controls,
+ 	.num_controls	= ARRAY_SIZE(hsw_volume_controls),
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 8b9abb79a69e..bec5cee19566 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1477,7 +1477,6 @@ static const struct snd_soc_component_driver skl_component  = {
+ 	.probe		= skl_platform_soc_probe,
+ 	.remove		= skl_platform_soc_remove,
+ 	.open		= skl_platform_soc_open,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.trigger	= skl_platform_soc_trigger,
+ 	.pointer	= skl_platform_soc_pointer,
+ 	.get_time_info	= skl_platform_soc_get_time_info,
 -- 
 2.20.1
 
