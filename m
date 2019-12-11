@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97492C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:18:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 583E2C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:18:53 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2089D222C4
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:18:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8F922073D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:18:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rxLWKFre"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2089D222C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K7U3+dJ7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8F922073D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62C991673;
-	Wed, 11 Dec 2019 18:17:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62C991673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27F011698;
+	Wed, 11 Dec 2019 18:18:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27F011698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576084691;
-	bh=IXZELkDXpGefJzNce5nCzzhWHeB19WhaHMAX+xD3Jl0=;
+	s=default; t=1576084731;
+	bh=vQA6jr9hWLjzZrOyN3qw/zsheDKAFvLoSdUb7ikwXq4=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=rxLWKFrej6hube9DA/nvNHFmXL8/IyC/h/hCDmpX8QsN0nNHIBWIHtLYXZPVZOiHz
-	 KTL8kC3+UcU0MieTlhlJjfqMtjc08PS9xLapMTA+VBfLCIiZ6nZOeAylPat7ZIP8kk
-	 fWGnIH4SHZxmHXRVnGcfGq9jO7nXAeDr8GBuTmTc=
+	b=K7U3+dJ7UK7AhSLsuoQq1LWIAO8L74D4KPWHKZDj9IrntC1D9NFtlfOb2py1hI7rt
+	 G60vKYs2qPVf4LxZUCErv9RewQGPKtn6bX6EtXzvUIZpPyeeuh+eiA5rMcm87UN45L
+	 L+8UIwfJOoqvhwrfVNoKMDjwz2rrbmk/F2HuPLlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71E18F80441;
-	Wed, 11 Dec 2019 17:54:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F3B3F80442;
+	Wed, 11 Dec 2019 17:54:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0E26F80405; Wed, 11 Dec 2019 17:54:39 +0100 (CET)
+ id 2DF44F8042B; Wed, 11 Dec 2019 17:54:42 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 43E32F803DF
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43E32F803DF
+ by alsa1.perex.cz (Postfix) with ESMTP id 1893BF803FB
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1893BF803FB
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81FF331B;
- Wed, 11 Dec 2019 08:54:33 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC05B31B;
+ Wed, 11 Dec 2019 08:54:35 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 009BE3F52E;
- Wed, 11 Dec 2019 08:54:32 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:54:31 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AB443F52E;
+ Wed, 11 Dec 2019 08:54:35 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:54:33 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210145406.21419-11-tiwai@suse.de>
-Message-Id: <applied-20191210145406.21419-11-tiwai@suse.de>
+In-Reply-To: <20191210145406.21419-10-tiwai@suse.de>
+Message-Id: <applied-20191210145406.21419-10-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Cc: Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
-Subject: [alsa-devel] Applied "ASoC: meson: Drop superfluous ioctl PCM ops"
-	to the asoc tree
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: mediatek: Drop superfluous ioctl PCM
+	ops" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: meson: Drop superfluous ioctl PCM ops
+   ASoC: mediatek: Drop superfluous ioctl PCM ops
 
 has been applied to the asoc tree at
 
@@ -103,81 +103,73 @@ to this mail.
 Thanks,
 Mark
 
-From a984e214de0c5d592a50bc6bd04b32a335d48a55 Mon Sep 17 00:00:00 2001
+From a1b175b0828de15e04b551a8406affcddc552d7d Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:53:53 +0100
-Subject: [PATCH] ASoC: meson: Drop superfluous ioctl PCM ops
+Date: Tue, 10 Dec 2019 15:53:52 +0100
+Subject: [PATCH] ASoC: mediatek: Drop superfluous ioctl PCM ops
 
 ASoC PCM core deals the empty ioctl field now as default.
 Let's kill the redundant lines.
 
-Cc: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20191210145406.21419-11-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210145406.21419-10-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/axg-frddr.c | 3 ---
- sound/soc/meson/axg-toddr.c | 3 ---
- 2 files changed, 6 deletions(-)
+ sound/soc/mediatek/common/mtk-afe-platform-driver.c | 1 -
+ sound/soc/mediatek/common/mtk-btcvsd.c              | 1 -
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c          | 1 -
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c          | 1 -
+ 4 files changed, 4 deletions(-)
 
-diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
-index 665d75d49d7b..0a7d41257a38 100644
---- a/sound/soc/meson/axg-frddr.c
-+++ b/sound/soc/meson/axg-frddr.c
-@@ -151,7 +151,6 @@ static const struct snd_soc_component_driver axg_frddr_component_drv = {
- 	.num_dapm_routes	= ARRAY_SIZE(axg_frddr_dapm_routes),
- 	.open			= axg_fifo_pcm_open,
- 	.close			= axg_fifo_pcm_close,
--	.ioctl			= snd_soc_pcm_lib_ioctl,
- 	.hw_params		= axg_fifo_pcm_hw_params,
- 	.hw_free		= axg_fifo_pcm_hw_free,
- 	.pointer		= axg_fifo_pcm_pointer,
-@@ -275,7 +274,6 @@ static const struct snd_soc_component_driver g12a_frddr_component_drv = {
- 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
- 	.open			= axg_fifo_pcm_open,
- 	.close			= axg_fifo_pcm_close,
--	.ioctl			= snd_soc_pcm_lib_ioctl,
- 	.hw_params		= g12a_fifo_pcm_hw_params,
- 	.hw_free		= axg_fifo_pcm_hw_free,
- 	.pointer		= axg_fifo_pcm_pointer,
-@@ -345,7 +343,6 @@ static const struct snd_soc_component_driver sm1_frddr_component_drv = {
- 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
- 	.open			= axg_fifo_pcm_open,
- 	.close			= axg_fifo_pcm_close,
--	.ioctl			= snd_soc_pcm_lib_ioctl,
- 	.hw_params		= g12a_fifo_pcm_hw_params,
- 	.hw_free		= axg_fifo_pcm_hw_free,
- 	.pointer		= axg_fifo_pcm_pointer,
-diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
-index 7fef0b961496..f6023397c8fe 100644
---- a/sound/soc/meson/axg-toddr.c
-+++ b/sound/soc/meson/axg-toddr.c
-@@ -183,7 +183,6 @@ static const struct snd_soc_component_driver axg_toddr_component_drv = {
- 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
- 	.open			= axg_fifo_pcm_open,
- 	.close			= axg_fifo_pcm_close,
--	.ioctl			= snd_soc_pcm_lib_ioctl,
- 	.hw_params		= axg_fifo_pcm_hw_params,
- 	.hw_free		= axg_fifo_pcm_hw_free,
- 	.pointer		= axg_fifo_pcm_pointer,
-@@ -222,7 +221,6 @@ static const struct snd_soc_component_driver g12a_toddr_component_drv = {
- 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
- 	.open			= axg_fifo_pcm_open,
- 	.close			= axg_fifo_pcm_close,
--	.ioctl			= snd_soc_pcm_lib_ioctl,
- 	.hw_params		= g12a_fifo_pcm_hw_params,
- 	.hw_free		= axg_fifo_pcm_hw_free,
- 	.pointer		= axg_fifo_pcm_pointer,
-@@ -292,7 +290,6 @@ static const struct snd_soc_component_driver sm1_toddr_component_drv = {
- 	.num_dapm_routes	= ARRAY_SIZE(sm1_toddr_dapm_routes),
- 	.open			= axg_fifo_pcm_open,
- 	.close			= axg_fifo_pcm_close,
--	.ioctl			= snd_soc_pcm_lib_ioctl,
- 	.hw_params		= g12a_fifo_pcm_hw_params,
- 	.hw_free		= axg_fifo_pcm_hw_free,
- 	.pointer		= axg_fifo_pcm_pointer,
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+index b6624d8d084b..86c09165fae1 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -135,7 +135,6 @@ EXPORT_SYMBOL_GPL(mtk_afe_pcm_free);
+ 
+ const struct snd_soc_component_driver mtk_afe_pcm_platform = {
+ 	.name		= AFE_PCM_NAME,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.pointer	= mtk_afe_pcm_pointer,
+ 	.pcm_construct	= mtk_afe_pcm_new,
+ 	.pcm_destruct	= mtk_afe_pcm_free,
+diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
+index 2b490ae2e642..668fef3e319a 100644
+--- a/sound/soc/mediatek/common/mtk-btcvsd.c
++++ b/sound/soc/mediatek/common/mtk-btcvsd.c
+@@ -1271,7 +1271,6 @@ static const struct snd_soc_component_driver mtk_btcvsd_snd_platform = {
+ 	.probe		= mtk_btcvsd_snd_component_probe,
+ 	.open		= mtk_pcm_btcvsd_open,
+ 	.close		= mtk_pcm_btcvsd_close,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= mtk_pcm_btcvsd_hw_params,
+ 	.hw_free	= mtk_pcm_btcvsd_hw_free,
+ 	.prepare	= mtk_pcm_btcvsd_prepare,
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index 033c07fb599c..cd7c5fabc605 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -712,7 +712,6 @@ static int mt6797_afe_component_probe(struct snd_soc_component *component)
+ static const struct snd_soc_component_driver mt6797_afe_component = {
+ 	.name		= AFE_PCM_NAME,
+ 	.probe		= mt6797_afe_component_probe,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.pointer	= mtk_afe_pcm_pointer,
+ 	.pcm_construct	= mtk_afe_pcm_new,
+ 	.pcm_destruct	= mtk_afe_pcm_free,
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 76af09d8f1af..f6a0fadeb3cc 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -1050,7 +1050,6 @@ static int mt8183_afe_component_probe(struct snd_soc_component *component)
+ static const struct snd_soc_component_driver mt8183_afe_component = {
+ 	.name		= AFE_PCM_NAME,
+ 	.probe		= mt8183_afe_component_probe,
+-	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.pointer	= mtk_afe_pcm_pointer,
+ 	.pcm_construct	= mtk_afe_pcm_new,
+ 	.pcm_destruct	= mtk_afe_pcm_free,
 -- 
 2.20.1
 
