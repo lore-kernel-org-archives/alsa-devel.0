@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D94CBC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:00:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A8F5C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:01:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62A3B22527
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:00:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C9359214AF
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:01:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g4mH3Kzs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62A3B22527
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rqfYnDY3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9359214AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7631F1616;
-	Wed, 11 Dec 2019 17:59:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7631F1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1ACB7166B;
+	Wed, 11 Dec 2019 18:00:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ACB7166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576083637;
-	bh=K77oCQgG71EEg91VCy/ZFbp2G/P7QU14NQ9OET5XY88=;
+	s=default; t=1576083675;
+	bh=5N58jGGNMONXfK980mw1Fm5nGq/ZAEZICyrzH/JHDg0=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=g4mH3KzsuKsXXf8LoHwnJpUm3LvMWKwbL556yd+kE5n4MPa5a9ngbXfHiFRiQxli5
-	 ohwhv+fj7I9KZ59FPmpYUE83xI90Hy0V/rLv8W+svwK7SqUZgKFzmngQbsUiKoasoB
-	 +NVfMJQLahHVl1UAg8u7Aq3TaddOD0X/Da0Vc9Bs=
+	b=rqfYnDY3Iop+z6Lt35aURvoBMmM8Ur89EwYWJcK1hynhJA7aXXB2cZx+b6H49UqzD
+	 iEKAYirdiUXvnjBEhGqhZkYnEmK0nkDP3u6IFJu57wWdksxjgBz3aeUEvy+2aFDQA4
+	 vDu88D/h7yAIznI4wyY39tRFT9wsz8qe6IucXBg8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5544F802C4;
-	Wed, 11 Dec 2019 17:53:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE4E1F802E1;
+	Wed, 11 Dec 2019 17:53:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69713F802A1; Wed, 11 Dec 2019 17:53:34 +0100 (CET)
+ id 09D3EF802D2; Wed, 11 Dec 2019 17:53:37 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 73BFEF8029B
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73BFEF8029B
+ by alsa1.perex.cz (Postfix) with ESMTP id 80593F802A0
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80593F802A0
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DDBC30E;
- Wed, 11 Dec 2019 08:53:29 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1382831B;
+ Wed, 11 Dec 2019 08:53:32 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 286783F52E;
- Wed, 11 Dec 2019 08:53:28 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:53:27 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8647E3F52E;
+ Wed, 11 Dec 2019 08:53:31 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:53:30 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210142614.19405-20-tiwai@suse.de>
-Message-Id: <applied-20191210142614.19405-20-tiwai@suse.de>
+In-Reply-To: <20191210142614.19405-19-tiwai@suse.de>
+Message-Id: <applied-20191210142614.19405-19-tiwai@suse.de>
 X-Patchwork-Hint: ignore
 Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
  Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: rt5677-spi: Use managed buffer
+Subject: [alsa-devel] Applied "ASoC: rt5514-spi: Use managed buffer
 	allocation" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt5677-spi: Use managed buffer allocation
+   ASoC: rt5514-spi: Use managed buffer allocation
 
 has been applied to the asoc tree at
 
@@ -103,10 +103,10 @@ to this mail.
 Thanks,
 Mark
 
-From 9a560089e964c47f9be11cfb174c47aab0db64a3 Mon Sep 17 00:00:00 2001
+From cae8055e065644fd1d92d2f0c23a39b6768d168a Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:26:10 +0100
-Subject: [PATCH] ASoC: rt5677-spi: Use managed buffer allocation
+Date: Tue, 10 Dec 2019 15:26:09 +0100
+Subject: [PATCH] ASoC: rt5514-spi: Use managed buffer allocation
 
 Clean up the driver with the new managed buffer allocation API.
 The superfluous snd_pcm_lib_malloc_pages() and
@@ -114,43 +114,48 @@ snd_pcm_lib_free_pages() calls are dropped.
 
 Cc: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210142614.19405-20-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210142614.19405-19-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677-spi.c | 10 ++++------
+ sound/soc/codecs/rt5514-spi.c | 10 ++++------
  1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-index 7810b1d7de32..3f40d2751833 100644
---- a/sound/soc/codecs/rt5677-spi.c
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -132,14 +132,12 @@ static int rt5677_spi_hw_params(
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index f1b7b947ecbd..1a25a3787935 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -215,11 +215,9 @@ static int rt5514_spi_hw_params(struct snd_soc_component *component,
  {
- 	struct rt5677_dsp *rt5677_dsp =
- 			snd_soc_component_get_drvdata(component);
+ 	struct rt5514_dsp *rt5514_dsp =
+ 		snd_soc_component_get_drvdata(component);
 -	int ret;
+ 	u8 buf[8];
  
- 	mutex_lock(&rt5677_dsp->dma_lock);
+ 	mutex_lock(&rt5514_dsp->dma_lock);
 -	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
- 	rt5677_dsp->substream = substream;
- 	mutex_unlock(&rt5677_dsp->dma_lock);
+ 	rt5514_dsp->substream = substream;
+ 	rt5514_dsp->dma_offset = 0;
+ 
+@@ -230,7 +228,7 @@ static int rt5514_spi_hw_params(struct snd_soc_component *component,
+ 
+ 	mutex_unlock(&rt5514_dsp->dma_lock);
  
 -	return ret;
 +	return 0;
  }
  
- static int rt5677_spi_hw_free(
-@@ -153,7 +151,7 @@ static int rt5677_spi_hw_free(
- 	rt5677_dsp->substream = NULL;
- 	mutex_unlock(&rt5677_dsp->dma_lock);
+ static int rt5514_spi_hw_free(struct snd_soc_component *component,
+@@ -245,7 +243,7 @@ static int rt5514_spi_hw_free(struct snd_soc_component *component,
+ 
+ 	cancel_delayed_work_sync(&rt5514_dsp->copy_work);
  
 -	return snd_pcm_lib_free_pages(substream);
 +	return 0;
  }
  
- static int rt5677_spi_prepare(
-@@ -376,8 +374,8 @@ static void rt5677_spi_copy_work(struct work_struct *work)
- static int rt5677_spi_pcm_new(struct snd_soc_component *component,
+ static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
+@@ -294,8 +292,8 @@ static int rt5514_spi_pcm_probe(struct snd_soc_component *component)
+ static int rt5514_spi_pcm_new(struct snd_soc_component *component,
  			      struct snd_soc_pcm_runtime *rtd)
  {
 -	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_VMALLOC,
