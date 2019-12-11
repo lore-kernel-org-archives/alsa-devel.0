@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 518B1C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97492C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:18:13 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBE3D20409
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:17:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2089D222C4
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:18:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i0ZRcXco"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBE3D20409
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rxLWKFre"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2089D222C4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19918167C;
-	Wed, 11 Dec 2019 18:16:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19918167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62C991673;
+	Wed, 11 Dec 2019 18:17:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62C991673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576084657;
-	bh=2Iera4Uq025pfSMqzblZMG0GvLRMb3ZijTE0nwiJ5JA=;
+	s=default; t=1576084691;
+	bh=IXZELkDXpGefJzNce5nCzzhWHeB19WhaHMAX+xD3Jl0=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=i0ZRcXco9OfYPAeMGIQoas7hKBj1XdEF9t3JRu7yDZ3CMngrNeyHkSMGmDGnprmxd
-	 qPzIKh7aAPcUjqRKrskUZQqIz+J4ZYaBGBr4dwz0EEOpAnc1eym9iDo2IYuYWuEytL
-	 z3BVSsPlguhJA+/HzNTadR318Y1gvRYn3GzjuzCw=
+	b=rxLWKFrej6hube9DA/nvNHFmXL8/IyC/h/hCDmpX8QsN0nNHIBWIHtLYXZPVZOiHz
+	 KTL8kC3+UcU0MieTlhlJjfqMtjc08PS9xLapMTA+VBfLCIiZ6nZOeAylPat7ZIP8kk
+	 fWGnIH4SHZxmHXRVnGcfGq9jO7nXAeDr8GBuTmTc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D6D3F80436;
-	Wed, 11 Dec 2019 17:54:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71E18F80441;
+	Wed, 11 Dec 2019 17:54:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 159E5F803F4; Wed, 11 Dec 2019 17:54:37 +0100 (CET)
+ id B0E26F80405; Wed, 11 Dec 2019 17:54:39 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 92D2AF803CD
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92D2AF803CD
+ by alsa1.perex.cz (Postfix) with ESMTP id 43E32F803DF
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43E32F803DF
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D67231B;
- Wed, 11 Dec 2019 08:54:31 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81FF331B;
+ Wed, 11 Dec 2019 08:54:33 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FF523F52E;
- Wed, 11 Dec 2019 08:54:30 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:54:28 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 009BE3F52E;
+ Wed, 11 Dec 2019 08:54:32 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:54:31 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210145406.21419-12-tiwai@suse.de>
-Message-Id: <applied-20191210145406.21419-12-tiwai@suse.de>
+In-Reply-To: <20191210145406.21419-11-tiwai@suse.de>
+Message-Id: <applied-20191210145406.21419-11-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>
-Subject: [alsa-devel] Applied "ASoC: pxa: Drop superfluous ioctl PCM ops" to
-	the asoc tree
+Cc: Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+Subject: [alsa-devel] Applied "ASoC: meson: Drop superfluous ioctl PCM ops"
+	to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: pxa: Drop superfluous ioctl PCM ops
+   ASoC: meson: Drop superfluous ioctl PCM ops
 
 has been applied to the asoc tree at
 
@@ -103,88 +103,81 @@ to this mail.
 Thanks,
 Mark
 
-From 92e63b552822b51aac65348b7ae46749590a3c8e Mon Sep 17 00:00:00 2001
+From a984e214de0c5d592a50bc6bd04b32a335d48a55 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:53:54 +0100
-Subject: [PATCH] ASoC: pxa: Drop superfluous ioctl PCM ops
+Date: Tue, 10 Dec 2019 15:53:53 +0100
+Subject: [PATCH] ASoC: meson: Drop superfluous ioctl PCM ops
 
 ASoC PCM core deals the empty ioctl field now as default.
 Let's kill the redundant lines.
 
-Cc: Daniel Mack <daniel@zonque.org>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210145406.21419-12-tiwai@suse.de
+Acked-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20191210145406.21419-11-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mmp-pcm.c     | 1 -
- sound/soc/pxa/pxa-ssp.c     | 1 -
- sound/soc/pxa/pxa2xx-ac97.c | 1 -
- sound/soc/pxa/pxa2xx-i2s.c  | 1 -
- sound/soc/pxa/pxa2xx-pcm.c  | 1 -
- 5 files changed, 5 deletions(-)
+ sound/soc/meson/axg-frddr.c | 3 ---
+ sound/soc/meson/axg-toddr.c | 3 ---
+ 2 files changed, 6 deletions(-)
 
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 54a4c9213e83..287b5da739e5 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -225,7 +225,6 @@ static const struct snd_soc_component_driver mmp_soc_component = {
- 	.name		= DRV_NAME,
- 	.open		= mmp_pcm_open,
- 	.close		= mmp_pcm_close,
--	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= mmp_pcm_hw_params,
- 	.trigger	= mmp_pcm_trigger,
- 	.pointer	= mmp_pcm_pointer,
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 76fdce54f007..f37ea0fb4f3f 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -873,7 +873,6 @@ static const struct snd_soc_component_driver pxa_ssp_component = {
- 	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
--	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
- 	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 31e81a6f616f..22fe77955c2c 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -208,7 +208,6 @@ static const struct snd_soc_component_driver pxa_ac97_component = {
- 	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
--	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
- 	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index e77d707efde7..d9d366a8df11 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -364,7 +364,6 @@ static const struct snd_soc_component_driver pxa_i2s_component = {
- 	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
--	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
- 	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 07b3455a6f23..2b7839715dd5 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -22,7 +22,6 @@ static const struct snd_soc_component_driver pxa2xx_soc_platform = {
- 	.pcm_destruct	= pxa2xx_soc_pcm_free,
- 	.open		= pxa2xx_soc_pcm_open,
- 	.close		= pxa2xx_soc_pcm_close,
--	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= pxa2xx_soc_pcm_hw_params,
- 	.hw_free	= pxa2xx_soc_pcm_hw_free,
- 	.prepare	= pxa2xx_soc_pcm_prepare,
+diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
+index 665d75d49d7b..0a7d41257a38 100644
+--- a/sound/soc/meson/axg-frddr.c
++++ b/sound/soc/meson/axg-frddr.c
+@@ -151,7 +151,6 @@ static const struct snd_soc_component_driver axg_frddr_component_drv = {
+ 	.num_dapm_routes	= ARRAY_SIZE(axg_frddr_dapm_routes),
+ 	.open			= axg_fifo_pcm_open,
+ 	.close			= axg_fifo_pcm_close,
+-	.ioctl			= snd_soc_pcm_lib_ioctl,
+ 	.hw_params		= axg_fifo_pcm_hw_params,
+ 	.hw_free		= axg_fifo_pcm_hw_free,
+ 	.pointer		= axg_fifo_pcm_pointer,
+@@ -275,7 +274,6 @@ static const struct snd_soc_component_driver g12a_frddr_component_drv = {
+ 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
+ 	.open			= axg_fifo_pcm_open,
+ 	.close			= axg_fifo_pcm_close,
+-	.ioctl			= snd_soc_pcm_lib_ioctl,
+ 	.hw_params		= g12a_fifo_pcm_hw_params,
+ 	.hw_free		= axg_fifo_pcm_hw_free,
+ 	.pointer		= axg_fifo_pcm_pointer,
+@@ -345,7 +343,6 @@ static const struct snd_soc_component_driver sm1_frddr_component_drv = {
+ 	.num_dapm_routes	= ARRAY_SIZE(g12a_frddr_dapm_routes),
+ 	.open			= axg_fifo_pcm_open,
+ 	.close			= axg_fifo_pcm_close,
+-	.ioctl			= snd_soc_pcm_lib_ioctl,
+ 	.hw_params		= g12a_fifo_pcm_hw_params,
+ 	.hw_free		= axg_fifo_pcm_hw_free,
+ 	.pointer		= axg_fifo_pcm_pointer,
+diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
+index 7fef0b961496..f6023397c8fe 100644
+--- a/sound/soc/meson/axg-toddr.c
++++ b/sound/soc/meson/axg-toddr.c
+@@ -183,7 +183,6 @@ static const struct snd_soc_component_driver axg_toddr_component_drv = {
+ 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
+ 	.open			= axg_fifo_pcm_open,
+ 	.close			= axg_fifo_pcm_close,
+-	.ioctl			= snd_soc_pcm_lib_ioctl,
+ 	.hw_params		= axg_fifo_pcm_hw_params,
+ 	.hw_free		= axg_fifo_pcm_hw_free,
+ 	.pointer		= axg_fifo_pcm_pointer,
+@@ -222,7 +221,6 @@ static const struct snd_soc_component_driver g12a_toddr_component_drv = {
+ 	.num_dapm_routes	= ARRAY_SIZE(axg_toddr_dapm_routes),
+ 	.open			= axg_fifo_pcm_open,
+ 	.close			= axg_fifo_pcm_close,
+-	.ioctl			= snd_soc_pcm_lib_ioctl,
+ 	.hw_params		= g12a_fifo_pcm_hw_params,
+ 	.hw_free		= axg_fifo_pcm_hw_free,
+ 	.pointer		= axg_fifo_pcm_pointer,
+@@ -292,7 +290,6 @@ static const struct snd_soc_component_driver sm1_toddr_component_drv = {
+ 	.num_dapm_routes	= ARRAY_SIZE(sm1_toddr_dapm_routes),
+ 	.open			= axg_fifo_pcm_open,
+ 	.close			= axg_fifo_pcm_close,
+-	.ioctl			= snd_soc_pcm_lib_ioctl,
+ 	.hw_params		= g12a_fifo_pcm_hw_params,
+ 	.hw_free		= axg_fifo_pcm_hw_free,
+ 	.pointer		= axg_fifo_pcm_pointer,
 -- 
 2.20.1
 
