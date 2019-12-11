@@ -2,95 +2,70 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D919C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 06:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33DD7C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 06:45:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B953D2077B
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 06:44:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A2F662077B
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 06:45:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OINdhHCg";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmYjvIQX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B953D2077B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ie11N5/W"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2F662077B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 183DE1614;
-	Wed, 11 Dec 2019 07:43:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 183DE1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 004BA1669;
+	Wed, 11 Dec 2019 07:44:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 004BA1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576046674;
-	bh=7+e0Jqg2Aq8FDq4RZApaS7xdRzNa5h1a+v9GhYOth5A=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=OINdhHCg+Z2AGDckBKilPb6SKg25b8vLYYC2MZ08ZJyJkfIoAEMo81Vf8Blf6RRxt
-	 +3Yk26JOPAxSq2XZqhjq3q1coLz1LIPPdMV28FzKxfrhAb3m6lAER1mpg0RjjH4lTE
-	 +EgceHtOwRZn/ezAYj8Go7zq9ciF1IYI/ORSFXt0=
+	s=default; t=1576046718;
+	bh=DiFzNbF7Tei9U0dPtb97H8mKQUNrEHNiZeknPmMkW6c=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Ie11N5/W0qtvBuM6YBPdtMSpRNbWtk4so9kggwd3nM18Z/+s+SY4PPZSIjW8yqmMc
+	 Lr3DA+oMajbzYBeH8fi9xG+LZ0fnFi0YJKPXblrOuAls460HE0ZJ4BZ8ciR1vkeBRh
+	 +spiOya+eL9wf1a0EQso/EnVfb0bZarHnxA0jOFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D310BF8028C;
-	Wed, 11 Dec 2019 07:38:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62BBFF80292;
+	Wed, 11 Dec 2019 07:39:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0C40F8020C; Wed, 11 Dec 2019 02:39:06 +0100 (CET)
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com
- [IPv6:2607:f8b0:4864:20::f41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 099C7F801F4; Wed, 11 Dec 2019 07:37:07 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E20DF800B4
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 02:39:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E20DF800B4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="PmYjvIQX"
-Received: by mail-qv1-xf41.google.com with SMTP id c2so5046314qvp.12
- for <alsa-devel@alsa-project.org>; Tue, 10 Dec 2019 17:39:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=Oo8iSl+PbW7oxKRku63cLB38Us675nnQXIUnSFmiZm0=;
- b=PmYjvIQXm2ujizamgxSRKk3AjWwdW/VleXxlg7hWa8OZeVAXJpdUDjc8/pRwW8buGG
- +ABs8eyulGtqTz4d2hJ2SnKsMa8gTmMUrJFpPwKM1FpQH9ylD/eDO1Wk/W5xjvIAhaPv
- U7EIOu1GwB5xHYJpZJv/1ix3ljD1S4R5DdfpjzQr9HhEy368woRgg5mUBBHy34ONkreP
- M4IcSHIHkmvWtZ0Y2ffwZKanMvO3Tk+ilrEgTel55EwcH0hYD9fSuRIjsT/p+fr1sP41
- JJp7odXgfVaWDs/WmyW17vpdhPWOeGzQdOIMXCxGTSgOPNPu7O2Fvtyaxv18gYAfW1z3
- p5mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=Oo8iSl+PbW7oxKRku63cLB38Us675nnQXIUnSFmiZm0=;
- b=X86RyRFgd/oVdpd0hVJYV/By74/wo/bXYKlLcDD9ZpIwwdjXzOtsWvugBi29288vnk
- a3jUTIiitfZ3A9IRZ1IucInBYzqrJJOr4c6uy/HYMZ/yfvfS02ikHsqm2lYVSja22k3B
- QWu5cEOo/zYD7m2WnEgOFvFvLjCw+xiiCzCU45IdFs+qg5f1+Uan8m/YA6dQpXx73Ykl
- WnT2LrQqyqSCYeNDEE2UDCSwh33lihm5apJfgVjZ6gLx1quBZP92SzuQ+d0+Xnap8OUi
- tl+pmC7eP39bsn+QLwDoAPX+V/MhYQcsEQV/11nPi6kgYJz8Z7H8xHEonM8bGxAKpHLY
- x/Ow==
-X-Gm-Message-State: APjAAAUoM7aypbfdqUXKQ7ePFBV/5c7cmvm2rk6y1s6IxhanrMx58qRE
- 4fiPEnA0R7Uva79azvNZz23BZMLTEiDUCodMZzQ=
-X-Google-Smtp-Source: APXvYqyfIDiXdlPybf2xoyjGCzaKw4xhe+VY3XWs1QzStQBlAaf2I42VFuPx15yzeGnvT+OWCikEcwg0S2Bd7NsAObI=
-X-Received: by 2002:a0c:eb8c:: with SMTP id x12mr785173qvo.65.1576028341156;
- Tue, 10 Dec 2019 17:39:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20191210145406.21419-1-tiwai@suse.de>
- <20191210145406.21419-18-tiwai@suse.de>
-In-Reply-To: <20191210145406.21419-18-tiwai@suse.de>
-From: Baolin Wang <baolin.wang7@gmail.com>
-Date: Wed, 11 Dec 2019 09:38:49 +0800
-Message-ID: <CADBw62p9tQcpi2TFjg-Eb+6HXpE-jAmx4r9y-yDcbiui=ubdyQ@mail.gmail.com>
-To: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 561BFF800F3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 07:37:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 561BFF800F3
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 10 Dec 2019 22:36:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,301,1571727600"; d="scan'208";a="245127326"
+Received: from linux.intel.com ([10.54.29.200])
+ by fmsmga002.fm.intel.com with ESMTP; 10 Dec 2019 22:36:58 -0800
+Received: from younglee-svr.sh.intel.com (younglee-svr.sh.intel.com
+ [10.239.159.31])
+ by linux.intel.com (Postfix) with ESMTP id 43DB4580297;
+ Tue, 10 Dec 2019 22:36:58 -0800 (PST)
+From: libin.yang@linux.intel.com
+To: alsa-devel@alsa-project.org
+Date: Wed, 11 Dec 2019 14:07:19 +0800
+Message-Id: <1576044439-2158-1-git-send-email-libin.yang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 X-Mailman-Approved-At: Wed, 11 Dec 2019 07:38:39 +0100
-Cc: Orson Zhai <orsonzhai@gmail.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: Re: [alsa-devel] [PATCH for-5.6 17/23] ASoC: sprd: Drop superfluous
-	ioctl PCM ops
+Cc: Libin Yang <libin.yang@linux.intel.com>
+Subject: [alsa-devel] [alsa-lib][PATCH] ucm: setup conf_format after getting
+	ALSA_CONFIG_UCM_VAR successfully
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,40 +78,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Dec 10, 2019 at 10:54 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> ASoC PCM core deals the empty ioctl field now as default.
-> Let's kill the redundant lines.
->
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Baolin Wang <baolin.wang7@gmail.com>
-> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/soc/sprd/sprd-pcm-dma.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/sound/soc/sprd/sprd-pcm-dma.c b/sound/soc/sprd/sprd-pcm-dma.c
-> index da4b8f5f192b..2284558684bc 100644
-> --- a/sound/soc/sprd/sprd-pcm-dma.c
-> +++ b/sound/soc/sprd/sprd-pcm-dma.c
-> @@ -508,7 +508,6 @@ static const struct snd_soc_component_driver sprd_soc_component = {
->         .name           = DRV_NAME,
->         .open           = sprd_pcm_open,
->         .close          = sprd_pcm_close,
-> -       .ioctl          = snd_soc_pcm_lib_ioctl,
->         .hw_params      = sprd_pcm_hw_params,
->         .hw_free        = sprd_pcm_hw_free,
->         .trigger        = sprd_pcm_trigger,
-> --
+From: Libin Yang <libin.yang@linux.intel.com>
 
-Thanks for your cleaning up.
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+Set the conf_format to 1 after getting ALSA_CONFIG_UCM_VAR successfully.
+Otherwise, the conf_format is not set in this scenario.
+
+Signed-off-by: Libin Yang <libin.yang@linux.intel.com>
+---
+ src/ucm/parser.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index ba50027..d61124a 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -89,6 +89,8 @@ static void configuration_filename(snd_use_case_mgr_t *uc_mgr,
+ 		env = getenv(ALSA_CONFIG_UCM2_VAR);
+ 		if (env == NULL) {
+ 			env = getenv(ALSA_CONFIG_UCM_VAR);
++			if (env)
++				uc_mgr->conf_format = 1;
+ 		} else {
+ 			uc_mgr->conf_format = 2;
+ 		}
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
