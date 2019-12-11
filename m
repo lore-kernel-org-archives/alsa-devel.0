@@ -2,80 +2,84 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71C12C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 21:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81677C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 21:22:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72AD42054F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 21:21:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D2A62173E
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 21:22:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mgGQd36x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72AD42054F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b7rFBFsR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D2A62173E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A044852;
-	Wed, 11 Dec 2019 22:20:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A044852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 285DB166A;
+	Wed, 11 Dec 2019 22:21:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 285DB166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576099294;
-	bh=lrFv+g7OlMO6lzOGfCTKdC7LRZVbuUhArH/hf+oKXBI=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mgGQd36xkSdu00MjVziUlgKuqKCgXGxcoXw9KGB0jB0Dd3fJqBAgko3kRB2dsLD5B
-	 gZJRxSDFmlkIii8eNzjVKUnGk2pnrGS/LK0GA6FxCpB252U5LDzLQUJQHoqsAadFWJ
-	 VCTrPVOWYfOghOLIM+WfjEVicmlqDBKuMZVFzgwM=
+	s=default; t=1576099353;
+	bh=XzDZe8WNGErePc7yl54vR0PDw/1xU0RbQvkaSSN71nc=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=b7rFBFsRVQP8zScotsptdWJHFCt7ii47Ywz6wSbmrw1RxJRZLU3iMbz9Whs3hgBD+
+	 pf3SoGD3CgV7GHhe/leOJ8lA52R0W6mfTnQ/NxJlKrxkyuNMQSt3O/cFbaaAWqElbS
+	 TvM+UJAw3Tf9mZ6/sInjJhjuMFktcv2+7LCh76Kw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 655A7F80256;
-	Wed, 11 Dec 2019 22:20:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE2C9F80260;
+	Wed, 11 Dec 2019 22:20:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0FE4F80256; Wed, 11 Dec 2019 22:20:39 +0100 (CET)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ id 49EDAF80258; Wed, 11 Dec 2019 22:20:43 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C195FF800EC
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 22:20:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C195FF800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0671DF8019B
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 22:20:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0671DF8019B
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
  (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1Mo7eX-1hvNKe05hz-00pfxP; Wed, 11 Dec 2019 22:20:31 +0100
+ 1M890H-1ib0fc2usl-005IZj; Wed, 11 Dec 2019 22:20:31 +0100
 From: Arnd Bergmann <arnd@arndb.de>
 To: alsa-devel@alsa-project.org,
 	Takashi Iwai <tiwai@suse.com>
-Date: Wed, 11 Dec 2019 22:20:16 +0100
-Message-Id: <20191211212025.1981822-1-arnd@arndb.de>
+Date: Wed, 11 Dec 2019 22:20:18 +0100
+Message-Id: <20191211212025.1981822-3-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
+In-Reply-To: <20191211212025.1981822-1-arnd@arndb.de>
+References: <20191211212025.1981822-1-arnd@arndb.de>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:EUNjsuCMFvOfLutRxMiDpsrdBNUjEnJY9WYrs7u4SgqHOEMtTQr
- jKDw6lqSni3FNWrx9XXBtARvrFjizsPEn+nvMSqjRiUsg3ZVQj5wvBXHcHmQM3fA5rPV9if
- eYFnSj/RbNur4cr2575gxtU+YinZnOGoTz45bXqganXcTY5kaJbKg79OiNzWJmilpZt/dLE
- PYXDEHBOpgA+AEPnJu4vQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Hf3kE9BGNcs=:p0QD8vySsZB9EGU/RjRvgy
- xeY3HbWJqQZqGkE1pQaqjDvABo0/GR/Ns+kAzHhWT9ohkisvw9jwxjF6sZ9wRcUDM4QL/M6rM
- 4NoxYJW/D97waBIuUlIYg40eGtQClNXXw2DSJw+SJg0hIsV1XO/p0OzI77Q/Nc7MEs2HOo70S
- zG5h+4hLqoTqoarczPc2/KPkhzzsLnVO7oQ53qK9ft6x3R8btAQZOM0PiHNX0iujI7awU/Tfw
- uovBcm9JPVHTgXdUaLN1hkT+3vEq+bAo8W391fIlE3NyT5vXh3LN3+rbk2GpsISWzb79zYmdD
- qhnGXrqhBMWfQR1bQEJQ2PWYU3FcRK7oKxU5/PmqekVnAGXQsxWAPFn2Nghnx34ZB6Eewlydb
- dsz26qSiWhx9fvKomDqcL5B1+rwyK+qpjbNXgigZSJqEL9lI4YNjDC42F+iEKmVa7mzqBT8B8
- AdJ6pxdnfkmiLb85MNKZwsS+VslP47mB7GIFFG4RjRppllExpjtJ1pw5nRh5Xi1GkoPh88wwW
- rs537Xk+8pGtALK2lkaLqZ1AlrSCvvJ8UbGq/vkSTYu1GL6d2jp44878OYnXyCfSoktUbhViK
- Atv/eZo0Bg3k/1xEAsCf7I8W+rjywf7SFmcUKU5/TKDOBZ5SVgtzUaMk5rO3y2qtpOmubyK2k
- VQZ6Eh6i8ya8+y5rVuFF7tR4mz+9lnzCd/6ZAxApqS8fQqDfLWqMc8nPvoT5RQAp5g5P4Zksh
- 8jpQuqazHE2imnDdS/oZxBmTPZxpbl/73mlj3zzkTXOPxzrHNSNaSDHMmsCQESSFIL0Y9Qr/M
- Rj0VVgWLNPsMZHNaeO0Xnr/H7s5w8DJ2An16pLQf+mGx34j07juW+0ak7ghgfZoFpwIsQOoBT
- isbIYlnWryBuBavmxqYQ==
-Cc: Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Baolin Wang <baolin.wang7@gmail.com>
-Subject: [alsa-devel] [PATCH v7 0/8] Fix year 2038 issue for sound subsystem
+X-Provags-ID: V03:K1:dASm1+fwPi9ktSUgKFgQ12hr3ORHPeVSyLCtmtG5M1WYGKRGD5G
+ fnF6XiWNl9XCouAIcLL/JXK+Dt8dORlDH81A4dP6cj/wfAl1p5TvSSr5SZZhWpepWZUv6Hr
+ nuKLUHXdRbpzVryz4OZjTDYbx1IuyJuHdZurA3JT5JR+ap9p7tvB+A7iuhi/OPGdm39s+V+
+ 888KUlbr+gujNN4XGf3WA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vqpdI6wKNCo=:lr1IHH0cnyMDeh5L6vk/M0
+ Y3SKwG5IuwCqULkfu2kIVmtd899IpEj4yaAERepZEgLCAwN9Cd3S5IkyOk5+W/zVFUGGwM/sw
+ /UcjvJuCOezswCqh6zlScD1+ga3Tp0YIwcYS6kM6mGn6xUGuFtDhIaGv64y4nPMAEFJufO6Uz
+ 5K1logXRsK4IFNYJXWFlHdGyX2h7v+BDb4xd7UtUIb5OYzrWLPc5LqT1u82CjSlsxU1rwwiEi
+ JyeB9Y1IWJxSo5JK/AwvNuy86DOaTC6ZNdRwgiw1FrFw44cgNxRnpmMSYN8AcqLfvxtX8oVVl
+ hNukMNMw/WG9PQtuY2XM8tYx0/Pw3YRRcnHlygBvdyp5VSSQzHDJzknxI+oS2suyFywhZxnyF
+ iaGIQ5mqQae6/pnAFpkwMECY5YsfrrZEhjceervLn0rhlchU95ohvC25F8ofFujftW8v2pB3J
+ nYFlhODa/FaG2aFbIUsYyHUGu1riAvHbrEucgmbZ3oocO0wX2w9lizJboWWSnQiz2ZTnIPDTZ
+ o5x0oohZoZSGIWZRlHgcRxbkLA4CtaE+yLa9ExnRJUwaZArHBHeHArX7XZSwZ61qhvt0uqtLq
+ Ks6SgqmhBf4lhJhuO5EVxGgJLAjusYg2q/vCgUz2Z+H5J4JVecn0Rx9HSL4Q0J3LcAw8B1Pu3
+ CMmsr1SC1tnOaQkJRcPKpYxsNx85lur4Inhqviz5Ux/1xbWnciJvn6rRLal0skaHCktOz7+Xl
+ AZGk8yrulhLZc2vtTK6IThD9+9TdbXMBy6VfIyw6InSTwtPmSI9lg6mKrHVp11oFefiipnlak
+ nypz1BPscfP0yGfYnzWD+IET/W6urvSfKMXeaw/M9sWPCS1lYWfeHLeA9YMaybPB+w8VPwsQR
+ nk9ORUBG8pJDSonSUCvg==
+Cc: Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>,
+ y2038@lists.linaro.org, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Baolin Wang <baolin.wang7@gmail.com>
+Subject: [alsa-devel] [PATCH v7 2/9] ALSA: Avoid using timespec for struct
+	snd_timer_status
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,128 +97,226 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is a series I worked on with Baolin in 2017 and 2018, but we
-never quite managed to finish up the last pieces. During the
-ALSA developer meetup at ELC-E 2018 in Edinburgh, a decision was
-made to go with this approach for keeping best compatibility
-with existing source code, and then I failed to follow up by
-resending the patches.
+From: Baolin Wang <baolin.wang@linaro.org>
 
-Now I have patches for all remaining time_t uses in the kernel,
-so it's absolutely time to revisit them. I have done more
-review of the patches myself and found a couple of minor issues
-that I have fixed up, otherwise the series is still the same as
-before.
+struct snd_timer_status uses 'timespec' type variables to record
+timestamp, which will be changed to an incompatible layout with
+updated user space using 64-bit time_t.
 
-Conceptually, the idea of these patches is:
+To handle both the old and the new layout on 32-bit architectures,
+this patch introduces 'struct snd_timer_status32' and 'struct snd_timer_status64'
+to handle 32bit time_t and 64bit time_t in native mode and compat mode,
+which replaces timespec with s64 type.
 
-- 64-bit applications should see no changes at all, neither
-  compile-time nor run-time.
+When glibc changes time_t to 64-bit, any recompiled program will issue
+ioctl commands that the kernel does not understand without this patch.
 
-- 32-bit code compiled with a 64-bit time_t currently
-  does not work with ALSA, and requires kernel changes and/or
-  sound/asound.h changes
+In the public uapi header, snd_timer_status is now guarded by
+an #ifndef __KERNEL__ to avoid referencing 'struct timespec'.
+The timespec definition will be removed from the kernel to prevent
+new y2038 bugs and to avoid the conflict with an incompatible libc
+type of the same name.
 
-- Most 32-bit code using these interfaces will work correctly
-  on a modified kernel, with or without the uapi header changes.
-
-- 32-bit code using SNDRV_TIMER_IOCTL_TREAD requires the
-  updated header file for 64-bit time_t support
-
-- 32-bit i386 user space with 64-bit time_t is broken for
-  SNDRV_PCM_IOCTL_STATUS, SNDRV_RAWMIDI_IOCTL_STATUS and
-  SNDRV_PCM_IOCTL_SYNC_PTR because of i386 alignment. This is also
-  addressed by the updated uapi header.
-
-- PCM mmap is currently supported on native x86 kernels
-  (both 32-bit and 64-bit) but not for compat mode. This series breaks
-  the 32-bit native mmap support for 32-bit time_t, but instead allows
-  it for 64-bit time_t on both native and compat kernels. This seems to
-  be the best trade-off, as mmap support is optional already, and most
-  32-bit code runs in compat mode anyway.
-
-- I've tried to avoid breaking compilation of 32-bit code
-  as much as possible. Anything that does break however is likely code
-  that is already broken on 64-bit time_t and needs source changes to
-  fix them.
-
-I hope I addressed all review comments by now, so please pull this
-for linux-5.6.
-
-A git branch with the same contents is available for testing at [1].
-
-     Arnd
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git y2038-alsa-v7
-[2] https://lore.kernel.org/lkml/CAK8P3a2Os66+iwQYf97qh05W2JP8rmWao8zmKoHiXqVHvyYAJA@mail.gmail.com/T/#m6519cb07cfda08adf1dedea6596bb98892b4d5dc
-
-Changes since v6: (Arnd):
- - Add a patch to update the API versions
- - Hide a timespec reference in #ifndef __KERNEL__ to remove the
-   last reference to time_t
- - Use a more readable way to do padding and describe it in the
-   changelog
- - Rebase to linux-5.5-rc1, changing include/sound/soc-component.h                   
-   and sound/drivers/aloop.c as needed.
-
-Changes since v5 (Arnd):
- - Rebased to linux-5.4-rc4
- - Updated to completely remove timespec and time_t references from alsa
- - found and fixed a few bugs
-
-Changes since v4 (Baolin):
- - Add patch 5 to change trigger_tstamp member of struct snd_pcm_runtime.
- - Add patch 8 to change internal timespec.
- - Add more explanation in commit message.
- - Use ktime_get_real_ts64() in patch 6.
- - Split common code out into a separate function in patch 6.
- - Fix tu->tread bug in patch 6 and remove #if __BITS_PER_LONG == 64 macro.
-
-Changes since v3:
- - Move struct snd_pcm_status32 to pcm.h file.
- - Modify comments and commit message.
- - Add new patch2 ~ patch6.
-
-Changes since v2:
- - Renamed all structures to make clear.
- - Remove CONFIG_X86_X32 macro and introduced new compat_snd_pcm_status64_x86_32.
-
-Changes since v1:
- - Add one macro for struct snd_pcm_status_32 which only active in 32bits kernel.
- - Convert pcm_compat.c to use struct snd_pcm_status_64.
- - Convert pcm_native.c to use struct snd_pcm_status_64.
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
+ include/uapi/sound/asound.h |  2 ++
+ sound/core/timer.c          | 62 +++++++++++++++++++++++++++++++++----
+ sound/core/timer_compat.c   | 57 ++++------------------------------
+ 3 files changed, 64 insertions(+), 57 deletions(-)
 
-Arnd Bergmann (3):
-  ALSA: move snd_pcm_ioctl_sync_ptr_compat into pcm_native.c
-  ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
-  ALSA: bump uapi version numbers
-
-Baolin Wang (6):
-  ALSA: Replace timespec with timespec64
-  ALSA: Avoid using timespec for struct snd_timer_status
-  ALSA: Avoid using timespec for struct snd_ctl_elem_value
-  ALSA: Avoid using timespec for struct snd_pcm_status
-  ALSA: Avoid using timespec for struct snd_rawmidi_status
-  ALSA: Avoid using timespec for struct snd_timer_tread
-
- include/sound/pcm.h               |  74 ++++++--
- include/sound/soc-component.h     |   4 +-
- include/sound/timer.h             |   4 +-
- include/uapi/sound/asound.h       | 145 +++++++++++++--
- sound/core/pcm.c                  |  12 +-
- sound/core/pcm_compat.c           | 282 ++++++++----------------------
- sound/core/pcm_lib.c              |  38 ++--
- sound/core/pcm_native.c           | 226 +++++++++++++++++++++---
- sound/core/rawmidi.c              | 132 +++++++++++---
- sound/core/rawmidi_compat.c       |  87 +++------
- sound/core/timer.c                | 229 ++++++++++++++++++------
- sound/core/timer_compat.c         |  62 +------
- sound/drivers/aloop.c             |   2 +-
- sound/pci/hda/hda_controller.c    |  10 +-
- sound/soc/intel/skylake/skl-pcm.c |   4 +-
- 15 files changed, 817 insertions(+), 494 deletions(-)
-
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index df1153cea0b7..930854f67fd3 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -761,6 +761,7 @@ struct snd_timer_params {
+ 	unsigned char reserved[60];	/* reserved */
+ };
+ 
++#ifndef __KERNEL__
+ struct snd_timer_status {
+ 	struct timespec tstamp;		/* Timestamp - last update */
+ 	unsigned int resolution;	/* current period resolution in ns */
+@@ -769,6 +770,7 @@ struct snd_timer_status {
+ 	unsigned int queue;		/* used queue size */
+ 	unsigned char reserved[64];	/* reserved */
+ };
++#endif
+ 
+ #define SNDRV_TIMER_IOCTL_PVERSION	_IOR('T', 0x00, int)
+ #define SNDRV_TIMER_IOCTL_NEXT_DEVICE	_IOWR('T', 0x01, struct snd_timer_id)
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index d808d5554c7a..d2f69039f941 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -65,6 +65,30 @@ struct snd_timer_user {
+ 	struct mutex ioctl_lock;
+ };
+ 
++struct snd_timer_status32 {
++	s32 tstamp_sec;			/* Timestamp - last update */
++	s32 tstamp_nsec;
++	unsigned int resolution;	/* current period resolution in ns */
++	unsigned int lost;		/* counter of master tick lost */
++	unsigned int overrun;		/* count of read queue overruns */
++	unsigned int queue;		/* used queue size */
++	unsigned char reserved[64];	/* reserved */
++};
++
++#define SNDRV_TIMER_IOCTL_STATUS32	_IOR('T', 0x14, struct snd_timer_status32)
++
++struct snd_timer_status64 {
++	s64 tstamp_sec;			/* Timestamp - last update */
++	s64 tstamp_nsec;
++	unsigned int resolution;	/* current period resolution in ns */
++	unsigned int lost;		/* counter of master tick lost */
++	unsigned int overrun;		/* count of read queue overruns */
++	unsigned int queue;		/* used queue size */
++	unsigned char reserved[64];	/* reserved */
++};
++
++#define SNDRV_TIMER_IOCTL_STATUS64	_IOR('T', 0x14, struct snd_timer_status64)
++
+ /* list of timers */
+ static LIST_HEAD(snd_timer_list);
+ 
+@@ -1875,17 +1899,41 @@ static int snd_timer_user_params(struct file *file,
+ 	return err;
+ }
+ 
+-static int snd_timer_user_status(struct file *file,
+-				 struct snd_timer_status __user *_status)
++static int snd_timer_user_status32(struct file *file,
++				   struct snd_timer_status32 __user *_status)
++ {
++	struct snd_timer_user *tu;
++	struct snd_timer_status32 status;
++
++	tu = file->private_data;
++	if (!tu->timeri)
++		return -EBADFD;
++	memset(&status, 0, sizeof(status));
++	status.tstamp_sec = tu->tstamp.tv_sec;
++	status.tstamp_nsec = tu->tstamp.tv_nsec;
++	status.resolution = snd_timer_resolution(tu->timeri);
++	status.lost = tu->timeri->lost;
++	status.overrun = tu->overrun;
++	spin_lock_irq(&tu->qlock);
++	status.queue = tu->qused;
++	spin_unlock_irq(&tu->qlock);
++	if (copy_to_user(_status, &status, sizeof(status)))
++		return -EFAULT;
++	return 0;
++}
++
++static int snd_timer_user_status64(struct file *file,
++				   struct snd_timer_status64 __user *_status)
+ {
+ 	struct snd_timer_user *tu;
+-	struct snd_timer_status status;
++	struct snd_timer_status64 status;
+ 
+ 	tu = file->private_data;
+ 	if (!tu->timeri)
+ 		return -EBADFD;
+ 	memset(&status, 0, sizeof(status));
+-	status.tstamp = timespec64_to_timespec(tu->tstamp);
++	status.tstamp_sec = tu->tstamp.tv_sec;
++	status.tstamp_nsec = tu->tstamp.tv_nsec;
+ 	status.resolution = snd_timer_resolution(tu->timeri);
+ 	status.lost = tu->timeri->lost;
+ 	status.overrun = tu->overrun;
+@@ -2009,8 +2057,10 @@ static long __snd_timer_user_ioctl(struct file *file, unsigned int cmd,
+ 		return snd_timer_user_info(file, argp);
+ 	case SNDRV_TIMER_IOCTL_PARAMS:
+ 		return snd_timer_user_params(file, argp);
+-	case SNDRV_TIMER_IOCTL_STATUS:
+-		return snd_timer_user_status(file, argp);
++	case SNDRV_TIMER_IOCTL_STATUS32:
++		return snd_timer_user_status32(file, argp);
++	case SNDRV_TIMER_IOCTL_STATUS64:
++		return snd_timer_user_status64(file, argp);
+ 	case SNDRV_TIMER_IOCTL_START:
+ 	case SNDRV_TIMER_IOCTL_START_OLD:
+ 		return snd_timer_user_start(file);
+diff --git a/sound/core/timer_compat.c b/sound/core/timer_compat.c
+index bb6be484dfd3..20eef5bc304b 100644
+--- a/sound/core/timer_compat.c
++++ b/sound/core/timer_compat.c
+@@ -69,54 +69,11 @@ static int snd_timer_user_info_compat(struct file *file,
+ 	return 0;
+ }
+ 
+-struct snd_timer_status32 {
+-	struct compat_timespec tstamp;
+-	u32 resolution;
+-	u32 lost;
+-	u32 overrun;
+-	u32 queue;
+-	unsigned char reserved[64];
+-};
+-
+-static int snd_timer_user_status_compat(struct file *file,
+-					struct snd_timer_status32 __user *_status)
+-{
+-	struct snd_timer_user *tu;
+-	struct snd_timer_status32 status;
+-	
+-	tu = file->private_data;
+-	if (!tu->timeri)
+-		return -EBADFD;
+-	memset(&status, 0, sizeof(status));
+-	status.tstamp.tv_sec = tu->tstamp.tv_sec;
+-	status.tstamp.tv_nsec = tu->tstamp.tv_nsec;
+-	status.resolution = snd_timer_resolution(tu->timeri);
+-	status.lost = tu->timeri->lost;
+-	status.overrun = tu->overrun;
+-	spin_lock_irq(&tu->qlock);
+-	status.queue = tu->qused;
+-	spin_unlock_irq(&tu->qlock);
+-	if (copy_to_user(_status, &status, sizeof(status)))
+-		return -EFAULT;
+-	return 0;
+-}
+-
+-#ifdef CONFIG_X86_X32
+-/* X32 ABI has the same struct as x86-64 */
+-#define snd_timer_user_status_x32(file, s) \
+-	snd_timer_user_status(file, s)
+-#endif /* CONFIG_X86_X32 */
+-
+-/*
+- */
+-
+ enum {
+ 	SNDRV_TIMER_IOCTL_GPARAMS32 = _IOW('T', 0x04, struct snd_timer_gparams32),
+ 	SNDRV_TIMER_IOCTL_INFO32 = _IOR('T', 0x11, struct snd_timer_info32),
+-	SNDRV_TIMER_IOCTL_STATUS32 = _IOW('T', 0x14, struct snd_timer_status32),
+-#ifdef CONFIG_X86_X32
+-	SNDRV_TIMER_IOCTL_STATUS_X32 = _IOW('T', 0x14, struct snd_timer_status),
+-#endif /* CONFIG_X86_X32 */
++	SNDRV_TIMER_IOCTL_STATUS_COMPAT32 = _IOW('T', 0x14, struct snd_timer_status32),
++	SNDRV_TIMER_IOCTL_STATUS_COMPAT64 = _IOW('T', 0x14, struct snd_timer_status64),
+ };
+ 
+ static long __snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd,
+@@ -145,12 +102,10 @@ static long __snd_timer_user_ioctl_compat(struct file *file, unsigned int cmd,
+ 		return snd_timer_user_gparams_compat(file, argp);
+ 	case SNDRV_TIMER_IOCTL_INFO32:
+ 		return snd_timer_user_info_compat(file, argp);
+-	case SNDRV_TIMER_IOCTL_STATUS32:
+-		return snd_timer_user_status_compat(file, argp);
+-#ifdef CONFIG_X86_X32
+-	case SNDRV_TIMER_IOCTL_STATUS_X32:
+-		return snd_timer_user_status_x32(file, argp);
+-#endif /* CONFIG_X86_X32 */
++	case SNDRV_TIMER_IOCTL_STATUS_COMPAT32:
++		return snd_timer_user_status32(file, argp);
++	case SNDRV_TIMER_IOCTL_STATUS_COMPAT64:
++		return snd_timer_user_status64(file, argp);
+ 	}
+ 	return -ENOIOCTLCMD;
+ }
 -- 
 2.20.0
 
