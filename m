@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47A05C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:06:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5101AC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:07:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5F74222C4
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:06:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D18442054F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:07:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cc+cstHN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5F74222C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XjqETjYv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D18442054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F40EA1690;
-	Wed, 11 Dec 2019 18:05:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F40EA1690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 257CE1689;
+	Wed, 11 Dec 2019 18:06:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 257CE1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576084007;
-	bh=pTzug3gFubAHhAk/pOG330T9tGL1rHQiKB4LDOc+LWY=;
+	s=default; t=1576084045;
+	bh=UTcZHy07bhqDuuDOeuwerY6gPNG/+Jmqh9Vf/U1imU4=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Cc+cstHNk5fkjPxLWjMn9I/RBdK/yS7mKWhSlnXfPVtInhYkAFl4btbOakwTmhZcj
-	 h83wMEera6rYsTnPtzi8K3DBtsA+2FrwvcRIPhrGRhC7WU17e8JR2r8NBUoL1O5CJM
-	 xJgmuVLqsQzdA9wOTmSlqwbNbQJOt0sNi3viWQVE=
+	b=XjqETjYvgiG4IEeVCKJh66TfkLW9kQd4FITeQXbXr46s86/Yk7RMFdYGK1a4kQ8WW
+	 GuWKHqKze2QbSXZtEea1akgA7DRX7z67lSZqh20cQC0c1Xj4cUWnkhUCut48VPywvY
+	 TDzsMzXazTakJRMJu7kODbtzBsbAc4h2oisqVHKk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C62EF80344;
-	Wed, 11 Dec 2019 17:54:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C16C9F80343;
+	Wed, 11 Dec 2019 17:54:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 541CCF80341; Wed, 11 Dec 2019 17:54:01 +0100 (CET)
+ id 35555F80343; Wed, 11 Dec 2019 17:54:03 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E7C3DF80329
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7C3DF80329
+ by alsa1.perex.cz (Postfix) with ESMTP id B63EEF80307
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B63EEF80307
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59EE731B;
- Wed, 11 Dec 2019 08:53:56 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12BC331B;
+ Wed, 11 Dec 2019 08:53:49 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB08A3F52E;
- Wed, 11 Dec 2019 08:53:55 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:53:54 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 871A63F52E;
+ Wed, 11 Dec 2019 08:53:48 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:53:47 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210142614.19405-4-tiwai@suse.de>
-Message-Id: <applied-20191210142614.19405-4-tiwai@suse.de>
+In-Reply-To: <20191210142614.19405-9-tiwai@suse.de>
+Message-Id: <applied-20191210142614.19405-9-tiwai@suse.de>
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: dwc: Use managed buffer allocation" to
+Subject: [alsa-devel] Applied "ASoC: rcar: Use managed buffer allocation" to
 	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dwc: Use managed buffer allocation
+   ASoC: rcar: Use managed buffer allocation
 
 has been applied to the asoc tree at
 
@@ -102,85 +102,78 @@ to this mail.
 Thanks,
 Mark
 
-From fcf306efab32975e4f8bdf5e9d3e7c34fe4ce48c Mon Sep 17 00:00:00 2001
+From e494dbcd9be743f41cf842f94ffbc7c56b6b072a Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:25:54 +0100
-Subject: [PATCH] ASoC: dwc: Use managed buffer allocation
+Date: Tue, 10 Dec 2019 15:25:59 +0100
+Subject: [PATCH] ASoC: rcar: Use managed buffer allocation
 
-Clean up the drivers with the new managed buffer allocation API.
+Clean up the driver with the new managed buffer allocation API.
 The superfluous snd_pcm_lib_malloc_pages() and
-snd_pcm_lib_free_pages() calls are dropped, as well as the superfluous
-snd_pcm_lib_preallocate_free_for_all() call.  As of the result,
-hw_free and pcm_destruct ops became empty and got removed.
+snd_pcm_lib_free_pages() calls are dropped.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210142614.19405-4-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210142614.19405-9-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/dwc-pcm.c | 24 ++----------------------
- 1 file changed, 2 insertions(+), 22 deletions(-)
+ sound/soc/sh/rcar/core.c | 23 ++++++-----------------
+ 1 file changed, 6 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/dwc/dwc-pcm.c b/sound/soc/dwc/dwc-pcm.c
-index bf36c1d29642..4b25aca3804f 100644
---- a/sound/soc/dwc/dwc-pcm.c
-+++ b/sound/soc/dwc/dwc-pcm.c
-@@ -162,7 +162,6 @@ static int dw_pcm_hw_params(struct snd_soc_component *component,
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct dw_i2s_dev *dev = runtime->private_data;
--	int ret;
- 
- 	switch (params_channels(hw_params)) {
- 	case 2:
-@@ -187,18 +186,7 @@ static int dw_pcm_hw_params(struct snd_soc_component *component,
- 		return -EINVAL;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 6aac25095218..3dfc02092f76 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1218,10 +1218,10 @@ static int rsnd_preallocate_pages(struct snd_soc_pcm_runtime *rtd,
+ 	for (substream = rtd->pcm->streams[stream].substream;
+ 	     substream;
+ 	     substream = substream->next) {
+-		snd_pcm_lib_preallocate_pages(substream,
+-					      SNDRV_DMA_TYPE_DEV,
+-					      dev,
+-					      PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
++		snd_pcm_set_managed_buffer(substream,
++					   SNDRV_DMA_TYPE_DEV,
++					   dev,
++					   PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
  	}
  
--	ret = snd_pcm_lib_malloc_pages(substream,
--			params_buffer_bytes(hw_params));
--	if (ret < 0)
--		return ret;
--	else
--		return 0;
--}
--
--static int dw_pcm_hw_free(struct snd_soc_component *component,
--			  struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
-+	return 0;
- }
- 
- static int dw_pcm_trigger(struct snd_soc_component *component,
-@@ -256,27 +244,19 @@ static int dw_pcm_new(struct snd_soc_component *component,
- {
- 	size_t size = dw_pcm_hardware.buffer_bytes_max;
- 
--	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+	snd_pcm_set_managed_buffer_all(rtd->pcm,
- 			SNDRV_DMA_TYPE_CONTINUOUS,
- 			NULL, size, size);
  	return 0;
+@@ -1400,7 +1400,6 @@ static int rsnd_hw_params(struct snd_soc_component *component,
+ 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+ 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
+ 	struct snd_soc_pcm_runtime *fe = substream->private_data;
+-	int ret;
+ 
+ 	/*
+ 	 * rsnd assumes that it might be used under DPCM if user want to use
+@@ -1433,12 +1432,7 @@ static int rsnd_hw_params(struct snd_soc_component *component,
+ 			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
+ 	}
+ 
+-	ret = rsnd_dai_call(hw_params, io, substream, hw_params);
+-	if (ret)
+-		return ret;
+-
+-	return snd_pcm_lib_malloc_pages(substream,
+-					params_buffer_bytes(hw_params));
++	return rsnd_dai_call(hw_params, io, substream, hw_params);
  }
  
--static void dw_pcm_free(struct snd_soc_component *component,
--			struct snd_pcm *pcm)
--{
--	snd_pcm_lib_preallocate_free_for_all(pcm);
--}
+ static int rsnd_hw_free(struct snd_soc_component *component,
+@@ -1447,13 +1441,8 @@ static int rsnd_hw_free(struct snd_soc_component *component,
+ 	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
+ 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+ 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
+-	int ret;
 -
- static const struct snd_soc_component_driver dw_pcm_component = {
- 	.open		= dw_pcm_open,
- 	.close		= dw_pcm_close,
- 	.hw_params	= dw_pcm_hw_params,
--	.hw_free	= dw_pcm_hw_free,
- 	.trigger	= dw_pcm_trigger,
- 	.pointer	= dw_pcm_pointer,
- 	.pcm_construct	= dw_pcm_new,
--	.pcm_destruct	= dw_pcm_free,
- };
+-	ret = rsnd_dai_call(hw_free, io, substream);
+-	if (ret)
+-		return ret;
  
- int dw_pcm_register(struct platform_device *pdev)
+-	return snd_pcm_lib_free_pages(substream);
++	return rsnd_dai_call(hw_free, io, substream);
+ }
+ 
+ static snd_pcm_uframes_t rsnd_pointer(struct snd_soc_component *component,
 -- 
 2.20.1
 
