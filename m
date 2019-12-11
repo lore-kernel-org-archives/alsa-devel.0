@@ -2,61 +2,67 @@ Return-Path: <SRS0=ZYEx=2B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2730EC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:24:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8643FC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:25:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A8A49206A5
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:24:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14180206A5
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:25:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LQz1AJi0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8A49206A5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aC8gqD54"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14180206A5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0833916B5;
-	Wed, 11 Dec 2019 18:24:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0833916B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3352416B4;
+	Wed, 11 Dec 2019 18:24:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3352416B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576085096;
-	bh=J063RsFfTDyQiJ7KEnhkqHecTqIGyBLwbwqHKZvms3o=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=LQz1AJi0ztNGLovGWgPvhxOpo6eHWhxmx5XXd4PMvxP0vCWmkeDjjP105Jt4/jqTV
-	 z0pb6bL6FxQqdeR0S6JzhXFS1Vng/f3jRCoqr07M9eao6AcHTfl0dxiH+luFLidq9X
-	 dKbc9MuMY29mKp/jgtxLL+lLyWEZLyBZBXkBoMsw=
+	s=default; t=1576085145;
+	bh=9fufB00D2BPyRDR3Lim1hUp8lfSu6hlLdrySr4BefOA=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aC8gqD54Bth6/HsdfAod92LjV77vSn8pPspyk//ot4ZjrvivV5WJBg70M7uzUCA3J
+	 6ZHHWaRcUVGPptxM+KqUextO/7ubTZCyuwKWZwmW4dpV7Ms8nanoNx9J5CiXhxuoER
+	 xfQCNZefllavuCpCQafITyVPE2GHup2DFwEJ1RUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA212F804BD;
-	Wed, 11 Dec 2019 17:55:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE95AF80256;
+	Wed, 11 Dec 2019 17:57:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FB9CF804B0; Wed, 11 Dec 2019 17:55:04 +0100 (CET)
+ id 48E72F8025A; Wed, 11 Dec 2019 17:57:44 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4F7A5F8049F
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F7A5F8049F
+ by alsa1.perex.cz (Postfix) with ESMTP id 48917F80256
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:57:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48917F80256
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C33FE30E;
- Wed, 11 Dec 2019 08:54:57 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5387F31B;
+ Wed, 11 Dec 2019 08:57:40 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41BFF3F52E;
- Wed, 11 Dec 2019 08:54:57 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:54:55 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5F4C3F52E;
+ Wed, 11 Dec 2019 08:57:39 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:57:38 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210142614.19405-2-tiwai@suse.de>
-Message-Id: <applied-20191210142614.19405-2-tiwai@suse.de>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: amd: Use managed buffer allocation" to
-	the asoc tree
+Message-ID: <20191211165738.GG3870@sirena.org.uk>
+References: <20191210145406.21419-1-tiwai@suse.de>
+ <20191210145406.21419-15-tiwai@suse.de>
+ <20191211163418.GE3870@sirena.org.uk>
+ <s5ha77yiz4i.wl-tiwai@suse.de>
+MIME-Version: 1.0
+In-Reply-To: <s5ha77yiz4i.wl-tiwai@suse.de>
+X-Cookie: NOBODY EXPECTS THE SPANISH INQUISITION!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH for-5.6 14/23] ASoC: sh: Drop superfluous
+	ioctl PCM ops
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,220 +75,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2341895289813063892=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: amd: Use managed buffer allocation
+--===============2341895289813063892==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KR/qxknboQ7+Tpez"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+--KR/qxknboQ7+Tpez
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Dec 11, 2019 at 05:51:57PM +0100, Takashi Iwai wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Sigh, I had to wait rc1 release so that everything can get synced for
+> this kind of large API changes, and then one day after the window
+> close, it's already too late... :-<
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+People send stuff through the merge window, and if everyone waits for
+the end before submitting you end up with conflicts still.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> OK, will submit all patches again.  But at the next time I won't split
+> to two series but in a single queue.  Be prepared.
 
-Thanks,
-Mark
+I've applied most of it - there's only a couple that didn't end up
+applying at all (IIRC these ones actually got fixed up).
 
-From 7f4aee8fa79c2d753aa1b2e9ffcad24689317f75 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:25:52 +0100
-Subject: [PATCH] ASoC: amd: Use managed buffer allocation
+--KR/qxknboQ7+Tpez
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Clean up the drivers with the new managed buffer allocation API.
-The superfluous snd_pcm_lib_malloc_pages() and
-snd_pcm_lib_free_pages() calls are dropped.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210142614.19405-2-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/amd/acp-pcm-dma.c         | 58 ++++++++++-------------------
- sound/soc/amd/raven/acp3x-pcm-dma.c | 30 +++------------
- 2 files changed, 26 insertions(+), 62 deletions(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3xIAEACgkQJNaLcl1U
+h9BF3Qf+OAqatZ3w1QC0hPhv/X/e3AsWPp0sgVJAba7684I9zWlO3rDxuy56Sh4m
+azXTj4jx1c63PvZqkiu9tyG2hOa8kKT2az4lPxrXg512TL0iPDDTxmOdYz6T2N5T
+IMahgQkAMBUfFUtMC4gKPd8EN6YQnajVQZVbDJJqgZOdVe7LUG37M3ShBK9HGOoN
+u6mQbL4mtvUO5ySAf/61bfUIYjl0dTDk9T9UBEa+zOsdxFtWCa3S6Npvx78DCjsN
+X22R0o0UhpahzODQ3XC3c+rWh9bnAyh/sfGWSbPrnARXuRmWQFw5hl0sDnfrZR9E
+nD4tyFW72IBT7g4F18yHivF6Ht0scQ==
+=BUa0
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 4b9a27e25206..98400aaf0305 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -836,7 +836,6 @@ static int acp_dma_hw_params(struct snd_soc_component *component,
- 			     struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
--	int status;
- 	uint64_t size;
- 	u32 val = 0;
- 	struct snd_pcm_runtime *runtime;
-@@ -967,35 +966,19 @@ static int acp_dma_hw_params(struct snd_soc_component *component,
- 	}
- 
- 	size = params_buffer_bytes(params);
--	status = snd_pcm_lib_malloc_pages(substream, size);
--	if (status < 0)
--		return status;
--
--	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
- 
--	if (substream->dma_buffer.area) {
--		acp_set_sram_bank_state(rtd->acp_mmio, 0, true);
--		/* Save for runtime private data */
--		rtd->dma_addr = substream->dma_buffer.addr;
--		rtd->order = get_order(size);
-+	acp_set_sram_bank_state(rtd->acp_mmio, 0, true);
-+	/* Save for runtime private data */
-+	rtd->dma_addr = substream->dma_buffer.addr;
-+	rtd->order = get_order(size);
- 
--		/* Fill the page table entries in ACP SRAM */
--		rtd->size = size;
--		rtd->num_of_pages = PAGE_ALIGN(size) >> PAGE_SHIFT;
--		rtd->direction = substream->stream;
-+	/* Fill the page table entries in ACP SRAM */
-+	rtd->size = size;
-+	rtd->num_of_pages = PAGE_ALIGN(size) >> PAGE_SHIFT;
-+	rtd->direction = substream->stream;
- 
--		config_acp_dma(rtd->acp_mmio, rtd, adata->asic_type);
--		status = 0;
--	} else {
--		status = -ENOMEM;
--	}
--	return status;
--}
--
--static int acp_dma_hw_free(struct snd_soc_component *component,
--			   struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
-+	config_acp_dma(rtd->acp_mmio, rtd, adata->asic_type);
-+	return 0;
- }
- 
- static u64 acp_get_byte_count(struct audio_substream_data *rtd)
-@@ -1142,18 +1125,18 @@ static int acp_dma_new(struct snd_soc_component *component,
- 
- 	switch (adata->asic_type) {
- 	case CHIP_STONEY:
--		snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
--						      SNDRV_DMA_TYPE_DEV,
--						      parent,
--						      ST_MIN_BUFFER,
--						      ST_MAX_BUFFER);
-+		snd_pcm_set_managed_buffer_all(rtd->pcm,
-+					       SNDRV_DMA_TYPE_DEV,
-+					       parent,
-+					       ST_MIN_BUFFER,
-+					       ST_MAX_BUFFER);
- 		break;
- 	default:
--		snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
--						      SNDRV_DMA_TYPE_DEV,
--						      parent,
--						      MIN_BUFFER,
--						      MAX_BUFFER);
-+		snd_pcm_set_managed_buffer_all(rtd->pcm,
-+					       SNDRV_DMA_TYPE_DEV,
-+					       parent,
-+					       MIN_BUFFER,
-+					       MAX_BUFFER);
- 		break;
- 	}
- 	return 0;
-@@ -1221,7 +1204,6 @@ static const struct snd_soc_component_driver acp_asoc_platform = {
- 	.close		= acp_dma_close,
- 	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= acp_dma_hw_params,
--	.hw_free	= acp_dma_hw_free,
- 	.trigger	= acp_dma_trigger,
- 	.pointer	= acp_dma_pointer,
- 	.mmap		= acp_dma_mmap,
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 60709e3ba99d..98b76c38dae0 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -334,7 +334,6 @@ static int acp3x_dma_hw_params(struct snd_soc_component *component,
- 			       struct snd_pcm_substream *substream,
- 			       struct snd_pcm_hw_params *params)
- {
--	int status;
- 	u64 size;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct i2s_stream_instance *rtd = runtime->private_data;
-@@ -343,20 +342,10 @@ static int acp3x_dma_hw_params(struct snd_soc_component *component,
- 		return -EINVAL;
- 
- 	size = params_buffer_bytes(params);
--	status = snd_pcm_lib_malloc_pages(substream, size);
--	if (status < 0)
--		return status;
--
--	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
--	if (substream->dma_buffer.area) {
--		rtd->dma_addr = substream->dma_buffer.addr;
--		rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
--		config_acp3x_dma(rtd, substream->stream);
--		status = 0;
--	} else {
--		status = -ENOMEM;
--	}
--	return status;
-+	rtd->dma_addr = substream->dma_buffer.addr;
-+	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
-+	config_acp3x_dma(rtd, substream->stream);
-+	return 0;
- }
- 
- static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_soc_component *component,
-@@ -381,17 +370,11 @@ static int acp3x_dma_new(struct snd_soc_component *component,
- 			 struct snd_soc_pcm_runtime *rtd)
- {
- 	struct device *parent = component->dev->parent;
--	snd_pcm_lib_preallocate_pages_for_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
--					      parent, MIN_BUFFER, MAX_BUFFER);
-+	snd_pcm_set_managed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
-+				       parent, MIN_BUFFER, MAX_BUFFER);
- 	return 0;
- }
- 
--static int acp3x_dma_hw_free(struct snd_soc_component *component,
--			     struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
--}
--
- static int acp3x_dma_mmap(struct snd_soc_component *component,
- 			  struct snd_pcm_substream *substream,
- 			  struct vm_area_struct *vma)
-@@ -601,7 +584,6 @@ static const struct snd_soc_component_driver acp3x_i2s_component = {
- 	.close		= acp3x_dma_close,
- 	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= acp3x_dma_hw_params,
--	.hw_free	= acp3x_dma_hw_free,
- 	.pointer	= acp3x_dma_pointer,
- 	.mmap		= acp3x_dma_mmap,
- 	.pcm_construct	= acp3x_dma_new,
--- 
-2.20.1
+--KR/qxknboQ7+Tpez--
+
+--===============2341895289813063892==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2341895289813063892==--
