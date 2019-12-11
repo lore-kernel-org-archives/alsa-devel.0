@@ -7,57 +7,58 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 635B5C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 039B3C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:16:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D84C12054F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:15:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 858EB2054F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:16:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Bj++0wzW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D84C12054F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="br4wRoRK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 858EB2054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28A04169D;
-	Wed, 11 Dec 2019 18:14:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28A04169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9B3F1691;
+	Wed, 11 Dec 2019 18:15:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9B3F1691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576084529;
-	bh=iph3HRw7q+ltQ2t7GlI1LGkSjf9zVMKSrdwMui/mLYU=;
+	s=default; t=1576084567;
+	bh=h32bPJGIVLZhlDqw5AiNtrUpnJUTalMDs90/lVGjet4=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Bj++0wzWZq+aQp+wy46F1tNN7COEu8FXVEG0Q60A7FgthRyVM/6ipM8OkbvlNtGpg
-	 50svOXm33ZdApFKNbJc6FqXZrYIucDvu1fAQcf26X5sElL5NrmOtUBGJaalaC/eqwB
-	 uFB16wBp4amHlLOm/PhuLR7RaO4h6HD7OnYGK8AI=
+	b=br4wRoRK6YmlT/Wf1Rt01XUCkhTJW20jLC4d6ogNMfo+hP1d2JGMLMpe6lU7Mpp7k
+	 iz1RrADV8FDBxb4zqz8cBnUnNZUBwbMKArsikDbSUAloJf8UXHf4gArdVMoAs86nXZ
+	 lcPgiI6XLxLVrvaYeIBmKcU/uOP/ao9FdC94WLLM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0082F8023E;
-	Wed, 11 Dec 2019 17:54:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C132EF803F4;
+	Wed, 11 Dec 2019 17:54:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AAA1BF803B1; Wed, 11 Dec 2019 17:54:27 +0100 (CET)
+ id 81F4BF803CB; Wed, 11 Dec 2019 17:54:30 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6CAFAF8038C
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CAFAF8038C
+ by alsa1.perex.cz (Postfix) with ESMTP id D0DABF8038C
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0DABF8038C
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B97D130E;
- Wed, 11 Dec 2019 08:54:23 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EC8A31B;
+ Wed, 11 Dec 2019 08:54:26 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38B9E3F52E;
- Wed, 11 Dec 2019 08:54:23 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:54:21 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A31103F52E;
+ Wed, 11 Dec 2019 08:54:25 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:54:24 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210145406.21419-16-tiwai@suse.de>
-Message-Id: <applied-20191210145406.21419-16-tiwai@suse.de>
+In-Reply-To: <20191210145406.21419-14-tiwai@suse.de>
+Message-Id: <applied-20191210145406.21419-14-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: generic-dmaengine: Drop superfluous
-	ioctl PCM ops" to the asoc tree
+Cc: Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: samsung: Drop superfluous ioctl PCM
+	ops" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +79,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: generic-dmaengine: Drop superfluous ioctl PCM ops
+   ASoC: samsung: Drop superfluous ioctl PCM ops
 
 has been applied to the asoc tree at
 
@@ -103,42 +104,36 @@ to this mail.
 Thanks,
 Mark
 
-From 2680c3127c3995c7cbd920c87fbc3411685e7717 Mon Sep 17 00:00:00 2001
+From c4d14046650087f6495ab6855cf1a0090325c48a Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:53:58 +0100
-Subject: [PATCH] ASoC: generic-dmaengine: Drop superfluous ioctl PCM ops
+Date: Tue, 10 Dec 2019 15:53:56 +0100
+Subject: [PATCH] ASoC: samsung: Drop superfluous ioctl PCM ops
 
 ASoC PCM core deals the empty ioctl field now as default.
 Let's kill the redundant lines.
 
-Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Sangbeom Kim <sbkim73@samsung.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210145406.21419-16-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210145406.21419-14-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-generic-dmaengine-pcm.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/samsung/idma.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index a428ff393ea2..4616cab2117c 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -329,7 +329,6 @@ static const struct snd_soc_component_driver dmaengine_pcm_component = {
- 	.probe_order	= SND_SOC_COMP_ORDER_LATE,
- 	.open		= dmaengine_pcm_open,
- 	.close		= dmaengine_pcm_close,
+diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
+index 294dce111b05..66bcc2f97544 100644
+--- a/sound/soc/samsung/idma.c
++++ b/sound/soc/samsung/idma.c
+@@ -394,7 +394,6 @@ EXPORT_SYMBOL_GPL(idma_reg_addr_init);
+ static const struct snd_soc_component_driver asoc_idma_platform = {
+ 	.open		= idma_open,
+ 	.close		= idma_close,
 -	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= dmaengine_pcm_hw_params,
- 	.hw_free	= dmaengine_pcm_hw_free,
- 	.trigger	= dmaengine_pcm_trigger,
-@@ -342,7 +341,6 @@ static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
- 	.probe_order	= SND_SOC_COMP_ORDER_LATE,
- 	.open		= dmaengine_pcm_open,
- 	.close		= dmaengine_pcm_close,
--	.ioctl		= snd_soc_pcm_lib_ioctl,
- 	.hw_params	= dmaengine_pcm_hw_params,
- 	.hw_free	= dmaengine_pcm_hw_free,
- 	.trigger	= dmaengine_pcm_trigger,
+ 	.trigger	= idma_trigger,
+ 	.pointer	= idma_pointer,
+ 	.mmap		= idma_mmap,
 -- 
 2.20.1
 
