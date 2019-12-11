@@ -7,57 +7,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67909C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE173C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:06:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF9D92054F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:05:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 576BF2054F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:06:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DEBud52/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF9D92054F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="krL0pLXo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 576BF2054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44E1A1660;
-	Wed, 11 Dec 2019 18:04:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44E1A1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EA421675;
+	Wed, 11 Dec 2019 18:05:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EA421675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576083927;
-	bh=b4LulrTWbwzJJbilEypNCKuN6FxzA4U5pxGeN+DUod4=;
+	s=default; t=1576083963;
+	bh=cmxaJNd9L8cuQ0p+nUJfnsxhxrtqQi0Oy6ZYMdkixAM=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=DEBud52/wtW2Imon/ozQl/G9cm+aFBHeS8IHVNvWsrfERV9U8/nkt0pHtGS++3JPf
-	 sSuYHlfblpOcq300BZVWOo2XporgyHe9GWRwGSx5EhWKpx7/lsvxkLx8pcEaC7pZbr
-	 LhWc5cnut3m4kBuDfBDdqzO7v1CA1gK1VoDG72B4=
+	b=krL0pLXotwrtW9cklKcd1gxHaJNpfpm1xww4SIalH8M3M1a2ovKJFhXRK6lkDtVxp
+	 LYiDFlIu5UW2ATDbnKmHoMJZwtXBqPn21/Qsc7rQ7Fz9CFxY1P4I1q7dSrJ36bw+nk
+	 trJSQQp1Xr8IfoOJR4CwEVCu31pKTBJu9qxek2o0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B09CF80339;
-	Wed, 11 Dec 2019 17:53:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DC0BF80307;
+	Wed, 11 Dec 2019 17:54:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 942EEF80328; Wed, 11 Dec 2019 17:53:55 +0100 (CET)
+ id 7CE41F80328; Wed, 11 Dec 2019 17:53:56 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 59CD8F802FE
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59CD8F802FE
+ by alsa1.perex.cz (Postfix) with ESMTP id 3123BF802F9
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3123BF802F9
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E04E30E;
- Wed, 11 Dec 2019 08:53:46 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B0C231B;
+ Wed, 11 Dec 2019 08:53:51 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E8A73F52E;
- Wed, 11 Dec 2019 08:53:45 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:53:44 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED9D23F52E;
+ Wed, 11 Dec 2019 08:53:50 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:53:49 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210142614.19405-11-tiwai@suse.de>
-Message-Id: <applied-20191210142614.19405-11-tiwai@suse.de>
+In-Reply-To: <20191210142614.19405-7-tiwai@suse.de>
+Message-Id: <applied-20191210142614.19405-7-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: generic-dmaengine-pcm: Use managed
-	buffer allocation" to the asoc tree
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: dma-sh7760: Use managed buffer
+	allocation" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: generic-dmaengine-pcm: Use managed buffer allocation
+   ASoC: dma-sh7760: Use managed buffer allocation
 
 has been applied to the asoc tree at
 
@@ -103,73 +102,68 @@ to this mail.
 Thanks,
 Mark
 
-From d708c2b36b5d23a7266ca9bfe648533a0f61bdfd Mon Sep 17 00:00:00 2001
+From d23a16584b4f4cc7226c75793d1797e5505a193b Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:26:01 +0100
-Subject: [PATCH] ASoC: generic-dmaengine-pcm: Use managed buffer allocation
+Date: Tue, 10 Dec 2019 15:25:57 +0100
+Subject: [PATCH] ASoC: dma-sh7760: Use managed buffer allocation
 
-Clean up the driver with the new managed buffer allocation API.
-The hw_free callback became superfluous and got dropped.
+Clean up the drivers with the new managed buffer allocation API.
+The superfluous snd_pcm_lib_malloc_pages() and
+snd_pcm_lib_free_pages() calls are dropped.
 
-Cc: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210142614.19405-11-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210142614.19405-7-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-generic-dmaengine-pcm.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ sound/soc/sh/dma-sh7760.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 4616cab2117c..df57ec47ad60 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -104,7 +104,7 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
- 			return ret;
- 	}
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 2b0eca02a8b9..4d0f2f738ffa 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -179,11 +179,6 @@ static int camelot_hw_params(struct snd_soc_component *component,
+ 	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
+ 	int ret;
  
--	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
-+	return 0;
+-	ret = snd_pcm_lib_malloc_pages(substream,
+-				       params_buffer_bytes(hw_params));
+-	if (ret < 0)
+-		return ret;
+-
+ 	if (recv) {
+ 		cam->rx_period_size = params_period_bytes(hw_params);
+ 		cam->rx_period = 0;
+@@ -194,12 +189,6 @@ static int camelot_hw_params(struct snd_soc_component *component,
+ 	return 0;
  }
  
- static int
-@@ -168,12 +168,6 @@ static int dmaengine_pcm_close(struct snd_soc_component *component,
- 	return snd_dmaengine_pcm_close(substream);
- }
- 
--static int dmaengine_pcm_hw_free(struct snd_soc_component *component,
--				 struct snd_pcm_substream *substream)
+-static int camelot_hw_free(struct snd_soc_component *component,
+-			   struct snd_pcm_substream *substream)
 -{
 -	return snd_pcm_lib_free_pages(substream);
 -}
 -
- static int dmaengine_pcm_trigger(struct snd_soc_component *component,
- 				 struct snd_pcm_substream *substream, int cmd)
+ static int camelot_prepare(struct snd_soc_component *component,
+ 			   struct snd_pcm_substream *substream)
  {
-@@ -261,7 +255,7 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
- 			return -EINVAL;
- 		}
- 
--		snd_pcm_lib_preallocate_pages(substream,
-+		snd_pcm_set_managed_buffer(substream,
- 				SNDRV_DMA_TYPE_DEV_IRAM,
- 				dmaengine_dma_dev(pcm, substream),
- 				prealloc_buffer_size,
-@@ -330,7 +324,6 @@ static const struct snd_soc_component_driver dmaengine_pcm_component = {
- 	.open		= dmaengine_pcm_open,
- 	.close		= dmaengine_pcm_close,
- 	.hw_params	= dmaengine_pcm_hw_params,
--	.hw_free	= dmaengine_pcm_hw_free,
- 	.trigger	= dmaengine_pcm_trigger,
- 	.pointer	= dmaengine_pcm_pointer,
- 	.pcm_construct	= dmaengine_pcm_new,
-@@ -342,7 +335,6 @@ static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
- 	.open		= dmaengine_pcm_open,
- 	.close		= dmaengine_pcm_close,
- 	.hw_params	= dmaengine_pcm_hw_params,
--	.hw_free	= dmaengine_pcm_hw_free,
- 	.trigger	= dmaengine_pcm_trigger,
- 	.pointer	= dmaengine_pcm_pointer,
- 	.copy_user	= dmaengine_copy_user,
+@@ -307,7 +296,7 @@ static int camelot_pcm_new(struct snd_soc_component *component,
+ 	/* dont use SNDRV_DMA_TYPE_DEV, since it will oops the SH kernel
+ 	 * in MMAP mode (i.e. aplay -M)
+ 	 */
+-	snd_pcm_lib_preallocate_pages_for_all(pcm,
++	snd_pcm_set_managed_buffer_all(pcm,
+ 		SNDRV_DMA_TYPE_CONTINUOUS,
+ 		NULL,
+ 		DMABRG_PREALLOC_BUFFER,	DMABRG_PREALLOC_BUFFER_MAX);
+@@ -320,7 +309,6 @@ static const struct snd_soc_component_driver sh7760_soc_component = {
+ 	.close		= camelot_pcm_close,
+ 	.ioctl		= snd_soc_pcm_lib_ioctl,
+ 	.hw_params	= camelot_hw_params,
+-	.hw_free	= camelot_hw_free,
+ 	.prepare	= camelot_prepare,
+ 	.trigger	= camelot_trigger,
+ 	.pointer	= camelot_pos,
 -- 
 2.20.1
 
