@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C08FC2D0C6
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AE80C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:10:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0D9C21556
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:09:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E66B42054F
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 17:10:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BA4tj6kJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0D9C21556
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RUz3LHRo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E66B42054F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 319901691;
-	Wed, 11 Dec 2019 18:08:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 319901691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17A241696;
+	Wed, 11 Dec 2019 18:09:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17A241696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576084162;
-	bh=G1L3dVVKcBZzC3bGAZSNGvQBU3JGZBZM1m1Luv6eHss=;
+	s=default; t=1576084200;
+	bh=EzyGjws0tcO9UUOUKd692njy7MJD8WXmbqAoSbex3ZM=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=BA4tj6kJX+Zw82zLS42IZKQ9nxoV7bEqBKKI6FYNX8K3GIex4gEvsFXxDdSw2WJGi
-	 w2HRQpuiHiWiTfoTO3fXvUD8dz+LNuD/wg+R3/dHUaDEGwYBsGHU1CK3z3CX9w8ZSx
-	 z7dH537cJLgCAy7sNEEJoG2htOw8Hn/vzSxJxwqc=
+	b=RUz3LHRoSgfsUXNrNVt3VsOJQkW2i2C4Bm+H1YalGV7AHRpAURcJaHJO5GDcpLRLH
+	 3XHvDvcJIMZ+FD2FW6BseJmwthHNN/ef9RnOibDAY+k7CpnQXzs3JkqXU8N33IGBmY
+	 sAeKRnsvZwgi81f8FNf5qQOPqZoFOEDryzk/cO58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46D4DF80363;
-	Wed, 11 Dec 2019 17:54:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89417F8036B;
+	Wed, 11 Dec 2019 17:54:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E6E3F8034A; Wed, 11 Dec 2019 17:54:10 +0100 (CET)
+ id 91588F80349; Wed, 11 Dec 2019 17:54:10 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BF4F9F80329
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF4F9F80329
+ by alsa1.perex.cz (Postfix) with ESMTP id AF307F80343
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:54:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF307F80343
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A61C30E;
- Wed, 11 Dec 2019 08:54:01 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0B7131B;
+ Wed, 11 Dec 2019 08:54:03 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE9A63F52E;
- Wed, 11 Dec 2019 08:54:00 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:53:59 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3049A3F52E;
+ Wed, 11 Dec 2019 08:54:03 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:54:01 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87d0cvbhyj.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-87d0cvbhyj.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87eexbbhyy.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-87eexbbhyy.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-core: tidyup for CONFIG_DEBUG_FS"
-	to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: tidyup for CONFIG_DMI" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-core: tidyup for CONFIG_DEBUG_FS
+   ASoC: soc-core: tidyup for CONFIG_DMI
 
 has been applied to the asoc tree at
 
@@ -102,46 +101,88 @@ to this mail.
 Thanks,
 Mark
 
-From a4072cdfa9fe79adcd41320355847e77de22baf0 Mon Sep 17 00:00:00 2001
+From 8a6a6a38f86885982891197840e7b8eccad5ef50 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 11 Dec 2019 13:32:20 +0900
-Subject: [PATCH] ASoC: soc-core: tidyup for CONFIG_DEBUG_FS
+Date: Wed, 11 Dec 2019 13:32:05 +0900
+Subject: [PATCH] ASoC: soc-core: tidyup for CONFIG_DMI
 
-soc-core.c has 2 #ifdef CONFIG_DEBUG_FS, but we can merge these.
+soc-core.c has 2 #ifdef CONFIG_DMI, but we can merge these.
+OTOH, soc.h has dmi_longname, but it is needed if CONFIG_DMI was defined.
+In other words, It is not needed if CONFIG_DMI was not defined.
+This patch tidyup these.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87d0cvbhyj.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87eexbbhyy.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ include/sound/soc.h  |  2 ++
+ sound/soc/soc-core.c | 32 +++++++++++++++-----------------
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index c920f17a5647..a6a3a7d54c70 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -986,7 +986,9 @@ struct snd_soc_card {
+ 	const char *long_name;
+ 	const char *driver_name;
+ 	const char *components;
++#ifdef CONFIG_DMI
+ 	char dmi_longname[80];
++#endif /* CONFIG_DMI */
+ 	char topology_shortname[32];
+ 
+ 	struct device *dev;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 51a404fb89e2..3eb874c4a340 100644
+index f8090bd2cf73..51a404fb89e2 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -45,11 +45,6 @@
+@@ -73,23 +73,6 @@ static int pmdown_time = 5000;
+ module_param(pmdown_time, int, 0);
+ MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
  
- #define NAME_SIZE	32
- 
--#ifdef CONFIG_DEBUG_FS
--struct dentry *snd_soc_debugfs_root;
--EXPORT_SYMBOL_GPL(snd_soc_debugfs_root);
+-#ifdef CONFIG_DMI
+-/*
+- * If a DMI filed contain strings in this blacklist (e.g.
+- * "Type2 - Board Manufacturer" or "Type1 - TBD by OEM"), it will be taken
+- * as invalid and dropped when setting the card long name from DMI info.
+- */
+-static const char * const dmi_blacklist[] = {
+-	"To be filled by OEM",
+-	"TBD by OEM",
+-	"Default String",
+-	"Board Manufacturer",
+-	"Board Vendor Name",
+-	"Board Product Name",
+-	NULL,	/* terminator */
+-};
 -#endif
 -
- static DEFINE_MUTEX(client_mutex);
- static LIST_HEAD(component_list);
- static LIST_HEAD(unbind_card_list);
-@@ -133,6 +128,9 @@ static const struct attribute_group *soc_dev_attr_groups[] = {
- };
- 
- #ifdef CONFIG_DEBUG_FS
-+struct dentry *snd_soc_debugfs_root;
-+EXPORT_SYMBOL_GPL(snd_soc_debugfs_root);
-+
- static void soc_init_component_debugfs(struct snd_soc_component *component)
+ static ssize_t pmdown_time_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
  {
- 	if (!component->card->debugfs_card_root)
+@@ -1607,6 +1590,21 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
+ 
+ #ifdef CONFIG_DMI
++/*
++ * If a DMI filed contain strings in this blacklist (e.g.
++ * "Type2 - Board Manufacturer" or "Type1 - TBD by OEM"), it will be taken
++ * as invalid and dropped when setting the card long name from DMI info.
++ */
++static const char * const dmi_blacklist[] = {
++	"To be filled by OEM",
++	"TBD by OEM",
++	"Default String",
++	"Board Manufacturer",
++	"Board Vendor Name",
++	"Board Product Name",
++	NULL,	/* terminator */
++};
++
+ /*
+  * Trim special characters, and replace '-' with '_' since '-' is used to
+  * separate different DMI fields in the card long name. Only number and
 -- 
 2.20.1
 
