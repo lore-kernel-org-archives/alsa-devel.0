@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F3BEC3F68F
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 16:58:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28666C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 16:59:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAC52222C4
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 16:58:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A4A91222C4
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Dec 2019 16:59:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aW399LSc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAC52222C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KQlQ9i6u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4A91222C4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A0A21678;
-	Wed, 11 Dec 2019 17:57:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A0A21678
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7CF1166B;
+	Wed, 11 Dec 2019 17:58:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7CF1166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576083522;
-	bh=49v7tM266hMMI5ZrGQowX5Lqh4aBwNzBink+iUPWn+o=;
+	s=default; t=1576083551;
+	bh=s8Get93RhsxdtALxyWhjW2SVFsccNdHaxsZz8blMCJ8=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=aW399LSchoYEDNQNqExzoB7YQ/4yQXN4BOt/kPhQ43bBQVIvdj5emp3Png/x3pbgL
-	 ulb88G44aWaSEXyPPkCNHAtwc2skDL5x4uTZ+M/TbJ94t3u18sR4wFRJfJq+OfGwLq
-	 s/c7vTZ0bX4lxTXyD7OsgE25PYcbo5NnwCklLY9U=
+	b=KQlQ9i6u2VBUT+Z7sVTntqzidFbYAQIJrh3xxTFkzuok2XVPtQcxxgp7Mn70rHxnL
+	 zrjAQqB1pLWeZyU3CvueOfA/jfY+z7tXu1dM7g7AvNYCds1suuErS3cyEpFfFVrxkK
+	 uxBwOjcuVp7FhzU/aU3fIPZ25VlVEeE2HAB4ZdYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE03EF80292;
-	Wed, 11 Dec 2019 17:53:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F37CF8029A;
+	Wed, 11 Dec 2019 17:53:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 795DDF8028D; Wed, 11 Dec 2019 17:53:26 +0100 (CET)
+ id E3210F8028B; Wed, 11 Dec 2019 17:53:27 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 6B502F8028A
- for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B502F8028A
+ by alsa1.perex.cz (Postfix) with ESMTP id 0124BF8028B
+ for <alsa-devel@alsa-project.org>; Wed, 11 Dec 2019 17:53:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0124BF8028B
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3FA631B;
- Wed, 11 Dec 2019 08:53:21 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69E88DA7;
+ Wed, 11 Dec 2019 08:53:24 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 731533F52E;
- Wed, 11 Dec 2019 08:53:21 -0800 (PST)
-Date: Wed, 11 Dec 2019 16:53:19 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE3693F802;
+ Wed, 11 Dec 2019 08:53:23 -0800 (PST)
+Date: Wed, 11 Dec 2019 16:53:22 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210142614.19405-23-tiwai@suse.de>
-Message-Id: <applied-20191210142614.19405-23-tiwai@suse.de>
+In-Reply-To: <20191210142614.19405-22-tiwai@suse.de>
+Message-Id: <applied-20191210142614.19405-22-tiwai@suse.de>
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: intel: haswell: Use managed buffer
+Subject: [alsa-devel] Applied "ASoC: intel: baytrail: Use managed buffer
 	allocation" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -81,7 +81,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: haswell: Use managed buffer allocation
+   ASoC: intel: baytrail: Use managed buffer allocation
 
 has been applied to the asoc tree at
 
@@ -106,10 +106,10 @@ to this mail.
 Thanks,
 Mark
 
-From 3f93b1ed4ac1e285eafc6da8b354d3577977059a Mon Sep 17 00:00:00 2001
+From d9c7824aa29d064b205957033463563ac3205fcb Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Dec 2019 15:26:13 +0100
-Subject: [PATCH] ASoC: intel: haswell: Use managed buffer allocation
+Date: Tue, 10 Dec 2019 15:26:12 +0100
+Subject: [PATCH] ASoC: intel: baytrail: Use managed buffer allocation
 
 Clean up the driver with the new managed buffer allocation API.
 The hw_free callback became superfluous and got dropped.
@@ -119,61 +119,63 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: Jie Yang <yang.jie@linux.intel.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191210142614.19405-23-tiwai@suse.de
+Link: https://lore.kernel.org/r/20191210142614.19405-22-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/haswell/sst-haswell-pcm.c | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/intel/haswell/sst-haswell-pcm.c b/sound/soc/intel/haswell/sst-haswell-pcm.c
-index 31fb38067f8f..033d7c05d7fb 100644
---- a/sound/soc/intel/haswell/sst-haswell-pcm.c
-+++ b/sound/soc/intel/haswell/sst-haswell-pcm.c
-@@ -592,13 +592,6 @@ static int hsw_pcm_hw_params(struct snd_soc_component *component,
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index 775c3b0b209e..53383055c8dc 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -102,8 +102,6 @@ static int sst_byt_pcm_hw_params(struct snd_soc_component *component,
  		return ret;
  	}
  
--	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
--	if (ret < 0) {
--		dev_err(rtd->dev, "error: could not allocate %d bytes for PCM %d\n",
--			params_buffer_bytes(params), ret);
--		return ret;
--	}
+-	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
 -
- 	dmab = snd_pcm_get_dma_buf(substream);
- 
- 	ret = create_adsp_page_table(substream, pdata, rtd, runtime->dma_area,
-@@ -656,13 +649,6 @@ static int hsw_pcm_hw_params(struct snd_soc_component *component,
+ 	ret = sst_byt_stream_buffer(byt, pcm_data->stream,
+ 				    substream->dma_buffer.addr,
+ 				    params_buffer_bytes(params));
+@@ -121,17 +119,6 @@ static int sst_byt_pcm_hw_params(struct snd_soc_component *component,
  	return 0;
  }
  
--static int hsw_pcm_hw_free(struct snd_soc_component *component,
--			   struct snd_pcm_substream *substream)
+-static int sst_byt_pcm_hw_free(struct snd_soc_component *component,
+-			       struct snd_pcm_substream *substream)
 -{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-
+-	dev_dbg(rtd->dev, "PCM: hw_free\n");
 -	snd_pcm_lib_free_pages(substream);
+-
 -	return 0;
 -}
 -
- static int hsw_pcm_trigger(struct snd_soc_component *component,
- 			   struct snd_pcm_substream *substream, int cmd)
+ static int sst_byt_pcm_restore_stream_context(struct snd_pcm_substream *substream)
  {
-@@ -930,7 +916,7 @@ static int hsw_pcm_new(struct snd_soc_component *component,
- 
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -315,9 +302,8 @@ static int sst_byt_pcm_new(struct snd_soc_component *component,
  	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
- 			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		snd_pcm_lib_preallocate_pages_for_all(pcm,
-+		snd_pcm_set_managed_buffer_all(pcm,
- 			SNDRV_DMA_TYPE_DEV_SG,
- 			dev,
- 			hsw_pcm_hardware.buffer_bytes_max,
-@@ -1114,7 +1100,6 @@ static const struct snd_soc_component_driver hsw_dai_component = {
- 	.open		= hsw_pcm_open,
- 	.close		= hsw_pcm_close,
- 	.hw_params	= hsw_pcm_hw_params,
--	.hw_free	= hsw_pcm_hw_free,
- 	.trigger	= hsw_pcm_trigger,
- 	.pointer	= hsw_pcm_pointer,
- 	.pcm_construct	= hsw_pcm_new,
+ 	    pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+ 		size = sst_byt_pcm_hardware.buffer_bytes_max;
+-		snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-						      pdata->dma_dev,
+-						      size, size);
++		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++					       pdata->dma_dev, size, size);
+ 	}
+ 
+ 	return 0;
+@@ -374,7 +360,6 @@ static const struct snd_soc_component_driver byt_dai_component = {
+ 	.open		= sst_byt_pcm_open,
+ 	.close		= sst_byt_pcm_close,
+ 	.hw_params	= sst_byt_pcm_hw_params,
+-	.hw_free	= sst_byt_pcm_hw_free,
+ 	.trigger	= sst_byt_pcm_trigger,
+ 	.pointer	= sst_byt_pcm_pointer,
+ 	.mmap		= sst_byt_pcm_mmap,
 -- 
 2.20.1
 
