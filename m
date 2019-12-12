@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A012FC43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:16:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F20C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:16:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 21DA1214D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:16:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC4D2214D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:16:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TuQ0W2OS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21DA1214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FJMCFY+o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC4D2214D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75EC8169A;
-	Thu, 12 Dec 2019 02:15:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75EC8169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C6DF1676;
+	Thu, 12 Dec 2019 02:15:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C6DF1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576113372;
-	bh=mgGUMGwFS52sZlnhp42OYONmGLbX7H8Tw1UsdA1+zIQ=;
+	s=default; t=1576113406;
+	bh=W0iInprygXhe2jy2YBGPMblFInesbaTDI/zl+7avTYo=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TuQ0W2OSCnkKCBjNF5Hq4M1WrxT3pyC864/uKKYMcP43Tt+m7RDTESNMFl+mgu9Rq
-	 39WoEkwFsYQA52EWH9enMwbJbNbXnRYCDRCvQJ6XgsI1RIqZHgRqe/0WOVCg9yJFZN
-	 BMXRz5ScQMX4yBumpPW9+BGKz1DtLdWt79P19r50=
+	b=FJMCFY+oP7bNgaeO3WWap2y8J+MdG07iQQxCvu6EgNKZ86zVxQNAOyvE1k7PNOa6F
+	 zTD6a9oWCcW4ODKIu5y1sXuH54ls1HA0RpR3qjI/qQdnIpNNubIpVv9ny8ie/rGX4/
+	 8Cta3PPJK29bbeARzV4uvykF/nNxC3h5+W861pME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B62B6F802C3;
-	Thu, 12 Dec 2019 02:08:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28919F802E0;
+	Thu, 12 Dec 2019 02:08:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 108FCF802DB; Thu, 12 Dec 2019 02:08:50 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9666AF802C3
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:08:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9666AF802C3
-Date: 12 Dec 2019 10:08:45 +0900
-X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="34162141"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 12 Dec 2019 10:08:45 +0900
+ id 1FB34F802E0; Thu, 12 Dec 2019 02:08:56 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 44276F802DC
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:08:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44276F802DC
+Date: 12 Dec 2019 10:08:50 +0900
+X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="33945872"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 12 Dec 2019 10:08:50 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4DEFE400C42B;
- Thu, 12 Dec 2019 10:08:45 +0900 (JST)
-Message-ID: <878snie4f6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id ECD21414A69E;
+ Thu, 12 Dec 2019 10:08:49 +0900 (JST)
+Message-ID: <877e32e4f2.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +58,7 @@ In-Reply-To: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
 References: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 12/15] ASoC: samsung: neo1973_wm8753: use
+Subject: [alsa-devel] [PATCH 13/15] ASoC: samsung: speyside: use
 	snd_soc_dai_link_component for codec_conf
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,20 +84,20 @@ Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/samsung/neo1973_wm8753.c | 2 +-
+ sound/soc/samsung/speyside.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-index 38f536b..649d769 100644
---- a/sound/soc/samsung/neo1973_wm8753.c
-+++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -303,7 +303,7 @@ static struct snd_soc_aux_dev neo1973_aux_devs[] = {
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index 5ccdfe0..7491d16 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -247,7 +247,7 @@ static struct snd_soc_aux_dev speyside_aux_dev[] = {
  
- static struct snd_soc_codec_conf neo1973_codec_conf[] = {
+ static struct snd_soc_codec_conf speyside_codec_conf[] = {
  	{
--		.dev_name = "lm4857.0-007c",
-+		.dlc = COMP_CODEC_CNF("lm4857.0-007c"),
- 		.name_prefix = "Amp",
+-		.dev_name = "wm9081.1-006c",
++		.dlc = COMP_CODEC_CNF("wm9081.1-006c"),
+ 		.name_prefix = "Sub",
  	},
  };
 -- 
