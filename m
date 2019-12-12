@@ -2,66 +2,96 @@ Return-Path: <SRS0=r47B=2C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65D2CC43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 17:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3073AC43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 18:06:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C837B21655
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 17:24:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 448C121556
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 18:06:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mVCZeLkP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C837B21655
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aW77vifc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="uGZeFuek"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 448C121556
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1715F1700;
-	Thu, 12 Dec 2019 18:23:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1715F1700
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F38A16F5;
+	Thu, 12 Dec 2019 19:05:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F38A16F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576171445;
-	bh=zafKrkwr/br/ZmqrBBSVYjGRW3qH32yD8WJsjugNDYM=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1576174002;
+	bh=ZbQ+Mlj1mfwKPBO7mHt2eDqZ0MRssvimzRorn5+Tkes=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mVCZeLkPCOuYgwiC9u62iVR03v9anOXwuR0uEpvya6PT+IIAy18QaEVD2+4MfUFDq
-	 VMC3qLsfCNRn85DqbasmGs4VfWuPNJk/hJSa1URzNJMPj6d96EMoPWsP6ZPRTku4FG
-	 x2V6TcxCVKEtphSVNK2nu15u5RP3qGpvlQsGL+Nw=
+	b=aW77vifcnfU3COBri/oDcliMhm317vh+xFav27BtoS6DhyTRWk+8KJHeIdrgaUx3D
+	 fPQqh87pDjFqFDeN1lKarWHO/KWtXywPI+Ew7tzY0tje761dsCjyx63bD7jWchsvJr
+	 WyXw+//LPDQfJbTeN5gpeujpuc3EFl32LJVoRAmk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8843DF801D8;
-	Thu, 12 Dec 2019 18:23:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A42EF800EC;
+	Thu, 12 Dec 2019 19:05:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78E35F8020C; Thu, 12 Dec 2019 18:23:12 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 83A57F8020C; Thu, 12 Dec 2019 19:05:50 +0100 (CET)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
+ [IPv6:2607:f8b0:4864:20::d42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D1C7F80089
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 18:23:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D1C7F80089
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 90285AFA8;
- Thu, 12 Dec 2019 17:23:08 +0000 (UTC)
-Date: Thu, 12 Dec 2019 18:23:08 +0100
-Message-ID: <s5hh825fog3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <alpine.DEB.2.21.1912121902200.16459@zeliteleevi>
-References: <20191210145727.22054-1-tiwai@suse.de>
- <alpine.DEB.2.21.1912121902200.16459@zeliteleevi>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Use standard waitqueue for RIRB
-	wakeup
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A198F800EC
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 19:05:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A198F800EC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="uGZeFuek"
+Received: by mail-io1-xd42.google.com with SMTP id b10so2980379iof.11
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 10:05:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=h1PVTShbmTWPWoLzVKljKHRYw3rcqIPLwvlis0wSDhc=;
+ b=uGZeFuekrv7Zc4MOO091PIYsKXyeF/FwZfUf/VmtefCFnn3KJuevQ9b60DYdCvVANm
+ YBcNPL8S18NsVx5OehjETWmnBCr9ClopD0+tYCggVhw8nb5V/aDb9hTxM2FGbaI/8EZa
+ YVt1Lsdqbw8s8P8O9f+owG//TiP/QV8bqIl1MIu/BbdJi7vFA8tZCGDu1tZ26OZs5PQm
+ ipJRSK7FQGpgqpAIpMdteIJFpm0yMC8nXzV4V8+JBoLubSmQvU74ibd69tlx2GsfMxxs
+ rg2dremhaK3wWiRDM0WvEBj4Ew10byui7WDibVI5AF3QfeRZ6MD/RDo4J9kysPzbDFAn
+ D/Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=h1PVTShbmTWPWoLzVKljKHRYw3rcqIPLwvlis0wSDhc=;
+ b=BEu9aH/z76J55ivPi+iQol57otRZrTzFU81xPu3+NRFcS1MM5seBa1qdR/OIeSjwWi
+ azn3I7iJv0bgTCXasxhEzgIEEnxCTbQCXL7Bi3hgK8BB107bZUsaVo9LXAKAmfPq5gOF
+ qimlpDAca4Zzs1dLpGrFZKIyovNAtqaIoFM6Cm9wzMv11BLy/m8mgBFlhAKCW39jDHlP
+ afwhgmYVRzvONEe0aMVjp+4pmMbhMECgO0ZLxBFRfXocA2hW+0CNdVeTbnXk//Q7uJhG
+ ZY69AOCqwNwWrbehjp/bRDdsDWx7RtTRdouamKpmT9g7N2uNCs15EcIsWVu8xELxAtov
+ Iy3Q==
+X-Gm-Message-State: APjAAAUih4guRq74A5gwT81pJoyvydk7gDxIKIZFLqUbhZGFO/A7rJQM
+ /a8v49PTDaJVH9cdu3Ae674wrw/2T72BR3wx8t4Eaw==
+X-Google-Smtp-Source: APXvYqwk0AUqlLisz5L1ubxtjt4aBWDgQPfRFolNYD7szCHBfjyDpPgFqHnAhng0q0VqeOrf2zrZi/b9oaSoCMmcH0M=
+X-Received: by 2002:a5d:9953:: with SMTP id v19mr4153981ios.118.1576173945200; 
+ Thu, 12 Dec 2019 10:05:45 -0800 (PST)
+MIME-Version: 1.0
+References: <CGME20191128152110epcas3p2b205b4b55f6d8bfac42fcb8faaade93c@epcas3p2.samsung.com>
+ <20191128151908.180871-1-tzungbi@google.com>
+ <8aceb9ec-aa6e-1fa4-cee9-e22084c141e8@samsung.com>
+In-Reply-To: <8aceb9ec-aa6e-1fa4-cee9-e22084c141e8@samsung.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 13 Dec 2019 02:05:32 +0800
+Message-ID: <CA+Px+wXPa_cwdZUQfCx4jAhhj4Q9b7bNABUGazLKOJ7U5ae-mA@mail.gmail.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, Dylan Reid <dgreid@google.com>
+Subject: Re: [alsa-devel] [PATCH v2] ASoC: max98090: save and restore SHDN
+ when changing sensitive registers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,30 +109,53 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 12 Dec 2019 18:17:14 +0100,
-Kai Vehmanen wrote:
-> 
-> Hey,
-> 
-> On Tue, 10 Dec 2019, Takashi Iwai wrote:
-> 
-> > This patch attempts to improve the situation by introducing the
-> > standard waitqueue in the RIRB waiter side instead of polling.  The
-> 
-> this seems like a good change. It's a bit unfortunate this logic is not 
-> yet shared and SOF uses the variant in snd_hdac_bus_get_response() -- that 
-> would need similar treatment. I can make a matching change there and see 
-> how this fairs in SOF CI. But basic tests with snd-hda-intel on a few 
-> systems didn't reveal anything odd and code seems correct.
+On Thu, Dec 12, 2019 at 10:09 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+> -> #1 (&card->controls_rwsem){++++}:
+>         snd_ctl_add_replace+0x3c/0x84
+>         dapm_create_or_share_kcontrol+0x24c/0x2e0
+>         snd_soc_dapm_new_widgets+0x308/0x594
+>         snd_soc_bind_card+0x80c/0xac8
+>         devm_snd_soc_register_card+0x34/0x6c
+>         asoc_simple_probe+0x244/0x4a0
+>         platform_drv_probe+0x6c/0xa4
+>         really_probe+0x200/0x490
+>         driver_probe_device+0x78/0x1f8
+>         bus_for_each_drv+0x74/0xb8
+>         __device_attach+0xd4/0x16c
+>         bus_probe_device+0x88/0x90
+>         deferred_probe_work_func+0x3c/0xd0
+>         process_one_work+0x22c/0x7c4
+>         worker_thread+0x44/0x524
+>         kthread+0x130/0x164
+>         ret_from_fork+0x14/0x20
+>         0x0
+A key observation here is: the card registration got deferred.
 
-Yes, please, the adaption to SOF is really appreciated.
-This is a 5.6 material and I applied only the changes I could actually
-test as a start.
+>
+> -> #0 (&card->dapm_mutex){+.+.}:
+>         lock_acquire+0xe8/0x270
+>         __mutex_lock+0x9c/0xb18
+>         mutex_lock_nested+0x1c/0x24
+>         max98090_shdn_save+0x1c/0x28
+>         max98090_put_enum_double+0x20/0x40
+>         snd_ctl_ioctl+0x190/0xbb8
+>         do_vfs_ioctl+0xb0/0xab0
+>         ksys_ioctl+0x34/0x5c
+>         ret_fast_syscall+0x0/0x28
+>         0xbe9094dc
+And this is an ioctl( ) on a control (e.g. controlC0).
 
-
-thanks,
-
-Takashi
+I have no enough resources to test and trace the code temporarily.
+But is it possible:
+- snd_card_new( ) succeed in snd_soc_bind_card( ), so that userspace
+can see the control
+- code in later snd_soc_bind_card( ) decided to defer the probe
+- soc_cleanup_card_resources( ) may forget to clean the control?  (not
+sure about this)
+Then, when the card is instantiating next time, some userspace program
+tries to ioctl( ) to get the deadlock possibility and the NULL
+dereference.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
