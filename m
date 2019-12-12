@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF539C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEFE6C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:14:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 69F03214D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:14:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3D47B214D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:14:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oa11uInM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 69F03214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sWc7A84n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D47B214D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7D6D1676;
-	Thu, 12 Dec 2019 02:13:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7D6D1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 786B61689;
+	Thu, 12 Dec 2019 02:13:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 786B61689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576113251;
-	bh=yiaetYseVyy+xaefnLnOERNBse+9gSjd2Lxbn8akxYA=;
+	s=default; t=1576113288;
+	bh=jchN6TP6V0ysw9zMHZ4QR/9UIxIzKet+l6uJof3Ophg=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oa11uInMOmk1ZhBiiLE7iauMmZXsMt04mlPFaphFDlek3gl7b5RwrZ9avwX0OjzBH
-	 pGEyKvT5yOxuhxNI1Pl8gCvIJ2WWcUXqRHsekhCK8dpM2mjoSLLqi+BoDYiYPwIe24
-	 kWmUdduAd8Y4ixlCASlz1N4s9HT4zsc8TVDe8EVI=
+	b=sWc7A84nUZ2sNbcOU3BhRyyAgJozqZfTlqapjnmtYesVxYhwNkSZDI2YbzhrZKNBu
+	 W4pO/r++45K3VktwHKvuFAWmUdYB7LPHzTZF+Uayrm1lJ+cDhFwqicnPP6ieSR6aZz
+	 d6/fp9H2kyJbiA1/tdKFRzmdWEUgAucllffXKt4w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFAFFF8029A;
-	Thu, 12 Dec 2019 02:08:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38043F802A9;
+	Thu, 12 Dec 2019 02:08:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7F67F802A1; Thu, 12 Dec 2019 02:08:30 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 1AA8DF8029A
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:08:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AA8DF8029A
-Date: 12 Dec 2019 10:08:24 +0900
-X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="33945811"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 12 Dec 2019 10:08:24 +0900
+ id 50785F802BC; Thu, 12 Dec 2019 02:08:36 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9CE8AF802A0
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:08:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CE8AF802A0
+Date: 12 Dec 2019 10:08:30 +0900
+X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="34162104"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 12 Dec 2019 10:08:30 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 56AB2410F34D;
- Thu, 12 Dec 2019 10:08:24 +0900 (JST)
-Message-ID: <87d0cue4fr.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4FE2F4007F5F;
+ Thu, 12 Dec 2019 10:08:30 +0900 (JST)
+Message-ID: <87blsee4fl.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,8 +58,8 @@ In-Reply-To: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
 References: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 09/15] ASoC: mediatek: mt8183-da7219-max98357:
-	use snd_soc_dai_link_component for codec_conf
+Subject: [alsa-devel] [PATCH 10/15] ASoC: samsung: bells: use
+	snd_soc_dai_link_component for codec_conf
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,20 +84,20 @@ Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c | 2 +-
+ sound/soc/samsung/bells.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 43f99e5..581533c 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -367,7 +367,7 @@ static struct snd_soc_aux_dev mt8183_da7219_max98357_headset_dev = {
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index 58d8a81..c1bea86 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -381,7 +381,7 @@ static struct snd_soc_dai_link bells_dai_wm5110[] = {
  
- static struct snd_soc_codec_conf mt6358_codec_conf[] = {
+ static struct snd_soc_codec_conf bells_codec_conf[] = {
  	{
--		.dev_name = "mt6358-sound",
-+		.dlc = COMP_CODEC_CNF("mt6358-sound"),
- 		.name_prefix = "Mt6358",
+-		.dev_name = "wm9081.1-006c",
++		.dlc = COMP_CODEC_CNF("wm9081.1-006c"),
+ 		.name_prefix = "Sub",
  	},
  };
 -- 
