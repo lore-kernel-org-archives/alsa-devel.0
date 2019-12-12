@@ -2,68 +2,70 @@ Return-Path: <SRS0=r47B=2C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1333BC43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:54:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE255C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 17:18:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7ED32214AF
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:54:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D6ACE21655
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 17:18:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nv8NsPHH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7ED32214AF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rMTbRewZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6ACE21655
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5EAF16FC;
-	Thu, 12 Dec 2019 17:53:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5EAF16FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A240216FE;
+	Thu, 12 Dec 2019 18:17:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A240216FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576169649;
-	bh=7YDIksE1mIitffO6LLeU9AHG/BKxi8X6J9aHXTuFVS0=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576171096;
+	bh=6ppNckTsqy85ocQ3eOrH5x/FyPXQZ9FeCfrdcHt5Wec=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nv8NsPHH4iHx4kYLR0WxImZ3qiYWnEd/G+EF538uNFuopnKCsK91Jfc0iubQin1SV
-	 DrVi3JAnrcQeM//lKAobGmrbGxVqB1GgCKUm/ugD9pKG+KfcNhnmOeDFttELLlTSCh
-	 Vd8CLZPN5ahqO7BddJlWTcAFNQCbsHfeZY2dKbiM=
+	b=rMTbRewZTrQrQlk7Z5AQrcbB9lxv0WtxDCv1vXYmvm/PEioa4kVLLYdBVEnO3Hodx
+	 Gu5qlIStMvWLNQfw2zvBnGq+0bvnezClL/W1uMo+HWbEyRZJdIyLhMD046WOI7VTm0
+	 WE1MXEmbuw2Kab4Z0/yOP+mR2R3dZXCz+oGtOyv4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 272BBF801D8;
-	Thu, 12 Dec 2019 17:53:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32ABDF801D8;
+	Thu, 12 Dec 2019 18:17:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD471F8020C; Thu, 12 Dec 2019 17:53:17 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5E029F801D8
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 17:53:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E029F801D8
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 884F830E;
- Thu, 12 Dec 2019 08:53:13 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0452F3F6CF;
- Thu, 12 Dec 2019 08:53:12 -0800 (PST)
-Date: Thu, 12 Dec 2019 16:53:11 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Message-ID: <20191212165311.GK4310@sirena.org.uk>
-References: <1576065442-19763-1-git-send-email-shengjiu.wang@nxp.com>
- <20191212164835.GD10451@ediswmail.ad.cirrus.com>
+ id 19D3CF8020C; Thu, 12 Dec 2019 18:17:24 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 404B0F80089
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 18:17:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 404B0F80089
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 12 Dec 2019 09:17:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,306,1571727600"; d="scan'208";a="220736786"
+Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
+ by fmsmga001.fm.intel.com with ESMTP; 12 Dec 2019 09:17:15 -0800
+Date: Thu, 12 Dec 2019 19:17:14 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@zeliteleevi
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <20191210145727.22054-1-tiwai@suse.de>
+Message-ID: <alpine.DEB.2.21.1912121902200.16459@zeliteleevi>
+References: <20191210145727.22054-1-tiwai@suse.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-In-Reply-To: <20191212164835.GD10451@ediswmail.ad.cirrus.com>
-X-Cookie: We have DIFFERENT amounts of HAIR --
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: kstewart@linuxfoundation.org, guennadi.liakhovetski@linux.intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
- tiwai@suse.com, lgirdwood@gmail.com, patches@opensource.cirrus.com,
- tglx@linutronix.de, allison@lohutok.net
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8962: fix lambda value
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Use standard waitqueue for RIRB
+ wakeup
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,59 +78,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4231189140586567167=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hey,
 
---===============4231189140586567167==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ogUXNSQj4OI1q3LQ"
-Content-Disposition: inline
+On Tue, 10 Dec 2019, Takashi Iwai wrote:
 
+> This patch attempts to improve the situation by introducing the
+> standard waitqueue in the RIRB waiter side instead of polling.  The
 
---ogUXNSQj4OI1q3LQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+this seems like a good change. It's a bit unfortunate this logic is not 
+yet shared and SOF uses the variant in snd_hdac_bus_get_response() -- that 
+would need similar treatment. I can make a matching change there and see 
+how this fairs in SOF CI. But basic tests with snd-hda-intel on a few 
+systems didn't reveal anything odd and code seems correct.
 
-On Thu, Dec 12, 2019 at 04:48:35PM +0000, Charles Keepax wrote:
-> On Wed, Dec 11, 2019 at 07:57:22PM +0800, Shengjiu Wang wrote:
-> > According to user manual, it is required that FLL_LAMBDA > 0
-> > in all cases (Integer and Franctional modes).
-
-> How well tested is this change, and is it addressing an issue you
-> have observed? I agree this does better fit the datasheet just a
-> little nervous as its an older part that has seen a lot of usage.
-
-I've got a feeling that requirement might've been added in later
-versions of the datasheet...
-
---ogUXNSQj4OI1q3LQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3ycHYACgkQJNaLcl1U
-h9CUewf9HCpR8m1farmmx9Se1np+I9L3i4ncQb8j5AD1UGgSmhZMsNze4JTk6oWA
-9DT0aL69PsnCxrYL8gV8CMy0vJPKhLg3+nRQvb1aVsRPBbWbtFQkSZA4YJ/xnmuu
-lC7PGYlGH7XM2z8QU7XwRsZQVwZ183+1QF4srp4w+VSCDtTku8I4nHzVzCOvGMaF
-3T8dZQkGZ642sYUA3ZZCBRfVJOKIE/JsEQYLTksyOLqIAhjzvg31uyT+P1GnvZjV
-iD7C8zj22PjiICoEhOFk+0KpLcb38763CCxC7jF4Z3prrNY+jV0ExukK4VfG3vCh
-67xrgyK5Y7JF8tUgkZ5Zu9c9/ulLZQ==
-=q6x7
------END PGP SIGNATURE-----
-
---ogUXNSQj4OI1q3LQ--
-
---===============4231189140586567167==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Br, Kai
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4231189140586567167==--
