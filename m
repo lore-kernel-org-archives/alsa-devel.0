@@ -2,60 +2,64 @@ Return-Path: <SRS0=r47B=2C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7B85C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:07:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82D37C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:08:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 015ED214D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:07:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 08CD7214D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:08:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SgzVoiyN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 015ED214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JOhGUIk1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08CD7214D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E01DE1654;
-	Thu, 12 Dec 2019 02:07:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E01DE1654
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4AD41663;
+	Thu, 12 Dec 2019 02:07:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4AD41663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576112874;
-	bh=W8IxZd31T5KV6HFZSaBa/T7gwNguzlZZ6+60YIlfLv4=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SgzVoiyNYKhjQXj+d7l/w+qq8s8FtTjhVPPIKAomYNwdU1FHvHtwiDf/KY6F+UlyX
-	 A/KyjhLuvLkJSTJ4ZoM0wTmmlJWiY9osYRmNTWmKd5CWPqbCAM3tRTbj08TdMTpWy6
-	 WgOFHilYf1IiehKUL0JJKrPvOzUlFawu8TEgggYA=
+	s=default; t=1576112927;
+	bh=KMWswIwSBj1L/BZeypIbhsguzEsJsrfPmac2nfGwe2Q=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JOhGUIk1iCzN+ZIl/pqZZz6mLnBmElX5IxlsBUZtSK/g03k8zlvc4ofRsFUE0xPXI
+	 TkXu/QiuL8nUaFL/L+KoRs0Jf/W3gkNrkEZezIEQaSzrfjnXt+Xuk6QjZZU+izyGUq
+	 rik7RuWUfWJBQUXxYyOL/nkURrPOA+H4PGzLJ2Ew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DA03F8019B;
-	Thu, 12 Dec 2019 02:07:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51DCAF800F3;
+	Thu, 12 Dec 2019 02:07:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 439AAF801F4; Thu, 12 Dec 2019 02:07:02 +0100 (CET)
+ id 1571CF8023F; Thu, 12 Dec 2019 02:07:31 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 04E9BF800EC
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:06:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04E9BF800EC
-Date: 12 Dec 2019 10:06:53 +0900
-X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="33945616"
+ by alsa1.perex.cz (Postfix) with ESMTP id 090A2F80234
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:07:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 090A2F80234
+Date: 12 Dec 2019 10:07:24 +0900
+X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="33945682"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 12 Dec 2019 10:06:53 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 12 Dec 2019 10:07:24 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 75FB54007F5F;
- Thu, 12 Dec 2019 10:06:53 +0900 (JST)
-Message-ID: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 888454007F5F;
+ Thu, 12 Dec 2019 10:07:24 +0900 (JST)
+Message-ID: <87o8wee4hf.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
+References: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 00/15] ASoC: soc-core cleanup step7
+Subject: [alsa-devel] [PATCH 01/15] ASoC: soc-core: support
+	snd_soc_dai_link_component for codec_conf
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,49 +77,78 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+To find codec_conf component, it is using dev_name, of_node.
+But, we already has this kind of finding component method by
+snd_soc_dai_link_component, and snd_soc_is_matching_component().
+We shouldn't have duplicate implementation to do same things.
+This patch adds snd_soc_dai_link_component support to find
+codec_conf component.
 
-ASoC has codec_conf, and we are using original
-dev_name, of_node for it to finding codec.
-But, we already have snd_soc_dai_link_component method.
-We can reuse it for codec_conf, too.
-This patches are for it.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/soc.h  |  3 +++
+ sound/soc/soc-core.c | 18 +++++++++++-------
+ 2 files changed, 14 insertions(+), 7 deletions(-)
 
-Kuninori Morimoto (15):
-  ASoC: soc-core: support snd_soc_dai_link_component for codec_conf
-  ASoC: fsl: imx-audmix: use snd_soc_dai_link_component for codec_conf
-  ASoC: intel: kbl_da7219_max98927: use snd_soc_dai_link_component for codec_conf
-  ASoC: intel: kbl_rt5663_max98927: use snd_soc_dai_link_component for codec_conf
-  ASoC: intel: kbl_rt5663_rt5514_max98927: use snd_soc_dai_link_component for codec_conf
-  ASoC: intel: skl_nau88l25_ssm4567: use snd_soc_dai_link_component for codec_conf
-  ASoC: mediatek: mt8173-rt5650-rt5514: use snd_soc_dai_link_component for codec_conf
-  ASoC: mediatek: mt8173-rt5650-rt5676: use snd_soc_dai_link_component for codec_conf
-  ASoC: mediatek: mt8183-da7219-max98357: use snd_soc_dai_link_component for codec_conf
-  ASoC: samsung: bells: use snd_soc_dai_link_component for codec_conf
-  ASoC: samsung: lowland: use snd_soc_dai_link_component for codec_conf
-  ASoC: samsung: neo1973_wm8753: use snd_soc_dai_link_component for codec_conf
-  ASoC: samsung: speyside: use snd_soc_dai_link_component for codec_conf
-  ASoC: ti: rx51: use snd_soc_dai_link_component for codec_conf
-  ASoC: soc-core: remove legacy style of codec_conf
-
- include/sound/soc.h                                 |  4 ++--
- sound/soc/fsl/imx-audmix.c                          |  2 +-
- sound/soc/intel/boards/kbl_da7219_max98927.c        |  8 ++++----
- sound/soc/intel/boards/kbl_rt5663_max98927.c        |  4 ++--
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c |  4 ++--
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c       |  4 ++--
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c    |  2 +-
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c    |  2 +-
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c  |  2 +-
- sound/soc/samsung/bells.c                           |  2 +-
- sound/soc/samsung/lowland.c                         |  2 +-
- sound/soc/samsung/neo1973_wm8753.c                  |  2 +-
- sound/soc/samsung/speyside.c                        |  2 +-
- sound/soc/soc-core.c                                | 12 +++++-------
- sound/soc/ti/rx51.c                                 | 12 ++++++------
- 15 files changed, 31 insertions(+), 33 deletions(-)
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 82e6523..dab1212 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -949,6 +949,7 @@ struct snd_soc_dai_link {
+ #define COMP_CODEC(_name, _dai)		{ .name = _name, .dai_name = _dai, }
+ #define COMP_PLATFORM(_name)		{ .name = _name }
+ #define COMP_AUX(_name)			{ .name = _name }
++#define COMP_CODEC_CNF(_name)		{ .name = _name }
+ #define COMP_DUMMY()			{ .name = "snd-soc-dummy", .dai_name = "snd-soc-dummy-dai", }
+ 
+ extern struct snd_soc_dai_link_component null_dailink_component[0];
+@@ -962,6 +963,8 @@ struct snd_soc_codec_conf {
+ 	const char *dev_name;
+ 	struct device_node *of_node;
+ 
++	struct snd_soc_dai_link_component dlc;
++
+ 	/*
+ 	 * optional map of kcontrol, widget and path name prefixes that are
+ 	 * associated per device
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index ee77db2..411b83b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1185,12 +1185,16 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
+ 	for (i = 0; i < card->num_configs; i++) {
+ 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
+ 
+-		if (map->of_node && of_node != map->of_node)
+-			continue;
+-		if (map->dev_name && strcmp(component->name, map->dev_name))
+-			continue;
+-		component->name_prefix = map->name_prefix;
+-		return;
++		/* fixme */
++		if (map->dev_name)
++			map->dlc.name = map->dev_name;
++		if (map->of_node)
++			map->dlc.of_node = map->of_node;
++
++		if (snd_soc_is_matching_component(&map->dlc, component)) {
++			component->name_prefix = map->name_prefix;
++			return;
++		}
+ 	}
+ 
+ 	/*
+@@ -2915,7 +2919,7 @@ void snd_soc_of_parse_node_prefix(struct device_node *np,
+ 		return;
+ 	}
+ 
+-	codec_conf->of_node	= of_node;
++	codec_conf->dlc.of_node	= of_node;
+ 	codec_conf->name_prefix	= str;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_node_prefix);
 -- 
 2.7.4
 
