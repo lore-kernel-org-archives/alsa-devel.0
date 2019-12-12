@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46254C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B6A4C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:10:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5387214D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:09:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CFE54214D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:10:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F9vr1fyl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5387214D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="knobB+/x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFE54214D8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13B59167B;
-	Thu, 12 Dec 2019 02:08:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B59167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C710167A;
+	Thu, 12 Dec 2019 02:09:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C710167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576112975;
-	bh=BIFxSgRCskQgjl/08XXGUWhOXqi7XYf3ofU6QC4deAw=;
+	s=default; t=1576113019;
+	bh=NVt7OQV/t9LDWU3kBJvJHSY8dth8bBZKm/u45VR6JUg=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F9vr1fylXhGO8hEsY5/dPSuPAj+x61hqPGXjUAH+7Hak86CFD7I3V0QyZXqt+vIF2
-	 dT1WdovTHZsV5ajA1ign7f8W+oj3HKDUspYuQfpK8Pdegc1qbBhlmRXIJhJ0/RpslD
-	 6wMNSOo+uR5rVQPdJuu8agifJhai0DnoNa021MUQ=
+	b=knobB+/x9bmSbER/2+TgIt4BRjTgW3DdLcViLl0IlYIR52JZBiwnH7upYAtqF8/tl
+	 /r8I7X07xF7ZE5pkNVFsoJoufMXChPVTaNqfG/4d3YMVWds1DVfYbOqP6X2guZ8yLC
+	 A0m5DtMaM3F8aqVaefKr9LS2FZ5Vd6IM4/8g3AC0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 480FCF80256;
-	Thu, 12 Dec 2019 02:07:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5229BF8019B;
+	Thu, 12 Dec 2019 02:07:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA4ADF80257; Thu, 12 Dec 2019 02:07:36 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7394CF80234
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:07:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7394CF80234
-Date: 12 Dec 2019 10:07:31 +0900
-X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="33945694"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 12 Dec 2019 10:07:31 +0900
+ id 5A828F8025E; Thu, 12 Dec 2019 02:07:55 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A9E77F80258
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:07:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9E77F80258
+Date: 12 Dec 2019 10:07:44 +0900
+X-IronPort-AV: E=Sophos;i="5.69,303,1571670000"; d="scan'208";a="34162009"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 12 Dec 2019 10:07:44 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id EC080400C42B;
- Thu, 12 Dec 2019 10:07:30 +0900 (JST)
-Message-ID: <87mubye4h9.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id BC7954157410;
+ Thu, 12 Dec 2019 10:07:44 +0900 (JST)
+Message-ID: <87lfrie4gv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +58,7 @@ In-Reply-To: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
 References: <87pngue4ia.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 02/15] ASoC: fsl: imx-audmix: use
+Subject: [alsa-devel] [PATCH 03/15] ASoC: intel: kbl_da7219_max98927: use
 	snd_soc_dai_link_component for codec_conf
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,22 +84,43 @@ Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/fsl/imx-audmix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/kbl_da7219_max98927.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 71590ca..5ef6881 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -289,7 +289,7 @@ static int imx_audmix_probe(struct platform_device *pdev)
- 		priv->dai[num_dai + i].ignore_pmdown_time = 1;
- 		priv->dai[num_dai + i].ops = &imx_audmix_be_ops;
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 829f95f..2511c05 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -571,12 +571,12 @@ static struct snd_soc_ops skylake_refcap_ops = {
+ static struct snd_soc_codec_conf max98927_codec_conf[] = {
  
--		priv->dai_conf[i].of_node = args.np;
-+		priv->dai_conf[i].dlc.of_node = args.np;
- 		priv->dai_conf[i].name_prefix = dai_name;
+ 	{
+-		.dev_name = MAX98927_DEV0_NAME,
++		.dlc = COMP_CODEC_CNF(MAX98927_DEV0_NAME),
+ 		.name_prefix = "Right",
+ 	},
  
- 		priv->dapm_routes[i].source =
+ 	{
+-		.dev_name = MAX98927_DEV1_NAME,
++		.dlc = COMP_CODEC_CNF(MAX98927_DEV1_NAME),
+ 		.name_prefix = "Left",
+ 	},
+ };
+@@ -584,12 +584,12 @@ static struct snd_soc_codec_conf max98927_codec_conf[] = {
+ static struct snd_soc_codec_conf max98373_codec_conf[] = {
+ 
+ 	{
+-		.dev_name = MAX98373_DEV0_NAME,
++		.dlc = COMP_CODEC_CNF(MAX98373_DEV0_NAME),
+ 		.name_prefix = "Right",
+ 	},
+ 
+ 	{
+-		.dev_name = MAX98373_DEV1_NAME,
++		.dlc = COMP_CODEC_CNF(MAX98373_DEV1_NAME),
+ 		.name_prefix = "Left",
+ 	},
+ };
 -- 
 2.7.4
 
