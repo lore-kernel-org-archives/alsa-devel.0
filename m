@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41B97C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:47:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57682C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:47:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C04B4222C4
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:47:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D442A22527
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 01:47:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QCqQB8kj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C04B4222C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gDarfQzL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D442A22527
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F4151690;
-	Thu, 12 Dec 2019 02:46:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F4151690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 297FD169D;
+	Thu, 12 Dec 2019 02:47:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 297FD169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576115226;
-	bh=amrqqRX5wteWEjhOBJjhzJNPzmCqY0Nh2r/8Ag9LLko=;
+	s=default; t=1576115274;
+	bh=syBxWHNLgbdqw7c7cJwGJbyivJ3ihuv9AhP3aGYcFvk=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QCqQB8kj3BB/LxYVw/LRcKeojLMonzWFI48/NFQzbcRJiX0LAu2N5UHdpFTssNa4b
-	 iMdmBMrm3KL6ajMCT/3S0VxqlIujyuLkLeGohc4uIB53rKDvKN9hhZ2B13eGz1pj1s
-	 Mcqz0GTdbjeX1rj3Axo9bPod6bEl7OeK3pa5xcY0=
+	b=gDarfQzLLrIk5dd78morvxiHGqKN8eW2CuF462t6G9JY5W5EWz8saX3PWewb+lsm8
+	 Wf+xXOKzrymhkHyHSTKR2XM1+XsIaNo6oepMN82SkscAKD8jbZEwBFBePcsX7Q72TG
+	 JgSXgiQVxFgVKeC0OxaK90bMwEu+JDfKXzKHVblA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68C5DF8023E;
-	Thu, 12 Dec 2019 02:45:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAACAF801F4;
+	Thu, 12 Dec 2019 02:45:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62F9CF8023F; Thu, 12 Dec 2019 02:45:22 +0100 (CET)
+ id DCACAF801F4; Thu, 12 Dec 2019 02:45:23 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C05C0F8011E
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:45:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C05C0F8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50680F801F4
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 02:45:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50680F801F4
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 11 Dec 2019 17:45:14 -0800
+ 11 Dec 2019 17:45:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,303,1571727600"; d="scan'208";a="296446043"
+X-IronPort-AV: E=Sophos;i="5.69,303,1571727600"; d="scan'208";a="296446059"
 Received: from gjang-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.252.207.37])
- by orsmga001.jf.intel.com with ESMTP; 11 Dec 2019 17:45:12 -0800
+ by orsmga001.jf.intel.com with ESMTP; 11 Dec 2019 17:45:14 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed, 11 Dec 2019 19:44:57 -0600
-Message-Id: <20191212014507.28050-2-pierre-louis.bossart@linux.intel.com>
+Date: Wed, 11 Dec 2019 19:44:58 -0600
+Message-Id: <20191212014507.28050-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191212014507.28050-1-pierre-louis.bossart@linux.intel.com>
 References: <20191212014507.28050-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v5 01/11] soundwire: sdw_slave: add
-	probe_complete structure and new fields
+Subject: [alsa-devel] [PATCH v5 02/11] soundwire: sdw_slave: add
+	enumeration_complete structure
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,76 +89,62 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When a Slave device becomes synchronized with the bus, it may report
-its presence in PING frames, as well as optionally asserting an
-in-band PREQ signal.
+When the Master starts the bus (be it during the initial boot or
+system resume), it usually performs a HardReset to make sure
+electrical levels are correct, then enables the control channel.
 
-The bus driver will detect a new Device0, start the enumeration
-process and assign it a non-zero device number. The SoundWire
-enumeration provides an arbitration to deal with multiple Slaves
-reporting ATTACHED at the same time. The bus driver will also invoke
-the driver .probe() callback associated with this device. The probe()
-depends on the Linux device core, which handles the match operations
-and may result in modules being loaded.
+While the PM framework guarantees that the Slave devices will only
+become 'active' once the Master completes the bus initialization,
+there is still a risk of a race condition: the Slave enumeration is
+handled in a separate interrupt thread triggered by hardware status
+changes, so the Slave device may not be ready to accept commands when
+the Slave driver tries to access the registers and restore settings in
+its resume or pm_runtime_resume callbacks. In those cases, any
+read/write commands from/to the Slave device will result in a timeout.
 
-Once the non-zero device number is programmed, the Slave will report
-its new status in PING frames and the Master hardware will typically
-report this status change with an interrupt. At this point, the
-.update_status() callback of the codec driver will be invoked (usually
-from an interrupt thread or workqueue scheduled from the interrupt
-thread).
+This patch adds an enumeration_complete structure. When the bus is
+goes through a HardReset sequence and restarted, the Slave will be
+marked as UNATTACHED, which will result in a call to
+init_completion().
 
-The first race condition which can happen is between the .probe(),
-which allocates the resources, and .update_status() where
-initializations are typically handled. The .probe() is only called
-once during the initial boot, while .update_status() will be called
-for every bus hardware reset and if the Slave device loses
-synchronization (an unlikely event but with non-zero probability).
+When the Slave reports its presence during PING frames as a non-zero
+Device, the Master hardware will issue an interrupt and the bus driver
+will invoke complete(). The order between init_completion()/complete()
+is predictable since this is a Master-initiated transition.
 
-The time difference between the end of the enumeration process and a
-change of status reported by the hardware may be as small as one
-SoundWire PING frame. The scheduling of the interrupt thread, which
-invokes .update_status() is not deterministic, but can be small enough
-to create a race condition. With a 48 kHz frame rate and ideal
-scheduling cases, the .probe() may be pre-empted within double-digit
-microseconds.
-
-Since there is no guarantee that the .probe() completes by the time
-.update_status() is invoked as a result of an interrupt, it's not
-unusual for the .update_status() to rely on data structures that have
-not been allocated yet, leading to kernel oopses.
-
-This patch adds a probe_complete utility, which is used in the
-sdw_update_slave_status() routine. The codec driver does not need to
-do anything and can safely assume all resources are allocated in its
-update_status() callback.
+The Slave driver may use wait_for_completion() in its resume callback.
+When regmap is used, the Slave driver will typically set its regmap in
+cache-only mode on suspend, then on resume block on
+wait_for_completion(&enumeration_complete) to guarantee it is safe to
+start read/write transactions. It may then exit the cache-only mode
+and use a regmap_sync to restore settings. All these steps are
+optional, their use completely depends on the Slave device
+capabilities and how the Slave driver is implemented.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/linux/soundwire/sdw.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/soundwire/sdw.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 28745b9ba279..cb1db4a7475d 100644
+index cb1db4a7475d..3fa8d875b16b 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -547,6 +547,10 @@ struct sdw_slave_ops {
-  * @node: node for bus list
-  * @port_ready: Port ready completion flag for each Slave port
-  * @dev_num: Device Number assigned by Bus
-+ * @probed: boolean tracking driver state
-+ * @probe_complete: completion utility to control potential races
-+ * on startup between driver probe/initialization and SoundWire
-+ * Slave state changes/implementation-defined interrupts
+@@ -551,6 +551,9 @@ struct sdw_slave_ops {
+  * @probe_complete: completion utility to control potential races
+  * on startup between driver probe/initialization and SoundWire
+  * Slave state changes/implementation-defined interrupts
++ * @enumeration_complete: completion utility to control potential races
++ * on startup between device enumeration and read/write access to the
++ * Slave device
   */
  struct sdw_slave {
  	struct sdw_slave_id id;
-@@ -561,6 +565,8 @@ struct sdw_slave {
- 	struct list_head node;
- 	struct completion *port_ready;
+@@ -567,6 +570,7 @@ struct sdw_slave {
  	u16 dev_num;
-+	bool probed;
-+	struct completion probe_complete;
+ 	bool probed;
+ 	struct completion probe_complete;
++	struct completion enumeration_complete;
  };
  
  #define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
