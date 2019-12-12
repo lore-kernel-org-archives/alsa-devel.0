@@ -2,66 +2,70 @@ Return-Path: <SRS0=r47B=2C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 791DAC43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:34:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE4A2C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:49:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8750F22527
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:34:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 479C522527
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 16:49:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F+vE4D4V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8750F22527
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=the-dreams.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nfhDS6yD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 479C522527
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60D9816F0;
-	Thu, 12 Dec 2019 17:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60D9816F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C1DF16F5;
+	Thu, 12 Dec 2019 17:48:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C1DF16F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576168459;
-	bh=NggzBJHakpXS3ziO/oBEyKWZeypvnk2t8caUMnE+hRo=;
+	s=default; t=1576169348;
+	bh=sZb6IM9j/7VCu3igqkZPn38KDIobyWyPmUul2sKghL8=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F+vE4D4VCbIIrglmxQqOtO9KhI3yIQHXAg3lxt1Gig8ABoXp6xCwTx+iEvVwwg/RG
-	 t3I61WJUkQGee0YckpMFyII/igLmNQ9zxsALwbqLHaHwTN0fmZhHXTFZOtNUnad69i
-	 Ik5lfVbd1n1WJ8yLbhM7QfcbM0l4GkeEvdGLX24c=
+	b=nfhDS6yD5qnj2rstX4aqH1OKcrtV7Y9b+YKtSoFzqk7PiwnD7jPwPHPUcP3briFjz
+	 cfuWsXTBSEUFlud2zhLlU9d9J01Rte/e7AWL7smjfElnCauNfgEuBlON1kQC3hibJs
+	 OddZ66fys0rX06ENyDaJHd5SYFYA7UOpvItkH7Ak=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3D88F801D8;
-	Thu, 12 Dec 2019 17:33:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5D96F801D8;
+	Thu, 12 Dec 2019 17:48:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0542F8020C; Thu, 12 Dec 2019 17:33:27 +0100 (CET)
-Received: from pokefinder.org (sauhun.de [88.99.104.3])
- by alsa1.perex.cz (Postfix) with ESMTP id 5D143F80139
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 17:33:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D143F80139
-Received: from localhost (p54B331D1.dip0.t-ipconnect.de [84.179.49.209])
- by pokefinder.org (Postfix) with ESMTPSA id 7C6252C04D8;
- Thu, 12 Dec 2019 17:33:23 +0100 (CET)
-Date: Thu, 12 Dec 2019 17:33:15 +0100
-From: Wolfram Sang <wsa@the-dreams.de>
-To: Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <20191212163315.GA3932@kunai>
-References: <20191209183511.3576038-1-daniel@zonque.org>
- <20191209183511.3576038-9-daniel@zonque.org>
- <64adf5d7-754a-f1da-aa9b-11579c5a2780@lucaceresoli.net>
+ id 1627FF80139; Thu, 12 Dec 2019 17:48:16 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9ACA3F80139
+ for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 17:48:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ACA3F80139
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6378930E;
+ Thu, 12 Dec 2019 08:48:11 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6B6C3F6CF;
+ Thu, 12 Dec 2019 08:48:10 -0800 (PST)
+Date: Thu, 12 Dec 2019 16:48:09 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <20191212164809.GH4310@sirena.org.uk>
+References: <CGME20191128152110epcas3p2b205b4b55f6d8bfac42fcb8faaade93c@epcas3p2.samsung.com>
+ <20191128151908.180871-1-tzungbi@google.com>
+ <8aceb9ec-aa6e-1fa4-cee9-e22084c141e8@samsung.com>
+ <129540e9-a4e8-3d01-41bc-e7c9c04bbefe@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <64adf5d7-754a-f1da-aa9b-11579c5a2780@lucaceresoli.net>
+In-Reply-To: <129540e9-a4e8-3d01-41bc-e7c9c04bbefe@samsung.com>
+X-Cookie: We have DIFFERENT amounts of HAIR --
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de,
- sboyd@kernel.org, mturquette@baylibre.com, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org,
- linux-i2c@vger.kernel.org, pascal.huerst@gmail.com, lee.jones@linaro.org,
- linux-clk@vger.kernel.org, Daniel Mack <daniel@zonque.org>
-Subject: Re: [alsa-devel] [PATCH 07/10] i2c: Add driver for AD242x bus
-	controller
+Cc: alsa-devel@alsa-project.org,
+ 'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>, cychiang@google.com,
+ Krzysztof Kozlowski <krzk@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, dgreid@google.com
+Subject: Re: [alsa-devel] [PATCH v2] ASoC: max98090: save and restore SHDN
+ when changing sensitive registers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,64 +78,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6330739092897047890=="
+Content-Type: multipart/mixed; boundary="===============4738326992772696617=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============6330739092897047890==
+--===============4738326992772696617==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+	protocol="application/pgp-signature"; boundary="U3BNvdZEnlJXqmh+"
 Content-Disposition: inline
 
 
---x+6KMIRAuhnl3hBn
+--U3BNvdZEnlJXqmh+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Luca,
+On Thu, Dec 12, 2019 at 05:02:50PM +0100, Marek Szyprowski wrote:
+> On 12.12.2019 15:09, Marek Szyprowski wrote:
 
-thanks for the review!
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-> good, but I think there's a problem in this function. A "normal"
-> master_xfer function issues a repeated start between one msg and the
-> next one, at least in the typical case where all msgs have the same
-> slave address. Your implementation breaks repeated start. At first sight
-> we might need more complex code here to coalesce all consecutive msgs
-> with the same address into a single i2c_transfer() call.
+> >> +static void max98090_shdn_save(struct max98090_priv *max98090)
+> >> +{
+> >> + mutex_lock(&max98090->component->card->dapm_mutex);
 
-Note that it is by far the standard case that all messages in a transfer
-have the same client address (99,999%?). But technically, this is not a
-requirement and the repeated start on the bus is totally independent of
-the addresses used. It is just a master wanting to send without being
-interrupted by another master.
+> The NULL pointer dereference demonstrated above is caused by=20
+> max98090->component->card being NULL here. Adding a simple !=3D NULL chec=
+k=20
+> here and in the max98090_shdn_restore() function fixes the boot issue,=20
+> although the deplock warning is still there. The question is that is the=
+=20
+> max98090->component->card being NULL is a normal case or something that=
+=20
+> needs further analysis.
 
-   Wolfram
+It'd be good to get a bit more analysis, the _shdn_save() call looks to
+have come from a userspace write and we shouldn't be exposing the card
+and hence the controls on the card to userspace until it's fully
+instantiated.
 
-
---x+6KMIRAuhnl3hBn
+--U3BNvdZEnlJXqmh+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl3ya8cACgkQFA3kzBSg
-KbZBdQ/6ApPjJEPmloupECtcOPxRdHIBMJSbDi9HpBk6QSvFwtknvv6ybcJHJ3Dc
-2GkbUK4EAcDvvDx4mTqhw7t8JPay3Bu3O13a/wXP5PDb7DeHJ5xDaBsEYVLC9id2
-E1I5aEfdrrxsL1HFUZn86BmmthMuupvelZAyfL7pXDT3AU5oNkPipfKzoiC0EiBP
-MPu2HN8BIX7l1ECvOL9j0pZYCfz00UHA4PtWHwz7zjiCG7RmY3qlm6xw5l6XFeq3
-wbcmTXcLr8OIG/8sw0PMJjJFqHfH9Vlj8aYcRrsgjDEHQbSTKAQ/RTDw9rcmAktW
-/1u6RUea0ckwX6rhKWZSXVktPzCV5LWaywD6lsMGXxhF/0T2tvKRqV6+xIngUY3n
-8KnzpK2i3gvLmP9BYYxa/BM8qiuR4SimZi35lmofttUzXUs/5fgJwxFg2UuJqpPD
-Ex/lyLc1AUbRRp8mDsSMsGg7Ku6WUt5T7OxmVjzvIYPLJ84GlTvZLA4WIskzWFVw
-aZ2+E4YZq35snfMfawdrDmTOOmNOEPfVuT5Cm2ul1HVTprAgF/DVkQHVWPzNtOo9
-xxwPgX9lrN0I+Ek2F1kSJguphMzVjIFRvFCl77TJUQ7qvBEWYDLQs1hBdmXieBxA
-bNZoxeVI6DmFF5qTxkQ3Qh9NUGWkPKuslRF2Fh7dWQIoS9FauJo=
-=Gmcp
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl3yb0gACgkQJNaLcl1U
+h9C/Wgf/Y7I6BrvNaFrXEHzt/taVhn/ZZlQSgnHib0N9rpkW7Zf1L//y4/7mCnDu
+qJGJ5JruhXB4XgVIlHKcLVOLf56SLMRIMyFg/hg92q0osUO1B3otOdzHRoWLXlms
+VAJK9oarfeMgC3YZ3Z0DGKTUlpco0nl9QCs34Rv0E0Aff78l82UBpbDjjnntXGI+
+ljNTxjoMrfsiyY4qORmoj8kOrEqamZPawYLLOxmyd9NKCbAldAOXj0cBJ82y8/ua
+unOYRfbXfswv5Ah6w3xrjUo/2Zqbc9s1PgQl4J2pYxyROaIUA4LNdq3a1UUjRth2
+BBzbbMKZt6G+oBpRzW9dAuknlEIwqA==
+=5wJQ
 -----END PGP SIGNATURE-----
 
---x+6KMIRAuhnl3hBn--
+--U3BNvdZEnlJXqmh+--
 
---===============6330739092897047890==
+--===============4738326992772696617==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -142,4 +149,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============6330739092897047890==--
+--===============4738326992772696617==--
