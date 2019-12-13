@@ -2,81 +2,82 @@ Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6B29C43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 07:22:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F984C43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 07:23:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7783C22527
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 07:22:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8AFF222527
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 07:23:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gRF6a8Rl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nK0mkKVm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7783C22527
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aIMXDX3W";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="2flDD/pR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AFF222527
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1008174D;
-	Fri, 13 Dec 2019 08:21:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1008174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2F741763;
+	Fri, 13 Dec 2019 08:22:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2F741763
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576221750;
-	bh=rR/lvCLT0WEZbtsCoEHcUGpPkz18OzVz8zmsp4gNbPk=;
+	s=default; t=1576221810;
+	bh=DoDJNL5jhfS3LXyUuyZDlAVWNiN11gzO8PPHtkVCMFY=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gRF6a8RlZjzUIttI/pD4TsZ/U8AdVthksUuRV+O1/Azr3cDt806UJq8lCXrrikIjy
-	 OGdzwpHrm6IeHeIl6wwxag+QmA2Eo3pPVt9xLpLcUswdjbqOamAzBkG1RBtmPdJIA5
-	 BelNl1O7pgArCKnKGWfK+n+7D2IqvAyeujC6joDY=
+	b=aIMXDX3WQnYjR0m4l2EYfjkqTRdrfgZ7UJRy+wMHfUoRuvGKVvHCnWTKOPhqmOjvz
+	 f4AZ41tWs9HHzZa5wzXYG4F2JTBBX3Spm4agJTaihZ0uo88VN2W2auY/tRz65h4aKV
+	 WVGAKhCa8AHUj3bvBihtoQZu8vj2/bahbwfUHNrA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99E80F8019B;
-	Fri, 13 Dec 2019 08:21:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62609F801F4;
+	Fri, 13 Dec 2019 08:22:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6DC3F801F4; Fri, 13 Dec 2019 08:21:36 +0100 (CET)
+ id 1A2B9F8021E; Fri, 13 Dec 2019 08:22:39 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C1C1F80139
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 08:21:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C1C1F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B412F800AB
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 08:22:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B412F800AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nK0mkKVm"
+ header.b="2flDD/pR"
 Received: from localhost (unknown [84.241.199.142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AF17A22527;
- Fri, 13 Dec 2019 07:21:29 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E955222527;
+ Fri, 13 Dec 2019 07:22:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576221690;
- bh=1irYrXGOcxexWbuIpAf9P38P6DG0tz6DxNZJDv6EmtE=;
+ s=default; t=1576221754;
+ bh=0sPm7J7BCIEhMIoIedEg2UHth35LruEqtDCfrEnZ7Vs=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=nK0mkKVmXw7yPAns6tFG57mYIF/DC4ECaDxa6MTMHPSLqnk+MSMsR085zVutvYQAV
- 7UYPqnsEhYcTghhvcofVsrcuPD2B/7IRgn+8EPaWeCWXZbUDRoQSgvL7oOtB+XzUcm
- pjE/UUBFae5wZF8Yqo2aWF/lI+X0Txh4bbAcpKTM=
-Date: Fri, 13 Dec 2019 08:21:27 +0100
+ b=2flDD/pRkDALP6RVioapKjvMd3DFwlByvJfqSwkUOzH4yhMOzaWu38P/krZc6cA4Y
+ fEKZ0sbG0hWTa4ccqYWjXdK6wy+iPKQMAlcUiZ4cpvW14Cfx8ti65ilWrLypCL6E2z
+ hO47UMngPqdR2r53YuwyJErkX1obP+uB1JvrdHD0=
+Date: Fri, 13 Dec 2019 08:22:31 +0100
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191213072127.GD1750354@kroah.com>
+Message-ID: <20191213072231.GE1750354@kroah.com>
 References: <20191213050409.12776-1-pierre-louis.bossart@linux.intel.com>
- <20191213050409.12776-7-pierre-louis.bossart@linux.intel.com>
+ <20191213050409.12776-8-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20191213050409.12776-7-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191213050409.12776-8-pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
  slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: add support for
-	sdw_slave_type
+Subject: Re: [alsa-devel] [PATCH v4 07/15] soundwire: slave: move uevent
+	handling to slave
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,58 +95,69 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Dec 12, 2019 at 11:04:00PM -0600, Pierre-Louis Bossart wrote:
-> Currently the bus does not have any explicit support for master
-> devices.
-> 
-> First add explicit support for sdw_slave_type and error checks if this type
-> is not set.
-> 
-> In follow-up patches we can add support for the sdw_md_type (md==Master
-> Device), following the Grey Bus example.
+On Thu, Dec 12, 2019 at 11:04:01PM -0600, Pierre-Louis Bossart wrote:
+> Currently the code deals with uevents at the bus level, but we only care
+> for Slave events
 
-How are you using greybus as an example of "master devices"?  All you
-are doing here is setting the type of the existing devices, right?
-
+What does this mean?  I can't understand it, can you please provide more
+information on what you are doing here?
 
 > 
+> Suggested-by: Vinod Koul <vkoul@kernel.org>
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  drivers/soundwire/bus_type.c       | 16 ++++++++++++----
->  drivers/soundwire/slave.c          |  7 ++++++-
->  include/linux/soundwire/sdw_type.h |  6 ++++++
->  3 files changed, 24 insertions(+), 5 deletions(-)
+>  drivers/soundwire/bus.h      | 2 ++
+>  drivers/soundwire/bus_type.c | 3 +--
+>  drivers/soundwire/slave.c    | 1 +
+>  3 files changed, 4 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> index cb482da914da..be01a5f3d00b 100644
+> --- a/drivers/soundwire/bus.h
+> +++ b/drivers/soundwire/bus.h
+> @@ -6,6 +6,8 @@
+>  
+>  #define DEFAULT_BANK_SWITCH_TIMEOUT 3000
+>  
+> +int sdw_uevent(struct device *dev, struct kobj_uevent_env *env);
+> +
+>  #if IS_ENABLED(CONFIG_ACPI)
+>  int sdw_acpi_find_slaves(struct sdw_bus *bus);
+>  #else
 > diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-> index 9a0fd3ee1014..bbdedce5eb26 100644
+> index bbdedce5eb26..5c18c21545b5 100644
 > --- a/drivers/soundwire/bus_type.c
 > +++ b/drivers/soundwire/bus_type.c
-> @@ -49,13 +49,21 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
+> @@ -47,7 +47,7 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
+>  			slave->id.mfg_id, slave->id.part_id);
+>  }
 >  
->  static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+> -static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+> +int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
 >  {
-> -	struct sdw_slave *slave = to_sdw_slave_device(dev);
-> +	struct sdw_slave *slave;
+>  	struct sdw_slave *slave;
 >  	char modalias[32];
+> @@ -71,7 +71,6 @@ static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  struct bus_type sdw_bus_type = {
+>  	.name = "soundwire",
+>  	.match = sdw_bus_match,
+> -	.uevent = sdw_uevent,
+>  };
+>  EXPORT_SYMBOL_GPL(sdw_bus_type);
 >  
-> -	sdw_slave_modalias(slave, modalias, sizeof(modalias));
-> +	if (is_sdw_slave(dev)) {
-> +		slave = to_sdw_slave_device(dev);
-> +
-> +		sdw_slave_modalias(slave, modalias, sizeof(modalias));
->  
-> -	if (add_uevent_var(env, "MODALIAS=%s", modalias))
-> -		return -ENOMEM;
-> +		if (add_uevent_var(env, "MODALIAS=%s", modalias))
-> +			return -ENOMEM;
-> +	} else {
-> +		/* only Slave device type supported */
-> +		dev_warn(dev, "uevent for unknown Soundwire type\n");
-> +		return -EINVAL;
+> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+> index c87267f12a3b..014c3ece1f17 100644
+> --- a/drivers/soundwire/slave.c
+> +++ b/drivers/soundwire/slave.c
+> @@ -17,6 +17,7 @@ static void sdw_slave_release(struct device *dev)
+>  struct device_type sdw_slave_type = {
+>  	.name =		"sdw_slave",
+>  	.release =	sdw_slave_release,
+> +	.uevent = sdw_uevent,
 
-Right now, this can not happen, right?
+Align this with the other ones?
 
-Not a problem, just trying to understand the sequence of patches here...
+does this cause any different functionality?
 
 thanks,
 
