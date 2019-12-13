@@ -2,77 +2,66 @@ Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9A54C3436B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F9EC3B1BB
 	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:41:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26D04246F6
+	by mail.kernel.org (Postfix) with ESMTPS id 26F242470F
 	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:41:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C5vUozsp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26D04246F6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fxpL+5gt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26F242470F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 135C3179E;
-	Fri, 13 Dec 2019 16:54:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 135C3179E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EAF01788;
+	Fri, 13 Dec 2019 14:34:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EAF01788
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576252517;
-	bh=RRx6hg6uJ4jeiBXCuHzrMdjB7+OqF6LgQVxmwZD9sLI=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576244113;
+	bh=k58UueqGF7daLdlU/C9jqufGnz+ONjEumWRY/pPwKAM=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C5vUozspFcOZAoZkvOMsRYQxpwPDJz4M0VFnRjSfXbj+JjdstqSmInwrPpYd5g4TH
-	 co8onc5Xy2b8u3tEyK6usEvWZ7G4MBQSCpKzZgc8lNor/HgLKOQZiVMaNxKWPa83L5
-	 YzYB9MzV8y2TuxRRsL1oCsWQppOjj2Ic9Z3+5p08=
+	b=fxpL+5gtXbvhIguWfKHK/Z6jyqzUt86lurAp8sknlVEEMJrPw58/HPSYsyUbfUk24
+	 R63VZaBT/smG58RGOLExrV834Fh1PTYKSIASH3wy6sz6VRCvU6Of2dl9R7AOGA2Hhp
+	 KaZFxNdwdTO3NnvY2RrwdFk2mojOE4FXT4ossggo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58188F80139;
-	Fri, 13 Dec 2019 16:54:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 184F1F8019B;
+	Fri, 13 Dec 2019 14:34:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7DC3F8021E; Fri, 13 Dec 2019 16:54:24 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3F4E5F801F4; Fri, 13 Dec 2019 14:34:22 +0100 (CET)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56C01F8014F
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 16:54:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C01F8014F
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Dec 2019 07:54:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,309,1571727600"; d="scan'208";a="246170744"
-Received: from dbmoens-mobl1.amr.corp.intel.com ([10.255.228.102])
- by fmsmga002.fm.intel.com with ESMTP; 13 Dec 2019 07:54:15 -0800
-To: Greg KH <gregkh@linuxfoundation.org>
-References: <20191213050409.12776-1-pierre-louis.bossart@linux.intel.com>
- <20191213050409.12776-7-pierre-louis.bossart@linux.intel.com>
- <20191213072127.GD1750354@kroah.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <41d1fcbc-47b7-bbee-5b55-759cbb5f5a7b@linux.intel.com>
-Date: Fri, 13 Dec 2019 09:05:37 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20191213072127.GD1750354@kroah.com>
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: add support for
- sdw_slave_type
+ by alsa1.perex.cz (Postfix) with ESMTPS id 167BEF8014F
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 14:34:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 167BEF8014F
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 78D9FAE5E;
+ Fri, 13 Dec 2019 13:34:13 +0000 (UTC)
+Date: Fri, 13 Dec 2019 14:34:13 +0100
+Message-ID: <s5hv9qke4dm.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <alpine.DEB.2.21.1912131504070.16459@zeliteleevi>
+References: <20191210145727.22054-1-tiwai@suse.de>
+ <alpine.DEB.2.21.1912131504070.16459@zeliteleevi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Use standard waitqueue for RIRB
+	wakeup
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,59 +74,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 12/13/19 1:21 AM, Greg KH wrote:
-> On Thu, Dec 12, 2019 at 11:04:00PM -0600, Pierre-Louis Bossart wrote:
->> Currently the bus does not have any explicit support for master
->> devices.
->>
->> First add explicit support for sdw_slave_type and error checks if this type
->> is not set.
->>
->> In follow-up patches we can add support for the sdw_md_type (md==Master
->> Device), following the Grey Bus example.
+On Fri, 13 Dec 2019 14:05:31 +0100,
+Kai Vehmanen wrote:
 > 
-> How are you using greybus as an example of "master devices"?  All you
-> are doing here is setting the type of the existing devices, right?
-
-I took your advice to look at GreyBus and used the 'gb host device' as 
-the model to implement the 'sdw master' add/startup/remove interfaces we 
-needed.
-
-so yes in this patch we just add a type for the slave, the interesting 
-part is in the next patches.
->>   static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
->>   {
->> -	struct sdw_slave *slave = to_sdw_slave_device(dev);
->> +	struct sdw_slave *slave;
->>   	char modalias[32];
->>   
->> -	sdw_slave_modalias(slave, modalias, sizeof(modalias));
->> +	if (is_sdw_slave(dev)) {
->> +		slave = to_sdw_slave_device(dev);
->> +
->> +		sdw_slave_modalias(slave, modalias, sizeof(modalias));
->>   
->> -	if (add_uevent_var(env, "MODALIAS=%s", modalias))
->> -		return -ENOMEM;
->> +		if (add_uevent_var(env, "MODALIAS=%s", modalias))
->> +			return -ENOMEM;
->> +	} else {
->> +		/* only Slave device type supported */
->> +		dev_warn(dev, "uevent for unknown Soundwire type\n");
->> +		return -EINVAL;
+> Hey,
 > 
-> Right now, this can not happen, right?
+> On Tue, 10 Dec 2019, Takashi Iwai wrote:
 > 
-> Not a problem, just trying to understand the sequence of patches here...
+> > This patch attempts to improve the situation by introducing the
+> > standard waitqueue in the RIRB waiter side instead of polling.  The
+> 
+> this patch was part of the testing as well, so looks good. One minor
+> nit only:
+> 
+> > @@ -216,6 +216,9 @@ void snd_hdac_bus_update_rirb(struct hdac_bus *bus)
+> >  		else if (bus->rirb.cmds[addr]) {
+> >  			bus->rirb.res[addr] = res;
+> >  			bus->rirb.cmds[addr]--;
+> > +			if (!bus->rirb.cmds[addr] &&
+> > +			    waitqueue_active(&bus->rirb_wq))
+> > +				wake_up(&bus->rirb_wq);
+> 
+> Checkpath would like to have a comment here:
+> 
+> WARNING: waitqueue_active without comment
+> #77: FILE: sound/hda/hdac_controller.c:220:
+> +                           waitqueue_active(&bus->rirb_wq))
 
-yes this cannot happen at this point, it's more of a paranoid test. In 
-theory a SoundWire solution could enable a 'monitor' device as defined 
-in the standard.
+Yeah, that was known to me, too.  Actually it's misleading; what
+actually matters is the memory barrier or other synchronization there,
+and this should work as is because of the current code path.
+(Besides, majority of existing waitqueue_active() have no comments at
+all :)
+
+And, now I found wa_has_sleeper() as a better replacement of
+waitqueue_active() that explicitly cares about synchronization.
+So I'll change with this in a later patch (after unification to
+hda-core).
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
