@@ -2,70 +2,101 @@ Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 670D7C341B5
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF616C4D2DE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:56:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4FDFA2469B
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:51:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AEDBC246A0
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:56:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vr5AwI0G"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FDFA2469B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t80SL5AU";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P/EwZeZp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEDBC246A0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 573331757;
-	Fri, 13 Dec 2019 14:05:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 573331757
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7554F16CD;
+	Fri, 13 Dec 2019 17:08:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7554F16CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576242390;
-	bh=gOprwXaLBBUd3ERHNg2Xds1vqn5J0SD/+V6V60yeRJw=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1576253361;
+	bh=cD1UuIWiOrymelgh8b5gbUU9sCNsMn8B1iIuw+if8H0=;
+	h=From:Date:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vr5AwI0GC2wGmbWP8Zib6eDr+JedDF/ZT0InhyzQSXLMdKBLLKYLgDynoh5e2O8T5
-	 6EcAq6Araw0pmu6WzdKpi2mLWKD40oa21pmD77LJ8OOfrnuJ+bpMK6UHh5XYAN1SWQ
-	 GZ5TEn9UT4NwBPuG4fXqsPERIf4gl0ABPW95yELw=
+	b=t80SL5AUhH3X7BgEux2NurlZDQXGeUC2fTQ+IpFDqa4ck/9GRRIphnziNWmv+cHAm
+	 P8oHK/PJ+PJADQsu/sFzjN27rrXloK+lKdNwyHZ+S20dl1B827sXMq9jj7ikx58dI1
+	 +joTjQv0/QDVR8WzFOhDg49Z2oGHHOyPdlZhF4oE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D80B8F801F4;
-	Fri, 13 Dec 2019 14:05:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E999CF8019B;
+	Fri, 13 Dec 2019 17:08:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15802F8021E; Fri, 13 Dec 2019 14:05:39 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A819EF801F4; Fri, 13 Dec 2019 15:39:18 +0100 (CET)
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com
+ [IPv6:2a00:1450:4864:20::243])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E516F8014F
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 14:05:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E516F8014F
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Dec 2019 05:05:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,309,1571727600"; d="scan'208";a="216635981"
-Received: from zeliteleevi.tm.intel.com ([10.237.55.130])
- by orsmga003.jf.intel.com with ESMTP; 13 Dec 2019 05:05:31 -0800
-Date: Fri, 13 Dec 2019 15:05:31 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@zeliteleevi
+ by alsa1.perex.cz (Postfix) with ESMTPS id D16FEF80139
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 15:39:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D16FEF80139
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="P/EwZeZp"
+Received: by mail-lj1-x243.google.com with SMTP id c19so2859848lji.11
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 06:39:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:date:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=K0xyGvYdKE3hBTD3MTOnFGoeyVHi3fOPiFEUThBDlBc=;
+ b=P/EwZeZpRKMNHl6iqV3Csl4OLoMpWGTPETioS5J07YC8v/QU6EFsXRvFFXLjZrzFV5
+ J7S000cmkgJ0C+q/1/9cIRC6g8BjKfDrJ6MdYPjcICt+wW8q5ihFTiX7lrwZLXpkNPK3
+ YPjwXY/UUgMwoRZXd8qDGKLjmNCrSaUtKApiqwpJGuRnk8gwBMEk7hUVgT0W8/L1kfKY
+ pyD1WIERMjP8sjlbTnCJ7UU/TVxhcC/SR3uz2pz97a9xqsK9VFnjmpeO1g/l/eJsvyCM
+ YilLpaqmKiiBUMQQxLNGy7HNqaS+ZFxpbfs4j5lJspMcwhQW8Owgey8ktw45m6gpOcj8
+ JG+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=K0xyGvYdKE3hBTD3MTOnFGoeyVHi3fOPiFEUThBDlBc=;
+ b=VYTG7Rcqlq5+zcXF1cBfT+ekqw3umB+DPdWzK5W7FhnP60Oz88JxEeDpCNUClavViR
+ XFXoDYSRAV/21qLqnNaBvbOEsMWdDXFonVf+zMw4lEcowVqVQxHYHNevTYQ1m/IuWkPl
+ mRaGX00S6KC0f1VXIteG/tEgLTz62qRgOWL8RTW7OIA2UHn1dMp8Csq8RuezGT/wH35K
+ BhHmDNDOGvk/jAxYPgkaiX1A6r1itrYlPhoCaCZ3ltRjtMZpwO1P6DwsawX3qvGQ6+JJ
+ xpk+q4OTGTHPp6A8IU+5naN3YlMjQFosBmGlOVJTGJTdMDPpdSMcWN+JLROBihQQzBCH
+ r4nA==
+X-Gm-Message-State: APjAAAXEgKHZjPxL4uzVSwssXxOs6RLdU6h42yRmOeN23KXsmvPrg7cU
+ mpqGKyAbMm3o5B8PNd2v9iw=
+X-Google-Smtp-Source: APXvYqwMjAne3xDaq8yHsYg1EmmlUe+MSNgEISEsa7lHDi2E+riRw+k7y+G6slqJbpccT1oYhfV0yw==
+X-Received: by 2002:a2e:98c4:: with SMTP id s4mr9972478ljj.102.1576247950504; 
+ Fri, 13 Dec 2019 06:39:10 -0800 (PST)
+Received: from google.com ([2620:0:1043:12:60fa:1524:8dd0:6d])
+ by smtp.gmail.com with ESMTPSA id h24sm4889926ljl.80.2019.12.13.06.39.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 13 Dec 2019 06:39:09 -0800 (PST)
+From: Lionel Koenig <lionel.koenig@gmail.com>
+X-Google-Original-From: Lionel Koenig <lionelk@google.com>
+Date: Fri, 13 Dec 2019 15:39:08 +0100
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191210145727.22054-1-tiwai@suse.de>
-Message-ID: <alpine.DEB.2.21.1912131504070.16459@zeliteleevi>
-References: <20191210145727.22054-1-tiwai@suse.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+Message-ID: <20191213143908.GA172456@google.com>
+References: <20191211155742.3213-1-tiwai@suse.de>
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Use standard waitqueue for RIRB
- wakeup
+Content-Disposition: inline
+In-Reply-To: <20191211155742.3213-1-tiwai@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailman-Approved-At: Fri, 13 Dec 2019 17:08:29 +0100
+Cc: alsa-devel@alsa-project.org, Lionel Koenig <lionel.koenig@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: Avoid possible info leaks from
+ PCM stream buffers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,32 +114,52 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hey,
+On Wed, Dec 11, 2019 at 04:57:42PM +0100, Takashi Iwai wrote:
+> The current PCM code doesn't initialize explicitly the buffers
+> allocated for PCM streams, hence it might leak some uninitialized
+> kernel data or previous stream contents by mmapping or reading the
+> buffer before actually starting the stream.
+> 
+> Since this is a common problem, this patch simply adds the clearance
+> of the buffer data at hw_params callback.  Although this does only
+> zero-clear no matter which format is used, which doesn't mean the
+> silence for some formats, but it should be OK because the intention is
+> just to clear the previous data on the buffer.
 
-On Tue, 10 Dec 2019, Takashi Iwai wrote:
+I have tested this patch on the same way I tested the previous one and
+didn't experience any leakage of data. 
+Thanks for helping putting that together.
 
-> This patch attempts to improve the situation by introducing the
-> standard waitqueue in the RIRB waiter side instead of polling.  The
+Kind regards,
+Lionel
 
-this patch was part of the testing as well, so looks good. One minor
-nit only:
-
-> @@ -216,6 +216,9 @@ void snd_hdac_bus_update_rirb(struct hdac_bus *bus)
->  		else if (bus->rirb.cmds[addr]) {
->  			bus->rirb.res[addr] = res;
->  			bus->rirb.cmds[addr]--;
-> +			if (!bus->rirb.cmds[addr] &&
-> +			    waitqueue_active(&bus->rirb_wq))
-> +				wake_up(&bus->rirb_wq);
-
-Checkpath would like to have a comment here:
-
-WARNING: waitqueue_active without comment
-#77: FILE: sound/hda/hdac_controller.c:220:
-+                           waitqueue_active(&bus->rirb_wq))
-
-Br, Kai
-
+> 
+> Reported-by: Lionel Koenig <lionel.koenig@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> 
+> This is a revised patch of the previous one
+>   20191210130219.27919-1-tiwai@suse.de
+> 
+>  sound/core/pcm_native.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index 1fe581167b7b..d083225344a0 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -739,6 +739,10 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+>  	while (runtime->boundary * 2 <= LONG_MAX - runtime->buffer_size)
+>  		runtime->boundary *= 2;
+>  
+> +	/* clear the buffer for avoiding possible kernel info leaks */
+> +	if (runtime->dma_area && !substream->ops->copy_user)
+> +		memset(runtime->dma_area, 0, runtime->dma_bytes);
+> +
+>  	snd_pcm_timer_resolution_change(substream);
+>  	snd_pcm_set_state(substream, SNDRV_PCM_STATE_SETUP);
+>  
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
