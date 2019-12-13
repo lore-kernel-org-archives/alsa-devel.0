@@ -2,59 +2,67 @@ Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04D4AC43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AD90C3F68F
 	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 21:16:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4130320706
+	by mail.kernel.org (Postfix) with ESMTPS id 41184206C3
 	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 21:16:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oNaMaZId"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4130320706
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c2p3gR7T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41184206C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C1DD1768;
-	Fri, 13 Dec 2019 17:30:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C1DD1768
+	by alsa0.perex.cz (Postfix) with ESMTPS id CAA601793;
+	Fri, 13 Dec 2019 14:42:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAA601793
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576254665;
-	bh=hB3hjxT6BYPjYK774MGVV5QxfkznDF/5wWloTkrJN50=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=oNaMaZIdqtQVTN7E0C7/6/PNQ1w64Q/x5M22j4mqdUWscgvMgK16zCXNYCGxFNRe3
-	 O6NkWwL0B+CowHSMH+boj+U6cVdrVjaaSPXbxED6GJbhuruDcLzkk3wgi6BrMA9blH
-	 vtyozbtlxf2EP51aKCSFFGsezuf3UfNxAPv7Gln4=
+	s=default; t=1576244597;
+	bh=URl3QpN7+KcP3qD1rO5x0oitl522FjtI1WGDuhj8Suc=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=c2p3gR7TSo4bOJ592w9nS8m3/xCHegx2Ub8gaLcSIt9gsb3NBZ9RXQQ5JBeNbSoEA
+	 qen1RNZ6R/+MT+VaA8A7+rC7O6pplGbunvM6i+4KD0kVf7z8zCIi2dA6IPVK56ZniT
+	 s8vG5s719qC6NzFOiZl7aVGHaDlBxNAeBwkJpRZE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75764F8019B;
-	Fri, 13 Dec 2019 17:30:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55770F8019B;
+	Fri, 13 Dec 2019 14:42:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 112A4F801F4; Fri, 13 Dec 2019 17:30:12 +0100 (CET)
+ id E6954F801F4; Fri, 13 Dec 2019 14:42:25 +0100 (CET)
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3ACD7F8014F
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 17:30:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ACD7F8014F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 803E2F80139
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 14:42:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 803E2F80139
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 0D89AAE78
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 16:30:07 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 919A5AE5E;
+ Fri, 13 Dec 2019 13:42:22 +0000 (UTC)
+Date: Fri, 13 Dec 2019 14:42:22 +0100
+Message-ID: <s5hr218e401.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Fri, 13 Dec 2019 17:30:05 +0100
-Message-Id: <20191213163005.19116-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: hda: Comment about
-	snd_hdac_bus_update_rirb() and spinlock
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <s5hv9qke4dm.wl-tiwai@suse.de>
+References: <20191210145727.22054-1-tiwai@suse.de>
+ <alpine.DEB.2.21.1912131504070.16459@zeliteleevi>
+ <s5hv9qke4dm.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Use standard waitqueue for RIRB
+	wakeup
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,36 +75,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The call of snd_hdac_bus_update_rirb() needs the bus->reg_lock
-spinlock protection for concurrency.  Comment about it more
-explicitly.
+On Fri, 13 Dec 2019 14:34:13 +0100,
+Takashi Iwai wrote:
+> 
+> On Fri, 13 Dec 2019 14:05:31 +0100,
+> Kai Vehmanen wrote:
+> > 
+> > Hey,
+> > 
+> > On Tue, 10 Dec 2019, Takashi Iwai wrote:
+> > 
+> > > This patch attempts to improve the situation by introducing the
+> > > standard waitqueue in the RIRB waiter side instead of polling.  The
+> > 
+> > this patch was part of the testing as well, so looks good. One minor
+> > nit only:
+> > 
+> > > @@ -216,6 +216,9 @@ void snd_hdac_bus_update_rirb(struct hdac_bus *bus)
+> > >  		else if (bus->rirb.cmds[addr]) {
+> > >  			bus->rirb.res[addr] = res;
+> > >  			bus->rirb.cmds[addr]--;
+> > > +			if (!bus->rirb.cmds[addr] &&
+> > > +			    waitqueue_active(&bus->rirb_wq))
+> > > +				wake_up(&bus->rirb_wq);
+> > 
+> > Checkpath would like to have a comment here:
+> > 
+> > WARNING: waitqueue_active without comment
+> > #77: FILE: sound/hda/hdac_controller.c:220:
+> > +                           waitqueue_active(&bus->rirb_wq))
+> 
+> Yeah, that was known to me, too.  Actually it's misleading; what
+> actually matters is the memory barrier or other synchronization there,
+> and this should work as is because of the current code path.
+> (Besides, majority of existing waitqueue_active() have no comments at
+> all :)
+> 
+> And, now I found wa_has_sleeper() as a better replacement of
+> waitqueue_active() that explicitly cares about synchronization.
+> So I'll change with this in a later patch (after unification to
+> hda-core).
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/hda/hdac_controller.c | 1 +
- 1 file changed, 1 insertion(+)
+On the second thought, the extra barrier should be utterly
+superfluous, so I'll go for commenting about the spinlock instead...
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 01787081552d..b856184af37f 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -181,6 +181,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_bus_send_cmd);
-  * @bus: HD-audio core bus
-  *
-  * Usually called from interrupt handler.
-+ * The caller needs bus->reg_lock spinlock before calling this.
-  */
- void snd_hdac_bus_update_rirb(struct hdac_bus *bus)
- {
--- 
-2.16.4
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
