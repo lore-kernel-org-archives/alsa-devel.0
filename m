@@ -2,76 +2,92 @@ Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C478C00454
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 21:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FE04C43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 21:36:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B523324692
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 21:21:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 40BFC206C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 21:36:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BmZbmMQe";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="1g6VNHxc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B523324692
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UCAvp7wY";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="dCx+E9Ei"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40BFC206C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9952175C;
-	Fri, 13 Dec 2019 12:17:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9952175C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A6AE1670;
+	Fri, 13 Dec 2019 18:22:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A6AE1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576235891;
-	bh=dQ90D4BnsAnwXkYO8JdOAmybozAkuQCU2BrGjfPvems=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576257796;
+	bh=Cmka3WrqJfIT2p0wNgWrpmIMOagUuPD7qf7UtgzENZk=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BmZbmMQe81GephWsaT+rJuEOgDrRPt5LCfKGYdt+39L7elY9aBrXZ66Me76fTSxKE
-	 WuvbZ5KbTAi2jKWWGbWaqY9fXfiyGhAh2J0gTPDR//WXIJdv2QXCpx6KJXE4X6Of7U
-	 a/xS7jV6GWQGZF2GhQiLNwAoWtTap8Dk1QruK8tM=
+	b=UCAvp7wYR5BPohoz9RAJOYAu5b1AjNNfSMWkmzTY/bB39FeZ9DWEE8FzbpSfYP8bn
+	 FwXRbmFGsnx3c42r56nv38ALZ8B7UN/GUeprPev3G7+CsSaX0sl7L5lHWevBv0Gspu
+	 GQI/Mhc4kSttGs0/wGV56W/xNDTo8Wzisz2fgelk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6291CF8019B;
-	Fri, 13 Dec 2019 12:17:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 255F1F800AB;
+	Fri, 13 Dec 2019 18:22:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0FEAF801F4; Fri, 13 Dec 2019 12:17:18 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8F6CF800AB
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 12:17:15 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 9D76DA003F;
- Fri, 13 Dec 2019 12:17:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 9D76DA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1576235834; bh=MmVlyHvVCcPYgRjOzSeGupfCfmXIMVzaIJb1kmDObU0=;
- h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
- b=1g6VNHxcVqNDkNMJ/tLOMPWavMVGkcGAx9uqFA51dspAFQ7XjPf+oZO6upvlPmFXk
- cuBF2VDBRgOehtfCCFlL2bqNlTmkNIURqLXgITNwJXhmBbYTCHpxoMbf4c9MCDZBUF
- CLRIQsIN1tT64D96EEVAeAJy2aYeNqHmbYI5HERY=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ id 01985F801F4; Fri, 13 Dec 2019 18:22:23 +0100 (CET)
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com
+ [IPv6:2607:f8b0:4864:20::d2e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 13 Dec 2019 12:17:12 +0100 (CET)
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-References: <20191201080449.GA408@workstation>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <b121b3eb-3bb8-7efc-d5e1-f470049899b7@perex.cz>
-Date: Fri, 13 Dec 2019 12:17:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2364F800AB
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 18:22:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2364F800AB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="dCx+E9Ei"
+Received: by mail-io1-xd2e.google.com with SMTP id f82so354178ioa.9
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 09:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=mjEBGpIV8dfJoPpjnBD7QQhqb16t0QpmMDHNzqt3GB4=;
+ b=dCx+E9EiDVm6WwrjxpRclSWpiVC5ZyufgBvc/7SZItBHf4vWpz/uIuxWWn5qSshtma
+ v4k5SmV/JnjoCUaptlvNpjXeLNkeTX2ZwmlwOaiBCbD/JCVSHW/7D3tIZ1v8NbN+9QZt
+ b/5JkOWE0jURrwOZEl8aMgXD3q7Z6uSmi3bitoqgF+ASfU+VGRZdkM7Sx1hcHiUOrkMh
+ 4NgkFLLUHqm7+06tNLiohmjMn+Q5CEPeKvwLrpu3EXukAZTh9UNEPQqVQKXrRYoBhhsF
+ izujPBBOZnDZclUZ39M+OFcsD5iDSyCb16CllQLox/KKW3EYqCq0iubqq2So5OPIvkvC
+ 9YjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=mjEBGpIV8dfJoPpjnBD7QQhqb16t0QpmMDHNzqt3GB4=;
+ b=dql7VwoH6PRtn5Wp6tUnyOwOnrxyulqV0qF42R9gryFW7/t0kVMloos16ju2ivu0eP
+ P18e0A+5oybUcKHCL9kgrJI+K8SwI6LIzIEf84Ks+6oolRPpUJPlAs0Bu8GdINu6Gq7P
+ 1eU2CoZnF5XOuWc/SvIlxoCMvDg4RRB8SzNl2kNS3mUBcF8tf757LqoMxnXLyP2a+4k3
+ m8NFMPEXOy2D7PXncLlQ8D360Sh+ATISBI6sVOVJV5+OPxw8mGNhfivcupmzccAPeDVL
+ VmJ9PogQif4JGmgAV+b6QWlhD97f1TtOpiCpHnB4dCx3K09dgjzLnlID1xv/Op07w2Fz
+ kyDA==
+X-Gm-Message-State: APjAAAXKzR3YJlQD8EdzKV+lKmRsaYPIVfjBDtFdep3Oin1pp+kQP79v
+ QmGV4N30tEkuCael943oSGzeQkZJLEYn3Hq5hsPGJg==
+X-Google-Smtp-Source: APXvYqxeFYkFBS8NNi4XsMCBPTPKXlDhBh09Brh0FjDHejI7FBClQP781/RD6ghCP7N8iY2j2f8WQtyKytbzEyXvYkc=
+X-Received: by 2002:a6b:5503:: with SMTP id j3mr8218284iob.142.1576257737234; 
+ Fri, 13 Dec 2019 09:22:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191201080449.GA408@workstation>
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Restart alsa-gi project as alsa-gobject project
+References: <87mubx59la.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87mubx59la.wl-kuninori.morimoto.gx@renesas.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Date: Fri, 13 Dec 2019 09:22:06 -0800
+Message-ID: <CAFQqKeX7Mjv67oZoeKcXT1OuSACDB_CHNmn=fOF=vyVW36OScg@mail.gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 00/15] ASoC: soc-core cleanup step7
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,49 +100,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 01. 12. 19 v 9:04 Takashi Sakamoto napsal(a):
-> Hi Jaroslav,
-> 
-> Since Audio Mini Conference 2018, I continued to work for alsa-gi[1] in
-> my local to integrate toward better I/O libraries. However I realized
-> that its basic design includes some disadvantages to produce useful APIs.
-> 
-> I rethink the design and realize it better to wrap each of structures
-> in <sound/asound.h> simply. Then, I restart it as alsa-gobject[2].
-> At present, master branch includes a library, `libalsactl0` for the
-> most of I/O features in ALSA control interface, which is compatible with
-> GObject mechanism and GObject introspection.
-> 
-> Jaroslav, would you please delete the alsa-gi repository and fork
-> the master branch from my alsa-gobject repository, then apply enough
-> configurations to the new repository?
+On Thu, Dec 12, 2019 at 4:56 PM Kuninori Morimoto <
+kuninori.morimoto.gx@renesas.com> wrote:
 
-Hi Takashi,
-
-I am sorry that it took so long but I was really busy with other things.
-The alsa-gobject repository is set, synced with git.alsa-project.org now like 
-other repos. The settings should be similar to alsa-gi, so you should have 
-write permissions. If you hit any issue, just let me know.
-
-The original alsa-gi repository was archived and I will remove it later.
-
-There is only one difference - I did not clone this repo from yours via 
-github. It might make sense, if you fork the alsa-project repo to your github 
-repository and push your changes back (alsa-project/alsa-gobject -> 
-takaswie/alsa-gobject), so the fork link system on github will be updated 
-properly.
-
-				Thank you,
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>
+> Hi Mark
+>
+> These are v2 of codec_conf cleanup.
+>
+> ASoC has codec_conf, and we are using original
+> dev_name, of_node for it to finding codec.
+> But, we already have snd_soc_dai_link_component method.
+> We can reuse it for codec_conf, too.
+> This patches are for it.
+>
+> Big change from v1 is
+>
+>         - COMP_CODEC_CNF(_name)
+>         + COMP_CODEC_CONF(_name)
+>
+LGTM. Thanks, Morimoto-san!
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
