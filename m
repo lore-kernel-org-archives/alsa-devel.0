@@ -1,65 +1,62 @@
-Return-Path: <SRS0=r47B=2C=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAE38C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 19:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C07FBC43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 00:55:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6691C2073B
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Dec 2019 19:18:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE88C21655
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 00:55:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ifsgP3ma"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6691C2073B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="meP8DrHh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE88C21655
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3ECE16FC;
-	Thu, 12 Dec 2019 20:18:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3ECE16FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FB1E170D;
+	Fri, 13 Dec 2019 01:54:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FB1E170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576178333;
-	bh=zUoNoY9PbdMzcvzzO8boaqhwVKxLE9EHv2YWg/6POtU=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1576198511;
+	bh=PmsP3S7kHMp0qqQaVOZqVo8yeNcT3FXed/9HOMntQvs=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ifsgP3ma09TXxAYSvwyz5pYyJQYQWHfVgjfjYtzRSVfkFnWA0U6SSDSIUHzfBeZlP
-	 yvDkUBy4QVv30LtksNBTqvmrk1ltON6DzYNf7CrdTpXj5ZRCCGpZTqeRYCGqyAtejB
-	 REdTK7rAtdlk9I1m+bVVkdF2tH5978iGxQ/jDSK4=
+	b=meP8DrHhV0IB0lK+L4jRaMpItWr1c6jKqdgJY+e6Tf1t3dQUhsRi1AIAy+EvOUqBu
+	 mdzd7QYOUc2kJ93cOUda0QpItSItROC5iYUMdi4moTfHFeMgJvLyHUrkutWw1+L9HM
+	 24qLAgoEf+8QQ3UY27cJWE30DT/5mhSCPbfHwWkg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01E2AF801D8;
-	Thu, 12 Dec 2019 20:18:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0201DF801D8;
+	Fri, 13 Dec 2019 01:54:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DED58F8020C; Thu, 12 Dec 2019 20:18:00 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 272D6F80139
- for <alsa-devel@alsa-project.org>; Thu, 12 Dec 2019 20:17:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 272D6F80139
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 04FE0AC0C;
- Thu, 12 Dec 2019 19:17:57 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
+ id 41394F8020C; Fri, 13 Dec 2019 01:54:19 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3DECFF80089
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 01:54:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DECFF80089
+Date: 13 Dec 2019 09:54:09 +0900
+X-IronPort-AV: E=Sophos;i="5.69,307,1571670000"; d="scan'208";a="34066081"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 13 Dec 2019 09:54:09 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 91F2D41340F1;
+ Fri, 13 Dec 2019 09:54:09 +0900 (JST)
+Message-ID: <87mubx59la.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
-Date: Thu, 12 Dec 2019 20:17:47 +0100
-Message-Id: <20191212191747.19995-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH] ASoC: intel: skylake: Remove superfluous bus
-	ops
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH v2 00/15] ASoC: soc-core cleanup step7
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,48 +69,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The bus_core_ops values set in skl driver are same as the default
-values, so we can drop it and pass NULL to snd_hdac_ext_bus_init()
-instead.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/intel/skylake/skl.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Hi Mark
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 58ba3e9469ba..f755ca2484cf 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -773,11 +773,6 @@ static void skl_codec_create(struct hdac_bus *bus)
- 	}
- }
- 
--static const struct hdac_bus_ops bus_core_ops = {
--	.command = snd_hdac_bus_send_cmd,
--	.get_response = snd_hdac_bus_get_response,
--};
--
- static int skl_i915_init(struct hdac_bus *bus)
- {
- 	int err;
-@@ -888,7 +883,7 @@ static int skl_create(struct pci_dev *pci,
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
- 	ext_ops = snd_soc_hdac_hda_get_ops();
- #endif
--	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, ext_ops);
-+	snd_hdac_ext_bus_init(bus, &pci->dev, NULL, ext_ops);
- 	bus->use_posbuf = 1;
- 	skl->pci = pci;
- 	INIT_WORK(&skl->probe_work, skl_probe_work);
+These are v2 of codec_conf cleanup.
+
+ASoC has codec_conf, and we are using original
+dev_name, of_node for it to finding codec.
+But, we already have snd_soc_dai_link_component method.
+We can reuse it for codec_conf, too.
+This patches are for it.
+
+Big change from v1 is
+
+	- COMP_CODEC_CNF(_name)
+	+ COMP_CODEC_CONF(_name)
+
+Kuninori Morimoto (15):
+  ASoC: soc-core: support snd_soc_dai_link_component for codec_conf
+  ASoC: fsl: imx-audmix: use snd_soc_dai_link_component for codec_conf
+  ASoC: intel: kbl_da7219_max98927: use snd_soc_dai_link_component for codec_conf
+  ASoC: intel: kbl_rt5663_max98927: use snd_soc_dai_link_component for codec_conf
+  ASoC: intel: kbl_rt5663_rt5514_max98927: use snd_soc_dai_link_component for codec_conf
+  ASoC: intel: skl_nau88l25_ssm4567: use snd_soc_dai_link_component for codec_conf
+  ASoC: mediatek: mt8173-rt5650-rt5514: use snd_soc_dai_link_component for codec_conf
+  ASoC: mediatek: mt8173-rt5650-rt5676: use snd_soc_dai_link_component for codec_conf
+  ASoC: mediatek: mt8183-da7219-max98357: use snd_soc_dai_link_component for codec_conf
+  ASoC: samsung: bells: use snd_soc_dai_link_component for codec_conf
+  ASoC: samsung: lowland: use snd_soc_dai_link_component for codec_conf
+  ASoC: samsung: neo1973_wm8753: use snd_soc_dai_link_component for codec_conf
+  ASoC: samsung: speyside: use snd_soc_dai_link_component for codec_conf
+  ASoC: ti: rx51: use snd_soc_dai_link_component for codec_conf
+  ASoC: soc-core: remove legacy style of codec_conf
+
+ include/sound/soc.h                                 |  4 ++--
+ sound/soc/fsl/imx-audmix.c                          |  2 +-
+ sound/soc/intel/boards/kbl_da7219_max98927.c        |  8 ++++----
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        |  4 ++--
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c |  4 ++--
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c       |  4 ++--
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c    |  2 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c    |  2 +-
+ sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c  |  2 +-
+ sound/soc/samsung/bells.c                           |  2 +-
+ sound/soc/samsung/lowland.c                         |  2 +-
+ sound/soc/samsung/neo1973_wm8753.c                  |  2 +-
+ sound/soc/samsung/speyside.c                        |  2 +-
+ sound/soc/soc-core.c                                | 12 +++++-------
+ sound/soc/ti/rx51.c                                 | 12 ++++++------
+ 15 files changed, 31 insertions(+), 33 deletions(-)
+
 -- 
-2.16.4
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
