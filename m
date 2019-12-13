@@ -2,61 +2,96 @@ Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93DA8C43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 08:54:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF500C43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 10:26:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AFB4206C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 08:54:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BDB6424658
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 10:26:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LQOytVC0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AFB4206C3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rixlw4Nx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDB6424658
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 345A61766;
-	Fri, 13 Dec 2019 09:53:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 345A61766
+	by alsa0.perex.cz (Postfix) with ESMTPS id 744B11762;
+	Fri, 13 Dec 2019 11:26:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 744B11762
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576227279;
-	bh=U0I5YSuHf8j8hY1QP4Fk5iyloTmYCPwalBkXVSOYIe0=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1576232814;
+	bh=5L7yauyh3aXxYODQ7La3EvGKQaJpITBZdfe5zdydnY4=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LQOytVC0Dz48pdLsUmwF+R9dB/E7omDmQcwmsu2R4DMVmFpRxWNWPJkA5LPk76Xxu
-	 MJ9UXo1qHkhXhAtGY16faxf1eN4DvkaB8Ro/UQCZT35yjPebiwbn2+ITIuO0Fp0T7i
-	 sM1xy3695XZOfhmoYYfP1bR6od3NKit0t4tg3t4U=
+	b=rixlw4Nx41k0Tf/H3eMTl/Zrt0MAdyziI26VSVcRnCTul/EHBEMozr+mbSDWmK32V
+	 aCAPOjOQK3oGTnbMUKIxTpoRmDsScFm4dGnLY0vt06hgNeQlx5ySyp9Kk40fOfbbYy
+	 7h/ijys4cYfHWSu67oNya4GidaEeIC3KYJ1ajvXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAE76F80268;
-	Fri, 13 Dec 2019 09:51:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6EFFF800AB;
+	Fri, 13 Dec 2019 11:26:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEE85F80258; Fri, 13 Dec 2019 09:51:21 +0100 (CET)
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 76111F801F4; Fri, 13 Dec 2019 11:26:01 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA063F8021D
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 09:51:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA063F8021D
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 55D3EAE99
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 08:51:13 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Fri, 13 Dec 2019 09:51:10 +0100
-Message-Id: <20191213085111.22855-3-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191213085111.22855-1-tiwai@suse.de>
-References: <20191213085111.22855-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 2/3] ALSA: hda/ca0132 - Avoid endless loop
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99FFEF800AB
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 11:25:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99FFEF800AB
+Received: from mail-qt1-f170.google.com ([209.85.160.170]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M5PRT-1igWxM1ywH-001Sk1 for <alsa-devel@alsa-project.org>; Fri, 13 Dec
+ 2019 11:25:57 +0100
+Received: by mail-qt1-f170.google.com with SMTP id 38so1814416qtb.13
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 02:25:57 -0800 (PST)
+X-Gm-Message-State: APjAAAVQbZzc7IP6kMnmw2Otmn52mpEiToaBEKHNmcYkI1gBgVEDc52p
+ oOPcChu2OMSctm8kzZOtJouHdOkF/thIbSesm+w=
+X-Google-Smtp-Source: APXvYqzQbLZzun4UPMcyYud1qq2XcN6i6bQrSev+tzenclZnUxptcZ8EZKr8KndoQJUpiIybOxbQeNJCn8vGS4FD6jo=
+X-Received: by 2002:ac8:3a27:: with SMTP id w36mr11551312qte.204.1576232756266; 
+ Fri, 13 Dec 2019 02:25:56 -0800 (PST)
+MIME-Version: 1.0
+References: <20191211212025.1981822-1-arnd@arndb.de>
+ <20191211212025.1981822-7-arnd@arndb.de>
+ <0e00090ef6fcf310159d6ce23f2c92f511dd01de.camel@codethink.co.uk>
+ <CAK8P3a2-5qNsy0cbxmLYfgwtbdSp4e4XXQ+gAAh0X+Kr1F-4sw@mail.gmail.com>
+ <b937b99c9843ae5daa3bdf84929b325f05ecab8f.camel@codethink.co.uk>
+In-Reply-To: <b937b99c9843ae5daa3bdf84929b325f05ecab8f.camel@codethink.co.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 13 Dec 2019 11:25:40 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2BwA-wnxRPLgLrb9e2HpnrhXXyNyLfn4sOpSOjiJ3oEw@mail.gmail.com>
+Message-ID: <CAK8P3a2BwA-wnxRPLgLrb9e2HpnrhXXyNyLfn4sOpSOjiJ3oEw@mail.gmail.com>
+To: Ben Hutchings <ben.hutchings@codethink.co.uk>
+X-Provags-ID: V03:K1:tSFlHh/bUHJGyCZOIXacgcz0Yb0i3PCtcY/Dgjzweltx7E4qAAU
+ At8YLjURAs7MIx0oCwfRCSQ03AMiiFQv0/9bc5U4pgJT7ejQAOdEZL64Basx8lefWihAxyE
+ cHDSQGBv0mK+ZFWTRcHZUOdYWssSrRppHzbYRXtgDr+3zQNkC0NCmwJZWR+3sDUo+fFKgHw
+ RM7W43MZuMLw16rn9t8sA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:X6qdoxPEOZM=:F1o1ur3+ffcE8k8pbLMrSG
+ ctKIIWz3+HAY8+ZfrkkXJK6y4eSWOacQ+/L84of+sRanGh6zXn9rNsendy1DoSLSeqpU5cNEm
+ nSGZ/OspzHmNU/JZhFoMf1ISSFk00pxQO+YCOpHsuQNmQBV0V+V52W8fojnyglsDYu+BEZvWA
+ fnFOnBS9PMv3I1AApLYiOSGfHnI1+PS/imMF7GClpQKV15D3Mn8HMGzJIy8G1NbeQT2VVzgXr
+ STrsNJ4iL3gJ8ybLbfXjqtj2aYJWMAJ60HttOcFNJ88dq7vEEwRiUZlyGmZkRaqnk0YiWr+Sx
+ 1s2QAPqsEEA4oW+3zr8zHd3DBf5jUNm45bcdrISEUzvsMzeQcYTwtr2uF6k0ffdPwn39vVyc1
+ bTJCVqH+4fScA5STWO/IIbP7nW8jJAQLQlRKZDjuMboOxLbWVLVnQrJ7OsoTQNNj6cbg/ttmN
+ 0w6DvqDlEuFHx+/4AXQmO2hlfZluWD07fBSMup9xFmAgzHm1Ak6ofOz0wGDmlbX59ScSd9bEl
+ Na2+2l79eC45cGn1hkHC3bng4tXyhtn8rikNvI8m8yB3TFwOQz5eNvlo7fEZ9ykUCuvUrCkWd
+ l2nsW4W+JbJDvTNg7MyNIO0fQIpiAUDfg5zUZbJJ1VHf4Ysw3ItFQD1mXWMaRn7VkqSc8A7Vn
+ Nx37RUsKri4Qqei7+rO4GVFquCRYka7MZE56lXcoKmD7lQCguxmFhrn5BUw6msLy7jwICvLDS
+ 7EpgON1bQ7MsO5Hn2zn3iJ7kwjZEVxXnGVPBeSsvXBZjlDAVTel5xX1TbFVZ2e+nfPKTLL1g9
+ 5uUuqTYQYG78qHpIoPlgV1IX6L02Z5qpcE2jevXbwEBp+tlvVjliB+6zzirpOwEdBsvAMmTQY
+ o7iYfIho0VlwozIPoRBA==
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Baolin Wang <baolin.wang@linaro.org>,
+ y2038 Mailman List <y2038@lists.linaro.org>, Takashi Iwai <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Baolin Wang <baolin.wang7@gmail.com>
+Subject: Re: [alsa-devel] [Y2038] [PATCH v7 6/9] ALSA: Avoid using timespec
+	for struct snd_timer_tread
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,47 +104,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Introduce a timeout to dspio_clear_response_queue() so that it won't
-be caught in an endless loop even if the hardware doesn't respond
-properly.
+On Thu, Dec 12, 2019 at 3:27 PM Ben Hutchings
+<ben.hutchings@codethink.co.uk> wrote:
+> On Thu, 2019-12-12 at 10:57 +0100, Arnd Bergmann wrote:
+> > On Thu, Dec 12, 2019 at 1:14 AM Ben Hutchings
+> > <ben.hutchings@codethink.co.uk> wrote:
+> > > On Wed, 2019-12-11 at 22:20 +0100, Arnd Bergmann wrote:
+> > > > @@ -2145,14 +2202,34 @@ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
+> > > > +             case TREAD_FORMAT_NONE:
+> > > >                       if (copy_to_user(buffer, &tu->queue[qhead],
+> > > >                                        sizeof(struct snd_timer_read)))
+> > > >                               err = -EFAULT;
+> > > > +                     break;
+> > > > +             default:
+> > > > +                     err = -ENOTSUPP;
+> > > [...]
+> > >
+> > > This is not a valid error code for returning to user-space, but this
+> > > case should be impossible so I don't think it matters.
+> >
+> > Agreed. Maybe it should also WARN_ON(1), as there getting here
+> > would indicate a bug in the kernel.
+>
+> Yes, WARN_ON() or WARN_ON_ONCE() would make sense.
 
-Fixes: a73d511c4867 ("ALSA: hda/ca0132: Add unsol handler for DSP and jack detection")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_ca0132.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+This is what I added now:
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index c3d34ff3d9ec..8d0209fff8f5 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1809,13 +1809,14 @@ struct scp_msg {
- 
- static void dspio_clear_response_queue(struct hda_codec *codec)
- {
-+	unsigned long timeout = jiffies + msecs_to_jiffies(1000);
- 	unsigned int dummy = 0;
--	int status = -1;
-+	int status;
- 
- 	/* clear all from the response queue */
- 	do {
- 		status = dspio_read(codec, &dummy);
--	} while (status == 0);
-+	} while (status == 0 && time_before(jiffies, timeout));
- }
- 
- static int dspio_get_response_data(struct hda_codec *codec)
--- 
-2.16.4
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -2161,6 +2161,7 @@ static ssize_t snd_timer_user_read(struct file
+*file, char __user *buffer,
+                unit = sizeof(struct snd_timer_read);
+                break;
+        default:
++               WARN_ONCE(1, "Corrupt snd_timer_user\n");
+                return -ENOTSUPP;
+        }
 
+         Arnd
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
