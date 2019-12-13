@@ -2,110 +2,78 @@ Return-Path: <SRS0=T7nt=2D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E174C43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 10:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A83B0C34355
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:41:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C2CB24656
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 10:58:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2682F2469F
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Dec 2019 20:41:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y+QIAoJI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="UWC0CNBf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C2CB24656
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SLjvvmHu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2682F2469F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4119E1734;
-	Fri, 13 Dec 2019 11:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4119E1734
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4FEE17A4;
+	Fri, 13 Dec 2019 16:55:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4FEE17A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576234681;
-	bh=5Y/yLBt1e+j7541CgmyEgNAX/PtcssvnNRWruN09WdY=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576252570;
+	bh=D8jDzNaW2ygYJMOPWwAkujMDKbmvCvn5Ocvke48jnKc=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y+QIAoJIa/2hqSIbbk76rv2dzOzn6Tm2m1q9FKUxDjQ0IxpKZdKq70vSA07khgnmi
-	 5YRDLwg7S407T92WSlEioFyred1ZB8WHi7sypD97KD2OVkQs3T5Zk8Nwa42XlDyD0P
-	 1UCdC3Wmo1vXICwjzWmb3yyf+/uKRj/HbcNxzwTY=
+	b=SLjvvmHuGUsSoAfgVKCLZv3+vc0EswDjmqzuj1Z6y38KsYH5WSOpXt/9z2xsh0Z2f
+	 GLDSR6UVNagr5TE7XuS7Eweglj5tXPP6kkW+43lf83qrN15YdzqNLu+LWV3NgxH7jB
+	 zNcxoEwM94UWndbVWxDCYGshcGB770TOyEMKfw30=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAA29F8019B;
-	Fri, 13 Dec 2019 11:57:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 282A2F80234;
+	Fri, 13 Dec 2019 16:54:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 757ADF801F4; Fri, 13 Dec 2019 11:57:09 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 2F12EF8019B; Fri, 13 Dec 2019 16:54:26 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3829FF800AB
- for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 11:57:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3829FF800AB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="UWC0CNBf"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- xBDApeV8018866; Fri, 13 Dec 2019 04:57:01 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=b3XCO3g7n3HWcPlAKBzHSMbVpUVeYqKQIfE9XAkGT/g=;
- b=UWC0CNBfl57fq2VE2ZFB48b+gKVNeedw+x2/bSgHtaJ7uP6Rkg5i/sJQ9bAYCO80FLKk
- VwKKRcCK3mvjm9CsAfBGX4bZ8Mi6ori/WI2LuQ0YIfrRwwdaIj54YIQLop7uF1y0I9pM
- lBgQFLd5gTv2dsWJjYwOYXTNPB9/KokrFhjkCVvYpXojSLdBve4wT0ivN2pOt88Mi9tY
- LSRJAwrTe/RelqnRM1GNYdWHEY25W/XoVFAFRY7PxZJmfwaujOykZ3aBeQWkkcBYdd8K
- Vyma3C+RtOJuJTrrkmOu2hm6JwRXav/ep7TeT8k/NBhjh5XTHn3isfHdcRHJUrkXsr46 FQ== 
-Authentication-Results: ppops.net;
- spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex02.ad.cirrus.com ([5.172.152.52])
- by mx0b-001ae601.pphosted.com with ESMTP id 2wr9cu00s5-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 13 Dec 2019 04:57:01 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Fri, 13 Dec
- 2019 10:56:58 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
- Frontend Transport; Fri, 13 Dec 2019 10:56:58 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CD3192A1;
- Fri, 13 Dec 2019 10:56:58 +0000 (UTC)
-Date: Fri, 13 Dec 2019 10:56:58 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Message-ID: <20191213105658.GE10451@ediswmail.ad.cirrus.com>
-References: <1576065442-19763-1-git-send-email-shengjiu.wang@nxp.com>
- <20191212164835.GD10451@ediswmail.ad.cirrus.com>
- <20191212165311.GK4310@sirena.org.uk>
- <CAA+D8AP4XNNmQ72xG6gNevtu8i8TJ7AaQMMgXJMCPmv2VO0_HA@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A7CAF8019B
+ for <alsa-devel@alsa-project.org>; Fri, 13 Dec 2019 16:54:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A7CAF8019B
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Dec 2019 07:54:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,309,1571727600"; d="scan'208";a="246170754"
+Received: from dbmoens-mobl1.amr.corp.intel.com ([10.255.228.102])
+ by fmsmga002.fm.intel.com with ESMTP; 13 Dec 2019 07:54:17 -0800
+To: Greg KH <gregkh@linuxfoundation.org>
+References: <20191213050409.12776-1-pierre-louis.bossart@linux.intel.com>
+ <20191213050409.12776-8-pierre-louis.bossart@linux.intel.com>
+ <20191213072231.GE1750354@kroah.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <032e6505-22b6-45bb-ff04-87db1f8d8be9@linux.intel.com>
+Date: Fri, 13 Dec 2019 09:11:27 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AP4XNNmQ72xG6gNevtu8i8TJ7AaQMMgXJMCPmv2VO0_HA@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
- include:spf.protection.outlook.com -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0
- phishscore=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
- malwarescore=0 clxscore=1011 suspectscore=0 mlxscore=0 mlxlogscore=969
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1910280000
- definitions=main-1912130087
-Cc: kstewart@linuxfoundation.org, guennadi.liakhovetski@linux.intel.com,
- Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
- gregkh@linuxfoundation.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
- tglx@linutronix.de, allison@lohutok.net
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8962: fix lambda value
+In-Reply-To: <20191213072231.GE1750354@kroah.com>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
+ slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 07/15] soundwire: slave: move uevent
+ handling to slave
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,40 +86,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Dec 13, 2019 at 11:09:09AM +0800, Shengjiu Wang wrote:
-> Hi
+On 12/13/19 1:22 AM, Greg KH wrote:
+> On Thu, Dec 12, 2019 at 11:04:01PM -0600, Pierre-Louis Bossart wrote:
+>> Currently the code deals with uevents at the bus level, but we only care
+>> for Slave events
 > 
-> On Fri, Dec 13, 2019 at 12:54 AM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > On Thu, Dec 12, 2019 at 04:48:35PM +0000, Charles Keepax wrote:
-> > > On Wed, Dec 11, 2019 at 07:57:22PM +0800, Shengjiu Wang wrote:
-> > > > According to user manual, it is required that FLL_LAMBDA > 0
-> > > > in all cases (Integer and Franctional modes).
-> >
-> > > How well tested is this change, and is it addressing an issue you
-> > > have observed? I agree this does better fit the datasheet just a
-> > > little nervous as its an older part that has seen a lot of usage.
-> >
-> > I've got a feeling that requirement might've been added in later
-> > versions of the datasheet...
+> What does this mean?  I can't understand it, can you please provide more
+> information on what you are doing here?
+
+In the earlier versions of the patch, the code looks like this and there 
+was an open on what to do with a master-specific event.
+
+  static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+  {
++	struct sdw_master_device *md;
+  	struct sdw_slave *slave;
+  	char modalias[32];
+
+-	if (is_sdw_slave(dev)) {
++	if (is_sdw_md(dev)) {
++		md = to_sdw_master_device(dev);
++		/* TODO: do we need to call add_uevent_var() ? */
++	} else if (is_sdw_slave(dev)) {
+  		slave = to_sdw_slave_device(dev);
++
++		sdw_slave_modalias(slave, modalias, sizeof(modalias));
++
++		if (add_uevent_var(env, "MODALIAS=%s", modalias))
++			return -ENOMEM;
+  	} else {
+  		dev_warn(dev, "uevent for unknown Soundwire type\n");
+  		return -EINVAL;
+  	}
+
+Vinod suggested this was not needed and suggested the code for uevents 
+be moved to be slave-specific, which is what this patch does.
+>> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+>> index c87267f12a3b..014c3ece1f17 100644
+>> --- a/drivers/soundwire/slave.c
+>> +++ b/drivers/soundwire/slave.c
+>> @@ -17,6 +17,7 @@ static void sdw_slave_release(struct device *dev)
+>>   struct device_type sdw_slave_type = {
+>>   	.name =		"sdw_slave",
+>>   	.release =	sdw_slave_release,
+>> +	.uevent = sdw_uevent,
 > 
-> We encounter an issue that when Integer mode, the lambda=theta=0,
-> the output sound is slower than expected. After change lambda=1
-> the issue is gone.
+> Align this with the other ones?
 > 
+> does this cause any different functionality?
 
-Cool alright if there is a real issue here, then we should be
-getting it fixed.
+As mentioned above, this move was suggested by Vinod. I don't have a 
+specific need for uevents for the master and there's no functionality 
+limitation, that said this is way beyond my comfort zone so I will 
+follow recommendations, if any.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
