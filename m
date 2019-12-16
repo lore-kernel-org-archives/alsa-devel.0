@@ -2,62 +2,68 @@ Return-Path: <SRS0=bmHO=2G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77392C43603
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:53:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D80A0C43603
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 14:24:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A5F520725
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:53:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6EB2206B7
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 14:24:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L0j0+uQ7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A5F520725
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DYl/KQ2L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6EB2206B7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1266850;
-	Mon, 16 Dec 2019 13:52:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1266850
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE26185D;
+	Mon, 16 Dec 2019 15:23:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE26185D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576500779;
-	bh=zW/fPWfjNAYYOKuNA3CU8AaOYT0tTWPvTSLGkRilge8=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=L0j0+uQ75U2Cm8UMugqjRsAtMyPFbauS19qu5CgN6vU31wlOJhSE6126uWAvvdV+G
-	 Cc5MZKGybbZGN26fl1cOR+ayFipG97YFRbQVpHprfq/1lQEpMOGUeMrocK3eEs2Mq3
-	 to1pGtFz5sPpdMcUfumHHPJdRUFiUoks7dAlHCKU=
+	s=default; t=1576506251;
+	bh=8lvc0PzouO18kOmcy8ZpqJaP1xr1GqGWhiHgsYcfOlw=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DYl/KQ2LjbnYWrcWzii0dCwaIr7kBe8/Jj+028EeuVmSK+4tMFbSKOzO1T6PA6923
+	 9/v+DTR3CJmyJucqzt1e07g3hk0X1FAHi9uwx5HqocKm9DP0Vl3RXp2fkvlU1vXH9H
+	 z3mONh2KBwSUJKw4HgBR0znYhzkuiUpSnY3K+T68=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DDFEF8022C;
-	Mon, 16 Dec 2019 13:52:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 270B3F8022C;
+	Mon, 16 Dec 2019 15:23:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46031F80255; Mon, 16 Dec 2019 13:52:06 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A46F7F8014F
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:52:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A46F7F8014F
-Received: from [111.194.120.142] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1igpqy-0008E8-O1; Mon, 16 Dec 2019 12:52:01 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org,
-	perex@perex.cz
-Date: Mon, 16 Dec 2019 20:51:36 +0800
-Message-Id: <20191216125136.6709-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.17.1
-Subject: [alsa-devel] [alsa-lib][PATCH] conf: SOF-Intel: map pcm device for
-	sof driver
+ id 367F2F80255; Mon, 16 Dec 2019 15:23:20 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6C929F800AD
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 15:23:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C929F800AD
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39B091FB;
+ Mon, 16 Dec 2019 06:23:15 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC44E3F718;
+ Mon, 16 Dec 2019 06:23:14 -0800 (PST)
+Date: Mon, 16 Dec 2019 14:23:13 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Mack <daniel@zonque.org>
+Message-ID: <20191216142313.GD4161@sirena.org.uk>
+References: <20191209183511.3576038-1-daniel@zonque.org>
+ <20191209183511.3576038-12-daniel@zonque.org>
+MIME-Version: 1.0
+In-Reply-To: <20191209183511.3576038-12-daniel@zonque.org>
+X-Cookie: Backed up the system lately?
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de,
+ sboyd@kernel.org, mturquette@baylibre.com, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, robh+dt@kernel.org, linux-i2c@vger.kernel.org,
+ pascal.huerst@gmail.com, lee.jones@linaro.org, linux-clk@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: Add codec component for AD242x
+	nodes
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,533 +76,82 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0068977458287235692=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On the machines with HDA codec, the sof driver will use the legacy hda
-codec driver, as a result, most mixer controls are same as before.
 
-There are only 2 difference:
- - HDMI pcm index is 3, 4 and 5 instead of 3, 7, 8...
- - dmic is on device 6, 7 instead of 0
+--===============0068977458287235692==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
+Content-Disposition: inline
 
-After applying this patch, we will get (aplay -L):
-hdmi:CARD=sofsklhdacard,DEV=0
-    sof-skl_hda_card,
-    HDMI Audio Output
-hdmi:CARD=sofsklhdacard,DEV=1
-    sof-skl_hda_card,
-    HDMI Audio Output
-hdmi:CARD=sofsklhdacard,DEV=2
-    sof-skl_hda_card,
-    HDMI Audio Output
 
-and (arecord -L):
-dmic:CARD=sofsklhdacard,DEV=0
-    sof-skl_hda_card,
-    Digital Mic connected to the PCH directly
-dmic:CARD=sofsklhdacard,DEV=1
-    sof-skl_hda_card,
-    Digital Mic connected to the PCH directly
+--AkbCVLjbJ9qUtAXD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Then we could add minor changes in the pulseaudio configuration, after
-that, all output and input devices will work under pulseaudio.
+On Mon, Dec 09, 2019 at 07:35:11PM +0100, Daniel Mack wrote:
 
-This is a supplement for ucm, the ucm for sof driver has higher
-priority than this conf, if there is no ucm for sof driver, this conf
-will take effect.
+> +	/*
+> +	 * Setting clock inversion is only supported globally for both DAIs,
+> +	 * so we ignore the settings made for DAI1 here.
+> +	 */
+> +	if (index == 0) {
+> +		switch (format & SND_SOC_DAIFMT_INV_MASK) {
+> +		case SND_SOC_DAIFMT_NB_NF:
 
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- src/conf/alsa.conf            |   4 +
- src/conf/cards/Makefile.am    |   3 +-
- src/conf/cards/SOF-Intel.conf | 345 ++++++++++++++++++++++++++++++++++
- src/conf/cards/aliases.conf   |   1 +
- src/conf/pcm/Makefile.am      |   2 +-
- src/conf/pcm/dmic.conf        |  54 ++++++
- 6 files changed, 407 insertions(+), 2 deletions(-)
- create mode 100644 src/conf/cards/SOF-Intel.conf
- create mode 100644 src/conf/pcm/dmic.conf
+I dunno if it's a blocker but it'd feel nicer to try to verify that the
+settings are the same and warn if not.
 
-diff --git a/src/conf/alsa.conf b/src/conf/alsa.conf
-index 09980586..28c11c81 100644
---- a/src/conf/alsa.conf
-+++ b/src/conf/alsa.conf
-@@ -101,6 +101,9 @@ defaults.pcm.iec958.card defaults.pcm.card
- defaults.pcm.iec958.device defaults.pcm.device
- defaults.pcm.modem.card defaults.pcm.card
- defaults.pcm.modem.device defaults.pcm.device
-+defaults.pcm.dmic.card defaults.pcm.card
-+defaults.pcm.dmic.device 6
-+
- # truncate files via file or tee PCM
- defaults.pcm.file_format	"raw"
- defaults.pcm.file_truncate	true
-@@ -141,6 +144,7 @@ pcm.dmix cards.pcm.dmix
- pcm.dsnoop cards.pcm.dsnoop
- pcm.modem cards.pcm.modem
- pcm.phoneline cards.pcm.phoneline
-+pcm.dmic cards.pcm.dmic
- 
- pcm.hw {
- 	@args [ CARD DEV SUBDEV ]
-diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
-index 00999f01..b22386a0 100644
---- a/src/conf/cards/Makefile.am
-+++ b/src/conf/cards/Makefile.am
-@@ -58,7 +58,8 @@ cfg_files = aliases.conf \
- 	VIA8237.conf \
- 	VX222.conf \
- 	VXPocket.conf \
--	VXPocket440.conf
-+	VXPocket440.conf \
-+	SOF-Intel.conf
- 
- if BUILD_ALISP
- cfg_files += aliases.alisp
-diff --git a/src/conf/cards/SOF-Intel.conf b/src/conf/cards/SOF-Intel.conf
-new file mode 100644
-index 00000000..fe280d72
---- /dev/null
-+++ b/src/conf/cards/SOF-Intel.conf
-@@ -0,0 +1,345 @@
-+#
-+# Configuration for the Intel HD audio (with sof driver)
-+#
-+
-+<confdir:pcm/front.conf>
-+
-+SOF-Intel.pcm.front.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type asym
-+	playback.pcm {
-+		type softvol
-+		slave.pcm {
-+			type hw
-+			card $CARD
-+			subdevice 0
-+		}
-+		control {
-+			name "PCM Playback Volume"
-+			card $CARD
-+		}
-+	}
-+	capture.pcm {
-+		type hw
-+		card $CARD
-+	}
-+}
-+
-+# default with dmix+softvol & dsnoop
-+SOF-Intel.pcm.default {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type asym
-+	playback.pcm {
-+		type plug
-+		slave.pcm {
-+			type softvol
-+			slave.pcm {
-+				@func concat
-+				strings [ "dmix:" $CARD ]
-+			}
-+			control {
-+				name "PCM Playback Volume"
-+				card $CARD
-+			}
-+		}
-+	}
-+	capture.pcm {
-+		type plug
-+		slave.pcm {
-+			type softvol
-+			slave.pcm {
-+				@func concat
-+				strings [ "dsnoop:" $CARD ]
-+			}
-+			control {
-+				name "Digital Capture Volume"
-+				card $CARD
-+			}
-+			min_dB -30.0
-+			max_dB 30.0
-+			resolution 121
-+		}
-+		# to avoid possible phase inversions with digital mics
-+		route_policy copy
-+	}
-+	hint.device 0
-+}
-+
-+<confdir:pcm/surround21.conf>
-+<confdir:pcm/surround40.conf>
-+<confdir:pcm/surround41.conf>
-+<confdir:pcm/surround50.conf>
-+<confdir:pcm/surround51.conf>
-+<confdir:pcm/surround71.conf>
-+
-+SOF-Intel.pcm.surround40.0 cards.SOF-Intel.pcm.front.0
-+SOF-Intel.pcm.surround51.0 cards.SOF-Intel.pcm.front.0
-+SOF-Intel.pcm.surround71.0 cards.SOF-Intel.pcm.front.0
-+
-+<confdir:pcm/iec958.conf>
-+
-+SOF-Intel.pcm.iec958.0 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD {
-+		type string
-+	}
-+	@args.AES0 {
-+		type integer
-+	}
-+	@args.AES1 {
-+		type integer
-+	}
-+	@args.AES2 {
-+		type integer
-+	}
-+	@args.AES3 {
-+		type integer
-+	}
-+	type asym
-+	playback.pcm {
-+		type hooks
-+		slave.pcm {
-+			type hw
-+			card $CARD
-+			device 1
-+		}
-+		hooks.0 {
-+			type ctl_elems
-+			hook_args [
-+			{
-+				name "IEC958 Playback Default"
-+				index 16
-+				optional true
-+				lock true
-+				preserve true
-+				value [ $AES0 $AES1 $AES2 $AES3 ]
-+			}
-+			{
-+				name "IEC958 Playback Switch"
-+				index 16
-+				optional true
-+				value true
-+				# if this element is present, skip the rest
-+				skip_rest true
-+			}
-+			{
-+				name "IEC958 Playback Default"
-+				lock true
-+				preserve true
-+				value [ $AES0 $AES1 $AES2 $AES3 ]
-+			}
-+			{
-+				name "IEC958 Playback Switch"
-+				value true
-+			}
-+			]
-+		}
-+	}
-+	capture.pcm {
-+		type hooks
-+		slave.pcm {
-+			type hw
-+			card $CARD
-+			device 1
-+		}
-+		hooks.0 {
-+			type ctl_elems
-+			hook_args [
-+			{
-+				name "IEC958 Capture Switch"
-+				lock true
-+				preserve true
-+				value true
-+			}
-+			]
-+		}
-+	}
-+	hint.device 1
-+}
-+
-+<confdir:pcm/hdmi.conf>
-+
-+SOF-Intel.pcm.hdmi.common {
-+	@args [ CARD DEVICE CTLINDEX AES0 AES1 AES2 AES3 ]
-+	@args.CARD {
-+		type string
-+	}
-+	@args.DEVICE {
-+		type integer
-+	}
-+	@args.CTLINDEX {
-+		type integer
-+	}
-+	@args.AES0 {
-+		type integer
-+	}
-+	@args.AES1 {
-+		type integer
-+	}
-+	@args.AES2 {
-+		type integer
-+	}
-+	@args.AES3 {
-+		type integer
-+	}
-+	type hooks
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+		device $DEVICE
-+	}
-+	hooks.0 {
-+		type ctl_elems
-+		hook_args [
-+		{
-+			name "IEC958 Playback Default"
-+			index $CTLINDEX
-+			lock true
-+			preserve true
-+			value [ $AES0 $AES1 $AES2 $AES3 ]
-+		}
-+		{
-+			name "IEC958 Playback Switch"
-+			index $CTLINDEX
-+			value true
-+		}
-+		]
-+	}
-+	hint.device $DEVICE
-+}
-+
-+SOF-Intel.pcm.hdmi.0 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD { type string }
-+	@args.AES0 { type integer }
-+	@args.AES1 { type integer }
-+	@args.AES2 { type integer }
-+	@args.AES3 { type integer }
-+	@func refer
-+	name {
-+		@func concat
-+		strings [
-+			"cards.SOF-Intel.pcm.hdmi.common:"
-+			"CARD=" $CARD ","
-+			"DEVICE=3,"
-+			"CTLINDEX=0,"
-+			"AES0=" $AES0 ","
-+			"AES1=" $AES1 ","
-+			"AES2=" $AES2 ","
-+			"AES3=" $AES3
-+		]
-+	}
-+}
-+
-+SOF-Intel.pcm.hdmi.1 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD { type string }
-+	@args.AES0 { type integer }
-+	@args.AES1 { type integer }
-+	@args.AES2 { type integer }
-+	@args.AES3 { type integer }
-+	@func refer
-+	name {
-+		@func concat
-+		strings [
-+			"cards.SOF-Intel.pcm.hdmi.common:"
-+			"CARD=" $CARD ","
-+			"DEVICE=4,"
-+			"CTLINDEX=1,"
-+			"AES0=" $AES0 ","
-+			"AES1=" $AES1 ","
-+			"AES2=" $AES2 ","
-+			"AES3=" $AES3
-+		]
-+	}
-+}
-+
-+SOF-Intel.pcm.hdmi.2 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD { type string }
-+	@args.AES0 { type integer }
-+	@args.AES1 { type integer }
-+	@args.AES2 { type integer }
-+	@args.AES3 { type integer }
-+	@func refer
-+	name {
-+		@func concat
-+		strings [
-+			"cards.SOF-Intel.pcm.hdmi.common:"
-+			"CARD=" $CARD ","
-+			"DEVICE=5,"
-+			"CTLINDEX=2,"
-+			"AES0=" $AES0 ","
-+			"AES1=" $AES1 ","
-+			"AES2=" $AES2 ","
-+			"AES3=" $AES3
-+		]
-+	}
-+}
-+
-+<confdir:pcm/dmic.conf>
-+
-+SOF-Intel.pcm.dmic.common {
-+	@args [ CARD DEVICE ]
-+	@args.CARD {
-+		type string
-+	}
-+	@args.DEVICE {
-+		type integer
-+	}
-+	type plug
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+		device $DEVICE
-+	}
-+
-+	hint.device $DEVICE
-+}
-+
-+SOF-Intel.pcm.dmic.0 {
-+	@args [ CARD ]
-+	@args.CARD { type string }
-+	@func refer
-+	name {
-+		@func concat
-+		strings [
-+			"cards.SOF-Intel.pcm.dmic.common:"
-+			"CARD=" $CARD ","
-+			"DEVICE=6"
-+		]
-+	}
-+}
-+
-+SOF-Intel.pcm.dmic.1 {
-+	@args [ CARD ]
-+	@args.CARD { type string }
-+	@func refer
-+	name {
-+		@func concat
-+		strings [
-+			"cards.SOF-Intel.pcm.dmic.common:"
-+			"CARD=" $CARD ","
-+			"DEVICE=7"
-+		]
-+	}
-+}
-+
-+<confdir:pcm/modem.conf>
-+
-+SOF-Intel.pcm.modem.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+	device 6
-+	hint.show off
-+}
-diff --git a/src/conf/cards/aliases.conf b/src/conf/cards/aliases.conf
-index 18a920f4..0c44c1aa 100644
---- a/src/conf/cards/aliases.conf
-+++ b/src/conf/cards/aliases.conf
-@@ -57,6 +57,7 @@ CMI8786 cards.CMI8788
- CMI8787 cards.CMI8788
- pistachio cards.pistachio-card
- VC4-HDMI cards.vc4-hdmi
-+sof-skl_hda_car cards.SOF-Intel
- 
- <confdir:pcm/default.conf>
- <confdir:pcm/dmix.conf>
-diff --git a/src/conf/pcm/Makefile.am b/src/conf/pcm/Makefile.am
-index c548660d..20da0448 100644
---- a/src/conf/pcm/Makefile.am
-+++ b/src/conf/pcm/Makefile.am
-@@ -3,7 +3,7 @@ cfg_files = default.conf front.conf rear.conf center_lfe.conf side.conf\
- 	    surround50.conf surround51.conf \
- 	    surround71.conf iec958.conf hdmi.conf modem.conf \
- 	    dmix.conf dsnoop.conf \
--	    dpl.conf
-+	    dpl.conf dmic.conf
- 
- EXTRA_DIST = $(cfg_files)
- 
-diff --git a/src/conf/pcm/dmic.conf b/src/conf/pcm/dmic.conf
-new file mode 100644
-index 00000000..1dce37c9
---- /dev/null
-+++ b/src/conf/pcm/dmic.conf
-@@ -0,0 +1,54 @@
-+#
-+#  input from digital mic
-+#
-+
-+pcm.!dmic {
-+	@args [ CARD DEV ]
-+	@args.CARD {
-+		type string
-+		default {
-+			@func getenv
-+			vars [
-+				ALSA_PCM_CARD
-+				ALSA_CARD
-+			]
-+			default {
-+				@func refer
-+				name defaults.pcm.dmic.card
-+			}
-+		}
-+	}
-+	@args.DEV {
-+		type integer
-+		default {
-+			default {
-+				@func refer
-+				name defaults.pcm.dmic.device
-+			}
-+		}
-+	}
-+	type empty
-+	slave.pcm {
-+		@func refer
-+		name {
-+			@func concat
-+			strings [
-+				"cards."
-+				{
-+					@func card_driver
-+					card $CARD
-+				}
-+				".pcm.dmic." $DEV ":"
-+				"CARD=" $CARD
-+			]
-+		}
-+	}
-+	hint {
-+		show {
-+			@func refer
-+			name defaults.namehint.basic
-+		}
-+		description "Digital Mic connected to the PCH directly"
-+		device $DEV
-+	}
-+}
--- 
-2.17.1
+> +static int ad242x_set_dai_fmt_dai0(struct snd_soc_dai *codec_dai,
+> +				   unsigned int format)
+> +{
+> +	return ad242x_set_dai_fmt(codec_dai, format, 0);
+> +}
+> +
+> +static int ad242x_set_dai_fmt_dai1(struct snd_soc_dai *codec_dai,
+> +				   unsigned int format)
+> +{
+> +	return ad242x_set_dai_fmt(codec_dai, format, 1);
+> +}
+
+You don't need separate ops, just look at dai->id.
+
+> +module_platform_driver(ad242x_platform_driver);
+> +
+> +MODULE_AUTHOR("Daniel Mack <daniel@zonque.org>");
+> +MODULE_DESCRIPTION("AD242X ALSA SoC driver");
+> +MODULE_LICENSE("GPL");
+
+Should have a MODULE_ALIAS() as well for autoloading.
+
+--AkbCVLjbJ9qUtAXD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl33k1AACgkQJNaLcl1U
+h9CJzAf5AVSyR1/mSM1ETDWuCIYuCIEFlu7/ooDTySWL/oz8g/+17UrUPo4t74Kv
+vEBYnAiDtdNss2zAjSK4TGyvVRqIH+PRdOpEyJcaGK23yLD8tr/MzD3iYvVxXnhP
+4rd555BKIjpXedGoFoVUMsqYq6elyLawB42m2kVesOxlY2YxGw76dpcNJH061vjM
+M8YttjOvZdbN4maecBVI6tq1gTttZ+ap+k/T3CqAEa6A701pg6GlQR0ZX/rsKl84
+BTYGk9C2XDYoJrwMp6cPRr93AyxAf/pAzYqhju0Co1VxnvnDxk0r6gfSW4EYn18n
+kIHoPy2cHMeADFhK7n4j0Sc1c79h4g==
+=eeff
+-----END PGP SIGNATURE-----
+
+--AkbCVLjbJ9qUtAXD--
+
+--===============0068977458287235692==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0068977458287235692==--
