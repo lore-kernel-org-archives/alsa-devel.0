@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54DCCC43603
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:08:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B8F6C43603
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:09:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2E4F207FF
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:08:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9908B206D3
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:09:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sMRkr2EU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2E4F207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gew7Fljc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9908B206D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18E7F850;
-	Mon, 16 Dec 2019 13:08:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18E7F850
+	by alsa0.perex.cz (Postfix) with ESMTPS id E864D1676;
+	Mon, 16 Dec 2019 13:08:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E864D1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576498135;
-	bh=nRq07p8ybxsY13vWY0DTUh11eIrDqHYkX/y+ZAq7EKk=;
+	s=default; t=1576498168;
+	bh=q3l4hPwOK/Y5YuMcfC8JjrFP4fRx13Mms32vjGJ4Zcw=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=sMRkr2EUq1iwi3Z65ODd0RwXjTEYg368EoCALucx4mrQja1nPcmh0XDTT+GMHFbkT
-	 YF2UuOFa41QaDUS8utoQOxedtSJu4WFakcmTrTc05/s6erxR27+9hQCorX1ghBuZ12
-	 5OVELwXzC4HObQS01a5TIG7W5gDLAApk9GiwdQbw=
+	b=Gew7FljckwKfda//SqzngHgk4LlVKsOxx+w2wnRvEpKMTPr33L/NA2zmNsuKYLbdF
+	 VDWunhiEO50/Hsb564uyXyWL/T6aCxdNDJHrWjVJ8fKiNluFiLeTo/UB9Zpy+e843a
+	 WVx+vuj0l+HW0BEGCnCWmaxFPC6n9o3Qvvrc6AQY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B5DBF80278;
-	Mon, 16 Dec 2019 13:05:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37612F8028D;
+	Mon, 16 Dec 2019 13:05:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77AE6F8026A; Mon, 16 Dec 2019 13:05:15 +0100 (CET)
+ id 0892BF8027B; Mon, 16 Dec 2019 13:05:18 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B5D79F80259
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:05:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5D79F80259
+ by alsa1.perex.cz (Postfix) with ESMTP id 6805FF8026F
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:05:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6805FF8026F
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1B661FB;
- Mon, 16 Dec 2019 04:05:11 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 365E91045;
+ Mon, 16 Dec 2019 04:05:14 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4150E3F719;
- Mon, 16 Dec 2019 04:05:11 -0800 (PST)
-Date: Mon, 16 Dec 2019 12:05:09 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AAB703F719;
+ Mon, 16 Dec 2019 04:05:13 -0800 (PST)
+Date: Mon, 16 Dec 2019 12:05:12 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <877e3159ix.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-877e3159ix.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <878snh59j1.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-878snh59j1.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: samsung: lowland: use
+Subject: [alsa-devel] Applied "ASoC: samsung: bells: use
 	snd_soc_dai_link_component for codec_conf" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: samsung: lowland: use snd_soc_dai_link_component for codec_conf
+   ASoC: samsung: bells: use snd_soc_dai_link_component for codec_conf
 
 has been applied to the asoc tree at
 
@@ -102,31 +102,31 @@ to this mail.
 Thanks,
 Mark
 
-From bfc5b22c7181b39cb106ae5c2fb1dfb6ad53a724 Mon Sep 17 00:00:00 2001
+From 3874b2154be7abd3e5eb1c19af7e556f6a22d2fa Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 13 Dec 2019 09:55:34 +0900
-Subject: [PATCH] ASoC: samsung: lowland: use snd_soc_dai_link_component for
+Date: Fri, 13 Dec 2019 09:55:30 +0900
+Subject: [PATCH] ASoC: samsung: bells: use snd_soc_dai_link_component for
  codec_conf
 
 We can use snd_soc_dai_link_component to specify codec_conf.
 Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/877e3159ix.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/878snh59j1.wl-kuninori.morimoto.gx@renesas.com
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/lowland.c | 2 +-
+ sound/soc/samsung/bells.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/samsung/lowland.c b/sound/soc/samsung/lowland.c
-index 973f22bcc747..098eefc764db 100644
---- a/sound/soc/samsung/lowland.c
-+++ b/sound/soc/samsung/lowland.c
-@@ -126,7 +126,7 @@ static struct snd_soc_dai_link lowland_dai[] = {
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index 58d8a81aa0ea..5de633497f83 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -381,7 +381,7 @@ static struct snd_soc_dai_link bells_dai_wm5110[] = {
  
- static struct snd_soc_codec_conf lowland_codec_conf[] = {
+ static struct snd_soc_codec_conf bells_codec_conf[] = {
  	{
 -		.dev_name = "wm9081.1-006c",
 +		.dlc = COMP_CODEC_CONF("wm9081.1-006c"),
