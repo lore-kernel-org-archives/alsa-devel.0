@@ -2,88 +2,55 @@ Return-Path: <SRS0=bmHO=2G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C10DC43603
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 21:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E7AFC43603
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 21:56:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E0AE24655
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 21:41:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A09520CC7
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 21:56:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="USK5xd8b"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E0AE24655
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qz+dTs5A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A09520CC7
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12829850;
-	Mon, 16 Dec 2019 22:40:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12829850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8192D84F;
+	Mon, 16 Dec 2019 22:56:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8192D84F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576532508;
-	bh=ZuhCicHWHnKECFoeeu8sUvMvFK091U2jXhpHmiCvvbA=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576533413;
+	bh=MmYYPyVqq+IPCViV4czVcpLY4TwbdlBqepVfK9Y16sw=;
+	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=USK5xd8bkNxPi4nmHeDJZO41RISQgl8z6vpSMSbvKthZiyly9epPzfQkwgPN2+WNu
-	 762BeJw+vzPYPxHS6CVN/NJciRQrTWU87bgpjE5MLTrNsd/Pqr3jI/K/N7EcoPWfPx
-	 nZQ9xI1gMCYoQ905r+Yci510ypLwh9485MKt3oPM=
+	b=Qz+dTs5APz/BGBSZ4OUB6XEo5DrNYlJK8zhwUpFGqBY3wSg2NzONU4wjUJYzSGC2l
+	 oH+DCVpzBlqBwOoO0j+IS7EpVIjjP3gJuw2mXEb/5T6/97n34tQanMouD9ydvBKBPx
+	 aUUVzmgTj45VBn2xWi40uAs3bnv2hb7JT6w4dRBo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84476F8022C;
-	Mon, 16 Dec 2019 22:40:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4146F8022C;
+	Mon, 16 Dec 2019 22:56:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5A2FF80255; Mon, 16 Dec 2019 22:40:55 +0100 (CET)
-Received: from mail-ot1-f66.google.com (mail-ot1-f66.google.com
- [209.85.210.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F643F800B2
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 22:40:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F643F800B2
-Received: by mail-ot1-f66.google.com with SMTP id f71so1330131otf.2
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:40:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=w/B4Ufn2vEQWN8qDF+PdKshh4CtUrJHulKoVBKykf+I=;
- b=iWZeSXBJIN72lSXaW4s6nTv7E1keSwMtX7YgSh46/LQLTQVQ5tiz7wUglhSX+obE7z
- W5pdSEM1uceKr9rrJ4hYSSQI2vPC56NOhzCX3LwELK17XuH0Il3tXWqbh9eotfBsiwX/
- eMCXz67VFUPIkeFN5SJinyfdwIeAdKCbczWjKU66+hKf8l4PRFveKSIL+Ql7dzqa7Ua7
- b2Q+0ROcfT/ddQGTkHCW9PAqSrQmpUNcDKP0SO/P2qNEwMr22ePBGI/5dgCI1V6w1a5d
- EnVG5Y0fzo/ReRcORR5fvRylV/s5joTbe7LWmdWvnTq4iNQXwfzKHibg92lu0krhbbSQ
- mSsw==
-X-Gm-Message-State: APjAAAVA5GOMm1URwTwpgJUd18th2o4m4lnuxr2DRIJw1uJVv9C1PnJ9
- xvnyWUCtVQ5hP6nNpEfmYA==
-X-Google-Smtp-Source: APXvYqxx/YyPyFV09xDlJezz/+Zd9ug5RlT5+zsybfzBCYv9hYcK/r6VQMlyDfmf4Beo5bdrVmC4+A==
-X-Received: by 2002:a9d:7c97:: with SMTP id q23mr17133632otn.253.1576532446957; 
- Mon, 16 Dec 2019 13:40:46 -0800 (PST)
-Received: from localhost (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id i25sm97492otc.67.2019.12.16.13.40.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Dec 2019 13:40:46 -0800 (PST)
-Date: Mon, 16 Dec 2019 15:40:45 -0600
-From: Rob Herring <robh@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Message-ID: <20191216214045.GA6988@bogus>
-References: <b9352edb014c1ee8530c0fd8829c2b044b3da649.1575452454.git.shengjiu.wang@nxp.com>
+ id C60BFF80255; Mon, 16 Dec 2019 22:56:01 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 76B35F800AD
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 22:55:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76B35F800AD
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b9352edb014c1ee8530c0fd8829c2b044b3da649.1575452454.git.shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
- robh+dt@kernel.org, nicoleotsuka@gmail.com, broonie@kernel.org,
- festevam@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH v5 1/2] ASoC: dt-bindings: fsl_asrc: add
- compatible string for imx8qm & imx8qxp
+From: GitHub pull_request - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1576533357364182949-webhooks-bot@alsa-project.org>
+References: <1576533357364182949-webhooks-bot@alsa-project.org>
+Message-Id: <20191216215601.C60BFF80255@alsa1.perex.cz>
+Date: Mon, 16 Dec 2019 22:56:01 +0100 (CET)
+Subject: [alsa-devel] alsa-info: lots of mostly syntactic changes
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,34 +68,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed,  4 Dec 2019 20:00:18 +0800, Shengjiu Wang wrote:
-> Add compatible string "fsl,imx8qm-asrc" for imx8qm platform,
-> "fsl,imx8qxp-asrc" for imx8qxp platform.
-> 
-> There are two asrc modules in imx8qm & imx8qxp, the clock mapping is
-> different for each other, so add new property "fsl,asrc-clk-map"
-> to distinguish them.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
-> changes in v2
-> -none
-> 
-> changes in v3
-> -use only one compatible string "fsl,imx8qm-asrc",
-> -add new property "fsl,asrc-clk-map".
-> 
-> changes in v4
-> -add "fsl,imx8qxp-asrc"
-> 
-> changes in v5
-> -refine the comments for compatible
-> 
->  Documentation/devicetree/bindings/sound/fsl,asrc.txt | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
+alsa-project/alsa-utils pull request #29 was edited from E5ten:
 
-Acked-by: Rob Herring <robh@kernel.org>
+- remove all bashisms and change shebang to #!/bin/sh
+- replace use of which with command -v for portability
+- remove awk dependency
+- general cosmetic consistency:
+    - indentation
+    - always put then or do on the same line as if, for, or while
+- quote much more, especially when the variable refers to a file
+- replace many uses of >> $FILE with command grouping and single
+  redirects of the command groups
+- simplify text processing pipelines, mostly by turning them into
+  a single sed command
+
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/29
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/29.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
