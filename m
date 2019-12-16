@@ -2,59 +2,69 @@ Return-Path: <SRS0=bmHO=2G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3645C43603
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 15:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10548C43603
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 16:26:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B390720717
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 15:46:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 662282072B
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 16:26:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EPxyxPZO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B390720717
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nr9g6X4d";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4XeOd/H"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 662282072B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8990885D;
-	Mon, 16 Dec 2019 16:45:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8990885D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6522115E0;
+	Mon, 16 Dec 2019 17:25:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6522115E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576511169;
-	bh=EXnJyrZXla9Se5fn9qnnl+RHO2uvsCLQmkfcXsEuaVw=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576513577;
+	bh=h4KceFw2tLPYbj7eX/9X+DksY8x2LaGnA18aSeQWSo4=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EPxyxPZObEHzgLLbjxzP/8RsQ3Atc21tb+5bF25wlpEiUgKpAHfs8tXj8ZVzIqqRw
-	 vmrsv1CFIpjjuezBG5uvkwiUIjm5JwCtdOWF/8X2ZneRybLH7SAVc4wweHzozW+FYC
-	 1J/XRn+SqvNpp3+0t/6ngKZRWxEpcDzSv2abXRUE=
+	b=Nr9g6X4daUaAqDdmRNJiyGHFiMHBZfYWfO69YM2XUVkO0POREoyWGNG8OWnh/tIVX
+	 HEGtEjnSFx+XYDasjCiaq0i5hBRcCLduAW49Lb9yFX6/eo4HTQ83dyxCK0IV7iRAnv
+	 pHwjzR5J+4qNt3a0R4+aic+dR5y2JjMywxwt5K78=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FE7DF8014F;
-	Mon, 16 Dec 2019 16:45:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E29F8F8022C;
+	Mon, 16 Dec 2019 17:25:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFA6EF80255; Mon, 16 Dec 2019 16:45:17 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id A911EF80255; Mon, 16 Dec 2019 17:25:25 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1ED2F800B2
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 17:25:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1ED2F800B2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="B4XeOd/H"
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl
+ [83.86.89.107])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 991A0F8014F
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 16:45:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 991A0F8014F
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2019 07:45:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,322,1571727600"; d="scan'208";a="247075032"
-Received: from andresma-mobl.amr.corp.intel.com (HELO [10.252.132.232])
- ([10.252.132.232])
- by fmsmga002.fm.intel.com with ESMTP; 16 Dec 2019 07:45:06 -0800
-To: Greg KH <gregkh@linuxfoundation.org>
+ by mail.kernel.org (Postfix) with ESMTPSA id A1DAC206D7;
+ Mon, 16 Dec 2019 16:25:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1576513520;
+ bh=BIgz88Jxh/hhpFVygPCWmHqmEervhbpVfOW1PXEq/4Y=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=B4XeOd/HNIJ2fz7+62Ywopnp31Jw6v6HijzywYRXZ0y0D/DI43NS4vJvB0ehaiYPh
+ ClkfRA0zvLMsi4qgnA0rfEbhQlBJ1uB7QcUQboJJBbNVSarne4UDToy0caYNHvn/RP
+ IR87HXp2GWbxzucsyhC1aV2blpQZNRJUlRRUkRjo=
+Date: Mon, 16 Dec 2019 17:25:17 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20191216162517.GA2258618@kroah.com>
 References: <20191213050409.12776-1-pierre-louis.bossart@linux.intel.com>
  <20191213050409.12776-9-pierre-louis.bossart@linux.intel.com>
  <20191213072844.GF1750354@kroah.com>
@@ -62,14 +72,10 @@ References: <20191213050409.12776-1-pierre-louis.bossart@linux.intel.com>
  <20191213161046.GA2653074@kroah.com>
  <20728848-e0ae-01f6-1c45-c8eef6a6a1f4@linux.intel.com>
  <20191214082742.GA3318534@kroah.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e9d77c58-e0bd-010c-bbc8-b54c82f065fd@linux.intel.com>
-Date: Mon, 16 Dec 2019 09:02:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ <e9d77c58-e0bd-010c-bbc8-b54c82f065fd@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20191214082742.GA3318534@kroah.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <e9d77c58-e0bd-010c-bbc8-b54c82f065fd@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
@@ -90,63 +96,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 12/14/19 2:27 AM, Greg KH wrote:
-> On Fri, Dec 13, 2019 at 05:25:23PM -0600, Pierre-Louis Bossart wrote:
->>
->>> No, I mean the new MODULE_NAMESPACE() support that is in the kernel.
->>> I'll move the greybus code to use it too, but when you are adding new
->>> apis, it just makes sense to use it then as well.
->>
->> Greg, would the patch below be what you had in mind?
->> Thanks
->> -Pierre
->>
->>
->> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
->> index 76a5c52b12b4..5bad8422887e 100644
->> --- a/drivers/soundwire/Makefile
->> +++ b/drivers/soundwire/Makefile
->> @@ -7,9 +7,11 @@ ccflags-y += -DDEBUG
->>   #Bus Objs
->>   soundwire-bus-objs := bus_type.o bus.o master.o slave.o mipi_disco.o
->> stream.o
->>   obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
->> +ccflags-$(CONFIG_SOUNDWIRE) += -DDEFAULT_SYMBOL_NAMESPACE=SDW_CORE
->>
->>   soundwire-generic-allocation-objs := generic_bandwidth_allocation.o
->>   obj-$(CONFIG_SOUNDWIRE_GENERIC_ALLOCATION) +=
->> soundwire-generic-allocation.o
->> +ccflags-$(CONFIG_SOUNDWIRE_GENERIC_ALLOCATION) +=
->> -DDEFAULT_SYMBOL_NAMESPACE=SDW_CORE
+On Mon, Dec 16, 2019 at 09:02:01AM -0600, Pierre-Louis Bossart wrote:
 > 
-> Don't use ccflags, just use the correct MODULE_EXPORT_NS() tag instead.
+> 
+> On 12/14/19 2:27 AM, Greg KH wrote:
+> > On Fri, Dec 13, 2019 at 05:25:23PM -0600, Pierre-Louis Bossart wrote:
+> > > 
+> > > > No, I mean the new MODULE_NAMESPACE() support that is in the kernel.
+> > > > I'll move the greybus code to use it too, but when you are adding new
+> > > > apis, it just makes sense to use it then as well.
+> > > 
+> > > Greg, would the patch below be what you had in mind?
+> > > Thanks
+> > > -Pierre
+> > > 
+> > > 
+> > > diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> > > index 76a5c52b12b4..5bad8422887e 100644
+> > > --- a/drivers/soundwire/Makefile
+> > > +++ b/drivers/soundwire/Makefile
+> > > @@ -7,9 +7,11 @@ ccflags-y += -DDEBUG
+> > >   #Bus Objs
+> > >   soundwire-bus-objs := bus_type.o bus.o master.o slave.o mipi_disco.o
+> > > stream.o
+> > >   obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+> > > +ccflags-$(CONFIG_SOUNDWIRE) += -DDEFAULT_SYMBOL_NAMESPACE=SDW_CORE
+> > > 
+> > >   soundwire-generic-allocation-objs := generic_bandwidth_allocation.o
+> > >   obj-$(CONFIG_SOUNDWIRE_GENERIC_ALLOCATION) +=
+> > > soundwire-generic-allocation.o
+> > > +ccflags-$(CONFIG_SOUNDWIRE_GENERIC_ALLOCATION) +=
+> > > -DDEFAULT_SYMBOL_NAMESPACE=SDW_CORE
+> > 
+> > Don't use ccflags, just use the correct MODULE_EXPORT_NS() tag instead.
+> 
+> The documentation [1] states
+> 
+> "
+> Defining namespaces for all symbols of a subsystem can be very verbose and
+> may become hard to maintain. Therefore a default define
+> (DEFAULT_SYMBOL_NAMESPACE) is been provided, that, if set, will become the
+> default for all EXPORT_SYMBOL() and EXPORT_SYMBOL_GPL() macro expansions
+> that do not specify a namespace.
+> "
+> 
+> If the ccflags option is not supported or no longer desired, it'd be worth
+> updating the documentation for dummies like me. I took the wording as a hint
+> to avoid using MODULE_EXPORT_NS.
 
-The documentation [1] states
+It's supported, and works just fine.  It's just that you really don't
+have a ton of exports, right?  What's wrong with manually marking them?
 
-"
-Defining namespaces for all symbols of a subsystem can be very verbose 
-and may become hard to maintain. Therefore a default define 
-(DEFAULT_SYMBOL_NAMESPACE) is been provided, that, if set, will become 
-the default for all EXPORT_SYMBOL() and EXPORT_SYMBOL_GPL() macro 
-expansions that do not specify a namespace.
-"
+> > And "SDW_CORE" is odd, "SOUNDWIRE" instead?
+> 
+> 'sdw' is the prefix used everywhere for SoundWire symbols.
 
-If the ccflags option is not supported or no longer desired, it'd be 
-worth updating the documentation for dummies like me. I took the wording 
-as a hint to avoid using MODULE_EXPORT_NS.
+Ok, I guess that ship has sailed :(
 
-> And "SDW_CORE" is odd, "SOUNDWIRE" instead?
-
-'sdw' is the prefix used everywhere for SoundWire symbols.
-
-[1] https://www.kernel.org/doc/html/latest/core-api/symbol-namespaces.html
+greg k-h
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
