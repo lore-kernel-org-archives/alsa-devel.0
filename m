@@ -6,86 +6,77 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB8C6C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 16:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B29D4C43603
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 17:05:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0C06206EC
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 16:54:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37A26206EC
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 17:05:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FYtRFBdu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="InUpgdik";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="InUpgdik"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0C06206EC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=akkea.ca
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MxDBnpYe";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WmF8LwYY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37A26206EC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9121E84F;
-	Mon, 16 Dec 2019 17:53:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9121E84F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5492D850;
+	Mon, 16 Dec 2019 18:04:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5492D850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576515285;
-	bh=enebr5DJcXPUkP0eA8FXLQzwtu5vUzO8yFiYchkOgOQ=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FYtRFBdu3nURzmf0WBgFIxw5RXMjvoW+Qa7ORjdBljUcOjYeOSR2IpqpJ3EnPKfnP
-	 cdpQ9+ubK/m3zHfMYLLUol/nsegjYwiBqVJxoS7fEs48heO7zhJXZ6TjzfNQyQssLZ
-	 jYnHOvwTsb9/MEBsIk8nbRnyOPJLOZTHUXa3C9pA=
+	s=default; t=1576515921;
+	bh=SMq9ODiNPL4URnpdpAHWhKoi9GgKWgDz3NdXcjW4DPY=;
+	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MxDBnpYeWpGm3eKr66j5Nu2cykBkoP+Zz5ztOFyRPHLIKr3VltenT70NqrPbg+zJo
+	 HTC+AhM8FTiUOecpFPkIr0tUHIj5xEbtGHVW+dsTPrswNu62Cn1YuK6x8+B1UKYIS/
+	 5nmQpUsFXMjMpOzD7ITxav/QKIddOM11mPdadpaE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0497AF8022C;
-	Mon, 16 Dec 2019 17:53:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86279F8022C;
+	Mon, 16 Dec 2019 18:04:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67FD3F80255; Mon, 16 Dec 2019 17:53:53 +0100 (CET)
-Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id AFEAEF80255; Mon, 16 Dec 2019 18:04:29 +0100 (CET)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95520F800B2
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 17:53:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95520F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 352E7F800B2
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 18:04:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 352E7F800B2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
- header.b="InUpgdik"; 
- dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
- header.b="InUpgdik"
-Received: from localhost (localhost [127.0.0.1])
- by node.akkea.ca (Postfix) with ESMTP id DE9014E2006;
- Mon, 16 Dec 2019 16:53:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
- t=1576515227; bh=PDG4xILM0ggz//+/yPEhO7+YPyNm+jyBiOoMiKrGSH8=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References;
- b=InUpgdik2rw3RH9CAtDXLPzGZbi+Mj1zDS30acc3jowFAyTe3WnxZqWlBIz3jqTKP
- AQX4vJEMDoswjIXvOI5uwt+LRYip/IvOHB+5wb1gzX2ObciSlG/vu7EdXXQPwmOlv0
- A+8EBtIqugoP69y/EA4r5qWpBrUVXMydcOU6Mjuo=
-X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
-Received: from node.akkea.ca ([127.0.0.1])
- by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 5XS3_Gd8CFnQ; Mon, 16 Dec 2019 16:53:47 +0000 (UTC)
-Received: from www.akkea.ca (node.akkea.ca [192.155.83.177])
- by node.akkea.ca (Postfix) with ESMTPSA id 725604E2003;
- Mon, 16 Dec 2019 16:53:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
- t=1576515227; bh=PDG4xILM0ggz//+/yPEhO7+YPyNm+jyBiOoMiKrGSH8=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References;
- b=InUpgdik2rw3RH9CAtDXLPzGZbi+Mj1zDS30acc3jowFAyTe3WnxZqWlBIz3jqTKP
- AQX4vJEMDoswjIXvOI5uwt+LRYip/IvOHB+5wb1gzX2ObciSlG/vu7EdXXQPwmOlv0
- A+8EBtIqugoP69y/EA4r5qWpBrUVXMydcOU6Mjuo=
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="WmF8LwYY"
+Received: by mail-wr1-x430.google.com with SMTP id z3so669535wru.3
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 09:04:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=D3KrVha7Xy8MmXsg2fUaHSDil7iN5fjwMv42kKYTDx8=;
+ b=WmF8LwYYUlAK0WNN/c5dqoCRGQtpMu77pdxAPZCZrRw+qS2ThGoQbHU84mv1LuXAdJ
+ UkBM+EgaqWI5Ld2gZxZom+Er3cmfoKLUt8aQ3zvZHDd8l1WmhE0zrk+OTrakE35lxqm2
+ BA1uOFiz7/yAzs2M/0KMdX/4rm0TeTTJL10FY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=D3KrVha7Xy8MmXsg2fUaHSDil7iN5fjwMv42kKYTDx8=;
+ b=ExoqA5FlDosoGVkRQ02H16Fpqhl2j/ReQlis+14frs3FVcL2iMYaFGutUt6Php2+Yt
+ X9VVXMzLxdF1W1vTKgPVR4YuBcaF6HzBDQfvKqdn7KLuLuZGF9xCE2abAFcQ0XFNPuxH
+ /vO2jcA3CxD6FIAGbrWbpwWVpC/0qMW7V7dfuj8m+jHJSEtqcqKs/qRc9TxACA7HS5lp
+ tXq0gxCSkQ11JRfAxlgNPaCFzA1KSaM1wXslxVyQeCP7oOyfH7v9U6/TSazTI3Yp1Kul
+ AXmz9pvt71a6pspPLaOglSMu1iM3Bp5YC2VGL7nTWkaDuZtoNdtjGW2zmMcvuo1IGknS
+ T4Hw==
+X-Gm-Message-State: APjAAAWzfGMqsD9JOrRcdnz4eh+fMTsehTBsY378zWOVkdWNRVszvlaX
+ p7KhRdvBdhkRXhN8mJnBs4m+yVuTL7X1H6sOWBgcfDqB
+X-Google-Smtp-Source: APXvYqx9VP5OQQ9mHwnv5hWWvVlTK9CknZ06x/b4bIy78vLi7XxX6ww5VPqi1ctzTm9aNrX+pPsxFyx9UQ4KnQLTmtA=
+X-Received: by 2002:adf:e74f:: with SMTP id c15mr32803593wrn.274.1576515865856; 
+ Mon, 16 Dec 2019 09:04:25 -0800 (PST)
 MIME-Version: 1.0
-Date: Mon, 16 Dec 2019 08:53:47 -0800
-From: Angus Ainslie <angus@akkea.ca>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20191216122258.GC4161@sirena.org.uk>
-References: <20191214235550.31257-1-angus@akkea.ca>
- <20191216122258.GC4161@sirena.org.uk>
-Message-ID: <3b7f47120df1d63747788bf9de16392c@akkea.ca>
-X-Sender: angus@akkea.ca
-User-Agent: Roundcube Webmail/1.3.6
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, kernel@puri.sm,
- linux-kernel-owner@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v2 0/2] Add the broadmobi BM818
+From: Fletcher Woodruff <fletcherw@chromium.org>
+Date: Mon, 16 Dec 2019 10:04:00 -0700
+Message-ID: <CAN-6NYbiFOKDqAP2tHBYm6heqFSCQqQohdZfXqQ-rpgwnX1PjA@mail.gmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [alsa-devel] Free-running MMAP Mode
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,28 +89,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2019-12-16 04:22, Mark Brown wrote:
-> On Sat, Dec 14, 2019 at 03:55:48PM -0800, Angus Ainslie (Purism) wrote:
-> 
->> Angus Ainslie (Purism) (2):
->>   sound: codecs: gtm601: add Broadmobi bm818 sound profile
->>   dt-bindings: sound: gtm601: add the broadmobi interface
-> 
-> As I said in reply to v1:
-> 
-> | These subject styles don't even agree with each other :( - please
-> | try to be consistent with the style for the subsystem (the latter
-> | one matches, the first one doesn't).
+Hi alsa-devel,
 
-Sorry I missed fixing that. I will re-submit.
+I'm working on implementing memory-mapped audio for a project that
+uses the alsa user-space API. My understanding is that typically, mmap
+mode requires explicit calls to mmap_begin/mmap_commit before and
+after every read/write in order to notify the driver of newly
+read/written frames.
 
-Do you have any comments on the code changes I made in v2 ?
+Is there any way for a user to request a sort of "free-running" MMAP,
+where alsa just assumes that the data it needs has been written to the
+circular buffer and doesn't expect those begin/commit calls?
 
+Thanks,
+Fletcher
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
