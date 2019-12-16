@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CCF0C43603
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7636EC43603
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:14:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F6D3206CB
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:14:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F0A0E206CB
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:14:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C3O5n794"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F6D3206CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pn0fM2w7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0A0E206CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBEAF166D;
-	Mon, 16 Dec 2019 13:13:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBEAF166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id F401B1658;
+	Mon, 16 Dec 2019 13:14:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F401B1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576498462;
-	bh=Z7hX2DVmSXgzO4x42N9yFd2QnVp4xYduxhXHKkQFSlY=;
+	s=default; t=1576498495;
+	bh=ia5UOtu8qiMMqUYVNv/P8U3KTda7P9s5UXaxewlcHds=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=C3O5n794A+jXty5vkieSr2wdnT/qapYtNnEYbbh1W2eKaXFDssGYOxcl7dkjCWZxS
-	 K7AJHDL/O1UC5j0BCqnQaWA4NVacyaX+QocqBJGVX8X+4f/2iDjBT8i6wXcbsY51+Y
-	 hFEXKS5Osy/LXtKQqU8th3kOqVxSTNZhdfp3ORe4=
+	b=pn0fM2w76JZ1/yJJTJ2zrIklO2zlDndCHt7U/SQPiynkIG1imwjEM7Rgnq0nfgVIG
+	 XWccjiyJCido1k1sEclDjqws/voDJs79V1mRXAr1WdjRUfH4O6lI3MfWOmLLQ8ow9e
+	 FAcVURx/3RBIsA8Wx9pw/u0WcYFL6VwTnWTcegwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DC75F80304;
-	Mon, 16 Dec 2019 13:05:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A641F802F8;
+	Mon, 16 Dec 2019 13:05:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDE01F802E2; Mon, 16 Dec 2019 13:05:35 +0100 (CET)
+ id 09AC3F802E9; Mon, 16 Dec 2019 13:05:38 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C6CDAF802DB
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:05:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6CDAF802DB
+ by alsa1.perex.cz (Postfix) with ESMTP id DD9D1F802DB
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:05:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD9D1F802DB
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45C7E1045;
- Mon, 16 Dec 2019 04:05:31 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B05F11045;
+ Mon, 16 Dec 2019 04:05:33 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAE0F3F719;
- Mon, 16 Dec 2019 04:05:30 -0800 (PST)
-Date: Mon, 16 Dec 2019 12:05:29 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 312A63F719;
+ Mon, 16 Dec 2019 04:05:33 -0800 (PST)
+Date: Mon, 16 Dec 2019 12:05:31 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87imml59k2.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-87imml59k2.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k17159kb.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-87k17159kb.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: intel: kbl_da7219_max98927: use
+Subject: [alsa-devel] Applied "ASoC: fsl: imx-audmix: use
 	snd_soc_dai_link_component for codec_conf" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: kbl_da7219_max98927: use snd_soc_dai_link_component for codec_conf
+   ASoC: fsl: imx-audmix: use snd_soc_dai_link_component for codec_conf
 
 has been applied to the asoc tree at
 
@@ -102,58 +102,37 @@ to this mail.
 Thanks,
 Mark
 
-From 13568b0331c5f2839925c586f7e3e6cfe7f2ab71 Mon Sep 17 00:00:00 2001
+From eea2395217374b5ad8a97e525dcdae663b49f2d9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 13 Dec 2019 09:54:53 +0900
-Subject: [PATCH] ASoC: intel: kbl_da7219_max98927: use
- snd_soc_dai_link_component for codec_conf
+Date: Fri, 13 Dec 2019 09:54:44 +0900
+Subject: [PATCH] ASoC: fsl: imx-audmix: use snd_soc_dai_link_component for
+ codec_conf
 
 We can use snd_soc_dai_link_component to specify codec_conf.
 Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87imml59k2.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87k17159kb.wl-kuninori.morimoto.gx@renesas.com
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98927.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/fsl/imx-audmix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
-index 829f95fc4179..34e734adac19 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98927.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
-@@ -571,12 +571,12 @@ static struct snd_soc_ops skylake_refcap_ops = {
- static struct snd_soc_codec_conf max98927_codec_conf[] = {
+diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
+index 71590ca6394b..5ef6881395e0 100644
+--- a/sound/soc/fsl/imx-audmix.c
++++ b/sound/soc/fsl/imx-audmix.c
+@@ -289,7 +289,7 @@ static int imx_audmix_probe(struct platform_device *pdev)
+ 		priv->dai[num_dai + i].ignore_pmdown_time = 1;
+ 		priv->dai[num_dai + i].ops = &imx_audmix_be_ops;
  
- 	{
--		.dev_name = MAX98927_DEV0_NAME,
-+		.dlc = COMP_CODEC_CONF(MAX98927_DEV0_NAME),
- 		.name_prefix = "Right",
- 	},
+-		priv->dai_conf[i].of_node = args.np;
++		priv->dai_conf[i].dlc.of_node = args.np;
+ 		priv->dai_conf[i].name_prefix = dai_name;
  
- 	{
--		.dev_name = MAX98927_DEV1_NAME,
-+		.dlc = COMP_CODEC_CONF(MAX98927_DEV1_NAME),
- 		.name_prefix = "Left",
- 	},
- };
-@@ -584,12 +584,12 @@ static struct snd_soc_codec_conf max98927_codec_conf[] = {
- static struct snd_soc_codec_conf max98373_codec_conf[] = {
- 
- 	{
--		.dev_name = MAX98373_DEV0_NAME,
-+		.dlc = COMP_CODEC_CONF(MAX98373_DEV0_NAME),
- 		.name_prefix = "Right",
- 	},
- 
- 	{
--		.dev_name = MAX98373_DEV1_NAME,
-+		.dlc = COMP_CODEC_CONF(MAX98373_DEV1_NAME),
- 		.name_prefix = "Left",
- 	},
- };
+ 		priv->dapm_routes[i].source =
 -- 
 2.20.1
 
