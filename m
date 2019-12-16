@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E40C7C43603
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90807C43603
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:12:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D1FE206CB
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:11:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C5A5206D3
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Dec 2019 12:12:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="phgwHveC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D1FE206CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tFSKfU6R"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C5A5206D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89793850;
-	Mon, 16 Dec 2019 13:10:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89793850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54FAF1666;
+	Mon, 16 Dec 2019 13:11:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54FAF1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576498309;
-	bh=MGyPcLzHW8Jpz48uPhzslQIKYq50l5o/HhQzFQkQc9g=;
+	s=default; t=1576498337;
+	bh=8W+Ox9jvbltFrTaJTL+MenfdfGy7T89JSeqRSIUx/h0=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=phgwHveCpzuek3+2XfR8z5gxn5hV2Em9qoDUkekyQpY+VesRKBT0zsG5tsQNfnOvB
-	 1rgHWJn3S7b2kOeWhjrph6vjG5ppPgHuncTtog08IjnZwF5EgB+qljtt4mFUGdU+wZ
-	 +ECKpg2XzgFW6fV6g1H2GIBG8L1h7TpViEzM5r0Q=
+	b=tFSKfU6RTNGnGHD0/OvGMfq0I7UThxfyKi7NnnFUxllUTh9yCPMPiuib7TsuQYQXq
+	 vTc4hu1jltQUJJjP89f7c2/4ph2sa25GdEbSRCl+JL7edvymre/9rMoqxSd9oka5Qb
+	 PZOQ80z5TQl9zfImYqB+kEDFFYi5azv8dnh4WbKg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 680CCF8028E;
-	Mon, 16 Dec 2019 13:05:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A82F4F802E2;
+	Mon, 16 Dec 2019 13:05:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3AF00F8028E; Mon, 16 Dec 2019 13:05:25 +0100 (CET)
+ id B1522F802A0; Mon, 16 Dec 2019 13:05:29 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 715A4F8028A
- for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:05:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 715A4F8028A
+ by alsa1.perex.cz (Postfix) with ESMTP id 8EC48F8028E
+ for <alsa-devel@alsa-project.org>; Mon, 16 Dec 2019 13:05:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EC48F8028E
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8473F106F;
- Mon, 16 Dec 2019 04:05:21 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF0AE1045;
+ Mon, 16 Dec 2019 04:05:23 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04BB53F719;
- Mon, 16 Dec 2019 04:05:20 -0800 (PST)
-Date: Mon, 16 Dec 2019 12:05:19 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DAAC3F719;
+ Mon, 16 Dec 2019 04:05:23 -0800 (PST)
+Date: Mon, 16 Dec 2019 12:05:21 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87d0ct59jg.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-87d0ct59jg.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87eex959jm.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-87eex959jm.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: mediatek: mt8173-rt5650-rt5514: use
+Subject: [alsa-devel] Applied "ASoC: intel: skl_nau88l25_ssm4567: use
 	snd_soc_dai_link_component for codec_conf" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: mediatek: mt8173-rt5650-rt5514: use snd_soc_dai_link_component for codec_conf
+   ASoC: intel: skl_nau88l25_ssm4567: use snd_soc_dai_link_component for codec_conf
 
 has been applied to the asoc tree at
 
@@ -102,37 +102,42 @@ to this mail.
 Thanks,
 Mark
 
-From e90c2a3bc151f7c855c67461be42dbf16625eb67 Mon Sep 17 00:00:00 2001
+From 03b70ef529aeabee42174bc356635ea1ab7a1729 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 13 Dec 2019 09:55:15 +0900
-Subject: [PATCH] ASoC: mediatek: mt8173-rt5650-rt5514: use
+Date: Fri, 13 Dec 2019 09:55:09 +0900
+Subject: [PATCH] ASoC: intel: skl_nau88l25_ssm4567: use
  snd_soc_dai_link_component for codec_conf
 
 We can use snd_soc_dai_link_component to specify codec_conf.
 Let's use it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87d0ct59jg.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87eex959jm.wl-kuninori.morimoto.gx@renesas.com
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-index 8717e87bfe26..2e1e61d8f127 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-@@ -209,7 +209,7 @@ static int mt8173_rt5650_rt5514_dev_probe(struct platform_device *pdev)
- 			"Property 'audio-codec' missing or invalid\n");
- 		return -EINVAL;
- 	}
--	mt8173_rt5650_rt5514_codec_conf[0].of_node =
-+	mt8173_rt5650_rt5514_codec_conf[0].dlc.of_node =
- 		mt8173_rt5650_rt5514_dais[DAI_LINK_CODEC_I2S].codecs[1].of_node;
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 1a7ac8bdf543..b96b014e8c9e 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -147,11 +147,11 @@ static const struct snd_soc_dapm_route skylake_map[] = {
  
- 	card->dev = &pdev->dev;
+ static struct snd_soc_codec_conf ssm4567_codec_conf[] = {
+ 	{
+-		.dev_name = "i2c-INT343B:00",
++		.dlc = COMP_CODEC_CONF("i2c-INT343B:00"),
+ 		.name_prefix = "Left",
+ 	},
+ 	{
+-		.dev_name = "i2c-INT343B:01",
++		.dlc = COMP_CODEC_CONF("i2c-INT343B:01"),
+ 		.name_prefix = "Right",
+ 	},
+ };
 -- 
 2.20.1
 
