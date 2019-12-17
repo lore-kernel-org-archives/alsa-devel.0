@@ -7,87 +7,88 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55B3FC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B3F1C2D0D1
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:22:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA17A2082E
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:21:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 19E0B2176D
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:22:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gs8hTOiL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fXiVPsVT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA17A2082E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ASVQTbXf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FJmV12Z9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19E0B2176D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 019201657;
-	Tue, 17 Dec 2019 13:20:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 019201657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A48B1671;
+	Tue, 17 Dec 2019 13:21:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A48B1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576585271;
-	bh=YsPd0VTxpdpcbl6PhEduZD97tzOvliQO568qfg/uHEQ=;
+	s=default; t=1576585321;
+	bh=85o+DohtbazuOk4mMutQv9/vD+2Ty93xBl7Jfqqa/5c=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gs8hTOiL+z22fWgZwLubx03ZMxhqXFiHQTYyQRUtJTw4GHye/AHHeS6R82+AUptK3
-	 VxjS1RV10IFn8ba+Pv/dYHZUVcE2sLfrJQGmIyFbzxNQOzqee1BK/WKIDSEexRIgcK
-	 DOVZgD9d5pKpnShlNBfqr6cnxd0N/T04+DvhY7UY=
+	b=ASVQTbXfPADZNmAUFBD8BCiDT8is6nCaeofNrsLgUuuGmDnhLBdW5kZJ6qxjfXln/
+	 zGTdG8CiAJTOQVQF9pGkFdzy17EGZRiUtgy6NATc32KL8Ig1qx0zfDh7BfK1kuHp92
+	 /lqLM5XvvsHwl/YiUfc7kIsQGf4NY+bqrv+kST/w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AB31F802A7;
-	Tue, 17 Dec 2019 13:17:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7ED28F802DB;
+	Tue, 17 Dec 2019 13:17:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01AFBF8029A; Tue, 17 Dec 2019 13:17:15 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
+ id 73985F802C2; Tue, 17 Dec 2019 13:17:23 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69F58F8025A
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:17:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69F58F8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BEF7F8028C
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:17:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BEF7F8028C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="fXiVPsVT"
-Received: by mail-wr1-x444.google.com with SMTP id y11so11047946wrt.6
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 04:17:05 -0800 (PST)
+ header.b="FJmV12Z9"
+Received: by mail-wr1-x443.google.com with SMTP id q10so11035906wrm.11
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 04:17:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=ocdBt6/FzUfIkK3e8UHe5UNiSG0YclxpuKNMaOj8eZE=;
- b=fXiVPsVTxeTG0G2OJbQ3pGvBD/GieEi8vBJ2p+IDMyhYtjGq10ehDUgfMm+nVqx1SV
- mcWktAKQUZ1OOsLAZBeN2iudw6V+aCuacrjwWi/jkr0Q4kKcdbi6HWM36tmV0lEJpcY2
- 6ictKvF3BErTNTHC59n4gH/OFxPQMxMbErom1lvvm2YYq9kUW/ZoqWBv34WNt4LqCw1p
- g5gEmBoQfeifUbHfcoym5pp+4nuSWt/uh3nOTYoP5hQ6+97cMCXkgamnc8VqPXnq9K23
- tZDpbla/PIHw4KRwP6vFDxbrh+kQGZrZpzhG3ejG5/cXeQ7kVbm1kmGE1w9VF2MsrB+x
- jTxg==
+ bh=DVqcfTgjqDIP2wy7JDCyl9+vrKLd49ALRMx75DX6+Wc=;
+ b=FJmV12Z9o79SLdhEWr5+T6LjN72YQvI8I5rXdPbm2D1C8KFHb4r2UtTdawkgvN6Ltr
+ u/qyJFDz5dZLFIBXDlt4QcICzRDXUTg0hHw636UCf3Trav1QxVYX7FcNk7heMWHF5kUO
+ pZfnNZrl/H4kFCPeCu0LceG83AVqU+2HNMcKBk2HafX3IdSz09RjjlnhbI9+oAPzomp1
+ Sg/9nNGomHJyWnBV56dsDdX4AjrrU5Gr9gqracEpPdWb8wiqIvHDhFfdG0vruRZM263H
+ QlGZU//Z7L58oXXY3afMyOOKjBCQppKBJfkDlzt+g7M5QEgySkBI/229dfSnRTCz6AcA
+ Hk3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=ocdBt6/FzUfIkK3e8UHe5UNiSG0YclxpuKNMaOj8eZE=;
- b=F1BtTQjY+cEC+Ssl2y8QyG5KCipjtvOt8otk6S9YiH1WdfRiy9BNIO2hiFcE/llMiN
- lzeP1ngLuOozTW6o/YknxTL/Aoc7f1IHLl/kGYyzXS0LM1wD1eadEtrrA52/SECyOCQt
- EBmb5DL6QXpqTdeBWNFSEGQblfVnoUGTR4v68kTdI3j2p6Bow6Ikoa5X/nUvgqShA+yX
- yfBL+9qI9GR9d4welnHnlAphoJmSO+rvxK+9+Fnb17PbVTQaDTr0V4mku64AISb25y/R
- DKkGB652cxPCy0okqsM1EBlRqFl726LKDeDDeSBOgnqHgyTfEtO6vkfM0aUc9WyDmRdK
- tYJA==
-X-Gm-Message-State: APjAAAXW51NGDK2RoSbN5G/My1wdFJNoQPgcZSEi//j1n4fXlTUHE3Io
- xuLNrgq3hSEaVj9XynXj3BEvOg==
-X-Google-Smtp-Source: APXvYqw5990WD/cNmiRM5NbzuxB8LbpSea8ZbwXWdRzcBTTrVydnyk/cGiCknhDab9ceqUf8MVaS5w==
-X-Received: by 2002:adf:bc4f:: with SMTP id a15mr36775340wrh.160.1576585025067; 
- Tue, 17 Dec 2019 04:17:05 -0800 (PST)
+ bh=DVqcfTgjqDIP2wy7JDCyl9+vrKLd49ALRMx75DX6+Wc=;
+ b=YBkkkOMN0SbIzdzghcIjj57A86vhHTQ2cIj0cOCe+1Lnl+ha8JoncwziWBD6g3d+Rz
+ xLACmV6U5xg19hHvr/LXAEx5OBbjR9TUMGLP11l3L8NoRUoNWjFmUwNFTfUHTLsLRQ54
+ 5KzQ55ewolFapE4QOShejnqTahE+33fsPJAB8WhZPThakZPYO38TMyykPvFa5Z/YE1XR
+ 89faUC/tzHFE1QY1Qz+KGoUPvIToRmswGSH3piwAym3BzVYLEZwLTSRI6j1GcoKjx5RQ
+ HIHi8sYANoEuiPfxNpryvsw+ip4gvC68BsN4VrdSyveZnrnuP+cM6xAz/8a2zTXEY7ba
+ 8bMA==
+X-Gm-Message-State: APjAAAUW9rtlwyZ0GIGaMjA9Jrd6bUZbkvzVJHfKq79yE9gVS3ibIKWD
+ gHA/xRJ3So9i3iXtNP42Fretvg==
+X-Google-Smtp-Source: APXvYqxI8zjRqAqvVE2CT5mmoo1tSkKgcBWGCL6qkh/AcQp+7aMawPDnKwJbbrI37VoCCKTPuzhmpg==
+X-Received: by 2002:a05:6000:cf:: with SMTP id
+ q15mr36111061wrx.393.1576585031908; 
+ Tue, 17 Dec 2019 04:17:11 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id f1sm25087270wru.6.2019.12.17.04.17.03
+ by smtp.gmail.com with ESMTPSA id f1sm25087270wru.6.2019.12.17.04.17.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Dec 2019 04:17:04 -0800 (PST)
+ Tue, 17 Dec 2019 04:17:11 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: robh@kernel.org, broonie@kernel.org, lee.jones@linaro.org,
  linus.walleij@linaro.org
-Date: Tue, 17 Dec 2019 12:16:35 +0000
-Message-Id: <20191217121642.28534-5-srinivas.kandagatla@linaro.org>
+Date: Tue, 17 Dec 2019 12:16:40 +0000
+Message-Id: <20191217121642.28534-10-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191217121642.28534-1-srinivas.kandagatla@linaro.org>
 References: <20191217121642.28534-1-srinivas.kandagatla@linaro.org>
@@ -96,7 +97,8 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  bgoswami@codeaurora.org, vinod.koul@linaro.org, spapothi@codeaurora.org,
  linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] [PATCH v5 04/11] ASoC: wcd934x: add basic controls
+Subject: [alsa-devel] [PATCH v5 09/11] gpio: wcd934x: Add support to wcd934x
+	gpio controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,561 +116,158 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds basic controls found in wcd934x codec.
+This patch adds support to wcd934x gpio block found in
+WCD9340/WC9341 Audio codecs.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wcd934x.c | 506 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 506 insertions(+)
+ drivers/gpio/Kconfig        |   8 +++
+ drivers/gpio/Makefile       |   1 +
+ drivers/gpio/gpio-wcd934x.c | 104 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 113 insertions(+)
+ create mode 100644 drivers/gpio/gpio-wcd934x.c
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index 825cf057e8b7..27a864f2ff77 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -120,6 +120,21 @@
- #define WCD934X_DEF_MICBIAS_MV	1800
- #define WCD934X_MAX_MICBIAS_MV	2850
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 8adffd42f8cb..3da3e228c221 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -613,6 +613,14 @@ config GPIO_VX855
+ 	  additional drivers must be enabled in order to use the
+ 	  functionality of the device.
  
-+#define WCD_IIR_FILTER_SIZE	(sizeof(u32) * BAND_MAX)
++config GPIO_WCD934X
++	tristate "Qualcomm Technologies Inc WCD9340/WCD9341 gpio controller driver"
++	depends on MFD_WCD934X && OF_GPIO
++	select GPIO_GENERIC
++	help
++         This driver is to supprot GPIO block found on the Qualcomm Technologies
++	 Inc WCD9340/WCD9341 Audio Codec.
 +
-+#define WCD_IIR_FILTER_CTL(xname, iidx, bidx) \
-+{ \
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = wcd934x_iir_filter_info, \
-+	.get = wcd934x_get_iir_band_audio_mixer, \
-+	.put = wcd934x_put_iir_band_audio_mixer, \
-+	.private_value = (unsigned long)&(struct wcd_iir_filter_ctl) { \
-+		.iir_idx = iidx, \
-+		.band_idx = bidx, \
-+		.bytes_ext = {.max = WCD_IIR_FILTER_SIZE, }, \
-+	} \
-+}
+ config GPIO_XGENE
+ 	bool "APM X-Gene GPIO controller support"
+ 	depends on ARM64 && OF_GPIO
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index 34eb8b2b12dd..116133f905e7 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -157,6 +157,7 @@ obj-$(CONFIG_GPIO_VF610)		+= gpio-vf610.o
+ obj-$(CONFIG_GPIO_VIPERBOARD)		+= gpio-viperboard.o
+ obj-$(CONFIG_GPIO_VR41XX)		+= gpio-vr41xx.o
+ obj-$(CONFIG_GPIO_VX855)		+= gpio-vx855.o
++obj-$(CONFIG_GPIO_WCD934X)		+= gpio-wcd934x.o
+ obj-$(CONFIG_GPIO_WHISKEY_COVE)		+= gpio-wcove.o
+ obj-$(CONFIG_GPIO_WINBOND)		+= gpio-winbond.o
+ obj-$(CONFIG_GPIO_WM831X)		+= gpio-wm831x.o
+diff --git a/drivers/gpio/gpio-wcd934x.c b/drivers/gpio/gpio-wcd934x.c
+new file mode 100644
+index 000000000000..0aac33235c5f
+--- /dev/null
++++ b/drivers/gpio/gpio-wcd934x.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2019, Linaro Limited
 +
- enum {
- 	SIDO_SOURCE_INTERNAL,
- 	SIDO_SOURCE_RCO_BG,
-@@ -217,6 +232,35 @@ static const struct wcd934x_slim_ch wcd934x_rx_chs[WCD934X_RX_MAX] = {
- 	WCD934X_SLIM_RX_CH(12),
- };
- 
-+/* Codec supports 2 IIR filters */
-+enum {
-+	IIR0 = 0,
-+	IIR1,
-+	IIR_MAX,
++#include <linux/module.h>
++#include <linux/gpio.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <linux/of_device.h>
++
++#define WCD_PIN_MASK(p) BIT(p - 1)
++#define WCD_REG_DIR_CTL_OFFSET 0x42
++#define WCD_REG_VAL_CTL_OFFSET 0x43
++#define WCD934X_NPINS		5
++
++struct wcd_gpio_data {
++	struct regmap *map;
++	struct gpio_chip chip;
 +};
 +
-+/* Each IIR has 5 Filter Stages */
-+enum {
-+	BAND1 = 0,
-+	BAND2,
-+	BAND3,
-+	BAND4,
-+	BAND5,
-+	BAND_MAX,
-+};
-+
-+enum {
-+	COMPANDER_1, /* HPH_L */
-+	COMPANDER_2, /* HPH_R */
-+	COMPANDER_3, /* LO1_DIFF */
-+	COMPANDER_4, /* LO2_DIFF */
-+	COMPANDER_5, /* LO3_SE - not used in Tavil */
-+	COMPANDER_6, /* LO4_SE - not used in Tavil */
-+	COMPANDER_7, /* SWR SPK CH1 */
-+	COMPANDER_8, /* SWR SPK CH2 */
-+	COMPANDER_MAX,
-+};
-+
- enum {
- 	AIF1_PB = 0,
- 	AIF1_CAP,
-@@ -335,12 +379,112 @@ struct wcd934x_codec {
- 	int dmic_2_3_clk_cnt;
- 	int dmic_4_5_clk_cnt;
- 	int dmic_sample_rate;
-+	int comp_enabled[COMPANDER_MAX];
- 	int sysclk_users;
- 	struct mutex sysclk_mutex;
- };
- 
- #define to_wcd934x_codec(_hw) container_of(_hw, struct wcd934x_codec, hw)
- 
-+struct wcd_iir_filter_ctl {
-+	unsigned int iir_idx;
-+	unsigned int band_idx;
-+	struct soc_bytes_ext bytes_ext;
-+};
-+
-+static const DECLARE_TLV_DB_SCALE(digital_gain, 0, 1, 0);
-+static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
-+static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
-+static const DECLARE_TLV_DB_SCALE(ear_pa_gain, 0, 150, 0);
-+
-+/* Cutoff frequency for high pass filter */
-+static const char * const cf_text[] = {
-+	"CF_NEG_3DB_4HZ", "CF_NEG_3DB_75HZ", "CF_NEG_3DB_150HZ"
-+};
-+
-+static const char * const rx_cf_text[] = {
-+	"CF_NEG_3DB_4HZ", "CF_NEG_3DB_75HZ", "CF_NEG_3DB_150HZ",
-+	"CF_NEG_3DB_0P48HZ"
-+};
-+
-+static const char * const rx_hph_mode_mux_text[] = {
-+	"Class H Invalid", "Class-H Hi-Fi", "Class-H Low Power", "Class-AB",
-+	"Class-H Hi-Fi Low Power"
-+};
-+
-+static const struct soc_enum cf_dec0_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX0_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX1_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec2_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX2_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec3_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX3_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec4_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX4_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec5_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX5_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec6_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX6_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec7_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX7_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_dec8_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_TX8_TX_PATH_CFG0, 5, 3, cf_text);
-+
-+static const struct soc_enum cf_int0_1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_RX0_RX_PATH_CFG2, 0, 4, rx_cf_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cf_int0_2_enum, WCD934X_CDC_RX0_RX_PATH_MIX_CFG, 2,
-+		     rx_cf_text);
-+
-+static const struct soc_enum cf_int1_1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_RX1_RX_PATH_CFG2, 0, 4, rx_cf_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cf_int1_2_enum, WCD934X_CDC_RX1_RX_PATH_MIX_CFG, 2,
-+		     rx_cf_text);
-+
-+static const struct soc_enum cf_int2_1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_RX2_RX_PATH_CFG2, 0, 4, rx_cf_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cf_int2_2_enum, WCD934X_CDC_RX2_RX_PATH_MIX_CFG, 2,
-+		     rx_cf_text);
-+
-+static const struct soc_enum cf_int3_1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_RX3_RX_PATH_CFG2, 0, 4, rx_cf_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cf_int3_2_enum, WCD934X_CDC_RX3_RX_PATH_MIX_CFG, 2,
-+			    rx_cf_text);
-+
-+static const struct soc_enum cf_int4_1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_RX4_RX_PATH_CFG2, 0, 4, rx_cf_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cf_int4_2_enum, WCD934X_CDC_RX4_RX_PATH_MIX_CFG, 2,
-+			    rx_cf_text);
-+
-+static const struct soc_enum cf_int7_1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_RX7_RX_PATH_CFG2, 0, 4, rx_cf_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cf_int7_2_enum, WCD934X_CDC_RX7_RX_PATH_MIX_CFG, 2,
-+			    rx_cf_text);
-+
-+static const struct soc_enum cf_int8_1_enum =
-+	SOC_ENUM_SINGLE(WCD934X_CDC_RX8_RX_PATH_CFG2, 0, 4, rx_cf_text);
-+
-+static SOC_ENUM_SINGLE_DECL(cf_int8_2_enum, WCD934X_CDC_RX8_RX_PATH_MIX_CFG, 2,
-+			    rx_cf_text);
-+
-+static const struct soc_enum rx_hph_mode_mux_enum =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_hph_mode_mux_text),
-+			    rx_hph_mode_mux_text);
-+
- static int wcd934x_set_sido_input_src(struct wcd934x_codec *wcd,
- 				      int sido_src)
- {
-@@ -1479,10 +1623,372 @@ static int wcd934x_comp_set_sysclk(struct snd_soc_component *comp,
- 	return clk_set_rate(wcd->extclk, freq);
- }
- 
-+static uint32_t get_iir_band_coeff(struct snd_soc_component *component,
-+				   int iir_idx, int band_idx, int coeff_idx)
++static int wcd_gpio_direction_input(struct gpio_chip *chip, unsigned int pin)
 +{
-+	u32 value = 0;
-+	int reg, b2_reg;
++	struct wcd_gpio_data *data = gpiochip_get_data(chip);
 +
-+	/* Address does not automatically update if reading */
-+	reg = WCD934X_CDC_SIDETONE_IIR0_IIR_COEF_B1_CTL + 16 * iir_idx;
-+	b2_reg = WCD934X_CDC_SIDETONE_IIR0_IIR_COEF_B2_CTL + 16 * iir_idx;
-+
-+	snd_soc_component_write(component, reg,
-+				((band_idx * BAND_MAX + coeff_idx) *
-+				 sizeof(uint32_t)) & 0x7F);
-+
-+	value |= snd_soc_component_read32(component, b2_reg);
-+	snd_soc_component_write(component, reg,
-+				((band_idx * BAND_MAX + coeff_idx)
-+				 * sizeof(uint32_t) + 1) & 0x7F);
-+
-+	value |= (snd_soc_component_read32(component, b2_reg) << 8);
-+	snd_soc_component_write(component, reg,
-+				((band_idx * BAND_MAX + coeff_idx)
-+				 * sizeof(uint32_t) + 2) & 0x7F);
-+
-+	value |= (snd_soc_component_read32(component, b2_reg) << 16);
-+	snd_soc_component_write(component, reg,
-+		((band_idx * BAND_MAX + coeff_idx)
-+		* sizeof(uint32_t) + 3) & 0x7F);
-+
-+	/* Mask bits top 2 bits since they are reserved */
-+	value |= (snd_soc_component_read32(component, b2_reg) << 24);
-+	return value;
++	return regmap_update_bits(data->map, WCD_REG_DIR_CTL_OFFSET,
++				  WCD_PIN_MASK(pin), 0);
 +}
 +
-+static void set_iir_band_coeff(struct snd_soc_component *component,
-+			       int iir_idx, int band_idx, uint32_t value)
++static int wcd_gpio_direction_output(struct gpio_chip *chip, unsigned int pin,
++				     int val)
 +{
-+	int reg = WCD934X_CDC_SIDETONE_IIR0_IIR_COEF_B2_CTL + 16 * iir_idx;
++	struct wcd_gpio_data *data = gpiochip_get_data(chip);
 +
-+	snd_soc_component_write(component, reg, (value & 0xFF));
-+	snd_soc_component_write(component, reg, (value >> 8) & 0xFF);
-+	snd_soc_component_write(component, reg, (value >> 16) & 0xFF);
-+	/* Mask top 2 bits, 7-8 are reserved */
-+	snd_soc_component_write(component, reg, (value >> 24) & 0x3F);
++	regmap_update_bits(data->map, WCD_REG_DIR_CTL_OFFSET,
++			   WCD_PIN_MASK(pin), WCD_PIN_MASK(pin));
++
++	return regmap_update_bits(data->map, WCD_REG_VAL_CTL_OFFSET,
++				  WCD_PIN_MASK(pin),
++				  val ? WCD_PIN_MASK(pin) : 0);
 +}
 +
-+static int wcd934x_put_iir_band_audio_mixer(
-+					struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
++static int wcd_gpio_get(struct gpio_chip *chip, unsigned int pin)
 +{
-+	struct snd_soc_component *component =
-+			snd_soc_kcontrol_component(kcontrol);
-+	struct wcd_iir_filter_ctl *ctl =
-+			(struct wcd_iir_filter_ctl *)kcontrol->private_value;
-+	struct soc_bytes_ext *params = &ctl->bytes_ext;
-+	int iir_idx = ctl->iir_idx;
-+	int band_idx = ctl->band_idx;
-+	u32 coeff[BAND_MAX];
-+	int reg = WCD934X_CDC_SIDETONE_IIR0_IIR_COEF_B1_CTL + 16 * iir_idx;
++	struct wcd_gpio_data *data = gpiochip_get_data(chip);
++	int value;
 +
-+	memcpy(&coeff[0], ucontrol->value.bytes.data, params->max);
++	regmap_read(data->map, WCD_REG_VAL_CTL_OFFSET, &value);
 +
-+	/* Mask top bit it is reserved */
-+	/* Updates addr automatically for each B2 write */
-+	snd_soc_component_write(component, reg, (band_idx * BAND_MAX *
-+						 sizeof(uint32_t)) & 0x7F);
-+
-+	set_iir_band_coeff(component, iir_idx, band_idx, coeff[0]);
-+	set_iir_band_coeff(component, iir_idx, band_idx, coeff[1]);
-+	set_iir_band_coeff(component, iir_idx, band_idx, coeff[2]);
-+	set_iir_band_coeff(component, iir_idx, band_idx, coeff[3]);
-+	set_iir_band_coeff(component, iir_idx, band_idx, coeff[4]);
-+
-+	return 0;
++	return !!(value && WCD_PIN_MASK(pin));
 +}
 +
-+static int wcd934x_get_iir_band_audio_mixer(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
++static void wcd_gpio_set(struct gpio_chip *chip, unsigned int pin, int val)
 +{
-+	struct snd_soc_component *component =
-+			snd_soc_kcontrol_component(kcontrol);
-+	struct wcd_iir_filter_ctl *ctl =
-+			(struct wcd_iir_filter_ctl *)kcontrol->private_value;
-+	struct soc_bytes_ext *params = &ctl->bytes_ext;
-+	int iir_idx = ctl->iir_idx;
-+	int band_idx = ctl->band_idx;
-+	u32 coeff[BAND_MAX];
-+
-+	coeff[0] = get_iir_band_coeff(component, iir_idx, band_idx, 0);
-+	coeff[1] = get_iir_band_coeff(component, iir_idx, band_idx, 1);
-+	coeff[2] = get_iir_band_coeff(component, iir_idx, band_idx, 2);
-+	coeff[3] = get_iir_band_coeff(component, iir_idx, band_idx, 3);
-+	coeff[4] = get_iir_band_coeff(component, iir_idx, band_idx, 4);
-+
-+	memcpy(ucontrol->value.bytes.data, &coeff[0], params->max);
-+
-+	return 0;
++	wcd_gpio_direction_output(chip, pin, val);
 +}
 +
-+static int wcd934x_iir_filter_info(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_info *ucontrol)
++static int wcd_gpio_probe(struct platform_device *pdev)
 +{
-+	struct wcd_iir_filter_ctl *ctl =
-+		(struct wcd_iir_filter_ctl *)kcontrol->private_value;
-+	struct soc_bytes_ext *params = &ctl->bytes_ext;
++	struct device *dev = &pdev->dev;
++	struct wcd_gpio_data *data;
++	struct gpio_chip *chip;
 +
-+	ucontrol->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	ucontrol->count = params->max;
++	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
 +
-+	return 0;
-+}
-+
-+static int wcd934x_compander_get(struct snd_kcontrol *kc,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
-+	int comp = ((struct soc_mixer_control *)kc->private_value)->shift;
-+	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-+
-+	ucontrol->value.integer.value[0] = wcd->comp_enabled[comp];
-+
-+	return 0;
-+}
-+
-+static int wcd934x_compander_set(struct snd_kcontrol *kc,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
-+	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-+	int comp = ((struct soc_mixer_control *)kc->private_value)->shift;
-+	int value = ucontrol->value.integer.value[0];
-+	int sel;
-+
-+	wcd->comp_enabled[comp] = value;
-+	sel = value ? WCD934X_HPH_GAIN_SRC_SEL_COMPANDER :
-+		WCD934X_HPH_GAIN_SRC_SEL_REGISTER;
-+
-+	/* Any specific register configuration for compander */
-+	switch (comp) {
-+	case COMPANDER_1:
-+		/* Set Gain Source Select based on compander enable/disable */
-+		snd_soc_component_update_bits(component, WCD934X_HPH_L_EN,
-+					      WCD934X_HPH_GAIN_SRC_SEL_MASK,
-+					      sel);
-+		break;
-+	case COMPANDER_2:
-+		snd_soc_component_update_bits(component, WCD934X_HPH_R_EN,
-+					      WCD934X_HPH_GAIN_SRC_SEL_MASK,
-+					      sel);
-+		break;
-+	case COMPANDER_3:
-+	case COMPANDER_4:
-+	case COMPANDER_7:
-+	case COMPANDER_8:
-+		break;
-+	default:
-+		break;
-+	};
-+
-+	return 0;
-+}
-+
-+static int wcd934x_rx_hph_mode_get(struct snd_kcontrol *kc,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
-+	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-+
-+	ucontrol->value.enumerated.item[0] = wcd->hph_mode;
-+
-+	return 0;
-+}
-+
-+static int wcd934x_rx_hph_mode_put(struct snd_kcontrol *kc,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
-+	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-+	u32 mode_val;
-+
-+	mode_val = ucontrol->value.enumerated.item[0];
-+
-+	if (mode_val == 0) {
-+		dev_err(wcd->dev, "Invalid HPH Mode, default to ClSH HiFi\n");
-+		mode_val = CLS_H_LOHIFI;
++	data->map = dev_get_regmap(dev->parent, NULL);
++	if (!data->map) {
++		dev_err(dev, "%s: failed to get regmap\n", __func__);
++		return  -EINVAL;
 +	}
-+	wcd->hph_mode = mode_val;
 +
-+	return 0;
++	chip = &data->chip;
++	chip->direction_input  = wcd_gpio_direction_input;
++	chip->direction_output = wcd_gpio_direction_output;
++	chip->get = wcd_gpio_get;
++	chip->set = wcd_gpio_set;
++	chip->parent = dev;
++	chip->base = -1;
++	chip->ngpio = WCD934X_NPINS;
++	chip->label = dev_name(dev);
++	chip->of_gpio_n_cells = 2;
++	chip->can_sleep = false;
++
++	return devm_gpiochip_add_data(dev, chip, data);
 +}
 +
-+static const struct snd_kcontrol_new wcd934x_snd_controls[] = {
-+	/* Gain Controls */
-+	SOC_SINGLE_TLV("EAR PA Volume", WCD934X_ANA_EAR, 4, 4, 1, ear_pa_gain),
-+	SOC_SINGLE_TLV("HPHL Volume", WCD934X_HPH_L_EN, 0, 24, 1, line_gain),
-+	SOC_SINGLE_TLV("HPHR Volume", WCD934X_HPH_R_EN, 0, 24, 1, line_gain),
-+	SOC_SINGLE_TLV("LINEOUT1 Volume", WCD934X_DIFF_LO_LO1_COMPANDER,
-+		       3, 16, 1, line_gain),
-+	SOC_SINGLE_TLV("LINEOUT2 Volume", WCD934X_DIFF_LO_LO2_COMPANDER,
-+		       3, 16, 1, line_gain),
++static const struct of_device_id wcd_gpio_of_match[] = {
++	{ .compatible = "qcom,wcd9340-gpio" },
++	{ .compatible = "qcom,wcd9341-gpio" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, wcd_gpio_of_match);
 +
-+	SOC_SINGLE_TLV("ADC1 Volume", WCD934X_ANA_AMIC1, 0, 20, 0, analog_gain),
-+	SOC_SINGLE_TLV("ADC2 Volume", WCD934X_ANA_AMIC2, 0, 20, 0, analog_gain),
-+	SOC_SINGLE_TLV("ADC3 Volume", WCD934X_ANA_AMIC3, 0, 20, 0, analog_gain),
-+	SOC_SINGLE_TLV("ADC4 Volume", WCD934X_ANA_AMIC4, 0, 20, 0, analog_gain),
-+
-+	SOC_SINGLE_S8_TLV("RX0 Digital Volume", WCD934X_CDC_RX0_RX_VOL_CTL,
-+			  -84, 40, digital_gain), /* -84dB min - 40dB max */
-+	SOC_SINGLE_S8_TLV("RX1 Digital Volume", WCD934X_CDC_RX1_RX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX2 Digital Volume", WCD934X_CDC_RX2_RX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX3 Digital Volume", WCD934X_CDC_RX3_RX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX4 Digital Volume", WCD934X_CDC_RX4_RX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX7 Digital Volume", WCD934X_CDC_RX7_RX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX8 Digital Volume", WCD934X_CDC_RX8_RX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX0 Mix Digital Volume",
-+			  WCD934X_CDC_RX0_RX_VOL_MIX_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX1 Mix Digital Volume",
-+			  WCD934X_CDC_RX1_RX_VOL_MIX_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX2 Mix Digital Volume",
-+			  WCD934X_CDC_RX2_RX_VOL_MIX_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX3 Mix Digital Volume",
-+			  WCD934X_CDC_RX3_RX_VOL_MIX_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX4 Mix Digital Volume",
-+			  WCD934X_CDC_RX4_RX_VOL_MIX_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX7 Mix Digital Volume",
-+			  WCD934X_CDC_RX7_RX_VOL_MIX_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX8 Mix Digital Volume",
-+			  WCD934X_CDC_RX8_RX_VOL_MIX_CTL,
-+			  -84, 40, digital_gain),
-+
-+	SOC_SINGLE_S8_TLV("DEC0 Volume", WCD934X_CDC_TX0_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC1 Volume", WCD934X_CDC_TX1_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC2 Volume", WCD934X_CDC_TX2_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC3 Volume", WCD934X_CDC_TX3_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC4 Volume", WCD934X_CDC_TX4_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC5 Volume", WCD934X_CDC_TX5_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC6 Volume", WCD934X_CDC_TX6_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC7 Volume", WCD934X_CDC_TX7_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("DEC8 Volume", WCD934X_CDC_TX8_TX_VOL_CTL,
-+			  -84, 40, digital_gain),
-+
-+	SOC_SINGLE_S8_TLV("IIR0 INP0 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR0_IIR_GAIN_B1_CTL, -84, 40,
-+			  digital_gain),
-+	SOC_SINGLE_S8_TLV("IIR0 INP1 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR0_IIR_GAIN_B2_CTL, -84, 40,
-+			  digital_gain),
-+	SOC_SINGLE_S8_TLV("IIR0 INP2 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR0_IIR_GAIN_B3_CTL, -84, 40,
-+			  digital_gain),
-+	SOC_SINGLE_S8_TLV("IIR0 INP3 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR0_IIR_GAIN_B4_CTL, -84, 40,
-+			  digital_gain),
-+	SOC_SINGLE_S8_TLV("IIR1 INP0 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR1_IIR_GAIN_B1_CTL, -84, 40,
-+			  digital_gain),
-+	SOC_SINGLE_S8_TLV("IIR1 INP1 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR1_IIR_GAIN_B2_CTL, -84, 40,
-+			  digital_gain),
-+	SOC_SINGLE_S8_TLV("IIR1 INP2 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR1_IIR_GAIN_B3_CTL, -84, 40,
-+			  digital_gain),
-+	SOC_SINGLE_S8_TLV("IIR1 INP3 Volume",
-+			  WCD934X_CDC_SIDETONE_IIR1_IIR_GAIN_B4_CTL, -84, 40,
-+			  digital_gain),
-+
-+	SOC_ENUM("TX0 HPF cut off", cf_dec0_enum),
-+	SOC_ENUM("TX1 HPF cut off", cf_dec1_enum),
-+	SOC_ENUM("TX2 HPF cut off", cf_dec2_enum),
-+	SOC_ENUM("TX3 HPF cut off", cf_dec3_enum),
-+	SOC_ENUM("TX4 HPF cut off", cf_dec4_enum),
-+	SOC_ENUM("TX5 HPF cut off", cf_dec5_enum),
-+	SOC_ENUM("TX6 HPF cut off", cf_dec6_enum),
-+	SOC_ENUM("TX7 HPF cut off", cf_dec7_enum),
-+	SOC_ENUM("TX8 HPF cut off", cf_dec8_enum),
-+
-+	SOC_ENUM("RX INT0_1 HPF cut off", cf_int0_1_enum),
-+	SOC_ENUM("RX INT0_2 HPF cut off", cf_int0_2_enum),
-+	SOC_ENUM("RX INT1_1 HPF cut off", cf_int1_1_enum),
-+	SOC_ENUM("RX INT1_2 HPF cut off", cf_int1_2_enum),
-+	SOC_ENUM("RX INT2_1 HPF cut off", cf_int2_1_enum),
-+	SOC_ENUM("RX INT2_2 HPF cut off", cf_int2_2_enum),
-+	SOC_ENUM("RX INT3_1 HPF cut off", cf_int3_1_enum),
-+	SOC_ENUM("RX INT3_2 HPF cut off", cf_int3_2_enum),
-+	SOC_ENUM("RX INT4_1 HPF cut off", cf_int4_1_enum),
-+	SOC_ENUM("RX INT4_2 HPF cut off", cf_int4_2_enum),
-+	SOC_ENUM("RX INT7_1 HPF cut off", cf_int7_1_enum),
-+	SOC_ENUM("RX INT7_2 HPF cut off", cf_int7_2_enum),
-+	SOC_ENUM("RX INT8_1 HPF cut off", cf_int8_1_enum),
-+	SOC_ENUM("RX INT8_2 HPF cut off", cf_int8_2_enum),
-+
-+	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum,
-+		     wcd934x_rx_hph_mode_get, wcd934x_rx_hph_mode_put),
-+
-+	SOC_SINGLE("IIR1 Band1 Switch", WCD934X_CDC_SIDETONE_IIR0_IIR_CTL,
-+		   0, 1, 0),
-+	SOC_SINGLE("IIR1 Band2 Switch", WCD934X_CDC_SIDETONE_IIR0_IIR_CTL,
-+		   1, 1, 0),
-+	SOC_SINGLE("IIR1 Band3 Switch", WCD934X_CDC_SIDETONE_IIR0_IIR_CTL,
-+		   2, 1, 0),
-+	SOC_SINGLE("IIR1 Band4 Switch", WCD934X_CDC_SIDETONE_IIR0_IIR_CTL,
-+		   3, 1, 0),
-+	SOC_SINGLE("IIR1 Band5 Switch", WCD934X_CDC_SIDETONE_IIR0_IIR_CTL,
-+		   4, 1, 0),
-+	SOC_SINGLE("IIR2 Band1 Switch", WCD934X_CDC_SIDETONE_IIR1_IIR_CTL,
-+		   0, 1, 0),
-+	SOC_SINGLE("IIR2 Band2 Switch", WCD934X_CDC_SIDETONE_IIR1_IIR_CTL,
-+		   1, 1, 0),
-+	SOC_SINGLE("IIR2 Band3 Switch", WCD934X_CDC_SIDETONE_IIR1_IIR_CTL,
-+		   2, 1, 0),
-+	SOC_SINGLE("IIR2 Band4 Switch", WCD934X_CDC_SIDETONE_IIR1_IIR_CTL,
-+		   3, 1, 0),
-+	SOC_SINGLE("IIR2 Band5 Switch", WCD934X_CDC_SIDETONE_IIR1_IIR_CTL,
-+		   4, 1, 0),
-+	WCD_IIR_FILTER_CTL("IIR0 Band1", IIR0, BAND1),
-+	WCD_IIR_FILTER_CTL("IIR0 Band2", IIR0, BAND2),
-+	WCD_IIR_FILTER_CTL("IIR0 Band3", IIR0, BAND3),
-+	WCD_IIR_FILTER_CTL("IIR0 Band4", IIR0, BAND4),
-+	WCD_IIR_FILTER_CTL("IIR0 Band5", IIR0, BAND5),
-+
-+	WCD_IIR_FILTER_CTL("IIR1 Band1", IIR1, BAND1),
-+	WCD_IIR_FILTER_CTL("IIR1 Band2", IIR1, BAND2),
-+	WCD_IIR_FILTER_CTL("IIR1 Band3", IIR1, BAND3),
-+	WCD_IIR_FILTER_CTL("IIR1 Band4", IIR1, BAND4),
-+	WCD_IIR_FILTER_CTL("IIR1 Band5", IIR1, BAND5),
-+
-+	SOC_SINGLE_EXT("COMP1 Switch", SND_SOC_NOPM, COMPANDER_1, 1, 0,
-+		       wcd934x_compander_get, wcd934x_compander_set),
-+	SOC_SINGLE_EXT("COMP2 Switch", SND_SOC_NOPM, COMPANDER_2, 1, 0,
-+		       wcd934x_compander_get, wcd934x_compander_set),
-+	SOC_SINGLE_EXT("COMP3 Switch", SND_SOC_NOPM, COMPANDER_3, 1, 0,
-+		       wcd934x_compander_get, wcd934x_compander_set),
-+	SOC_SINGLE_EXT("COMP4 Switch", SND_SOC_NOPM, COMPANDER_4, 1, 0,
-+		       wcd934x_compander_get, wcd934x_compander_set),
-+	SOC_SINGLE_EXT("COMP7 Switch", SND_SOC_NOPM, COMPANDER_7, 1, 0,
-+		       wcd934x_compander_get, wcd934x_compander_set),
-+	SOC_SINGLE_EXT("COMP8 Switch", SND_SOC_NOPM, COMPANDER_8, 1, 0,
-+		       wcd934x_compander_get, wcd934x_compander_set),
++static struct platform_driver wcd_gpio_driver = {
++	.driver = {
++		   .name = "wcd934x-gpio",
++		   .of_match_table = wcd_gpio_of_match,
++	},
++	.probe = wcd_gpio_probe,
 +};
 +
- static const struct snd_soc_component_driver wcd934x_component_drv = {
- 	.probe = wcd934x_comp_probe,
- 	.remove = wcd934x_comp_remove,
- 	.set_sysclk = wcd934x_comp_set_sysclk,
-+	.controls = wcd934x_snd_controls,
-+	.num_controls = ARRAY_SIZE(wcd934x_snd_controls),
- };
- 
- static int wcd934x_codec_parse_data(struct wcd934x_codec *wcd)
++module_platform_driver(wcd_gpio_driver);
++MODULE_DESCRIPTION("Qualcomm Technologies, Inc WCD GPIO control driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.21.0
 
