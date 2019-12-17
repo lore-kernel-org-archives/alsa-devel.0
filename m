@@ -6,57 +6,60 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91F97C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEFC4C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:41:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CDEF2146E
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:40:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 795662146E
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:41:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gjMo8r2m"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CDEF2146E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bCzD93e6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 795662146E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 698AF84F;
-	Tue, 17 Dec 2019 13:39:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 698AF84F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E95971658;
+	Tue, 17 Dec 2019 13:40:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E95971658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576586412;
-	bh=ctlIfudYRzqGF8bY4cMq3trNDdWHvC9WQ4DNUQ7FmSI=;
+	s=default; t=1576586466;
+	bh=A5b/4FUlPRlQ6uu6Pc9zhtcZpOXGmFO5V/9wVMcAOsY=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=gjMo8r2mBeSf+aewlL1DyzVZ6PEw4twE4TZFdLeGhAdBt/+IrZmqg++lXoH/QmTAa
-	 J7WdUOlv5dHwgbwL2rl+aWP2z2CMQHFjxRosph5aiTcZXQEbQFdK/+yUCCCPyUPC5D
-	 tBsJFxu+q0jHgbl4zedFxkyWn73cZX7kwnabz4sM=
+	b=bCzD93e6ZUxgymguT3EfMFDuJx8QhOCBHINJV5sCajh/bBuIZux1NSB4AiwZTN2L2
+	 EkMFujLhn5PTEvrhAXnNEMAPlVexH7H2uMxMnteCr6ziTFUccNZXJkEEJGFarVDaCX
+	 +fMBKY8UYpx90UsDFLpEKWv2Dj0B4JhZIAhRP9H0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0AADF8020B;
-	Tue, 17 Dec 2019 13:39:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29D8AF8025F;
+	Tue, 17 Dec 2019 13:39:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A51FFF80234; Tue, 17 Dec 2019 13:39:19 +0100 (CET)
+ id 9AEFFF80100; Tue, 17 Dec 2019 13:39:21 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D3B16F8020B
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:39:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3B16F8020B
+ by alsa1.perex.cz (Postfix) with ESMTP id F3116F80100
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:39:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3116F80100
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FBD631B;
- Tue, 17 Dec 2019 04:39:15 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F147DA7;
+ Tue, 17 Dec 2019 04:39:17 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8336B3F718;
- Tue, 17 Dec 2019 04:39:14 -0800 (PST)
-Date: Tue, 17 Dec 2019 12:39:13 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F20B63F718;
+ Tue, 17 Dec 2019 04:39:16 -0800 (PST)
+Date: Tue, 17 Dec 2019 12:39:15 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20191217095851.19629-7-cezary.rojewski@intel.com>
-Message-Id: <applied-20191217095851.19629-7-cezary.rojewski@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <20191212191747.19995-1-tiwai@suse.de>
+Message-Id: <applied-20191212191747.19995-1-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
-Subject: [alsa-devel] Applied "ASoC: compress: Add pm_runtime support" to
-	the asoc tree
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: intel: skylake: Remove superfluous bus
+	ops" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +80,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: compress: Add pm_runtime support
+   ASoC: intel: skylake: Remove superfluous bus ops
 
 has been applied to the asoc tree at
 
@@ -102,94 +105,47 @@ to this mail.
 Thanks,
 Mark
 
-From 4137f4b65df7608e52f307f4aa9792b984bad7de Mon Sep 17 00:00:00 2001
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Tue, 17 Dec 2019 10:58:50 +0100
-Subject: [PATCH] ASoC: compress: Add pm_runtime support
+From ae91a189d2459644e800ceea615a9c1937ee5ae2 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Thu, 12 Dec 2019 20:17:47 +0100
+Subject: [PATCH] ASoC: intel: skylake: Remove superfluous bus ops
 
-For some devices, components need to be powered-up before stream startup
-sequence commences. Update soc_compr_open to provide such functionality.
-Based on soc_pcm_open. Adjust soc_compr_free accordingly to power down
-components once compress stream is closed.
+The bus_core_ops values set in skl driver are same as the default
+values, so we can drop it and pass NULL to snd_hdac_ext_bus_init()
+instead.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20191217095851.19629-7-cezary.rojewski@intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20191212191747.19995-1-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-compress.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 6615ef64c7f5..b2a5351b1a11 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -19,6 +19,7 @@
- #include <sound/soc.h>
- #include <sound/initval.h>
- #include <sound/soc-dpcm.h>
-+#include <linux/pm_runtime.h>
- 
- static int soc_compr_components_open(struct snd_compr_stream *cstream,
- 				     struct snd_soc_component **last)
-@@ -72,10 +73,20 @@ static int soc_compr_components_free(struct snd_compr_stream *cstream,
- static int soc_compr_open(struct snd_compr_stream *cstream)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct snd_soc_component *component;
-+	struct snd_soc_component *component, *save = NULL;
-+	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
-+	for_each_rtd_components(rtd, rtdcom, component) {
-+		ret = pm_runtime_get_sync(component->dev);
-+		if (ret < 0 && ret != -EACCES) {
-+			pm_runtime_put_noidle(component->dev);
-+			save = component;
-+			goto pm_err;
-+		}
-+	}
-+
- 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
- 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->startup) {
-@@ -115,6 +126,14 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- 		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
- out:
- 	mutex_unlock(&rtd->card->pcm_mutex);
-+pm_err:
-+	for_each_rtd_components(rtd, rtdcom, component) {
-+		if (component == save)
-+			break;
-+		pm_runtime_mark_last_busy(component->dev);
-+		pm_runtime_put_autosuspend(component->dev);
-+	}
-+
- 	return ret;
- }
- 
-@@ -239,6 +258,8 @@ static void close_delayed_work(struct snd_soc_pcm_runtime *rtd)
- static int soc_compr_free(struct snd_compr_stream *cstream)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_component *component;
-+	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int stream;
-@@ -287,6 +308,12 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 58ba3e9469ba..f755ca2484cf 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -773,11 +773,6 @@ static void skl_codec_create(struct hdac_bus *bus)
  	}
- 
- 	mutex_unlock(&rtd->card->pcm_mutex);
-+
-+	for_each_rtd_components(rtd, rtdcom, component) {
-+		pm_runtime_mark_last_busy(component->dev);
-+		pm_runtime_put_autosuspend(component->dev);
-+	}
-+
- 	return 0;
  }
  
+-static const struct hdac_bus_ops bus_core_ops = {
+-	.command = snd_hdac_bus_send_cmd,
+-	.get_response = snd_hdac_bus_get_response,
+-};
+-
+ static int skl_i915_init(struct hdac_bus *bus)
+ {
+ 	int err;
+@@ -888,7 +883,7 @@ static int skl_create(struct pci_dev *pci,
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
+ 	ext_ops = snd_soc_hdac_hda_get_ops();
+ #endif
+-	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, ext_ops);
++	snd_hdac_ext_bus_init(bus, &pci->dev, NULL, ext_ops);
+ 	bus->use_posbuf = 1;
+ 	skl->pci = pci;
+ 	INIT_WORK(&skl->probe_work, skl_probe_work);
 -- 
 2.20.1
 
