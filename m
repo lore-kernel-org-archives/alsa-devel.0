@@ -7,71 +7,70 @@ X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 634B1C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:27:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2763BC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:34:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E05A220716
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:27:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 983CA20716
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:34:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mtfWYWlw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E05A220716
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CRbsD0U8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 983CA20716
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B73A85D;
-	Tue, 17 Dec 2019 13:26:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B73A85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61B15850;
+	Tue, 17 Dec 2019 13:33:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61B15850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576585628;
-	bh=vmuozhI6URolsnT1an4OyqoE0Fi6yCpJQ3Yq5B7e+gU=;
+	s=default; t=1576586089;
+	bh=Yg2JjSywIDqiEV8IF0yxtzbzyU+b8OBjh1OlAW++24Y=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mtfWYWlwE5yZFozQOO7s6orK54f+5sNPchMbiRNZiUg/dezordOBVl91bhtiHCc3z
-	 RwftDx5e0p+FoH0hHw3zCzm7jrSIjmRtb4tALpvB+aRGYI/6pB9AG929EGT7nx43/p
-	 r29ugSdWbjhu/LbeYo5JubdAom39ffWppuv+dvpk=
+	b=CRbsD0U8CAp6Ll/dA/v2JpHQtrXZ/IqQg+GG2kFKKabE+77uoEJPoCKRtdHOhnJgR
+	 CBIpCvujHFnCy/N5ebgFUON366PxX3bUicGpqqGHWLaq9EYCimwxQSDT3Ed5gcF4kF
+	 t1EqhoPFh3AsEBci2u2W8k+YD36qO4uwVPR1CeW0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B554AF8023F;
-	Tue, 17 Dec 2019 13:22:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA109F80100;
+	Tue, 17 Dec 2019 13:33:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DA9DF8020B; Tue, 17 Dec 2019 13:22:48 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id E4612F80234; Tue, 17 Dec 2019 13:33:56 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F9B5F8020B
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:22:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F9B5F8020B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30D0DF80100
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:33:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D0DF80100
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 04:22:41 -0800
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 17 Dec 2019 04:33:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,325,1571727600"; d="scan'208";a="298034937"
+X-IronPort-AV: E=Sophos;i="5.69,325,1571727600"; d="scan'208";a="298037448"
 Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.237.137.172])
  ([10.237.137.172])
- by orsmga001.jf.intel.com with ESMTP; 17 Dec 2019 04:22:39 -0800
+ by orsmga001.jf.intel.com with ESMTP; 17 Dec 2019 04:33:48 -0800
 To: Takashi Iwai <tiwai@suse.de>
 References: <20191217095851.19629-1-cezary.rojewski@intel.com>
- <20191217095851.19629-6-cezary.rojewski@intel.com>
- <s5hzhfr1c8u.wl-tiwai@suse.de>
+ <20191217095851.19629-8-cezary.rojewski@intel.com>
+ <s5hy2vb1bxg.wl-tiwai@suse.de>
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <1e361e1c-00ba-f8e4-14a8-b636eee6e29c@intel.com>
-Date: Tue, 17 Dec 2019 13:22:38 +0100
+Message-ID: <40723c20-2adf-60bc-eb11-a2efb1f89ce3@intel.com>
+Date: Tue, 17 Dec 2019 13:33:47 +0100
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.1
 MIME-Version: 1.0
-In-Reply-To: <s5hzhfr1c8u.wl-tiwai@suse.de>
+In-Reply-To: <s5hy2vb1bxg.wl-tiwai@suse.de>
 Content-Language: en-US
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- Divya Prakash <divya1.prakash@intel.com>, lgirdwood@gmail.com, tiwai@suse.com,
- broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH 5/7] ALSA: core: Implement compress page
- allocation and free routines
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com
+Subject: Re: [alsa-devel] [PATCH 7/7] ASoC: SOF: Intel: Account for compress
+ streams when servicing IRQs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,139 +88,59 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-On 2019-12-17 11:24, Takashi Iwai wrote:
-> On Tue, 17 Dec 2019 10:58:49 +0100,
+On 2019-12-17 11:30, Takashi Iwai wrote:
+> On Tue, 17 Dec 2019 10:58:51 +0100,
 > Cezary Rojewski wrote:
 >>
->> Add simple malloc and free methods for memory management for compress
->> streams. Based on snd_pcm_lib_malloc_pages and snd_pcm_lib_free_pages
->> implementation.
+>> Update stream irq handler definition to correctly set hdac_stream
+>> current position when servicing stream interrupts for compress streams.
+>>
+>> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+>> ---
+>>   include/sound/hdaudio.h          |  1 +
+>>   sound/soc/sof/intel/hda-stream.c | 26 ++++++++++++++++++++++++--
+>>   2 files changed, 25 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+>> index 9a8bf1eb7d69..9a24d57f0cf2 100644
+>> --- a/include/sound/hdaudio.h
+>> +++ b/include/sound/hdaudio.h
+>> @@ -496,6 +496,7 @@ struct hdac_stream {
+>>   	bool locked:1;
+>>   	bool stripe:1;			/* apply stripe control */
+>>   
+>> +	unsigned long curr_pos;
 > 
-> I see no user of these functions in the series.  How these are
-> supposed to be used?
+> Unless the actual implementation of this user is shown, it's a bit
+> hard to judge whether this addition is really OK or not....
 > 
+> I don't believe it'd be a big problem at all, but still we need the
+> usage implementation for a proper evaluation.
+> 
+> And, IMO, such a change should be split to two parts: the common API
+> change and its user.
+> 
+> 
+> thanks,
 > 
 > Takashi
 > 
 
-I've given github links in the cover letter although I could have been 
-more descriptive here too..
+The actual user of this is _pointer op for hda compr stream.
 
 Probing pull request link:
 https://github.com/thesofproject/linux/pull/1276/
 
-Commits implementing compr flow:
-- ASoC: SOF: Generic probe compress operations
-https://github.com/thesofproject/linux/pull/1276/commits/217025f0fdad7523645a141ad2965dff4923a229
-
 - ASoC: SOF: Intel: Probe compress operations
 https://github.com/thesofproject/linux/pull/1276/commits/fb3e724a54bf859f039b2b0b03503a52e1740375
 
-Methods: sof_probe_compr_set_params and sof_probe_compr_free of "ASoC: 
-SOF: Generic probe compress operations" commit make use of these.
+Method hda_probe_compr_pointer initializes 
+snd_compr_tstamp::copied_total with hdac_stream::curr_pos value.
 
-Basically it shares the concept of simple HDA PCM stream setup. During 
-the development process, we decided to split the "introduction" and 
-"usage" parts and thus this set of 7patches had spawned - covers the 
-introduction. Actual probing patches take care of the "usage".
+If this can be done better or in more elegant way, let's do so.
 
 Czarek
-
->>
->> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
->> Signed-off-by: Divya Prakash <divya1.prakash@intel.com>
->> ---
->>   include/sound/compress_driver.h |  5 ++++
->>   sound/core/compress_offload.c   | 42 +++++++++++++++++++++++++++++++++
->>   2 files changed, 47 insertions(+)
->>
->> diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
->> index 00f633c0c3ba..6ce8effa0b12 100644
->> --- a/include/sound/compress_driver.h
->> +++ b/include/sound/compress_driver.h
->> @@ -67,6 +67,7 @@ struct snd_compr_runtime {
->>    * @metadata_set: metadata set flag, true when set
->>    * @next_track: has userspace signal next track transition, true when set
->>    * @private_data: pointer to DSP private data
->> + * @dma_buffer: allocated buffer if any
->>    */
->>   struct snd_compr_stream {
->>   	const char *name;
->> @@ -78,6 +79,7 @@ struct snd_compr_stream {
->>   	bool metadata_set;
->>   	bool next_track;
->>   	void *private_data;
->> +	struct snd_dma_buffer dma_buffer;
->>   };
->>   
->>   /**
->> @@ -212,6 +214,9 @@ snd_compr_set_runtime_buffer(struct snd_compr_stream *stream,
->>   	}
->>   }
->>   
->> +int snd_compr_malloc_pages(struct snd_compr_stream *stream, size_t size);
->> +int snd_compr_free_pages(struct snd_compr_stream *stream);
->> +
->>   int snd_compr_stop_error(struct snd_compr_stream *stream,
->>   			 snd_pcm_state_t state);
->>   
->> diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
->> index f34ce564d92c..dfb20ceb2d30 100644
->> --- a/sound/core/compress_offload.c
->> +++ b/sound/core/compress_offload.c
->> @@ -488,6 +488,48 @@ snd_compr_get_codec_caps(struct snd_compr_stream *stream, unsigned long arg)
->>   }
->>   #endif /* !COMPR_CODEC_CAPS_OVERFLOW */
->>   
->> +int snd_compr_malloc_pages(struct snd_compr_stream *stream, size_t size)
->> +{
->> +	struct snd_dma_buffer *dmab;
->> +	int ret;
->> +
->> +	if (snd_BUG_ON(!(stream) || !(stream)->runtime))
->> +		return -EINVAL;
->> +	dmab = kzalloc(sizeof(*dmab), GFP_KERNEL);
->> +	if (!dmab)
->> +		return -ENOMEM;
->> +	dmab->dev = stream->dma_buffer.dev;
->> +	ret = snd_dma_alloc_pages(dmab->dev.type, dmab->dev.dev, size, dmab);
->> +	if (ret < 0) {
->> +		kfree(dmab);
->> +		return ret;
->> +	}
->> +
->> +	snd_compr_set_runtime_buffer(stream, dmab);
->> +	stream->runtime->dma_bytes = size;
->> +	return 1;
->> +}
->> +EXPORT_SYMBOL(snd_compr_malloc_pages);
->> +
->> +int snd_compr_free_pages(struct snd_compr_stream *stream)
->> +{
->> +	struct snd_compr_runtime *runtime = stream->runtime;
->> +
->> +	if (snd_BUG_ON(!(stream) || !(stream)->runtime))
->> +		return -EINVAL;
->> +	if (!runtime->dma_area)
->> +		return 0;
->> +	if (runtime->dma_buffer_p != &stream->dma_buffer) {
->> +		/* It's a newly allocated buffer. Release it now. */
->> +		snd_dma_free_pages(runtime->dma_buffer_p);
->> +		kfree(runtime->dma_buffer_p);
->> +	}
->> +
->> +	snd_compr_set_runtime_buffer(stream, NULL);
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL(snd_compr_free_pages);
->> +
->>   /* revisit this with snd_pcm_preallocate_xxx */
->>   static int snd_compr_allocate_buffer(struct snd_compr_stream *stream,
->>   		struct snd_compr_params *params)
->> -- 
->> 2.17.1
->>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
