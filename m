@@ -2,60 +2,75 @@ Return-Path: <SRS0=Cvq+=2H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3AC8C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:05:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D4ADC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:07:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2FFC207FF
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:05:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA1412176D
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:07:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R6v2EqgY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D2FFC207FF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tOEk+TaL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA1412176D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FAB384A;
-	Tue, 17 Dec 2019 13:04:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FAB384A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3617950;
+	Tue, 17 Dec 2019 13:06:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3617950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576584330;
-	bh=nFXs6Mc9gDAKK4uiRdh/i549qjTBoWrZyxruqedMhU0=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=R6v2EqgYGA3uRtpV0L59t59Iw4xRGeHooS9lin9M/scWNFk/p044IN8r4FCs07gvu
-	 +uyb6GMGKIZBcxQ2Ge2z9/S3r4kIU7GkYBPBad4EWwHlM4psDKjIiMYwk83I1Y8Q4C
-	 lGh3jA4L4eJ4kH2Nzi7YmmkilZ6CHjrubHudJIDI=
+	s=default; t=1576584451;
+	bh=DAqx8ffnFN28AZKLtRW2na7xjieaFGLm1o404sxuAGM=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tOEk+TaLPkbe/pW79bj4a8m6599dPPaZDEspzFjZI/F2uoWTIOYTxMCuOOOzO6rVl
+	 EEnRbT0h5KdaKFBQwr7SYpz9vX1soqfh2RdqjF63Kf3PQEZRkECUInrlEziT9qgEqW
+	 UiFewzkhV+ycuIXnR6wnG81FJSMtYBukU5dbXilQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13F3FF80218;
-	Tue, 17 Dec 2019 13:04:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89056F80218;
+	Tue, 17 Dec 2019 13:06:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68E9EF80234; Tue, 17 Dec 2019 13:04:38 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 77FC2F80100
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:04:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77FC2F80100
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CCA2931B;
- Tue, 17 Dec 2019 04:04:30 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 491973F6CF;
- Tue, 17 Dec 2019 04:04:30 -0800 (PST)
-Date: Tue, 17 Dec 2019 12:04:28 +0000
-From: Mark Brown <broonie@kernel.org>
+ id 73CA9F80234; Tue, 17 Dec 2019 13:06:38 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCB8FF8020B
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:06:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCB8FF8020B
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 17 Dec 2019 04:06:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,325,1571727600"; d="scan'208";a="298029846"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.237.137.172])
+ ([10.237.137.172])
+ by orsmga001.jf.intel.com with ESMTP; 17 Dec 2019 04:06:30 -0800
 To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20191217120428.GB4755@sirena.org.uk>
+References: <20191217095851.19629-1-cezary.rojewski@intel.com>
+ <20191217095851.19629-2-cezary.rojewski@intel.com>
+ <s5h36dj2r0y.wl-tiwai@suse.de>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <8d796ef4-e6d2-ade3-25c3-756599c44348@intel.com>
+Date: Tue, 17 Dec 2019 13:06:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-X-Cookie: Thufir's a Harkonnen now.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
-Subject: [alsa-devel] [GIT PULL] ASoC fixes for v5.5
+In-Reply-To: <s5h36dj2r0y.wl-tiwai@suse.de>
+Content-Language: en-US
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com
+Subject: Re: [alsa-devel] [PATCH 1/7] ALSA: hda: Allow for compress stream
+ to hdac_ext_stream assignment
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,135 +83,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0284935209800855056=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============0284935209800855056==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qcHopEYAB45HaUaB"
-Content-Disposition: inline
 
+On 2019-12-17 11:19, Takashi Iwai wrote:
+> On Tue, 17 Dec 2019 10:58:45 +0100,
+> Cezary Rojewski wrote:
+>>
+>> Currently only PCM streams can enlist hdac_stream for their data
+>> transfer. Add cstream field to hdac_ext_stream to expose possibility of
+>> compress stream assignment in place of PCM one.
+>> Limited to HOST-type only.
+>>
+>> Rather than copying entire hdac_ext_host_stream_assign, declare separate
+>> PCM and compress wrappers and reuse it for both cases.
+>>
+>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+>> ---
+>>   include/sound/hdaudio.h         |  1 +
+>>   include/sound/hdaudio_ext.h     |  2 ++
+>>   sound/hda/ext/hdac_ext_stream.c | 46 +++++++++++++++++++++++++++++----
+>>   3 files changed, 44 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+>> index e05b95e83d5a..9a8bf1eb7d69 100644
+>> --- a/include/sound/hdaudio.h
+>> +++ b/include/sound/hdaudio.h
+>> @@ -481,6 +481,7 @@ struct hdac_stream {
+>>   	struct snd_pcm_substream *substream;	/* assigned substream,
+>>   						 * set in PCM open
+>>   						 */
+>> +	struct snd_compr_stream *cstream;
+>>   	unsigned int format_val;	/* format value to be set in the
+>>   					 * controller and the codec
+>>   					 */
+> 
+> One might use union for pointing to either PCM or compr stream and
+> identify the type with some flag.
+> 
+> 	struct hdac_stream {
+> 		union {
+> 			struct snd_pcm_substream *substream;
+> 			struct snd_compr_stream *cstream;
+> 		};
+> 		bool is_compr;
+> 		....
+> 
+> But, I'm not advocating for this.  Although this makes the stream
+> assignment more handy, it might lead to refer to a wrong object if you
+> don't check the flag properly, too.  It really depends on the code.
+> 
 
---qcHopEYAB45HaUaB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm happy with both - existing - and your variant. In essence, this 
+causes simply: s/if (hstream->cstream)/if (hstream->is_compr)/g to occur.
 
-The following changes since commit 39870b0dec68ed7dd814beb697e541670975c7d8:
+In general, I'm strong supporter of a "PCM-compr marriage" idea - both 
+being combined in sense of having similar base in the future so one 
+could make use of "snd_base_stream", checkout the is_compr field and 
+cast into actual type (_pcm_ -or- _compr_) via container_of macro.
 
-  ASoC: DMI long name - avoid to add board name if matches with product name (2019-11-22 19:54:50 +0000)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.5-rc2
-
-for you to fetch changes up to 556672d75ff486e0b6786056da624131679e0576:
-
-  ASoC: wm8962: fix lambda value (2019-12-16 11:47:28 +0000)
-
-----------------------------------------------------------------
-ASoC: Fixes for v5.5
-
-A collection of fixes since the merge window, mostly driver specific but
-there's a few in the core that clean up fallout from the refactorings
-done in the last cycle.
-
-----------------------------------------------------------------
-Amery Song (1):
-      ASoC: Intel: common: work-around incorrect ACPI HID for CML boards
-
-Curtis Malainey (3):
-      ASoC: core: Init pcm runtime work early to avoid warnings
-      ASoC: core: only flush inited work during free
-      ASoC: SOF: Intel: split cht and byt debug window sizes
-
-Daniel Baluta (2):
-      ASoC: SOF: topology: Fix unload for SAI/ESAI
-      ASoC: simple-card: Don't create separate link when platform is present
-
-Dragos Tarcatu (2):
-      ASoC: topology: Check return value for snd_soc_add_dai_link()
-      ASoC: topology: Check return value for soc_tplg_pcm_create()
-
-Hans de Goede (1):
-      ASoC: Intel: bytcr_rt5640: Update quirk for Teclast X89
-
-Karol Trzcinski (2):
-      ASoC: SOF: loader: snd_sof_fw_parse_ext_data log warning on unknown header
-      ASoC: SOF: loader: fix snd_sof_fw_parse_ext_data
-
-Keyon Jie (1):
-      ASoC: SOF: Intel: BYT: fix a copy/paste mistake in byt_dump()
-
-Michael Walle (1):
-      ASoC: wm8904: fix automatic sysclk configuration
-
-Shengjiu Wang (1):
-      ASoC: wm8962: fix lambda value
-
-Shuming Fan (1):
-      ASoC: rt5682: fix i2c arbitration lost issue
-
-Tzung-Bi Shih (3):
-      ASoC: max98090: remove msleep in PLL unlocked workaround
-      ASoC: max98090: exit workaround earlier if PLL is locked
-      ASoC: max98090: fix possible race conditions
-
-Yu-Hsuan Hsu (1):
-      ASoC: AMD: Enable clk in startup intead of hw_params
-
-YueHaibing (2):
-      ASoC: rt5677: Fix build error without CONFIG_SPI
-      ASoC: Intel: sst: Add missing include <linux/io.h>
-
- include/sound/soc.h                               |  1 +
- sound/soc/amd/acp-da7219-max98357a.c              | 46 +++++++----------------
- sound/soc/codecs/max98090.c                       | 30 ++++++++++-----
- sound/soc/codecs/max98090.h                       |  1 -
- sound/soc/codecs/rt5677-spi.h                     | 16 ++++++++
- sound/soc/codecs/rt5682.c                         |  2 +
- sound/soc/codecs/wm8904.c                         |  6 +++
- sound/soc/codecs/wm8962.c                         |  4 +-
- sound/soc/generic/simple-card.c                   |  6 +++
- sound/soc/intel/atom/sst/sst.c                    |  1 +
- sound/soc/intel/boards/bytcr_rt5640.c             |  8 +++-
- sound/soc/intel/common/soc-acpi-intel-cml-match.c | 41 +++++++++++---------
- sound/soc/soc-compress.c                          |  6 +--
- sound/soc/soc-core.c                              | 13 ++++++-
- sound/soc/soc-pcm.c                               | 11 ++----
- sound/soc/soc-topology.c                          | 27 +++++++++----
- sound/soc/sof/intel/byt.c                         | 25 ++++++------
- sound/soc/sof/loader.c                            |  7 +++-
- sound/soc/sof/topology.c                          |  4 +-
- 19 files changed, 158 insertions(+), 97 deletions(-)
-
---qcHopEYAB45HaUaB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl34xEsACgkQJNaLcl1U
-h9Bn+gf+I3pXl/BSINgmKoXSzf52xvHxryo9+Ej8yCkOOjOwM0gUJCUB3q6x6VPa
-Ue5Fqtbc/MQ3PQeVqqvw9S1gB/g0lD4cuHdlslwJSRMemIfNQkf0dzUoNsd0CObZ
-ZtV8Tzr9l/wffBWSNQFM1EFV20oKKIG5e567QBVZo0/M0oYCsshAo3jPsHFUCezk
-xIK0r9MRnZ9qBQAHDADP3Y3ACIVcisa4LXn923jqZUV2IwUEhHHyBDqWm8y6xgpA
-/FEEK8NGneoWmFIv4roUQ9xVMq5+wb9DkZfgREn5ymKuLzaNf6Yy9SBGqRA7jIDb
-I9Kt5WOtKQc7f510Zo0OkDVCYK6fMQ==
-=jAy6
------END PGP SIGNATURE-----
-
---qcHopEYAB45HaUaB--
-
---===============0284935209800855056==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This is more of a wish or song of the future for now, though. Compress 
+and PCM ops streamlining is not within the scope of probes and requires 
+much more work : )
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0284935209800855056==--
