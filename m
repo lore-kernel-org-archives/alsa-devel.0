@@ -7,66 +7,66 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93EE1C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B761AC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:26:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18F4E206E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:25:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 38561206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:26:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i2cKpGrR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18F4E206E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ezKdK67F"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38561206E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 621E4826;
-	Tue, 17 Dec 2019 21:24:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 621E4826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FE05166D;
+	Tue, 17 Dec 2019 21:25:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FE05166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576614330;
-	bh=dZKK19m/mEhGzBSHfHQyhkJi6K2/6r0Wb6oQGPCZVQo=;
+	s=default; t=1576614373;
+	bh=J8Jh0E6BNV4lhY1Xq7Pqhr8dAKECfooEtCwNpM5v73s=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i2cKpGrR/+N+tEplbDlCECHkG+yx7uVYgNICocF7vIVRwlsM6VwgYM7uo6VcMq26H
-	 HM2CZNIa0BbkQHP7snjurDKJqknzGKFxno3GEiFJEDCrjNNs+z8MWVqsBI+AZ1wJLb
-	 j27wMO91iiMaoYmbrsFdvQaReenccKRfWs2/ZkIw=
+	b=ezKdK67FmrI6w6y6hNJl+FkXI1zENeOa7aIfpWcV3pz1Kj/QJB4/9sok7s0SebUjB
+	 4HEA63cOC6JlWsbCM/ajdAWrSjWlQr6GlSQ9HrKlG1uyP8nbbVdXpD5oVM6voxoqHx
+	 mXH4KIV5Gp/jVSPi5808WwlFqMP25BnUViBlgIhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D049F80272;
-	Tue, 17 Dec 2019 21:23:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1F11F8025A;
+	Tue, 17 Dec 2019 21:23:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06113F80272; Tue, 17 Dec 2019 21:23:01 +0100 (CET)
+ id EF4C1F80274; Tue, 17 Dec 2019 21:23:02 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DC7EF80234
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 21:22:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DC7EF80234
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED8C9F8023F
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 21:22:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED8C9F8023F
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 12:22:50 -0800
+ 17 Dec 2019 12:22:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; d="scan'208";a="266679225"
+X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; d="scan'208";a="266679229"
 Received: from smcdonal-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.83.42])
- by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2019 12:22:49 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2019 12:22:50 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 17 Dec 2019 14:22:24 -0600
-Message-Id: <20191217202231.18259-2-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 17 Dec 2019 14:22:26 -0600
+Message-Id: <20191217202231.18259-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191217202231.18259-1-pierre-louis.bossart@linux.intel.com>
 References: <20191217202231.18259-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, gregkh@linuxfoundation.org, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 1/8] ASoC: SOF: Intel: add module namespace for
-	legacy IPC
+Subject: [alsa-devel] [PATCH 3/8] ASoC: SOF: Intel: add namespace for
+	BROADWELL
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,74 +84,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The legacy IPC routines are only used by broadwell and baytrail
-modules, import them as needed and make sure other modules cannot load
-them.
+Define namespace and include it in ACPI top-level module.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/bdw.c       | 1 +
- sound/soc/sof/intel/byt.c       | 1 +
- sound/soc/sof/intel/intel-ipc.c | 8 ++++----
- 3 files changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/sof/intel/bdw.c    | 4 ++--
+ sound/soc/sof/sof-acpi-dev.c | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index c09885c0eb7d..39d1c8c7cddf 100644
+index 39d1c8c7cddf..f017089c7b2d 100644
 --- a/sound/soc/sof/intel/bdw.c
 +++ b/sound/soc/sof/intel/bdw.c
-@@ -642,3 +642,4 @@ const struct sof_intel_dsp_desc bdw_chip_info = {
- EXPORT_SYMBOL(bdw_chip_info);
+@@ -633,13 +633,13 @@ const struct snd_sof_dsp_ops sof_bdw_ops = {
+ 			SNDRV_PCM_INFO_PAUSE |
+ 			SNDRV_PCM_INFO_BATCH,
+ };
+-EXPORT_SYMBOL(sof_bdw_ops);
++EXPORT_SYMBOL_NS(sof_bdw_ops, SND_SOC_SOF_BROADWELL);
+ 
+ const struct sof_intel_dsp_desc bdw_chip_info = {
+ 	.cores_num = 1,
+ 	.cores_mask = 1,
+ };
+-EXPORT_SYMBOL(bdw_chip_info);
++EXPORT_SYMBOL_NS(bdw_chip_info, SND_SOC_SOF_BROADWELL);
  
  MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index d43098a962c0..b214b12fdcda 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -877,3 +877,4 @@ EXPORT_SYMBOL(cht_chip_info);
- #endif /* CONFIG_SND_SOC_SOF_BAYTRAIL */
+ MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
+diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
+index 6d44d5802e29..d8ed6bfa5ce7 100644
+--- a/sound/soc/sof/sof-acpi-dev.c
++++ b/sound/soc/sof/sof-acpi-dev.c
+@@ -241,3 +241,4 @@ module_platform_driver(snd_sof_acpi_driver);
  
  MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
-diff --git a/sound/soc/sof/intel/intel-ipc.c b/sound/soc/sof/intel/intel-ipc.c
-index 4edd92151fd5..e935f70d611b 100644
---- a/sound/soc/sof/intel/intel-ipc.c
-+++ b/sound/soc/sof/intel/intel-ipc.c
-@@ -39,7 +39,7 @@ void intel_ipc_msg_data(struct snd_sof_dev *sdev,
- 			sof_mailbox_read(sdev, stream->posn_offset, p, sz);
- 	}
- }
--EXPORT_SYMBOL(intel_ipc_msg_data);
-+EXPORT_SYMBOL_NS(intel_ipc_msg_data, SND_SOC_SOF_INTEL_HIFI_EP_IPC);
- 
- int intel_ipc_pcm_params(struct snd_sof_dev *sdev,
- 			 struct snd_pcm_substream *substream,
-@@ -60,7 +60,7 @@ int intel_ipc_pcm_params(struct snd_sof_dev *sdev,
- 
- 	return 0;
- }
--EXPORT_SYMBOL(intel_ipc_pcm_params);
-+EXPORT_SYMBOL_NS(intel_ipc_pcm_params, SND_SOC_SOF_INTEL_HIFI_EP_IPC);
- 
- int intel_pcm_open(struct snd_sof_dev *sdev,
- 		   struct snd_pcm_substream *substream)
-@@ -75,7 +75,7 @@ int intel_pcm_open(struct snd_sof_dev *sdev,
- 
- 	return 0;
- }
--EXPORT_SYMBOL(intel_pcm_open);
-+EXPORT_SYMBOL_NS(intel_pcm_open, SND_SOC_SOF_INTEL_HIFI_EP_IPC);
- 
- int intel_pcm_close(struct snd_sof_dev *sdev,
- 		    struct snd_pcm_substream *substream)
-@@ -87,6 +87,6 @@ int intel_pcm_close(struct snd_sof_dev *sdev,
- 
- 	return 0;
- }
--EXPORT_SYMBOL(intel_pcm_close);
-+EXPORT_SYMBOL_NS(intel_pcm_close, SND_SOC_SOF_INTEL_HIFI_EP_IPC);
- 
- MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_IMPORT_NS(SND_SOC_SOF_BAYTRAIL);
++MODULE_IMPORT_NS(SND_SOC_SOF_BROADWELL);
 -- 
 2.20.1
 
