@@ -2,64 +2,65 @@ Return-Path: <SRS0=Cvq+=2H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEFC4C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:41:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6352EC43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 13:23:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 795662146E
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 12:41:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6413921582
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 13:23:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bCzD93e6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 795662146E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U34oZmnZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6413921582
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E95971658;
-	Tue, 17 Dec 2019 13:40:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E95971658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32CDD38;
+	Tue, 17 Dec 2019 14:22:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32CDD38
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576586466;
-	bh=A5b/4FUlPRlQ6uu6Pc9zhtcZpOXGmFO5V/9wVMcAOsY=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=bCzD93e6ZUxgymguT3EfMFDuJx8QhOCBHINJV5sCajh/bBuIZux1NSB4AiwZTN2L2
-	 EkMFujLhn5PTEvrhAXnNEMAPlVexH7H2uMxMnteCr6ziTFUccNZXJkEEJGFarVDaCX
-	 +fMBKY8UYpx90UsDFLpEKWv2Dj0B4JhZIAhRP9H0=
+	s=default; t=1576589000;
+	bh=E6Hy0Dh0h8BOZ/SJGOmnlIBkPUOr6AFELMRjSPnf+Y8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=U34oZmnZym+QyBZ+tGLAU1to9by7Jg8ywDthPZliw4DwbaAGPHzo8vYs/vG3hpjpA
+	 WEP54kzHruLHQpLq1cloTTvck/qHpYlhxd6rwY/GVOj+dbgt/5k13pGDD/drrc0DY5
+	 2+R9+mKQSMpGgtH4ZxkFtC+l7huDpZCnEMgA5TAo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29D8AF8025F;
-	Tue, 17 Dec 2019 13:39:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2C16F80218;
+	Tue, 17 Dec 2019 14:22:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AEFFF80100; Tue, 17 Dec 2019 13:39:21 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id F3116F80100
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:39:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3116F80100
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F147DA7;
- Tue, 17 Dec 2019 04:39:17 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F20B63F718;
- Tue, 17 Dec 2019 04:39:16 -0800 (PST)
-Date: Tue, 17 Dec 2019 12:39:15 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20191212191747.19995-1-tiwai@suse.de>
-Message-Id: <applied-20191212191747.19995-1-tiwai@suse.de>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: intel: skylake: Remove superfluous bus
-	ops" to the asoc tree
+ id 5F0F3F80234; Tue, 17 Dec 2019 14:22:28 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A400F80088
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 14:22:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A400F80088
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 907A6AE3F;
+ Tue, 17 Dec 2019 13:22:23 +0000 (UTC)
+Date: Tue, 17 Dec 2019 14:22:23 +0100
+Message-ID: <s5hk16v9je8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20191217120428.GB4755@sirena.org.uk>
+References: <20191217120428.GB4755@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [alsa-devel] [GIT PULL] ASoC fixes for v5.5
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,83 +73,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Tue, 17 Dec 2019 13:04:28 +0100,
+Mark Brown wrote:
+> 
+> The following changes since commit 39870b0dec68ed7dd814beb697e541670975c7d8:
+> 
+>   ASoC: DMI long name - avoid to add board name if matches with product name (2019-11-22 19:54:50 +0000)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.5-rc2
+> 
+> for you to fetch changes up to 556672d75ff486e0b6786056da624131679e0576:
+> 
+>   ASoC: wm8962: fix lambda value (2019-12-16 11:47:28 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.5
+> 
+> A collection of fixes since the merge window, mostly driver specific but
+> there's a few in the core that clean up fallout from the refactorings
+> done in the last cycle.
 
-   ASoC: intel: skylake: Remove superfluous bus ops
+Pulled now.  Thanks.
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From ae91a189d2459644e800ceea615a9c1937ee5ae2 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Thu, 12 Dec 2019 20:17:47 +0100
-Subject: [PATCH] ASoC: intel: skylake: Remove superfluous bus ops
-
-The bus_core_ops values set in skl driver are same as the default
-values, so we can drop it and pass NULL to snd_hdac_ext_bus_init()
-instead.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20191212191747.19995-1-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 58ba3e9469ba..f755ca2484cf 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -773,11 +773,6 @@ static void skl_codec_create(struct hdac_bus *bus)
- 	}
- }
- 
--static const struct hdac_bus_ops bus_core_ops = {
--	.command = snd_hdac_bus_send_cmd,
--	.get_response = snd_hdac_bus_get_response,
--};
--
- static int skl_i915_init(struct hdac_bus *bus)
- {
- 	int err;
-@@ -888,7 +883,7 @@ static int skl_create(struct pci_dev *pci,
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC)
- 	ext_ops = snd_soc_hdac_hda_get_ops();
- #endif
--	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, ext_ops);
-+	snd_hdac_ext_bus_init(bus, &pci->dev, NULL, ext_ops);
- 	bus->use_posbuf = 1;
- 	skl->pci = pci;
- 	INIT_WORK(&skl->probe_work, skl_probe_work);
--- 
-2.20.1
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
