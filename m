@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5330C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 506A8C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:28:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BF32206E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:28:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D57F206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 20:28:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bty00lW8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BF32206E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WkGW9fO3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D57F206E0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51ED01654;
-	Tue, 17 Dec 2019 21:27:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51ED01654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DD55166D;
+	Tue, 17 Dec 2019 21:28:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DD55166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576614487;
-	bh=BOmCKZ6HuDrovLOhxLXqg2E7+rWtlDe4BebMftCENws=;
+	s=default; t=1576614531;
+	bh=ebtPEjYCPGezq+6pBcytDsqlk1nlFwm+3GZg0vteOkw=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bty00lW8UAC3ND3f2yMVQxmJb381++zR9p6+Soh1G23IdfaEo1u+2n1XDe8vjn1Qe
-	 UIiwYDwWM4Ko+eGQE8iLeCgaMgPVSXr9MD7MLJ9w7+7q6ISFbMG8LlQYXSkAffO8NU
-	 GJ9Stb23zR9df70+5adz9KeiLI3Z5wluzOngKsbM=
+	b=WkGW9fO3MVhJyiRotJXQ88b4hvNOMEb9gzVkD2oIDQc90BiSgGe9VTGOgEm7u/wA5
+	 cTLgA2LChMus7sDH0s0fWbl2eAmrfIxmtwxwyvJnbP9gBtiu/THI9cr/2DrxC8rPlv
+	 kzJ0gMlyGOKdzyLftFOcRFcKsKzj/gJjt4Ix4iwo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4BD79F802A0;
-	Tue, 17 Dec 2019 21:23:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90D74F802A9;
+	Tue, 17 Dec 2019 21:23:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98E99F80278; Tue, 17 Dec 2019 21:23:06 +0100 (CET)
+ id 9F638F8027B; Tue, 17 Dec 2019 21:23:07 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0210F8020B
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 21:22:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0210F8020B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0ABF5F80268
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 21:22:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ABF5F80268
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 12:22:52 -0800
+ 17 Dec 2019 12:22:55 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; d="scan'208";a="266679231"
+X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; d="scan'208";a="266679243"
 Received: from smcdonal-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.255.83.42])
- by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2019 12:22:51 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2019 12:22:54 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 17 Dec 2019 14:22:27 -0600
-Message-Id: <20191217202231.18259-5-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 17 Dec 2019 14:22:31 -0600
+Message-Id: <20191217202231.18259-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191217202231.18259-1-pierre-louis.bossart@linux.intel.com>
 References: <20191217202231.18259-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, gregkh@linuxfoundation.org, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 4/8] ASoC: SOF: remove references to Haswell
+Subject: [alsa-devel] [PATCH 8/8] ASoC: SOF: Intel: add namespace for XTENSA
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,104 +83,57 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are no known commercial devices using Haswell, and there is no
-support for Haswell in SOF so remove remaining definitions and
-structures.
+Now that Xtensa stuff is only referenced in Intel stuff, define
+namespace and import it in Intel BYT/BDW/HDaudio modules
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/Kconfig        |  2 +-
- sound/soc/sof/intel/shim.h   |  6 ++----
- sound/soc/sof/sof-acpi-dev.c | 20 --------------------
- 3 files changed, 3 insertions(+), 25 deletions(-)
+ sound/soc/sof/intel/bdw.c   | 1 +
+ sound/soc/sof/intel/byt.c   | 1 +
+ sound/soc/sof/intel/hda.c   | 1 +
+ sound/soc/sof/xtensa/core.c | 2 +-
+ 4 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 71a0fc075a63..827b0ec92522 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -28,7 +28,7 @@ config SND_SOC_SOF_ACPI
- 	select IOSF_MBI if X86 && PCI
- 	help
- 	  This adds support for ACPI enumeration. This option is required
--	  to enable Intel Haswell/Broadwell/Baytrail/Cherrytrail devices
-+	  to enable Intel Broadwell/Baytrail/Cherrytrail devices
- 	  Say Y if you need this option
- 	  If unsure select "N".
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index 4d45b54a0f8b..6c23c5769330 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -645,3 +645,4 @@ EXPORT_SYMBOL_NS(bdw_chip_info, SND_SOC_SOF_BROADWELL);
  
-diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
-index f7a3f62e45d4..daaf3364c177 100644
---- a/sound/soc/sof/intel/shim.h
-+++ b/sound/soc/sof/intel/shim.h
-@@ -12,7 +12,7 @@
- #define __SOF_INTEL_SHIM_H
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
++MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 08193882f91f..f84391294f12 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -884,3 +884,4 @@ EXPORT_SYMBOL_NS(cht_chip_info, SND_SOC_SOF_BAYTRAIL);
  
- /*
-- * SHIM registers for BYT, BSW, CHT, HSW, BDW
-+ * SHIM registers for BYT, BSW, CHT, BDW
-  */
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
++MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index e47bf4d303c2..4f9f84a3209e 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -797,3 +797,4 @@ void hda_machine_select(struct snd_sof_dev *sdev)
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC);
+ MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
++MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
+diff --git a/sound/soc/sof/xtensa/core.c b/sound/soc/sof/xtensa/core.c
+index 46a4905a9dce..ea08651f0bb3 100644
+--- a/sound/soc/sof/xtensa/core.c
++++ b/sound/soc/sof/xtensa/core.c
+@@ -132,7 +132,7 @@ const struct sof_arch_ops sof_xtensa_arch_ops = {
+ 	.dsp_oops = xtensa_dsp_oops,
+ 	.dsp_stack = xtensa_stack,
+ };
+-EXPORT_SYMBOL(sof_xtensa_arch_ops);
++EXPORT_SYMBOL_NS(sof_xtensa_arch_ops, SND_SOC_SOF_XTENSA);
  
- #define SHIM_CSR		(SHIM_OFFSET + 0x00)
-@@ -38,7 +38,7 @@
- #define SHIM_PWMCTRL		0x1000
- 
- /*
-- * SST SHIM register bits for BYT, BSW, CHT HSW, BDW
-+ * SST SHIM register bits for BYT, BSW, CHT, BDW
-  * Register bit naming and functionaility can differ between devices.
-  */
- 
-@@ -169,13 +169,11 @@ struct sof_intel_dsp_desc {
- extern const struct snd_sof_dsp_ops sof_tng_ops;
- extern const struct snd_sof_dsp_ops sof_byt_ops;
- extern const struct snd_sof_dsp_ops sof_cht_ops;
--extern const struct snd_sof_dsp_ops sof_hsw_ops;
- extern const struct snd_sof_dsp_ops sof_bdw_ops;
- 
- extern const struct sof_intel_dsp_desc byt_chip_info;
- extern const struct sof_intel_dsp_desc cht_chip_info;
- extern const struct sof_intel_dsp_desc bdw_chip_info;
--extern const struct sof_intel_dsp_desc hsw_chip_info;
- extern const struct sof_intel_dsp_desc tng_chip_info;
- 
- struct sof_intel_stream {
-diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
-index d8ed6bfa5ce7..9100d7c70bb2 100644
---- a/sound/soc/sof/sof-acpi-dev.c
-+++ b/sound/soc/sof/sof-acpi-dev.c
-@@ -35,23 +35,6 @@ MODULE_PARM_DESC(sof_acpi_debug, "SOF ACPI debug options (0x0 all off)");
- 
- #define SOF_ACPI_DISABLE_PM_RUNTIME BIT(0)
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
--static const struct sof_dev_desc sof_acpi_haswell_desc = {
--	.machines = snd_soc_acpi_intel_haswell_machines,
--	.resindex_lpe_base = 0,
--	.resindex_pcicfg_base = 1,
--	.resindex_imr_base = -1,
--	.irqindex_host_ipc = 0,
--	.chip_info = &hsw_chip_info,
--	.default_fw_path = "intel/sof",
--	.default_tplg_path = "intel/sof-tplg",
--	.default_fw_filename = "sof-hsw.ri",
--	.nocodec_tplg_filename = "sof-hsw-nocodec.tplg",
--	.ops = &sof_hsw_ops,
--	.arch_ops = &sof_xtensa_arch_ops
--};
--#endif
--
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- static const struct sof_dev_desc sof_acpi_broadwell_desc = {
- 	.machines = snd_soc_acpi_intel_broadwell_machines,
-@@ -213,9 +196,6 @@ static int sof_acpi_remove(struct platform_device *pdev)
- }
- 
- static const struct acpi_device_id sof_acpi_match[] = {
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HASWELL)
--	{ "INT33C8", (unsigned long)&sof_acpi_haswell_desc },
--#endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
- 	{ "INT3438", (unsigned long)&sof_acpi_broadwell_desc },
- #endif
+ MODULE_DESCRIPTION("SOF Xtensa DSP support");
+ MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.20.1
 
