@@ -2,56 +2,68 @@ Return-Path: <SRS0=Cvq+=2H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 189D1C43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 04:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76240C43603
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 04:42:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC5AE2146E
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 04:22:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 861D6206A5
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 04:42:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Oo7vQvpe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC5AE2146E
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="baE9JwbY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 861D6206A5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2AFD15F9;
-	Tue, 17 Dec 2019 05:21:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2AFD15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46591950;
+	Tue, 17 Dec 2019 05:41:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46591950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576556548;
-	bh=j0d3D1SNZKUFk1c+UodbFFiQGtG7oK0664omZ/9TT1E=;
-	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
+	s=default; t=1576557732;
+	bh=RdPwLMEkfhtbUP3ufUbb3BwulkcfK45fXJ+gKxRkSM4=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Oo7vQvpeWgcMqWAy8gS1y3yL1ZiHGxFP7zjro/9P50MrUR+ZJ66V0MP+IFF2WcYjx
-	 Fc1zXXsytfo1tUx+hrcASxzbocrONx0JBJcrjJrceDHaNqcQG3JHrcyNWZ7RnEUelS
-	 1fuf9JSLkTqZTifWsJhtMYXfZf609eTkZOG1J6X0=
+	b=baE9JwbYb6cRRlYkMrX8vYtXy2KZHw0Cx6uI44LuYi5brEMiYfbf3xnhN5sJSIRTf
+	 uJ4Uv1M3zvuDV9Y1LJ0LpvSEeD/wWlgG1+KdKxJ5Ql6f4hT1EPKeKokRghEtEL4lJo
+	 T3Ks3v5v/aBdU9xWqLC6aN9p/Hk5SC+1h1lpqLsQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86C73F80234;
-	Tue, 17 Dec 2019 05:21:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE1A1F80218;
+	Tue, 17 Dec 2019 05:41:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AEE08F8023F; Tue, 17 Dec 2019 05:21:36 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 3CD14F80088
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 05:21:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CD14F80088
-MIME-Version: 1.0
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1576556494063792944-webhooks-bot@alsa-project.org>
-References: <1576556494063792944-webhooks-bot@alsa-project.org>
-Message-Id: <20191217042136.AEE08F8023F@alsa1.perex.cz>
-Date: Tue, 17 Dec 2019 05:21:36 +0100 (CET)
-Subject: [alsa-devel] Don't use 16 bit signed integers for sample rate
-	conversion.
+ id 901DCF80234; Tue, 17 Dec 2019 05:41:19 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1B01EF80100
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 05:41:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B01EF80100
+Date: 17 Dec 2019 13:41:09 +0900
+X-IronPort-AV: E=Sophos;i="5.69,324,1571670000"; d="scan'208";a="34398529"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 17 Dec 2019 13:41:09 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A3400418F60A;
+ Tue, 17 Dec 2019 13:41:09 +0900 (JST)
+Message-ID: <87k16vh8d6.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+In-Reply-To: <87lfrbhajp.wl-kuninori.morimoto.gx@renesas.com>
+References: <87woavhhfi.wl-kuninori.morimoto.gx@renesas.com>
+ <87o8w7hhds.wl-kuninori.morimoto.gx@renesas.com>
+ <01e4157a-d4b7-8bb2-d3bf-957d47e3e5f9@linux.intel.com>
+ <87lfrbhajp.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] [PATCH 6/6] ASoC: soc-core: add
+	snd_soc_stream_stop()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,14 +81,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-plugins issue #5 was edited from crocket:
 
-Sample rate conversion should be done with the highest resolution possible.
-I recommend using 32bit signed integers for sample rate conversion.
-Currently, once sample rate conversion is done, using S32_LE is meaningless.
+Hi
 
-Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/5
-Repository URL: https://github.com/alsa-project/alsa-plugins
+> > > +void snd_soc_stream_stop(struct snd_soc_pcm_runtime *rtd, int stream)
+> > > +{
+> > > +	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> > > +		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
+> > > +			/* powered down playback stream now */
+> > > +			snd_soc_dapm_stream_event(rtd,
+> > > +						  SNDRV_PCM_STREAM_PLAYBACK,
+> > > +						  SND_SOC_DAPM_STREAM_STOP);
+> > > +		} else {
+> > > +			/* start delayed pop wq here for playback streams */
+> > > +			rtd->pop_wait = 1;
+> > > +			queue_delayed_work(system_power_efficient_wq,
+> > > +					   &rtd->delayed_work,
+> > > +					   msecs_to_jiffies(rtd->pmdown_time));
+> > > +		}
+> > > +	} else {
+> > > +		/* capture streams can be powered down now */
+> > > +		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
+> > > +					  SND_SOC_DAPM_STREAM_STOP);
+> > > +	}
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(snd_soc_stream_stop);
+
+Hmm...
+I noticed that soc_compr_free_fe(), dpcm_fe_dai_shutdown() are directly
+calling SND_SOC_DAPM_STREAM_STOP without caring pmdown time / delayed work.
+Can we use snd_soc_dapm_stream_stop() for these, too ?
+
+	static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+	{
+		...
+		/* run the stream event for each BE */
+=>		dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
+		...
+	}
+
+	static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+	{
+		...
+=>		dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
+		...
+	}
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
