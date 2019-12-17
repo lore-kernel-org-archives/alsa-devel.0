@@ -2,75 +2,93 @@ Return-Path: <SRS0=Cvq+=2H=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6448CC43603
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 21:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DBF6C2D0BF
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 21:16:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E34F2206E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 21:16:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ECCE4206E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Dec 2019 21:16:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QNToYDOZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E34F2206E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NvAlQnLA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECCE4206E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AB561670;
-	Tue, 17 Dec 2019 22:15:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AB561670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 363371678;
+	Tue, 17 Dec 2019 22:15:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 363371678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576617362;
-	bh=omRo5XImNpzw2QOozoSjrmdEg9OBug3Jsohk9w5AviI=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1576617406;
+	bh=Z2k5iUuurRAgBCodjF+WzOSqOk/19U8gGXcHuWNRQ90=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QNToYDOZqybfLiumryn2zJoqiln+bc5bIWzgSyHdMuneCQpylQPY1OKxB0jGZ7d8s
-	 LgXdX3uC/SXSe2DuHYyiYOBw+G4AxDxtp9q3W8+BqYp8YyZgaSUfwK1tLsMXlZQaBS
-	 MG4STVRvKSkE1kDz9Upwn2+H8Xy1HBcOKzBryfAk=
+	b=NvAlQnLABanOvH/W7yN/YYu0cymd6nDgUYOzvkdQYGbtZEf95rxxwm3jJRRv8V2xh
+	 n6UGi8dCZhwjjDOMkuAnkDoS3lHPFTGraYPXrCtKUShSxBF62rspT7orNahbmtCyy0
+	 GDqoGKmd+FcEYMyzq+F5hAjsqZRnvwQq6Q4/RuQo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 460C4F80347;
-	Tue, 17 Dec 2019 22:04:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 775F4F80234;
+	Tue, 17 Dec 2019 22:15:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AEEEF802A0; Tue, 17 Dec 2019 22:03:52 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 95773F8023F; Tue, 17 Dec 2019 22:15:53 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C764CF8027C
- for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 22:03:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C764CF8027C
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 13:03:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; d="scan'208";a="240561092"
-Received: from smcdonal-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.255.83.42])
- by fmsmga004.fm.intel.com with ESMTP; 17 Dec 2019 13:03:45 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Tue, 17 Dec 2019 15:03:14 -0600
-Message-Id: <20191217210314.20410-18-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191217210314.20410-1-pierre-louis.bossart@linux.intel.com>
-References: <20191217210314.20410-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D92E9F8020B
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 22:15:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D92E9F8020B
+Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M3Upe-1ihsQR3XN4-000bTU for <alsa-devel@alsa-project.org>; Tue, 17 Dec
+ 2019 22:15:50 +0100
+Received: by mail-qt1-f180.google.com with SMTP id e12so78880qto.2
+ for <alsa-devel@alsa-project.org>; Tue, 17 Dec 2019 13:15:49 -0800 (PST)
+X-Gm-Message-State: APjAAAU2abO5UbSoNUM7LCM+XRJ1ejfzw9O3xyddmJ+Sq+QURTKoDzvn
+ sguX2ULxzXfJQ1u4Le84pQiF+MoJ5V6k690UAiA=
+X-Google-Smtp-Source: APXvYqy7B0yAuutBabtpxZAD4q9oCuIdKTJ/s6uAQ2ZKYGBWmxxVMFU8CMT20J9fghezOmHOWFZajbDQKTvpdR049S8=
+X-Received: by 2002:ac8:709a:: with SMTP id y26mr6536373qto.304.1576617348814; 
+ Tue, 17 Dec 2019 13:15:48 -0800 (PST)
 MIME-Version: 1.0
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH v5 17/17] soundwire: intel: use EXPORT_SYMBOL_NS
+References: <20191211212025.1981822-1-arnd@arndb.de>
+ <s5htv5z1bes.wl-tiwai@suse.de>
+In-Reply-To: <s5htv5z1bes.wl-tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 17 Dec 2019 22:15:32 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3um5paR7DoNE3Qa9pjJx4jDfzsCbh+ihSPf1aGA10Niw@mail.gmail.com>
+Message-ID: <CAK8P3a3um5paR7DoNE3Qa9pjJx4jDfzsCbh+ihSPf1aGA10Niw@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+X-Provags-ID: V03:K1:x6dve+vqjrk2hDjlm1NJgcSNWcbd6rcDpd5EY4ucNzwd3iHeal0
+ aA95gJfmiRP6cidX+YcsX4UpcpOCC9gzKA+/14dWMIvWwRfvhXiyW1kkmKFb4fiIXLrPvFW
+ fNqW4idjaR3SNPojMN0GMhzjvCTuuhTcW8YB5gbbaBDH0M2p+S7ryW5ygbOBYhCBR8ku5Qo
+ lNrJao8mFUoPfAp+mtLLg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gSecO8UVMgg=:yozMXKuxX9M0ePvRVldEkT
+ PCwNcmS6QDuFpFxXI6Y8b8PpNyKvKQjju40XDVzxm83WMejJUK54ha8vqKPcw6Uy7JlBgOOsV
+ +GeD0EeALeefJqCdKP3jkR1YzJrSp/AykHlRJTiH0ZYyWk6Pc81nM3uaeuyqUFHmLAqUF0pZO
+ XBMmPBdisVUFSK/U0CPDlZRYQ5AXP0cKTAg4xuIg6ZnKGi6RTQUUnB6J2lPQ1FIm/xV+9bR4A
+ GtmaCr28a4wuRf7lzroJ9SJrkvrxBzCho2OvfspMmr9ZNPoynkNCKcslP0W2QC6iQOgWnTRyr
+ HAKEMYQF/2YjkxXD8uucE/8MyfwXLyesWGU5Iv1L54NeaaB3yQuiO8RjI14WedrGGVKe+Svpy
+ LS+XyW+FVU6lEb+71hgpDZWZKKkcgkekmM123LwY99wokDxlDHxOiysWFh1GkhJyIYb1dYgpg
+ FTziNkhxO6sXmsPjMK8A5r5D76x3S3oinnIiL8rMiOreQ+/uPrvkxX1Qp/8f8pbX6S84FyPD1
+ COnDq+DyB5zhgfuSrjpVN4VJAGdxwzEwdp/I9gCURht4F+8uGBgLN3ZsW/E7uicAfQkrB2epU
+ reSXa5h4+fD53F4guS4VuiE3/vn1N5zlQEuhEMAVVVX5IN6FS7jRB8BdjGjUtBT13jGpALwQl
+ WNnTPM80p1ghXuU8WVI3t1EYZDT1yXOq2cbfTyD16qxacxvOnxfuZam/C4SQeJ6XRBGL4tJXG
+ NIfvYLGGP4OziAxy/tJScFK96JVAukNZvcteVV6M10et6GMfCBJhgRu9vcEBWyZuxiDboVISE
+ tiGcrV1+gCJXPTBSr5IXVhutsyFwfylp7JmAvmctO8TZId4tBP18kbYASUS471EDwHYNF9XMt
+ fCUJ9KiJVBeexa+T/QxA==
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ y2038 Mailman List <y2038@lists.linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Baolin Wang <baolin.wang7@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v7 0/8] Fix year 2038 issue for sound
+	subsystem
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,46 +106,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The soundwire-intel module exports an 'intel_sdw_driver' structure,
-which is declared with a namespace explicitly imported by the
-soundwire-intel-init module.
+On Tue, Dec 17, 2019 at 11:42 AM Takashi Iwai <tiwai@suse.de> wrote:
+> On Wed, 11 Dec 2019 22:20:16 +0100,
+> Arnd Bergmann wrote:
 
-The use of namespaces might be deemed overkill here, but it did help
-enforce a proper code partitioning for follow-up patches on clock-stop
-support.
+> >
+> > I hope I addressed all review comments by now, so please pull this
+> > for linux-5.6.
+> >
+> > A git branch with the same contents is available for testing at [1].
+> >
+> >      Arnd
+>
+> I see no issue other than the timer API patch Ben pointed.
+>
+> Could you resubmit that patch?  Or just submit the whole as v8, I
+> don't mind either way.  Then we'll get this done for 5.6.
 
-Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- drivers/soundwire/intel.c      | 2 +-
- drivers/soundwire/intel_init.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+Can you take this as a pull request? That would be ideal for me,
+as I can then use it as a parent for a shared branch with additional
+cleanups on top (removing time_t etc) in linux-next. It also provides
+a nice place to preserve the series cover letter.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 0e77df0a7760..c24b5f30789d 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1225,7 +1225,7 @@ struct sdw_md_driver intel_sdw_driver = {
- 	.startup = intel_master_startup,
- 	.remove = intel_master_remove,
- };
--EXPORT_SYMBOL(intel_sdw_driver);
-+EXPORT_SYMBOL_NS(intel_sdw_driver, SOUNDWIRE_INTEL);
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_ALIAS("platform:int-sdw");
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 0f83907e1bc7..0acb92a3c6d1 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -390,3 +390,4 @@ EXPORT_SYMBOL_NS(sdw_intel_exit, SOUNDWIRE_INTEL_INIT);
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_DESCRIPTION("Intel Soundwire Init Library");
-+MODULE_IMPORT_NS(SOUNDWIRE_INTEL);
--- 
-2.20.1
+I'm sending you the pull request now, and the last modified patch,
+in case you prefer the patch over a git tag.
 
+Thanks,
+
+        Arnd
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
