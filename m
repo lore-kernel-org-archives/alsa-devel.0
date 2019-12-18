@@ -2,69 +2,81 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ED4CC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 16:29:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68FA6C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 16:38:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ADF9724676
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 16:29:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E672024676
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 16:38:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nxekWXiy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADF9724676
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Bs6IsGBI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E672024676
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5C75839;
-	Wed, 18 Dec 2019 17:28:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5C75839
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD591839;
+	Wed, 18 Dec 2019 17:37:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD591839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576686564;
-	bh=8WxhUXCm8Hw98+BXcd9NP23LR7cUKassvhJ/ix7cAfI=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nxekWXiyyXDUdP/sKS5UE6xBXwm6ChePPW2EDilaTSEF+YjBmw+YDvendv3p5cBf4
-	 BcY8jwlQt/e+xpzZfZ6g7Vkjwr2n4GFNicvGUDBrUIP9l+Vl+Y1i8mcHFD62UFAfq1
-	 ux5Yko5nbH3rkfD2SyaGeETAGAFTmh+TPaHV5j4k=
+	s=default; t=1576687083;
+	bh=Z/AN/6YURAtYbnRNZ94bRyv0sfEaIll0TJXApcJKij4=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Bs6IsGBIPoq8D8qVZSTVWGQxy2o4yM9H3krkBJf9G42UVRRKvzG5ajIxkxU/Jm2HF
+	 JvhCUzWwQfEu6Lu7+prIaXbZU60xQsudqsLIuZLRD3qRw8DuvDwe8aEPVgaf/GHmle
+	 CAnrjW01YDZwxsn5FzrSLa4w2PiqlQ33xbVjEajg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80BE4F8014C;
-	Wed, 18 Dec 2019 17:28:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7160AF8014C;
+	Wed, 18 Dec 2019 17:37:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99F1BF8022C; Wed, 18 Dec 2019 17:28:32 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CBF9AF8022C; Wed, 18 Dec 2019 17:37:10 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C73BF80059
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 17:28:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C73BF80059
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id ABCB4B18B;
- Wed, 18 Dec 2019 16:28:28 +0000 (UTC)
-Date: Wed, 18 Dec 2019 17:28:28 +0100
-Message-ID: <s5hbls57g43.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <f442ed39-1a86-28fb-b42c-b0e5273cd79a@linux.intel.com>
-References: <20191126141423.21523-1-pierre-louis.bossart@linux.intel.com>
- <s5h4kyqzpge.wl-tiwai@suse.de>
- <0131b134-46dc-991f-230b-fe843f43f078@linux.intel.com>
- <s5hd0cm16vf.wl-tiwai@suse.de>
- <f442ed39-1a86-28fb-b42c-b0e5273cd79a@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: add PCI ID for
-	CometLake-S
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D701F80059
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 17:37:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D701F80059
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MG9Xu-1iTL6J1RBk-00GY5i; Wed, 18 Dec 2019 17:37:03 +0100
+From: Arnd Bergmann <arnd@arndb.de>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 18 Dec 2019 17:36:46 +0100
+Message-Id: <20191218163701.171914-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
+MIME-Version: 1.0
+X-Provags-ID: V03:K1:qgb4fv+y9jcZDdpdrYUzzZ6dcoTpOmWPWNxttY6NQEFKg1bDoXQ
+ B8bqBnvvxos5FtMQnxCDOFQ527z89fM6fqTggu4VOZPdwXxYEy9r3w37gzECjT+eMTqGnF6
+ ly9JMYeZKcJe3EuopMcDg8AL0lA4eT/yhs+C/64xsg5ABByb1llXoz3Uc2UmzGq6ONJoy1g
+ 2REgf8iAJKqKqxht1sJYg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:R7XF/1zRMos=:rp3V/WKf77fEMd73eFH0AC
+ XfE2lkTKfYE6GtWPmzrYqXady4wg1PyKRAzgDKWZ+CA7kxJfOpadlZEtW9HC0hXifbbvMxhlo
+ FtoXE7p2C+rWifRMsZXInr6rGUuBikVCCZ/CW2UETfN+C7MYdQNwDVyyvngfeBcCJ4cUG88NA
+ kiyyMvEvtHt+4ygR4JtIS+yfqMiwmOY5ZB0npBnlXMYHsl02BbpcyeAPbK8DOFs+lTviqgMAh
+ UIvMh4BINzOYUeTL6KlCeFGBrxRqrfGKHZl5gvIReuITkcnCMEfwgSEQ4yXE05kQopQsvzdma
+ ImHi5E7Jhae12wCiWvk1qoQkZF/yqssco3orf/ancxLSwnUpRY4ULKkguqBj497u1WWjjQ4c9
+ YF63nQRZ5abYyHbNdTJKZCGckwfJclo1WW7zIPa4L3Juz/LgjkqhzXVjNyP3m5eBhLlhdixhl
+ 7d9S6QTHnJW8iW+GNYkACv5GoV2RLjORwRv6Q96vtJ7kT8FwkRvhn4jwvHmI5p8nXlFoIDA2+
+ WnwqOtgjmyEkDsNZBH/ZdPy1TTtVBJuB5xOwUHzHkzAA+SbBqMcsgmj979dYVSS4oHvmEE+tz
+ Os0lKHQ3ejWk2A6v4KTFKjyxtLvW7l5y3v2Smc9adP6kqYzmOsf+oOQ9Vm5KLDP6zfIIZUR2j
+ xx9aAE4XwAPBfvkNfn7q4gYRBxqj89Emcgr1I2c9VvP5CInn7T7Qi/s78hjLPrcSNti1Xd4nt
+ 8ZDNyamZZprFN8sHMIZo/tBD+SozGu1kGrg9O2LM1v3OpR8Hg2hx1utXYSKWZn8mFRMhABuvS
+ Hl42gTjKfBvHrpWXhGPbfVEet4eapQAgdBDFtHT3aB/EBWANHtmm5/QrIq6BoaYBj2H9O/Y/b
+ q+zRAyjuqTC7A1AQglAg==
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-gpio@vger.kernel.org
+Subject: [alsa-devel] [PATCH] pinctrl: lochnagar: select GPIOLIB
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,82 +94,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Dec 2019 16:21:22 +0100,
-Pierre-Louis Bossart wrote:
-> 
-> >>> Also, can we reduce even the ifdef around sof_dev_desc definitions by
-> >>> __maybe_unused atttribute?
-> >>
-> >> Sorry, I am not following your suggestion. I would really like to keep
-> >> the ifdefs for now, and while it can be seen as overkill to have
-> >> descriptors that are identical in some cases the past experience shows
-> >> it's useful when we have to add quirks for specific 'hardware
-> >> recommended programming sequences'.
-> >
-> > What I suggested was simple, just dropping ifdef by something like
-> >
-> > diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> > index bbeffd932de7..297632a54f1b 100644
-> > --- a/sound/soc/sof/sof-pci-dev.c
-> > +++ b/sound/soc/sof/sof-pci-dev.c
-> > @@ -36,8 +36,7 @@ MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
-> >     #define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
-> >   -#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
-> > -static const struct sof_dev_desc bxt_desc = {
-> > +static const struct sof_dev_desc __maybe_unused bxt_desc = {
-> >   	.machines		= snd_soc_acpi_intel_bxt_machines,
-> >   	.resindex_lpe_base	= 0,
-> >   	.resindex_pcicfg_base	= -1,
-> > @@ -52,10 +51,8 @@ static const struct sof_dev_desc bxt_desc = {
-> >   	.ops = &sof_apl_ops,
-> >   	.arch_ops = &sof_xtensa_arch_ops
-> >   };
-> > -#endif
-> >   -#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
-> > -static const struct sof_dev_desc glk_desc = {
-> > +static const struct sof_dev_desc __maybe_unused glk_desc = {
-> >   	.machines		= snd_soc_acpi_intel_glk_machines,
-> >   	.resindex_lpe_base	= 0,
-> >   	.resindex_pcicfg_base	= -1,
-> > @@ -70,10 +67,8 @@ static const struct sof_dev_desc glk_desc = {
-> >   	.ops = &sof_apl_ops,
-> >   	.arch_ops = &sof_xtensa_arch_ops
-> >   };
-> > -#endif
-> > .....
-> >   
-> >
-> > Then the issue I pointed above can be solved as well.
-> 
-> The ifdefs are still needed in the PCI IDs tables
+In a rare randconfig build I came across one configuration that does
+not enable CONFIG_GPIOLIB, which is needed by lochnagar:
 
-Yes, but it halves the messes :)
+ERROR: "devm_gpiochip_add_data" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
+ERROR: "gpiochip_generic_free" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
+ERROR: "gpiochip_generic_request" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
+ERROR: "gpiochip_get_data" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
 
+Add another 'select' like all other pinctrl drivers have.
 
-Takashi
+Fixes: 0548448b719a ("pinctrl: lochnagar: Add support for the Cirrus Logic Lochnagar")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+I wonder if GPIOLIB should just become mandatory when enabling the pinctrl
+subsystem, or if there are still good reasons for leaving it disabled
+on any machine that uses CONFIG_PINCTRL.
+---
+ drivers/pinctrl/cirrus/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> static const struct pci_device_id sof_pci_ids[] = {
-> #if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
-> 	{ PCI_DEVICE(0x8086, 0x119a),
-> 		.driver_data = (unsigned long)&tng_desc},
-> #endif
-> #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
-> 	/* BXT-P & Apollolake */
-> 	{ PCI_DEVICE(0x8086, 0x5a98),
-> 		.driver_data = (unsigned long)&bxt_desc},
-> 	{ PCI_DEVICE(0x8086, 0x1a98),
-> 		.driver_data = (unsigned long)&bxt_desc},
-> #endif
-> #if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
-> 	{ PCI_DEVICE(0x8086, 0x3198),
-> 		.driver_data = (unsigned long)&glk_desc},
-> #endif
-> 
-> so for consistency I personally prefer the matching ifdef for the
-> descriptors.
-> 
-> 
+diff --git a/drivers/pinctrl/cirrus/Kconfig b/drivers/pinctrl/cirrus/Kconfig
+index f1806fd781a0..530426a74f75 100644
+--- a/drivers/pinctrl/cirrus/Kconfig
++++ b/drivers/pinctrl/cirrus/Kconfig
+@@ -2,6 +2,7 @@
+ config PINCTRL_LOCHNAGAR
+ 	tristate "Cirrus Logic Lochnagar pinctrl driver"
+ 	depends on MFD_LOCHNAGAR
++	select GPIOLIB
+ 	select PINMUX
+ 	select PINCONF
+ 	select GENERIC_PINCONF
+-- 
+2.20.0
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
