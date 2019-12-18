@@ -2,70 +2,98 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 092FDC2D0BF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A660C3F68F
 	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:32:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 897B02146E
+	by mail.kernel.org (Postfix) with ESMTPS id 8931620717
 	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:32:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u6dlp7ih"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 897B02146E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q3xTKKrP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="WL6LQvaJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8931620717
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24D9915F9;
-	Wed, 18 Dec 2019 18:14:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24D9915F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0D021657;
+	Wed, 18 Dec 2019 18:24:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0D021657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576689314;
-	bh=pGNO1pUxDN3fI36c+eRW+qF01WQ9xGwJcvgobNxBS9I=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=u6dlp7ih4OuwJ96jX+GAKVQuLxr+Z6Aye7zJpgcQ7tEhoWct7XtE5A7p6kh8lmAwL
-	 +aUizG1clYkL3xv5W0TE8Qtbut8RS04em8qMljAiCWXYQXy/Fl/zdBN4KZSxlWlgTr
-	 Fw9e2dGB06eGYzygBLf6jMP5GgLqXvBSYD99cuLo=
+	s=default; t=1576689922;
+	bh=Tgf/jw8hj8MnGYSNhCIp/HHcoiOhduAdvLE1BhZSqPw=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=q3xTKKrPOODOYzRuq7eJ4+xQuTe7lmc/7/8FoxgKy9tpnqzHxLVkbwVqai7q434Sa
+	 kTaXQrzlJXIlTvrg4sxDy2kQhEiujNPgtXJhL+aPapxggzyenRTTr10l1xDmvYAypE
+	 3UMe+TxDglzTZcDfM6pSMmG69AS89zfOd4ZABDLE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94F94F8015A;
-	Wed, 18 Dec 2019 18:14:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42E8DF8022C;
+	Wed, 18 Dec 2019 18:24:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32177F8022C; Wed, 18 Dec 2019 18:14:22 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 85CD3F80096
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 18:14:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85CD3F80096
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64C001FB;
- Wed, 18 Dec 2019 09:14:17 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D67753F67D;
- Wed, 18 Dec 2019 09:14:16 -0800 (PST)
-Date: Wed, 18 Dec 2019 17:14:15 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191218171415.GJ3219@sirena.org.uk>
-References: <87r212jqt1.wl-kuninori.morimoto.gx@renesas.com>
- <87o8w6jqrk.wl-kuninori.morimoto.gx@renesas.com>
- <CAFQqKeWWdwCMEO9idW4sANYio3y1ye3Q3okbOEd=zwYrRXDSYg@mail.gmail.com>
- <87eex2jnck.wl-kuninori.morimoto.gx@renesas.com>
- <bc4cef12-0095-e2af-5c91-63b06d815b8c@linux.intel.com>
+ id 8E7E5F80247; Wed, 18 Dec 2019 18:24:29 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5A92F80096
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 18:24:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5A92F80096
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="WL6LQvaJ"
+Received: by mail-wr1-x443.google.com with SMTP id c14so3161346wrn.7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 09:24:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gkeDNQUJ3ikeTDqUkF4Gryc9YGb0Gj5eqNCbDtkdhPw=;
+ b=WL6LQvaJ9GGlUjw9H2P/1hGp29WTQgH0SjF3vxM3PXuoSHkCPIJMZ0/moLtc9sKgF+
+ JEh6NAbPqIWRs+wngIArKVHOaQSYykBTrlkNfSRW5F8uLnOYl7JY1UB6HVoQXdY3kEMO
+ QVPbDjuu41bQvjV9npjWA3XGgU7mNTizqkPWaq8m8TTm8pEn3o7oHmiP/QDEr8b4hWy1
+ gB0B7bA0p4nRahqNbn8k7FC58AA9TFFrBbxaBSXJ4WNCY3mEi7BmrGLsi4VkqvTiLIFP
+ c/ym3SuKFZDF8BCpRPf5wTGrB/t9RvWsnyq/Mj8chxROlsIi0KDJel1ST8/iTOySbmG6
+ A/xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=gkeDNQUJ3ikeTDqUkF4Gryc9YGb0Gj5eqNCbDtkdhPw=;
+ b=Su8h8pTNnz6Kx4chsV3Ex6WLfMxuRZTsXA2sNBloLN/kmJ7fAurB40SWrNfRXQvqSV
+ NiF4RxzWLmeX2yr59Qwbsp8Q5jiEzLHdVu8PAKuzKnct6Et64HkIrUj+8VBV++EO8cpE
+ vAuqnWeRmmZ9O+nRNucPffBQKoqjZWJGB8quQlvH7+BJWxG80iEzEpfQ3aaSf7Ikz401
+ Wtjg4S0Wx0AtGUrAxKnAsigR4PAFKEpmiH/Wa+rChjuvjZKQcCQt/YQ2gqJiRfCX8p/p
+ dZD1AIX3qU7HE5arVdl4+9RnvhVAI1Y3/7kNNyqjidCY3/vLgv1A8RlxVjj+1+hDOBBL
+ P+Lg==
+X-Gm-Message-State: APjAAAUtXjxfgZtXw5wgEEQMzm4EGbAp2c792gYCqZ0LlZMbG/592KA7
+ cF1dXROCi9LsOhqn6xin/s8IKg==
+X-Google-Smtp-Source: APXvYqwBahCJsSlMYv9H8BS5x9yINh/xRKEr1G8MnVvK/fUdISZ8dpu38/NOPkP1wQV26nQIfcBMEw==
+X-Received: by 2002:a5d:4f90:: with SMTP id d16mr3902176wru.395.1576689865056; 
+ Wed, 18 Dec 2019 09:24:25 -0800 (PST)
+Received: from localhost.localdomain (cag06-3-82-243-161-21.fbx.proxad.net.
+ [82.243.161.21])
+ by smtp.googlemail.com with ESMTPSA id 4sm2883231wmg.22.2019.12.18.09.24.23
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 18 Dec 2019 09:24:24 -0800 (PST)
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Date: Wed, 18 Dec 2019 18:24:16 +0100
+Message-Id: <20191218172420.1199117-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <bc4cef12-0095-e2af-5c91-63b06d815b8c@linux.intel.com>
-X-Cookie: Power is poison.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
- Ranjani" <ranjani.sridharan@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [alsa-devel] [PATCH v2 2/7] ASoC: soc-core: care
- .ignore_suspend for Component suspend
+X-Patchwork-Bot: notify
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Subject: [alsa-devel] [PATCH 0/4] ASoC: meson: axg-fifo: fix depth handling
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,65 +106,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5065720651829697167=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patchset improves the handling the depth of the different fifos
+found in amlogic audio subsystems derived from the axg family.
 
---===============5065720651829697167==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/qIPZgKzMPM+y5U5"
-Content-Disposition: inline
+Initially, it was reported that, when the period is less than 8kB on sm1
+and with TODDR A, several period are coming at once. This is because the
+field related to the fifo request threshold changed on the sm1 SoC and
+also because TODDR A instance is significantly larger compared to the
+other instances.
 
+With this initial issue fixed, I used the opportunity to improve the
+driver and properly deal with the different fifo depth found in these
+SoCs.
 
---/qIPZgKzMPM+y5U5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Jerome Brunet (4):
+  ASoC: meson: axg-fifo: fix fifo threshold setup
+  ASoC: meson: axg-fifo: add fifo depth to the bindings documentation
+  ASoC: meson: axg-fifo: improve depth handling
+  ASoC: meson: axg-fifo: relax period size constraints
 
-On Wed, Dec 18, 2019 at 08:54:27AM -0600, Pierre-Louis Bossart wrote:
+ .../bindings/sound/amlogic,axg-fifo.txt       |  4 ++
+ sound/soc/meson/axg-fifo.c                    | 50 ++++++++++++++++---
+ sound/soc/meson/axg-fifo.h                    |  9 ++--
+ sound/soc/meson/axg-frddr.c                   | 33 ++++++------
+ sound/soc/meson/axg-toddr.c                   | 21 ++++----
+ 5 files changed, 76 insertions(+), 41 deletions(-)
 
-> Even for dai links, it's not clear to me what .ignore_suspend means.
-
-It means exactly what it says, don't do anything on suspend.
-
-> For Intel machine drivers, the .ignore_suspend flag is used for DMIC links
-> which may be used in S0ix/D0ix states. I don't believe this works if there
-> are multiple target states, e.g. you would probably want to leave the link
-> active in S0ix, but suspend it in S3?
-
-> I think the current .ignore_suspend settings only work with the assumption
-> that applications will close all capture streams before going to S3.
-
-These numbered suspend states are a platform specific concept, other
-systems will typically just suspend or not suspend.  It sounds like this
-feature does not map onto your systems.
-
---/qIPZgKzMPM+y5U5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl36XmYACgkQJNaLcl1U
-h9BRjAf/QoXPWvlk8JPDu2k5OUgXo0cDM4Yb6Z7DonO++UfpNfyHJRhW1IDRvX9/
-VYlWEdl2HHL0pFsvrpmPz7/k9F2AP993SjFJs+0U/V4Nds1acD++qKfKw05RxPmO
-HdZgrogWbv6Ws9L55MnfDeR1xkwSG+Jxgd4uGp7PpFYE5kUQf+8qOssIo/Dti2iS
-JFh2T81D6nnvNsDrCezxa6vvG/Z30zuqo0CGs71MHk5yb7Ap9n42TV6Xa4m24IoY
-2+m1m44HlF5EqFZDheUHObi+wpgA+9U0DJq/AfvlLnb7QBgF7O01ahThHTVC2i28
-EApNl2MVQwVi9RIWwUZ8foH+VWX8Ow==
-=/rfm
------END PGP SIGNATURE-----
-
---/qIPZgKzMPM+y5U5--
-
---===============5065720651829697167==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+2.23.0
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5065720651829697167==--
