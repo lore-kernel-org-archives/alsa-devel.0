@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C768BC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:30:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B12DC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52E002176D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:30:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B93FA2176D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:31:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hzdRhZTM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52E002176D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V7GRNUrg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B93FA2176D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96096852;
-	Wed, 18 Dec 2019 01:29:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96096852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20DCC38;
+	Wed, 18 Dec 2019 01:30:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20DCC38
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576629042;
-	bh=fewJ/LxEhVU17ZhJ0H7+b7fOAft/cZr4DSStInozPRw=;
+	s=default; t=1576629063;
+	bh=nGNT/7ogrRiM39xPp9Jh9VvJg3Z36di7Qo6y/ZcBBDE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hzdRhZTMQ9oALFneaWrEincn9rSjpxxwjO2j0jI3L1CKOFg4f4HpnHhVLzfIySHjM
-	 iGTaXQuZFliqFNqRCatb0JmDn0Vi9tSQtvTZLuy6HQI594LMrVp16YQTdqS+/WCBhJ
-	 lQOA0nfGxjF3Ujr/lYy9VDhNVqrrsdBRJUjKjZ1Q=
+	b=V7GRNUrgpDEr0uoSONYVkTOMqB5QqUPv6+nYCHVQO09+Sp7qJ+J+oU+du1kvBFbU5
+	 i224ANzr2nhePglp1XQ3vVJrx6J1TivG/GfMrdqU+hgipb0GeKYaF7PSuceBPaSJNY
+	 gKrf6s1HVY5FCxshavOyh5KTOZIyUcAgpohnAHMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96CB0F8028F;
-	Wed, 18 Dec 2019 01:26:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F4D6F8029A;
+	Wed, 18 Dec 2019 01:26:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C903EF80273; Wed, 18 Dec 2019 01:26:41 +0100 (CET)
+ id BFDB0F80274; Wed, 18 Dec 2019 01:26:44 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB18CF8023F
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:26:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB18CF8023F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F5FFF80266
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:26:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F5FFF80266
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 16:26:32 -0800
+ 17 Dec 2019 16:26:36 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="217974224"
+X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="217974253"
 Received: from dshoemak-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.3.243])
- by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 16:26:31 -0800
+ by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 16:26:35 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 17 Dec 2019 18:26:11 -0600
-Message-Id: <20191218002616.7652-4-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 17 Dec 2019 18:26:16 -0600
+Message-Id: <20191218002616.7652-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191218002616.7652-1-pierre-louis.bossart@linux.intel.com>
 References: <20191218002616.7652-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, Karol Trzcinski <karolx.trzcinski@linux.intel.com>,
- broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 3/8] ASoC: SOF: log compiler name and version
-	information
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Guido Roncarolo <guido.roncarolo@nxp.com>
+Subject: [alsa-devel] [PATCH 8/8] ASoC: SOF: imx: Read SAI parameters and
+	send them to DSP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,88 +85,123 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+From: Guido Roncarolo <guido.roncarolo@nxp.com>
 
-Log information about used compilator and optimization level
-in sof firmware to host system.
-It will be helful to catch some compiler dependent bugs.
+Follow example from Intel SSP.
 
-Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+Signed-off-by: Guido Roncarolo <guido.roncarolo@nxp.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/loader.c   | 39 +++++++++++++++++++++++++++++++++++++++
- sound/soc/sof/sof-priv.h |  1 +
- 2 files changed, 40 insertions(+)
+ sound/soc/sof/pcm.c      |  8 +++++
+ sound/soc/sof/topology.c | 69 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 31847aa3975d..235be4fc0862 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -32,6 +32,42 @@ static int get_ext_windows(struct snd_sof_dev *sdev,
- 	return 0;
- }
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 86829e5bd62d..9bb6388742e1 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -693,6 +693,14 @@ static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		channels->min = dai->dai_config->esai.tdm_slots;
+ 		channels->max = dai->dai_config->esai.tdm_slots;
  
-+static int get_cc_info(struct snd_sof_dev *sdev,
-+		       struct sof_ipc_ext_data_hdr *ext_hdr)
-+{
++		dev_dbg(component->dev,
++			"channels_min: %d channels_max: %d\n",
++			channels->min, channels->max);
++		break;
++	case SOF_DAI_IMX_SAI:
++		channels->min = dai->dai_config->sai.tdm_slots;
++		channels->max = dai->dai_config->sai.tdm_slots;
++
+ 		dev_dbg(component->dev,
+ 			"channels_min: %d channels_max: %d\n",
+ 			channels->min, channels->max);
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index e06fa7c7e502..9f4f8868b386 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -695,6 +695,13 @@ static const struct sof_topology_token esai_tokens[] = {
+ 		offsetof(struct sof_ipc_dai_esai_params, mclk_id), 0},
+ };
+ 
++/* SAI */
++static const struct sof_topology_token sai_tokens[] = {
++	{SOF_TKN_IMX_SAI_MCLK_ID,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_sai_params, mclk_id), 0},
++};
++
+ /*
+  * DMIC PDM Tokens
+  * SOF_TKN_INTEL_DMIC_PDM_CTRL_ID should be the first token
+@@ -2704,8 +2711,66 @@ static int sof_link_sai_load(struct snd_soc_component *scomp, int index,
+ 			     struct snd_soc_tplg_hw_config *hw_config,
+ 			     struct sof_ipc_dai_config *config)
+ {
+-	/*TODO: Add implementation */
+-	return 0;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &cfg->priv;
++	struct sof_ipc_reply reply;
++	u32 size = sizeof(*config);
 +	int ret;
 +
-+	struct sof_ipc_cc_version *cc =
-+		container_of(ext_hdr, struct sof_ipc_cc_version, ext_hdr);
++	/* handle master/slave and inverted clocks */
++	sof_dai_set_format(hw_config, config);
 +
-+	dev_dbg(sdev->dev, "Firmware info: used compiler %s %d:%d:%d%s used optimization flags %s\n",
-+		cc->name, cc->major, cc->minor, cc->micro, cc->desc,
-+		cc->optim);
++	/* init IPC */
++	memset(&config->sai, 0, sizeof(struct sof_ipc_dai_sai_params));
++	config->hdr.size = size;
 +
-+	/* create read-only cc_version debugfs to store compiler version info */
-+	/* use local copy of the cc_version to prevent data corruption */
-+	if (sdev->first_boot) {
-+		sdev->cc_version = devm_kmalloc(sdev->dev, cc->ext_hdr.hdr.size,
-+						GFP_KERNEL);
-+
-+		if (!sdev->cc_version)
-+			return -ENOMEM;
-+
-+		memcpy(sdev->cc_version, cc, cc->ext_hdr.hdr.size);
-+		ret = snd_sof_debugfs_buf_item(sdev, sdev->cc_version,
-+					       cc->ext_hdr.hdr.size,
-+					       "cc_version", 0444);
-+
-+		/* errors are only due to memory allocation, not debugfs */
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "error: snd_sof_debugfs_buf_item failed\n");
-+			return ret;
-+		}
++	ret = sof_parse_tokens(scomp, &config->sai, sai_tokens,
++			       ARRAY_SIZE(sai_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(scomp->dev, "error: parse sai tokens failed %d\n",
++			le32_to_cpu(private->size));
++		return ret;
 +	}
 +
-+	return 0;
-+}
++	config->sai.mclk_rate = le32_to_cpu(hw_config->mclk_rate);
++	config->sai.mclk_direction = hw_config->mclk_direction;
 +
- /* parse the extended FW boot data structures from FW boot message */
- int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
- {
-@@ -65,6 +101,9 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
- 		case SOF_IPC_EXT_WINDOW:
- 			ret = get_ext_windows(sdev, ext_hdr);
- 			break;
-+		case SOF_IPC_EXT_CC_INFO:
-+			ret = get_cc_info(sdev, ext_hdr);
-+			break;
- 		default:
- 			dev_warn(sdev->dev, "warning: unknown ext header type %d size 0x%x\n",
- 				 ext_hdr->type, ext_hdr->hdr.size);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 220b35141c34..3f1e1eb7c55f 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -361,6 +361,7 @@ struct snd_sof_dev {
- 	struct snd_dma_buffer dmab_bdl;
- 	struct sof_ipc_fw_ready fw_ready;
- 	struct sof_ipc_fw_version fw_version;
-+	struct sof_ipc_cc_version *cc_version;
++	config->sai.tdm_slots = le32_to_cpu(hw_config->tdm_slots);
++	config->sai.tdm_slot_width = le32_to_cpu(hw_config->tdm_slot_width);
++	config->sai.rx_slots = le32_to_cpu(hw_config->rx_slots);
++	config->sai.tx_slots = le32_to_cpu(hw_config->tx_slots);
++
++	dev_info(scomp->dev,
++		 "tplg: config SAI%d fmt 0x%x mclk %d width %d slots %d mclk id %d\n",
++		config->dai_index, config->format,
++		config->sai.mclk_rate, config->sai.tdm_slot_width,
++		config->sai.tdm_slots, config->sai.mclk_id);
++
++	if (config->sai.tdm_slots < 1 || config->sai.tdm_slots > 8) {
++		dev_err(scomp->dev, "error: invalid channel count for SAI%d\n",
++			config->dai_index);
++		return -EINVAL;
++	}
++
++	/* send message to DSP */
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 config->hdr.cmd, config, size, &reply,
++				 sizeof(reply));
++
++	if (ret < 0) {
++		dev_err(scomp->dev, "error: failed to set DAI config for SAI%d\n",
++			config->dai_index);
++		return ret;
++	}
++
++	/* set config for all DAI's with name matching the link name */
++	ret = sof_set_dai_config(sdev, size, link, config);
++	if (ret < 0)
++		dev_err(scomp->dev, "error: failed to save DAI config for SAI%d\n",
++			config->dai_index);
++
++	return ret;
+ }
  
- 	/* topology */
- 	struct snd_soc_tplg_ops *tplg_ops;
+ static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
 -- 
 2.20.1
 
