@@ -7,67 +7,68 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B12DC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5240C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:31:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B93FA2176D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:31:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4437B218AC
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:31:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="V7GRNUrg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B93FA2176D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ph6OYzGK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4437B218AC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20DCC38;
-	Wed, 18 Dec 2019 01:30:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20DCC38
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6242A1677;
+	Wed, 18 Dec 2019 01:30:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6242A1677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576629063;
-	bh=nGNT/7ogrRiM39xPp9Jh9VvJg3Z36di7Qo6y/ZcBBDE=;
+	s=default; t=1576629107;
+	bh=tEw83fyYMA+LqR1dH42/uHGRwqCSJe1r1sYSEML8ckI=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V7GRNUrgpDEr0uoSONYVkTOMqB5QqUPv6+nYCHVQO09+Sp7qJ+J+oU+du1kvBFbU5
-	 i224ANzr2nhePglp1XQ3vVJrx6J1TivG/GfMrdqU+hgipb0GeKYaF7PSuceBPaSJNY
-	 gKrf6s1HVY5FCxshavOyh5KTOZIyUcAgpohnAHMk=
+	b=ph6OYzGKJaRVyKx2yviUM9QKGVsZuxkPMIUySk8od3Rx8U6RcwH0VoY/aMhCyy2W3
+	 EK5dPVeXeS3Au0ZG9V0bHVylvVyRbQSclNKUs3hG90RSlF7v/nUt4R02P4GReaxIT2
+	 OKb/UpUwfRwPDuUFKlsqy40zqQS3XnevKdZ6kkPE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F4D6F8029A;
-	Wed, 18 Dec 2019 01:26:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BEA2F80268;
+	Wed, 18 Dec 2019 01:27:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFDB0F80274; Wed, 18 Dec 2019 01:26:44 +0100 (CET)
+ id D243EF8020B; Wed, 18 Dec 2019 01:27:03 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F5FFF80266
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:26:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F5FFF80266
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E8FEF80256
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:26:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E8FEF80256
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 16:26:36 -0800
+ 17 Dec 2019 16:26:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="217974253"
+X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="217974237"
 Received: from dshoemak-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.3.243])
- by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 16:26:35 -0800
+ by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 16:26:33 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 17 Dec 2019 18:26:16 -0600
-Message-Id: <20191218002616.7652-9-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 17 Dec 2019 18:26:13 -0600
+Message-Id: <20191218002616.7652-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191218002616.7652-1-pierre-louis.bossart@linux.intel.com>
 References: <20191218002616.7652-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Guido Roncarolo <guido.roncarolo@nxp.com>
-Subject: [alsa-devel] [PATCH 8/8] ASoC: SOF: imx: Read SAI parameters and
-	send them to DSP
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH 5/8] ASoC: SOF: Intel: drop HDA codec upon
+	probe failure
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,123 +86,74 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Guido Roncarolo <guido.roncarolo@nxp.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Follow example from Intel SSP.
+In case a HDA codec probe fails, do not raise error immediately,
+but instead remove the codec from bus->codec_mask and continue
+probe for other codecs.
 
-Signed-off-by: Guido Roncarolo <guido.roncarolo@nxp.com>
+This allows for more robust behaviour in cases where one codec
+in the system is faulty. SOF driver load can still proceed with
+the codecs that can be probed successfully. Probe may still
+fail if suitable machine driver is not found, but in many
+cases the generic HDA machine driver can operate with a subset
+of codecs.
+
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pcm.c      |  8 +++++
- sound/soc/sof/topology.c | 69 ++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 75 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-codec.c | 12 +++++-------
+ sound/soc/sof/intel/hda.h       |  4 ++--
+ 2 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 86829e5bd62d..9bb6388742e1 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -693,6 +693,14 @@ static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
- 		channels->min = dai->dai_config->esai.tdm_slots;
- 		channels->max = dai->dai_config->esai.tdm_slots;
- 
-+		dev_dbg(component->dev,
-+			"channels_min: %d channels_max: %d\n",
-+			channels->min, channels->max);
-+		break;
-+	case SOF_DAI_IMX_SAI:
-+		channels->min = dai->dai_config->sai.tdm_slots;
-+		channels->max = dai->dai_config->sai.tdm_slots;
-+
- 		dev_dbg(component->dev,
- 			"channels_min: %d channels_max: %d\n",
- 			channels->min, channels->max);
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index e06fa7c7e502..9f4f8868b386 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -695,6 +695,13 @@ static const struct sof_topology_token esai_tokens[] = {
- 		offsetof(struct sof_ipc_dai_esai_params, mclk_id), 0},
- };
- 
-+/* SAI */
-+static const struct sof_topology_token sai_tokens[] = {
-+	{SOF_TKN_IMX_SAI_MCLK_ID,
-+		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
-+		offsetof(struct sof_ipc_dai_sai_params, mclk_id), 0},
-+};
-+
- /*
-  * DMIC PDM Tokens
-  * SOF_TKN_INTEL_DMIC_PDM_CTRL_ID should be the first token
-@@ -2704,8 +2711,66 @@ static int sof_link_sai_load(struct snd_soc_component *scomp, int index,
- 			     struct snd_soc_tplg_hw_config *hw_config,
- 			     struct sof_ipc_dai_config *config)
- {
--	/*TODO: Add implementation */
--	return 0;
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	struct snd_soc_tplg_private *private = &cfg->priv;
-+	struct sof_ipc_reply reply;
-+	u32 size = sizeof(*config);
-+	int ret;
-+
-+	/* handle master/slave and inverted clocks */
-+	sof_dai_set_format(hw_config, config);
-+
-+	/* init IPC */
-+	memset(&config->sai, 0, sizeof(struct sof_ipc_dai_sai_params));
-+	config->hdr.size = size;
-+
-+	ret = sof_parse_tokens(scomp, &config->sai, sai_tokens,
-+			       ARRAY_SIZE(sai_tokens), private->array,
-+			       le32_to_cpu(private->size));
-+	if (ret != 0) {
-+		dev_err(scomp->dev, "error: parse sai tokens failed %d\n",
-+			le32_to_cpu(private->size));
-+		return ret;
-+	}
-+
-+	config->sai.mclk_rate = le32_to_cpu(hw_config->mclk_rate);
-+	config->sai.mclk_direction = hw_config->mclk_direction;
-+
-+	config->sai.tdm_slots = le32_to_cpu(hw_config->tdm_slots);
-+	config->sai.tdm_slot_width = le32_to_cpu(hw_config->tdm_slot_width);
-+	config->sai.rx_slots = le32_to_cpu(hw_config->rx_slots);
-+	config->sai.tx_slots = le32_to_cpu(hw_config->tx_slots);
-+
-+	dev_info(scomp->dev,
-+		 "tplg: config SAI%d fmt 0x%x mclk %d width %d slots %d mclk id %d\n",
-+		config->dai_index, config->format,
-+		config->sai.mclk_rate, config->sai.tdm_slot_width,
-+		config->sai.tdm_slots, config->sai.mclk_id);
-+
-+	if (config->sai.tdm_slots < 1 || config->sai.tdm_slots > 8) {
-+		dev_err(scomp->dev, "error: invalid channel count for SAI%d\n",
-+			config->dai_index);
-+		return -EINVAL;
-+	}
-+
-+	/* send message to DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc,
-+				 config->hdr.cmd, config, size, &reply,
-+				 sizeof(reply));
-+
-+	if (ret < 0) {
-+		dev_err(scomp->dev, "error: failed to set DAI config for SAI%d\n",
-+			config->dai_index);
-+		return ret;
-+	}
-+
-+	/* set config for all DAI's with name matching the link name */
-+	ret = sof_set_dai_config(sdev, size, link, config);
-+	if (ret < 0)
-+		dev_err(scomp->dev, "error: failed to save DAI config for SAI%d\n",
-+			config->dai_index);
-+
-+	return ret;
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 65761e095184..d7855b1f8e2e 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -140,8 +140,8 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
  }
  
- static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
+ /* Codec initialization */
+-int hda_codec_probe_bus(struct snd_sof_dev *sdev,
+-			bool hda_codec_use_common_hdmi)
++void hda_codec_probe_bus(struct snd_sof_dev *sdev,
++			 bool hda_codec_use_common_hdmi)
+ {
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	int i, ret;
+@@ -154,13 +154,11 @@ int hda_codec_probe_bus(struct snd_sof_dev *sdev,
+ 
+ 		ret = hda_codec_probe(sdev, i, hda_codec_use_common_hdmi);
+ 		if (ret < 0) {
+-			dev_err(bus->dev, "error: codec #%d probe error, ret: %d\n",
+-				i, ret);
+-			return ret;
++			dev_warn(bus->dev, "codec #%d probe error, ret: %d\n",
++				 i, ret);
++			bus->codec_mask &= ~BIT(i);
+ 		}
+ 	}
+-
+-	return 0;
+ }
+ EXPORT_SYMBOL(hda_codec_probe_bus);
+ 
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 01529c7058f3..47408ec0de40 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -575,8 +575,8 @@ void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev);
+ /*
+  * HDA Codec operations.
+  */
+-int hda_codec_probe_bus(struct snd_sof_dev *sdev,
+-			bool hda_codec_use_common_hdmi);
++void hda_codec_probe_bus(struct snd_sof_dev *sdev,
++			 bool hda_codec_use_common_hdmi);
+ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev);
+ void hda_codec_jack_check(struct snd_sof_dev *sdev);
+ 
 -- 
 2.20.1
 
