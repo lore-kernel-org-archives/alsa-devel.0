@@ -2,67 +2,67 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0ABFC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 06:33:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26576C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 06:34:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B5EF20717
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 06:33:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A602321D7D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 06:34:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RtpY+mzL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B5EF20717
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SJ9TPDQO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A602321D7D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFE851667;
-	Wed, 18 Dec 2019 07:32:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFE851667
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3D131657;
+	Wed, 18 Dec 2019 07:33:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D131657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576650814;
-	bh=d7hF+1nWJalV7zA18Rv5X2dXmgdQSmsimnIcmEpivv4=;
+	s=default; t=1576650880;
+	bh=3gRxy3jsrCQXldVW4+2ClsR7zi8Vseuuh2ROwYpMVWo=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RtpY+mzL9+7009N/YZqsQatVtezXjsiL5uV6lx9RgfEswG47rVNGc628qjuyV9P/T
-	 Ur6q/MSlnerRUZMv4Q6IIkUCyxDWjMk4HIXJrjMFxb+sXZhSqysiDT1vOmpuMEFsnW
-	 xlWv3sMQ0W9IxmA5FjDy+1p04NN72uaBDHHtsiwQ=
+	b=SJ9TPDQOOftip/9uIgsKW/Y8j1UixjRUjI63DhevKSz6Rnwc0IguDrsKqJ60hd16M
+	 9L+xLAJzOswSZGXJe8pH4TAlLbqjlVws9AMqdkUZMqtbyZUpkePmlw95wPvqEmGuDE
+	 YGGXa3nizHsYDuPp8//ODZ1Q1mpLtmO8jvWWMvNU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B62FF8014C;
-	Wed, 18 Dec 2019 07:32:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27626F8015A;
+	Wed, 18 Dec 2019 07:33:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69C71F80258; Wed, 18 Dec 2019 07:32:25 +0100 (CET)
+ id 3EBADF8022C; Wed, 18 Dec 2019 07:33:49 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B2F2F8014C
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 07:32:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B2F2F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99C00F80059
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 07:33:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99C00F80059
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5CA85B211;
- Wed, 18 Dec 2019 06:32:20 +0000 (UTC)
-Date: Wed, 18 Dec 2019 07:32:20 +0100
-Message-ID: <s5hd0cm16vf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 11849B1E2;
+ Wed, 18 Dec 2019 06:33:45 +0000 (UTC)
+Date: Wed, 18 Dec 2019 07:33:44 +0100
+Message-ID: <s5hbls616t3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <0131b134-46dc-991f-230b-fe843f43f078@linux.intel.com>
-References: <20191126141423.21523-1-pierre-louis.bossart@linux.intel.com>
- <s5h4kyqzpge.wl-tiwai@suse.de>
- <0131b134-46dc-991f-230b-fe843f43f078@linux.intel.com>
+To: Nathan Chancellor <natechancellor@gmail.com>
+In-Reply-To: <20191218034257.54535-1-natechancellor@gmail.com>
+References: <20191218034257.54535-1-natechancellor@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: add PCI ID for
-	CometLake-S
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, clang-built-linux@googlegroups.com
+Subject: Re: [alsa-devel] [PATCH] ALSA: usx2y: Adjust indentation in
+	snd_usX2Y_hwdep_dsp_status
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,108 +80,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Dec 2019 01:50:42 +0100,
-Pierre-Louis Bossart wrote:
+On Wed, 18 Dec 2019 04:42:57 +0100,
+Nathan Chancellor wrote:
 > 
+> Clang warns:
 > 
-> >> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> >> index bbeffd932de7..0b39ea6117cf 100644
-> >> --- a/sound/soc/sof/sof-pci-dev.c
-> >> +++ b/sound/soc/sof/sof-pci-dev.c
-> >> @@ -417,6 +417,10 @@ static const struct pci_device_id sof_pci_ids[] = {
-> >>   	{ PCI_DEVICE(0x8086, 0x06c8),
-> >>   		.driver_data = (unsigned long)&cml_desc},
-> >>   #endif
-> >> +#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_S)
-> >> +	{ PCI_DEVICE(0x8086, 0xa3f0),
-> >> +		.driver_data = (unsigned long)&cml_desc},
-> >> +#endif
-> >>   #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
-> >>   	{ PCI_DEVICE(0x8086, 0xa0c8),
-> >>   		.driver_data = (unsigned long)&tgl_desc},
+> ../sound/usb/usx2y/usX2Yhwdep.c:122:3: warning: misleading indentation;
+> statement is not part of the previous 'if' [-Wmisleading-indentation]
+>         info->version = USX2Y_DRIVER_VERSION;
+>         ^
+> ../sound/usb/usx2y/usX2Yhwdep.c:120:2: note: previous statement is here
+>         if (us428->chip_status & USX2Y_STAT_CHIP_INIT)
+>         ^
+> 1 warning generated.
 > 
-> Sorry Takashi, I was checking why this patch wasn't merged and only
-> realized now that I missed your feedback (likely an effect of the
-> Thanksgiving holiday).
+> This warning occurs because there is a space before the tab on this
+> line. Remove it so that the indentation is consistent with the Linux
+> kernel coding style and clang no longer warns.
 > 
-> > I guess the change in ifdef for cml_desc definition is still missing.
+> This was introduced before the beginning of git history so no fixes tag.
 > 
-> Not sure what change you are referring to?
+> Link: https://github.com/ClangBuiltLinux/linux/issues/831
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Take a look at the definition of cml_desc.  It's wrapped with
+Applied, thanks.
 
-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_LP) || \
-        IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
-
-but this wasn't updated for the new COMETLAKE_S.
-
-> > But, I wonder whether it'd be simpler to have Kconfigs only per
-> > sof_dev_desc?  That is, have CONFIG_SND_SOC_SOF_COMETLAKE, and all CML
-> > model PCI entries are enabled by that as long as they use the same
-> > cml_desc definition.
-> 
-> it's difficult to have a classification that's complete and accurate,
-> some PCH versions are reused in products that use a different family
-> name. For example you will find the same PCI ID for CNL and WHL, and
-> in others the -H, -U and -Y skews are not identical. Even Intel folks
-> get lost at times, myself included.
-> 
-> For now we prefer having one Kconfig per PCI ID, and we try to provide
-> a name for the Kconfig that is the most accurate without being
-> cryptic. One of the reasons for having different Kconfigs is that we
-> have multiple versions of the audio IP, and the ability to narrow the
-> selection to a single device helps make sure the code is in the right
-> place/module and dependencies are correct.
-> 
-> > Also, can we reduce even the ifdef around sof_dev_desc definitions by
-> > __maybe_unused atttribute?
-> 
-> Sorry, I am not following your suggestion. I would really like to keep
-> the ifdefs for now, and while it can be seen as overkill to have
-> descriptors that are identical in some cases the past experience shows
-> it's useful when we have to add quirks for specific 'hardware
-> recommended programming sequences'.
-
-What I suggested was simple, just dropping ifdef by something like
-
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index bbeffd932de7..297632a54f1b 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -36,8 +36,7 @@ MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
- 
- #define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
--static const struct sof_dev_desc bxt_desc = {
-+static const struct sof_dev_desc __maybe_unused bxt_desc = {
- 	.machines		= snd_soc_acpi_intel_bxt_machines,
- 	.resindex_lpe_base	= 0,
- 	.resindex_pcicfg_base	= -1,
-@@ -52,10 +51,8 @@ static const struct sof_dev_desc bxt_desc = {
- 	.ops = &sof_apl_ops,
- 	.arch_ops = &sof_xtensa_arch_ops
- };
--#endif
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
--static const struct sof_dev_desc glk_desc = {
-+static const struct sof_dev_desc __maybe_unused glk_desc = {
- 	.machines		= snd_soc_acpi_intel_glk_machines,
- 	.resindex_lpe_base	= 0,
- 	.resindex_pcicfg_base	= -1,
-@@ -70,10 +67,8 @@ static const struct sof_dev_desc glk_desc = {
- 	.ops = &sof_apl_ops,
- 	.arch_ops = &sof_xtensa_arch_ops
- };
--#endif
-.....
- 
-
-Then the issue I pointed above can be solved as well.
-
-
-thanks,
 
 Takashi
 _______________________________________________
