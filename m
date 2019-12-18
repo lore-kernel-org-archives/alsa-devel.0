@@ -6,62 +6,69 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86C00C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7D98C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:03:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3DAE218AC
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:02:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C9F02082E
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:03:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SxIShFNj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3DAE218AC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GpkFyrL9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C9F02082E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5039785D;
-	Wed, 18 Dec 2019 20:24:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5039785D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AEA5843;
+	Wed, 18 Dec 2019 21:02:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AEA5843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576697135;
-	bh=HY7qdg51THyqwZryRcx+lYc6Jrux/hNxCQdZQFGLd2E=;
+	s=default; t=1576699406;
+	bh=9QuCXLowsjLtgY3weQPBY+bMjmKnhyJh9l+So2QNgEQ=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SxIShFNjU51LTc245WyMkLcq1+wm9OllcBEhibpyZzx+WDHG2OEH8cpp5XPiQtmJ3
-	 AYe/R7fS43MFMpWhJr3CH9Pp4fFcI69apJT7UoKjPeiA1HfCal5/3xiFZSBdU1F0xA
-	 hApolNV7H1vxbufH26b9NEZunn8z8pasIsfVYyMA=
+	b=GpkFyrL9mCa4zKfKITNGzuoqldPx5O6Ib9ptCqKW5o30mmT19qnCcUqvzfhp1qUCW
+	 YRk1uXPDloJnIa/FKKLshfMvw01v6gdTdfamh6GchAWN/vjORaOk5HJ0QC2mPNENtJ
+	 RSGIJM7S5mfDbfjm91wmotN514E36ILJZKirEprA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8994F8015A;
-	Wed, 18 Dec 2019 20:24:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDADAF8015A;
+	Wed, 18 Dec 2019 21:02:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC081F8022C; Wed, 18 Dec 2019 20:24:42 +0100 (CET)
+ id 1E8EDF8022C; Wed, 18 Dec 2019 21:02:34 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAE2CF80096
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 20:24:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAE2CF80096
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC8FEF8014C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:02:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC8FEF8014C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 519E7ADEF;
- Wed, 18 Dec 2019 19:24:39 +0000 (UTC)
-Date: Wed, 18 Dec 2019 20:24:39 +0100
-Message-ID: <s5hh81xzbbc.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7A40DAE9A;
+ Wed, 18 Dec 2019 20:02:30 +0000 (UTC)
+Date: Wed, 18 Dec 2019 21:02:30 +0100
+Message-ID: <s5hd0clz9k9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jia-Ju Bai <baijiaju1990@gmail.com>
-In-Reply-To: <5d43135e-73b9-a46a-2155-9e91d0dcdf83@gmail.com>
-References: <5d43135e-73b9-a46a-2155-9e91d0dcdf83@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <828b260d-a22a-4c44-4a0b-644057336b67@linux.intel.com>
+References: <20191126141423.21523-1-pierre-louis.bossart@linux.intel.com>
+ <s5h4kyqzpge.wl-tiwai@suse.de>
+ <0131b134-46dc-991f-230b-fe843f43f078@linux.intel.com>
+ <s5hd0cm16vf.wl-tiwai@suse.de>
+ <f442ed39-1a86-28fb-b42c-b0e5273cd79a@linux.intel.com>
+ <s5hbls57g43.wl-tiwai@suse.de>
+ <a90e86ce-b468-28b2-f0a8-30f66429d921@linux.intel.com>
+ <s5hr211zd4q.wl-tiwai@suse.de>
+ <828b260d-a22a-4c44-4a0b-644057336b67@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>,
- tiwai@suse.com, rfontana@redhat.com, tglx@linutronix.de, allison@lohutok.net
-Subject: Re: [alsa-devel] [BUG] ALSA: ice1712: a possible
-	sleep-in-atomic-context bug in snd_vt1724_set_pro_rate()
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: add PCI ID for
+	CometLake-S
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,27 +81,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gV2VkLCAxOCBEZWMgMjAxOSAxMzoyNTo0MiArMDEwMCwKSmlhLUp1IEJhaSB3cm90ZToKPiAK
-PiBUaGUgZHJpdmVyIG1heSBzbGVlcCB3aGlsZSBob2xkaW5nIGEgcmVhZCBsb2NrLgo+IFRoZSBm
-dW5jdGlvbiBjYWxsIHBhdGggKGZyb20gYm90dG9tIHRvIHRvcCkgaW4gTGludXggNC4xOSBpczoK
-PiAKPiBzb3VuZC9wY2kvaWNlMTcxMi9xdWFydGV0LmMsIDQxNDoKPiDCoMKgwqAgbXV0ZXhfbG9j
-ayBpbiByZWdfd3JpdGUKPiBzb3VuZC9wY2kvaWNlMTcxMi9xdWFydGV0LmMsIDQ4NToKPiDCoMKg
-wqAgcmVnX3dyaXRlIGluIHNldF9jcGxkCj4gc291bmQvcGNpL2ljZTE3MTIvcXVhcnRldC5jLCA4
-NzY6Cj4gwqDCoMKgIHNldF9jcGxkIGluIHF0ZXRfc2V0X3JhdGUKPiBzb3VuZC9wY2kvaWNlMTcx
-Mi9pY2UxNzI0LmMsIDY4NzoKPiDCoMKgwqAgKEZVTkNfUFRSKSBxdGV0X3NldF9yYXRlIGluIHNu
-ZF92dDE3MjRfc2V0X3Byb19yYXRlCj4gc291bmQvcGNpL2ljZTE3MTIvaWNlMTcyNC5jLCA2Njg6
-Cj4gwqDCoMKgIF9yYXdfc3Bpbl9sb2NrX2lycXNhdmUgaW4gc25kX3Z0MTcyNF9zZXRfcHJvX3Jh
-dGUKPiAKPiAoRlVOQ19QVFIpIG1lYW5zIGEgZnVuY3Rpb24gcG9pbnRlciBpcyBjYWxsZWQuCj4g
-bXV0ZXhfbG9jaygpIGNhbiBzbGVlcCBhdCBydW50aW1lLgo+IAo+IEkgYW0gbm90IHN1cmUgaG93
-IHRvIHByb3Blcmx5IGZpeCB0aGlzIHBvc3NpYmxlIGJ1Zywgc28gSSBvbmx5IHJlcG9ydCBpdC4K
-PiAKPiBUaGlzIGJ1ZyBpcyBmb3VuZCBieSBhIHN0YXRpYyBhbmFseXNpcyB0b29sIFNUQ2hlY2sg
-d3JpdHRlbiBieSBteXNlbGYuCgpUaGFua3MgZm9yIHRoZSByZXBvcnQuICBJJ2xsIHN1Ym1pdHRl
-ZCB0aGUgZml4LgoKClRha2FzaGkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On Wed, 18 Dec 2019 20:01:55 +0100,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> 
+> >>>>> Then the issue I pointed above can be solved as well.
+> >>>>
+> >>>> The ifdefs are still needed in the PCI IDs tables
+> >>>
+> >>> Yes, but it halves the messes :)
+> >>
+> >> I wish it was true :-)
+> >>
+> >> In reality having buildbots play with kconfig options does help
+> >> identify issues at the code level, just like the namespace use helped
+> >> identify the .arch_ops just above did not belong here.
+> >> I find it's a constant battle to avoid accumulated crud in the wrong
+> >> places when dealing with multiple platforms, and when looking at
+> >> patches it's very hard (at least for me) to realize where the code
+> >> gets added and the implications.
+> >
+> > But how it can be worse than ifdef...?  From the resultant code POV,
+> > it's same, the redundant objects are dropped automatically, while you
+> > can avoid a pitfall like this case to forget the counter-part ifdef,
+> > which could be identified at first by some randconfig tests.
+> 
+> In a perfect world it'd be fine.
+> But the reviews are not perfect and it happens that we let things go
+> through.
+> With the _maybe_unused proposal, I would not know which objects are
+> not necessary for a specific config, they would be silently removed by
+> a tool. Issues reported by randconfig or 'unused variable' warnings
+> are painful but at least they do provide a clear hint that something's
+> not right (including in my own code).
+
+Well, it's another side of coin.  With the current massive Kconfig and
+ifdef, something can be overlooked pretty easily.  A randconfig may
+catch it up, but this would be often after the commit.
+
+But it's basically just a minor bikeshed thing.  However, the main
+concern is: unless Intel stops producing a newer model, we'll go soon
+beyond the amount of Kconfigs we can manage manually.
+
+Usually splitting Kconfig items makes sense if -
+
+- Functionality needs to be selective,
+- It reduces the resultant code significantly, or
+- Modules to be built can be chosen (and reduces memory footprint)
+
+When looking at the current code, for example, I'm not sure which
+category hits the case of Cometlake-S vs Cometlake-H vs
+Cometlake-LP...
+
+In short: I'd love to see if Kconfigs can be reduced as much as
+possible.  It'll make our life easier for users, including distros, in
+the end.
+
+
+thanks,
+
+Takashi
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
