@@ -2,60 +2,65 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6E58C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 19:00:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED8E5C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 19:07:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E5AE2082E
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 19:00:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C19D218AC
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 19:07:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bnl+xaTk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E5AE2082E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ukbzGd+U"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C19D218AC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 510A1852;
-	Wed, 18 Dec 2019 19:59:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 510A1852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E4D785D;
+	Wed, 18 Dec 2019 20:06:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E4D785D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576695641;
-	bh=BvxalPN1pQJ+38pJ/BVZ4dVjTl2Lbv0J0ruE8ZF3T98=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bnl+xaTkkT2uplw90HIF2r6nColXxqg7CbPVGFrDwiRtEvxOJ9erX1ezt7asT7/ck
-	 j1IyMVRLxPUHFMnEGVD+sIPaV+c1cAPjwcTInR9CXHfDRHmvu0x4JC3z5EFYu+GCqd
-	 6DxGzFmJxf+JNQD8f5z4z4uWmtgyeUc2mNpjVrxw=
+	s=default; t=1576696024;
+	bh=FnfkVEByfVlgq0+EU2J37CoC1PVXIYXGb5wKOfNYq5Y=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ukbzGd+U76NK53Ttdvpuffbb3970jtP+29F9rxVq8utyLjVHXoBhQ+pqFjBt4X6Je
+	 2w6/VmKftQCLA5+IBuO6WLFL8L9sXQcfwbkN4Kued12qFZwoJqFszPvPyt3s/qvikk
+	 imCfGewZCJcp+qvk52qmuitACIzAK+NASRrqUh00=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7373F80096;
-	Wed, 18 Dec 2019 19:59:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0322CF8015A;
+	Wed, 18 Dec 2019 20:06:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AAE4F8022C; Wed, 18 Dec 2019 19:59:49 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 046DBF80096
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 19:59:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 046DBF80096
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A67441FB;
- Wed, 18 Dec 2019 10:59:44 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 252A33F67D;
- Wed, 18 Dec 2019 10:59:43 -0800 (PST)
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Date: Wed, 18 Dec 2019 18:59:38 +0000
-Message-Id: <20191218185938.38282-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Cc: Tzung-Bi Shih <tzungbi@google.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH] ASoC: max98090: Remove empty suspend function
+ id 8502EF8022C; Wed, 18 Dec 2019 20:06:12 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0551EF80059
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 20:06:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0551EF80059
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B004FAC50;
+ Wed, 18 Dec 2019 19:06:08 +0000 (UTC)
+Date: Wed, 18 Dec 2019 20:06:08 +0100
+Message-ID: <s5hlfr9zc67.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hui Wang <hui.wang@canonical.com>
+In-Reply-To: <20191218132650.6303-1-hui.wang@canonical.com>
+References: <20191218132650.6303-1-hui.wang@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: set the interface format
+	after resume on Dell WD19
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,37 +78,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The suspend function is empty so can be removed.
+On Wed, 18 Dec 2019 14:26:50 +0100,
+Hui Wang wrote:
+> 
+> Recently we found the headset-mic on the Dell Dock WD19 doesn't work
+> anymore after s3 (s2i or deep), this problem could be workarounded by
+> closeing (pcm_close) the app and then reopening (pcm_open) the app, so
+> this bug is not easy to be detected by users.
+> 
+> When problem happens, retire_capture_urb() could still be called
+> periodically, but the size of captured data is always 0, it could be
+> a firmware bug on the dock. Anyway I found after resuming, the
+> snd_usb_pcm_prepare() will be called, and if we forcibly run
+> set_format() to set the interface and its endpoint, the capture
+> size will be normal again. This problem and workaound also apply to
+> playback.
+> 
+> To fix it in the kernel, add a quirk to let set_format() run
+> forcibly once after resume.
+> 
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/max98090.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Thanks, the workaround looks reasonable.
+I applied it now with Cc to stable.
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index da23810f958e..68271042f586 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2838,15 +2838,10 @@ static int max98090_resume(struct device *dev)
- 
- 	return 0;
- }
--
--static int max98090_suspend(struct device *dev)
--{
--	return 0;
--}
- #endif
- 
- static const struct dev_pm_ops max98090_pm = {
--	SET_RUNTIME_PM_OPS(max98090_runtime_suspend,
-+	SET_RUNTIME_PM_OPS(NULL,
- 		max98090_runtime_resume, NULL)
- 	SET_SYSTEM_SLEEP_PM_OPS(max98090_suspend, max98090_resume)
- };
--- 
-2.20.1
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
