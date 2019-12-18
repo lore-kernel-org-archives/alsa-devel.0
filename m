@@ -2,105 +2,76 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38DE7C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D613C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 18:03:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB62E2064B
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:52:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 84572218AC
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 18:03:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I916pA2l";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NG5VFsWc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB62E2064B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l0scfvl5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84572218AC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD51843;
-	Wed, 18 Dec 2019 17:57:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD51843
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE66884A;
+	Wed, 18 Dec 2019 19:02:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE66884A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576688271;
-	bh=iUyb9bEgqWN6UR0Ji5ddxR0kwwqh0FOl1R2cxs9cg+w=;
+	s=default; t=1576692187;
+	bh=wrU01rGMRfJG3PpJqFb+II6wVIloZvYpTX/Pz5BSdDs=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I916pA2lkSr0VolGDB2lhfH809/Z+vmUXzVHhMTCgv7xb0dw/6S5o1nqOeGmFKtwK
-	 G7FfIs3u4x/j0AP4uaATkbYUPfx5UGAT4lTKMXoCW6uo2cA9E1FCx3JD1ZjYXN8ptP
-	 4SBkS2gdrFB1NPidFxseS0tz7MsA35d8rXD+AXHE=
+	b=l0scfvl5N/0IIccXAafhWtModUwzZ+MPED4BnBwEXjuNoc/13WI6unU8ba0TtfJXe
+	 qW+MlPIqsdPIed7jmztmEFdXZ9KoJuUKUL5hyCkVYYaN0DFHlGoBeScMcnkXaOPf4p
+	 hInsoFAk3jVB66zn6K6YDezT5Rw8BkrbwKcNLG6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E551F8014C;
-	Wed, 18 Dec 2019 17:57:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1D5DF80257;
+	Wed, 18 Dec 2019 19:02:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38C6BF8022C; Wed, 18 Dec 2019 17:56:58 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E51CBF8015A; Wed, 18 Dec 2019 19:02:15 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88407F80096
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 17:56:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88407F80096
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="NG5VFsWc"
-Received: by mail-wm1-x344.google.com with SMTP id p17so2719624wmb.0
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 08:56:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=8jj912AzfGGR36Zyy9ypT1L40eB7VdydRDFRM+xeTvg=;
- b=NG5VFsWc8OpSQic9A+qnuy4tuyQZdBU9/nTqultIIQayP3uOueYT5vGA+8b6M1HV8h
- bxdKnjCmG+UfDHsM8noS2NBaSKlX8UL7eihej0mx97HbhLYXYKoJW254BhYko9SuLy33
- ljPy0UWL3KfqEm08I9Fd7J/fBnELrh2eBp/0uGIliwDzc/kmvW16bQSO86KgMZ77Oxc4
- 7sqGqHZiqgXXKs8pBrz7C2h7PxHHGL67p3nWtaJN/ECZaGsgw7EBw5njpjDVuZ8FPbSS
- Rjj4RUZmI4aVN6NQis8G2s13S6sI8seJ9kRgafhXcBCCtsf7SDB1RN6ad4GwWfiVkZSS
- eEGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=8jj912AzfGGR36Zyy9ypT1L40eB7VdydRDFRM+xeTvg=;
- b=MkltdeanQ5I44dGqGRExhinvUna0ABNP/88SMx9AqGYugf4hmwNI/hCC+URfe6rGOW
- Oc3N9a0XzPBSsrK6YtwCnrIN7irE0GFMinVXw4XAdt4/h0UqgfSUEz+XwyxPgV9MdgDH
- uOIk3Zh7VG90wAGm449j+TS51S1cPIjNwZudzHc7aDGf6i6IpuelNXctxyG2gedvCdRB
- 7pGn68YAfmpeGLvaTaAyiPpcyrKVJhmQUcO3if0pGWM0jZER2wVWy7puRJafbd9BdYbv
- ESPMWDvBLL4S6aZ4+nJBRKluFhgdLIEpJL7Dsdp7bMbCY3RfhoaZt1Gk6YtovZMqrmtE
- axSA==
-X-Gm-Message-State: APjAAAWuW3z/wjcSQt6xYbylHl+JxSM8mETJTvlkrpBAuUFnONZPo9KN
- sncDwkEsxOc/ISjI9yVB+iviGw==
-X-Google-Smtp-Source: APXvYqznvg70lQUmBT0CE2ypcnW1H3HGNTT/+ZStxK+nd5g6Jq0zy6bdSurZTVj87HNT3pvZgPeZVQ==
-X-Received: by 2002:a1c:a382:: with SMTP id m124mr4472324wme.90.1576688214360; 
- Wed, 18 Dec 2019 08:56:54 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id n14sm2981137wmi.26.2019.12.18.08.56.53
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 18 Dec 2019 08:56:53 -0800 (PST)
-To: Mark Brown <broonie@kernel.org>
-References: <20191217121642.28534-1-srinivas.kandagatla@linaro.org>
- <20191217121642.28534-4-srinivas.kandagatla@linaro.org>
- <20191218114624.GB3219@sirena.org.uk>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <80a291dd-9063-ca34-08ac-5ed194e05e79@linaro.org>
-Date: Wed, 18 Dec 2019 16:56:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 444F9F8015A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 19:02:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 444F9F8015A
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 18 Dec 2019 10:02:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,330,1571727600"; d="scan'208";a="415912266"
+Received: from dshoemak-mobl.amr.corp.intel.com (HELO [10.251.3.243])
+ ([10.251.3.243])
+ by fmsmga005.fm.intel.com with ESMTP; 18 Dec 2019 10:02:06 -0800
+To: Takashi Iwai <tiwai@suse.de>
+References: <20191126141423.21523-1-pierre-louis.bossart@linux.intel.com>
+ <s5h4kyqzpge.wl-tiwai@suse.de>
+ <0131b134-46dc-991f-230b-fe843f43f078@linux.intel.com>
+ <s5hd0cm16vf.wl-tiwai@suse.de>
+ <f442ed39-1a86-28fb-b42c-b0e5273cd79a@linux.intel.com>
+ <s5hbls57g43.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a90e86ce-b468-28b2-f0a8-30f66429d921@linux.intel.com>
+Date: Wed, 18 Dec 2019 10:42:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191218114624.GB3219@sirena.org.uk>
+In-Reply-To: <s5hbls57g43.wl-tiwai@suse.de>
 Content-Language: en-US
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- vinod.koul@linaro.org, devicetree@vger.kernel.org, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, lee.jones@linaro.org,
- spapothi@codeaurora.org
-Subject: Re: [alsa-devel] [PATCH v5 03/11] ASoC: wcd934x: add support to
- wcd9340/wcd9341 codec
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: add PCI ID for
+	CometLake-S
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,22 +91,67 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 18/12/2019 11:46, Mark Brown wrote:
-> On Tue, Dec 17, 2019 at 12:16:34PM +0000, Srinivas Kandagatla wrote:
+On 12/18/19 10:28 AM, Takashi Iwai wrote:
+> On Wed, 18 Dec 2019 16:21:22 +0100,
+> Pierre-Louis Bossart wrote:
+>>
+>>>>> Also, can we reduce even the ifdef around sof_dev_desc definitions by
+>>>>> __maybe_unused atttribute?
+>>>>
+>>>> Sorry, I am not following your suggestion. I would really like to keep
+>>>> the ifdefs for now, and while it can be seen as overkill to have
+>>>> descriptors that are identical in some cases the past experience shows
+>>>> it's useful when we have to add quirks for specific 'hardware
+>>>> recommended programming sequences'.
+>>>
+>>> What I suggested was simple, just dropping ifdef by something like
+>>>
+>>> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+>>> index bbeffd932de7..297632a54f1b 100644
+>>> --- a/sound/soc/sof/sof-pci-dev.c
+>>> +++ b/sound/soc/sof/sof-pci-dev.c
+>>> @@ -36,8 +36,7 @@ MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
+>>>      #define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
+>>>    -#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+>>> -static const struct sof_dev_desc bxt_desc = {
+>>> +static const struct sof_dev_desc __maybe_unused bxt_desc = {
+>>>    	.machines		= snd_soc_acpi_intel_bxt_machines,
+>>>    	.resindex_lpe_base	= 0,
+>>>    	.resindex_pcicfg_base	= -1,
+>>> @@ -52,10 +51,8 @@ static const struct sof_dev_desc bxt_desc = {
+>>>    	.ops = &sof_apl_ops,
+>>>    	.arch_ops = &sof_xtensa_arch_ops
+>>>    };
+>>> -#endif
+>>>    -#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
+>>> -static const struct sof_dev_desc glk_desc = {
+>>> +static const struct sof_dev_desc __maybe_unused glk_desc = {
+>>>    	.machines		= snd_soc_acpi_intel_glk_machines,
+>>>    	.resindex_lpe_base	= 0,
+>>>    	.resindex_pcicfg_base	= -1,
+>>> @@ -70,10 +67,8 @@ static const struct sof_dev_desc glk_desc = {
+>>>    	.ops = &sof_apl_ops,
+>>>    	.arch_ops = &sof_xtensa_arch_ops
+>>>    };
+>>> -#endif
+>>> .....
+>>>    
+>>>
+>>> Then the issue I pointed above can be solved as well.
+>>
+>> The ifdefs are still needed in the PCI IDs tables
 > 
->> +config SND_SOC_WCD934X
->> +	tristate "WCD9340/WCD9341 Codec"
->> +	depends on SLIMBUS
->> +	select REGMAP_SLIMBUS
->> +	select REGMAP_IRQ
->> +	help
-> 
-> Why does this not depend on the MFD change?
-My bad, I missed this, Will fix this in next spin.
+> Yes, but it halves the messes :)
 
-thanks,
-srini
-> 
+I wish it was true :-)
+
+In reality having buildbots play with kconfig options does help identify 
+issues at the code level, just like the namespace use helped identify 
+the .arch_ops just above did not belong here.
+I find it's a constant battle to avoid accumulated crud in the wrong 
+places when dealing with multiple platforms, and when looking at patches 
+it's very hard (at least for me) to realize where the code gets added 
+and the implications.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
