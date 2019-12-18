@@ -7,68 +7,69 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6322C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0A73C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:08:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F48C21582
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:07:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 49B432176D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:08:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OXDosP9o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F48C21582
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="htU0MCjy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49B432176D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B4FE1658;
-	Wed, 18 Dec 2019 01:06:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B4FE1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A09D1614;
+	Wed, 18 Dec 2019 01:07:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A09D1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576627645;
-	bh=/ejLfEG2rf5y65NtLex7iFFJp24qHOZCr3Bn6DmXndE=;
+	s=default; t=1576627692;
+	bh=zpM4asH930XV8j7Xlw7Y6iI0xa5tkLYHuUb15mfz3QE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OXDosP9o0hr5AYEkDE8Gq2pn2MXtEL2CkDf3hKEztebYVQxIzXx6K0GHPXsdHWLWu
-	 UnXWOWwf35EE13XkdkVR/3lSdDqfw/6jEvvYakZq0v8id3ouB3gYTYc/IHNZThgevQ
-	 djlo3DFJ5HJuSUt0K42iSYa7Bt+zEaL7JK9okQss=
+	b=htU0MCjy0Qz8jG8IueZEMF2EVJHQgDoWXJHeDD0RLHLoEqRo6qTepWOIXoLmtNoYU
+	 CjAciKzNxVrl6IUyH3ZWfI3VZjh/4iFvcE0ktxdh0JTWnJyffMpbTPsqV+vfRIVo7R
+	 UXkktAxAyoVtgfwC0rxqOoYMi/7h8Lsj4BpO56ms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47F0FF8023F;
-	Wed, 18 Dec 2019 01:05:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59F15F80269;
+	Wed, 18 Dec 2019 01:05:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6323BF80256; Wed, 18 Dec 2019 01:05:39 +0100 (CET)
+ id 41A82F80260; Wed, 18 Dec 2019 01:05:41 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 263E6F80100
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:05:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 263E6F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12D4FF80218
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:05:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12D4FF80218
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 16:05:30 -0800
+ 17 Dec 2019 16:05:32 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="266723542"
+X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="266723547"
 Received: from dshoemak-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.3.243])
- by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2019 16:05:29 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 17 Dec 2019 16:05:31 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 17 Dec 2019 18:05:16 -0600
-Message-Id: <20191218000518.5830-2-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 17 Dec 2019 18:05:18 -0600
+Message-Id: <20191218000518.5830-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191218000518.5830-1-pierre-louis.bossart@linux.intel.com>
 References: <20191218000518.5830-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 1/3] ASoC: SOF: fix fault at driver unload
-	after failed probe
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org
+Subject: [alsa-devel] [PATCH v2 3/3] ASoC: topology: Prevent use-after-free
+	in snd_soc_get_pcm_runtime()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,42 +87,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
 
-If sof_machine_check() fails during driver probe, the IPC
-state is not initialized and this will lead to a NULL
-dereference at driver unload. Example log is as follows:
+remove_link() is currently calling snd_soc_remove_pcm_runtime() after
+it has already freed the memory for the link name. But this is later
+read from snd_soc_get_pcm_runtime() causing a KASAN use-after-free
+warning. Reorder the cleanups to fix this issue.
 
-[ 1535.980630] sof-audio-pci 0000:00:1f.3: error: no matching ASoC machine driver found - aborting probe
-[ 1535.980631] sof-audio-pci 0000:00:1f.3: error: failed to get machine info -19
-[ 1535.980632] sof-audio-pci 0000:00:1f.3: error: sof_probe_work failed err: -19
-[ 1550.798373] BUG: kernel NULL pointer dereference, address: 0000000000000008
-...
-[ 1550.798393] Call Trace:
-[ 1550.798397]  snd_sof_ipc_free+0x15/0x30 [snd_sof]
-[ 1550.798399]  snd_sof_device_remove+0x29/0xa0 [snd_sof]
-[ 1550.798400]  sof_pci_remove+0x10/0x30 [snd_sof_pci]
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/soc-topology.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 293c5ae8e882..1cede16aa7d8 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -830,6 +830,9 @@ void snd_sof_ipc_free(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_ipc *ipc = sdev->ipc;
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index f8bd406c6198..2b3c74a0b126 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -548,14 +548,14 @@ static void remove_link(struct snd_soc_component *comp,
+ 	if (dobj->ops && dobj->ops->link_unload)
+ 		dobj->ops->link_unload(comp, dobj);
  
-+	if (!ipc)
-+		return;
+-	kfree(link->name);
+-	kfree(link->stream_name);
+-	kfree(link->cpus->dai_name);
+-
+ 	list_del(&dobj->list);
+ 
+ 	snd_soc_remove_pcm_runtime(comp->card,
+ 			snd_soc_get_pcm_runtime(comp->card, link));
 +
- 	/* disable sending of ipc's */
- 	mutex_lock(&ipc->tx_mutex);
- 	ipc->disable_ipc_tx = true;
++	kfree(link->name);
++	kfree(link->stream_name);
++	kfree(link->cpus->dai_name);
+ 	kfree(link);
+ }
+ 
 -- 
 2.20.1
 
