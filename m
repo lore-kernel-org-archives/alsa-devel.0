@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B45FC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 02:47:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98137C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 02:47:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7FC921775
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 02:47:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2371821775
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 02:47:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VPoH8USr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7FC921775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MGkRQf5w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2371821775
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F022241;
-	Wed, 18 Dec 2019 03:46:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F022241
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EF5A1667;
+	Wed, 18 Dec 2019 03:47:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EF5A1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576637235;
-	bh=5Kk9thTAeU67slJngvjX1IF8+q20dk5wpJEBVHGII4A=;
+	s=default; t=1576637275;
+	bh=U3F8SQcDE5WhF1wH08h9QB2ooRozUGQQILx9Qaafswg=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VPoH8USroAZoxRLSGZmkV/wBE2E9SXphhTuNKN0NpCE7wNHSSSlmS68VOQu8IQ04g
-	 cuOoQUEtkhN9lalIVk/sg1KAfIKaNf53CVT6B1r46Au4ZLYUHEfiOY2mdIPOE2PlyT
-	 8jGW+y6yEbFBZY0zwd3tI5MyHfiLLCJcMCaekpQI=
+	b=MGkRQf5wEEhC8EzqNods1dpNvblumljPedTbmjNzOvF5EpHXoFub5EyrbFRSD0Nww
+	 1uydzUHUmSSqfOa300ahCrZ+G5XCdnhWu9fFtpVJ2kgnmEwOHS9Pf0HWe1puPTHsCn
+	 L4hZx7FsLTx9FBhLZBnKnR086RJkbG25FAn1mSgA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2C20F80273;
-	Wed, 18 Dec 2019 03:45:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08732F80277;
+	Wed, 18 Dec 2019 03:45:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FEEFF80274; Wed, 18 Dec 2019 03:45:25 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 8EE11F8026F
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 03:45:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EE11F8026F
-Date: 18 Dec 2019 11:45:19 +0900
-X-IronPort-AV: E=Sophos;i="5.69,327,1571670000"; d="scan'208";a="34706670"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 18 Dec 2019 11:45:19 +0900
+ id AA2A4F80278; Wed, 18 Dec 2019 03:45:36 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3CA64F8015A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 03:45:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CA64F8015A
+Date: 18 Dec 2019 11:45:30 +0900
+X-IronPort-AV: E=Sophos;i="5.69,327,1571670000"; d="scan'208";a="34489628"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Dec 2019 11:45:30 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 592E24173808;
- Wed, 18 Dec 2019 11:45:19 +0900 (JST)
-Message-ID: <87o8w6jqrk.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 83C8B400C74E;
+ Wed, 18 Dec 2019 11:45:30 +0900 (JST)
+Message-ID: <87mubqjqr9.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,8 +58,8 @@ In-Reply-To: <87r212jqt1.wl-kuninori.morimoto.gx@renesas.com>
 References: <87r212jqt1.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 2/7] ASoC: soc-core: care .ignore_suspend
-	for Component suspend
+Subject: [alsa-devel] [PATCH v2 3/7] ASoC: soc-core: remove duplicate
+	pinctrl operation when suspend
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,17 +79,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Card dai_link has .ignore_suspend, and ALSA SoC cares it when suspend.
-For example, like this
+snd_soc_suspend() are doing below for pinctrl_pm_select_sleep_state()
 
-	for_each_card_rtds(card, rtd) {
-		if (rtd->dai_link->ignore_suspend)
-			continue;
+	int snd_soc_suspend(struct device *dev)
+	{
 		...
+		for_each_card_components(card, component) {
+			...
+(1)			pinctrl_pm_select_sleep_state(component->dev);
+		}
+
+		for_each_card_rtds(card, rtd) {
+			...
+(2)			pinctrl_pm_select_sleep_state(cpu_dai->dev);
+		}
 	}
 
-But in snd_soc_suspend(), it doesn't care about
-it when suspending Component. This patch cares it.
+(1) is called for all component (CPU/Codec/Platform), and
+(2) is called for CPU DAIs.
+Here, component->dev is same as dai->dev.
+This means, it is called in duplicate on CPU case.
+This patch removes (2).
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
@@ -97,46 +107,23 @@ v2 -> v3
 
 	- no change
 
- sound/soc/soc-core.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ sound/soc/soc-core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8e49fb8..c10b9af 100644
+index c10b9af..9b94a5a 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -562,15 +562,25 @@ int snd_soc_suspend(struct device *dev)
- 	snd_soc_dapm_sync(&card->dapm);
+@@ -619,9 +619,6 @@ int snd_soc_suspend(struct device *dev)
  
- 	/* suspend all COMPONENTs */
--	for_each_card_components(card, component) {
--		struct snd_soc_dapm_context *dapm =
-+	for_each_card_rtds(card, rtd) {
-+
-+		if (rtd->dai_link->ignore_suspend)
-+			continue;
-+
-+		for_each_rtd_components(rtd, i, component) {
-+			struct snd_soc_dapm_context *dapm =
- 				snd_soc_component_get_dapm(component);
+ 		if (cpu_dai->driver->bus_control)
+ 			snd_soc_dai_suspend(cpu_dai);
+-
+-		/* deactivate pins to sleep state */
+-		pinctrl_pm_select_sleep_state(cpu_dai->dev);
+ 	}
  
--		/*
--		 * If there are paths active then the COMPONENT will be held
--		 * with bias _ON and should not be suspended.
--		 */
--		if (!snd_soc_component_is_suspended(component)) {
-+			/*
-+			 * ignore if component was already suspended
-+			 */
-+			if (snd_soc_component_is_suspended(component))
-+				continue;
-+
-+			/*
-+			 * If there are paths active then the COMPONENT will be
-+			 * held with bias _ON and should not be suspended.
-+			 */
- 			switch (snd_soc_dapm_get_bias_level(dapm)) {
- 			case SND_SOC_BIAS_STANDBY:
- 				/*
+ 	if (card->suspend_post)
 -- 
 2.7.4
 
