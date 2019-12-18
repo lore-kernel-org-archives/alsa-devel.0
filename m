@@ -2,70 +2,65 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 296C8C2D0BF
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 01:52:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ABCBC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 01:54:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C91C2176D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 01:52:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0AA2F2176D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 01:54:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IcqLR1Xs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C91C2176D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FZZANfWy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AA2F2176D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DBCB850;
-	Wed, 18 Dec 2019 02:51:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DBCB850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5951185D;
+	Wed, 18 Dec 2019 02:53:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5951185D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576633963;
-	bh=4KcUJY17Fm8hN6r6j+ho+pUi94/aMMpFPfVTQeWW9CE=;
+	s=default; t=1576634068;
+	bh=s5sfiBmOLxehQccDxPqA0bZXvE8Yq5jE5XP56PuNC3I=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IcqLR1XsncoUCm91b2Qt1GHq8dwBBJ8xtV4ZEqw5jIhFhBc0HQWZ3b/CXQ0B65Jj8
-	 Evhyhbg55vjAQ8tk6ypnNRTnuX+/UTw74ceiBCl++2PhM+l5DlGM2vcHepgh8ETTKL
-	 ZuRkAU6b1E726Mm6aw5gD3C3XofSQ2o75mIzPFFc=
+	b=FZZANfWyOktdS/BmbAFtaJ8APPMUTrHhI0c4rrJYmvyZpYj89e6Bve1U1YjfAvlcs
+	 VdIuYrsh0dTOXab7BfbHSUAZg17bfY1Vgfvda/vjMQd/AeQnjeokcP+Xp2qmDXqAcI
+	 Wg6Hx+qtfVf0BxieNw+3cPSYP/9c5blo7me50bHU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F282F80218;
-	Wed, 18 Dec 2019 02:51:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED250F80218;
+	Wed, 18 Dec 2019 02:53:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22E78F80234; Wed, 18 Dec 2019 02:51:51 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 119CEF80088
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 02:51:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 119CEF80088
-Date: 18 Dec 2019 10:51:41 +0900
-X-IronPort-AV: E=Sophos;i="5.69,327,1571670000"; d="scan'208";a="34482561"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 18 Dec 2019 10:51:41 +0900
+ id BB089F80234; Wed, 18 Dec 2019 02:53:36 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3A15BF80100
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 02:53:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A15BF80100
+Date: 18 Dec 2019 10:53:28 +0900
+X-IronPort-AV: E=Sophos;i="5.69,327,1571670000"; d="scan'208";a="34699869"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 18 Dec 2019 10:53:28 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id DD66541542F3;
- Wed, 18 Dec 2019 10:51:41 +0900 (JST)
-Message-ID: <87y2vajt8y.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id BC278400C729;
+ Wed, 18 Dec 2019 10:53:28 +0900 (JST)
+Message-ID: <87woaujt5z.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <124fd50c-db99-7a4a-9e35-ad69b5e16abc@linux.intel.com>
-References: <87woavhhfi.wl-kuninori.morimoto.gx@renesas.com>
- <87o8w7hhds.wl-kuninori.morimoto.gx@renesas.com>
- <01e4157a-d4b7-8bb2-d3bf-957d47e3e5f9@linux.intel.com>
- <87lfrbhajp.wl-kuninori.morimoto.gx@renesas.com>
- <87k16vh8d6.wl-kuninori.morimoto.gx@renesas.com>
- <20191217121308.GC4755@sirena.org.uk>
- <124fd50c-db99-7a4a-9e35-ad69b5e16abc@linux.intel.com>
+In-Reply-To: <20191217165649.12091-1-pierre-louis.bossart@linux.intel.com>
+References: <20191217165649.12091-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 6/6] ASoC: soc-core: add
-	snd_soc_stream_stop()
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org,
+ Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: cml_rt1011_rt5682: fix
+	codec_conf by removing legacy style
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,35 +81,17 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Pierre-Louis
 
-> >> I noticed that soc_compr_free_fe(), dpcm_fe_dai_shutdown() are directly
-> >> calling SND_SOC_DAPM_STREAM_STOP without caring pmdown time / delayed work.
-> >> Can we use snd_soc_dapm_stream_stop() for these, too ?
-> > 
-> > That does seem like an oversight...
+> Now that the legacy style is removed, we have to use the new macros
+> for the codec configuration. This change was missed in the initial
+> series.
 > 
-> What would the rationale for deferring a FE shutdown though?
-> 
-> IIRC in the Intel machine drivers we only use .pm_ignore_downtime to
-> backends to keep some clocks on, and even that is questionable (the
-> clock dependencies should be properly modeled instead of hidden with
-> an obscure dailink setting). When I asked why exactly this flag was
-> set in most cases the reason why 'because others did so in the
-> past'...
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Fixes: ee8f537fd8b71c ("ASoC: soc-core: remove legacy style of codec_conf")
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
 
-Not only "ignore_pmdown_time", but many flags are used
-for such reasons, I guess...
-But, it is "driver side setting issue", and same things happen
-even if we have properly modeled clock dependencies, I guess unfortunately...
-
-From framework side point of view, it should care settings anyway
-if it was added/selected even though if it was added by copy-and-paste.
-"Following settings case-by-case" is a little bit strange for me.
-Maybe FE which has ignore_pmdown_time has some rationale, somehow ?
-
-So, I will post v2 which renames function name that is pointed from you.
-And, post additional patch which cares above +2 STREAM_STOP.
-Feel free to post NACK it if you don't like it.
-Then, Mark can just ignore it.
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Thank you for your help !!
 Best regards
