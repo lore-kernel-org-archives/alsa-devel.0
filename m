@@ -2,56 +2,84 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BA39C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 10:10:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B60AC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 11:22:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B5CB224650
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 10:10:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A7E2E21582
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 11:21:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AE27Jt0V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5CB224650
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CEl3BXOE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7E2E21582
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lucaceresoli.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F279985D;
-	Wed, 18 Dec 2019 11:09:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F279985D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 776EA84A;
+	Wed, 18 Dec 2019 12:21:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 776EA84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576663801;
-	bh=mDlXZcfoGJNaNIGgBZ+9X3YtcPtKir8AZPVAwtbX1bc=;
-	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
+	s=default; t=1576668117;
+	bh=Ml+y6uDuJZWy8S6kGD01iyqpDH2XNS/MEJrvlMXVRWY=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AE27Jt0VtHIM2NVJleU2AursYBnEHtN1yrvk5WLk5Wq1/zhx4d95z/xT4N7mx5It7
-	 BekO6J6l3DaIUbMU0hZ0SFxnxw0lVBgIsvOhxVVGJ9b1sqXmrxn0Z2ybzY37u0y8xB
-	 eP4AKEJPvFE68XNBYDh9n5ctT3YaOJRAUyn/0Tp8=
+	b=CEl3BXOE66lwxDRecYVvUAusBBkfYmCqRG77PfRd5i7UkMnoJ8XfsKnC/pv0wwxjc
+	 ifmi7G+o4ObBGjUa/sfNSI3dbVg6o0+Mexvzq5BcaNiZKWBxK29yKthydYuzI0JBx4
+	 Q2YTLYomn8QW/Pu026uKEByZtFXq27zSSc2tUzt4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36371F80059;
-	Wed, 18 Dec 2019 11:09:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F160DF8015A;
+	Wed, 18 Dec 2019 12:21:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CBC5F8022C; Wed, 18 Dec 2019 11:09:09 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id D845BF80059
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 11:09:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D845BF80059
+ id AE6FAF8022C; Wed, 18 Dec 2019 12:21:04 +0100 (CET)
+Received: from hostingweb31-40.netsons.net (hostingweb31-40.netsons.net
+ [89.40.174.40])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E5E8F80059
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 12:21:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E5E8F80059
+Received: from [37.162.94.155] (port=27596 helo=[192.168.43.3])
+ by hostingweb31.netsons.net with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92)
+ (envelope-from <luca@lucaceresoli.net>)
+ id 1ihXNz-00B31J-Q6; Wed, 18 Dec 2019 12:20:59 +0100
+To: Daniel Mack <daniel@zonque.org>, Lee Jones <lee.jones@linaro.org>
+References: <20191209183511.3576038-1-daniel@zonque.org>
+ <20191209183511.3576038-8-daniel@zonque.org> <20191217133952.GJ18955@dell>
+ <ce6e0b19-ec40-c17b-cee6-05eca52d5df3@zonque.org>
+From: Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <e288a6e1-a967-d7cd-72fc-d190819953e3@lucaceresoli.net>
+Date: Wed, 18 Dec 2019 12:20:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1576663745816961050-webhooks-bot@alsa-project.org>
-References: <1576663745816961050-webhooks-bot@alsa-project.org>
-Message-Id: <20191218100909.6CBC5F8022C@alsa1.perex.cz>
-Date: Wed, 18 Dec 2019 11:09:09 +0100 (CET)
-Subject: [alsa-devel] Undecalared Variable "p" when compile alsa-lib with
-	TPLG_DEBUG defined
+In-Reply-To: <ce6e0b19-ec40-c17b-cee6-05eca52d5df3@zonque.org>
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id:
+ luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de,
+ sboyd@kernel.org, mturquette@baylibre.com, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org,
+ linux-i2c@vger.kernel.org, pascal.huerst@gmail.com, linux-clk@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH 06/10] mfd: Add core driver for AD242x A2B
+	transceivers
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -64,37 +92,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #18 was opened from aiChaoSONG:
-
-Undecalared Variable "p" when compile alsa-lib with TPLG_DEBUG defined, the pointer 'p'  in line 152 of src/topology/data.c seem not declared. see code below.
-```
-static void dump_priv_data(struct tplg_elem *elem)
-{
-	struct snd_soc_tplg_private *priv = elem->data;
-	unsigned int i, j = 0;
-
-	tplg_dbg(" elem size = %d, priv data size = %d\n",
-		elem->size, priv->size);
-
-	for (i = 0; i < priv->size; i++) {
-		if (j++ % 8 == 0)
-			tplg_dbg("\n");
-
-		*******tplg_dbg(" 0x%x", *p++);*******
-	}
-
-	tplg_dbg("\n\n");
-}
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/18
-Repository URL: https://github.com/alsa-project/alsa-lib
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+SGkgRGFuaWVsLAoKT24gMTcvMTIvMTkgMjA6MjQsIERhbmllbCBNYWNrIHdyb3RlOgo+Pj4gKysr
+IGIvZHJpdmVycy9tZmQvYWQyNDJ4LWJ1cy5jCj4+PiBAQCAtMCwwICsxLDQyIEBACj4+PiArLy8g
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQo+Pj4gKwo+Pj4gKyNpbmNsdWRl
+IDxsaW51eC9pMmMuaD4KPj4+ICsjaW5jbHVkZSA8bGludXgvaW5pdC5oPgo+Pj4gKyNpbmNsdWRl
+IDxsaW51eC9tZmQvYWQyNDJ4Lmg+Cj4+PiArI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+Pj4g
+KyNpbmNsdWRlIDxsaW51eC9vZi5oPgo+Pj4gKwo+Pj4gK3N0YXRpYyBpbnQgYWQyNDJ4X2J1c19p
+MmNfcHJvYmUoc3RydWN0IGkyY19jbGllbnQgKmkyYywKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgY29uc3Qgc3RydWN0IGkyY19kZXZpY2VfaWQgKmlkKQo+Pj4gK3sKPj4+ICvC
+oMKgwqAgZGV2X3NldF9kcnZkYXRhKCZpMmMtPmRldiwgaTJjKTsKPj4+ICvCoMKgwqAgaTJjX3Nl
+dF9jbGllbnRkYXRhKGkyYywgJmkyYy0+ZGV2KTsKPj4KPj4gUGxlYXNlIGV4cGxhaW4gdG8gbWUg
+d2hhdCB5b3UgdGhpbmsgaXMgaGFwcGVuaW5nIGhlcmUuCj4+Cj4+PiArwqDCoMKgIHJldHVybiAw
+Owo+Pj4gK30KPj4KPj4gV2hhdCBkb2VzIHRoaXMgZHJpdmVyIGRvP8KgIFNlZW1zIGtpbmRhIHBv
+aW50bGVzcz8KPiAKPiBBcyBleHBsYWluZWQgaW4gdGhlIGNvbW1pdCBsb2csIHRoZXNlIGRldmlj
+ZXMgZXhwb3NlIHR3byBhZGRyZXNzZXMgb24KPiB0aGUgaTJjIGJ1cywgYW5kIGVhY2ggb2Ygd2hp
+Y2ggZXhpc3RzIGZvciBhIGRpc3RpbmN0IHB1cnBvc2UuIFRoZQo+IHByaW1hcnkgb25lIGlzIHVz
+ZWQgdG8gYWNjZXNzIHJlZ2lzdGVycyBvbiB0aGUgbWFzdGVyIG5vZGUgaXRzZWxmLCB0aGUKPiBz
+ZWNvbmQgb25lIGlzIHByb3h5aW5nIHRyYWZmaWMgdG8gcmVtb3RlIG5vZGVzLgo+IAo+IE5vdywg
+dGhlIHF1ZXN0aW9uIGlzIGhvdyB0byBzdXBwb3J0IHRoYXQsIGFuZCB0aGUgYXBwcm9hY2ggY2hv
+c2VuIGhlcmUKPiBpcyB0byBoYXZlIGEgZHVtbXkgZHJpdmVyIHNpdHRpbmcgb24gdGhlIDJuZCBh
+ZGRyZXNzLCBhbmQgdG8gcmVhY2ggb3V0Cj4gdG8gaXQgdmlhIGEgRFQgcGhhbmRsZSBmcm9tIHRo
+ZSBtYXN0ZXIgbm9kZS4gSSBkb24ndCBsaWtlIHRoYXQgbXVjaAo+IGVpdGhlciwgYnV0IEknbSBu
+b3QgYXdhcmUgb2YgYSBjbGVhbmVyIHdheSB0byBiaW5kIHR3byBhZGRyZXNzZXMgd2l0aAo+IG9u
+ZSBkcml2ZXIuIElmIHRoZXJlIGlzIGFueSwgSSdkIGJlIGhhcHB5IHRvIGNoYW5nZSB0aGF0LgoK
+SGF2ZSBhIGxvb2sgYXQgaTJjX25ld19kdW1teV9kZXZpY2UoKSwgcGVyaGFwcyBpdCBpcyB3aGF0
+IHlvdSBuZWVkIGhlcmUuCgotLSAKTHVjYQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
