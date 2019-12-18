@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 231C4C2D0BF
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECABAC3F68F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:17:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CFE524679
+	by mail.kernel.org (Postfix) with ESMTPS id 7765524650
 	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:17:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B0hBWfYG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CFE524679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A9BijodA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7765524650
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79FBB166B;
-	Wed, 18 Dec 2019 21:08:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79FBB166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A22241690;
+	Wed, 18 Dec 2019 21:09:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A22241690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576699735;
-	bh=vE4Yw7hoHmXcl3CANO1XXPeHfAuk44DqEh9IAK1mKXI=;
+	s=default; t=1576699799;
+	bh=6LA0sRA1raTlhg6ZHwMn5CvzAX6HQRrGhKJpu7/GY1Y=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=B0hBWfYGJMk/CA6BH//Vki78G0P1AgBva+y76nnrjysAghGdQdvbb9jk0v4/aDstJ
-	 hG5aKJ+t698DQpks3MRJHo+ivxt8bD4pj99UBGv6ba1kma4W6GBOP/VOEyjRafyKSV
-	 oZkt28AGbYASMaiknukdv4IshcXLDV1OuBJN5VvA=
+	b=A9BijodA5up3IYnT62zmuylU/T7T+4eoMa9iIxUk2j0pukHjs+MeM+sg0Z9VSZkTH
+	 mPIxY4MwlkLnOVM0uv0n4m2qtXMKf5m8+/u4KoNGTpEQxxD97KLy7PsSfIf4ku+Jvu
+	 KvwTBwKhCaEN258ZOcqJm7RkL834FV1IaQqDGEAw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E061AF8027C;
-	Wed, 18 Dec 2019 21:05:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0850BF80290;
+	Wed, 18 Dec 2019 21:05:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8300DF80273; Wed, 18 Dec 2019 21:05:39 +0100 (CET)
+ id 8C4BFF8028E; Wed, 18 Dec 2019 21:05:45 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A01A6F80266
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:05:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A01A6F80266
+ by alsa1.perex.cz (Postfix) with ESMTP id F2BBBF80279
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:05:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2BBBF80279
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EE7331B;
- Wed, 18 Dec 2019 12:05:35 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8369611FB;
+ Wed, 18 Dec 2019 12:05:40 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3248B3F67D;
- Wed, 18 Dec 2019 12:05:35 -0800 (PST)
-Date: Wed, 18 Dec 2019 20:05:33 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3F263F67D;
+ Wed, 18 Dec 2019 12:05:39 -0800 (PST)
+Date: Wed, 18 Dec 2019 20:05:38 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191217202231.18259-7-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191217202231.18259-7-pierre-louis.bossart@linux.intel.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20191218172420.1199117-4-jbrunet@baylibre.com>
+Message-Id: <applied-20191218172420.1199117-4-jbrunet@baylibre.com>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda: add namespace for
-	hda-codec functionality" to the asoc tree
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-amlogic@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: meson: axg-fifo: improve depth
+	handling" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +79,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda: add namespace for hda-codec functionality
+   ASoC: meson: axg-fifo: improve depth handling
 
 has been applied to the asoc tree at
 
@@ -102,93 +104,117 @@ to this mail.
 Thanks,
 Mark
 
-From 5bd216c6a6b48d8ed0b3283bf7ba84fc3a566b25 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 17 Dec 2019 14:22:29 -0600
-Subject: [PATCH] ASoC: SOF: Intel: hda: add namespace for hda-codec
- functionality
+From 23b89e1d62c75f2c1985449e968886e8a97860c0 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 18 Dec 2019 18:24:19 +0100
+Subject: [PATCH] ASoC: meson: axg-fifo: improve depth handling
 
-Define namespaces (one generic and one dedicated for i915) and include
-them in HDaudio top-level module.
+Let the fifo driver parse the fifo depth from DT. Eventually all DT should
+have this property. Until it is actually the case, default to 256 bytes if
+the property is missing. 256 bytes is the size of the smallest fifo on the
+supported SoCs.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191217202231.18259-7-pierre-louis.bossart@linux.intel.com
+On the supported SoC, fifo A is usually bigger than the other ones.  With
+depth known, we can improve the usage of the fifo and adapt the setup of
+request threshold.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20191218172420.1199117-4-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-codec.c | 14 +++++++-------
- sound/soc/sof/intel/hda.c       |  2 ++
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ sound/soc/meson/axg-fifo.c  | 19 +++++++++++++++++--
+ sound/soc/meson/axg-fifo.h  |  1 +
+ sound/soc/meson/axg-frddr.c | 13 ++++---------
+ 3 files changed, 22 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index d7855b1f8e2e..5514e6191ba4 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -76,8 +76,8 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
- void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev) {}
- void hda_codec_jack_check(struct snd_sof_dev *sdev) {}
- #endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
--EXPORT_SYMBOL(hda_codec_jack_wake_enable);
--EXPORT_SYMBOL(hda_codec_jack_check);
-+EXPORT_SYMBOL_NS(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
-+EXPORT_SYMBOL_NS(hda_codec_jack_check, SND_SOC_SOF_HDA_AUDIO_CODEC);
+diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
+index 4365086c9a31..c2742a02d866 100644
+--- a/sound/soc/meson/axg-fifo.c
++++ b/sound/soc/meson/axg-fifo.c
+@@ -132,8 +132,7 @@ int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
+ 	 * - Half the fifo size
+ 	 * - Half the period size
+ 	 */
+-	threshold = min(period / 2,
+-			(unsigned int)AXG_FIFO_MIN_DEPTH / 2);
++	threshold = min(period / 2, fifo->depth / 2);
  
- /* probe individual codec */
- static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
-@@ -160,7 +160,7 @@ void hda_codec_probe_bus(struct snd_sof_dev *sdev,
- 		}
- 	}
+ 	/*
+ 	 * With the threshold in bytes, register value is:
+@@ -320,6 +319,7 @@ int axg_fifo_probe(struct platform_device *pdev)
+ 	const struct axg_fifo_match_data *data;
+ 	struct axg_fifo *fifo;
+ 	void __iomem *regs;
++	int ret;
+ 
+ 	data = of_device_get_match_data(dev);
+ 	if (!data) {
+@@ -370,6 +370,21 @@ int axg_fifo_probe(struct platform_device *pdev)
+ 	if (IS_ERR(fifo->field_threshold))
+ 		return PTR_ERR(fifo->field_threshold);
+ 
++	ret = of_property_read_u32(dev->of_node, "amlogic,fifo-depth",
++				   &fifo->depth);
++	if (ret) {
++		/* Error out for anything but a missing property */
++		if (ret != -EINVAL)
++			return ret;
++		/*
++		 * If the property is missing, it might be because of an old
++		 * DT. In such case, assume the smallest known fifo depth
++		 */
++		fifo->depth = 256;
++		dev_warn(dev, "fifo depth not found, assume %u bytes\n",
++			 fifo->depth);
++	}
++
+ 	return devm_snd_soc_register_component(dev, data->component_drv,
+ 					       data->dai_drv, 1);
  }
--EXPORT_SYMBOL(hda_codec_probe_bus);
-+EXPORT_SYMBOL_NS(hda_codec_probe_bus, SND_SOC_SOF_HDA_AUDIO_CODEC);
+diff --git a/sound/soc/meson/axg-fifo.h b/sound/soc/meson/axg-fifo.h
+index c442195ba191..521b54e98fd3 100644
+--- a/sound/soc/meson/axg-fifo.h
++++ b/sound/soc/meson/axg-fifo.h
+@@ -68,6 +68,7 @@ struct axg_fifo {
+ 	struct clk *pclk;
+ 	struct reset_control *arb;
+ 	struct regmap_field *field_threshold;
++	unsigned int depth;
+ 	int irq;
+ };
  
- #if IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI) || \
- 	IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)
-@@ -172,7 +172,7 @@ void hda_codec_i915_get(struct snd_sof_dev *sdev)
- 	dev_dbg(bus->dev, "Turning i915 HDAC power on\n");
- 	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
- }
--EXPORT_SYMBOL(hda_codec_i915_get);
-+EXPORT_SYMBOL_NS(hda_codec_i915_get, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- 
- void hda_codec_i915_put(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
+index df104303351f..c3ae8ac30745 100644
+--- a/sound/soc/meson/axg-frddr.c
++++ b/sound/soc/meson/axg-frddr.c
+@@ -50,7 +50,7 @@ static int axg_frddr_dai_startup(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *dai)
  {
-@@ -181,7 +181,7 @@ void hda_codec_i915_put(struct snd_sof_dev *sdev)
- 	dev_dbg(bus->dev, "Turning i915 HDAC power off\n");
- 	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
- }
--EXPORT_SYMBOL(hda_codec_i915_put);
-+EXPORT_SYMBOL_NS(hda_codec_i915_put, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
+ 	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
+-	unsigned int fifo_depth;
++	unsigned int val;
+ 	int ret;
  
- int hda_codec_i915_init(struct snd_sof_dev *sdev)
- {
-@@ -197,7 +197,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+ 	/* Enable pclk to access registers and clock the fifo ip */
+@@ -61,15 +61,10 @@ static int axg_frddr_dai_startup(struct snd_pcm_substream *substream,
+ 	/* Apply single buffer mode to the interface */
+ 	regmap_update_bits(fifo->map, FIFO_CTRL0, CTRL0_FRDDR_PP_MODE, 0);
+ 
+-	/*
+-	 * TODO: We could adapt the fifo depth and the fifo threshold
+-	 * depending on the expected memory throughput and lantencies
+-	 * For now, we'll just use the same values as the vendor kernel
+-	 * Depth and threshold are zero based.
+-	 */
+-	fifo_depth = AXG_FIFO_MIN_CNT - 1;
++	/* Use all fifo depth */
++	val = (fifo->depth / AXG_FIFO_BURST) - 1;
+ 	regmap_update_bits(fifo->map, FIFO_CTRL1, CTRL1_FRDDR_DEPTH_MASK,
+-			   CTRL1_FRDDR_DEPTH(fifo_depth));
++			   CTRL1_FRDDR_DEPTH(val));
  
  	return 0;
  }
--EXPORT_SYMBOL(hda_codec_i915_init);
-+EXPORT_SYMBOL_NS(hda_codec_i915_init, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- 
- int hda_codec_i915_exit(struct snd_sof_dev *sdev)
- {
-@@ -210,7 +210,7 @@ int hda_codec_i915_exit(struct snd_sof_dev *sdev)
- 
- 	return ret;
- }
--EXPORT_SYMBOL(hda_codec_i915_exit);
-+EXPORT_SYMBOL_NS(hda_codec_i915_exit, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- 
- #endif
- 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 3335e0076180..adb842ed6b26 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -795,3 +795,5 @@ void hda_machine_select(struct snd_sof_dev *sdev)
- }
- 
- MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC);
-+MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
 -- 
 2.20.1
 
