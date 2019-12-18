@@ -6,68 +6,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 988A7C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:06:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D2ABC3F68F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:12:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 246AB2176D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:06:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EB1A32176D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:12:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M1Yd9B3M"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 246AB2176D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EDvRW/I8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB1A32176D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6930485D;
-	Wed, 18 Dec 2019 21:05:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6930485D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 323F8169A;
+	Wed, 18 Dec 2019 21:11:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 323F8169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576699586;
-	bh=bIi2zGYjxvyBR8YPuGaSiYuzMH0HSDhsposMleVHJE0=;
+	s=default; t=1576699962;
+	bh=+lIcsNylhlzJk4D4zRwOcB1Ar7SoduCmH8WMeXvgih0=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=M1Yd9B3MWr12ZtfngoE+cDr4sRzlvIQH6LZoH/sP+WyuXUUppiPjO5uKfKXkbwq+i
-	 65Zi+qQrKMT1aNkT2xH0d8Uio3N2UUmXQr5m1HSUc9Qhpo0KwgoRxopgC9gsxexp+1
-	 g9Advg78MmYSsQEAZfuYob1Gq4AuSIxY8G5uQkY8=
+	b=EDvRW/I8POqkphxS3+FtfMKdKYaTm2DUWVcQtXAEcrN2jZEAjoyccgSF11dZkn2zC
+	 8azsZri962F434wg1pBAMTKvwFMZSrScL9iaSMIxXeECNEJJ6zdcPeIAPU2ja5d7fg
+	 r4laG7KHy9orUmvlFrcLa9A1c0R9yLOzDAm7kXH4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64700F8022C;
-	Wed, 18 Dec 2019 21:05:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EF7BF802E7;
+	Wed, 18 Dec 2019 21:05:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88C5BF8022C; Wed, 18 Dec 2019 21:05:33 +0100 (CET)
+ id D5838F802EA; Wed, 18 Dec 2019 21:05:56 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5F1ECF8014C
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:05:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F1ECF8014C
+ by alsa1.perex.cz (Postfix) with ESMTP id CC86BF802DD
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:05:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC86BF802DD
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CFAD1FB;
- Wed, 18 Dec 2019 12:05:28 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 648F711B3;
+ Wed, 18 Dec 2019 12:05:50 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68F603F67D;
- Wed, 18 Dec 2019 12:05:27 -0800 (PST)
-Date: Wed, 18 Dec 2019 20:05:25 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D67FF3F67D;
+ Wed, 18 Dec 2019 12:05:49 -0800 (PST)
+Date: Wed, 18 Dec 2019 20:05:48 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Ben Zhang <benzh@chromium.org>
-In-Reply-To: <20191218143937.122665-1-cujomalainey@chromium.org>
-Message-Id: <applied-20191218143937.122665-1-cujomalainey@chromium.org>
+To: Guido Roncarolo <guido.roncarolo@nxp.com>
+In-Reply-To: <20191218002616.7652-9-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191218002616.7652-9-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Naveen Manohar <naveen.m@intel.com>,
- Sathya Prakash M R <sathya.prakash.m.r@intel.com>,
- Bard Liao <bardliao@realtek.com>, Curtis Malainey <cujomalainey@chromium.org>,
- Jon Flatley <jflat@chromium.org>, Bard liao <yung-chuan.liao@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Allison Randal <allison@lohutok.net>
-Subject: [alsa-devel] Applied "ASoC: intel: Add Broadwell rt5650 machine
-	driver" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: imx: Read SAI parameters and send
+	them to DSP" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: intel: Add Broadwell rt5650 machine driver
+   ASoC: SOF: imx: Read SAI parameters and send them to DSP
 
 has been applied to the asoc tree at
 
@@ -113,415 +102,128 @@ to this mail.
 Thanks,
 Mark
 
-From 5b425814f13f373cf36d58cf1b418e075d45ad86 Mon Sep 17 00:00:00 2001
-From: Ben Zhang <benzh@chromium.org>
-Date: Wed, 18 Dec 2019 06:39:30 -0800
-Subject: [PATCH] ASoC: intel: Add Broadwell rt5650 machine driver
+From d88cbd6feaf4b5de07d91f531112cf57ce821d78 Mon Sep 17 00:00:00 2001
+From: Guido Roncarolo <guido.roncarolo@nxp.com>
+Date: Tue, 17 Dec 2019 18:26:16 -0600
+Subject: [PATCH] ASoC: SOF: imx: Read SAI parameters and send them to DSP
 
-Add machine driver for Broadwell + rt5650.
+Follow example from Intel SSP.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Ben Zhang <benzh@chromium.org>
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Signed-off-by: Jon Flatley <jflat@chromium.org>
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191218143937.122665-1-cujomalainey@chromium.org
+Signed-off-by: Guido Roncarolo <guido.roncarolo@nxp.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191218002616.7652-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig                |  12 +
- sound/soc/intel/boards/Makefile               |   2 +
- sound/soc/intel/boards/bdw-rt5650.c           | 319 ++++++++++++++++++
- .../common/soc-acpi-intel-hsw-bdw-match.c     |   7 +
- 4 files changed, 340 insertions(+)
- create mode 100644 sound/soc/intel/boards/bdw-rt5650.c
+ sound/soc/sof/pcm.c      |  8 +++++
+ sound/soc/sof/topology.c | 69 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 11dbc59046f8..bddf04715f15 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -44,6 +44,18 @@ endif ## SND_SOC_INTEL_HASWELL
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 86829e5bd62d..9bb6388742e1 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -693,6 +693,14 @@ static int sof_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		channels->min = dai->dai_config->esai.tdm_slots;
+ 		channels->max = dai->dai_config->esai.tdm_slots;
  
- if SND_SOC_INTEL_HASWELL || SND_SOC_SOF_BROADWELL
++		dev_dbg(component->dev,
++			"channels_min: %d channels_max: %d\n",
++			channels->min, channels->max);
++		break;
++	case SOF_DAI_IMX_SAI:
++		channels->min = dai->dai_config->sai.tdm_slots;
++		channels->max = dai->dai_config->sai.tdm_slots;
++
+ 		dev_dbg(component->dev,
+ 			"channels_min: %d channels_max: %d\n",
+ 			channels->min, channels->max);
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index e06fa7c7e502..9f4f8868b386 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -695,6 +695,13 @@ static const struct sof_topology_token esai_tokens[] = {
+ 		offsetof(struct sof_ipc_dai_esai_params, mclk_id), 0},
+ };
  
-+config SND_SOC_INTEL_BDW_RT5650_MACH
-+	tristate "Broadwell with RT5650 codec"
-+	depends on I2C
-+	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
-+	depends on X86_INTEL_LPSS || COMPILE_TEST
-+	select SND_SOC_RT5645
-+	help
-+	  This adds the ASoC machine driver for Intel Broadwell platforms with
-+	  the RT5650 codec.
-+	  Say Y if you have such a device.
-+	  If unsure select "N".
-+
- config SND_SOC_INTEL_BDW_RT5677_MACH
- 	tristate "Broadwell with RT5677 codec"
- 	depends on I2C
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 5369627fa4c8..b74ddd49bd39 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -2,6 +2,7 @@
- snd-soc-sst-haswell-objs := haswell.o
- snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
- snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
-+snd-soc-sst-bdw-rt5650-mach-objs := bdw-rt5650.o
- snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
- snd-soc-sst-broadwell-objs := broadwell.o
- snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o hda_dsp_common.o
-@@ -38,6 +39,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_COMMON) += snd-soc-sst-bxt-da721
- obj-$(CONFIG_SND_SOC_INTEL_BXT_RT298_MACH) += snd-soc-sst-bxt-rt298.o
- obj-$(CONFIG_SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH) += snd-soc-sst-glk-rt5682_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
-+obj-$(CONFIG_SND_SOC_INTEL_BDW_RT5650_MACH) += snd-soc-sst-bdw-rt5650-mach.o
- obj-$(CONFIG_SND_SOC_INTEL_BDW_RT5677_MACH) += snd-soc-sst-bdw-rt5677-mach.o
- obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH) += snd-soc-sst-bytcr-rt5640.o
- obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5651_MACH) += snd-soc-sst-bytcr-rt5651.o
-diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
-new file mode 100644
-index 000000000000..ba3fc1ef900a
---- /dev/null
-+++ b/sound/soc/intel/boards/bdw-rt5650.c
-@@ -0,0 +1,319 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ASoC machine driver for Intel Broadwell platforms with RT5650 codec
-+ *
-+ * Copyright 2019, The Chromium OS Authors.  All rights reserved.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-acpi.h>
-+
-+#include "../common/sst-dsp.h"
-+#include "../haswell/sst-haswell-ipc.h"
-+
-+#include "../../codecs/rt5645.h"
-+
-+struct bdw_rt5650_priv {
-+	struct gpio_desc *gpio_hp_en;
-+	struct snd_soc_component *component;
++/* SAI */
++static const struct sof_topology_token sai_tokens[] = {
++	{SOF_TKN_IMX_SAI_MCLK_ID,
++		SND_SOC_TPLG_TUPLE_TYPE_SHORT, get_token_u16,
++		offsetof(struct sof_ipc_dai_sai_params, mclk_id), 0},
 +};
 +
-+static const struct snd_soc_dapm_widget bdw_rt5650_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("DMIC Pair1", NULL),
-+	SND_SOC_DAPM_MIC("DMIC Pair2", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route bdw_rt5650_map[] = {
-+	/* Speakers */
-+	{"Speaker", NULL, "SPOL"},
-+	{"Speaker", NULL, "SPOR"},
-+
-+	/* Headset jack connectors */
-+	{"Headphone", NULL, "HPOL"},
-+	{"Headphone", NULL, "HPOR"},
-+	{"IN1P", NULL, "Headset Mic"},
-+	{"IN1N", NULL, "Headset Mic"},
-+
-+	/* Digital MICs
-+	 * DMIC Pair1 are the two DMICs connected on the DMICN1 connector.
-+	 * DMIC Pair2 are the two DMICs connected on the DMICN2 connector.
-+	 * Facing the camera, DMIC Pair1 are on the left side, DMIC Pair2
-+	 * are on the right side.
-+	 */
-+	{"DMIC L1", NULL, "DMIC Pair1"},
-+	{"DMIC R1", NULL, "DMIC Pair1"},
-+	{"DMIC L2", NULL, "DMIC Pair2"},
-+	{"DMIC R2", NULL, "DMIC Pair2"},
-+
-+	/* CODEC BE connections */
-+	{"SSP0 CODEC IN", NULL, "AIF1 Capture"},
-+	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
-+};
-+
-+static const struct snd_kcontrol_new bdw_rt5650_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("DMIC Pair1"),
-+	SOC_DAPM_PIN_SWITCH("DMIC Pair2"),
-+};
-+
-+
-+static struct snd_soc_jack headphone_jack;
-+static struct snd_soc_jack mic_jack;
-+
-+static struct snd_soc_jack_pin headphone_jack_pin = {
-+	.pin	= "Headphone",
-+	.mask	= SND_JACK_HEADPHONE,
-+};
-+
-+static struct snd_soc_jack_pin mic_jack_pin = {
-+	.pin	= "Headset Mic",
-+	.mask	= SND_JACK_MICROPHONE,
-+};
-+
-+static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
-+			struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	/* The ADSP will covert the FE rate to 48k, max 4-channels */
-+	rate->min = rate->max = 48000;
-+	channels->min = 2;
-+	channels->max = 4;
-+
-+	/* set SSP0 to 24 bit */
-+	snd_mask_set_format(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT),
-+			    SNDRV_PCM_FORMAT_S24_LE);
-+
-+	return 0;
-+}
-+
-+static int bdw_rt5650_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ /*
+  * DMIC PDM Tokens
+  * SOF_TKN_INTEL_DMIC_PDM_CTRL_ID should be the first token
+@@ -2704,8 +2711,66 @@ static int sof_link_sai_load(struct snd_soc_component *scomp, int index,
+ 			     struct snd_soc_tplg_hw_config *hw_config,
+ 			     struct sof_ipc_dai_config *config)
+ {
+-	/*TODO: Add implementation */
+-	return 0;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct snd_soc_tplg_private *private = &cfg->priv;
++	struct sof_ipc_reply reply;
++	u32 size = sizeof(*config);
 +	int ret;
 +
-+	/* Workaround: set codec PLL to 19.2MHz that PLL source is
-+	 * from MCLK(24MHz) to conform 2.4MHz DMIC clock.
-+	 */
-+	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5645_PLL1_S_MCLK,
-+		24000000, 19200000);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
++	/* handle master/slave and inverted clocks */
++	sof_dai_set_format(hw_config, config);
++
++	/* init IPC */
++	memset(&config->sai, 0, sizeof(struct sof_ipc_dai_sai_params));
++	config->hdr.size = size;
++
++	ret = sof_parse_tokens(scomp, &config->sai, sai_tokens,
++			       ARRAY_SIZE(sai_tokens), private->array,
++			       le32_to_cpu(private->size));
++	if (ret != 0) {
++		dev_err(scomp->dev, "error: parse sai tokens failed %d\n",
++			le32_to_cpu(private->size));
 +		return ret;
 +	}
 +
-+	/* The actual MCLK freq is 24MHz. The codec is told that MCLK is
-+	 * 24.576MHz to satisfy the requirement of rl6231_get_clk_info.
-+	 * ASRC is enabled on AD and DA filters to ensure good audio quality.
-+	 */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5645_SCLK_S_PLL1, 24576000,
-+		SND_SOC_CLOCK_IN);
++	config->sai.mclk_rate = le32_to_cpu(hw_config->mclk_rate);
++	config->sai.mclk_direction = hw_config->mclk_direction;
++
++	config->sai.tdm_slots = le32_to_cpu(hw_config->tdm_slots);
++	config->sai.tdm_slot_width = le32_to_cpu(hw_config->tdm_slot_width);
++	config->sai.rx_slots = le32_to_cpu(hw_config->rx_slots);
++	config->sai.tx_slots = le32_to_cpu(hw_config->tx_slots);
++
++	dev_info(scomp->dev,
++		 "tplg: config SAI%d fmt 0x%x mclk %d width %d slots %d mclk id %d\n",
++		config->dai_index, config->format,
++		config->sai.mclk_rate, config->sai.tdm_slot_width,
++		config->sai.tdm_slots, config->sai.mclk_id);
++
++	if (config->sai.tdm_slots < 1 || config->sai.tdm_slots > 8) {
++		dev_err(scomp->dev, "error: invalid channel count for SAI%d\n",
++			config->dai_index);
++		return -EINVAL;
++	}
++
++	/* send message to DSP */
++	ret = sof_ipc_tx_message(sdev->ipc,
++				 config->hdr.cmd, config, size, &reply,
++				 sizeof(reply));
++
 +	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
++		dev_err(scomp->dev, "error: failed to set DAI config for SAI%d\n",
++			config->dai_index);
 +		return ret;
 +	}
++
++	/* set config for all DAI's with name matching the link name */
++	ret = sof_set_dai_config(sdev, size, link, config);
++	if (ret < 0)
++		dev_err(scomp->dev, "error: failed to save DAI config for SAI%d\n",
++			config->dai_index);
 +
 +	return ret;
-+}
-+
-+static struct snd_soc_ops bdw_rt5650_ops = {
-+	.hw_params = bdw_rt5650_hw_params,
-+};
-+
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
-+static int bdw_rt5650_rtd_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, DRV_NAME);
-+	struct sst_pdata *pdata = dev_get_platdata(component->dev);
-+	struct sst_hsw *broadwell = pdata->dsp;
-+	int ret;
-+
-+	/* Set ADSP SSP port settings
-+	 * clock_divider = 4 means BCLK = MCLK/5 = 24MHz/5 = 4.8MHz
-+	 */
-+	ret = sst_hsw_device_set_config(broadwell, SST_HSW_DEVICE_SSP_0,
-+		SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
-+		SST_HSW_DEVICE_TDM_CLOCK_MASTER, 4);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "error: failed to set device config\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+#endif
-+
-+static int bdw_rt5650_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct bdw_rt5650_priv *bdw_rt5650 =
-+		snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_component *component = rtd->codec_dai->component;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+
-+	/* Enable codec ASRC function for Stereo DAC/Stereo1 ADC/DMIC/I2S1.
-+	 * The ASRC clock source is clk_i2s1_asrc.
-+	 */
-+	rt5645_sel_asrc_clk_src(component,
-+				RT5645_DA_STEREO_FILTER |
-+				RT5645_DA_MONO_L_FILTER |
-+				RT5645_DA_MONO_R_FILTER |
-+				RT5645_AD_STEREO_FILTER |
-+				RT5645_AD_MONO_L_FILTER |
-+				RT5645_AD_MONO_R_FILTER,
-+				RT5645_CLK_SEL_I2S1_ASRC);
-+
-+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
-+
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Create and initialize headphone jack */
-+	if (snd_soc_card_jack_new(rtd->card, "Headphone Jack",
-+			SND_JACK_HEADPHONE, &headphone_jack,
-+			&headphone_jack_pin, 1)) {
-+		dev_err(component->dev, "Can't create headphone jack\n");
-+	}
-+
-+	/* Create and initialize mic jack */
-+	if (snd_soc_card_jack_new(rtd->card, "Mic Jack", SND_JACK_MICROPHONE,
-+			&mic_jack, &mic_jack_pin, 1)) {
-+		dev_err(component->dev, "Can't create mic jack\n");
-+	}
-+
-+	rt5645_set_jack_detect(component, &headphone_jack, &mic_jack, NULL);
-+
-+	bdw_rt5650->component = component;
-+
-+	return 0;
-+}
-+
-+/* broadwell digital audio interface glue - connects codec <--> CPU */
-+SND_SOC_DAILINK_DEF(dummy,
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+
-+SND_SOC_DAILINK_DEF(fe,
-+	DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
-+
-+SND_SOC_DAILINK_DEF(platform,
-+	DAILINK_COMP_ARRAY(COMP_PLATFORM("haswell-pcm-audio")));
-+
-+SND_SOC_DAILINK_DEF(be,
-+	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5650:00", "rt5645-aif1")));
-+
-+static struct snd_soc_dai_link bdw_rt5650_dais[] = {
-+	/* Front End DAI links */
-+	{
-+		.name = "System PCM",
-+		.stream_name = "System Playback",
-+		.dynamic = 1,
-+#if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
-+		.init = bdw_rt5650_rtd_init,
-+#endif
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST,
-+			SND_SOC_DPCM_TRIGGER_POST
-+		},
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(fe, dummy, platform),
-+	},
-+
-+	/* Back End DAI links */
-+	{
-+		/* SSP0 - Codec */
-+		.name = "Codec",
-+		.id = 0,
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+		.ignore_suspend = 1,
-+		.ignore_pmdown_time = 1,
-+		.be_hw_params_fixup = broadwell_ssp0_fixup,
-+		.ops = &bdw_rt5650_ops,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.init = bdw_rt5650_init,
-+		SND_SOC_DAILINK_REG(dummy, be, dummy),
-+	},
-+};
-+
-+/* ASoC machine driver for Broadwell DSP + RT5650 */
-+static struct snd_soc_card bdw_rt5650_card = {
-+	.name = "bdw-rt5650",
-+	.owner = THIS_MODULE,
-+	.dai_link = bdw_rt5650_dais,
-+	.num_links = ARRAY_SIZE(bdw_rt5650_dais),
-+	.dapm_widgets = bdw_rt5650_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(bdw_rt5650_widgets),
-+	.dapm_routes = bdw_rt5650_map,
-+	.num_dapm_routes = ARRAY_SIZE(bdw_rt5650_map),
-+	.controls = bdw_rt5650_controls,
-+	.num_controls = ARRAY_SIZE(bdw_rt5650_controls),
-+	.fully_routed = true,
-+};
-+
-+static int bdw_rt5650_probe(struct platform_device *pdev)
-+{
-+	struct bdw_rt5650_priv *bdw_rt5650;
-+	struct snd_soc_acpi_mach *mach;
-+	int ret;
-+
-+	bdw_rt5650_card.dev = &pdev->dev;
-+
-+	/* Allocate driver private struct */
-+	bdw_rt5650 = devm_kzalloc(&pdev->dev, sizeof(struct bdw_rt5650_priv),
-+		GFP_KERNEL);
-+	if (!bdw_rt5650)
-+		return -ENOMEM;
-+
-+	/* override plaform name, if required */
-+	mach = (&pdev->dev)->platform_data;
-+	ret = snd_soc_fixup_dai_links_platform_name(&bdw_rt5650_card,
-+						    mach->mach_params.platform);
-+
-+	if (ret)
-+		return ret;
-+
-+	snd_soc_card_set_drvdata(&bdw_rt5650_card, bdw_rt5650);
-+
-+	return devm_snd_soc_register_card(&pdev->dev, &bdw_rt5650_card);
-+}
-+
-+static struct platform_driver bdw_rt5650_audio = {
-+	.probe = bdw_rt5650_probe,
-+	.driver = {
-+		.name = "bdw-rt5650",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+};
-+
-+module_platform_driver(bdw_rt5650_audio)
-+
-+/* Module information */
-+MODULE_AUTHOR("Ben Zhang <benzh@chromium.org>");
-+MODULE_DESCRIPTION("Intel Broadwell RT5650 machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:bdw-rt5650");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-index 34eb0baaa951..35958553652e 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-@@ -29,6 +29,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
- 		.sof_fw_filename = "sof-bdw.ri",
- 		.sof_tplg_filename = "sof-bdw-rt286.tplg",
- 	},
-+	{
-+		.id = "10EC5650",
-+		.drv_name = "bdw-rt5650",
-+		.fw_filename = "intel/IntcSST2.bin",
-+		.sof_fw_filename = "sof-bdw.ri",
-+		.sof_tplg_filename = "sof-bdw-rt5650.tplg",
-+	},
- 	{
- 		.id = "RT5677CE",
- 		.drv_name = "bdw-rt5677",
+ }
+ 
+ static int sof_link_esai_load(struct snd_soc_component *scomp, int index,
 -- 
 2.20.1
 
