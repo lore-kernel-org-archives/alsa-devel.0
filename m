@@ -2,98 +2,103 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A660C3F68F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:32:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93727C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:37:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8931620717
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:32:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B431218AC
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:37:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q3xTKKrP";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="WL6LQvaJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8931620717
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Os16oAdc";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="Aq11DQQz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B431218AC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0D021657;
-	Wed, 18 Dec 2019 18:24:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0D021657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 892A3167C;
+	Wed, 18 Dec 2019 18:26:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 892A3167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576689922;
-	bh=Tgf/jw8hj8MnGYSNhCIp/HHcoiOhduAdvLE1BhZSqPw=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=q3xTKKrPOODOYzRuq7eJ4+xQuTe7lmc/7/8FoxgKy9tpnqzHxLVkbwVqai7q434Sa
-	 kTaXQrzlJXIlTvrg4sxDy2kQhEiujNPgtXJhL+aPapxggzyenRTTr10l1xDmvYAypE
-	 3UMe+TxDglzTZcDfM6pSMmG69AS89zfOd4ZABDLE=
+	s=default; t=1576690023;
+	bh=wq5QMPkgucoGkkTxEeetRXiq/UuFVmiOlINuqbmbfKw=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Os16oAdc+PB5nsHpsoox6+MNonU0NCfIDk54z4xKl1Xwc9ezsHSog4fkYorffjtTx
+	 7Qg9jocxwiNvaPoZEnkM5A0/9Smrnc0jh1pSh3ShKC4tyOSpBt+XxZTQCEvxZQHCuS
+	 uqKVGMhFkcy+9swU1mDyenOovWWoJ1PHCMv5JtU8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42E8DF8022C;
-	Wed, 18 Dec 2019 18:24:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79A1EF8015A;
+	Wed, 18 Dec 2019 18:24:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E7E5F80247; Wed, 18 Dec 2019 18:24:29 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
+ id 1461BF8026A; Wed, 18 Dec 2019 18:24:34 +0100 (CET)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
+ [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5A92F80096
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 18:24:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5A92F80096
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CCF9F80247
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 18:24:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CCF9F80247
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="WL6LQvaJ"
-Received: by mail-wr1-x443.google.com with SMTP id c14so3161346wrn.7
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 09:24:26 -0800 (PST)
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="Aq11DQQz"
+Received: by mail-wr1-x442.google.com with SMTP id c14so3161547wrn.7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 09:24:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=gkeDNQUJ3ikeTDqUkF4Gryc9YGb0Gj5eqNCbDtkdhPw=;
- b=WL6LQvaJ9GGlUjw9H2P/1hGp29WTQgH0SjF3vxM3PXuoSHkCPIJMZ0/moLtc9sKgF+
- JEh6NAbPqIWRs+wngIArKVHOaQSYykBTrlkNfSRW5F8uLnOYl7JY1UB6HVoQXdY3kEMO
- QVPbDjuu41bQvjV9npjWA3XGgU7mNTizqkPWaq8m8TTm8pEn3o7oHmiP/QDEr8b4hWy1
- gB0B7bA0p4nRahqNbn8k7FC58AA9TFFrBbxaBSXJ4WNCY3mEi7BmrGLsi4VkqvTiLIFP
- c/ym3SuKFZDF8BCpRPf5wTGrB/t9RvWsnyq/Mj8chxROlsIi0KDJel1ST8/iTOySbmG6
- A/xw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=tSV0U+WsxMuhIA7h8z+p35tUgb5H1eC3kU9lrnCcoSE=;
+ b=Aq11DQQzGzUVMcpWF0JLC2YC8sZjcaX3sfuiLmMCNRh+4c7+JI34s4KpbzVuBJAHhU
+ h5+qSCTuVinAqS2kS5fTfta1r86RCr1OoBFcIbsSOYGA4dTisxrZ67amFumwgvYNMu6i
+ PNay5IKLqsKRt2sGA5KLjCcDNArAXPXSwVMKRQXPVctl7oH0fH08hM2qFAQUmhE4ycgT
+ 8gScSfV2FbRmb5BcHVFOFtO0xdqNAM46Z9Uyz4CjV38JT4PmakxTTk5RfsutAf472msv
+ 9d6kV3z6w/sM6/o1V7cJsXSmXmAmxw6tLaFTekzis8EWAKgU8DoTZVv+vU52P4vvqOh5
+ L9yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=gkeDNQUJ3ikeTDqUkF4Gryc9YGb0Gj5eqNCbDtkdhPw=;
- b=Su8h8pTNnz6Kx4chsV3Ex6WLfMxuRZTsXA2sNBloLN/kmJ7fAurB40SWrNfRXQvqSV
- NiF4RxzWLmeX2yr59Qwbsp8Q5jiEzLHdVu8PAKuzKnct6Et64HkIrUj+8VBV++EO8cpE
- vAuqnWeRmmZ9O+nRNucPffBQKoqjZWJGB8quQlvH7+BJWxG80iEzEpfQ3aaSf7Ikz401
- Wtjg4S0Wx0AtGUrAxKnAsigR4PAFKEpmiH/Wa+rChjuvjZKQcCQt/YQ2gqJiRfCX8p/p
- dZD1AIX3qU7HE5arVdl4+9RnvhVAI1Y3/7kNNyqjidCY3/vLgv1A8RlxVjj+1+hDOBBL
- P+Lg==
-X-Gm-Message-State: APjAAAUtXjxfgZtXw5wgEEQMzm4EGbAp2c792gYCqZ0LlZMbG/592KA7
- cF1dXROCi9LsOhqn6xin/s8IKg==
-X-Google-Smtp-Source: APXvYqwBahCJsSlMYv9H8BS5x9yINh/xRKEr1G8MnVvK/fUdISZ8dpu38/NOPkP1wQV26nQIfcBMEw==
-X-Received: by 2002:a5d:4f90:: with SMTP id d16mr3902176wru.395.1576689865056; 
- Wed, 18 Dec 2019 09:24:25 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=tSV0U+WsxMuhIA7h8z+p35tUgb5H1eC3kU9lrnCcoSE=;
+ b=grMtT/jvseiNNikdnePYJh0KHbF02a1S2dnsy+2ig+8t5Jc1Xbma5EW7DtyI/Okk88
+ SxgXQPoh1pi3F4q4tibHbDuCrIiXz2rqJDaOzl/XtUttB1wcT7Bj3ajW2sNoIBEGg4FN
+ 2YpWNrNX9EALV16MBoOfYTklvVT5REX7dQsqv0S64xDIuX+XBOMN+VNapz790juNequ6
+ +H6xQpPO9Yb2WBcwQ0lIEInji/IfW5pSaiKjkuEGMScQTvpzUxTwYCu6g1a46NFqY0Lo
+ HsT2jqiG8BczM3sWTUE6TA75HnTHOiBaCmJLiewAry581POP+x6MKn4JISGfjjV6EU7B
+ Un7A==
+X-Gm-Message-State: APjAAAWhYUa6w5PdCGtjXA6lCNAgELmZEm/Ac4NAvSPPwqLiE0q5QF+T
+ pLhIsajx9CowC8XvsQUm47kLEA==
+X-Google-Smtp-Source: APXvYqzR3OHiC1qb2gmKaVTY+JWZnRqg1+/NxiFB3m8W82gVRRtbYJi73MwFBkCdV+TgNGVWs/ce9Q==
+X-Received: by 2002:adf:e8ca:: with SMTP id k10mr4149822wrn.50.1576689869279; 
+ Wed, 18 Dec 2019 09:24:29 -0800 (PST)
 Received: from localhost.localdomain (cag06-3-82-243-161-21.fbx.proxad.net.
  [82.243.161.21])
- by smtp.googlemail.com with ESMTPSA id 4sm2883231wmg.22.2019.12.18.09.24.23
+ by smtp.googlemail.com with ESMTPSA id 4sm2883231wmg.22.2019.12.18.09.24.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Dec 2019 09:24:24 -0800 (PST)
+ Wed, 18 Dec 2019 09:24:28 -0800 (PST)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
-Date: Wed, 18 Dec 2019 18:24:16 +0100
-Message-Id: <20191218172420.1199117-1-jbrunet@baylibre.com>
+Date: Wed, 18 Dec 2019 18:24:18 +0100
+Message-Id: <20191218172420.1199117-3-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191218172420.1199117-1-jbrunet@baylibre.com>
+References: <20191218172420.1199117-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
  linux-amlogic@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
-Subject: [alsa-devel] [PATCH 0/4] ASoC: meson: axg-fifo: fix depth handling
+Subject: [alsa-devel] [PATCH 2/4] ASoC: meson: axg-fifo: add fifo depth to
+	the bindings documentation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,32 +116,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset improves the handling the depth of the different fifos
-found in amlogic audio subsystems derived from the axg family.
+Add a new property with the depth of the fifo in bytes. This is useful
+since some instance of the fifo, even on the same SoC, may have different
+depth. The depth is useful is set some parameters of the fifo.
 
-Initially, it was reported that, when the period is less than 8kB on sm1
-and with TODDR A, several period are coming at once. This is because the
-field related to the fifo request threshold changed on the sm1 SoC and
-also because TODDR A instance is significantly larger compared to the
-other instances.
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-With this initial issue fixed, I used the opportunity to improve the
-driver and properly deal with the different fifo depth found in these
-SoCs.
-
-Jerome Brunet (4):
-  ASoC: meson: axg-fifo: fix fifo threshold setup
-  ASoC: meson: axg-fifo: add fifo depth to the bindings documentation
-  ASoC: meson: axg-fifo: improve depth handling
-  ASoC: meson: axg-fifo: relax period size constraints
-
- .../bindings/sound/amlogic,axg-fifo.txt       |  4 ++
- sound/soc/meson/axg-fifo.c                    | 50 ++++++++++++++++---
- sound/soc/meson/axg-fifo.h                    |  9 ++--
- sound/soc/meson/axg-frddr.c                   | 33 ++++++------
- sound/soc/meson/axg-toddr.c                   | 21 ++++----
- 5 files changed, 76 insertions(+), 41 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+index 3080979350a0..fa4545ed81ca 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+@@ -17,6 +17,9 @@ Required properties:
+   * "arb" : memory ARB line (required)
+   * "rst" : dedicated device reset line (optional)
+ - #sound-dai-cells: must be 0.
++- amlogic,fifo-depth: The size of the controller's fifo in bytes. This
++  		      is useful for determining certain configuration such
++		      as the flush threshold of the fifo
+ 
+ Example of FRDDR A on the A113 SoC:
+ 
+@@ -27,4 +30,5 @@ frddr_a: audio-controller@1c0 {
+ 	interrupts = <GIC_SPI 88 IRQ_TYPE_EDGE_RISING>;
+ 	clocks = <&clkc_audio AUD_CLKID_FRDDR_A>;
+ 	resets = <&arb AXG_ARB_FRDDR_A>;
++	fifo-depth = <512>;
+ };
 -- 
 2.23.0
 
