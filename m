@@ -6,59 +6,58 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E141C2D0D1
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19ADDC2D0CD
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 893B821582
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 971A121582
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jfkXyHpE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 893B821582
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hMc8v/kY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 971A121582
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDAD61687;
-	Wed, 18 Dec 2019 21:21:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDAD61687
+	by alsa0.perex.cz (Postfix) with ESMTPS id E09A91690;
+	Wed, 18 Dec 2019 21:22:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E09A91690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576700537;
-	bh=d88jvhwah4JZEcqe/4NW3dagPduRoZhTD56MQg0HUJs=;
+	s=default; t=1576700575;
+	bh=XEfhpJjZQJgDw6h8Lrvu0J8ztuwMthaiRTUk61L0vqE=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jfkXyHpEflxmbMu1CnrWGYQ0DUhV8etrckCgTZ7iHq1hgHtrNIzmkoF/fGYR7aIVg
-	 oCpumuXtxAPk6cjTmXBKLZBa3zyTE9vxiw3ysh4ZBxxzgZdtu7wmxt/AKRCJfOB/KT
-	 tL7ZSlpNt3FSkomXZy5Ls7hYadNTbA97zluYy/Os=
+	b=hMc8v/kYAub1YoxUTiNf5juq1/wD73yoF/rqlcOV7pWpUky0BSFguIxSMfY0NV/de
+	 D9PCAsOsquXG9hDsJC0IQARo98/6hTK6iuFLjLyyB2RTsL6GGRBtM4b+48DUDv0xwZ
+	 KhBqtdzoILA1jZk0DDpMvxOciV9Z1tLIV79EHrV0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95D3CF8038D;
-	Wed, 18 Dec 2019 21:06:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7E54F80392;
+	Wed, 18 Dec 2019 21:06:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0A82F80385; Wed, 18 Dec 2019 21:06:30 +0100 (CET)
+ id 6A9BFF80384; Wed, 18 Dec 2019 21:06:32 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id AD0B5F8036C
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:06:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD0B5F8036C
+ by alsa1.perex.cz (Postfix) with ESMTP id A6093F8037E
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:06:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6093F8037E
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97B22113E;
- Wed, 18 Dec 2019 12:06:25 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 174B91396;
+ Wed, 18 Dec 2019 12:06:28 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 157A03F67D;
- Wed, 18 Dec 2019 12:06:24 -0800 (PST)
-Date: Wed, 18 Dec 2019 20:06:23 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 88AAC3F67D;
+ Wed, 18 Dec 2019 12:06:27 -0800 (PST)
+Date: Wed, 18 Dec 2019 20:06:26 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191218000518.5830-3-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191218000518.5830-3-pierre-louis.bossart@linux.intel.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20191218000518.5830-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191218000518.5830-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda: hda-dai: fix oops on
-	hda_link .hw_free" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: fix fault at driver unload after
+	failed probe" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda: hda-dai: fix oops on hda_link .hw_free
+   ASoC: SOF: fix fault at driver unload after failed probe
 
 has been applied to the asoc tree at
 
@@ -104,69 +103,47 @@ to this mail.
 Thanks,
 Mark
 
-From 921162c81a089aa2f442103290f1af9ba281fc9f Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 17 Dec 2019 18:05:17 -0600
-Subject: [PATCH] ASoC: SOF: Intel: hda: hda-dai: fix oops on hda_link .hw_free
+From b06e46427f987bf83dcb6a69516b57276eb8ec0c Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Tue, 17 Dec 2019 18:05:16 -0600
+Subject: [PATCH] ASoC: SOF: fix fault at driver unload after failed probe
 
-When the PCM_PARAM IPC fails while configuring the FE, the kernel
-oopses in the HDaudio link DMA .hw_free operation. The root cause is a
-NULL dma_data since the BE .hw_params was never called by the SOC
-core.
+If sof_machine_check() fails during driver probe, the IPC
+state is not initialized and this will lead to a NULL
+dereference at driver unload. Example log is as follows:
 
-This error can also happen if the HDaudio link DMA configuration IPC
-fails in the BE .hw_params.
+[ 1535.980630] sof-audio-pci 0000:00:1f.3: error: no matching ASoC machine driver found - aborting probe
+[ 1535.980631] sof-audio-pci 0000:00:1f.3: error: failed to get machine info -19
+[ 1535.980632] sof-audio-pci 0000:00:1f.3: error: sof_probe_work failed err: -19
+[ 1550.798373] BUG: kernel NULL pointer dereference, address: 0000000000000008
+...
+[ 1550.798393] Call Trace:
+[ 1550.798397]  snd_sof_ipc_free+0x15/0x30 [snd_sof]
+[ 1550.798399]  snd_sof_device_remove+0x29/0xa0 [snd_sof]
+[ 1550.798400]  sof_pci_remove+0x10/0x30 [snd_sof_pci]
 
-This patches makes sure the dma_data is properly saved in .hw_params,
-and tested before being use in hw_free.
-
-GitHub issue: https://github.com/thesofproject/linux/issues/1417
-
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191218000518.5830-3-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191218000518.5830-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-dai.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sof/ipc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 8796f385be76..896d21984b73 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -216,6 +216,8 @@ static int hda_link_hw_params(struct snd_pcm_substream *substream,
- 		link_dev = hda_link_stream_assign(bus, substream);
- 		if (!link_dev)
- 			return -EBUSY;
-+
-+		snd_soc_dai_set_dma_data(dai, substream, (void *)link_dev);
- 	}
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 5994e1073364..5fdfbaa8c4ed 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -826,6 +826,9 @@ void snd_sof_ipc_free(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_sof_ipc *ipc = sdev->ipc;
  
- 	stream_tag = hdac_stream(link_dev)->stream_tag;
-@@ -228,8 +230,6 @@ static int hda_link_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	snd_soc_dai_set_dma_data(dai, substream, (void *)link_dev);
--
- 	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
- 	if (!link)
- 		return -EINVAL;
-@@ -361,6 +361,13 @@ static int hda_link_hw_free(struct snd_pcm_substream *substream,
- 	bus = hstream->bus;
- 	rtd = snd_pcm_substream_chip(substream);
- 	link_dev = snd_soc_dai_get_dma_data(dai, substream);
++	if (!ipc)
++		return;
 +
-+	if (!link_dev) {
-+		dev_dbg(dai->dev,
-+			"%s: link_dev is not assigned\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	hda_stream = hstream_to_sof_hda_stream(link_dev);
- 
- 	/* free the link DMA channel in the FW */
+ 	/* disable sending of ipc's */
+ 	mutex_lock(&ipc->tx_mutex);
+ 	ipc->disable_ipc_tx = true;
 -- 
 2.20.1
 
