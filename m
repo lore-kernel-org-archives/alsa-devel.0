@@ -2,66 +2,72 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30F48C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:27:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 029CEC43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:28:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F40A2176D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:27:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7872A2176D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 00:28:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nz0sJRVO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F40A2176D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EdobnFkS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7872A2176D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A521850;
-	Wed, 18 Dec 2019 01:26:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A521850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8936B1615;
+	Wed, 18 Dec 2019 01:27:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8936B1615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576628849;
-	bh=UDfADNEeSXZ+y5vY9L/IZSWRbXho8u9v4PiHixcJ1l8=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Nz0sJRVOVs3DiHx3tPcrxjOMVESHAYK8JGJG7CmRlO+T81vp5hrVGmBsSS0FyfoM3
-	 94O+DAh4W92fLskx/wfxsJo6bGyXlDTEfbMoMdp25PbCuPXt4rKy4j9bj9ZUlG9I7b
-	 a06kTSdGD17JPsaUq0r4PehWXxXSaSZmIq3Kiy/0=
+	s=default; t=1576628902;
+	bh=oSpz3dGwRVqcsDlb33M2cfbt2uZEZRvbZyHQNwGKDX0=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EdobnFkSfKctVBwQEWJ46MgsJK0HqilxQ92aGLZzwgz3Huw8Mn2maoZp3HRadlizc
+	 BVTY3/pjOgGZ7hXKJBe6HcclXn5+HaR82qS1G4HCisC6c2KjpBdTVYutJhCtYdorxV
+	 hNAQGd7PS9RBMRH6q/3gR8vtsj7InB75RJV1N4Xw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3FF8F8025F;
-	Wed, 18 Dec 2019 01:26:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDD66F8026F;
+	Wed, 18 Dec 2019 01:26:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE92DF80256; Wed, 18 Dec 2019 01:26:35 +0100 (CET)
+ id 46B46F80266; Wed, 18 Dec 2019 01:26:38 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E500F8020B
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:26:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E500F8020B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E619F80218
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 01:26:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E619F80218
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2019 16:26:30 -0800
+ 17 Dec 2019 16:26:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="217974208"
+X-IronPort-AV: E=Sophos;i="5.69,327,1571727600"; d="scan'208";a="217974218"
 Received: from dshoemak-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.3.243])
- by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 16:26:29 -0800
+ by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 16:26:30 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Tue, 17 Dec 2019 18:26:08 -0600
-Message-Id: <20191218002616.7652-1-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 17 Dec 2019 18:26:10 -0600
+Message-Id: <20191218002616.7652-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191218002616.7652-1-pierre-louis.bossart@linux.intel.com>
+References: <20191218002616.7652-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de, Karol Trzcinski <karolx.trzcinski@linux.intel.com>,
+ broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 0/8] ASoC: SOF: last patches for 2019
+Subject: [alsa-devel] [PATCH 2/8] ASoC: SOF: define struct with compiler
+	name and version
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,49 +85,50 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset adds a set of somewhat independent changes for i.MX,
-Intel, boards and core.
+From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 
-Guido Roncarolo (2):
-  ASoC: SOF: imx: Describe SAI parameters to be sent to DSP
-  ASoC: SOF: imx: Read SAI parameters and send them to DSP
+Add compiler information structure sof_ipc_cc_version.
+Add new enum value in sof_ipc_ext_data for new structure.
+This struct will be used to show more information about firmware
+in host system. It will be helpful during debugging.
 
-Kai Vehmanen (2):
-  ASoC: SOF: Intel: drop HDA codec upon probe failure
-  ASoC: Intel: boards: fix incorrect HDMI Kconfig dependency
+Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/sof/info.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Karol Trzcinski (2):
-  ASoC: SOF: define struct with compiler name and version
-  ASoC: SOF: log compiler name and version information
-
-Ranjani Sridharan (1):
-  ASoC: SOF: Introduce state machine for FW boot
-
-Yong Zhi (1):
-  ASoC: Intel: Add machine driver for da7219_max98373
-
- include/sound/sof/dai-imx.h                   |  20 +
- include/sound/sof/dai.h                       |   1 +
- include/sound/sof/info.h                      |  15 +
- include/uapi/sound/sof/tokens.h               |   3 +-
- sound/soc/intel/boards/Kconfig                |  28 +-
- sound/soc/intel/boards/Makefile               |   3 +
- sound/soc/intel/boards/sof_da7219_max98373.c  | 371 ++++++++++++++++++
- .../intel/common/soc-acpi-intel-jsl-match.c   |   7 +
- sound/soc/sof/core.c                          |  50 ++-
- sound/soc/sof/intel/hda-codec.c               |  12 +-
- sound/soc/sof/intel/hda-loader.c              |   1 -
- sound/soc/sof/intel/hda.c                     |   4 +-
- sound/soc/sof/intel/hda.h                     |   4 +-
- sound/soc/sof/ipc.c                           |  17 +-
- sound/soc/sof/loader.c                        |  58 ++-
- sound/soc/sof/pcm.c                           |   8 +
- sound/soc/sof/pm.c                            |  21 +-
- sound/soc/sof/sof-priv.h                      |  12 +-
- sound/soc/sof/topology.c                      |  69 +++-
- 19 files changed, 662 insertions(+), 42 deletions(-)
- create mode 100644 sound/soc/intel/boards/sof_da7219_max98373.c
-
+diff --git a/include/sound/sof/info.h b/include/sound/sof/info.h
+index a9156b4a062c..1c560144996c 100644
+--- a/include/sound/sof/info.h
++++ b/include/sound/sof/info.h
+@@ -30,6 +30,7 @@
+ enum sof_ipc_ext_data {
+ 	SOF_IPC_EXT_DMA_BUFFER = 0,
+ 	SOF_IPC_EXT_WINDOW,
++	SOF_IPC_EXT_CC_INFO,
+ };
+ 
+ /* FW version - SOF_IPC_GLB_VERSION */
+@@ -115,4 +116,18 @@ struct sof_ipc_window {
+ 	struct sof_ipc_window_elem window[];
+ }  __packed;
+ 
++struct sof_ipc_cc_version {
++	struct sof_ipc_ext_data_hdr ext_hdr;
++	uint32_t major;
++	uint32_t minor;
++	uint32_t micro;
++
++	/* reserved for future use */
++	uint32_t reserved[4];
++
++	char name[16]; /* null terminated compiler name */
++	char optim[4]; /* null terminated compiler -O flag value */
++	char desc[]; /* null terminated compiler description */
++} __packed;
++
+ #endif
 -- 
 2.20.1
 
