@@ -2,62 +2,74 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19ADDC2D0CD
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A02CC3F68F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:23:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 971A121582
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 13CFB21582
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:23:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hMc8v/kY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 971A121582
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lum8mJm+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13CFB21582
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E09A91690;
-	Wed, 18 Dec 2019 21:22:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E09A91690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69AFB1692;
+	Wed, 18 Dec 2019 21:22:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69AFB1692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576700575;
-	bh=XEfhpJjZQJgDw6h8Lrvu0J8ztuwMthaiRTUk61L0vqE=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=hMc8v/kYAub1YoxUTiNf5juq1/wD73yoF/rqlcOV7pWpUky0BSFguIxSMfY0NV/de
-	 D9PCAsOsquXG9hDsJC0IQARo98/6hTK6iuFLjLyyB2RTsL6GGRBtM4b+48DUDv0xwZ
-	 KhBqtdzoILA1jZk0DDpMvxOciV9Z1tLIV79EHrV0=
+	s=default; t=1576700625;
+	bh=dp5me7o/YPawRSTwVyjtaQV0x3WWWGxfzPttMuzKit0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lum8mJm+PpYsJQiC168yAK54pvgZxOqn/hIR7yFSunqxLMNU8HKbjq4QAX7nclBNC
+	 rR1D26Mg8jADlWQsp2I+YYHBwHESJ72qp5Tabq2UsgfZLy2INkAHnb83HNvDycG4/j
+	 n2RjQafwBg90D52X+4qUvrPwSZ/i3yjxqT0u0f88=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7E54F80392;
-	Wed, 18 Dec 2019 21:06:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD1F2F80269;
+	Wed, 18 Dec 2019 21:08:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A9BFF80384; Wed, 18 Dec 2019 21:06:32 +0100 (CET)
+ id D3BA5F80269; Wed, 18 Dec 2019 21:07:59 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A6093F8037E
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:06:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6093F8037E
+ by alsa1.perex.cz (Postfix) with ESMTP id 7B7B8F8015A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:07:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B7B8F8015A
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 174B91396;
- Wed, 18 Dec 2019 12:06:28 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8C6D1FB;
+ Wed, 18 Dec 2019 12:07:56 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 88AAC3F67D;
- Wed, 18 Dec 2019 12:06:27 -0800 (PST)
-Date: Wed, 18 Dec 2019 20:06:26 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46BF43F67D;
+ Wed, 18 Dec 2019 12:07:56 -0800 (PST)
+Date: Wed, 18 Dec 2019 20:07:54 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20191218000518.5830-2-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191218000518.5830-2-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: fix fault at driver unload after
-	failed probe" to the asoc tree
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20191218200754.GA21386@sirena.org.uk>
+References: <20191126141423.21523-1-pierre-louis.bossart@linux.intel.com>
+ <s5h4kyqzpge.wl-tiwai@suse.de>
+ <0131b134-46dc-991f-230b-fe843f43f078@linux.intel.com>
+ <s5hd0cm16vf.wl-tiwai@suse.de>
+ <f442ed39-1a86-28fb-b42c-b0e5273cd79a@linux.intel.com>
+ <s5hbls57g43.wl-tiwai@suse.de>
+ <a90e86ce-b468-28b2-f0a8-30f66429d921@linux.intel.com>
+ <s5hr211zd4q.wl-tiwai@suse.de>
+ <828b260d-a22a-4c44-4a0b-644057336b67@linux.intel.com>
+ <s5hd0clz9k9.wl-tiwai@suse.de>
+MIME-Version: 1.0
+In-Reply-To: <s5hd0clz9k9.wl-tiwai@suse.de>
+X-Cookie: Please take note:
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: add PCI ID for
+	CometLake-S
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,84 +82,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3746736432578512381=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: SOF: fix fault at driver unload after failed probe
+--===============3746736432578512381==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Dec 18, 2019 at 09:02:30PM +0100, Takashi Iwai wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> When looking at the current code, for example, I'm not sure which
+> category hits the case of Cometlake-S vs Cometlake-H vs
+> Cometlake-LP...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Yeah, it's a bit much at the minute - there's enormous resolution there
+with the Intel systems and I'm not 100% sure who's using it.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
-From b06e46427f987bf83dcb6a69516b57276eb8ec0c Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Tue, 17 Dec 2019 18:05:16 -0600
-Subject: [PATCH] ASoC: SOF: fix fault at driver unload after failed probe
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl36hxkACgkQJNaLcl1U
+h9DYAgf/T5lXETppaDDtWBy+b4syr9p/Jjb7Eg80Q5sh4M5hAkLJMaTw6B3+Ntdp
+y5AzWuoCMaJ5d5PfUOp5C2A4cYQ5Z1Zby6BaIadAuJuBGmr5/v5Io5ib9b5jmzrR
+ztgfh/uED88CuqlNF5AAW1/vASeTF4U58Rxl30x69U2uQali8JqDJNpUfP4B8vMG
+pgb2KkEYdEVWYmpFrQrO6x34D1IAVkMnl3bw60NvfkenbSlx4455EuiDCVY7G1Lm
+MMzthv18CgPCoFfKJtuX90uagB/4qqRRst7KEcO4J0LHxfDkija9l1PE9q9XzL8X
+rmkWgniHH8Yq4+xXqsYnQkWF7B86IQ==
+=RXkh
+-----END PGP SIGNATURE-----
 
-If sof_machine_check() fails during driver probe, the IPC
-state is not initialized and this will lead to a NULL
-dereference at driver unload. Example log is as follows:
+--mP3DRpeJDSE+ciuQ--
 
-[ 1535.980630] sof-audio-pci 0000:00:1f.3: error: no matching ASoC machine driver found - aborting probe
-[ 1535.980631] sof-audio-pci 0000:00:1f.3: error: failed to get machine info -19
-[ 1535.980632] sof-audio-pci 0000:00:1f.3: error: sof_probe_work failed err: -19
-[ 1550.798373] BUG: kernel NULL pointer dereference, address: 0000000000000008
-...
-[ 1550.798393] Call Trace:
-[ 1550.798397]  snd_sof_ipc_free+0x15/0x30 [snd_sof]
-[ 1550.798399]  snd_sof_device_remove+0x29/0xa0 [snd_sof]
-[ 1550.798400]  sof_pci_remove+0x10/0x30 [snd_sof_pci]
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191218000518.5830-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/ipc.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 5994e1073364..5fdfbaa8c4ed 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -826,6 +826,9 @@ void snd_sof_ipc_free(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_ipc *ipc = sdev->ipc;
- 
-+	if (!ipc)
-+		return;
-+
- 	/* disable sending of ipc's */
- 	mutex_lock(&ipc->tx_mutex);
- 	ipc->disable_ipc_tx = true;
--- 
-2.20.1
+--===============3746736432578512381==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3746736432578512381==--
