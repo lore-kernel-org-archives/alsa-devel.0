@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78C55C2D0BF
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1811DC2D0D1
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F366A21582
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:21:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 86EDC24676
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:22:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Fx9sYh0Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F366A21582
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mN0DfNGM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86EDC24676
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44B39167B;
-	Wed, 18 Dec 2019 21:20:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44B39167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34AC5169C;
+	Wed, 18 Dec 2019 21:11:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34AC5169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576700498;
-	bh=hfXKwT7pz/LeBH2LBE4bu0rcvZAtU8mUevWC586NcvE=;
+	s=default; t=1576699932;
+	bh=PQL0FQ8AWDg9D99j7f1qcMDMrEOYenPDdOlFYjmlMB8=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Fx9sYh0YEfUEDUC7N8UP6ptzYCdJIxFMwOBHVBLtHlAoDUtkS4DNbpUB92tb8JpOu
-	 bjZD6dg8i5P0bBBniVlYV9XybVN7nDKGThKQdxuet2ck04u/+pUPDYZRfT71EKdB1U
-	 PjbIN2aQC4pKajtalvE2YZk+XGlo9pqNjRiO6osI=
+	b=mN0DfNGMXkqKisCVXiogLSqli1e6cBKQke6Fq2y7Xglv3bC5QwEn7yLgbH9ux+WKn
+	 /p6/sKBTCoR541/8zTeVD00/2rJh6gTffnX2g0b6HwRbbakQDwMuMO74BJtJdoShlG
+	 H1581wqOPMhY8QKZl44FZ7cmPEozMHbA46+3qFSw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A01CAF8037E;
-	Wed, 18 Dec 2019 21:06:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98972F802E2;
+	Wed, 18 Dec 2019 21:05:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E124F8037D; Wed, 18 Dec 2019 21:06:27 +0100 (CET)
+ id E6B0DF802D2; Wed, 18 Dec 2019 21:05:51 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D2218F80370
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:06:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2218F80370
+ by alsa1.perex.cz (Postfix) with ESMTP id 055C8F802BC
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:05:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 055C8F802BC
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2883A31B;
- Wed, 18 Dec 2019 12:06:23 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E714811B3;
+ Wed, 18 Dec 2019 12:05:47 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C3DC3F67D;
- Wed, 18 Dec 2019 12:06:22 -0800 (PST)
-Date: Wed, 18 Dec 2019 20:06:21 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 65D8D3F67D;
+ Wed, 18 Dec 2019 12:05:47 -0800 (PST)
+Date: Wed, 18 Dec 2019 20:05:45 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191217165649.12091-1-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191217165649.12091-1-pierre-louis.bossart@linux.intel.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+In-Reply-To: <20191218172420.1199117-3-jbrunet@baylibre.com>
+Message-Id: <applied-20191218172420.1199117-3-jbrunet@baylibre.com>
 X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: cml_rt1011_rt5682: fix
-	codec_conf by removing legacy style" to the asoc tree
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-amlogic@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: meson: axg-fifo: add fifo depth to the
+	bindings documentation" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +79,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: cml_rt1011_rt5682: fix codec_conf by removing legacy style
+   ASoC: meson: axg-fifo: add fifo depth to the bindings documentation
 
 has been applied to the asoc tree at
 
@@ -103,55 +104,42 @@ to this mail.
 Thanks,
 Mark
 
-From 5610b90e6bb21ca31caa635bf0c17c1ee6cf1c08 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 17 Dec 2019 10:56:48 -0600
-Subject: [PATCH] ASoC: Intel: cml_rt1011_rt5682: fix codec_conf by removing
- legacy style
+From fb522dbb4531c14193115a09905c6c31b37dbfc5 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 18 Dec 2019 18:24:18 +0100
+Subject: [PATCH] ASoC: meson: axg-fifo: add fifo depth to the bindings
+ documentation
 
-Now that the legacy style is removed, we have to use the new macros
-for the codec configuration. This change was missed in the initial
-series.
+Add a new property with the depth of the fifo in bytes. This is useful
+since some instance of the fifo, even on the same SoC, may have different
+depth. The depth is useful is set some parameters of the fifo.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Fixes: ee8f537fd8b71c ("ASoC: soc-core: remove legacy style of codec_conf")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20191217165649.12091-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20191218172420.1199117-3-jbrunet@baylibre.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cml_rt1011_rt5682.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-index a22f97234201..ab1196108d23 100644
---- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
-+++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-@@ -406,19 +406,19 @@ static struct snd_soc_dai_link cml_rt1011_rt5682_dailink[] = {
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+index 3080979350a0..fa4545ed81ca 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+@@ -17,6 +17,9 @@ Required properties:
+   * "arb" : memory ARB line (required)
+   * "rst" : dedicated device reset line (optional)
+ - #sound-dai-cells: must be 0.
++- amlogic,fifo-depth: The size of the controller's fifo in bytes. This
++  		      is useful for determining certain configuration such
++		      as the flush threshold of the fifo
  
- static struct snd_soc_codec_conf rt1011_conf[] = {
- 	{
--		.dev_name = "i2c-10EC1011:00",
-+		.dlc = COMP_CODEC_CONF("i2c-10EC1011:00"),
- 		.name_prefix = "WL",
- 	},
- 	{
--		.dev_name = "i2c-10EC1011:01",
-+		.dlc = COMP_CODEC_CONF("i2c-10EC1011:01"),
- 		.name_prefix = "WR",
- 	},
- 	{
--		.dev_name = "i2c-10EC1011:02",
-+		.dlc = COMP_CODEC_CONF("i2c-10EC1011:02"),
- 		.name_prefix = "TL",
- 	},
- 	{
--		.dev_name = "i2c-10EC1011:03",
-+		.dlc = COMP_CODEC_CONF("i2c-10EC1011:03"),
- 		.name_prefix = "TR",
- 	},
+ Example of FRDDR A on the A113 SoC:
+ 
+@@ -27,4 +30,5 @@ frddr_a: audio-controller@1c0 {
+ 	interrupts = <GIC_SPI 88 IRQ_TYPE_EDGE_RISING>;
+ 	clocks = <&clkc_audio AUD_CLKID_FRDDR_A>;
+ 	resets = <&arb AXG_ARB_FRDDR_A>;
++	fifo-depth = <512>;
  };
 -- 
 2.20.1
