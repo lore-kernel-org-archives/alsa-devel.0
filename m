@@ -2,105 +2,70 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 057CFC2D0CD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 092FDC2D0BF
 	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:32:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A4392465E
+	by mail.kernel.org (Postfix) with ESMTPS id 897B02146E
 	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 17:32:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q9mUp0Pj";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com header.i=@baylibre-com.20150623.gappssmtp.com header.b="ELeYHi5y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A4392465E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u6dlp7ih"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 897B02146E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFD011667;
-	Wed, 18 Dec 2019 18:25:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFD011667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24D9915F9;
+	Wed, 18 Dec 2019 18:14:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24D9915F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576689975;
-	bh=18sOEC2NQDdiMZUaUHk/n8Av0VJ0/w9IFcSRVpp88rw=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1576689314;
+	bh=pGNO1pUxDN3fI36c+eRW+qF01WQ9xGwJcvgobNxBS9I=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q9mUp0Pj4qtr1BGrJf8Yi8OjHSqVf4DfhZBvWNhhcrg+HelBXjiqUMtvYlCjQo8wv
-	 H6eXdH3YPWhAY0bMRNopD3XPq27J07xPhSwfUG94WbahK5KRUFuUn4Fvksfq/MijaR
-	 2YRaBsZ4JhmO7ww4okxM2GV9jbe6KED0hTpx2HgI=
+	b=u6dlp7ih4OuwJ96jX+GAKVQuLxr+Z6Aye7zJpgcQ7tEhoWct7XtE5A7p6kh8lmAwL
+	 +aUizG1clYkL3xv5W0TE8Qtbut8RS04em8qMljAiCWXYQXy/Fl/zdBN4KZSxlWlgTr
+	 Fw9e2dGB06eGYzygBLf6jMP5GgLqXvBSYD99cuLo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75AFBF80255;
-	Wed, 18 Dec 2019 18:24:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94F94F8015A;
+	Wed, 18 Dec 2019 18:14:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3E37F80259; Wed, 18 Dec 2019 18:24:31 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D418F8014C
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 18:24:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D418F8014C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="ELeYHi5y"
-Received: by mail-wm1-x344.google.com with SMTP id b19so2677097wmj.4
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 09:24:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=60aP4DflHtE4hw6pi+F8g20w+nVNv8AfPUSyKiwSy7M=;
- b=ELeYHi5yna5gupIWb5DwW4LmgYH9P/3mMxgpzW1oMcJKQTsAQZFrLJOJ2/zGHsskC1
- WRh6gbsUnkEV5e+xH44nvlHARyprgsib0ltK1UyyObj1gciZqzMqEXSIORHTYqtAYvcW
- myj+cc9/OVD/uMgBdSpvXWP8n9pXnDKidXsUzPHSTbSF737doFzlHv7rcKs5RfpcHnMT
- xzhWf/M22Od/PVPp0zulcq19H82tT4adR7rJ3Y26d7crwmPjV2dmtQpEyPVmTGbhMPRv
- DH1kd5fqNN/wlAKnaXrpkyNSBLwy5KWOg+LIAR2uDDc3e6UIfdGmkm7NA5txfcoDsOB6
- YUZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=60aP4DflHtE4hw6pi+F8g20w+nVNv8AfPUSyKiwSy7M=;
- b=qfSgSCJirf3HSRn9p1zu3anAGWS/FHtDtTvinfR76JGMHXXcdMpkSOnNZjCsGrFqBP
- Zq97F5lwRBXuWMZ0chmUA7hbli6bdA7XqCxvp+2N+IAg1V1/6Z822ZhyynTCpVwDR3VC
- 0n0IrRVjXHKj+4vbROQQUz/bU++Gb3UYQtfJLZcRd2lP8HwdeNnxhMpJnZZKgmDf77Xk
- cmbP4gqZLpetrut+FPX+gnmFIEWnwqx8y1MSwG5hpkw2H7TXAkXnpqbkX7TcOu5fVI/j
- fUjvuAvLJbW+yDCPY8+6b11qy7er9NRgTIFuaVxsvm8pyTvqygb0CtMlhGu5bXzkhxgI
- vU6g==
-X-Gm-Message-State: APjAAAV0346Oalnc+neRsJVB2H3zykzibdlil8rzTtI3MFVG8mq142FK
- drizF/4wrddqn2jXtDPozR8IiQ==
-X-Google-Smtp-Source: APXvYqxLyHrLorNOHAe8b1ZgYm5HdlUM0fLM+WwDt1/0cfK5vOQIkABEGIaZtDxd0T/evxFe78Eqfw==
-X-Received: by 2002:a05:600c:141:: with SMTP id
- w1mr4435278wmm.61.1576689867113; 
- Wed, 18 Dec 2019 09:24:27 -0800 (PST)
-Received: from localhost.localdomain (cag06-3-82-243-161-21.fbx.proxad.net.
- [82.243.161.21])
- by smtp.googlemail.com with ESMTPSA id 4sm2883231wmg.22.2019.12.18.09.24.25
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Dec 2019 09:24:26 -0800 (PST)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Date: Wed, 18 Dec 2019 18:24:17 +0100
-Message-Id: <20191218172420.1199117-2-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191218172420.1199117-1-jbrunet@baylibre.com>
-References: <20191218172420.1199117-1-jbrunet@baylibre.com>
+ id 32177F8022C; Wed, 18 Dec 2019 18:14:22 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 85CD3F80096
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 18:14:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85CD3F80096
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64C001FB;
+ Wed, 18 Dec 2019 09:14:17 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D67753F67D;
+ Wed, 18 Dec 2019 09:14:16 -0800 (PST)
+Date: Wed, 18 Dec 2019 17:14:15 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20191218171415.GJ3219@sirena.org.uk>
+References: <87r212jqt1.wl-kuninori.morimoto.gx@renesas.com>
+ <87o8w6jqrk.wl-kuninori.morimoto.gx@renesas.com>
+ <CAFQqKeWWdwCMEO9idW4sANYio3y1ye3Q3okbOEd=zwYrRXDSYg@mail.gmail.com>
+ <87eex2jnck.wl-kuninori.morimoto.gx@renesas.com>
+ <bc4cef12-0095-e2af-5c91-63b06d815b8c@linux.intel.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
- Alden DSouza <aldend@google.com>, linux-amlogic@lists.infradead.org,
- Jerome Brunet <jbrunet@baylibre.com>
-Subject: [alsa-devel] [PATCH 1/4] ASoC: meson: axg-fifo: fix fifo threshold
-	setup
+In-Reply-To: <bc4cef12-0095-e2af-5c91-63b06d815b8c@linux.intel.com>
+X-Cookie: Power is poison.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
+ Ranjani" <ranjani.sridharan@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [alsa-devel] [PATCH v2 2/7] ASoC: soc-core: care
+ .ignore_suspend for Component suspend
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,251 +78,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5065720651829697167=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On TODDR sm1, the fifo threshold register field is slightly different
-compared to the other SoCs. This leads to the fifo A being flushed to
-memory every 8kB. If the period is smaller than that, several periods
-are pushed to memory and notified at once. This is not ideal.
 
-Fix the register field update. With this, the fifos are flushed every
-128B. We could still do better, like adapt the threshold depending on
-the period size, but at least it consistent across the different
-SoC/fifos
+--===============5065720651829697167==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/qIPZgKzMPM+y5U5"
+Content-Disposition: inline
 
-Fixes: 5ac825c3d85e ("ASoC: meson: axg-toddr: add sm1 support")
-Reported-by: Alden DSouza <aldend@google.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/axg-fifo.c  | 27 +++++++++++++++++++++++++--
- sound/soc/meson/axg-fifo.h  |  6 ++++--
- sound/soc/meson/axg-frddr.c | 24 ++++++++++++------------
- sound/soc/meson/axg-toddr.c | 21 +++++++++------------
- 4 files changed, 50 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index 772eda857019..4365086c9a31 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -113,8 +113,10 @@ int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
- {
- 	struct snd_pcm_runtime *runtime = ss->runtime;
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
-+	unsigned int burst_num, period, threshold;
- 	dma_addr_t end_ptr;
--	unsigned int burst_num;
-+
-+	period = params_period_bytes(params);
- 
- 	/* Setup dma memory pointers */
- 	end_ptr = runtime->dma_addr + runtime->dma_bytes - AXG_FIFO_BURST;
-@@ -122,9 +124,25 @@ int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
- 	regmap_write(fifo->map, FIFO_FINISH_ADDR, end_ptr);
- 
- 	/* Setup interrupt periodicity */
--	burst_num = params_period_bytes(params) / AXG_FIFO_BURST;
-+	burst_num = period / AXG_FIFO_BURST;
- 	regmap_write(fifo->map, FIFO_INT_ADDR, burst_num);
- 
-+	/*
-+	 * Start the fifo request on the smallest of the following:
-+	 * - Half the fifo size
-+	 * - Half the period size
-+	 */
-+	threshold = min(period / 2,
-+			(unsigned int)AXG_FIFO_MIN_DEPTH / 2);
-+
-+	/*
-+	 * With the threshold in bytes, register value is:
-+	 * V = (threshold / burst) - 1
-+	 */
-+	threshold /= AXG_FIFO_BURST;
-+	regmap_field_write(fifo->field_threshold,
-+			   threshold ? threshold - 1 : 0);
-+
- 	/* Enable block count irq */
- 	regmap_update_bits(fifo->map, FIFO_CTRL0,
- 			   CTRL0_INT_EN(FIFO_INT_COUNT_REPEAT),
-@@ -347,6 +365,11 @@ int axg_fifo_probe(struct platform_device *pdev)
- 		return fifo->irq;
- 	}
- 
-+	fifo->field_threshold =
-+		devm_regmap_field_alloc(dev, fifo->map, data->field_threshold);
-+	if (IS_ERR(fifo->field_threshold))
-+		return PTR_ERR(fifo->field_threshold);
-+
- 	return devm_snd_soc_register_component(dev, data->component_drv,
- 					       data->dai_drv, 1);
- }
-diff --git a/sound/soc/meson/axg-fifo.h b/sound/soc/meson/axg-fifo.h
-index cf928d43b558..c442195ba191 100644
---- a/sound/soc/meson/axg-fifo.h
-+++ b/sound/soc/meson/axg-fifo.h
-@@ -9,7 +9,9 @@
- 
- struct clk;
- struct platform_device;
-+struct reg_field;
- struct regmap;
-+struct regmap_field;
- struct reset_control;
- 
- struct snd_soc_component_driver;
-@@ -50,8 +52,6 @@ struct snd_soc_pcm_runtime;
- #define  CTRL1_STATUS2_SEL_MASK		GENMASK(11, 8)
- #define  CTRL1_STATUS2_SEL(x)		((x) << 8)
- #define   STATUS2_SEL_DDR_READ		0
--#define  CTRL1_THRESHOLD_MASK		GENMASK(23, 16)
--#define  CTRL1_THRESHOLD(x)		((x) << 16)
- #define  CTRL1_FRDDR_DEPTH_MASK		GENMASK(31, 24)
- #define  CTRL1_FRDDR_DEPTH(x)		((x) << 24)
- #define FIFO_START_ADDR			0x08
-@@ -67,12 +67,14 @@ struct axg_fifo {
- 	struct regmap *map;
- 	struct clk *pclk;
- 	struct reset_control *arb;
-+	struct regmap_field *field_threshold;
- 	int irq;
- };
- 
- struct axg_fifo_match_data {
- 	const struct snd_soc_component_driver *component_drv;
- 	struct snd_soc_dai_driver *dai_drv;
-+	struct reg_field field_threshold;
- };
- 
- int axg_fifo_pcm_open(struct snd_soc_component *component,
-diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
-index 0a7d41257a38..df104303351f 100644
---- a/sound/soc/meson/axg-frddr.c
-+++ b/sound/soc/meson/axg-frddr.c
-@@ -50,7 +50,7 @@ static int axg_frddr_dai_startup(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *dai)
- {
- 	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
--	unsigned int fifo_depth, fifo_threshold;
-+	unsigned int fifo_depth;
- 	int ret;
- 
- 	/* Enable pclk to access registers and clock the fifo ip */
-@@ -68,11 +68,8 @@ static int axg_frddr_dai_startup(struct snd_pcm_substream *substream,
- 	 * Depth and threshold are zero based.
- 	 */
- 	fifo_depth = AXG_FIFO_MIN_CNT - 1;
--	fifo_threshold = (AXG_FIFO_MIN_CNT / 2) - 1;
--	regmap_update_bits(fifo->map, FIFO_CTRL1,
--			   CTRL1_FRDDR_DEPTH_MASK | CTRL1_THRESHOLD_MASK,
--			   CTRL1_FRDDR_DEPTH(fifo_depth) |
--			   CTRL1_THRESHOLD(fifo_threshold));
-+	regmap_update_bits(fifo->map, FIFO_CTRL1, CTRL1_FRDDR_DEPTH_MASK,
-+			   CTRL1_FRDDR_DEPTH(fifo_depth));
- 
- 	return 0;
- }
-@@ -158,8 +155,9 @@ static const struct snd_soc_component_driver axg_frddr_component_drv = {
- };
- 
- static const struct axg_fifo_match_data axg_frddr_match_data = {
--	.component_drv	= &axg_frddr_component_drv,
--	.dai_drv	= &axg_frddr_dai_drv
-+	.field_threshold	= REG_FIELD(FIFO_CTRL1, 16, 23),
-+	.component_drv		= &axg_frddr_component_drv,
-+	.dai_drv		= &axg_frddr_dai_drv
- };
- 
- static const struct snd_soc_dai_ops g12a_frddr_ops = {
-@@ -281,8 +279,9 @@ static const struct snd_soc_component_driver g12a_frddr_component_drv = {
- };
- 
- static const struct axg_fifo_match_data g12a_frddr_match_data = {
--	.component_drv	= &g12a_frddr_component_drv,
--	.dai_drv	= &g12a_frddr_dai_drv
-+	.field_threshold	= REG_FIELD(FIFO_CTRL1, 16, 23),
-+	.component_drv		= &g12a_frddr_component_drv,
-+	.dai_drv		= &g12a_frddr_dai_drv
- };
- 
- /* On SM1, the output selection in on CTRL2 */
-@@ -350,8 +349,9 @@ static const struct snd_soc_component_driver sm1_frddr_component_drv = {
- };
- 
- static const struct axg_fifo_match_data sm1_frddr_match_data = {
--	.component_drv	= &sm1_frddr_component_drv,
--	.dai_drv	= &g12a_frddr_dai_drv
-+	.field_threshold	= REG_FIELD(FIFO_CTRL1, 16, 23),
-+	.component_drv		= &sm1_frddr_component_drv,
-+	.dai_drv		= &g12a_frddr_dai_drv
- };
- 
- static const struct of_device_id axg_frddr_of_match[] = {
-diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
-index f6023397c8fe..e711abcf8c12 100644
---- a/sound/soc/meson/axg-toddr.c
-+++ b/sound/soc/meson/axg-toddr.c
-@@ -89,7 +89,6 @@ static int axg_toddr_dai_startup(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *dai)
- {
- 	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
--	unsigned int fifo_threshold;
- 	int ret;
- 
- 	/* Enable pclk to access registers and clock the fifo ip */
-@@ -107,11 +106,6 @@ static int axg_toddr_dai_startup(struct snd_pcm_substream *substream,
- 	/* Apply single buffer mode to the interface */
- 	regmap_update_bits(fifo->map, FIFO_CTRL0, CTRL0_TODDR_PP_MODE, 0);
- 
--	/* TODDR does not have a configurable fifo depth */
--	fifo_threshold = AXG_FIFO_MIN_CNT - 1;
--	regmap_update_bits(fifo->map, FIFO_CTRL1, CTRL1_THRESHOLD_MASK,
--			   CTRL1_THRESHOLD(fifo_threshold));
--
- 	return 0;
- }
- 
-@@ -190,8 +184,9 @@ static const struct snd_soc_component_driver axg_toddr_component_drv = {
- };
- 
- static const struct axg_fifo_match_data axg_toddr_match_data = {
--	.component_drv	= &axg_toddr_component_drv,
--	.dai_drv	= &axg_toddr_dai_drv
-+	.field_threshold	= REG_FIELD(FIFO_CTRL1, 16, 23),
-+	.component_drv		= &axg_toddr_component_drv,
-+	.dai_drv		= &axg_toddr_dai_drv
- };
- 
- static const struct snd_soc_dai_ops g12a_toddr_ops = {
-@@ -228,8 +223,9 @@ static const struct snd_soc_component_driver g12a_toddr_component_drv = {
- };
- 
- static const struct axg_fifo_match_data g12a_toddr_match_data = {
--	.component_drv	= &g12a_toddr_component_drv,
--	.dai_drv	= &g12a_toddr_dai_drv
-+	.field_threshold	= REG_FIELD(FIFO_CTRL1, 16, 23),
-+	.component_drv		= &g12a_toddr_component_drv,
-+	.dai_drv		= &g12a_toddr_dai_drv
- };
- 
- static const char * const sm1_toddr_sel_texts[] = {
-@@ -297,8 +293,9 @@ static const struct snd_soc_component_driver sm1_toddr_component_drv = {
- };
- 
- static const struct axg_fifo_match_data sm1_toddr_match_data = {
--	.component_drv	= &sm1_toddr_component_drv,
--	.dai_drv	= &g12a_toddr_dai_drv
-+	.field_threshold	= REG_FIELD(FIFO_CTRL1, 12, 23),
-+	.component_drv		= &sm1_toddr_component_drv,
-+	.dai_drv		= &g12a_toddr_dai_drv
- };
- 
- static const struct of_device_id axg_toddr_of_match[] = {
--- 
-2.23.0
+--/qIPZgKzMPM+y5U5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Dec 18, 2019 at 08:54:27AM -0600, Pierre-Louis Bossart wrote:
+
+> Even for dai links, it's not clear to me what .ignore_suspend means.
+
+It means exactly what it says, don't do anything on suspend.
+
+> For Intel machine drivers, the .ignore_suspend flag is used for DMIC links
+> which may be used in S0ix/D0ix states. I don't believe this works if there
+> are multiple target states, e.g. you would probably want to leave the link
+> active in S0ix, but suspend it in S3?
+
+> I think the current .ignore_suspend settings only work with the assumption
+> that applications will close all capture streams before going to S3.
+
+These numbered suspend states are a platform specific concept, other
+systems will typically just suspend or not suspend.  It sounds like this
+feature does not map onto your systems.
+
+--/qIPZgKzMPM+y5U5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl36XmYACgkQJNaLcl1U
+h9BRjAf/QoXPWvlk8JPDu2k5OUgXo0cDM4Yb6Z7DonO++UfpNfyHJRhW1IDRvX9/
+VYlWEdl2HHL0pFsvrpmPz7/k9F2AP993SjFJs+0U/V4Nds1acD++qKfKw05RxPmO
+HdZgrogWbv6Ws9L55MnfDeR1xkwSG+Jxgd4uGp7PpFYE5kUQf+8qOssIo/Dti2iS
+JFh2T81D6nnvNsDrCezxa6vvG/Z30zuqo0CGs71MHk5yb7Ap9n42TV6Xa4m24IoY
+2+m1m44HlF5EqFZDheUHObi+wpgA+9U0DJq/AfvlLnb7QBgF7O01ahThHTVC2i28
+EApNl2MVQwVi9RIWwUZ8foH+VWX8Ow==
+=/rfm
+-----END PGP SIGNATURE-----
+
+--/qIPZgKzMPM+y5U5--
+
+--===============5065720651829697167==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5065720651829697167==--
