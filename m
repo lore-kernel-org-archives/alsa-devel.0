@@ -2,71 +2,60 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7569EC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 18:46:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6E58C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 19:00:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8497D2176D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 18:46:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E5AE2082E
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 19:00:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y0abu9qh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8497D2176D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bnl+xaTk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E5AE2082E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51A2084A;
-	Wed, 18 Dec 2019 19:45:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51A2084A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 510A1852;
+	Wed, 18 Dec 2019 19:59:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 510A1852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576694782;
-	bh=hnXWdQlw2dr734Q2+DUg0NobX3ULQj9y/nNvrLTY094=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Y0abu9qhTjgN4lzgLneB9m9LyXTs62hmyiOJ9gb7ON2OIqE1Dlzibd4Bj70UVA+vo
-	 f/rLc3YFXzIm0IvHuCrktkFeHfjlBcIfLnTpDcks53uIDMvB/87HE/DDJ8KmGkrYin
-	 Osd+5ikqOBLl8uVhU4VYnOqwAtvPnU02X0OhJ3G0=
+	s=default; t=1576695641;
+	bh=BvxalPN1pQJ+38pJ/BVZ4dVjTl2Lbv0J0ruE8ZF3T98=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bnl+xaTkkT2uplw90HIF2r6nColXxqg7CbPVGFrDwiRtEvxOJ9erX1ezt7asT7/ck
+	 j1IyMVRLxPUHFMnEGVD+sIPaV+c1cAPjwcTInR9CXHfDRHmvu0x4JC3z5EFYu+GCqd
+	 6DxGzFmJxf+JNQD8f5z4z4uWmtgyeUc2mNpjVrxw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD6F9F80096;
-	Wed, 18 Dec 2019 19:45:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7373F80096;
+	Wed, 18 Dec 2019 19:59:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3395CF8022C; Wed, 18 Dec 2019 19:45:30 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F9F3F80096
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 19:45:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F9F3F80096
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 929A9AAD0;
- Wed, 18 Dec 2019 18:45:25 +0000 (UTC)
-Date: Wed, 18 Dec 2019 19:45:25 +0100
-Message-ID: <s5hr211zd4q.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <a90e86ce-b468-28b2-f0a8-30f66429d921@linux.intel.com>
-References: <20191126141423.21523-1-pierre-louis.bossart@linux.intel.com>
- <s5h4kyqzpge.wl-tiwai@suse.de>
- <0131b134-46dc-991f-230b-fe843f43f078@linux.intel.com>
- <s5hd0cm16vf.wl-tiwai@suse.de>
- <f442ed39-1a86-28fb-b42c-b0e5273cd79a@linux.intel.com>
- <s5hbls57g43.wl-tiwai@suse.de>
- <a90e86ce-b468-28b2-f0a8-30f66429d921@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: add PCI ID for
-	CometLake-S
+ id 4AAE4F8022C; Wed, 18 Dec 2019 19:59:49 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 046DBF80096
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 19:59:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 046DBF80096
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A67441FB;
+ Wed, 18 Dec 2019 10:59:44 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 252A33F67D;
+ Wed, 18 Dec 2019 10:59:43 -0800 (PST)
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Date: Wed, 18 Dec 2019 18:59:38 +0000
+Message-Id: <20191218185938.38282-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Cc: Tzung-Bi Shih <tzungbi@google.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH] ASoC: max98090: Remove empty suspend function
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,80 +73,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Dec 2019 17:42:24 +0100,
-Pierre-Louis Bossart wrote:
-> 
-> 
-> 
-> On 12/18/19 10:28 AM, Takashi Iwai wrote:
-> > On Wed, 18 Dec 2019 16:21:22 +0100,
-> > Pierre-Louis Bossart wrote:
-> >>
-> >>>>> Also, can we reduce even the ifdef around sof_dev_desc definitions by
-> >>>>> __maybe_unused atttribute?
-> >>>>
-> >>>> Sorry, I am not following your suggestion. I would really like to keep
-> >>>> the ifdefs for now, and while it can be seen as overkill to have
-> >>>> descriptors that are identical in some cases the past experience shows
-> >>>> it's useful when we have to add quirks for specific 'hardware
-> >>>> recommended programming sequences'.
-> >>>
-> >>> What I suggested was simple, just dropping ifdef by something like
-> >>>
-> >>> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> >>> index bbeffd932de7..297632a54f1b 100644
-> >>> --- a/sound/soc/sof/sof-pci-dev.c
-> >>> +++ b/sound/soc/sof/sof-pci-dev.c
-> >>> @@ -36,8 +36,7 @@ MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
-> >>>      #define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
-> >>>    -#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
-> >>> -static const struct sof_dev_desc bxt_desc = {
-> >>> +static const struct sof_dev_desc __maybe_unused bxt_desc = {
-> >>>    	.machines		= snd_soc_acpi_intel_bxt_machines,
-> >>>    	.resindex_lpe_base	= 0,
-> >>>    	.resindex_pcicfg_base	= -1,
-> >>> @@ -52,10 +51,8 @@ static const struct sof_dev_desc bxt_desc = {
-> >>>    	.ops = &sof_apl_ops,
-> >>>    	.arch_ops = &sof_xtensa_arch_ops
-> >>>    };
-> >>> -#endif
-> >>>    -#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
-> >>> -static const struct sof_dev_desc glk_desc = {
-> >>> +static const struct sof_dev_desc __maybe_unused glk_desc = {
-> >>>    	.machines		= snd_soc_acpi_intel_glk_machines,
-> >>>    	.resindex_lpe_base	= 0,
-> >>>    	.resindex_pcicfg_base	= -1,
-> >>> @@ -70,10 +67,8 @@ static const struct sof_dev_desc glk_desc = {
-> >>>    	.ops = &sof_apl_ops,
-> >>>    	.arch_ops = &sof_xtensa_arch_ops
-> >>>    };
-> >>> -#endif
-> >>> .....
-> >>>    
-> >>>
-> >>> Then the issue I pointed above can be solved as well.
-> >>
-> >> The ifdefs are still needed in the PCI IDs tables
-> >
-> > Yes, but it halves the messes :)
-> 
-> I wish it was true :-)
-> 
-> In reality having buildbots play with kconfig options does help
-> identify issues at the code level, just like the namespace use helped
-> identify the .arch_ops just above did not belong here.
-> I find it's a constant battle to avoid accumulated crud in the wrong
-> places when dealing with multiple platforms, and when looking at
-> patches it's very hard (at least for me) to realize where the code
-> gets added and the implications.
+The suspend function is empty so can be removed.
 
-But how it can be worse than ifdef...?  From the resultant code POV,
-it's same, the redundant objects are dropped automatically, while you
-can avoid a pitfall like this case to forget the counter-part ifdef,
-which could be identified at first by some randconfig tests.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98090.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index da23810f958e..68271042f586 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2838,15 +2838,10 @@ static int max98090_resume(struct device *dev)
+ 
+ 	return 0;
+ }
+-
+-static int max98090_suspend(struct device *dev)
+-{
+-	return 0;
+-}
+ #endif
+ 
+ static const struct dev_pm_ops max98090_pm = {
+-	SET_RUNTIME_PM_OPS(max98090_runtime_suspend,
++	SET_RUNTIME_PM_OPS(NULL,
+ 		max98090_runtime_resume, NULL)
+ 	SET_SYSTEM_SLEEP_PM_OPS(max98090_suspend, max98090_resume)
+ };
+-- 
+2.20.1
 
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
