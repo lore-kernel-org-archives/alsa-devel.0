@@ -2,67 +2,60 @@ Return-Path: <SRS0=OYz8=2I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E491C43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 01:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C6D8C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 02:45:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A18421835
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 01:58:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4C35221835
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 02:45:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RX/Nmkfl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A18421835
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c0Iovmde"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C35221835
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4A0B850;
-	Wed, 18 Dec 2019 02:57:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4A0B850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32A1A82A;
+	Wed, 18 Dec 2019 03:44:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32A1A82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576634328;
-	bh=I2qhtud//P3TKEEsHmxm/MArvPq4g/ROIsSyvAFC+Ls=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RX/NmkflzhvHwlZHNzsdbM1DuZn1BFLPyBVwSFO+rLhawnxlQtJ7UYnFVLUGEWvng
-	 oeFeN0/69sCRxws1zZGfZmJC7VaPBSAkSSJK6+RfeNucdhhWv+nu5K+r3JQAlrGSMA
-	 84fIBmYXSoFgtoGTvKeGveKc3fn9Hab574HtHXb4=
+	s=default; t=1576637128;
+	bh=+e+PLrYCrWDfBIf7WUKmvv+/31Wirml5I8BNaIHUvfY=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=c0IovmdeTHjU+iLHcfUS9ZhD5SwYGpC+7WhnpprpqgSrxFRnTxLiRO7wOfb2AAE40
+	 u1i0tzGKm2oXGXe4r1D+ck4A+SkjNv9Un0rAa6oxI6XfnSzbGlWWb3HkajdATHNfJx
+	 KB8JEgVuert6vAxZkK+jN0Wqw+9dO0aQ9I6he8v8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 709B7F80218;
-	Wed, 18 Dec 2019 02:57:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA8A0F8015A;
+	Wed, 18 Dec 2019 03:44:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16C7BF80234; Wed, 18 Dec 2019 02:57:56 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 976BBF80100
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 02:57:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 976BBF80100
-Date: 18 Dec 2019 10:57:49 +0900
-X-IronPort-AV: E=Sophos;i="5.69,327,1571670000"; d="scan'208";a="34700330"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 18 Dec 2019 10:57:49 +0900
+ id E57B7F8022C; Wed, 18 Dec 2019 03:44:35 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B4FBAF8014C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 03:44:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4FBAF8014C
+Date: 18 Dec 2019 11:44:26 +0900
+X-IronPort-AV: E=Sophos;i="5.69,327,1571670000"; d="scan'208";a="34489484"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 18 Dec 2019 11:44:26 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 99588415599B;
- Wed, 18 Dec 2019 10:57:49 +0900 (JST)
-Message-ID: <87v9qejsyq.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1736A400C74E;
+ Wed, 18 Dec 2019 11:44:26 +0900 (JST)
+Message-ID: <87r212jqt1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191218000518.5830-4-pierre-louis.bossart@linux.intel.com>
-References: <20191218000518.5830-1-pierre-louis.bossart@linux.intel.com>
- <20191218000518.5830-4-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: tiwai@suse.de, Dragos Tarcatu <dragos_tarcatu@mentor.com>,
- alsa-devel@alsa-project.org, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: topology: Prevent
-	use-after-free in snd_soc_get_pcm_runtime()
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 0/7 v2] ASoC: soc-core cleanup step8
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,51 +74,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Pierre-Louis
+Hi Mark
 
-> From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-> 
-> remove_link() is currently calling snd_soc_remove_pcm_runtime() after
-> it has already freed the memory for the link name. But this is later
-> read from snd_soc_get_pcm_runtime() causing a KASAN use-after-free
-> warning. Reorder the cleanups to fix this issue.
-> 
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/soc/soc-topology.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index f8bd406c6198..2b3c74a0b126 100644
-> --- a/sound/soc/soc-topology.c
-> +++ b/sound/soc/soc-topology.c
-> @@ -548,14 +548,14 @@ static void remove_link(struct snd_soc_component *comp,
->  	if (dobj->ops && dobj->ops->link_unload)
->  		dobj->ops->link_unload(comp, dobj);
->  
-> -	kfree(link->name);
-> -	kfree(link->stream_name);
-> -	kfree(link->cpus->dai_name);
-> -
->  	list_del(&dobj->list);
->  
->  	snd_soc_remove_pcm_runtime(comp->card,
->  			snd_soc_get_pcm_runtime(comp->card, link));
-> +
-> +	kfree(link->name);
-> +	kfree(link->stream_name);
-> +	kfree(link->cpus->dai_name);
->  	kfree(link);
->  }
+These are v2 of soc-core cleanup step8.
+There is no relationship between each patches.
 
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ - [6/7] renamed function name
+ - [7/7] new patch which cares SND_SOC_DAPM_STREAM_STOP
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+Kuninori Morimoto (7):
+  1) ASoC: soc-core: remove snd_soc_rtdcom_list
+  2) ASoC: soc-core: care .ignore_suspend for Component suspend
+  3) ASoC: soc-core: remove duplicate pinctrl operation when suspend
+  4) ASoC: soc-core: do pinctrl_pm_select_xxx() as component
+  5) ASoC: soc-core: add snd_soc_close_delayed_work()
+  6) ASoC: soc-dapm: add snd_soc_dapm_stream_stop()
+  7) ASoC: use snd_soc_dapm_stream_stop() for SND_SOC_DAPM_STREAM_STOP
+
+ include/sound/soc-dapm.h  |   1 +
+ include/sound/soc.h       |  19 +++---
+ sound/soc/soc-component.c |  33 +++++-----
+ sound/soc/soc-compress.c  | 112 +++++++++------------------------
+ sound/soc/soc-core.c      | 157 +++++++++++++++++++++++-----------------------
+ sound/soc/soc-dapm.c      |  23 +++++++
+ sound/soc/soc-pcm.c       | 115 ++++++++-------------------------
+ 7 files changed, 181 insertions(+), 279 deletions(-)
+
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
