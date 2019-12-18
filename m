@@ -6,57 +6,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57C3AC43603
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC682C43603
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:20:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3B602064B
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:19:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E2962176D
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Dec 2019 20:20:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tp2CSaCP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3B602064B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f/wAEs4D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E2962176D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3152E166B;
-	Wed, 18 Dec 2019 21:18:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3152E166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A66961688;
+	Wed, 18 Dec 2019 21:19:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A66961688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576700383;
-	bh=R2rQvt0oBZ7PIX6TgKI3UaVPxwFNRwZoz4sOoAVksvE=;
+	s=default; t=1576700416;
+	bh=McSbigfCjCNOf2bXHek66yTJLSeTBjYopQffGMxELXc=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Tp2CSaCPZyGYF7UWHX5fEgec6esLkCLFSu9Try3De6+lnf41tPckBHCW+g4Oa7ykf
-	 DGL3mqDmRVEWKmp4pnCcRqOEPH5SPopgM7G/094n4KBqJyB+WaZ+nxZmot+XLbQQXI
-	 0k876L5Vag/X+HSk/GJVYxqtIr2b2FuCCpHfRK+Y=
+	b=f/wAEs4DcbZ3C3YpB7k1MbRGUm15VmEdr6OfrNvshi72nS2gndFRkJQRLZpOLrr9U
+	 CTPSPQDIfafyXRnDQYHjzfWqH8glpwp27xaT97mtbCZG60X2KTZqAEl9pSbzidmzHS
+	 6q6VUvNWTeGOMDrQSg/VCXQpCXKidHt/6AHO1e7E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 908F5F8036B;
-	Wed, 18 Dec 2019 21:06:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53883F80372;
+	Wed, 18 Dec 2019 21:06:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 692F1F8014C; Wed, 18 Dec 2019 21:06:19 +0100 (CET)
+ id 0BE90F8036C; Wed, 18 Dec 2019 21:06:22 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 51539F8034C
- for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:06:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51539F8034C
+ by alsa1.perex.cz (Postfix) with ESMTP id D9F28F8035F
+ for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2019 21:06:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9F28F8035F
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1E78113E;
- Wed, 18 Dec 2019 12:06:15 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 348E731B;
+ Wed, 18 Dec 2019 12:06:18 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E5403F67D;
- Wed, 18 Dec 2019 12:06:15 -0800 (PST)
-Date: Wed, 18 Dec 2019 20:06:13 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A71CC3F67D;
+ Wed, 18 Dec 2019 12:06:17 -0800 (PST)
+Date: Wed, 18 Dec 2019 20:06:16 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20191217202231.18259-4-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191217202231.18259-4-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20191217202231.18259-3-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191217202231.18259-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
  Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: add namespace for
-	BROADWELL" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: add namespaces for BAYTRAIL
+	and MERRIFIELD" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: add namespace for BROADWELL
+   ASoC: SOF: Intel: add namespaces for BAYTRAIL and MERRIFIELD
 
 has been applied to the asoc tree at
 
@@ -102,50 +102,93 @@ to this mail.
 Thanks,
 Mark
 
-From 8caa99bb5d8007fdd206ed6ba2fe4f881b1552c7 Mon Sep 17 00:00:00 2001
+From e42b19450866fbd447e459d8935c208e3888705a Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 17 Dec 2019 14:22:26 -0600
-Subject: [PATCH] ASoC: SOF: Intel: add namespace for BROADWELL
+Date: Tue, 17 Dec 2019 14:22:25 -0600
+Subject: [PATCH] ASoC: SOF: Intel: add namespaces for BAYTRAIL and MERRIFIELD
 
-Define namespace and include it in ACPI top-level module.
+Define separate namespaces and include them in ACPI and PCI top-level
+modules.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191217202231.18259-4-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20191217202231.18259-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/bdw.c    | 4 ++--
- sound/soc/sof/sof-acpi-dev.c | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/byt.c    | 12 ++++++------
+ sound/soc/sof/sof-acpi-dev.c |  1 +
+ sound/soc/sof/sof-pci-dev.c  |  1 +
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 39d1c8c7cddf..f017089c7b2d 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -633,13 +633,13 @@ const struct snd_sof_dsp_ops sof_bdw_ops = {
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index b214b12fdcda..07634873deb6 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -619,13 +619,13 @@ const struct snd_sof_dsp_ops sof_tng_ops = {
  			SNDRV_PCM_INFO_PAUSE |
  			SNDRV_PCM_INFO_BATCH,
  };
--EXPORT_SYMBOL(sof_bdw_ops);
-+EXPORT_SYMBOL_NS(sof_bdw_ops, SND_SOC_SOF_BROADWELL);
+-EXPORT_SYMBOL(sof_tng_ops);
++EXPORT_SYMBOL_NS(sof_tng_ops, SND_SOC_SOF_MERRIFIELD);
  
- const struct sof_intel_dsp_desc bdw_chip_info = {
+ const struct sof_intel_dsp_desc tng_chip_info = {
  	.cores_num = 1,
  	.cores_mask = 1,
  };
--EXPORT_SYMBOL(bdw_chip_info);
-+EXPORT_SYMBOL_NS(bdw_chip_info, SND_SOC_SOF_BROADWELL);
+-EXPORT_SYMBOL(tng_chip_info);
++EXPORT_SYMBOL_NS(tng_chip_info, SND_SOC_SOF_MERRIFIELD);
  
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HIFI_EP_IPC);
+ #endif /* CONFIG_SND_SOC_SOF_MERRIFIELD */
+ 
+@@ -793,13 +793,13 @@ const struct snd_sof_dsp_ops sof_byt_ops = {
+ 			SNDRV_PCM_INFO_PAUSE |
+ 			SNDRV_PCM_INFO_BATCH,
+ };
+-EXPORT_SYMBOL(sof_byt_ops);
++EXPORT_SYMBOL_NS(sof_byt_ops, SND_SOC_SOF_BAYTRAIL);
+ 
+ const struct sof_intel_dsp_desc byt_chip_info = {
+ 	.cores_num = 1,
+ 	.cores_mask = 1,
+ };
+-EXPORT_SYMBOL(byt_chip_info);
++EXPORT_SYMBOL_NS(byt_chip_info, SND_SOC_SOF_BAYTRAIL);
+ 
+ /* cherrytrail and braswell ops */
+ const struct snd_sof_dsp_ops sof_cht_ops = {
+@@ -866,13 +866,13 @@ const struct snd_sof_dsp_ops sof_cht_ops = {
+ 			SNDRV_PCM_INFO_PAUSE |
+ 			SNDRV_PCM_INFO_BATCH,
+ };
+-EXPORT_SYMBOL(sof_cht_ops);
++EXPORT_SYMBOL_NS(sof_cht_ops, SND_SOC_SOF_BAYTRAIL);
+ 
+ const struct sof_intel_dsp_desc cht_chip_info = {
+ 	.cores_num = 1,
+ 	.cores_mask = 1,
+ };
+-EXPORT_SYMBOL(cht_chip_info);
++EXPORT_SYMBOL_NS(cht_chip_info, SND_SOC_SOF_BAYTRAIL);
+ 
+ #endif /* CONFIG_SND_SOC_SOF_BAYTRAIL */
+ 
 diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
-index 6d44d5802e29..d8ed6bfa5ce7 100644
+index 9c0a4eed5cc8..6d44d5802e29 100644
 --- a/sound/soc/sof/sof-acpi-dev.c
 +++ b/sound/soc/sof/sof-acpi-dev.c
-@@ -241,3 +241,4 @@ module_platform_driver(snd_sof_acpi_driver);
+@@ -240,3 +240,4 @@ static struct platform_driver snd_sof_acpi_driver = {
+ module_platform_driver(snd_sof_acpi_driver);
  
  MODULE_LICENSE("Dual BSD/GPL");
- MODULE_IMPORT_NS(SND_SOC_SOF_BAYTRAIL);
-+MODULE_IMPORT_NS(SND_SOC_SOF_BROADWELL);
++MODULE_IMPORT_NS(SND_SOC_SOF_BAYTRAIL);
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 5f08a9ca6bf8..0c67e5d7dc33 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -415,3 +415,4 @@ static struct pci_driver snd_sof_pci_driver = {
+ module_pci_driver(snd_sof_pci_driver);
+ 
+ MODULE_LICENSE("Dual BSD/GPL");
++MODULE_IMPORT_NS(SND_SOC_SOF_MERRIFIELD);
 -- 
 2.20.1
 
