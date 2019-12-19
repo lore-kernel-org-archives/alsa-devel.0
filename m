@@ -2,81 +2,91 @@ Return-Path: <SRS0=OsOn=2J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4D41C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 20:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D8EC43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 21:11:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCD6020674
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 20:25:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 662232467B
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 21:11:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HOPsxK8d";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TlZXCHKV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCD6020674
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rYAf6LUP";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="kKyLSAXL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="HOlRWkeR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 662232467B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=akkea.ca
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E618284F;
-	Thu, 19 Dec 2019 21:24:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E618284F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5998882A;
+	Thu, 19 Dec 2019 22:10:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5998882A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576787131;
-	bh=NTVEWlOW+NOk+4CxO/gBqVpQQO4rE3woAsG1nGbQTZc=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1576789872;
+	bh=1POjPEtEflTMyjkwffusj3P5dmZtSMh1nqAFHluxFKA=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HOPsxK8dXI8HK9BAQipRuOJBNUKdaSMqlng6KdQdAkHzL6WTBz2HoWz0t1jDAcecK
-	 cLTV7r196EuravSRjjyx7npZMqh8zGb0Fqubt6xfk+Ho4dJsDx+3z4nArScLFvyRoR
-	 iOp/IZzGRuyINA2GRJ38Le04ZeNGlPyOTDfJg/WA=
+	b=rYAf6LUPIceYw/HqHIaqk68TGjA9sosmO4xERa5WRiDl7au2hrrGwHVD/TVCbuGQ4
+	 OyUPc2MyOY5y94pqPCrF8nly2URBkB+Xbz0QFFnzDPNgdj2tDmDL071JONe1jXnqjU
+	 TQ3jLoHaaKcAL9ZmQlHdVUN6N8vbqbOhiyq6vZBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B327F80218;
-	Thu, 19 Dec 2019 21:24:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC5A4F80059;
+	Thu, 19 Dec 2019 22:10:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3C0FF80234; Thu, 19 Dec 2019 21:24:38 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C1708F80253; Thu, 19 Dec 2019 22:10:07 +0100 (CET)
+Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A456F80059
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 21:24:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A456F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1CA9F80218
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 22:10:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1CA9F80218
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TlZXCHKV"
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A3297227BF;
- Thu, 19 Dec 2019 19:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1576784779;
- bh=xUSTFd7GGdvk10sf3+om8mg9EYMJvjpiQnqD0QauP2I=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=TlZXCHKVySipIwV8OQTf4eP3VeA0QPzE+s9nJVK5IUitaVn0l2mcL7AWC2Xvaxbju
- l4K26akuLHBCiPdJZXw9IjzSH3PlfKq+EHYNazCz9xmkuM90nZO4pSvrwtESuW0ggT
- 4/G6f+qMiFE1v3SEzi1TZcwsUyDIJy4Cpr3wiQ5Q=
-Date: Thu, 19 Dec 2019 14:46:18 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Message-ID: <20191219194618.GQ17708@sasha-vm>
-References: <20191210210735.9077-1-sashal@kernel.org>
- <20191210210735.9077-158-sashal@kernel.org>
- <20191211110005.GC3870@sirena.org.uk>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191211110005.GC3870@sirena.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [alsa-devel] [PATCH AUTOSEL 5.4 197/350] ASoC: SOF: imx: fix
- reverse CONFIG_SND_SOC_SOF_OF dependency
+ dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
+ header.b="kKyLSAXL"; 
+ dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
+ header.b="HOlRWkeR"
+Received: from localhost (localhost [127.0.0.1])
+ by node.akkea.ca (Postfix) with ESMTP id 0CD6D4E2006;
+ Thu, 19 Dec 2019 21:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+ t=1576789802; bh=l91r0YDEN+oe9jxf3D6wJpDm6U1PN8Ku0lGaSjCm2s8=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=kKyLSAXL9WXcCaj7tecU6Rnw6SLgMpLvZWifvwRl8R2TWaqu58nuDuO9MGLWQ8cZu
+ ODW1yTOzmP5d/pWekQfNsZP+BQME+4lGv1cqagySyIAI80ECVVLRgWYB+/mhVFvvlh
+ udmdQIHVqFHb33ZiEThMpFGc5spfm1uONZihw5pk=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+ by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id lT-jJpG9j64k; Thu, 19 Dec 2019 21:10:01 +0000 (UTC)
+Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net
+ [70.66.86.75])
+ by node.akkea.ca (Postfix) with ESMTPSA id 906254E200E;
+ Thu, 19 Dec 2019 21:10:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+ t=1576789801; bh=l91r0YDEN+oe9jxf3D6wJpDm6U1PN8Ku0lGaSjCm2s8=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=HOlRWkeR3xYnbjNyjFf6ded9lgCi9Q7odWr5GnzBHjKMbLan+8opD04SPESwIGp/Y
+ DrPAFmpVWhm2uKN6GPJNz5iEk4C3etcSoO1ZCJCjs+Kd1QfPK1K9i8wXCsobrN/ALt
+ wGu1n6kPN6pdieQSh5QEGUgPSQnrvDGGCRnA3jeU=
+From: "Angus Ainslie (Purism)" <angus@akkea.ca>
+To: broonie@kernel.org
+Date: Thu, 19 Dec 2019 13:09:44 -0800
+Message-Id: <20191219210944.18256-3-angus@akkea.ca>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20191219210944.18256-1-angus@akkea.ca>
+References: <20191219210944.18256-1-angus@akkea.ca>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ "Angus Ainslie \(Purism\)" <angus@akkea.ca>, kernel@puri.sm,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [alsa-devel] [PATCH v3 2/2] dt-bindings: sound: gtm601: add the
+	broadmobi interface
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,31 +99,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 11, 2019 at 11:00:05AM +0000, Mark Brown wrote:
->On Tue, Dec 10, 2019 at 04:05:02PM -0500, Sasha Levin wrote:
->> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>
->> [ Upstream commit f9ad75468453b019b92c5296e6a04bf7c37f49e4 ]
->>
->> updated solution to the problem reported with randconfig:
->>
->> CONFIG_SND_SOC_SOF_IMX depends on CONFIG_SND_SOC_SOF, but is in
->> turn referenced by the sof-of-dev driver. This creates a reverse
->> dependency that manifests in a link error when CONFIG_SND_SOC_SOF_OF
->> is built-in but CONFIG_SND_SOC_SOF_IMX=m:
->
->Are you sure this doesn't depend on any other Kconfig changes?
+The Broadmobi BM818 uses a different sample rate and channels from the
+option modem.
 
-Nope, but it didn't fail my build tests.
+Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/gtm601.txt | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
+index 5efc8c068de0..efa32a486c4a 100644
+--- a/Documentation/devicetree/bindings/sound/gtm601.txt
++++ b/Documentation/devicetree/bindings/sound/gtm601.txt
+@@ -1,10 +1,16 @@
+ GTM601 UMTS modem audio interface CODEC
+ 
+-This device has no configuration interface. Sample rate is fixed - 8kHz.
++This device has no configuration interface. The sample rate and channels are
++based on the compatible string
++	"option,gtm601" = 8kHz mono
++	"broadmobi,bm818" = 48KHz stereo
+ 
+ Required properties:
+ 
+-  - compatible : "option,gtm601"
++  - compatible : one of
++	"option,gtm601"
++	"broadmobi,bm818"
++
+ 
+ Example:
+ 
 -- 
-Thanks,
-Sasha
+2.17.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
