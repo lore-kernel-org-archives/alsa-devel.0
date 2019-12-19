@@ -2,69 +2,104 @@ Return-Path: <SRS0=OsOn=2J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3B35C3F68F
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 08:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63654C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 09:29:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6181E24676
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 08:52:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 720B22465E
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 09:29:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GyEzGfeD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6181E24676
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lc5FKepB";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="JJTzD+da"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 720B22465E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B091847;
-	Thu, 19 Dec 2019 09:35:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B091847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4268E82A;
+	Thu, 19 Dec 2019 10:28:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4268E82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576744565;
-	bh=rja+uQXapsA2dndbUOM2U3RFYl1ACEGRK1vm/gs5eos=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1576747740;
+	bh=WZUDBBfHdK2vkFREGkmqbN56KOG2jQbGuCjKm6Emd/U=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GyEzGfeDhvBBNGXDsGg5sN/G6WQv3zgbmmF9Sc+et0iT3KONUFTM4jxH/LNYrmCAE
-	 pGhoeDCLHWdGxr/aJP8hlVEW38xsJo1ofBnVoc9IBRMZuB/oLmlHNvrhklBSFXRJSQ
-	 hEUi7u8ZPntJvS0wJW4PXwCqkfi5oVbKzqKAAUBg=
+	b=lc5FKepBasAZAlqmH+y8Urfsa0ebc97k1BLQbKsfVv0qWIWNrFCCjeIFW6T5hq/nO
+	 4QIJhz1THTbhKKGhbcP5XWNyw6mlS8NOuTQAohhkBWuPau6FQqmAMPFGITQ4YcdKtu
+	 Vwe0yC8ZTCLkgyWqKY9E/t61JQ9HFecww/oobfog=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4F07F80059;
-	Thu, 19 Dec 2019 09:35:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFC71F80218;
+	Thu, 19 Dec 2019 10:28:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FA42F80234; Thu, 19 Dec 2019 09:35:13 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1D34AF80234; Thu, 19 Dec 2019 10:28:07 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5114DF80059
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 09:35:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5114DF80059
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C4D11AFCD;
- Thu, 19 Dec 2019 08:35:08 +0000 (UTC)
-Date: Thu, 19 Dec 2019 09:35:08 +0100
-Message-ID: <s5hzhfoyapv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <EE459081-2B46-481C-ACE4-940552DEE098@canonical.com>
-References: <20191218132650.6303-1-hui.wang@canonical.com>
- <s5hlfr9zc67.wl-tiwai@suse.de>
- <EB061C4E-72BE-491B-ABAE-DFB96BEB7D7C@canonical.com>
- <e58306bc-8a2c-dcb5-c875-0dd4a2f3a51c@canonical.com>
- <EE459081-2B46-481C-ACE4-940552DEE098@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: set the interface format
-	after resume on Dell WD19
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7EAABF80059
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 10:28:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EAABF80059
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="JJTzD+da"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ xBJ9Rwt2005346; Thu, 19 Dec 2019 03:27:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=r5zL0mWbhXUAlQ6GTa/5A4wMXYncj5xrQu/3spYSd70=;
+ b=JJTzD+dagB42aszPNCXvj5ZyAR6hwpVRaicZMzidXv3ZYJvVdnbflQdYYv0dmFSu2A4W
+ 3TT0pRwr3hoED+EcVXyt1O1Diq7vx4m8FET5j5FEf1JSr1C5d2vSBf8GU06LJLLss/A9
+ sGQ3BYWIGLy5t7WbfLtaMmRJ7jXYu1JEcQ/dXSqjcHG8bAsT6wQxHnvzKcVNxZfIXWjd
+ BJWZGEgMnl0KMOPu5f1jV73xXKi54eFhvw4mJ8tgQnc03+AR1LSoYBEboqq7Tcnlkzsi
+ 713zIwvStQdkubA/R2ka0cjInafK6avnSFiz1e2Xigp0t3caGWpwA4lkzAR7WD9NN2EF dw== 
+Authentication-Results: ppops.net;
+ spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex02.ad.cirrus.com ([5.172.152.52])
+ by mx0a-001ae601.pphosted.com with ESMTP id 2wyynh8g5c-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 19 Dec 2019 03:27:58 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Thu, 19 Dec
+ 2019 09:27:53 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
+ Frontend Transport; Thu, 19 Dec 2019 09:27:53 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9F3012A1;
+ Thu, 19 Dec 2019 09:27:52 +0000 (UTC)
+Date: Thu, 19 Dec 2019 09:27:52 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20191219092752.GF10451@ediswmail.ad.cirrus.com>
+References: <20191218163701.171914-1-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20191218163701.171914-1-arnd@arndb.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ lowpriorityscore=0 bulkscore=0
+ phishscore=0 adultscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ clxscore=1011 malwarescore=0 suspectscore=2 mlxlogscore=794
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912190080
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [alsa-devel] [PATCH] pinctrl: lochnagar: select GPIOLIB
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,76 +112,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gVGh1LCAxOSBEZWMgMjAxOSAwNzozNzowNyArMDEwMCwKS2FpIEhlbmcgRmVuZyB3cm90ZToK
-PiAKPiAKPiAKPiA+IE9uIERlYyAxOSwgMjAxOSwgYXQgMjoyMyBQTSwgSHVpIFdhbmcgPGh1aS53
-YW5nQGNhbm9uaWNhbC5jb20+IHdyb3RlOgo+ID4gCj4gPiAKPiA+IE9uIDIwMTkvMTIvMTkg5LiL
-5Y2IMTI6NTUsIEthaSBIZW5nIEZlbmcgd3JvdGU6Cj4gPj4gSGkgSHVpIGFuZCBUYWthc2hpLAo+
-ID4+IAo+ID4+PiBPbiBEZWMgMTksIDIwMTksIGF0IDM6MDYgQU0sIFRha2FzaGkgSXdhaSA8dGl3
-YWlAc3VzZS5kZT4gd3JvdGU6Cj4gPj4+IAo+ID4+PiBPbiBXZWQsIDE4IERlYyAyMDE5IDE0OjI2
-OjUwICswMTAwLAo+ID4+PiBIdWkgV2FuZyB3cm90ZToKPiA+Pj4+IFJlY2VudGx5IHdlIGZvdW5k
-IHRoZSBoZWFkc2V0LW1pYyBvbiB0aGUgRGVsbCBEb2NrIFdEMTkgZG9lc24ndCB3b3JrCj4gPj4+
-PiBhbnltb3JlIGFmdGVyIHMzIChzMmkgb3IgZGVlcCksIHRoaXMgcHJvYmxlbSBjb3VsZCBiZSB3
-b3JrYXJvdW5kZWQgYnkKPiA+Pj4+IGNsb3NlaW5nIChwY21fY2xvc2UpIHRoZSBhcHAgYW5kIHRo
-ZW4gcmVvcGVuaW5nIChwY21fb3BlbikgdGhlIGFwcCwgc28KPiA+Pj4+IHRoaXMgYnVnIGlzIG5v
-dCBlYXN5IHRvIGJlIGRldGVjdGVkIGJ5IHVzZXJzLgo+ID4+Pj4gCj4gPj4+PiBXaGVuIHByb2Js
-ZW0gaGFwcGVucywgcmV0aXJlX2NhcHR1cmVfdXJiKCkgY291bGQgc3RpbGwgYmUgY2FsbGVkCj4g
-Pj4+PiBwZXJpb2RpY2FsbHksIGJ1dCB0aGUgc2l6ZSBvZiBjYXB0dXJlZCBkYXRhIGlzIGFsd2F5
-cyAwLCBpdCBjb3VsZCBiZQo+ID4+Pj4gYSBmaXJtd2FyZSBidWcgb24gdGhlIGRvY2suIEFueXdh
-eSBJIGZvdW5kIGFmdGVyIHJlc3VtaW5nLCB0aGUKPiA+Pj4+IHNuZF91c2JfcGNtX3ByZXBhcmUo
-KSB3aWxsIGJlIGNhbGxlZCwgYW5kIGlmIHdlIGZvcmNpYmx5IHJ1bgo+ID4+Pj4gc2V0X2Zvcm1h
-dCgpIHRvIHNldCB0aGUgaW50ZXJmYWNlIGFuZCBpdHMgZW5kcG9pbnQsIHRoZSBjYXB0dXJlCj4g
-Pj4+PiBzaXplIHdpbGwgYmUgbm9ybWFsIGFnYWluLiBUaGlzIHByb2JsZW0gYW5kIHdvcmthb3Vu
-ZCBhbHNvIGFwcGx5IHRvCj4gPj4+PiBwbGF5YmFjay4KPiA+Pj4+IAo+ID4+Pj4gVG8gZml4IGl0
-IGluIHRoZSBrZXJuZWwsIGFkZCBhIHF1aXJrIHRvIGxldCBzZXRfZm9ybWF0KCkgcnVuCj4gPj4+
-PiBmb3JjaWJseSBvbmNlIGFmdGVyIHJlc3VtZS4KPiA+Pj4+IAo+ID4+Pj4gU2lnbmVkLW9mZi1i
-eTogSHVpIFdhbmcgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+Cj4gPj4+IFRoYW5rcywgdGhlIHdv
-cmthcm91bmQgbG9va3MgcmVhc29uYWJsZS4KPiA+Pj4gSSBhcHBsaWVkIGl0IG5vdyB3aXRoIENj
-IHRvIHN0YWJsZS4KPiA+PiBJIGFtIG5vdCBlbnRpcmVseSBzdXJlIGl04oCZcyBhIGtlcm5lbCBi
-dWcuIFsxXSBbMl0gY2FuIGFsc28gZml4IHRoZSBpc3N1ZS4KPiA+PiAKPiA+PiBTaW5jZSBVU0Ig
-YXVkaW8gZG9lc27igJl0IGhhdmUgU05EUlZfUENNX0lORk9fUkVTVU1FIGNhcGFiaWxpdHksCj4g
-Pj4gdXNlcnNwYWNlIHNob3VsZG7igJl0IHRyeSB0byB1c2Ugc25kX3BjbV9yZXN1bWUoKS4gQ29t
-bWl0IFsxXSB1c2VzCj4gPj4gc25kX3BjbV9kcm9wKCkgdG8gbWFrZSB0aGUgZGV2aWNlIGxlYXZl
-IHN1c3BlbmRlZCBzdGF0ZSBhbmQgdGhlIGRldmljZQo+ID4+IGJlaGF2ZXMgY29ycmVjdGx5IHdp
-dGggdGhlIGZpeC4KPiA+PiAKPiA+PiBbMV0gaHR0cHM6Ly9naXRsYWIuZnJlZWRlc2t0b3Aub3Jn
-L3B1bHNlYXVkaW8vcHVsc2VhdWRpby9jb21taXQvZjdiMzUzN2JiZjlhNjkxNmVlM2ZkNzJhODIw
-MjU1MTliNGMzNDZmNQo+ID4+IFsyXSBodHRwczovL2dpdGxhYi5mcmVlZGVza3RvcC5vcmcvcHVs
-c2VhdWRpby9wdWxzZWF1ZGlvL2NvbW1pdC83MzRhMDBjODQ5ODE1YTQ1Njk3OTcwZDU5MzA2OGMz
-MDFhMDRlYmJiCj4gPiAKPiA+IFRoYW5rcyBmb3Igc2hhcmluZyB0aGUgaW5mbywgWzFdIGNvdWxk
-IHdvcmthcm91bmQgdGhpcyBidWcgYmVjYXVzZSBpdCBmaW5hbGx5IGNhbGxlZCBwY21fY2xvc2Uo
-KSBhbmQgcGNtX29wZW4oKSwgWzJdIGRvZXNuJ3QgY2hhbmdlIHRoZSBleGVjdXRpbmcgcGF0aCBp
-biB0aCBQQSwgaXQgaXMgYSBjb3NtZXRpYyBpbXByb3ZlbWVudCBmb3IgWzFdLgo+IAo+IEluIFsy
-XSwgaWYgUENNIGRvZXNuJ3Qgc3VwcG9ydCBoYXJkd2FyZSByZXN1bWUsIGxpa2UgVVNCIGF1ZGlv
-LCBpdCBmYWxscyB0aHJvdWdoIHRvIGRlZmF1bHQgYW5kIGNhbGxzIHNuZF9wY21fZHJvcCgpIHRv
-IGxldCBkZXZpY2UgbGVhdmUgc3VzcGVuZGVkIHN0YXRlLiBTbyBpdOKAmXMgbW9yZSB0aGFuIGEg
-Y29zbWV0aWMgY2hhbmdlLgoKTm90IHJlYWxseSwgdGhlIHdvcmxkIGlzIG5vdCBvbmx5IHdpdGgg
-UEEuCgpUaGUgc3RhbmRhcmQgYWxzYS1saWIgZnVuY3Rpb24gc25kX3BjbV9yZWNvdmVyKCkganVz
-dCBjYWxscwpzbmRfcGNtX3ByZXBhcmUoKSB3aGVuIHNuZF9wY21fcmVzdW1lKCkgZmFpbHMuICBU
-aGF0IGlzLCB0aGUgc3RyZWFtIGlzCnJlLXByZXBhcmVkIGFuZCByZS10cmlnZ2VyZWQgd2l0aG91
-dCBjbG9zaW5nIGZvciB0aGUgZGV2aWNlIHRoYXQgaGFzCm5vIFNORFJWX1BDTV9JTkZPX1JFU1VN
-RSBmbGFnLgoKClRha2FzaGkKCj4gPiAKPiA+IEkgZ3Vlc3MgaXQgaXMgYSBmaXJtd2FyZSBwcm9i
-bGVtLCBhbmQgY291bGQgYmUgZml4ZWQgaW4gdGhlIGtlcm5lbC4gIEJlY2F1c2UgSSB0ZXN0ZWQg
-bWFueSBvdGhlciB1c2IgYXVkaW8gY2FyZHMsIHRoZXkgZG9uJ3QgbmVlZCB3b3JrYXJvdWQgb2Yg
-WzFdLCB0aGV5IGFsbCBjb3VsZCBwbGF5YmFjayBhbmQgY2FwdHVyZSBhZnRlciByZXN1bWluZywg
-c28gdGhpcyBwcm9ibGVtIGlzIHNwZWNpZmljIHRvIHRoaXMgaGFyZHdhcmUuIEFuZCBpbiB0aGVv
-cnkgYSBkZXZpY2Ugc2hvdWxkIHdvcmsgc2FtZSBiZWZvcmUgYW5kIGFmdGVyIHN1c3BlbmQsICBp
-dCBzaG91bGQgbm90IGRlcGVuZCBvbiB1c2Vyc3BhY2UgdG8gY2xvc2UgaXQgYW5kIHJlb3BlbiBp
-dC4gQWZ0ZXIgYWRkaW5nIHRoaXMgZml4LCB0aGlzIHVzYiBhdWRpbyBjYXJkIGNvdWxkIHdvcmsg
-YWZ0ZXIgcmVzdW1pbmcgZXZlbiBvbiBhIHN5c3RlbSB3aXRob3V0IFBBLiBBbmQgdGhpcyBrZXJu
-ZWwgcGF0Y2ggZG9lc24ndCBoYXZlIGFueSBjb25mbGljdCB3aXRoIFsxXS9bMl0gaW4gdGhlIFBB
-LCB0aGV5IGNvdWxkIHdvcmsgd2VsbCB0b2dldGhlci4KPiAKPiBZZXMgdGhlIHR3byBhcHByb2Fj
-aGVzIGFyZSBvcnRob2dvbmFsIGluIHNvbWUgc2Vuc2UuIEhvd2V2ZXIgaWYgdGhlIGlzc3VlIGNh
-biBiZSBzb2x2ZWQgYnkgZm9sbG93aW5nIGFsc2EtbGliJ3MgZG9jdW1lbnRhdGlvbiwgSSBkb24n
-dCB0aGluayBpdCdzIGEga2VybmVsIGJ1Zy4KPiAKPiBLYWktSGVuZwo+IAo+ID4gCj4gPiBUaGFu
-a3MsCj4gPiAKPiA+IEh1aS4KPiA+IAo+ID4gCj4gPj4gS2FpLUhlbmcKPiA+PiAKPiA+Pj4gCj4g
-Pj4+IFRha2FzaGkKPiA+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPiA+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+Pj4gQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCj4gPj4+IGh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Dec 18, 2019 at 05:36:46PM +0100, Arnd Bergmann wrote:
+> In a rare randconfig build I came across one configuration that does
+> not enable CONFIG_GPIOLIB, which is needed by lochnagar:
+> 
+> ERROR: "devm_gpiochip_add_data" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
+> ERROR: "gpiochip_generic_free" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
+> ERROR: "gpiochip_generic_request" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
+> ERROR: "gpiochip_get_data" [drivers/pinctrl/cirrus/pinctrl-lochnagar.ko] undefined!
+> 
+> Add another 'select' like all other pinctrl drivers have.
+> 
+> Fixes: 0548448b719a ("pinctrl: lochnagar: Add support for the Cirrus Logic Lochnagar")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
