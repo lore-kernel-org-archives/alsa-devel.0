@@ -7,69 +7,72 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C87C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 21:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D97CCC43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 21:34:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 497C42465E
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 21:33:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F1162465E
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 21:34:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cB1dIogF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 497C42465E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K89gl/zG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F1162465E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=denx.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F6F482A;
-	Thu, 19 Dec 2019 22:32:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F6F482A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F1A21654;
+	Thu, 19 Dec 2019 22:33:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F1A21654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576791216;
-	bh=y7V6OnESTRnRgv3+9x2rbZwvp0Kfj+M9bFuGxrMkIZ8=;
+	s=default; t=1576791270;
+	bh=H8fla0FY3adt+Xx3j4t1l1iBtGz9k/bC6kPpTkLbXDM=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cB1dIogFobcDnjmNpRiGwNcy4rMBoHYxZQ2SRv2WUlubWG48hfE76aAzyc4ZJZYZ+
-	 /iGkkd8aYFE9vKsYzPbwHkowsiECEtGV59/BjmHwhHrdDPVBOO2C8xu9S2pnC1FHhG
-	 l+PW6PRrhw53MFtZYws2zWPO2UMraVr3ubq0Wsdw=
+	b=K89gl/zG6U8dE4XmwWhOo1ACAzsIPYSPSGMSSqRLLoE1isdwSIsxxKyOoQyKFG09p
+	 acXR1dGSHc4VuVnqIWpuqgZkRRGdIWyIRZYbsjBxIZq7QPdQeIi97C/sH2kcqr7651
+	 yVZSqB7p/LQGg0DY+UJS4ZIXJtmaMDJZX8qA/ZQY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01F50F80059;
-	Thu, 19 Dec 2019 22:32:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50826F80256;
+	Thu, 19 Dec 2019 22:33:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0CE1F80218; Thu, 19 Dec 2019 22:32:41 +0100 (CET)
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+ id AA183F80259; Thu, 19 Dec 2019 22:33:03 +0100 (CET)
+Received: from mail-out.m-online.net (mail-out.m-online.net
+ [IPv6:2001:a60:0:28:0:1:25:1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F113BF80059
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 22:32:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F113BF80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A172F8013E
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 22:33:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A172F8013E
 Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
- by mail-out.m-online.net (Postfix) with ESMTP id 47f4ps5Nllz1rgD3;
- Thu, 19 Dec 2019 22:32:37 +0100 (CET)
+ by mail-out.m-online.net (Postfix) with ESMTP id 47f4qJ1dwxz1rgD3;
+ Thu, 19 Dec 2019 22:33:00 +0100 (CET)
 Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
- by mail.m-online.net (Postfix) with ESMTP id 47f4ps4CWnz1qr2R;
- Thu, 19 Dec 2019 22:32:37 +0100 (CET)
+ by mail.m-online.net (Postfix) with ESMTP id 47f4qJ13Wgz1qr2L;
+ Thu, 19 Dec 2019 22:33:00 +0100 (CET)
 X-Virus-Scanned: amavisd-new at mnet-online.de
 Received: from mail.mnet-online.de ([192.168.8.182])
  by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new,
  port 10024)
- with ESMTP id 08luIRFc_8XE; Thu, 19 Dec 2019 22:32:36 +0100 (CET)
-X-Auth-Info: C++WcgFi5WZ4blpdA1Bu58NEDD8VGuCLmH8dmWNp9S0=
+ with ESMTP id RHVTxaXA_q6W; Thu, 19 Dec 2019 22:32:59 +0100 (CET)
+X-Auth-Info: Q2TjMNxd4xR94wHv4FBSGwJKrL3sd3PZQJKHzOCY//U=
 Received: from desktop.lan (ip-86-49-35-8.net.upcbroadband.cz [86.49.35.8])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
  by mail.mnet-online.de (Postfix) with ESMTPSA;
- Thu, 19 Dec 2019 22:32:36 +0100 (CET)
+ Thu, 19 Dec 2019 22:32:59 +0100 (CET)
 From: Marek Vasut <marex@denx.de>
 To: alsa-devel@alsa-project.org
-Date: Thu, 19 Dec 2019 22:32:19 +0100
-Message-Id: <20191219213219.366073-1-marex@denx.de>
+Date: Thu, 19 Dec 2019 22:32:57 +0100
+Message-Id: <20191219213257.366145-1-marex@denx.de>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Cc: Marek Vasut <marex@denx.de>, Mark Brown <broonie@kernel.org>,
- festevam@gmail.com
-Subject: [alsa-devel] [PATCH] ASoC: sgtl5000: add multi endpoint support
+Cc: Marek Vasut <marex@denx.de>, Igor Opaniuk <igor.opaniuk@toradex.com>,
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+ Mark Brown <broonie@kernel.org>, festevam@gmail.com
+Subject: [alsa-devel] [PATCH] ASoC: sgtl5000: Fix VDDA and VDDIO comparison
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,74 +90,47 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Support multiple endpoints on SGTL5000 codec port when used in
-of_graph context.
+Comparing the voltage of VDDA and VDDIO to determine whether or not to
+enable VDDC manual override is insufficient. This is a problem in case
+the VDDA is supplied from different regulator than VDDIO, while both
+report the same voltage to the regulator framework. In that case where
+VDDA and VDDIO is supplied by different regulators, the VDDC manual
+override must not be applied.
 
-This patch allows to share the codec port between two CPU DAIs.
-
-Example:
-
-Custom STM32MP157C board uses SGTL5000 audio codec. This codec is
-connected to two serial audio interfaces, which are configured
-either as rx or tx.
-
-From AsoC point of view the topolgy is the following:
-// 2 CPU DAIs (SAI2A/B), 1 Codec (SGTL5000)
-Playback: CPU-A-DAI(slave) -> (master)CODEC-DAI/port0
-Record:   CPU-B-DAI(slave) <- (master)CODEC-DAI/port0
-
-In the DT two endpoints have to be associated to the codec port:
-sgtl5000_port: port {
-    sgtl5000_tx_endpoint: endpoint@0 {
-	    remote-endpoint = <&sai2a_endpoint>;
-    };
-    sgtl5000_rx_endpoint: endpoint@1 {
-	    remote-endpoint = <&sai2b_endpoint>;
-    };
-};
-
-However, when the audio graph card parses the codec nodes, it expects
-to find DAI interface indexes matching the endpoints indexes.
-
-The current patch forces the use of DAI id 0 for both endpoints,
-which allows to share the codec DAI between the two CPU DAIs
-for playback and capture streams respectively.
-
+Fixes: b6319b061ba2 ("ASoC: sgtl5000: Fix charge pump source assignment")
 Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Igor Opaniuk <igor.opaniuk@toradex.com>
+Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 Cc: Mark Brown <broonie@kernel.org>
+Cc: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 ---
-NOTE: This is the same as commit ad6bb3067c4d
-      ("ASoC: cs42l51: add multi endpoint support")
----
- sound/soc/codecs/sgtl5000.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/sgtl5000.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index aa1f9637d8950..93da6b58c97df 100644
+index 93da6b58c97df..b4568f417d78e 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -1513,6 +1513,13 @@ static int sgtl5000_probe(struct snd_soc_component *component)
- 	return ret;
- }
+@@ -28,6 +28,8 @@
  
-+static int sgtl5000_of_xlate_dai_id(struct snd_soc_component *component,
-+				    struct device_node *endpoint)
-+{
-+	/* return dai id 0, whatever the endpoint index */
-+	return 0;
-+}
+ #include "sgtl5000.h"
+ 
++#include "../../../drivers/regulator/internal.h"
 +
- static const struct snd_soc_component_driver sgtl5000_driver = {
- 	.probe			= sgtl5000_probe,
- 	.set_bias_level		= sgtl5000_set_bias_level,
-@@ -1522,6 +1529,7 @@ static const struct snd_soc_component_driver sgtl5000_driver = {
- 	.num_dapm_widgets	= ARRAY_SIZE(sgtl5000_dapm_widgets),
- 	.dapm_routes		= sgtl5000_dapm_routes,
- 	.num_dapm_routes	= ARRAY_SIZE(sgtl5000_dapm_routes),
-+	.of_xlate_dai_id	= sgtl5000_of_xlate_dai_id,
- 	.suspend_bias_off	= 1,
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
+ #define SGTL5000_DAP_REG_OFFSET	0x0100
+ #define SGTL5000_MAX_REG_OFFSET	0x013A
+ 
+@@ -1344,7 +1346,8 @@ static int sgtl5000_set_power_regs(struct snd_soc_component *component)
+ 		 * if vddio == vdda the source of charge pump should be
+ 		 * assigned manually to VDDIO
+ 		 */
+-		if (vddio == vdda) {
++		if (sgtl5000->supplies[VDDA].consumer->rdev ==
++		    sgtl5000->supplies[VDDIO].consumer->rdev) {
+ 			lreg_ctrl |= SGTL5000_VDDC_ASSN_OVRD;
+ 			lreg_ctrl |= SGTL5000_VDDC_MAN_ASSN_VDDIO <<
+ 				    SGTL5000_VDDC_MAN_ASSN_SHIFT;
 -- 
 2.24.1
 
