@@ -2,64 +2,69 @@ Return-Path: <SRS0=OsOn=2J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7E32C43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3B35C3F68F
 	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 08:52:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 617932465E
+	by mail.kernel.org (Postfix) with ESMTPS id 6181E24676
 	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 08:52:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OrA64DbJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 617932465E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GyEzGfeD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6181E24676
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50AA315E0;
-	Thu, 19 Dec 2019 09:45:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50AA315E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B091847;
+	Thu, 19 Dec 2019 09:35:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B091847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576745192;
-	bh=rAkvIMMDbyLbgfUhkzIW6KO0aFyM8fZ141JPYAAaMA0=;
+	s=default; t=1576744565;
+	bh=rja+uQXapsA2dndbUOM2U3RFYl1ACEGRK1vm/gs5eos=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OrA64DbJfIo/SuqrWnXt0ieElK3ZYcJwnh98yVFC+2TwwwGgvOO1rYXaBBbW6tgDX
-	 AGqT07UNr7HUeeLRzGcMEjOgZYxdRTGJUfWY9spRhArU/tZjHsSOrqMw5Wdstc4Fs3
-	 K3Uk8717xae5T9w76DcFjm+uvPMFKUxqCkMcQfl0=
+	b=GyEzGfeDhvBBNGXDsGg5sN/G6WQv3zgbmmF9Sc+et0iT3KONUFTM4jxH/LNYrmCAE
+	 pGhoeDCLHWdGxr/aJP8hlVEW38xsJo1ofBnVoc9IBRMZuB/oLmlHNvrhklBSFXRJSQ
+	 hEUi7u8ZPntJvS0wJW4PXwCqkfi5oVbKzqKAAUBg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8486F8013E;
-	Thu, 19 Dec 2019 09:45:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4F07F80059;
+	Thu, 19 Dec 2019 09:35:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFD99F80234; Thu, 19 Dec 2019 09:45:40 +0100 (CET)
+ id 7FA42F80234; Thu, 19 Dec 2019 09:35:13 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4778F8013E
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 09:45:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4778F8013E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5114DF80059
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 09:35:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5114DF80059
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0BDB8ABCD;
- Thu, 19 Dec 2019 08:45:37 +0000 (UTC)
-Date: Thu, 19 Dec 2019 09:45:35 +0100
-Message-ID: <s5hwoasya8g.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C4D11AFCD;
+ Thu, 19 Dec 2019 08:35:08 +0000 (UTC)
+Date: Thu, 19 Dec 2019 09:35:08 +0100
+Message-ID: <s5hzhfoyapv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-In-Reply-To: <2692449396954c6c968f5b75e2660358@realtek.com>
-References: <2692449396954c6c968f5b75e2660358@realtek.com>
+To: Kai Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <EE459081-2B46-481C-ACE4-940552DEE098@canonical.com>
+References: <20191218132650.6303-1-hui.wang@canonical.com>
+ <s5hlfr9zc67.wl-tiwai@suse.de>
+ <EB061C4E-72BE-491B-ABAE-DFB96BEB7D7C@canonical.com>
+ <e58306bc-8a2c-dcb5-c875-0dd4a2f3a51c@canonical.com>
+ <EE459081-2B46-481C-ACE4-940552DEE098@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Add headset Mic no shutup for ALC283
+Cc: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: set the interface format
+	after resume on Dell WD19
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,24 +77,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 Dec 2019 06:20:46 +0100,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> ChromeBox machine had humming noise from external skeaker plugin at
-> codec D3 state.
-
-Applied now.  Thanks.
-
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVGh1LCAxOSBEZWMgMjAxOSAwNzozNzowNyArMDEwMCwKS2FpIEhlbmcgRmVuZyB3cm90ZToK
+PiAKPiAKPiAKPiA+IE9uIERlYyAxOSwgMjAxOSwgYXQgMjoyMyBQTSwgSHVpIFdhbmcgPGh1aS53
+YW5nQGNhbm9uaWNhbC5jb20+IHdyb3RlOgo+ID4gCj4gPiAKPiA+IE9uIDIwMTkvMTIvMTkg5LiL
+5Y2IMTI6NTUsIEthaSBIZW5nIEZlbmcgd3JvdGU6Cj4gPj4gSGkgSHVpIGFuZCBUYWthc2hpLAo+
+ID4+IAo+ID4+PiBPbiBEZWMgMTksIDIwMTksIGF0IDM6MDYgQU0sIFRha2FzaGkgSXdhaSA8dGl3
+YWlAc3VzZS5kZT4gd3JvdGU6Cj4gPj4+IAo+ID4+PiBPbiBXZWQsIDE4IERlYyAyMDE5IDE0OjI2
+OjUwICswMTAwLAo+ID4+PiBIdWkgV2FuZyB3cm90ZToKPiA+Pj4+IFJlY2VudGx5IHdlIGZvdW5k
+IHRoZSBoZWFkc2V0LW1pYyBvbiB0aGUgRGVsbCBEb2NrIFdEMTkgZG9lc24ndCB3b3JrCj4gPj4+
+PiBhbnltb3JlIGFmdGVyIHMzIChzMmkgb3IgZGVlcCksIHRoaXMgcHJvYmxlbSBjb3VsZCBiZSB3
+b3JrYXJvdW5kZWQgYnkKPiA+Pj4+IGNsb3NlaW5nIChwY21fY2xvc2UpIHRoZSBhcHAgYW5kIHRo
+ZW4gcmVvcGVuaW5nIChwY21fb3BlbikgdGhlIGFwcCwgc28KPiA+Pj4+IHRoaXMgYnVnIGlzIG5v
+dCBlYXN5IHRvIGJlIGRldGVjdGVkIGJ5IHVzZXJzLgo+ID4+Pj4gCj4gPj4+PiBXaGVuIHByb2Js
+ZW0gaGFwcGVucywgcmV0aXJlX2NhcHR1cmVfdXJiKCkgY291bGQgc3RpbGwgYmUgY2FsbGVkCj4g
+Pj4+PiBwZXJpb2RpY2FsbHksIGJ1dCB0aGUgc2l6ZSBvZiBjYXB0dXJlZCBkYXRhIGlzIGFsd2F5
+cyAwLCBpdCBjb3VsZCBiZQo+ID4+Pj4gYSBmaXJtd2FyZSBidWcgb24gdGhlIGRvY2suIEFueXdh
+eSBJIGZvdW5kIGFmdGVyIHJlc3VtaW5nLCB0aGUKPiA+Pj4+IHNuZF91c2JfcGNtX3ByZXBhcmUo
+KSB3aWxsIGJlIGNhbGxlZCwgYW5kIGlmIHdlIGZvcmNpYmx5IHJ1bgo+ID4+Pj4gc2V0X2Zvcm1h
+dCgpIHRvIHNldCB0aGUgaW50ZXJmYWNlIGFuZCBpdHMgZW5kcG9pbnQsIHRoZSBjYXB0dXJlCj4g
+Pj4+PiBzaXplIHdpbGwgYmUgbm9ybWFsIGFnYWluLiBUaGlzIHByb2JsZW0gYW5kIHdvcmthb3Vu
+ZCBhbHNvIGFwcGx5IHRvCj4gPj4+PiBwbGF5YmFjay4KPiA+Pj4+IAo+ID4+Pj4gVG8gZml4IGl0
+IGluIHRoZSBrZXJuZWwsIGFkZCBhIHF1aXJrIHRvIGxldCBzZXRfZm9ybWF0KCkgcnVuCj4gPj4+
+PiBmb3JjaWJseSBvbmNlIGFmdGVyIHJlc3VtZS4KPiA+Pj4+IAo+ID4+Pj4gU2lnbmVkLW9mZi1i
+eTogSHVpIFdhbmcgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+Cj4gPj4+IFRoYW5rcywgdGhlIHdv
+cmthcm91bmQgbG9va3MgcmVhc29uYWJsZS4KPiA+Pj4gSSBhcHBsaWVkIGl0IG5vdyB3aXRoIENj
+IHRvIHN0YWJsZS4KPiA+PiBJIGFtIG5vdCBlbnRpcmVseSBzdXJlIGl04oCZcyBhIGtlcm5lbCBi
+dWcuIFsxXSBbMl0gY2FuIGFsc28gZml4IHRoZSBpc3N1ZS4KPiA+PiAKPiA+PiBTaW5jZSBVU0Ig
+YXVkaW8gZG9lc27igJl0IGhhdmUgU05EUlZfUENNX0lORk9fUkVTVU1FIGNhcGFiaWxpdHksCj4g
+Pj4gdXNlcnNwYWNlIHNob3VsZG7igJl0IHRyeSB0byB1c2Ugc25kX3BjbV9yZXN1bWUoKS4gQ29t
+bWl0IFsxXSB1c2VzCj4gPj4gc25kX3BjbV9kcm9wKCkgdG8gbWFrZSB0aGUgZGV2aWNlIGxlYXZl
+IHN1c3BlbmRlZCBzdGF0ZSBhbmQgdGhlIGRldmljZQo+ID4+IGJlaGF2ZXMgY29ycmVjdGx5IHdp
+dGggdGhlIGZpeC4KPiA+PiAKPiA+PiBbMV0gaHR0cHM6Ly9naXRsYWIuZnJlZWRlc2t0b3Aub3Jn
+L3B1bHNlYXVkaW8vcHVsc2VhdWRpby9jb21taXQvZjdiMzUzN2JiZjlhNjkxNmVlM2ZkNzJhODIw
+MjU1MTliNGMzNDZmNQo+ID4+IFsyXSBodHRwczovL2dpdGxhYi5mcmVlZGVza3RvcC5vcmcvcHVs
+c2VhdWRpby9wdWxzZWF1ZGlvL2NvbW1pdC83MzRhMDBjODQ5ODE1YTQ1Njk3OTcwZDU5MzA2OGMz
+MDFhMDRlYmJiCj4gPiAKPiA+IFRoYW5rcyBmb3Igc2hhcmluZyB0aGUgaW5mbywgWzFdIGNvdWxk
+IHdvcmthcm91bmQgdGhpcyBidWcgYmVjYXVzZSBpdCBmaW5hbGx5IGNhbGxlZCBwY21fY2xvc2Uo
+KSBhbmQgcGNtX29wZW4oKSwgWzJdIGRvZXNuJ3QgY2hhbmdlIHRoZSBleGVjdXRpbmcgcGF0aCBp
+biB0aCBQQSwgaXQgaXMgYSBjb3NtZXRpYyBpbXByb3ZlbWVudCBmb3IgWzFdLgo+IAo+IEluIFsy
+XSwgaWYgUENNIGRvZXNuJ3Qgc3VwcG9ydCBoYXJkd2FyZSByZXN1bWUsIGxpa2UgVVNCIGF1ZGlv
+LCBpdCBmYWxscyB0aHJvdWdoIHRvIGRlZmF1bHQgYW5kIGNhbGxzIHNuZF9wY21fZHJvcCgpIHRv
+IGxldCBkZXZpY2UgbGVhdmUgc3VzcGVuZGVkIHN0YXRlLiBTbyBpdOKAmXMgbW9yZSB0aGFuIGEg
+Y29zbWV0aWMgY2hhbmdlLgoKTm90IHJlYWxseSwgdGhlIHdvcmxkIGlzIG5vdCBvbmx5IHdpdGgg
+UEEuCgpUaGUgc3RhbmRhcmQgYWxzYS1saWIgZnVuY3Rpb24gc25kX3BjbV9yZWNvdmVyKCkganVz
+dCBjYWxscwpzbmRfcGNtX3ByZXBhcmUoKSB3aGVuIHNuZF9wY21fcmVzdW1lKCkgZmFpbHMuICBU
+aGF0IGlzLCB0aGUgc3RyZWFtIGlzCnJlLXByZXBhcmVkIGFuZCByZS10cmlnZ2VyZWQgd2l0aG91
+dCBjbG9zaW5nIGZvciB0aGUgZGV2aWNlIHRoYXQgaGFzCm5vIFNORFJWX1BDTV9JTkZPX1JFU1VN
+RSBmbGFnLgoKClRha2FzaGkKCj4gPiAKPiA+IEkgZ3Vlc3MgaXQgaXMgYSBmaXJtd2FyZSBwcm9i
+bGVtLCBhbmQgY291bGQgYmUgZml4ZWQgaW4gdGhlIGtlcm5lbC4gIEJlY2F1c2UgSSB0ZXN0ZWQg
+bWFueSBvdGhlciB1c2IgYXVkaW8gY2FyZHMsIHRoZXkgZG9uJ3QgbmVlZCB3b3JrYXJvdWQgb2Yg
+WzFdLCB0aGV5IGFsbCBjb3VsZCBwbGF5YmFjayBhbmQgY2FwdHVyZSBhZnRlciByZXN1bWluZywg
+c28gdGhpcyBwcm9ibGVtIGlzIHNwZWNpZmljIHRvIHRoaXMgaGFyZHdhcmUuIEFuZCBpbiB0aGVv
+cnkgYSBkZXZpY2Ugc2hvdWxkIHdvcmsgc2FtZSBiZWZvcmUgYW5kIGFmdGVyIHN1c3BlbmQsICBp
+dCBzaG91bGQgbm90IGRlcGVuZCBvbiB1c2Vyc3BhY2UgdG8gY2xvc2UgaXQgYW5kIHJlb3BlbiBp
+dC4gQWZ0ZXIgYWRkaW5nIHRoaXMgZml4LCB0aGlzIHVzYiBhdWRpbyBjYXJkIGNvdWxkIHdvcmsg
+YWZ0ZXIgcmVzdW1pbmcgZXZlbiBvbiBhIHN5c3RlbSB3aXRob3V0IFBBLiBBbmQgdGhpcyBrZXJu
+ZWwgcGF0Y2ggZG9lc24ndCBoYXZlIGFueSBjb25mbGljdCB3aXRoIFsxXS9bMl0gaW4gdGhlIFBB
+LCB0aGV5IGNvdWxkIHdvcmsgd2VsbCB0b2dldGhlci4KPiAKPiBZZXMgdGhlIHR3byBhcHByb2Fj
+aGVzIGFyZSBvcnRob2dvbmFsIGluIHNvbWUgc2Vuc2UuIEhvd2V2ZXIgaWYgdGhlIGlzc3VlIGNh
+biBiZSBzb2x2ZWQgYnkgZm9sbG93aW5nIGFsc2EtbGliJ3MgZG9jdW1lbnRhdGlvbiwgSSBkb24n
+dCB0aGluayBpdCdzIGEga2VybmVsIGJ1Zy4KPiAKPiBLYWktSGVuZwo+IAo+ID4gCj4gPiBUaGFu
+a3MsCj4gPiAKPiA+IEh1aS4KPiA+IAo+ID4gCj4gPj4gS2FpLUhlbmcKPiA+PiAKPiA+Pj4gCj4g
+Pj4+IFRha2FzaGkKPiA+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+Pj4gQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCj4gPj4+IGh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
