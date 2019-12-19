@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB627C43603
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 07:51:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1736C43603
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 07:52:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 561652465E
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 07:51:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61C0D24650
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Dec 2019 07:52:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AtjZWxWN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 561652465E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VJd3NrkK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61C0D24650
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 991CE1670;
-	Thu, 19 Dec 2019 08:50:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 991CE1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0F9C1684;
+	Thu, 19 Dec 2019 08:51:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F9C1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576741908;
-	bh=NRZXD2NvBS0GKy75FQR0yUH+R8t1LzEp9TnVsH4w+6s=;
+	s=default; t=1576741959;
+	bh=pnsJTilr/vwsmOisWkCUPq557eLqLSfoNy6hp2RnZUA=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AtjZWxWNUJyj7XX+6EuydXc3oEITJxoEZWMV2q9/6LqN7ZKqil+wnZVuftGZVmD6u
-	 Xwi/VvP5HXctNo60vGqllTtGTXQRtDlBMIz+ksc6nCooTJBnmiG9zuSR3hX2MG+/CG
-	 o8WHUtxGE0pdOZS9Ffq1f8AyJgLi9FzkCsFAVz0A=
+	b=VJd3NrkK4m4rupmlQmzMPRbrX2AtD+bbhTBMX0WpJR+NfwbKnuvKz0GqPQhASK5F9
+	 32sSsWUeS86DJajQDzOej176goMF8FgPmjxZnx5qqEkvxg1gOXy7dWq7iIcfJWOUH5
+	 GwOc326bLgDPNhV/06cSur69kE+JxJ10i+bW6UfA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12CD3F802A7;
-	Thu, 19 Dec 2019 08:47:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFC87F802DC;
+	Thu, 19 Dec 2019 08:47:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 997F5F802A7; Thu, 19 Dec 2019 08:47:03 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 4B0BAF802A1
- for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 08:46:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B0BAF802A1
-Date: 19 Dec 2019 16:46:58 +0900
-X-IronPort-AV: E=Sophos;i="5.69,330,1571670000"; d="scan'208";a="34840682"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 19 Dec 2019 16:46:58 +0900
+ id DBD35F802DD; Thu, 19 Dec 2019 08:47:12 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 21D57F802A0
+ for <alsa-devel@alsa-project.org>; Thu, 19 Dec 2019 08:47:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21D57F802A0
+Date: 19 Dec 2019 16:47:06 +0900
+X-IronPort-AV: E=Sophos;i="5.69,330,1571670000"; d="scan'208";a="34623176"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 19 Dec 2019 16:47:06 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E8CC9419F8CC;
- Thu, 19 Dec 2019 16:46:57 +0900 (JST)
-Message-ID: <878sn8zrim.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CCCCE400F7A0;
+ Thu, 19 Dec 2019 16:47:06 +0900 (JST)
+Message-ID: <877e2szrid.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,8 +58,8 @@ In-Reply-To: <87immczrkk.wl-kuninori.morimoto.gx@renesas.com>
 References: <87immczrkk.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v3 7/8] ASoC: soc-dapm: add
-	snd_soc_dapm_stream_stop()
+Subject: [alsa-devel] [PATCH v3 8/8] ASoC: use snd_soc_dapm_stream_stop()
+	for SND_SOC_DAPM_STREAM_STOP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,130 +77,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-When we stop stream, if it was Playback, we might need to care
-about power down time. In such case, we need to use delayed work.
-
-We have same implementation for it at soc-pcm.c and soc-compress.c,
-but we don't want to have duplicate code.
-This patch adds snd_soc_dapm_stream_stop(), and share same code.
+dpcm_fe_dai_shutdown() / soc_compr_free_fe() didn't care pmdown_time.
+We already have snd_soc_dapm_stream_stop() for it.
+Let's use common method.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-By: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/sound/soc-dapm.h |  1 +
- sound/soc/soc-compress.c | 18 +-----------------
- sound/soc/soc-dapm.c     | 23 +++++++++++++++++++++++
- sound/soc/soc-pcm.c      | 19 +------------------
- 4 files changed, 26 insertions(+), 35 deletions(-)
+ sound/soc/soc-compress.c | 2 +-
+ sound/soc/soc-pcm.c      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 6e8a312..1b6afbc 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -434,6 +434,7 @@ void snd_soc_dapm_reset_cache(struct snd_soc_dapm_context *dapm);
- /* dapm events */
- void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- 	int event);
-+void snd_soc_dapm_stream_stop(struct snd_soc_pcm_runtime *rtd, int stream);
- void snd_soc_dapm_shutdown(struct snd_soc_card *card);
- 
- /* external DAPM widget events */
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 7249471..392a1c5 100644
+index 392a1c5..223cd04 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -259,23 +259,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->shutdown)
- 		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
+@@ -299,7 +299,7 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+ 	for_each_dpcm_be(fe, stream, dpcm)
+ 		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
  
--	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
--		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
--			snd_soc_dapm_stream_event(rtd,
--						  SNDRV_PCM_STREAM_PLAYBACK,
--						  SND_SOC_DAPM_STREAM_STOP);
--		} else {
--			rtd->pop_wait = 1;
--			queue_delayed_work(system_power_efficient_wq,
--					   &rtd->delayed_work,
--					   msecs_to_jiffies(rtd->pmdown_time));
--		}
--	} else {
--		/* capture streams can be powered down now */
--		snd_soc_dapm_stream_event(rtd,
--					  SNDRV_PCM_STREAM_CAPTURE,
--					  SND_SOC_DAPM_STREAM_STOP);
--	}
-+	snd_soc_dapm_stream_stop(rtd, stream);
+-	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
++	snd_soc_dapm_stream_stop(fe, stream);
  
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b6378f0..442846f 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -4447,6 +4447,29 @@ void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- 	mutex_unlock(&card->dapm_mutex);
- }
- 
-+void snd_soc_dapm_stream_stop(struct snd_soc_pcm_runtime *rtd, int stream)
-+{
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
-+			/* powered down playback stream now */
-+			snd_soc_dapm_stream_event(rtd,
-+						  SNDRV_PCM_STREAM_PLAYBACK,
-+						  SND_SOC_DAPM_STREAM_STOP);
-+		} else {
-+			/* start delayed pop wq here for playback streams */
-+			rtd->pop_wait = 1;
-+			queue_delayed_work(system_power_efficient_wq,
-+					   &rtd->delayed_work,
-+					   msecs_to_jiffies(rtd->pmdown_time));
-+		}
-+	} else {
-+		/* capture streams can be powered down now */
-+		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
-+					  SND_SOC_DAPM_STREAM_STOP);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_stream_stop);
-+
- /**
-  * snd_soc_dapm_enable_pin_unlocked - enable pin.
-  * @dapm: DAPM context
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ad908e0..dfff2dd 100644
+index dfff2dd..74d340d 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -672,24 +672,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+@@ -1966,7 +1966,7 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ 	soc_pcm_close(substream);
  
- 	soc_pcm_components_close(substream, NULL);
+ 	/* run the stream event for each BE */
+-	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
++	snd_soc_dapm_stream_stop(fe, stream);
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
--			/* powered down playback stream now */
--			snd_soc_dapm_stream_event(rtd,
--						  SNDRV_PCM_STREAM_PLAYBACK,
--						  SND_SOC_DAPM_STREAM_STOP);
--		} else {
--			/* start delayed pop wq here for playback streams */
--			rtd->pop_wait = 1;
--			queue_delayed_work(system_power_efficient_wq,
--					   &rtd->delayed_work,
--					   msecs_to_jiffies(rtd->pmdown_time));
--		}
--	} else {
--		/* capture streams can be powered down now */
--		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
--					  SND_SOC_DAPM_STREAM_STOP);
--	}
-+	snd_soc_dapm_stream_stop(rtd, substream->stream);
- 
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
 -- 
 2.7.4
 
