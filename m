@@ -2,57 +2,62 @@ Return-Path: <SRS0=6EJT=2K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69611C43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:35:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02552C43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:36:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79B112146E
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:35:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82C3D2146E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:36:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P26QQDM8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79B112146E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UmvhWUuz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82C3D2146E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CE1882A;
-	Fri, 20 Dec 2019 16:34:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CE1882A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A1431615;
+	Fri, 20 Dec 2019 16:35:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A1431615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576856115;
-	bh=f8wE9hcgOeTF7rbhvDXN5k5d7WxpyDz+gFQCjmn/VX0=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=P26QQDM8wD9A43JQRsdWmoyNSvWqr6UY3a9mz1eeV1nrLmeV03Cb8wyeplEB2+4YY
-	 hzY8HIZgFa2QaCh/9Hr9pkffgLSM7YkD/uAqyT7LNTkgjIfRRzLy2/N1CbQrHl1Nj8
-	 eiGGQetlbW+22wiSlZhcIwFxnvKLtzSRvTC/vIZI=
+	s=default; t=1576856169;
+	bh=eJsFvfhM3XOWq3pmUQjM2wSP6msJPxg8nN69oEdnQCs=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UmvhWUuzPVSaQIhDbH5YtSvxgZnuyi8dDW1dTdnaTw0ZeCMVxZRLetweNTuXeVWm/
+	 bqLVfX6pyQT1jboi+z4qxOerX/JsRvMpkFuidBesng1ARwSvRYTd7ocDMwkqj+ZgAj
+	 Lawudc8HJ9kwmOvX4diG09D3kyxZo+j2eQr+BqKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9DECF80059;
-	Fri, 20 Dec 2019 16:34:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74F4DF8014C;
+	Fri, 20 Dec 2019 16:34:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00A5BF8015A; Fri, 20 Dec 2019 16:34:22 +0100 (CET)
+ id 8722CF80269; Fri, 20 Dec 2019 16:34:27 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77A15F80059
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 16:34:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77A15F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16D57F8015A
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 16:34:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16D57F8015A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 57723AE37
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 15:34:19 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id A626FAE37
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 15:34:23 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri, 20 Dec 2019 16:34:10 +0100
-Message-Id: <20191220153415.2740-1-tiwai@suse.de>
+Date: Fri, 20 Dec 2019 16:34:11 +0100
+Message-Id: <20191220153415.2740-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH 0/5] ALSA: Fix uapi headers
+In-Reply-To: <20191220153415.2740-1-tiwai@suse.de>
+References: <20191220153415.2740-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 1/5] ALSA: emu10k1: Make uapi/emu10k1.h
+	compilable again
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,35 +76,184 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Recently we updated the content in alsa-lib uapi header files by just
+copying from the latest Linus kernel uapi/*.h, and noticed that it
+broke the build of some alsa-tools programs.  The reason is that we
+used to have a modified version in the past, so that the program can
+be built without referring to the unexported stuff like
+snd_ctl_elem_id or __user prefix.
 
-here is a series of fixes for include/uapi/sound/*.h files and the
-relevant code changes, so that they can be used for building
-alsa-tools programs again.
+This patch attempts to restore that, i.e. dropping the stuff that
+can't be referred in the user-space.  For adapting the changes in
+uapi/emu10k1.h, the emu10k1 driver code is also slightly modified.
+Most of changes are pointer cast.
 
-The corresponding alsa-lib update will be followed.
-
-
-Takashi
-
-===
-
-Takashi Iwai (5):
-  ALSA: emu10k1: Make uapi/emu10k1.h compilable again
-  ALSA: hdsp: Make uapi/hdsp.h compilable again
-  ALSA: hdspm: Drop linux/types.h inclusion in uapi header
-  ALSA: uapi: Fix typos and header inclusion in asound.h
-  ALSA: uapi: Drop asound.h inclusion from asoc.h
-
- include/uapi/sound/asoc.h    |  1 -
- include/uapi/sound/asound.h  |  6 +++---
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
  include/uapi/sound/emu10k1.h | 38 ++++++++++++++++++++++++++------------
- include/uapi/sound/hdsp.h    |  4 +---
- include/uapi/sound/hdspm.h   |  2 --
  sound/pci/emu10k1/emufx.c    | 26 ++++++++++++++------------
- sound/pci/rme9652/hdsp.c     |  2 +-
- 7 files changed, 45 insertions(+), 34 deletions(-)
+ 2 files changed, 40 insertions(+), 24 deletions(-)
 
+diff --git a/include/uapi/sound/emu10k1.h b/include/uapi/sound/emu10k1.h
+index 042c5a6f16ee..c1150e4d0231 100644
+--- a/include/uapi/sound/emu10k1.h
++++ b/include/uapi/sound/emu10k1.h
+@@ -23,9 +23,6 @@
+ #ifndef _UAPI__SOUND_EMU10K1_H
+ #define _UAPI__SOUND_EMU10K1_H
+ 
+-#include <linux/types.h>
+-#include <sound/asound.h>
+-
+ /*
+  * ---- FX8010 ----
+  */
+@@ -282,8 +279,22 @@ struct snd_emu10k1_fx8010_info {
+ #define EMU10K1_GPR_TRANSLATION_TREBLE		3
+ #define EMU10K1_GPR_TRANSLATION_ONOFF		4
+ 
++enum emu10k1_ctl_elem_iface {
++	EMU10K1_CTL_ELEM_IFACE_MIXER = 2,	/* virtual mixer device */
++	EMU10K1_CTL_ELEM_IFACE_PCM = 3,		/* PCM device */
++};
++
++struct emu10k1_ctl_elem_id {
++	unsigned int pad;		/* don't use */
++	int iface;			/* interface identifier */
++	unsigned int device;		/* device/client number */
++	unsigned int subdevice;		/* subdevice (substream) number */
++	unsigned char name[44];		/* ASCII name of item */
++	unsigned int index;		/* index of item */
++};
++
+ struct snd_emu10k1_fx8010_control_gpr {
+-	struct snd_ctl_elem_id id;		/* full control ID definition */
++	struct emu10k1_ctl_elem_id id;	/* full control ID definition */
+ 	unsigned int vcount;		/* visible count */
+ 	unsigned int count;		/* count of GPR (1..16) */
+ 	unsigned short gpr[32];		/* GPR number(s) */
+@@ -296,7 +307,7 @@ struct snd_emu10k1_fx8010_control_gpr {
+ 
+ /* old ABI without TLV support */
+ struct snd_emu10k1_fx8010_control_old_gpr {
+-	struct snd_ctl_elem_id id;
++	struct emu10k1_ctl_elem_id id;
+ 	unsigned int vcount;
+ 	unsigned int count;
+ 	unsigned short gpr[32];
+@@ -310,24 +321,24 @@ struct snd_emu10k1_fx8010_code {
+ 	char name[128];
+ 
+ 	__EMU10K1_DECLARE_BITMAP(gpr_valid, 0x200); /* bitmask of valid initializers */
+-	__u32 __user *gpr_map;		/* initializers */
++	__u32 *gpr_map;			/* initializers */
+ 
+ 	unsigned int gpr_add_control_count; /* count of GPR controls to add/replace */
+-	struct snd_emu10k1_fx8010_control_gpr __user *gpr_add_controls; /* GPR controls to add/replace */
++	struct snd_emu10k1_fx8010_control_gpr *gpr_add_controls; /* GPR controls to add/replace */
+ 
+ 	unsigned int gpr_del_control_count; /* count of GPR controls to remove */
+-	struct snd_ctl_elem_id __user *gpr_del_controls; /* IDs of GPR controls to remove */
++	struct emu10k1_ctl_elem_id *gpr_del_controls; /* IDs of GPR controls to remove */
+ 
+ 	unsigned int gpr_list_control_count; /* count of GPR controls to list */
+ 	unsigned int gpr_list_control_total; /* total count of GPR controls */
+-	struct snd_emu10k1_fx8010_control_gpr __user *gpr_list_controls; /* listed GPR controls */
++	struct snd_emu10k1_fx8010_control_gpr *gpr_list_controls; /* listed GPR controls */
+ 
+ 	__EMU10K1_DECLARE_BITMAP(tram_valid, 0x100); /* bitmask of valid initializers */
+-	__u32 __user *tram_data_map;	  /* data initializers */
+-	__u32 __user *tram_addr_map;	  /* map initializers */
++	__u32 *tram_data_map;		  /* data initializers */
++	__u32 *tram_addr_map;		  /* map initializers */
+ 
+ 	__EMU10K1_DECLARE_BITMAP(code_valid, 1024); /* bitmask of valid instructions */
+-	__u32 __user *code;		  /* one instruction - 64 bits */
++	__u32 *code;			  /* one instruction - 64 bits */
+ };
+ 
+ struct snd_emu10k1_fx8010_tram {
+@@ -371,11 +382,14 @@ struct snd_emu10k1_fx8010_pcm_rec {
+ #define SNDRV_EMU10K1_IOCTL_SINGLE_STEP	_IOW ('H', 0x83, int)
+ #define SNDRV_EMU10K1_IOCTL_DBG_READ	_IOR ('H', 0x84, int)
+ 
++#ifndef __KERNEL__
+ /* typedefs for compatibility to user-space */
+ typedef struct snd_emu10k1_fx8010_info emu10k1_fx8010_info_t;
+ typedef struct snd_emu10k1_fx8010_control_gpr emu10k1_fx8010_control_gpr_t;
+ typedef struct snd_emu10k1_fx8010_code emu10k1_fx8010_code_t;
+ typedef struct snd_emu10k1_fx8010_tram emu10k1_fx8010_tram_t;
+ typedef struct snd_emu10k1_fx8010_pcm_rec emu10k1_fx8010_pcm_t;
++typedef struct emu10k1_ctl_elem_id emu10k1_ctl_elem_id_t;
++#endif
+ 
+ #endif /* _UAPI__SOUND_EMU10K1_H */
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index a31adecfe608..e0e076a9c321 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -628,7 +628,7 @@ static int snd_emu10k1_code_peek(struct snd_emu10k1 *emu,
+ }
+ 
+ static struct snd_emu10k1_fx8010_ctl *
+-snd_emu10k1_look_for_ctl(struct snd_emu10k1 *emu, struct snd_ctl_elem_id *id)
++snd_emu10k1_look_for_ctl(struct snd_emu10k1 *emu, struct emu10k1_ctl_elem_id *id)
+ {
+ 	struct snd_emu10k1_fx8010_ctl *ctl;
+ 	struct snd_kcontrol *kcontrol;
+@@ -714,15 +714,15 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
+ 				       bool in_kernel)
+ {
+ 	unsigned int i;
+-	struct snd_ctl_elem_id __user *_id;
+-	struct snd_ctl_elem_id id;
++	struct emu10k1_ctl_elem_id __user *_id;
++	struct emu10k1_ctl_elem_id id;
+ 	struct snd_emu10k1_fx8010_control_gpr *gctl;
+ 	int err;
+ 	
+-	for (i = 0, _id = icode->gpr_del_controls;
+-	     i < icode->gpr_del_control_count; i++, _id++) {
++	_id = (__force struct emu10k1_ctl_elem_id __user *)icode->gpr_del_controls;
++	for (i = 0; i < icode->gpr_del_control_count; i++, _id++) {
+ 		if (in_kernel)
+-			id = *(__force struct snd_ctl_elem_id *)_id;
++			id = *(__force struct emu10k1_ctl_elem_id *)_id;
+ 		else if (copy_from_user(&id, _id, sizeof(id)))
+ 	     		return -EFAULT;
+ 		if (snd_emu10k1_look_for_ctl(emu, &id) == NULL)
+@@ -741,7 +741,8 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
+ 		if (snd_emu10k1_look_for_ctl(emu, &gctl->id))
+ 			continue;
+ 		down_read(&emu->card->controls_rwsem);
+-		if (snd_ctl_find_id(emu->card, &gctl->id) != NULL) {
++		if (snd_ctl_find_id(emu->card,
++				    (struct snd_ctl_elem_id *)&gctl->id)) {
+ 			up_read(&emu->card->controls_rwsem);
+ 			err = -EEXIST;
+ 			goto __error;
+@@ -876,15 +877,16 @@ static int snd_emu10k1_del_controls(struct snd_emu10k1 *emu,
+ 				    bool in_kernel)
+ {
+ 	unsigned int i;
+-	struct snd_ctl_elem_id id;
+-	struct snd_ctl_elem_id __user *_id;
++	struct emu10k1_ctl_elem_id id;
++	struct emu10k1_ctl_elem_id __user *_id;
+ 	struct snd_emu10k1_fx8010_ctl *ctl;
+ 	struct snd_card *card = emu->card;
+ 	
+-	for (i = 0, _id = icode->gpr_del_controls;
+-	     i < icode->gpr_del_control_count; i++, _id++) {
++	_id = (__force struct emu10k1_ctl_elem_id __user *)icode->gpr_del_controls;
++
++	for (i = 0; i < icode->gpr_del_control_count; i++, _id++) {
+ 		if (in_kernel)
+-			id = *(__force struct snd_ctl_elem_id *)_id;
++			id = *(__force struct emu10k1_ctl_elem_id *)_id;
+ 		else if (copy_from_user(&id, _id, sizeof(id)))
+ 			return -EFAULT;
+ 		down_write(&card->controls_rwsem);
 -- 
 2.16.4
 
