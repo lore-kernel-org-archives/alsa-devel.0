@@ -6,75 +6,69 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65CBFC43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D260C43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:51:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73F982465E
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:50:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9DD532465E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:51:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NuX1riS2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73F982465E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="krjeBMH7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DD532465E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6092382A;
-	Fri, 20 Dec 2019 16:49:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6092382A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 634561616;
+	Fri, 20 Dec 2019 16:50:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 634561616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576857036;
-	bh=FMhmYudlLP73AL7FvC1LxFF3Kh9FnnD077E157yVeNI=;
+	s=default; t=1576857090;
+	bh=LcpPqR+F61JKXQWMaeP6qeJpTWJNdca2jjibFemi2ts=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NuX1riS2sqh69TCBfaR2WUySVDfa+pPxrlYhpsz2lsrJMViVNZnB3/aobJGiQTILK
-	 jeMzqpgnOvoqrvzntPSdfR7Gy5i/uoGR8SSTzkIEDV2LlZoBOOSeTVWsNitxNLxjWw
-	 y1PN5nVH6TqhrjorbN/wXF7paBFik0m0s3iduDRo=
+	b=krjeBMH7cuTNZFv3J/oGWLCx/pJJtyYCrf6Vfn4GHd3RGz0X4GG6Sre2HQozoRPEb
+	 oWBKdQngo6qF+jU6XNGiyxHRIgvHuvzCWuW+nbSx1UE4O3enegDZDnZuIW9e/k+4NO
+	 qdNdwUEHaBXHkfCvfWtcifhmpSomD9+edVd+FggA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0757F8014F;
-	Fri, 20 Dec 2019 16:49:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2EA8F80257;
+	Fri, 20 Dec 2019 16:49:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7E48F8022C; Fri, 20 Dec 2019 16:49:44 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 881A7F8014C; Fri, 20 Dec 2019 16:49:45 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A46CF80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60EB4F8014C
  for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 16:49:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A46CF80059
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60EB4F8014C
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
  20 Dec 2019 07:49:38 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,336,1571727600"; d="scan'208";a="267551905"
+X-IronPort-AV: E=Sophos;i="5.69,336,1571727600"; d="scan'208";a="267551909"
 Received: from pkriegsm-mobl.amr.corp.intel.com (HELO [10.252.132.172])
  ([10.252.132.172])
- by FMSMGA003.fm.intel.com with ESMTP; 20 Dec 2019 07:49:34 -0800
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, 
- lee.jones@linaro.org, linus.walleij@linaro.org
-References: <20191219103153.14875-1-srinivas.kandagatla@linaro.org>
- <20191219103153.14875-3-srinivas.kandagatla@linaro.org>
- <af48cd71-fa1a-dbc5-0e88-e315ea13c28c@linux.intel.com>
- <db36d6d7-40a2-bbd2-f299-838abf4d92cc@linaro.org>
- <4492b71e-9923-365c-f22c-3766e2d5bae2@linux.intel.com>
- <3fa4997f-4409-97f6-ba10-a87013383eb7@linaro.org>
+ by FMSMGA003.fm.intel.com with ESMTP; 20 Dec 2019 07:49:37 -0800
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20191220115629.8293-1-srinivas.kandagatla@linaro.org>
+ <20191220115629.8293-3-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <df1c8ef8-2619-99b7-317c-1970c9413d00@linux.intel.com>
-Date: Fri, 20 Dec 2019 09:22:48 -0600
+Message-ID: <052d527b-77a5-172e-2b18-ca635242b440@linux.intel.com>
+Date: Fri, 20 Dec 2019 09:45:01 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <3fa4997f-4409-97f6-ba10-a87013383eb7@linaro.org>
+In-Reply-To: <20191220115629.8293-3-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
 Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- vinod.koul@linaro.org, devicetree@vger.kernel.org, spapothi@codeaurora.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH v6 02/11] mfd: wcd934x: add support to
- wcd9340/wcd9341 codec
+ spapothi@codeaurora.org, lgirdwood@gmail.com, vkoul@kernel.org
+Subject: Re: [alsa-devel] [PATCH v10 2/2] ASoC: codecs: add wsa881x
+ amplifier support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,40 +86,126 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Looks mostly good, couple of comments below.
+
+> +static int wsa881x_prepare(struct snd_pcm_substream *substream,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
+> +	int ret;
+> +
+> +	if (wsa881x->stream_prepared) {
+> +		sdw_disable_stream(wsa881x->sruntime);
+> +		sdw_deprepare_stream(wsa881x->sruntime);
+> +		wsa881x->stream_prepared = false;
+> +	}
+
+in what scenario would you have a transition from a stream active to 
+prepared?
+
+> +
+> +
+> +	ret = sdw_prepare_stream(wsa881x->sruntime);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/**
+> +	 * NOTE: there is a strict hw requirement about the ordering of port
+> +	 * enables and actual PA enable. PA enable should only happen after
+
+PA == power amplifiers?
+
+> +	 * soundwire ports are enabled if not DC on the line is accumlated
+
+accumulated
+
+> +	 * resulting in Click/Pop Noise
+> +	 */
+> +
+> +	ret = sdw_enable_stream(wsa881x->sruntime);
+
+I guess this answers to my question above, you are not using the 'usual' 
+mapping between ALSA states and SoundWire stream states. Enabling the 
+stream will cause a bank switch and (zero?) data to be transmitted, is 
+this intentional?
+
+If this is due to the order with the PA, then where is the PA handled?
 
 
->>> Note these are the child devices of the MFD SLIMBus device.
->>
->> Ah ok. I guess the creation of those child devices when the parent 
->> SLIMbus device reports PRESENT initially if fine, it's the part where 
->> you remove them if the device loses sync or gets powered off which is 
->> odd. And I guess technically you could still have race conditions 
->> where a child device starts a transaction just as the parent is no 
->> longer attached to the bus.
-> 
-> Losing power to SLIMBus device is very odd usecase and if it happens 
-> suggests that threre are bigger issues on the board design itself. This 
-> case should never happen. Even if it happens we would get timeout errors 
-> on every SLIMbus transactions.
-> 
->>
->>>> I would however not remove the devices when the status is down but 
->>>> only on an explicit .remove.
->>>
->>> Am open for suggestions but I would not like the child devices to 
->>> talk on the bus once the SLIMbus device is down! Only way to ensure 
->>> or make it silent is to remove.
->>
->> it's as if you are missing a mechanism to forward the parent status to 
->> the children so use remove() for lack of a better solution?
-> That is true. This gives bit more control on the slave device lifecycle.
-> Current solution works fine for now with less complexities across 
-> multiple drivers. I also agree that there is scope of improvement in 
-> future for this.
+> +	if (ret) {
+> +		sdw_deprepare_stream(wsa881x->sruntime);
+> +		return ret;
+> +	}
+> +	wsa881x->stream_prepared = true;
+> +
+> +	return ret;
+> +}
+> +
+> +static int wsa881x_hw_params(struct snd_pcm_substream *substream,
+> +			     struct snd_pcm_hw_params *params,
+> +			     struct snd_soc_dai *dai)
+> +{
+> +	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
+> +	int i;
+> +
+> +	wsa881x->active_ports = 0;
+> +	for (i = 0; i < WSA881X_MAX_SWR_PORTS; i++) {
+> +		if (!wsa881x->port_enable[i])
+> +			continue;
+> +
+> +		wsa881x->port_config[wsa881x->active_ports] =
+> +							wsa881x_pconfig[i];
+> +		wsa881x->active_ports++;
+> +	}
+> +
+> +	return sdw_stream_add_slave(wsa881x->slave, &wsa881x->sconfig,
+> +				    wsa881x->port_config, wsa881x->active_ports,
+> +				    wsa881x->sruntime);
+> +}
+> +
+> +static int wsa881x_hw_free(struct snd_pcm_substream *substream,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	struct wsa881x_priv *wsa881x = dev_get_drvdata(dai->dev);
+> +
+> +	sdw_disable_stream(wsa881x->sruntime);
+> +	sdw_deprepare_stream(wsa881x->sruntime);
 
-ok, makes sense, thanks for the answers. No further questions, so
+This works if you do a hw_params->prepare->hw_free transition, but isn't 
+it possible to have hw_params->hw_free as well? In that case the stream 
+would not enabled/prepared, so shouldn't you have the same test as in 
+prepare?
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+if (wsa881x->stream_prepared) {
+	sdw_disable_stream(wsa881x->sruntime);
+	sdw_deprepare_stream(wsa881x->sruntime);
+	wsa881x->stream_prepared = false;
+}
+
+> +	sdw_stream_remove_slave(wsa881x->slave, wsa881x->sruntime);
+> +	wsa881x->stream_prepared = false;
+> +
+> +	return 0;
+> +}
+> +
+
+> +static struct snd_soc_dai_driver wsa881x_dais[] = {
+> +	[0] = {
+
+is that [0] needed?
+
+> +		.name = "SPKR",
+> +		.id = 0,
+> +		.playback = {
+> +			.stream_name = "SPKR Playback",
+> +			.rate_max = 48000,
+> +			.rate_min = 48000,
+> +			.channels_min = 1,
+> +			.channels_max = 1,
+> +		},
+> +		.ops = &wsa881x_dai_ops,
+> +	},
+> +};
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
