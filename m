@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85379C43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 12:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A156C43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 13:00:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F77524680
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 12:12:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7CA66206DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 13:00:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="npqkPWGa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F77524680
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qtaWva7x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CA66206DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F20E7165E;
-	Fri, 20 Dec 2019 13:12:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F20E7165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5622E1660;
+	Fri, 20 Dec 2019 13:59:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5622E1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576843971;
-	bh=l4SiG5Do3taU62ejND4qgS2G7guRCbgUiLHqs/lNcuo=;
+	s=default; t=1576846806;
+	bh=6vrETVMnZipWTECs0l3Y1WlkpImN3lE0A39gYoy8Vd4=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=npqkPWGamsvw6sGai/p5KOO6BksfCpzyDID0IUhjuyO9bvrU7PI4uvLl/kIWQWaSG
-	 Nhv5PMPkGNMzbJjBnELzQwOqLWPoxBvwxo/ctHdiehDHYArRNFyOh1B3VVseEHQ9DJ
-	 2KUzC2lY784sKiE+z8kIecNRAlcBmn9mIlYkWgZQ=
+	b=qtaWva7xAth00EOKjmx2EuiSn4eCXm7YgR1koh/6iR02qwDAkLV4FmRENKYu0nLa4
+	 yYpnWK2QWpI4yNY+wYQNtZzcBIbWTORfQ95hIarvDiEjdEdqLJXjBrR4vZ6pIrJSq4
+	 b0GCwG3kumliV42wgaZTnI90XLC5GI8VCeLwzyS0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80A9AF8014C;
-	Fri, 20 Dec 2019 13:12:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1297F8014C;
+	Fri, 20 Dec 2019 13:59:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6ED01F8014F; Fri, 20 Dec 2019 13:11:59 +0100 (CET)
+ id 99118F8014F; Fri, 20 Dec 2019 13:59:13 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E5D5FF80059
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 13:11:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5D5FF80059
+ by alsa1.perex.cz (Postfix) with ESMTP id 2D136F80059
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 13:59:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D136F80059
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA40830E;
- Fri, 20 Dec 2019 04:11:54 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B29330E;
+ Fri, 20 Dec 2019 04:59:09 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 683BC3F719;
- Fri, 20 Dec 2019 04:11:54 -0800 (PST)
-Date: Fri, 20 Dec 2019 12:11:52 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC6383F719;
+ Fri, 20 Dec 2019 04:59:08 -0800 (PST)
+Date: Fri, 20 Dec 2019 12:59:07 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Jeff Chang <richtek.jeff.chang@gmail.com>
-Message-ID: <20191220121152.GC4790@sirena.org.uk>
-References: <1576836934-5370-1-git-send-email-richtek.jeff.chang@gmail.com>
+To: "Angus Ainslie (Purism)" <angus@akkea.ca>
+Message-ID: <20191220125907.GD4790@sirena.org.uk>
+References: <20191219210944.18256-1-angus@akkea.ca>
+ <20191219210944.18256-2-angus@akkea.ca>
 MIME-Version: 1.0
-In-Reply-To: <1576836934-5370-1-git-send-email-richtek.jeff.chang@gmail.com>
+In-Reply-To: <20191219210944.18256-2-angus@akkea.ca>
 X-Cookie: I think we're in trouble.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, jeff_chang@richtek.com, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add MediaTek MT6660 Speaker Amp
-	Driver
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, kernel@puri.sm,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: gtm601: add Broadmobi bm818
+	sound profile
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,123 +74,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1051287562156117635=="
+Content-Type: multipart/mixed; boundary="===============7466168436731151251=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============1051287562156117635==
+--===============7466168436731151251==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Y5rl02BVI9TCfPar"
+	protocol="application/pgp-signature"; boundary="48TaNjbzBVislYPb"
 Content-Disposition: inline
 
 
---Y5rl02BVI9TCfPar
+--48TaNjbzBVislYPb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 20, 2019 at 06:15:34PM +0800, Jeff Chang wrote:
+On Thu, Dec 19, 2019 at 01:09:43PM -0800, Angus Ainslie (Purism) wrote:
 
-> +++ b/sound/soc/codecs/mt6660.c
-> @@ -0,0 +1,653 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2019 MediaTek Inc.
-> + */
+> @@ -37,7 +37,7 @@ static struct snd_soc_dai_driver gtm601_dai = {
+>  		.channels_max = 1,
+>  		.rates = SNDRV_PCM_RATE_8000,
+>  		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> -		},
+> +	},
+>  	.capture = {
 
-Please make the entire comment a C++ one so things look more
-intentional.
+This is an unrelated indentation change.
 
-> +	{ MT6660_REG_DEVID, 2},
-> +	{ MT6660_REG_TDM_CFG3, 2},
-> +	{ MT6660_REG_HCLIP_CTRL, 2},
-> +	{ MT6660_REG_DA_GAIN, 2},
-
-Missing space before the } (the same thing happens in some of the
-other tables).
-
-> +static int mt6660_component_get_volsw(struct snd_kcontrol *kcontrol,
-> +				  struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct mt6660_chip *chip = (struct mt6660_chip *)
-> +		snd_soc_component_get_drvdata(component);
-> +	int ret = -EINVAL;
-> +
-> +	if (!strcmp(kcontrol->id.name, "Chip_Rev")) {
-
-Why would this be used on a different control?
-
-> +	SOC_SINGLE_EXT("BoostMode", MT6660_REG_BST_CTRL, 0, 3, 0,
-> +		       snd_soc_get_volsw, snd_soc_put_volsw),
-
-Boost Mode.  You've also got a lot of these controls that are _EXT but
-you then just use standard operations so it's not clear why you're using
-_EXT.
-
-> +	SOC_SINGLE_EXT("audio input selection", MT6660_REG_DATAO_SEL, 6, 3, 0,
-> +		       snd_soc_get_volsw, snd_soc_put_volsw),
-
-Audio Input Selection, but this looks like it should be a DAPM control
-if it's controlling audio routing.  A simple numerical setting
-definitely doesn't seem like the right thing.
-
-> +	SOC_SINGLE_EXT("AUD LOOP BACK Switch", MT6660_REG_PATH_BYPASS, 4, 1, 0,
-> +		       snd_soc_get_volsw, snd_soc_put_volsw),
-
-This sounds like it should be a DAPM thing too.
-
-> +static int mt6660_component_probe(struct snd_soc_component *component)
-> +{
-> +	struct mt6660_chip *chip = snd_soc_component_get_drvdata(component);
-> +	int ret = 0;
-> +
-> +	dev_info(component->dev, "%s\n", __func__);
-
-dev_dbg() at most but probably better to remove this and the other
-similar dev_info()s.
-
-> +static inline int _mt6660_chip_id_check(struct mt6660_chip *chip)
-> +{
-> +	u8 id[2] = {0};
-> +	int ret = 0;
-> +
-> +	ret = i2c_smbus_read_i2c_block_data(chip->i2c, MT6660_REG_DEVID, 2, id);
-> +	if (ret < 0)
-> +		return ret;
-> +	ret = (id[0] << 8) + id[1];
-> +	ret &= 0x0ff0;
-> +	if (ret != 0x00e0 && ret != 0x01e0)
-> +		return -ENODEV;
-
-It'd be better to print an error message saying we don't recognize the
-device to help people doing debugging.
-
-> +	if (of_property_read_u32(np, "rt,init_setting_num", &val)) {
-> +		dev_info(dev, "no init setting\n");
-> +		chip->plat_data.init_setting_num = 0;
-
-You should be adding a DT binding document for any new DT bindings.
-
---Y5rl02BVI9TCfPar
+--48TaNjbzBVislYPb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl38uogACgkQJNaLcl1U
-h9B+kQf6AzhZSat7mqBSwJVubwAXZcJ6ApJ29GlB2ypbTdOhUOTKKR8ytA2kMg6l
-Ifw88ajLzpL4jAIHwwS3NOMonMD/9KgNLfQVgMxzuzsYyRYBmj7p9lXsYICNIvoe
-nSn2nPJfw5g5PlMZ+qwxyNNMTOkui6qKCFoFS77TJq0hsbTh+x6azMfn8VVRwrL+
-VRXPN2C9mAdyrVPw/XPjkTyCrXw8P6brXK6qW23Y14FRQ8dXke0rhMumWytquybM
-ebURG75CUEXyykGbNGHoJa4ycypd5AA/LYR86mzRbs7Mxiqlmw3co8/C44n4XKM0
-QungC3A3a98p1kNSIiBM9g2Ie+cgBw==
-=pOxx
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl38xZoACgkQJNaLcl1U
+h9C4ZAf8CQJRsBBKW1r/HN9qrSPlWJ/8y2yShT5u/Q46IsjSr2ENsv3ljkkC9BIv
+ioX2h5Y/ikx7RJy5rVYwrp2anG97WNnfXu8I9OfIlvjBfDKoxg99HwmJQWL7niqh
+VS/rxHQyEPIyvaDaDT6wKF+gYZpvlCQaYLi6DRhYQxZzhLo72tWrDvvr8604bOn4
+aJqd0Enqf716cNuRGkYQLNkQd4565oA50kxybbJoRaiYedLR+lnvcAPQvGfpV9CL
+g/owmDglgQj3oDOSgw4F4iSRNVohxf0CncQMoCGmWPLpuzw5Z0n1OU+Idfwqv08j
+E/Na+edk3JFuBsoEQ+zqRmhqyaDACw==
+=ximh
 -----END PGP SIGNATURE-----
 
---Y5rl02BVI9TCfPar--
+--48TaNjbzBVislYPb--
 
---===============1051287562156117635==
+--===============7466168436731151251==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -201,4 +129,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============1051287562156117635==--
+--===============7466168436731151251==--
