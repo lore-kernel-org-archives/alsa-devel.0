@@ -6,62 +6,62 @@ X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A156C43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 13:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29CE7C43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 13:01:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CA66206DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 13:00:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9BD9121D7E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 13:01:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qtaWva7x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CA66206DA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uTZ+Kjm+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BD9121D7E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5622E1660;
-	Fri, 20 Dec 2019 13:59:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5622E1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD9741660;
+	Fri, 20 Dec 2019 14:00:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD9741660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576846806;
-	bh=6vrETVMnZipWTECs0l3Y1WlkpImN3lE0A39gYoy8Vd4=;
+	s=default; t=1576846888;
+	bh=K+rgoa8zN4AIQVXlsBMoYQKdArBhlEwuQQyKZH4cDP8=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qtaWva7xAth00EOKjmx2EuiSn4eCXm7YgR1koh/6iR02qwDAkLV4FmRENKYu0nLa4
-	 yYpnWK2QWpI4yNY+wYQNtZzcBIbWTORfQ95hIarvDiEjdEdqLJXjBrR4vZ6pIrJSq4
-	 b0GCwG3kumliV42wgaZTnI90XLC5GI8VCeLwzyS0=
+	b=uTZ+Kjm+n/R3oEl8jlKYL/NUBdoP/K8ChUJncfqhnsIK0aYbFGvirIuhTxV2mFbr/
+	 RL6DDOgabAYV+GgCYMZmsPPZe5Tn27Q3EgaMTyKDuxbEG/K9mpUMLjop94lO6kTrcQ
+	 4vmfnEVXSQ4o7UNrWFHHik0lkBMdTfy4nwqrsTEg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1297F8014C;
-	Fri, 20 Dec 2019 13:59:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5628CF8014C;
+	Fri, 20 Dec 2019 14:00:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99118F8014F; Fri, 20 Dec 2019 13:59:13 +0100 (CET)
+ id 8B69CF8022C; Fri, 20 Dec 2019 14:00:37 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2D136F80059
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 13:59:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D136F80059
+ by alsa1.perex.cz (Postfix) with ESMTP id E209BF80059
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 14:00:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E209BF80059
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B29330E;
- Fri, 20 Dec 2019 04:59:09 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D408430E;
+ Fri, 20 Dec 2019 05:00:32 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC6383F719;
- Fri, 20 Dec 2019 04:59:08 -0800 (PST)
-Date: Fri, 20 Dec 2019 12:59:07 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 53B4F3F719;
+ Fri, 20 Dec 2019 05:00:32 -0800 (PST)
+Date: Fri, 20 Dec 2019 13:00:30 +0000
 From: Mark Brown <broonie@kernel.org>
-To: "Angus Ainslie (Purism)" <angus@akkea.ca>
-Message-ID: <20191220125907.GD4790@sirena.org.uk>
-References: <20191219210944.18256-1-angus@akkea.ca>
- <20191219210944.18256-2-angus@akkea.ca>
+To: Marek Vasut <marex@denx.de>
+Message-ID: <20191220130030.GE4790@sirena.org.uk>
+References: <20191219213257.366145-1-marex@denx.de>
 MIME-Version: 1.0
-In-Reply-To: <20191219210944.18256-2-angus@akkea.ca>
+In-Reply-To: <20191219213257.366145-1-marex@denx.de>
 X-Cookie: I think we're in trouble.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, kernel@puri.sm,
- Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: gtm601: add Broadmobi bm818
-	sound profile
+Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Oleksandr Suvorov <oleksandr.suvorov@toradex.com>, alsa-devel@alsa-project.org,
+ festevam@gmail.com, Igor Opaniuk <igor.opaniuk@toradex.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: Fix VDDA and VDDIO
+	comparison
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,51 +74,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7466168436731151251=="
+Content-Type: multipart/mixed; boundary="===============2721814942742187495=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---===============7466168436731151251==
+--===============2721814942742187495==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="48TaNjbzBVislYPb"
+	protocol="application/pgp-signature"; boundary="nHwqXXcoX0o6fKCv"
 Content-Disposition: inline
 
 
---48TaNjbzBVislYPb
+--nHwqXXcoX0o6fKCv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 19, 2019 at 01:09:43PM -0800, Angus Ainslie (Purism) wrote:
+On Thu, Dec 19, 2019 at 10:32:57PM +0100, Marek Vasut wrote:
 
-> @@ -37,7 +37,7 @@ static struct snd_soc_dai_driver gtm601_dai = {
->  		.channels_max = 1,
->  		.rates = SNDRV_PCM_RATE_8000,
->  		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-> -		},
-> +	},
->  	.capture = {
+>  #include "sgtl5000.h"
+> =20
+> +#include "../../../drivers/regulator/internal.h"
+> +
 
-This is an unrelated indentation change.
+This sort of peering inside the internals of the framework is obviously
+not OK, please add an interface for this if it's needed.
 
---48TaNjbzBVislYPb
+--nHwqXXcoX0o6fKCv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl38xZoACgkQJNaLcl1U
-h9C4ZAf8CQJRsBBKW1r/HN9qrSPlWJ/8y2yShT5u/Q46IsjSr2ENsv3ljkkC9BIv
-ioX2h5Y/ikx7RJy5rVYwrp2anG97WNnfXu8I9OfIlvjBfDKoxg99HwmJQWL7niqh
-VS/rxHQyEPIyvaDaDT6wKF+gYZpvlCQaYLi6DRhYQxZzhLo72tWrDvvr8604bOn4
-aJqd0Enqf716cNuRGkYQLNkQd4565oA50kxybbJoRaiYedLR+lnvcAPQvGfpV9CL
-g/owmDglgQj3oDOSgw4F4iSRNVohxf0CncQMoCGmWPLpuzw5Z0n1OU+Idfwqv08j
-E/Na+edk3JFuBsoEQ+zqRmhqyaDACw==
-=ximh
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl38xe4ACgkQJNaLcl1U
+h9CnbAf/QhNG7otRihP4TheQyGNOeGGPK6YAS1/FJYJX56rqaxVUUuTfY3Kh+4ez
+MMaiODkz1qb7jS0AIjmmBX7/q5ip8Ww4JTd4YyGc8UU7I4fb1MeW4TMwpnGC5wow
+50Bkcbe1Y23YDAjqh3+J/BKDHiZcaeNW4p+GlZy2Q2psr5WXmC0D/Bgn43DplpZ+
+Rs4DjBFuOvgzC293U+gGvYqDzGfXapKjLacPyX0VvHyd6ZypemgbKmykw0IPSpYo
+7N8Pco8kmy6vRJennngwUxMkG5mjrdt6mM3miG6Ws2JwOkAiJExShPFX5q2HU6wr
+W8Wv88Zqv5bprM6yNuQt5ScZpHM02g==
+=hD8x
 -----END PGP SIGNATURE-----
 
---48TaNjbzBVislYPb--
+--nHwqXXcoX0o6fKCv--
 
---===============7466168436731151251==
+--===============2721814942742187495==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -129,4 +128,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============7466168436731151251==--
+--===============2721814942742187495==--
