@@ -2,59 +2,79 @@ Return-Path: <SRS0=6EJT=2K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 297DDC43603
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:43:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65CBFC43603
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:50:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A30DD24682
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:43:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 73F982465E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Dec 2019 15:50:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O3PeD3pE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A30DD24682
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NuX1riS2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73F982465E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC85682A;
-	Fri, 20 Dec 2019 16:43:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC85682A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6092382A;
+	Fri, 20 Dec 2019 16:49:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6092382A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576856630;
-	bh=Gd6GdR7BdhuywcA3Q/CwOfPe/IiPf2LdJkaExC7iQ9Q=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=O3PeD3pEda4/tjjLOqtFTGeFIL4lgNd+FZZ3R10drVWg4W35gWC6DUCWauug/igCa
-	 v0VE0TDIixo6gF5csnY6heaqcW+bLK7jeTK5ayl7BagCRQB0R2ngjdMWPs1AEwV8cB
-	 ktQ3rWU499MV8j9CoKqjDN/V/rYKaRgHesuPCoXw=
+	s=default; t=1576857036;
+	bh=FMhmYudlLP73AL7FvC1LxFF3Kh9FnnD077E157yVeNI=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NuX1riS2sqh69TCBfaR2WUySVDfa+pPxrlYhpsz2lsrJMViVNZnB3/aobJGiQTILK
+	 jeMzqpgnOvoqrvzntPSdfR7Gy5i/uoGR8SSTzkIEDV2LlZoBOOSeTVWsNitxNLxjWw
+	 y1PN5nVH6TqhrjorbN/wXF7paBFik0m0s3iduDRo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43A73F8014F;
-	Fri, 20 Dec 2019 16:43:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0757F8014F;
+	Fri, 20 Dec 2019 16:49:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34AF6F8015A; Fri, 20 Dec 2019 16:42:59 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B7E48F8022C; Fri, 20 Dec 2019 16:49:44 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B2D4F8014C
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 16:42:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B2D4F8014C
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C9BF1AE35
- for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 15:42:55 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Fri, 20 Dec 2019 16:42:54 +0100
-Message-Id: <20191220154254.3690-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] hdspmixer: Use __u32 and __u64 for RMS array
-	types
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A46CF80059
+ for <alsa-devel@alsa-project.org>; Fri, 20 Dec 2019 16:49:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A46CF80059
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 20 Dec 2019 07:49:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,336,1571727600"; d="scan'208";a="267551905"
+Received: from pkriegsm-mobl.amr.corp.intel.com (HELO [10.252.132.172])
+ ([10.252.132.172])
+ by FMSMGA003.fm.intel.com with ESMTP; 20 Dec 2019 07:49:34 -0800
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, 
+ lee.jones@linaro.org, linus.walleij@linaro.org
+References: <20191219103153.14875-1-srinivas.kandagatla@linaro.org>
+ <20191219103153.14875-3-srinivas.kandagatla@linaro.org>
+ <af48cd71-fa1a-dbc5-0e88-e315ea13c28c@linux.intel.com>
+ <db36d6d7-40a2-bbd2-f299-838abf4d92cc@linaro.org>
+ <4492b71e-9923-365c-f22c-3766e2d5bae2@linux.intel.com>
+ <3fa4997f-4409-97f6-ba10-a87013383eb7@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <df1c8ef8-2619-99b7-317c-1970c9413d00@linux.intel.com>
+Date: Fri, 20 Dec 2019 09:22:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <3fa4997f-4409-97f6-ba10-a87013383eb7@linaro.org>
+Content-Language: en-US
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ vinod.koul@linaro.org, devicetree@vger.kernel.org, spapothi@codeaurora.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH v6 02/11] mfd: wcd934x: add support to
+ wcd9340/wcd9341 codec
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,39 +87,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some variable types are referring to the field in ioctl struct, which
-are actually __u32 or __u64 instead of uint32_t or uint64_t.
-This inconsistency may result in the compile error.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- hdspmixer/src/HDSPMixerWindow.cxx | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/hdspmixer/src/HDSPMixerWindow.cxx b/hdspmixer/src/HDSPMixerWindow.cxx
-index 342efb2b857f..9efc25d0d5c0 100644
---- a/hdspmixer/src/HDSPMixerWindow.cxx
-+++ b/hdspmixer/src/HDSPMixerWindow.cxx
-@@ -35,8 +35,8 @@ static void readregisters_cb(void *arg)
-     hdsp_peak_rms_t hdsp_peak_rms;
-     struct hdspm_peak_rms hdspm_peak_rms;
-     bool isMADI = false;
--    uint32_t *input_peaks, *playback_peaks, *output_peaks;
--    uint64_t *input_rms, *playback_rms, *output_rms;
-+    __u32 *input_peaks, *playback_peaks, *output_peaks;
-+    __u64 *input_rms, *playback_rms, *output_rms;
-     
-     HDSPMixerWindow *w = (HDSPMixerWindow *)arg;
- 
--- 
-2.16.4
+>>> Note these are the child devices of the MFD SLIMBus device.
+>>
+>> Ah ok. I guess the creation of those child devices when the parent 
+>> SLIMbus device reports PRESENT initially if fine, it's the part where 
+>> you remove them if the device loses sync or gets powered off which is 
+>> odd. And I guess technically you could still have race conditions 
+>> where a child device starts a transaction just as the parent is no 
+>> longer attached to the bus.
+> 
+> Losing power to SLIMBus device is very odd usecase and if it happens 
+> suggests that threre are bigger issues on the board design itself. This 
+> case should never happen. Even if it happens we would get timeout errors 
+> on every SLIMbus transactions.
+> 
+>>
+>>>> I would however not remove the devices when the status is down but 
+>>>> only on an explicit .remove.
+>>>
+>>> Am open for suggestions but I would not like the child devices to 
+>>> talk on the bus once the SLIMbus device is down! Only way to ensure 
+>>> or make it silent is to remove.
+>>
+>> it's as if you are missing a mechanism to forward the parent status to 
+>> the children so use remove() for lack of a better solution?
+> That is true. This gives bit more control on the slave device lifecycle.
+> Current solution works fine for now with less complexities across 
+> multiple drivers. I also agree that there is scope of improvement in 
+> future for this.
 
+ok, makes sense, thanks for the answers. No further questions, so
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
