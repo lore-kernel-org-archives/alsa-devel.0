@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88BDCC43603
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Dec 2019 05:37:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3421C43603
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Dec 2019 05:38:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1490A21775
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Dec 2019 05:37:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D2AD2070B
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Dec 2019 05:38:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tQmB9VFw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1490A21775
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sE/Pubd4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D2AD2070B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ll.mit.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20AE21677;
-	Sat, 21 Dec 2019 06:36:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20AE21677
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8EDD165E;
+	Sat, 21 Dec 2019 06:37:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8EDD165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1576906654;
-	bh=eRuAIU2GQGX7/23LG+RVDt3BDufUqh3o9zSgs/nlRlM=;
+	s=default; t=1576906705;
+	bh=JRTja1A08DxZFpkBoBBd7QQlk5BE33RBndz8b1ESzC4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tQmB9VFwr+PkmviQFEMaE++0p0/9t9GWOLKDUXeBBq8MCThWHaI9VxTX7a97ZIem7
-	 60R4nQM8lVSfVKknqt+pTfaLfzMG6MgYUs8n/PiH1SRZMkKI929qRTvpbpVZfnB/4y
-	 VGwMxAWqa/ZQBOSE+/vHQ88hKTottDY9PGaZDNXo=
+	b=sE/Pubd4pndigRvk3BpkIvgicrTNoIzJbioxWrZh9y8whglxGdrguZhszrL4QtImM
+	 seiU+RyAsJ0humJIxY9onvuVTnRoJJ6pbs+kieSaIbh3g3ASmq0op5V88/R+6oZam2
+	 +cWWOqh9ibBHVtr/OjaQ549yj+q62O/JxWwX/j2Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1C4BF80290;
-	Sat, 21 Dec 2019 06:32:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2E38F802A2;
+	Sat, 21 Dec 2019 06:32:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED2BBF80271; Sat, 21 Dec 2019 06:32:31 +0100 (CET)
-Received: from llmx2.ll.mit.edu (llmx2.ll.mit.edu [129.55.12.48])
+ id 98B74F8026A; Sat, 21 Dec 2019 06:32:32 +0100 (CET)
+Received: from llmx3.ll.mit.edu (llmx3.ll.mit.edu [129.55.12.49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97F6CF8023F
- for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2019 06:32:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97F6CF8023F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A71CF80234
+ for <alsa-devel@alsa-project.org>; Sat, 21 Dec 2019 06:32:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A71CF80234
 Received: from LLE2K16-MBX03.mitll.ad.local (LLE2K16-MBX03.mitll.ad.local) by
- llmx2.ll.mit.edu (unknown) with ESMTPS id xBL5WOis023816 for
- <alsa-devel@alsa-project.org>; Sat, 21 Dec 2019 00:32:24 -0500
+ llmx3.ll.mit.edu (unknown) with ESMTPS id xBL5WPDF023223 for
+ <alsa-devel@alsa-project.org>; Sat, 21 Dec 2019 00:32:25 -0500
 From: David Ward <david.ward@ll.mit.edu>
 To: <alsa-devel@alsa-project.org>
-Date: Sat, 21 Dec 2019 00:32:06 -0500
-Message-ID: <1576906331-5212-7-git-send-email-david.ward@ll.mit.edu>
+Date: Sat, 21 Dec 2019 00:32:07 -0500
+Message-ID: <1576906331-5212-8-git-send-email-david.ward@ll.mit.edu>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1576906331-5212-1-git-send-email-david.ward@ll.mit.edu>
 References: <1576906331-5212-1-git-send-email-david.ward@ll.mit.edu>
@@ -64,8 +64,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1911140001 definitions=main-1912210045
 Cc: David Ward <david.ward@ll.mit.edu>
-Subject: [alsa-devel] [PATCH alsa-utils 06/11] alsa-info.sh: Replace gauge
-	with infobox for upload dialog
+Subject: [alsa-devel] [PATCH alsa-utils 07/11] alsa-info.sh: Remove progress
+	spinner during upload without dialog
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,42 +83,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The gauge did not actually show the upload progress; in fact, the
-dialog did not even appear until after the upload was completed.
-
-Use an infobox instead, which will be displayed while wget runs.
+The spinner did not actually provide information about the status
+of the file upload, and caused other problems: it would repeatedly
+spawn new pgrep processes (without a delay between them), and it
+blocked the script if any wget process was running on the system.
 
 Signed-off-by: David Ward <david.ward@ll.mit.edu>
 ---
- alsa-info/alsa-info.sh | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ alsa-info/alsa-info.sh | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/alsa-info/alsa-info.sh b/alsa-info/alsa-info.sh
-index 372d7ae..a02864d 100755
+index a02864d..9bc8c38 100755
 --- a/alsa-info/alsa-info.sh
 +++ b/alsa-info/alsa-info.sh
-@@ -830,19 +830,11 @@ if [[ -n $DIALOG ]]
- then
- 
- if [[ -z $PASTEBIN ]]; then
-+	dialog --backtitle "$BGTITLE" --infobox "Uploading information to www.alsa-project.org ..." 6 70
- 	wget -O - --tries=5 --timeout=60 --post-file=$FILE "http://www.alsa-project.org/cardinfo-db/" &>$TEMPDIR/wget.tmp || echo "Upload failed; exit"
--	{ for i in 10 20 30 40 50 60 70 80 90; do
--		echo $i
--		sleep 0.2
--	done
--	echo; } |dialog --backtitle "$BGTITLE" --guage "Uploading information to www.alsa-project.org ..." 6 70 0
- else
-+	dialog --backtitle "$BGTITLE" --infobox "Uploading information to www.pastebin.ca ..." 6 70
- 	wget -O - --tries=5 --timeout=60 --post-file=$FILE "http://pastebin.ca/quiet-paste.php?api=$PASTEBINKEY&encrypt=t&encryptpw=blahblah" &>$TEMPDIR/wget.tmp || echo "Upload failed; exit"
--	{ for i in 10 20 30 40 50 60 70 80 90; do
--		echo $i
--		sleep 0.2
--	done
--	echo; } |dialog --backtitle "$BGTITLE" --guage "Uploading information to www.pastebin.ca ..." 6 70 0
+@@ -857,16 +857,7 @@ else
+ 	wget -O - --tries=5 --timeout=60 --post-file=$FILE http://pastebin.ca/quiet-paste.php?api=$PASTEBINKEY &>$TEMPDIR/wget.tmp &
  fi
  
- dialog --backtitle "$BGTITLE" --title "Information uploaded" --yesno "Would you like to see the uploaded information?" 5 100 
+-#Progess spinner for wget transfer.
+-i=1
+-sp="/-\|"
+-echo -n ' '
+-while pgrep wget &>/dev/null
+-do
+-	echo -en "\b${sp:i++%${#sp}:1}"
+-done
+-
+-echo -e "\b Done!"
++echo -e " Done!"
+ echo ""
+ 
+ fi # dialog
 -- 
 1.8.3.1
 
