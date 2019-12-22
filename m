@@ -2,56 +2,113 @@ Return-Path: <SRS0=JMHt=2M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AF51C2D0C0
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Dec 2019 07:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76E68C2D0C0
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Dec 2019 08:06:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C85220733
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Dec 2019 07:35:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C3F820733
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Dec 2019 08:06:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oZwvMuFi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C85220733
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BsHVH42R";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="TqY6JrDm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EDDKXOga"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C3F820733
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E09ED1654;
-	Sun, 22 Dec 2019 08:34:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E09ED1654
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD76F1658;
+	Sun, 22 Dec 2019 09:05:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD76F1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577000118;
-	bh=yrKY41VGAEtzj4RJ360tE5Pw2SMEaej9qQi0eRGrp0I=;
-	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
+	s=default; t=1577001962;
+	bh=5u/hLS6HUhxOlJ8yoXG5XwSCOyCSfZneL7LUOVj6d/0=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oZwvMuFi5sWy7vM5u2BtTFNQVPOiu6oCPKYTMdj+i0D5ffdODZSJufsZkyPyz4c0H
-	 p9cmduxjmTeAKZjy+QECPHMqU0bnmpW3zQlyCG0s8aOqWH4yVB1dA1xD2V2pFrFxEe
-	 45GQgv2A5qjEthMfSKCFuIPA40/yVpMjyseOAO+s=
+	b=BsHVH42RgqnX3Kp0bsLrqTz4U+cTlN7oOqnRZI2zTAuTO3vQ/x5iXg211DOdRX6yX
+	 WsZxenw5l8As65ryFMLhEKkvspxiqaC8bDgW6Ho3ALKsarYRDO/a9L7Yxq2PIankWT
+	 hB43FWwIEuIOEzqI8h4o5vAt8+HeEpPHT1G37WsA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D387F8011C;
-	Sun, 22 Dec 2019 08:34:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63F93F8011C;
+	Sun, 22 Dec 2019 09:05:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE253F80136; Sun, 22 Dec 2019 08:34:26 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 0F31EF800BC
- for <alsa-devel@alsa-project.org>; Sun, 22 Dec 2019 08:34:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F31EF800BC
+ id 76F42F80136; Sun, 22 Dec 2019 09:05:11 +0100 (CET)
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
+ [64.147.123.21])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D001DF800BC
+ for <alsa-devel@alsa-project.org>; Sun, 22 Dec 2019 09:05:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D001DF800BC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="TqY6JrDm"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="EDDKXOga"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id 3CCCF3A4;
+ Sun, 22 Dec 2019 03:05:03 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute1.internal (MEProxy); Sun, 22 Dec 2019 03:05:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm3; bh=v0cqd+1HE/TMOyzOTbDwUTnv4/8
+ U+w7uIs+b60Qpo7I=; b=TqY6JrDmBeS1nG6BeGMAFF+OpAzxQKmJHyzA5ZIgmEM
+ ueCEP/M4ED4u3WZQ/PioKBE+aPUyF2hq/CXQZd9Tp3hncOvS3e6CD44tCh79naUJ
+ 1Uk9Lfd9aXamVP3H4kTKwEEB7LrPa1+gVFEaKQ+KuQYG6zqN7/z9TZvYjpcrfoyF
+ Mtl68c9Ok+fF/aQdglDD1aT20MSK6aE1q+Xim1zuokLkhNXffG6QZ/N7MpwyndLJ
+ mi9P54cui8iGyxeCBvEs/sTYo+KHIL1xPTWr0XFbUbidOjV2WHEOJfIAXwrirahR
+ s4Nfm2RzH/w4yunVxP0zrMDxEa9AqUkZCaWS1iaAJUQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=v0cqd+
+ 1HE/TMOyzOTbDwUTnv4/8U+w7uIs+b60Qpo7I=; b=EDDKXOgaE+cl3/wMcz+JlO
+ BF+s6rrKZgFQNBNhP26jUqr7LVuI1cDkMjRnBNrmQ2Z9bF/strB04IQQEeN4A1nJ
+ E2ZfbUGga2SuQrCYtMJ+BkAG0B3t7KaxVf1C1HU3rM5ZcNlenYH9xcZvU9UVp/Rr
+ No7PdLc1mj3gDmUuleEPF5YHkLWzDWvt6pOOvSYPvQnRyxDAeKmP8GJ51S7pchft
+ iGhV13AHoV1KtMKqBglpjWsgK0Hef1iYNI7cnXzaYeSF42ByfOThbIU8iQrk6BJ/
+ GCHd45raxS2ocKP2p4J/jGvNJVZxn2g7gIfOIKM6dU+6RtF7gtDRlryWZzKDqNwg
+ ==
+X-ME-Sender: <xms:rSP_XVKZquDgNkJp0yC9uwTu9RXVrOP9ZDer3f6I6Gm9s6mes_Yhqw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvddujedgtdelucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucgoufhushhpvggtthffohhmrghinhculdegledmne
+ cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepvfgrkhgr
+ shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+ hjpheqnecuffhomhgrihhnpehgihhthhhusgdrihhopdhgihhthhhusgdrtghomhenucfk
+ phepudegrdefrdejhedrudekudenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkh
+ grshhhihesshgrkhgrmhhotggthhhirdhjphenucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:rSP_XciKg3pWdOerUUQvPYP4Tcpi2yZW10MfsMAqH60Ahc-CcsZILA>
+ <xmx:rSP_XblLJxEzlmfvj_cd2-xxqPBRB9mVyIYPGZHRXyya9puoQZKTOA>
+ <xmx:rSP_XRj9a3-xD7HigsVg1wfk7jpNgU3W0oRec6GFZSNAGJ6jHOFiXg>
+ <xmx:riP_XfWI18C2hxLWRnxc4R4OeH5sLWfMO55kyyGQLqBgpfWX6REe1A>
+Received: from workstation (ae075181.dynamic.ppp.asahi-net.or.jp [14.3.75.181])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 9EAE180059;
+ Sun, 22 Dec 2019 03:05:00 -0500 (EST)
+Date: Sun, 22 Dec 2019 17:04:58 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <20191222080454.GA16605@workstation>
+Mail-Followup-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+References: <20191201080449.GA408@workstation>
+ <b121b3eb-3bb8-7efc-d5e1-f470049899b7@perex.cz>
+ <20191214165242.GA32025@workstation>
+ <a63e0b6b-b1c6-3044-cbd0-7fad47b78f35@perex.cz>
 MIME-Version: 1.0
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1577000063145612001-webhooks-bot@alsa-project.org>
-References: <1577000063145612001-webhooks-bot@alsa-project.org>
-Message-Id: <20191222073426.EE253F80136@alsa1.perex.cz>
-Date: Sun, 22 Dec 2019 08:34:26 +0100 (CET)
-Subject: [alsa-devel] ctl: elem_id/elem_value: add APIs to check whether two
- instances have the same meaning
+Content-Disposition: inline
+In-Reply-To: <a63e0b6b-b1c6-3044-cbd0-7fad47b78f35@perex.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Restart alsa-gi project as alsa-gobject project
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,13 +126,46 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #2 was opened from takaswie:
+Hi Jaroslav,
 
-For some cases, it's convenient for users to check whether two instances of elem_id/elem_value have the same meaning. In glib, APIs for comparison of content of objects are named as equal. This commit adds equal APIs for this purpose.
+On Wed, Dec 18, 2019 at 08:20:44PM +0100, Jaroslav Kysela wrote:
+> > Here excuse me for request you another work for documentation of
+> > alsa-gobject. I utilize glib/gobject architecture developed by GNOME
+> > project for gtk+. Documentation can be automatically generated by
+> > gtk-doc. I'd like to publish the documentation in github pages[1]. I'd
+> > like you to add another repository to maintain the publish the
+> > documentation.
+> > 
+> > You can see an actual example of documentation for libhinawa. The
+> > documentation is available in URL of github.io, and published documents
+> > are maintained in my remote repository[3].
+> > 
+> > But this is not a kind of urgent work. I'm OK that you make it enough
+> > later ;)
+> 
+> I created the new docs repo:
+> 
+> https://github.com/alsa-project/alsa-gobject-docs
+> 
+> You should have the admin access for this repository, too.
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/2
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/2.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
+Thanks for your addition of the above repository. I upload generated
+documentation and it's available in URL below:
+
+https://alsa-project.github.io/alsa-gobject-docs/
+
+For alsa-gobject repository, I file two PRs for improvements:
+ * https://github.com/alsa-project/alsa-gobject/pull/1
+ * https://github.com/alsa-project/alsa-gobject/pull/2
+
+I'm glad if you grant these requests and merge. Or would I
+merge them by myself? I think that we have no concrete policy
+to maintain the repository.
+
+
+Regards
+
+Takashi Sakamoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
