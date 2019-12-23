@@ -2,65 +2,91 @@ Return-Path: <SRS0=adxF=2N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2540C2D0C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B089C2D0C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:48:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4206E20409
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:05:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C270205C9
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:48:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vnglzbBr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4206E20409
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="chbOEN7P";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="hRnL2nMM";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="WQTq/9PA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C270205C9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=akkea.ca
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 064D81691;
-	Mon, 23 Dec 2019 16:04:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 064D81691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41F561675;
+	Mon, 23 Dec 2019 16:48:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41F561675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577113501;
-	bh=T/ON6Q+gOSpDEIyaOQ9LBrpxhVCNFWiAWia5b+2Lvmc=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1577116133;
+	bh=1POjPEtEflTMyjkwffusj3P5dmZtSMh1nqAFHluxFKA=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vnglzbBr1l3B50DHzA1RmW9RLFE7jkZCfqgpE5UGlEv7QcsAf+4UxOxkG2DGP0GMC
-	 OO2XKS8ro7a6uQO/D6UPIxYg/iIdx/1mtUZRxAbB7+mC8fT1oKCrpx59cnCPIMmLzh
-	 cJxUYo7hITuXHlgD9QdlVc4s/rIsjHdANWPEnIt8=
+	b=chbOEN7PwjshbNQvlhjSTVDJvNJcm6qkgx2qb8MIcFx57NW0iQZvN07kWbu1moR9r
+	 1ipAVlo/k1Gm9wt57v/Mr36h9Q1NXakOV1MOCpZZjbDhxsD0DCHAvsyI2iG32souWu
+	 WH+m1zEVzJg7IU9EeMGydkiqyfQNGkGyBP6sm8hI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F33CF800AD;
-	Mon, 23 Dec 2019 16:03:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4238F8012F;
+	Mon, 23 Dec 2019 16:48:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE05FF80146; Mon, 23 Dec 2019 16:03:56 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 87D65F80132; Mon, 23 Dec 2019 16:48:00 +0100 (CET)
+Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13693F80132
- for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2019 16:03:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13693F80132
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id ACA33ADE4;
- Mon, 23 Dec 2019 15:03:53 +0000 (UTC)
-Date: Mon, 23 Dec 2019 16:03:53 +0100
-Message-ID: <s5ho8vzw0bq.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-In-Reply-To: <20191223093347.15279-1-o-takashi@sakamocchi.jp>
-References: <20191223093347.15279-1-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: ctl: allow TLV read operation for
-	callback type of element in locked case
+ by alsa1.perex.cz (Postfix) with ESMTPS id 357FDF8012F
+ for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2019 16:47:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 357FDF8012F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
+ header.b="hRnL2nMM"; 
+ dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
+ header.b="WQTq/9PA"
+Received: from localhost (localhost [127.0.0.1])
+ by node.akkea.ca (Postfix) with ESMTP id 19B934E2010;
+ Mon, 23 Dec 2019 15:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+ t=1577116075; bh=l91r0YDEN+oe9jxf3D6wJpDm6U1PN8Ku0lGaSjCm2s8=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=hRnL2nMMVwL+nce9WFkgKmJXsZ4RcKCTA2Ygm2lc9ItXuygoCZMCb17IgSEHtOc1D
+ hXjGtIugvpDo421/z2dVb2RftAQAXd3/MjwFNd9KZclSlthNp90oMvORCKl1n9TqxZ
+ IjmP3IiPrXrQCR4wETvFw2ucM3Sesc6igWr13vAs=
+X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
+Received: from node.akkea.ca ([127.0.0.1])
+ by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id NxrCUansM3_G; Mon, 23 Dec 2019 15:47:54 +0000 (UTC)
+Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net
+ [70.66.86.75])
+ by node.akkea.ca (Postfix) with ESMTPSA id 80F804E2003;
+ Mon, 23 Dec 2019 15:47:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
+ t=1577116074; bh=l91r0YDEN+oe9jxf3D6wJpDm6U1PN8Ku0lGaSjCm2s8=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=WQTq/9PAYT8c5stV9E7wa1+BFWRJMaMeLSGEK21UeOUtftJ/iyb8IrAFeQD6pMVk6
+ Mv+jLvnkJxo+DLiYllp1zDhtDbyXl8jFZS640nSHKiVRkFWlq5UvoRFHJ1R8HPFa0t
+ gOPMI0DIAtc6JlHlqHUFkYt41wzdzj5XogMqpB9M=
+From: "Angus Ainslie (Purism)" <angus@akkea.ca>
+To: broonie@kernel.org
+Date: Mon, 23 Dec 2019 07:47:12 -0800
+Message-Id: <20191223154712.18581-3-angus@akkea.ca>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20191223154712.18581-1-angus@akkea.ca>
+References: <20191223154712.18581-1-angus@akkea.ca>
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, kernel@puri.sm,
+ "Angus Ainslie \(Purism\)" <angus@akkea.ca>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH v4 2/2] dt-bindings: sound: gtm601: add the
+	broadmobi interface
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,43 +99,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 23 Dec 2019 10:33:47 +0100,
-Takashi Sakamoto wrote:
-> 
-> A design of ALSA control core allows applications to execute three
-> operations for TLV feature; read, write and command. Furthermore, it
-> allows driver developers to process the operations by two ways; allocated
-> array or callback function. In the former, read operation is just allowed,
-> thus developers uses the latter when device driver supports variety of
-> models or the target model is expected to dynamically change information
-> stored in TLV container.
-> 
-> The core also allows applications to lock any element so that the other
-> applications can't perform write operation to the element for element
-> value and TLV information. When the element is locked, write and command
-> operation for TLV information are prohibited as well as element value.
-> Any read operation should be allowed in the case.
-> 
-> At present, when an element has callback function for TLV information,
-> TLV read operation returns EPERM if the element is locked. On the
-> other hand, the read operation is success when an element has allocated
-> array for TLV information. In both cases, read operation is success for
-> element value expectedly.
-> 
-> This commit fixes the bug. This change can be backported to v4.14
-> kernel or later.
+The Broadmobi BM818 uses a different sample rate and channels from the
+option modem.
 
-The patch looks good but your sign-off is missing...
+Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/gtm601.txt | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
+index 5efc8c068de0..efa32a486c4a 100644
+--- a/Documentation/devicetree/bindings/sound/gtm601.txt
++++ b/Documentation/devicetree/bindings/sound/gtm601.txt
+@@ -1,10 +1,16 @@
+ GTM601 UMTS modem audio interface CODEC
+ 
+-This device has no configuration interface. Sample rate is fixed - 8kHz.
++This device has no configuration interface. The sample rate and channels are
++based on the compatible string
++	"option,gtm601" = 8kHz mono
++	"broadmobi,bm818" = 48KHz stereo
+ 
+ Required properties:
+ 
+-  - compatible : "option,gtm601"
++  - compatible : one of
++	"option,gtm601"
++	"broadmobi,bm818"
++
+ 
+ Example:
+ 
+-- 
+2.17.1
 
-thanks,
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
