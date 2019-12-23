@@ -2,86 +2,91 @@ Return-Path: <SRS0=adxF=2N=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C43ACC2D0C0
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:49:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BED3EC2D0C0
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:50:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 445FC205C9
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:49:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 467A220715
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Dec 2019 15:50:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IjJPK2Ko";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="nBiqSjNT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="nBiqSjNT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 445FC205C9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mo9MEc7q";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="OQheLzYK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=akkea.ca header.i=@akkea.ca header.b="OQheLzYK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 467A220715
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=akkea.ca
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 687961687;
-	Mon, 23 Dec 2019 16:48:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 687961687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E819169B;
+	Mon, 23 Dec 2019 16:49:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E819169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577116187;
-	bh=EFKnuZPfjSyXM0jniDsWak7Jt7mWkcT2Var2/IXgCXs=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IjJPK2Ko+hUZ+OiEkWMLDhobXuAo7En/eD2Z8O5ucYcqV/HOA3lRxSWqELJJajH+h
-	 UxWUSD05IscDJBtwfck4Zaidhcyybct6TI0A/xNXbRmFYnEMdsIFnSKlCYp3TQuidX
-	 aEG+XJS3LDRraVzBIFHUYJzsgYggDDwXJj3/g6tI=
+	s=default; t=1577116234;
+	bh=pm8DZcpgZSs/ExLqOjuQyr03ocrsB1qStefH3DZJSjM=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mo9MEc7q1hmab0i33Woa7Ndu0R3TB5yKmuReVJhCe8V7KmZZO9NiWcg6f+VYm2EQL
+	 /MEJCvnEuRD8AYNWMo4vJ9vG+rVsP7d4ckfpjbkjVR2E2FZCClnTQ5WiYEkReSVheD
+	 /abEf4xWax0t4Y3UHaVzeWjAPEu/HVuihEjLbL7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 983C5F80146;
-	Mon, 23 Dec 2019 16:48:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 328E7F8026A;
+	Mon, 23 Dec 2019 16:48:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29945F80131; Mon, 23 Dec 2019 16:48:00 +0100 (CET)
+ id AB7D7F8012F; Mon, 23 Dec 2019 16:48:01 +0100 (CET)
 Received: from node.akkea.ca (node.akkea.ca [192.155.83.177])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33261F80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46A68F80130
  for <alsa-devel@alsa-project.org>; Mon, 23 Dec 2019 16:47:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33261F80087
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46A68F80130
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
- header.b="nBiqSjNT"; 
+ header.b="OQheLzYK"; 
  dkim=pass (1024-bit key) header.d=akkea.ca header.i=@akkea.ca
- header.b="nBiqSjNT"
+ header.b="OQheLzYK"
 Received: from localhost (localhost [127.0.0.1])
- by node.akkea.ca (Postfix) with ESMTP id 4A72A4E200E;
+ by node.akkea.ca (Postfix) with ESMTP id A26024E201A;
  Mon, 23 Dec 2019 15:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
- t=1577116074; bh=32jFHoBT/8A9zaicn0KxEkscstF6mPjMAkS1keiBsqQ=;
- h=From:To:Cc:Subject:Date;
- b=nBiqSjNTbIcp5dsnZbr3uHOZoeYGPAKrJ/iC6ih9CV1HDcd29I7IzBPAL0i9E4nvr
- NhJRl0w53uRqBhmtKZ4YmBTwI5g5UgYrcIq0DV6lAIE7vV+OThTxcrqvm6vBIF7Ryf
- 3MX9io12qtwjzyo+oJJBbeKom0SCNj5bC6HZVuZU=
+ t=1577116074; bh=WqmvSpCpKdfEKGMrhNPJ7uiAMSHmxyw8X3Se1/YVDR4=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=OQheLzYKE9s1TnbenSYyXx03UE/6UOn2CCyMI4T/mbVfdzkd4u2rjMOV+MKqt5yim
+ AtPEgyto7OeFqdkjr3306FXxQM4C1MA5bYZqjerTPr6qBo08H+Gm2IQrObiBWt8Q3k
+ TMec4N1J32ByymT/QeeBi/Enptz8ZX+61ABIr32E=
 X-Virus-Scanned: Debian amavisd-new at mail.akkea.ca
 Received: from node.akkea.ca ([127.0.0.1])
  by localhost (mail.akkea.ca [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id CGd51sVCK05Q; Mon, 23 Dec 2019 15:47:54 +0000 (UTC)
+ with ESMTP id W_oXF-J36k12; Mon, 23 Dec 2019 15:47:54 +0000 (UTC)
 Received: from midas.localdomain (S0106788a2041785e.gv.shawcable.net
  [70.66.86.75])
- by node.akkea.ca (Postfix) with ESMTPSA id 9C6004E2003;
- Mon, 23 Dec 2019 15:47:53 +0000 (UTC)
+ by node.akkea.ca (Postfix) with ESMTPSA id 1AD9E4E2006;
+ Mon, 23 Dec 2019 15:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akkea.ca; s=mail;
- t=1577116074; bh=32jFHoBT/8A9zaicn0KxEkscstF6mPjMAkS1keiBsqQ=;
- h=From:To:Cc:Subject:Date;
- b=nBiqSjNTbIcp5dsnZbr3uHOZoeYGPAKrJ/iC6ih9CV1HDcd29I7IzBPAL0i9E4nvr
- NhJRl0w53uRqBhmtKZ4YmBTwI5g5UgYrcIq0DV6lAIE7vV+OThTxcrqvm6vBIF7Ryf
- 3MX9io12qtwjzyo+oJJBbeKom0SCNj5bC6HZVuZU=
+ t=1577116074; bh=WqmvSpCpKdfEKGMrhNPJ7uiAMSHmxyw8X3Se1/YVDR4=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=OQheLzYKE9s1TnbenSYyXx03UE/6UOn2CCyMI4T/mbVfdzkd4u2rjMOV+MKqt5yim
+ AtPEgyto7OeFqdkjr3306FXxQM4C1MA5bYZqjerTPr6qBo08H+Gm2IQrObiBWt8Q3k
+ TMec4N1J32ByymT/QeeBi/Enptz8ZX+61ABIr32E=
 From: "Angus Ainslie (Purism)" <angus@akkea.ca>
 To: broonie@kernel.org
-Date: Mon, 23 Dec 2019 07:47:10 -0800
-Message-Id: <20191223154712.18581-1-angus@akkea.ca>
+Date: Mon, 23 Dec 2019 07:47:11 -0800
+Message-Id: <20191223154712.18581-2-angus@akkea.ca>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20191223154712.18581-1-angus@akkea.ca>
+References: <20191223154712.18581-1-angus@akkea.ca>
 Cc: robh@kernel.org, alsa-devel@alsa-project.org, kernel@puri.sm,
  "Angus Ainslie \(Purism\)" <angus@akkea.ca>,
  Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH v4 0/2] Add the broadmobi BM818
+Subject: [alsa-devel] [PATCH v4 1/2] ASoC: gtm601: add Broadmobi bm818 sound
+	profile
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,32 +105,73 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The broadmobi uses slightly different parameters from the option modems
-so add the paramters and document them.
+The Broadmobi bm818 uses stereo sound at 48Khz sample rate
 
-Changes since v3:
+Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
+---
+ sound/soc/codecs/gtm601.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-Dropped unrelated indentation fix.
-Fixed const warning.
-
-Changes since v2:
-
-Use of_device_get_match_data to get the dai data.
-Updated subject styles.
-
-Changes since v1:
-
-Cut back the CC list.
-Use data from compatible match instead of explicit compatible match.
-
-Angus Ainslie (Purism) (2):
-  ASoC: gtm601: add Broadmobi bm818 sound profile
-  dt-bindings: sound: gtm601: add the broadmobi interface
-
- .../devicetree/bindings/sound/gtm601.txt      | 10 +++++--
- sound/soc/codecs/gtm601.c                     | 30 +++++++++++++++++--
- 2 files changed, 35 insertions(+), 5 deletions(-)
-
+diff --git a/sound/soc/codecs/gtm601.c b/sound/soc/codecs/gtm601.c
+index d454294c8d06..7f05ebcb88d1 100644
+--- a/sound/soc/codecs/gtm601.c
++++ b/sound/soc/codecs/gtm601.c
+@@ -13,7 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+-#include <linux/device.h>
++#include <linux/of_device.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/initval.h>
+@@ -47,6 +47,24 @@ static struct snd_soc_dai_driver gtm601_dai = {
+ 	},
+ };
+ 
++static struct snd_soc_dai_driver bm818_dai = {
++	.name = "bm818",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++};
++
+ static const struct snd_soc_component_driver soc_component_dev_gtm601 = {
+ 	.dapm_widgets		= gtm601_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(gtm601_dapm_widgets),
+@@ -60,13 +78,19 @@ static const struct snd_soc_component_driver soc_component_dev_gtm601 = {
+ 
+ static int gtm601_platform_probe(struct platform_device *pdev)
+ {
++	const struct snd_soc_dai_driver *dai_driver;
++
++	dai_driver = of_device_get_match_data(&pdev->dev);
++
+ 	return devm_snd_soc_register_component(&pdev->dev,
+-			&soc_component_dev_gtm601, &gtm601_dai, 1);
++			&soc_component_dev_gtm601,
++			(struct snd_soc_dai_driver *)dai_driver, 1);
+ }
+ 
+ #if defined(CONFIG_OF)
+ static const struct of_device_id gtm601_codec_of_match[] = {
+-	{ .compatible = "option,gtm601", },
++	{ .compatible = "option,gtm601", .data = (void *)&gtm601_dai },
++	{ .compatible = "broadmobi,bm818", .data = (void *)&bm818_dai },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, gtm601_codec_of_match);
 -- 
 2.17.1
 
