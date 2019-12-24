@@ -2,81 +2,112 @@ Return-Path: <SRS0=G//A=2O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-10.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31317C2D0CF
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Dec 2019 07:47:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D388C2D0D0
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Dec 2019 10:03:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AABBF20706
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Dec 2019 07:47:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 57B04206B7
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Dec 2019 10:03:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dZIu+dpN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JdfRkv/i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AABBF20706
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yl0lM5TW";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="GC9Yyu2d";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uZsxiXea"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57B04206B7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36A001693;
-	Tue, 24 Dec 2019 08:46:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36A001693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FC921697;
+	Tue, 24 Dec 2019 11:02:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FC921697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577173656;
-	bh=VPg5NRUAPQSf3C0Yt5C052FQc8IbI6zIV7svYXnt5tw=;
-	h=In-Reply-To:References:From:To:Date:Cc:Subject:List-Id:
+	s=default; t=1577181793;
+	bh=s1wQW/0WzDNI4szTpWVmwxsiT2h33HQGOx/kBWBd6XU=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dZIu+dpNUzH3cpwE/j1sGiiT4y2mzZckoHuV1qNiWHcczR/ztlr/oTfPl7l4bqipR
-	 0/ouuFrUG9hu0oOu6Xg9CLKHgeCkfKPvVe5QlHRE+xWDFybMFl9b9ZIq66P6rNwyYN
-	 0TBhzapw1KnMJiIp7JlFOSJholODhJz4HRXSJFnI=
+	b=Yl0lM5TWjuNv3V0NPcFm/FmzGQpqqxo+QdsjZ4CR5paJG/2ktSuo/yjx418yrY6Qn
+	 1nKIyBGK4t432Pq2fM6YOuhAD7PhB58AHqEBmg+qtsA50cwO/LHX2aUsbf/E0vShAj
+	 NHm3bqCc/Gw0IySitHEXKo+CisewpdbkmcNRvL9I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAC86F80136;
-	Tue, 24 Dec 2019 08:46:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69C7EF800E8;
+	Tue, 24 Dec 2019 11:02:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 280EBF800E3; Tue, 24 Dec 2019 08:46:44 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id DA57EF80138; Tue, 24 Dec 2019 11:02:20 +0100 (CET)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61F49F800E3
- for <alsa-devel@alsa-project.org>; Tue, 24 Dec 2019 08:46:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61F49F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54862F800E3
+ for <alsa-devel@alsa-project.org>; Tue, 24 Dec 2019 11:02:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54862F800E3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JdfRkv/i"
-Received: from kernel.org (unknown [104.132.0.74])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 1589220706;
- Tue, 24 Dec 2019 07:46:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1577173599;
- bh=1BJxrvDxsrR7VIQZMUVHbOxilZxPHKLhLbtnCYK0wCI=;
- h=In-Reply-To:References:Cc:From:To:Subject:Date:From;
- b=JdfRkv/iA1GPjKltY9g+b6rJwS1+cIxjN0vr48ttnpmYMEX8QPn5meFCchbWv1huh
- l5/CLVEWnsvGvfxUOH+WSJj1UElcjrFHTrpxVoM+UwvZIgbLRtqAKwkA5RoQzbHRTr
- W3VvVkpDVzCB4m2PWvDaoMi4Nd5r5ZrjumyhIS7s=
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="GC9Yyu2d"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="uZsxiXea"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 0BF6521E44;
+ Tue, 24 Dec 2019 05:02:14 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute1.internal (MEProxy); Tue, 24 Dec 2019 05:02:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm3; bh=KEv6i2D5lh74fXi/Kb+Y/is6PCX
+ jyUghrd2ERasvWFE=; b=GC9Yyu2dKdbnzYzVGE1A1wOGppZa4IqaAkzhwYzHOHX
+ 04FcplbA4Lx2+slAG/Mi0zpLev/m3VBmrdRosHjAPGGLEUQQfdSPuA09VxiTqC2Y
+ rtCseqJIAeB9xPzt5eWs3c0WNHhig/cUjYiWoOKKaIo9p7p/Pqy7YnKhsGkDYEAX
+ 9h1IW9kBfxLQhZVkMRKw/HwTYAm4jR6vBwtaiq75JBMMjkz+VCQNRJH7ZHlqT5he
+ OR5MJK/L6YPzvk/uOXVrCptU8d/dYeleQc6rK+mOys4Omsx7+qOZBHsQZ/spPKUe
+ oHxRL+sOGrZIheJOPwfjcfmUf8/advtedTNPf3UuAeg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KEv6i2
+ D5lh74fXi/Kb+Y/is6PCXjyUghrd2ERasvWFE=; b=uZsxiXeaoB7P6nnJFz39fW
+ UaBA/324erPSSk/EVrCAQ7SK+MlPx8Uvny3xE1C/xgTmV1dUV8KNYQaMsyg7PM0Y
+ OmiUxRqtaXbc0heJgPDHtJtUbmhAmWfTtatI6nuVeq8qBwLSs3+VcYquzdxqn/Kk
+ tbvPEVwj6O3xLTh5pRKMsgjCqXFbghJbCYbGtBxfx+IHbkZg1reJTxlKyn3G3NCw
+ HLHZMdNjNqirZxhgCbxSmqNbmLlv8KWpY8lc4tab1Ro9GND1T9iZmK+SoeBuY40L
+ vNKQcQvzQhOWiXSkOruInEin2VhVcq9OrqgkC2ObjoHD1PVJOB4GIFaTScGg2CMA
+ ==
+X-ME-Sender: <xms:JeIBXpj1csWQwftYdlgxxb6qt4dCpRrrZWbkhkMiSi64lAD7hMoC3A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvddvvddgtdeiucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepvfgrkhgr
+ shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+ hjpheqnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudegrdefrdejhedr
+ udekudenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmh
+ hotggthhhirdhjphenucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:JeIBXpnIyli9sI0GRzrL-mhClCTcwTZ-4YImLyPsAp7eYKl3-_xnjA>
+ <xmx:JeIBXpF7l2fnN7f3zEI2wt5HL-B1dCBhLu1uqovSHcYXpM39vPBmMA>
+ <xmx:JeIBXjPWgN5MMT8HzjDcFPAu_TSQyP2l_3dBmY4AgVW7Q9v7qxVnOQ>
+ <xmx:JuIBXoAIlpwwcpCly0we50yXlfGW41qNwBuI_uFosyYx8DQLvKZviw>
+Received: from workstation (ae075181.dynamic.ppp.asahi-net.or.jp [14.3.75.181])
+ by mail.messagingengine.com (Postfix) with ESMTPA id BFC093060802;
+ Tue, 24 Dec 2019 05:02:12 -0500 (EST)
+Date: Tue, 24 Dec 2019 19:02:10 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20191224100209.GA28396@workstation>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20191223093347.15279-1-o-takashi@sakamocchi.jp>
+ <s5ho8vzw0bq.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20191209183511.3576038-11-daniel@zonque.org>
-References: <20191209183511.3576038-1-daniel@zonque.org>
- <20191209183511.3576038-11-daniel@zonque.org>
-From: Stephen Boyd <sboyd@kernel.org>
-To: Daniel Mack <daniel@zonque.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-kernel@vger.kernel.org
-User-Agent: alot/0.8.1
-Date: Mon, 23 Dec 2019 23:46:38 -0800
-Message-Id: <20191224074639.1589220706@mail.kernel.org>
-Cc: lars@metafoo.de, mturquette@baylibre.com, robh+dt@kernel.org,
- broonie@kernel.org, pascal.huerst@gmail.com, lee.jones@linaro.org,
- Daniel Mack <daniel@zonque.org>
-Subject: Re: [alsa-devel] [PATCH 09/10] clk: Add support for AD242x clock
-	output providers
+Content-Disposition: inline
+In-Reply-To: <s5ho8vzw0bq.wl-tiwai@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: ctl: allow TLV read operation for
+ callback type of element in locked case
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,158 +125,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Daniel Mack (2019-12-09 10:35:10)
-> diff --git a/drivers/clk/clk-ad242x.c b/drivers/clk/clk-ad242x.c
-> new file mode 100644
-> index 000000000000..201789d8f174
-> --- /dev/null
-> +++ b/drivers/clk/clk-ad242x.c
-> @@ -0,0 +1,231 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include <linux/clk.h>
+On Mon, Dec 23, 2019 at 04:03:53PM +0100, Takashi Iwai wrote:
+> On Mon, 23 Dec 2019 10:33:47 +0100,
+> Takashi Sakamoto wrote:
+> > 
+> > A design of ALSA control core allows applications to execute three
+> > operations for TLV feature; read, write and command. Furthermore, it
+> > allows driver developers to process the operations by two ways; allocated
+> > array or callback function. In the former, read operation is just allowed,
+> > thus developers uses the latter when device driver supports variety of
+> > models or the target model is expected to dynamically change information
+> > stored in TLV container.
+> > 
+> > The core also allows applications to lock any element so that the other
+> > applications can't perform write operation to the element for element
+> > value and TLV information. When the element is locked, write and command
+> > operation for TLV information are prohibited as well as element value.
+> > Any read operation should be allowed in the case.
+> > 
+> > At present, when an element has callback function for TLV information,
+> > TLV read operation returns EPERM if the element is locked. On the
+> > other hand, the read operation is success when an element has allocated
+> > array for TLV information. In both cases, read operation is success for
+> > element value expectedly.
+> > 
+> > This commit fixes the bug. This change can be backported to v4.14
+> > kernel or later.
+> 
+> The patch looks good but your sign-off is missing...
 
-Is this include used?
+Oops, I was in the festive mood...
 
-> +#include <linux/clk-provider.h>
-> +#include <linux/err.h>
-> +#include <linux/errno.h>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Is this include used?
+Besides, let us backport this patch to older kernels? As long as I
+investigate, this bug exists since v2.6.19 kernel, in which TLV feature
+was firstly introduced and extended[1]. When I worked for refactoring to
+control core in v4,14 kernel, the bug remains kept as is[2].
 
-> +#include <linux/mfd/ad242x.h>
+It's possible to apply this patch to the longterm v4.14.160 kernel. But
+when fixing this bug for the older kernels. we need to prepare an
+alternative patch. In my opinion, the disadvantage of the bug is not so
+critical, thus it's reasonable to abandon the older kernels.
 
-Any way we can avoid this build dependency? Maybe just put defines in
-this driver that deals with the clk bits of the device?
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=8aa9b586e4209
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=450296f305f13
 
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <dt-bindings/clock/adi,ad242x.h>
-> +
-> +#define AD242X_NUM_CLKS 2
-> +
-> +struct ad242x_clk_hw {
-> +       struct clk_hw hw;
-> +       struct clk_init_data init;
 
-Do we need to keep around this init data after probe? I'd rather leave
-this out.
+Regards
 
-> +       struct ad242x_node *node;
-
-What's the point of this structure? Can we use dev->parent->regmap and
-just store the struct regmap pointer here instead of using this custom
-struct?
-
-> +       u8 reg;
-> +};
-> +
-> +struct ad242x_clk_driver_data {
-> +       struct ad242x_clk_hw hw[AD242X_NUM_CLKS];
-
-If this is the only drvdata, then I'd prefer just the array and not
-another struct so we can have clarity.
-
-> +};
-> +
-> +static inline struct ad242x_clk_hw *to_ad242x_clk(struct clk_hw *hw)
-> +{
-> +       return container_of(hw, struct ad242x_clk_hw, hw);
-> +}
-> +
-[...]
-> +
-> +static long ad242x_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> +                                 unsigned long *parent_rate)
-> +{
-> +       unsigned long pll_rate = *parent_rate * 2048UL;
-> +       unsigned long prediv, div;
-> +
-> +       if (rate > pll_rate / 4 || rate < pll_rate / 1024UL)
-> +               return -EINVAL;
-
-This callback should round the rate to something valid. If the rate is
-larger than pll_rate / 4 then it should clamp to be the highest rate
-supported. Likewise for something slow.
-
-> +
-> +       ad242x_do_div(rate, pll_rate, &prediv, &div);
-> +
-> +       return pll_rate / (prediv * div);
-> +}
-> +
-[...]
-> +
-> +static struct clk_hw *
-> +ad242x_of_clk_get(struct of_phandle_args *clkspec, void *data)
-> +{
-> +       struct ad242x_clk_driver_data *drvdata = data;
-> +       unsigned int idx = clkspec->args[0];
-> +
-> +       return &drvdata->hw[idx].hw;
-
-It looks quite a bit like of_clk_hw_onecell_get(). Can that be used? Or
-at least check for out of bounds and return failure?
-
-> +}
-> +
-> +static int ad242x_clk_probe(struct platform_device *pdev)
-> +{
-> +       const char *clk_names[AD242X_NUM_CLKS] = { "clkout1", "clkout2" };
-> +       u8 regs[AD242X_NUM_CLKS] = { AD242X_CLK1CFG, AD242X_CLK2CFG };
-> +       struct ad242x_clk_driver_data *drvdata;
-> +       struct device *dev = &pdev->dev;
-> +       const char *sync_clk_name;
-> +       struct ad242x_node *node;
-> +       int i, ret;
-> +
-> +       if (!dev->of_node)
-> +               return -ENODEV;
-
-Please drop this. It's not useful.
-
-> +
-> +       drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> +       if (!drvdata)
-> +               return -ENOMEM;
-> +
-> +       node = dev_get_drvdata(dev->parent);
-
-Add a NULL check on node?
-
-> +       sync_clk_name = ad242x_master_get_clk_name(node->master);
-> +
-> +       for (i = 0; i < AD242X_NUM_CLKS; i++) {
-> +               const char *name;
-> +
-> +               if (of_property_read_string_index(dev->of_node,
-> +                                                 "clock-output-names",
-> +                                                 i, &name) == 0)
-> +                       drvdata->hw[i].init.name = name;
-> +               else
-> +                       drvdata->hw[i].init.name = clk_names[i];
-
-Do you need unique names? Or can you generate psuedo unique names based
-on the device name and clk number?
-
-> +
-> +               drvdata->hw[i].reg = regs[i];
-> +               drvdata->hw[i].init.ops = &ad242x_clk_ops;
-> +               drvdata->hw[i].init.num_parents = 1;
-> +               drvdata->hw[i].init.parent_names = &sync_clk_name;
-> +               drvdata->hw[i].hw.init = &drvdata->hw[i].init;
-> +               drvdata->hw[i].node = node;
-> +
-> +               ret = devm_clk_hw_register(dev, &drvdata->hw[i].hw);
-> +               if (ret < 0)
-> +                       return ret;
-> +       }
-> +
-> +       return devm_of_clk_add_hw_provider(dev, ad242x_of_clk_get, drvdata);
-> +}
+Takashi Sakamoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
