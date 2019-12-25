@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD8D5C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:14:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA217C2D0C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:15:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 576CF20679
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:14:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5620220679
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:15:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OlPWzpTk";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="L23xa+tK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 576CF20679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N2Pc20WO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="u6NttF2u"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5620220679
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC95B16AF;
-	Wed, 25 Dec 2019 01:13:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC95B16AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D17316C6;
+	Wed, 25 Dec 2019 01:14:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D17316C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577232856;
-	bh=1twDTuC69j6KrQ85uuJaI/oBVoPUOFx+oj8HPJjvxXo=;
+	s=default; t=1577232941;
+	bh=jKK6A4n/B0cpheg7M8wiBjHLgaO09rnPEhWXYFEQtBg=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=OlPWzpTkEmeQ30sxNuGgkmb/3agZC7VGB6feoamzGm7VB9Pbg4A11ECznrJ201JOy
-	 nkAJklPF2Al3/uw7s1WM2IKlpA0tVa2eDWp1vTYLrzsYQGXr4ET95QgFzsxtgPSPcG
-	 RokX0MLJVbIVE88SiNVJFEsRXIHvJ68UWCUy+9kg=
+	b=N2Pc20WOZ98BRIF6km3iW32aR/J09UhoH6IfbfbeppEjR49oYgRFgxZY05y9ofLLR
+	 r2nhHfMvj7NOgWmoNoGh81jnn0Z93qwx7IRqqn5xSTcfdrDO45xkd0lP3bc3VOf1pE
+	 nOwyblbft+ba67G3GK/d9ab/yQpxnC14NvTBSz8I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5018FF8029A;
-	Wed, 25 Dec 2019 01:09:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67891F802C2;
+	Wed, 25 Dec 2019 01:09:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 704DBF80136; Wed, 25 Dec 2019 01:09:13 +0100 (CET)
+ id AA6C3F8028A; Wed, 25 Dec 2019 01:09:19 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CEDBF80148
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:09:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CEDBF80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1DC1F8026A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:09:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1DC1F8026A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="L23xa+tK"
+ header.b="u6NttF2u"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=eVUU8xDfxdxeV1ja1PKoWiKoHUgAAK/EI5466jc7YPU=; b=L23xa+tKxmIE
- hGTXV2bzkYsxwxfv2+Z62LCP8Gs2spYSDsPQnJSeEWaF4J4xdEl/56WEwEs+NVtrDkm7hInWVz6ds
- I3jkn7jmZVP4DRZvir5n5Bt8ZGcj1aKRyvofFrBrvYNvjpOSCUf4ww3hxOZ5twvKKF9FoG62GUv6k
- HNmVQ=;
+ List-Archive; bh=kl38DjUk9o2U/FwQRMbYB7NV347FDsumGC5L5YiNVQ0=; b=u6NttF2u5BRh
+ 5nhem86XSs2X/DlZxobkKy+mRK2TXg4SLI+xhrAorgkCUJ4p610ldGWpRMdag6pU4LViRd8HiTMsR
+ gGzvGriqTlbHgNguWO5Lk47jwJPlKJK9oWqT/Jdakpirgfxjw+Y14+Zxo/LSNIsXy2R5NivfFDE2K
+ JOW3g=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ijuEU-0007Kb-85; Wed, 25 Dec 2019 00:08:58 +0000
+ id 1ijuEc-0007Lq-1I; Wed, 25 Dec 2019 00:09:06 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id A21EFD01A24; Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
+ id 8B1C6D01957; Wed, 25 Dec 2019 00:09:05 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-In-Reply-To: <20191220171037.10689-2-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191220171037.10689-2-pierre-louis.bossart@linux.intel.com>
+To: Olivier Moysan <olivier.moysan@st.com>
+In-Reply-To: <20191204154333.7152-3-olivier.moysan@st.com>
+Message-Id: <applied-20191204154333.7152-3-olivier.moysan@st.com>
 X-Patchwork-Hint: ignore
-Date: Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Jairaj Arava <jairaj.arava@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda: Add iDisp4 DAI" to the
-	asoc tree
+Date: Wed, 25 Dec 2019 00:09:05 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
+ tiwai@suse.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: stm32: spdifrx: fix race condition in
+	irq handler" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,11 +98,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: Intel: hda: Add iDisp4 DAI
+   ASoC: stm32: spdifrx: fix race condition in irq handler
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -122,41 +123,110 @@ to this mail.
 Thanks,
 Mark
 
-From e68d6696575e1af3f92125e842f2853708f34589 Mon Sep 17 00:00:00 2001
-From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Date: Fri, 20 Dec 2019 11:10:36 -0600
-Subject: [PATCH] ASoC: SOF: Intel: hda: Add iDisp4 DAI
+From 86e1956af4c863d653136fd6e5694adf2054dbaa Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Wed, 4 Dec 2019 16:43:32 +0100
+Subject: [PATCH] ASoC: stm32: spdifrx: fix race condition in irq handler
 
-TGL supports more than three iDisp DAI's.
-Add support for iDisp4 CPU DAI.
+When snd_pcm_stop() is called in interrupt routine,
+substream context may have already been released.
+Add protection on substream context.
 
-Without this patch, we saw the below error on our TGL DUT:
-   sof_rt5682 tgl_max98357a_rt5682: ASoC: CPU DAI iDisp4 Pin not registered
+Fixes: 03e4d5d56fa5 ("ASoC: stm32: Add SPDIFRX support")
 
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191220171037.10689-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20191204154333.7152-3-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-dai.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/stm/stm32_spdifrx.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 2d9ac0035bd2..638812a41328 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -440,6 +440,10 @@ struct snd_soc_dai_driver skl_dai[] = {
- 	.name = "iDisp3 Pin",
- 	.ops = &hda_link_dai_ops,
- },
-+{
-+	.name = "iDisp4 Pin",
-+	.ops = &hda_link_dai_ops,
-+},
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index 9c6beb610c17..3cb8e6db3eeb 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -220,6 +220,7 @@
+  * @slave_config: dma slave channel runtime config pointer
+  * @phys_addr: SPDIFRX registers physical base address
+  * @lock: synchronization enabling lock
++ * @irq_lock: prevent race condition with IRQ on stream state
+  * @cs: channel status buffer
+  * @ub: user data buffer
+  * @irq: SPDIFRX interrupt line
+@@ -240,6 +241,7 @@ struct stm32_spdifrx_data {
+ 	struct dma_slave_config slave_config;
+ 	dma_addr_t phys_addr;
+ 	spinlock_t lock;  /* Sync enabling lock */
++	spinlock_t irq_lock; /* Prevent race condition on stream state */
+ 	unsigned char cs[SPDIFRX_CS_BYTES_NB];
+ 	unsigned char ub[SPDIFRX_UB_BYTES_NB];
+ 	int irq;
+@@ -667,7 +669,6 @@ static const struct regmap_config stm32_h7_spdifrx_regmap_conf = {
+ static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
  {
- 	.name = "Analog CPU DAI",
- 	.ops = &hda_link_dai_ops,
+ 	struct stm32_spdifrx_data *spdifrx = (struct stm32_spdifrx_data *)devid;
+-	struct snd_pcm_substream *substream = spdifrx->substream;
+ 	struct platform_device *pdev = spdifrx->pdev;
+ 	unsigned int cr, mask, sr, imr;
+ 	unsigned int flags, sync_state;
+@@ -747,14 +748,19 @@ static irqreturn_t stm32_spdifrx_isr(int irq, void *devid)
+ 			return IRQ_HANDLED;
+ 		}
+ 
+-		if (substream)
+-			snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
++		spin_lock(&spdifrx->irq_lock);
++		if (spdifrx->substream)
++			snd_pcm_stop(spdifrx->substream,
++				     SNDRV_PCM_STATE_DISCONNECTED);
++		spin_unlock(&spdifrx->irq_lock);
+ 
+ 		return IRQ_HANDLED;
+ 	}
+ 
+-	if (err_xrun && substream)
+-		snd_pcm_stop_xrun(substream);
++	spin_lock(&spdifrx->irq_lock);
++	if (err_xrun && spdifrx->substream)
++		snd_pcm_stop_xrun(spdifrx->substream);
++	spin_unlock(&spdifrx->irq_lock);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -763,9 +769,12 @@ static int stm32_spdifrx_startup(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *cpu_dai)
+ {
+ 	struct stm32_spdifrx_data *spdifrx = snd_soc_dai_get_drvdata(cpu_dai);
++	unsigned long flags;
+ 	int ret;
+ 
++	spin_lock_irqsave(&spdifrx->irq_lock, flags);
+ 	spdifrx->substream = substream;
++	spin_unlock_irqrestore(&spdifrx->irq_lock, flags);
+ 
+ 	ret = clk_prepare_enable(spdifrx->kclk);
+ 	if (ret)
+@@ -841,8 +850,12 @@ static void stm32_spdifrx_shutdown(struct snd_pcm_substream *substream,
+ 				   struct snd_soc_dai *cpu_dai)
+ {
+ 	struct stm32_spdifrx_data *spdifrx = snd_soc_dai_get_drvdata(cpu_dai);
++	unsigned long flags;
+ 
++	spin_lock_irqsave(&spdifrx->irq_lock, flags);
+ 	spdifrx->substream = NULL;
++	spin_unlock_irqrestore(&spdifrx->irq_lock, flags);
++
+ 	clk_disable_unprepare(spdifrx->kclk);
+ }
+ 
+@@ -946,6 +959,7 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 	spdifrx->pdev = pdev;
+ 	init_completion(&spdifrx->cs_completion);
+ 	spin_lock_init(&spdifrx->lock);
++	spin_lock_init(&spdifrx->irq_lock);
+ 
+ 	platform_set_drvdata(pdev, spdifrx);
+ 
 -- 
 2.20.1
 
