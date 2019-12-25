@@ -2,70 +2,100 @@ Return-Path: <SRS0=4Kwc=2Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-14.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC723C2D0DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 07:15:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB81BC2D0DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 08:07:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46BB3206CB
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 07:15:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E4EFF2071E
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 08:07:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e3vuPNXU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46BB3206CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gOzK/hfb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j2Rs4ozr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4EFF2071E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CAB316F4;
-	Thu, 26 Dec 2019 08:14:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CAB316F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9D7B16E2;
+	Thu, 26 Dec 2019 09:07:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D7B16E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577344511;
-	bh=nXeBvUWBd/DwQKWctZRH6mDOmPLEVgxLmqQ8ySr38vg=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=e3vuPNXUgLnh8e0jPLXjPrFvq0Uqydum+9OaU9jrOU3KvuC2v/0lC2MykGM0kW4Tu
-	 VqwHdS37KEH71dk1mY+4LbpOyiLmGtnpfoLW+ze7HnesOTtvGpWK4JdBU/PzoZvE9v
-	 TKxANFTu0ndbrc7qYZ75q04RkcVt3PjdYblY+BGo=
+	s=default; t=1577347670;
+	bh=BNgvS61hkvQppMXlbS88mUOss4X7BX4/mF2llM6ip1Y=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gOzK/hfb0KC4HUcn3hEwHz+ROIxaPYL3pdlpjQgHNYh5xmJSIkJzYjlhxvjqM8SHD
+	 hqXn8Cm+7YC6MlH1xQuYsiRoxWK+GpS9JToh81MYyDlfx7g67lrQm9QU/pF7WLtbf1
+	 aClexX0lkLXXGrZphKeBgHK3UuLiXSJBJnv2SsDU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E6A6F80273;
-	Thu, 26 Dec 2019 08:12:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4439CF80138;
+	Thu, 26 Dec 2019 09:07:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB937F80269; Thu, 26 Dec 2019 08:12:04 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2DFC7F80138; Wed, 25 Dec 2019 03:22:07 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E029BF8012E
- for <alsa-devel@alsa-project.org>; Thu, 26 Dec 2019 08:11:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E029BF8012E
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 25 Dec 2019 23:11:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,358,1571727600"; d="scan'208";a="300327223"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga001.jf.intel.com with ESMTP; 25 Dec 2019 23:11:52 -0800
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-To: broonie@kernel.org
-Date: Thu, 26 Dec 2019 03:15:00 +0800
-Message-Id: <20191225191501.23848-3-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191225191501.23848-1-yung-chuan.liao@linux.intel.com>
-References: <20191225191501.23848-1-yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
- liam.r.girdwood@linux.intel.com, bard.liao@intel.com
-Subject: [alsa-devel] [PATCH RFC 2/3] ASoC: Add multiple CPU DAI support for
-	PCM ops
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57783F800E3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 03:22:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57783F800E3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="j2Rs4ozr"
+Received: by mail-wm1-x341.google.com with SMTP id b19so3474666wmj.4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Dec 2019 18:22:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=message-id:from:to:cc:subject:date:mime-version
+ :content-transfer-encoding;
+ bh=rJ+8IH18zzODLKaNgkx0pG4CqT3ZWdQ3iFDsdDHCiFw=;
+ b=j2Rs4ozrsy3uKCrnhOgJ7kmGSecpmduNqNFVRDxcdiU0F5dtPHdx0WFl9ngePW/mZL
+ M76vjk9LS+bjm2IROBaTbDl2H3TJNl8nFMUNnYxQx081pYo/76zituHfT+q3AVicFEzo
+ 2pRBd8BN8j7SwX7g6DnzWipQmnYoQn98/EsebMAmrpEzjptlm+x1TQJF2ZD72q33iGhV
+ xkCcnrC+y7pycvSog6qfrbAmJJGiuOMceeFuCO9fkzqz7GjkvEcjEaX2XZ7ve1pbGoWF
+ 8NuJ82au3vBxyiqo1+ymF+CEET7M7hu4/EpgEtzoVX3WYjzIzgmo2gOvpZhJ36jkQoxw
+ dXIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:message-id:from:to:cc:subject:date:mime-version
+ :content-transfer-encoding;
+ bh=rJ+8IH18zzODLKaNgkx0pG4CqT3ZWdQ3iFDsdDHCiFw=;
+ b=Skf59snhi9JHWROQJvqmqyel3wz6wvGSac2ntU4E1ABbMDbbGwxAiDze6+6KG/gZxu
+ +X8Q+x3Zd+BSDxkF7Kqc3daMc3XxXn6eM6+9XYhWvhh6aQKU+h2zK8N9J+yYj9opxAYx
+ ciIxNf7JVWvEWp3pJPgd1mIYcpaHqIyy6DoLPg9Iz33aWjBIbQ04qZv/fFB/AUzU8drd
+ CtHkC4UD+YvQWDg+ejPCIL/GM2Jkh9dRe9F32lqqmzH4x5kK1+KSqz8a4AF+wLoMm+ct
+ +fK7HuKj6ZgLn/4wJ+l9/ww0p39t+QLa/l0RBewT9/oqTt4JUX7sSZfswF2F00dYqFET
+ kNIw==
+X-Gm-Message-State: APjAAAW1TdT964a+/vSB+Z+r8z3NZMb0/8/w7KXhn7gRDXke3dtcryZt
+ klFoSLTBMWQUfv2oHArZ11KkDeoG
+X-Google-Smtp-Source: APXvYqyNAAOz/zHJVxC6ssknHm19poi2Uj2328qfDd5a1JMsaspSQrMvm+jFqhD7qPJgFtO2ziFQqg==
+X-Received: by 2002:a1c:6389:: with SMTP id x131mr6254983wmb.155.1577240521677; 
+ Tue, 24 Dec 2019 18:22:01 -0800 (PST)
+Received: from localhost.localdomain ([139.91.73.37])
+ by smtp.gmail.com with ESMTPSA id x1sm25596709wru.50.2019.12.24.18.22.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 24 Dec 2019 18:22:00 -0800 (PST)
+Message-ID: <5e02c7c8.1c69fb81.19960.dbd7@mx.google.com>
+X-Google-Original-Message-ID: <20191225022157.51843-1---help>
+From: mickflemm@gmail.com
+X-Google-Original-From: --help
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.de,
+	perex@perex.cz
+Date: Wed, 25 Dec 2019 04:21:57 +0200
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+X-Mailman-Approved-At: Thu, 26 Dec 2019 09:06:58 +0100
+Cc: Nick Kossifidis <mickflemm@gmail.com>
+Subject: [alsa-devel] [PATCH 1/1] [PATCH] ALSA: usb-audio: Add support for
+	Presonus Studio 1810c
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,898 +108,736 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Shreyas NC <shreyas.nc@intel.com>
+This patch adds support for Presonus Studio 1810c, a usb interface
+that's UAC2 compliant with a few quirks and a few extra hw-specific
+controls. I've tested all 3 altsettings and the added switch
+controls and they work as expected.
 
-Add support in PCM operations to invoke multiple cpu dais as we do
-for multiple codec dais. Also the symmetry calculations are updated to
-reflect multiple cpu dais.
+More infos on the card:
+https://www.presonus.com/products/Studio-1810c
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Note that this work is based on packet inspection with
+usbmon. I just wanted to get this card to work for using
+it on our open-source radio station:
+https://github.com/UoC-Radio
+
+Signed-off-by: Nick Kossifidis <mickflemm@gmail.com>
 ---
- sound/soc/soc-pcm.c | 432 +++++++++++++++++++++++++++++---------------
- 1 file changed, 287 insertions(+), 145 deletions(-)
+ sound/usb/Makefile       |   1 +
+ sound/usb/format.c       |  17 ++
+ sound/usb/mixer_quirks.c |   5 +
+ sound/usb/mixer_s1810c.c | 565 +++++++++++++++++++++++++++++++++++++++
+ sound/usb/mixer_s1810c.h |   6 +
+ sound/usb/quirks.c       |  34 +++
+ 6 files changed, 628 insertions(+)
+ create mode 100644 sound/usb/mixer_s1810c.c
+ create mode 100644 sound/usb/mixer_s1810c.h
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 01e7bc03d92f..f0c7f2d6df06 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -40,24 +40,28 @@
-  */
- void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
- {
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i;
- 
- 	lockdep_assert_held(&rtd->card->pcm_mutex);
- 
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		cpu_dai->playback_active++;
-+		for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+			cpu_dai->playback_active++;
- 		for_each_rtd_codec_dai(rtd, i, codec_dai)
- 			codec_dai->playback_active++;
- 	} else {
--		cpu_dai->capture_active++;
-+		for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+			cpu_dai->capture_active++;
- 		for_each_rtd_codec_dai(rtd, i, codec_dai)
- 			codec_dai->capture_active++;
- 	}
- 
--	cpu_dai->active++;
--	cpu_dai->component->active++;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		cpu_dai->active++;
-+		cpu_dai->component->active++;
-+	}
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 		codec_dai->active++;
- 		codec_dai->component->active++;
-@@ -76,24 +80,28 @@ void snd_soc_runtime_activate(struct snd_soc_pcm_runtime *rtd, int stream)
-  */
- void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
- {
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i;
- 
- 	lockdep_assert_held(&rtd->card->pcm_mutex);
- 
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		cpu_dai->playback_active--;
-+		for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+			cpu_dai->playback_active--;
- 		for_each_rtd_codec_dai(rtd, i, codec_dai)
- 			codec_dai->playback_active--;
- 	} else {
--		cpu_dai->capture_active--;
-+		for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+			cpu_dai->capture_active--;
- 		for_each_rtd_codec_dai(rtd, i, codec_dai)
- 			codec_dai->capture_active--;
- 	}
- 
--	cpu_dai->active--;
--	cpu_dai->component->active--;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		cpu_dai->active--;
-+		cpu_dai->component->active--;
-+	}
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 		codec_dai->component->active--;
- 		codec_dai->active--;
-@@ -233,7 +241,7 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	unsigned int rate, channels, sample_bits, symmetry, i;
- 
-@@ -242,40 +250,54 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
- 	sample_bits = snd_pcm_format_physical_width(params_format(params));
- 
- 	/* reject unmatched parameters when applying symmetry */
--	symmetry = cpu_dai->driver->symmetric_rates ||
--		rtd->dai_link->symmetric_rates;
-+	symmetry = rtd->dai_link->symmetric_rates;
-+
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		symmetry |= cpu_dai->driver->symmetric_rates;
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		symmetry |= codec_dai->driver->symmetric_rates;
- 
--	if (symmetry && cpu_dai->rate && cpu_dai->rate != rate) {
--		dev_err(rtd->dev, "ASoC: unmatched rate symmetry: %d - %d\n",
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (symmetry && cpu_dai->rate && cpu_dai->rate != rate) {
-+			dev_err(rtd->dev, "ASoC: unmatched rate symmetry: %d - %d\n",
- 				cpu_dai->rate, rate);
--		return -EINVAL;
-+			return -EINVAL;
-+		}
- 	}
- 
--	symmetry = cpu_dai->driver->symmetric_channels ||
--		rtd->dai_link->symmetric_channels;
-+	symmetry = rtd->dai_link->symmetric_channels;
-+
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		symmetry |= cpu_dai->driver->symmetric_channels;
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		symmetry |= codec_dai->driver->symmetric_channels;
- 
--	if (symmetry && cpu_dai->channels && cpu_dai->channels != channels) {
--		dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (symmetry && cpu_dai->channels &&
-+		    cpu_dai->channels != channels) {
-+			dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
- 				cpu_dai->channels, channels);
--		return -EINVAL;
-+			return -EINVAL;
-+		}
- 	}
- 
--	symmetry = cpu_dai->driver->symmetric_samplebits ||
--		rtd->dai_link->symmetric_samplebits;
-+	symmetry = rtd->dai_link->symmetric_samplebits;
-+
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		symmetry |= cpu_dai->driver->symmetric_samplebits;
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		symmetry |= codec_dai->driver->symmetric_samplebits;
- 
--	if (symmetry && cpu_dai->sample_bits && cpu_dai->sample_bits != sample_bits) {
--		dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (symmetry && cpu_dai->sample_bits &&
-+		    cpu_dai->sample_bits != sample_bits) {
-+			dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
- 				cpu_dai->sample_bits, sample_bits);
--		return -EINVAL;
-+			return -EINVAL;
-+		}
- 	}
- 
- 	return 0;
-@@ -287,11 +309,18 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai_driver *cpu_driver = rtd->cpu_dai->driver;
- 	struct snd_soc_dai_link *link = rtd->dai_link;
- 	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	unsigned int symmetry, i;
- 
--	symmetry = cpu_driver->symmetric_rates || link->symmetric_rates ||
--		cpu_driver->symmetric_channels || link->symmetric_channels ||
--		cpu_driver->symmetric_samplebits || link->symmetric_samplebits;
-+	symmetry = link->symmetric_rates ||
-+		link->symmetric_channels ||
-+		link->symmetric_samplebits;
-+
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		symmetry = symmetry ||
-+			cpu_driver->symmetric_rates ||
-+			cpu_driver->symmetric_channels ||
-+			cpu_driver->symmetric_samplebits;
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		symmetry = symmetry ||
-@@ -322,7 +351,7 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i;
--	unsigned int bits = 0, cpu_bits;
-+	unsigned int bits = 0, cpu_bits = 0;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
-@@ -332,7 +361,14 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
- 			}
- 			bits = max(codec_dai->driver->playback.sig_bits, bits);
+diff --git a/sound/usb/Makefile b/sound/usb/Makefile
+index 78edd7d2f..56031026b 100644
+--- a/sound/usb/Makefile
++++ b/sound/usb/Makefile
+@@ -13,6 +13,7 @@ snd-usb-audio-objs := 	card.o \
+ 			mixer_scarlett.o \
+ 			mixer_scarlett_gen2.o \
+ 			mixer_us16x08.o \
++			mixer_s1810c.o \
+ 			pcm.o \
+ 			power.o \
+ 			proc.o \
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index d79db7130..edf3f2a55 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -262,6 +262,23 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
  		}
--		cpu_bits = cpu_dai->driver->playback.sig_bits;
-+		for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+			if (cpu_dai->driver->playback.sig_bits == 0) {
-+				cpu_bits = 0;
-+				break;
-+			}
-+			cpu_bits = max(cpu_dai->driver->playback.sig_bits,
-+				       bits);
-+		}
- 	} else {
- 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 			if (codec_dai->driver->capture.sig_bits == 0) {
-@@ -341,7 +377,13 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
- 			}
- 			bits = max(codec_dai->driver->capture.sig_bits, bits);
- 		}
--		cpu_bits = cpu_dai->driver->capture.sig_bits;
-+		for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+			if (cpu_dai->driver->capture.sig_bits == 0) {
-+				cpu_bits = 0;
-+				break;
-+			}
-+			cpu_bits = max(cpu_dai->driver->capture.sig_bits, bits);
-+		}
- 	}
  
- 	soc_pcm_set_msb(substream, bits);
-@@ -354,22 +396,40 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 	struct snd_pcm_hardware *hw = &runtime->hw;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai;
--	struct snd_soc_dai_driver *cpu_dai_drv = rtd->cpu_dai->driver;
-+	struct snd_soc_dai *cpu_dai;
-+	struct snd_soc_dai_driver *cpu_dai_drv;
- 	struct snd_soc_dai_driver *codec_dai_drv;
- 	struct snd_soc_pcm_stream *codec_stream;
- 	struct snd_soc_pcm_stream *cpu_stream;
- 	unsigned int chan_min = 0, chan_max = UINT_MAX;
-+	unsigned int cpu_chan_min = 0, cpu_chan_max = UINT_MAX;
- 	unsigned int rate_min = 0, rate_max = UINT_MAX;
--	unsigned int rates = UINT_MAX;
-+	unsigned int cpu_rate_min = 0, cpu_rate_max = UINT_MAX;
-+	unsigned int rates = UINT_MAX, cpu_rates = UINT_MAX;
- 	u64 formats = ULLONG_MAX;
- 	int i;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		cpu_stream = &cpu_dai_drv->playback;
--	else
--		cpu_stream = &cpu_dai_drv->capture;
-+	/* first calculate min/max only for CPUs in the DAI link */
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (!snd_soc_dai_stream_valid(cpu_dai,
-+					      substream->stream))
-+			continue;
+ 		for (rate = min; rate <= max; rate += res) {
 +
-+		cpu_dai_drv = cpu_dai->driver;
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			cpu_stream = &cpu_dai_drv->playback;
-+		else
-+			cpu_stream = &cpu_dai_drv->capture;
-+		cpu_chan_min = max(cpu_chan_min, cpu_stream->channels_min);
-+		cpu_chan_max = min(cpu_chan_max, cpu_stream->channels_max);
-+		cpu_rate_min = max(cpu_rate_min, cpu_stream->rate_min);
-+		cpu_rate_max = min_not_zero(cpu_rate_max, cpu_stream->rate_max);
-+		formats &= cpu_stream->formats;
-+		cpu_rates = snd_pcm_rate_mask_intersect(cpu_stream->rates,
-+							rates);
-+	}
- 
--	/* first calculate min/max only for CODECs in the DAI link */
-+	/* second calculate min/max only for CODECs in the DAI link */
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 
- 		/*
-@@ -400,27 +460,28 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 
- 	/*
- 	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
--	 * connected to a single CPU DAI, use CPU DAI's directly and let
-+	 * connected to CPU DAI(s), use CPU DAI's directly and let
- 	 * channel allocation be fixed up later
- 	 */
- 	if (rtd->num_codecs > 1) {
--		chan_min = cpu_stream->channels_min;
--		chan_max = cpu_stream->channels_max;
-+		chan_min = cpu_chan_min;
-+		chan_max = cpu_chan_max;
- 	}
- 
--	hw->channels_min = max(chan_min, cpu_stream->channels_min);
--	hw->channels_max = min(chan_max, cpu_stream->channels_max);
-+	/* finally find a intersection between CODECs and CPUs */
-+	hw->channels_min = max(chan_min, cpu_chan_min);
-+	hw->channels_max = min(chan_max, cpu_chan_max);
- 	if (hw->formats)
--		hw->formats &= formats & cpu_stream->formats;
-+		hw->formats &= formats;
- 	else
--		hw->formats = formats & cpu_stream->formats;
--	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_stream->rates);
-+		hw->formats = formats;
-+	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_rates);
- 
- 	snd_pcm_limit_hw_rates(runtime);
- 
--	hw->rate_min = max(hw->rate_min, cpu_stream->rate_min);
-+	hw->rate_min = max(hw->rate_min, cpu_rate_min);
- 	hw->rate_min = max(hw->rate_min, rate_min);
--	hw->rate_max = min_not_zero(hw->rate_max, cpu_stream->rate_max);
-+	hw->rate_max = min_not_zero(hw->rate_max, cpu_rate_max);
- 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
- }
- 
-@@ -485,12 +546,14 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	const char *codec_dai_name = "multicodec";
-+	const char *cpu_dai_name = "multicpu";
- 	int i, ret = 0;
- 
--	pinctrl_pm_select_default_state(cpu_dai->dev);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		pinctrl_pm_select_default_state(cpu_dai->dev);
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		pinctrl_pm_select_default_state(codec_dai->dev);
- 
-@@ -501,11 +564,13 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
- 	/* startup the audio subsystem */
--	ret = snd_soc_dai_startup(cpu_dai, substream);
--	if (ret < 0) {
--		dev_err(cpu_dai->dev, "ASoC: can't open interface %s: %d\n",
--			cpu_dai->name, ret);
--		goto out;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		ret = snd_soc_dai_startup(cpu_dai, substream);
-+		if (ret < 0) {
-+			dev_err(cpu_dai->dev, "ASoC: can't open interface %s: %d\n",
-+				cpu_dai_name, ret);
-+			goto interface_err;
-+		}
- 	}
- 
- 	ret = soc_pcm_components_open(substream, &component);
-@@ -546,34 +611,39 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	if (rtd->num_codecs == 1)
- 		codec_dai_name = rtd->codec_dai->name;
- 
-+	if (rtd->num_cpu_dai == 1)
-+		cpu_dai_name = rtd->cpu_dai->name;
-+
- 	if (soc_pcm_has_symmetry(substream))
- 		runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
- 
- 	ret = -EINVAL;
- 	if (!runtime->hw.rates) {
- 		printk(KERN_ERR "ASoC: %s <-> %s No matching rates\n",
--			codec_dai_name, cpu_dai->name);
-+			codec_dai_name, cpu_dai_name);
- 		goto config_err;
- 	}
- 	if (!runtime->hw.formats) {
- 		printk(KERN_ERR "ASoC: %s <-> %s No matching formats\n",
--			codec_dai_name, cpu_dai->name);
-+			codec_dai_name, cpu_dai_name);
- 		goto config_err;
- 	}
- 	if (!runtime->hw.channels_min || !runtime->hw.channels_max ||
- 	    runtime->hw.channels_min > runtime->hw.channels_max) {
- 		printk(KERN_ERR "ASoC: %s <-> %s No matching channels\n",
--				codec_dai_name, cpu_dai->name);
-+				codec_dai_name, cpu_dai_name);
- 		goto config_err;
- 	}
- 
- 	soc_pcm_apply_msb(substream);
- 
- 	/* Symmetry only applies if we've already got an active stream. */
--	if (cpu_dai->active) {
--		ret = soc_pcm_apply_symmetry(substream, cpu_dai);
--		if (ret != 0)
--			goto config_err;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (cpu_dai->active) {
-+			ret = soc_pcm_apply_symmetry(substream, cpu_dai);
-+			if (ret != 0)
-+				goto config_err;
-+		}
- 	}
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
-@@ -585,7 +655,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	}
- 
- 	pr_debug("ASoC: %s <-> %s info:\n",
--			codec_dai_name, cpu_dai->name);
-+			codec_dai_name, cpu_dai_name);
- 	pr_debug("ASoC: rate mask 0x%x\n", runtime->hw.rates);
- 	pr_debug("ASoC: min ch %d max ch %d\n", runtime->hw.channels_min,
- 		 runtime->hw.channels_max);
-@@ -613,8 +683,12 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- component_err:
- 	soc_pcm_components_close(substream, component);
- 
--	snd_soc_dai_shutdown(cpu_dai, substream);
--out:
-+	i = rtd->num_cpu_dai;
-+
-+interface_err:
-+	for_each_rtd_cpu_dai_rollback(rtd, i, cpu_dai)
-+		snd_soc_dai_shutdown(cpu_dai, substream);
-+
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 
- 	for_each_rtd_components(rtd, rtdcom, component) {
-@@ -626,8 +700,11 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		if (!codec_dai->active)
- 			pinctrl_pm_select_sleep_state(codec_dai->dev);
- 	}
--	if (!cpu_dai->active)
--		pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (!cpu_dai->active)
-+			pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+	}
- 
- 	return ret;
- }
-@@ -678,7 +755,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i;
- 
-@@ -687,17 +764,21 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	snd_soc_runtime_deactivate(rtd, substream->stream);
- 
- 	/* clear the corresponding DAIs rate when inactive */
--	if (!cpu_dai->active)
--		cpu_dai->rate = 0;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (!cpu_dai->active)
-+			cpu_dai->rate = 0;
-+	}
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 		if (!codec_dai->active)
- 			codec_dai->rate = 0;
- 	}
- 
--	snd_soc_dai_digital_mute(cpu_dai, 1, substream->stream);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		snd_soc_dai_digital_mute(cpu_dai, 1, substream->stream);
- 
--	snd_soc_dai_shutdown(cpu_dai, substream);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		snd_soc_dai_shutdown(cpu_dai, substream);
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		snd_soc_dai_shutdown(codec_dai, substream);
-@@ -737,8 +818,11 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 		if (!codec_dai->active)
- 			pinctrl_pm_select_sleep_state(codec_dai->dev);
- 	}
--	if (!cpu_dai->active)
--		pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (!cpu_dai->active)
-+			pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+	}
- 
- 	return 0;
- }
-@@ -753,7 +837,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i, ret = 0;
- 
-@@ -787,11 +871,13 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 		}
- 	}
- 
--	ret = snd_soc_dai_prepare(cpu_dai, substream);
--	if (ret < 0) {
--		dev_err(cpu_dai->dev,
--			"ASoC: cpu DAI prepare error: %d\n", ret);
--		goto out;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		ret = snd_soc_dai_prepare(cpu_dai, substream);
-+		if (ret < 0) {
-+			dev_err(cpu_dai->dev,
-+				"ASoC: cpu DAI prepare error: %d\n", ret);
-+			goto out;
-+		}
- 	}
- 
- 	/* cancel any delayed stream shutdown that is pending */
-@@ -807,7 +893,8 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		snd_soc_dai_digital_mute(codec_dai, 0,
- 					 substream->stream);
--	snd_soc_dai_digital_mute(cpu_dai, 0, substream->stream);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai)
-+		snd_soc_dai_digital_mute(cpu_dai, 0, substream->stream);
- 
- out:
- 	mutex_unlock(&rtd->card->pcm_mutex);
-@@ -854,7 +941,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i, ret = 0;
- 
-@@ -920,17 +1007,19 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		snd_soc_dapm_update_dai(substream, &codec_params, codec_dai);
- 	}
- 
--	ret = snd_soc_dai_hw_params(cpu_dai, substream, params);
--	if (ret < 0)
--		goto interface_err;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		ret = snd_soc_dai_hw_params(cpu_dai, substream, params);
-+		if (ret < 0)
-+			goto interface_err;
- 
--	/* store the parameters for each DAIs */
--	cpu_dai->rate = params_rate(params);
--	cpu_dai->channels = params_channels(params);
--	cpu_dai->sample_bits =
--		snd_pcm_format_physical_width(params_format(params));
-+		/* store the parameters for each DAI */
-+		cpu_dai->rate = params_rate(params);
-+		cpu_dai->channels = params_channels(params);
-+		cpu_dai->sample_bits =
-+			snd_pcm_format_physical_width(params_format(params));
- 
--	snd_soc_dapm_update_dai(substream, params, cpu_dai);
-+		snd_soc_dapm_update_dai(substream, params, cpu_dai);
-+	}
- 
- 	for_each_rtd_components(rtd, rtdcom, component) {
- 		ret = snd_soc_component_hw_params(component, substream, params);
-@@ -950,10 +1039,17 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- component_err:
- 	soc_pcm_components_hw_free(substream, component);
- 
--	snd_soc_dai_hw_free(cpu_dai, substream);
--	cpu_dai->rate = 0;
-+	i = rtd->num_cpu_dai;
- 
- interface_err:
-+	for_each_rtd_cpu_dai_rollback(rtd, i, cpu_dai) {
-+		if (!snd_soc_dai_stream_valid(cpu_dai, substream->stream))
-+			continue;
-+
-+		snd_soc_dai_hw_free(cpu_dai, substream);
-+		cpu_dai->rate = 0;
-+	}
-+
- 	i = rtd->num_codecs;
- 
- codec_err:
-@@ -978,20 +1074,23 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	bool playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	int i;
- 
- 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
--	/* clear the corresponding DAIs parameters when going to be inactive */
--	if (cpu_dai->active == 1) {
--		cpu_dai->rate = 0;
--		cpu_dai->channels = 0;
--		cpu_dai->sample_bits = 0;
-+	/* clear all CPU DAIs parameters when inactive */
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (cpu_dai->active == 1) {
-+			cpu_dai->rate = 0;
-+			cpu_dai->channels = 0;
-+			cpu_dai->sample_bits = 0;
-+		}
- 	}
- 
-+	/* clear all CODEC DAIs parameters when inactive */
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 		if (codec_dai->active == 1) {
- 			codec_dai->rate = 0;
-@@ -1023,7 +1122,12 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 		snd_soc_dai_hw_free(codec_dai, substream);
- 	}
- 
--	snd_soc_dai_hw_free(cpu_dai, substream);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		if (!snd_soc_dai_stream_valid(cpu_dai, substream->stream))
-+			continue;
-+
-+		snd_soc_dai_hw_free(cpu_dai, substream);
-+	}
- 
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 	return 0;
-@@ -1034,7 +1138,7 @@ static int soc_pcm_trigger_start(struct snd_pcm_substream *substream, int cmd)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i, ret;
- 
-@@ -1050,9 +1154,11 @@ static int soc_pcm_trigger_start(struct snd_pcm_substream *substream, int cmd)
- 			return ret;
- 	}
- 
--	ret = snd_soc_dai_trigger(cpu_dai, substream, cmd);
--	if (ret < 0)
--		return ret;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		ret = snd_soc_dai_trigger(cpu_dai, substream, cmd);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 		ret = snd_soc_dai_trigger(codec_dai, substream, cmd);
-@@ -1068,7 +1174,7 @@ static int soc_pcm_trigger_stop(struct snd_pcm_substream *substream, int cmd)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i, ret;
- 
-@@ -1078,9 +1184,11 @@ static int soc_pcm_trigger_stop(struct snd_pcm_substream *substream, int cmd)
- 			return ret;
- 	}
- 
--	ret = snd_soc_dai_trigger(cpu_dai, substream, cmd);
--	if (ret < 0)
--		return ret;
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		ret = snd_soc_dai_trigger(cpu_dai, substream, cmd);
-+		if (ret < 0)
-+			return ret;
-+	}
- 
- 	for_each_rtd_components(rtd, rtdcom, component) {
- 		ret = snd_soc_component_trigger(component, substream, cmd);
-@@ -1147,12 +1255,13 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
- static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_uframes_t offset = 0;
- 	snd_pcm_sframes_t delay = 0;
- 	snd_pcm_sframes_t codec_delay = 0;
-+	snd_pcm_sframes_t cpu_delay = 0;
- 	int i;
- 
- 	/* clearing the previous total delay */
-@@ -1163,7 +1272,11 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- 	/* base delay if assigned in pointer callback */
- 	delay = runtime->delay;
- 
--	delay += snd_soc_dai_delay(cpu_dai, substream);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		cpu_delay = max(cpu_delay,
-+				snd_soc_dai_delay(cpu_dai, substream));
-+	}
-+	delay += cpu_delay;
- 
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 		codec_delay = max(codec_delay,
-@@ -1289,6 +1402,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- {
- 	struct snd_soc_pcm_runtime *be;
- 	struct snd_soc_dai *dai;
-+	struct snd_soc_dai *cpu_dai;
- 	int i;
- 
- 	dev_dbg(card->dev, "ASoC: find BE for widget %s\n", widget->name);
-@@ -1299,12 +1413,15 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 			if (!be->dai_link->no_pcm)
- 				continue;
- 
--			dev_dbg(card->dev, "ASoC: try BE : %s\n",
--				be->cpu_dai->playback_widget ?
--				be->cpu_dai->playback_widget->name : "(not set)");
-+			for_each_rtd_cpu_dai(be, i, cpu_dai) {
-+				dev_dbg(card->dev, "ASoC: try BE : %s\n",
-+					cpu_dai->playback_widget ?
-+					cpu_dai->playback_widget->name :
-+					"(not set)");
- 
--			if (be->cpu_dai->playback_widget == widget)
--				return be;
-+				if (cpu_dai->playback_widget == widget)
-+					return be;
-+			}
- 
- 			for_each_rtd_codec_dai(be, i, dai) {
- 				if (dai->playback_widget == widget)
-@@ -1318,12 +1435,15 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 			if (!be->dai_link->no_pcm)
- 				continue;
- 
--			dev_dbg(card->dev, "ASoC: try BE %s\n",
--				be->cpu_dai->capture_widget ?
--				be->cpu_dai->capture_widget->name : "(not set)");
-+			for_each_rtd_cpu_dai(be, i, cpu_dai) {
-+				dev_dbg(card->dev, "ASoC: try BE %s\n",
-+					cpu_dai->capture_widget ?
-+					cpu_dai->capture_widget->name :
-+					"(not set)");
- 
--			if (be->cpu_dai->capture_widget == widget)
--				return be;
-+				if (cpu_dai->capture_widget == widget)
-+					return be;
-+			}
- 
- 			for_each_rtd_codec_dai(be, i, dai) {
- 				if (dai->capture_widget == widget)
-@@ -1373,8 +1493,10 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
- 			if (!rtd->dai_link->no_pcm)
- 				continue;
- 
--			if (rtd->cpu_dai->playback_widget == widget)
--				return true;
-+			for_each_rtd_cpu_dai(rtd, i, dai) {
-+				if (dai->playback_widget == widget)
-+					return true;
-+			}
- 
- 			for_each_rtd_codec_dai(rtd, i, dai) {
- 				if (dai->playback_widget == widget)
-@@ -1386,8 +1508,10 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
- 			if (!rtd->dai_link->no_pcm)
- 				continue;
- 
--			if (rtd->cpu_dai->capture_widget == widget)
--				return true;
-+			for_each_rtd_cpu_dai(rtd, i, dai) {
-+				if (dai->capture_widget == widget)
-+					return true;
-+			}
- 
- 			for_each_rtd_codec_dai(rtd, i, dai) {
- 				if (dai->capture_widget == widget)
-@@ -1430,10 +1554,18 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
- 		unsigned int i;
- 
- 		/* is there a valid CPU DAI widget for this BE */
--		widget = dai_get_widget(dpcm->be->cpu_dai, stream);
-+		do_prune = 1;
-+		for_each_rtd_cpu_dai(dpcm->be, i, dai) {
-+			widget = dai_get_widget(dai, stream);
- 
--		/* prune the BE if it's no longer in our active list */
--		if (widget && widget_in_list(list, widget))
 +			/*
-+			 * The BE is pruned only if none of the cpu_dai
-+			 * widgets are in the active list.
++			 * Presonus Studio 1810c anounces invalid
++			 * sampling rates for its streams.
 +			 */
-+			if (widget && widget_in_list(list, widget))
-+				do_prune = 0;
-+		}
-+		if (!do_prune)
- 			continue;
++			if (chip->usb_id == USB_ID(0x0194f, 0x010c) &&
++			((rate > 48000 && fp->altsetting == 1) ||
++			 ((rate < 88200 || rate > 96000)
++			  && fp->altsetting == 2) ||
++			 ((rate < 176400 || rate > 192000)
++			  && fp->altsetting == 3))) {
++				if (res)
++					continue;
++				else
++					break;
++			}
++
+ 			if (fp->rate_table)
+ 				fp->rate_table[nr_rates] = rate;
+ 			if (!fp->rate_min || rate < fp->rate_min)
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 39e27ae6c..71e705fab 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -34,6 +34,7 @@
+ #include "mixer_scarlett.h"
+ #include "mixer_scarlett_gen2.h"
+ #include "mixer_us16x08.h"
++#include "mixer_s1810c.h"
+ #include "helper.h"
  
- 		/* is there a valid CODEC DAI widget for this BE */
-@@ -1827,13 +1959,17 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai_driver *cpu_dai_drv = cpu_dai->driver;
-+	struct snd_soc_dai *cpu_dai;
-+	struct snd_soc_dai_driver *cpu_dai_drv;
-+	int i;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback);
--	else
--		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture);
-+	for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+		cpu_dai_drv = cpu_dai->driver;
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback);
-+		else
-+			dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture);
-+	}
- 
- 	dpcm_runtime_merge_format(substream, &runtime->hw.formats);
- 	dpcm_runtime_merge_chan(substream, &runtime->hw.channels_min,
-@@ -1870,18 +2006,21 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- {
- 	struct snd_soc_dpcm *dpcm;
- 	struct snd_soc_pcm_runtime *fe = fe_substream->private_data;
--	struct snd_soc_dai *fe_cpu_dai = fe->cpu_dai;
-+	struct snd_soc_dai *fe_cpu_dai;
- 	int err;
-+	int i;
- 
- 	/* apply symmetry for FE */
- 	if (soc_pcm_has_symmetry(fe_substream))
- 		fe_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
- 
- 	/* Symmetry only applies if we've got an active stream. */
--	if (fe_cpu_dai->active) {
--		err = soc_pcm_apply_symmetry(fe_substream, fe_cpu_dai);
--		if (err < 0)
--			return err;
-+	for_each_rtd_cpu_dai(fe, i, fe_cpu_dai) {
-+		if (fe_cpu_dai->active) {
-+			err = soc_pcm_apply_symmetry(fe_substream, fe_cpu_dai);
-+			if (err < 0)
-+				return err;
-+		}
+ struct std_mono_table {
+@@ -2277,6 +2278,10 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 	case USB_ID(0x2a39, 0x3fd4): /* RME */
+ 		err = snd_rme_controls_create(mixer);
+ 		break;
++
++	case USB_ID(0x0194f, 0x010c): /* Presonus Studio 1810c */
++		err = snd_sc1810_init_mixer(mixer);
++		break;
  	}
  
- 	/* apply symmetry for BE */
-@@ -1891,6 +2030,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 			snd_soc_dpcm_get_substream(be, stream);
- 		struct snd_soc_pcm_runtime *rtd;
- 		struct snd_soc_dai *codec_dai;
-+		struct snd_soc_dai *cpu_dai;
- 		int i;
- 
- 		/* A backend may not have the requested substream */
-@@ -1905,11 +2045,13 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 			be_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
- 
- 		/* Symmetry only applies if we've got an active stream. */
--		if (rtd->cpu_dai->active) {
--			err = soc_pcm_apply_symmetry(fe_substream,
--						     rtd->cpu_dai);
--			if (err < 0)
--				return err;
-+		for_each_rtd_cpu_dai(rtd, i, cpu_dai) {
-+			if (cpu_dai->active) {
-+				err = soc_pcm_apply_symmetry(fe_substream,
-+							     cpu_dai);
-+				if (err < 0)
-+					return err;
+ 	return err;
+diff --git a/sound/usb/mixer_s1810c.c b/sound/usb/mixer_s1810c.c
+new file mode 100644
+index 000000000..ff86e4aab
+--- /dev/null
++++ b/sound/usb/mixer_s1810c.c
+@@ -0,0 +1,565 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Presonus Studio 1810c driver for ALSA
++ * Copyright (C) 2019 Nick Kossifidis <mickflemm@gmail.com>
++ *
++ * Based on reverse engineering of the communication protocol
++ * between the windows driver / Univeral Control (UC) program
++ * and the device, through usbmon.
++ *
++ * For now this bypasses the mixer, with all channels split,
++ * so that the software can mix with greater flexibility.
++ * It also adds controls for the 4 buttons on the front of
++ * the device.
++ */
++#include <linux/usb.h>
++#include <linux/usb/audio-v2.h>
++#include <sound/control.h>
++#include <linux/slab.h>
++
++#include "usbaudio.h"
++#include "mixer.h"
++#include "mixer_quirks.h"
++#include "helper.h"
++
++#define SC1810C_CMD_REQ	160
++#define SC1810C_CMD_REQTYPE \
++	(USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT)
++#define SC1810C_CMD_F1	0x50617269
++#define SC1810C_CMD_F2	0x14
++
++/*
++ * DISCLAIMER: These are just guesses based on the
++ * dumps I got.
++ *
++ * It seems like a selects between
++ * device (0), mixer (0x64) and output (0x65)
++ *
++ * For mixer (0x64):
++ *  * b selects an input channel (see below).
++ *  * c selects an output channel pair (see below).
++ *  * d selects left (0) or right (1) of that pair.
++ *  * e 0-> disconnect, 0x01000000-> connect,
++ *	0x0109-> used for stereo-linking channels,
++ *	e is also used for setting volume levels
++ *	in which case b is also set so I guess
++ *	this way it is possible to set the volume
++ *	level from the specified input to the
++ *	specified output.
++ *
++ * IN Channels:
++ * 0 - 7   Mic/Inst/Line (Analog inputs)
++ * 8 - 9   S/PDIF
++ * 10 - 17 ADAT
++ * 18 - 35 DAW (Inputs from the host)
++ *
++ * OUT Channels (pairs):
++ * 0 -> Main out
++ * 1 -> Line1/2
++ * 2 -> Line3/4
++ * 3 -> S/PDIF
++ * 4 -> ADAT?
++ *
++ * For device (0):
++ *  * b and c are not used, at least not on the
++ *    dumps I got.
++ *  * d sets the control id to be modified
++ *    (see below).
++ *  * e sets the setting for that control.
++ *    (so for the switches I was interested
++ *    in it's 0/1)
++ *
++ * For output (0x65):
++ *   * b is the output channel (see above).
++ *   * c is zero.
++ *   * e I guess the same as with mixer except 0x0109
++ *	 which I didn't see in my dumps.
++ *
++ * The two fixed fields have the same values for
++ * mixer and output but a different set for device.
++ */
++struct s1810c_ctl_packet {
++	uint32_t a;
++	uint32_t b;
++	uint32_t fixed1;
++	uint32_t fixed2;
++	uint32_t c;
++	uint32_t d;
++	uint32_t e;
++};
++
++#define SC1810C_CTL_LINE_SW	0
++#define SC1810C_CTL_MUTE_SW	1
++#define SC1810C_CTL_AB_SW	3
++#define SC1810C_CTL_48V_SW	4
++
++#define SC1810C_SET_STATE_REQ 161
++#define SC1810C_SET_STATE_REQTYPE SC1810C_CMD_REQTYPE
++#define SC1810C_SET_STATE_F1 0x64656D73
++#define SC1810C_SET_STATE_F2 0xF4
++
++#define SC1810C_GET_STATE_REQ 162
++#define SC1810C_GET_STATE_REQTYPE \
++	(USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN)
++#define SC1810C_GET_STATE_F1 SC1810C_SET_STATE_F1
++#define SC1810C_GET_STATE_F2 SC1810C_SET_STATE_F2
++
++#define SC1810C_STATE_F1_IDX	2
++#define SC1810C_STATE_F2_IDX	3
++
++/*
++ * This packet includes mixer volumes and
++ * various other fields, it's an extended
++ * version of ctl_packet, with a and b
++ * being zero and different f1/f2.
++ */
++struct s1810c_state_packet {
++	uint32_t fields[63];
++};
++
++#define SC1810C_STATE_48V_SW	58
++#define SC1810C_STATE_LINE_SW	59
++#define SC1810C_STATE_MUTE_SW	60
++#define SC1810C_STATE_AB_SW	62
++
++struct s1810_mixer_state {
++	uint16_t seqnum;
++	struct mutex usb_mutex;
++};
++
++static int
++snd_s1810c_send_ctl_packet(struct usb_device *dev, uint32_t a,
++			   uint32_t b, uint32_t c, uint32_t d, uint32_t e)
++{
++	struct s1810c_ctl_packet pkt = { 0 };
++	int ret = 0;
++
++	pkt.fixed1 = SC1810C_CMD_F1;
++	pkt.fixed2 = SC1810C_CMD_F2;
++
++	pkt.a = a;
++	pkt.b = b;
++	pkt.c = c;
++	pkt.d = d;
++	/*
++	 * Value for settings 0/1 for this
++	 * output channel is always 0 (probably because
++	 * there is no ADAT output on 1810c)
++	 */
++	pkt.e = (c == 4) ? 0 : e;
++
++	ret = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			      SC1810C_CMD_REQ,
++			      SC1810C_CMD_REQTYPE, 0, 0, &pkt, sizeof(pkt));
++	if (ret < 0) {
++		dev_warn(&dev->dev, "could not send ctl packet\n");
++		return ret;
++	}
++	return 0;
++}
++
++/*
++ * When opening Universal Control the program periodicaly
++ * sends and receives state packets for syncinc state between
++ * the device and the host.
++ *
++ * Note that if we send only the request to get data back we'll
++ * get an error, we need to first send an empty state packet and
++ * then ask to receive a filled. Their seqnumbers must also match.
++ */
++static int
++snd_sc1810c_get_status_field(struct usb_device *dev,
++			     uint32_t *field, int field_idx, uint16_t *seqnum)
++{
++	struct s1810c_state_packet pkt_out = { 0 };
++	struct s1810c_state_packet pkt_in = { 0 };
++	int ret = 0;
++
++	pkt_out.fields[SC1810C_STATE_F1_IDX] = SC1810C_SET_STATE_F1;
++	pkt_out.fields[SC1810C_STATE_F2_IDX] = SC1810C_SET_STATE_F2;
++	ret = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
++			      SC1810C_SET_STATE_REQ,
++			      SC1810C_SET_STATE_REQTYPE,
++			      (*seqnum), 0, &pkt_out, sizeof(pkt_out));
++	if (ret < 0) {
++		dev_warn(&dev->dev, "could not send state packet (%d)\n", ret);
++		return ret;
++	}
++
++	ret = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
++			      SC1810C_GET_STATE_REQ,
++			      SC1810C_GET_STATE_REQTYPE,
++			      (*seqnum), 0, &pkt_in, sizeof(pkt_in));
++	if (ret < 0) {
++		dev_warn(&dev->dev, "could not get state field %u (%d)\n",
++			 field_idx, ret);
++		return ret;
++	}
++
++	(*field) = pkt_in.fields[field_idx];
++	(*seqnum)++;
++	return 0;
++}
++
++/*
++ * This is what I got when bypassing the mixer with
++ * all channels split. I'm not 100% sure of what's going
++ * on, I could probably clean this up based on my observations
++ * but I prefer to keep the same behavior as the windows driver.
++ */
++static int snd_s1810c_init_mixer_maps(struct snd_usb_audio *chip)
++{
++	uint32_t a, b, c, e, n, off;
++	struct usb_device *dev = chip->dev;
++
++	/* Set initial volume levels ? */
++	a = 0x64;
++	e = 0xbc;
++	for (n = 0; n < 2; n++) {
++		off = n * 18;
++		for (b = off, c = 0; b < 18 + off; b++) {
++			/* This channel to all outputs ? */
++			for (c = 0; c <= 8; c++) {
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 0, e);
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 1, e);
 +			}
- 		}
- 
- 		for_each_rtd_codec_dai(rtd, i, codec_dai) {
-@@ -3038,7 +3180,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- out:
- 	dev_info(rtd->card->dev, "%s <-> %s mapping ok\n",
- 		 (rtd->num_codecs > 1) ? "multicodec" : rtd->codec_dai->name,
--		 cpu_dai->name);
-+		 (rtd->num_cpu_dai > 1) ? "multicpu" : rtd->cpu_dai->name);
- 	return ret;
++			/* This channel to main output (again) */
++			snd_s1810c_send_ctl_packet(dev, a, b, 0, 0, e);
++			snd_s1810c_send_ctl_packet(dev, a, b, 0, 1, e);
++		}
++		/*
++		 * I noticed on UC that DAW channels have different
++		 * initial volumes (they can go both above and below
++		 * 0db), so this makes sense.
++		 */
++		e = 0xb53bf0;
++	}
++
++	/* Connect analog outputs ? */
++	a = 0x65;
++	e = 0x01000000;
++	for (b = 1; b < 3; b++) {
++		snd_s1810c_send_ctl_packet(dev, a, b, 0, 0, e);
++		snd_s1810c_send_ctl_packet(dev, a, b, 0, 1, e);
++	}
++	snd_s1810c_send_ctl_packet(dev, a, 0, 0, 0, e);
++	snd_s1810c_send_ctl_packet(dev, a, 0, 0, 1, e);
++
++	/* Set initial volume levels for S/PDIF mappings ? */
++	a = 0x64;
++	e = 0xbc;
++	c = 3;
++	for (n = 0; n < 2; n++) {
++		off = n * 18;
++		for (b = off; b < 18 + off; b++) {
++			snd_s1810c_send_ctl_packet(dev, a, b, c, 0, e);
++			snd_s1810c_send_ctl_packet(dev, a, b, c, 1, e);
++		}
++		e = 0xb53bf0;
++	}
++
++	/* Connect S/PDIF output ? */
++	a = 0x65;
++	e = 0x01000000;
++	snd_s1810c_send_ctl_packet(dev, a, 3, 0, 0, e);
++	snd_s1810c_send_ctl_packet(dev, a, 3, 0, 1, e);
++
++	/* Connect all outputs (again) ? */
++	a = 0x65;
++	e = 0x01000000;
++	for (b = 0; b < 4; b++) {
++		snd_s1810c_send_ctl_packet(dev, a, b, 0, 0, e);
++		snd_s1810c_send_ctl_packet(dev, a, b, 0, 1, e);
++	}
++
++	/* Basic routing to get sound out of the device */
++	a = 0x64;
++	e = 0x01000000;
++	for (c = 0; c < 4; c++) {
++		for (b = 0; b < 36; b++) {
++			if ((c == 0 && b == 18) ||	/* DAW1/2 -> Main */
++			    (c == 1 && b == 20) ||	/* DAW3/4 -> Line3/4 */
++			    (c == 2 && b == 22) ||	/* DAW4/5 -> Line5/4 */
++			    (c == 3 && b == 24)) {	/* DAW5/6 -> S/PDIF */
++				/* Left */
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 0, e);
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 1, 0);
++				b++;
++				/* Right */
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 0, 0);
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 1, e);
++			} else {
++				/* Leave the rest disconnected */
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 0, 0);
++				snd_s1810c_send_ctl_packet(dev, a, b, c, 1, 0);
++			}
++		}
++	}
++
++	/* Set initial volume levels for S/PDIF (again) ? */
++	a = 0x64;
++	e = 0xbc;
++	c = 3;
++	for (n = 0; n < 2; n++) {
++		off = n * 18;
++		for (b = off; b < 18 + off; b++) {
++			snd_s1810c_send_ctl_packet(dev, a, b, c, 0, e);
++			snd_s1810c_send_ctl_packet(dev, a, b, c, 1, e);
++		}
++		e = 0xb53bf0;
++	}
++
++	/* Connect S/PDIF outputs (again) ? */
++	a = 0x65;
++	e = 0x01000000;
++	snd_s1810c_send_ctl_packet(dev, a, 3, 0, 0, e);
++	snd_s1810c_send_ctl_packet(dev, a, 3, 0, 1, e);
++
++	/* Again ? */
++	snd_s1810c_send_ctl_packet(dev, a, 3, 0, 0, e);
++	snd_s1810c_send_ctl_packet(dev, a, 3, 0, 1, e);
++
++	return 0;
++}
++
++/*
++ * Sync state with the device and retrieve the requested field,
++ * whose index is specified in (kctl->private_value & 0xFF),
++ * from the received fields array.
++ */
++static int
++snd_s1810c_get_switch_state(struct usb_mixer_interface *mixer,
++			    struct snd_kcontrol *kctl, uint32_t *state)
++{
++	struct snd_usb_audio *chip = mixer->chip;
++	struct s1810_mixer_state *private = mixer->private_data;
++	uint32_t field = 0;
++	uint32_t ctl_idx = (uint32_t) (kctl->private_value & 0xFF);
++	int ret = 0;
++
++	mutex_lock(&private->usb_mutex);
++	ret = snd_sc1810c_get_status_field(chip->dev, &field,
++					   ctl_idx, &private->seqnum);
++	if (ret < 0)
++		goto unlock;
++
++	*state = field;
++ unlock:
++	mutex_unlock(&private->usb_mutex);
++	return ret ? ret : 0;
++}
++
++/*
++ * Send a control packet to the device for the control id
++ * specified in (kctl->private_value >> 8) with value
++ * specified in (kctl->private_value >> 16).
++ */
++static int
++snd_s1810c_set_switch_state(struct usb_mixer_interface *mixer,
++			    struct snd_kcontrol *kctl)
++{
++	struct snd_usb_audio *chip = mixer->chip;
++	struct s1810_mixer_state *private = mixer->private_data;
++	uint32_t pval = (uint32_t) kctl->private_value;
++	uint32_t ctl_id = (pval >> 8) & 0xFF;
++	uint32_t ctl_val = (pval >> 16) & 0x1;
++	int ret = 0;
++
++	mutex_lock(&private->usb_mutex);
++	ret = snd_s1810c_send_ctl_packet(chip->dev, 0, 0, 0, ctl_id, ctl_val);
++	mutex_unlock(&private->usb_mutex);
++	return ret;
++}
++
++/* Generic get/set/init functions for switch controls */
++
++static int
++snd_s1810c_switch_get(struct snd_kcontrol *kctl,
++		      struct snd_ctl_elem_value *ctl_elem)
++{
++	struct usb_mixer_elem_list *list = snd_kcontrol_chip(kctl);
++	struct usb_mixer_interface *mixer = list->mixer;
++	uint32_t state = 0;
++	int ret = 0;
++
++	ret = snd_s1810c_get_switch_state(mixer, kctl, &state);
++	if (ret < 0)
++		return ret;
++
++	ctl_elem->value.integer.value[0] = (long)state;
++
++	return 0;
++}
++
++static int
++snd_s1810c_switch_set(struct snd_kcontrol *kctl,
++		      struct snd_ctl_elem_value *ctl_elem)
++{
++	struct usb_mixer_elem_list *list = snd_kcontrol_chip(kctl);
++	struct usb_mixer_interface *mixer = list->mixer;
++	uint32_t curval = 0;
++	uint32_t newval = (uint32_t) ctl_elem->value.integer.value[0];
++	int ret = 0;
++
++	ret = snd_s1810c_get_switch_state(mixer, kctl, &curval);
++	if (ret < 0)
++		return 0;
++
++	if (curval == newval)
++		return 0;
++
++	kctl->private_value &= ~(0x1 << 16);
++	kctl->private_value |= (unsigned int)(newval & 0x1) << 16;
++	ret = snd_s1810c_set_switch_state(mixer, kctl);
++	if (ret < 0)
++		return 0;
++
++	return 1;
++}
++
++static int
++snd_s1810c_switch_init(struct usb_mixer_interface *mixer,
++		       const struct snd_kcontrol_new *new_kctl)
++{
++	struct snd_kcontrol *kctl;
++	struct usb_mixer_elem_info *elem;
++
++	elem = kzalloc(sizeof(struct usb_mixer_elem_info), GFP_KERNEL);
++	if (!elem)
++		return -ENOMEM;
++
++	elem->head.mixer = mixer;
++	elem->control = 0;
++	elem->head.id = 0;
++	elem->channels = 1;
++
++	kctl = snd_ctl_new1(new_kctl, elem);
++	if (!kctl) {
++		kfree(elem);
++		return -ENOMEM;
++	}
++	kctl->private_free = snd_usb_mixer_elem_free;
++
++	return snd_usb_mixer_add_control(&elem->head, kctl);
++}
++
++static int
++snd_s1810c_line_sw_info(struct snd_kcontrol *kctl,
++			struct snd_ctl_elem_info *uinfo)
++{
++	static const char *const texts[2] = { "Preamp on (Mic/Inst)",
++		"Preamp off (Line in)"
++	};
++
++	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(texts), texts);
++}
++
++static struct snd_kcontrol_new snd_s1810c_line_sw = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Line 1/2 source type",
++	.info = snd_s1810c_line_sw_info,
++	.get = snd_s1810c_switch_get,
++	.put = snd_s1810c_switch_set,
++	.private_value = (SC1810C_STATE_LINE_SW | SC1810C_CTL_LINE_SW << 8)
++};
++
++static struct snd_kcontrol_new snd_s1810c_mute_sw = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Mute Main Out",
++	.info = snd_ctl_boolean_mono_info,
++	.get = snd_s1810c_switch_get,
++	.put = snd_s1810c_switch_set,
++	.private_value = (SC1810C_STATE_MUTE_SW | SC1810C_CTL_MUTE_SW << 8)
++};
++
++static struct snd_kcontrol_new snd_s1810c_48v_sw = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "48V Phantom power on Mic inputs",
++	.info = snd_ctl_boolean_mono_info,
++	.get = snd_s1810c_switch_get,
++	.put = snd_s1810c_switch_set,
++	.private_value = (SC1810C_STATE_48V_SW | SC1810C_CTL_48V_SW << 8)
++};
++
++static int
++snd_s1810c_ab_sw_info(struct snd_kcontrol *kctl,
++		      struct snd_ctl_elem_info *uinfo)
++{
++	static const char *const texts[2] = { "1/2",
++		"3/4"
++	};
++
++	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(texts), texts);
++}
++
++static struct snd_kcontrol_new snd_s1810c_ab_sw = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Headphone 1 source selector",
++	.info = snd_s1810c_ab_sw_info,
++	.get = snd_s1810c_switch_get,
++	.put = snd_s1810c_switch_set,
++	.private_value = (SC1810C_STATE_AB_SW | SC1810C_CTL_AB_SW << 8)
++};
++
++static void snd_sc1810_mixer_state_free(struct usb_mixer_interface *mixer)
++{
++	struct s1810_mixer_state *private = mixer->private_data;
++	vfree(private);
++	mixer->private_data = NULL;
++}
++
++/* Entry point, called from mixer_quirks.c */
++int snd_sc1810_init_mixer(struct usb_mixer_interface *mixer)
++{
++	struct s1810_mixer_state *private = NULL;
++	struct snd_usb_audio *chip = mixer->chip;
++	struct usb_device *dev = chip->dev;
++	int ret = 0;
++
++	/* Run this only once */
++	if (!list_empty(&chip->mixer_list))
++		return 0;
++
++	dev_info(&dev->dev,
++		 "Presonus Studio 1810c, device_setup: %u\n", chip->setup);
++	if (chip->setup == 1)
++		dev_info(&dev->dev, "(8out/18in @ 48KHz)\n");
++	else if (chip->setup == 2)
++		dev_info(&dev->dev, "(6out/8in @ 192KHz)\n");
++	else
++		dev_info(&dev->dev, "(8out/14in @ 96KHz)\n");
++
++	ret = snd_s1810c_init_mixer_maps(chip);
++	if (ret < 0)
++		return ret;
++
++	private = vzalloc(sizeof(struct s1810_mixer_state));
++	if (!private) {
++		dev_err(&dev->dev, "could not allocate mixer state\n");
++		return -ENOMEM;
++	}
++
++	mutex_init(&private->usb_mutex);
++
++	mixer->private_data = private;
++	mixer->private_free = snd_sc1810_mixer_state_free;
++
++	private->seqnum = 1;
++
++	ret = snd_s1810c_switch_init(mixer, &snd_s1810c_line_sw);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_s1810c_switch_init(mixer, &snd_s1810c_mute_sw);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_s1810c_switch_init(mixer, &snd_s1810c_48v_sw);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_s1810c_switch_init(mixer, &snd_s1810c_ab_sw);
++	if (ret < 0)
++		return ret;
++	return ret;
++}
+diff --git a/sound/usb/mixer_s1810c.h b/sound/usb/mixer_s1810c.h
+new file mode 100644
+index 000000000..2a9ae0922
+--- /dev/null
++++ b/sound/usb/mixer_s1810c.h
+@@ -0,0 +1,6 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Presonus Studio 1810c driver for ALSA
++ * Copyright (C) 2019 Nick Kossifidis <mickflemm@gmail.com>
++ */
++int snd_sc1810_init_mixer(struct usb_mixer_interface *mixer);
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 349e1e529..9a0ceaaf9 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1216,6 +1216,36 @@ static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
+ 	return 0; /* keep this altsetting */
  }
  
++static int s1810c_skip_setting_quirk(struct snd_usb_audio *chip,
++					   int iface, int altno)
++{
++	/*
++	 * Playback:
++	 * 1: 6 Analog + 2 S/PDIF
++	 * 2: 6 Analog + 2 S/PDIF
++	 * 3: 6 Analog
++	 *
++	 * Capture:
++	 * 1: 8 Analog + 2 S/PDIF + 8 ADAT
++	 * 2: 8 Analog + 2 S/PDIF + 4 ADAT
++	 * 3: 8 Analog
++	 */
++
++	/*
++	 * I'll leave 2 as the default one and
++	 * use device_setup to switch to the
++	 * other two.
++	 */
++	if (chip->setup == 1 && altno != 1)
++		return 1;
++	else if (chip->setup == 2 && altno != 3)
++		return 1;
++	else if (altno != 2)
++		return 1;
++
++	return 0;
++}
++
+ int snd_usb_apply_interface_quirk(struct snd_usb_audio *chip,
+ 				  int iface,
+ 				  int altno)
+@@ -1229,6 +1259,10 @@ int snd_usb_apply_interface_quirk(struct snd_usb_audio *chip,
+ 	/* fasttrackpro usb: skip altsets incompatible with device_setup */
+ 	if (chip->usb_id == USB_ID(0x0763, 0x2012))
+ 		return fasttrackpro_skip_setting_quirk(chip, iface, altno);
++	/* presonus studio 1810c: skip altsets incompatible with device_setup */
++	if (chip->usb_id == USB_ID(0x0194f, 0x010c))
++		return s1810c_skip_setting_quirk(chip, iface, altno);
++
+ 
+ 	return 0;
+ }
 -- 
-2.17.1
+2.23.0
 
 _______________________________________________
 Alsa-devel mailing list
