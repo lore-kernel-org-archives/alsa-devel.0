@@ -4,81 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8ECBC2D0C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 041F8C2D0C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:13:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F21020679
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:13:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8327720679
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:13:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="obexmxNe";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LYeQvcIk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F21020679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C2sL/0Pj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="uc+NypEq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8327720679
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9962C16B0;
-	Wed, 25 Dec 2019 01:12:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9962C16B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0BAB16C7;
+	Wed, 25 Dec 2019 01:12:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0BAB16C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577232789;
-	bh=3j/12Mzd78zvtLRfcC/irpWq3NH9vepPnDY+gwZ9I18=;
+	s=default; t=1577232813;
+	bh=jFhIC3cf4Gy0NzW3zQSBMIwZBwtoqWwzQ/zqiDVhAeE=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=obexmxNex5u6K1uCjKnA51YLp5uBSNUTdWWkglDCA/EpLxLrEXkMoe5Iwo2c6comH
-	 itgnqx6+9fvGwVvTNCwgRuSncZXMK+6nplLrktazBh+EfgQ/QyN/GElTJAnhxIZThJ
-	 HsYzu4nE2f3Y13neXpg2HBiMCPr5o8FeLjl+plis=
+	b=C2sL/0PjQhMI6zkPXA2lgZJcnD9I0frkM5tZIzo8UF91GRkkwPefcblXZlY9G7FKw
+	 szLdQA/NP5eXYlw46jKl2aKrDd3tr86ek/CZMdWmxKgKxA+19TtzdMvMKdm1yRHiAd
+	 3eJyl54yDjbyM69hx3dvYDRG20znXAazewLRLOlw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 620F4F8028D;
-	Wed, 25 Dec 2019 01:09:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48BAAF8028F;
+	Wed, 25 Dec 2019 01:09:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 537DBF80272; Wed, 25 Dec 2019 01:09:11 +0100 (CET)
+ id B0FCAF80274; Wed, 25 Dec 2019 01:09:11 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04590F8014C
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:09:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04590F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C73FF80136
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:08:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C73FF80136
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="LYeQvcIk"
+ header.b="uc+NypEq"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=wai+g/RnEe1d915v48AlK1TWO39W3/fiSnRZzVq9MGc=; b=LYeQvcIkogG5
- g2c0l8jFVAH97jbq21iDBo3sbC25jYVoL3KPJqgoGNqNZEHDRYbLY+zaMQ3MXK4R7M1D9BVFXPSVp
- p+955vdTgtA7DOGyUcgbnVX5LaJTRHRXkytz5OqdfkNH+71qZz6THj6cOuTYyKDRhlwOlBY6uVCK1
- lTyTU=;
+ List-Archive; bh=p26wgisYxxYMSvvPgu9UbmNcMRVE/Th6vTcPV+OsQJw=; b=uc+NypEqzyEH
+ a/y3n70VYmrfyw0xoV9fXTRRzr8AdE5JrJgqd/SMmC9nbPVxPJBTE17J3JvfDvBsNMgaBJFMjzT2n
+ zRfNWiGYAizT4dCr9lYUqH1hZGNkXG1lnK5jTs3K2oLfBPasmIdvpqC1aJDZrey9KmzG2k9ZuM1s6
+ NjyZM=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ijuEW-0007Ky-9S; Wed, 25 Dec 2019 00:09:00 +0000
+ id 1ijuET-0007KY-Rf; Wed, 25 Dec 2019 00:08:57 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id B48C6D01957; Wed, 25 Dec 2019 00:08:59 +0000 (GMT)
+ id 5140BD01963; Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-In-Reply-To: <20191204210447.11701-4-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20191204210447.11701-4-pierre-louis.bossart@linux.intel.com>
+To: Angus Ainslie (Purism) <angus@akkea.ca>
+In-Reply-To: <20191223154712.18581-2-angus@akkea.ca>
+Message-Id: <applied-20191223154712.18581-2-angus@akkea.ca>
 X-Patchwork-Hint: ignore
-Date: Wed, 25 Dec 2019 00:08:59 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Date: Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, kernel@puri.sm,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: topology: Prevent use-after-free in
-	snd_soc_get_pcm_runtime()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: gtm601: add Broadmobi bm818 sound
+	profile" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,11 +97,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: topology: Prevent use-after-free in snd_soc_get_pcm_runtime()
+   ASoC: gtm601: add Broadmobi bm818 sound profile
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -124,47 +122,80 @@ to this mail.
 Thanks,
 Mark
 
-From dd836ddf4e4e1c7f1eb2ae44783ccd70872ef24e Mon Sep 17 00:00:00 2001
-From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-Date: Wed, 4 Dec 2019 15:04:47 -0600
-Subject: [PATCH] ASoC: topology: Prevent use-after-free in
- snd_soc_get_pcm_runtime()
+From 057a317a8d94136b76a3cc6f7be53ee2b85dc115 Mon Sep 17 00:00:00 2001
+From: "Angus Ainslie (Purism)" <angus@akkea.ca>
+Date: Mon, 23 Dec 2019 07:47:11 -0800
+Subject: [PATCH] ASoC: gtm601: add Broadmobi bm818 sound profile
 
-remove_link() is currently calling snd_soc_remove_dai_link() after
-it has already freed the memory for the link name. But this is later
-read from snd_soc_get_pcm_runtime() causing a KASAN use-after-free
-warning. Reorder the cleanups to fix this issue.
+The Broadmobi bm818 uses stereo sound at 48Khz sample rate
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20191204210447.11701-4-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
+Link: https://lore.kernel.org/r/20191223154712.18581-2-angus@akkea.ca
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/gtm601.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index b28613149b0c..92e4f4d08bfa 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -548,12 +548,12 @@ static void remove_link(struct snd_soc_component *comp,
- 	if (dobj->ops && dobj->ops->link_unload)
- 		dobj->ops->link_unload(comp, dobj);
+diff --git a/sound/soc/codecs/gtm601.c b/sound/soc/codecs/gtm601.c
+index d454294c8d06..7f05ebcb88d1 100644
+--- a/sound/soc/codecs/gtm601.c
++++ b/sound/soc/codecs/gtm601.c
+@@ -13,7 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+-#include <linux/device.h>
++#include <linux/of_device.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/initval.h>
+@@ -47,6 +47,24 @@ static struct snd_soc_dai_driver gtm601_dai = {
+ 	},
+ };
  
-+	list_del(&dobj->list);
-+	snd_soc_remove_dai_link(comp->card, link);
++static struct snd_soc_dai_driver bm818_dai = {
++	.name = "bm818",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++};
 +
- 	kfree(link->name);
- 	kfree(link->stream_name);
- 	kfree(link->cpus->dai_name);
--
--	list_del(&dobj->list);
--	snd_soc_remove_dai_link(comp->card, link);
- 	kfree(link);
+ static const struct snd_soc_component_driver soc_component_dev_gtm601 = {
+ 	.dapm_widgets		= gtm601_dapm_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(gtm601_dapm_widgets),
+@@ -60,13 +78,19 @@ static const struct snd_soc_component_driver soc_component_dev_gtm601 = {
+ 
+ static int gtm601_platform_probe(struct platform_device *pdev)
+ {
++	const struct snd_soc_dai_driver *dai_driver;
++
++	dai_driver = of_device_get_match_data(&pdev->dev);
++
+ 	return devm_snd_soc_register_component(&pdev->dev,
+-			&soc_component_dev_gtm601, &gtm601_dai, 1);
++			&soc_component_dev_gtm601,
++			(struct snd_soc_dai_driver *)dai_driver, 1);
  }
  
+ #if defined(CONFIG_OF)
+ static const struct of_device_id gtm601_codec_of_match[] = {
+-	{ .compatible = "option,gtm601", },
++	{ .compatible = "option,gtm601", .data = (void *)&gtm601_dai },
++	{ .compatible = "broadmobi,bm818", .data = (void *)&bm818_dai },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, gtm601_codec_of_match);
 -- 
 2.20.1
 
