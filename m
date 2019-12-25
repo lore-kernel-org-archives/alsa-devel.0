@@ -4,80 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F10C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:16:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC3FC2D0C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:16:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C281C20679
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:16:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA0C820679
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:16:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QBN1O3GA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="bRt/n1MC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C281C20679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OcbH7msE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="bWvKQw0C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA0C820679
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FFCD16A4;
-	Wed, 25 Dec 2019 01:15:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FFCD16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B5F8167D;
+	Wed, 25 Dec 2019 01:16:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B5F8167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577232984;
-	bh=y6OO9pNRKXSn8kbieTJFq8Vijm966bDek/vT1C2sr48=;
+	s=default; t=1577233017;
+	bh=eigADizJ0HB+kqn+4RmOWje19HuYeyyKxYbkhy/gX1E=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QBN1O3GASFkncjNyNYjchjz0kOZtGqHaicqQtCIvbzgYP2tvJErIn3P9BvLn7tqYD
-	 ZlzZVLXc81z+aVXV2yn2tCbekUfDQMrNNGMfu/zb1yeka2CDxvHKps8qHnYs5nxBQ+
-	 QK9eugXXOwsScvPCfWhw4ATKD8aGouuvsv3WsODc=
+	b=OcbH7msEpY/9Mvll2w8Sp9ga2t0dBpePQDtvZC5msviGqNRllRVyUWgTvJc4dH6Wh
+	 uUTaxmhuRPErhL8L9VzT65toYPeP2y9r4+3vzxAlo6PBQ2roBsrNuDIBMmYyxngBIf
+	 DXPhE+9UO6y58rR+yA1u2DRfScnFT2EhhpstRl00=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DB0BF80247;
-	Wed, 25 Dec 2019 01:09:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 856E5F802EC;
+	Wed, 25 Dec 2019 01:09:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 774E3F8027D; Wed, 25 Dec 2019 01:09:20 +0100 (CET)
+ id 05E33F8028A; Wed, 25 Dec 2019 01:09:21 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89F5BF8019B
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:09:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89F5BF8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 600F6F8014C
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:09:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 600F6F8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="bRt/n1MC"
+ header.b="bWvKQw0C"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=ZAC+d2JhJHnHloKpHt3+Xps6PellG/fLmAlbtuVbLVU=; b=bRt/n1MCrO/u
- xCRVANLJ6/mrTO6xb79b49qi0iI5agKkGFWVD0uD8ka0JAabDUX8Mziun4Vnwg6rZFc+ifcZjTNc1
- IkaLM+fqNt3PcvicCGJMYiNLA/6xcu1cUvsd6VPvRIVriCjEq92WZb1NqBMnmZEWKS0rP78ZSs33I
- Ik8ak=;
+ List-Archive; bh=D+gflELiAYWqAf3W7ibh4uGUEvCoKO8Uul7fTN2lTb4=; b=bWvKQw0CKhPl
+ auKXl93h85JnJV3mY1ZGyzaj+sy169t2HeasyxKLwY6NZFlILU3g0XuxJN2HSb7a4TaebFJlLAmqk
+ vVYQn07D25a/9Gk7UsFMXeyKi0Ep1aDWptXZTgWYK3UMd4O4ADty/hKmgb/UPPFyAJ45c9homHQ4K
+ GlVLo=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ijuEa-0007Ld-4Y; Wed, 25 Dec 2019 00:09:04 +0000
+ id 1ijuEf-0007MD-Ul; Wed, 25 Dec 2019 00:09:09 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 9713CD01957; Wed, 25 Dec 2019 00:09:03 +0000 (GMT)
+ id 71D87D01957; Wed, 25 Dec 2019 00:09:09 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Olivier Moysan <olivier.moysan@st.com>
-In-Reply-To: <20191204154333.7152-4-olivier.moysan@st.com>
-Message-Id: <applied-20191204154333.7152-4-olivier.moysan@st.com>
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <20191204151454.21643-1-tiwai@suse.de>
+Message-Id: <applied-20191204151454.21643-1-tiwai@suse.de>
 X-Patchwork-Hint: ignore
-Date: Wed, 25 Dec 2019 00:09:03 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
- tiwai@suse.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: stm32: spdifrx: fix input pin state
-	management" to the asoc tree
+Date: Wed, 25 Dec 2019 00:09:09 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: core: Fix access to uninitialized list
+	heads" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +95,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: stm32: spdifrx: fix input pin state management
+   ASoC: core: Fix access to uninitialized list heads
 
 has been applied to the asoc tree at
 
@@ -123,59 +120,60 @@ to this mail.
 Thanks,
 Mark
 
-From 3b7658679d88b5628939f9bdc8e613f79cd821f9 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Wed, 4 Dec 2019 16:43:33 +0100
-Subject: [PATCH] ASoC: stm32: spdifrx: fix input pin state management
+From 07d22a9bb623714dc3199099c5cce3df6aef496c Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 4 Dec 2019 16:14:54 +0100
+Subject: [PATCH] ASoC: core: Fix access to uninitialized list heads
 
-Changing input state in iec capture control is not safe,
-as the pin state may be changed concurrently by ASoC
-framework.
-Remove pin state handling in iec capture control.
+The error path of soc_new_pcm_runtime() invokes soc_free_pcm_runtime()
+that may cause a few problems.  First off, it calls list_del() for
+rtd->list that may not be initialized.  Similarly,
+snd_soc_pcm_component_free() traverses over the component list that
+may not be initialized, either.  Such access to the uninitialized list
+head would lead to either a BUG_ON() or a memory corruption.
 
-Note: This introduces a restriction on capture control,
-when pin sleep state is defined in device tree. In this case
-channel status can be captured only when an audio stream
-capture is active.
+This patch fixes the access to uninitialized list heads by
+initializing the list heads properly at the beginning before those
+error paths.
 
-Fixes: f68c2a682d44 ("ASoC: stm32: spdifrx: add power management")
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20191204154333.7152-4-olivier.moysan@st.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191204151454.21643-1-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_spdifrx.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/soc-core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index 3cb8e6db3eeb..3769d9ce5dbe 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -12,7 +12,6 @@
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/of_platform.h>
--#include <linux/pinctrl/consumer.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6050c4c62fe8..8ef0efeed0a7 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -479,6 +479,12 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 		goto free_rtd;
  
-@@ -484,8 +483,6 @@ static int stm32_spdifrx_get_ctrl_data(struct stm32_spdifrx_data *spdifrx)
- 	memset(spdifrx->cs, 0, SPDIFRX_CS_BYTES_NB);
- 	memset(spdifrx->ub, 0, SPDIFRX_UB_BYTES_NB);
+ 	rtd->dev = dev;
++	INIT_LIST_HEAD(&rtd->list);
++	INIT_LIST_HEAD(&rtd->component_list);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
++	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
+ 	dev_set_drvdata(dev, rtd);
+ 	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
  
--	pinctrl_pm_select_default_state(&spdifrx->pdev->dev);
+@@ -494,12 +500,6 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 	/*
+ 	 * rtd remaining settings
+ 	 */
+-	INIT_LIST_HEAD(&rtd->component_list);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].be_clients);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].be_clients);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_PLAYBACK].fe_clients);
+-	INIT_LIST_HEAD(&rtd->dpcm[SNDRV_PCM_STREAM_CAPTURE].fe_clients);
 -
- 	ret = stm32_spdifrx_dma_ctrl_start(spdifrx);
- 	if (ret < 0)
- 		return ret;
-@@ -517,7 +514,6 @@ static int stm32_spdifrx_get_ctrl_data(struct stm32_spdifrx_data *spdifrx)
- 
- end:
- 	clk_disable_unprepare(spdifrx->kclk);
--	pinctrl_pm_select_sleep_state(&spdifrx->pdev->dev);
- 
- 	return ret;
- }
+ 	rtd->card = card;
+ 	rtd->dai_link = dai_link;
+ 	if (!rtd->dai_link->ops)
 -- 
 2.20.1
 
