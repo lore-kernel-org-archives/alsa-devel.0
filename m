@@ -6,76 +6,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19608C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A8BBC2D0C8
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 18:22:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9644520679
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:14:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7E2822072A
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 18:22:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I/01CXO/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="iTz0/DPV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9644520679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="usLYhsG9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="wfjne8Cq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E2822072A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0A7C16BA;
-	Wed, 25 Dec 2019 01:14:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0A7C16BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76D7816BE;
+	Wed, 25 Dec 2019 19:21:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76D7816BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577232897;
-	bh=p4P3A8nS0a+6GBeENFLTS5ouiuMxJAOttjkmVtzZDwo=;
+	s=default; t=1577298160;
+	bh=OuBciL7nAJHvtLdwHZ4lgD0FR8+mGpdhuSpeViu5bi4=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=I/01CXO/bumvuF36oxP61OozaKP2SQ6iX24KNP+F/cYmxCRPP79VEucxqsNwuO1Kj
-	 w3STa4ewTd3aWxPAPlHPFc2Ur2dfKFiz2J/osvzH0xatRK0jCoYx2+86EBAzhxUyjs
-	 nkDaCTkxFysyyQv7ORklY15ugQVysy4ZTGQfkZXY=
+	b=usLYhsG9fLyyilmEVw8Begi1yBwEnUbrjbos+D3o+9QtYlXangEtZR4DzQDlhZ2uE
+	 mS8Cqt2PA25Je8+KfgVjcnZwXjlhjVZp0FAtlolzLc0pNPsdpAdiD7YDIZe+mPM6Vr
+	 Z/WPuB6fvAIdaifPjArk9b2f2JNU9Gso8CBSjzDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A411DF802A9;
-	Wed, 25 Dec 2019 01:09:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCA82F80131;
+	Wed, 25 Dec 2019 19:21:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15245F8027D; Wed, 25 Dec 2019 01:09:18 +0100 (CET)
+ id 0F215F80132; Wed, 25 Dec 2019 19:21:46 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79B7EF800E3
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:09:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79B7EF800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C879F8012E
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 19:21:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C879F8012E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="iTz0/DPV"
+ header.b="wfjne8Cq"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=4W5HfLIfwUdrt3/2lU7BxRO+SDUjDxhkYLcwq17mi1c=; b=iTz0/DPVXdrj
- 60vcmg/eKXMB7B6mwq6jmSr8eyWGAE6kbANVMT/LHjfMX89y1QasYcYudhKruU2wVEbPDvzwYyhg5
- pP48btxFHanNWv8Eu3+4WogGvXwILwfc/9sJiH6uOofIUycA0wHomf7LJ8Y4hx3TdYD2D+0vebvkT
- wXu+g=;
+ List-Archive; bh=niT0JlheopzKpmDe4XcUuEwwWl3IPTqsELeljnyUDwE=; b=wfjne8CqtX4E
+ c8TeSkSv5U0/5FLMGYm+YlhviBVj1Odt2BNj8UhvDapP4S4Cc/UaUzwGdLBUIkQV77q6cLSea7SHh
+ nQebxMih9tyMJnCxW6MtXBtemMBWc6vtUM26k5hZnkKYBFIHRQngEbzlrQYfEJU8QYdpeyuWti0Ky
+ UmlOI=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ijuEY-0007LM-4c; Wed, 25 Dec 2019 00:09:02 +0000
+ id 1ikBHy-0001nz-66; Wed, 25 Dec 2019 18:21:42 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id A06DED01957; Wed, 25 Dec 2019 00:09:01 +0000 (GMT)
+ id 5EE5ED01A24; Wed, 25 Dec 2019 18:21:41 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Chuhong Yuan <hslester96@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Date: Wed, 25 Dec 2019 00:09:01 +0000 (GMT)
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: fsl_audmix: add missed
-	pm_runtime_disable" to the asoc tree
+Date: Wed, 25 Dec 2019 18:21:41 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: qcom: sdm845: add support to DB845c and
+	Lenovo Yoga" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,11 +92,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20191225000901.Jj8KWXvtT2PMEzb1zjb3iCQvq7yKwLNUZw7mSNaK7_c@z>
+Message-ID: <20191225182141.Zqo__hvsudKMEj4FUY6ri6-5hPl1dw0eUoK9T3UAFUk@z>
 
 The patch
 
-   ASoC: fsl_audmix: add missed pm_runtime_disable
+   ASoC: qcom: sdm845: add support to DB845c and Lenovo Yoga
 
 has been applied to the asoc tree at
 
@@ -122,58 +121,175 @@ to this mail.
 Thanks,
 Mark
 
-From 77fffa742285f2b587648d6c72b5c705633f146f Mon Sep 17 00:00:00 2001
-From: Chuhong Yuan <hslester96@gmail.com>
-Date: Tue, 3 Dec 2019 19:13:03 +0800
-Subject: [PATCH] ASoC: fsl_audmix: add missed pm_runtime_disable
+From 5caf64c633a3564f70e734868254281b25932fc0 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 19 Dec 2019 10:31:53 +0000
+Subject: [PATCH] ASoC: qcom: sdm845: add support to DB845c and Lenovo Yoga
 
-The driver forgets to call pm_runtime_disable in probe failure
-and remove.
-Add the missed calls to fix it.
+This patch adds support to Lenovo Yoga c630 compatible strings
+and related setup to the sound machine driver.
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20191203111303.12933-1-hslester96@gmail.com
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20191219103153.14875-12-srinivas.kandagatla@linaro.org
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_audmix.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/qcom/sdm845.c | 86 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 85 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-index a1db1bce330f..5faecbeb5497 100644
---- a/sound/soc/fsl/fsl_audmix.c
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -505,15 +505,20 @@ static int fsl_audmix_probe(struct platform_device *pdev)
- 					      ARRAY_SIZE(fsl_audmix_dai));
- 	if (ret) {
- 		dev_err(dev, "failed to register ASoC DAI\n");
--		return ret;
-+		goto err_disable_pm;
- 	}
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 28f3cef696e6..3b5547a27aad 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -24,6 +24,9 @@
+ #define RIGHT_SPK_TDM_TX_MASK   0xC0
+ #define SPK_TDM_RX_MASK         0x03
+ #define NUM_TDM_SLOTS           8
++#define SLIM_MAX_TX_PORTS 16
++#define SLIM_MAX_RX_PORTS 16
++#define WCD934X_DEFAULT_MCLK_RATE	9600000
  
- 	priv->pdev = platform_device_register_data(dev, mdrv, 0, NULL, 0);
- 	if (IS_ERR(priv->pdev)) {
- 		ret = PTR_ERR(priv->pdev);
- 		dev_err(dev, "failed to register platform %s: %d\n", mdrv, ret);
-+		goto err_disable_pm;
- 	}
+ struct sdm845_snd_data {
+ 	struct snd_soc_jack jack;
+@@ -36,6 +39,39 @@ struct sdm845_snd_data {
  
+ static unsigned int tdm_slot_offset[8] = {0, 4, 8, 12, 16, 20, 24, 28};
+ 
++static int sdm845_slim_snd_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai_link *dai_link = rtd->dai_link;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	u32 rx_ch[SLIM_MAX_RX_PORTS], tx_ch[SLIM_MAX_TX_PORTS];
++	u32 rx_ch_cnt = 0, tx_ch_cnt = 0;
++	int ret = 0, i;
++
++	for (i = 0 ; i < dai_link->num_codecs; i++) {
++		ret = snd_soc_dai_get_channel_map(rtd->codec_dais[i],
++				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
++
++		if (ret != 0 && ret != -ENOTSUPP) {
++			pr_err("failed to get codec chan map, err:%d\n", ret);
++			return ret;
++		} else if (ret == -ENOTSUPP) {
++			/* Ignore unsupported */
++			continue;
++		}
++
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
++							  rx_ch_cnt, rx_ch);
++		else
++			ret = snd_soc_dai_set_channel_map(cpu_dai, tx_ch_cnt,
++							  tx_ch, 0, NULL);
++	}
++
 +	return 0;
++}
 +
-+err_disable_pm:
-+	pm_runtime_disable(dev);
- 	return ret;
- }
- 
-@@ -521,6 +526,8 @@ static int fsl_audmix_remove(struct platform_device *pdev)
+ static int sdm845_tdm_snd_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params)
  {
- 	struct fsl_audmix *priv = dev_get_drvdata(&pdev->dev);
- 
-+	pm_runtime_disable(&pdev->dev);
+@@ -151,6 +187,11 @@ static int sdm845_snd_hw_params(struct snd_pcm_substream *substream,
+ 	case QUATERNARY_TDM_TX_0:
+ 		ret = sdm845_tdm_snd_hw_params(substream, params);
+ 		break;
++	case SLIMBUS_0_RX...SLIMBUS_6_TX:
++		ret = sdm845_slim_snd_hw_params(substream, params);
++		break;
++	case QUATERNARY_MI2S_RX:
++		break;
+ 	default:
+ 		pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
+ 		break;
+@@ -173,7 +214,20 @@ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct sdm845_snd_data *pdata = snd_soc_card_get_drvdata(card);
+ 	struct snd_jack *jack;
+-	int rval;
++	struct snd_soc_dai_link *dai_link = rtd->dai_link;
++	/*
++	 * Codec SLIMBUS configuration
++	 * RX1, RX2, RX3, RX4, RX5, RX6, RX7, RX8, RX9, RX10, RX11, RX12, RX13
++	 * TX1, TX2, TX3, TX4, TX5, TX6, TX7, TX8, TX9, TX10, TX11, TX12, TX13
++	 * TX14, TX15, TX16
++	 */
++	unsigned int rx_ch[SLIM_MAX_RX_PORTS] = {144, 145, 146, 147, 148, 149,
++					150, 151, 152, 153, 154, 155, 156};
++	unsigned int tx_ch[SLIM_MAX_TX_PORTS] = {128, 129, 130, 131, 132, 133,
++					    134, 135, 136, 137, 138, 139,
++					    140, 141, 142, 143};
++	int rval, i;
 +
- 	if (priv->pdev)
- 		platform_device_unregister(priv->pdev);
  
+ 	if (!pdata->jack_setup) {
+ 		rval = snd_soc_card_jack_new(card, "Headset Jack",
+@@ -211,6 +265,21 @@ static int sdm845_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 			return rval;
+ 		}
+ 		break;
++	case SLIMBUS_0_RX...SLIMBUS_6_TX:
++		for (i = 0 ; i < dai_link->num_codecs; i++) {
++			rval = snd_soc_dai_set_channel_map(rtd->codec_dais[i],
++							  ARRAY_SIZE(tx_ch),
++							  tx_ch,
++							  ARRAY_SIZE(rx_ch),
++							  rx_ch);
++			if (rval != 0 && rval != -ENOTSUPP)
++				return rval;
++
++			snd_soc_dai_set_sysclk(rtd->codec_dais[i], 0,
++					       WCD934X_DEFAULT_MCLK_RATE,
++					       SNDRV_PCM_STREAM_PLAYBACK);
++		}
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -256,6 +325,14 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 		}
+ 		snd_soc_dai_set_fmt(cpu_dai, fmt);
+ 		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
++		break;
++	case QUATERNARY_MI2S_RX:
++		snd_soc_dai_set_sysclk(cpu_dai,
++			Q6AFE_LPASS_CLK_ID_QUAD_MI2S_IBIT,
++			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
++		snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_CBS_CFS);
++
++
+ 		break;
+ 
+ 	case QUATERNARY_TDM_RX_0:
+@@ -294,6 +371,8 @@ static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+ 			}
+ 		}
+ 		break;
++	case SLIMBUS_0_RX...SLIMBUS_6_TX:
++		break;
+ 
+ 	default:
+ 		pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
+@@ -338,6 +417,9 @@ static void  sdm845_snd_shutdown(struct snd_pcm_substream *substream)
+ 				0, SNDRV_PCM_STREAM_PLAYBACK);
+ 		}
+ 		break;
++	case SLIMBUS_0_RX...SLIMBUS_6_TX:
++	case QUATERNARY_MI2S_RX:
++		break;
+ 
+ 	default:
+ 		pr_err("%s: invalid dai id 0x%x\n", __func__, cpu_dai->id);
+@@ -451,6 +533,8 @@ static int sdm845_snd_platform_remove(struct platform_device *pdev)
+ 
+ static const struct of_device_id sdm845_snd_device_id[]  = {
+ 	{ .compatible = "qcom,sdm845-sndcard" },
++	{ .compatible = "qcom,db845c-sndcard" },
++	{ .compatible = "lenovo,yoga-c630-sndcard" },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, sdm845_snd_device_id);
 -- 
 2.20.1
 
