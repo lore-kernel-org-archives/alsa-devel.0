@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CD69C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:10:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D58FFC2D0C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:11:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A4AD20679
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:10:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5FFA5206D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:11:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jx5QisXn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="dSZPcGaE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A4AD20679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ukbf7qP9";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="py+1SUIs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FFA5206D7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B36EA16AA;
-	Wed, 25 Dec 2019 01:10:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B36EA16AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D4AD16BC;
+	Wed, 25 Dec 2019 01:10:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D4AD16BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577232650;
-	bh=tvFL48ycq6kwsBUKngVhHemqxAhVePzhR1KAFAi87L4=;
+	s=default; t=1577232704;
+	bh=Wr9zQ9eyLa0OmKGfqp8VskBoCWuSEak05bavkRf2rZM=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jx5QisXnRMqMW4JbOAJksfmDiXmkxrbjua0tX3LUirhaboZYykVg8zWqKAVwoWowR
-	 ig6quiKz7X6Rm6ZrqVRotvppXIaiCiS0svFF+R8jK5NKMblOtLx+8PNmGFphRsL3g4
-	 soXICg7cFHH5PbDjb8LhqzkHnyAkfvU4Y5vvjeZg=
+	b=Ukbf7qP9Y8vKFVi8mEX3HU1ydAwElwhJzqy6pj+snEWjDEisb5QXKIc4zk8/zM54V
+	 H+xCLyUbAriB/buDNm0oXGT4nuWWs6vH9WKuCSgKMmTUw5mq9VmekUrqgxc90gTMk1
+	 N/aoyzyG/y+6IV4NZvsVImVw7o/96cgM9jL9R31E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18F0EF80138;
-	Wed, 25 Dec 2019 01:09:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B04E4F800E3;
+	Wed, 25 Dec 2019 01:09:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF885F8024A; Wed, 25 Dec 2019 01:09:03 +0100 (CET)
+ id B4540F80272; Wed, 25 Dec 2019 01:09:09 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC705F800AD
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:08:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC705F800AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE17BF80138
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:09:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE17BF80138
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="dSZPcGaE"
+ header.b="py+1SUIs"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Gqo4W2wd35PTMFOufRK6Qz2Gfto+Ek4gloQMq8zY+Ng=; b=dSZPcGaEp3QD
- frXPhyYkTGldb1XSOdbyRTh8CmK5SCkscXIJZMqDyuDGbTuc+0nFvw9FHnphK/qLG/MybG6N71waL
- KH1UGHOuqikocrnHDgpS2vQiGYo/Qwm/C1vUlMyqFIwZUBsnnRP3trXhrhfNjUvRJ8fn6g0rAWsfm
- bGhX8=;
+ List-Archive; bh=07LWZQqPpBm02wk7zR9ZNRj8WHeLdLUMcjrqS5EvbdM=; b=py+1SUIs0xtV
+ 2g1jgd3iTjPQbsFrGx5zwyzNruYNHolkR9LDm0HZsSiJZGlt30Sauj9/n8aGLT/PE63Yi7v4rtnsi
+ NFxKyR5cbhRzkWdnJR64hRYtAQkxq6MC+jMFpp0PRXYWWexaoF4cihygV6kzNnil6Dwqbw/AvFwAR
+ cENMk=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ijuET-0007KX-Rj; Wed, 25 Dec 2019 00:08:57 +0000
+ id 1ijuEU-0007Ka-2B; Wed, 25 Dec 2019 00:08:58 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 38262D01957; Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
+ id 882EBD01A22; Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Angus Ainslie (Purism) <angus@akkea.ca>
-In-Reply-To: <20191223154712.18581-3-angus@akkea.ca>
-Message-Id: <applied-20191223154712.18581-3-angus@akkea.ca>
+To: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+In-Reply-To: <20191220171037.10689-3-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191220171037.10689-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Date: Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, kernel@puri.sm,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "dt-bindings: sound: gtm601: add the broadmobi
-	interface" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Jairaj Arava <jairaj.arava@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: hdac_hda: Update hdac hda dai table to
+	include intel-hdmi-hifi4" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +97,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   dt-bindings: sound: gtm601: add the broadmobi interface
+   ASoC: hdac_hda: Update hdac hda dai table to include intel-hdmi-hifi4
 
 has been applied to the asoc tree at
 
@@ -122,45 +122,76 @@ to this mail.
 Thanks,
 Mark
 
-From bb9ee1eacb2dfcdf419f14c739b866c3eba4dc1f Mon Sep 17 00:00:00 2001
-From: "Angus Ainslie (Purism)" <angus@akkea.ca>
-Date: Mon, 23 Dec 2019 07:47:12 -0800
-Subject: [PATCH] dt-bindings: sound: gtm601: add the broadmobi interface
+From 4bb16cd82773ee2e73d6201e6e7271f75312144c Mon Sep 17 00:00:00 2001
+From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Date: Fri, 20 Dec 2019 11:10:37 -0600
+Subject: [PATCH] ASoC: hdac_hda: Update hdac hda dai table to include
+ intel-hdmi-hifi4
 
-The Broadmobi BM818 uses a different sample rate and channels from the
-option modem.
+TGL supports more than three HDMI Dai's. So, update hdac_hda_dais table
+to include 4th DAI.
 
-Signed-off-by: Angus Ainslie (Purism) <angus@akkea.ca>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20191223154712.18581-3-angus@akkea.ca
+Without this patch, we saw the below error in TGL DUT:
+ sof_rt5682 tgl_max98357a_rt5682: ASoC: CODEC DAI intel-hdmi-hifi4 not
+
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191220171037.10689-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/gtm601.txt | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/codecs/hdac_hda.c | 16 ++++++++++++++++
+ sound/soc/codecs/hdac_hda.h |  3 ++-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
-index 5efc8c068de0..efa32a486c4a 100644
---- a/Documentation/devicetree/bindings/sound/gtm601.txt
-+++ b/Documentation/devicetree/bindings/sound/gtm601.txt
-@@ -1,10 +1,16 @@
- GTM601 UMTS modem audio interface CODEC
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index 6803d39e09a5..4e0f4afe6ddc 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -164,6 +164,19 @@ static struct snd_soc_dai_driver hdac_hda_dais[] = {
+ 		.sig_bits = 24,
+ 	},
+ },
++{
++	.id = HDAC_HDMI_3_DAI_ID,
++	.name = "intel-hdmi-hifi4",
++	.ops = &hdac_hda_dai_ops,
++	.playback = {
++		.stream_name    = "hifi4",
++		.channels_min   = 1,
++		.channels_max   = 32,
++		.rates          = STUB_HDMI_RATES,
++		.formats        = STUB_FORMATS,
++		.sig_bits = 24,
++	},
++},
  
--This device has no configuration interface. Sample rate is fixed - 8kHz.
-+This device has no configuration interface. The sample rate and channels are
-+based on the compatible string
-+	"option,gtm601" = 8kHz mono
-+	"broadmobi,bm818" = 48KHz stereo
+ };
  
- Required properties:
+@@ -346,6 +359,9 @@ static struct hda_pcm *snd_soc_find_pcm_from_dai(struct hdac_hda_priv *hda_pvt,
+ 	case HDAC_HDMI_2_DAI_ID:
+ 		pcm_name = "HDMI 2";
+ 		break;
++	case HDAC_HDMI_3_DAI_ID:
++		pcm_name = "HDMI 3";
++		break;
+ 	default:
+ 		dev_err(&hcodec->core.dev, "invalid dai id %d\n", dai->id);
+ 		return NULL;
+diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
+index e145cec085b8..598b07d9b6fe 100644
+--- a/sound/soc/codecs/hdac_hda.h
++++ b/sound/soc/codecs/hdac_hda.h
+@@ -13,7 +13,8 @@ enum {
+ 	HDAC_HDMI_0_DAI_ID,
+ 	HDAC_HDMI_1_DAI_ID,
+ 	HDAC_HDMI_2_DAI_ID,
+-	HDAC_LAST_DAI_ID = HDAC_HDMI_2_DAI_ID,
++	HDAC_HDMI_3_DAI_ID,
++	HDAC_LAST_DAI_ID = HDAC_HDMI_3_DAI_ID,
+ };
  
--  - compatible : "option,gtm601"
-+  - compatible : one of
-+	"option,gtm601"
-+	"broadmobi,bm818"
-+
- 
- Example:
- 
+ struct hdac_hda_pcm {
 -- 
 2.20.1
 
