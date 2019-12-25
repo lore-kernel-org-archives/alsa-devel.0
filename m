@@ -1,90 +1,81 @@
-Return-Path: <SRS0=G//A=2O=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=bNm3=2P=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3843AC2D0C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Dec 2019 23:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ACFBC2D0C3
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:09:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 49A91206D3
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Dec 2019 23:52:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 95AFC20722
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 00:09:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I4vR2HhQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Qqn84oRL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49A91206D3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NDOvUoUF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="DOI33U7I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95AFC20722
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACFA116A0;
-	Wed, 25 Dec 2019 00:51:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACFA116A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BF1616A4;
+	Wed, 25 Dec 2019 01:09:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BF1616A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577231569;
-	bh=KNGfgoGfyt8X/4Qzo2a6wehFh9WuJ9kTzJYcFcpmDFU=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=I4vR2HhQ6SAuOQB0YBS3NLnADwjs/IHCQNPb3sqrAb22YkHCRZXWs2owbLtV4IU5c
-	 kS6fmjTQwLdSQEGSIj+yvN6RlfOCqLF8VHZs27EKrTAAvqazCVXaSi+nXuVAVfGNK9
-	 jjgquHLrsCKbDJf92wclz0ZvB75gN6wgh7VWEYjk=
+	s=default; t=1577232596;
+	bh=9iTZOsFORwaQq36iJ1ElKcqAw9/N1AJvyHbMy8EhtPE=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=NDOvUoUF2oaZI5VYhaA1Gr3eQ+kWBpPiIpC6tUBuBy5IhlMecppkHOUg7mKThIGkp
+	 qrVe9R7KrI/315aeFE6VniAsMKb5mAjdclEmWyLKxBUsZOS1mRaIdXlNtzR+pLHsnm
+	 tuxRlOLFzkkEhUr2JHhTt32Cu9UunFR4vUGu+BJ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26863F80136;
-	Wed, 25 Dec 2019 00:51:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55415F80240;
+	Wed, 25 Dec 2019 01:09:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 569F9F80138; Wed, 25 Dec 2019 00:51:56 +0100 (CET)
+ id 61B57F80247; Wed, 25 Dec 2019 01:09:03 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7203F800E8
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 00:51:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7203F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 922B8F800E3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 01:08:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 922B8F800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="Qqn84oRL"
+ header.b="DOI33U7I"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=wVeG4o2wMLfWamY/spW73kzHgOHGF8sCfwGnxV1QecY=; b=Qqn84oRLhfEoicUtxn8KgThtq
- ekIL2BYMpXYFkDWCTQa3OkwsKbFICnezYVm5bxWhwismS5YCDkoRJSK3Gjt4AzP0ZPqHh7GgBJ90Z
- 1OjPgDhJpjrvi/XL0xlQRXwvVd91R79HneYLVJhdhyFMiEm9G14s5vKQgfqcz29GZO954=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=mSFUdtnl076QRNW8MS7MC3xO9q4FWSjjgOMtTTBta+I=; b=DOI33U7IjMXb
+ UAC1lXvhqvrXXlHexBLQblkN/1xKYxqRH0ynh6HeejolwwZK70gfCAGKT5mMKW67S3WHD8/N2jnJe
+ qMwD1waDAm4lZk6dK+2A8YjEoAOAUFy+SzZMZ2nq21Ly1iuDVtSiUqEBwAE/SRIIzvbrddYW4p+kK
+ 6XDZU=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ijtxr-0007BU-Pt; Tue, 24 Dec 2019 23:51:47 +0000
+ id 1ijuEU-0007Kh-D4; Wed, 25 Dec 2019 00:08:58 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 9EAB1D01938; Tue, 24 Dec 2019 23:51:45 +0000 (GMT)
-Date: Tue, 24 Dec 2019 23:51:45 +0000
+ id BD3ECD01A47; Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?B?amVmZl9jaGFuZyjlvLXkuJbkvbMp?= <jeff_chang@richtek.com>
-Message-ID: <20191224235145.GA27497@sirena.org.uk>
-References: <1576836934-5370-1-git-send-email-richtek.jeff.chang@gmail.com>
- <20191220121152.GC4790@sirena.org.uk>
- <7a9bcf5d414c4a74ae8e101c54c9e46f@ex1.rt.l>
-MIME-Version: 1.0
-In-Reply-To: <7a9bcf5d414c4a74ae8e101c54c9e46f@ex1.rt.l>
-X-Cookie: I have many CHARTS and DIAGRAMS..
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- Jeff Chang <richtek.jeff.chang@gmail.com>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Add MediaTek MT6660 Speaker Amp
-	Driver
+To: Daniel Baluta <daniel.baluta@nxp.com>
+In-Reply-To: <20191220170531.10423-1-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20191220170531.10423-1-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Date: Wed, 25 Dec 2019 00:08:57 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: SOF: imx8: Fix dsp_box offset" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,60 +88,99 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8322270374942053586=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---===============8322270374942053586==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
-Content-Disposition: inline
+   ASoC: SOF: imx8: Fix dsp_box offset
 
+has been applied to the asoc tree at
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
-On Mon, Dec 23, 2019 at 02:10:12AM +0000, jeff_chang(=E5=BC=B5=E4=B8=96=E4=
-=BD=B3) wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> --> When I check other driver at sound/soc/codecs/ folder, I just follow =
-what others do.
-> It seems in .h --> /* SPDX-Liencese-Identifier: GPL-2.0 */
->    In .c --> // SPDK-Liencese-Identifier: GPL-2.0
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Is it correct?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Yes, headers use C style comments and source files use C++ style.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+From dcf08d0f8f09081b16f69071dd55d51d5e964e84 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Fri, 20 Dec 2019 11:05:31 -0600
+Subject: [PATCH] ASoC: SOF: imx8: Fix dsp_box offset
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4CpI4ACgkQJNaLcl1U
-h9DFVwf7Bvj8SH/istxSwNkLQ2Tr1SMqR95oagZSg6cNQ4V31uLCUSK/oD+TYaO/
-4JjGHrPKLlwBKweT/nJ6nOX9/YcS1N7hvb5bOwK2dbcpsNb0BmkuDC+fy4sEXqfY
-KyMmaYgN7+lkV2bYC7Y+x3FtZHs3IScuvGLk5pDp4NqXJddKTMEljQRdegtPDP3N
-sAzfTrBMczPhnb320cF+yBQk5xSGCrez8FAJPlpGiaS1TkuHMr4CczYtSgO2qCKW
-DYRLizqBUbJ0l8FkHW87f1YY8KdF4GKig5ihIiF8BQ4Vz7IiNTXiDC9eaayD/V71
-hchxd/+izG1UhhEmm6NiVOIuyyUl9w==
-=YYW7
------END PGP SIGNATURE-----
+dsp_box is used to keep DSP initiated messages. The value of dsp_offset
+is set by the DSP with the first message, so we need a way to bootstrap
+it in order to get the first message.
 
---SLDf9lqlvOQaIe6s--
+We do this by setting the correct default dsp_box offset which on i.MX8
+is not zero.
 
---===============8322270374942053586==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Very interesting is why it has worked until now.
+
+On i.MX8, DSP communicates with ARM core using a shared SDRAM memory
+area. Actually, there are two shared areas:
+	* SDRAM0 - starting at 0x92400000, size 0x800000
+	* SDRAM1 - starting at 0x92C00000, size 0x800000
+
+SDRAM0 keeps the data sections, starting with .rodata. By chance
+fw_ready structure was placed at the beginning of .rodata.
+
+dsp_box_base is defined as SDRAM0 + dsp_box_offset and it is placed
+at the beginning of SDRAM1 (dsp_box_offset should be 0x800000). But
+because it is zero initialized by default it points to SDRAM0 where
+by chance the fw_ready was placed in the SOF firmware.
+
+Anyhow, SOF commit 7466bee378dd811b ("clk: make freq arrays constant")
+fw_ready is no longer at the beginning of SDRAM0 and everything shows
+how lucky we were until now.
+
+Fix this by properly setting the default dsp_box offset.
+
+Fixes: 202acc565a1f050 ("ASoC: SOF: imx: Add i.MX8 HW support")
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20191220170531.10423-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sof/imx/imx8.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index 9d926b1df0d7..aef6ca167b9c 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -304,6 +304,9 @@ static int imx8_probe(struct snd_sof_dev *sdev)
+ 	}
+ 	sdev->mailbox_bar = SOF_FW_BLK_TYPE_SRAM;
+ 
++	/* set default mailbox offset for FW ready message */
++	sdev->dsp_box.offset = MBOX_OFFSET;
++
+ 	return 0;
+ 
+ exit_pdev_unregister:
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8322270374942053586==--
