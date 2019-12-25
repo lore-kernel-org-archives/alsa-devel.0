@@ -8,94 +8,95 @@ X-Spam-Status: No, score=-14.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB81BC2D0DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 08:07:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 018F8C2D0DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 08:08:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4EFF2071E
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 08:07:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7EE842071E
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 08:08:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gOzK/hfb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j2Rs4ozr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4EFF2071E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NH4kzE4B";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CqU06Iq8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EE842071E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9D7B16E2;
-	Thu, 26 Dec 2019 09:07:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D7B16E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA05616F2;
+	Thu, 26 Dec 2019 09:07:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA05616F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577347670;
+	s=default; t=1577347725;
 	bh=BNgvS61hkvQppMXlbS88mUOss4X7BX4/mF2llM6ip1Y=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=gOzK/hfb0KC4HUcn3hEwHz+ROIxaPYL3pdlpjQgHNYh5xmJSIkJzYjlhxvjqM8SHD
-	 hqXn8Cm+7YC6MlH1xQuYsiRoxWK+GpS9JToh81MYyDlfx7g67lrQm9QU/pF7WLtbf1
-	 aClexX0lkLXXGrZphKeBgHK3UuLiXSJBJnv2SsDU=
+	b=NH4kzE4BsoRcu03x7AtBswZ2VCFX59j0/OGsjnnsJzjTKeouvBsRLByLZeV+hx7WM
+	 eGU0WcD4qb4mTXudpls76g/CDnZh/HCrlI3T+YpsNBIaDtE5b26Y6gMzDEon7cdnU6
+	 5CoIvW32aUqkiiBtdonkYeIRGQ1JGuAMBONkWucA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4439CF80138;
-	Thu, 26 Dec 2019 09:07:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D6B0F80247;
+	Thu, 26 Dec 2019 09:07:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DFC7F80138; Wed, 25 Dec 2019 03:22:07 +0100 (CET)
+ id 1EB16F80138; Wed, 25 Dec 2019 03:34:35 +0100 (CET)
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
  [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57783F800E3
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 03:22:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57783F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E918F800E3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 03:34:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E918F800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="j2Rs4ozr"
-Received: by mail-wm1-x341.google.com with SMTP id b19so3474666wmj.4
- for <alsa-devel@alsa-project.org>; Tue, 24 Dec 2019 18:22:02 -0800 (PST)
+ header.b="CqU06Iq8"
+Received: by mail-wm1-x341.google.com with SMTP id c127so2885450wme.1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Dec 2019 18:34:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=message-id:from:to:cc:subject:date:mime-version
  :content-transfer-encoding;
  bh=rJ+8IH18zzODLKaNgkx0pG4CqT3ZWdQ3iFDsdDHCiFw=;
- b=j2Rs4ozrsy3uKCrnhOgJ7kmGSecpmduNqNFVRDxcdiU0F5dtPHdx0WFl9ngePW/mZL
- M76vjk9LS+bjm2IROBaTbDl2H3TJNl8nFMUNnYxQx081pYo/76zituHfT+q3AVicFEzo
- 2pRBd8BN8j7SwX7g6DnzWipQmnYoQn98/EsebMAmrpEzjptlm+x1TQJF2ZD72q33iGhV
- xkCcnrC+y7pycvSog6qfrbAmJJGiuOMceeFuCO9fkzqz7GjkvEcjEaX2XZ7ve1pbGoWF
- 8NuJ82au3vBxyiqo1+ymF+CEET7M7hu4/EpgEtzoVX3WYjzIzgmo2gOvpZhJ36jkQoxw
- dXIw==
+ b=CqU06Iq8cWki7B5jned3VxSOvam0iUgmSP34y0mcpTY+Q9A/OCbbZkfoV1bruluoI/
+ EwkQOfcg6JLxsRqcB8IegDo3OhfgW2guWLfutHMgzsPf7PzwL7PBhymg1rcMa5ts0dTp
+ 963u6ArSt60boD4lnZx4pzUNdZxxRheGGPm6aabG39YEcMLCg907Sd4IGTzsagyYHylb
+ Lf1gAKA/nSqyEaVmlD3Hs7AEvLyKtMikNcOtT/yDo4BHyCF+QgfnGfgzjm9Miz+B54hY
+ Qq8UnuFIl9EiMjRxR7aUBRtDDNZCe5knUC9/V01h3B62EXx1SIEosUVTWDUeNe0NqgeN
+ 0bRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:message-id:from:to:cc:subject:date:mime-version
  :content-transfer-encoding;
  bh=rJ+8IH18zzODLKaNgkx0pG4CqT3ZWdQ3iFDsdDHCiFw=;
- b=Skf59snhi9JHWROQJvqmqyel3wz6wvGSac2ntU4E1ABbMDbbGwxAiDze6+6KG/gZxu
- +X8Q+x3Zd+BSDxkF7Kqc3daMc3XxXn6eM6+9XYhWvhh6aQKU+h2zK8N9J+yYj9opxAYx
- ciIxNf7JVWvEWp3pJPgd1mIYcpaHqIyy6DoLPg9Iz33aWjBIbQ04qZv/fFB/AUzU8drd
- CtHkC4UD+YvQWDg+ejPCIL/GM2Jkh9dRe9F32lqqmzH4x5kK1+KSqz8a4AF+wLoMm+ct
- +fK7HuKj6ZgLn/4wJ+l9/ww0p39t+QLa/l0RBewT9/oqTt4JUX7sSZfswF2F00dYqFET
- kNIw==
-X-Gm-Message-State: APjAAAW1TdT964a+/vSB+Z+r8z3NZMb0/8/w7KXhn7gRDXke3dtcryZt
- klFoSLTBMWQUfv2oHArZ11KkDeoG
-X-Google-Smtp-Source: APXvYqyNAAOz/zHJVxC6ssknHm19poi2Uj2328qfDd5a1JMsaspSQrMvm+jFqhD7qPJgFtO2ziFQqg==
-X-Received: by 2002:a1c:6389:: with SMTP id x131mr6254983wmb.155.1577240521677; 
- Tue, 24 Dec 2019 18:22:01 -0800 (PST)
+ b=Uzy0SB/+D1ZToCnp85vj/7vHvTGSzbT1iYieIE7HYwZaD64GS+2I1yf0KpcPlU3WGx
+ pXPQuizWCUsx8+P0n3c6rZKwn77yjAlYMLrIirEoteQ9voiSJDCAWnjdyYum5BjJm5Bw
+ hq8d/b5iuQJno564DCxSNgitvyJugz2sOD3u90nAFclO6tcv/8Gl9DSwBLnfG2iCHJJ3
+ 6RcsLfp8/F5K1R9+2vivhNX8gH4LFAede3geydfge3VotN0LChKeu/eyQZrMc+xJsM8L
+ 9BOZ9zNYhFFtrkYQsl2s6MD0z2il4Z3u7tps3fO+ThvdhOLLhr3+RRQA6427AQ6bdICX
+ CPMA==
+X-Gm-Message-State: APjAAAXCXuA8tLio30Ix4GSYvLFKMHqKnzORmcLm1frVyq0eVHHnRTIo
+ tZJRamhGN99fCM43/075vNl3+UzL
+X-Google-Smtp-Source: APXvYqzEziEMXnTc91pTnQ+hI2ibbbM3BoNveTvL0dIn1UtwkqmW5yG8fqRm3xySa66n4mAHT4G80g==
+X-Received: by 2002:a05:600c:210b:: with SMTP id
+ u11mr6760815wml.43.1577241269221; 
+ Tue, 24 Dec 2019 18:34:29 -0800 (PST)
 Received: from localhost.localdomain ([139.91.73.37])
- by smtp.gmail.com with ESMTPSA id x1sm25596709wru.50.2019.12.24.18.22.00
+ by smtp.gmail.com with ESMTPSA id a1sm25918891wrr.80.2019.12.24.18.34.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Dec 2019 18:22:00 -0800 (PST)
-Message-ID: <5e02c7c8.1c69fb81.19960.dbd7@mx.google.com>
-X-Google-Original-Message-ID: <20191225022157.51843-1---help>
+ Tue, 24 Dec 2019 18:34:28 -0800 (PST)
+Message-ID: <5e02cab4.1c69fb81.83bec.f334@mx.google.com>
+X-Google-Original-Message-ID: <20191225023424.52146-1---help>
 From: mickflemm@gmail.com
 X-Google-Original-From: --help
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	perex@perex.cz
-Date: Wed, 25 Dec 2019 04:21:57 +0200
+Date: Wed, 25 Dec 2019 04:34:24 +0200
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 26 Dec 2019 09:06:58 +0100
 Cc: Nick Kossifidis <mickflemm@gmail.com>
-Subject: [alsa-devel] [PATCH 1/1] [PATCH] ALSA: usb-audio: Add support for
-	Presonus Studio 1810c
+Subject: [alsa-devel] [PATCH] ALSA: usb-audio: Add support for Presonus
+	Studio 1810c
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
