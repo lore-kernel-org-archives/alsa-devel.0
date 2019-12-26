@@ -2,67 +2,68 @@ Return-Path: <SRS0=4Kwc=2Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DE17C2D0DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 15:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CE1DC2D0DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 16:32:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E1FC206CB
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 15:46:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5352B20740
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 16:32:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lX/6ZkaS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E1FC206CB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xfzi1HnD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5352B20740
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48B3216ED;
-	Thu, 26 Dec 2019 16:45:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48B3216ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 487FD16F1;
+	Thu, 26 Dec 2019 17:31:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 487FD16F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577375160;
-	bh=RvWoNWfTJCNtQ8vVI/LJYgCtR6CP0iLoleavebn3cKc=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lX/6ZkaSHp52D9l/+/bjb0cen8TxIuuPhmrSrX5KeicbT7sKfZl7Z91k6wwSp5a3J
-	 CB9h5U327zowqsiFuNpfFp2yfgUkpiGxBVroYOIkDF5NI0AjWnlxuZ+r0jtaJdyocf
-	 mU6jXq3IyyVTp7hgRy6IB0SgrTXKHInQ6UZ5e96s=
+	s=default; t=1577377928;
+	bh=J5EnA8AouA8kJBellF3P/hL7CBK/TUzrTCa66zMWRPo=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Xfzi1HnD6L7hLebkoEOBBrbtVoyhjs16yDsXDJ/WN3MXNG7w3JdDexNG+gjs+ahz6
+	 Zx3AiuZ0h2b5Aq3+HqK878dUfmVjMAMnwvPMRS0A6MQy9LBdiAGMOZr5vlxx56nulc
+	 ohrE7CyqRR8hqO9oJTPvRp7ZbxdVKhruLcB4gyGo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B5C3F80138;
-	Thu, 26 Dec 2019 16:45:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0706F80138;
+	Thu, 26 Dec 2019 17:31:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0487AF80139; Thu, 26 Dec 2019 16:45:08 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 91BE4F80139; Thu, 26 Dec 2019 17:31:16 +0100 (CET)
+Received: from smtp.smtpout.orange.fr (smtp05.smtpout.orange.fr
+ [80.12.242.127])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 445EDF8012D
- for <alsa-devel@alsa-project.org>; Thu, 26 Dec 2019 16:45:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 445EDF8012D
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 425ACAFA8;
- Thu, 26 Dec 2019 15:45:03 +0000 (UTC)
-Date: Thu, 26 Dec 2019 16:45:02 +0100
-Message-ID: <s5htv5n5bwh.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <91e1ebe8-270e-d62f-844e-2018fe77145e@molgen.mpg.de>
-References: <6aa4e167-abb0-6a2c-c00e-558aa79d94be@molgen.mpg.de>
- <s5h1rsr769i.wl-tiwai@suse.de>
- <91e1ebe8-270e-d62f-844e-2018fe77145e@molgen.mpg.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- LKML <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org
-Subject: Re: [alsa-devel] [Regression drm-tip] Internal audio device missing
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A027F8012E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Dec 2019 17:31:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A027F8012E
+Received: from localhost.localdomain ([90.40.29.152]) by mwinf5d81 with ME
+ id igX92100B3Gv28S03gX9u9; Thu, 26 Dec 2019 17:31:12 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 26 Dec 2019 17:31:12 +0100
+X-ME-IP: 90.40.29.152
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: brian.austin@cirrus.com, Paul.Handrigan@cirrus.com,
+ ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com,
+ lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Date: Thu, 26 Dec 2019 17:29:07 +0100
+Message-Id: <20191226162907.9490-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ASoC: cs47l92: Simplify error handling code in
+	'cs47l92_probe()'
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,88 +81,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 26 Dec 2019 15:41:34 +0100,
-Paul Menzel wrote:
-> 
-> Dear Takashi,
-> 
-> 
-> Am 26.12.19 um 11:03 schrieb Takashi Iwai:
-> > On Thu, 26 Dec 2019 10:47:18 +0100, Paul Menzel wrote:
-> 
-> >> With
-> >>
-> >>      $ git describe --tags drm-tip/drm-tip
-> >>      v5.5-rc3-1481-ga20d8cd6901a
-> >>
-> >> the internal audio device is not available, and just a dummy device.
-> >>
-> >> Running `alsa-info.sh` [1], the messages below are shown with the
-> >> problematic Linux kernel.
-> >>
-> >>      alsactl: get_controls:567: snd_ctl_open error: Sound protocol is
-> >> not compatible
-> >>      cat: /tmp/alsa-info.ateDlDjrZX/alsactl.tmp: No such file or directory
-> >
-> > That's an unexpected side-effect of the recent protocol version bump
-> > in sound.git for-next branch.  It seems that we can't change the minor
-> > version unless we really want to break something.
-> >
-> > Below is the fix patch.  Please give it a try.
-> 
-> Thank you for the quick reply and fix.
-> 
-> > -- 8< --
-> > From: Takashi Iwai <tiwai@suse.de>
-> > Subject: [PATCH] ALSA: control: Fix incompatible protocol error
-> >
-> > The recent change to bump the ALSA control API protocol version from
-> > 2.0.7 to 2.1.0 caused a regression on user-space; while the user-space
-> > expects both the major and the minor versions to be identical with the
-> > supported numbers, we changed the minor number from 0 to 1.
-> >
-> > For recovering from the incompatibility, this patch changes the
-> > protocol version again to 2.0.8, which is compatible, but yet higher
-> > than the original number 2.0.7, indicating that the protocol change.
-> >
-> > Fixes: bd3eb4e87eb3 ("ALSA: ctl: bump protocol version up to v2.1.0")
-> > Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > ---
-> >   include/uapi/sound/asound.h | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> > index e36dadaf84ba..30ebb2a42983 100644
-> > --- a/include/uapi/sound/asound.h
-> > +++ b/include/uapi/sound/asound.h
-> > @@ -936,7 +936,7 @@ struct snd_timer_tread {
-> >    *                                                                          *
-> >    ****************************************************************************/
-> >   -#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 1,
-> > 0)
-> > +#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 8)
-> >     struct snd_ctl_card_info {
-> >   	int card;			/* card number */
-> >
-> 
-> Tested-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> 
-> Are there CI systems, which should have caught this problem?
-> 
-> Which user-space component should forward this problem to the user
-> (desktop environment displaying a warning)?
+If 'madera_init_bus_error_irq()' fails,
+'wm_adsp2_remove(&cs47l92->core.adsp[0])' will be called twice.
+Once in the 'if' block, and once in the error handling path.
+This is harmless, but one of this call can be axed.
 
-Unfortunately no -- I'd love to have it, though.
-I usually test and push more carefully, but it was a bit rush before
-the holidays :)
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/soc/codecs/cs47l92.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Now merged and pushed out.
+diff --git a/sound/soc/codecs/cs47l92.c b/sound/soc/codecs/cs47l92.c
+index d50f75f3b3e4..536b7d35d6b2 100644
+--- a/sound/soc/codecs/cs47l92.c
++++ b/sound/soc/codecs/cs47l92.c
+@@ -1959,10 +1959,8 @@ static int cs47l92_probe(struct platform_device *pdev)
+ 		goto error_dsp_irq;
+ 
+ 	ret = madera_init_bus_error_irq(&cs47l92->core, 0, wm_adsp2_bus_error);
+-	if (ret != 0) {
+-		wm_adsp2_remove(&cs47l92->core.adsp[0]);
++	if (ret != 0)
+ 		goto error_adsp;
+-	}
+ 
+ 	madera_init_fll(madera, 1, MADERA_FLL1_CONTROL_1 - 1,
+ 			&cs47l92->fll[0]);
+-- 
+2.20.1
 
-
-thanks,
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
