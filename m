@@ -1,84 +1,95 @@
-Return-Path: <SRS0=bNm3=2P=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=4Kwc=2Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF735C2D0C8
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 18:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA54DC2D0C8
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 02:31:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 237A02072A
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 18:26:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C82E220828
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Dec 2019 02:31:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Tu23E2wK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="RKTp1MK3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 237A02072A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="srB9Cljb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZJzccynv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C82E220828
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FD6216E8;
-	Wed, 25 Dec 2019 19:26:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FD6216E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 318F816B6;
+	Thu, 26 Dec 2019 03:30:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 318F816B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577298416;
-	bh=3Q3IVpKZaa1+eR1BRr+8BNapT2MjeFRC6TTZnxsvopE=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Tu23E2wKvW6sfUUXITAH/rHe+c4J5LBM+3yCl9XOHMGStMg1nAHV9feAZZTJR0mkm
-	 y/qUfo+78HdFM0tAdjfRnqnLoaNpF7DMnMEx9yYgAxDp0WRTOdgRmMGfkWZXJhaQ1V
-	 cn3b/ogYHoiS4fcY9ZdEuW/5U7C19jw/fU2DdRBo=
+	s=default; t=1577327509;
+	bh=/EbqUExd5NB09z700dmk4xzEfzA66jDzAEgNCmds4oQ=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=srB9CljbMip0a7qTeldcjHf7t1jYm5oRrgY41p8MyIMehTvBvo9aKr3sJbVpZ88G4
+	 n3bRDR/rnFkVVzUAxX65xywPGYdgAFa7lJDER5pyF6ubUsZ2ecG6n7OPtRktBH0zo+
+	 dprvQvxzheWm+MShavdDs4eZKcxQ4YN9o/j9GswY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1711DF8028E;
-	Wed, 25 Dec 2019 19:22:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3A67F80138;
+	Thu, 26 Dec 2019 03:30:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B1F9F80276; Wed, 25 Dec 2019 19:21:59 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4352CF80139; Thu, 26 Dec 2019 03:30:57 +0100 (CET)
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
+ [IPv6:2607:f8b0:4864:20::441])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87B4BF80269
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 19:21:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87B4BF80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id DFDB1F8012D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Dec 2019 03:30:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFDB1F8012D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="RKTp1MK3"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=aotcA+CWO8fDEpJc8BsMjFiV7vJtC8ywgfmb354jAoo=; b=RKTp1MK3CJis
- Phgi1DgwqoJCN1pqAxKqBbnK6bavh6OTTBxKrnXa5JkZOmQYkmxp8LX7qYaszBG5R8AcUCftoIYdW
- qVSM5j9BT2iAuh5B2zdLDIlrGxW6yjfQ6qzuD9IUHKL9jdRyg1u2zYG5Jmw7EvhzO8uuCHTOqDiv/
- XX23k=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ikBIA-0001oZ-65; Wed, 25 Dec 2019 18:21:54 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id A813BD01A24; Wed, 25 Dec 2019 18:21:53 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20191219103153.14875-4-srinivas.kandagatla@linaro.org>
-Message-Id: <applied-20191219103153.14875-4-srinivas.kandagatla@linaro.org>
-X-Patchwork-Hint: ignore
-Date: Wed, 25 Dec 2019 18:21:53 +0000 (GMT)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, vinod.koul@linaro.org, robh@kernel.org,
- linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- lee.jones@linaro.org, spapothi@codeaurora.org
-Subject: [alsa-devel] Applied "ASoC: wcd934x: add support to wcd9340/wcd9341
-	codec" to the asoc tree
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ZJzccynv"
+Received: by mail-pf1-x441.google.com with SMTP id n9so4679554pff.13
+ for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 18:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=LmxoGLrqj02C7+56HMe3kKWHk3CnUs//IFmDvr8+vsg=;
+ b=ZJzccynvo3JHELRiRumUd+jY+jFF5At6iHvq4jo9SHiCpgbR0/qwyGSx/TKlNxr5Ye
+ oSIuYn83KydIskimZoMdWzNSntYxDIhC7xr6DvbOa9ZMW41ISvW2yyln1CUMq5C2qK5I
+ R1FxgXnVzlbnlH/kraPRKGzvyjGB2GQtDBF5d1587oCltOKqKs+qDD985rsjHSk/0tsg
+ Zeo1iDHcj6YmJrGu+gUvW4uY9rpTbkJj/OLiTnbgKNr3QOJHMPeOGoc9ma3JwsE7KBkG
+ rinLG2gvrdV2F4lnOs+AyvtB7i8GEpjLs8pW47wdsmqDAVj/APAldPFcIBr9cpEf/T82
+ Xq/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=LmxoGLrqj02C7+56HMe3kKWHk3CnUs//IFmDvr8+vsg=;
+ b=mCVcAliy/sI0STjJHDHi4eXMeBJ1IfDiM8qVuGSmuzUbyVt8QEH5Phn8mtnHNlRVK5
+ EHjarbwtD53+nsQh5lT9UR7K83OfFozpl8iGj3N16qSM5kn0LXAcyfXW4A+rOV887QKi
+ 8QO+cA8SQxK1m7mmeW8wgH6S1/JUr/w1jWRtZWc8ZGxcBps8C7FQUbm22K2mtMH/QgNB
+ yYiUmlKusZFPhj0mfwQvG8O3xAv/X6W7X+CKvwXugAUan+UnWiqsWNXeOhmyEAyJKB7z
+ YA+jX7fFkTR2x/Ota9caWe9GvMQvSKc1nps1iqZvpqlm+IpwcrXmQL1jH4JWT4rADMmh
+ 1Vfg==
+X-Gm-Message-State: APjAAAVwSm+kC8JmTt+tyMcqhs+H1NQaNHQ+glPsnLWAJ9owNlPc/vwY
+ A4ZWwEXVMsNhB5lKMaeNf40=
+X-Google-Smtp-Source: APXvYqz+YIkp4YWnm5htAfsgbtHHtcQm+t4ZCruOUJlndrEIFXh+ZZ5Q905T5F4P0jpZfGkr4LX5bw==
+X-Received: by 2002:aa7:982d:: with SMTP id q13mr45700828pfl.152.1577327449840; 
+ Wed, 25 Dec 2019 18:30:49 -0800 (PST)
+Received: from localhost.localdomain ([101.15.212.52])
+ by smtp.gmail.com with ESMTPSA id r37sm8360016pjb.7.2019.12.25.18.30.47
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Wed, 25 Dec 2019 18:30:49 -0800 (PST)
+From: Jeff Chang <richtek.jeff.chang@gmail.com>
+To: lgirdwood@gmail.com
+Date: Thu, 26 Dec 2019 10:30:42 +0800
+Message-Id: <1577327442-27620-1-git-send-email-richtek.jeff.chang@gmail.com>
+X-Mailer: git-send-email 2.7.4
+Cc: alsa-devel@alsa-project.org, richtek.jeff.chang@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, jeff_chang@richtek.com,
+ broonie@kernel.org, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH v4] ASoC: Add MediaTek MT6660 Speaker Amp Driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,1708 +108,874 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+From: Jeff Chang <jeff_chang@richtek.com>
 
-   ASoC: wcd934x: add support to wcd9340/wcd9341 codec
+The MT6660 is a boosted BTL class-D amplifier with V/I sensing.
+A built-in DC-DC step-up converter is used to provide efficient
+power for class-D amplifier with multi-level class-G operation.
+The digital audio interface supports I2S, left-justified,
+right-justified, TDM and DSP A/B format for audio in with a data
+out used for chip information like voltage sense and current
+sense, which are able to be monitored via DATAO through proper
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From a61f3b4f476eceb25274161e5a53a8d18e42610b Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 19 Dec 2019 10:31:45 +0000
-Subject: [PATCH] ASoC: wcd934x: add support to wcd9340/wcd9341 codec
-
-Qualcomm WCD9340/WCD9341 Codec is a standalone Hi-Fi audio codec IC,
-It supports both I2S/I2C and SLIMbus audio interfaces.
-On slimbus interface it supports two data lanes; 16 Tx ports
-and 8 Rx ports. It has Five DACs and seven dedicated interpolators,
-Seven (six audio ADCs, and one VBAT ADC), Multibutton headset
-control (MBHC), Active noise cancellation, Sidetone paths,
-MAD (mic activity detection) and codec processing engine.
-It supports Class-H differential earpiece out and stereo single
-ended headphones out.
-This codec also has integrated SoundWire controller.
-
-This patchset adds very basic support for playback and capture
-via the interpolators and ADC respectively.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20191219103153.14875-4-srinivas.kandagatla@linaro.org
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jeff Chang <jeff_chang@richtek.com>
 ---
- sound/soc/codecs/Kconfig   |    8 +
- sound/soc/codecs/Makefile  |    2 +
- sound/soc/codecs/wcd934x.c | 1591 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 1601 insertions(+)
- create mode 100644 sound/soc/codecs/wcd934x.c
+ Documentation/devicetree/bindings/sound/mt6660.txt |  53 ++
+ sound/soc/codecs/Kconfig                           |  11 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/mt6660.c                          | 628 +++++++++++++++++++++
+ sound/soc/codecs/mt6660.h                          |  75 +++
+ 5 files changed, 769 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6660.txt
+ create mode 100644 sound/soc/codecs/mt6660.c
+ create mode 100644 sound/soc/codecs/mt6660.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 4abf37b5083f..146682049007 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -207,6 +207,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_UDA134X
- 	select SND_SOC_UDA1380 if I2C
- 	select SND_SOC_WCD9335 if SLIMBUS
-+	select SND_SOC_WCD934X if MFD_WCD934X
- 	select SND_SOC_WL1273 if MFD_WL1273_CORE
- 	select SND_SOC_WM0010 if SPI_MASTER
- 	select SND_SOC_WM1250_EV1 if I2C
-@@ -1275,6 +1276,13 @@ config SND_SOC_WCD9335
- 	  Qualcomm Technologies, Inc. (QTI) multimedia solutions,
- 	  including the MSM8996, MSM8976, and MSM8956 chipsets.
- 
-+config SND_SOC_WCD934X
-+	tristate "WCD9340/WCD9341 Codec"
-+	depends on MFD_WCD934X
-+	help
-+	  The WCD9340/9341 is a audio codec IC Integrated in
-+	  Qualcomm SoCs like SDM845.
-+
- config SND_SOC_WL1273
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index ddfd07071925..0290fb389835 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -220,6 +220,7 @@ snd-soc-uda1334-objs := uda1334.o
- snd-soc-uda134x-objs := uda134x.o
- snd-soc-uda1380-objs := uda1380.o
- snd-soc-wcd9335-objs := wcd-clsh-v2.o wcd9335.o
-+snd-soc-wcd934x-objs := wcd-clsh-v2.o wcd934x.o
- snd-soc-wl1273-objs := wl1273.o
- snd-soc-wm-adsp-objs := wm_adsp.o
- snd-soc-wm0010-objs := wm0010.o
-@@ -509,6 +510,7 @@ obj-$(CONFIG_SND_SOC_UDA1334)	+= snd-soc-uda1334.o
- obj-$(CONFIG_SND_SOC_UDA134X)	+= snd-soc-uda134x.o
- obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
- obj-$(CONFIG_SND_SOC_WCD9335)	+= snd-soc-wcd9335.o
-+obj-$(CONFIG_SND_SOC_WCD934X)	+= snd-soc-wcd934x.o
- obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
- obj-$(CONFIG_SND_SOC_WM0010)	+= snd-soc-wm0010.o
- obj-$(CONFIG_SND_SOC_WM1250_EV1) += snd-soc-wm1250-ev1.o
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+
+changelogs between v4 & v3
+	- remove unnecessary kcontrols.
+	- modify copy right header.
+	- use dev_dbg instead of dev_info.
+	- add necessary debug message.
+	- add DT binding documentation.
+	- add space before } at every table.
+
+changelogs between v3 & v2
+
+        - modify MT6660 Kconfig, remove unnecessary selection.
+        - remove my own debug io interface. use standard regmap for debugging.
+        - remove regmap volatile ops, we do not use cache.
+        - remove component io read/write function, use snd_soc_component_init_regmap.
+        - remove init setting write code. Using parsing dts to set them.
+        - remove unnecessary pr_info log message.
+        - remove mt6660_component_put_volsw. Using snd_soc_get_volsw.
+
+
+
+diff --git a/Documentation/devicetree/bindings/sound/mt6660.txt b/Documentation/devicetree/bindings/sound/mt6660.txt
 new file mode 100644
-index 000000000000..825cf057e8b7
+index 0000000..2a1736b
 --- /dev/null
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -0,0 +1,1591 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019, Linaro Limited
-+
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/gpio.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/mfd/wcd934x/registers.h>
-+#include <linux/mfd/wcd934x/wcd934x.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of_clk.h>
-+#include <linux/of_device.h>
-+#include <linux/of_gpio.h>
-+#include <linux/of.h>
-+#include <linux/of_irq.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/slab.h>
-+#include <linux/slimbus.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
-+#include "wcd-clsh-v2.h"
-+
-+#define WCD934X_RATES_MASK (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
-+			    SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
-+			    SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
-+/* Fractional Rates */
-+#define WCD934X_FRAC_RATES_MASK (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_88200 |\
-+				 SNDRV_PCM_RATE_176400)
-+#define WCD934X_FORMATS_S16_S24_LE (SNDRV_PCM_FMTBIT_S16_LE | \
-+				    SNDRV_PCM_FMTBIT_S24_LE)
-+
-+/* slave port water mark level
-+ *   (0: 6bytes, 1: 9bytes, 2: 12 bytes, 3: 15 bytes)
-+ */
-+#define SLAVE_PORT_WATER_MARK_6BYTES	0
-+#define SLAVE_PORT_WATER_MARK_9BYTES	1
-+#define SLAVE_PORT_WATER_MARK_12BYTES	2
-+#define SLAVE_PORT_WATER_MARK_15BYTES	3
-+#define SLAVE_PORT_WATER_MARK_SHIFT	1
-+#define SLAVE_PORT_ENABLE		1
-+#define SLAVE_PORT_DISABLE		0
-+#define WCD934X_SLIM_WATER_MARK_VAL \
-+	((SLAVE_PORT_WATER_MARK_12BYTES << SLAVE_PORT_WATER_MARK_SHIFT) | \
-+	 (SLAVE_PORT_ENABLE))
-+
-+#define WCD934X_SLIM_NUM_PORT_REG	3
-+#define WCD934X_SLIM_PGD_PORT_INT_TX_EN0 (WCD934X_SLIM_PGD_PORT_INT_EN0 + 2)
-+#define WCD934X_SLIM_IRQ_OVERFLOW	BIT(0)
-+#define WCD934X_SLIM_IRQ_UNDERFLOW	BIT(1)
-+#define WCD934X_SLIM_IRQ_PORT_CLOSED	BIT(2)
-+
-+#define WCD934X_MCLK_CLK_12P288MHZ	12288000
-+#define WCD934X_MCLK_CLK_9P6MHZ		9600000
-+
-+/* Only valid for 9.6 MHz mclk */
-+#define WCD9XXX_DMIC_SAMPLE_RATE_2P4MHZ 2400000
-+#define WCD9XXX_DMIC_SAMPLE_RATE_4P8MHZ 4800000
-+
-+/* Only valid for 12.288 MHz mclk */
-+#define WCD9XXX_DMIC_SAMPLE_RATE_4P096MHZ 4096000
-+
-+#define WCD934X_DMIC_CLK_DIV_2		0x0
-+#define WCD934X_DMIC_CLK_DIV_3		0x1
-+#define WCD934X_DMIC_CLK_DIV_4		0x2
-+#define WCD934X_DMIC_CLK_DIV_6		0x3
-+#define WCD934X_DMIC_CLK_DIV_8		0x4
-+#define WCD934X_DMIC_CLK_DIV_16		0x5
-+#define WCD934X_DMIC_CLK_DRIVE_DEFAULT 0x02
-+
-+#define TX_HPF_CUT_OFF_FREQ_MASK	0x60
-+#define CF_MIN_3DB_4HZ			0x0
-+#define CF_MIN_3DB_75HZ			0x1
-+#define CF_MIN_3DB_150HZ		0x2
-+
-+#define WCD934X_RX_START		16
-+#define WCD934X_NUM_INTERPOLATORS	9
-+#define WCD934X_RX_PATH_CTL_OFFSET	20
-+#define WCD934X_MAX_VALID_ADC_MUX	13
-+#define WCD934X_INVALID_ADC_MUX		9
-+
-+#define WCD934X_SLIM_RX_CH(p) \
-+	{.port = p + WCD934X_RX_START, .shift = p,}
-+
-+#define WCD934X_SLIM_TX_CH(p) \
-+	{.port = p, .shift = p,}
-+
-+/* Feature masks to distinguish codec version */
-+#define DSD_DISABLED_MASK   0
-+#define SLNQ_DISABLED_MASK  1
-+
-+#define DSD_DISABLED   BIT(DSD_DISABLED_MASK)
-+#define SLNQ_DISABLED  BIT(SLNQ_DISABLED_MASK)
-+
-+/* As fine version info cannot be retrieved before wcd probe.
-+ * Define three coarse versions for possible future use before wcd probe.
-+ */
-+#define WCD_VERSION_WCD9340_1_0     0x400
-+#define WCD_VERSION_WCD9341_1_0     0x410
-+#define WCD_VERSION_WCD9340_1_1     0x401
-+#define WCD_VERSION_WCD9341_1_1     0x411
-+#define WCD934X_AMIC_PWR_LEVEL_LP	0
-+#define WCD934X_AMIC_PWR_LEVEL_DEFAULT	1
-+#define WCD934X_AMIC_PWR_LEVEL_HP	2
-+#define WCD934X_AMIC_PWR_LEVEL_HYBRID	3
-+#define WCD934X_AMIC_PWR_LVL_MASK	0x60
-+#define WCD934X_AMIC_PWR_LVL_SHIFT	0x5
-+
-+#define WCD934X_DEC_PWR_LVL_MASK	0x06
-+#define WCD934X_DEC_PWR_LVL_LP		0x02
-+#define WCD934X_DEC_PWR_LVL_HP		0x04
-+#define WCD934X_DEC_PWR_LVL_DF		0x00
-+#define WCD934X_DEC_PWR_LVL_HYBRID WCD934X_DEC_PWR_LVL_DF
-+
-+#define WCD934X_DEF_MICBIAS_MV	1800
-+#define WCD934X_MAX_MICBIAS_MV	2850
-+
-+enum {
-+	SIDO_SOURCE_INTERNAL,
-+	SIDO_SOURCE_RCO_BG,
-+};
-+
-+enum {
-+	INTERP_EAR = 0,
-+	INTERP_HPHL,
-+	INTERP_HPHR,
-+	INTERP_LO1,
-+	INTERP_LO2,
-+	INTERP_LO3_NA, /* LO3 not avalible in Tavil */
-+	INTERP_LO4_NA,
-+	INTERP_SPKR1, /*INT7 WSA Speakers via soundwire */
-+	INTERP_SPKR2, /*INT8 WSA Speakers via soundwire */
-+	INTERP_MAX,
-+};
-+
-+enum {
-+	WCD934X_RX0 = 0,
-+	WCD934X_RX1,
-+	WCD934X_RX2,
-+	WCD934X_RX3,
-+	WCD934X_RX4,
-+	WCD934X_RX5,
-+	WCD934X_RX6,
-+	WCD934X_RX7,
-+	WCD934X_RX8,
-+	WCD934X_RX9,
-+	WCD934X_RX10,
-+	WCD934X_RX11,
-+	WCD934X_RX12,
-+	WCD934X_RX_MAX,
-+};
-+
-+enum {
-+	WCD934X_TX0 = 0,
-+	WCD934X_TX1,
-+	WCD934X_TX2,
-+	WCD934X_TX3,
-+	WCD934X_TX4,
-+	WCD934X_TX5,
-+	WCD934X_TX6,
-+	WCD934X_TX7,
-+	WCD934X_TX8,
-+	WCD934X_TX9,
-+	WCD934X_TX10,
-+	WCD934X_TX11,
-+	WCD934X_TX12,
-+	WCD934X_TX13,
-+	WCD934X_TX14,
-+	WCD934X_TX15,
-+	WCD934X_TX_MAX,
-+};
-+
-+struct wcd934x_slim_ch {
-+	u32 ch_num;
-+	u16 port;
-+	u16 shift;
-+	struct list_head list;
-+};
-+
-+static const struct wcd934x_slim_ch wcd934x_tx_chs[WCD934X_TX_MAX] = {
-+	WCD934X_SLIM_TX_CH(0),
-+	WCD934X_SLIM_TX_CH(1),
-+	WCD934X_SLIM_TX_CH(2),
-+	WCD934X_SLIM_TX_CH(3),
-+	WCD934X_SLIM_TX_CH(4),
-+	WCD934X_SLIM_TX_CH(5),
-+	WCD934X_SLIM_TX_CH(6),
-+	WCD934X_SLIM_TX_CH(7),
-+	WCD934X_SLIM_TX_CH(8),
-+	WCD934X_SLIM_TX_CH(9),
-+	WCD934X_SLIM_TX_CH(10),
-+	WCD934X_SLIM_TX_CH(11),
-+	WCD934X_SLIM_TX_CH(12),
-+	WCD934X_SLIM_TX_CH(13),
-+	WCD934X_SLIM_TX_CH(14),
-+	WCD934X_SLIM_TX_CH(15),
-+};
-+
-+static const struct wcd934x_slim_ch wcd934x_rx_chs[WCD934X_RX_MAX] = {
-+	WCD934X_SLIM_RX_CH(0),	 /* 16 */
-+	WCD934X_SLIM_RX_CH(1),	 /* 17 */
-+	WCD934X_SLIM_RX_CH(2),
-+	WCD934X_SLIM_RX_CH(3),
-+	WCD934X_SLIM_RX_CH(4),
-+	WCD934X_SLIM_RX_CH(5),
-+	WCD934X_SLIM_RX_CH(6),
-+	WCD934X_SLIM_RX_CH(7),
-+	WCD934X_SLIM_RX_CH(8),
-+	WCD934X_SLIM_RX_CH(9),
-+	WCD934X_SLIM_RX_CH(10),
-+	WCD934X_SLIM_RX_CH(11),
-+	WCD934X_SLIM_RX_CH(12),
-+};
-+
-+enum {
-+	AIF1_PB = 0,
-+	AIF1_CAP,
-+	AIF2_PB,
-+	AIF2_CAP,
-+	AIF3_PB,
-+	AIF3_CAP,
-+	AIF4_PB,
-+	AIF4_VIFEED,
-+	AIF4_MAD_TX,
-+	NUM_CODEC_DAIS,
-+};
-+
-+enum {
-+	INTn_1_INP_SEL_ZERO = 0,
-+	INTn_1_INP_SEL_DEC0,
-+	INTn_1_INP_SEL_DEC1,
-+	INTn_1_INP_SEL_IIR0,
-+	INTn_1_INP_SEL_IIR1,
-+	INTn_1_INP_SEL_RX0,
-+	INTn_1_INP_SEL_RX1,
-+	INTn_1_INP_SEL_RX2,
-+	INTn_1_INP_SEL_RX3,
-+	INTn_1_INP_SEL_RX4,
-+	INTn_1_INP_SEL_RX5,
-+	INTn_1_INP_SEL_RX6,
-+	INTn_1_INP_SEL_RX7,
-+};
-+
-+enum {
-+	INTn_2_INP_SEL_ZERO = 0,
-+	INTn_2_INP_SEL_RX0,
-+	INTn_2_INP_SEL_RX1,
-+	INTn_2_INP_SEL_RX2,
-+	INTn_2_INP_SEL_RX3,
-+	INTn_2_INP_SEL_RX4,
-+	INTn_2_INP_SEL_RX5,
-+	INTn_2_INP_SEL_RX6,
-+	INTn_2_INP_SEL_RX7,
-+	INTn_2_INP_SEL_PROXIMITY,
-+};
-+
-+enum {
-+	INTERP_MAIN_PATH,
-+	INTERP_MIX_PATH,
-+};
-+
-+struct interp_sample_rate {
-+	int sample_rate;
-+	int rate_val;
-+};
-+
-+static struct interp_sample_rate sr_val_tbl[] = {
-+	{8000, 0x0},
-+	{16000, 0x1},
-+	{32000, 0x3},
-+	{48000, 0x4},
-+	{96000, 0x5},
-+	{192000, 0x6},
-+	{384000, 0x7},
-+	{44100, 0x9},
-+	{88200, 0xA},
-+	{176400, 0xB},
-+	{352800, 0xC},
-+};
-+
-+struct wcd_slim_codec_dai_data {
-+	struct list_head slim_ch_list;
-+	struct slim_stream_config sconfig;
-+	struct slim_stream_runtime *sruntime;
-+};
-+
-+static const struct regmap_range_cfg wcd934x_ifc_ranges[] = {
-+	{
-+		.name = "WCD9335-IFC-DEV",
-+		.range_min =  0x0,
-+		.range_max = 0xffff,
-+		.selector_reg = 0x800,
-+		.selector_mask = 0xfff,
-+		.selector_shift = 0,
-+		.window_start = 0x800,
-+		.window_len = 0x400,
-+	},
-+};
-+
-+static struct regmap_config wcd934x_ifc_regmap_config = {
-+	.reg_bits = 16,
-+	.val_bits = 8,
-+	.max_register = 0xffff,
-+	.ranges = wcd934x_ifc_ranges,
-+	.num_ranges = ARRAY_SIZE(wcd934x_ifc_ranges),
-+};
-+
-+struct wcd934x_codec {
-+	struct device *dev;
-+	struct clk_hw hw;
-+	struct clk *extclk;
-+	struct regmap *regmap;
-+	struct regmap *if_regmap;
-+	struct slim_device *sdev;
-+	struct slim_device *sidev;
-+	struct wcd_clsh_ctrl *clsh_ctrl;
-+	struct snd_soc_component *component;
-+	struct wcd934x_slim_ch rx_chs[WCD934X_RX_MAX];
-+	struct wcd934x_slim_ch tx_chs[WCD934X_TX_MAX];
-+	struct wcd_slim_codec_dai_data dai[NUM_CODEC_DAIS];
-+	int rate;
-+	u32 version;
-+	u32 hph_mode;
-+	int num_rx_port;
-+	int num_tx_port;
-+	u32 tx_port_value[WCD934X_TX_MAX];
-+	u32 rx_port_value[WCD934X_RX_MAX];
-+	int sido_input_src;
-+	int dmic_0_1_clk_cnt;
-+	int dmic_2_3_clk_cnt;
-+	int dmic_4_5_clk_cnt;
-+	int dmic_sample_rate;
-+	int sysclk_users;
-+	struct mutex sysclk_mutex;
-+};
-+
-+#define to_wcd934x_codec(_hw) container_of(_hw, struct wcd934x_codec, hw)
-+
-+static int wcd934x_set_sido_input_src(struct wcd934x_codec *wcd,
-+				      int sido_src)
-+{
-+	if (sido_src == wcd->sido_input_src)
-+		return 0;
-+
-+	if (sido_src == SIDO_SOURCE_INTERNAL) {
-+		regmap_update_bits(wcd->regmap, WCD934X_ANA_BUCK_CTL,
-+				   WCD934X_ANA_BUCK_HI_ACCU_EN_MASK, 0);
-+		usleep_range(100, 110);
-+		regmap_update_bits(wcd->regmap, WCD934X_ANA_BUCK_CTL,
-+				   WCD934X_ANA_BUCK_HI_ACCU_PRE_ENX_MASK, 0x0);
-+		usleep_range(100, 110);
-+		regmap_update_bits(wcd->regmap, WCD934X_ANA_RCO,
-+				   WCD934X_ANA_RCO_BG_EN_MASK, 0);
-+		usleep_range(100, 110);
-+	} else if (sido_src == SIDO_SOURCE_RCO_BG) {
-+		regmap_update_bits(wcd->regmap, WCD934X_ANA_RCO,
-+				   WCD934X_ANA_RCO_BG_EN_MASK,
-+				   WCD934X_ANA_RCO_BG_ENABLE);
-+		usleep_range(100, 110);
-+		regmap_update_bits(wcd->regmap, WCD934X_ANA_BUCK_CTL,
-+				   WCD934X_ANA_BUCK_PRE_EN1_MASK,
-+				   WCD934X_ANA_BUCK_PRE_EN1_ENABLE);
-+		usleep_range(100, 110);
-+		regmap_update_bits(wcd->regmap, WCD934X_ANA_BUCK_CTL,
-+				   WCD934X_ANA_BUCK_PRE_EN2_MASK,
-+				   WCD934X_ANA_BUCK_PRE_EN2_ENABLE);
-+		usleep_range(100, 110);
-+		regmap_update_bits(wcd->regmap, WCD934X_ANA_BUCK_CTL,
-+				   WCD934X_ANA_BUCK_HI_ACCU_EN_MASK,
-+				   WCD934X_ANA_BUCK_HI_ACCU_ENABLE);
-+		usleep_range(100, 110);
-+	}
-+	wcd->sido_input_src = sido_src;
-+
-+	return 0;
-+}
-+
-+static int wcd934x_enable_ana_bias_and_sysclk(struct wcd934x_codec *wcd)
-+{
-+	mutex_lock(&wcd->sysclk_mutex);
-+
-+	if (++wcd->sysclk_users != 1) {
-+		mutex_unlock(&wcd->sysclk_mutex);
-+		return 0;
-+	}
-+	mutex_unlock(&wcd->sysclk_mutex);
-+
-+	regmap_update_bits(wcd->regmap, WCD934X_ANA_BIAS,
-+			   WCD934X_ANA_BIAS_EN_MASK,
-+			   WCD934X_ANA_BIAS_EN);
-+	regmap_update_bits(wcd->regmap, WCD934X_ANA_BIAS,
-+			   WCD934X_ANA_PRECHRG_EN_MASK,
-+			   WCD934X_ANA_PRECHRG_EN);
-+	/*
-+	 * 1ms delay is required after pre-charge is enabled
-+	 * as per HW requirement
-+	 */
-+	usleep_range(1000, 1100);
-+	regmap_update_bits(wcd->regmap, WCD934X_ANA_BIAS,
-+			   WCD934X_ANA_PRECHRG_EN_MASK, 0);
-+	regmap_update_bits(wcd->regmap, WCD934X_ANA_BIAS,
-+			   WCD934X_ANA_PRECHRG_MODE_MASK, 0);
-+
-+	/*
-+	 * In data clock contrl register is changed
-+	 * to CLK_SYS_MCLK_PRG
-+	 */
-+
-+	regmap_update_bits(wcd->regmap, WCD934X_CLK_SYS_MCLK_PRG,
-+			   WCD934X_EXT_CLK_BUF_EN_MASK,
-+			   WCD934X_EXT_CLK_BUF_EN);
-+	regmap_update_bits(wcd->regmap, WCD934X_CLK_SYS_MCLK_PRG,
-+			   WCD934X_EXT_CLK_DIV_RATIO_MASK,
-+			   WCD934X_EXT_CLK_DIV_BY_2);
-+	regmap_update_bits(wcd->regmap, WCD934X_CLK_SYS_MCLK_PRG,
-+			   WCD934X_MCLK_SRC_MASK,
-+			   WCD934X_MCLK_SRC_EXT_CLK);
-+	regmap_update_bits(wcd->regmap, WCD934X_CLK_SYS_MCLK_PRG,
-+			   WCD934X_MCLK_EN_MASK, WCD934X_MCLK_EN);
-+	regmap_update_bits(wcd->regmap,
-+			   WCD934X_CDC_CLK_RST_CTRL_FS_CNT_CONTROL,
-+			   WCD934X_CDC_FS_MCLK_CNT_EN_MASK,
-+			   WCD934X_CDC_FS_MCLK_CNT_ENABLE);
-+	regmap_update_bits(wcd->regmap,
-+			   WCD934X_CDC_CLK_RST_CTRL_MCLK_CONTROL,
-+			   WCD934X_MCLK_EN_MASK,
-+			   WCD934X_MCLK_EN);
-+	regmap_update_bits(wcd->regmap, WCD934X_CODEC_RPM_CLK_GATE,
-+			   WCD934X_CODEC_RPM_CLK_GATE_MASK, 0x0);
-+	/*
-+	 * 10us sleep is required after clock is enabled
-+	 * as per HW requirement
-+	 */
-+	usleep_range(10, 15);
-+
-+	wcd934x_set_sido_input_src(wcd, SIDO_SOURCE_RCO_BG);
-+
-+	return 0;
-+}
-+
-+static int wcd934x_disable_ana_bias_and_syclk(struct wcd934x_codec *wcd)
-+{
-+	mutex_lock(&wcd->sysclk_mutex);
-+	if (--wcd->sysclk_users != 0) {
-+		mutex_unlock(&wcd->sysclk_mutex);
-+		return 0;
-+	}
-+	mutex_unlock(&wcd->sysclk_mutex);
-+
-+	regmap_update_bits(wcd->regmap, WCD934X_CLK_SYS_MCLK_PRG,
-+			   WCD934X_EXT_CLK_BUF_EN_MASK |
-+			   WCD934X_MCLK_EN_MASK, 0x0);
-+	wcd934x_set_sido_input_src(wcd, SIDO_SOURCE_INTERNAL);
-+
-+	regmap_update_bits(wcd->regmap, WCD934X_ANA_BIAS,
-+			   WCD934X_ANA_BIAS_EN_MASK, 0);
-+	regmap_update_bits(wcd->regmap, WCD934X_ANA_BIAS,
-+			   WCD934X_ANA_PRECHRG_EN_MASK, 0);
-+
-+	return 0;
-+}
-+
-+static int __wcd934x_cdc_mclk_enable(struct wcd934x_codec *wcd, bool enable)
-+{
-+	int ret = 0;
-+
-+	if (enable) {
-+		ret = clk_prepare_enable(wcd->extclk);
-+
-+		if (ret) {
-+			dev_err(wcd->dev, "%s: ext clk enable failed\n",
-+				__func__);
-+			return ret;
-+		}
-+		ret = wcd934x_enable_ana_bias_and_sysclk(wcd);
-+	} else {
-+		int val;
-+
-+		regmap_read(wcd->regmap, WCD934X_CDC_CLK_RST_CTRL_SWR_CONTROL,
-+			    &val);
-+
-+		/* Don't disable clock if soundwire using it.*/
-+		if (val & WCD934X_CDC_SWR_CLK_EN_MASK)
-+			return 0;
-+
-+		wcd934x_disable_ana_bias_and_syclk(wcd);
-+		clk_disable_unprepare(wcd->extclk);
-+	}
-+
-+	return ret;
-+}
-+
-+static int wcd934x_get_version(struct wcd934x_codec *wcd)
-+{
-+	int val1, val2, ver, ret;
-+	struct regmap *regmap;
-+	u16 id_minor;
-+	u32 version_mask = 0;
-+
-+	regmap = wcd->regmap;
-+	ver = 0;
-+
-+	ret = regmap_bulk_read(regmap, WCD934X_CHIP_TIER_CTRL_CHIP_ID_BYTE0,
-+			       (u8 *)&id_minor, sizeof(u16));
-+
-+	if (ret)
-+		return ret;
-+
-+	regmap_read(regmap, WCD934X_CHIP_TIER_CTRL_EFUSE_VAL_OUT14, &val1);
-+	regmap_read(regmap, WCD934X_CHIP_TIER_CTRL_EFUSE_VAL_OUT15, &val2);
-+
-+	version_mask |= (!!((u8)val1 & 0x80)) << DSD_DISABLED_MASK;
-+	version_mask |= (!!((u8)val2 & 0x01)) << SLNQ_DISABLED_MASK;
-+
-+	switch (version_mask) {
-+	case DSD_DISABLED | SLNQ_DISABLED:
-+		if (id_minor == 0)
-+			ver = WCD_VERSION_WCD9340_1_0;
-+		else if (id_minor == 0x01)
-+			ver = WCD_VERSION_WCD9340_1_1;
-+		break;
-+	case SLNQ_DISABLED:
-+		if (id_minor == 0)
-+			ver = WCD_VERSION_WCD9341_1_0;
-+		else if (id_minor == 0x01)
-+			ver = WCD_VERSION_WCD9341_1_1;
-+		break;
-+	}
-+
-+	wcd->version = ver;
-+	dev_info(wcd->dev, "WCD934X Minor:0x%x Version:0x%x\n", id_minor, ver);
-+
-+	return 0;
-+}
-+
-+static void wcd934x_enable_efuse_sensing(struct wcd934x_codec *wcd)
-+{
-+	int rc, val;
-+
-+	__wcd934x_cdc_mclk_enable(wcd, true);
-+
-+	regmap_update_bits(wcd->regmap,
-+			   WCD934X_CHIP_TIER_CTRL_EFUSE_CTL,
-+			   WCD934X_EFUSE_SENSE_STATE_MASK,
-+			   WCD934X_EFUSE_SENSE_STATE_DEF);
-+	regmap_update_bits(wcd->regmap,
-+			   WCD934X_CHIP_TIER_CTRL_EFUSE_CTL,
-+			   WCD934X_EFUSE_SENSE_EN_MASK,
-+			   WCD934X_EFUSE_SENSE_ENABLE);
-+	/*
-+	 * 5ms sleep required after enabling efuse control
-+	 * before checking the status.
-+	 */
-+	usleep_range(5000, 5500);
-+	wcd934x_set_sido_input_src(wcd, SIDO_SOURCE_RCO_BG);
-+
-+	rc = regmap_read(wcd->regmap,
-+			 WCD934X_CHIP_TIER_CTRL_EFUSE_STATUS, &val);
-+	if (rc || (!(val & 0x01)))
-+		WARN(1, "%s: Efuse sense is not complete val=%x, ret=%d\n",
-+		     __func__, val, rc);
-+
-+	__wcd934x_cdc_mclk_enable(wcd, false);
-+}
-+
-+static int wcd934x_swrm_clock(struct wcd934x_codec *wcd, bool enable)
-+{
-+	if (enable) {
-+		__wcd934x_cdc_mclk_enable(wcd, true);
-+		regmap_update_bits(wcd->regmap,
-+				   WCD934X_CDC_CLK_RST_CTRL_SWR_CONTROL,
-+				   WCD934X_CDC_SWR_CLK_EN_MASK,
-+				   WCD934X_CDC_SWR_CLK_ENABLE);
-+	} else {
-+		regmap_update_bits(wcd->regmap,
-+				   WCD934X_CDC_CLK_RST_CTRL_SWR_CONTROL,
-+				   WCD934X_CDC_SWR_CLK_EN_MASK, 0);
-+		__wcd934x_cdc_mclk_enable(wcd, false);
-+	}
-+
-+	return 0;
-+}
-+
-+static int wcd934x_set_prim_interpolator_rate(struct snd_soc_dai *dai,
-+					      u8 rate_val, u32 rate)
-+{
-+	struct snd_soc_component *comp = dai->component;
-+	struct wcd934x_codec *wcd = dev_get_drvdata(comp->dev);
-+	struct wcd934x_slim_ch *ch;
-+	u8 cfg0, cfg1, inp0_sel, inp1_sel, inp2_sel;
-+	int inp, j;
-+
-+	list_for_each_entry(ch, &wcd->dai[dai->id].slim_ch_list, list) {
-+		inp = ch->shift + INTn_1_INP_SEL_RX0;
-+		/*
-+		 * Loop through all interpolator MUX inputs and find out
-+		 * to which interpolator input, the slim rx port
-+		 * is connected
-+		 */
-+		for (j = 0; j < WCD934X_NUM_INTERPOLATORS; j++) {
-+			/* Interpolators 5 and 6 are not aviliable in Tavil */
-+			if (j == INTERP_LO3_NA || j == INTERP_LO4_NA)
-+				continue;
-+
-+			cfg0 = snd_soc_component_read32(comp,
-+					WCD934X_CDC_RX_INP_MUX_RX_INT_CFG0(j));
-+			cfg1 = snd_soc_component_read32(comp,
-+					WCD934X_CDC_RX_INP_MUX_RX_INT_CFG1(j));
-+
-+			inp0_sel = cfg0 &
-+				 WCD934X_CDC_RX_INP_MUX_RX_INT_SEL_MASK;
-+			inp1_sel = (cfg0 >> 4) &
-+				 WCD934X_CDC_RX_INP_MUX_RX_INT_SEL_MASK;
-+			inp2_sel = (cfg1 >> 4) &
-+				 WCD934X_CDC_RX_INP_MUX_RX_INT_SEL_MASK;
-+
-+			if ((inp0_sel == inp) ||  (inp1_sel == inp) ||
-+			    (inp2_sel == inp)) {
-+				/* rate is in Hz */
-+				/*
-+				 * Ear and speaker primary path does not support
-+				 * native sample rates
-+				 */
-+				if ((j == INTERP_EAR || j == INTERP_SPKR1 ||
-+				     j == INTERP_SPKR2) && rate == 44100)
-+					dev_err(wcd->dev,
-+						"Cannot set 44.1KHz on INT%d\n",
-+						j);
-+				else
-+					snd_soc_component_update_bits(comp,
-+					      WCD934X_CDC_RX_PATH_CTL(j),
-+					      WCD934X_CDC_MIX_PCM_RATE_MASK,
-+					      rate_val);
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int wcd934x_set_mix_interpolator_rate(struct snd_soc_dai *dai,
-+					     int rate_val, u32 rate)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-+	struct wcd934x_slim_ch *ch;
-+	int val, j;
-+
-+	list_for_each_entry(ch, &wcd->dai[dai->id].slim_ch_list, list) {
-+		for (j = 0; j < WCD934X_NUM_INTERPOLATORS; j++) {
-+			/* Interpolators 5 and 6 are not aviliable in Tavil */
-+			if (j == INTERP_LO3_NA || j == INTERP_LO4_NA)
-+				continue;
-+			val = snd_soc_component_read32(component,
-+					WCD934X_CDC_RX_INP_MUX_RX_INT_CFG1(j)) &
-+					WCD934X_CDC_RX_INP_MUX_RX_INT_SEL_MASK;
-+
-+			if (val == (ch->shift + INTn_2_INP_SEL_RX0)) {
-+				/*
-+				 * Ear mix path supports only 48, 96, 192,
-+				 * 384KHz only
-+				 */
-+				if ((j == INTERP_EAR) &&
-+				    (rate_val < 0x4 ||
-+				     rate_val > 0x7)) {
-+					dev_err(component->dev,
-+						"Invalid rate for AIF_PB DAI(%d)\n",
-+						dai->id);
-+					return -EINVAL;
-+				}
-+
-+				snd_soc_component_update_bits(component,
-+					      WCD934X_CDC_RX_PATH_MIX_CTL(j),
-+					      WCD934X_CDC_MIX_PCM_RATE_MASK,
-+					      rate_val);
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int wcd934x_set_interpolator_rate(struct snd_soc_dai *dai,
-+					 u32 sample_rate)
-+{
-+	int rate_val = 0;
-+	int i, ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(sr_val_tbl); i++) {
-+		if (sample_rate == sr_val_tbl[i].sample_rate) {
-+			rate_val = sr_val_tbl[i].rate_val;
-+			break;
-+		}
-+	}
-+	if ((i == ARRAY_SIZE(sr_val_tbl)) || (rate_val < 0)) {
-+		dev_err(dai->dev, "Unsupported sample rate: %d\n", sample_rate);
-+		return -EINVAL;
-+	}
-+
-+	ret = wcd934x_set_prim_interpolator_rate(dai, (u8)rate_val,
-+						 sample_rate);
-+	if (ret)
-+		return ret;
-+	ret = wcd934x_set_mix_interpolator_rate(dai, (u8)rate_val,
-+						sample_rate);
-+	if (ret)
-+		return ret;
-+
-+	return ret;
-+}
-+
-+static int wcd934x_set_decimator_rate(struct snd_soc_dai *dai,
-+				      u8 rate_val, u32 rate)
-+{
-+	struct snd_soc_component *comp = dai->component;
-+	struct wcd934x_codec *wcd = snd_soc_component_get_drvdata(comp);
-+	u8 shift = 0, shift_val = 0, tx_mux_sel;
-+	struct wcd934x_slim_ch *ch;
-+	int tx_port, tx_port_reg;
-+	int decimator = -1;
-+
-+	list_for_each_entry(ch, &wcd->dai[dai->id].slim_ch_list, list) {
-+		tx_port = ch->port;
-+		/* Find the SB TX MUX input - which decimator is connected */
-+		switch (tx_port) {
-+		case 0 ...  3:
-+			tx_port_reg = WCD934X_CDC_IF_ROUTER_TX_MUX_CFG0;
-+			shift = (tx_port << 1);
-+			shift_val = 0x03;
-+			break;
-+		case 4 ... 7:
-+			tx_port_reg = WCD934X_CDC_IF_ROUTER_TX_MUX_CFG1;
-+			shift = ((tx_port - 4) << 1);
-+			shift_val = 0x03;
-+			break;
-+		case 8 ... 10:
-+			tx_port_reg = WCD934X_CDC_IF_ROUTER_TX_MUX_CFG2;
-+			shift = ((tx_port - 8) << 1);
-+			shift_val = 0x03;
-+			break;
-+		case 11:
-+			tx_port_reg = WCD934X_CDC_IF_ROUTER_TX_MUX_CFG3;
-+			shift = 0;
-+			shift_val = 0x0F;
-+			break;
-+		case 13:
-+			tx_port_reg = WCD934X_CDC_IF_ROUTER_TX_MUX_CFG3;
-+			shift = 4;
-+			shift_val = 0x03;
-+			break;
-+		default:
-+			dev_err(wcd->dev, "Invalid SLIM TX%u port DAI ID:%d\n",
-+				tx_port, dai->id);
-+			return -EINVAL;
-+		}
-+
-+		tx_mux_sel = snd_soc_component_read32(comp, tx_port_reg) &
-+						      (shift_val << shift);
-+
-+		tx_mux_sel = tx_mux_sel >> shift;
-+		switch (tx_port) {
-+		case 0 ... 8:
-+			if ((tx_mux_sel == 0x2) || (tx_mux_sel == 0x3))
-+				decimator = tx_port;
-+			break;
-+		case 9 ... 10:
-+			if ((tx_mux_sel == 0x1) || (tx_mux_sel == 0x2))
-+				decimator = ((tx_port == 9) ? 7 : 6);
-+			break;
-+		case 11:
-+			if ((tx_mux_sel >= 1) && (tx_mux_sel < 7))
-+				decimator = tx_mux_sel - 1;
-+			break;
-+		case 13:
-+			if ((tx_mux_sel == 0x1) || (tx_mux_sel == 0x2))
-+				decimator = 5;
-+			break;
-+		default:
-+			dev_err(wcd->dev, "ERROR: Invalid tx_port: %d\n",
-+				tx_port);
-+			return -EINVAL;
-+		}
-+
-+		snd_soc_component_update_bits(comp,
-+				      WCD934X_CDC_TX_PATH_CTL(decimator),
-+				      WCD934X_CDC_TX_PATH_CTL_PCM_RATE_MASK,
-+				      rate_val);
-+	}
-+
-+	return 0;
-+}
-+
-+static int wcd934x_slim_set_hw_params(struct wcd934x_codec *wcd,
-+				      struct wcd_slim_codec_dai_data *dai_data,
-+				      int direction)
-+{
-+	struct list_head *slim_ch_list = &dai_data->slim_ch_list;
-+	struct slim_stream_config *cfg = &dai_data->sconfig;
-+	struct wcd934x_slim_ch *ch;
-+	u16 payload = 0;
-+	int ret, i;
-+
-+	cfg->ch_count = 0;
-+	cfg->direction = direction;
-+	cfg->port_mask = 0;
-+
-+	/* Configure slave interface device */
-+	list_for_each_entry(ch, slim_ch_list, list) {
-+		cfg->ch_count++;
-+		payload |= 1 << ch->shift;
-+		cfg->port_mask |= BIT(ch->port);
-+	}
-+
-+	cfg->chs = kcalloc(cfg->ch_count, sizeof(unsigned int), GFP_KERNEL);
-+	if (!cfg->chs)
-+		return -ENOMEM;
-+
-+	i = 0;
-+	list_for_each_entry(ch, slim_ch_list, list) {
-+		cfg->chs[i++] = ch->ch_num;
-+		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+			/* write to interface device */
-+			ret = regmap_write(wcd->if_regmap,
-+			   WCD934X_SLIM_PGD_RX_PORT_MULTI_CHNL_0(ch->port),
-+			   payload);
-+
-+			if (ret < 0)
-+				goto err;
-+
-+			/* configure the slave port for water mark and enable*/
-+			ret = regmap_write(wcd->if_regmap,
-+					WCD934X_SLIM_PGD_RX_PORT_CFG(ch->port),
-+					WCD934X_SLIM_WATER_MARK_VAL);
-+			if (ret < 0)
-+				goto err;
-+		} else {
-+			ret = regmap_write(wcd->if_regmap,
-+				WCD934X_SLIM_PGD_TX_PORT_MULTI_CHNL_0(ch->port),
-+				payload & 0x00FF);
-+			if (ret < 0)
-+				goto err;
-+
-+			/* ports 8,9 */
-+			ret = regmap_write(wcd->if_regmap,
-+				WCD934X_SLIM_PGD_TX_PORT_MULTI_CHNL_1(ch->port),
-+				(payload & 0xFF00) >> 8);
-+			if (ret < 0)
-+				goto err;
-+
-+			/* configure the slave port for water mark and enable*/
-+			ret = regmap_write(wcd->if_regmap,
-+					WCD934X_SLIM_PGD_TX_PORT_CFG(ch->port),
-+					WCD934X_SLIM_WATER_MARK_VAL);
-+
-+			if (ret < 0)
-+				goto err;
-+		}
-+	}
-+
-+	dai_data->sruntime = slim_stream_allocate(wcd->sdev, "WCD934x-SLIM");
-+
-+	return 0;
-+
-+err:
-+	dev_err(wcd->dev, "Error Setting slim hw params\n");
-+	kfree(cfg->chs);
-+	cfg->chs = NULL;
-+
-+	return ret;
-+}
-+
-+static int wcd934x_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct wcd934x_codec *wcd;
-+	int ret, tx_fs_rate = 0;
-+
-+	wcd = snd_soc_component_get_drvdata(dai->component);
-+
-+	switch (substream->stream) {
-+	case SNDRV_PCM_STREAM_PLAYBACK:
-+		ret = wcd934x_set_interpolator_rate(dai, params_rate(params));
-+		if (ret) {
-+			dev_err(wcd->dev, "cannot set sample rate: %u\n",
-+				params_rate(params));
-+			return ret;
-+		}
-+		switch (params_width(params)) {
-+		case 16 ... 24:
-+			wcd->dai[dai->id].sconfig.bps = params_width(params);
-+			break;
-+		default:
-+			dev_err(wcd->dev, "Invalid format 0x%x\n",
-+				params_width(params));
-+			return -EINVAL;
-+		}
-+		break;
-+
-+	case SNDRV_PCM_STREAM_CAPTURE:
-+		switch (params_rate(params)) {
-+		case 8000:
-+			tx_fs_rate = 0;
-+			break;
-+		case 16000:
-+			tx_fs_rate = 1;
-+			break;
-+		case 32000:
-+			tx_fs_rate = 3;
-+			break;
-+		case 48000:
-+			tx_fs_rate = 4;
-+			break;
-+		case 96000:
-+			tx_fs_rate = 5;
-+			break;
-+		case 192000:
-+			tx_fs_rate = 6;
-+			break;
-+		case 384000:
-+			tx_fs_rate = 7;
-+			break;
-+		default:
-+			dev_err(wcd->dev, "Invalid TX sample rate: %d\n",
-+				params_rate(params));
-+			return -EINVAL;
-+
-+		};
-+
-+		ret = wcd934x_set_decimator_rate(dai, tx_fs_rate,
-+						 params_rate(params));
-+		if (ret < 0) {
-+			dev_err(wcd->dev, "Cannot set TX Decimator rate\n");
-+			return ret;
-+		}
-+		switch (params_width(params)) {
-+		case 16 ... 32:
-+			wcd->dai[dai->id].sconfig.bps = params_width(params);
-+			break;
-+		default:
-+			dev_err(wcd->dev, "Invalid format 0x%x\n",
-+				params_width(params));
-+			return -EINVAL;
-+		};
-+		break;
-+	default:
-+		dev_err(wcd->dev, "Invalid stream type %d\n",
-+			substream->stream);
-+		return -EINVAL;
++++ b/Documentation/devicetree/bindings/sound/mt6660.txt
+@@ -0,0 +1,53 @@
++MT6660 MediaTek Speaker Amplifier
++
++This device supports I2C mode only.
++
++Required properties:
++
++	- compatible : "mediatek,mt6660"
++	
++	- reg : The I2C slave address
++
++Optional properties:
++
++	- rt,init_setting_num : The initial register setting element number.
++
++	- rt,init_setting_addr : the addreses array for INIT Setting table.
++
++	- rt,init_setting_mask : the mask array for INIT Setting table.
++
++	- rt,init_setting_val : the value array for INIT Setting table.
++
++Example:
++
++	mt6660@34 {
++		status = "ok";
++		compatible = "mediatek,mt6660";
++		reg = <0x34>;
++		rt,init_setting_num = <26>;
++		rt,init_setting_addr =
++			<0x20 0x30 0x50 0xB1
++			 0xD3 0xE0 0x98 0xB9
++			 0xB7 0xB6 0x6B 0x07
++			 0xBB 0x69 0xBD 0x70
++			 0x7C 0x46 0x1A 0x1B
++			 0x51 0xA2 0x33 0x4C
++			 0x15 0x68>;
++		rt,init_setting_mask =
++			<0x80 0x01 0x1c 0x0c
++			 0x03 0x01 0x44 0xff
++			 0x7777 0x07 0xe0 0xff
++			 0xff 0xff 0xffff 0xff
++			 0xff 0xff 0xffffffff 0xffffffff
++			 0xff 0xff 0xffff 0xffff
++			 0x1800 0x1f>;
++		rt,init_setting_val =
++			<0x00 0x00 0x04 0x00
++			 0x03 0x00 0x04 0x82
++			 0x7273 0x03 0x20 0x70
++			 0x20 0x40 0x17f8 0x15
++			 0x00 0x1d 0x7fdb7ffe 0x7fdb7ffe
++			 0x58 0xce 0x7fff 0x0116
++			 0x0800 0x07>;
 +	};
 +
-+	wcd->dai[dai->id].sconfig.rate = params_rate(params);
-+	wcd934x_slim_set_hw_params(wcd, &wcd->dai[dai->id], substream->stream);
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 229cc89..f135fbb 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -122,6 +122,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_ML26124 if I2C
+ 	select SND_SOC_MT6351 if MTK_PMIC_WRAP
+ 	select SND_SOC_MT6358 if MTK_PMIC_WRAP
++	select SND_SOC_MT6660 if I2C
+ 	select SND_SOC_NAU8540 if I2C
+ 	select SND_SOC_NAU8810 if I2C
+ 	select SND_SOC_NAU8822 if I2C
+@@ -1465,6 +1466,16 @@ config SND_SOC_MT6358
+ 	  Enable support for the platform which uses MT6358 as
+ 	  external codec device.
+ 
++config SND_SOC_MT6660
++	tristate "Mediatek MT6660 Speaker Amplifier"
++	depends on I2C
++	help
++	  MediaTek MT6660 is a smart power amplifier which contain
++	  speaker protection, multi-band DRC, equalizer functions.
++	  Select N if you don't have MT6660 on board.
++	  Select M to build this as module.
 +
-+	return 0;
-+}
 +
-+static int wcd934x_hw_free(struct snd_pcm_substream *substream,
-+			   struct snd_soc_dai *dai)
+ config SND_SOC_NAU8540
+        tristate "Nuvoton Technology Corporation NAU85L40 CODEC"
+        depends on I2C
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index c498373..2b6814c 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -119,6 +119,7 @@ snd-soc-msm8916-analog-objs := msm8916-wcd-analog.o
+ snd-soc-msm8916-digital-objs := msm8916-wcd-digital.o
+ snd-soc-mt6351-objs := mt6351.o
+ snd-soc-mt6358-objs := mt6358.o
++snd-soc-mt6660-objs := mt6660.o
+ snd-soc-nau8540-objs := nau8540.o
+ snd-soc-nau8810-objs := nau8810.o
+ snd-soc-nau8822-objs := nau8822.o
+@@ -403,6 +404,7 @@ obj-$(CONFIG_SND_SOC_MSM8916_WCD_ANALOG) +=snd-soc-msm8916-analog.o
+ obj-$(CONFIG_SND_SOC_MSM8916_WCD_DIGITAL) +=snd-soc-msm8916-digital.o
+ obj-$(CONFIG_SND_SOC_MT6351)	+= snd-soc-mt6351.o
+ obj-$(CONFIG_SND_SOC_MT6358)	+= snd-soc-mt6358.o
++obj-$(CONFIG_SND_SOC_MT6660)	+= snd-soc-mt6660.o
+ obj-$(CONFIG_SND_SOC_NAU8540)   += snd-soc-nau8540.o
+ obj-$(CONFIG_SND_SOC_NAU8810)   += snd-soc-nau8810.o
+ obj-$(CONFIG_SND_SOC_NAU8822)   += snd-soc-nau8822.o
+diff --git a/sound/soc/codecs/mt6660.c b/sound/soc/codecs/mt6660.c
+new file mode 100644
+index 0000000..b8fc53b
+--- /dev/null
++++ b/sound/soc/codecs/mt6660.c
+@@ -0,0 +1,628 @@
++// SPDX-License-Identifier: GPL-2.0 //
++
++// Copyright (c) 2019 MediaTek Inc.
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/version.h>
++#include <linux/err.h>
++#include <linux/i2c.h>
++#include <linux/pm_runtime.h>
++#include <linux/delay.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++#include <sound/pcm_params.h>
++#include <linux/debugfs.h>
++
++#include "mt6660.h"
++
++struct codec_reg_val {
++	u32 addr;
++	u32 mask;
++	u32 data;
++};
++
++struct reg_size_table {
++	u32 addr;
++	u8 size;
++};
++
++static const struct reg_size_table mt6660_reg_size_table[] = {
++	{ MT6660_REG_HPF1_COEF, 4 },
++	{ MT6660_REG_HPF2_COEF, 4 },
++	{ MT6660_REG_TDM_CFG3, 2 },
++	{ MT6660_REG_RESV17, 2 },
++	{ MT6660_REG_RESV23, 2 },
++	{ MT6660_REG_SIGMAX, 2 },
++	{ MT6660_REG_DEVID, 2 },
++	{ MT6660_REG_HCLIP_CTRL, 2 },
++	{ MT6660_REG_DA_GAIN, 2 },
++};
++
++static int mt6660_get_reg_size(uint32_t addr)
 +{
-+	struct wcd_slim_codec_dai_data *dai_data;
-+	struct wcd934x_codec *wcd;
-+
-+	wcd = snd_soc_component_get_drvdata(dai->component);
-+
-+	dai_data = &wcd->dai[dai->id];
-+
-+	kfree(dai_data->sconfig.chs);
-+
-+	return 0;
-+}
-+
-+static int wcd934x_trigger(struct snd_pcm_substream *substream, int cmd,
-+			   struct snd_soc_dai *dai)
-+{
-+	struct wcd_slim_codec_dai_data *dai_data;
-+	struct wcd934x_codec *wcd;
-+	struct slim_stream_config *cfg;
-+
-+	wcd = snd_soc_component_get_drvdata(dai->component);
-+
-+	dai_data = &wcd->dai[dai->id];
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		cfg = &dai_data->sconfig;
-+		slim_stream_prepare(dai_data->sruntime, cfg);
-+		slim_stream_enable(dai_data->sruntime);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		slim_stream_unprepare(dai_data->sruntime);
-+		slim_stream_disable(dai_data->sruntime);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wcd934x_set_channel_map(struct snd_soc_dai *dai,
-+				   unsigned int tx_num, unsigned int *tx_slot,
-+				   unsigned int rx_num, unsigned int *rx_slot)
-+{
-+	struct wcd934x_codec *wcd;
-+	int i;
-+
-+	wcd = snd_soc_component_get_drvdata(dai->component);
-+
-+	if (!tx_slot || !rx_slot) {
-+		dev_err(wcd->dev, "Invalid tx_slot=%p, rx_slot=%p\n",
-+			tx_slot, rx_slot);
-+		return -EINVAL;
-+	}
-+
-+	if (wcd->rx_chs) {
-+		wcd->num_rx_port = rx_num;
-+		for (i = 0; i < rx_num; i++) {
-+			wcd->rx_chs[i].ch_num = rx_slot[i];
-+			INIT_LIST_HEAD(&wcd->rx_chs[i].list);
-+		}
-+	}
-+
-+	if (wcd->tx_chs) {
-+		wcd->num_tx_port = tx_num;
-+		for (i = 0; i < tx_num; i++) {
-+			wcd->tx_chs[i].ch_num = tx_slot[i];
-+			INIT_LIST_HEAD(&wcd->tx_chs[i].list);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int wcd934x_get_channel_map(struct snd_soc_dai *dai,
-+				   unsigned int *tx_num, unsigned int *tx_slot,
-+				   unsigned int *rx_num, unsigned int *rx_slot)
-+{
-+	struct wcd934x_slim_ch *ch;
-+	struct wcd934x_codec *wcd;
 +	int i = 0;
 +
-+	wcd = snd_soc_component_get_drvdata(dai->component);
++	for (i = 0; i < ARRAY_SIZE(mt6660_reg_size_table); i++) {
++		if (mt6660_reg_size_table[i].addr == addr)
++			return mt6660_reg_size_table[i].size;
++	}
++	return 1;
++}
 +
-+	switch (dai->id) {
-+	case AIF1_PB:
-+	case AIF2_PB:
-+	case AIF3_PB:
-+	case AIF4_PB:
-+		if (!rx_slot || !rx_num) {
-+			dev_err(wcd->dev, "Invalid rx_slot %p or rx_num %p\n",
-+				rx_slot, rx_num);
-+			return -EINVAL;
-+		}
++static int mt6660_reg_write(void *context, unsigned int reg, unsigned int val)
++{
++	struct mt6660_chip *chip = context;
++	int size = mt6660_get_reg_size(reg);
++	u8 reg_data[4] = {0};
++	int i = 0, ret = 0;
 +
-+		list_for_each_entry(ch, &wcd->dai[dai->id].slim_ch_list, list)
-+			rx_slot[i++] = ch->ch_num;
++	for (i = 0; i < size; i++)
++		reg_data[size - i - 1] = (val >> (8 * i)) & 0xff;
 +
-+		*rx_num = i;
++	ret = i2c_smbus_write_i2c_block_data(chip->i2c, reg, size, reg_data);
++	if (ret < 0)
++		return ret;
++	return 0;
++}
++
++static int mt6660_reg_read(void *context, unsigned int reg, unsigned int *val)
++{
++	struct mt6660_chip *chip = context;
++	int size = mt6660_get_reg_size(reg);
++	int i = 0, ret = 0;
++	u8 data[4] = {0};
++	u32 reg_data = 0;
++
++	ret = i2c_smbus_read_i2c_block_data(chip->i2c, reg, size, data);
++	if (ret < 0)
++		return ret;
++	for (i = 0; i < size; i++) {
++		reg_data <<= 8;
++		reg_data |= data[i];
++	}
++	*val = reg_data;
++	return 0;
++}
++
++static struct regmap_config mt6660_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 32,
++	.reg_write = mt6660_reg_write,
++	.reg_read = mt6660_reg_read,
++};
++
++static int mt6660_codec_dac_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		usleep_range(1000, 1100);
 +		break;
-+	case AIF1_CAP:
-+	case AIF2_CAP:
-+	case AIF3_CAP:
-+		if (!tx_slot || !tx_num) {
-+			dev_err(wcd->dev, "Invalid tx_slot %p or tx_num %p\n",
-+				tx_slot, tx_num);
-+			return -EINVAL;
++	}
++	return 0;
++}
++
++static int mt6660_codec_classd_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component =
++		snd_soc_dapm_to_component(w->dapm);
++	int ret = 0;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		dev_dbg(component->dev,
++			"%s: before classd turn on\n", __func__);
++		/* config to adaptive mode */
++		ret = snd_soc_component_update_bits(component,
++			MT6660_REG_BST_CTRL, 0x03, 0x03);
++		if (ret < 0) {
++			dev_err(component->dev, "config mode adaptive fail\n");
++			return ret;
 +		}
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/* voltage sensing enable */
++		ret = snd_soc_component_update_bits(component,
++			MT6660_REG_RESV7, 0x04, 0x04);
++		if (ret < 0) {
++			dev_err(component->dev,
++				"enable voltage sensing fail\n");
++			return ret;
++		}
++		dev_dbg(component->dev, "Amp on\n");
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		dev_dbg(component->dev, "Amp off\n");
++		/* voltage sensing disable */
++		ret = snd_soc_component_update_bits(component,
++			MT6660_REG_RESV7, 0x04, 0x00);
++		if (ret < 0) {
++			dev_err(component->dev,
++				"disable voltage sensing fail\n");
++			return ret;
++		}
++		/* pop-noise improvement 1 */
++		ret = snd_soc_component_update_bits(component,
++			MT6660_REG_RESV10, 0x10, 0x10);
++		if (ret < 0) {
++			dev_err(component->dev,
++				"pop-noise improvement 1 fail\n");
++			return ret;
++		}
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		dev_dbg(component->dev,
++			"%s: after classd turn off\n", __func__);
++		/* pop-noise improvement 2 */
++		ret = snd_soc_component_update_bits(component,
++			MT6660_REG_RESV10, 0x10, 0x00);
++		if (ret < 0) {
++			dev_err(component->dev,
++				"pop-noise improvement 2 fail\n");
++			return ret;
++		}
++		/* config to off mode */
++		ret = snd_soc_component_update_bits(component,
++			MT6660_REG_BST_CTRL, 0x03, 0x00);
++		if (ret < 0) {
++			dev_err(component->dev, "config mode off fail\n");
++			return ret;
++		}
++		break;
++	}
++	return 0;
++}
 +
-+		list_for_each_entry(ch, &wcd->dai[dai->id].slim_ch_list, list)
-+			tx_slot[i++] = ch->ch_num;
++static const struct snd_soc_dapm_widget mt6660_component_dapm_widgets[] = {
++	SND_SOC_DAPM_DAC_E("DAC", NULL, MT6660_REG_PLL_CFG1,
++		0, 1, mt6660_codec_dac_event, SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_ADC("VI ADC", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_PGA("PGA", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_OUT_DRV_E("ClassD", MT6660_REG_SYSTEM_CTRL, 2, 0,
++			       NULL, 0, mt6660_codec_classd_event,
++			       SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++			       SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_OUTPUT("OUTP"),
++	SND_SOC_DAPM_OUTPUT("OUTN"),
++};
 +
-+		*tx_num = i;
++static const struct snd_soc_dapm_route mt6660_component_dapm_routes[] = {
++	{ "DAC", NULL, "aif_playback" },
++	{ "PGA", NULL, "DAC" },
++	{ "ClassD", NULL, "PGA" },
++	{ "OUTP", NULL, "ClassD" },
++	{ "OUTN", NULL, "ClassD" },
++	{ "VI ADC", NULL, "ClassD" },
++	{ "aif_capture", NULL, "VI ADC" },
++};
++
++static int mt6660_component_get_volsw(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component =
++		snd_soc_kcontrol_component(kcontrol);
++	struct mt6660_chip *chip = (struct mt6660_chip *)
++		snd_soc_component_get_drvdata(component);
++	int ret = -EINVAL;
++
++	if (!strcmp(kcontrol->id.name, "Chip Rev")) {
++		ucontrol->value.integer.value[0] = chip->chip_rev & 0x0f;
++		ret = 0;
++	}
++	return ret;
++}
++
++static const DECLARE_TLV_DB_SCALE(vol_ctl_tlv, -1155, 5, 0);
++
++static const struct snd_kcontrol_new mt6660_component_snd_controls[] = {
++	SOC_SINGLE_TLV("Digital Volume", MT6660_REG_VOL_CTRL, 0, 255,
++			   1, vol_ctl_tlv),
++	SOC_SINGLE("Hard Clip Switch", MT6660_REG_HCLIP_CTRL, 8, 1, 0),
++	SOC_SINGLE("Clip Switch", MT6660_REG_SPS_CTRL, 0, 1, 0),
++	SOC_SINGLE("Boost Mode", MT6660_REG_BST_CTRL, 0, 3, 0),
++	SOC_SINGLE("DRE Switch", MT6660_REG_DRE_CTRL, 0, 1, 0),
++	SOC_SINGLE("DC Protect Switch",	MT6660_REG_DC_PROTECT_CTRL, 3, 1, 0),
++	SOC_SINGLE("Data Output Left Channel Selection",
++		   MT6660_REG_DATAO_SEL, 3, 7, 0),
++	SOC_SINGLE("Data Output Right Channel Selection",
++		   MT6660_REG_DATAO_SEL, 0, 7, 0),
++	SOC_SINGLE_EXT("T0 SEL", MT6660_REG_CALI_T0, 0, 7, 0,
++		       snd_soc_get_volsw, NULL),
++	SOC_SINGLE_EXT("Chip Rev", MT6660_REG_DEVID, 8, 15, 0,
++		       mt6660_component_get_volsw, NULL),
++};
++
++static inline int _mt6660_chip_power_on(struct mt6660_chip *chip, int on_off)
++{
++	u8 reg_data = 0;
++	int ret = 0;
++
++	ret = i2c_smbus_read_byte_data(chip->i2c, MT6660_REG_SYSTEM_CTRL);
++	if (ret < 0)
++		return ret;
++	reg_data = (u8)ret;
++	if (on_off)
++		reg_data &= (~0x01);
++	else
++		reg_data |= 0x01;
++	return regmap_write(chip->regmap, MT6660_REG_SYSTEM_CTRL, reg_data);
++}
++
++static int mt6660_apply_plat_data(struct mt6660_chip *chip,
++		struct snd_soc_component *component)
++{
++	size_t i = 0;
++	int num = chip->plat_data.init_setting_num;
++	int ret = 0;
++
++	ret = _mt6660_chip_power_on(chip, 1);
++	if (ret < 0) {
++		dev_err(chip->dev, "%s power on failed\n", __func__);
++		return ret;
++	}
++
++	for (i = 0; i < num; i++) {
++		ret = snd_soc_component_update_bits(component,
++				chip->plat_data.init_setting_addr[i],
++				chip->plat_data.init_setting_mask[i],
++				chip->plat_data.init_setting_val[i]);
++		if (ret < 0)
++			return ret;
++	}
++	ret = _mt6660_chip_power_on(chip, 0);
++	if (ret < 0) {
++		dev_err(chip->dev, "%s power on failed\n", __func__);
++		return ret;
++	}
++	return 0;
++}
++
++static int mt6660_component_probe(struct snd_soc_component *component)
++{
++	struct mt6660_chip *chip = snd_soc_component_get_drvdata(component);
++	int ret = 0;
++
++	dev_dbg(component->dev, "%s\n", __func__);
++	snd_soc_component_init_regmap(component, chip->regmap);
++
++	ret = mt6660_apply_plat_data(chip, component);
++	if (ret < 0)
++		dev_err(chip->dev, "mt6660 apply plat data failed\n");
++
++	return ret;
++}
++
++static void mt6660_component_remove(struct snd_soc_component *component)
++{
++	dev_dbg(component->dev, "%s\n", __func__);
++	snd_soc_component_exit_regmap(component);
++}
++
++static const struct snd_soc_component_driver mt6660_component_driver = {
++	.probe = mt6660_component_probe,
++	.remove = mt6660_component_remove,
++
++	.controls = mt6660_component_snd_controls,
++	.num_controls = ARRAY_SIZE(mt6660_component_snd_controls),
++	.dapm_widgets = mt6660_component_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(mt6660_component_dapm_widgets),
++	.dapm_routes = mt6660_component_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(mt6660_component_dapm_routes),
++
++	.idle_bias_on = false, /* idle_bias_off = true */
++};
++
++static int mt6660_component_aif_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
++{
++	int word_len = params_physical_width(hw_params);
++	int aud_bit = params_width(hw_params);
++	u16 reg_data = 0;
++	int ret = 0;
++
++	dev_dbg(dai->dev, "%s: ++\n", __func__);
++	dev_dbg(dai->dev, "format: 0x%08x\n", params_format(hw_params));
++	dev_dbg(dai->dev, "rate: 0x%08x\n", params_rate(hw_params));
++	dev_dbg(dai->dev, "word_len: %d, aud_bit: %d\n", word_len, aud_bit);
++	if (word_len > 32 || word_len < 16) {
++		dev_err(dai->dev, "not supported word length\n");
++		return -ENOTSUPP;
++	}
++	switch (aud_bit) {
++	case 16:
++		reg_data = 3;
++		break;
++	case 18:
++		reg_data = 2;
++		break;
++	case 20:
++		reg_data = 1;
++		break;
++	case 24:
++	case 32:
++		reg_data = 0;
 +		break;
 +	default:
-+		dev_err(wcd->dev, "Invalid DAI ID %x\n", dai->id);
-+		break;
++		return -ENOTSUPP;
 +	}
-+
++	ret = snd_soc_component_update_bits(dai->component,
++		MT6660_REG_SERIAL_CFG1, 0xc0, (reg_data << 6));
++	if (ret < 0) {
++		dev_err(dai->dev, "config aud bit fail\n");
++		return ret;
++	}
++	ret = snd_soc_component_update_bits(dai->component,
++		MT6660_REG_TDM_CFG3, 0x3f0, word_len << 4);
++	if (ret < 0) {
++		dev_err(dai->dev, "config word len fail\n");
++		return ret;
++	}
++	dev_dbg(dai->dev, "%s: --\n", __func__);
 +	return 0;
 +}
 +
-+static struct snd_soc_dai_ops wcd934x_dai_ops = {
-+	.hw_params = wcd934x_hw_params,
-+	.hw_free = wcd934x_hw_free,
-+	.trigger = wcd934x_trigger,
-+	.set_channel_map = wcd934x_set_channel_map,
-+	.get_channel_map = wcd934x_get_channel_map,
++static const struct snd_soc_dai_ops mt6660_component_aif_ops = {
++	.hw_params = mt6660_component_aif_hw_params,
 +};
 +
-+static struct snd_soc_dai_driver wcd934x_slim_dais[] = {
-+	[0] = {
-+		.name = "wcd934x_rx1",
-+		.id = AIF1_PB,
-+		.playback = {
-+			.stream_name = "AIF1 Playback",
-+			.rates = WCD934X_RATES_MASK | WCD934X_FRAC_RATES_MASK,
-+			.formats = WCD934X_FORMATS_S16_S24_LE,
-+			.rate_max = 192000,
-+			.rate_min = 8000,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+		},
-+		.ops = &wcd934x_dai_ops,
++#define STUB_RATES	SNDRV_PCM_RATE_8000_192000
++#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++			SNDRV_PCM_FMTBIT_U16_LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_U24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE | \
++			SNDRV_PCM_FMTBIT_U32_LE)
++
++static struct snd_soc_dai_driver mt6660_codec_dai = {
++	.name = "mt6660-aif",
++	.playback = {
++		.stream_name	= "aif_playback",
++		.channels_min	= 1,
++		.channels_max	= 2,
++		.rates		= STUB_RATES,
++		.formats	= STUB_FORMATS,
 +	},
-+	[1] = {
-+		.name = "wcd934x_tx1",
-+		.id = AIF1_CAP,
-+		.capture = {
-+			.stream_name = "AIF1 Capture",
-+			.rates = WCD934X_RATES_MASK,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+			.channels_min = 1,
-+			.channels_max = 4,
-+		},
-+		.ops = &wcd934x_dai_ops,
++	.capture = {
++		.stream_name	= "aif_capture",
++		.channels_min	= 1,
++		.channels_max	= 2,
++		.rates = STUB_RATES,
++		.formats = STUB_FORMATS,
 +	},
-+	[2] = {
-+		.name = "wcd934x_rx2",
-+		.id = AIF2_PB,
-+		.playback = {
-+			.stream_name = "AIF2 Playback",
-+			.rates = WCD934X_RATES_MASK | WCD934X_FRAC_RATES_MASK,
-+			.formats = WCD934X_FORMATS_S16_S24_LE,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+		},
-+		.ops = &wcd934x_dai_ops,
-+	},
-+	[3] = {
-+		.name = "wcd934x_tx2",
-+		.id = AIF2_CAP,
-+		.capture = {
-+			.stream_name = "AIF2 Capture",
-+			.rates = WCD934X_RATES_MASK,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+			.channels_min = 1,
-+			.channels_max = 4,
-+		},
-+		.ops = &wcd934x_dai_ops,
-+	},
-+	[4] = {
-+		.name = "wcd934x_rx3",
-+		.id = AIF3_PB,
-+		.playback = {
-+			.stream_name = "AIF3 Playback",
-+			.rates = WCD934X_RATES_MASK | WCD934X_FRAC_RATES_MASK,
-+			.formats = WCD934X_FORMATS_S16_S24_LE,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+		},
-+		.ops = &wcd934x_dai_ops,
-+	},
-+	[5] = {
-+		.name = "wcd934x_tx3",
-+		.id = AIF3_CAP,
-+		.capture = {
-+			.stream_name = "AIF3 Capture",
-+			.rates = WCD934X_RATES_MASK,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+			.channels_min = 1,
-+			.channels_max = 4,
-+		},
-+		.ops = &wcd934x_dai_ops,
-+	},
-+	[6] = {
-+		.name = "wcd934x_rx4",
-+		.id = AIF4_PB,
-+		.playback = {
-+			.stream_name = "AIF4 Playback",
-+			.rates = WCD934X_RATES_MASK | WCD934X_FRAC_RATES_MASK,
-+			.formats = WCD934X_FORMATS_S16_S24_LE,
-+			.rate_min = 8000,
-+			.rate_max = 192000,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+		},
-+		.ops = &wcd934x_dai_ops,
-+	},
++	/* dai properties */
++	.symmetric_rates = 1,
++	.symmetric_channels = 1,
++	.symmetric_samplebits = 1,
++	/* dai operations */
++	.ops = &mt6660_component_aif_ops,
 +};
 +
-+static int swclk_gate_enable(struct clk_hw *hw)
++static inline int _mt6660_chip_id_check(struct mt6660_chip *chip)
 +{
-+	return wcd934x_swrm_clock(to_wcd934x_codec(hw), true);
-+}
++	u8 id[2] = {0};
++	int ret = 0;
 +
-+static void swclk_gate_disable(struct clk_hw *hw)
-+{
-+	wcd934x_swrm_clock(to_wcd934x_codec(hw), false);
-+}
-+
-+static int swclk_gate_is_enabled(struct clk_hw *hw)
-+{
-+	struct wcd934x_codec *wcd = to_wcd934x_codec(hw);
-+	int ret, val;
-+
-+	regmap_read(wcd->regmap, WCD934X_CDC_CLK_RST_CTRL_SWR_CONTROL, &val);
-+	ret = val & WCD934X_CDC_SWR_CLK_EN_MASK;
-+
++	ret = i2c_smbus_read_i2c_block_data(chip->i2c, MT6660_REG_DEVID, 2, id);
++	if (ret < 0)
++		return ret;
++	ret = (id[0] << 8) + id[1];
++	ret &= 0x0ff0;
++	if (ret != 0x00e0 && ret != 0x01e0) {
++		dev_err(chip->dev, "%s id(%x) not match\n", __func__, ret);
++		return -ENODEV;
++	}
 +	return ret;
 +}
 +
-+static unsigned long swclk_recalc_rate(struct clk_hw *hw,
-+				       unsigned long parent_rate)
++static inline int _mt6660_chip_sw_reset(struct mt6660_chip *chip)
 +{
-+	return parent_rate / 2;
-+}
-+
-+static const struct clk_ops swclk_gate_ops = {
-+	.prepare = swclk_gate_enable,
-+	.unprepare = swclk_gate_disable,
-+	.is_enabled = swclk_gate_is_enabled,
-+	.recalc_rate = swclk_recalc_rate,
-+
-+};
-+
-+static struct clk *wcd934x_register_mclk_output(struct wcd934x_codec *wcd)
-+{
-+	struct clk *parent = wcd->extclk;
-+	struct device *dev = wcd->dev;
-+	struct device_node *np = dev->parent->of_node;
-+	const char *parent_clk_name = NULL;
-+	const char *clk_name = "mclk";
-+	struct clk_hw *hw;
-+	struct clk_init_data init;
 +	int ret;
 +
-+	if (of_property_read_u32(np, "clock-frequency", &wcd->rate))
-+		return NULL;
-+
-+	parent_clk_name = __clk_get_name(parent);
-+
-+	of_property_read_string(np, "clock-output-names", &clk_name);
-+
-+	init.name = clk_name;
-+	init.ops = &swclk_gate_ops;
-+	init.flags = 0;
-+	init.parent_names = &parent_clk_name;
-+	init.num_parents = 1;
-+	wcd->hw.init = &init;
-+
-+	hw = &wcd->hw;
-+	ret = clk_hw_register(wcd->dev->parent, hw);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	of_clk_add_provider(np, of_clk_src_simple_get, hw->clk);
-+
-+	return NULL;
++	/* turn on main pll first, then trigger reset */
++	ret = regmap_write(chip->regmap, 0x03, 0x00);
++	if (ret < 0)
++		return ret;
++	ret = regmap_write(chip->regmap, MT6660_REG_SYSTEM_CTRL, 0x80);
++	msleep(30);
++	return 0;
 +}
 +
-+static int wcd934x_get_micbias_val(struct device *dev, const char *micbias)
++static inline int _mt6660_read_chip_revision(struct mt6660_chip *chip)
 +{
-+	int mv;
++	u8 reg_data[2] = {0};
++	int ret = 0;
 +
-+	if (of_property_read_u32(dev->parent->of_node, micbias, &mv)) {
-+		dev_err(dev, "%s value not found, using default\n", micbias);
-+		mv = WCD934X_DEF_MICBIAS_MV;
++	ret = i2c_smbus_read_i2c_block_data(
++		chip->i2c, MT6660_REG_DEVID, 2, reg_data);
++	if (ret < 0) {
++		dev_err(chip->dev, "get chip revision fail\n");
++		return ret;
++	}
++	chip->chip_rev = reg_data[1];
++	return 0;
++}
++
++static int mt6660_parse_dt(struct mt6660_chip *chip, struct device *dev)
++{
++	struct device_node *np = dev->of_node;
++	u32 val;
++	size_t i = 0;
++
++	if (!np) {
++		dev_err(dev, "no device node\n");
++		return -EINVAL;
++	}
++
++	if (of_property_read_u32(np, "rt,init_setting_num", &val)) {
++		dev_err(dev, "no init setting\n");
++		chip->plat_data.init_setting_num = 0;
 +	} else {
-+		/* convert it to milli volts */
-+		mv = mv/1000;
++		chip->plat_data.init_setting_num = val;
 +	}
 +
-+	if (mv < 1000 || mv > 2850) {
-+		dev_err(dev, "%s value not in valid range, using default\n",
-+			micbias);
-+		mv = WCD934X_DEF_MICBIAS_MV;
++	chip->plat_data.init_setting_addr =
++		devm_kzalloc(dev, sizeof(u32) *
++				chip->plat_data.init_setting_num, GFP_KERNEL);
++	chip->plat_data.init_setting_mask =
++		devm_kzalloc(dev, sizeof(u32) *
++				chip->plat_data.init_setting_num, GFP_KERNEL);
++	chip->plat_data.init_setting_val =
++		devm_kzalloc(dev, sizeof(u32) *
++				chip->plat_data.init_setting_num, GFP_KERNEL);
++
++	if (of_property_read_u32_array(np, "rt,init_setting_addr",
++				chip->plat_data.init_setting_addr,
++				chip->plat_data.init_setting_num)) {
++		dev_err(dev, "no init setting addr\n");
++	}
++	if (of_property_read_u32_array(np, "rt,init_setting_mask",
++				chip->plat_data.init_setting_mask,
++				chip->plat_data.init_setting_num)) {
++		dev_err(dev, "no init setting addr\n");
++	}
++	if (of_property_read_u32_array(np, "rt,init_setting_val",
++				chip->plat_data.init_setting_val,
++				chip->plat_data.init_setting_num)) {
++		dev_err(dev, "no init setting addr\n");
 +	}
 +
-+	return (mv - 1000) / 50;
-+}
-+
-+static int wcd934x_init_dmic(struct snd_soc_component *comp)
-+{
-+	int vout_ctl_1, vout_ctl_2, vout_ctl_3, vout_ctl_4;
-+	struct wcd934x_codec *wcd = dev_get_drvdata(comp->dev);
-+	u32 def_dmic_rate, dmic_clk_drv;
-+
-+	vout_ctl_1 = wcd934x_get_micbias_val(comp->dev,
-+					     "qcom,micbias1-microvolt");
-+	vout_ctl_2 = wcd934x_get_micbias_val(comp->dev,
-+					     "qcom,micbias2-microvolt");
-+	vout_ctl_3 = wcd934x_get_micbias_val(comp->dev,
-+					     "qcom,micbias3-microvolt");
-+	vout_ctl_4 = wcd934x_get_micbias_val(comp->dev,
-+					     "qcom,micbias4-microvolt");
-+
-+	snd_soc_component_update_bits(comp, WCD934X_ANA_MICB1,
-+				      WCD934X_MICB_VAL_MASK, vout_ctl_1);
-+	snd_soc_component_update_bits(comp, WCD934X_ANA_MICB2,
-+				      WCD934X_MICB_VAL_MASK, vout_ctl_2);
-+	snd_soc_component_update_bits(comp, WCD934X_ANA_MICB3,
-+				      WCD934X_MICB_VAL_MASK, vout_ctl_3);
-+	snd_soc_component_update_bits(comp, WCD934X_ANA_MICB4,
-+				      WCD934X_MICB_VAL_MASK, vout_ctl_4);
-+
-+	if (wcd->rate == WCD934X_MCLK_CLK_9P6MHZ)
-+		def_dmic_rate = WCD9XXX_DMIC_SAMPLE_RATE_4P8MHZ;
-+	else
-+		def_dmic_rate = WCD9XXX_DMIC_SAMPLE_RATE_4P096MHZ;
-+
-+	wcd->dmic_sample_rate = def_dmic_rate;
-+
-+	dmic_clk_drv = 0;
-+	snd_soc_component_update_bits(comp, WCD934X_TEST_DEBUG_PAD_DRVCTL_0,
-+				      0x0C, dmic_clk_drv << 2);
-+
++	dev_dbg(dev, "%s, init stting table, num = %d\n", __func__,
++		chip->plat_data.init_setting_num);
++	for (i = 0; i < chip->plat_data.init_setting_num; i++) {
++		dev_dbg(dev, "0x%02x, 0x%08x, 0x%08x\n",
++				chip->plat_data.init_setting_addr[i],
++				chip->plat_data.init_setting_mask[i],
++				chip->plat_data.init_setting_val[i]);
++	}
 +	return 0;
 +}
 +
-+static void wcd934x_hw_init(struct wcd934x_codec *wcd)
++static int mt6660_i2c_probe(struct i2c_client *client,
++			    const struct i2c_device_id *id)
 +{
-+	struct regmap *rm = wcd->regmap;
++	struct mt6660_chip *chip = NULL;
++	int ret = 0;
 +
-+	/* set SPKR rate to FS_2P4_3P072 */
-+	regmap_update_bits(rm, WCD934X_CDC_RX7_RX_PATH_CFG1, 0x08, 0x08);
-+	regmap_update_bits(rm, WCD934X_CDC_RX8_RX_PATH_CFG1, 0x08, 0x08);
++	dev_dbg(&client->dev, "%s\n", __func__);
++	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
++	if (!chip)
++		return -ENOMEM;
++	chip->i2c = client;
++	chip->dev = &client->dev;
++	mutex_init(&chip->io_lock);
++	i2c_set_clientdata(client, chip);
 +
-+	/* Take DMICs out of reset */
-+	regmap_update_bits(rm, WCD934X_CPE_SS_DMIC_CFG, 0x80, 0x00);
-+}
-+
-+static int wcd934x_comp_init(struct snd_soc_component *component)
-+{
-+	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-+
-+	wcd934x_hw_init(wcd);
-+	wcd934x_enable_efuse_sensing(wcd);
-+	wcd934x_get_version(wcd);
-+
-+	return 0;
-+}
-+
-+static irqreturn_t wcd934x_slim_irq_handler(int irq, void *data)
-+{
-+	struct wcd934x_codec *wcd = data;
-+	unsigned long status = 0;
-+	int i, j, port_id;
-+	unsigned int val, int_val = 0;
-+	irqreturn_t ret = IRQ_NONE;
-+	bool tx;
-+	unsigned short reg = 0;
-+
-+	for (i = WCD934X_SLIM_PGD_PORT_INT_STATUS_RX_0, j = 0;
-+	     i <= WCD934X_SLIM_PGD_PORT_INT_STATUS_TX_1; i++, j++) {
-+		regmap_read(wcd->if_regmap, i, &val);
-+		status |= ((u32)val << (8 * j));
++	ret = mt6660_parse_dt(chip, &client->dev);
++	if (ret < 0) {
++		dev_err(&client->dev, "parsing dts failed\n");
++		return ret;
 +	}
 +
-+	for_each_set_bit(j, &status, 32) {
-+		tx = false;
-+		port_id = j;
-+
-+		if (j >= 16) {
-+			tx = true;
-+			port_id = j - 16;
-+		}
-+
-+		regmap_read(wcd->if_regmap,
-+			    WCD934X_SLIM_PGD_PORT_INT_RX_SOURCE0 + j, &val);
-+		if (val) {
-+			if (!tx)
-+				reg = WCD934X_SLIM_PGD_PORT_INT_EN0 +
-+					(port_id / 8);
-+			else
-+				reg = WCD934X_SLIM_PGD_PORT_INT_TX_EN0 +
-+					(port_id / 8);
-+			regmap_read(wcd->if_regmap, reg, &int_val);
-+		}
-+
-+		if (val & WCD934X_SLIM_IRQ_OVERFLOW)
-+			dev_err_ratelimited(wcd->dev,
-+					    "overflow error on %s port %d, value %x\n",
-+					    (tx ? "TX" : "RX"), port_id, val);
-+
-+		if (val & WCD934X_SLIM_IRQ_UNDERFLOW)
-+			dev_err_ratelimited(wcd->dev,
-+					    "underflow error on %s port %d, value %x\n",
-+					    (tx ? "TX" : "RX"), port_id, val);
-+
-+		if ((val & WCD934X_SLIM_IRQ_OVERFLOW) ||
-+		    (val & WCD934X_SLIM_IRQ_UNDERFLOW)) {
-+			if (!tx)
-+				reg = WCD934X_SLIM_PGD_PORT_INT_EN0 +
-+					(port_id / 8);
-+			else
-+				reg = WCD934X_SLIM_PGD_PORT_INT_TX_EN0 +
-+					(port_id / 8);
-+			regmap_read(
-+				wcd->if_regmap, reg, &int_val);
-+			if (int_val & (1 << (port_id % 8))) {
-+				int_val = int_val ^ (1 << (port_id % 8));
-+				regmap_write(wcd->if_regmap,
-+					     reg, int_val);
-+			}
-+		}
-+
-+		if (val & WCD934X_SLIM_IRQ_PORT_CLOSED)
-+			dev_err_ratelimited(wcd->dev,
-+					    "Port Closed %s port %d, value %x\n",
-+					    (tx ? "TX" : "RX"), port_id, val);
-+
-+		regmap_write(wcd->if_regmap,
-+			     WCD934X_SLIM_PGD_PORT_INT_CLR_RX_0 + (j / 8),
-+				BIT(j % 8));
-+		ret = IRQ_HANDLED;
++	chip->regmap = devm_regmap_init(&client->dev,
++		NULL, chip, &mt6660_regmap_config);
++	if (IS_ERR(chip->regmap)) {
++		ret = PTR_ERR(chip->regmap);
++		dev_err(&client->dev, "failed to initialise regmap: %d\n", ret);
++		return ret;
 +	}
 +
++	/* chip reset first */
++	ret = _mt6660_chip_sw_reset(chip);
++	if (ret < 0) {
++		dev_err(chip->dev, "chip reset fail\n");
++		goto probe_fail;
++	}
++	/* chip power on */
++	ret = _mt6660_chip_power_on(chip, 1);
++	if (ret < 0) {
++		dev_err(chip->dev, "chip power on 2 fail\n");
++		goto probe_fail;
++	}
++	/* chip devid check */
++	ret = _mt6660_chip_id_check(chip);
++	if (ret < 0) {
++		dev_err(chip->dev, "chip id check fail\n");
++		goto probe_fail;
++	}
++	/* chip revision get */
++	ret = _mt6660_read_chip_revision(chip);
++	if (ret < 0) {
++		dev_err(chip->dev, "read chip revision fail\n");
++		goto probe_fail;
++	}
++	pm_runtime_set_active(chip->dev);
++	pm_runtime_enable(chip->dev);
++
++	ret = devm_snd_soc_register_component(chip->dev,
++					       &mt6660_component_driver,
++					       &mt6660_codec_dai, 1);
++	return ret;
++probe_fail:
++	_mt6660_chip_power_on(chip, 0);
++	mutex_destroy(&chip->io_lock);
 +	return ret;
 +}
 +
-+static int wcd934x_comp_probe(struct snd_soc_component *component)
++static int mt6660_i2c_remove(struct i2c_client *client)
 +{
-+	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-+	int i;
++	struct mt6660_chip *chip = i2c_get_clientdata(client);
 +
-+	snd_soc_component_init_regmap(component, wcd->regmap);
-+	wcd->component = component;
-+
-+	/* Class-H Init*/
-+	wcd->clsh_ctrl = wcd_clsh_ctrl_alloc(component, wcd->version);
-+	if (IS_ERR(wcd->clsh_ctrl))
-+		return PTR_ERR(wcd->clsh_ctrl);
-+
-+	/* Default HPH Mode to Class-H Low HiFi */
-+	wcd->hph_mode = CLS_H_LOHIFI;
-+
-+	wcd934x_comp_init(component);
-+
-+	for (i = 0; i < NUM_CODEC_DAIS; i++)
-+		INIT_LIST_HEAD(&wcd->dai[i].slim_ch_list);
-+
-+	wcd934x_init_dmic(component);
++	pm_runtime_disable(chip->dev);
++	pm_runtime_set_suspended(chip->dev);
++	mutex_destroy(&chip->io_lock);
 +	return 0;
 +}
 +
-+static void wcd934x_comp_remove(struct snd_soc_component *comp)
++static int __maybe_unused mt6660_i2c_runtime_suspend(struct device *dev)
 +{
-+	struct wcd934x_codec *wcd = dev_get_drvdata(comp->dev);
++	struct mt6660_chip *chip = dev_get_drvdata(dev);
 +
-+	wcd_clsh_ctrl_free(wcd->clsh_ctrl);
++	dev_dbg(dev, "enter low power mode\n");
++	return regmap_update_bits(chip->regmap,
++		MT6660_REG_SYSTEM_CTRL, 0x01, 0x01);
 +}
 +
-+static int wcd934x_comp_set_sysclk(struct snd_soc_component *comp,
-+				   int clk_id, int source,
-+				   unsigned int freq, int dir)
++static int __maybe_unused mt6660_i2c_runtime_resume(struct device *dev)
 +{
-+	struct wcd934x_codec *wcd = dev_get_drvdata(comp->dev);
-+	int val = WCD934X_CODEC_RPM_CLK_MCLK_CFG_9P6MHZ;
++	struct mt6660_chip *chip = dev_get_drvdata(dev);
 +
-+	wcd->rate = freq;
-+
-+	if (wcd->rate == WCD934X_MCLK_CLK_12P288MHZ)
-+		val = WCD934X_CODEC_RPM_CLK_MCLK_CFG_12P288MHZ;
-+
-+	snd_soc_component_update_bits(comp, WCD934X_CODEC_RPM_CLK_MCLK_CFG,
-+				      WCD934X_CODEC_RPM_CLK_MCLK_CFG_MCLK_MASK,
-+				      val);
-+
-+	return clk_set_rate(wcd->extclk, freq);
++	dev_dbg(dev, "exit low power mode\n");
++	return regmap_update_bits(chip->regmap,
++		MT6660_REG_SYSTEM_CTRL, 0x01, 0x00);
 +}
 +
-+static const struct snd_soc_component_driver wcd934x_component_drv = {
-+	.probe = wcd934x_comp_probe,
-+	.remove = wcd934x_comp_remove,
-+	.set_sysclk = wcd934x_comp_set_sysclk,
++static const struct dev_pm_ops mt6660_dev_pm_ops = {
++	SET_RUNTIME_PM_OPS(mt6660_i2c_runtime_suspend,
++			   mt6660_i2c_runtime_resume, NULL)
 +};
 +
-+static int wcd934x_codec_parse_data(struct wcd934x_codec *wcd)
-+{
-+	struct device *dev = &wcd->sdev->dev;
-+	struct device_node *ifc_dev_np;
-+
-+	ifc_dev_np = of_parse_phandle(dev->of_node, "slim-ifc-dev", 0);
-+	if (!ifc_dev_np) {
-+		dev_err(dev, "No Interface device found\n");
-+		return -EINVAL;
-+	}
-+
-+	wcd->sidev = of_slim_get_device(wcd->sdev->ctrl, ifc_dev_np);
-+	if (!wcd->sidev) {
-+		dev_err(dev, "Unable to get SLIM Interface device\n");
-+		return -EINVAL;
-+	}
-+
-+	slim_get_logical_addr(wcd->sidev);
-+	wcd->if_regmap = regmap_init_slimbus(wcd->sidev,
-+				  &wcd934x_ifc_regmap_config);
-+	if (IS_ERR(wcd->if_regmap)) {
-+		dev_err(dev, "Failed to allocate ifc register map\n");
-+		return PTR_ERR(wcd->if_regmap);
-+	}
-+
-+	of_property_read_u32(dev->parent->of_node, "qcom,dmic-sample-rate",
-+			     &wcd->dmic_sample_rate);
-+
-+	return 0;
-+}
-+
-+static int wcd934x_codec_probe(struct platform_device *pdev)
-+{
-+	struct wcd934x_ddata *data = dev_get_drvdata(pdev->dev.parent);
-+	struct wcd934x_codec *wcd;
-+	struct device *dev = &pdev->dev;
-+	int ret, irq;
-+
-+	wcd = devm_kzalloc(&pdev->dev, sizeof(*wcd), GFP_KERNEL);
-+	if (!wcd)
-+		return -ENOMEM;
-+
-+	wcd->dev = dev;
-+	wcd->regmap = data->regmap;
-+	wcd->extclk = data->extclk;
-+	wcd->sdev = to_slim_device(data->dev);
-+	mutex_init(&wcd->sysclk_mutex);
-+
-+	ret = wcd934x_codec_parse_data(wcd);
-+	if (ret) {
-+		dev_err(wcd->dev, "Failed to get SLIM IRQ\n");
-+		return ret;
-+	}
-+
-+	/* set default rate 9P6MHz */
-+	regmap_update_bits(wcd->regmap, WCD934X_CODEC_RPM_CLK_MCLK_CFG,
-+			   WCD934X_CODEC_RPM_CLK_MCLK_CFG_MCLK_MASK,
-+			   WCD934X_CODEC_RPM_CLK_MCLK_CFG_9P6MHZ);
-+	memcpy(wcd->rx_chs, wcd934x_rx_chs, sizeof(wcd934x_rx_chs));
-+	memcpy(wcd->tx_chs, wcd934x_tx_chs, sizeof(wcd934x_tx_chs));
-+
-+	irq = regmap_irq_get_virq(data->irq_data, WCD934X_IRQ_SLIMBUS);
-+	if (irq < 0) {
-+		dev_err(wcd->dev, "Failed to get SLIM IRQ\n");
-+		return irq;
-+	}
-+
-+	ret = devm_request_threaded_irq(dev, irq, NULL,
-+					wcd934x_slim_irq_handler,
-+					IRQF_TRIGGER_RISING,
-+					"slim", wcd);
-+	if (ret) {
-+		dev_err(dev, "Failed to request slimbus irq\n");
-+		return ret;
-+	}
-+
-+	wcd934x_register_mclk_output(wcd);
-+	platform_set_drvdata(pdev, wcd);
-+
-+	return devm_snd_soc_register_component(dev, &wcd934x_component_drv,
-+					       wcd934x_slim_dais,
-+					       ARRAY_SIZE(wcd934x_slim_dais));
-+}
-+
-+static const struct platform_device_id wcd934x_driver_id[] = {
-+	{
-+		.name = "wcd934x-codec",
-+	},
++static const struct of_device_id __maybe_unused mt6660_of_id[] = {
++	{ .compatible = "mediatek,mt6660",},
 +	{},
 +};
-+MODULE_DEVICE_TABLE(platform, wcd934x_driver_id);
++MODULE_DEVICE_TABLE(of, mt6660_of_id);
 +
-+static struct platform_driver wcd934x_codec_driver = {
-+	.probe	= &wcd934x_codec_probe,
-+	.id_table = wcd934x_driver_id,
++static const struct i2c_device_id mt6660_i2c_id[] = {
++	{"mt6660", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(i2c, mt6660_i2c_id);
++
++static struct i2c_driver mt6660_i2c_driver = {
 +	.driver = {
-+		.name	= "wcd934x-codec",
-+	}
++		.name = "mt6660",
++		.of_match_table = of_match_ptr(mt6660_of_id),
++		.pm = &mt6660_dev_pm_ops,
++	},
++	.probe = mt6660_i2c_probe,
++	.remove = mt6660_i2c_remove,
++	.id_table = mt6660_i2c_id,
++};
++module_i2c_driver(mt6660_i2c_driver);
++
++MODULE_AUTHOR("Jeff Chang <jeff_chang@richtek.com>");
++MODULE_DESCRIPTION("MT6660 SPKAMP Driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("1.0.7_G");
+diff --git a/sound/soc/codecs/mt6660.h b/sound/soc/codecs/mt6660.h
+new file mode 100644
+index 0000000..6c40b40
+--- /dev/null
++++ b/sound/soc/codecs/mt6660.h
+@@ -0,0 +1,75 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2019 MediaTek Inc.
++ */
++
++#ifndef __SND_SOC_MT6660_H
++#define __SND_SOC_MT6660_H
++
++#include <linux/mutex.h>
++#include <linux/regmap.h>
++
++struct mt6660_platform_data {
++	u8 init_setting_num;
++	u32 *init_setting_addr;
++	u32 *init_setting_mask;
++	u32 *init_setting_val;
 +};
 +
-+MODULE_ALIAS("platform:wcd934x-codec");
-+module_platform_driver(wcd934x_codec_driver);
-+MODULE_DESCRIPTION("WCD934x codec driver");
-+MODULE_LICENSE("GPL v2");
++struct mt6660_chip {
++	struct i2c_client *i2c;
++	struct device *dev;
++	struct platform_device *param_dev;
++	struct mt6660_platform_data plat_data;
++	struct mutex io_lock;
++	struct regmap *regmap;
++	u16 chip_rev;
++};
++
++#define MT6660_REG_DEVID		(0x00)
++#define MT6660_REG_SYSTEM_CTRL		(0x03)
++#define MT6660_REG_IRQ_STATUS1		(0x05)
++#define MT6660_REG_ADDA_CLOCK		(0x07)
++#define MT6660_REG_SERIAL_CFG1		(0x10)
++#define MT6660_REG_DATAO_SEL		(0x12)
++#define MT6660_REG_TDM_CFG3		(0x15)
++#define MT6660_REG_HPF_CTRL		(0x18)
++#define MT6660_REG_HPF1_COEF		(0x1A)
++#define MT6660_REG_HPF2_COEF		(0x1B)
++#define MT6660_REG_PATH_BYPASS		(0x1E)
++#define MT6660_REG_WDT_CTRL		(0x20)
++#define MT6660_REG_HCLIP_CTRL		(0x24)
++#define MT6660_REG_VOL_CTRL		(0x29)
++#define MT6660_REG_SPS_CTRL		(0x30)
++#define MT6660_REG_SIGMAX		(0x33)
++#define MT6660_REG_CALI_T0		(0x3F)
++#define MT6660_REG_BST_CTRL		(0x40)
++#define MT6660_REG_PROTECTION_CFG	(0x46)
++#define MT6660_REG_DA_GAIN		(0x4c)
++#define MT6660_REG_AUDIO_IN2_SEL	(0x50)
++#define MT6660_REG_SIG_GAIN		(0x51)
++#define MT6660_REG_PLL_CFG1		(0x60)
++#define MT6660_REG_DRE_CTRL		(0x68)
++#define MT6660_REG_DRE_THDMODE		(0x69)
++#define MT6660_REG_DRE_CORASE		(0x6B)
++#define MT6660_REG_PWM_CTRL		(0x70)
++#define MT6660_REG_DC_PROTECT_CTRL	(0x74)
++#define MT6660_REG_ADC_USB_MODE		(0x7c)
++#define MT6660_REG_INTERNAL_CFG		(0x88)
++#define MT6660_REG_RESV0		(0x98)
++#define MT6660_REG_RESV1		(0x99)
++#define MT6660_REG_RESV2		(0x9A)
++#define MT6660_REG_RESV3		(0x9B)
++#define MT6660_REG_RESV6		(0xA2)
++#define MT6660_REG_RESV7		(0xA3)
++#define MT6660_REG_RESV10		(0xB0)
++#define MT6660_REG_RESV11		(0xB1)
++#define MT6660_REG_RESV16		(0xB6)
++#define MT6660_REG_RESV17		(0xB7)
++#define MT6660_REG_RESV19		(0xB9)
++#define MT6660_REG_RESV21		(0xBB)
++#define MT6660_REG_RESV23		(0xBD)
++#define MT6660_REG_RESV31		(0xD3)
++#define MT6660_REG_RESV40		(0xE0)
++
++#endif /* __SND_SOC_MT6660_H */
 -- 
-2.20.1
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
