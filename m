@@ -6,76 +6,76 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FED3C2D0DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA772C2D0C6
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:16:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9EC5206CB
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:04:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E5F621744
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:16:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ug9mKwfO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LwuV6Yew"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9EC5206CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tyewf22I";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KRo0Rgqr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E5F621744
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D42AF174F;
-	Fri, 27 Dec 2019 19:03:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D42AF174F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87860173C;
+	Fri, 27 Dec 2019 19:15:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87860173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577469879;
+	s=default; t=1577470565;
 	bh=jum3a+L7P7NLy1ITn7yaz6oiFIlbNP5TUwuYk1w2rMc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ug9mKwfOlhwP8gRY9fRqApDy3hznd78Jyr5xGMnM7smsH681Mk/8CJ5UbFPbvb/6y
-	 YHWHrEFisnPM/84Wm2lsPEqUqABSLL6s9zn0H4gFqPR0iuBIHsqfQsUAnvaznQ9hlW
-	 pIiaHgRHdpOMj31JNPrOVaZKh5A29NRQt7c6QSgw=
+	b=tyewf22IJDhcI0ZlJrSqoJfwF5vlgSeTfm3zmZ8lkBuHCZQhZ2w4qjLKEx4kzO5Ep
+	 xfgmtCq2lU8izB+9x8zPIgGsREamrEY/cpnSV+d2R/wtUp0e3JqWx/7Ni86k4bsV2p
+	 hV3gcMcwHI1iyVxctf0TR2f1FhH8tGuymnMIJn88=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2B0BF80145;
-	Fri, 27 Dec 2019 19:03:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D91FAF80131;
+	Fri, 27 Dec 2019 19:15:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2AA4F801F4; Fri, 27 Dec 2019 19:03:14 +0100 (CET)
+ id B8D47F80132; Fri, 27 Dec 2019 19:15:12 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C9CAF80145
- for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 19:03:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C9CAF80145
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30AECF800E3
+ for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 19:15:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30AECF800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LwuV6Yew"
+ header.b="KRo0Rgqr"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C947B20CC7;
- Fri, 27 Dec 2019 18:03:09 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 84EFA21927;
+ Fri, 27 Dec 2019 18:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1577469790;
+ s=default; t=1577470508;
  bh=J3NkTOWXOZmH0EY4PU7cHQHu00J6XATnSgRlK4EGgIQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LwuV6Yewdo8zmrPdP6+QsYtoZ6rlRiEejGz7ZbHVIkZWjRD+gzkchO0uBzdhsSWop
- 2evK1uGOGrstihhXD3Gt5ebTlCDP1xaTWueEwBOc5p0tZokUm6pG6Sk1GZ84FoMrjQ
- BPoXk00hF9JveqxX+Y+i4BEB81hVDfXrn2qA4pzw=
+ b=KRo0RgqrDdAWO1iE9Fh3ispBqYrJ/u8JNo0puHvJ09p2XAUEpnat5WNyXgPFMK7DF
+ PufZ4LlhrhPHetuZ4URFNr0BxsyNkBQZp0zpsM2MhKu2Qkk1WFICdxXtvkpoBvXPLS
+ r4bQhA2z1cE79aojMCntkIxO4+CUCIMc3T11ZP+o=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 27 Dec 2019 13:02:04 -0500
-Message-Id: <20191227180222.7076-39-sashal@kernel.org>
+Date: Fri, 27 Dec 2019 13:14:23 -0500
+Message-Id: <20191227181435.7644-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191227180222.7076-1-sashal@kernel.org>
-References: <20191227180222.7076-1-sashal@kernel.org>
+In-Reply-To: <20191227181435.7644-1-sashal@kernel.org>
+References: <20191227181435.7644-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
  Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
  Shengjiu Wang <shengjiu.wang@nxp.com>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.14 39/57] ASoC: wm8962: fix lambda
+Subject: [alsa-devel] [PATCH AUTOSEL 4.9 26/38] ASoC: wm8962: fix lambda
 	value
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
