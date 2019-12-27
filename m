@@ -2,75 +2,81 @@ Return-Path: <SRS0=/8xD=2R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FAD1C2D0DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B178C2D0DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:17:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7874D20CC7
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:17:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC55424125
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:17:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="H3FhZcuh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="XfnDZouW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7874D20CC7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nseePERU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gn/8FU57"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC55424125
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CEE21753;
-	Fri, 27 Dec 2019 19:16:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CEE21753
+	by alsa0.perex.cz (Postfix) with ESMTPS id E48C1175E;
+	Fri, 27 Dec 2019 19:16:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E48C1175E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577470619;
-	bh=sGXFisSyu+gC1oDtxGhpit3dIGqQ9eLDs1Eu6Vupc3c=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=H3FhZcuh+MKRIZoGtwurRIBEJnwUaLXxrbSVMmEZnYQ0k0LWxPkerchQDmUBRyoY3
-	 mUEP3hUu+ToIu8eiG393inPERKfG8XdisDtQugTWT0tVKtBVQADcshgtoRtLYpbQWa
-	 yOSIgc8QOMSUoBezCrYlTzXjWXIyINW3DE1+8zmQ=
+	s=default; t=1577470667;
+	bh=EfAOby94jxxDJlzRJhhJUrUDC7CbtSyHmjLCLAzBEmw=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nseePERUZ3v0wArI6nQ4BekuVGeaFkHLjyKRDJqQj9Ws6Y2PmExUU5R/5AfslTsTp
+	 IF3/X5PVlapDjtFeaqpIQfx/xMrph4AcjocObrTZyauPJjQK1WrdT/U4O485Tt0GUP
+	 9YxsG5Xpx1I8Tzc/UHz5frDE5Q9bUs3RSgIro3Po=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7720EF8013D;
-	Fri, 27 Dec 2019 19:15:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7668F8025E;
+	Fri, 27 Dec 2019 19:16:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F295F80147; Fri, 27 Dec 2019 19:15:57 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id DD517F80264; Fri, 27 Dec 2019 19:16:14 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4D1AF800CD
- for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 19:15:54 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A925EA0055;
- Fri, 27 Dec 2019 19:15:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A925EA0055
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1577470553; bh=ySOmZ+8azTykAyCVE/0pg1TD58i3W9JZpYQDC5k97Wc=;
- h=From:Subject:To:Cc:Date:From;
- b=XfnDZouWh6MSAJExPaUlwULIW0CU3afYAK8j0LNZJOTUtdei6Pc4VB1MVqHBf50rd
- ASFeJVuBUahD996wQ25QFpL5J2TvVGVg/Z0f3TisUaNR4KIuL3AcCsXobKqZq5tPsz
- ec3/Ga4MUDgmxA1OcsipWlDDnUEWLJnpFg6MtVQA=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3787BF80132
+ for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 19:16:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3787BF80132
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Gn/8FU57"
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
+ [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 27 Dec 2019 19:15:48 +0100 (CET)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Message-ID: <2cae9b3c-8634-7aff-3d76-7a16b1807abf@perex.cz>
-Date: Fri, 27 Dec 2019 19:15:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B06C121775;
+ Fri, 27 Dec 2019 18:16:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1577470570;
+ bh=cmQ5bPpFTHGhZsTA/P2QxTSzK+X+Y59Kbf/bpK7LRh4=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Gn/8FU576je5hT+wDWPRGNNrGgY0SK8eo+qWbVEKaniI9hpL0SLf2paZO/egPzP3Y
+ 7izquxNul0upPxNM62NNQ2eDDQL7wFysv/C4BA3EUaphVzSvrVMbgwpe1nrFp4cHUM
+ nZshKnCDBIp0aS6p/HTSI1seXhwsaPip4afwO/Fk=
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Date: Fri, 27 Dec 2019 13:15:41 -0500
+Message-Id: <20191227181549.8040-17-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191227181549.8040-1-sashal@kernel.org>
+References: <20191227181549.8040-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Language: en-US
-Cc: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>,
- Mengdong Lin <mengdong.lin@linux.intel.com>,
- Pan Xiuli <xiuli.pan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] topology file broadwell.conf
+X-stable: review
+X-Patchwork-Hint: Ignore
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.4 17/25] ASoC: wm8962: fix lambda
+	value
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,25 +89,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-	I am working on some (major) cleanups for the topology library and I hit the 
-issue with the topology file broadwell.conf in upstream. It cannot be compiled 
-with the latest alsatplg / libatopology, because the SectionPCMConfig was 
-removed in commit 368e4f2a897b5500573a2ee525f5504c135cfca2 in alsa-lib.
-	Which driver is using this topology in the current linux kernel?
+[ Upstream commit 556672d75ff486e0b6786056da624131679e0576 ]
 
-					Thanks,
-						Jaroslav	
+According to user manual, it is required that FLL_LAMBDA > 0
+in all cases (Integer and Franctional modes).
 
+Fixes: 9a76f1ff6e29 ("ASoC: Add initial WM8962 CODEC driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/1576065442-19763-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/wm8962.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index a7e79784fc16..4a3ce9b85253 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2792,7 +2792,7 @@ static int fll_factors(struct _fll_div *fll_div, unsigned int Fref,
+ 
+ 	if (target % Fref == 0) {
+ 		fll_div->theta = 0;
+-		fll_div->lambda = 0;
++		fll_div->lambda = 1;
+ 	} else {
+ 		gcd_fll = gcd(target, fratio * Fref);
+ 
+@@ -2862,7 +2862,7 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (fll_div.theta || fll_div.lambda)
++	if (fll_div.theta)
+ 		fll1 |= WM8962_FLL_FRAC;
+ 
+ 	/* Stop the FLL while we reconfigure */
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
