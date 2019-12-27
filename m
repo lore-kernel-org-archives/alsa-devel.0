@@ -2,85 +2,102 @@ Return-Path: <SRS0=/8xD=2R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06B64C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 22:42:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD79C2D0C3
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 22:43:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 094CC208C4
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 22:42:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 141E4208C4
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 22:43:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SrKAhejg";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="JVYtFtoX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 094CC208C4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KZ+uNdZw";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=endlessm-com.20150623.gappssmtp.com header.i=@endlessm-com.20150623.gappssmtp.com header.b="YrwbpXmo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 141E4208C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=endlessm.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1EC71747;
-	Fri, 27 Dec 2019 23:41:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1EC71747
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C6A5175A;
+	Fri, 27 Dec 2019 23:42:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C6A5175A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577486551;
-	bh=Y0p3YMrYGIIkVH+kiPIcsySqagRjdK+f2SqVDfqh87Q=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=SrKAhejg4QWc56lIjIg9xlJDExTToA5Tt/NdbfdE6FN7+QAlHZOKUH3ppXr/ltIzb
-	 iP2T+Z9MzhrWcvmg+3VIycjqazjWBTz0TuRa/1tQH8AJswxM737vlzDzHRD1y4jjs3
-	 6o1fN3YixPAwwY+e/8+Q/uTluCzNfHL4t5a9QTC0=
+	s=default; t=1577486620;
+	bh=HOrlQpgYYvna6rz5gZjkXBBzgGQkPJe7nhqbgqRf7Ik=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KZ+uNdZwvLlOg7ASsS7ezsABNT0mJ8yfLZZXCVqZr0jOaHRrbj6jbtpzm45Zp6S46
+	 UngQESwGk1bqBau7MediwUvPHNNGWiWBqV1odCGbSBXX6U4LM9A3BktNwMy+yzrHZA
+	 TK+E4rE5MEwdfRo6q2c1F2RpSHKdzQT2H29BsHZg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A72EF800AE;
-	Fri, 27 Dec 2019 23:41:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5B20F80132;
+	Fri, 27 Dec 2019 23:42:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4FD3BF80132; Fri, 27 Dec 2019 23:41:39 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 73B20F80132; Fri, 27 Dec 2019 07:57:39 +0100 (CET)
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
+ [IPv6:2607:f8b0:4864:20::641])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A639DF800E3
- for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 23:41:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A639DF800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5570DF800E3
+ for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 07:57:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5570DF800E3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="JVYtFtoX"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=2wSlIYlha4L+cqEPZ70dByZOLWC0etpORytOtK6GDzM=; b=JVYtFtoXGipHvnzQzUGF1Oux9
- CXAY9oDKzb7/DcMdbU1Q0SaTLUPLsg1EmsJlPkLTkHtQAo2s7dEWnhu4nXlOnWvgZNN1V/s8LQzd5
- 0JSW6mLPhnsbwGQOwYFms8QHUtbuOtgTO444G1SGvgdiLq+mnU/4P9KUgO0BELrTnyx/Q=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ikyIZ-0006Zq-BK; Fri, 27 Dec 2019 22:41:35 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 414BCD01A22; Fri, 27 Dec 2019 22:41:33 +0000 (GMT)
-Date: Fri, 27 Dec 2019 22:41:33 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20191227224133.GL27497@sirena.org.uk>
-References: <20191204151454.21643-1-tiwai@suse.de>
- <s5h8smz79o8.wl-tiwai@suse.de>
- <20191227000818.GF27497@sirena.org.uk>
- <s5hlfqy5it6.wl-tiwai@suse.de>
+ dkim=pass (2048-bit key) header.d=endlessm-com.20150623.gappssmtp.com
+ header.i=@endlessm-com.20150623.gappssmtp.com header.b="YrwbpXmo"
+Received: by mail-pl1-x641.google.com with SMTP id bd4so11386065plb.8
+ for <alsa-devel@alsa-project.org>; Thu, 26 Dec 2019 22:57:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=PnkNvUFtvzbbYcE5CwfaCD/l1qPrOZWX6lNmWQNNLKE=;
+ b=YrwbpXmotny6FI9nIbFIyeg+ylSzXsCvExjIzikQPY+n54yXehgurNHW7qrxGTQ9RT
+ zesiXNUmTMuhevDfwch77rne6wrlv23AiG84gNLfdfKymRAvkODhKqK6/pnazuqE0WIc
+ 0ZBCViPwePVFn3aVY6NR9uKORsTkKiCCONjxkkAn8GJkIWpi9D3hCGFTMqTkDowkHUyM
+ A0VeSsnP/oiP/KDS9Xm72ld5HmU8jLfnYFvor6vE3ZO8SfX/GF0pubM87YEL2nY1asf3
+ +/OjQAVs8MHejN0ga1c1SC4/+PkFQatOcO56Tj4NrOm+tHGqWrGbviyQvxB2uacBMpai
+ c1yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=PnkNvUFtvzbbYcE5CwfaCD/l1qPrOZWX6lNmWQNNLKE=;
+ b=fs5YOPxtlvTr0RyFcQWjRvzTkeJCip9PV0zYb+3cOKgWvuPYkuzwR2nxs7gXUi4HWz
+ MjuJostVKnX5oHYNxFqO2gK+QptZHXNKpbcIqLttI9d4yDzx4tqLkp1idzCKGdnXW/Ge
+ IO/9sayIug8qhUEthHCmm/SjNbOPWUUYy6ir6botbeHDiJJJeEKp5fJf66L29890gwR9
+ axzRzQPk4r6dBGMlTDY1sJ1TvEjbwg8Ujm9ZryT3Ap3WAqfqhvu2BxwMf2Y0aZ8jWpGv
+ 4yqPqQGOrkG+U+auHtTpPx+W6VwcBt2ek7O/XkXPObyf6GgvrCT9snBIqaqTr9eQlzFP
+ 7O7Q==
+X-Gm-Message-State: APjAAAVlGeGrT57zmuO5eWcuCc1AQcwDwZKwAmM0xpADIH4cYxiUnBw/
+ t97dTMHqGD7OCgahzLKc8dYNxA==
+X-Google-Smtp-Source: APXvYqxtY/9hAi9APfUm0ya3wc7W/vrscRGRDzi+zNzns0bnB8bJqCmwIydV8hjy8GFWNUvuMXpFXw==
+X-Received: by 2002:a17:902:bc4b:: with SMTP id
+ t11mr14003821plz.190.1577429853727; 
+ Thu, 26 Dec 2019 22:57:33 -0800 (PST)
+Received: from endless.endlessm-sf.com
+ (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
+ by smtp.gmail.com with ESMTPSA id o2sm13449658pjo.26.2019.12.26.22.57.30
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 26 Dec 2019 22:57:33 -0800 (PST)
+From: Chris Chiu <chiu@endlessm.com>
+X-Google-Original-From: Chris Chiu <chris.chiu@pacidal.com>
+To: perex@perex.cz, tiwai@suse.com, kailang@realtek.com,
+ hui.wang@canonical.com, tomas.espeleta@gmail.com
+Date: Fri, 27 Dec 2019 14:57:24 +0800
+Message-Id: <20191227065724.2581-1-chris.chiu@pacidal.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <s5hlfqy5it6.wl-tiwai@suse.de>
-X-Cookie: I have many CHARTS and DIAGRAMS..
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: core: Fix access to uninitialized
-	list heads
+X-Mailman-Approved-At: Fri, 27 Dec 2019 23:42:48 +0100
+Cc: Chris Chiu <chiu@endlessm.com>, alsa-devel@alsa-project.org,
+ linux@endlessm.com, linux-kernel@vger.kernel.org,
+ Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: [alsa-devel] [PATCH] ALSA: hda/realtek - Enable the subwoofer of
+	ASUS UX431FLC
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,75 +110,102 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5437970082751795068=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Chris Chiu <chiu@endlessm.com>
 
---===============5437970082751795068==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="VBq/nvTu32OVLBUP"
-Content-Disposition: inline
+ASUS reported that there's an additional speaker which serves as
+the subwoofer and uses DAC 0x02. It does not work with the commit
+73a723348a43 ("ALSA: hda/realtek - Enable internal speaker of ASUS
+UX431FLC") which enables the amplifier and front speakers. This
+commit enables the subwoofer to improve the acoustic experience.
 
+Signed-off-by: Chris Chiu <chiu@endlessm.com>
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+---
+ sound/pci/hda/patch_realtek.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
---VBq/nvTu32OVLBUP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Dec 27, 2019 at 08:28:05AM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > Please don't send content free pings and please allow a reasonable time
-> > for review.  People get busy, go on holiday, attend conferences and so=
-=20
-> > on so unless there is some reason for urgency (like critical bug fixes)
-> > please allow at least a couple of weeks for review.  If there have been
-> > review comments then people may be waiting for those to be addressed.
-
-> > Sending content free pings adds to the mail volume (if they are seen at
-> > all) which is often the problem and since they can't be reviewed
-> > directly if something has gone wrong you'll have to resend the patches
-> > anyway, so sending again is generally a better approach though there are
-> > some other maintainers who like them - if in doubt look at how patches
-> > for the subsystem are normally handled.
-
-> This warning doesn't seem fit at all.  The patch was submitted three
-> weeks ago.
-
-There's two bits there - one is that it's adding to the mail
-volume when people chase up, the other is that if things have
-been lost then almost always the answer is that I don't have the
-patch any more (or it'll be error prone to find) and it'll need a
-resend so it's better to chase up by resending the patch since
-that can be acted on directly.
-
---VBq/nvTu32OVLBUP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4GiH4ACgkQJNaLcl1U
-h9BTTwf/QogfOW+DF5B9oISz6ywL09+RA21I4fQ1Yxl7kduPx/JbOEMQpKJ5xETp
-VtAPH5jLX+XI+oQNOrB1IaY+BsxliVrtzvMLuGQw+3k/rNkK1eF7PBDASrT1sDuQ
-jlYwLptFIK+KHiwypl32rgDcLv04b5F9vnyLpttTM5mwWDE+SIP0sbnAsxhYZIWy
-X8P2KL3/7YWU8AkHNkeGpOZ+ghB7n1mnWFP1NOX8NoCO60wgNlloErhQfpHw0P6t
-GhQQp68poBWkdQWFI8E5KasOtlHQZnFjV4gmU8J4qbSOoucRPkGmGudpL6CHRQ9f
-IP2XvtGitEHMH8HAuIAbep37jZqyoQ==
-=FVD+
------END PGP SIGNATURE-----
-
---VBq/nvTu32OVLBUP--
-
---===============5437970082751795068==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index fada1ff61353..0193a8722be2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5576,6 +5576,16 @@ static void alc295_fixup_disable_dac3(struct hda_codec *codec,
+ 	}
+ }
+ 
++/* Fixed DAC (0x02) on NID 0x17 to enable the mono speaker */
++static void alc294_fixup_fixed_dac_subwoofer(struct hda_codec *codec,
++					const struct hda_fixup *fix, int action)
++{
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		hda_nid_t conn[1] = { 0x02 };
++		snd_hda_override_conn_list(codec, 0x17, 1, conn);
++	}
++}
++
+ /* Hook to update amp GPIO4 for automute */
+ static void alc280_hp_gpio4_automute_hook(struct hda_codec *codec,
+ 					  struct hda_jack_callback *jack)
+@@ -5950,7 +5960,8 @@ enum {
+ 	ALC269VC_FIXUP_ACER_HEADSET_MIC,
+ 	ALC294_FIXUP_ASUS_INTSPK_HEADSET_MIC,
+ 	ALC256_FIXUP_MEDION_HEADSET_NO_PRESENCE,
+-	ALC294_FIXUP_ASUS_INTSPK_GPIO,
++	ALC294_FIXUP_ASUS_DUAL_SPEAKERS,
++	ALC294_FIXUP_FIXED_DAC_SUBWOOFER,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7097,10 +7108,9 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ }
+ 		}
+ 	},
+-	[ALC294_FIXUP_ASUS_INTSPK_HEADSET_MIC] = {
++	[ALC294_FIXUP_ASUS_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+-			{ 0x14, 0x411111f0 }, /* disable confusing internal speaker */
+ 			{ 0x19, 0x04a11150 }, /* use as headset mic, without its own jack detect */
+ 			{ }
+ 		},
+@@ -7117,12 +7127,18 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
+ 	},
+-	[ALC294_FIXUP_ASUS_INTSPK_GPIO] = {
++	[ALC294_FIXUP_FIXED_DAC_SUBWOOFER] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc294_fixup_fixed_dac_subwoofer,
++		.chained = true,
++		.chain_id = ALC294_FIXUP_ASUS_HEADSET_MIC
++	},
++	[ALC294_FIXUP_ASUS_DUAL_SPEAKERS] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		/* The GPIO must be pulled to initialize the AMP */
+ 		.v.func = alc_fixup_gpio4,
+ 		.chained = true,
+-		.chain_id = ALC294_FIXUP_ASUS_INTSPK_HEADSET_MIC
++		.chain_id = ALC294_FIXUP_FIXED_DAC_SUBWOOFER
+ 	},
+ };
+ 
+@@ -7291,7 +7307,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+-	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_INTSPK_GPIO),
++	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_DUAL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+ 	SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5437970082751795068==--
