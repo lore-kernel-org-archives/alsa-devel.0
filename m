@@ -2,70 +2,69 @@ Return-Path: <SRS0=I0CO=2S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF977C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 00:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EC23C2D0C3
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 00:18:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFBFE20882
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 00:17:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BBF0020882
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 00:18:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oAPpUNkj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFBFE20882
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UrTnZoZ6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBF0020882
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B33C1757;
-	Sat, 28 Dec 2019 01:16:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B33C1757
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8AF51768;
+	Sat, 28 Dec 2019 01:17:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8AF51768
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577492227;
-	bh=YNHnNyztT7YnJKBNcIH4DfTmLDcAMzVayb4Lw1quyn0=;
+	s=default; t=1577492281;
+	bh=B7JFMacq3dwGu/i4+zh2ISbOeMBJ7XA8S72plIWVkLo=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oAPpUNkj0eZfZRTISxNmGDZTQ8m7n3YmQ5FKAo2hsZjdEBpCy4CcK4iNvkHmz8Qf/
-	 bFdP5fE21meRTnvTwDvHg64//P8z4WGG1m5eo5oawiwO69yJZW/Q03vicjOWNxlgBv
-	 wU7u50vpwWC+frsvlzG2KYM0fBsL2zjz17SfPSNU=
+	b=UrTnZoZ6St2gTiwKvvLQTmEebzHN9Kwd3ru2qGpMFhQpsOostnBW0tClp9nb1+CWd
+	 r8eLK6aEj9HrAVQIEPFdtB+XgDwkKMzaLIm5ivv8zuQiVucsEfhKOH3wOA6s8Z54bu
+	 QMpF/+UVU19h/KhuS6l4tJIiKZfsCVcm9LBdS0ZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE47DF8013D;
-	Sat, 28 Dec 2019 01:16:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D395FF800CD;
+	Sat, 28 Dec 2019 01:16:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8944F8013D; Sat, 28 Dec 2019 01:16:14 +0100 (CET)
+ id 0BBABF800AE; Sat, 28 Dec 2019 01:16:17 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DF0FF800CD
- for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 01:16:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DF0FF800CD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29932F800AE
+ for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 01:16:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29932F800AE
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 27 Dec 2019 16:16:07 -0800
+ 27 Dec 2019 16:16:11 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,364,1571727600"; d="scan'208";a="243364207"
+X-IronPort-AV: E=Sophos;i="5.69,364,1571727600"; d="scan'208";a="243364220"
 Received: from vdoan2-mobl.ccr.corp.intel.com (HELO [10.251.152.151])
  ([10.251.152.151])
- by fmsmga004.fm.intel.com with ESMTP; 27 Dec 2019 16:16:06 -0800
+ by fmsmga004.fm.intel.com with ESMTP; 27 Dec 2019 16:16:10 -0800
 To: Vinod Koul <vkoul@kernel.org>
 References: <20191217210314.20410-1-pierre-louis.bossart@linux.intel.com>
- <20191217210314.20410-4-pierre-louis.bossart@linux.intel.com>
- <20191227070011.GJ3006@vkoul-mobl>
+ <20191217210314.20410-9-pierre-louis.bossart@linux.intel.com>
+ <20191227071433.GL3006@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e5b45832-6a7e-1538-8069-ef366b87a8b7@linux.intel.com>
-Date: Fri, 27 Dec 2019 17:23:42 -0600
+Message-ID: <1922c494-4641-8c40-192d-758b21014fbc@linux.intel.com>
+Date: Fri, 27 Dec 2019 17:38:44 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191227070011.GJ3006@vkoul-mobl>
+In-Reply-To: <20191227071433.GL3006@vkoul-mobl>
 Content-Language: en-US
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
@@ -74,8 +73,8 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 03/17] soundwire: rename
- drv_to_sdw_slave_driver macro
+Subject: Re: [alsa-devel] [PATCH v5 08/17] soundwire: add initial
+ definitions for sdw_master_device
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,42 +94,102 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 12/27/19 1:00 AM, Vinod Koul wrote:
+On 12/27/19 1:14 AM, Vinod Koul wrote:
 > On 17-12-19, 15:03, Pierre-Louis Bossart wrote:
->> Align with previous renames and shorten macro
+>> Since we want an explicit support for the SoundWire Master device, add
+>> the definitions, following the Greybus example of a 'Host Device'.
 >>
->> No functionality change
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   drivers/soundwire/bus_type.c       | 9 ++++-----
->>   include/linux/soundwire/sdw_type.h | 3 ++-
->>   2 files changed, 6 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
->> index c0585bcc8a41..2b2830b622fa 100644
+>> A parent (such as the Intel audio controller) would use sdw_md_add()
+>> to create the device, passing a driver as a parameter. The
+>> sdw_md_release() would be called when put_device() is invoked by the
+>> parent. We use the shortcut 'md' for 'master device' to avoid very
+>> long function names.
+> 
+> I agree we should not have long name :) but md does not sound great. Can
+> we drop the device and use sdw_slave and sdw_master for devices and
+> append _driver when we are talking about drivers...
+> 
+> we dont use sd for slave and imo this would gel well with existing names
+
+In SoundWire parlance, both 'Slave' and 'Master' are 'Devices', so yes 
+we do in the standard talk about 'Slave Devices' and 'Master Devices'.
+
+Then we have Linux 'Devices' which can be used for both.
+
+If we use 'sdw_slave', would we be referring to the actual physical part 
+or the Linux device?
+
+FWIW the Greybus example used 'Host Device' and 'hd' as shortcut.
+
+> 
 >> --- a/drivers/soundwire/bus_type.c
 >> +++ b/drivers/soundwire/bus_type.c
->> @@ -34,7 +34,7 @@ sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
->>   static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
->>   {
->>   	struct sdw_slave *slave = to_sdw_slave_device(dev);
->> -	struct sdw_driver *drv = drv_to_sdw_slave_driver(ddrv);
->> +	struct sdw_driver *drv = to_sdw_slave_driver(ddrv);
+>> @@ -66,7 +66,10 @@ int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+>>   		 * callback is set to use this function for a
+>>   		 * different device type (e.g. Master or Monitor)
+>>   		 */
+>> -		dev_err(dev, "uevent for unknown Soundwire type\n");
+>> +		if (is_sdw_master_device(dev))
+>> +			dev_err(dev, "uevent for SoundWire Master type\n");
 > 
-> so patch 1 does:
+> see below [1]:
 > 
-> -       struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-> +       struct sdw_driver *drv = drv_to_sdw_slave_driver(dev->driver);
+>> +static void sdw_md_release(struct device *dev)
 > 
-> and here we move drv_to_sdw_slave_driver to to_sdw_slave_driver... why
-> not do this in first patch and save step1... or did i miss something??
+> sdw_master_release() won't be too long!
 
-because patch1 introduces replaces 'sdw_' by 'sdw_slave_' in several 
-places, not just for drv_to_sdw_driver()
+yes, but there is no such operation as 'Master Release' in SoundWire.
+At least the 'md' shortcut conveys the implicit convention that this is 
+a Linux device only.
 
-I can squash all these patches if you want to but then you'll tell me 
-one step at a time...
+I really would like to avoid overloading the standard definitions with 
+the Linux ones...
+
+> 
+>> +{
+>> +	struct sdw_master_device *md = to_sdw_master_device(dev);
+>> +
+>> +	kfree(md);
+>> +}
+>> +
+>> +struct device_type sdw_md_type = {
+> 
+> sdw_master_type and so on :)
+> 
+>> +	.name =		"soundwire_master",
+>> +	.release =	sdw_md_release,
+> 
+> [1]:
+> There is no uevent added here, so sdw_uevent() will never be called for
+> this, can you check again if you see the print you added?
+
+as explained this is to avoid errors at a later point. I don't see any 
+harm in providing error checks for a routine that can only be used for 1 
+of the 3 devices defined in the standard?
+
+>>   
+>> +struct sdw_master_device {
+> 
+> we have sdw_slave, so would be better if we call this sdw_master
+> 
+>> +	struct device dev;
+>> +	int link_id;
+>> +	struct sdw_md_driver *driver;
+>> +	void *pdata;
+> 
+> no sdw_bus pointer and I dont see bus adding this object.. Is there no
+> link between bus and master device objects?
+
+There is currently no bus device object, see the structure definition 
+it's a pointer to a device (which leads to all sorts of issues because 
+we can't use container_of).
+
+when the master device gets added, that's where the Linux device is 
+created and the pointer saved in the bus structure, with IIRC 
+sdw_add_bus_master().
+
+
+  	ret = sdw_add_bus_master(&sdw->cdns.bus);
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
