@@ -1,4 +1,4 @@
-Return-Path: <SRS0=bNm3=2P=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=/8xD=2R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
@@ -6,75 +6,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22019C2D0C8
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 18:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1BA9C2D0C0
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 01:09:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A21C32072A
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Dec 2019 18:27:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5949F20882
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 01:09:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A+wcrH0K";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="PqtvHzzt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A21C32072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bO/nkrWG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="tx56UrCx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5949F20882
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED7FA16E3;
-	Wed, 25 Dec 2019 19:26:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED7FA16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 509491709;
+	Fri, 27 Dec 2019 02:08:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 509491709
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577298459;
-	bh=l+hqEckv2L6jWZBHSmZ5U7uKsWLH2MtXnfMUdV4Nmao=;
+	s=default; t=1577408988;
+	bh=W6k2WKyckAac3gjiDVlgWaJlshBgJwgxRfwI4ll4jcY=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=A+wcrH0K3WlaF2rDX3LlV5BcP+/wMfe5oZMCz+sD7eS7IpdEmmDLAMGi3ytjpncxu
-	 UTdvOBSj+YLfEwCJzlHIWjZ8NHxlM6gyQcDT+F4KYEsKPLhpNO3uCGtMVw2+okRUY3
-	 P2JGHlwOrd2kNNn8iIvQUzvXYjXg7HCfDPlMTbvs=
+	b=bO/nkrWGPCv6NYx9MwLMYQIyywxoNUw8RuW/8MFGHI4f0MvsJ28z9tzhsksQtdThi
+	 M/dhOuGaE0UdG0+7w51Yb0hHm1Za7de9Mdvf7SCtAt8j/i/IwiOJfgCxf8y6KnBkk3
+	 WxpErwJzar3RKRhq2HsC+v/VXyhQxOu0/Fonow+s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C587F80299;
-	Wed, 25 Dec 2019 19:22:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4FE9F80138;
+	Fri, 27 Dec 2019 02:08:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB629F80277; Wed, 25 Dec 2019 19:21:59 +0100 (CET)
+ id A70BAF80148; Fri, 27 Dec 2019 02:08:55 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69CECF8026F
- for <alsa-devel@alsa-project.org>; Wed, 25 Dec 2019 19:21:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69CECF8026F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99FACF800E3
+ for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 02:08:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99FACF800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="PqtvHzzt"
+ header.b="tx56UrCx"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=ttO9jm9hfLPmA7gQWAdEEwEGtPl6twLWsws0OdI0Ve0=; b=PqtvHzztCltI
- Pm42yvi0AXfm7Fv/rxnbYv0swr+Th7hGz8kOiPB9xwbjXNsvqBEeBwQiUj0RjofzrmD4GKatltR4N
- mhFyqxZgd28vjIQEx3OE0e1l1MqXRzZOKxH/mE6ZMLXsqV+g4KMcqXEchn0sqXfsGd8TudRmxXeis
- vtCNU=;
+ List-Archive; bh=QuBUNLmdCrC+AkaqFrnXlyLrKLz7/NzoAEx8Rf4Qdmg=; b=tx56UrCxUANR
+ jqN6GzOFAFiEU4CN3UoW4jItCyh+5IEz6Gb8a9aLETPRdYPcu5TtSrggmug1305Cm3WnzqpqJLubQ
+ V5WuHQeZLi7R5luzq6XgujhM0ayxcZzDfrCFWRzYE4HEbJHdFpi2xKkbkCKPqzMwb+14y3Aknedoc
+ u3Qb4=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ikBIC-0001of-3l; Wed, 25 Dec 2019 18:21:56 +0000
+ id 1ike7X-00049X-5w; Fri, 27 Dec 2019 01:08:51 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 9673BD01A24; Wed, 25 Dec 2019 18:21:55 +0000 (GMT)
+ id A45FFD01A22; Fri, 27 Dec 2019 01:08:50 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Date: Wed, 25 Dec 2019 18:21:55 +0000 (GMT)
+Date: Fri, 27 Dec 2019 01:08:50 +0000 (GMT)
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: add dt bindings for
-	WCD9340/WCD9341 audio codec" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: amd: Create multiple I2S platform
+	device endpoint" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,11 +92,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20191225182155.D8sd7dFcYP_OgffmJgvxEHfgVg1PbBocBtRyNbeuW00@z>
+Message-ID: <20191227010850.iwi1qbJuCidXeiKKz2u9ogfD-9UzMy6rUiGN_fQ4jqE@z>
 
 The patch
 
-   ASoC: dt-bindings: add dt bindings for WCD9340/WCD9341 audio codec
+   ASoC: amd: Create multiple I2S platform device endpoint
 
 has been applied to the asoc tree at
 
@@ -121,206 +121,211 @@ to this mail.
 Thanks,
 Mark
 
-From a6b748713205242d1483a78662bf147b1aa7d90b Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 19 Dec 2019 10:31:43 +0000
-Subject: [PATCH] ASoC: dt-bindings: add dt bindings for WCD9340/WCD9341 audio
- codec
+From 5def0136c609062091b03a91ac1d987f4afc5363 Mon Sep 17 00:00:00 2001
+From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Date: Thu, 5 Dec 2019 19:07:26 +0530
+Subject: [PATCH] ASoC: amd: Create multiple I2S platform device endpoint
 
-This patch adds bindings for wcd9340/wcd9341 audio codec which can
-support both SLIMbus and I2S/I2C interface.
+Creates Platform Device endpoints for multiple
+I2S instances: SP and  BT endpoints device.
+Pass PCI resources like MMIO, irq to the platform devices.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20191219103153.14875-2-srinivas.kandagatla@linaro.org
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/1575553053-18344-2-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/qcom,wcd934x.yaml          | 175 ++++++++++++++++++
- 1 file changed, 175 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
+ sound/soc/amd/raven/acp3x.h     |  5 ++
+ sound/soc/amd/raven/pci-acp3x.c | 95 ++++++++++++++++++++++-----------
+ 2 files changed, 68 insertions(+), 32 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
-new file mode 100644
-index 000000000000..38eaf0c028f9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
-@@ -0,0 +1,175 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,wcd934x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index 4f2cadd90a87..2f15fe10ead5 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -7,10 +7,15 @@
+ 
+ #include "chip_offset_byte.h"
+ 
++#define ACP3x_DEVS		3
+ #define ACP3x_PHY_BASE_ADDRESS 0x1240000
+ #define	ACP3x_I2S_MODE	0
+ #define	ACP3x_REG_START	0x1240000
+ #define	ACP3x_REG_END	0x1250200
++#define ACP3x_I2STDM_REG_START	0x1242400
++#define ACP3x_I2STDM_REG_END	0x1242410
++#define ACP3x_BT_TDM_REG_START	0x1242800
++#define ACP3x_BT_TDM_REG_END	0x1242810
+ #define I2S_MODE	0x04
+ #define	BT_TX_THRESHOLD 26
+ #define	BT_RX_THRESHOLD 25
+diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
+index facec2472b34..94f5f21d9a53 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -16,17 +16,17 @@ struct acp3x_dev_data {
+ 	void __iomem *acp3x_base;
+ 	bool acp3x_audio_mode;
+ 	struct resource *res;
+-	struct platform_device *pdev;
++	struct platform_device *pdev[ACP3x_DEVS];
+ };
+ 
+ static int snd_acp3x_probe(struct pci_dev *pci,
+ 			   const struct pci_device_id *pci_id)
+ {
+-	int ret;
+-	u32 addr, val;
+ 	struct acp3x_dev_data *adata;
+-	struct platform_device_info pdevinfo;
++	struct platform_device_info pdevinfo[ACP3x_DEVS];
+ 	unsigned int irqflags;
++	int ret, i;
++	u32 addr, val;
+ 
+ 	if (pci_enable_device(pci)) {
+ 		dev_err(&pci->dev, "pci_enable_device failed\n");
+@@ -56,10 +56,11 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 		irqflags = 0;
+ 
+ 	addr = pci_resource_start(pci, 0);
+-	adata->acp3x_base = ioremap(addr, pci_resource_len(pci, 0));
++	adata->acp3x_base = devm_ioremap(&pci->dev, addr,
++					pci_resource_len(pci, 0));
+ 	if (!adata->acp3x_base) {
+ 		ret = -ENOMEM;
+-		goto release_regions;
++		goto disable_msi;
+ 	}
+ 	pci_set_master(pci);
+ 	pci_set_drvdata(pci, adata);
+@@ -68,11 +69,11 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 	switch (val) {
+ 	case I2S_MODE:
+ 		adata->res = devm_kzalloc(&pci->dev,
+-					  sizeof(struct resource) * 2,
++					  sizeof(struct resource) * 4,
+ 					  GFP_KERNEL);
+ 		if (!adata->res) {
+ 			ret = -ENOMEM;
+-			goto unmap_mmio;
++			goto disable_msi;
+ 		}
+ 
+ 		adata->res[0].name = "acp3x_i2s_iomem";
+@@ -80,40 +81,67 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 		adata->res[0].start = addr;
+ 		adata->res[0].end = addr + (ACP3x_REG_END - ACP3x_REG_START);
+ 
+-		adata->res[1].name = "acp3x_i2s_irq";
+-		adata->res[1].flags = IORESOURCE_IRQ;
+-		adata->res[1].start = pci->irq;
+-		adata->res[1].end = pci->irq;
++		adata->res[1].name = "acp3x_i2s_sp";
++		adata->res[1].flags = IORESOURCE_MEM;
++		adata->res[1].start = addr + ACP3x_I2STDM_REG_START;
++		adata->res[1].end = addr + ACP3x_I2STDM_REG_END;
 +
-+title: Bindings for Qualcomm WCD9340/WCD9341 Audio Codec
++		adata->res[2].name = "acp3x_i2s_bt";
++		adata->res[2].flags = IORESOURCE_MEM;
++		adata->res[2].start = addr + ACP3x_BT_TDM_REG_START;
++		adata->res[2].end = addr + ACP3x_BT_TDM_REG_END;
 +
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++		adata->res[3].name = "acp3x_i2s_irq";
++		adata->res[3].flags = IORESOURCE_IRQ;
++		adata->res[3].start = pci->irq;
++		adata->res[3].end = adata->res[3].start;
+ 
+ 		adata->acp3x_audio_mode = ACP3x_I2S_MODE;
+ 
+ 		memset(&pdevinfo, 0, sizeof(pdevinfo));
+-		pdevinfo.name = "acp3x_rv_i2s";
+-		pdevinfo.id = 0;
+-		pdevinfo.parent = &pci->dev;
+-		pdevinfo.num_res = 2;
+-		pdevinfo.res = adata->res;
+-		pdevinfo.data = &irqflags;
+-		pdevinfo.size_data = sizeof(irqflags);
+-
+-		adata->pdev = platform_device_register_full(&pdevinfo);
+-		if (IS_ERR(adata->pdev)) {
+-			dev_err(&pci->dev, "cannot register %s device\n",
+-				pdevinfo.name);
+-			ret = PTR_ERR(adata->pdev);
+-			goto unmap_mmio;
++		pdevinfo[0].name = "acp3x_rv_i2s_dma";
++		pdevinfo[0].id = 0;
++		pdevinfo[0].parent = &pci->dev;
++		pdevinfo[0].num_res = 4;
++		pdevinfo[0].res = &adata->res[0];
++		pdevinfo[0].data = &irqflags;
++		pdevinfo[0].size_data = sizeof(irqflags);
 +
-+description: |
-+  Qualcomm WCD9340/WCD9341 Codec is a standalone Hi-Fi audio codec IC.
-+  It has in-built Soundwire controller, pin controller, interrupt mux and
-+  supports both I2S/I2C and SLIMbus audio interfaces.
++		pdevinfo[1].name = "acp3x_i2s_playcap";
++		pdevinfo[1].id = 0;
++		pdevinfo[1].parent = &pci->dev;
++		pdevinfo[1].num_res = 1;
++		pdevinfo[1].res = &adata->res[1];
 +
-+properties:
-+  compatible:
-+    const: slim217,250
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    description: GPIO spec for reset line to use
-+    maxItems: 1
-+
-+  slim-ifc-dev: true
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    const: extclk
-+
-+  vdd-buck-supply:
-+    description: A reference to the 1.8V buck supply
-+
-+  vdd-buck-sido-supply:
-+    description: A reference to the 1.8V SIDO buck supply
-+
-+  vdd-rx-supply:
-+    description: A reference to the 1.8V rx supply
-+
-+  vdd-tx-supply:
-+    description: A reference to the 1.8V tx supply
-+
-+  vdd-vbat-supply:
-+    description: A reference to the vbat supply
-+
-+  vdd-io-supply:
-+    description: A reference to the 1.8V I/O supply
-+
-+  vdd-micbias-supply:
-+    description: A reference to the micbias supply
-+
-+  qcom,micbias1-microvolt:
-+    description: micbias1 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias2-microvolt:
-+    description: micbias2 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias3-microvolt:
-+    description: micbias3 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias4-microvolt:
-+    description: micbias4 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  clock-output-names:
-+    const: mclk
-+
-+  clock-frequency:
-+    description: Clock frequency of output clk in Hz
-+
-+  interrupt-controller: true
-+
-+  '#interrupt-cells':
-+    const: 1
-+
-+  '#clock-cells':
-+    const: 0
-+
-+  '#sound-dai-cells':
-+    const: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+  gpio@42:
-+    type: object
-+    allOf:
-+      - $ref: ../gpio/qcom,wcd934x-gpio.yaml#
-+
-+patternProperties:
-+  "^.*@[0-9a-f]+$":
-+    type: object
-+    description: |
-+      WCD934x subnode for each slave devices. Bindings of each subnodes
-+      depends on the specific driver providing the functionality and
-+      documented in their respective bindings.
-+
-+    properties:
-+      reg:
-+        maxItems: 1
-+
-+    required:
-+      - reg
-+
-+required:
-+  - compatible
-+  - reg
-+  - reset-gpios
-+  - slim-ifc-dev
-+  - interrupts
-+  - interrupt-controller
-+  - clock-frequency
-+  - clock-output-names
-+  - qcom,micbias1-microvolt
-+  - qcom,micbias2-microvolt
-+  - qcom,micbias3-microvolt
-+  - qcom,micbias4-microvolt
-+  - "#interrupt-cells"
-+  - "#clock-cells"
-+  - "#sound-dai-cells"
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+examples:
-+  - |
-+    codec@1,0{
-+        compatible = "slim217,250";
-+        reg  = <1 0>;
-+        reset-gpios = <&tlmm 64 0>;
-+        slim-ifc-dev  = <&wcd9340_ifd>;
-+        #sound-dai-cells = <1>;
-+        interrupt-parent = <&tlmm>;
-+        interrupts = <54 4>;
-+        interrupt-controller;
-+        #interrupt-cells = <1>;
-+        #clock-cells = <0>;
-+        clock-frequency = <9600000>;
-+        clock-output-names = "mclk";
-+        qcom,micbias1-microvolt = <1800000>;
-+        qcom,micbias2-microvolt = <1800000>;
-+        qcom,micbias3-microvolt = <1800000>;
-+        qcom,micbias4-microvolt = <1800000>;
-+        clock-names = "extclk";
-+        clocks = <&rpmhcc 2>;
-+
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        gpio@42 {
-+            compatible = "qcom,wcd9340-gpio";
-+            reg = <0x42 0x2>;
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+        };
-+    };
-+
-+...
++		pdevinfo[2].name = "acp3x_i2s_playcap";
++		pdevinfo[2].id = 1;
++		pdevinfo[2].parent = &pci->dev;
++		pdevinfo[2].num_res = 1;
++		pdevinfo[2].res = &adata->res[2];
++		for (i = 0; i < ACP3x_DEVS ; i++) {
++			adata->pdev[i] =
++				platform_device_register_full(&pdevinfo[i]);
++			if (IS_ERR(adata->pdev[i])) {
++				dev_err(&pci->dev, "cannot register %s device\n",
++					pdevinfo[i].name);
++				ret = PTR_ERR(adata->pdev[i]);
++				goto unregister_devs;
++			}
+ 		}
+ 		break;
+ 	default:
+ 		dev_err(&pci->dev, "Invalid ACP audio mode : %d\n", val);
+ 		ret = -ENODEV;
+-		goto unmap_mmio;
++		goto disable_msi;
+ 	}
+ 	return 0;
+ 
+-unmap_mmio:
++unregister_devs:
++	if (val == I2S_MODE)
++		for (i = 0 ; i < ACP3x_DEVS ; i++)
++			platform_device_unregister(adata->pdev[i]);
++disable_msi:
+ 	pci_disable_msi(pci);
+-	iounmap(adata->acp3x_base);
+ release_regions:
+ 	pci_release_regions(pci);
+ disable_pci:
+@@ -125,10 +153,12 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ static void snd_acp3x_remove(struct pci_dev *pci)
+ {
+ 	struct acp3x_dev_data *adata = pci_get_drvdata(pci);
++	int i;
+ 
+-	platform_device_unregister(adata->pdev);
+-	iounmap(adata->acp3x_base);
+-
++	if (adata->acp3x_audio_mode == ACP3x_I2S_MODE) {
++		for (i = 0 ; i <  ACP3x_DEVS ; i++)
++			platform_device_unregister(adata->pdev[i]);
++	}
+ 	pci_disable_msi(pci);
+ 	pci_release_regions(pci);
+ 	pci_disable_device(pci);
+@@ -151,6 +181,7 @@ static struct pci_driver acp3x_driver  = {
+ 
+ module_pci_driver(acp3x_driver);
+ 
++MODULE_AUTHOR("Vishnuvardhanrao.Ravulapati@amd.com");
+ MODULE_AUTHOR("Maruthi.Bayyavarapu@amd.com");
+ MODULE_DESCRIPTION("AMD ACP3x PCI driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.20.1
 
