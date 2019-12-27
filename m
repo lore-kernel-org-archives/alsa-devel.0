@@ -6,77 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6477DC2D0C6
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91101C2D0C6
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:49:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EFBBB20740
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:48:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 23A3B206CB
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:49:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T8nQUSrO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LbsvAOvY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFBBB20740
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IIoaUPkY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BcMOn5hx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23A3B206CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F653173C;
-	Fri, 27 Dec 2019 18:47:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F653173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FEBB171C;
+	Fri, 27 Dec 2019 18:48:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FEBB171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577468906;
-	bh=Lls+WKPSQRcHe0r7UgQHhGt3praJEYfFmGDP2ppud9g=;
+	s=default; t=1577468938;
+	bh=G/a2JXPNWQBh908JD1EhfAQ7DvhVbTKX6KlCMd4xm1A=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T8nQUSrOQuDPwUC4AO7oXO97Qwn/UzBOKRpUArbX1KInZrojgJlQrU1acE+P7i1hU
-	 HQQHLE9QQNWOCf2wVFrnafGWOpkiCJdehcwP+0Wb3peRTfe43wz7F2KEl26mOXjAUd
-	 wcq4rL5wi1vZt8TI9PPF4yurMXaJM4YchfH9Mvao=
+	b=IIoaUPkYiUFqyb3b55MSHdKe7x5YxZ5SL1eOKoWJbe1LDg0AscK196rS1c3J0FzGr
+	 VPyW1vgtoOVvPRzrnNm8T3tklaDgjNeIMUPkduNrapLHAcQKpWCOP3nJuv/0EHD7X8
+	 Zn+adH5g+2RuG5hW4tBUpXXY6oh+ABOl0Owj8sbs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA720F80145;
-	Fri, 27 Dec 2019 18:43:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6460FF8026A;
+	Fri, 27 Dec 2019 18:44:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69005F801F4; Fri, 27 Dec 2019 18:43:27 +0100 (CET)
+ id 83E28F8026F; Fri, 27 Dec 2019 18:44:00 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CF4EF80145
- for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 18:43:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CF4EF80145
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99711F800E3
+ for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 18:43:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99711F800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LbsvAOvY"
+ header.b="BcMOn5hx"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0A2BD22522;
- Fri, 27 Dec 2019 17:43:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 87096222C4;
+ Fri, 27 Dec 2019 17:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1577468602;
- bh=GQiAvbWLjMvJk09cCba+syEJkkqYycnVG/FlajrljWk=;
+ s=default; t=1577468636;
+ bh=R9T1roOG9U3+aD1yPt52pLF+w7mQCmZcfvR9EUSyiu4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LbsvAOvYBpmkkudEXR6GMX702Y19SmZyyl7TwyV+ZnHw3eXLXpSHjdpkLxJ/KLJP1
- JBMktf6R8/KUetLhl7HYWbIjA4/bcW9pxttkwvmqayRie1g+/qzBNnuAZKpJzPd68d
- PiiX22UJT4Ng+pn2jsLcbWbHxfIhXmPptrxAO7Hw=
+ b=BcMOn5hxpv8DMmwc0lvY+GNgnnOR7NKupNYIupq3bN/D/pm6eDmYz8yCEAO5hKlp2
+ 1Oly8Y4+l39IqcY4ht0c6VhQMPXoAOp3QztVGcz8yhFo/K2jjGtElLqTtqTiut6KHo
+ 6ihSiqRQ0b7WfP6KrqPOBM22TVH7Tq0r545Lf9gY=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 27 Dec 2019 12:39:51 -0500
-Message-Id: <20191227174055.4923-123-sashal@kernel.org>
+Date: Fri, 27 Dec 2019 12:42:31 -0500
+Message-Id: <20191227174352.6264-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
-References: <20191227174055.4923-1-sashal@kernel.org>
+In-Reply-To: <20191227174352.6264-1-sashal@kernel.org>
+References: <20191227174352.6264-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 123/187] ASoC: wm8962: fix lambda
-	value
+Cc: Sasha Levin <sashal@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 03/84] ASoC: max98090: exit
+	workaround earlier if PLL is locked
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,45 +94,57 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
 
-[ Upstream commit 556672d75ff486e0b6786056da624131679e0576 ]
+[ Upstream commit 6f49919d11690a9b5614445ba30fde18083fdd63 ]
 
-According to user manual, it is required that FLL_LAMBDA > 0
-in all cases (Integer and Franctional modes).
+According to the datasheet, PLL lock time typically takes 2 msec and
+at most takes 7 msec.
 
-Fixes: 9a76f1ff6e29 ("ASoC: Add initial WM8962 CODEC driver")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/1576065442-19763-1-git-send-email-shengjiu.wang@nxp.com
+Check the lock status every 1 msec and exit the workaround if PLL is
+locked.
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20191122073114.219945-3-tzungbi@google.com
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/max98090.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 3e5c69fbc33a..d9d59f45833f 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2788,7 +2788,7 @@ static int fll_factors(struct _fll_div *fll_div, unsigned int Fref,
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index f8c8b9decab6..172a48d42479 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2126,6 +2126,8 @@ static void max98090_pll_work(struct work_struct *work)
+ 	struct max98090_priv *max98090 =
+ 		container_of(work, struct max98090_priv, pll_work);
+ 	struct snd_soc_component *component = max98090->component;
++	unsigned int pll;
++	int i;
  
- 	if (target % Fref == 0) {
- 		fll_div->theta = 0;
--		fll_div->lambda = 0;
-+		fll_div->lambda = 1;
- 	} else {
- 		gcd_fll = gcd(target, fratio * Fref);
+ 	if (!snd_soc_component_is_active(component))
+ 		return;
+@@ -2145,8 +2147,16 @@ static void max98090_pll_work(struct work_struct *work)
+ 	snd_soc_component_update_bits(component, M98090_REG_DEVICE_SHUTDOWN,
+ 			    M98090_SHDNN_MASK, M98090_SHDNN_MASK);
  
-@@ -2858,7 +2858,7 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
- 		return -EINVAL;
- 	}
+-	/* Give PLL time to lock */
+-	msleep(10);
++	for (i = 0; i < 10; ++i) {
++		/* Give PLL time to lock */
++		usleep_range(1000, 1200);
++
++		/* Check lock status */
++		pll = snd_soc_component_read32(
++				component, M98090_REG_DEVICE_STATUS);
++		if (!(pll & M98090_ULK_MASK))
++			break;
++	}
+ }
  
--	if (fll_div.theta || fll_div.lambda)
-+	if (fll_div.theta)
- 		fll1 |= WM8962_FLL_FRAC;
- 
- 	/* Stop the FLL while we reconfigure */
+ static void max98090_jack_work(struct work_struct *work)
 -- 
 2.20.1
 
