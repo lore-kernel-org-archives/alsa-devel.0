@@ -6,79 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54496C2D0CE
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FED3C2D0DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:04:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 700D7206CB
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:03:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B9EC5206CB
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 18:04:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OYxOv5eU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+pczYWf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 700D7206CB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ug9mKwfO";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="LwuV6Yew"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9EC5206CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F2911733;
-	Fri, 27 Dec 2019 19:02:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F2911733
+	by alsa0.perex.cz (Postfix) with ESMTPS id D42AF174F;
+	Fri, 27 Dec 2019 19:03:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D42AF174F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577469824;
-	bh=mbqNPkMFeNQisif2Dr73L4ATxkgbOK8oVSd9fF+Dazg=;
+	s=default; t=1577469879;
+	bh=jum3a+L7P7NLy1ITn7yaz6oiFIlbNP5TUwuYk1w2rMc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OYxOv5eUMLCfz7ZSAzDvclMvYuOUk1RD+P1Ixcczn15vSpjXbY+bfEYHd5W1TPFWp
-	 wdDXAQJD7SkFoty9P053D10sLQ1xIs8X83fnqP4e3rRUZfLCWgekr6HkuC1eBWcR9X
-	 X3B3ABRJVfw117J7J5vagivRZ9ew+LFv1AmM1vqk=
+	b=Ug9mKwfOlhwP8gRY9fRqApDy3hznd78Jyr5xGMnM7smsH681Mk/8CJ5UbFPbvb/6y
+	 YHWHrEFisnPM/84Wm2lsPEqUqABSLL6s9zn0H4gFqPR0iuBIHsqfQsUAnvaznQ9hlW
+	 pIiaHgRHdpOMj31JNPrOVaZKh5A29NRQt7c6QSgw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BF75F80131;
-	Fri, 27 Dec 2019 19:02:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2B0BF80145;
+	Fri, 27 Dec 2019 19:03:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C708F80132; Fri, 27 Dec 2019 19:02:53 +0100 (CET)
+ id F2AA4F801F4; Fri, 27 Dec 2019 19:03:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71B52F800CD
- for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 19:02:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71B52F800CD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C9CAF80145
+ for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 19:03:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C9CAF80145
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Y+pczYWf"
+ header.b="LwuV6Yew"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A16F920CC7;
- Fri, 27 Dec 2019 18:02:46 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C947B20CC7;
+ Fri, 27 Dec 2019 18:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1577469767;
- bh=goXLQiBb8Jyj+bAQ1SO1/YqFV4H48vkmPhLKYKRMZNY=;
+ s=default; t=1577469790;
+ bh=J3NkTOWXOZmH0EY4PU7cHQHu00J6XATnSgRlK4EGgIQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Y+pczYWfLNKUxtBFRKrbcnZicUk/nK3OuUxgOjCQPWM6icvHF10A62Xr6t5GM6upf
- 75wnkwIle+A4led2EAmR3TAY6Z9bdwwlGVDeUqk5mtWL0QWfHal+VrBH7Hvso11q0m
- KMQr/se5RU9isLIkbNkj+blZIpiey4i+J6yudZQg=
+ b=LwuV6Yewdo8zmrPdP6+QsYtoZ6rlRiEejGz7ZbHVIkZWjRD+gzkchO0uBzdhsSWop
+ 2evK1uGOGrstihhXD3Gt5ebTlCDP1xaTWueEwBOc5p0tZokUm6pG6Sk1GZ84FoMrjQ
+ BPoXk00hF9JveqxX+Y+i4BEB81hVDfXrn2qA4pzw=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 27 Dec 2019 13:01:44 -0500
-Message-Id: <20191227180222.7076-19-sashal@kernel.org>
+Date: Fri, 27 Dec 2019 13:02:04 -0500
+Message-Id: <20191227180222.7076-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191227180222.7076-1-sashal@kernel.org>
 References: <20191227180222.7076-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.14 19/57] ASoC: topology: Check
-	return value for soc_tplg_pcm_create()
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.14 39/57] ASoC: wm8962: fix lambda
+	value
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,52 +94,45 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit a3039aef52d9ffeb67e9211899cd3e8a2953a01f ]
+[ Upstream commit 556672d75ff486e0b6786056da624131679e0576 ]
 
-The return value of soc_tplg_pcm_create() is currently not checked
-in soc_tplg_pcm_elems_load(). If an error is to occur there, the
-topology ignores it and continues loading.
+According to user manual, it is required that FLL_LAMBDA > 0
+in all cases (Integer and Franctional modes).
 
-Fix that by checking the status and rejecting the topology on error.
-
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20191210003939.15752-3-pierre-louis.bossart@linux.intel.com
+Fixes: 9a76f1ff6e29 ("ASoC: Add initial WM8962 CODEC driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/1576065442-19763-1-git-send-email-shengjiu.wang@nxp.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-topology.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8962.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 2d5cf263515b..72301bcad3bd 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1921,6 +1921,7 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 	int count = hdr->count;
- 	int i;
- 	bool abi_match;
-+	int ret;
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index fd2731d171dd..0e8008d38161 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2791,7 +2791,7 @@ static int fll_factors(struct _fll_div *fll_div, unsigned int Fref,
  
- 	if (tplg->pass != SOC_TPLG_PASS_PCM_DAI)
- 		return 0;
-@@ -1957,7 +1958,12 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
- 		}
+ 	if (target % Fref == 0) {
+ 		fll_div->theta = 0;
+-		fll_div->lambda = 0;
++		fll_div->lambda = 1;
+ 	} else {
+ 		gcd_fll = gcd(target, fratio * Fref);
  
- 		/* create the FE DAIs and DAI links */
--		soc_tplg_pcm_create(tplg, _pcm);
-+		ret = soc_tplg_pcm_create(tplg, _pcm);
-+		if (ret < 0) {
-+			if (!abi_match)
-+				kfree(_pcm);
-+			return ret;
-+		}
+@@ -2861,7 +2861,7 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+ 		return -EINVAL;
+ 	}
  
- 		/* offset by version-specific struct size and
- 		 * real priv data size
+-	if (fll_div.theta || fll_div.lambda)
++	if (fll_div.theta)
+ 		fll1 |= WM8962_FLL_FRAC;
+ 
+ 	/* Stop the FLL while we reconfigure */
 -- 
 2.20.1
 
