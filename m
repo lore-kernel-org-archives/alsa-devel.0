@@ -6,65 +6,65 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06987C2D0C6
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15F95C2D0C6
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:41:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A25D520882
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:30:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2E0D421D7E
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Dec 2019 17:41:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EX6dhhCB";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="w/odNDt2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A25D520882
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qrDD2nX6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bGYbuKlc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E0D421D7E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E248E1669;
-	Fri, 27 Dec 2019 18:29:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E248E1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A3651714;
+	Fri, 27 Dec 2019 18:41:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A3651714
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577467813;
+	s=default; t=1577468516;
 	bh=sW8gPA828F1+uv0XTT5mcZyx4QZtf/sVrcVFOPNJILo=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=EX6dhhCBl6MZidCSdtwVtvNgFFniaahUio6PfNrFTPR74VazzD471iNulr3AZOfOE
-	 +Ry7h/04kpKqHrL4LpC1O4o77TDNW36EHqFrqPPSjHrjsigDmTs3KC1AegV2mx6WIZ
-	 D8YCliB1+N2AF2labghHe6mQh3xGHNskxPYepyIY=
+	b=qrDD2nX6RQUP+s8BLnsh+iwq8p8KNGp8V0Bw5NDYCDV8YTiyzVtgjH8J9i8VBD/M+
+	 wdl2nh6aXo4WWEP/Lam13CYkO3JwKXRS/QxQlzuN+lBjGffr+GgLqP9JNzH21T0z9T
+	 2N4wetVhEJBkMgphsljdqp/zMSSWBcwTsp1oJBe8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EBF1F80131;
-	Fri, 27 Dec 2019 18:29:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73F8DF80131;
+	Fri, 27 Dec 2019 18:41:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91029F80132; Fri, 27 Dec 2019 18:29:19 +0100 (CET)
+ id 6DF28F80132; Fri, 27 Dec 2019 18:41:04 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 888EBF800AE
- for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 18:29:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 888EBF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id A36A6F800CD
+ for <alsa-devel@alsa-project.org>; Fri, 27 Dec 2019 18:41:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A36A6F800CD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="w/odNDt2"
+ header.b="bGYbuKlc"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 95EA920882;
- Fri, 27 Dec 2019 17:29:12 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DC30120740;
+ Fri, 27 Dec 2019 17:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1577467753;
+ s=default; t=1577468458;
  bh=iWH0MFW5TIsBkDItbrtJZGgrfm8ntD5+Gb/OZCOoeX8=;
  h=From:To:Cc:Subject:Date:From;
- b=w/odNDt2mh58np8SzGlCt06+tOPHNI8o48vwuH9aDAVF2RWjjlaciIN1NeSa0Horc
- U7EsEUmnCkzUprtp8s98j4osUeWuWGK4mZkFE6G3SO73qp9c2uFK/t2vIm/sko2bTw
- rs6GxcL01XNO07ZR9Nxz0I5feIlBilB2T67WtwWM=
+ b=bGYbuKlc1zLBFKdxCDkoz1fwXmc2MrTmVmuJC4XsccDqSvz3L+ZvXibzDC0C+THHS
+ HQTJTzGKmBpv/NepUQtpqUPWm2O8NtDy9PpvE59x27lpis0X4V2bmdhTOOhZmkXhFM
+ idnfzI7QiaF5vPsYsl+TZD21vtf01F0eS0uN8hfs=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 27 Dec 2019 12:26:05 -0500
-Message-Id: <20191227172911.4430-1-sashal@kernel.org>
+Date: Fri, 27 Dec 2019 12:37:49 -0500
+Message-Id: <20191227174055.4923-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-stable: review
