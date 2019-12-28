@@ -2,115 +2,67 @@ Return-Path: <SRS0=I0CO=2S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7E10C2D0C8
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 04:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3531FC2D0C6
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 08:06:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE83020722
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 04:31:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 452D8207E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 08:06:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AD9pMfen";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="SwQtv5Ap";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KVhwh8Ga"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE83020722
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MR6tBOTR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 452D8207E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C79D174A;
-	Sat, 28 Dec 2019 05:31:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C79D174A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 055BE1747;
+	Sat, 28 Dec 2019 09:05:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 055BE1747
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577507514;
-	bh=8FucFkrsIH3tBK4b99b8RtMV9eOmdveWPbhXkwlgVZk=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1577520361;
+	bh=oAEcd3iHVOkGDseM356oOVVfoy3nBoRaxOwfCq6u3zo=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AD9pMfencckwOSelVleD37Ak70LxZoMebSfvPp5ZAis5ObNuvMmONYAqar1WRtCxU
-	 qnH4/DRQeSB466KExUBom3HnoZb1MrB0suJeeM4Q7NnXvitHOvwaDY+AFUWZrQVPN8
-	 EWe0HFZFo1hIz3ym7weOQ1IeaRafwn7ray2ZLCqU=
+	b=MR6tBOTRrgCksleAflSTrlM2AV7Q9PqRx4SDXoDtzL7DQu2vsolwC7dlpcGjOKFTn
+	 fV31JPjgaeGQCHlzMUDikT9mkeSz+rYCjhmMwm0nP4JJZQ2NfqGZXcHm2JkzT3CLzH
+	 tR9xekul1x5WuF1snth10R1r+tEtun34CJMwQXdg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20A09F80138;
-	Sat, 28 Dec 2019 05:31:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86A7FF80138;
+	Sat, 28 Dec 2019 09:05:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60516F80139; Sat, 28 Dec 2019 05:31:02 +0100 (CET)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25])
+ id 0082FF80139; Sat, 28 Dec 2019 09:05:08 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D38A0F800AE
- for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 05:30:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D38A0F800AE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="SwQtv5Ap"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="KVhwh8Ga"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id DC6D321FBC;
- Fri, 27 Dec 2019 23:30:53 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Fri, 27 Dec 2019 23:30:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm3; bh=PaQDAHhjXUo39+y0gVQQpanUNqe
- ZRlMvPA+pjy+L5Z4=; b=SwQtv5Ap/xgS7dZRb1ZqrJMG6l72FoMDPayXtNQ3V8z
- tjb5iFO5RFrptLfGYxx1oCYrOca4vPcKIQfdygKAL52+WkNZsfwJ5UtcoQGXClky
- 8hy00ouLg1iUrFcjiyRlfK3DNomo3EWc/T458qfhJEnxl2n3ySKZGjMR+QVj0mBi
- /PYWmOnNMrA2s1sJdHNy4dipqz/nPkvBfEC0jncU5ktu6kq1SfHiDBtSLH5Hs/HD
- 3YGq2UKy9Aq2tSUpkD2oOpXLuYkXqbNoZI/rCUgziIL/PPNAqGnCuNteBTspjMfm
- qCnceUmPLQ6ziQy651hBMCP0u3C0LvxXP7KdhkdejeQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PaQDAH
- hjXUo39+y0gVQQpanUNqeZRlMvPA+pjy+L5Z4=; b=KVhwh8GaJrrhJ1voJRS2e+
- IMUf6FFrvE3hAsr4EmnCgSfi/PGgjnhyjgvIBxuW7b6XjkX7eLK5U146w4VM+AIr
- Yvt1o51sny8/aqgu60ZzIYJDv8jJECVGiRtFyD+tUPiZPiUYbgv+fY8H1bFaI62c
- aRvn67bXZkNlkL3PzwoEXZJ+ktSk5zU4OWryJcHVp6CbwMN5QKAK36fQxKzFbPMO
- xHI5PHrF1CbjNJ9k9wODK2/b4sDC/OGLYXvjgcyi6YzefqHAmMCBbBUitzXDtS68
- lsq+gwedKiQduEh2YLuEHfi8WPK1iRLLJDxj0gS2qP5OAlmLbCmKUHn03SFdsYXw
- ==
-X-ME-Sender: <xms:fdoGXsJdU9v3Vsc-0tjVgWeb5YVsI85nWcUMXdqqYxzv-gEqACuQUA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvddvledgjedtucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujggfsehttd
- ertddtredvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
- rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucffohhmrghinhepghhithhhuhgsrd
- gtohhmnecukfhppedugedrfedrjeehrddukedunecurfgrrhgrmhepmhgrihhlfhhrohhm
- pehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhpnecuvehluhhsthgvrhfuih
- iivgeptd
-X-ME-Proxy: <xmx:fdoGXrMy_IFcdgj9ScaA6lu-xTk0XOb86yM8hPwSZqdwjuP_fY9Lhg>
- <xmx:fdoGXi4mf3gqKxGQjKyD2EsE4xxdLU8duO4lBYzM_TtZVqpRfajb4g>
- <xmx:fdoGXl6zwRXMJdjbETF6VVKId4qO2pOd_H0H44YB-8TdmrWVsgSxFg>
- <xmx:fdoGXsBvfkGilOrc4BQqWMaXy8w5YC7KlV8eyvkyStegKuBj0Ga07g>
-Received: from workstation (ae075181.dynamic.ppp.asahi-net.or.jp [14.3.75.181])
- by mail.messagingengine.com (Postfix) with ESMTPA id 79BE330607D5;
- Fri, 27 Dec 2019 23:30:52 -0500 (EST)
-Date: Sat, 28 Dec 2019 13:30:50 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <20191228043049.GA23459@workstation>
-Mail-Followup-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
-References: <20191201080449.GA408@workstation>
- <b121b3eb-3bb8-7efc-d5e1-f470049899b7@perex.cz>
- <20191214165242.GA32025@workstation>
- <a63e0b6b-b1c6-3044-cbd0-7fad47b78f35@perex.cz>
- <20191222080454.GA16605@workstation>
- <7a871b7b-a36d-db9c-5b40-ccfdc2373400@perex.cz>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7a871b7b-a36d-db9c-5b40-ccfdc2373400@perex.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Restart alsa-gi project as alsa-gobject project
+ by alsa1.perex.cz (Postfix) with ESMTPS id 474A3F800AE
+ for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 09:05:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 474A3F800AE
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7C099ABF4;
+ Sat, 28 Dec 2019 08:05:04 +0000 (UTC)
+Date: Sat, 28 Dec 2019 09:05:02 +0100
+Message-ID: <s5h4kxk6fkh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Chris Chiu <chiu@endlessm.com>
+In-Reply-To: <20191227100825.75790-1-chiu@endlessm.com>
+References: <20191227100825.75790-1-chiu@endlessm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, tomas.espeleta@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, hui.wang@canonical.com,
+ Jian-Hong Pan <jian-hong@endlessm.com>, linux@endlessm.com
+Subject: Re: [alsa-devel] [PATCH v2] ALSA: hda/realtek - Enable the bass
+	speaker of ASUS UX431FLC
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -128,56 +80,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jaroslav,
-
-On Wed, Dec 25, 2019 at 12:11:29PM +0100, Jaroslav Kysela wrote:
-> > For alsa-gobject repository, I file two PRs for improvements:
-> >   * https://github.com/alsa-project/alsa-gobject/pull/1
-> >   * https://github.com/alsa-project/alsa-gobject/pull/2
-> > 
-> > I'm glad if you grant these requests and merge. Or would I
-> > merge them by myself? I think that we have no concrete policy
-> > to maintain the repository.
+On Fri, 27 Dec 2019 11:08:25 +0100,
+Chris Chiu wrote:
 > 
-> Could you keep to maintain this repository? You should have all rights set
-> on github.
+> ASUS reported that there's an bass speaker in addition to internal
+> speaker and it uses DAC 0x02. It was not enabled in the commit
+> 436e25505f34 ("ALSA: hda/realtek - Enable internal speaker of ASUS
+> UX431FLC") which only enables the amplifier for the front speaker.
+> This commit enables the bass speaker on top of the aforementioned
+> work to improve the acoustic experience.
+> 
+> Signed-off-by: Chris Chiu <chiu@endlessm.com>
+> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+> ---
+> 
+> Notes:
+>   v2: 
+>    - Use existing alc285_fixup_speaker2_to_dac1 instead of new fixup function
+>    - Correct the commit hash number in the commit message 
+>    - Remove the redundant fixup ALC294_FIXUP_ASUS_INTSPK_HEADSET_MIC
 
-Thanks for your arrangement. I merged the PRs.
-
-Well, now I'm working for userspace services to add/maintain control
-elements for sound cards bound to audio and music units on IEEE 1394
-bus. The services listen application's events from ALSA control character
-device to control internal DSP on the units. The services are programmed
-with libraries of alsa-gobject and libhinawa by Rust languages. For
-this work, I generate Rust crates for these libraries by gtk-rs/gir[1].
-
-Next year, I'd like to add repositories for the crates, listed
-below:
-
- * alsa-gobject-rs-sys
-   * sys crates for libraries in alsa-gobject
- * alsactl-rs
-   * safe API crate for libalsactl0
- * alsaseq-rs
-   * safe API crate for libalsaseq0
-
-Additionally, I'll push libhinawa v2 release to GObject Introspection
-team of github.com/alsa-project and corresponding Rust crates. Thus
-below repositories will be added:
-
- * libhinawa
- * hinawa-rs-sys
-   * sys crate for libhinawa2
- * hinawa-rs
-   * safe API crate for libhinawa2
-
-I'm glad if you accept my proposal for the above repositories next year.
-Have a great holidays.
-
-[1] https://github.com/gtk-rs/gir
+Could you rebase on the latest for-linus branch?  This patch isn't
+applied cleanly any longer.
 
 
-Takashi Sakamoto
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
