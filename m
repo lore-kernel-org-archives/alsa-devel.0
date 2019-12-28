@@ -6,71 +6,71 @@ X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95A8EC2D0C6
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 12:06:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A627AC2D0C6
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 12:10:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AAFF206F4
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 12:06:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2A89720409
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 12:10:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QPMzkXmQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="h9g4NRyb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AAFF206F4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W6gDTA2a";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="0j29eL0y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A89720409
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 584DF1749;
-	Sat, 28 Dec 2019 13:05:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 584DF1749
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7790A1750;
+	Sat, 28 Dec 2019 13:09:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7790A1750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577534780;
-	bh=JO4/rWMykhh13JItLS2S8682/msMEeo6HnL4So35KBo=;
+	s=default; t=1577535033;
+	bh=sVm53G8S2Kz0tOLR3x5wFe01i2ABP7T2NvW/caIksvc=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QPMzkXmQPRF8Wo+UkwYuAN+ziOSLKv+TO5LmA5EthFTEx73RKH60yMlrPpCwCVOCR
-	 ejp57XC6V0I7FEf+QWOp5MwyXuNvpom8Knx+hCSvsMzzTnw/vHslpydp1J8dHWwFsB
-	 4SGGPsP7dpntq437N+GLwUkmhBefD4IW48UeCvgM=
+	b=W6gDTA2ab9ARxWc2iFvftPN+8oFYSEKmPi6VPQGT7SMnVKjPz3y+Dr8/2fpaSl3xU
+	 vSG3AuqeCelZReSVlD5I8cDehKN1LL8w5zxLZ5p7KUT8Q+m8csMoIZwAcokBZYoEUw
+	 yIWzNApzAeSegpnJ4VRuTIC87nU1PHdk1vcQCczE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D69FBF8011E;
-	Sat, 28 Dec 2019 13:05:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC482F800E3;
+	Sat, 28 Dec 2019 13:09:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32A92F8011E; Sat, 28 Dec 2019 13:05:28 +0100 (CET)
+ id 82540F80139; Sat, 28 Dec 2019 13:09:40 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE6DAF8011E
- for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 13:05:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE6DAF8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2AB9F8011E
+ for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 13:09:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2AB9F8011E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="h9g4NRyb"
+ header.b="0j29eL0y"
 Received: from localhost (unknown [122.178.200.8])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5A98020748;
- Sat, 28 Dec 2019 12:05:23 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0258B20409;
+ Sat, 28 Dec 2019 12:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1577534724;
- bh=wJqzOZYfIUcwpsmayT7euq6E2bx0zdBap1jaRbyPzBY=;
+ s=default; t=1577534975;
+ bh=q49tqPH7tWafvxKLb/LDDT7f3OVFmJjvV/wyX/oHtic=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=h9g4NRybIzJEDKgs1IRroNq1Jq4yHpfiCZkRuZF/BYQJYqAj5V9t1L+M9rCyyLaea
- WG7EfAewoU6ouhF0RPwQlgwi4ssh423j4Gcww7REytIqYxYndl6FDTT5ilt/exuSBx
- OpUWbuuetvhqrmiGz1rEEPlhs63POYFlyEyS0DqU=
-Date: Sat, 28 Dec 2019 17:35:20 +0530
+ b=0j29eL0yns+J51T/AsO3uu9vm2Qk/EnCOtm0eYwpLLSHOMGfkvaFef8K2CS3es/zj
+ ApR0tGsf1JrocGTXpSfpjlxn7P1hlAYAtFVRBlxgqvEEccbMW5V5l+EYHqCcpTk91L
+ eK0ryDmZY5S+JGRd2sw2tei7o/ToyaA/1v/fviyQ=
+Date: Sat, 28 Dec 2019 17:39:30 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20191228120520.GQ3006@vkoul-mobl>
+Message-ID: <20191228120930.GR3006@vkoul-mobl>
 References: <20191217210314.20410-1-pierre-louis.bossart@linux.intel.com>
- <20191217210314.20410-7-pierre-louis.bossart@linux.intel.com>
- <20191227070301.GK3006@vkoul-mobl>
- <2913a70d-f1e1-7d91-eb3c-33005c5c4007@linux.intel.com>
+ <20191217210314.20410-9-pierre-louis.bossart@linux.intel.com>
+ <20191227071433.GL3006@vkoul-mobl>
+ <1922c494-4641-8c40-192d-758b21014fbc@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <2913a70d-f1e1-7d91-eb3c-33005c5c4007@linux.intel.com>
+In-Reply-To: <1922c494-4641-8c40-192d-758b21014fbc@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
@@ -78,8 +78,8 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 06/17] soundwire: add support for
- sdw_slave_type
+Subject: Re: [alsa-devel] [PATCH v5 08/17] soundwire: add initial
+ definitions for sdw_master_device
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,44 +97,111 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27-12-19, 17:26, Pierre-Louis Bossart wrote:
+On 27-12-19, 17:38, Pierre-Louis Bossart wrote:
 > 
-> > >   static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
-> > >   {
-> > > -	struct sdw_slave *slave = to_sdw_slave_device(dev);
-> > > +	struct sdw_slave *slave;
-> > >   	char modalias[32];
-> > > -	sdw_slave_modalias(slave, modalias, sizeof(modalias));
-> > > -
-> > > -	if (add_uevent_var(env, "MODALIAS=%s", modalias))
-> > > -		return -ENOMEM;
-> > > +	if (is_sdw_slave(dev)) {
-> > > +		slave = to_sdw_slave_device(dev);
-> > > +
-> > > +		sdw_slave_modalias(slave, modalias, sizeof(modalias));
-> > > +
-> > > +		if (add_uevent_var(env, "MODALIAS=%s", modalias))
-> > > +			return -ENOMEM;
-> > > +	} else {
-> > > +		/*
-> > > +		 * We only need to handle uevents for the Slave device
-> > > +		 * type. This error cannot happen unless the .uevent
-> > > +		 * callback is set to use this function for a
-> > > +		 * different device type (e.g. Master or Monitor)
-> > > +		 */
-> > > +		dev_err(dev, "uevent for unknown Soundwire type\n");
-> > > +		return -EINVAL;
+> 
+> On 12/27/19 1:14 AM, Vinod Koul wrote:
+> > On 17-12-19, 15:03, Pierre-Louis Bossart wrote:
+> > > Since we want an explicit support for the SoundWire Master device, add
+> > > the definitions, following the Greybus example of a 'Host Device'.
+> > > 
+> > > A parent (such as the Intel audio controller) would use sdw_md_add()
+> > > to create the device, passing a driver as a parameter. The
+> > > sdw_md_release() would be called when put_device() is invoked by the
+> > > parent. We use the shortcut 'md' for 'master device' to avoid very
+> > > long function names.
 > > 
-> > At this point and after next patch, the above code would be a no-op, do
-> > we want this here, if so why?
+> > I agree we should not have long name :) but md does not sound great. Can
+> > we drop the device and use sdw_slave and sdw_master for devices and
+> > append _driver when we are talking about drivers...
+> > 
+> > we dont use sd for slave and imo this would gel well with existing names
 > 
-> to be future proof if someone wants to add support for a monitor, as
-> explained above.
-> I can remove this if you don't want it.
+> In SoundWire parlance, both 'Slave' and 'Master' are 'Devices', so yes we do
+> in the standard talk about 'Slave Devices' and 'Master Devices'.
+> 
+> Then we have Linux 'Devices' which can be used for both.
+> 
+> If we use 'sdw_slave', would we be referring to the actual physical part or
+> the Linux device?
+> 
+> FWIW the Greybus example used 'Host Device' and 'hd' as shortcut.
 
-It can be added with monitor support whenever that comes. We dont like
-dead code in kernel, the piece can come when future arrives :)
+But this messes up consistency in the naming of sdw objects. I am all for
+it, if we do sd for slave and name all structs and APIs accordingly. The key
+is consistency!
 
+So it needs to be sd/md and so on or sdw_slave and sdw_master and so
+on... not a mix of both
+
+> > > --- a/drivers/soundwire/bus_type.c
+> > > +++ b/drivers/soundwire/bus_type.c
+> > > @@ -66,7 +66,10 @@ int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+> > >   		 * callback is set to use this function for a
+> > >   		 * different device type (e.g. Master or Monitor)
+> > >   		 */
+> > > -		dev_err(dev, "uevent for unknown Soundwire type\n");
+> > > +		if (is_sdw_master_device(dev))
+> > > +			dev_err(dev, "uevent for SoundWire Master type\n");
+> > 
+> > see below [1]:
+> > 
+> > > +static void sdw_md_release(struct device *dev)
+> > 
+> > sdw_master_release() won't be too long!
+> 
+> yes, but there is no such operation as 'Master Release' in SoundWire.
+> At least the 'md' shortcut conveys the implicit convention that this is a
+> Linux device only.
+> 
+> I really would like to avoid overloading the standard definitions with the
+> Linux ones...
+
+I agree with you on not overloading but from a linux pov, we need names
+which are consistent with each other...
+
+> > > +{
+> > > +	struct sdw_master_device *md = to_sdw_master_device(dev);
+> > > +
+> > > +	kfree(md);
+> > > +}
+> > > +
+> > > +struct device_type sdw_md_type = {
+> > 
+> > sdw_master_type and so on :)
+> > 
+> > > +	.name =		"soundwire_master",
+> > > +	.release =	sdw_md_release,
+> > 
+> > [1]:
+> > There is no uevent added here, so sdw_uevent() will never be called for
+> > this, can you check again if you see the print you added?
+> 
+> as explained this is to avoid errors at a later point. I don't see any harm
+> in providing error checks for a routine that can only be used for 1 of the 3
+> devices defined in the standard?
+> 
+> > > +struct sdw_master_device {
+> > 
+> > we have sdw_slave, so would be better if we call this sdw_master
+> > 
+> > > +	struct device dev;
+> > > +	int link_id;
+> > > +	struct sdw_md_driver *driver;
+> > > +	void *pdata;
+> > 
+> > no sdw_bus pointer and I dont see bus adding this object.. Is there no
+> > link between bus and master device objects?
+> 
+> There is currently no bus device object, see the structure definition it's a
+> pointer to a device (which leads to all sorts of issues because we can't use
+> container_of).
+> 
+> when the master device gets added, that's where the Linux device is created
+> and the pointer saved in the bus structure, with IIRC sdw_add_bus_master().
+> 
+> 
+>  	ret = sdw_add_bus_master(&sdw->cdns.bus);
 -- 
 ~Vinod
 _______________________________________________
