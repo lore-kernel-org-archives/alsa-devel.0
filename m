@@ -2,67 +2,69 @@ Return-Path: <SRS0=I0CO=2S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3531FC2D0C6
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 08:06:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D09F2C2D0C6
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 08:26:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 452D8207E0
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 08:06:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D5C8221582
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Dec 2019 08:26:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MR6tBOTR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 452D8207E0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CpLD81Wz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D5C8221582
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 055BE1747;
-	Sat, 28 Dec 2019 09:05:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 055BE1747
+	by alsa0.perex.cz (Postfix) with ESMTPS id C79231750;
+	Sat, 28 Dec 2019 09:25:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C79231750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577520361;
-	bh=oAEcd3iHVOkGDseM356oOVVfoy3nBoRaxOwfCq6u3zo=;
+	s=default; t=1577521574;
+	bh=jRPp/d2s0JJMkbxcgcrk3ZtpWhhv3EsZv9zRWVggL34=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MR6tBOTRrgCksleAflSTrlM2AV7Q9PqRx4SDXoDtzL7DQu2vsolwC7dlpcGjOKFTn
-	 fV31JPjgaeGQCHlzMUDikT9mkeSz+rYCjhmMwm0nP4JJZQ2NfqGZXcHm2JkzT3CLzH
-	 tR9xekul1x5WuF1snth10R1r+tEtun34CJMwQXdg=
+	b=CpLD81WzTDZPhjdvDVnn5FcPNH5n/FPHMmHG4jVYRRnkmv7leA2g9yse/2n3VXNWd
+	 cWN09TT5f2BaZWcx24FUhAkVGZLK3Ye2KzgyTSOHt4bKmxdFX/TMllDhhHImf52CJd
+	 slAoniLP0Khj9+9WayL2lAg+hZRzoVLCjV1/fraA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86A7FF80138;
-	Sat, 28 Dec 2019 09:05:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A74BF8011E;
+	Sat, 28 Dec 2019 09:25:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0082FF80139; Sat, 28 Dec 2019 09:05:08 +0100 (CET)
+ id 86B13F800AE; Sat, 28 Dec 2019 09:25:22 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 474A3F800AE
- for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 09:05:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 474A3F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD0DEF800AE
+ for <alsa-devel@alsa-project.org>; Sat, 28 Dec 2019 09:25:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD0DEF800AE
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7C099ABF4;
- Sat, 28 Dec 2019 08:05:04 +0000 (UTC)
-Date: Sat, 28 Dec 2019 09:05:02 +0100
-Message-ID: <s5h4kxk6fkh.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 99332AB98;
+ Sat, 28 Dec 2019 08:25:18 +0000 (UTC)
+Date: Sat, 28 Dec 2019 09:25:18 +0100
+Message-ID: <s5h36d46emp.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Chris Chiu <chiu@endlessm.com>
-In-Reply-To: <20191227100825.75790-1-chiu@endlessm.com>
-References: <20191227100825.75790-1-chiu@endlessm.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20191227224133.GL27497@sirena.org.uk>
+References: <20191204151454.21643-1-tiwai@suse.de>
+ <s5h8smz79o8.wl-tiwai@suse.de>
+ <20191227000818.GF27497@sirena.org.uk>
+ <s5hlfqy5it6.wl-tiwai@suse.de>
+ <20191227224133.GL27497@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com, tomas.espeleta@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, hui.wang@canonical.com,
- Jian-Hong Pan <jian-hong@endlessm.com>, linux@endlessm.com
-Subject: Re: [alsa-devel] [PATCH v2] ALSA: hda/realtek - Enable the bass
-	speaker of ASUS UX431FLC
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ASoC: core: Fix access to uninitialized
+	list heads
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,28 +82,58 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Dec 2019 11:08:25 +0100,
-Chris Chiu wrote:
+On Fri, 27 Dec 2019 23:41:33 +0100,
+Mark Brown wrote:
 > 
-> ASUS reported that there's an bass speaker in addition to internal
-> speaker and it uses DAC 0x02. It was not enabled in the commit
-> 436e25505f34 ("ALSA: hda/realtek - Enable internal speaker of ASUS
-> UX431FLC") which only enables the amplifier for the front speaker.
-> This commit enables the bass speaker on top of the aforementioned
-> work to improve the acoustic experience.
+> On Fri, Dec 27, 2019 at 08:28:05AM +0100, Takashi Iwai wrote:
+> > Mark Brown wrote:
 > 
-> Signed-off-by: Chris Chiu <chiu@endlessm.com>
-> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
-> ---
+> > > Please don't send content free pings and please allow a reasonable time
+> > > for review.  People get busy, go on holiday, attend conferences and so 
+> > > on so unless there is some reason for urgency (like critical bug fixes)
+> > > please allow at least a couple of weeks for review.  If there have been
+> > > review comments then people may be waiting for those to be addressed.
 > 
-> Notes:
->   v2: 
->    - Use existing alc285_fixup_speaker2_to_dac1 instead of new fixup function
->    - Correct the commit hash number in the commit message 
->    - Remove the redundant fixup ALC294_FIXUP_ASUS_INTSPK_HEADSET_MIC
+> > > Sending content free pings adds to the mail volume (if they are seen at
+> > > all) which is often the problem and since they can't be reviewed
+> > > directly if something has gone wrong you'll have to resend the patches
+> > > anyway, so sending again is generally a better approach though there are
+> > > some other maintainers who like them - if in doubt look at how patches
+> > > for the subsystem are normally handled.
+> 
+> > This warning doesn't seem fit at all.  The patch was submitted three
+> > weeks ago.
+> 
+> There's two bits there - one is that it's adding to the mail
+> volume when people chase up, the other is that if things have
+> been lost then almost always the answer is that I don't have the
+> patch any more (or it'll be error prone to find) and it'll need a
+> resend so it's better to chase up by resending the patch since
+> that can be acted on directly.
 
-Could you rebase on the latest for-linus branch?  This patch isn't
-applied cleanly any longer.
+Well, I see a few points to be revised in this policy:
+
+- If it were actually your oversight, then resending the patch makes
+  sense.  But if it's not merged by other reasons?  Silently resending
+  a patch can be worse.
+
+  For example, suppose the submitter either overlooked or didn't
+  receive a reply or a followup in the thread.  You didn't apply the
+  patch because of the reply/followup pointing some problem.  Now, the
+  submitter tries to resend the original patch again without asking
+  the situation, just because you suggested so in the past.  You'll
+  get the problematic patch again, and there is a risk that the patch
+  gets merged mistakenly at this time.
+
+- The mail archive (lore.kernel.org) nowadays catches all posted mails
+  in a proper manner, and it's pretty easy to fetch.  And, resending
+  the whole patch would be even higher volume than replying,
+  disconnecting the discussions in the previous thread.
+
+So, I find it's OK to give this kind of warning for educational
+purposes to the people who don't know the common practice and send the
+patches too frequently.  But for other cases, such a warning doesn't
+fit.
 
 
 thanks,
