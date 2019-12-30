@@ -2,55 +2,67 @@ Return-Path: <SRS0=zq5f=2U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB5BBC2D0C3
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Dec 2019 05:14:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69AD6C2D0C3
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Dec 2019 07:06:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAF452071E
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Dec 2019 05:14:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 78A9B207E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Dec 2019 07:06:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DXfheUHS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAF452071E
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mBA258vj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78A9B207E0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9104016D2;
-	Mon, 30 Dec 2019 06:13:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9104016D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F54C16D6;
+	Mon, 30 Dec 2019 08:05:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F54C16D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577682855;
-	bh=wnyMG9cWPBSJXbH42txOWgb5RwZ1jBjHjkb3tx/Buo8=;
-	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
+	s=default; t=1577689588;
+	bh=KI8IBVBNzVPBU5hUaDAl3oLEeDARj5pMnoU+cBqNVJg=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DXfheUHS1/Hb8j5ZqQVd82+cfYIb99z+54Wx+RP0XOZOMwgOlSI/ECRFj1GqK9dEp
-	 s0+AB/olTsmYmYu1h64yFO8tmwTl4hRJK6LiVajD7pLQKQWObRN5hid7RUmNZFQmal
-	 eIid6J6Jour/ev5Pn5Bc2jfr7T+fty6BzMwd9aUI=
+	b=mBA258vjbKQvxEedozlBA4NZsLloExnIa1gZpGdtU8ZJuh+4akcYVxFlWBc71Y/Wf
+	 nNL7jDuA5RcDM6nZVssgiHo4c1+bZGKbSpgt7qdbWWbUSB33H0zkrwcCZYJs6Jls+g
+	 eKHVVTveND0MJZPUibRxUO79BwWaxpaWl8YEFqVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 094D0F8015C;
-	Mon, 30 Dec 2019 06:13:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8DF0F8015C;
+	Mon, 30 Dec 2019 08:05:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53D7DF8015D; Mon, 30 Dec 2019 06:13:22 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 54F1AF80126
- for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2019 06:13:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54F1AF80126
-MIME-Version: 1.0
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1577682798323347092-webhooks-bot@alsa-project.org>
-References: <1577682798323347092-webhooks-bot@alsa-project.org>
-Message-Id: <20191230051322.53D7DF8015D@alsa1.perex.cz>
-Date: Mon, 30 Dec 2019 06:13:22 +0100 (CET)
-Subject: [alsa-devel] ctl: misc fixes
+ id 42F2BF8015D; Mon, 30 Dec 2019 08:05:36 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1584BF80126
+ for <alsa-devel@alsa-project.org>; Mon, 30 Dec 2019 08:05:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1584BF80126
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 999F3ACEC;
+ Mon, 30 Dec 2019 07:05:31 +0000 (UTC)
+Date: Mon, 30 Dec 2019 08:05:31 +0100
+Message-ID: <s5himly47k4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Chris Chiu <chiu@endlessm.com>
+In-Reply-To: <20191230031118.95076-1-chiu@endlessm.com>
+References: <20191230031118.95076-1-chiu@endlessm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, tomas.espeleta@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, hui.wang@canonical.com,
+ Jian-Hong Pan <jian-hong@endlessm.com>, linux@endlessm.com
+Subject: Re: [alsa-devel] [PATCH v3] ALSA: hda/realtek - Enable the bass
+	speaker of ASUS UX431FLC
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,16 +80,23 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #3 was opened from takaswie:
+On Mon, 30 Dec 2019 04:11:18 +0100,
+Chris Chiu wrote:
+> 
+> ASUS reported that there's an bass speaker in addition to internal
+> speaker and it uses DAC 0x02. It was not enabled in the commit
+> 436e25505f34 ("ALSA: hda/realtek - Enable internal speaker of ASUS
+> UX431FLC") which only enables the amplifier and the front speaker.
+> This commit enables the bass speaker on top of the aforementioned
+> work to improve the acoustic experience.
+> 
+> Signed-off-by: Chris Chiu <chiu@endlessm.com>
+> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
 
-This patchset incldues two changes:
+Applied now.  Thanks.
 
- * rename element event flag with suitable name
- * simplify event dispatching
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/3
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/3.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
