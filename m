@@ -2,86 +2,83 @@ Return-Path: <SRS0=0EOX=2V=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A83C6C2D0C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:18:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79EEFC2D0C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:31:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3450D206DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:18:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 055E7206CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:31:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dQP5Je3C";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="heqQ65uO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3450D206DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YEyjrOFQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Q1MXQgrl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 055E7206CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BA0516EB;
-	Tue, 31 Dec 2019 01:17:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BA0516EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AD8116DA;
+	Tue, 31 Dec 2019 01:30:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AD8116DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577751496;
-	bh=kAbvYuqGD9A9SNmuvMO9yeX4vZcRp2Kz5lp02ACYtsw=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dQP5Je3C4I4sh3W7PuLpGgUnNqnPVk7JCNxD0Ampx5G2HZs2Rs8rmRl3L9VrMob9O
-	 M8MAkTqIyVeTxRH3B3kJkfa1wnNnh3NojsEmubkB5qf3ze10WYniIlnjhLhea0SFA7
-	 jEJWq/LQEYF2wlrfRFik2Qd7zCdwcHgQnJTiYHAI=
+	s=default; t=1577752292;
+	bh=lXSI5tcssdSJ+ZFpYoWrTamM4+cR2/Kx9dBFGcDcBIk=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=YEyjrOFQKTcj8QbwqNIg3IoyNbpCta3vp7xJM+4oJPBsVqGmMSxPgcrfOlqWEUeok
+	 8e+ON5hFnJXCWOPMt+6gReHXhu2ZoQD6uoS68j8xCH42P2IA7HGYZwyDfH4CR63xsh
+	 7173LcLEhE0VLtAEeS8xNQq/i+PCG/r5Uxf2Gv/w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12DE1F8015D;
-	Tue, 31 Dec 2019 01:17:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 763A7F80258;
+	Tue, 31 Dec 2019 01:30:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BAA4F8015F; Tue, 31 Dec 2019 01:17:24 +0100 (CET)
+ id 4C8BEF80258; Tue, 31 Dec 2019 01:30:38 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7D74F80126
- for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2019 01:17:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7D74F80126
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34AA7F8011E
+ for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2019 01:30:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34AA7F8011E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="heqQ65uO"
+ header.b="Q1MXQgrl"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=RbisTe+iB3aSugYpvz9elCfJ1m1jElfgrG8cOw7p7uQ=; b=heqQ65uOQruVqrBdkas8NwERq
- 5jwYd62w0bDd1Y1a7yJo/gb2KHpaIM9PH/PVC1PuxdBGVSRIJkIl4cwMPE/w9Dit0UvGWrQla0Iv7
- cp7KLYK78VdkcUZeUHjC3w3EQGXDiZEBUnOpONHruGyQnElwaRVey/yPLQuPS7xTt9xc8=;
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=ZDYUnPr0Gg6JV6s6BlHlxJDwPuZjkA9HmH+afB8bAb8=; b=Q1MXQgrlm7ZA
+ lRQvF+27T2PpetxzSLpnIspT0kSy627mcwv1ZDmf3a4+vtPJ79c6tEqZWBOKpLokdY5fDdB43qdJw
+ hTxKnikyP2YOSzzsg8alsEyH/9RbFI/TD/qzXg/kcVUx+dFz3KeNHhFdCxfJI9yEP5QCm7Q48m0FV
+ 7IObA=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1im5Ds-0002iq-71; Tue, 31 Dec 2019 00:17:20 +0000
+ id 1im5Qg-0002nW-53; Tue, 31 Dec 2019 00:30:34 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 8BCC4D01A22; Tue, 31 Dec 2019 00:17:19 +0000 (GMT)
-Date: Tue, 31 Dec 2019 00:17:19 +0000
+ id A4429D01A58; Tue, 31 Dec 2019 00:30:33 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <20191231001719.GC3897@sirena.org.uk>
-References: <20191229150454.2127-1-digetx@gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <20191229150454.2127-1-digetx@gmail.com>
-X-Cookie: Programming is an unnatural act.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
- linux-tegra@vger.kernel.org, Bard Liao <bardliao@realtek.com>,
- Jonathan Hunter <jonathanh@nvidia.com>
-Subject: Re: [alsa-devel] [PATCH v1] ASoC: rt5640: Fix NULL dereference on
-	module unload
+To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+In-Reply-To: <1577540460-21438-4-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+Message-Id: <applied-1577540460-21438-4-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+X-Patchwork-Hint: ignore
+Date: Tue, 31 Dec 2019 00:30:33 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Takashi@sirena.org.uk,
+ open list <linux-kernel@vger.kernel.org>, moderated@sirena.org.uk,
+ "Cc:"@sirena.org.uk, Mark Brown <broonie@kernel.org>, djkurtz@google.com,
+ Alexander.Deucher@amd.com, Liam@sirena.org.uk,
+ Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [alsa-devel] Applied "ASoC: amd: add ACP3x TDM mode support" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,70 +91,121 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4640824518712292033=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---===============4640824518712292033==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jy6Sn24JjFx/iggw"
-Content-Disposition: inline
+   ASoC: amd: add ACP3x TDM mode support
 
+has been applied to the asoc tree at
 
---jy6Sn24JjFx/iggw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
 
-On Sun, Dec 29, 2019 at 06:04:54PM +0300, Dmitry Osipenko wrote:
-> The rt5640->jack is NULL if jack is already disabled at the time of
-> driver's module unloading.
->=20
->  Unable to handle kernel NULL pointer dereference at virtual address 0000=
-0024
->  ...
->  (rt5640_set_jack [snd_soc_rt5640]) from [<bf86f7ed>] (snd_soc_component_=
-set_jack+0x11/0x1c [snd_soc_core])
->  (snd_soc_component_set_jack [snd_soc_core]) from [<bf8675cf>] (soc_remov=
-e_component+0x1b/0x54 [snd_soc_core])
->  (soc_remove_component [snd_soc_core]) from [<bf868859>] (soc_cleanup_car=
-d_resources+0xad/0x1cc [snd_soc_core])
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-In addition to what Takashi said:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative then it's
-usually better to pull out the relevant sections.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---jy6Sn24JjFx/iggw
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4Kk44ACgkQJNaLcl1U
-h9B0vAf+Jesim6R6yU2diF32zHcRsUbMmsppI6c2j5Th/D8i5h+fRxjvXEvVkuGI
-XjQkntGRuppBqIv7EcVt19JhOaO2S2+dCWskZY9G1C2t0k/i4FaGv20iVr+Zd1qI
-po2/Sv/mjruuFZqpx8ZVGdGVwrdCB8EnANT6k62eFFGb+bvrE9k6xh4db9CyYBKH
-EO+NXjIDf/115a4XcHEfWGe3627k8rlw5llArmHyp+kTo2jq5jbCVcUxsXGTsz7W
-QyGsYgljmuJ7OVMZv2lpHa4Wxl1hdCobWS8TCrjK5gMFmlWZypw1zOh5Z9lkEVcl
-nm/taB4a/p7GEMWOa+AJevErYZjl2w==
-=D3/K
------END PGP SIGNATURE-----
+From a43ea44ddda94bc6c4dbe257fcbdeecde8cb06f1 Mon Sep 17 00:00:00 2001
+From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Date: Sat, 28 Dec 2019 19:10:57 +0530
+Subject: [PATCH] ASoC: amd: add ACP3x TDM mode support
 
---jy6Sn24JjFx/iggw--
+ACP3x I2S (CPU DAI) can act in normal I2S and TDM modes. Added support
+for TDM mode. Desired mode can be selected from ASoC machine driver.
 
---===============4640824518712292033==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Link: https://lore.kernel.org/r/1577540460-21438-4-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/amd/raven/acp3x-i2s.c | 28 ++++++++++++++++++++++------
+ sound/soc/amd/raven/acp3x.h     |  1 +
+ 2 files changed, 23 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/amd/raven/acp3x-i2s.c b/sound/soc/amd/raven/acp3x-i2s.c
+index 368e4c855268..d9b287b8396c 100644
+--- a/sound/soc/amd/raven/acp3x-i2s.c
++++ b/sound/soc/amd/raven/acp3x-i2s.c
+@@ -42,7 +42,7 @@ static int acp3x_i2s_set_tdm_slot(struct snd_soc_dai *cpu_dai,
+ 		u32 tx_mask, u32 rx_mask, int slots, int slot_width)
+ {
+ 	struct i2s_dev_data *adata;
+-	u32 val, reg_val, frmt_val, frm_len;
++	u32 val, reg_val, frmt_reg, frm_len;
+ 	u16 slot_len;
+ 
+ 	adata = snd_soc_dai_get_drvdata(cpu_dai);
+@@ -69,15 +69,31 @@ static int acp3x_i2s_set_tdm_slot(struct snd_soc_dai *cpu_dai,
+ 
+ 	frm_len = FRM_LEN | (slots << 15) | (slot_len << 18);
+ 	if (adata->substream_type == SNDRV_PCM_STREAM_PLAYBACK) {
+-		reg_val = mmACP_BTTDM_ITER;
+-		frmt_val = mmACP_BTTDM_TXFRMT;
++		switch (adata->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_val = mmACP_BTTDM_ITER;
++			frmt_reg = mmACP_BTTDM_TXFRMT;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			reg_val = mmACP_I2STDM_ITER;
++			frmt_reg = mmACP_I2STDM_TXFRMT;
++		}
+ 	} else {
+-		reg_val = mmACP_BTTDM_IRER;
+-		frmt_val = mmACP_BTTDM_RXFRMT;
++		switch (adata->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_val = mmACP_BTTDM_IRER;
++			frmt_reg = mmACP_BTTDM_RXFRMT;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			reg_val = mmACP_I2STDM_IRER;
++			frmt_reg = mmACP_I2STDM_RXFRMT;
++		}
+ 	}
+ 	val = rv_readl(adata->acp3x_base + reg_val);
+ 	rv_writel(val | 0x2, adata->acp3x_base + reg_val);
+-	rv_writel(frm_len, adata->acp3x_base + frmt_val);
++	rv_writel(frm_len, adata->acp3x_base + frmt_reg);
+ 	adata->tdm_fmt = frm_len;
+ 	return 0;
+ }
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index a1cdc4e768e2..43213aec7f59 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -78,6 +78,7 @@ struct acp3x_platform_info {
+ struct i2s_dev_data {
+ 	bool tdm_mode;
+ 	unsigned int i2s_irq;
++	u16 i2s_instance;
+ 	u32 tdm_fmt;
+ 	u32 substream_type;
+ 	void __iomem *acp3x_base;
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4640824518712292033==--
