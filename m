@@ -4,78 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B6AAC2D0C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:34:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 456AEC2D0C3
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:35:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBAB620722
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:34:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C0B9F206CB
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:35:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EK+h4hei";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="sMCtZM+P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBAB620722
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CQfo/G3g";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ShXDL5o+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0B9F206CB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E1E016EE;
-	Tue, 31 Dec 2019 01:33:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E1E016EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16CF2172A;
+	Tue, 31 Dec 2019 01:34:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16CF2172A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577752464;
-	bh=chXqbBDAF6mxX7MM9on5M6sQe8R1D64mW6NAvfoRS0s=;
+	s=default; t=1577752500;
+	bh=WC9f2r4cBtHtehlrxzyFTaeRTbSg5RAT6b+QdrJs0I4=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=EK+h4heiZbeJTgkoEZ5hj354PFw4azLF13u9YZJNhrNucHsGpLsit9WrYDGtutIKo
-	 JEsLaWVuT0vNPS+RU3G6WT10lVTRtG5UOSWMFbh8oR8lmWF/N1eMftPHPuOlxudEkE
-	 AzCINOE6AUpLX8FPzIdpgai7W6QoPkhP/Iy5Su6Q=
+	b=CQfo/G3g8OmXhWQJE5DpK6KyM9opL55cz5mgK540CdkQXB6wBF5UbWlOxXCO3dTh3
+	 44PgrW5/xd58rjFtzUcOplGRAH4vBucwDywN4cZ3hyKZQYOX//e6xiWzch5vRTJSS6
+	 77+hukdd96pChNxrmdPsJtK08rKn4gMjTU+gWeFs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D912AF80277;
-	Tue, 31 Dec 2019 01:30:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C5B9F8028B;
+	Tue, 31 Dec 2019 01:30:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24AB5F80271; Tue, 31 Dec 2019 01:30:46 +0100 (CET)
+ id 11805F80273; Tue, 31 Dec 2019 01:30:47 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9581F8015E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57265F80246
  for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2019 01:30:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9581F8015E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57265F80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="sMCtZM+P"
+ header.b="ShXDL5o+"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=SOuH1cr4SVCIEgXZvOn+X7YbRkDR81aUuFxV70hPKZE=; b=sMCtZM+PbU5C
- +J03hTvMLxBnR8rzm0nylasCwtycSY3Njotdl/uRrs3AqjT88HqyLja9ocpFWo7ZC79uAO5tWaxK6
- hPyPGAXPDMTiu4xKLnG8spjhHWnsp6X5L84jAeijub5GG1OHXpJG3bXPw5LZbJ478JiLuFq7u+Tfd
- 5gHOg=;
+ List-Archive; bh=h7KkH1oLf5HJEUv/tnJHyRdC7NDFOsPUihr/figvhuI=; b=ShXDL5o+EQnp
+ GripnwVSK66YBUTypbWhg5NLMSniC1bV3i8QY36Az/WlDqFEBg1PonkXhCiXkGJeUbwsLSfwlWbqB
+ QO5w+ZVjALpDxSuMDvWdiEUdOFrN6s2dd3NlQuQZ8k+CCLL6g0KObiwfigpVLImYP8WIt2zjblaT5
+ Zq+cY=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1im5Qg-0002nn-Mp; Tue, 31 Dec 2019 00:30:34 +0000
+ id 1im5Qg-0002nZ-8w; Tue, 31 Dec 2019 00:30:34 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 40650D01A54; Tue, 31 Dec 2019 00:30:34 +0000 (GMT)
+ id C77E0D01A24; Tue, 31 Dec 2019 00:30:33 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20191230143517.21005-1-ckeepax@opensource.cirrus.com>
-Message-Id: <applied-20191230143517.21005-1-ckeepax@opensource.cirrus.com>
+To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+In-Reply-To: <1577540460-21438-3-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+Message-Id: <applied-1577540460-21438-3-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
 X-Patchwork-Hint: ignore
-Date: Tue, 31 Dec 2019 00:30:34 +0000 (GMT)
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
-Subject: [alsa-devel] Applied "ASoC: madera: Enable clocks for input pins
-	when used as a direct clock" to the asoc tree
+Date: Tue, 31 Dec 2019 00:30:33 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, YueHaibing <yuehaibing@huawei.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, /@sirena.org.uk,
+ Gustavo@sirena.org.uk, SOC@sirena.org.uk, Takashi@sirena.org.uk,
+ moderated@sirena.org.uk, "Cc:"@sirena.org.uk, -@sirena.org.uk,
+ Mark Brown <broonie@kernel.org>, djkurtz@google.com,
+ "list:SOUND"@sirena.org.uk, LAYER@sirena.org.uk,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com,
+ Colin Ian King <colin.king@canonical.com>, Dan@sirena.org.uk,
+ Liam@sirena.org.uk, open list <linux-kernel@vger.kernel.org>
+Subject: [alsa-devel] Applied "ASoC: amd: Enabling I2S instance in DMA and
+	DAI" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +103,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: madera: Enable clocks for input pins when used as a direct clock
+   ASoC: amd: Enabling I2S instance in DMA and DAI
 
 has been applied to the asoc tree at
 
@@ -121,296 +128,670 @@ to this mail.
 Thanks,
 Mark
 
-From 1094af1199007976370b8f04b4d6668ad9707954 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Mon, 30 Dec 2019 14:35:16 +0000
-Subject: [PATCH] ASoC: madera: Enable clocks for input pins when used as a
- direct clock
+From 703a6e22888be41531461ad99ff6c25cd54a5ddf Mon Sep 17 00:00:00 2001
+From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Date: Sat, 28 Dec 2019 19:10:56 +0530
+Subject: [PATCH] ASoC: amd: Enabling I2S instance in DMA and DAI
 
-When one of the MCLK pins is used to supply an internal clock directly
-enable the source clock for that pin.
+This patch adds I2S SP support in ACP PCM DMA and DAI.
+Added I2S support in DMA and DAI probe,its hw_params handling
+its open and close functionalities.
+This enables to open and close on the SP instance for
+playback and capture.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20191230143517.21005-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+Link: https://lore.kernel.org/r/1577540460-21438-3-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs47l15.c |  8 ++++--
- sound/soc/codecs/cs47l35.c |  6 ++--
- sound/soc/codecs/cs47l85.c | 11 +++++---
- sound/soc/codecs/cs47l90.c | 11 +++++---
- sound/soc/codecs/cs47l92.c | 58 ++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/madera.c  | 53 ++++++++++++++++++++++++++++++++--
- sound/soc/codecs/madera.h  |  2 ++
- 7 files changed, 129 insertions(+), 20 deletions(-)
+ sound/soc/amd/raven/acp3x-i2s.c     | 123 +++++++++++++---
+ sound/soc/amd/raven/acp3x-pcm-dma.c | 217 +++++++++++++++++++---------
+ sound/soc/amd/raven/acp3x.h         |  76 ++++++++--
+ 3 files changed, 312 insertions(+), 104 deletions(-)
 
-diff --git a/sound/soc/codecs/cs47l15.c b/sound/soc/codecs/cs47l15.c
-index ece1276f38eb..513e2875e4c6 100644
---- a/sound/soc/codecs/cs47l15.c
-+++ b/sound/soc/codecs/cs47l15.c
-@@ -438,11 +438,13 @@ static const struct snd_kcontrol_new cs47l15_aec_loopback_mux[] = {
- static const struct snd_soc_dapm_widget cs47l15_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", MADERA_SYSTEM_CLOCK_1, MADERA_SYSCLK_ENA_SHIFT,
- 		    0, madera_sysclk_ev,
--		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+		    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", MADERA_OUTPUT_SYSTEM_CLOCK,
- 		    MADERA_OPCLK_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1,
--		    MADERA_DSP_CLK_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1, MADERA_DSP_CLK_ENA_SHIFT,
-+		    0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+diff --git a/sound/soc/amd/raven/acp3x-i2s.c b/sound/soc/amd/raven/acp3x-i2s.c
+index d9bc0fc63185..368e4c855268 100644
+--- a/sound/soc/amd/raven/acp3x-i2s.c
++++ b/sound/soc/amd/raven/acp3x-i2s.c
+@@ -27,10 +27,10 @@ static int acp3x_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	mode = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 	switch (mode) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		adata->tdm_mode = false;
++		adata->tdm_mode = TDM_DISABLE;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		adata->tdm_mode = true;
++		adata->tdm_mode = TDM_ENABLE;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -86,10 +86,22 @@ static int acp3x_i2s_hwparams(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+ 	struct i2s_stream_instance *rtd;
++	struct snd_soc_pcm_runtime *prtd;
++	struct snd_soc_card *card;
++	struct acp3x_platform_info *pinfo;
+ 	u32 val;
+ 	u32 reg_val;
  
- SND_SOC_DAPM_REGULATOR_SUPPLY("CPVDD1", 20, 0),
- SND_SOC_DAPM_REGULATOR_SUPPLY("MICVDD", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-diff --git a/sound/soc/codecs/cs47l35.c b/sound/soc/codecs/cs47l35.c
-index d396a8545d51..ba7aa6b31205 100644
---- a/sound/soc/codecs/cs47l35.c
-+++ b/sound/soc/codecs/cs47l35.c
-@@ -521,11 +521,13 @@ static const struct snd_kcontrol_new cs47l35_aec_loopback_mux[] = {
- static const struct snd_soc_dapm_widget cs47l35_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", MADERA_SYSTEM_CLOCK_1, MADERA_SYSCLK_ENA_SHIFT,
- 		    0, madera_sysclk_ev,
--		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+		    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", MADERA_OUTPUT_SYSTEM_CLOCK,
- 		    MADERA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1, MADERA_DSP_CLK_ENA_SHIFT,
--		    0, NULL, 0),
-+		    0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	prtd = substream->private_data;
+ 	rtd = substream->runtime->private_data;
++	card = prtd->card;
++	pinfo = snd_soc_card_get_drvdata(card);
++	if (pinfo) {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			rtd->i2s_instance = pinfo->play_i2s_instance;
++		else
++			rtd->i2s_instance = pinfo->cap_i2s_instance;
++	}
  
- SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD2", 0, 0),
- SND_SOC_DAPM_REGULATOR_SUPPLY("CPVDD1", 20, 0),
-diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
-index 32fe7ffb7526..f85581a97bdc 100644
---- a/sound/soc/codecs/cs47l85.c
-+++ b/sound/soc/codecs/cs47l85.c
-@@ -790,15 +790,18 @@ static const struct snd_kcontrol_new cs47l85_output_anc_src[] = {
- static const struct snd_soc_dapm_widget cs47l85_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", MADERA_SYSTEM_CLOCK_1, MADERA_SYSCLK_ENA_SHIFT,
- 		    0, madera_sysclk_ev,
--		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+		    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", MADERA_ASYNC_CLOCK_1,
--		    MADERA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    MADERA_ASYNC_CLK_ENA_SHIFT, 0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", MADERA_OUTPUT_SYSTEM_CLOCK,
- 		    MADERA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", MADERA_OUTPUT_ASYNC_CLOCK,
- 		    MADERA_OPCLK_ASYNC_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1,
--		    MADERA_DSP_CLK_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1, MADERA_DSP_CLK_ENA_SHIFT,
-+		    0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ 	/* These values are as per Hardware Spec */
+ 	switch (params_format(params)) {
+@@ -109,11 +121,25 @@ static int acp3x_i2s_hwparams(struct snd_pcm_substream *substream,
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		reg_val = mmACP_BTTDM_ITER;
+-	else
+-		reg_val = mmACP_BTTDM_IRER;
+-
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_val = mmACP_BTTDM_ITER;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			reg_val = mmACP_I2STDM_ITER;
++		}
++	} else {
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_val = mmACP_BTTDM_IRER;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			reg_val = mmACP_I2STDM_IRER;
++		}
++	}
+ 	val = rv_readl(rtd->acp3x_base + reg_val);
+ 	val = val | (rtd->xfer_resolution  << 3);
+ 	rv_writel(val, rtd->acp3x_base + reg_val);
+@@ -124,10 +150,21 @@ static int acp3x_i2s_trigger(struct snd_pcm_substream *substream,
+ 				int cmd, struct snd_soc_dai *dai)
+ {
+ 	struct i2s_stream_instance *rtd;
+-	u32 val, period_bytes;
+-	int ret, reg_val;
++	struct snd_soc_pcm_runtime *prtd;
++	struct snd_soc_card *card;
++	struct acp3x_platform_info *pinfo;
++	u32 ret, val, period_bytes, reg_val, ier_val, water_val;
  
- SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD2", 0, 0),
- SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD3", 0, 0),
-diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
-index 67cac60a859d..c3b6f4d41005 100644
---- a/sound/soc/codecs/cs47l90.c
-+++ b/sound/soc/codecs/cs47l90.c
-@@ -744,15 +744,18 @@ static const struct snd_kcontrol_new cs47l90_output_anc_src[] = {
- static const struct snd_soc_dapm_widget cs47l90_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", MADERA_SYSTEM_CLOCK_1, MADERA_SYSCLK_ENA_SHIFT,
- 		    0, madera_sysclk_ev,
--		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+		    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", MADERA_ASYNC_CLOCK_1,
--		    MADERA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    MADERA_ASYNC_CLK_ENA_SHIFT, 0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", MADERA_OUTPUT_SYSTEM_CLOCK,
- 		    MADERA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", MADERA_OUTPUT_ASYNC_CLOCK,
- 		    MADERA_OPCLK_ASYNC_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1,
--		    MADERA_DSP_CLK_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1, MADERA_DSP_CLK_ENA_SHIFT,
-+		    0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	prtd = substream->private_data;
+ 	rtd = substream->runtime->private_data;
++	card = prtd->card;
++	pinfo = snd_soc_card_get_drvdata(card);
++	if (pinfo) {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			rtd->i2s_instance = pinfo->play_i2s_instance;
++		else
++			rtd->i2s_instance = pinfo->cap_i2s_instance;
++	}
+ 	period_bytes = frames_to_bytes(substream->runtime,
+ 			substream->runtime->period_size);
+ 	switch (cmd) {
+@@ -137,31 +174,75 @@ static int acp3x_i2s_trigger(struct snd_pcm_substream *substream,
+ 		rtd->bytescount = acp_get_byte_count(rtd,
+ 						substream->stream);
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-			reg_val = mmACP_BTTDM_ITER;
+-			rv_writel(period_bytes, rtd->acp3x_base +
+-					mmACP_BT_TX_INTR_WATERMARK_SIZE);
++			switch (rtd->i2s_instance) {
++			case I2S_BT_INSTANCE:
++				water_val =
++					mmACP_BT_TX_INTR_WATERMARK_SIZE;
++				reg_val = mmACP_BTTDM_ITER;
++				ier_val = mmACP_BTTDM_IER;
++				break;
++			case I2S_SP_INSTANCE:
++			default:
++				water_val =
++					mmACP_I2S_TX_INTR_WATERMARK_SIZE;
++				reg_val = mmACP_I2STDM_ITER;
++				ier_val = mmACP_I2STDM_IER;
++			}
+ 		} else {
+-			reg_val = mmACP_BTTDM_IRER;
+-			rv_writel(period_bytes, rtd->acp3x_base +
+-					mmACP_BT_RX_INTR_WATERMARK_SIZE);
++			switch (rtd->i2s_instance) {
++			case I2S_BT_INSTANCE:
++				water_val =
++					mmACP_BT_RX_INTR_WATERMARK_SIZE;
++				reg_val = mmACP_BTTDM_IRER;
++				ier_val = mmACP_BTTDM_IER;
++				break;
++			case I2S_SP_INSTANCE:
++			default:
++				water_val =
++					mmACP_I2S_RX_INTR_WATERMARK_SIZE;
++				reg_val = mmACP_I2STDM_IRER;
++				ier_val = mmACP_I2STDM_IER;
++			}
+ 		}
++		rv_writel(period_bytes, rtd->acp3x_base + water_val);
+ 		val = rv_readl(rtd->acp3x_base + reg_val);
+ 		val = val | BIT(0);
+ 		rv_writel(val, rtd->acp3x_base + reg_val);
+-		rv_writel(1, rtd->acp3x_base + mmACP_BTTDM_IER);
++		rv_writel(1, rtd->acp3x_base + ier_val);
++		ret = 0;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			reg_val = mmACP_BTTDM_ITER;
+-		else
+-			reg_val = mmACP_BTTDM_IRER;
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			switch (rtd->i2s_instance) {
++			case I2S_BT_INSTANCE:
++				reg_val = mmACP_BTTDM_ITER;
++				ier_val = mmACP_BTTDM_IER;
++				break;
++			case I2S_SP_INSTANCE:
++			default:
++				reg_val = mmACP_I2STDM_ITER;
++				ier_val = mmACP_I2STDM_IER;
++			}
  
- SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD2", 0, 0),
- SND_SOC_DAPM_REGULATOR_SUPPLY("DBVDD3", 0, 0),
-diff --git a/sound/soc/codecs/cs47l92.c b/sound/soc/codecs/cs47l92.c
-index 536b7d35d6b2..cbffcd84766d 100644
---- a/sound/soc/codecs/cs47l92.c
-+++ b/sound/soc/codecs/cs47l92.c
-@@ -163,6 +163,51 @@ static int cs47l92_adsp_power_ev(struct snd_soc_dapm_widget *w,
- 	return wm_adsp_early_event(w, kcontrol, event);
++		} else {
++			switch (rtd->i2s_instance) {
++			case I2S_BT_INSTANCE:
++				reg_val = mmACP_BTTDM_IRER;
++				ier_val = mmACP_BTTDM_IER;
++				break;
++			case I2S_SP_INSTANCE:
++			default:
++				reg_val = mmACP_I2STDM_IRER;
++				ier_val = mmACP_I2STDM_IER;
++			}
++		}
+ 		val = rv_readl(rtd->acp3x_base + reg_val);
+ 		val = val & ~BIT(0);
+ 		rv_writel(val, rtd->acp3x_base + reg_val);
+-		rv_writel(0, rtd->acp3x_base + mmACP_BTTDM_IER);
++		rv_writel(0, rtd->acp3x_base + ier_val);
++		ret = 0;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index 9f6ea3ef2441..040a8be593f0 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -193,15 +193,31 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
+ static void config_acp3x_dma(struct i2s_stream_instance *rtd, int direction)
+ {
+ 	u16 page_idx;
+-	u32 low, high, val, acp_fifo_addr;
+-	dma_addr_t addr = rtd->dma_addr;
++	u32 low, high, val, acp_fifo_addr, reg_fifo_addr;
++	u32 reg_ringbuf_size, reg_dma_size, reg_fifo_size;
++	dma_addr_t addr;
+ 
+-	/* 8 scratch registers used to map one 64 bit address */
+-	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		val = 0;
+-	else
+-		val = rtd->num_pages * 8;
++	addr = rtd->dma_addr;
+ 
++	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			val = ACP_SRAM_BT_PB_PTE_OFFSET;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			val = ACP_SRAM_SP_PB_PTE_OFFSET;
++		}
++	} else {
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			val = ACP_SRAM_BT_CP_PTE_OFFSET;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			val = ACP_SRAM_SP_CP_PTE_OFFSET;
++		}
++	}
+ 	/* Group Enable */
+ 	rv_writel(ACP_SRAM_PTE_OFFSET | BIT(31), rtd->acp3x_base +
+ 		  mmACPAXI2AXI_ATU_BASE_ADDR_GRP_1);
+@@ -223,38 +239,61 @@ static void config_acp3x_dma(struct i2s_stream_instance *rtd, int direction)
+ 	}
+ 
+ 	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
+-		/* Config ringbuffer */
+-		rv_writel(MEM_WINDOW_START, rtd->acp3x_base +
+-			  mmACP_BT_TX_RINGBUFADDR);
+-		rv_writel(MAX_BUFFER, rtd->acp3x_base +
+-			  mmACP_BT_TX_RINGBUFSIZE);
+-		rv_writel(DMA_SIZE, rtd->acp3x_base + mmACP_BT_TX_DMA_SIZE);
+-
+-		/* Config audio fifo */
+-		acp_fifo_addr = ACP_SRAM_PTE_OFFSET + (rtd->num_pages * 8)
+-				+ PLAYBACK_FIFO_ADDR_OFFSET;
+-		rv_writel(acp_fifo_addr, rtd->acp3x_base +
+-			  mmACP_BT_TX_FIFOADDR);
+-		rv_writel(FIFO_SIZE, rtd->acp3x_base + mmACP_BT_TX_FIFOSIZE);
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_ringbuf_size = mmACP_BT_TX_RINGBUFSIZE;
++			reg_dma_size = mmACP_BT_TX_DMA_SIZE;
++			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
++						BT_PB_FIFO_ADDR_OFFSET;
++			reg_fifo_addr = mmACP_BT_TX_FIFOADDR;
++			reg_fifo_size = mmACP_BT_TX_FIFOSIZE;
++			rv_writel(I2S_BT_TX_MEM_WINDOW_START,
++				rtd->acp3x_base + mmACP_BT_TX_RINGBUFADDR);
++			break;
++
++		case I2S_SP_INSTANCE:
++		default:
++			reg_ringbuf_size = mmACP_I2S_TX_RINGBUFSIZE;
++			reg_dma_size = mmACP_I2S_TX_DMA_SIZE;
++			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
++						SP_PB_FIFO_ADDR_OFFSET;
++			reg_fifo_addr =	mmACP_I2S_TX_FIFOADDR;
++			reg_fifo_size = mmACP_I2S_TX_FIFOSIZE;
++			rv_writel(I2S_SP_TX_MEM_WINDOW_START,
++				rtd->acp3x_base + mmACP_I2S_TX_RINGBUFADDR);
++		}
+ 	} else {
+-		/* Config ringbuffer */
+-		rv_writel(MEM_WINDOW_START + MAX_BUFFER, rtd->acp3x_base +
+-			  mmACP_BT_RX_RINGBUFADDR);
+-		rv_writel(MAX_BUFFER, rtd->acp3x_base +
+-			  mmACP_BT_RX_RINGBUFSIZE);
+-		rv_writel(DMA_SIZE, rtd->acp3x_base + mmACP_BT_RX_DMA_SIZE);
+-
+-		/* Config audio fifo */
+-		acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
+-				(rtd->num_pages * 8) + CAPTURE_FIFO_ADDR_OFFSET;
+-		rv_writel(acp_fifo_addr, rtd->acp3x_base +
+-			  mmACP_BT_RX_FIFOADDR);
+-		rv_writel(FIFO_SIZE, rtd->acp3x_base + mmACP_BT_RX_FIFOSIZE);
+-	}
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_ringbuf_size = mmACP_BT_RX_RINGBUFSIZE;
++			reg_dma_size = mmACP_BT_RX_DMA_SIZE;
++			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
++						BT_CAPT_FIFO_ADDR_OFFSET;
++			reg_fifo_addr = mmACP_BT_RX_FIFOADDR;
++			reg_fifo_size = mmACP_BT_RX_FIFOSIZE;
++			rv_writel(I2S_BT_RX_MEM_WINDOW_START,
++				rtd->acp3x_base + mmACP_BT_RX_RINGBUFADDR);
++			break;
+ 
+-	/* Enable  watermark/period interrupt to host */
+-	rv_writel(BIT(BT_TX_THRESHOLD) | BIT(BT_RX_THRESHOLD),
+-		  rtd->acp3x_base + mmACP_EXTERNAL_INTR_CNTL);
++		case I2S_SP_INSTANCE:
++		default:
++			reg_ringbuf_size = mmACP_I2S_RX_RINGBUFSIZE;
++			reg_dma_size = mmACP_I2S_RX_DMA_SIZE;
++			acp_fifo_addr = ACP_SRAM_PTE_OFFSET +
++						SP_CAPT_FIFO_ADDR_OFFSET;
++			reg_fifo_addr = mmACP_I2S_RX_FIFOADDR;
++			reg_fifo_size = mmACP_I2S_RX_FIFOSIZE;
++			rv_writel(I2S_SP_RX_MEM_WINDOW_START,
++				rtd->acp3x_base + mmACP_I2S_RX_RINGBUFADDR);
++		}
++	}
++	rv_writel(MAX_BUFFER, rtd->acp3x_base + reg_ringbuf_size);
++	rv_writel(DMA_SIZE, rtd->acp3x_base + reg_dma_size);
++	rv_writel(acp_fifo_addr, rtd->acp3x_base + reg_fifo_addr);
++	rv_writel(FIFO_SIZE, rtd->acp3x_base + reg_fifo_size);
++	rv_writel(BIT(I2S_RX_THRESHOLD) | BIT(BT_RX_THRESHOLD)
++		| BIT(I2S_TX_THRESHOLD) | BIT(BT_TX_THRESHOLD),
++		rtd->acp3x_base + mmACP_EXTERNAL_INTR_CNTL);
  }
  
-+static int cs47l92_outclk_ev(struct snd_soc_dapm_widget *w,
-+			     struct snd_kcontrol *kcontrol,
-+			     int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct cs47l92 *cs47l92 = snd_soc_component_get_drvdata(component);
-+	struct madera_priv *priv = &cs47l92->core;
-+	struct madera *madera = priv->madera;
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap, MADERA_OUTPUT_RATE_1, &val);
-+	if (ret) {
-+		dev_err(madera->dev, "Failed to read OUTCLK source: %d\n", ret);
-+		return ret;
-+	}
-+
-+	val &= MADERA_OUT_CLK_SRC_MASK;
-+
-+	switch (val) {
-+	case MADERA_OUTCLK_MCLK1:
-+	case MADERA_OUTCLK_MCLK2:
-+	case MADERA_OUTCLK_MCLK3:
-+		val -= (MADERA_OUTCLK_MCLK1 - MADERA_MCLK1);
-+
-+		switch (event) {
-+		case SND_SOC_DAPM_PRE_PMU:
-+			ret = clk_prepare_enable(madera->mclk[val].clk);
-+			if (ret)
-+				return ret;
-+			break;
-+		case SND_SOC_DAPM_POST_PMD:
-+			clk_disable_unprepare(madera->mclk[val].clk);
-+			break;
-+		default:
-+			break;
-+		}
-+	default:
-+		break;
-+	}
-+
-+	return madera_domain_clk_ev(w, kcontrol, event);
-+}
-+
- #define CS47L92_NG_SRC(name, base) \
- 	SOC_SINGLE(name " NG HPOUT1L Switch",  base,  0, 1, 0), \
- 	SOC_SINGLE(name " NG HPOUT1R Switch",  base,  1, 1, 0), \
-@@ -615,15 +660,18 @@ static const struct snd_kcontrol_new cs47l92_aec_loopback_mux =
- static const struct snd_soc_dapm_widget cs47l92_dapm_widgets[] = {
- SND_SOC_DAPM_SUPPLY("SYSCLK", MADERA_SYSTEM_CLOCK_1, MADERA_SYSCLK_ENA_SHIFT,
- 		    0, madera_sysclk_ev,
--		    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-+		    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("ASYNCCLK", MADERA_ASYNC_CLOCK_1,
--		    MADERA_ASYNC_CLK_ENA_SHIFT, 0, NULL, 0),
-+		    MADERA_ASYNC_CLK_ENA_SHIFT, 0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OPCLK", MADERA_OUTPUT_SYSTEM_CLOCK,
- 		    MADERA_OPCLK_ENA_SHIFT, 0, NULL, 0),
- SND_SOC_DAPM_SUPPLY("ASYNCOPCLK", MADERA_OUTPUT_ASYNC_CLOCK,
- 		    MADERA_OPCLK_ASYNC_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1,
--		    MADERA_DSP_CLK_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_SUPPLY("DSPCLK", MADERA_DSP_CLOCK_1, MADERA_DSP_CLK_ENA_SHIFT,
-+		    0, madera_clk_ev,
-+		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ static int acp3x_dma_open(struct snd_soc_component *component,
+@@ -287,17 +326,21 @@ static int acp3x_dma_open(struct snd_soc_component *component,
+ 		return ret;
+ 	}
  
- SND_SOC_DAPM_REGULATOR_SUPPLY("CPVDD1", 20, 0),
- SND_SOC_DAPM_REGULATOR_SUPPLY("CPVDD2", 20, 0),
-@@ -666,7 +714,7 @@ SND_SOC_DAPM_SUPPLY("ISRC2CLK", SND_SOC_NOPM,
- 		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("OUTCLK", SND_SOC_NOPM,
- 		    MADERA_DOM_GRP_OUT, 0,
--		    madera_domain_clk_ev,
-+		    cs47l92_outclk_ev,
- 		    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- SND_SOC_DAPM_SUPPLY("SPDCLK", SND_SOC_NOPM,
- 		    MADERA_DOM_GRP_SPD, 0,
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index 52639811cc52..9b4b4c52b9e4 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -163,6 +163,48 @@ static const int madera_dsp_bus_error_irqs[MADERA_MAX_ADSP] = {
- 	MADERA_IRQ_DSP7_BUS_ERR,
+-	if (!adata->play_stream && !adata->capture_stream)
++	if (!adata->play_stream && !adata->capture_stream &&
++		adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
+ 		rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		adata->play_stream = substream;
+-	else
++		adata->i2ssp_play_stream = substream;
++	} else {
+ 		adata->capture_stream = substream;
++		adata->i2ssp_capture_stream = substream;
++	}
+ 
+ 	i2s_data->acp3x_base = adata->acp3x_base;
+ 	runtime->private_data = i2s_data;
+-	return 0;
++	return ret;
+ }
+ 
+ 
+@@ -305,13 +348,27 @@ static int acp3x_dma_hw_params(struct snd_soc_component *component,
+ 			       struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *params)
+ {
++	struct i2s_stream_instance *rtd;
++	struct snd_soc_pcm_runtime *prtd;
++	struct snd_soc_card *card;
++	struct acp3x_platform_info *pinfo;
+ 	u64 size;
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct i2s_stream_instance *rtd = runtime->private_data;
+ 
++	prtd = substream->private_data;
++	card = prtd->card;
++	pinfo = snd_soc_card_get_drvdata(card);
++	rtd = substream->runtime->private_data;
+ 	if (!rtd)
+ 		return -EINVAL;
+ 
++	if (pinfo)
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			rtd->i2s_instance = pinfo->play_i2s_instance;
++		else
++			rtd->i2s_instance = pinfo->cap_i2s_instance;
++	else
++		pr_err("pinfo failed\n");
++
+ 	size = params_buffer_bytes(params);
+ 	rtd->dma_addr = substream->dma_buffer.addr;
+ 	rtd->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
+@@ -322,12 +379,25 @@ static int acp3x_dma_hw_params(struct snd_soc_component *component,
+ static snd_pcm_uframes_t acp3x_dma_pointer(struct snd_soc_component *component,
+ 					   struct snd_pcm_substream *substream)
+ {
++	struct snd_soc_pcm_runtime *prtd;
++	struct snd_soc_card *card;
++	struct acp3x_platform_info *pinfo;
+ 	struct i2s_stream_instance *rtd;
+ 	u32 pos;
+ 	u32 buffersize;
+ 	u64 bytescount;
+ 
++	prtd = substream->private_data;
++	card = prtd->card;
+ 	rtd = substream->runtime->private_data;
++	pinfo = snd_soc_card_get_drvdata(card);
++	if (pinfo) {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			rtd->i2s_instance = pinfo->play_i2s_instance;
++		else
++			rtd->i2s_instance = pinfo->cap_i2s_instance;
++	}
++
+ 	buffersize = frames_to_bytes(substream->runtime,
+ 				     substream->runtime->buffer_size);
+ 	bytescount = acp_get_byte_count(rtd, substream->stream);
+@@ -363,15 +433,19 @@ static int acp3x_dma_close(struct snd_soc_component *component,
+ 	component = snd_soc_rtdcom_lookup(prtd, DRV_NAME);
+ 	adata = dev_get_drvdata(component->dev);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		adata->play_stream = NULL;
+-	else
++		adata->i2ssp_play_stream = NULL;
++	} else {
+ 		adata->capture_stream = NULL;
++		adata->i2ssp_capture_stream = NULL;
++	}
+ 
+ 	/* Disable ACP irq, when the current stream is being closed and
+ 	 * another stream is also not active.
+ 	 */
+-	if (!adata->play_stream && !adata->capture_stream)
++	if (!adata->play_stream && !adata->capture_stream &&
++		!adata->i2ssp_play_stream && !adata->i2ssp_capture_stream)
+ 		rv_writel(0, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+@@ -478,8 +552,10 @@ static int acp3x_resume(struct device *dev)
+ {
+ 	struct i2s_dev_data *adata;
+ 	int status;
+-	u32 val;
++	u32 val, reg_val, frmt_val;
+ 
++	reg_val = 0;
++	frmt_val = 0;
+ 	adata = dev_get_drvdata(dev);
+ 	status = acp3x_init(adata->acp3x_base);
+ 	if (status)
+@@ -489,32 +565,39 @@ static int acp3x_resume(struct device *dev)
+ 		struct i2s_stream_instance *rtd =
+ 			adata->play_stream->runtime->private_data;
+ 		config_acp3x_dma(rtd, SNDRV_PCM_STREAM_PLAYBACK);
+-		rv_writel((rtd->xfer_resolution  << 3),
+-			  rtd->acp3x_base + mmACP_BTTDM_ITER);
+-		if (adata->tdm_mode == true) {
+-			rv_writel(adata->tdm_fmt, adata->acp3x_base +
+-				  mmACP_BTTDM_TXFRMT);
+-			val = rv_readl(adata->acp3x_base + mmACP_BTTDM_ITER);
+-			rv_writel((val | 0x2), adata->acp3x_base +
+-				  mmACP_BTTDM_ITER);
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_val = mmACP_BTTDM_ITER;
++			frmt_val = mmACP_BTTDM_TXFRMT;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			reg_val = mmACP_I2STDM_ITER;
++			frmt_val = mmACP_I2STDM_TXFRMT;
+ 		}
++	rv_writel((rtd->xfer_resolution  << 3), rtd->acp3x_base + reg_val);
+ 	}
+-
+ 	if (adata->capture_stream && adata->capture_stream->runtime) {
+ 		struct i2s_stream_instance *rtd =
+ 			adata->capture_stream->runtime->private_data;
+ 		config_acp3x_dma(rtd, SNDRV_PCM_STREAM_CAPTURE);
+-		rv_writel((rtd->xfer_resolution  << 3),
+-			  rtd->acp3x_base + mmACP_BTTDM_IRER);
+-		if (adata->tdm_mode == true) {
+-			rv_writel(adata->tdm_fmt, adata->acp3x_base +
+-				  mmACP_BTTDM_RXFRMT);
+-			val = rv_readl(adata->acp3x_base + mmACP_BTTDM_IRER);
+-			rv_writel((val | 0x2), adata->acp3x_base +
+-				  mmACP_BTTDM_IRER);
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			reg_val = mmACP_BTTDM_IRER;
++			frmt_val = mmACP_BTTDM_RXFRMT;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			reg_val = mmACP_I2STDM_IRER;
++			frmt_val = mmACP_I2STDM_RXFRMT;
+ 		}
++	rv_writel((rtd->xfer_resolution  << 3), rtd->acp3x_base + reg_val);
++	}
++	if (adata->tdm_mode == TDM_ENABLE) {
++		rv_writel(adata->tdm_fmt, adata->acp3x_base + frmt_val);
++		val = rv_readl(adata->acp3x_base + reg_val);
++		rv_writel(val | 0x2, adata->acp3x_base + reg_val);
+ 	}
+-
+ 	rv_writel(1, adata->acp3x_base + mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+@@ -524,8 +607,8 @@ static int acp3x_pcm_runtime_suspend(struct device *dev)
+ {
+ 	struct i2s_dev_data *adata;
+ 	int status;
+-	adata = dev_get_drvdata(dev);
+ 
++	adata = dev_get_drvdata(dev);
+ 	status = acp3x_deinit(adata->acp3x_base);
+ 	if (status)
+ 		dev_err(dev, "ACP de-init failed\n");
+@@ -541,8 +624,8 @@ static int acp3x_pcm_runtime_resume(struct device *dev)
+ {
+ 	struct i2s_dev_data *adata;
+ 	int status;
+-	adata = dev_get_drvdata(dev);
+ 
++	adata = dev_get_drvdata(dev);
+ 	status = acp3x_init(adata->acp3x_base);
+ 	if (status)
+ 		return -ENODEV;
+diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
+index a1f03fce68fa..a1cdc4e768e2 100644
+--- a/sound/soc/amd/raven/acp3x.h
++++ b/sound/soc/amd/raven/acp3x.h
+@@ -7,6 +7,11 @@
+ 
+ #include "chip_offset_byte.h"
+ #include <sound/pcm.h>
++#define I2S_SP_INSTANCE                 0x01
++#define I2S_BT_INSTANCE                 0x02
++
++#define TDM_ENABLE 1
++#define TDM_DISABLE 0
+ 
+ #define ACP3x_DEVS		3
+ #define ACP3x_PHY_BASE_ADDRESS 0x1240000
+@@ -18,8 +23,11 @@
+ #define ACP3x_BT_TDM_REG_START	0x1242800
+ #define ACP3x_BT_TDM_REG_END	0x1242810
+ #define I2S_MODE	0x04
++#define	I2S_RX_THRESHOLD	27
++#define	I2S_TX_THRESHOLD	28
+ #define	BT_TX_THRESHOLD 26
+ #define	BT_RX_THRESHOLD 25
++#define ACP_ERR_INTR_MASK	29
+ #define ACP3x_POWER_ON 0x00
+ #define ACP3x_POWER_ON_IN_PROGRESS 0x01
+ #define ACP3x_POWER_OFF 0x02
+@@ -27,19 +35,28 @@
+ #define ACP3x_SOFT_RESET__SoftResetAudDone_MASK	0x00010001
+ 
+ #define ACP_SRAM_PTE_OFFSET	0x02050000
++#define ACP_SRAM_SP_PB_PTE_OFFSET	0x0
++#define ACP_SRAM_SP_CP_PTE_OFFSET	0x100
++#define ACP_SRAM_BT_PB_PTE_OFFSET	0x200
++#define ACP_SRAM_BT_CP_PTE_OFFSET	0x300
+ #define PAGE_SIZE_4K_ENABLE 0x2
+-#define MEM_WINDOW_START	0x4000000
+-#define PLAYBACK_FIFO_ADDR_OFFSET 0x400
+-#define CAPTURE_FIFO_ADDR_OFFSET  0x500
++#define I2S_SP_TX_MEM_WINDOW_START	0x4000000
++#define I2S_SP_RX_MEM_WINDOW_START	0x4020000
++#define I2S_BT_TX_MEM_WINDOW_START	0x4040000
++#define I2S_BT_RX_MEM_WINDOW_START	0x4060000
+ 
++#define SP_PB_FIFO_ADDR_OFFSET		0x500
++#define SP_CAPT_FIFO_ADDR_OFFSET	0x700
++#define BT_PB_FIFO_ADDR_OFFSET		0x900
++#define BT_CAPT_FIFO_ADDR_OFFSET	0xB00
+ #define PLAYBACK_MIN_NUM_PERIODS    2
+ #define PLAYBACK_MAX_NUM_PERIODS    8
+-#define PLAYBACK_MAX_PERIOD_SIZE    16384
+-#define PLAYBACK_MIN_PERIOD_SIZE    4096
++#define PLAYBACK_MAX_PERIOD_SIZE    8192
++#define PLAYBACK_MIN_PERIOD_SIZE    1024
+ #define CAPTURE_MIN_NUM_PERIODS     2
+ #define CAPTURE_MAX_NUM_PERIODS     8
+-#define CAPTURE_MAX_PERIOD_SIZE     16384
+-#define CAPTURE_MIN_PERIOD_SIZE     4096
++#define CAPTURE_MAX_PERIOD_SIZE     8192
++#define CAPTURE_MIN_PERIOD_SIZE     1024
+ 
+ #define MAX_BUFFER (PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
+ #define MIN_BUFFER MAX_BUFFER
+@@ -66,14 +83,20 @@ struct i2s_dev_data {
+ 	void __iomem *acp3x_base;
+ 	struct snd_pcm_substream *play_stream;
+ 	struct snd_pcm_substream *capture_stream;
++	struct snd_pcm_substream *i2ssp_play_stream;
++	struct snd_pcm_substream *i2ssp_capture_stream;
  };
  
-+int madera_clk_ev(struct snd_soc_dapm_widget *w,
-+		  struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct madera_priv *priv = snd_soc_component_get_drvdata(component);
-+	struct madera *madera = priv->madera;
-+	unsigned int val;
-+	int clk_idx;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap, w->reg, &val);
-+	if (ret) {
-+		dev_err(madera->dev, "Failed to check clock source: %d\n", ret);
-+		return ret;
-+	}
-+
-+	switch ((val & MADERA_SYSCLK_SRC_MASK) >> MADERA_SYSCLK_SRC_SHIFT) {
-+	case MADERA_CLK_SRC_MCLK1:
-+		clk_idx = MADERA_MCLK1;
-+		break;
-+	case MADERA_CLK_SRC_MCLK2:
-+		clk_idx = MADERA_MCLK2;
-+		break;
-+	case MADERA_CLK_SRC_MCLK3:
-+		clk_idx = MADERA_MCLK3;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return clk_prepare_enable(madera->mclk[clk_idx].clk);
-+	case SND_SOC_DAPM_POST_PMD:
-+		clk_disable_unprepare(madera->mclk[clk_idx].clk);
-+		return 0;
-+	default:
-+		return 0;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(madera_clk_ev);
-+
- static void madera_spin_sysclk(struct madera_priv *priv)
- {
- 	struct madera *madera = priv->madera;
-@@ -193,9 +235,16 @@ int madera_sysclk_ev(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct madera_priv *priv = snd_soc_component_get_drvdata(component);
+ struct i2s_stream_instance {
+ 	u16 num_pages;
++	u16 i2s_instance;
++	u16 capture_channel;
++	u16 direction;
+ 	u16 channels;
+ 	u32 xfer_resolution;
+-	u64 bytescount;
++	u32 val;
+ 	dma_addr_t dma_addr;
++	u64 bytescount;
+ 	void __iomem *acp3x_base;
+ };
  
--	madera_spin_sysclk(priv);
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+	case SND_SOC_DAPM_PRE_PMD:
-+		madera_spin_sysclk(priv);
-+		break;
-+	default:
-+		break;
-+	}
+@@ -93,15 +116,36 @@ static inline u64 acp_get_byte_count(struct i2s_stream_instance *rtd,
+ 	u64 byte_count;
  
--	return 0;
-+	return madera_clk_ev(w, kcontrol, event);
+ 	if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
+-		byte_count = rv_readl(rtd->acp3x_base +
+-				mmACP_BT_TX_LINEARPOSITIONCNTR_HIGH);
+-		byte_count |= rv_readl(rtd->acp3x_base +
+-				mmACP_BT_TX_LINEARPOSITIONCNTR_LOW);
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			byte_count = rv_readl(rtd->acp3x_base +
++					mmACP_BT_TX_LINEARPOSITIONCNTR_HIGH);
++			byte_count |= rv_readl(rtd->acp3x_base +
++					mmACP_BT_TX_LINEARPOSITIONCNTR_LOW);
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			byte_count = rv_readl(rtd->acp3x_base +
++					mmACP_I2S_TX_LINEARPOSITIONCNTR_HIGH);
++			byte_count |= rv_readl(rtd->acp3x_base +
++					mmACP_I2S_TX_LINEARPOSITIONCNTR_LOW);
++		}
++
+ 	} else {
+-		byte_count = rv_readl(rtd->acp3x_base +
+-				mmACP_BT_RX_LINEARPOSITIONCNTR_HIGH);
+-		byte_count |= rv_readl(rtd->acp3x_base +
+-				mmACP_BT_RX_LINEARPOSITIONCNTR_LOW);
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			byte_count = rv_readl(rtd->acp3x_base +
++					mmACP_BT_RX_LINEARPOSITIONCNTR_HIGH);
++			byte_count |= rv_readl(rtd->acp3x_base +
++					mmACP_BT_RX_LINEARPOSITIONCNTR_LOW);
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			byte_count = rv_readl(rtd->acp3x_base +
++					mmACP_I2S_RX_LINEARPOSITIONCNTR_HIGH);
++			byte_count |= rv_readl(rtd->acp3x_base +
++					mmACP_I2S_RX_LINEARPOSITIONCNTR_LOW);
++		}
+ 	}
+ 	return byte_count;
  }
- EXPORT_SYMBOL_GPL(madera_sysclk_ev);
- 
-diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
-index 6d8938a3fb64..49a8f68ec43d 100644
---- a/sound/soc/codecs/madera.h
-+++ b/sound/soc/codecs/madera.h
-@@ -383,6 +383,8 @@ int madera_eq_coeff_put(struct snd_kcontrol *kcontrol,
- int madera_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
- 			  struct snd_ctl_elem_value *ucontrol);
- 
-+int madera_clk_ev(struct snd_soc_dapm_widget *w,
-+		  struct snd_kcontrol *kcontrol, int event);
- int madera_sysclk_ev(struct snd_soc_dapm_widget *w,
- 		     struct snd_kcontrol *kcontrol, int event);
- int madera_spk_ev(struct snd_soc_dapm_widget *w,
 -- 
 2.20.1
 
