@@ -2,67 +2,82 @@ Return-Path: <SRS0=lBDT=2W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 161EEC2D0DC
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 19:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7269C2D0DE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:43:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81105206DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 19:24:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 000FF206DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:43:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WDG7wRJf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81105206DB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=inria.fr
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D0jA04g5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="rrfujMrM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 000FF206DB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C621E16B0;
-	Wed,  1 Jan 2020 20:23:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C621E16B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E75EF16B0;
+	Wed,  1 Jan 2020 22:42:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E75EF16B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577906660;
-	bh=2D9eSOK83RZFvONTswx9G5+I3J4Sbkm4sWzapFS2K1c=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WDG7wRJfZOLpXPVAk6u/yVvc0jDVOKSkflOvbgwGwQCHFvCow8MUYuKu1/NrGAdWl
-	 UxmRWiQF4Aip0lw6zxkmMusoWgENKXOLrWtwoBWitSCAxBRk0A7aytBD6Cg1PM+tRh
-	 8jDSs+0peG1nQUfr9efromIh6hEHYhvjbOWneMSU=
+	s=default; t=1577914988;
+	bh=e5UKzrnbdnv65bVLtcTvgMRnasXxdK6fKNUtPNXoLCw=;
+	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=D0jA04g5OpITCNDimogdWP4WgAZ2gL+MpJPOPiR1fBjFq232wN6uwXnrIpIMvSFb4
+	 7BR/1RETqodVz+1YDHSCbITKw68xFrKQt7t42+G/bXMea6TFBHqrIPgdIZPLT6cjWy
+	 a/24+YbdkW25ntX1kJP41EptW3qmCra3dqX2wNUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53B33F8011E;
-	Wed,  1 Jan 2020 20:23:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D43CF8015C;
+	Wed,  1 Jan 2020 22:42:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB3C4F8015D; Wed,  1 Jan 2020 20:23:28 +0100 (CET)
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
+ id 95C0AF8015E; Wed,  1 Jan 2020 22:42:05 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE1A3F8011E
- for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2020 20:23:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE1A3F8011E
-X-IronPort-AV: E=Sophos;i="5.69,384,1571695200"; d="scan'208";a="334543739"
-Received: from abo-154-110-68.mrs.modulonet.fr (HELO hadrien) ([85.68.110.154])
- by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 01 Jan 2020 20:23:24 +0100
-Date: Wed, 1 Jan 2020 20:23:24 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <s5hmub72dh3.wl-tiwai@suse.de>
-Message-ID: <alpine.DEB.2.21.2001012022380.3262@hadrien>
-References: <1577900990-8588-1-git-send-email-Julia.Lawall@inria.fr>
- <1577900990-8588-3-git-send-email-Julia.Lawall@inria.fr>
- <s5hmub72dh3.wl-tiwai@suse.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [alsa-devel] [PATCH 02/10] ALSA: ml403-ac97cr: use resource_size
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86363F8011E
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2020 22:42:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86363F8011E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="rrfujMrM"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=1GJeXqBZgwVZGjKHCG8CUrT1zbGnow5SWLDAyMEOoqA=; b=rrfujMrMQDqx
+ 694ngqHc4672jevij1CmPFnBhzJy+5Fvxpv2Nv3EaaEgSD470jKdcT627rGJ+Bp/FQwery4QDsWNA
+ c+jHgtzNwwFSM6iJIHZNUeTXsZPtqT2WVjkyg2kXY16D9R/+KofPO0ceLc64VAqhh16uGS92Kv53Z
+ 4Xu4k=;
+Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
+ ([82.37.168.47] helo=fitzroy.sirena.org.uk)
+ by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1imlke-0002aP-75; Wed, 01 Jan 2020 21:42:00 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 78EFFD057C6; Wed,  1 Jan 2020 21:41:59 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Julia Lawall <Julia.Lawall@inria.fr>
+In-Reply-To: <1577864614-5543-11-git-send-email-Julia.Lawall@inria.fr>
+Message-Id: <applied-1577864614-5543-11-git-send-email-Julia.Lawall@inria.fr>
+X-Patchwork-Hint: ignore
+Date: Wed,  1 Jan 2020 21:41:59 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+ kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: qdsp6: q6asm-dai: constify copied
+	structure" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,45 +90,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 1 Jan 2020, Takashi Iwai wrote:
+The patch
 
-> On Wed, 01 Jan 2020 18:49:42 +0100,
-> Julia Lawall wrote:
-> >
-> > Use resource_size rather than a verbose computation on
-> > the end and start fields.
-> >
-> > The semantic patch that makes this change is as follows:
-> > (http://coccinelle.lip6.fr/)
-> >
-> > <smpl>
-> > @@ struct resource *ptr; @@
-> > - ((ptr->end) - (ptr->start) + 1)
-> > + resource_size(ptr)
-> > </smpl>
-> >
-> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
->
-> Unfortunately this doesn't apply cleanly on my tree.  I guess you
-> worked on linux-next which contains a change outside the sound git
-> tree that converts ioremap_nocache() to ioremap().
->
-> We may apply it in sound git tree and let conflicts resolved at the
-> merge time.  OTOH, it's no urgent fix at all and can be postponed
-> after 5.6-rc1 merge, too -- then everything can be applied in a
-> cleaner way.
->
-> Let me know your preference.
+   ASoC: qdsp6: q6asm-dai: constify copied structure
 
-It's from linux-next.  No hurry.  Postponing it is fine.
+has been applied to the asoc tree at
 
-thanks,
-julia
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 0da390ba86d841b1f9770c0a67bdebb4d8dc8be5 Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@inria.fr>
+Date: Wed, 1 Jan 2020 08:43:28 +0100
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: constify copied structure
+
+The q6asm_dai_hardware_capture structure is only copied into another
+structure, so make it const.
+
+The opportunity for this change was found using Coccinelle.
+
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Link: https://lore.kernel.org/r/1577864614-5543-11-git-send-email-Julia.Lawall@inria.fr
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 5e2327708772..c0d422d0ab94 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -72,7 +72,7 @@ struct q6asm_dai_data {
+ 	long long int sid;
+ };
+ 
+-static struct snd_pcm_hardware q6asm_dai_hardware_capture = {
++static const struct snd_pcm_hardware q6asm_dai_hardware_capture = {
+ 	.info =                 (SNDRV_PCM_INFO_MMAP |
+ 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 				SNDRV_PCM_INFO_MMAP_VALID |
+-- 
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
