@@ -1,86 +1,68 @@
-Return-Path: <SRS0=0EOX=2V=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=lBDT=2W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4269EC2D0C3
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27DA7C2D0DC
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 11:39:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C21942071E
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Dec 2019 00:36:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 330C92064B
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 11:39:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="F691bJ8J";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="fgPLWU3n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C21942071E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AHMXq9Ib"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 330C92064B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FAF41724;
-	Tue, 31 Dec 2019 01:36:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FAF41724
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08C3116C1;
+	Wed,  1 Jan 2020 12:39:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08C3116C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577752618;
-	bh=RCE+LwoRi7/5B0bRmQqjR5q12MMGqu34nnLvBNXO9II=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=F691bJ8Jt+4HlzaS85PSYgxYGN5FtNObgmZ5Z+V2vdY5wc7+9t4OZ9x8+D30lmzLC
-	 cJe2Jlg6zaG43IukwAAbBMg/EEn1ofQIp2SuS2nKzLDUV3oXGgzKrtX8zLxGFIQ8pR
-	 TDiJnQlp53nQfXPVP88q4pBcG7rLwk1qzm16eaF8=
+	s=default; t=1577878790;
+	bh=Mq5hpAX6D/LBKnaxJeByApvr/+qpH+DxE54S6nJsBs4=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AHMXq9IbVjO2d4l5Qd2LyTZGw1w3TFP45NiVg9qAInjUbW1VRXd39tQZpCduxfPu4
+	 StXOqOLebKGsQh0gIlu6wBkcXKUll3Y3fsIA2LJyb8VgPeO/BsIWvs5p/aK2RHymEA
+	 8rtNN7cCB1dmpq7Xtyn01NvVyL8TCaP3sUcwZqas=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 871F0F802A8;
-	Tue, 31 Dec 2019 01:30:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 816BEF80123;
+	Wed,  1 Jan 2020 12:38:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D43BF8015C; Tue, 31 Dec 2019 01:30:48 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9BE9BF8015D; Wed,  1 Jan 2020 12:38:56 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72762F80160
- for <alsa-devel@alsa-project.org>; Tue, 31 Dec 2019 01:30:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72762F80160
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="fgPLWU3n"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=LRE6H5xMkMRjNG5YNwa1v2sVNQG2SVX63QXvygSTW9c=; b=fgPLWU3nbm3w
- O5mCDFnLa84A5No8g7NFFYXdgxQ0OkzXL8D9vkEgjS8nW70mHbnsztkVsMmqLvwZ2aJQdh5oCcQZO
- yeKewhyx0q4k+v7pHpXsgZikwPpEQs03zUw2WgLddDqP8WhUBhHaXEqcdpPlKQDqg+yACXQLQwmHh
- UV5XE=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1im5Qg-0002nU-47; Tue, 31 Dec 2019 00:30:34 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 86CEAD01A54; Tue, 31 Dec 2019 00:30:33 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-In-Reply-To: <1577540460-21438-5-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-Message-Id: <applied-1577540460-21438-5-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-X-Patchwork-Hint: ignore
-Date: Tue, 31 Dec 2019 00:30:33 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Colin@sirena.org.uk,
- YueHaibing <yuehaibing@huawei.com>, open list <linux-kernel@vger.kernel.org>,
- Takashi@sirena.org.uk, moderated@sirena.org.uk, "Cc:"@sirena.org.uk,
- -@sirena.org.uk, Mark Brown <broonie@kernel.org>, djkurtz@google.com,
- "list:SOUND"@sirena.org.uk, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Alexander.Deucher@amd.com, Liam@sirena.org.uk
-Subject: [alsa-devel] Applied "ASoC: amd: Handle ACP3x I2S-SP Interrupts."
-	to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A162F80123
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2020 12:38:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A162F80123
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 76925AF87;
+ Wed,  1 Jan 2020 11:38:52 +0000 (UTC)
+Date: Wed, 01 Jan 2020 12:38:52 +0100
+Message-ID: <s5hv9pv2ypf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Julia Lawall <Julia.Lawall@inria.fr>
+In-Reply-To: <1577864614-5543-2-git-send-email-Julia.Lawall@inria.fr>
+References: <1577864614-5543-1-git-send-email-Julia.Lawall@inria.fr>
+ <1577864614-5543-2-git-send-email-Julia.Lawall@inria.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [alsa-devel] [PATCH 01/16] ALSA: ad1816a: constify copied
+	structure
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,90 +75,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Wed, 01 Jan 2020 08:43:19 +0100,
+Julia Lawall wrote:
+> 
+> The snd_ad1816a_timer_table structure is only copied into
+> another structure, so make it const.
+> 
+> The opportunity for this change was found using Coccinelle.
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-   ASoC: amd: Handle ACP3x I2S-SP Interrupts.
+Applied, thanks.
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From cea5f40d4e7ae711622ba7ee3caa60c315f101c0 Mon Sep 17 00:00:00 2001
-From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Date: Sat, 28 Dec 2019 19:10:58 +0530
-Subject: [PATCH] ASoC: amd: Handle ACP3x I2S-SP Interrupts.
-
-Enabled support for I2S-SP interrupt handling.
-Previous to this implementation, driver supports only interrupts
-on BT instance.
-
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Link: https://lore.kernel.org/r/1577540460-21438-5-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/amd/raven/acp3x-pcm-dma.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 040a8be593f0..c5d7f3558867 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -176,6 +176,13 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
- 		snd_pcm_period_elapsed(rv_i2s_data->play_stream);
- 		play_flag = 1;
- 	}
-+	if ((val & BIT(I2S_TX_THRESHOLD)) &&
-+				rv_i2s_data->i2ssp_play_stream) {
-+		rv_writel(BIT(I2S_TX_THRESHOLD),
-+			rv_i2s_data->acp3x_base	+ mmACP_EXTERNAL_INTR_STAT);
-+		snd_pcm_period_elapsed(rv_i2s_data->i2ssp_play_stream);
-+		play_flag = 1;
-+	}
- 
- 	if ((val & BIT(BT_RX_THRESHOLD)) && rv_i2s_data->capture_stream) {
- 		rv_writel(BIT(BT_RX_THRESHOLD), rv_i2s_data->acp3x_base +
-@@ -183,6 +190,13 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
- 		snd_pcm_period_elapsed(rv_i2s_data->capture_stream);
- 		cap_flag = 1;
- 	}
-+	if ((val & BIT(I2S_RX_THRESHOLD)) &&
-+				rv_i2s_data->i2ssp_capture_stream) {
-+		rv_writel(BIT(I2S_RX_THRESHOLD),
-+			 rv_i2s_data->acp3x_base + mmACP_EXTERNAL_INTR_STAT);
-+		snd_pcm_period_elapsed(rv_i2s_data->i2ssp_capture_stream);
-+		cap_flag = 1;
-+	}
- 
- 	if (play_flag | cap_flag)
- 		return IRQ_HANDLED;
--- 
-2.20.1
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
