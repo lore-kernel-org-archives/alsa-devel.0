@@ -6,78 +6,81 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7269C2D0DE
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:43:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A7FAC2D0DE
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:44:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 000FF206DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:43:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 962FD2073D
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:44:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D0jA04g5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="rrfujMrM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 000FF206DB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cCseF6N7";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="SbM53CQG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 962FD2073D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E75EF16B0;
-	Wed,  1 Jan 2020 22:42:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E75EF16B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7DE316B5;
+	Wed,  1 Jan 2020 22:43:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7DE316B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577914988;
-	bh=e5UKzrnbdnv65bVLtcTvgMRnasXxdK6fKNUtPNXoLCw=;
+	s=default; t=1577915041;
+	bh=ISY5mN7PdmYwerbWnIum7Js9RxcuwkP/6TKBPfOwOd8=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=D0jA04g5OpITCNDimogdWP4WgAZ2gL+MpJPOPiR1fBjFq232wN6uwXnrIpIMvSFb4
-	 7BR/1RETqodVz+1YDHSCbITKw68xFrKQt7t42+G/bXMea6TFBHqrIPgdIZPLT6cjWy
-	 a/24+YbdkW25ntX1kJP41EptW3qmCra3dqX2wNUE=
+	b=cCseF6N7P54zTAnDcS0z0xlF1y/RH5GZzaQz/vkSYAUpwdtH+ZNgwllmwf7zNJUxu
+	 ratcI08xUY0wN9kDaHNEg5Ht+9yLVRDWNbbZxZxRm2Kf1cTL6VQ7xiwmVotAPKEPQL
+	 FQUO58G+DHDldPsphdB93MVGgh/wr8pDeAJ+aKTM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D43CF8015C;
-	Wed,  1 Jan 2020 22:42:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6909F8025A;
+	Wed,  1 Jan 2020 22:42:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95C0AF8015E; Wed,  1 Jan 2020 22:42:05 +0100 (CET)
+ id B11D6F8015D; Wed,  1 Jan 2020 22:42:07 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86363F8011E
- for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2020 22:42:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86363F8011E
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2D69F8011F
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2020 22:42:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2D69F8011F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="rrfujMrM"
+ header.b="SbM53CQG"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=1GJeXqBZgwVZGjKHCG8CUrT1zbGnow5SWLDAyMEOoqA=; b=rrfujMrMQDqx
- 694ngqHc4672jevij1CmPFnBhzJy+5Fvxpv2Nv3EaaEgSD470jKdcT627rGJ+Bp/FQwery4QDsWNA
- c+jHgtzNwwFSM6iJIHZNUeTXsZPtqT2WVjkyg2kXY16D9R/+KofPO0ceLc64VAqhh16uGS92Kv53Z
- 4Xu4k=;
+ List-Archive; bh=79XWKkj31wGwumBYjA54s8OnuOHN68P66X/FOnDTTeE=; b=SbM53CQGUUHc
+ UcUyqxGU/+zizlzxTKG5tvwBu8JOObPRQ445sBf7exavks/y+ZT8NVBRtPDWuCiaJAw7elEC3dxMz
+ Czs41xLyR7ozgeZ7uLoBDKxXQqRZegGECxEzjnQT0QEV+lvS7tuTA/PZZqyzeoWWFcnR6aC5dZnDF
+ hXbjE=;
 Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
  ([82.37.168.47] helo=fitzroy.sirena.org.uk)
  by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1imlke-0002aP-75; Wed, 01 Jan 2020 21:42:00 +0000
+ id 1imlkc-0002aM-4S; Wed, 01 Jan 2020 21:41:58 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 78EFFD057C6; Wed,  1 Jan 2020 21:41:59 +0000 (GMT)
+ id 8030DD057C6; Wed,  1 Jan 2020 21:41:57 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Julia Lawall <Julia.Lawall@inria.fr>
-In-Reply-To: <1577864614-5543-11-git-send-email-Julia.Lawall@inria.fr>
-Message-Id: <applied-1577864614-5543-11-git-send-email-Julia.Lawall@inria.fr>
+In-Reply-To: <1577900990-8588-7-git-send-email-Julia.Lawall@inria.fr>
+Message-Id: <applied-1577900990-8588-7-git-send-email-Julia.Lawall@inria.fr>
 X-Patchwork-Hint: ignore
-Date: Wed,  1 Jan 2020 21:41:59 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+Date: Wed,  1 Jan 2020 21:41:57 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>,
  kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: qdsp6: q6asm-dai: constify copied
-	structure" to the asoc tree
+ Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: SOF: imx8: use resource_size" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,11 +101,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: qdsp6: q6asm-dai: constify copied structure
+   ASoC: SOF: imx8: use resource_size
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -123,36 +126,44 @@ to this mail.
 Thanks,
 Mark
 
-From 0da390ba86d841b1f9770c0a67bdebb4d8dc8be5 Mon Sep 17 00:00:00 2001
+From 49f261e273078a5dc0272296a833dc72571efd92 Mon Sep 17 00:00:00 2001
 From: Julia Lawall <Julia.Lawall@inria.fr>
-Date: Wed, 1 Jan 2020 08:43:28 +0100
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: constify copied structure
+Date: Wed, 1 Jan 2020 18:49:46 +0100
+Subject: [PATCH] ASoC: SOF: imx8: use resource_size
 
-The q6asm_dai_hardware_capture structure is only copied into another
-structure, so make it const.
+Use resource_size rather than a verbose computation on
+the end and start fields.
 
-The opportunity for this change was found using Coccinelle.
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
+
+<smpl>
+@@ struct resource ptr; @@
+- (ptr.end - ptr.start + 1)
++ resource_size(&ptr)
+</smpl>
 
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-Link: https://lore.kernel.org/r/1577864614-5543-11-git-send-email-Julia.Lawall@inria.fr
+Link: https://lore.kernel.org/r/1577900990-8588-7-git-send-email-Julia.Lawall@inria.fr
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/imx/imx8.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 5e2327708772..c0d422d0ab94 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -72,7 +72,7 @@ struct q6asm_dai_data {
- 	long long int sid;
- };
+diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
+index aef6ca167b9c..b2556f5e2871 100644
+--- a/sound/soc/sof/imx/imx8.c
++++ b/sound/soc/sof/imx/imx8.c
+@@ -294,8 +294,7 @@ static int imx8_probe(struct snd_sof_dev *sdev)
+ 	}
  
--static struct snd_pcm_hardware q6asm_dai_hardware_capture = {
-+static const struct snd_pcm_hardware q6asm_dai_hardware_capture = {
- 	.info =                 (SNDRV_PCM_INFO_MMAP |
- 				SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 				SNDRV_PCM_INFO_MMAP_VALID |
+ 	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev, res.start,
+-							  res.end - res.start +
+-							  1);
++							  resource_size(&res));
+ 	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
+ 		dev_err(sdev->dev, "failed to ioremap mem 0x%x size 0x%x\n",
+ 			base, size);
 -- 
 2.20.1
 
