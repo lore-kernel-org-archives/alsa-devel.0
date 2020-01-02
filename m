@@ -1,86 +1,104 @@
-Return-Path: <SRS0=lBDT=2W=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=fcCl=2X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A7FAC2D0DE
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECE21C2D0DE
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2020 00:30:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 962FD2073D
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jan 2020 21:44:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0298C2085B
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2020 00:30:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cCseF6N7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="SbM53CQG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 962FD2073D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jQn3EmLI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mf6oJFqD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0298C2085B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7DE316B5;
-	Wed,  1 Jan 2020 22:43:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7DE316B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6CF616A3;
+	Thu,  2 Jan 2020 01:29:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6CF616A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577915041;
-	bh=ISY5mN7PdmYwerbWnIum7Js9RxcuwkP/6TKBPfOwOd8=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=cCseF6N7P54zTAnDcS0z0xlF1y/RH5GZzaQz/vkSYAUpwdtH+ZNgwllmwf7zNJUxu
-	 ratcI08xUY0wN9kDaHNEg5Ht+9yLVRDWNbbZxZxRm2Kf1cTL6VQ7xiwmVotAPKEPQL
-	 FQUO58G+DHDldPsphdB93MVGgh/wr8pDeAJ+aKTM=
+	s=default; t=1577925011;
+	bh=m5rrAEbsIpKLGrRTkxoe3wGka0TkvsvwFEaE5ZMB6Zw=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jQn3EmLI0dgiO2sDyKDdqcKYcHpI2pDDUWxCZK+8hO5OsP7mHDtikj3yy+O8YULpz
+	 ardLY0nPnGL36wseWlcj+oAZ7tnc3rIGHihx0IxyR+Eyftsmv53tMJeVcm3qqHj4Ie
+	 694+uG4WTzwUpW1tLOFPDHjMCqB6p9mX9yHG3U18=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6909F8025A;
-	Wed,  1 Jan 2020 22:42:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EFE18F8015C;
+	Thu,  2 Jan 2020 01:29:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B11D6F8015D; Wed,  1 Jan 2020 22:42:07 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8BCA1F8015D; Thu,  2 Jan 2020 01:29:12 +0100 (CET)
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com
+ [IPv6:2607:f8b0:4864:20::641])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2D69F8011F
- for <alsa-devel@alsa-project.org>; Wed,  1 Jan 2020 22:42:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2D69F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9465F8011E
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2020 01:29:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9465F8011E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="SbM53CQG"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=79XWKkj31wGwumBYjA54s8OnuOHN68P66X/FOnDTTeE=; b=SbM53CQGUUHc
- UcUyqxGU/+zizlzxTKG5tvwBu8JOObPRQ445sBf7exavks/y+ZT8NVBRtPDWuCiaJAw7elEC3dxMz
- Czs41xLyR7ozgeZ7uLoBDKxXQqRZegGECxEzjnQT0QEV+lvS7tuTA/PZZqyzeoWWFcnR6aC5dZnDF
- hXbjE=;
-Received: from cpc102320-sgyl38-2-0-cust46.18-2.cable.virginm.net
- ([82.37.168.47] helo=fitzroy.sirena.org.uk)
- by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1imlkc-0002aM-4S; Wed, 01 Jan 2020 21:41:58 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 8030DD057C6; Wed,  1 Jan 2020 21:41:57 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Julia Lawall <Julia.Lawall@inria.fr>
-In-Reply-To: <1577900990-8588-7-git-send-email-Julia.Lawall@inria.fr>
-Message-Id: <applied-1577900990-8588-7-git-send-email-Julia.Lawall@inria.fr>
-X-Patchwork-Hint: ignore
-Date: Wed,  1 Jan 2020 21:41:57 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: SOF: imx8: use resource_size" to the
-	asoc tree
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="mf6oJFqD"
+Received: by mail-pl1-x641.google.com with SMTP id f20so17193967plj.5
+ for <alsa-devel@alsa-project.org>; Wed, 01 Jan 2020 16:29:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=9GJYS2xwYL6+Da0JsxP8DsSxNZ3j5TIjH/wHBFm0PRA=;
+ b=mf6oJFqDXwxAXyg4aXPM84cAGHIdCVNqcZT5aleGPlTquh+FLh1f+dyPgxcXX5RXfM
+ Qce0ahB7vz5jMsconZUcEGtyAUQ+lv75rMVTUlh+62VKKOT94OENioubYP82GLE24SkO
+ y5wTcSP8uunA6ljabFPF+vsqwVSuabg6vh9ZU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=9GJYS2xwYL6+Da0JsxP8DsSxNZ3j5TIjH/wHBFm0PRA=;
+ b=gO43Z6XF9RbShzA1g6Ok0WlbtaRL954x+I9z/zg56FB1zUFk8hsDBeHBV+xtwcTwmq
+ GYpWfwGQ+UOGnqQjeQtHuZ/JGCKHdcgpxq3j487s6NAIhkampwqULhbJXe7kMhJMGcqG
+ XvlvSGo+EDDT7pyZP3RX/rAfuPQB+LDUcRvF730JzIRnj3oykPpQ9YWwf7Te111NEOaH
+ zPCG/OWqmkpryX+Nx/ZDik0d3mb4y1nO7/PCiMetwrLqOZ+PANGqlGIX1hQsWK0GT80p
+ 6BVNdXJI5r5GSze/FufG0VrTJbE6BhpVBcrcfIOk8r3XIuOxrLZ5+fq4XU3rmk0gvGcq
+ SBrA==
+X-Gm-Message-State: APjAAAVMIMoFZzI/gzOxNYcbfo4/P+b3pbQ4X7gYDKf6nXReJuoBX/CD
+ n3IoZ2AUjE8BrzGfPaSC74DEOQ==
+X-Google-Smtp-Source: APXvYqxneFpTHIfgl2F/2i+m025oRgDpA8vNciUpijln22SYxjPjYXhMkW/DNF5QacCVeiX0ZzX2DA==
+X-Received: by 2002:a17:90b:3c9:: with SMTP id
+ go9mr16175122pjb.7.1577924944088; 
+ Wed, 01 Jan 2020 16:29:04 -0800 (PST)
+Received: from localhost ([2401:fa00:9:15:c479:b58e:61d1:15d5])
+ by smtp.gmail.com with ESMTPSA id b65sm58498229pgc.18.2020.01.01.16.28.57
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 01 Jan 2020 16:29:03 -0800 (PST)
+From: Sam McNally <sammc@chromium.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Date: Thu,  2 Jan 2020 11:28:12 +1100
+Message-Id: <20200102112558.1.Ib87c4a7fbb3fc818ea12198e291b87dc2d5bc8c2@changeid>
+X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
+MIME-Version: 1.0
+Cc: Xun Zhang <xun2.zhang@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Jairaj Arava <jairaj.arava@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Sam McNally <sammc@chromium.org>, Mark Brown <broonie@kernel.org>,
+ Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+ Sathya Prakash M R <sathya.prakash.m.r@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [alsa-devel] [PATCH] ASoC: Intel: sof_rt5682: Ignore the speaker
+	amp when there isn't one.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,79 +111,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Some members of the Google_Hatch family include a rt5682, but not a
+speaker amp. When a speaker amp is also present, it matches MX98357A
+as well, resulting in the quirk_data field in the snd_soc_acpi_mach
+being non-null. When only the rt5682 is present, quirk_data is left
+null.
 
-   ASoC: SOF: imx8: use resource_size
+The sof_rt5682 driver's DMI data matching identifies that a speaker amp
+is present for all Google_Hatch family devices. Detect cases where there
+is no speaker amp by checking for a null quirk_data in the
+snd_soc_acpi_mach and remove the speaker amp bit in that case.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 49f261e273078a5dc0272296a833dc72571efd92 Mon Sep 17 00:00:00 2001
-From: Julia Lawall <Julia.Lawall@inria.fr>
-Date: Wed, 1 Jan 2020 18:49:46 +0100
-Subject: [PATCH] ASoC: SOF: imx8: use resource_size
-
-Use resource_size rather than a verbose computation on
-the end and start fields.
-
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
-
-<smpl>
-@@ struct resource ptr; @@
-- (ptr.end - ptr.start + 1)
-+ resource_size(&ptr)
-</smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-Link: https://lore.kernel.org/r/1577900990-8588-7-git-send-email-Julia.Lawall@inria.fr
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sam McNally <sammc@chromium.org>
 ---
- sound/soc/sof/imx/imx8.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index aef6ca167b9c..b2556f5e2871 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -294,8 +294,7 @@ static int imx8_probe(struct snd_sof_dev *sdev)
- 	}
+ sound/soc/intel/boards/sof_rt5682.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index ad8a2b4bc709..8a13231dee15 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -603,6 +603,14 @@ static int sof_audio_probe(struct platform_device *pdev)
  
- 	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev, res.start,
--							  res.end - res.start +
--							  1);
-+							  resource_size(&res));
- 	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
- 		dev_err(sdev->dev, "failed to ioremap mem 0x%x size 0x%x\n",
- 			base, size);
+ 	dmi_check_system(sof_rt5682_quirk_table);
+ 
++	mach = (&pdev->dev)->platform_data;
++
++	/* A speaker amp might not be present when the quirk claims one is.
++	 * Detect this via whether the machine driver match includes quirk_data.
++	 */
++	if ((sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT) && !mach->quirk_data)
++		sof_rt5682_quirk &= ~SOF_SPEAKER_AMP_PRESENT;
++
+ 	if (soc_intel_is_byt() || soc_intel_is_cht()) {
+ 		is_legacy_cpu = 1;
+ 		dmic_be_num = 0;
+@@ -663,7 +671,6 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
+ 
+ 	sof_audio_card_rt5682.dev = &pdev->dev;
+-	mach = (&pdev->dev)->platform_data;
+ 
+ 	/* set platform name for each dailink */
+ 	ret = snd_soc_fixup_dai_links_platform_name(&sof_audio_card_rt5682,
 -- 
-2.20.1
+2.24.1.735.g03f4e72817-goog
 
 _______________________________________________
 Alsa-devel mailing list
