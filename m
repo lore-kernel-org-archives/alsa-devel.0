@@ -2,68 +2,106 @@ Return-Path: <SRS0=fcCl=2X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1920DC2D0DC
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2020 15:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7618C2D0DC
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2020 15:58:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C3322084D
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2020 15:14:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0558620866
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jan 2020 15:58:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C55mr3bF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C3322084D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eHbFByXa";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l3fFiR4L"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0558620866
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E48271690;
-	Thu,  2 Jan 2020 16:13:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E48271690
+	by alsa0.perex.cz (Postfix) with ESMTPS id F22231693;
+	Thu,  2 Jan 2020 16:57:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F22231693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1577978060;
-	bh=99oZdNGsjGd2xzvt95kNcH39SkkYsqschDs5Rx2w90Q=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1577980693;
+	bh=OlLINDSrAA9k5MOw+4yU0Q0QsnLThAWEFXFmHAsvtQQ=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C55mr3bF/EnaSSSqxSz5lCLIJ1qO0cqIR52wO/y26vagVDDTd2mRKBDgpZve+Dj/D
-	 lz2bYmuN9LZ90ER7SxvHUL+LA+A3c8ZqkgoB+skmvt+3ion4TJ/Kjr1mN9cebEiT2e
-	 OmBQ82BjZg13NmoO5Vp0fSIt4bHPBwpikQ3lSkh8=
+	b=eHbFByXap/+3WAeDZUjnMCHENPWVIV85t28qunAXip5+RzEcEgGWHvl36zU+E30TU
+	 uKTJYGVq88Xx+dHn905RcUEDwsHgWuWpuo17vw4GEy80JY5vvZ0TUECsHlqEvl8ZmD
+	 ECxn6MSG0/M2lXri0ipBEo0NCnag/u3ba48BqBrM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FB4DF8013E;
-	Thu,  2 Jan 2020 16:13:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75DECF8013E;
+	Thu,  2 Jan 2020 16:57:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72AF7F80157; Thu,  2 Jan 2020 16:13:27 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1D7F9F80157; Thu,  2 Jan 2020 16:57:20 +0100 (CET)
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com
+ [IPv6:2a00:1450:4864:20::141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1549F8013E
- for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2020 16:13:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1549F8013E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 021ECB0BE;
- Thu,  2 Jan 2020 15:13:22 +0000 (UTC)
-Date: Thu, 02 Jan 2020 16:13:21 +0100
-Message-ID: <s5hd0c1opri.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Julia Lawall <julia.lawall@inria.fr>
-In-Reply-To: <alpine.DEB.2.21.2001012022380.3262@hadrien>
-References: <1577900990-8588-1-git-send-email-Julia.Lawall@inria.fr>
- <1577900990-8588-3-git-send-email-Julia.Lawall@inria.fr>
- <s5hmub72dh3.wl-tiwai@suse.de>
- <alpine.DEB.2.21.2001012022380.3262@hadrien>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [alsa-devel] [PATCH 02/10] ALSA: ml403-ac97cr: use resource_size
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F6A0F8013E
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jan 2020 16:57:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F6A0F8013E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="l3fFiR4L"
+Received: by mail-lf1-x141.google.com with SMTP id y1so30142963lfb.6
+ for <alsa-devel@alsa-project.org>; Thu, 02 Jan 2020 07:57:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=6nJzNxoHHP2qeQwJAX7JtKv6dI5N1gKdyhYamT8Rigk=;
+ b=l3fFiR4LY1WvW8xQWZy2Yq/6iUVx9c1wc1ZM8GnmvPQbaRrpJRKULjQKkF3TKR0F38
+ wTIV1g4wHUyMmbeEH/YkwmPhsb/Zav1cQKsRxaHfvwJ+eCFOS+yYi1ioQqEYoWNWxU5u
+ 2DQ0rjcH+gOVH7n+8K9atyKtPV4W1Uu6gQj7RtLHsMnQ9iSIXROptDfJ1huIy6E/uWcs
+ +rVcm3sYkOT9YVIcFKyBSCKS48k1dMnkcl/Yi/AoDaD5pnrYoz7J+1Z8ufvAq6HkB/zU
+ ojMQ+Q31MOyx4wedjoaOe7o0xto7QS6DKcQZ1o1kUPi34/74vJwBadCG/6Gy4vaI9xOC
+ ehzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=6nJzNxoHHP2qeQwJAX7JtKv6dI5N1gKdyhYamT8Rigk=;
+ b=OctRSzsnvLNf+MdZoQsruKAD3r6PMZ3+RWoCY14b2bEV+tMNnQdukWybfykZZw7u59
+ Wwbrx6BnpVaDSx/kwEP+DqzGd53uJNbHVSeeCKDd2dJdz/Yyix40UUNWYNNN5X84ZBp5
+ 9OdwCGdwiVeYVu+e3XqqZ6V9WxhXkvObIs9o6cybIqQGW6YKhPoCvEf2AYEapu0mtYfX
+ vkWWVfXMeL5tYJQlCSfsAp/ZiEq4LbolRhWRgAp0no1PdwYBdNpTxQsmt7NbcxI6CdNn
+ PHhC1IqYkkovzfbgMzia2uReWNgVPYKKETbgjiYC4iu0AwfaE9cgcQchgYGUP5FF1U4X
+ Cv2Q==
+X-Gm-Message-State: APjAAAVl+D+ONSu7yRVT6Xon75lkvfAIAW3b5RoZb/IZIv+U3A/B5417
+ ml94TLtYiHOqU+xn9ktEbxg=
+X-Google-Smtp-Source: APXvYqwBEgyRMN2xwOc7zrBPderdE1gHsR38bw0rFNEK+8PQNUje3gqEWIQwQ1Qzlhl2uZkLaFsj4Q==
+X-Received: by 2002:a19:2d0d:: with SMTP id k13mr46205902lfj.12.1577980636121; 
+ Thu, 02 Jan 2020 07:57:16 -0800 (PST)
+Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
+ [79.139.233.37])
+ by smtp.googlemail.com with ESMTPSA id r20sm23384004lfi.91.2020.01.02.07.57.14
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 02 Jan 2020 07:57:15 -0800 (PST)
+To: Mark Brown <broonie@kernel.org>
+References: <20191229150454.2127-1-digetx@gmail.com>
+ <20191231001719.GC3897@sirena.org.uk>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <03ccf221-697e-bc34-f4ba-bf191aecd675@gmail.com>
+Date: Thu, 2 Jan 2020 18:57:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
+MIME-Version: 1.0
+In-Reply-To: <20191231001719.GC3897@sirena.org.uk>
+Content-Language: en-US
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-tegra@vger.kernel.org, Bard Liao <bardliao@realtek.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>
+Subject: Re: [alsa-devel] [PATCH v1] ASoC: rt5640: Fix NULL dereference on
+	module unload
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,51 +114,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 01 Jan 2020 20:23:24 +0100,
-Julia Lawall wrote:
-> 
-> On Wed, 1 Jan 2020, Takashi Iwai wrote:
-> 
-> > On Wed, 01 Jan 2020 18:49:42 +0100,
-> > Julia Lawall wrote:
-> > >
-> > > Use resource_size rather than a verbose computation on
-> > > the end and start fields.
-> > >
-> > > The semantic patch that makes this change is as follows:
-> > > (http://coccinelle.lip6.fr/)
-> > >
-> > > <smpl>
-> > > @@ struct resource *ptr; @@
-> > > - ((ptr->end) - (ptr->start) + 1)
-> > > + resource_size(ptr)
-> > > </smpl>
-> > >
-> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> >
-> > Unfortunately this doesn't apply cleanly on my tree.  I guess you
-> > worked on linux-next which contains a change outside the sound git
-> > tree that converts ioremap_nocache() to ioremap().
-> >
-> > We may apply it in sound git tree and let conflicts resolved at the
-> > merge time.  OTOH, it's no urgent fix at all and can be postponed
-> > after 5.6-rc1 merge, too -- then everything can be applied in a
-> > cleaner way.
-> >
-> > Let me know your preference.
-> 
-> It's from linux-next.  No hurry.  Postponing it is fine.
-
-OK, let's postpone this.  Thanks.
-
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+MzEuMTIuMjAxOSAwMzoxNywgTWFyayBCcm93biDQv9C40YjQtdGCOgo+IE9uIFN1biwgRGVjIDI5
+LCAyMDE5IGF0IDA2OjA0OjU0UE0gKzAzMDAsIERtaXRyeSBPc2lwZW5rbyB3cm90ZToKPj4gVGhl
+IHJ0NTY0MC0+amFjayBpcyBOVUxMIGlmIGphY2sgaXMgYWxyZWFkeSBkaXNhYmxlZCBhdCB0aGUg
+dGltZSBvZgo+PiBkcml2ZXIncyBtb2R1bGUgdW5sb2FkaW5nLgo+Pgo+PiAgVW5hYmxlIHRvIGhh
+bmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0IHZpcnR1YWwgYWRkcmVzcyAw
+MDAwMDAyNAo+PiAgLi4uCj4+ICAocnQ1NjQwX3NldF9qYWNrIFtzbmRfc29jX3J0NTY0MF0pIGZy
+b20gWzxiZjg2ZjdlZD5dIChzbmRfc29jX2NvbXBvbmVudF9zZXRfamFjaysweDExLzB4MWMgW3Nu
+ZF9zb2NfY29yZV0pCj4+ICAoc25kX3NvY19jb21wb25lbnRfc2V0X2phY2sgW3NuZF9zb2NfY29y
+ZV0pIGZyb20gWzxiZjg2NzVjZj5dIChzb2NfcmVtb3ZlX2NvbXBvbmVudCsweDFiLzB4NTQgW3Nu
+ZF9zb2NfY29yZV0pCj4+ICAoc29jX3JlbW92ZV9jb21wb25lbnQgW3NuZF9zb2NfY29yZV0pIGZy
+b20gWzxiZjg2ODg1OT5dIChzb2NfY2xlYW51cF9jYXJkX3Jlc291cmNlcysweGFkLzB4MWNjIFtz
+bmRfc29jX2NvcmVdKQo+IAo+IEluIGFkZGl0aW9uIHRvIHdoYXQgVGFrYXNoaSBzYWlkOgo+IAo+
+IFBsZWFzZSB0aGluayBoYXJkIGJlZm9yZSBpbmNsdWRpbmcgY29tcGxldGUgYmFja3RyYWNlcyBp
+biB1cHN0cmVhbQo+IHJlcG9ydHMsIHRoZXkgYXJlIHZlcnkgbGFyZ2UgYW5kIGNvbnRhaW4gYWxt
+b3N0IG5vIHVzZWZ1bCBpbmZvcm1hdGlvbgo+IHJlbGF0aXZlIHRvIHRoZWlyIHNpemUgc28gb2Z0
+ZW4gb2JzY3VyZSB0aGUgcmVsZXZhbnQgY29udGVudCBpbiB5b3VyCj4gbWVzc2FnZS4gSWYgcGFy
+dCBvZiB0aGUgYmFja3RyYWNlIGlzIHVzZWZ1bGx5IGlsbHVzdHJhdGl2ZSB0aGVuIGl0J3MKPiB1
+c3VhbGx5IGJldHRlciB0byBwdWxsIG91dCB0aGUgcmVsZXZhbnQgc2VjdGlvbnMuCgpZZWFoLCBw
+ZXJoYXBzIGl0J3Mgbm90IHJlYWxseSB1c2VmdWwgdG8gaGF2ZSBiYWNrdHJhY2UgaW4gdGhlIGNv
+bW1pdCdzCmRlc2NyaXB0aW9uIGZvciB0aGUgY2FzZSBvZiB0aGlzIHBhdGNoIGluIHBhcnRpY3Vs
+YXIuIEJ1dCBpbiBnZW5lcmFsIGl0CmlzIHZlcnkgdXNlZnVsIHRvIGhhdmUgYmFja3RyYWNlcyBz
+b21ld2hlcmUgbmVhciB0aGUgcGF0Y2ggc3VjaCB0aGF0Cm9ubGluZSBzZWFyY2ggZW5naW5lcywg
+bGlrZSBnb29nbGUsIGNvdWxkIHBpY2sgaXQgdXAuIEknbGwgbW92ZSB0aGUKYmFja3RyYWNlIGJl
+bG93IC0tLSBpbiB2MiwgdGhhbmtzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
