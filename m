@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE45EC00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:30:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C1DDC00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:31:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D4FB20848
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:30:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B86DE21734
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:31:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hln0gkK+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D4FB20848
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UbgDSwkF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B86DE21734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDFD81701;
-	Fri,  3 Jan 2020 09:29:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDFD81701
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB426173F;
+	Fri,  3 Jan 2020 09:30:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB426173F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578040236;
-	bh=G60yvej4kDT5ZGi1IkZenQFtOCGGIglEGgQcF1iRwBU=;
+	s=default; t=1578040274;
+	bh=R7zWdSVqvbuHmvMdC6nrfs+GOvn1zecZFa58RFvstyg=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hln0gkK+g5XtUeJqmeVOc1WX0LXTvHaxd2gWDjqjZz+5D1Bz9GPySxIRbFKONBiPg
-	 UKh+yFuXHGOOno2KWtkqUSb2MsjnuqXTPytFsI++xMds7/mV4e40jMLeA6HaeLtWeL
-	 pV/Af5N4r0lrx4I/owD+r5Fjyh4zG+f8qYroboXI=
+	b=UbgDSwkF28LEVbN3aNJsERbfNtSnJtwz4voa+ZFWwNIR3s+sHsjUA9e95i5TifAQc
+	 azGlzBaeENhcQUTym0QFGvflWGHnTFA2HUVmzrSRH/I87p4+4jxnzmkVdEhjSRBHL8
+	 odxsFrbpEmmmv1TaQvq+CC029dg2Pb1f1gSmNn0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7A33F80371;
-	Fri,  3 Jan 2020 09:18:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABAF6F8037D;
+	Fri,  3 Jan 2020 09:18:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB0E7F80276; Fri,  3 Jan 2020 09:17:53 +0100 (CET)
+ id 566B5F8027D; Fri,  3 Jan 2020 09:17:55 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2158CF80276
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2158CF80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FB9EF8027B
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FB9EF8027B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 40C23B257
+ by mx2.suse.de (Postfix) with ESMTP id 77077B268
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:20 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:16:29 +0100
-Message-Id: <20200103081714.9560-14-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:16:35 +0100
+Message-Id: <20200103081714.9560-20-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 13/58] ALSA: parisc: Constify snd_device_ops
+Subject: [alsa-devel] [PATCH 19/58] ALSA: docs: Constify snd_device_ops
 	definitions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -76,28 +76,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now we may declare const for snd_device_ops definitions, so let's do
-it for optimization.
-
-There should be no functional changes by this patch.
+Update the documentation for adding the const prefix to snd_device_ops
+definitions as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/parisc/harmony.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
-index ea3630217d39..d330f22a3e8f 100644
---- a/sound/parisc/harmony.c
-+++ b/sound/parisc/harmony.c
-@@ -881,7 +881,7 @@ snd_harmony_create(struct snd_card *card,
- {
- 	int err;
- 	struct snd_harmony *h;
--	static struct snd_device_ops ops = {
-+	static const struct snd_device_ops ops = {
- 		.dev_free = snd_harmony_dev_free,
- 	};
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index f169d58ca019..7b1ba1e447b9 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -259,7 +259,7 @@ to details explained in the following section.
+       {
+               struct mychip *chip;
+               int err;
+-              static struct snd_device_ops ops = {
++              static const struct snd_device_ops ops = {
+                      .dev_free = snd_mychip_dev_free,
+               };
+ 
+@@ -675,7 +675,7 @@ low-level device with a specified ``ops``,
+ 
+ ::
+ 
+-  static struct snd_device_ops ops = {
++  static const struct snd_device_ops ops = {
+           .dev_free =        snd_mychip_dev_free,
+   };
+   ....
+@@ -761,7 +761,7 @@ destructor and PCI entries. Example code is shown first, below.
+       {
+               struct mychip *chip;
+               int err;
+-              static struct snd_device_ops ops = {
++              static const struct snd_device_ops ops = {
+                      .dev_free = snd_mychip_dev_free,
+               };
  
 -- 
 2.16.4
