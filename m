@@ -2,80 +2,61 @@ Return-Path: <SRS0=XflM=2Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B6EDC3276C
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 02:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89769C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:18:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E7A621D7D
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 02:25:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 96D8521835
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:18:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nLcmC35q"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E7A621D7D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Szn2y/eq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96D8521835
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E4D116E0;
-	Fri,  3 Jan 2020 03:24:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E4D116E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6801116DB;
+	Fri,  3 Jan 2020 09:17:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6801116DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578018299;
-	bh=rT3HrVB62rMa0SwxF8LASCtrX4ubI3DYD+8dDh9K9a4=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1578039498;
+	bh=zLOGjz9a4REOoQMamSXQ237JAIGhizMixlyiWIQW6EE=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nLcmC35q3fv0IEnrP0JfvwoK6fdM2QxHT2xt5nO0qS7Cls5hm3TbfsUZX3HjvnWbv
-	 2znC1SCLuUb7DkTsYAWYLb0XpxKq6YamFzAANEqnIUb1OxwJAx2mt4gfxwZhoFoqzV
-	 hay49w/+NbroR4iaE5XxOceGvSDxQpAvxiG0QXuc=
+	b=Szn2y/eqvavKvyxQrOFkhoJISZR97JS7ud/Fh1Kmm6xgR+1E8elT+xiGiFYyfrF3L
+	 jNrS0nx/Pn04xuU4FkPBrdOn/oapGGxtpUhcYPsKJSqo4vkrRaViChZ04srOTc1phj
+	 sQTGLV8v0CEqCzoz6v5I380JeIF2sSrFYYKFfjWg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5090F8014F;
-	Fri,  3 Jan 2020 03:24:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D05DF802C2;
+	Fri,  3 Jan 2020 09:17:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB734F80157; Fri,  3 Jan 2020 03:24:06 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EB2E4F8028B; Fri,  3 Jan 2020 09:17:24 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D257F8011F
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 03:24:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D257F8011F
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 02 Jan 2020 18:23:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,389,1571727600"; d="scan'208";a="231982388"
-Received: from lavazque-mobl.amr.corp.intel.com (HELO [10.255.86.75])
- ([10.255.86.75])
- by orsmga002.jf.intel.com with ESMTP; 02 Jan 2020 18:23:56 -0800
-To: Sam McNally <sammc@chromium.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20200103124921.v3.1.Ib87c4a7fbb3fc818ea12198e291b87dc2d5bc8c2@changeid>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c7471ed8-a9ac-b261-b4b7-97198c92475e@linux.intel.com>
-Date: Thu, 2 Jan 2020 20:23:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20200103124921.v3.1.Ib87c4a7fbb3fc818ea12198e291b87dc2d5bc8c2@changeid>
-Content-Language: en-US
-Cc: Xun Zhang <xun2.zhang@intel.com>, alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Sathya Prakash M R <sathya.prakash.m.r@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v3] ASoC: Intel: sof_rt5682: Ignore the
- speaker amp when there isn't one.
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82839F8013E
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82839F8013E
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id AE00CB200
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:19 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Fri,  3 Jan 2020 09:16:19 +0100
+Message-Id: <20200103081714.9560-4-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
+References: <20200103081714.9560-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 03/58] ALSA: core: Treat snd_device_ops as const
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,85 +69,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This is a preliminary patch to allow const for snd_device_ops
+definitions in each driver's code.  The ops reference is read-only,
+hence it can be declared as const for further optimization.
 
+There should be no functional changes by this patch.
 
-On 1/2/20 7:50 PM, Sam McNally wrote:
-> Some members of the Google_Hatch family include a rt5682 jack codec, but
-> no speaker amplifier. This uses the same driver (sof_rt5682) as a
-> combination of rt5682 jack codec and max98357a speaker amplifier. Within
-> the sof_rt5682 driver, these cases are not currently distinguishable,
-> relying on a DMI quirk to decide the configuration. This causes an
-> incorrect configuration when only the rt5682 is present on a
-> Google_Hatch device.
-> 
-> For CML, the jack codec is used as the primary key when matching,
-> with a possible speaker amplifier described in quirk_data. The two cases
-> of interest are the second and third 10EC5682 entries in
-> snd_soc_acpi_intel_cml_machines[]. The second entry matches the
-> combination of rt5682 and max98357a, resulting in the quirk_data field
-> in the snd_soc_acpi_mach being non-null, pointing at
-> max98357a_spk_codecs, the snd_soc_acpi_codecs for the matched speaker
-> amplifier. The third entry matches just the rt5682, resulting in a null
-> quirk_data.
-> 
-> The sof_rt5682 driver's DMI data matching identifies that a speaker
-> amplifier is present for all Google_Hatch family devices. Detect cases
-> where there is no speaker amplifier by checking for a null quirk_data in
-> the snd_soc_acpi_mach and remove the speaker amplifier bit in that case.
-> 
-> Signed-off-by: Sam McNally <sammc@chromium.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/core.h | 4 ++--
+ sound/core/device.c  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-thanks, this is a great explanation
+diff --git a/include/sound/core.h b/include/sound/core.h
+index af3dce956c17..0e14b7a3e67b 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -69,7 +69,7 @@ struct snd_device {
+ 	enum snd_device_state state;	/* state of the device */
+ 	enum snd_device_type type;	/* device type */
+ 	void *device_data;		/* device structure */
+-	struct snd_device_ops *ops;	/* operations */
++	const struct snd_device_ops *ops;	/* operations */
+ };
+ 
+ #define snd_device(n) list_entry(n, struct snd_device, list)
+@@ -256,7 +256,7 @@ static inline void snd_card_unref(struct snd_card *card)
+ /* device.c */
+ 
+ int snd_device_new(struct snd_card *card, enum snd_device_type type,
+-		   void *device_data, struct snd_device_ops *ops);
++		   void *device_data, const struct snd_device_ops *ops);
+ int snd_device_register(struct snd_card *card, void *device_data);
+ int snd_device_register_all(struct snd_card *card);
+ void snd_device_disconnect(struct snd_card *card, void *device_data);
+diff --git a/sound/core/device.c b/sound/core/device.c
+index 708b91944de3..cdc5af526739 100644
+--- a/sound/core/device.c
++++ b/sound/core/device.c
+@@ -27,7 +27,7 @@
+  * Return: Zero if successful, or a negative error code on failure.
+  */
+ int snd_device_new(struct snd_card *card, enum snd_device_type type,
+-		   void *device_data, struct snd_device_ops *ops)
++		   void *device_data, const struct snd_device_ops *ops)
+ {
+ 	struct snd_device *dev;
+ 	struct list_head *p;
+-- 
+2.16.4
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-
-> ---
-> 
-> Changes in v3:
-> - Rewrote commit message to refer to correct
->    snd_soc_acpi_intel_cml_machines[] entries and better describe the
->    change
-> 
-> Changes in v2:
-> - Added details about the relevant ACPI matches to the description
-> 
->   sound/soc/intel/boards/sof_rt5682.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-> index ad8a2b4bc709..8a13231dee15 100644
-> --- a/sound/soc/intel/boards/sof_rt5682.c
-> +++ b/sound/soc/intel/boards/sof_rt5682.c
-> @@ -603,6 +603,14 @@ static int sof_audio_probe(struct platform_device *pdev)
->   
->   	dmi_check_system(sof_rt5682_quirk_table);
->   
-> +	mach = (&pdev->dev)->platform_data;
-> +
-> +	/* A speaker amp might not be present when the quirk claims one is.
-> +	 * Detect this via whether the machine driver match includes quirk_data.
-> +	 */
-> +	if ((sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT) && !mach->quirk_data)
-> +		sof_rt5682_quirk &= ~SOF_SPEAKER_AMP_PRESENT;
-> +
->   	if (soc_intel_is_byt() || soc_intel_is_cht()) {
->   		is_legacy_cpu = 1;
->   		dmic_be_num = 0;
-> @@ -663,7 +671,6 @@ static int sof_audio_probe(struct platform_device *pdev)
->   	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
->   
->   	sof_audio_card_rt5682.dev = &pdev->dev;
-> -	mach = (&pdev->dev)->platform_data;
->   
->   	/* set platform name for each dailink */
->   	ret = snd_soc_fixup_dai_links_platform_name(&sof_audio_card_rt5682,
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
