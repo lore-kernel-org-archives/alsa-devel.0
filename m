@@ -7,56 +7,57 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17803C00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F908C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:56:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9450721734
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:56:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E07921734
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:56:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eu6lEYsi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9450721734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YG3x5gyb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E07921734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6A9217AD;
-	Fri,  3 Jan 2020 09:55:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6A9217AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id F187F17DD;
+	Fri,  3 Jan 2020 09:55:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F187F17DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578041766;
-	bh=QHNUIAX46RafiW4ZgF3YSywxakT8CtrIoUmj0QKvCa8=;
+	s=default; t=1578041803;
+	bh=ooAZwD9T+BMxH4xkAI19HfCrkXuKYJyAtporuKYHEwo=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eu6lEYsicOo6F8DVdH3bBYVlgMkQuImLhDcTKEG06+SNT5PgkH2Tgp4OubScWCh8K
-	 LbnmMj23/xV8CelZQ62iyajhYWBrogzky+cPZju46kcjqUQid4zmNd7ro7UdsdnNaW
-	 sPtfLlnYiKx8sLJAqdeGR4CXbzupSVSixF1GSzc8=
+	b=YG3x5gybTkmPGInqJsRdHVwxHzRWxYQ2fkmmUbcUIeb/Z4bYWOBOGoJ7V6FsA5x3W
+	 YLHSD5ZYPykIUFFy1rW1BKlizHEzSNnwssriDzgkxD2uu8ZKUAmnbZ50ZFKwDMzAFo
+	 E2sr6lQBZkwGruaeZq0nTqjBPl+Pui1RNCBVsOdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5FF9F80564;
-	Fri,  3 Jan 2020 09:19:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33D94F8057C;
+	Fri,  3 Jan 2020 09:19:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2B3DF803E0; Fri,  3 Jan 2020 09:19:00 +0100 (CET)
+ id 4DD36F803DF; Fri,  3 Jan 2020 09:19:01 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61EF1F802EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3CA4EF802EB
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61EF1F802EC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CA4EF802EB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7A27AB28D
+ by mx2.suse.de (Postfix) with ESMTP id 23FE6B286
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:22 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:17:13 +0100
-Message-Id: <20200103081714.9560-58-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:17:07 +0100
+Message-Id: <20200103081714.9560-52-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 57/58] ALSA: hda: Constify snd_pci_quirk tables
+Subject: [alsa-devel] [PATCH 51/58] ALSA: usx2y: Constify struct
+	snd_usb_audio_quirk entries
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,56 +76,97 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The snd_pci_quirk tables are referred as read-only, hence they can be
-declared as const gracefully.
+The quirk entries used in us122l and usx2y drivers can be declared as
+const as they are read-only.
 
 There should be no functional changes by this patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_intel.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/usb/usx2y/us122l.c     |  8 ++++----
+ sound/usb/usx2y/usX2Yhwdep.c | 10 +++++-----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 4733268ec74e..bebc31024737 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1490,7 +1490,7 @@ static bool check_hdmi_disabled(struct pci_dev *pci)
- /*
-  * white/black-listing for position_fix
-  */
--static struct snd_pci_quirk position_fix_list[] = {
-+static const struct snd_pci_quirk position_fix_list[] = {
- 	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x103c, 0x306d, "HP dv3", POS_FIX_LPIB),
-@@ -1583,7 +1583,7 @@ static void assign_position_fix(struct azx *chip, int fix)
- /*
-  * black-lists for probe_mask
-  */
--static struct snd_pci_quirk probe_mask_list[] = {
-+static const struct snd_pci_quirk probe_mask_list[] = {
- 	/* Thinkpad often breaks the controller communication when accessing
- 	 * to the non-working (or non-existing) modem codec slot.
- 	 */
-@@ -1631,7 +1631,7 @@ static void check_probe_mask(struct azx *chip, int dev)
- /*
-  * white/black-list for enable_msi
-  */
--static struct snd_pci_quirk msi_black_list[] = {
-+static const struct snd_pci_quirk msi_black_list[] = {
- 	SND_PCI_QUIRK(0x103c, 0x2191, "HP", 0), /* AMD Hudson */
- 	SND_PCI_QUIRK(0x103c, 0x2192, "HP", 0), /* AMD Hudson */
- 	SND_PCI_QUIRK(0x103c, 0x21f7, "HP", 0), /* AMD Hudson */
-@@ -2164,7 +2164,7 @@ static int azx_probe(struct pci_dev *pci,
-  * So we keep a list of devices where we disable powersaving as its known
-  * to causes problems on these devices.
-  */
--static struct snd_pci_quirk power_save_blacklist[] = {
-+static const struct snd_pci_quirk power_save_blacklist[] = {
- 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
- 	SND_PCI_QUIRK(0x1849, 0xc892, "Asrock B85M-ITX", 0),
- 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
+index e82c5236482d..f86f7a61fb36 100644
+--- a/sound/usb/usx2y/us122l.c
++++ b/sound/usb/usx2y/us122l.c
+@@ -40,13 +40,13 @@ static int snd_us122l_card_used[SNDRV_CARDS];
+ 
+ static int us122l_create_usbmidi(struct snd_card *card)
+ {
+-	static struct snd_usb_midi_endpoint_info quirk_data = {
++	static const struct snd_usb_midi_endpoint_info quirk_data = {
+ 		.out_ep = 4,
+ 		.in_ep = 3,
+ 		.out_cables =	0x001,
+ 		.in_cables =	0x001
+ 	};
+-	static struct snd_usb_audio_quirk quirk = {
++	static const struct snd_usb_audio_quirk quirk = {
+ 		.vendor_name =	"US122L",
+ 		.product_name =	NAME_ALLCAPS,
+ 		.ifnum = 	1,
+@@ -62,13 +62,13 @@ static int us122l_create_usbmidi(struct snd_card *card)
+ 
+ static int us144_create_usbmidi(struct snd_card *card)
+ {
+-	static struct snd_usb_midi_endpoint_info quirk_data = {
++	static const struct snd_usb_midi_endpoint_info quirk_data = {
+ 		.out_ep = 4,
+ 		.in_ep = 3,
+ 		.out_cables =	0x001,
+ 		.in_cables =	0x001
+ 	};
+-	static struct snd_usb_audio_quirk quirk = {
++	static const struct snd_usb_audio_quirk quirk = {
+ 		.vendor_name =	"US144",
+ 		.product_name =	NAME_ALLCAPS,
+ 		.ifnum = 	0,
+diff --git a/sound/usb/usx2y/usX2Yhwdep.c b/sound/usb/usx2y/usX2Yhwdep.c
+index 9985fc139487..0e6d82b5778e 100644
+--- a/sound/usb/usx2y/usX2Yhwdep.c
++++ b/sound/usb/usx2y/usX2Yhwdep.c
+@@ -126,26 +126,26 @@ static int snd_usX2Y_hwdep_dsp_status(struct snd_hwdep *hw,
+ 
+ static int usX2Y_create_usbmidi(struct snd_card *card)
+ {
+-	static struct snd_usb_midi_endpoint_info quirk_data_1 = {
++	static const struct snd_usb_midi_endpoint_info quirk_data_1 = {
+ 		.out_ep = 0x06,
+ 		.in_ep = 0x06,
+ 		.out_cables =	0x001,
+ 		.in_cables =	0x001
+ 	};
+-	static struct snd_usb_audio_quirk quirk_1 = {
++	static const struct snd_usb_audio_quirk quirk_1 = {
+ 		.vendor_name =	"TASCAM",
+ 		.product_name =	NAME_ALLCAPS,
+ 		.ifnum = 	0,
+        		.type = QUIRK_MIDI_FIXED_ENDPOINT,
+ 		.data = &quirk_data_1
+ 	};
+-	static struct snd_usb_midi_endpoint_info quirk_data_2 = {
++	static const struct snd_usb_midi_endpoint_info quirk_data_2 = {
+ 		.out_ep = 0x06,
+ 		.in_ep = 0x06,
+ 		.out_cables =	0x003,
+ 		.in_cables =	0x003
+ 	};
+-	static struct snd_usb_audio_quirk quirk_2 = {
++	static const struct snd_usb_audio_quirk quirk_2 = {
+ 		.vendor_name =	"TASCAM",
+ 		.product_name =	"US428",
+ 		.ifnum = 	0,
+@@ -154,7 +154,7 @@ static int usX2Y_create_usbmidi(struct snd_card *card)
+ 	};
+ 	struct usb_device *dev = usX2Y(card)->dev;
+ 	struct usb_interface *iface = usb_ifnum_to_if(dev, 0);
+-	struct snd_usb_audio_quirk *quirk =
++	const struct snd_usb_audio_quirk *quirk =
+ 		le16_to_cpu(dev->descriptor.idProduct) == USB_ID_US428 ?
+ 		&quirk_2 : &quirk_1;
+ 
 -- 
 2.16.4
 
