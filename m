@@ -2,61 +2,84 @@ Return-Path: <SRS0=XflM=2Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7FEBC3F68F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:57:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E820C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:58:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6196821734
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:57:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DB85F21734
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:58:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LeQo6J6Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6196821734
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gu3IggKv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB85F21734
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=compal.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA7E717E0;
-	Fri,  3 Jan 2020 09:56:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA7E717E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3376517E4;
+	Fri,  3 Jan 2020 09:57:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3376517E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578041839;
-	bh=GvXOzOsZdZL6hByjHC9/C3VV+N/eeJJtlRQf2rQ8NrM=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LeQo6J6YNrAA9TECytbdq9nZ532ObcNlT8nhdbExRE+tOYoQ2lAfkBD+V8q8mnYle
-	 3XzZ5lfO/Hbfy+A5ywUWop8ArPyn/vQngGfUIgjLutFhJOdRagsJGKGd0SFk2HNuF/
-	 IBgD54N0bfLxgajPZn5vIIgkIpRM92lfNwigvcT0=
+	s=default; t=1578041879;
+	bh=qm43ejMhD6wCx5obhpbGTJs1o2ZfcfOi8R6sTnS4+Ak=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Gu3IggKvj1lX2XwGNoL3cDUBAd4wke1DL2A0rczDYQo5yOlx135NqXgrCfxeRVPkX
+	 o3VjjQJrGy0VS6u9xS3dXT2JdIsQu4GWP5QR2L9YfzTGbEjJbGhLVr1TeM3OAUcbAd
+	 iX5OpwoQdarrwyPIBXfDAp5Y9CXRMBD6a0NEZGgA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29655F805A8;
-	Fri,  3 Jan 2020 09:19:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B56BF80160;
+	Fri,  3 Jan 2020 09:20:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1447F803E0; Fri,  3 Jan 2020 09:19:01 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3CA7BF80157; Fri,  3 Jan 2020 02:57:19 +0100 (CET)
+Received: from tpecef01.compal.com (exmail3.compal.com [59.120.207.196])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66006F802F8
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66006F802F8
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 892E0B28E
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:22 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:17:14 +0100
-Message-Id: <20200103081714.9560-59-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
-References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 58/58] ALSA: pci: Constify snd_pci_quirk tables
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4170F8013E
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 02:57:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4170F8013E
+X-UUID: bb65d860ee0342b889c2af2bdeae80a3-20200103
+Received: from tpembx01.compal.com [(10.110.15.26)] by tpecef01.compal.com
+ (envelope-from <aj_cheng@compal.com>)
+ (Cellopoint E-mail Firewall v4.1.6 Build 0408 with TLS)
+ with ESMTP id 1736225997; Fri, 03 Jan 2020 09:57:05 +0800
+Received: from TPEMBX05.compal.com (10.110.15.29) by TPEMBX01.compal.com
+ (10.110.15.26) with Microsoft SMTP Server (TLS) id 15.0.995.29; Fri, 3 Jan
+ 2020 09:57:04 +0800
+Received: from TPEMBX01.compal.com (10.110.15.26) by TPEMBX05.compal.com
+ (10.110.15.29) with Microsoft SMTP Server (TLS) id 15.0.995.29; Fri, 3 Jan
+ 2020 09:57:03 +0800
+Received: from TPEMBX01.compal.com ([fe80::1942:f41b:515b:f225]) by
+ TPEMBX01.compal.com ([fe80::1942:f41b:515b:f225%16]) with mapi id
+ 15.00.0995.028; Fri, 3 Jan 2020 09:57:03 +0800
+From: <AJ_Cheng@compal.com>
+To: <intel-gfx@lists.freedesktop.org>, <alsa-devel@alsa-project.org>
+Thread-Topic: USB Type-C monitor flashes once when play a video file after
+ unplug and re-plug the monitor
+Thread-Index: AdXB0nlM5qaLFlJOTlavFS+ZjDjiAw==
+Date: Fri, 3 Jan 2020 01:57:03 +0000
+Message-ID: <d7aba6970fbd48f2b32e2bc6d838ab20@TPEMBX01.compal.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.110.15.241]
+X-TM-SNTS-SMTP: 403C9FDEFFC975AC44920C8AA31028E8731995EBB058783C2FF706CCA0F669922000:8
+Content-Type: multipart/mixed;
+ boundary="_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_"
+MIME-Version: 1.0
+X-Mailman-Approved-At: Fri, 03 Jan 2020 09:20:45 +0100
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: nathan.d.ciobanu@linux.intel.com, CindyXT_Wang@compal.com,
+ Nelson_Ye@compal.com, Shane_Yap@compal.com, Lucien_Kao@compal.com,
+ Evan_Tseng@compal.com
+Subject: [alsa-devel] USB Type-C monitor flashes once when play a video file
+ after unplug and re-plug the monitor
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,204 +92,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The snd_pci_quirk tables are referred as read-only, hence they can be
-declared as const gracefully.
+--_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-There should be no functional changes by this patch.
+Hi Sirs,
+        Here is chromebook SW team from Compal=2E
+As the mail title, we hit issue that the external monitor will flash once =
+when play video after hot pluging=2E
+We can reproduce not only on chromebook but also ubuntu 16=2E04=2E
+There has higher failure rate with Dell Solomon dock and Dell S2718D =
+monitor=2E
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/atiixp.c      | 2 +-
- sound/pci/ctxfi/ctatc.c | 4 ++--
- sound/pci/ens1370.c     | 8 ++++----
- sound/pci/intel8x0.c    | 6 +++---
- sound/pci/maestro3.c    | 8 ++++----
- sound/pci/nm256/nm256.c | 2 +-
- sound/pci/via82xx.c     | 2 +-
- 7 files changed, 16 insertions(+), 16 deletions(-)
+We found adding the delay in "sound/pci/hda/patch_hdmi=2Ec " can fix this =
+issue=2E(as the attachment)
+May need your help to review and advice=2E Thanks=2E
 
-diff --git a/sound/pci/atiixp.c b/sound/pci/atiixp.c
-index c3281fab365d..4a840734e7a7 100644
---- a/sound/pci/atiixp.c
-+++ b/sound/pci/atiixp.c
-@@ -282,7 +282,7 @@ static const struct pci_device_id snd_atiixp_ids[] = {
- 
- MODULE_DEVICE_TABLE(pci, snd_atiixp_ids);
- 
--static struct snd_pci_quirk atiixp_quirks[] = {
-+static const struct snd_pci_quirk atiixp_quirks[] = {
- 	SND_PCI_QUIRK(0x105b, 0x0c81, "Foxconn RC4107MA-RS2", 0),
- 	SND_PCI_QUIRK(0x15bd, 0x3100, "DFI RS482", 0),
- 	{ } /* terminator */
-diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
-index 8d92154ac262..e56a230f6a9c 100644
---- a/sound/pci/ctxfi/ctatc.c
-+++ b/sound/pci/ctxfi/ctatc.c
-@@ -35,7 +35,7 @@
- 			    | (0x10 << 16) \
- 			    | ((IEC958_AES3_CON_FS_48000) << 24))
- 
--static struct snd_pci_quirk subsys_20k1_list[] = {
-+static const struct snd_pci_quirk subsys_20k1_list[] = {
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, 0x0022, "SB055x", CTSB055X),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, 0x002f, "SB055x", CTSB055X),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, 0x0029, "SB073x", CTSB073X),
-@@ -45,7 +45,7 @@ static struct snd_pci_quirk subsys_20k1_list[] = {
- 	{ } /* terminator */
- };
- 
--static struct snd_pci_quirk subsys_20k2_list[] = {
-+static const struct snd_pci_quirk subsys_20k2_list[] = {
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB0760,
- 		      "SB0760", CTSB0760),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_CREATIVE, PCI_SUBDEVICE_ID_CREATIVE_SB1270,
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index 4f8202980b61..7ef9b7a1b2e6 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -1562,7 +1562,7 @@ struct es1371_quirk {
- };
- 
- static int es1371_quirk_lookup(struct ensoniq *ensoniq,
--				struct es1371_quirk *list)
-+			       const struct es1371_quirk *list)
- {
- 	while (list->vid != (unsigned short)PCI_ANY_ID) {
- 		if (ensoniq->pci->vendor == list->vid &&
-@@ -1583,7 +1583,7 @@ static struct es1371_quirk es1371_spdif_present[] = {
- 	{ .vid = PCI_ANY_ID, .did = PCI_ANY_ID }
- };
- 
--static struct snd_pci_quirk ens1373_line_quirk[] = {
-+static const struct snd_pci_quirk ens1373_line_quirk[] = {
- 	SND_PCI_QUIRK_ID(0x1274, 0x2000), /* GA-7DXR */
- 	SND_PCI_QUIRK_ID(0x1458, 0xa000), /* GA-8IEXP */
- 	{ } /* end */
-@@ -1909,7 +1909,7 @@ static int snd_ensoniq_dev_free(struct snd_device *device)
- }
- 
- #ifdef CHIP1371
--static struct snd_pci_quirk es1371_amplifier_hack[] = {
-+static const struct snd_pci_quirk es1371_amplifier_hack[] = {
- 	SND_PCI_QUIRK_ID(0x107b, 0x2150),	/* Gateway Solo 2150 */
- 	SND_PCI_QUIRK_ID(0x13bd, 0x100c),	/* EV1938 on Mebius PC-MJ100V */
- 	SND_PCI_QUIRK_ID(0x1102, 0x5938),	/* Targa Xtender300 */
-@@ -1917,7 +1917,7 @@ static struct snd_pci_quirk es1371_amplifier_hack[] = {
- 	{ } /* end */
- };
- 
--static struct es1371_quirk es1371_ac97_reset_hack[] = {
-+static const struct es1371_quirk es1371_ac97_reset_hack[] = {
- 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_C },
- 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_D },
- 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_E },
-diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
-index de875ea8ecbe..5bdd25815fc7 100644
---- a/sound/pci/intel8x0.c
-+++ b/sound/pci/intel8x0.c
-@@ -2328,7 +2328,7 @@ static void do_ali_reset(struct intel8x0 *chip)
- }
- 
- #ifdef CONFIG_SND_AC97_POWER_SAVE
--static struct snd_pci_quirk ich_chip_reset_mode[] = {
-+static const struct snd_pci_quirk ich_chip_reset_mode[] = {
- 	SND_PCI_QUIRK(0x1014, 0x051f, "Thinkpad R32", 1),
- 	{ } /* end */
- };
-@@ -2774,7 +2774,7 @@ static void intel8x0_measure_ac97_clock(struct intel8x0 *chip)
- 	snd_ac97_update_power(chip->ac97[0], AC97_PCM_FRONT_DAC_RATE, 0);
- }
- 
--static struct snd_pci_quirk intel8x0_clock_list[] = {
-+static const struct snd_pci_quirk intel8x0_clock_list[] = {
- 	SND_PCI_QUIRK(0x0e11, 0x008a, "AD1885", 41000),
- 	SND_PCI_QUIRK(0x1014, 0x0581, "AD1981B", 48000),
- 	SND_PCI_QUIRK(0x1028, 0x00be, "AD1885", 44100),
-@@ -3133,7 +3133,7 @@ static struct shortname_table {
- 	{ 0, NULL },
- };
- 
--static struct snd_pci_quirk spdif_aclink_defaults[] = {
-+static const struct snd_pci_quirk spdif_aclink_defaults[] = {
- 	SND_PCI_QUIRK(0x147b, 0x1c1a, "ASUS KN8", 1),
- 	{ } /* end */
- };
-diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
-index 89018d44d777..40232a278b1a 100644
---- a/sound/pci/maestro3.c
-+++ b/sound/pci/maestro3.c
-@@ -807,7 +807,7 @@ static const struct pci_device_id snd_m3_ids[] = {
- 
- MODULE_DEVICE_TABLE(pci, snd_m3_ids);
- 
--static struct snd_pci_quirk m3_amp_quirk_list[] = {
-+static const struct snd_pci_quirk m3_amp_quirk_list[] = {
- 	SND_PCI_QUIRK(0x0E11, 0x0094, "Compaq Evo N600c", 0x0c),
- 	SND_PCI_QUIRK(0x10f7, 0x833e, "Panasonic CF-28", 0x0d),
- 	SND_PCI_QUIRK(0x10f7, 0x833d, "Panasonic CF-72", 0x0d),
-@@ -816,7 +816,7 @@ static struct snd_pci_quirk m3_amp_quirk_list[] = {
- 	{ } /* END */
- };
- 
--static struct snd_pci_quirk m3_irda_quirk_list[] = {
-+static const struct snd_pci_quirk m3_irda_quirk_list[] = {
- 	SND_PCI_QUIRK(0x1028, 0x00b0, "Dell Inspiron 4000", 1),
- 	SND_PCI_QUIRK(0x1028, 0x00a4, "Dell Inspiron 8000", 1),
- 	SND_PCI_QUIRK(0x1028, 0x00e6, "Dell Inspiron 8100", 1),
-@@ -824,7 +824,7 @@ static struct snd_pci_quirk m3_irda_quirk_list[] = {
- };
- 
- /* hardware volume quirks */
--static struct snd_pci_quirk m3_hv_quirk_list[] = {
-+static const struct snd_pci_quirk m3_hv_quirk_list[] = {
- 	/* Allegro chips */
- 	SND_PCI_QUIRK(0x0E11, 0x002E, NULL, HV_CTRL_ENABLE | HV_BUTTON_FROM_GD),
- 	SND_PCI_QUIRK(0x0E11, 0x0094, NULL, HV_CTRL_ENABLE | HV_BUTTON_FROM_GD),
-@@ -902,7 +902,7 @@ static struct snd_pci_quirk m3_hv_quirk_list[] = {
- };
- 
- /* HP Omnibook quirks */
--static struct snd_pci_quirk m3_omnibook_quirk_list[] = {
-+static const struct snd_pci_quirk m3_omnibook_quirk_list[] = {
- 	SND_PCI_QUIRK_ID(0x103c, 0x0010), /* HP OmniBook 6000 */
- 	SND_PCI_QUIRK_ID(0x103c, 0x0011), /* HP OmniBook 500 */
- 	{ } /* END */
-diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
-index 99228b93b3c6..25275a98e950 100644
---- a/sound/pci/nm256/nm256.c
-+++ b/sound/pci/nm256/nm256.c
-@@ -1634,7 +1634,7 @@ snd_nm256_create(struct snd_card *card, struct pci_dev *pci,
- 
- enum { NM_BLACKLISTED, NM_RESET_WORKAROUND, NM_RESET_WORKAROUND_2 };
- 
--static struct snd_pci_quirk nm256_quirks[] = {
-+static const struct snd_pci_quirk nm256_quirks[] = {
- 	/* HP omnibook 4150 has cs4232 codec internally */
- 	SND_PCI_QUIRK(0x103c, 0x0007, "HP omnibook 4150", NM_BLACKLISTED),
- 	/* Reset workarounds to avoid lock-ups */
-diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
-index c8fb51885b6d..6c83ad3275f9 100644
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -2417,7 +2417,7 @@ static struct via823x_info via823x_cards[] = {
-  * auto detection of DXS channel supports.
-  */
- 
--static struct snd_pci_quirk dxs_whitelist[] = {
-+static const struct snd_pci_quirk dxs_whitelist[] = {
- 	SND_PCI_QUIRK(0x1005, 0x4710, "Avance Logic Mobo", VIA_DXS_ENABLE),
- 	SND_PCI_QUIRK(0x1019, 0x0996, "ESC Mobo", VIA_DXS_48K),
- 	SND_PCI_QUIRK(0x1019, 0x0a81, "ECS K7VTA3 v8.0", VIA_DXS_NO_VRA),
--- 
-2.16.4
+Here is the issue number in gitlab for more detail=2E
+https://gitlab=2Efreedesktop=2Eorg/drm/intel/issues/318
+
+
+
+AJ Cheng
+NID/NID1
+e-mail: AJ_Cheng@compal=2Ecom<mailto:AJ_Cheng@compal=2Ecom>
+Tel:  +886-2-8797-8599 ext=2E 17561
+Mobile : +886-932827829
+COMPAL Electronics, Inc=2E
+
+
+--_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_
+Content-Type: application/octet-stream; name="flash_once.diff"
+Content-Description: flash_once.diff
+Content-Disposition: attachment; filename="flash_once.diff"; size=593;
+	creation-date="Mon, 16 Dec 2019 06:29:48 GMT";
+	modification-date="Mon, 16 Dec 2019 06:29:48 GMT"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQvcGNpL2hkYS9w
+YXRjaF9oZG1pLmMKaW5kZXggNDQ0OGFiNi4uNzdkYzZiOSAxMDA2NDQKLS0tIGEvc291bmQvcGNp
+L2hkYS9wYXRjaF9oZG1pLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKQEAgLTg1
+NCw3ICs4NTQsNyBAQCBzdGF0aWMgdm9pZCBoYXN3ZWxsX3ZlcmlmeV9EMChzdHJ1Y3QgaGRhX2Nv
+ZGVjICpjb2RlYywKIAkgKiBjb252ZXJ0ZXJzIGFyZSBpbiBjb3JyZWN0IHBvd2VyIHN0YXRlICov
+CiAJaWYgKCFzbmRfaGRhX2NoZWNrX3Bvd2VyX3N0YXRlKGNvZGVjLCBjdnRfbmlkLCBBQ19QV1JT
+VF9EMCkpCiAJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIGN2dF9uaWQsIDAsIEFDX1ZFUkJf
+U0VUX1BPV0VSX1NUQVRFLCBBQ19QV1JTVF9EMCk7Ci0KKwltc2xlZXAoNDApOwogCWlmICghc25k
+X2hkYV9jaGVja19wb3dlcl9zdGF0ZShjb2RlYywgbmlkLCBBQ19QV1JTVF9EMCkpIHsKIAkJc25k
+X2hkYV9jb2RlY193cml0ZShjb2RlYywgbmlkLCAwLCBBQ19WRVJCX1NFVF9QT1dFUl9TVEFURSwK
+IAkJCQkgICAgQUNfUFdSU1RfRDApOwo=
+
+--_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_--
+
