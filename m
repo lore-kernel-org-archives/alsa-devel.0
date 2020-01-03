@@ -7,56 +7,57 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 359ABC00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:39:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B97A8C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:40:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEBA421D7D
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:39:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3E7FC22314
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:40:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DHdoKIGe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEBA421D7D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vx+/kSWT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E7FC22314
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A80B176E;
-	Fri,  3 Jan 2020 09:38:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A80B176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 949401772;
+	Fri,  3 Jan 2020 09:39:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 949401772
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578040787;
-	bh=KS8kVIuzZkUNz+hs2qne/xRUy5d5r9jFFd6OPItyLhI=;
+	s=default; t=1578040825;
+	bh=32raJPkSGOosZM7FePeIW7ngQL1Zlg5tYgEEczGtdsA=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DHdoKIGevAVXPpb2NgQpWbPke/vGhwmThhA+PzZi/uTzgzMznh2JLNI89OOb0Rb/6
-	 mak6ZCW1tD0q5h2rsJa2gIjw+5R0z8YpfAR0umsKNhv3w4uaSyBMecUgukx7Kiyhtq
-	 aQMaKAdwG29zZK8cjdoOYpbRu9cCDQfLvwqbj3rU=
+	b=Vx+/kSWTA6agNIdJGPyFXFafm0Sp0/VPTXMVSSpTWAT6gQpPxJj+gpHLU63qgLZnM
+	 HdinlGgjuvylAlGwGK6BKmETChM0WXOfc6jIzZUTFTk2ZrxhSGarqALikYMCjDch3l
+	 X8+obCM2evC6YXsivsNBbuoXJYxCirO109g8GlTM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F445F803FB;
-	Fri,  3 Jan 2020 09:19:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53E74F80406;
+	Fri,  3 Jan 2020 09:19:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59CE0F8028F; Fri,  3 Jan 2020 09:18:21 +0100 (CET)
+ id 0DEF9F8036D; Fri,  3 Jan 2020 09:18:22 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64684F80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7B23F8029B
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64684F80290
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7B23F8029B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0CC71B271
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:21 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id C939AB26D
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:20 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:16:45 +0100
-Message-Id: <20200103081714.9560-30-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:16:41 +0100
+Message-Id: <20200103081714.9560-26-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 29/58] ALSA: seq: Constify struct snd_midi_op
+Subject: [alsa-devel] [PATCH 25/58] ALSA: atmel: Constify snd_ac97_bus_ops
+	definitions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,200 +76,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Change the argument of snd_midi_process_event() to receive a const
-snd_midi_op pointer and its callers respectively.  This allows further
-optimizations.
+Now snd_ac97_bus() takes the const ops pointer, so we can define the
+snd_ac97_bus_ops locally as const as well for further optimization.
 
 There should be no functional changes by this patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/seq_midi_emul.h   |  3 ++-
- sound/core/seq/seq_midi_emul.c  | 37 ++++++++++++++++++++++---------------
- sound/drivers/opl3/opl3_seq.c   |  2 +-
- sound/drivers/opl3/opl3_voice.h |  2 +-
- sound/drivers/opl4/opl4_seq.c   |  2 +-
- sound/synth/emux/emux_seq.c     |  2 +-
- 6 files changed, 28 insertions(+), 20 deletions(-)
+ sound/atmel/ac97c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/seq_midi_emul.h b/include/sound/seq_midi_emul.h
-index d6b74059b4b1..88799d1e1f53 100644
---- a/include/sound/seq_midi_emul.h
-+++ b/include/sound/seq_midi_emul.h
-@@ -174,7 +174,8 @@ enum {
- };
- 
- /* Prototypes for midi_process.c */
--void snd_midi_process_event(struct snd_midi_op *ops, struct snd_seq_event *ev,
-+void snd_midi_process_event(const struct snd_midi_op *ops,
-+			    struct snd_seq_event *ev,
- 			    struct snd_midi_channel_set *chanset);
- void snd_midi_channel_set_clear(struct snd_midi_channel_set *chset);
- struct snd_midi_channel_set *snd_midi_channel_alloc_set(int n);
-diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
-index 770d3f4eee7c..536ccf48ee72 100644
---- a/sound/core/seq/seq_midi_emul.c
-+++ b/sound/core/seq/seq_midi_emul.c
-@@ -30,22 +30,25 @@ MODULE_DESCRIPTION("Advanced Linux Sound Architecture sequencer MIDI emulation."
- MODULE_LICENSE("GPL");
- 
- /* Prototypes for static functions */
--static void note_off(struct snd_midi_op *ops, void *drv,
-+static void note_off(const struct snd_midi_op *ops, void *drv,
- 		     struct snd_midi_channel *chan,
- 		     int note, int vel);
--static void do_control(struct snd_midi_op *ops, void *private,
-+static void do_control(const struct snd_midi_op *ops, void *private,
- 		       struct snd_midi_channel_set *chset,
- 		       struct snd_midi_channel *chan,
- 		       int control, int value);
--static void rpn(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-+static void rpn(const struct snd_midi_op *ops, void *drv,
-+		struct snd_midi_channel *chan,
- 		struct snd_midi_channel_set *chset);
--static void nrpn(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-+static void nrpn(const struct snd_midi_op *ops, void *drv,
-+		 struct snd_midi_channel *chan,
- 		 struct snd_midi_channel_set *chset);
--static void sysex(struct snd_midi_op *ops, void *private, unsigned char *sysex,
-+static void sysex(const struct snd_midi_op *ops, void *private,
-+		  unsigned char *sysex,
- 		  int len, struct snd_midi_channel_set *chset);
--static void all_sounds_off(struct snd_midi_op *ops, void *private,
-+static void all_sounds_off(const struct snd_midi_op *ops, void *private,
- 			   struct snd_midi_channel *chan);
--static void all_notes_off(struct snd_midi_op *ops, void *private,
-+static void all_notes_off(const struct snd_midi_op *ops, void *private,
- 			  struct snd_midi_channel *chan);
- static void snd_midi_reset_controllers(struct snd_midi_channel *chan);
- static void reset_all_channels(struct snd_midi_channel_set *chset);
-@@ -66,7 +69,7 @@ static void reset_all_channels(struct snd_midi_channel_set *chset);
-  *        be interpreted.
-  */
- void
--snd_midi_process_event(struct snd_midi_op *ops,
-+snd_midi_process_event(const struct snd_midi_op *ops,
- 		       struct snd_seq_event *ev,
- 		       struct snd_midi_channel_set *chanset)
- {
-@@ -229,7 +232,8 @@ EXPORT_SYMBOL(snd_midi_process_event);
-  * release note
-  */
- static void
--note_off(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-+note_off(const struct snd_midi_op *ops, void *drv,
-+	 struct snd_midi_channel *chan,
- 	 int note, int vel)
- {
- 	if (chan->gm_hold) {
-@@ -251,7 +255,8 @@ note_off(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-  * events that need to take place immediately to the driver.
-  */
- static void
--do_control(struct snd_midi_op *ops, void *drv, struct snd_midi_channel_set *chset,
-+do_control(const struct snd_midi_op *ops, void *drv,
-+	   struct snd_midi_channel_set *chset,
- 	   struct snd_midi_channel *chan, int control, int value)
- {
- 	int  i;
-@@ -402,7 +407,7 @@ EXPORT_SYMBOL(snd_midi_channel_set_clear);
-  * Process a rpn message.
-  */
- static void
--rpn(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-+rpn(const struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-     struct snd_midi_channel_set *chset)
- {
- 	int type;
-@@ -442,7 +447,7 @@ rpn(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-  * Process an nrpn message.
-  */
- static void
--nrpn(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-+nrpn(const struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan,
-      struct snd_midi_channel_set *chset)
- {
- 	/* parse XG NRPNs here if possible */
-@@ -470,7 +475,7 @@ get_channel(unsigned char cmd)
-  * Process a sysex message.
-  */
- static void
--sysex(struct snd_midi_op *ops, void *private, unsigned char *buf, int len,
-+sysex(const struct snd_midi_op *ops, void *private, unsigned char *buf, int len,
-       struct snd_midi_channel_set *chset)
- {
- 	/* GM on */
-@@ -584,7 +589,8 @@ sysex(struct snd_midi_op *ops, void *private, unsigned char *buf, int len,
-  * all sound off
-  */
- static void
--all_sounds_off(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan)
-+all_sounds_off(const struct snd_midi_op *ops, void *drv,
-+	       struct snd_midi_channel *chan)
- {
- 	int n;
- 
-@@ -602,7 +608,8 @@ all_sounds_off(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan
-  * all notes off
-  */
- static void
--all_notes_off(struct snd_midi_op *ops, void *drv, struct snd_midi_channel *chan)
-+all_notes_off(const struct snd_midi_op *ops, void *drv,
-+	      struct snd_midi_channel *chan)
- {
- 	int n;
- 
-diff --git a/sound/drivers/opl3/opl3_seq.c b/sound/drivers/opl3/opl3_seq.c
-index 20f2f5125394..cd2a01b5e2e1 100644
---- a/sound/drivers/opl3/opl3_seq.c
-+++ b/sound/drivers/opl3/opl3_seq.c
-@@ -128,7 +128,7 @@ static int snd_opl3_synth_unuse(void *private_data, struct snd_seq_port_subscrib
- /*
-  * MIDI emulation operators
-  */
--struct snd_midi_op opl3_ops = {
-+const struct snd_midi_op opl3_ops = {
- 	.note_on =		snd_opl3_note_on,
- 	.note_off =		snd_opl3_note_off,
- 	.key_press =		snd_opl3_key_press,
-diff --git a/sound/drivers/opl3/opl3_voice.h b/sound/drivers/opl3/opl3_voice.h
-index dc0626a2dd61..be9ccca2d952 100644
---- a/sound/drivers/opl3/opl3_voice.h
-+++ b/sound/drivers/opl3/opl3_voice.h
-@@ -41,6 +41,6 @@ void snd_opl3_free_seq_oss(struct snd_opl3 *opl3);
- 
- extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
- extern bool use_internal_drums;
--extern struct snd_midi_op opl3_ops;
-+extern const struct snd_midi_op opl3_ops;
- 
- #endif
-diff --git a/sound/drivers/opl4/opl4_seq.c b/sound/drivers/opl4/opl4_seq.c
-index 03d6202f4829..f59ca660c616 100644
---- a/sound/drivers/opl4/opl4_seq.c
-+++ b/sound/drivers/opl4/opl4_seq.c
-@@ -100,7 +100,7 @@ static int snd_opl4_seq_unuse(void *private_data, struct snd_seq_port_subscribe
- 	return 0;
- }
- 
--static struct snd_midi_op opl4_ops = {
-+static const struct snd_midi_op opl4_ops = {
- 	.note_on =		snd_opl4_note_on,
- 	.note_off =		snd_opl4_note_off,
- 	.note_terminate =	snd_opl4_terminate_note,
-diff --git a/sound/synth/emux/emux_seq.c b/sound/synth/emux/emux_seq.c
-index 9d8a69f1a644..b227c7e0bc2a 100644
---- a/sound/synth/emux/emux_seq.c
-+++ b/sound/synth/emux/emux_seq.c
-@@ -19,7 +19,7 @@ static int snd_emux_unuse(void *private_data, struct snd_seq_port_subscribe *inf
- /*
-  * MIDI emulation operators
-  */
--static struct snd_midi_op emux_ops = {
-+static const struct snd_midi_op emux_ops = {
- 	.note_on = snd_emux_note_on,
- 	.note_off = snd_emux_note_off,
- 	.key_press = snd_emux_key_press,
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 658b4d385249..a1dce9725b98 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -702,7 +702,7 @@ static int atmel_ac97c_probe(struct platform_device *pdev)
+ 	struct atmel_ac97c		*chip;
+ 	struct resource			*regs;
+ 	struct clk			*pclk;
+-	static struct snd_ac97_bus_ops	ops = {
++	static const struct snd_ac97_bus_ops	ops = {
+ 		.write	= atmel_ac97c_write,
+ 		.read	= atmel_ac97c_read,
+ 	};
 -- 
 2.16.4
 
