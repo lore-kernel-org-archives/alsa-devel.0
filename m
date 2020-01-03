@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E1BDC00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:44:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED8BFC00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:45:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B45721D7D
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:44:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 78D42227BF
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:45:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X7Ep/Na9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B45721D7D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WkveBL8N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78D42227BF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AAF5178B;
-	Fri,  3 Jan 2020 09:43:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AAF5178B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB3B41791;
+	Fri,  3 Jan 2020 09:44:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB3B41791
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578041069;
-	bh=0lOXqSEWKoJBl6MH/opTbRCVSml21dovETLgrqZ0Smk=;
+	s=default; t=1578041109;
+	bh=UfhGBpnngWUTkupXm/cBKMOknE86nkAa/Kf1E4TrM/A=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X7Ep/Na9chZfJnMg9uJ6tJbM3TGS4ICy/VnX5TWp2Jim7jA4ChSgyetozlOJSXgp/
-	 aZsucltIexrr7xtDNJAUX7avSmgOy85hxGZsZseARsZ5dKJdEVEKB8frQiM8Yyzvw8
-	 N5xkbK9kKqzHbY+tmZ9R5NEkxopTN7vjls3Wc+1Q=
+	b=WkveBL8NVDLCJewGqsCMiKsOBHrbm9CPebeFfKJweaAVYWhkyDMui3jo0yilQ6yZU
+	 PCBVe0Ku6P8rYpNNymPgP5zmkQD7GYCznHMGs1SCUM7N7mddu/Xd6eU42XVJVjtya8
+	 /dBLgvcMHEvT9u5OMcAjoRQJAohxFGmo6BwDHv7o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85065F80476;
-	Fri,  3 Jan 2020 09:19:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98E38F8047E;
+	Fri,  3 Jan 2020 09:19:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9D4AF80383; Fri,  3 Jan 2020 09:18:33 +0100 (CET)
+ id 36346F8038D; Fri,  3 Jan 2020 09:18:37 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6314F802A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C060F802BE
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6314F802A9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C060F802BE
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 89BE4B27B
+ by mx2.suse.de (Postfix) with ESMTP id B331FB27E
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:21 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:16:54 +0100
-Message-Id: <20200103081714.9560-39-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:16:58 +0100
+Message-Id: <20200103081714.9560-43-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 38/58] ALSA: ppc: Constify snd_kcontrol_new
+Subject: [alsa-devel] [PATCH 42/58] ALSA: parisc: Constify snd_kcontrol_new
 	items
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -83,309 +83,22 @@ There should be no functional changes by this patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/ppc/awacs.c    | 50 +++++++++++++++++++++++++-------------------------
- sound/ppc/burgundy.c | 20 ++++++++++----------
- sound/ppc/daca.c     |  2 +-
- sound/ppc/pmac.c     |  2 +-
- sound/ppc/snd_ps3.c  |  2 +-
- sound/ppc/tumbler.c  |  4 ++--
- 6 files changed, 40 insertions(+), 40 deletions(-)
+ sound/parisc/harmony.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/ppc/awacs.c b/sound/ppc/awacs.c
-index 359d22a81ae3..73c0fd7277e6 100644
---- a/sound/ppc/awacs.c
-+++ b/sound/ppc/awacs.c
-@@ -464,7 +464,7 @@ static int snd_pmac_awacs_put_master_amp(struct snd_kcontrol *kcontrol,
- #define AMP_CH_SPK	0
- #define AMP_CH_HD	1
+diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
+index d330f22a3e8f..97241d984c6c 100644
+--- a/sound/parisc/harmony.c
++++ b/sound/parisc/harmony.c
+@@ -797,7 +797,7 @@ snd_harmony_captureroute_put(struct snd_kcontrol *kc,
+   .private_value = ((left_shift) | ((right_shift) << 8) |            \
+                    ((mask) << 16) | ((invert) << 24)) }
  
--static struct snd_kcontrol_new snd_pmac_awacs_amp_vol[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_amp_vol[] = {
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "Speaker Playback Volume",
- 	  .info = snd_pmac_awacs_info_volume_amp,
-@@ -582,46 +582,46 @@ static int snd_pmac_screamer_mic_boost_put(struct snd_kcontrol *kcontrol,
- /*
-  * lists of mixer elements
-  */
--static struct snd_kcontrol_new snd_pmac_awacs_mixers[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_mixers[] = {
- 	AWACS_SWITCH("Master Capture Switch", 1, SHIFT_LOOPTHRU, 0),
- 	AWACS_VOLUME("Master Capture Volume", 0, 4, 0),
- /*	AWACS_SWITCH("Unknown Playback Switch", 6, SHIFT_PAROUT0, 0), */
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mixers_beige[] = {
-+static const struct snd_kcontrol_new snd_pmac_screamer_mixers_beige[] = {
- 	AWACS_VOLUME("Master Playback Volume", 2, 6, 1),
- 	AWACS_VOLUME("Play-through Playback Volume", 5, 6, 1),
- 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
- 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_LINE, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mixers_lo[] = {
-+static const struct snd_kcontrol_new snd_pmac_screamer_mixers_lo[] = {
- 	AWACS_VOLUME("Line out Playback Volume", 2, 6, 1),
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mixers_imac[] = {
-+static const struct snd_kcontrol_new snd_pmac_screamer_mixers_imac[] = {
- 	AWACS_VOLUME("Play-through Playback Volume", 5, 6, 1),
- 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mixers_g4agp[] = {
-+static const struct snd_kcontrol_new snd_pmac_screamer_mixers_g4agp[] = {
- 	AWACS_VOLUME("Line out Playback Volume", 2, 6, 1),
- 	AWACS_VOLUME("Master Playback Volume", 5, 6, 1),
- 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
- 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac7500[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac7500[] = {
- 	AWACS_VOLUME("Line out Playback Volume", 2, 6, 1),
- 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
- 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac5500[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac5500[] = {
- 	AWACS_VOLUME("Headphone Playback Volume", 2, 6, 1),
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac[] = {
- 	AWACS_VOLUME("Master Playback Volume", 2, 6, 1),
- 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
- };
-@@ -629,34 +629,34 @@ static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac[] = {
- /* FIXME: is this correct order?
-  * screamer (powerbook G3 pismo) seems to have different bits...
-  */
--static struct snd_kcontrol_new snd_pmac_awacs_mixers2[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_mixers2[] = {
- 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_LINE, 0),
- 	AWACS_SWITCH("Mic Capture Switch", 0, SHIFT_MUX_MIC, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mixers2[] = {
-+static const struct snd_kcontrol_new snd_pmac_screamer_mixers2[] = {
- 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
- 	AWACS_SWITCH("Mic Capture Switch", 0, SHIFT_MUX_LINE, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_mixers2_pmac5500[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_mixers2_pmac5500[] = {
- 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_master_sw =
-+static const struct snd_kcontrol_new snd_pmac_awacs_master_sw =
- AWACS_SWITCH("Master Playback Switch", 1, SHIFT_HDMUTE, 1);
- 
--static struct snd_kcontrol_new snd_pmac_awacs_master_sw_imac =
-+static const struct snd_kcontrol_new snd_pmac_awacs_master_sw_imac =
- AWACS_SWITCH("Line out Playback Switch", 1, SHIFT_HDMUTE, 1);
- 
--static struct snd_kcontrol_new snd_pmac_awacs_master_sw_pmac5500 =
-+static const struct snd_kcontrol_new snd_pmac_awacs_master_sw_pmac5500 =
- AWACS_SWITCH("Headphone Playback Switch", 1, SHIFT_HDMUTE, 1);
- 
--static struct snd_kcontrol_new snd_pmac_awacs_mic_boost[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_mic_boost[] = {
- 	AWACS_SWITCH("Mic Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mic_boost[] = {
-+static const struct snd_kcontrol_new snd_pmac_screamer_mic_boost[] = {
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "Mic Boost Capture Volume",
- 	  .info = snd_pmac_screamer_mic_boost_info,
-@@ -665,34 +665,34 @@ static struct snd_kcontrol_new snd_pmac_screamer_mic_boost[] = {
- 	},
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_mic_boost_pmac7500[] =
-+static const struct snd_kcontrol_new snd_pmac_awacs_mic_boost_pmac7500[] =
- {
- 	AWACS_SWITCH("Line Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mic_boost_beige[] =
-+static const struct snd_kcontrol_new snd_pmac_screamer_mic_boost_beige[] =
- {
- 	AWACS_SWITCH("Line Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
- 	AWACS_SWITCH("CD Boost Capture Switch", 6, SHIFT_MIC_BOOST, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_screamer_mic_boost_imac[] =
-+static const struct snd_kcontrol_new snd_pmac_screamer_mic_boost_imac[] =
- {
- 	AWACS_SWITCH("Line Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
- 	AWACS_SWITCH("Mic Boost Capture Switch", 6, SHIFT_MIC_BOOST, 0),
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_speaker_vol[] = {
-+static const struct snd_kcontrol_new snd_pmac_awacs_speaker_vol[] = {
- 	AWACS_VOLUME("Speaker Playback Volume", 4, 6, 1),
- };
- 
--static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw =
-+static const struct snd_kcontrol_new snd_pmac_awacs_speaker_sw =
- AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_SPKMUTE, 1);
- 
--static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac1 =
-+static const struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac1 =
- AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_PAROUT1, 1);
- 
--static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac2 =
-+static const struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac2 =
- AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_PAROUT1, 0);
- 
- 
-@@ -700,7 +700,7 @@ AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_PAROUT1, 0);
-  * add new mixer elements to the card
-  */
- static int build_mixers(struct snd_pmac *chip, int nums,
--			struct snd_kcontrol_new *mixers)
-+			const struct snd_kcontrol_new *mixers)
- {
- 	int i, err;
- 
-diff --git a/sound/ppc/burgundy.c b/sound/ppc/burgundy.c
-index a2a41e5245ef..4fb990ab2ceb 100644
---- a/sound/ppc/burgundy.c
-+++ b/sound/ppc/burgundy.c
-@@ -454,7 +454,7 @@ static int snd_pmac_burgundy_put_switch_b(struct snd_kcontrol *kcontrol,
- /*
-  * Burgundy mixers
-  */
--static struct snd_kcontrol_new snd_pmac_burgundy_mixers[] = {
-+static const struct snd_kcontrol_new snd_pmac_burgundy_mixers[] = {
- 	BURGUNDY_VOLUME_W("Master Playback Volume", 0,
- 			MASK_ADDR_BURGUNDY_MASTER_VOLUME, 8),
- 	BURGUNDY_VOLUME_W("CD Capture Volume", 0,
-@@ -482,7 +482,7 @@ static struct snd_kcontrol_new snd_pmac_burgundy_mixers[] = {
-  */	BURGUNDY_SWITCH_B("PCM Capture Switch", 0,
- 			MASK_ADDR_BURGUNDY_HOSTIFEH, 0x01, 0, 0)
- };
--static struct snd_kcontrol_new snd_pmac_burgundy_mixers_imac[] = {
-+static const struct snd_kcontrol_new snd_pmac_burgundy_mixers_imac[] = {
- 	BURGUNDY_VOLUME_W("Line in Capture Volume", 0,
- 			MASK_ADDR_BURGUNDY_VOLLINE, 16),
- 	BURGUNDY_VOLUME_W("Mic Capture Volume", 0,
-@@ -508,7 +508,7 @@ static struct snd_kcontrol_new snd_pmac_burgundy_mixers_imac[] = {
- 	BURGUNDY_SWITCH_B("Mic Boost Capture Switch", 0,
- 			MASK_ADDR_BURGUNDY_INPBOOST, 0x40, 0x80, 1)
- };
--static struct snd_kcontrol_new snd_pmac_burgundy_mixers_pmac[] = {
-+static const struct snd_kcontrol_new snd_pmac_burgundy_mixers_pmac[] = {
- 	BURGUNDY_VOLUME_W("Line in Capture Volume", 0,
- 			MASK_ADDR_BURGUNDY_VOLMIC, 16),
- 	BURGUNDY_VOLUME_B("Line in Gain Capture Volume", 0,
-@@ -524,33 +524,33 @@ static struct snd_kcontrol_new snd_pmac_burgundy_mixers_pmac[] = {
- /*	BURGUNDY_SWITCH_B("Line in Boost Capture Switch", 0,
-  *		MASK_ADDR_BURGUNDY_INPBOOST, 0x40, 0x80, 1) */
- };
--static struct snd_kcontrol_new snd_pmac_burgundy_master_sw_imac =
-+static const struct snd_kcontrol_new snd_pmac_burgundy_master_sw_imac =
- BURGUNDY_SWITCH_B("Master Playback Switch", 0,
- 	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
- 	BURGUNDY_OUTPUT_LEFT | BURGUNDY_LINEOUT_LEFT | BURGUNDY_HP_LEFT,
- 	BURGUNDY_OUTPUT_RIGHT | BURGUNDY_LINEOUT_RIGHT | BURGUNDY_HP_RIGHT, 1);
--static struct snd_kcontrol_new snd_pmac_burgundy_master_sw_pmac =
-+static const struct snd_kcontrol_new snd_pmac_burgundy_master_sw_pmac =
- BURGUNDY_SWITCH_B("Master Playback Switch", 0,
- 	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
- 	BURGUNDY_OUTPUT_INTERN
- 	| BURGUNDY_OUTPUT_LEFT, BURGUNDY_OUTPUT_RIGHT, 1);
--static struct snd_kcontrol_new snd_pmac_burgundy_speaker_sw_imac =
-+static const struct snd_kcontrol_new snd_pmac_burgundy_speaker_sw_imac =
- BURGUNDY_SWITCH_B("Speaker Playback Switch", 0,
- 	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
- 	BURGUNDY_OUTPUT_LEFT, BURGUNDY_OUTPUT_RIGHT, 1);
--static struct snd_kcontrol_new snd_pmac_burgundy_speaker_sw_pmac =
-+static const struct snd_kcontrol_new snd_pmac_burgundy_speaker_sw_pmac =
- BURGUNDY_SWITCH_B("Speaker Playback Switch", 0,
- 	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
- 	BURGUNDY_OUTPUT_INTERN, 0, 0);
--static struct snd_kcontrol_new snd_pmac_burgundy_line_sw_imac =
-+static const struct snd_kcontrol_new snd_pmac_burgundy_line_sw_imac =
- BURGUNDY_SWITCH_B("Line out Playback Switch", 0,
- 	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
- 	BURGUNDY_LINEOUT_LEFT, BURGUNDY_LINEOUT_RIGHT, 1);
--static struct snd_kcontrol_new snd_pmac_burgundy_line_sw_pmac =
-+static const struct snd_kcontrol_new snd_pmac_burgundy_line_sw_pmac =
- BURGUNDY_SWITCH_B("Line out Playback Switch", 0,
- 	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
- 	BURGUNDY_OUTPUT_LEFT, BURGUNDY_OUTPUT_RIGHT, 1);
--static struct snd_kcontrol_new snd_pmac_burgundy_hp_sw_imac =
-+static const struct snd_kcontrol_new snd_pmac_burgundy_hp_sw_imac =
- BURGUNDY_SWITCH_B("Headphone Playback Switch", 0,
- 	MASK_ADDR_BURGUNDY_MORE_OUTPUTENABLES,
- 	BURGUNDY_HP_LEFT, BURGUNDY_HP_RIGHT, 1);
-diff --git a/sound/ppc/daca.c b/sound/ppc/daca.c
-index f2b4478139a4..1eb698dafd93 100644
---- a/sound/ppc/daca.c
-+++ b/sound/ppc/daca.c
-@@ -186,7 +186,7 @@ static int daca_put_amp(struct snd_kcontrol *kcontrol,
- 	return change;
- }
- 
--static struct snd_kcontrol_new daca_mixers[] = {
-+static const struct snd_kcontrol_new daca_mixers[] = {
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "Deemphasis Switch",
- 	  .info = daca_info_deemphasis,
-diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
-index 6ee97008c8f0..87738ddc8bfd 100644
---- a/sound/ppc/pmac.c
-+++ b/sound/ppc/pmac.c
-@@ -1104,7 +1104,7 @@ static int pmac_hp_detect_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static struct snd_kcontrol_new auto_mute_controls[] = {
-+static const struct snd_kcontrol_new auto_mute_controls[] = {
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "Auto Mute Switch",
- 	  .info = snd_pmac_boolean_mono_info,
-diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
-index 2b4c0268a86b..6d2a33b8faa0 100644
---- a/sound/ppc/snd_ps3.c
-+++ b/sound/ppc/snd_ps3.c
-@@ -715,7 +715,7 @@ static int snd_ps3_spdif_default_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static struct snd_kcontrol_new spdif_ctls[] = {
-+static const struct snd_kcontrol_new spdif_ctls[] = {
- 	{
- 		.access = SNDRV_CTL_ELEM_ACCESS_READ,
- 		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
-index 31bab6af645f..a5843035d718 100644
---- a/sound/ppc/tumbler.c
-+++ b/sound/ppc/tumbler.c
-@@ -826,7 +826,7 @@ static int snapper_put_capture_source(struct snd_kcontrol *kcontrol,
- 
- /*
-  */
--static struct snd_kcontrol_new tumbler_mixers[] = {
-+static const struct snd_kcontrol_new tumbler_mixers[] = {
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "Master Playback Volume",
- 	  .info = tumbler_info_master_volume,
-@@ -850,7 +850,7 @@ static struct snd_kcontrol_new tumbler_mixers[] = {
- 	},
- };
- 
--static struct snd_kcontrol_new snapper_mixers[] = {
-+static const struct snd_kcontrol_new snapper_mixers[] = {
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "Master Playback Volume",
- 	  .info = tumbler_info_master_volume,
+-static struct snd_kcontrol_new snd_harmony_controls[] = {
++static const struct snd_kcontrol_new snd_harmony_controls[] = {
+ 	HARMONY_VOLUME("Master Playback Volume", HARMONY_GAIN_LO_SHIFT, 
+ 		       HARMONY_GAIN_RO_SHIFT, HARMONY_GAIN_OUT, 1),
+ 	HARMONY_VOLUME("Capture Volume", HARMONY_GAIN_LI_SHIFT,
 -- 
 2.16.4
 
