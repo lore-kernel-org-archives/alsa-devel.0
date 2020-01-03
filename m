@@ -2,84 +2,86 @@ Return-Path: <SRS0=XflM=2Y=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E820C00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:58:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C91C6C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:58:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB85F21734
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:58:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3898421734
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:58:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gu3IggKv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB85F21734
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=compal.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fwHKV7Sl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3898421734
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3376517E4;
-	Fri,  3 Jan 2020 09:57:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3376517E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E31C17A1;
+	Fri,  3 Jan 2020 09:57:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E31C17A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578041879;
-	bh=qm43ejMhD6wCx5obhpbGTJs1o2ZfcfOi8R6sTnS4+Ak=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Gu3IggKvj1lX2XwGNoL3cDUBAd4wke1DL2A0rczDYQo5yOlx135NqXgrCfxeRVPkX
-	 o3VjjQJrGy0VS6u9xS3dXT2JdIsQu4GWP5QR2L9YfzTGbEjJbGhLVr1TeM3OAUcbAd
-	 iX5OpwoQdarrwyPIBXfDAp5Y9CXRMBD6a0NEZGgA=
+	s=default; t=1578041920;
+	bh=7vB4enK56Ri4He4oaufYdkhxuwS77Gtpfc6/QPG/J2Y=;
+	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fwHKV7SlmDoBHNvGflGVJTM6k07o3FIR2xBomLOyP3z//crHPduDjdMUjEXP4Dt9I
+	 a2OHpW4RfQpNjmjj6HOjsTTGp+VNha5vzXD1Q1cPxKxCPgGsZg7nblaXFILBr5W+u1
+	 pu+e0ziSNgN6ILniYob2MSuCEWM0uUOh9hmp4n8k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B56BF80160;
-	Fri,  3 Jan 2020 09:20:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CB1BF8015F;
+	Fri,  3 Jan 2020 09:47:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CA7BF80157; Fri,  3 Jan 2020 02:57:19 +0100 (CET)
-Received: from tpecef01.compal.com (exmail3.compal.com [59.120.207.196])
+ id 34D05F8015F; Fri,  3 Jan 2020 09:47:06 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4170F8013E
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 02:57:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4170F8013E
-X-UUID: bb65d860ee0342b889c2af2bdeae80a3-20200103
-Received: from tpembx01.compal.com [(10.110.15.26)] by tpecef01.compal.com
- (envelope-from <aj_cheng@compal.com>)
- (Cellopoint E-mail Firewall v4.1.6 Build 0408 with TLS)
- with ESMTP id 1736225997; Fri, 03 Jan 2020 09:57:05 +0800
-Received: from TPEMBX05.compal.com (10.110.15.29) by TPEMBX01.compal.com
- (10.110.15.26) with Microsoft SMTP Server (TLS) id 15.0.995.29; Fri, 3 Jan
- 2020 09:57:04 +0800
-Received: from TPEMBX01.compal.com (10.110.15.26) by TPEMBX05.compal.com
- (10.110.15.29) with Microsoft SMTP Server (TLS) id 15.0.995.29; Fri, 3 Jan
- 2020 09:57:03 +0800
-Received: from TPEMBX01.compal.com ([fe80::1942:f41b:515b:f225]) by
- TPEMBX01.compal.com ([fe80::1942:f41b:515b:f225%16]) with mapi id
- 15.00.0995.028; Fri, 3 Jan 2020 09:57:03 +0800
-From: <AJ_Cheng@compal.com>
-To: <intel-gfx@lists.freedesktop.org>, <alsa-devel@alsa-project.org>
-Thread-Topic: USB Type-C monitor flashes once when play a video file after
- unplug and re-plug the monitor
-Thread-Index: AdXB0nlM5qaLFlJOTlavFS+ZjDjiAw==
-Date: Fri, 3 Jan 2020 01:57:03 +0000
-Message-ID: <d7aba6970fbd48f2b32e2bc6d838ab20@TPEMBX01.compal.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8ECF4F8015C
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:47:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ECF4F8015C
+Authenticated-By: 
+X-SpamFilter-By: BOX Solutions SpamTrap 5.62 with qID 0038kuum013380,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (RTITCASV02.realtek.com.tw[172.21.6.19])
+ by rtits2.realtek.com.tw (8.15.2/2.57/5.78) with ESMTPS id 0038kuum013380
+ (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT);
+ Fri, 3 Jan 2020 16:46:56 +0800
+Received: from RTEXMB03.realtek.com.tw (172.21.6.96) by
+ RTITCASV02.realtek.com.tw (172.21.6.19) with Microsoft SMTP Server (TLS) id
+ 14.3.468.0; Fri, 3 Jan 2020 16:46:56 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 3 Jan 2020 16:46:56 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::a917:b20f:da75:59e0]) by
+ RTEXMB01.realtek.com.tw ([fe80::a917:b20f:da75:59e0%6]) with mapi id
+ 15.01.1779.005; Fri, 3 Jan 2020 16:46:56 +0800
+From: Kailang <kailang@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Thread-Topic: Realtek ALC S1200A
+Thread-Index: AQHVwWKd1wha2HGt/E61OZMhI7SUd6fYnM4g//9+g4CAAIZaAA==
+Date: Fri, 3 Jan 2020 08:46:55 +0000
+Message-ID: <a9bd3cdaa02d4fa197623448d5c51e50@realtek.com>
+References: <44114db7-21cf-b6e5-e836-7a85dbec9777@gmail.com>
+ <s5himlu2i58.wl-tiwai@suse.de>	<22b6489cfe664d83836733cdaa19007e@realtek.com>
+ <s5h1rshj5d8.wl-tiwai@suse.de>
+In-Reply-To: <s5h1rshj5d8.wl-tiwai@suse.de>
 Accept-Language: zh-TW, en-US
 Content-Language: zh-TW
 X-MS-Has-Attach: yes
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.110.15.241]
-X-TM-SNTS-SMTP: 403C9FDEFFC975AC44920C8AA31028E8731995EBB058783C2FF706CCA0F669922000:8
+x-originating-ip: [172.22.105.211]
 Content-Type: multipart/mixed;
- boundary="_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_"
+ boundary="_002_a9bd3cdaa02d4fa197623448d5c51e50realtekcom_"
 MIME-Version: 1.0
-X-Mailman-Approved-At: Fri, 03 Jan 2020 09:20:45 +0100
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: nathan.d.ciobanu@linux.intel.com, CindyXT_Wang@compal.com,
- Nelson_Ye@compal.com, Shane_Yap@compal.com, Lucien_Kao@compal.com,
- Evan_Tseng@compal.com
-Subject: [alsa-devel] USB Type-C monitor flashes once when play a video file
- after unplug and re-plug the monitor
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>,
+ Lee Harris <lee.r.harris@gmail.com>
+Subject: Re: [alsa-devel] Realtek ALC S1200A
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,56 +97,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_
+--_002_a9bd3cdaa02d4fa197623448d5c51e50realtekcom_
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Sirs,
-        Here is chromebook SW team from Compal=2E
-As the mail title, we hit issue that the external monitor will flash once =
-when play video after hot pluging=2E
-We can reproduce not only on chromebook but also ubuntu 16=2E04=2E
-There has higher failure rate with Dell Solomon dock and Dell S2718D =
-monitor=2E
+CC alsa-devel.
 
-We found adding the delay in "sound/pci/hda/patch_hdmi=2Ec " can fix this =
-issue=2E(as the attachment)
-May need your help to review and advice=2E Thanks=2E
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de>
+> Sent: Friday, January 3, 2020 4:45 PM
+> To: Kailang <kailang@realtek.com>
+> Cc: Lee Harris <lee.r.harris@gmail.com>
+> Subject: Re: Realtek ALC S1200A
+>=20
+> On Fri, 03 Jan 2020 09:29:59 +0100,
+> Kailang wrote:
+> >
+> > Hi Takashi,
+> >
+> > Attach was supported patch.
+>=20
+> Care to submit to alsa-devel ML?  Thanks!
+>=20
+>=20
+> Takashi
+>=20
+> >
+> > BR,
+> > Kailang
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai <tiwai@suse.de>
+> > > Sent: Thursday, January 2, 2020 7:49 PM
+> > > To: Lee Harris <lee.r.harris@gmail.com>
+> > > Cc: Kailang <kailang@realtek.com>
+> > > Subject: Re: Realtek ALC S1200A
+> > >
+> > > On Thu, 02 Jan 2020 12:41:08 +0100,
+> > > Lee Harris wrote:
+> > > >
+> > >
+> > > > Hi Takashi
+> > > >
+> > > > I saw you had made the changes to sound/pci/hda/patch_realtek.c to
+> > > > enable support for the Realtek ALC S1200.
+> > > > I hope you don't mind me emailing you?
+> > > > My motherboard is an Asus TUF-GAMING-X570-PLUS. The vendors
+> > > > product page states it has an Realtek ALC S1200A.
+> > > >
+> > > > cat /proc/asound/card0/codec#0 shows the following vendor ID
+> > > >
+> > > > Vendor Id: 0x10ec0b00
+> > > > Subsystem Id: 0x10438797
+> > > > Revision Id: 0x100001
+> > > >
+> > > > As standard the sound works but the snd_hda_codec_realtek module
+> > > > is not loaded, and the codec is reported as 'Realtek Generic'. I
+> > > > can add
+> > > > 0x10ec0b00 into patch_realtek.c (just replaced 0x10ec1168 wherever
+> > > > it
+> > > > occurred!) and the snd_hda_codec_realtek module is loaded, sound
+> > > > still
+> > > works. Possibly better ?
+> > > > No idea If I've done it close to right ? I'm not a programmer,
+> > > > just experimenting.
+> > > >
+> > > > If you need anymore info just let me know.
+> > > > Happy new year :)
+> > > >
+> > > > Regards
+> > > > Lee Harris
+> > >
+> > > Thanks for the report.
+> > >
+> > > I'd like to hear from Realtek people at first (now Cc'ed).
+> > > Kailang, could you check for this new codec?
+> > >
+> > >
+> > > Takashi
+> > >
+> > > ------Please consider the environment before printing this e-mail.
+> > [2 0000-alcs1200a-supported.patch <application/octet-stream (base64)>]
+> >
 
-Here is the issue number in gitlab for more detail=2E
-https://gitlab=2Efreedesktop=2Eorg/drm/intel/issues/318
-
-
-
-AJ Cheng
-NID/NID1
-e-mail: AJ_Cheng@compal=2Ecom<mailto:AJ_Cheng@compal=2Ecom>
-Tel:  +886-2-8797-8599 ext=2E 17561
-Mobile : +886-932827829
-COMPAL Electronics, Inc=2E
-
-
---_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_
-Content-Type: application/octet-stream; name="flash_once.diff"
-Content-Description: flash_once.diff
-Content-Disposition: attachment; filename="flash_once.diff"; size=593;
-	creation-date="Mon, 16 Dec 2019 06:29:48 GMT";
-	modification-date="Mon, 16 Dec 2019 06:29:48 GMT"
+--_002_a9bd3cdaa02d4fa197623448d5c51e50realtekcom_
+Content-Type: application/octet-stream;
+	name="0000-alcs1200a-supported.patch"
+Content-Description: 0000-alcs1200a-supported.patch
+Content-Disposition: attachment; filename="0000-alcs1200a-supported.patch";
+	size=1367; creation-date="Fri, 03 Jan 2020 08:28:10 GMT";
+	modification-date="Fri, 03 Jan 2020 08:27:52 GMT"
 Content-Transfer-Encoding: base64
 
-ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jIGIvc291bmQvcGNpL2hkYS9w
-YXRjaF9oZG1pLmMKaW5kZXggNDQ0OGFiNi4uNzdkYzZiOSAxMDA2NDQKLS0tIGEvc291bmQvcGNp
-L2hkYS9wYXRjaF9oZG1pLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMKQEAgLTg1
-NCw3ICs4NTQsNyBAQCBzdGF0aWMgdm9pZCBoYXN3ZWxsX3ZlcmlmeV9EMChzdHJ1Y3QgaGRhX2Nv
-ZGVjICpjb2RlYywKIAkgKiBjb252ZXJ0ZXJzIGFyZSBpbiBjb3JyZWN0IHBvd2VyIHN0YXRlICov
-CiAJaWYgKCFzbmRfaGRhX2NoZWNrX3Bvd2VyX3N0YXRlKGNvZGVjLCBjdnRfbmlkLCBBQ19QV1JT
-VF9EMCkpCiAJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIGN2dF9uaWQsIDAsIEFDX1ZFUkJf
-U0VUX1BPV0VSX1NUQVRFLCBBQ19QV1JTVF9EMCk7Ci0KKwltc2xlZXAoNDApOwogCWlmICghc25k
-X2hkYV9jaGVja19wb3dlcl9zdGF0ZShjb2RlYywgbmlkLCBBQ19QV1JTVF9EMCkpIHsKIAkJc25k
-X2hkYV9jb2RlY193cml0ZShjb2RlYywgbmlkLCAwLCBBQ19WRVJCX1NFVF9QT1dFUl9TVEFURSwK
-IAkJCQkgICAgQUNfUFdSU1RfRDApOwo=
+RnJvbSBiNzY5ODI4M2NlNTU3ZDI3YjkwZmVkMWNkY2U2NzU3MWI3MDVhYjcyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IEZyaSwgMyBKYW4gMjAyMCAxNjoyNDowNiArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
+IGhkYS9yZWFsdGVrIC0gQWRkIG5ldyBjb2RlYyBzdXBwb3J0ZWQgZm9yIEFMQ1MxMjAwQQoKQWRk
+IEFMQ1MxMjAwQSBzdXBwb3J0ZWQuCkl0IHdhcyBzaW1pbGFyIGFzIEFMQzkwMC4KClNpZ25lZC1v
+ZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KCmRpZmYgLS1naXQgYS9z
+b3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRl
+ay5jCmluZGV4IGRiZmFmZWU5NzkzMS4uZDZkYmY2NjUyZmUwIDEwMDY0NAotLS0gYS9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
+YwpAQCAtNDMwLDYgKzQzMCw3IEBAIHN0YXRpYyB2b2lkIGFsY19maWxsX2VhcGRfY29lZihzdHJ1
+Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJYnJlYWs7CiAJY2FzZSAweDEwZWMwODk5OgogCWNhc2Ug
+MHgxMGVjMDkwMDoKKwljYXNlIDB4MTBlYzBiMDA6CiAJY2FzZSAweDEwZWMxMTY4OgogCWNhc2Ug
+MHgxMGVjMTIyMDoKIAkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg3LCAxPDwxLCAwKTsK
+QEAgLTI1MjUsNiArMjUyNiw3IEBAIHN0YXRpYyBpbnQgcGF0Y2hfYWxjODgyKHN0cnVjdCBoZGFf
+Y29kZWMgKmNvZGVjKQogCWNhc2UgMHgxMGVjMDg4MjoKIAljYXNlIDB4MTBlYzA4ODU6CiAJY2Fz
+ZSAweDEwZWMwOTAwOgorCWNhc2UgMHgxMGVjMGIwMDoKIAljYXNlIDB4MTBlYzEyMjA6CiAJCWJy
+ZWFrOwogCWRlZmF1bHQ6CkBAIC05MjM3LDYgKzkyMzksNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
+IGhkYV9kZXZpY2VfaWQgc25kX2hkYV9pZF9yZWFsdGVrW10gPSB7CiAJSERBX0NPREVDX0VOVFJZ
+KDB4MTBlYzA4OTIsICJBTEM4OTIiLCBwYXRjaF9hbGM2NjIpLAogCUhEQV9DT0RFQ19FTlRSWSgw
+eDEwZWMwODk5LCAiQUxDODk4IiwgcGF0Y2hfYWxjODgyKSwKIAlIREFfQ09ERUNfRU5UUlkoMHgx
+MGVjMDkwMCwgIkFMQzExNTAiLCBwYXRjaF9hbGM4ODIpLAorCUhEQV9DT0RFQ19FTlRSWSgweDEw
+ZWMwYjAwLCAiQUxDUzEyMDBBIiwgcGF0Y2hfYWxjODgyKSwKIAlIREFfQ09ERUNfRU5UUlkoMHgx
+MGVjMTE2OCwgIkFMQzEyMjAiLCBwYXRjaF9hbGM4ODIpLAogCUhEQV9DT0RFQ19FTlRSWSgweDEw
+ZWMxMjIwLCAiQUxDMTIyMCIsIHBhdGNoX2FsYzg4MiksCiAJe30gLyogdGVybWluYXRvciAqLwo=
 
---_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_
+--_002_a9bd3cdaa02d4fa197623448d5c51e50realtekcom_
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -155,5 +225,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---_004_d7aba6970fbd48f2b32e2bc6d838ab20TPEMBX01compalcom_--
-
+--_002_a9bd3cdaa02d4fa197623448d5c51e50realtekcom_--
