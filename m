@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 514D3C00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:25:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF754C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:26:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D20D121734
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:25:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B15D206DA
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:26:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YLhep7g3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D20D121734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RsZ/L5ul"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B15D206DA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17E0C171E;
-	Fri,  3 Jan 2020 09:24:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17E0C171E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4487172D;
+	Fri,  3 Jan 2020 09:25:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4487172D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578039917;
-	bh=xl0l/Pzx/tVJ+oGx8zNRR/CTq9lNH+X0+KuSdO2NKg8=;
+	s=default; t=1578039961;
+	bh=MV2/CXoX92hSCtAg8kFIVrHJNnUnbYu6otu3q8zRuhE=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YLhep7g36z8/z3jQjWTSD3CbIqMfWhf1AkIFbydOTWKeItT/9RYWhMmx345Qvpsj5
-	 52lUhNPFB/PIdLbx+ZN/eRWdahOFBhBp5ZlUgcgwfFQv0qXDgYcJePJzTuRCUVYUCp
-	 ZFw46nbu/0nTeuAEuAOsyv+A5Q6QS3gfUf7k1aEg=
+	b=RsZ/L5ulGnpcM6KFesNOPEYCWCETEswb+heL2qlWqoCrOoYQFu9O5EVLxKFm224u5
+	 4Dh07BzSkI6dVf41u8PQAPLdEgQFao/qr8vG11B/JQjPfHyiMbYsgi8lE/39E0ncsF
+	 fwjw3Sv8tVGZ7yU2SEPGsa+LvclYm+pqf1UlCdNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A882FF80346;
-	Fri,  3 Jan 2020 09:18:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7A7EF80279;
+	Fri,  3 Jan 2020 09:18:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29E80F80329; Fri,  3 Jan 2020 09:17:45 +0100 (CET)
+ id 61A23F80328; Fri,  3 Jan 2020 09:17:45 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78807F80272
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78807F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E9C3F8023E
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E9C3F8023E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EF6C5B21E
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:19 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 4DEF8B25A
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:20 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:16:24 +0100
-Message-Id: <20200103081714.9560-9-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:16:30 +0100
+Message-Id: <20200103081714.9560-15-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 08/58] ALSA: hda: Constify snd_device_ops
+Subject: [alsa-devel] [PATCH 14/58] ALSA: pcmcia: Constify snd_device_ops
 	definitions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -83,64 +83,36 @@ There should be no functional changes by this patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_beep.c  | 2 +-
- sound/pci/hda/hda_codec.c | 2 +-
- sound/pci/hda/hda_intel.c | 2 +-
- sound/pci/hda/hda_tegra.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/pcmcia/pdaudiocf/pdaudiocf.c | 2 +-
+ sound/pcmcia/vx/vxpocket.c         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
-index b7d9160ed868..f5fd62ed4df5 100644
---- a/sound/pci/hda/hda_beep.c
-+++ b/sound/pci/hda/hda_beep.c
-@@ -192,7 +192,7 @@ static int beep_dev_free(struct snd_device *device)
-  */
- int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
- {
+diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf.c b/sound/pcmcia/pdaudiocf/pdaudiocf.c
+index eed2d60178e4..6c33ea91cc05 100644
+--- a/sound/pcmcia/pdaudiocf/pdaudiocf.c
++++ b/sound/pcmcia/pdaudiocf/pdaudiocf.c
+@@ -82,7 +82,7 @@ static int snd_pdacf_probe(struct pcmcia_device *link)
+ 	int i, err;
+ 	struct snd_pdacf *pdacf;
+ 	struct snd_card *card;
 -	static struct snd_device_ops ops = {
 +	static const struct snd_device_ops ops = {
- 		.dev_register = beep_dev_register,
- 		.dev_disconnect = beep_dev_disconnect,
- 		.dev_free = beep_dev_free,
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index a2fb19129219..8f166bbc438b 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -915,7 +915,7 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
- 	char component[31];
- 	hda_nid_t fg;
+ 		.dev_free =	snd_pdacf_dev_free,
+ 	};
+ 
+diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
+index f924d8819f9d..cad603ca0d93 100644
+--- a/sound/pcmcia/vx/vxpocket.c
++++ b/sound/pcmcia/vx/vxpocket.c
+@@ -126,7 +126,7 @@ static int snd_vxpocket_new(struct snd_card *card, int ibl,
+ {
+ 	struct vx_core *chip;
+ 	struct snd_vxpocket *vxp;
+-	static struct snd_device_ops ops = {
++	static const struct snd_device_ops ops = {
+ 		.dev_free =	snd_vxpocket_dev_free,
+ 	};
  	int err;
--	static struct snd_device_ops dev_ops = {
-+	static const struct snd_device_ops dev_ops = {
- 		.dev_register = snd_hda_codec_dev_register,
- 		.dev_free = snd_hda_codec_dev_free,
- 	};
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index c7efb6f66bdc..4733268ec74e 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1743,7 +1743,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 		      int dev, unsigned int driver_caps,
- 		      struct azx **rchip)
- {
--	static struct snd_device_ops ops = {
-+	static const struct snd_device_ops ops = {
- 		.dev_disconnect = azx_dev_disconnect,
- 		.dev_free = azx_dev_free,
- 	};
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 9d0784aed9e4..567c9ebddb2e 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -366,7 +366,7 @@ static int hda_tegra_create(struct snd_card *card,
- 			    unsigned int driver_caps,
- 			    struct hda_tegra *hda)
- {
--	static struct snd_device_ops ops = {
-+	static const struct snd_device_ops ops = {
- 		.dev_disconnect = hda_tegra_dev_disconnect,
- 		.dev_free = hda_tegra_dev_free,
- 	};
 -- 
 2.16.4
 
