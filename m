@@ -7,57 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B482C00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17803C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:56:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD6AE222C4
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:55:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9450721734
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:56:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lQZc12kX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD6AE222C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eu6lEYsi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9450721734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BC9217B6;
-	Fri,  3 Jan 2020 09:54:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BC9217B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6A9217AD;
+	Fri,  3 Jan 2020 09:55:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6A9217AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578041716;
-	bh=mfixm7lMuuWkOxxgoPQlfLReAVLU7+YEituh6jv8VDQ=;
+	s=default; t=1578041766;
+	bh=QHNUIAX46RafiW4ZgF3YSywxakT8CtrIoUmj0QKvCa8=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lQZc12kXTT79U3ScMzsA88Q94en7Mq4mjaQmCilOADM6ccDVSn2FYogO/45J0tiL2
-	 gHKdzDhuM0IGlablT5rUHAMOHvkxgnpw0k0dZ9S2dmLOzeI1yp9LX0eXdFVpiaF5fM
-	 r2h01hLQSQz92ogBv6+JGkibA1MA2+p49y7gjBhs=
+	b=eu6lEYsicOo6F8DVdH3bBYVlgMkQuImLhDcTKEG06+SNT5PgkH2Tgp4OubScWCh8K
+	 LbnmMj23/xV8CelZQ62iyajhYWBrogzky+cPZju46kcjqUQid4zmNd7ro7UdsdnNaW
+	 sPtfLlnYiKx8sLJAqdeGR4CXbzupSVSixF1GSzc8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CF3EF80553;
-	Fri,  3 Jan 2020 09:19:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5FF9F80564;
+	Fri,  3 Jan 2020 09:19:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2B94F803DE; Fri,  3 Jan 2020 09:18:58 +0100 (CET)
+ id B2B3DF803E0; Fri,  3 Jan 2020 09:19:00 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52A9DF802EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61EF1F802EC
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52A9DF802EA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61EF1F802EC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6C3D2B28C
+ by mx2.suse.de (Postfix) with ESMTP id 7A27AB28D
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:22 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:17:12 +0100
-Message-Id: <20200103081714.9560-57-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:17:13 +0100
+Message-Id: <20200103081714.9560-58-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 56/58] ALSA: fm801: Constify
-	snd_fm801_tea575x_gpios
+Subject: [alsa-devel] [PATCH 57/58] ALSA: hda: Constify snd_pci_quirk tables
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,29 +75,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The snd_fm801_tea575x_gpios table is referred as read-only, hence it
-can be declared as const gracefully.
+The snd_pci_quirk tables are referred as read-only, hence they can be
+declared as const gracefully.
 
 There should be no functional changes by this patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/fm801.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index 4117a053eb18..40dfad74f8e1 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -724,7 +724,7 @@ struct snd_fm801_tea575x_gpio {
- 	char *name;
- };
- 
--static struct snd_fm801_tea575x_gpio snd_fm801_tea575x_gpios[] = {
-+static const struct snd_fm801_tea575x_gpio snd_fm801_tea575x_gpios[] = {
- 	{ .data = 1, .clk = 3, .wren = 2, .most = 0, .name = "SF256-PCS" },
- 	{ .data = 1, .clk = 0, .wren = 2, .most = 3, .name = "SF256-PCP" },
- 	{ .data = 2, .clk = 0, .wren = 1, .most = 3, .name = "SF64-PCR" },
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4733268ec74e..bebc31024737 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1490,7 +1490,7 @@ static bool check_hdmi_disabled(struct pci_dev *pci)
+ /*
+  * white/black-listing for position_fix
+  */
+-static struct snd_pci_quirk position_fix_list[] = {
++static const struct snd_pci_quirk position_fix_list[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x103c, 0x306d, "HP dv3", POS_FIX_LPIB),
+@@ -1583,7 +1583,7 @@ static void assign_position_fix(struct azx *chip, int fix)
+ /*
+  * black-lists for probe_mask
+  */
+-static struct snd_pci_quirk probe_mask_list[] = {
++static const struct snd_pci_quirk probe_mask_list[] = {
+ 	/* Thinkpad often breaks the controller communication when accessing
+ 	 * to the non-working (or non-existing) modem codec slot.
+ 	 */
+@@ -1631,7 +1631,7 @@ static void check_probe_mask(struct azx *chip, int dev)
+ /*
+  * white/black-list for enable_msi
+  */
+-static struct snd_pci_quirk msi_black_list[] = {
++static const struct snd_pci_quirk msi_black_list[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x2191, "HP", 0), /* AMD Hudson */
+ 	SND_PCI_QUIRK(0x103c, 0x2192, "HP", 0), /* AMD Hudson */
+ 	SND_PCI_QUIRK(0x103c, 0x21f7, "HP", 0), /* AMD Hudson */
+@@ -2164,7 +2164,7 @@ static int azx_probe(struct pci_dev *pci,
+  * So we keep a list of devices where we disable powersaving as its known
+  * to causes problems on these devices.
+  */
+-static struct snd_pci_quirk power_save_blacklist[] = {
++static const struct snd_pci_quirk power_save_blacklist[] = {
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+ 	SND_PCI_QUIRK(0x1849, 0xc892, "Asrock B85M-ITX", 0),
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
 -- 
 2.16.4
 
