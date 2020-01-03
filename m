@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31E48C00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:41:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D138C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:41:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B219921D7D
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:41:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1760422314
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:41:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rogr1OrK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B219921D7D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="etpcm7UT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1760422314
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17A3D1779;
-	Fri,  3 Jan 2020 09:40:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17A3D1779
+	by alsa0.perex.cz (Postfix) with ESMTPS id 337501768;
+	Fri,  3 Jan 2020 09:40:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 337501768
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578040863;
-	bh=2I42lxjs5llm+MomhDOsGczMpi7m+JULJcNZwc8N/v4=;
+	s=default; t=1578040902;
+	bh=HO/fSfEpwNtbPPHIZvSHQDEF2+WHJ/YHx0ACxkz5N3A=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rogr1OrKW3NnY0YJaHz7DAAE7oEAMCj13roiSYuQRawDSmCYCmS+yfnfV939MDKS0
-	 ixkVO+7Hqr/RTk4cKFPpYDMecndpV4aWJ0pU4q0qXtog2dzFbidYNRlO1kULrnSTLp
-	 ADKFN6al1ochlfEx9hZ7F3c1iLaYQl8Tu79Bu6wQ=
+	b=etpcm7UTi/cvZId8h39Gu/9eRQc2xFFCFG1h0lms/n1Z/2k1C/aBcu+9vsajsrvvZ
+	 3l5UKjrHY+Eur8qOkbIk4ZQ3EqeH7Js3v0kRll/QvzaDzwcQs88x7zfM5Lk5ckBfX5
+	 xHaYca2G5bvyGKkYUDs/O9XPuHTj/wflO8RW73L8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 339BEF8042A;
-	Fri,  3 Jan 2020 09:19:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E1F9F80436;
+	Fri,  3 Jan 2020 09:19:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E4DA4F8036D; Fri,  3 Jan 2020 09:18:22 +0100 (CET)
+ id 0272DF8036F; Fri,  3 Jan 2020 09:18:25 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BEC1F802A1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 275BCF8028B
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BEC1F802A1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 275BCF8028B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4758FB276
+ by mx2.suse.de (Postfix) with ESMTP id 65BFEB278
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:21 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:16:50 +0100
-Message-Id: <20200103081714.9560-35-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:16:52 +0100
+Message-Id: <20200103081714.9560-37-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 34/58] ALSA: i2c: Constify snd_kcontrol_new
+Subject: [alsa-devel] [PATCH 36/58] ALSA: hda: Constify snd_kcontrol_new
 	items
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -83,87 +83,69 @@ There should be no functional changes by this patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/i2c/cs8427.c       | 2 +-
- sound/i2c/other/ak4113.c | 2 +-
- sound/i2c/other/ak4114.c | 2 +-
- sound/i2c/other/ak4117.c | 2 +-
- sound/i2c/tea6330t.c     | 4 ++--
- 5 files changed, 6 insertions(+), 6 deletions(-)
+ sound/pci/hda/hda_codec.c      | 8 ++++----
+ sound/pci/hda/patch_sigmatel.c | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/i2c/cs8427.c b/sound/i2c/cs8427.c
-index bac4f0036cd6..8634d4f466b3 100644
---- a/sound/i2c/cs8427.c
-+++ b/sound/i2c/cs8427.c
-@@ -459,7 +459,7 @@ static int snd_cs8427_spdif_mask_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static struct snd_kcontrol_new snd_cs8427_iec958_controls[] = {
-+static const struct snd_kcontrol_new snd_cs8427_iec958_controls[] = {
- {
- 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
- 	.info =		snd_cs8427_in_status_info,
-diff --git a/sound/i2c/other/ak4113.c b/sound/i2c/other/ak4113.c
-index 2700a8470388..e7213092eb4f 100644
---- a/sound/i2c/other/ak4113.c
-+++ b/sound/i2c/other/ak4113.c
-@@ -349,7 +349,7 @@ static int snd_ak4113_spdif_qget(struct snd_kcontrol *kcontrol,
- }
- 
- /* Don't forget to change AK4113_CONTROLS define!!! */
--static struct snd_kcontrol_new snd_ak4113_iec958_controls[] = {
-+static const struct snd_kcontrol_new snd_ak4113_iec958_controls[] = {
- {
- 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
- 	.name =		"IEC958 Parity Errors",
-diff --git a/sound/i2c/other/ak4114.c b/sound/i2c/other/ak4114.c
-index e7325af8af5b..2ce0a97957ab 100644
---- a/sound/i2c/other/ak4114.c
-+++ b/sound/i2c/other/ak4114.c
-@@ -318,7 +318,7 @@ static int snd_ak4114_spdif_qget(struct snd_kcontrol *kcontrol,
- }
- 
- /* Don't forget to change AK4114_CONTROLS define!!! */
--static struct snd_kcontrol_new snd_ak4114_iec958_controls[] = {
-+static const struct snd_kcontrol_new snd_ak4114_iec958_controls[] = {
- {
- 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
- 	.name =		"IEC958 Parity Errors",
-diff --git a/sound/i2c/other/ak4117.c b/sound/i2c/other/ak4117.c
-index 0d9e8252cc27..905be2d0780b 100644
---- a/sound/i2c/other/ak4117.c
-+++ b/sound/i2c/other/ak4117.c
-@@ -305,7 +305,7 @@ static int snd_ak4117_spdif_qget(struct snd_kcontrol *kcontrol,
- }
- 
- /* Don't forget to change AK4117_CONTROLS define!!! */
--static struct snd_kcontrol_new snd_ak4117_iec958_controls[] = {
-+static const struct snd_kcontrol_new snd_ak4117_iec958_controls[] = {
- {
- 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
- 	.name =		"IEC958 Parity Errors",
-diff --git a/sound/i2c/tea6330t.c b/sound/i2c/tea6330t.c
-index 93ca8bb71f54..08eb6a873768 100644
---- a/sound/i2c/tea6330t.c
-+++ b/sound/i2c/tea6330t.c
-@@ -260,7 +260,7 @@ static int snd_tea6330t_put_treble(struct snd_kcontrol *kcontrol,
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 8f166bbc438b..d039eeec080f 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2387,7 +2387,7 @@ static int snd_hda_spdif_out_switch_put(struct snd_kcontrol *kcontrol,
  	return change;
  }
  
--static struct snd_kcontrol_new snd_tea6330t_controls[] = {
-+static const struct snd_kcontrol_new snd_tea6330t_controls[] = {
- TEA6330T_MASTER_SWITCH("Master Playback Switch", 0),
- TEA6330T_MASTER_VOLUME("Master Playback Volume", 0),
- TEA6330T_BASS("Tone Control - Bass", 0),
-@@ -278,7 +278,7 @@ int snd_tea6330t_update_mixer(struct snd_card *card,
+-static struct snd_kcontrol_new dig_mixes[] = {
++static const struct snd_kcontrol_new dig_mixes[] = {
+ 	{
+ 		.access = SNDRV_CTL_ELEM_ACCESS_READ,
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+@@ -2437,7 +2437,7 @@ int snd_hda_create_dig_out_ctls(struct hda_codec *codec,
  {
- 	struct snd_i2c_device *device;
- 	struct tea6330t *tea;
--	struct snd_kcontrol_new *knew;
-+	const struct snd_kcontrol_new *knew;
- 	unsigned int idx;
- 	int err = -ENOMEM;
- 	u8 default_treble, default_bass;
+ 	int err;
+ 	struct snd_kcontrol *kctl;
+-	struct snd_kcontrol_new *dig_mix;
++	const struct snd_kcontrol_new *dig_mix;
+ 	int idx = 0;
+ 	int val = 0;
+ 	const int spdif_index = 16;
+@@ -2655,7 +2655,7 @@ static int snd_hda_spdif_in_status_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-static struct snd_kcontrol_new dig_in_ctls[] = {
++static const struct snd_kcontrol_new dig_in_ctls[] = {
+ 	{
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, SWITCH),
+@@ -2687,7 +2687,7 @@ int snd_hda_create_spdif_in_ctls(struct hda_codec *codec, hda_nid_t nid)
+ {
+ 	int err;
+ 	struct snd_kcontrol *kctl;
+-	struct snd_kcontrol_new *dig_mix;
++	const struct snd_kcontrol_new *dig_mix;
+ 	int idx;
+ 
+ 	idx = find_empty_mixer_ctl_idx(codec, "IEC958 Capture Switch", 0);
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 8ecb53bce509..9b816b377547 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -825,11 +825,11 @@ static int stac_auto_create_beep_ctls(struct hda_codec *codec,
+ 	struct sigmatel_spec *spec = codec->spec;
+ 	u32 caps = query_amp_caps(codec, nid, HDA_OUTPUT);
+ 	struct snd_kcontrol_new *knew;
+-	static struct snd_kcontrol_new abeep_mute_ctl =
++	static const struct snd_kcontrol_new abeep_mute_ctl =
+ 		HDA_CODEC_MUTE(NULL, 0, 0, 0);
+-	static struct snd_kcontrol_new dbeep_mute_ctl =
++	static const struct snd_kcontrol_new dbeep_mute_ctl =
+ 		HDA_CODEC_MUTE_BEEP(NULL, 0, 0, 0);
+-	static struct snd_kcontrol_new beep_vol_ctl =
++	static const struct snd_kcontrol_new beep_vol_ctl =
+ 		HDA_CODEC_VOLUME(NULL, 0, 0, 0);
+ 
+ 	/* check for mute support for the the amp */
 -- 
 2.16.4
 
