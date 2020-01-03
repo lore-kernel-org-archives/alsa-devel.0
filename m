@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B80D6C00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:47:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 080A3C00523
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:48:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4372C21734
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:47:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D2D821734
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 08:48:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gvnQ1AaP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4372C21734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KJopQfTw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D2D821734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 910931794;
-	Fri,  3 Jan 2020 09:46:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 910931794
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC0A117A3;
+	Fri,  3 Jan 2020 09:47:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC0A117A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578041249;
-	bh=Zx64XIHrbv/a5BaBAwMo5bRLTOv+1ScAVNR3wzN2iGo=;
+	s=default; t=1578041279;
+	bh=MomDSQ2hMVcteCxp3WbM30zPZhbfyqHHJCgIjKQV6u8=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gvnQ1AaPyYyCnJzXIYH+vI9VVYF4G/dQa8O2ETkJafpMAj3aDb/LGaf+5Ssu+Lteq
-	 pJrsyzUyD+krW3jjBOrzpyuj+mG6Pd3Kx92NKjzNR8g5nvToaUJVLI61kFiPWG4/4f
-	 jo3FIwnU5x/pH94r61jFysVo4R8ocSRRttoCNhiU=
+	b=KJopQfTwIItAcMzWOYxs5iBjSNsFFi1a7agiq+tpUh6WoB8tqyAacz8ig97XeRpqB
+	 Rs3okPb6Yqy8HbIsLpmUXw7VJUKba02R8SnjDEf8M3R3fPrl+b9KI0Hgdd/Xh5+Eiv
+	 OwA8zCgbfSVCFoFp5/rj7KA2uSHUghqU4Xs8Q5gs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81E6BF804BC;
-	Fri,  3 Jan 2020 09:19:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93B9DF804D0;
+	Fri,  3 Jan 2020 09:19:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9604DF803AF; Fri,  3 Jan 2020 09:18:44 +0100 (CET)
+ id 8C700F803B1; Fri,  3 Jan 2020 09:18:44 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90AC3F802D2
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90AC3F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C9B7F802C4
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 09:17:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C9B7F802C4
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D37BFB1FF
+ by mx2.suse.de (Postfix) with ESMTP id C7339B282
  for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 08:17:21 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 09:17:01 +0100
-Message-Id: <20200103081714.9560-46-tiwai@suse.de>
+Date: Fri,  3 Jan 2020 09:17:00 +0100
+Message-Id: <20200103081714.9560-45-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200103081714.9560-1-tiwai@suse.de>
 References: <20200103081714.9560-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 45/58] ALSA: ac97: Constify snd_ac97_res_table
-	definition
+Subject: [alsa-devel] [PATCH 44/58] ALSA: opl3: Constify snd_opl3_drum_voice
+	definitions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,29 +76,83 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-One snd_ac97_res_table definition remains forgotten without const.
-Let's add it for a bit of optimization.
+The snd_opl3_drum_voice items are all read-only, hence they can be
+declared as const.
 
 There should be no functional changes by this patch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ac97/ac97_patch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/drivers/opl3/opl3_drums.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
-index 719a1e4956dd..524f9d2dcb3c 100644
---- a/sound/pci/ac97/ac97_patch.c
-+++ b/sound/pci/ac97/ac97_patch.c
-@@ -3871,7 +3871,7 @@ static int mpatch_si3036(struct snd_ac97 * ac97)
-  * check_volume_resolution().
-  */
+diff --git a/sound/drivers/opl3/opl3_drums.c b/sound/drivers/opl3/opl3_drums.c
+index cc7fb35e521b..318cd8a2ee3a 100644
+--- a/sound/drivers/opl3/opl3_drums.c
++++ b/sound/drivers/opl3/opl3_drums.c
+@@ -47,25 +47,25 @@ struct snd_opl3_drum_note {
+ 	unsigned char feedback_connection;
+ };
  
--static struct snd_ac97_res_table lm4550_restbl[] = {
-+static const struct snd_ac97_res_table lm4550_restbl[] = {
- 	{ AC97_MASTER, 0x1f1f },
- 	{ AC97_HEADPHONE, 0x1f1f },
- 	{ AC97_MASTER_MONO, 0x001f },
+-static struct snd_opl3_drum_voice bass_op0 = {6, 0, 0x00, 0x32, 0xf8, 0x66, 0x30, 0x00};
+-static struct snd_opl3_drum_voice bass_op1 = {6, 1, 0x00, 0x03, 0xf6, 0x57, 0x30, 0x00};
+-static struct snd_opl3_drum_note bass_note = {6, 0x90, 0x09};
++static const struct snd_opl3_drum_voice bass_op0 = {6, 0, 0x00, 0x32, 0xf8, 0x66, 0x30, 0x00};
++static const struct snd_opl3_drum_voice bass_op1 = {6, 1, 0x00, 0x03, 0xf6, 0x57, 0x30, 0x00};
++static const struct snd_opl3_drum_note bass_note = {6, 0x90, 0x09};
+ 
+-static struct snd_opl3_drum_voice hihat = {7, 0, 0x00, 0x03, 0xf0, 0x06, 0x20, 0x00};
++static const struct snd_opl3_drum_voice hihat = {7, 0, 0x00, 0x03, 0xf0, 0x06, 0x20, 0x00};
+ 
+-static struct snd_opl3_drum_voice snare = {7, 1, 0x00, 0x03, 0xf0, 0x07, 0x20, 0x02};
+-static struct snd_opl3_drum_note snare_note = {7, 0xf4, 0x0d};
++static const struct snd_opl3_drum_voice snare = {7, 1, 0x00, 0x03, 0xf0, 0x07, 0x20, 0x02};
++static const struct snd_opl3_drum_note snare_note = {7, 0xf4, 0x0d};
+ 
+-static struct snd_opl3_drum_voice tomtom = {8, 0, 0x02, 0x03, 0xf0, 0x06, 0x10, 0x00};
+-static struct snd_opl3_drum_note tomtom_note = {8, 0xf4, 0x09};
++static const struct snd_opl3_drum_voice tomtom = {8, 0, 0x02, 0x03, 0xf0, 0x06, 0x10, 0x00};
++static const struct snd_opl3_drum_note tomtom_note = {8, 0xf4, 0x09};
+ 
+-static struct snd_opl3_drum_voice cymbal = {8, 1, 0x04, 0x03, 0xf0, 0x06, 0x10, 0x00};
++static const struct snd_opl3_drum_voice cymbal = {8, 1, 0x04, 0x03, 0xf0, 0x06, 0x10, 0x00};
+ 
+ /*
+  * set drum voice characteristics
+  */
+ static void snd_opl3_drum_voice_set(struct snd_opl3 *opl3,
+-				    struct snd_opl3_drum_voice *data)
++				    const struct snd_opl3_drum_voice *data)
+ {
+ 	unsigned char op_offset = snd_opl3_regmap[data->voice][data->op];
+ 	unsigned char voice_offset = data->voice;
+@@ -100,7 +100,7 @@ static void snd_opl3_drum_voice_set(struct snd_opl3 *opl3,
+  * Set drum voice pitch
+  */
+ static void snd_opl3_drum_note_set(struct snd_opl3 *opl3,
+-				   struct snd_opl3_drum_note *data)
++				   const struct snd_opl3_drum_note *data)
+ {
+ 	unsigned char voice_offset = data->voice;
+ 	unsigned short opl3_reg;
+@@ -118,7 +118,7 @@ static void snd_opl3_drum_note_set(struct snd_opl3 *opl3,
+  * Set drum voice volume and position
+  */
+ static void snd_opl3_drum_vol_set(struct snd_opl3 *opl3,
+-				  struct snd_opl3_drum_voice *data,
++				  const struct snd_opl3_drum_voice *data,
+ 				  int vel, struct snd_midi_channel *chan)
+ {
+ 	unsigned char op_offset = snd_opl3_regmap[data->voice][data->op];
+@@ -170,7 +170,7 @@ void snd_opl3_drum_switch(struct snd_opl3 *opl3, int note, int vel, int on_off,
+ 			  struct snd_midi_channel *chan)
+ {
+ 	unsigned char drum_mask;
+-	struct snd_opl3_drum_voice *drum_voice;
++	const struct snd_opl3_drum_voice *drum_voice;
+ 
+ 	if (!(opl3->drum_reg & OPL3_PERCUSSION_ENABLE))
+ 		return;
 -- 
 2.16.4
 
