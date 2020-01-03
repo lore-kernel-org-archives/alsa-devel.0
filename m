@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B780AC2D0C2
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 18:03:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3997CC2D0C2
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 18:04:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 35047215A4
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 18:03:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B463B22522
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 18:04:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gVYm57kO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35047215A4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q6x1zXge"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B463B22522
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ll.mit.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 504234E;
-	Fri,  3 Jan 2020 19:02:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 504234E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCAC017B5;
+	Fri,  3 Jan 2020 19:03:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCAC017B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578074606;
-	bh=sCaxrpoD/19CZrCif24EAad6PyrK2iu1gO8bMUW3VfQ=;
+	s=default; t=1578074643;
+	bh=UlvbZ3aBIrSGtov0xdOJ5AgaX/wkjYRqU4rtl9i2OEo=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gVYm57kOJHDV253vSqVFcLhleF+szAWSlJQlHJupJgfLL3Ikmvv29SRsFwwdaxStI
-	 Kox2SaY6Kgpua2pt7r+H3CATb6jU4nfkdC7Wy64jGulq86wEVZQgkHlMggH7aoZOuv
-	 h7emqoMBi5TZz2lnGqsoS3WVu6bKa3H+8OaREWOs=
+	b=q6x1zXge9Aa5hBI1Vpo+phIhgm4tQXzkaJwEfEfG2x3hpBsQFiLNpBXo84IpmFgGM
+	 Dil055f/s6YrkibRfi1EMao9+9yczsfri6DqpGIGaPd51s+cF9RVlkEO77I1puHtNh
+	 lyZnsLSXvwV1E0wVbQLTZnWkPvRZWiO8STcQTCzw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B66EF802DF;
-	Fri,  3 Jan 2020 18:56:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 474E6F802E7;
+	Fri,  3 Jan 2020 18:56:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B253F8028D; Fri,  3 Jan 2020 18:56:30 +0100 (CET)
-Received: from llmx3.ll.mit.edu (llmx3.ll.mit.edu [129.55.12.49])
+ id C1FADF80291; Fri,  3 Jan 2020 18:56:30 +0100 (CET)
+Received: from llmx2.ll.mit.edu (llmx2.ll.mit.edu [129.55.12.48])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99B02F80278
- for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 18:56:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99B02F80278
+ by alsa1.perex.cz (Postfix) with ESMTPS id 388CEF8015C
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jan 2020 18:56:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 388CEF8015C
 Received: from LLE2K16-MBX01.mitll.ad.local (LLE2K16-MBX01.mitll.ad.local) by
- llmx3.ll.mit.edu (unknown) with ESMTPS id 003HuOO2011866;
- Fri, 3 Jan 2020 12:56:24 -0500
+ llmx2.ll.mit.edu (unknown) with ESMTPS id 003HuQhm024936;
+ Fri, 3 Jan 2020 12:56:26 -0500
 From: David Ward <david.ward@ll.mit.edu>
 To: Takashi Iwai <tiwai@suse.de>, <alsa-devel@alsa-project.org>
-Date: Fri, 3 Jan 2020 12:55:56 -0500
-Message-ID: <1578074158-30328-10-git-send-email-david.ward@ll.mit.edu>
+Date: Fri, 3 Jan 2020 12:55:57 -0500
+Message-ID: <1578074158-30328-11-git-send-email-david.ward@ll.mit.edu>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1578074158-30328-1-git-send-email-david.ward@ll.mit.edu>
 References: <1578074158-30328-1-git-send-email-david.ward@ll.mit.edu>
@@ -64,8 +64,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1911140001 definitions=main-2001030164
 Cc: David Ward <david.ward@ll.mit.edu>
-Subject: [alsa-devel] [PATCH v2 alsa-utils 09/11] alsa-info.sh: Condense
-	nested commands for formatting upload result
+Subject: [alsa-devel] [PATCH v2 alsa-utils 10/11] alsa-info.sh: Perform test
+	for wget earlier
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,47 +83,108 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+If wget is not present, do not ask about uploading the information.
+
 Signed-off-by: David Ward <david.ward@ll.mit.edu>
 ---
- alsa-info/alsa-info.sh | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ alsa-info/alsa-info.sh | 73 ++++++++++++++++++++++++--------------------------
+ 1 file changed, 35 insertions(+), 38 deletions(-)
 
 diff --git a/alsa-info/alsa-info.sh b/alsa-info/alsa-info.sh
-index 987acb9..1bdb1aa 100755
+index 1bdb1aa..445e2cb 100755
 --- a/alsa-info/alsa-info.sh
 +++ b/alsa-info/alsa-info.sh
-@@ -833,8 +833,10 @@ fi
- 
- if [[ -z $PASTEBIN ]]; then
- 	wget -O - --tries=5 --timeout=60 --post-file=$FILE "http://www.alsa-project.org/cardinfo-db/" &>$TEMPDIR/wget.tmp || echo "Upload failed; exit"
-+	FINAL_URL=$(grep "SUCCESS:" $TEMPDIR/wget.tmp | cut -d ' ' -f 2)
- else
- 	wget -O - --tries=5 --timeout=60 --post-file=$FILE "http://pastebin.ca/quiet-paste.php?api=$PASTEBINKEY&encrypt=t&encryptpw=blahblah" &>$TEMPDIR/wget.tmp || echo "Upload failed; exit"
-+	FINAL_URL=$(grep "SUCCESS:" $TEMPDIR/wget.tmp | sed -n 's/.*\:\([0-9]\+\).*/http:\/\/pastebin.ca\/\1/p')
+@@ -767,6 +767,41 @@ if [ -z "$WITHALL" ]; then
+ 	withall
  fi
  
- if [ -n "$DIALOG" ]; then
-@@ -851,18 +853,8 @@ clear
- fi # dialog
++# Check if wget is installed, and supports --post-file.
++if ! wget --help 2>/dev/null | grep -q post-file; then
++	# We couldn't find a suitable wget. If --upload was passed, tell the user to upload manually.
++	if [ "$UPLOAD" != "yes" ]; then
++		:
++	elif [ -n "$DIALOG" ]; then
++		if [ -z "$PASTEBIN" ]; then
++			dialog --backtitle "$BGTITLE" --msgbox "Could not automatically upload output to http://www.alsa-project.org.\nPossible reasons are:\n\n    1. Couldn't find 'wget' in your PATH\n    2. Your version of wget is less than 1.8.2\n\nPlease manually upload $NFILE to http://www.alsa-project.org/cardinfo-db/ and submit your post." 25 100
++		else
++			dialog --backtitle "$BGTITLE" --msgbox "Could not automatically upload output to http://www.pastebin.ca.\nPossible reasons are:\n\n    1. Couldn't find 'wget' in your PATH\n    2. Your version of wget is less than 1.8.2\n\nPlease manually upload $NFILE to http://www.pastebin.ca/upload.php and submit your post." 25 100
++		fi
++	else
++		if [ -z "$PASTEBIN" ]; then
++			echo ""
++			echo "Could not automatically upload output to http://www.alsa-project.org"
++			echo "Possible reasons are:"
++			echo "    1. Couldn't find 'wget' in your PATH"
++			echo "    2. Your version of wget is less than 1.8.2"
++			echo ""
++			echo "Please manually upload $NFILE to http://www.alsa-project.org/cardinfo-db/ and submit your post."
++			echo ""
++		else
++			echo ""
++			echo "Could not automatically upload output to http://www.pastebin.ca"
++			echo "Possible reasons are:"
++			echo "    1. Couldn't find 'wget' in your PATH"
++			echo "    2. Your version of wget is less than 1.8.2"
++			echo ""
++			echo "Please manually upload $NFILE to http://www.pastebin.ca/upload.php and submit your post."
++			echo ""
++		fi
++	fi
++	UPLOAD="no"
++fi
++
+ if [ "$UPLOAD" = "ask" ]; then
+ 	if [ -n "$DIALOG" ]; then
+ 		dialog --backtitle "$BGTITLE" --title "Information collected" --yes-label " UPLOAD / SHARE " --no-label " SAVE LOCALLY " --defaultno --yesno "\n\nAutomatically upload ALSA information to $WWWSERVICE?" 10 80
+@@ -820,10 +855,6 @@ if [ "$UPLOAD" = "no" ]; then
  
- # See if tput is available, and use it if it is.
--if [ -n "$TPUT" ]; then
--	if [[ -z $PASTEBIN ]]; then
--		FINAL_URL=$(tput setaf 1; grep "SUCCESS:" $TEMPDIR/wget.tmp | cut -d ' ' -f 2 ; tput sgr0)
--	else
--		FINAL_URL=$(tput setaf 1; grep "SUCCESS:" $TEMPDIR/wget.tmp | sed -n 's/.*\:\([0-9]\+\).*/http:\/\/pastebin.ca\/\1/p'; tput sgr0)
--	fi
+ fi # UPLOAD
+ 
+-# Test that wget is installed, and supports --post-file. Upload $FILE if it does, and prompt user to upload file if it does not.
+-if [[ -n "${WGET}" ]] && [[ -x "${WGET}" ]] && [[ $(wget --help | grep post-file) ]]
+-then
+-
+ if [[ -n $DIALOG ]]
+ then
+ 	dialog --backtitle "$BGTITLE" --infobox "Uploading information to $WWWSERVICE ..." 6 70
+@@ -861,37 +892,3 @@ fi
+ echo "Your ALSA information is located at $FINAL_URL"
+ echo "Please inform the person helping you."
+ echo ""
+-
+-# We couldnt find a suitable wget, so tell the user to upload manually.
 -else
--	if [[ -z $PASTEBIN ]]; then
--		FINAL_URL=$(grep "SUCCESS:" $TEMPDIR/wget.tmp | cut -d ' ' -f 2)
+-	mv -f $FILE $NFILE || exit 1
+-	KEEP_OUTPUT="yes"
+-	if [[ -z $DIALOG ]]
+-	then
+-		if [[ -z $PASTEBIN ]]; then
+-		echo ""
+-		echo "Could not automatically upload output to http://www.alsa-project.org"
+-		echo "Possible reasons are:"
+-		echo "    1. Couldnt find 'wget' in your PATH"
+-		echo "    2. Your version of wget is less than 1.8.2"
+-		echo ""
+-		echo "Please manually upload $NFILE to http://www.alsa-project.org/cardinfo-db/ and submit your post."
+-		echo ""
+-		else
+-		echo ""
+-		echo "Could not automatically upload output to http://www.pastebin.ca"
+-		echo "Possible reasons are:"
+-		echo "    1. Couldnt find 'wget' in your PATH"
+-		echo "    2. Your version of wget is less than 1.8.2"
+-		echo ""
+-		echo "Please manually upload $NFILE to http://www.pastebin.ca/upload.php and submit your post."
+-		echo ""
+-		fi
 -	else
--		FINAL_URL=$(grep "SUCCESS:" $TEMPDIR/wget.tmp | sed -n 's/.*\:\([0-9]\+\).*/http:\/\/pastebin.ca\/\1/p')
+-		if [[ -z $PASTEBIN ]]; then
+-			dialog --backtitle "$BGTITLE" --msgbox "Could not automatically upload output to http://www.alsa-project.org.\nPossible reasons are:\n\n    1. Couldn't find 'wget' in your PATH\n    2. Your version of wget is less than 1.8.2\n\nPlease manually upload $NFILE to http://www.alsa-project,org/cardinfo-db/ and submit your post." 25 100
+-		else
+-			dialog --backtitle "$BGTITLE" --msgbox "Could not automatically upload output to http://www.pastebin.ca.\nPossible reasons are:\n\n    1. Couldn't find 'wget' in your PATH\n    2. Your version of wget is less than 1.8.2\n\nPlease manually upload $NFILE to http://www.pastebin.ca/upload.php and submit your post." 25 100
+-		fi
 -	fi
-+if [ -x "$TPUT" ]; then
-+	FINAL_URL=$(tput setaf 1; printf '%s' "$FINAL_URL"; tput sgr0)
- fi
- 
- # Output the URL of the uploaded file.	
+-fi
 -- 
 1.8.3.1
 
