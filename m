@@ -1,101 +1,109 @@
-Return-Path: <SRS0=XflM=2Y=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=svzq=2Z=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EB12C00523
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 23:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39765C00523
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jan 2020 00:38:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 810A722B48
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jan 2020 23:35:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4CA99222C3
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jan 2020 00:38:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LIgQqvyc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AdDUVBka"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 810A722B48
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mEcU5ouf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cYJl/4rk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CA99222C3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2370F177E;
-	Sat,  4 Jan 2020 00:34:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2370F177E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1644B1782;
+	Sat,  4 Jan 2020 01:37:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1644B1782
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578094541;
-	bh=y24ibNwu59NghVMulc/iDRulRbMe8iGmoWHpMUymlxM=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LIgQqvycocBO0ThxUEFLO5fcHMKGXzr0UV6qKXvpFBTN4w60ZnPfE0TAbbsuPRsxM
-	 BzUGEMcn+8jN3I6I5yov3aXA/W3nHKcukIEFn9qJhiyTjjbqPchSDiyxnJxhmc03Nj
-	 7oHL+59GpUhZ98WR1pWLAlte3ortbafmPCCzIz14=
+	s=default; t=1578098287;
+	bh=pKD5tWh9KzCsxTj1BQ4P16uPI1GyL9u/dV+OYYs9fHI=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mEcU5oufQmnLyvxhz+EqwDwD08//AvEc6c2M7TPd0tlWwA4bdh8HqF1J3R42z+ASg
+	 mr9XsS9wLLI3QkLCFWqZZmbfou+fFI5WxM4hGnGkLK8mP0MtkUnd9Wk8BIhA2elWGi
+	 aWXC8vym2AlHi+6zPmdxgdFaL4Xd6/mW0whumgFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9ADEDF8015C;
-	Sat,  4 Jan 2020 00:34:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 946F7F8015C;
+	Sat,  4 Jan 2020 01:37:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B63EEF8015D; Sat,  4 Jan 2020 00:34:48 +0100 (CET)
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com
- [IPv6:2607:f8b0:4864:20::544])
+ id F04BDF8015D; Sat,  4 Jan 2020 01:37:14 +0100 (CET)
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
+ [IPv6:2a00:1450:4864:20::242])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53757F8013E
- for <alsa-devel@alsa-project.org>; Sat,  4 Jan 2020 00:34:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53757F8013E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95173F80100
+ for <alsa-devel@alsa-project.org>; Sat,  4 Jan 2020 01:37:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95173F80100
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="AdDUVBka"
-Received: by mail-pg1-x544.google.com with SMTP id q127so24064960pga.4
- for <alsa-devel@alsa-project.org>; Fri, 03 Jan 2020 15:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ecAAqTTQEDsJhq1d+GQeh/so67WQS1s8AlS7zowLxCI=;
- b=AdDUVBkafB2Jykix7nUumiXV1CiNDBqmBeYyBep89Myp/9vTmDXDTP8YK6sGJU2M2Q
- gazpp1k/0A6raFhM9Fa4iaTx5CqTyZ258tiCmbY+qWjIQvtf5K4yzwZHZI6nEOVyduJf
- 4LWp5dG34vdq0C9gMX2sAsYtXVYTNhSXjvCb4=
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="cYJl/4rk"
+Received: by mail-lj1-x242.google.com with SMTP id r19so45423489ljg.3
+ for <alsa-devel@alsa-project.org>; Fri, 03 Jan 2020 16:37:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=Ts+SjzC4Gm6lvTOxTySTq7TEeSE+o11aKR5We09tXnU=;
+ b=cYJl/4rk1daPvvXESQWI91tjOBG8icZXyT/9Igjz8/1LNO0cfsQ7JkprURrKb5YZvx
+ BzLzdLAO8LyKI1nxuKVpam8W8OH2I7iVRG6AVVBnzSpFkhzHEnHOM5jOTqjRcii6cXVs
+ n4hFUGBUh0LQ+by8rhvJYvPXO4IOK5Puu2jF21IXaPzAYRKmxfyK3bEPWgLrsuhM7JJ3
+ tS2oMh2J6zzz9QbUuuCpTZkwCOI/GNPPICX5jGXhSJhOvnGaJ+mTxgBixkabiHjZFVcD
+ cj+d5Hk5sMjw0f89K9X6u2ynFxLC60GJlMkcp84B6BRkeaZ5xxbZc1GDpHvTlkmmjWBo
+ eN6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=ecAAqTTQEDsJhq1d+GQeh/so67WQS1s8AlS7zowLxCI=;
- b=eMf1tcvbymSerOJg8Qb3WGQfQGZfO4LIkJj6/JorbxDjhcUoqzShfLqjKR8gGF+cmk
- 3OAkQsGKnAhTn3lrVLYBqzrh/X6ra9d+5Qgo+EZbs2UUz9iRVegBL5PgyOfd57Gf6pY9
- Uwu+tOw5+KxK0M8xOdZI+8x3aHp0VGrTc+5K3YRTq2ccu+WivTguR2cVu601QPS6CkQO
- 6llEx+PkbeLQO6zbKCmMcmXm2/VAVs0qNUcwMGZ98pxKcWIV/VVuO4GcXqytPejHDycl
- 4Y8nmYHY/POwX8Zp89T5DDXYURC+2E5UQtyyXgROz8DpSpnjiiiF7IlN78l+l3zuZ2KQ
- tU3w==
-X-Gm-Message-State: APjAAAWnx2zM4s/o+4IHLELc/lrQq0CvSXDYlfuZSkmhBW7GLn1YVYsN
- muyGFxS7+XhXBMq+Nj7QNwDM0GN/kQ==
-X-Google-Smtp-Source: APXvYqzuQCZ+dSfjMG6Sy3Rt29INVsCzEfqR56eOT09vzs9UnB6kn5FBS2tna+tZehGRTT44CkfFAQ==
-X-Received: by 2002:a62:a515:: with SMTP id v21mr98240158pfm.128.1578094482563; 
- Fri, 03 Jan 2020 15:34:42 -0800 (PST)
-Received: from localhost ([2620:15c:202:201:c87a:31ae:9107:f63d])
- by smtp.gmail.com with ESMTPSA id j125sm67774804pfg.160.2020.01.03.15.34.41
+ bh=Ts+SjzC4Gm6lvTOxTySTq7TEeSE+o11aKR5We09tXnU=;
+ b=nhkO5o9w7Xl6n28814u7bW3r6olEsryZiP8mP3qwEYhTSlu8CoGBmWJI2kbapKt5dp
+ Pz677NfHFE04nu3LVsl0qvX9MYzvSW2kpcnGbISyFhf15qmOF8L0KBocdQ9h7hv6T6K5
+ X8WsvoE/8RBPMN1FJQmAtZ5tT3A5p0+s2QEQ2R7iFTPpWcNW1oqbSV8e3iaqPqsf38T9
+ 82ZRRnX/VCJDonXnReBT7X2zbbUguyZJKyLVkCh65Kkp7xS56a9rLtjexH/93i4DLLTL
+ myI6OTfEnjrf8gwr0tgcLfk6OV0XSJUm5PpHZz5iwJZG8T0zx3che8YuWcGNZ/+VYGiu
+ RaKg==
+X-Gm-Message-State: APjAAAVrW5SXMilal+MEFg9o8lzha1qbvq34S3s6EGiTuTi0sQmiIcJr
+ oEUHRGVu8RJEjTJoj3GslPw=
+X-Google-Smtp-Source: APXvYqw37Yl+OJvyHeQCjkpKB57wlb+8t1Igv6CyhuOjhC+4QP9VjjhZxbbwzeyWhmg1GJpHRz5cTg==
+X-Received: by 2002:a2e:8e22:: with SMTP id r2mr47757459ljk.51.1578098230268; 
+ Fri, 03 Jan 2020 16:37:10 -0800 (PST)
+Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
+ [79.139.233.37])
+ by smtp.googlemail.com with ESMTPSA id p26sm25418791lfh.64.2020.01.03.16.37.09
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 03 Jan 2020 15:34:42 -0800 (PST)
-From: Curtis Malainey <cujomalainey@chromium.org>
-To: alsa-devel@alsa-project.org
-Date: Fri,  3 Jan 2020 15:34:00 -0800
-Message-Id: <20200103233401.160654-1-cujomalainey@chromium.org>
-X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
+ Fri, 03 Jan 2020 16:37:09 -0800 (PST)
+To: Mark Brown <broonie@kernel.org>
+References: <20191229150454.2127-1-digetx@gmail.com>
+ <20191231001719.GC3897@sirena.org.uk>
+ <03ccf221-697e-bc34-f4ba-bf191aecd675@gmail.com>
+ <20200103005424.GF3897@sirena.org.uk>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <059becd2-4a91-23b3-59e1-0c4b0f3c0844@gmail.com>
+Date: Sat, 4 Jan 2020 03:37:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Ben Zhang <benzh@chromium.org>, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Pan Xiuli <xiuli.pan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Alexios Zavras <alexios.zavras@intel.com>, Mark Brown <broonie@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Curtis Malainey <cujomalainey@chromium.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Subject: [alsa-devel] [PATCH] ASoC: bdw-rt5677: add spi driver compile
-	switches
+In-Reply-To: <20200103005424.GF3897@sirena.org.uk>
+Content-Language: en-US
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-tegra@vger.kernel.org, Bard Liao <bardliao@realtek.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>
+Subject: Re: [alsa-devel] [PATCH v1] ASoC: rt5640: Fix NULL dereference on
+	module unload
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,62 +116,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the SPI driver is not compiled in then the RT5677_SPI driver will not
-be included as well which will cause the bdw-rt5677 driver to fail to
-probe since the DSP components are managed by the RT5677_SPI driver. The
-solution is to remove them when the driver is not present as part of the
-build.
-
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-CC: Pan Xiuli <xiuli.pan@linux.intel.com>
----
- sound/soc/intel/boards/bdw-rt5677.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 2af8e5a62da84..d5ded2c545d2c 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -74,11 +74,13 @@ static const struct snd_soc_dapm_route bdw_rt5677_map[] = {
- 	/* CODEC BE connections */
- 	{"SSP0 CODEC IN", NULL, "AIF1 Capture"},
- 	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
-+#if IS_ENABLED(CONFIG_SND_SOC_RT5677_SPI)
- 	{"DSP Capture", NULL, "DSP Buffer"},
- 
- 	/* DSP Clock Connections */
- 	{ "DSP Buffer", NULL, "SSP0 CODEC IN" },
- 	{ "SSP0 CODEC IN", NULL, "DSPTX" },
-+#endif
- };
- 
- static const struct snd_kcontrol_new bdw_rt5677_controls[] = {
-@@ -319,6 +321,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 		SND_SOC_DAILINK_REG(fe, dummy, platform),
- 	},
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_RT5677_SPI)
- 	/* Non-DPCM links */
- 	{
- 		.name = "Codec DSP",
-@@ -326,6 +329,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
- 		.ops = &bdw_rt5677_dsp_ops,
- 		SND_SOC_DAILINK_REG(dsp),
- 	},
-+#endif
- 
- 	/* Back End DAI links */
- 	{
--- 
-2.24.1.735.g03f4e72817-goog
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+MDMuMDEuMjAyMCAwMzo1NCwgTWFyayBCcm93biDQv9C40YjQtdGCOgo+IE9uIFRodSwgSmFuIDAy
+LCAyMDIwIGF0IDA2OjU3OjE0UE0gKzAzMDAsIERtaXRyeSBPc2lwZW5rbyB3cm90ZToKPj4gMzEu
+MTIuMjAxOSAwMzoxNywgTWFyayBCcm93biDQv9C40YjQtdGCOgo+IAo+Pj4gUGxlYXNlIHRoaW5r
+IGhhcmQgYmVmb3JlIGluY2x1ZGluZyBjb21wbGV0ZSBiYWNrdHJhY2VzIGluIHVwc3RyZWFtCj4+
+PiByZXBvcnRzLCB0aGV5IGFyZSB2ZXJ5IGxhcmdlIGFuZCBjb250YWluIGFsbW9zdCBubyB1c2Vm
+dWwgaW5mb3JtYXRpb24KPj4+IHJlbGF0aXZlIHRvIHRoZWlyIHNpemUgc28gb2Z0ZW4gb2JzY3Vy
+ZSB0aGUgcmVsZXZhbnQgY29udGVudCBpbiB5b3VyCj4+PiBtZXNzYWdlLiBJZiBwYXJ0IG9mIHRo
+ZSBiYWNrdHJhY2UgaXMgdXNlZnVsbHkgaWxsdXN0cmF0aXZlIHRoZW4gaXQncwo+Pj4gdXN1YWxs
+eSBiZXR0ZXIgdG8gcHVsbCBvdXQgdGhlIHJlbGV2YW50IHNlY3Rpb25zLgo+IAo+PiBZZWFoLCBw
+ZXJoYXBzIGl0J3Mgbm90IHJlYWxseSB1c2VmdWwgdG8gaGF2ZSBiYWNrdHJhY2UgaW4gdGhlIGNv
+bW1pdCdzCj4+IGRlc2NyaXB0aW9uIGZvciB0aGUgY2FzZSBvZiB0aGlzIHBhdGNoIGluIHBhcnRp
+Y3VsYXIuIEJ1dCBpbiBnZW5lcmFsIGl0Cj4+IGlzIHZlcnkgdXNlZnVsIHRvIGhhdmUgYmFja3Ry
+YWNlcyBzb21ld2hlcmUgbmVhciB0aGUgcGF0Y2ggc3VjaCB0aGF0Cj4+IG9ubGluZSBzZWFyY2gg
+ZW5naW5lcywgbGlrZSBnb29nbGUsIGNvdWxkIHBpY2sgaXQgdXAuIEknbGwgbW92ZSB0aGUKPj4g
+YmFja3RyYWNlIGJlbG93IC0tLSBpbiB2MiwgdGhhbmtzLgo+IAo+IFJpZ2h0LCB0aGlzIGlzIG1v
+cmUgZGlyZWN0ZWQgYXQganVzdCBwYXN0aW5nIGluIHRoZSBlbnRpcmUKPiBiYWNrdHJhY2UgKHdo
+aWNoIGNhbiBiZSBodWdlIHdpdGggbG90cyBvZiBnZW5lcmljIGJpdHMgYmVmb3JlIHRoZQo+IHNt
+YWxsIG51bWJlciB0aGF0IGFyZSByZWxldmFudCkgYnV0IHNvbWUgZWRpdGVkIGhpZ2hsaWdodHMg
+Y2FuCj4gZGVmaW5pdGVseSBiZSBoZWxwZnVsIGZvciBzZWFyY2ggZW5naW5lcyBhbmQgZm9yIGV4
+cGxhaW5pbmcgdGhlCj4gcHJvYmxlbS4gIEknbGwgbW9kaWZ5IHdoYXQgSSdtIHNheWluZyB0aGVy
+ZSB0byBjbGFyaWZ5IHRoaXMuCgpUaGFuayB5b3UgZm9yIHRoZSBjbGFyaWZpY2F0aW9uLgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
