@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D50E6C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 652D5C33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:55:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6199A2077B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:54:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E21D12077B
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:54:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Q7hYsNIL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6199A2077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kpp5f+9Y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E21D12077B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1E191756;
-	Sun,  5 Jan 2020 15:53:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1E191756
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10353178D;
+	Sun,  5 Jan 2020 15:54:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10353178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578236066;
-	bh=UkBovUAS7Vr31d4Tac1wElI9cspVnZj1CStkQZuU5k8=;
+	s=default; t=1578236098;
+	bh=hytQrdjE2fL6AGuarGStzIdayG+RzaCH5L6ll/1kzhM=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q7hYsNILcUkOYEBYnEiez8tskyZ1nhWwof29H5Gk37TLvieju6+ZB8yIdkUwy4Dax
-	 iW1mKzILgcXJR3HOppD2FChAp/QIlZs2kh2Tpsd+Lrqa+2QUW4tGQGu/s8OlsVCWTO
-	 NwqvhE/PbZVCLYk/BWiOYh8shQZGgChS6Ll5dFhQ=
+	b=Kpp5f+9YIja2bWJaoOiihAJw0EVNRD6bQOvfDCpIL/oq8kuWOrKzBrsqY6AqKi3b3
+	 0/ovhTxBcCqAMKmXS4rdDjgNUox2PuD5aTLNrp3HNFr0EUxjBLw7fU6B6SaO1E1fch
+	 y+kPVzA+ZP0Rd7+o/2BbgpLak9NsYSQDaq0RRNxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66D00F80337;
-	Sun,  5 Jan 2020 15:49:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49FA1F8033D;
+	Sun,  5 Jan 2020 15:49:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CD8FF80328; Sun,  5 Jan 2020 15:48:47 +0100 (CET)
+ id A6522F80329; Sun,  5 Jan 2020 15:48:49 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41822F80216
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AF2EF80214
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41822F80216
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AF2EF80214
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id DC526B185
+ by mx2.suse.de (Postfix) with ESMTP id DBB7FB181
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:31 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:22 +0100
-Message-Id: <20200105144823.29547-8-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:21 +0100
+Message-Id: <20200105144823.29547-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 07/68] ALSA: vx: More constifications
+Subject: [alsa-devel] [PATCH 06/68] ALSA: seq: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,125 +75,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to every possible place: the static tables for DSP
-commands, the string tables, and register/offset tables.
+Apply const prefix to the remaining sequencer code: the static tables
+for MIDI macros, RPN/NRPN, and some strings.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/vx/vx_cmd.c   |  2 +-
- sound/drivers/vx/vx_core.c  | 12 ++++++------
- sound/drivers/vx/vx_hwdep.c |  2 +-
- sound/drivers/vx/vx_mixer.c |  2 +-
- sound/pci/vx222/vx222_ops.c |  4 ++--
- sound/pcmcia/vx/vxp_ops.c   |  2 +-
- 6 files changed, 12 insertions(+), 12 deletions(-)
+ sound/core/seq/oss/seq_oss_init.c | 4 ++--
+ sound/core/seq/seq_midi_emul.c    | 6 +++---
+ sound/core/seq/seq_midi_event.c   | 6 +++---
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/drivers/vx/vx_cmd.c b/sound/drivers/vx/vx_cmd.c
-index 77ae59aef4e0..b0970a04883e 100644
---- a/sound/drivers/vx/vx_cmd.c
-+++ b/sound/drivers/vx/vx_cmd.c
-@@ -15,7 +15,7 @@
- /*
-  * Array of DSP commands
-  */
--static struct vx_cmd_info vx_dsp_cmds[] = {
-+static const struct vx_cmd_info vx_dsp_cmds[] = {
- [CMD_VERSION] =			{ 0x010000, 2, RMH_SSIZE_FIXED, 1 },
- [CMD_SUPPORTED] =		{ 0x020000, 1, RMH_SSIZE_FIXED, 2 },
- [CMD_TEST_IT] =			{ 0x040000, 1, RMH_SSIZE_FIXED, 1 },
-diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
-index dd35de3f2434..ffab0400d7fb 100644
---- a/sound/drivers/vx/vx_core.c
-+++ b/sound/drivers/vx/vx_core.c
-@@ -39,7 +39,7 @@ MODULE_LICENSE("GPL");
- int snd_vx_check_reg_bit(struct vx_core *chip, int reg, int mask, int bit, int time)
+diff --git a/sound/core/seq/oss/seq_oss_init.c b/sound/core/seq/oss/seq_oss_init.c
+index 6dc94efc19c9..4534a154b8c8 100644
+--- a/sound/core/seq/oss/seq_oss_init.c
++++ b/sound/core/seq/oss/seq_oss_init.c
+@@ -460,10 +460,10 @@ enabled_str(int bool)
+ 	return bool ? "enabled" : "disabled";
+ }
+ 
+-static char *
++static const char *
+ filemode_str(int val)
  {
- 	unsigned long end_time = jiffies + (time * HZ + 999) / 1000;
--	static char *reg_names[VX_REG_MAX] = {
-+	static const char * const reg_names[VX_REG_MAX] = {
- 		"ICR", "CVR", "ISR", "IVR", "RXH", "RXM", "RXL",
- 		"DMA", "CDSP", "RFREQ", "RUER/V2", "DATA", "MEMIRQ",
- 		"ACQ", "BIT0", "BIT1", "MIC0", "MIC1", "MIC2",
-@@ -588,11 +588,11 @@ static void vx_reset_board(struct vx_core *chip, int cold_reset)
- static void vx_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
+-	static char *str[] = {
++	static const char * const str[] = {
+ 		"none", "read", "write", "read/write",
+ 	};
+ 	return str[val & SNDRV_SEQ_OSS_FILE_ACMODE];
+diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
+index 536ccf48ee72..198f285594e3 100644
+--- a/sound/core/seq/seq_midi_emul.c
++++ b/sound/core/seq/seq_midi_emul.c
+@@ -479,11 +479,11 @@ sysex(const struct snd_midi_op *ops, void *private, unsigned char *buf, int len,
+       struct snd_midi_channel_set *chset)
  {
- 	struct vx_core *chip = entry->private_data;
--	static char *audio_src_vxp[] = { "Line", "Mic", "Digital" };
--	static char *audio_src_vx2[] = { "Analog", "Analog", "Digital" };
--	static char *clock_mode[] = { "Auto", "Internal", "External" };
--	static char *clock_src[] = { "Internal", "External" };
--	static char *uer_type[] = { "Consumer", "Professional", "Not Present" };
-+	static const char * const audio_src_vxp[] = { "Line", "Mic", "Digital" };
-+	static const char * const audio_src_vx2[] = { "Analog", "Analog", "Digital" };
-+	static const char * const clock_mode[] = { "Auto", "Internal", "External" };
-+	static const char * const clock_src[] = { "Internal", "External" };
-+	static const char * const uer_type[] = { "Consumer", "Professional", "Not Present" };
- 	
- 	snd_iprintf(buffer, "%s\n", chip->card->longname);
- 	snd_iprintf(buffer, "Xilinx Firmware: %s\n",
-diff --git a/sound/drivers/vx/vx_hwdep.c b/sound/drivers/vx/vx_hwdep.c
-index f0d31b0a178e..01baa6d872e9 100644
---- a/sound/drivers/vx/vx_hwdep.c
-+++ b/sound/drivers/vx/vx_hwdep.c
-@@ -32,7 +32,7 @@ MODULE_FIRMWARE("vx/l_1_vp4.d56");
+ 	/* GM on */
+-	static unsigned char gm_on_macro[] = {
++	static const unsigned char gm_on_macro[] = {
+ 		0x7e,0x7f,0x09,0x01,
+ 	};
+ 	/* XG on */
+-	static unsigned char xg_on_macro[] = {
++	static const unsigned char xg_on_macro[] = {
+ 		0x43,0x10,0x4c,0x00,0x00,0x7e,0x00,
+ 	};
+ 	/* GS prefix
+@@ -492,7 +492,7 @@ sysex(const struct snd_midi_op *ops, void *private, unsigned char *buf, int len,
+ 	 * chorus mode: XX=0x01, YY=0x38, ZZ=0-7
+ 	 * master vol:  XX=0x00, YY=0x04, ZZ=0-127
+ 	 */
+-	static unsigned char gs_pfx_macro[] = {
++	static const unsigned char gs_pfx_macro[] = {
+ 		0x41,0x10,0x42,0x12,0x40,/*XX,YY,ZZ*/
+ 	};
  
- int snd_vx_setup_firmware(struct vx_core *chip)
+diff --git a/sound/core/seq/seq_midi_event.c b/sound/core/seq/seq_midi_event.c
+index ae0308d4ace3..7511462fe071 100644
+--- a/sound/core/seq/seq_midi_event.c
++++ b/sound/core/seq/seq_midi_event.c
+@@ -422,12 +422,12 @@ static int extra_decode_xrpn(struct snd_midi_event *dev, unsigned char *buf,
+ 			     int count, struct snd_seq_event *ev)
  {
--	static char *fw_files[VX_TYPE_NUMS][4] = {
-+	static const char * const fw_files[VX_TYPE_NUMS][4] = {
- 		[VX_TYPE_BOARD] = {
- 			NULL, "x1_1_vx2.xlx", "bd56002.boot", "l_1_vx2.d56",
- 		},
-diff --git a/sound/drivers/vx/vx_mixer.c b/sound/drivers/vx/vx_mixer.c
-index b17c67b14d59..13099f8c84d6 100644
---- a/sound/drivers/vx/vx_mixer.c
-+++ b/sound/drivers/vx/vx_mixer.c
-@@ -961,7 +961,7 @@ int snd_vx_mixer_new(struct vx_core *chip)
- 		return err;
- 	/* VU, peak, saturation meters */
- 	for (c = 0; c < 2; c++) {
--		static char *dir[2] = { "Output", "Input" };
-+		static const char * const dir[2] = { "Output", "Input" };
- 		for (i = 0; i < chip->hw->num_ins; i++) {
- 			int val = (i * 2) | (c << 8);
- 			if (c == 1) {
-diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
-index 6245240d8768..23d4338dc553 100644
---- a/sound/pci/vx222/vx222_ops.c
-+++ b/sound/pci/vx222/vx222_ops.c
-@@ -19,7 +19,7 @@
- #include "vx222.h"
- 
- 
--static int vx2_reg_offset[VX_REG_MAX] = {
-+static const int vx2_reg_offset[VX_REG_MAX] = {
- 	[VX_ICR]    = 0x00,
- 	[VX_CVR]    = 0x04,
- 	[VX_ISR]    = 0x08,
-@@ -45,7 +45,7 @@ static int vx2_reg_offset[VX_REG_MAX] = {
- 	[VX_GPIOC]  = 0x54,		// VX_GPIOC (new with PLX9030)
- };
- 
--static int vx2_reg_index[VX_REG_MAX] = {
-+static const int vx2_reg_index[VX_REG_MAX] = {
- 	[VX_ICR]	= 1,
- 	[VX_CVR]	= 1,
- 	[VX_ISR]	= 1,
-diff --git a/sound/pcmcia/vx/vxp_ops.c b/sound/pcmcia/vx/vxp_ops.c
-index f7cf707d315f..45eeb0f57d59 100644
---- a/sound/pcmcia/vx/vxp_ops.c
-+++ b/sound/pcmcia/vx/vxp_ops.c
-@@ -15,7 +15,7 @@
- #include "vxpocket.h"
- 
- 
--static int vxp_reg_offset[VX_REG_MAX] = {
-+static const int vxp_reg_offset[VX_REG_MAX] = {
- 	[VX_ICR]	= 0x00,		// ICR
- 	[VX_CVR]	= 0x01,		// CVR
- 	[VX_ISR]	= 0x02,		// ISR
+ 	unsigned char cmd;
+-	char *cbytes;
+-	static char cbytes_nrpn[4] = { MIDI_CTL_NONREG_PARM_NUM_MSB,
++	const char *cbytes;
++	static const char cbytes_nrpn[4] = { MIDI_CTL_NONREG_PARM_NUM_MSB,
+ 				       MIDI_CTL_NONREG_PARM_NUM_LSB,
+ 				       MIDI_CTL_MSB_DATA_ENTRY,
+ 				       MIDI_CTL_LSB_DATA_ENTRY };
+-	static char cbytes_rpn[4] =  { MIDI_CTL_REGIST_PARM_NUM_MSB,
++	static const char cbytes_rpn[4] =  { MIDI_CTL_REGIST_PARM_NUM_MSB,
+ 				       MIDI_CTL_REGIST_PARM_NUM_LSB,
+ 				       MIDI_CTL_MSB_DATA_ENTRY,
+ 				       MIDI_CTL_LSB_DATA_ENTRY };
 -- 
 2.16.4
 
