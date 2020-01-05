@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60B28C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:01:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF493C33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:02:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF3CD2077B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:01:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4B0B12077B
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:02:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dVrtOErg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF3CD2077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SzQmxMZ4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B0B12077B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DE4D17C4;
-	Sun,  5 Jan 2020 16:00:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DE4D17C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CF7D17AD;
+	Sun,  5 Jan 2020 16:01:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CF7D17AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578236483;
-	bh=KC9jwusZhj5a48iBsG3toGJ/nmy/SaQpwJH3eYvz2wM=;
+	s=default; t=1578236521;
+	bh=TRHFGaI2T8DwwO2alhzpATOXfGZ7ao9OI6Eib07fLsk=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dVrtOErgM27SuplS4MVi3XzMh9tzjvsFjIr1HZj/Twh+FeaSLT5KA2xZy/b50josW
-	 oubzmHNxiMANbbJCRKqvmWufcFihT2He5uMFPLG9f3uy/zGpQrXeTXKOSco0lrz7h5
-	 AZVoQFkbR9LFIoRjR/Ns6w4V2KJ+HUaNAxEaoZmQ=
+	b=SzQmxMZ4Zdn1e2bFCTks1qPVP0PI/7MYrc3S82p/3AASz8ok/jb/nEqjH8V57BJHC
+	 MPXDh5gW238U9i1hCtLjHHzX9UA4Fx/71zk4hMxuNQnLcgqkLU8typpel/K/AxYwim
+	 goNYbtihV/cpGlKxDtCDGU/7NDDY0btl7COodBnY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00881F802A8;
-	Sun,  5 Jan 2020 15:49:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2EA8F8038E;
+	Sun,  5 Jan 2020 15:49:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7DBDF8033E; Sun,  5 Jan 2020 15:49:04 +0100 (CET)
+ id 75945F8033F; Sun,  5 Jan 2020 15:49:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A592FF8027B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74B22F80273
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A592FF8027B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74B22F80273
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 98CBDB1EC
+ by mx2.suse.de (Postfix) with ESMTP id 6CA0BB1DB
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:32 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:34 +0100
-Message-Id: <20200105144823.29547-20-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:31 +0100
+Message-Id: <20200105144823.29547-17-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 19/68] ALSA: hdspm: More constifications
+Subject: [alsa-devel] [PATCH 16/68] ALSA: ice1712: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,257 +75,414 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to each possible place: the string arrays, the
-channel map tables and callers.
+Apply const prefix to each possible place: the EEPROM tables, the
+static string arrays, the init verb tables, etc.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme9652/hdspm.c | 66 +++++++++++++++++++++++++----------------------
- 1 file changed, 35 insertions(+), 31 deletions(-)
+ sound/pci/ice1712/aureon.c       |  8 ++++----
+ sound/pci/ice1712/juli.c         |  6 +++---
+ sound/pci/ice1712/maya44.c       | 10 +++++-----
+ sound/pci/ice1712/phase.c        |  4 ++--
+ sound/pci/ice1712/pontis.c       |  2 +-
+ sound/pci/ice1712/prodigy192.c   |  2 +-
+ sound/pci/ice1712/prodigy_hifi.c | 16 ++++++++--------
+ sound/pci/ice1712/psc724.c       |  2 +-
+ sound/pci/ice1712/quartet.c      |  8 ++++----
+ sound/pci/ice1712/se.c           |  8 ++++----
+ sound/pci/ice1712/vt1720_mobo.c  |  4 ++--
+ sound/pci/ice1712/wtm.c          |  6 +++---
+ 12 files changed, 38 insertions(+), 38 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index f926899e4755..2212d5799151 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -637,7 +637,7 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define HDSPM_SPEED_QUAD   2
+diff --git a/sound/pci/ice1712/aureon.c b/sound/pci/ice1712/aureon.c
+index 025fe7820620..9a30f6d35d13 100644
+--- a/sound/pci/ice1712/aureon.c
++++ b/sound/pci/ice1712/aureon.c
+@@ -2133,7 +2133,7 @@ static int aureon_init(struct snd_ice1712 *ice)
+  * hence the driver needs to sets up it properly.
+  */
  
- /* names for speed modes */
--static char *hdspm_speed_names[] = { "single", "double", "quad" };
-+static const char * const hdspm_speed_names[] = { "single", "double", "quad" };
- 
- static const char *const texts_autosync_aes_tco[] = { "Word Clock",
- 					  "AES1", "AES2", "AES3", "AES4",
-@@ -684,7 +684,7 @@ static const char *const texts_freq[] = {
- 	"192 kHz"
+-static unsigned char aureon51_eeprom[] = {
++static const unsigned char aureon51_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x0a,	/* clock 512, spdif-in/ADC, 3DACs */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+ 	[ICE_EEP2_I2S]         = 0xfc,	/* vol, 96k, 24bit, 192k */
+@@ -2149,7 +2149,7 @@ static unsigned char aureon51_eeprom[] = {
+ 	[ICE_EEP2_GPIO_STATE2] = 0x00,
  };
  
--static char *texts_ports_madi[] = {
-+static const char * const texts_ports_madi[] = {
- 	"MADI.1", "MADI.2", "MADI.3", "MADI.4", "MADI.5", "MADI.6",
- 	"MADI.7", "MADI.8", "MADI.9", "MADI.10", "MADI.11", "MADI.12",
- 	"MADI.13", "MADI.14", "MADI.15", "MADI.16", "MADI.17", "MADI.18",
-@@ -699,7 +699,7 @@ static char *texts_ports_madi[] = {
+-static unsigned char aureon71_eeprom[] = {
++static const unsigned char aureon71_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x0b,	/* clock 512, spdif-in/ADC, 4DACs */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+ 	[ICE_EEP2_I2S]         = 0xfc,	/* vol, 96k, 24bit, 192k */
+@@ -2166,7 +2166,7 @@ static unsigned char aureon71_eeprom[] = {
+ };
+ #define prodigy71_eeprom aureon71_eeprom
+ 
+-static unsigned char aureon71_universe_eeprom[] = {
++static const unsigned char aureon71_universe_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x2b,	/* clock 512, mpu401, spdif-in/ADC,
+ 					 * 4DACs
+ 					 */
+@@ -2184,7 +2184,7 @@ static unsigned char aureon71_universe_eeprom[] = {
+ 	[ICE_EEP2_GPIO_STATE2] = 0x00,
  };
  
- 
--static char *texts_ports_raydat_ss[] = {
-+static const char * const texts_ports_raydat_ss[] = {
- 	"ADAT1.1", "ADAT1.2", "ADAT1.3", "ADAT1.4", "ADAT1.5", "ADAT1.6",
- 	"ADAT1.7", "ADAT1.8", "ADAT2.1", "ADAT2.2", "ADAT2.3", "ADAT2.4",
- 	"ADAT2.5", "ADAT2.6", "ADAT2.7", "ADAT2.8", "ADAT3.1", "ADAT3.2",
-@@ -710,7 +710,7 @@ static char *texts_ports_raydat_ss[] = {
- 	"SPDIF.L", "SPDIF.R"
+-static unsigned char prodigy71lt_eeprom[] = {
++static const unsigned char prodigy71lt_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x4b,	/* clock 384, spdif-in/ADC, 4DACs */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+ 	[ICE_EEP2_I2S]         = 0xfc,	/* vol, 96k, 24bit, 192k */
+diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
+index 079e58ec8b09..7be4eb42f05e 100644
+--- a/sound/pci/ice1712/juli.c
++++ b/sound/pci/ice1712/juli.c
+@@ -397,7 +397,7 @@ static const struct snd_kcontrol_new juli_mute_controls[] = {
+ 	},
  };
  
--static char *texts_ports_raydat_ds[] = {
-+static const char * const texts_ports_raydat_ds[] = {
- 	"ADAT1.1", "ADAT1.2", "ADAT1.3", "ADAT1.4",
- 	"ADAT2.1", "ADAT2.2", "ADAT2.3", "ADAT2.4",
- 	"ADAT3.1", "ADAT3.2", "ADAT3.3", "ADAT3.4",
-@@ -719,7 +719,7 @@ static char *texts_ports_raydat_ds[] = {
- 	"SPDIF.L", "SPDIF.R"
+-static char *slave_vols[] = {
++static const char * const slave_vols[] = {
+ 	PCM_VOLUME,
+ 	MONITOR_AN_IN_VOLUME,
+ 	MONITOR_DIG_IN_VOLUME,
+@@ -420,7 +420,7 @@ static struct snd_kcontrol *ctl_find(struct snd_card *card,
+ 
+ static void add_slaves(struct snd_card *card,
+ 		       struct snd_kcontrol *master,
+-		       char * const *list)
++		       const char * const *list)
+ {
+ 	for (; *list; list++) {
+ 		struct snd_kcontrol *slave = ctl_find(card, *list);
+@@ -651,7 +651,7 @@ static int juli_init(struct snd_ice1712 *ice)
+  * hence the driver needs to sets up it properly.
+  */
+ 
+-static unsigned char juli_eeprom[] = {
++static const unsigned char juli_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x2b,	/* clock 512, mpu401, 1xADC, 1xDACs,
+ 					   SPDIF in */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+diff --git a/sound/pci/ice1712/maya44.c b/sound/pci/ice1712/maya44.c
+index c2761e009c67..b46df1821251 100644
+--- a/sound/pci/ice1712/maya44.c
++++ b/sound/pci/ice1712/maya44.c
+@@ -116,7 +116,7 @@ struct maya_vol_info {
+ 	unsigned char mux_bits[2];	/* extra bits for ADC mute */
  };
  
--static char *texts_ports_raydat_qs[] = {
-+static const char * const texts_ports_raydat_qs[] = {
- 	"ADAT1.1", "ADAT1.2",
- 	"ADAT2.1", "ADAT2.2",
- 	"ADAT3.1", "ADAT3.2",
-@@ -729,7 +729,7 @@ static char *texts_ports_raydat_qs[] = {
+-static struct maya_vol_info vol_info[WM_NUM_VOLS] = {
++static const struct maya_vol_info vol_info[WM_NUM_VOLS] = {
+ 	[WM_VOL_HP] = {
+ 		.maxval = 80,
+ 		.regs = { WM8776_REG_HEADPHONE_L, WM8776_REG_HEADPHONE_R },
+@@ -158,7 +158,7 @@ static int maya_vol_info(struct snd_kcontrol *kcontrol,
+ 			 struct snd_ctl_elem_info *uinfo)
+ {
+ 	unsigned int idx = kcontrol->private_value;
+-	struct maya_vol_info *vol = &vol_info[idx];
++	const struct maya_vol_info *vol = &vol_info[idx];
+ 
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 2;
+@@ -189,7 +189,7 @@ static int maya_vol_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_wm8776 *wm =
+ 		&chip->wm[snd_ctl_get_ioff(kcontrol, &ucontrol->id)];
+ 	unsigned int idx = kcontrol->private_value;
+-	struct maya_vol_info *vol = &vol_info[idx];
++	const struct maya_vol_info *vol = &vol_info[idx];
+ 	unsigned int val, data;
+ 	int ch, changed = 0;
+ 
+@@ -662,7 +662,7 @@ static const struct snd_pcm_hw_constraint_list dac_rates = {
+ /*
+  * chip addresses on I2C bus
+  */
+-static unsigned char wm8776_addr[2] = {
++static const unsigned char wm8776_addr[2] = {
+ 	0x34, 0x36, /* codec 0 & 1 */
  };
  
+@@ -712,7 +712,7 @@ static int maya44_init(struct snd_ice1712 *ice)
+  * hence the driver needs to sets up it properly.
+  */
  
--static char *texts_ports_aio_in_ss[] = {
-+static const char * const texts_ports_aio_in_ss[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
-@@ -738,7 +738,7 @@ static char *texts_ports_aio_in_ss[] = {
- 	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
+-static unsigned char maya44_eeprom[] = {
++static const unsigned char maya44_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x45,
+ 		/* clock xin1=49.152MHz, mpu401, 2 stereo ADCs+DACs */
+ 	[ICE_EEP2_ACLINK]      = 0x80,
+diff --git a/sound/pci/ice1712/phase.c b/sound/pci/ice1712/phase.c
+index ced4a2bfd08e..1e47e46ab8ac 100644
+--- a/sound/pci/ice1712/phase.c
++++ b/sound/pci/ice1712/phase.c
+@@ -157,7 +157,7 @@ static int phase22_add_controls(struct snd_ice1712 *ice)
+ 	return 0;
+ }
+ 
+-static unsigned char phase22_eeprom[] = {
++static const unsigned char phase22_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x28,  /* clock 512, mpu 401,
+ 					spdif-in/1xADC, 1xDACs */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+@@ -174,7 +174,7 @@ static unsigned char phase22_eeprom[] = {
+ 	[ICE_EEP2_GPIO_STATE2] = 0x00,
  };
  
--static char *texts_ports_aio_out_ss[] = {
-+static const char * const texts_ports_aio_out_ss[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
-@@ -748,7 +748,7 @@ static char *texts_ports_aio_out_ss[] = {
- 	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
+-static unsigned char phase28_eeprom[] = {
++static const unsigned char phase28_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x2b,  /* clock 512, mpu401,
+ 					spdif-in/1xADC, 4xDACs */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+diff --git a/sound/pci/ice1712/pontis.c b/sound/pci/ice1712/pontis.c
+index 8ddb6c35a5e6..683909ca147c 100644
+--- a/sound/pci/ice1712/pontis.c
++++ b/sound/pci/ice1712/pontis.c
+@@ -778,7 +778,7 @@ static int pontis_init(struct snd_ice1712 *ice)
+  * hence the driver needs to sets up it properly.
+  */
+ 
+-static unsigned char pontis_eeprom[] = {
++static const unsigned char pontis_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x08,	/* clock 256, mpu401, spdif-in/ADC, 1DAC */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+ 	[ICE_EEP2_I2S]         = 0xf8,	/* vol, 96k, 24bit, 192k */
+diff --git a/sound/pci/ice1712/prodigy192.c b/sound/pci/ice1712/prodigy192.c
+index 105716961e39..8df14f63b10d 100644
+--- a/sound/pci/ice1712/prodigy192.c
++++ b/sound/pci/ice1712/prodigy192.c
+@@ -753,7 +753,7 @@ static int prodigy192_init(struct snd_ice1712 *ice)
+  * hence the driver needs to sets up it properly.
+  */
+ 
+-static unsigned char prodigy71_eeprom[] = {
++static const unsigned char prodigy71_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x6a,	/* 49MHz crystal, mpu401,
+ 					 * spdif-in+ 1 stereo ADC,
+ 					 * 3 stereo DACs
+diff --git a/sound/pci/ice1712/prodigy_hifi.c b/sound/pci/ice1712/prodigy_hifi.c
+index ba37f7eab166..91f83cef0e56 100644
+--- a/sound/pci/ice1712/prodigy_hifi.c
++++ b/sound/pci/ice1712/prodigy_hifi.c
+@@ -930,7 +930,7 @@ static int prodigy_hd2_add_controls(struct snd_ice1712 *ice)
+ 
+ static void wm8766_init(struct snd_ice1712 *ice)
+ {
+-	static unsigned short wm8766_inits[] = {
++	static const unsigned short wm8766_inits[] = {
+ 		WM8766_RESET,	   0x0000,
+ 		WM8766_DAC_CTRL,	0x0120,
+ 		WM8766_INT_CTRL,	0x0022, /* I2S Normal Mode, 24 bit */
+@@ -953,7 +953,7 @@ static void wm8766_init(struct snd_ice1712 *ice)
+ 
+ static void wm8776_init(struct snd_ice1712 *ice)
+ {
+-	static unsigned short wm8776_inits[] = {
++	static const unsigned short wm8776_inits[] = {
+ 		/* These come first to reduce init pop noise */
+ 		WM_ADC_MUX,	0x0003,	/* ADC mute */
+ 		/* 0x00c0 replaced by 0x0003 */
+@@ -973,7 +973,7 @@ static void wm8776_init(struct snd_ice1712 *ice)
+ #ifdef CONFIG_PM_SLEEP
+ static int prodigy_hifi_resume(struct snd_ice1712 *ice)
+ {
+-	static unsigned short wm8776_reinit_registers[] = {
++	static const unsigned short wm8776_reinit_registers[] = {
+ 		WM_MASTER_CTRL,
+ 		WM_DAC_INT,
+ 		WM_ADC_INT,
+@@ -1033,7 +1033,7 @@ static int prodigy_hifi_resume(struct snd_ice1712 *ice)
+  */
+ static int prodigy_hifi_init(struct snd_ice1712 *ice)
+ {
+-	static unsigned short wm8776_defaults[] = {
++	static const unsigned short wm8776_defaults[] = {
+ 		WM_MASTER_CTRL,  0x0022, /* 256fs, slave mode */
+ 		WM_DAC_INT,	0x0022,	/* I2S, normal polarity, 24bit */
+ 		WM_ADC_INT,	0x0022,	/* I2S, normal polarity, 24bit */
+@@ -1108,7 +1108,7 @@ static int prodigy_hifi_init(struct snd_ice1712 *ice)
+  */
+ static void ak4396_init(struct snd_ice1712 *ice)
+ {
+-	static unsigned short ak4396_inits[] = {
++	static const unsigned short ak4396_inits[] = {
+ 		AK4396_CTRL1,	   0x87,   /* I2S Normal Mode, 24 bit */
+ 		AK4396_CTRL2,	   0x02,
+ 		AK4396_CTRL3,	   0x00, 
+@@ -1180,7 +1180,7 @@ static int prodigy_hd2_init(struct snd_ice1712 *ice)
+ }
+ 
+ 
+-static unsigned char prodigy71hifi_eeprom[] = {
++static const unsigned char prodigy71hifi_eeprom[] = {
+ 	0x4b,   /* SYSCONF: clock 512, spdif-in/ADC, 4DACs */
+ 	0x80,   /* ACLINK: I2S */
+ 	0xfc,   /* I2S: vol, 96k, 24bit, 192k */
+@@ -1196,7 +1196,7 @@ static unsigned char prodigy71hifi_eeprom[] = {
+ 	0x00,   /* GPIO_STATE2 */
  };
  
--static char *texts_ports_aio_in_ds[] = {
-+static const char * const texts_ports_aio_in_ds[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
-@@ -756,7 +756,7 @@ static char *texts_ports_aio_in_ds[] = {
- 	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
+-static unsigned char prodigyhd2_eeprom[] = {
++static const unsigned char prodigyhd2_eeprom[] = {
+ 	0x4b,   /* SYSCONF: clock 512, spdif-in/ADC, 4DACs */
+ 	0x80,   /* ACLINK: I2S */
+ 	0xfc,   /* I2S: vol, 96k, 24bit, 192k */
+@@ -1212,7 +1212,7 @@ static unsigned char prodigyhd2_eeprom[] = {
+ 	0x00,   /* GPIO_STATE2 */
  };
  
--static char *texts_ports_aio_out_ds[] = {
-+static const char * const texts_ports_aio_out_ds[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
-@@ -765,7 +765,7 @@ static char *texts_ports_aio_out_ds[] = {
- 	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
+-static unsigned char fortissimo4_eeprom[] = {
++static const unsigned char fortissimo4_eeprom[] = {
+ 	0x43,   /* SYSCONF: clock 512, ADC, 4DACs */	
+ 	0x80,   /* ACLINK: I2S */
+ 	0xfc,   /* I2S: vol, 96k, 24bit, 192k */
+diff --git a/sound/pci/ice1712/psc724.c b/sound/pci/ice1712/psc724.c
+index 7287ebed2b5a..7aa3f92040d0 100644
+--- a/sound/pci/ice1712/psc724.c
++++ b/sound/pci/ice1712/psc724.c
+@@ -420,7 +420,7 @@ static void psc724_exit(struct snd_ice1712 *ice)
+ }
+ 
+ /* PSC724 has buggy EEPROM (no 96&192kHz, all FFh GPIOs), so override it here */
+-static unsigned char psc724_eeprom[] = {
++static const unsigned char psc724_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]	= 0x42,	/* 49.152MHz, 1 ADC, 3 DACs */
+ 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
+ 	[ICE_EEP2_I2S]		= 0xf0,	/* I2S volume, 96kHz, 24bit */
+diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
+index bfd811a08d90..866596205710 100644
+--- a/sound/pci/ice1712/quartet.c
++++ b/sound/pci/ice1712/quartet.c
+@@ -657,7 +657,7 @@ static int qtet_php_put(struct snd_kcontrol *kcontrol,
+ 	.get_register = get_##xreg,\
+ 	.texts = {xtext1, xtext2} }
+ 
+-static struct qtet_kcontrol_private qtet_privates[] = {
++static const struct qtet_kcontrol_private qtet_privates[] = {
+ 	PRIV_ENUM2(IN12_SEL, CPLD_IN12_SEL, cpld, "An In 1/2", "An In 3/4"),
+ 	PRIV_ENUM2(IN34_SEL, CPLD_IN34_SEL, cpld, "An In 3/4", "IEC958 In"),
+ 	PRIV_ENUM2(AIN34_SEL, SCR_AIN34_SEL, scr, "Line In 3/4", "Hi-Z"),
+@@ -757,7 +757,7 @@ static const struct snd_kcontrol_new qtet_controls[] = {
+ 	QTET_CONTROL("Output 3/4 to Monitor 1/2", sw, OUT34_MON12),
  };
  
--static char *texts_ports_aio_in_qs[] = {
-+static const char * const texts_ports_aio_in_qs[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
-@@ -773,7 +773,7 @@ static char *texts_ports_aio_in_qs[] = {
- 	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
+-static char *slave_vols[] = {
++static const char * const slave_vols[] = {
+ 	PCM_12_PLAYBACK_VOLUME,
+ 	PCM_34_PLAYBACK_VOLUME,
+ 	NULL
+@@ -777,7 +777,7 @@ static struct snd_kcontrol *ctl_find(struct snd_card *card,
+ }
+ 
+ static void add_slaves(struct snd_card *card,
+-		       struct snd_kcontrol *master, char * const *list)
++		       struct snd_kcontrol *master, const char * const *list)
+ {
+ 	for (; *list; list++) {
+ 		struct snd_kcontrol *slave = ctl_find(card, *list);
+@@ -1053,7 +1053,7 @@ static int qtet_init(struct snd_ice1712 *ice)
+ 	return 0;
+ }
+ 
+-static unsigned char qtet_eeprom[] = {
++static const unsigned char qtet_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x28,	/* clock 256(24MHz), mpu401, 1xADC,
+ 					   1xDACs, SPDIF in */
+ 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
+diff --git a/sound/pci/ice1712/se.c b/sound/pci/ice1712/se.c
+index fdc502783e07..ffa9d8860a5a 100644
+--- a/sound/pci/ice1712/se.c
++++ b/sound/pci/ice1712/se.c
+@@ -245,7 +245,7 @@ static const char * const se200pci_sel[] = {
+ static void se200pci_WM8776_set_input_selector(struct snd_ice1712 *ice,
+ 					       unsigned int sel)
+ {
+-	static unsigned char vals[] = {
++	static const unsigned char vals[] = {
+ 		/* LINE, CD, MIC, ALL, GND */
+ 		0x10, 0x04, 0x08, 0x1c, 0x03
+ 	};
+@@ -288,7 +288,7 @@ static void se200pci_WM8776_set_agc(struct snd_ice1712 *ice, unsigned int agc)
+ static void se200pci_WM8776_init(struct snd_ice1712 *ice)
+ {
+ 	int i;
+-	static unsigned short default_values[] = {
++	static const unsigned short default_values[] = {
+ 		0x100, 0x100, 0x100,
+ 		0x100, 0x100, 0x100,
+ 		0x000, 0x090, 0x000, 0x000,
+@@ -701,7 +701,7 @@ static int se_add_controls(struct snd_ice1712 *ice)
+ /*  entry point                                                             */
+ /****************************************************************************/
+ 
+-static unsigned char se200pci_eeprom[] = {
++static const unsigned char se200pci_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]	= 0x4b,	/* 49.152Hz, spdif-in/ADC, 4DACs */
+ 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
+ 	[ICE_EEP2_I2S]		= 0x78,	/* 96k-ok, 24bit, 192k-ok */
+@@ -720,7 +720,7 @@ static unsigned char se200pci_eeprom[] = {
+ 	[ICE_EEP2_GPIO_STATE2]	= 0x07, /* WM8766 ML/MC/MD */
  };
  
--static char *texts_ports_aio_out_qs[] = {
-+static const char * const texts_ports_aio_out_qs[] = {
- 	"Analogue.L", "Analogue.R",
- 	"AES.L", "AES.R",
- 	"SPDIF.L", "SPDIF.R",
-@@ -782,7 +782,7 @@ static char *texts_ports_aio_out_qs[] = {
- 	"AEB.1", "AEB.2", "AEB.3", "AEB.4"
+-static unsigned char se90pci_eeprom[] = {
++static const unsigned char se90pci_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]	= 0x4b,	/* 49.152Hz, spdif-in/ADC, 4DACs */
+ 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
+ 	[ICE_EEP2_I2S]		= 0x78,	/* 96k-ok, 24bit, 192k-ok */
+diff --git a/sound/pci/ice1712/vt1720_mobo.c b/sound/pci/ice1712/vt1720_mobo.c
+index 3d240125a644..47470b07197c 100644
+--- a/sound/pci/ice1712/vt1720_mobo.c
++++ b/sound/pci/ice1712/vt1720_mobo.c
+@@ -39,7 +39,7 @@ static int k8x800_add_controls(struct snd_ice1712 *ice)
+ 
+ /* EEPROM image */
+ 
+-static unsigned char k8x800_eeprom[] = {
++static const unsigned char k8x800_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x01,	/* clock 256, 1ADC, 2DACs */
+ 	[ICE_EEP2_ACLINK]      = 0x02,	/* ACLINK, packed */
+ 	[ICE_EEP2_I2S]         = 0x00,	/* - */
+@@ -55,7 +55,7 @@ static unsigned char k8x800_eeprom[] = {
+ 	[ICE_EEP2_GPIO_STATE2] = 0x00,	/* - */
  };
  
--static char *texts_ports_aes32[] = {
-+static const char * const texts_ports_aes32[] = {
- 	"AES.1", "AES.2", "AES.3", "AES.4", "AES.5", "AES.6", "AES.7",
- 	"AES.8", "AES.9.", "AES.10", "AES.11", "AES.12", "AES.13", "AES.14",
- 	"AES.15", "AES.16"
-@@ -796,7 +796,7 @@ static char *texts_ports_aes32[] = {
-    where the data for that channel can be read/written from/to.
- */
+-static unsigned char sn25p_eeprom[] = {
++static const unsigned char sn25p_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]     = 0x01,	/* clock 256, 1ADC, 2DACs */
+ 	[ICE_EEP2_ACLINK]      = 0x02,	/* ACLINK, packed */
+ 	[ICE_EEP2_I2S]         = 0x00,	/* - */
+diff --git a/sound/pci/ice1712/wtm.c b/sound/pci/ice1712/wtm.c
+index 4a7315ad51e8..f613f0067d8c 100644
+--- a/sound/pci/ice1712/wtm.c
++++ b/sound/pci/ice1712/wtm.c
+@@ -567,12 +567,12 @@ static int wtm_add_controls(struct snd_ice1712 *ice)
  
--static char channel_map_unity_ss[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_unity_ss[HDSPM_MAX_CHANNELS] = {
- 	0, 1, 2, 3, 4, 5, 6, 7,
- 	8, 9, 10, 11, 12, 13, 14, 15,
- 	16, 17, 18, 19, 20, 21, 22, 23,
-@@ -807,7 +807,7 @@ static char channel_map_unity_ss[HDSPM_MAX_CHANNELS] = {
- 	56, 57, 58, 59, 60, 61, 62, 63
- };
+ static int wtm_init(struct snd_ice1712 *ice)
+ {
+-	static unsigned short stac_inits_wtm[] = {
++	static const unsigned short stac_inits_wtm[] = {
+ 		STAC946X_RESET, 0,
+ 		STAC946X_MASTER_CLOCKING, 0x11,
+ 		(unsigned short)-1
+ 	};
+-	unsigned short *p;
++	const unsigned short *p;
+ 	struct wtm_spec *spec;
  
--static char channel_map_raydat_ss[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_raydat_ss[HDSPM_MAX_CHANNELS] = {
- 	4, 5, 6, 7, 8, 9, 10, 11,	/* ADAT 1 */
- 	12, 13, 14, 15, 16, 17, 18, 19,	/* ADAT 2 */
- 	20, 21, 22, 23, 24, 25, 26, 27,	/* ADAT 3 */
-@@ -820,7 +820,7 @@ static char channel_map_raydat_ss[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- };
+ 	/*WTM 192M*/
+@@ -599,7 +599,7 @@ static int wtm_init(struct snd_ice1712 *ice)
+ }
  
--static char channel_map_raydat_ds[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_raydat_ds[HDSPM_MAX_CHANNELS] = {
- 	4, 5, 6, 7,		/* ADAT 1 */
- 	8, 9, 10, 11,		/* ADAT 2 */
- 	12, 13, 14, 15,		/* ADAT 3 */
-@@ -835,7 +835,7 @@ static char channel_map_raydat_ds[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- };
  
--static char channel_map_raydat_qs[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_raydat_qs[HDSPM_MAX_CHANNELS] = {
- 	4, 5,			/* ADAT 1 */
- 	6, 7,			/* ADAT 2 */
- 	8, 9,			/* ADAT 3 */
-@@ -851,7 +851,7 @@ static char channel_map_raydat_qs[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- };
- 
--static char channel_map_aio_in_ss[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_aio_in_ss[HDSPM_MAX_CHANNELS] = {
- 	0, 1,			/* line in */
- 	8, 9,			/* aes in, */
- 	10, 11,			/* spdif in */
-@@ -865,7 +865,7 @@ static char channel_map_aio_in_ss[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- };
- 
--static char channel_map_aio_out_ss[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_aio_out_ss[HDSPM_MAX_CHANNELS] = {
- 	0, 1,			/* line out */
- 	8, 9,			/* aes out */
- 	10, 11,			/* spdif out */
-@@ -880,7 +880,7 @@ static char channel_map_aio_out_ss[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1,
- };
- 
--static char channel_map_aio_in_ds[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_aio_in_ds[HDSPM_MAX_CHANNELS] = {
- 	0, 1,			/* line in */
- 	8, 9,			/* aes in */
- 	10, 11,			/* spdif in */
-@@ -895,7 +895,7 @@ static char channel_map_aio_in_ds[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1
- };
- 
--static char channel_map_aio_out_ds[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_aio_out_ds[HDSPM_MAX_CHANNELS] = {
- 	0, 1,			/* line out */
- 	8, 9,			/* aes out */
- 	10, 11,			/* spdif out */
-@@ -910,7 +910,7 @@ static char channel_map_aio_out_ds[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1
- };
- 
--static char channel_map_aio_in_qs[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_aio_in_qs[HDSPM_MAX_CHANNELS] = {
- 	0, 1,			/* line in */
- 	8, 9,			/* aes in */
- 	10, 11,			/* spdif in */
-@@ -925,7 +925,7 @@ static char channel_map_aio_in_qs[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1
- };
- 
--static char channel_map_aio_out_qs[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_aio_out_qs[HDSPM_MAX_CHANNELS] = {
- 	0, 1,			/* line out */
- 	8, 9,			/* aes out */
- 	10, 11,			/* spdif out */
-@@ -941,7 +941,7 @@ static char channel_map_aio_out_qs[HDSPM_MAX_CHANNELS] = {
- 	-1, -1, -1, -1, -1, -1, -1, -1
- };
- 
--static char channel_map_aes32[HDSPM_MAX_CHANNELS] = {
-+static const char channel_map_aes32[HDSPM_MAX_CHANNELS] = {
- 	0, 1, 2, 3, 4, 5, 6, 7,
- 	8, 9, 10, 11, 12, 13, 14, 15,
- 	-1, -1, -1, -1, -1, -1, -1, -1,
-@@ -1010,17 +1010,21 @@ struct hdspm {
- 	unsigned char max_channels_in;
- 	unsigned char max_channels_out;
- 
--	signed char *channel_map_in;
--	signed char *channel_map_out;
-+	const signed char *channel_map_in;
-+	const signed char *channel_map_out;
- 
--	signed char *channel_map_in_ss, *channel_map_in_ds, *channel_map_in_qs;
--	signed char *channel_map_out_ss, *channel_map_out_ds, *channel_map_out_qs;
-+	const signed char *channel_map_in_ss, *channel_map_in_ds, *channel_map_in_qs;
-+	const signed char *channel_map_out_ss, *channel_map_out_ds, *channel_map_out_qs;
- 
--	char **port_names_in;
--	char **port_names_out;
-+	const char * const *port_names_in;
-+	const char * const *port_names_out;
- 
--	char **port_names_in_ss, **port_names_in_ds, **port_names_in_qs;
--	char **port_names_out_ss, **port_names_out_ds, **port_names_out_qs;
-+	const char * const *port_names_in_ss;
-+	const char * const *port_names_in_ds;
-+	const char * const *port_names_in_qs;
-+	const char * const *port_names_out_ss;
-+	const char * const *port_names_out_ds;
-+	const char * const *port_names_out_qs;
- 
- 	unsigned char *playback_buffer;	/* suitably aligned address */
- 	unsigned char *capture_buffer;	/* suitably aligned address */
+-static unsigned char wtm_eeprom[] = {
++static const unsigned char wtm_eeprom[] = {
+ 	[ICE_EEP2_SYSCONF]      = 0x67, /*SYSCONF: clock 192KHz, mpu401,
+ 							4ADC, 8DAC */
+ 	[ICE_EEP2_ACLINK]       = 0x80, /* ACLINK : I2S */
 -- 
 2.16.4
 
