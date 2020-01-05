@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3910C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:59:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87735C33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:59:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 507052077B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:59:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0CD082077B
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:59:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TyyJ2puJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 507052077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X49QpbQJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CD082077B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2ABC17AD;
-	Sun,  5 Jan 2020 15:58:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2ABC17AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E46717C9;
+	Sun,  5 Jan 2020 15:59:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E46717C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578236361;
-	bh=nBLsi82AVbsqlMwKxIm5imtc1/4BIvCziHL3HDTNMjY=;
+	s=default; t=1578236393;
+	bh=1EkZQQg+qW+aIRWS7rdxoDzj8UBPxaQIHcvB04ikw5U=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TyyJ2puJfjzplwbSiRWnY5SVFAj/QKTPUKV+a8rcv03JmI3+zmX2wy9YX6rUe0+cs
-	 nJboVgnETce6wY7XAirS805Y0zuIDD4yM3WryNmhZ3ab7LnwmLTOO8jBhRtRGBbbS3
-	 UxamezUwyT8XuZD416bZedfM96xGF2SdbhGC0090=
+	b=X49QpbQJNpCC1EFAWHLYi/acgUBM14jlBzm6N7fCgimzdhiKyojHJOPA0XrsUudUO
+	 +MeaYKo5XS6dnLZFKMK95eGQ+oxiYkw4aNJbETaFTRtIgQCF9zcJnB69x7qb1k53l4
+	 RkUC/3f43AeSt5vMmge1pux/onQA+2z+PuNRIpwA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D5F4F802A0;
-	Sun,  5 Jan 2020 15:49:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69E03F802A1;
+	Sun,  5 Jan 2020 15:49:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B997FF80333; Sun,  5 Jan 2020 15:48:58 +0100 (CET)
+ id 84EA0F80334; Sun,  5 Jan 2020 15:48:59 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9021F80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id C10C7F80274
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9021F80276
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C10C7F80274
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3EC0CB1D1
+ by mx2.suse.de (Postfix) with ESMTP id 4E029B1D3
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:32 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:28 +0100
-Message-Id: <20200105144823.29547-14-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:29 +0100
+Message-Id: <20200105144823.29547-15-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 13/68] ALSA: au88x0: More constifications
+Subject: [alsa-devel] [PATCH 14/68] ALSA: emu10k1: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,232 +75,344 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to each possible place: the static register tables,
-the coef tables, the string arrays, etc.
+Apply const prefix to the remaining possible places: the static tables
+for init verbs and registers, the string arrays, the conversion
+tables, etc.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/au88x0/au88x0_core.c   |  2 +-
- sound/pci/au88x0/au88x0_eq.c     | 22 +++++++++++-----------
- sound/pci/au88x0/au88x0_eqdata.c | 18 +++++++++---------
- sound/pci/au88x0/au88x0_pcm.c    |  4 ++--
- 4 files changed, 23 insertions(+), 23 deletions(-)
+ sound/pci/emu10k1/emu10k1_main.c | 12 ++++++------
+ sound/pci/emu10k1/emufx.c        | 14 +++++++-------
+ sound/pci/emu10k1/emumixer.c     | 28 ++++++++++++++--------------
+ sound/pci/emu10k1/emuproc.c      | 16 ++++++++--------
+ sound/pci/emu10k1/io.c           |  4 ++--
+ 5 files changed, 37 insertions(+), 37 deletions(-)
 
-diff --git a/sound/pci/au88x0/au88x0_core.c b/sound/pci/au88x0/au88x0_core.c
-index ce0564c5392a..f5512b72b3e0 100644
---- a/sound/pci/au88x0/au88x0_core.c
-+++ b/sound/pci/au88x0/au88x0_core.c
-@@ -1989,7 +1989,7 @@ vortex_connect_codecrec(vortex_t * vortex, int en, unsigned char mixin0,
- // Higher level ADB audio path (de)allocator.
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 51af766f57d2..a89a7e603ca8 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -100,7 +100,7 @@ void snd_emu10k1_voice_init(struct snd_emu10k1 *emu, int ch)
+ 	}
+ }
  
- /* Resource manager */
--static int resnum[VORTEX_RESOURCE_LAST] =
-+static const int resnum[VORTEX_RESOURCE_LAST] =
-     { NR_ADB, NR_SRC, NR_MIXIN, NR_MIXOUT, NR_A3D };
+-static unsigned int spi_dac_init[] = {
++static const unsigned int spi_dac_init[] = {
+ 		0x00ff,
+ 		0x02ff,
+ 		0x0400,
+@@ -124,7 +124,7 @@ static unsigned int spi_dac_init[] = {
+ 		0x1400,
+ };
+ 
+-static unsigned int i2c_adc_init[][2] = {
++static const unsigned int i2c_adc_init[][2] = {
+ 	{ 0x17, 0x00 }, /* Reset */
+ 	{ 0x07, 0x00 }, /* Timeout */
+ 	{ 0x0b, 0x22 },  /* Interface control */
+@@ -2050,7 +2050,7 @@ int snd_emu10k1_create(struct snd_card *card,
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+-static unsigned char saved_regs[] = {
++static const unsigned char saved_regs[] = {
+ 	CPF, PTRX, CVCF, VTFT, Z1, Z2, PSST, DSL, CCCA, CCR, CLP,
+ 	FXRT, MAPA, MAPB, ENVVOL, ATKHLDV, DCYSUSV, LFOVAL1, ENVVAL,
+ 	ATKHLDM, DCYSUSM, LFOVAL2, IP, IFATN, PEFE, FMMOD, TREMFRQ, FM2FRQ2,
+@@ -2059,7 +2059,7 @@ static unsigned char saved_regs[] = {
+ 	SPBYPASS, AC97SLOT, CDSRCS, GPSRCS, ZVSRCS, MICIDX, ADCIDX, FXIDX,
+ 	0xff /* end */
+ };
+-static unsigned char saved_regs_audigy[] = {
++static const unsigned char saved_regs_audigy[] = {
+ 	A_ADCIDX, A_MICIDX, A_FXWC1, A_FXWC2, A_SAMPLE_RATE,
+ 	A_FXRT2, A_SENDAMOUNTS, A_FXRT1,
+ 	0xff /* end */
+@@ -2094,7 +2094,7 @@ static void free_pm_buffer(struct snd_emu10k1 *emu)
+ void snd_emu10k1_suspend_regs(struct snd_emu10k1 *emu)
+ {
+ 	int i;
+-	unsigned char *reg;
++	const unsigned char *reg;
+ 	unsigned int *val;
+ 
+ 	val = emu->saved_ptr;
+@@ -2127,7 +2127,7 @@ void snd_emu10k1_resume_init(struct snd_emu10k1 *emu)
+ void snd_emu10k1_resume_regs(struct snd_emu10k1 *emu)
+ {
+ 	int i;
+-	unsigned char *reg;
++	const unsigned char *reg;
+ 	unsigned int *val;
+ 
+ 	snd_emu10k1_audio_enable(emu);
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index e0e076a9c321..6b7ff4a94800 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -46,7 +46,7 @@ MODULE_PARM_DESC(high_res_gpr_volume, "GPR mixer controls use 31-bit range.");
+  *  Tables
+  */ 
+ 
+-static char *fxbuses[16] = {
++static const char * const fxbuses[16] = {
+ 	/* 0x00 */ "PCM Left",
+ 	/* 0x01 */ "PCM Right",
+ 	/* 0x02 */ "PCM Surround Left",
+@@ -65,7 +65,7 @@ static char *fxbuses[16] = {
+ 	/* 0x0f */ NULL
+ };
+ 
+-static char *creative_ins[16] = {
++static const char * const creative_ins[16] = {
+ 	/* 0x00 */ "AC97 Left",
+ 	/* 0x01 */ "AC97 Right",
+ 	/* 0x02 */ "TTL IEC958 Left",
+@@ -84,7 +84,7 @@ static char *creative_ins[16] = {
+ 	/* 0x0f */ NULL
+ };
+ 
+-static char *audigy_ins[16] = {
++static const char * const audigy_ins[16] = {
+ 	/* 0x00 */ "AC97 Left",
+ 	/* 0x01 */ "AC97 Right",
+ 	/* 0x02 */ "Audigy CD Left",
+@@ -103,7 +103,7 @@ static char *audigy_ins[16] = {
+ 	/* 0x0f */ NULL
+ };
+ 
+-static char *creative_outs[32] = {
++static const char * const creative_outs[32] = {
+ 	/* 0x00 */ "AC97 Left",
+ 	/* 0x01 */ "AC97 Right",
+ 	/* 0x02 */ "Optical IEC958 Left",
+@@ -138,7 +138,7 @@ static char *creative_outs[32] = {
+ 	/* 0x1f */ NULL,
+ };
+ 
+-static char *audigy_outs[32] = {
++static const char * const audigy_outs[32] = {
+ 	/* 0x00 */ "Digital Front Left",
+ 	/* 0x01 */ "Digital Front Right",
+ 	/* 0x02 */ "Digital Center",
+@@ -2485,7 +2485,7 @@ static int snd_emu10k1_fx8010_open(struct snd_hwdep * hw, struct file *file)
+ 	return 0;
+ }
+ 
+-static void copy_string(char *dst, char *src, char *null, int idx)
++static void copy_string(char *dst, const char *src, const char *null, int idx)
+ {
+ 	if (src == NULL)
+ 		sprintf(dst, "%s %02X", null, idx);
+@@ -2496,7 +2496,7 @@ static void copy_string(char *dst, char *src, char *null, int idx)
+ static void snd_emu10k1_fx8010_info(struct snd_emu10k1 *emu,
+ 				   struct snd_emu10k1_fx8010_info *info)
+ {
+-	char **fxbus, **extin, **extout;
++	const char * const *fxbus, * const *extin, * const *extout;
+ 	unsigned short fxbus_mask, extin_mask, extout_mask;
+ 	int res;
+ 
+diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
+index 46c79dfe9844..8a6cbe67e29d 100644
+--- a/sound/pci/emu10k1/emumixer.c
++++ b/sound/pci/emu10k1/emumixer.c
+@@ -183,7 +183,7 @@ static const char * const emu1616_src_texts[] = {
  /*
-  Checkout/Checkin resource of given type. 
-diff --git a/sound/pci/au88x0/au88x0_eq.c b/sound/pci/au88x0/au88x0_eq.c
-index abaf9f912784..58e92f2a72c0 100644
---- a/sound/pci/au88x0/au88x0_eq.c
-+++ b/sound/pci/au88x0/au88x0_eq.c
-@@ -51,7 +51,7 @@ static inline u16 sign_invert(u16 a)
- 		return -a;
- }
- 
--static void vortex_EqHw_SetLeftCoefs(vortex_t * vortex, u16 coefs[])
-+static void vortex_EqHw_SetLeftCoefs(vortex_t *vortex, const u16 coefs[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int i = 0, n /*esp2c */;
-@@ -73,7 +73,7 @@ static void vortex_EqHw_SetLeftCoefs(vortex_t * vortex, u16 coefs[])
- 	}
- }
- 
--static void vortex_EqHw_SetRightCoefs(vortex_t * vortex, u16 coefs[])
-+static void vortex_EqHw_SetRightCoefs(vortex_t *vortex, const u16 coefs[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int i = 0, n /*esp2c */;
-@@ -96,7 +96,7 @@ static void vortex_EqHw_SetRightCoefs(vortex_t * vortex, u16 coefs[])
- 
- }
- 
--static void vortex_EqHw_SetLeftStates(vortex_t * vortex, u16 a[], u16 b[])
-+static void vortex_EqHw_SetLeftStates(vortex_t *vortex, const u16 a[], const u16 b[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int i = 0, ebx;
-@@ -113,7 +113,7 @@ static void vortex_EqHw_SetLeftStates(vortex_t * vortex, u16 a[], u16 b[])
- 	}
- }
- 
--static void vortex_EqHw_SetRightStates(vortex_t * vortex, u16 a[], u16 b[])
-+static void vortex_EqHw_SetRightStates(vortex_t *vortex, const u16 a[], const u16 b[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int i = 0, ebx;
-@@ -206,7 +206,7 @@ vortex_EqHw_SetRightGainsSingleTarget(vortex_t * vortex, u16 index, u16 b)
- 	hwwrite(vortex->mmio, 0x2b20c + (index * 0x30), b);
- }
- 
--static void vortex_EqHw_SetLeftGainsTarget(vortex_t * vortex, u16 a[])
-+static void vortex_EqHw_SetLeftGainsTarget(vortex_t *vortex, const u16 a[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int ebx;
-@@ -216,7 +216,7 @@ static void vortex_EqHw_SetLeftGainsTarget(vortex_t * vortex, u16 a[])
- 	}
- }
- 
--static void vortex_EqHw_SetRightGainsTarget(vortex_t * vortex, u16 a[])
-+static void vortex_EqHw_SetRightGainsTarget(vortex_t *vortex, const u16 a[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int ebx;
-@@ -226,7 +226,7 @@ static void vortex_EqHw_SetRightGainsTarget(vortex_t * vortex, u16 a[])
- 	}
- }
- 
--static void vortex_EqHw_SetLeftGainsCurrent(vortex_t * vortex, u16 a[])
-+static void vortex_EqHw_SetLeftGainsCurrent(vortex_t *vortex, const u16 a[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int ebx;
-@@ -236,7 +236,7 @@ static void vortex_EqHw_SetLeftGainsCurrent(vortex_t * vortex, u16 a[])
- 	}
- }
- 
--static void vortex_EqHw_SetRightGainsCurrent(vortex_t * vortex, u16 a[])
-+static void vortex_EqHw_SetRightGainsCurrent(vortex_t *vortex, const u16 a[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int ebx;
-@@ -309,7 +309,7 @@ static void vortex_EqHw_GetRightGainsCurrent(vortex_t * vortex, u16 a[])
- 
- #endif
- /* EQ band levels settings */
--static void vortex_EqHw_SetLevels(vortex_t * vortex, u16 peaks[])
-+static void vortex_EqHw_SetLevels(vortex_t *vortex, const u16 peaks[])
- {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int i;
-@@ -574,7 +574,7 @@ static int vortex_Eqlzr_SetAllBandsFromActiveCoeffSet(vortex_t * vortex)
- }
- 
- static int
--vortex_Eqlzr_SetAllBands(vortex_t * vortex, u16 gains[], s32 count)
-+vortex_Eqlzr_SetAllBands(vortex_t *vortex, const u16 gains[], s32 count)
- {
- 	eqlzr_t *eq = &(vortex->eq);
- 	int i;
-@@ -852,7 +852,7 @@ static const struct snd_kcontrol_new vortex_levels_kcontrol = {
+  * List of data sources available for each destination
+  */
+-static unsigned int emu1010_src_regs[] = {
++static const unsigned int emu1010_src_regs[] = {
+ 	EMU_SRC_SILENCE,/* 0 */
+ 	EMU_SRC_DOCK_MIC_A1, /* 1 */
+ 	EMU_SRC_DOCK_MIC_B1, /* 2 */
+@@ -240,7 +240,7 @@ static unsigned int emu1010_src_regs[] = {
  };
  
- /* EQ band gain labels. */
--static char *EqBandLabels[10] = {
-+static const char * const EqBandLabels[10] = {
- 	"EQ0 31Hz\0",
- 	"EQ1 63Hz\0",
- 	"EQ2 125Hz\0",
-diff --git a/sound/pci/au88x0/au88x0_eqdata.c b/sound/pci/au88x0/au88x0_eqdata.c
-index 49a52d298b1a..a74f266f0bd0 100644
---- a/sound/pci/au88x0/au88x0_eqdata.c
-+++ b/sound/pci/au88x0/au88x0_eqdata.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Data structs */
- 
--static u16 asEqCoefsZeros[50] = {
-+static const u16 asEqCoefsZeros[50] = {
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-@@ -14,7 +14,7 @@ static u16 asEqCoefsZeros[50] = {
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+ /* 1616(m) cardbus */
+-static unsigned int emu1616_src_regs[] = {
++static const unsigned int emu1616_src_regs[] = {
+ 	EMU_SRC_SILENCE,
+ 	EMU_SRC_DOCK_MIC_A1,
+ 	EMU_SRC_DOCK_MIC_B1,
+@@ -296,7 +296,7 @@ static unsigned int emu1616_src_regs[] = {
+  * Data destinations - physical EMU outputs.
+  * Each destination has an enum mixer control to choose a data source
+  */
+-static unsigned int emu1010_output_dst[] = {
++static const unsigned int emu1010_output_dst[] = {
+ 	EMU_DST_DOCK_DAC1_LEFT1, /* 0 */
+ 	EMU_DST_DOCK_DAC1_RIGHT1, /* 1 */
+ 	EMU_DST_DOCK_DAC2_LEFT1, /* 2 */
+@@ -324,7 +324,7 @@ static unsigned int emu1010_output_dst[] = {
  };
  
--static u16 asEqCoefsPipes[64] = {
-+static const u16 asEqCoefsPipes[64] = {
- 	0x0000, 0x0000,
- 	0x0000, 0x0666, 0x0000, 0x0000, 0x0666,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-@@ -33,7 +33,7 @@ static u16 asEqCoefsPipes[64] = {
- };
+ /* 1616(m) cardbus */
+-static unsigned int emu1616_output_dst[] = {
++static const unsigned int emu1616_output_dst[] = {
+ 	EMU_DST_DOCK_DAC1_LEFT1,
+ 	EMU_DST_DOCK_DAC1_RIGHT1,
+ 	EMU_DST_DOCK_DAC2_LEFT1,
+@@ -350,7 +350,7 @@ static unsigned int emu1616_output_dst[] = {
+  *   capture (EMU32 + I2S links)
+  * Each destination has an enum mixer control to choose a data source
+  */
+-static unsigned int emu1010_input_dst[] = {
++static const unsigned int emu1010_input_dst[] = {
+ 	EMU_DST_ALICE2_EMU32_0,
+ 	EMU_DST_ALICE2_EMU32_1,
+ 	EMU_DST_ALICE2_EMU32_2,
+@@ -1778,8 +1778,8 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 	int err, pcm;
+ 	struct snd_kcontrol *kctl;
+ 	struct snd_card *card = emu->card;
+-	char **c;
+-	static char *emu10k1_remove_ctls[] = {
++	const char * const *c;
++	static const char * const emu10k1_remove_ctls[] = {
+ 		/* no AC97 mono, surround, center/lfe */
+ 		"Master Mono Playback Switch",
+ 		"Master Mono Playback Volume",
+@@ -1793,13 +1793,13 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		"LFE Playback Volume",
+ 		NULL
+ 	};
+-	static char *emu10k1_rename_ctls[] = {
++	static const char * const emu10k1_rename_ctls[] = {
+ 		"Surround Digital Playback Volume", "Surround Playback Volume",
+ 		"Center Digital Playback Volume", "Center Playback Volume",
+ 		"LFE Digital Playback Volume", "LFE Playback Volume",
+ 		NULL
+ 	};
+-	static char *audigy_remove_ctls[] = {
++	static const char * const audigy_remove_ctls[] = {
+ 		/* Master/PCM controls on ac97 of Audigy has no effect */
+ 		/* On the Audigy2 the AC97 playback is piped into
+ 		 * the Philips ADC for 24bit capture */
+@@ -1826,7 +1826,7 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		"External Amplifier",
+ 		NULL
+ 	};
+-	static char *audigy_rename_ctls[] = {
++	static const char * const audigy_rename_ctls[] = {
+ 		/* use conventional names */
+ 		"Wave Playback Volume", "PCM Playback Volume",
+ 		/* "Wave Capture Volume", "PCM Capture Volume", */
+@@ -1836,7 +1836,7 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		"Master Mono Playback Volume", "Phone Output Playback Volume",
+ 		NULL
+ 	};
+-	static char *audigy_rename_ctls_i2c_adc[] = {
++	static const char * const audigy_rename_ctls_i2c_adc[] = {
+ 		//"Analog Mix Capture Volume","OLD Analog Mix Capture Volume",
+ 		"Line Capture Volume", "Analog Mix Capture Volume",
+ 		"Wave Playback Volume", "OLD PCM Playback Volume",
+@@ -1845,7 +1845,7 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		"CD Capture Volume", "IEC958 Optical Capture Volume",
+ 		NULL
+ 	};
+-	static char *audigy_remove_ctls_i2c_adc[] = {
++	static const char * const audigy_remove_ctls_i2c_adc[] = {
+ 		/* On the Audigy2 ZS Notebook
+ 		 * Capture via WM8775  */
+ 		"Mic Capture Volume",
+@@ -1854,7 +1854,7 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		"IEC958 Optical Capture Volume",
+ 		NULL
+ 	};
+-	static char *audigy_remove_ctls_1361t_adc[] = {
++	static const char * const audigy_remove_ctls_1361t_adc[] = {
+ 		/* On the Audigy2 the AC97 playback is piped into
+ 		 * the Philips ADC for 24bit capture */
+ 		"PCM Playback Switch",
+@@ -1872,7 +1872,7 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		"Line2 Capture Volume",
+ 		NULL
+ 	};
+-	static char *audigy_rename_ctls_1361t_adc[] = {
++	static const char * const audigy_rename_ctls_1361t_adc[] = {
+ 		"Master Playback Switch", "Master Capture Switch",
+ 		"Master Playback Volume", "Master Capture Volume",
+ 		"Wave Master Playback Volume", "Master Playback Volume",
+diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
+index 637446f19598..6e20cca9c98f 100644
+--- a/sound/pci/emu10k1/emuproc.c
++++ b/sound/pci/emu10k1/emuproc.c
+@@ -26,10 +26,10 @@ static void snd_emu10k1_proc_spdif_status(struct snd_emu10k1 * emu,
+ 					  int status_reg,
+ 					  int rate_reg)
+ {
+-	static char *clkaccy[4] = { "1000ppm", "50ppm", "variable", "unknown" };
+-	static int samplerate[16] = { 44100, 1, 48000, 32000, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+-	static char *channel[16] = { "unspec", "left", "right", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" };
+-	static char *emphasis[8] = { "none", "50/15 usec 2 channel", "2", "3", "4", "5", "6", "7" };
++	static const char * const clkaccy[4] = { "1000ppm", "50ppm", "variable", "unknown" };
++	static const int samplerate[16] = { 44100, 1, 48000, 32000, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
++	static const char * const channel[16] = { "unspec", "left", "right", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" };
++	static const char * const emphasis[8] = { "none", "50/15 usec 2 channel", "2", "3", "4", "5", "6", "7" };
+ 	unsigned int status, rate = 0;
+ 	
+ 	status = snd_emu10k1_ptr_read(emu, status_reg, 0);
+@@ -67,7 +67,7 @@ static void snd_emu10k1_proc_read(struct snd_info_entry *entry,
+ 				  struct snd_info_buffer *buffer)
+ {
+ 	/* FIXME - output names are in emufx.c too */
+-	static char *creative_outs[32] = {
++	static const char * const creative_outs[32] = {
+ 		/* 00 */ "AC97 Left",
+ 		/* 01 */ "AC97 Right",
+ 		/* 02 */ "Optical IEC958 Left",
+@@ -102,7 +102,7 @@ static void snd_emu10k1_proc_read(struct snd_info_entry *entry,
+ 		/* 31 */ "???"
+ 	};
  
- /* More coef sets can be found in the win2k "inf" file. */
--static auxxEqCoeffSet_t asEqCoefsNormal = {
-+static const auxxEqCoeffSet_t asEqCoefsNormal = {
- 	.LeftCoefs = {
- 		      0x7e60, 0xc19e, 0x0001, 0x0002, 0x0001,
- 		      0x7fa0, 0xc05f, 0x004f, 0x0000, 0xffb1,
-@@ -66,7 +66,7 @@ static auxxEqCoeffSet_t asEqCoefsNormal = {
- 		       0x3e96, 0x3e96, 0x3e96, 0x3e96, 0x3e96}
- };
+-	static char *audigy_outs[64] = {
++	static const char * const audigy_outs[64] = {
+ 		/* 00 */ "Digital Front Left",
+ 		/* 01 */ "Digital Front Right",
+ 		/* 02 */ "Digital Center",
+@@ -172,7 +172,7 @@ static void snd_emu10k1_proc_read(struct snd_info_entry *entry,
+ 	struct snd_emu10k1 *emu = entry->private_data;
+ 	unsigned int val, val1;
+ 	int nefx = emu->audigy ? 64 : 32;
+-	char **outputs = emu->audigy ? audigy_outs : creative_outs;
++	const char * const *outputs = emu->audigy ? audigy_outs : creative_outs;
+ 	int idx;
+ 	
+ 	snd_iprintf(buffer, "EMU10K1\n\n");
+@@ -262,7 +262,7 @@ static void snd_emu10k1_proc_spdif_read(struct snd_info_entry *entry,
+ static void snd_emu10k1_proc_rates_read(struct snd_info_entry *entry, 
+ 				  struct snd_info_buffer *buffer)
+ {
+-	static int samplerate[8] = { 44100, 48000, 96000, 192000, 4, 5, 6, 7 };
++	static const int samplerate[8] = { 44100, 48000, 96000, 192000, 4, 5, 6, 7 };
+ 	struct snd_emu10k1 *emu = entry->private_data;
+ 	unsigned int val, tmp, n;
+ 	val = snd_emu10k1_ptr20_read(emu, CAPTURE_RATE_STATUS, 0);
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index a3f1de7e5fee..e15092ce9848 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -510,7 +510,7 @@ void snd_emu10k1_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned
  
--static u16 eq_gains_normal[20] = {
-+static const u16 eq_gains_normal[20] = {
- 	0x3e96, 0x3e96, 0x3e96, 0x3e96, 0x3e96,
- 	0x3e96, 0x3e96, 0x3e96, 0x3e96, 0x3e96,
- 	0x3e96, 0x3e96, 0x3e96, 0x3e96, 0x3e96,
-@@ -74,22 +74,22 @@ static u16 eq_gains_normal[20] = {
- };
- 
- /* _rodatab60 */
--static u16 eq_gains_zero[10] = {
-+static const u16 eq_gains_zero[10] = {
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000
- };
- 
- /* _rodatab7c:  ProgramPipe */
--static u16 eq_gains_current[12] = {
-+static const u16 eq_gains_current[12] = {
- 	0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
- 	0x7fff,
- 	0x7fff, 0x7fff, 0x7fff
- };
- 
- /* _rodatab78 */
--static u16 eq_states_zero[2] = { 0x0000, 0x0000 };
-+static const u16 eq_states_zero[2] = { 0x0000, 0x0000 };
- 
--static u16 asEqOutStateZeros[48] = {
-+static const u16 asEqOutStateZeros[48] = {
- 	0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000,
-@@ -105,7 +105,7 @@ static u16 asEqOutStateZeros[48] = {
- };
- 
- /*_rodataba0:*/
--static u16 eq_levels[64] = {
-+static const u16 eq_levels[64] = {
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
- 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-diff --git a/sound/pci/au88x0/au88x0_pcm.c b/sound/pci/au88x0/au88x0_pcm.c
-index 2cdb7845f651..d019aa566de3 100644
---- a/sound/pci/au88x0/au88x0_pcm.c
-+++ b/sound/pci/au88x0/au88x0_pcm.c
-@@ -433,14 +433,14 @@ static const struct snd_pcm_ops snd_vortex_playback_ops = {
- *  definitions of capture are omitted here...
- */
- 
--static char *vortex_pcm_prettyname[VORTEX_PCM_LAST] = {
-+static const char * const vortex_pcm_prettyname[VORTEX_PCM_LAST] = {
- 	CARD_NAME " ADB",
- 	CARD_NAME " SPDIF",
- 	CARD_NAME " A3D",
- 	CARD_NAME " WT",
- 	CARD_NAME " I2S",
- };
--static char *vortex_pcm_name[VORTEX_PCM_LAST] = {
-+static const char * const vortex_pcm_name[VORTEX_PCM_LAST] = {
- 	"adb",
- 	"spdif",
- 	"a3d",
+ unsigned int snd_emu10k1_rate_to_pitch(unsigned int rate)
+ {
+-	static u32 logMagTable[128] = {
++	static const u32 logMagTable[128] = {
+ 		0x00000, 0x02dfc, 0x05b9e, 0x088e6, 0x0b5d6, 0x0e26f, 0x10eb3, 0x13aa2,
+ 		0x1663f, 0x1918a, 0x1bc84, 0x1e72e, 0x2118b, 0x23b9a, 0x2655d, 0x28ed5,
+ 		0x2b803, 0x2e0e8, 0x30985, 0x331db, 0x359eb, 0x381b6, 0x3a93d, 0x3d081,
+@@ -528,7 +528,7 @@ unsigned int snd_emu10k1_rate_to_pitch(unsigned int rate)
+ 		0xe829f, 0xe9b31, 0xeb3a9, 0xecc08, 0xee44c, 0xefc78, 0xf148a, 0xf2c83,
+ 		0xf4463, 0xf5c2a, 0xf73da, 0xf8b71, 0xfa2f0, 0xfba57, 0xfd1a7, 0xfe8df
+ 	};
+-	static char logSlopeTable[128] = {
++	static const char logSlopeTable[128] = {
+ 		0x5c, 0x5c, 0x5b, 0x5a, 0x5a, 0x59, 0x58, 0x58,
+ 		0x57, 0x56, 0x56, 0x55, 0x55, 0x54, 0x53, 0x53,
+ 		0x52, 0x52, 0x51, 0x51, 0x50, 0x50, 0x4f, 0x4f,
 -- 
 2.16.4
 
