@@ -7,54 +7,53 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC0C8C00523
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 08:12:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55DCDC00523
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 08:20:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEB0E218AC
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 08:12:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CA1DE222C4
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 08:20:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uHYNwzun"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEB0E218AC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IdWKUBM/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA1DE222C4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21FFE1728;
-	Sun,  5 Jan 2020 09:11:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21FFE1728
+	by alsa0.perex.cz (Postfix) with ESMTPS id CACF7172B;
+	Sun,  5 Jan 2020 09:19:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CACF7172B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578211943;
-	bh=FGFABkngWJ00uZKtVmGlJ0q5rLUKxs/CjZJon3sLFd4=;
+	s=default; t=1578212399;
+	bh=Vj/I0Qj97eVe44zKDEHQ+WcG1+BENtjFc8VtjKZJnm8=;
 	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=uHYNwzunlsmGtQLQYp59baqsks5WJBbFDNyV3fYhxDmPiLVnfgVAJ5T0/ZrDnvHVh
-	 UR78rsvRq6XIPfr2bGqVIaH7Y+1eWg/Jzq1uy0weICHUXpcLGx5Eie49bCTsq5RwJF
-	 s+cV1KQ66Qdz3+xwFYKJq/drGXSIdAEDAQm9R4YU=
+	b=IdWKUBM/ZC3fUhkKygJoEIJp7zF75FsXq5Iyp4f2+jBAKSF3bP6Cu/BhsHmo9kKO2
+	 wFS/LQTGTsPd4eqc+PiXKQ++1UT/UB7RP5jYhcmvASi+hPVwT0RIEDELFh8ejw46EM
+	 Np3lXLFBA+pDPGcvFT35Io8GLHWU1iN746K1JEEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85FEBF8013F;
-	Sun,  5 Jan 2020 09:11:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58937F80140;
+	Sun,  5 Jan 2020 09:19:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E624F8014A; Sun,  5 Jan 2020 09:11:29 +0100 (CET)
+ id 5DFE1F8014A; Sun,  5 Jan 2020 09:19:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7EAEF8013F
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 09:11:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7EAEF8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id A33B4F8013F
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 09:19:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A33B4F8013F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 415ECB1E5
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 08:11:24 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 16D2BB26A
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 08:19:02 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 09:11:19 +0100
-Message-Id: <20200105081119.21396-1-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 09:19:00 +0100
+Message-Id: <20200105081900.21870-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: hda/realtek - Apply mic mute LED quirk
-	for Dell E7xx laptops, too
+Subject: [alsa-devel] [PATCH] ALSA: usb-audio: Use lower hex numbers for IDs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,52 +72,85 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dell E7xx laptops have also mic mute LED that is driven by the
-dell-laptop platform driver.  Bind it with the capture control as
-already done for other models.
+For consistency reason, make all hex numbers with lower alphabets for
+USB ID entries.  It improves grep-ability and reduces careless
+mistakes.
 
-A caveat is that the fixup hook for the mic mute LED has to be applied
-at last, otherwise it results in the invalid override of the callback.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205529
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/usb/format.c |  8 ++++----
+ sound/usb/midi.c   |  4 ++--
+ sound/usb/quirks.c | 14 +++++++-------
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 40e30ea86663..03da83bcd6b9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5844,6 +5844,7 @@ enum {
- 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC288_FIXUP_DELL_XPS_13,
- 	ALC288_FIXUP_DISABLE_AAMIX,
-+	ALC292_FIXUP_DELL_E7X_AAMIX,
- 	ALC292_FIXUP_DELL_E7X,
- 	ALC292_FIXUP_DISABLE_AAMIX,
- 	ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK,
-@@ -6536,12 +6537,19 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC293_FIXUP_DELL1_MIC_NO_PRESENCE
- 	},
--	[ALC292_FIXUP_DELL_E7X] = {
-+	[ALC292_FIXUP_DELL_E7X_AAMIX] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_dell_xps13,
- 		.chained = true,
- 		.chain_id = ALC292_FIXUP_DISABLE_AAMIX
- 	},
-+	[ALC292_FIXUP_DELL_E7X] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = snd_hda_gen_fixup_micmute_led,
-+		/* micmute fixup must be applied at last */
-+		.chained_before = true,
-+		.chain_id = ALC292_FIXUP_DELL_E7X_AAMIX,
-+	},
- 	[ALC298_FIXUP_ALIENWARE_MIC_NO_PRESENCE] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index d79db71305f6..5e7c4c7beff2 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -292,10 +292,10 @@ static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
+ 						struct audioformat *fp)
+ {
+ 	switch (chip->usb_id) {
+-	case USB_ID(0x0E41, 0x4241): /* Line6 Helix */
+-	case USB_ID(0x0E41, 0x4242): /* Line6 Helix Rack */
+-	case USB_ID(0x0E41, 0x4244): /* Line6 Helix LT */
+-	case USB_ID(0x0E41, 0x4246): /* Line6 HX-Stomp */
++	case USB_ID(0x0e41, 0x4241): /* Line6 Helix */
++	case USB_ID(0x0e41, 0x4242): /* Line6 Helix Rack */
++	case USB_ID(0x0e41, 0x4244): /* Line6 Helix LT */
++	case USB_ID(0x0e41, 0x4246): /* Line6 HX-Stomp */
+ 		/* supported rates: 48Khz */
+ 		kfree(fp->rate_table);
+ 		fp->rate_table = kmalloc(sizeof(int), GFP_KERNEL);
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index b737f0ec77d0..392e5fda680c 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1408,8 +1408,8 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
+ 		/*
+ 		 * Some devices only work with 9 bytes packet size:
+ 		 */
+-	case USB_ID(0x0644, 0x800E): /* Tascam US-122L */
+-	case USB_ID(0x0644, 0x800F): /* Tascam US-144 */
++	case USB_ID(0x0644, 0x800e): /* Tascam US-122L */
++	case USB_ID(0x0644, 0x800f): /* Tascam US-144 */
+ 		ep->max_transfer = 9;
+ 		break;
+ 	}
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 82184036437b..11159fcfdcdf 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1393,22 +1393,22 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+ {
+ 	/* devices which do not support reading the sample rate. */
+ 	switch (chip->usb_id) {
+-	case USB_ID(0x041E, 0x4080): /* Creative Live Cam VF0610 */
+-	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
++	case USB_ID(0x041e, 0x4080): /* Creative Live Cam VF0610 */
++	case USB_ID(0x04d8, 0xfeea): /* Benchmark DAC1 Pre */
+ 	case USB_ID(0x0556, 0x0014): /* Phoenix Audio TMX320VC */
+-	case USB_ID(0x05A3, 0x9420): /* ELP HD USB Camera */
++	case USB_ID(0x05a3, 0x9420): /* ELP HD USB Camera */
+ 	case USB_ID(0x05a7, 0x1020): /* Bose Companion 5 */
+-	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
++	case USB_ID(0x074d, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
+ 	case USB_ID(0x1395, 0x740a): /* Sennheiser DECT */
+ 	case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
+-	case USB_ID(0x21B4, 0x0081): /* AudioQuest DragonFly */
++	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
+ 		return true;
+ 	}
+ 
+ 	/* devices of these vendors don't support reading rate, either */
+ 	switch (USB_ID_VENDOR(chip->usb_id)) {
+-	case 0x045E: /* MS Lifecam */
+-	case 0x047F: /* Plantronics */
++	case 0x045e: /* MS Lifecam */
++	case 0x047f: /* Plantronics */
+ 	case 0x1de7: /* Phoenix Audio */
+ 		return true;
+ 	}
 -- 
 2.16.4
 
