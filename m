@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 961ACC47409
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 979D7C33C99
 	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:57:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 13B6024679
+	by mail.kernel.org (Postfix) with ESMTPS id 1240F24677
 	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:57:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="n3EFONia"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13B6024679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZQjEoXky"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1240F24677
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10D1C1819;
-	Sun,  5 Jan 2020 16:19:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10D1C1819
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5AB01812;
+	Sun,  5 Jan 2020 16:20:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5AB01812
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578237636;
-	bh=HXSq3AUmtXKz8oRHphtCgYIQRwheztfjMKRWFxxqCwI=;
+	s=default; t=1578237674;
+	bh=X/WtwWP4dkbCcqL8DrKlL2IqU7uWOorp5TTXKN22BQU=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n3EFONiaMvqrCd2sSK51IuhD/mFK4yAx+ElrOLO+42FMfAi+bF/Xwrnacg2gkVAQv
-	 NSMJUCwrtYXHzMzWsF50l4xCFyOqef2tkKfHtFFpoyq4Z6/wMjs86JYX9J0iqKtkHt
-	 VK0KG6TTBU/INGJr4qKsX1jjp9QTM81M+DWkj5es=
+	b=ZQjEoXkywtGi0/cf9q3QN5oJ84qZseGXNLuWnRmn21CHEEiVjoEhhvo5svyLNJ+Zz
+	 s8oud1MGbQ16RWfB27fLwqSKw4rg92PPKlZ6tRttYIuTENhPXhwA4wH5Jy9pR1RjuH
+	 ocYWFMWqhUpH7EXl/EfNMXHbFcjgAxY3kooro6ho=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5E48F804E1;
-	Sun,  5 Jan 2020 15:50:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEE01F804CC;
+	Sun,  5 Jan 2020 15:50:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5058CF803AD; Sun,  5 Jan 2020 15:49:43 +0100 (CET)
+ id 204A1F803AD; Sun,  5 Jan 2020 15:49:44 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 195DDF802C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3822CF802DB
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 195DDF802C4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3822CF802DB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2A282B2BF
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:34 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id E8CCBAD5F
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:33 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:48:06 +0100
-Message-Id: <20200105144823.29547-52-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:48:02 +0100
+Message-Id: <20200105144823.29547-48-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 51/68] ALSA: wss: More constifications
+Subject: [alsa-devel] [PATCH 47/68] ALSA: es1688: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,46 +75,55 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to the static tables for parameters.
+Apply const prefix to the static resource tables and init tables.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/wss/wss_lib.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/isa/es1688/es1688.c     | 6 +++---
+ sound/isa/es1688/es1688_lib.c | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
-index d37f4642162a..ea5d3cdfe4e4 100644
---- a/sound/isa/wss/wss_lib.c
-+++ b/sound/isa/wss/wss_lib.c
-@@ -38,7 +38,7 @@ MODULE_LICENSE("GPL");
-  *  Some variables
-  */
- 
--static unsigned char freq_bits[14] = {
-+static const unsigned char freq_bits[14] = {
- 	/* 5510 */	0x00 | CS4231_XTAL2,
- 	/* 6620 */	0x0E | CS4231_XTAL2,
- 	/* 8000 */	0x00 | CS4231_XTAL1,
-@@ -72,7 +72,7 @@ static int snd_wss_xrate(struct snd_pcm_runtime *runtime)
- 					  &hw_constraints_rates);
- }
- 
--static unsigned char snd_wss_original_image[32] =
-+static const unsigned char snd_wss_original_image[32] =
+diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
+index 9be89377171b..ff3a05ad99c0 100644
+--- a/sound/isa/es1688/es1688.c
++++ b/sound/isa/es1688/es1688.c
+@@ -84,9 +84,9 @@ static int snd_es1688_legacy_create(struct snd_card *card,
+ 				    struct device *dev, unsigned int n)
  {
- 	0x00,			/* 00/00 - lic */
- 	0x00,			/* 01/01 - ric */
-@@ -108,7 +108,7 @@ static unsigned char snd_wss_original_image[32] =
- 	0x00,			/* 1f/31 - cbrl */
- };
+ 	struct snd_es1688 *chip = card->private_data;
+-	static long possible_ports[] = {0x220, 0x240, 0x260};
+-	static int possible_irqs[] = {5, 9, 10, 7, -1};
+-	static int possible_dmas[] = {1, 3, 0, -1};
++	static const long possible_ports[] = {0x220, 0x240, 0x260};
++	static const int possible_irqs[] = {5, 9, 10, 7, -1};
++	static const int possible_dmas[] = {1, 3, 0, -1};
  
--static unsigned char snd_opti93x_original_image[32] =
-+static const unsigned char snd_opti93x_original_image[32] =
+ 	int i, error;
+ 
+diff --git a/sound/isa/es1688/es1688_lib.c b/sound/isa/es1688/es1688_lib.c
+index 1568d0bfd1a8..1816e55c6edf 100644
+--- a/sound/isa/es1688/es1688_lib.c
++++ b/sound/isa/es1688/es1688_lib.c
+@@ -180,7 +180,7 @@ static int snd_es1688_probe(struct snd_es1688 *chip)
+ 
+ static int snd_es1688_init(struct snd_es1688 * chip, int enable)
  {
- 	0x00,		/* 00/00 - l_mixout_outctrl */
- 	0x00,		/* 01/01 - r_mixout_outctrl */
+-	static int irqs[16] = {-1, -1, 0, -1, -1, 1, -1, 2, -1, 0, 3, -1, -1, -1, -1, -1};
++	static const int irqs[16] = {-1, -1, 0, -1, -1, 1, -1, 2, -1, 0, 3, -1, -1, -1, -1, -1};
+ 	unsigned long flags;
+ 	int cfg, irq_bits, dma, dma_bits, tmp, tmp1;
+ 
+@@ -946,7 +946,7 @@ ES1688_SINGLE("Capture Switch", 0, ES1688_REC_DEV, 4, 1, 1),
+ 
+ #define ES1688_INIT_TABLE_SIZE (sizeof(snd_es1688_init_table)/2)
+ 
+-static unsigned char snd_es1688_init_table[][2] = {
++static const unsigned char snd_es1688_init_table[][2] = {
+ 	{ ES1688_MASTER_DEV, 0 },
+ 	{ ES1688_PCM_DEV, 0 },
+ 	{ ES1688_LINE_DEV, 0 },
 -- 
 2.16.4
 
