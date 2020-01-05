@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF493C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:02:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FA4EC33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:02:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B0B12077B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:02:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9391C2077B
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:02:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SzQmxMZ4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B0B12077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZrHEtcsu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9391C2077B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CF7D17AD;
-	Sun,  5 Jan 2020 16:01:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CF7D17AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E926E17D1;
+	Sun,  5 Jan 2020 16:01:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E926E17D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578236521;
-	bh=TRHFGaI2T8DwwO2alhzpATOXfGZ7ao9OI6Eib07fLsk=;
+	s=default; t=1578236561;
+	bh=lXW2ZjVsONNWLpk8eVcGKvFI42fucZGwNneqQ1/DywY=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SzQmxMZ4Zdn1e2bFCTks1qPVP0PI/7MYrc3S82p/3AASz8ok/jb/nEqjH8V57BJHC
-	 MPXDh5gW238U9i1hCtLjHHzX9UA4Fx/71zk4hMxuNQnLcgqkLU8typpel/K/AxYwim
-	 goNYbtihV/cpGlKxDtCDGU/7NDDY0btl7COodBnY=
+	b=ZrHEtcsu0xhaG0E8MSDRMyaIJRZkj7kFTmXR0XSDSY9YdJpYNNlbWIyGtklNkaxI2
+	 tvrSnAhYTJnExEYzCTjg4ySiXl9yTgYa/E4ps0nZUeX0m0k92ltUkI+wLbENEq6+7q
+	 +SGJzYLsdKrwn2ZKTRVLj/YDg6WRjy60cxRlzmTA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2EA8F8038E;
-	Sun,  5 Jan 2020 15:49:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F2ACF802BC;
+	Sun,  5 Jan 2020 15:49:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75945F8033F; Sun,  5 Jan 2020 15:49:05 +0100 (CET)
+ id 6CF88F80340; Sun,  5 Jan 2020 15:49:06 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74B22F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id C84A1F80279
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74B22F80273
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C84A1F80279
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 6CA0BB1DB
+ by mx2.suse.de (Postfix) with ESMTP id DCA7BB242
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:32 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:31 +0100
-Message-Id: <20200105144823.29547-17-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:39 +0100
+Message-Id: <20200105144823.29547-25-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 16/68] ALSA: ice1712: More constifications
+Subject: [alsa-devel] [PATCH 24/68] ALSA: mixart: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,414 +75,52 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to each possible place: the EEPROM tables, the
-static string arrays, the init verb tables, etc.
+Apply const prefix to each possible place: the string arrays and the
+static tables for volumes.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ice1712/aureon.c       |  8 ++++----
- sound/pci/ice1712/juli.c         |  6 +++---
- sound/pci/ice1712/maya44.c       | 10 +++++-----
- sound/pci/ice1712/phase.c        |  4 ++--
- sound/pci/ice1712/pontis.c       |  2 +-
- sound/pci/ice1712/prodigy192.c   |  2 +-
- sound/pci/ice1712/prodigy_hifi.c | 16 ++++++++--------
- sound/pci/ice1712/psc724.c       |  2 +-
- sound/pci/ice1712/quartet.c      |  8 ++++----
- sound/pci/ice1712/se.c           |  8 ++++----
- sound/pci/ice1712/vt1720_mobo.c  |  4 ++--
- sound/pci/ice1712/wtm.c          |  6 +++---
- 12 files changed, 38 insertions(+), 38 deletions(-)
+ sound/pci/mixart/mixart_hwdep.c | 2 +-
+ sound/pci/mixart/mixart_mixer.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/ice1712/aureon.c b/sound/pci/ice1712/aureon.c
-index 025fe7820620..9a30f6d35d13 100644
---- a/sound/pci/ice1712/aureon.c
-+++ b/sound/pci/ice1712/aureon.c
-@@ -2133,7 +2133,7 @@ static int aureon_init(struct snd_ice1712 *ice)
-  * hence the driver needs to sets up it properly.
-  */
+diff --git a/sound/pci/mixart/mixart_hwdep.c b/sound/pci/mixart/mixart_hwdep.c
+index 92b051c6572d..13dcb2fd0a85 100644
+--- a/sound/pci/mixart/mixart_hwdep.c
++++ b/sound/pci/mixart/mixart_hwdep.c
+@@ -548,7 +548,7 @@ static int mixart_dsp_load(struct mixart_mgr* mgr, int index, const struct firmw
  
--static unsigned char aureon51_eeprom[] = {
-+static const unsigned char aureon51_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x0a,	/* clock 512, spdif-in/ADC, 3DACs */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
- 	[ICE_EEP2_I2S]         = 0xfc,	/* vol, 96k, 24bit, 192k */
-@@ -2149,7 +2149,7 @@ static unsigned char aureon51_eeprom[] = {
- 	[ICE_EEP2_GPIO_STATE2] = 0x00,
- };
- 
--static unsigned char aureon71_eeprom[] = {
-+static const unsigned char aureon71_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x0b,	/* clock 512, spdif-in/ADC, 4DACs */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
- 	[ICE_EEP2_I2S]         = 0xfc,	/* vol, 96k, 24bit, 192k */
-@@ -2166,7 +2166,7 @@ static unsigned char aureon71_eeprom[] = {
- };
- #define prodigy71_eeprom aureon71_eeprom
- 
--static unsigned char aureon71_universe_eeprom[] = {
-+static const unsigned char aureon71_universe_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x2b,	/* clock 512, mpu401, spdif-in/ADC,
- 					 * 4DACs
- 					 */
-@@ -2184,7 +2184,7 @@ static unsigned char aureon71_universe_eeprom[] = {
- 	[ICE_EEP2_GPIO_STATE2] = 0x00,
- };
- 
--static unsigned char prodigy71lt_eeprom[] = {
-+static const unsigned char prodigy71lt_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x4b,	/* clock 384, spdif-in/ADC, 4DACs */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
- 	[ICE_EEP2_I2S]         = 0xfc,	/* vol, 96k, 24bit, 192k */
-diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
-index 079e58ec8b09..7be4eb42f05e 100644
---- a/sound/pci/ice1712/juli.c
-+++ b/sound/pci/ice1712/juli.c
-@@ -397,7 +397,7 @@ static const struct snd_kcontrol_new juli_mute_controls[] = {
- 	},
- };
- 
--static char *slave_vols[] = {
-+static const char * const slave_vols[] = {
- 	PCM_VOLUME,
- 	MONITOR_AN_IN_VOLUME,
- 	MONITOR_DIG_IN_VOLUME,
-@@ -420,7 +420,7 @@ static struct snd_kcontrol *ctl_find(struct snd_card *card,
- 
- static void add_slaves(struct snd_card *card,
- 		       struct snd_kcontrol *master,
--		       char * const *list)
-+		       const char * const *list)
+ int snd_mixart_setup_firmware(struct mixart_mgr *mgr)
  {
- 	for (; *list; list++) {
- 		struct snd_kcontrol *slave = ctl_find(card, *list);
-@@ -651,7 +651,7 @@ static int juli_init(struct snd_ice1712 *ice)
-  * hence the driver needs to sets up it properly.
-  */
- 
--static unsigned char juli_eeprom[] = {
-+static const unsigned char juli_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x2b,	/* clock 512, mpu401, 1xADC, 1xDACs,
- 					   SPDIF in */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
-diff --git a/sound/pci/ice1712/maya44.c b/sound/pci/ice1712/maya44.c
-index c2761e009c67..b46df1821251 100644
---- a/sound/pci/ice1712/maya44.c
-+++ b/sound/pci/ice1712/maya44.c
-@@ -116,7 +116,7 @@ struct maya_vol_info {
- 	unsigned char mux_bits[2];	/* extra bits for ADC mute */
- };
- 
--static struct maya_vol_info vol_info[WM_NUM_VOLS] = {
-+static const struct maya_vol_info vol_info[WM_NUM_VOLS] = {
- 	[WM_VOL_HP] = {
- 		.maxval = 80,
- 		.regs = { WM8776_REG_HEADPHONE_L, WM8776_REG_HEADPHONE_R },
-@@ -158,7 +158,7 @@ static int maya_vol_info(struct snd_kcontrol *kcontrol,
- 			 struct snd_ctl_elem_info *uinfo)
- {
- 	unsigned int idx = kcontrol->private_value;
--	struct maya_vol_info *vol = &vol_info[idx];
-+	const struct maya_vol_info *vol = &vol_info[idx];
- 
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = 2;
-@@ -189,7 +189,7 @@ static int maya_vol_put(struct snd_kcontrol *kcontrol,
- 	struct snd_wm8776 *wm =
- 		&chip->wm[snd_ctl_get_ioff(kcontrol, &ucontrol->id)];
- 	unsigned int idx = kcontrol->private_value;
--	struct maya_vol_info *vol = &vol_info[idx];
-+	const struct maya_vol_info *vol = &vol_info[idx];
- 	unsigned int val, data;
- 	int ch, changed = 0;
- 
-@@ -662,7 +662,7 @@ static const struct snd_pcm_hw_constraint_list dac_rates = {
- /*
-  * chip addresses on I2C bus
-  */
--static unsigned char wm8776_addr[2] = {
-+static const unsigned char wm8776_addr[2] = {
- 	0x34, 0x36, /* codec 0 & 1 */
- };
- 
-@@ -712,7 +712,7 @@ static int maya44_init(struct snd_ice1712 *ice)
-  * hence the driver needs to sets up it properly.
-  */
- 
--static unsigned char maya44_eeprom[] = {
-+static const unsigned char maya44_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x45,
- 		/* clock xin1=49.152MHz, mpu401, 2 stereo ADCs+DACs */
- 	[ICE_EEP2_ACLINK]      = 0x80,
-diff --git a/sound/pci/ice1712/phase.c b/sound/pci/ice1712/phase.c
-index ced4a2bfd08e..1e47e46ab8ac 100644
---- a/sound/pci/ice1712/phase.c
-+++ b/sound/pci/ice1712/phase.c
-@@ -157,7 +157,7 @@ static int phase22_add_controls(struct snd_ice1712 *ice)
- 	return 0;
- }
- 
--static unsigned char phase22_eeprom[] = {
-+static const unsigned char phase22_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x28,  /* clock 512, mpu 401,
- 					spdif-in/1xADC, 1xDACs */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
-@@ -174,7 +174,7 @@ static unsigned char phase22_eeprom[] = {
- 	[ICE_EEP2_GPIO_STATE2] = 0x00,
- };
- 
--static unsigned char phase28_eeprom[] = {
-+static const unsigned char phase28_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x2b,  /* clock 512, mpu401,
- 					spdif-in/1xADC, 4xDACs */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
-diff --git a/sound/pci/ice1712/pontis.c b/sound/pci/ice1712/pontis.c
-index 8ddb6c35a5e6..683909ca147c 100644
---- a/sound/pci/ice1712/pontis.c
-+++ b/sound/pci/ice1712/pontis.c
-@@ -778,7 +778,7 @@ static int pontis_init(struct snd_ice1712 *ice)
-  * hence the driver needs to sets up it properly.
-  */
- 
--static unsigned char pontis_eeprom[] = {
-+static const unsigned char pontis_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x08,	/* clock 256, mpu401, spdif-in/ADC, 1DAC */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
- 	[ICE_EEP2_I2S]         = 0xf8,	/* vol, 96k, 24bit, 192k */
-diff --git a/sound/pci/ice1712/prodigy192.c b/sound/pci/ice1712/prodigy192.c
-index 105716961e39..8df14f63b10d 100644
---- a/sound/pci/ice1712/prodigy192.c
-+++ b/sound/pci/ice1712/prodigy192.c
-@@ -753,7 +753,7 @@ static int prodigy192_init(struct snd_ice1712 *ice)
-  * hence the driver needs to sets up it properly.
-  */
- 
--static unsigned char prodigy71_eeprom[] = {
-+static const unsigned char prodigy71_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x6a,	/* 49MHz crystal, mpu401,
- 					 * spdif-in+ 1 stereo ADC,
- 					 * 3 stereo DACs
-diff --git a/sound/pci/ice1712/prodigy_hifi.c b/sound/pci/ice1712/prodigy_hifi.c
-index ba37f7eab166..91f83cef0e56 100644
---- a/sound/pci/ice1712/prodigy_hifi.c
-+++ b/sound/pci/ice1712/prodigy_hifi.c
-@@ -930,7 +930,7 @@ static int prodigy_hd2_add_controls(struct snd_ice1712 *ice)
- 
- static void wm8766_init(struct snd_ice1712 *ice)
- {
--	static unsigned short wm8766_inits[] = {
-+	static const unsigned short wm8766_inits[] = {
- 		WM8766_RESET,	   0x0000,
- 		WM8766_DAC_CTRL,	0x0120,
- 		WM8766_INT_CTRL,	0x0022, /* I2S Normal Mode, 24 bit */
-@@ -953,7 +953,7 @@ static void wm8766_init(struct snd_ice1712 *ice)
- 
- static void wm8776_init(struct snd_ice1712 *ice)
- {
--	static unsigned short wm8776_inits[] = {
-+	static const unsigned short wm8776_inits[] = {
- 		/* These come first to reduce init pop noise */
- 		WM_ADC_MUX,	0x0003,	/* ADC mute */
- 		/* 0x00c0 replaced by 0x0003 */
-@@ -973,7 +973,7 @@ static void wm8776_init(struct snd_ice1712 *ice)
- #ifdef CONFIG_PM_SLEEP
- static int prodigy_hifi_resume(struct snd_ice1712 *ice)
- {
--	static unsigned short wm8776_reinit_registers[] = {
-+	static const unsigned short wm8776_reinit_registers[] = {
- 		WM_MASTER_CTRL,
- 		WM_DAC_INT,
- 		WM_ADC_INT,
-@@ -1033,7 +1033,7 @@ static int prodigy_hifi_resume(struct snd_ice1712 *ice)
-  */
- static int prodigy_hifi_init(struct snd_ice1712 *ice)
- {
--	static unsigned short wm8776_defaults[] = {
-+	static const unsigned short wm8776_defaults[] = {
- 		WM_MASTER_CTRL,  0x0022, /* 256fs, slave mode */
- 		WM_DAC_INT,	0x0022,	/* I2S, normal polarity, 24bit */
- 		WM_ADC_INT,	0x0022,	/* I2S, normal polarity, 24bit */
-@@ -1108,7 +1108,7 @@ static int prodigy_hifi_init(struct snd_ice1712 *ice)
-  */
- static void ak4396_init(struct snd_ice1712 *ice)
- {
--	static unsigned short ak4396_inits[] = {
-+	static const unsigned short ak4396_inits[] = {
- 		AK4396_CTRL1,	   0x87,   /* I2S Normal Mode, 24 bit */
- 		AK4396_CTRL2,	   0x02,
- 		AK4396_CTRL3,	   0x00, 
-@@ -1180,7 +1180,7 @@ static int prodigy_hd2_init(struct snd_ice1712 *ice)
- }
- 
- 
--static unsigned char prodigy71hifi_eeprom[] = {
-+static const unsigned char prodigy71hifi_eeprom[] = {
- 	0x4b,   /* SYSCONF: clock 512, spdif-in/ADC, 4DACs */
- 	0x80,   /* ACLINK: I2S */
- 	0xfc,   /* I2S: vol, 96k, 24bit, 192k */
-@@ -1196,7 +1196,7 @@ static unsigned char prodigy71hifi_eeprom[] = {
- 	0x00,   /* GPIO_STATE2 */
- };
- 
--static unsigned char prodigyhd2_eeprom[] = {
-+static const unsigned char prodigyhd2_eeprom[] = {
- 	0x4b,   /* SYSCONF: clock 512, spdif-in/ADC, 4DACs */
- 	0x80,   /* ACLINK: I2S */
- 	0xfc,   /* I2S: vol, 96k, 24bit, 192k */
-@@ -1212,7 +1212,7 @@ static unsigned char prodigyhd2_eeprom[] = {
- 	0x00,   /* GPIO_STATE2 */
- };
- 
--static unsigned char fortissimo4_eeprom[] = {
-+static const unsigned char fortissimo4_eeprom[] = {
- 	0x43,   /* SYSCONF: clock 512, ADC, 4DACs */	
- 	0x80,   /* ACLINK: I2S */
- 	0xfc,   /* I2S: vol, 96k, 24bit, 192k */
-diff --git a/sound/pci/ice1712/psc724.c b/sound/pci/ice1712/psc724.c
-index 7287ebed2b5a..7aa3f92040d0 100644
---- a/sound/pci/ice1712/psc724.c
-+++ b/sound/pci/ice1712/psc724.c
-@@ -420,7 +420,7 @@ static void psc724_exit(struct snd_ice1712 *ice)
- }
- 
- /* PSC724 has buggy EEPROM (no 96&192kHz, all FFh GPIOs), so override it here */
--static unsigned char psc724_eeprom[] = {
-+static const unsigned char psc724_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]	= 0x42,	/* 49.152MHz, 1 ADC, 3 DACs */
- 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
- 	[ICE_EEP2_I2S]		= 0xf0,	/* I2S volume, 96kHz, 24bit */
-diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
-index bfd811a08d90..866596205710 100644
---- a/sound/pci/ice1712/quartet.c
-+++ b/sound/pci/ice1712/quartet.c
-@@ -657,7 +657,7 @@ static int qtet_php_put(struct snd_kcontrol *kcontrol,
- 	.get_register = get_##xreg,\
- 	.texts = {xtext1, xtext2} }
- 
--static struct qtet_kcontrol_private qtet_privates[] = {
-+static const struct qtet_kcontrol_private qtet_privates[] = {
- 	PRIV_ENUM2(IN12_SEL, CPLD_IN12_SEL, cpld, "An In 1/2", "An In 3/4"),
- 	PRIV_ENUM2(IN34_SEL, CPLD_IN34_SEL, cpld, "An In 3/4", "IEC958 In"),
- 	PRIV_ENUM2(AIN34_SEL, SCR_AIN34_SEL, scr, "Line In 3/4", "Hi-Z"),
-@@ -757,7 +757,7 @@ static const struct snd_kcontrol_new qtet_controls[] = {
- 	QTET_CONTROL("Output 3/4 to Monitor 1/2", sw, OUT34_MON12),
- };
- 
--static char *slave_vols[] = {
-+static const char * const slave_vols[] = {
- 	PCM_12_PLAYBACK_VOLUME,
- 	PCM_34_PLAYBACK_VOLUME,
- 	NULL
-@@ -777,7 +777,7 @@ static struct snd_kcontrol *ctl_find(struct snd_card *card,
- }
- 
- static void add_slaves(struct snd_card *card,
--		       struct snd_kcontrol *master, char * const *list)
-+		       struct snd_kcontrol *master, const char * const *list)
- {
- 	for (; *list; list++) {
- 		struct snd_kcontrol *slave = ctl_find(card, *list);
-@@ -1053,7 +1053,7 @@ static int qtet_init(struct snd_ice1712 *ice)
- 	return 0;
- }
- 
--static unsigned char qtet_eeprom[] = {
-+static const unsigned char qtet_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x28,	/* clock 256(24MHz), mpu401, 1xADC,
- 					   1xDACs, SPDIF in */
- 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
-diff --git a/sound/pci/ice1712/se.c b/sound/pci/ice1712/se.c
-index fdc502783e07..ffa9d8860a5a 100644
---- a/sound/pci/ice1712/se.c
-+++ b/sound/pci/ice1712/se.c
-@@ -245,7 +245,7 @@ static const char * const se200pci_sel[] = {
- static void se200pci_WM8776_set_input_selector(struct snd_ice1712 *ice,
- 					       unsigned int sel)
- {
--	static unsigned char vals[] = {
-+	static const unsigned char vals[] = {
- 		/* LINE, CD, MIC, ALL, GND */
- 		0x10, 0x04, 0x08, 0x1c, 0x03
+-	static char *fw_files[3] = {
++	static const char * const fw_files[3] = {
+ 		"miXart8.xlx", "miXart8.elf", "miXart8AES.xlx"
  	};
-@@ -288,7 +288,7 @@ static void se200pci_WM8776_set_agc(struct snd_ice1712 *ice, unsigned int agc)
- static void se200pci_WM8776_init(struct snd_ice1712 *ice)
- {
- 	int i;
--	static unsigned short default_values[] = {
-+	static const unsigned short default_values[] = {
- 		0x100, 0x100, 0x100,
- 		0x100, 0x100, 0x100,
- 		0x000, 0x090, 0x000, 0x000,
-@@ -701,7 +701,7 @@ static int se_add_controls(struct snd_ice1712 *ice)
- /*  entry point                                                             */
- /****************************************************************************/
+ 	char path[32];
+diff --git a/sound/pci/mixart/mixart_mixer.c b/sound/pci/mixart/mixart_mixer.c
+index 1378f9ee70a9..d2e7c3381267 100644
+--- a/sound/pci/mixart/mixart_mixer.c
++++ b/sound/pci/mixart/mixart_mixer.c
+@@ -20,7 +20,7 @@
+ #include <sound/tlv.h>
+ #include "mixart_mixer.h"
  
--static unsigned char se200pci_eeprom[] = {
-+static const unsigned char se200pci_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]	= 0x4b,	/* 49.152Hz, spdif-in/ADC, 4DACs */
- 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
- 	[ICE_EEP2_I2S]		= 0x78,	/* 96k-ok, 24bit, 192k-ok */
-@@ -720,7 +720,7 @@ static unsigned char se200pci_eeprom[] = {
- 	[ICE_EEP2_GPIO_STATE2]	= 0x07, /* WM8766 ML/MC/MD */
+-static u32 mixart_analog_level[256] = {
++static const u32 mixart_analog_level[256] = {
+ 	0xc2c00000,		/* [000] -96.0 dB */
+ 	0xc2bf0000,		/* [001] -95.5 dB */
+ 	0xc2be0000,		/* [002] -95.0 dB */
+@@ -443,7 +443,7 @@ static const struct snd_kcontrol_new mixart_control_output_switch = {
+ 	.put =          mixart_audio_sw_put
  };
  
--static unsigned char se90pci_eeprom[] = {
-+static const unsigned char se90pci_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]	= 0x4b,	/* 49.152Hz, spdif-in/ADC, 4DACs */
- 	[ICE_EEP2_ACLINK]	= 0x80,	/* I2S */
- 	[ICE_EEP2_I2S]		= 0x78,	/* 96k-ok, 24bit, 192k-ok */
-diff --git a/sound/pci/ice1712/vt1720_mobo.c b/sound/pci/ice1712/vt1720_mobo.c
-index 3d240125a644..47470b07197c 100644
---- a/sound/pci/ice1712/vt1720_mobo.c
-+++ b/sound/pci/ice1712/vt1720_mobo.c
-@@ -39,7 +39,7 @@ static int k8x800_add_controls(struct snd_ice1712 *ice)
- 
- /* EEPROM image */
- 
--static unsigned char k8x800_eeprom[] = {
-+static const unsigned char k8x800_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x01,	/* clock 256, 1ADC, 2DACs */
- 	[ICE_EEP2_ACLINK]      = 0x02,	/* ACLINK, packed */
- 	[ICE_EEP2_I2S]         = 0x00,	/* - */
-@@ -55,7 +55,7 @@ static unsigned char k8x800_eeprom[] = {
- 	[ICE_EEP2_GPIO_STATE2] = 0x00,	/* - */
- };
- 
--static unsigned char sn25p_eeprom[] = {
-+static const unsigned char sn25p_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]     = 0x01,	/* clock 256, 1ADC, 2DACs */
- 	[ICE_EEP2_ACLINK]      = 0x02,	/* ACLINK, packed */
- 	[ICE_EEP2_I2S]         = 0x00,	/* - */
-diff --git a/sound/pci/ice1712/wtm.c b/sound/pci/ice1712/wtm.c
-index 4a7315ad51e8..f613f0067d8c 100644
---- a/sound/pci/ice1712/wtm.c
-+++ b/sound/pci/ice1712/wtm.c
-@@ -567,12 +567,12 @@ static int wtm_add_controls(struct snd_ice1712 *ice)
- 
- static int wtm_init(struct snd_ice1712 *ice)
- {
--	static unsigned short stac_inits_wtm[] = {
-+	static const unsigned short stac_inits_wtm[] = {
- 		STAC946X_RESET, 0,
- 		STAC946X_MASTER_CLOCKING, 0x11,
- 		(unsigned short)-1
- 	};
--	unsigned short *p;
-+	const unsigned short *p;
- 	struct wtm_spec *spec;
- 
- 	/*WTM 192M*/
-@@ -599,7 +599,7 @@ static int wtm_init(struct snd_ice1712 *ice)
- }
- 
- 
--static unsigned char wtm_eeprom[] = {
-+static const unsigned char wtm_eeprom[] = {
- 	[ICE_EEP2_SYSCONF]      = 0x67, /*SYSCONF: clock 192KHz, mpu401,
- 							4ADC, 8DAC */
- 	[ICE_EEP2_ACLINK]       = 0x80, /* ACLINK : I2S */
+-static u32 mixart_digital_level[256] = {
++static const u32 mixart_digital_level[256] = {
+ 	0x00000000,		/* [000] = 0.00e+000 = mute if <= -109.5dB */
+ 	0x366e1c7a,		/* [001] = 3.55e-006 = pow(10.0, 0.05 * -109.0dB) */
+ 	0x367c3860,		/* [002] = 3.76e-006 = pow(10.0, 0.05 * -108.5dB) */
 -- 
 2.16.4
 
