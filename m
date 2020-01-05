@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17B46C33C9A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CE0BC33C8C
 	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 16:07:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9007E222C4
+	by mail.kernel.org (Postfix) with ESMTPS id 8C1F121734
 	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 16:07:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="evINUyHx"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9007E222C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cya0JxmH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C1F121734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 548911841;
-	Sun,  5 Jan 2020 16:29:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 548911841
+	by alsa0.perex.cz (Postfix) with ESMTPS id 567DE1858;
+	Sun,  5 Jan 2020 16:30:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 567DE1858
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578238195;
-	bh=/DDIBMefje2SxifJtdfnsAWfKoSTPkGG6R4NQTQNKoI=;
+	s=default; t=1578238268;
+	bh=ALYRSDPCGzEUEL8xOcDLrYxefJ6DYU6E3oPl1HQdw+8=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=evINUyHxQTBgrQcMp24G4Rk/auVfH9C9dSXE8IBTBrnp+BvmtO9uHaBCrv1XnKKEE
-	 TJzEIWdInclZgQGwnzebyl7iGIHhzPhEKrPiOLZZZ9sAQrGM1AYlcuVjYd/Fev3JK9
-	 0lYw0wlrbOST30UK5hszn38P3b3XQI3ybdbR+9jY=
+	b=cya0JxmHuSyjBLCu750yzV16gxtZgT+C1IJInJQtQSNZZgnfaPFJAIoTIzd4ngU+P
+	 ytME8dezivUmy6ah6oXMSJGaUUXRPrY5Rb70NLc3t/Bj0p564/7rvPrnwH4ozjCy7c
+	 74cZ7Qh5PWjWPA/d/1CTBeIOJiz9Jeqd2NICavvE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BFAAF805C7;
-	Sun,  5 Jan 2020 15:50:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D3D4F805D8;
+	Sun,  5 Jan 2020 15:50:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A44E3F803EA; Sun,  5 Jan 2020 15:49:59 +0100 (CET)
+ id ABEEEF803F3; Sun,  5 Jan 2020 15:50:01 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63DFEF802F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68226F802F8
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63DFEF802F7
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68226F802F8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CAF97B2CE
+ by mx2.suse.de (Postfix) with ESMTP id BD09CB2CD
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:34 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:48:18 +0100
-Message-Id: <20200105144823.29547-64-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:48:17 +0100
+Message-Id: <20200105144823.29547-63-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 63/68] ALSA: ens137x: More constification
+Subject: [alsa-devel] [PATCH 62/68] ALSA: echoaudio: More constification
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,28 +75,28 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to the quirk entry, forgotten in the previous fix.
+Apply const prefix to the static channel list table.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ens1370.c | 2 +-
+ sound/pci/echoaudio/echoaudio.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index 7ef9b7a1b2e6..d9acef0826a9 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -1574,7 +1574,7 @@ static int es1371_quirk_lookup(struct ensoniq *ensoniq,
- 	return 0;
- }
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index dae3a853a6e1..994ed51f813f 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -23,7 +23,7 @@ MODULE_PARM_DESC(id, "ID string for " ECHOCARD_NAME " soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable " ECHOCARD_NAME " soundcard.");
  
--static struct es1371_quirk es1371_spdif_present[] = {
-+static const struct es1371_quirk es1371_spdif_present[] = {
- 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_C },
- 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_D },
- 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_E },
+-static unsigned int channels_list[10] = {1, 2, 4, 6, 8, 10, 12, 14, 16, 999999};
++static const unsigned int channels_list[10] = {1, 2, 4, 6, 8, 10, 12, 14, 16, 999999};
+ static const DECLARE_TLV_DB_SCALE(db_scale_output_gain, -12800, 100, 1);
+ 
+ 
 -- 
 2.16.4
 
