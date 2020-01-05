@@ -2,85 +2,61 @@ Return-Path: <SRS0=7vEg=22=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5804BC33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 10:55:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27294C33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:49:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6635B21775
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 10:55:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2609C20801
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:49:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OjeFW6ZJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6635B21775
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qssLLXcm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2609C20801
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 153D81726;
-	Sun,  5 Jan 2020 11:54:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 153D81726
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCB90174B;
+	Sun,  5 Jan 2020 15:48:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCB90174B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578221702;
-	bh=WXeNOVF+HRfW2WgYqxUqJOw25nVe/0bop+3+foKBkZ4=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1578235771;
+	bh=4Z8+dVOtfKUnUWFyzE3mOW5ypHNHGNUBcH9FwXiXPcU=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OjeFW6ZJgt8mzadOvejKIp0Ln+7epKcSxx1O4ybLT3g+YyWzve9CIaF14R4fuKBmh
-	 Oqw0grK15sJFmNfPB7QehkXJoga81LUx7pu6kyMTKbNhmewQzBWQxoip20ete6MGUU
-	 mKz2BXXvApqgkp6ZJVSrsxTkQxSf+6xTH38KT8rM=
+	b=qssLLXcmF0usD1oK4TWAosugwtepQc6BQoQHP/E3VWSYYga6gpyPXLJ7o9lsN7PUT
+	 OHcvsFusm6FRK7Ozzh+QGSBoxslJeUvI39dL3AcjVEmsMitOTGMfjTDCZY/SIIkhhA
+	 1YlZFsxLVLQC6w2lRF5kbw8oiQljN7D5kFReNTJw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95B24F8013F;
-	Sun,  5 Jan 2020 11:54:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C99BF802DD;
+	Sun,  5 Jan 2020 15:48:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8188CF80140; Sun,  5 Jan 2020 11:54:09 +0100 (CET)
-Received: from imap2.colo.codethink.co.uk (imap2.colo.codethink.co.uk
- [78.40.148.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 09CAFF80278; Sun,  5 Jan 2020 15:48:35 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5634F8013F
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 11:54:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5634F8013F
-Received: from [78.40.148.177] (helo=localhost)
- by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
- id 1io3Xg-0007jP-TJ; Sun, 05 Jan 2020 10:53:57 +0000
-MIME-Version: 1.0
-Date: Sun, 05 Jan 2020 10:53:56 +0000
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-To: Dmitry Osipenko <digetx@gmail.com>
-In-Reply-To: <680e2dfd-6f4f-5c96-63b7-97520961dc82@gmail.com>
-References: <20191018154833.7560-1-ben.dooks@codethink.co.uk>
- <20191018154833.7560-3-ben.dooks@codethink.co.uk>
- <d2110a1f-c1de-e2c5-a1ff-5eb4c5d3e1da@gmail.com>
- <b4e2ec44-bc89-b5ca-cfa7-a6d5c45a9c94@codethink.co.uk>
- <a11ba33e-5ffb-c5c6-04f5-0e031877c55f@gmail.com>
- <621fa27d-9259-2949-9cf5-d2eda5cb0677@gmail.com>
- <a0f027d9-e9e0-d76c-1e40-002fdc37eb5f@nvidia.com>
- <d43d518d-9336-a011-2a69-3f9331f6d0b4@codethink.co.uk>
- <aba4edd6-0ea5-5e95-c5a0-9e749587c763@nvidia.com>
- <449bdc3c-bf82-7cc4-6704-440dd100ca3a@gmail.com>
- <5d3ae629-5d30-0930-5dd1-15161e64926e@codethink.co.uk>
- <9daeeb94-2b90-18b8-2e1e-daae5acf079d@gmail.com>
- <fd73f68c-80f5-ac80-f6e4-42256d3df76d@codethink.co.uk>
- <37beb96a-a525-c72f-a7e1-e9ef5d61f3b2@gmail.com>
- <29db3df4-6f51-7c0f-1eef-90171f1d233a@codethink.co.uk>
- <9a5447e2-155c-7e6e-b8f1-95523c6f42c6@gmail.com>
- <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
- <680e2dfd-6f4f-5c96-63b7-97520961dc82@gmail.com>
-User-Agent: Roundcube Webmail/1.4.2
-Message-ID: <0e0cd260e39ad293edb881da1c565510@codethink.co.uk>
-X-Sender: ben.dooks@codethink.co.uk
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
- Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org,
- Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [alsa-devel] [PATCH v5 2/7] ASoC: tegra: Allow 24bit and 32bit
-	samples
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8379F80116
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8379F80116
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A2458ADF0
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:31 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Sun,  5 Jan 2020 15:47:17 +0100
+Message-Id: <20200105144823.29547-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
+References: <20200105144823.29547-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 02/68] ALSA: aoa: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,24 +69,99 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CgpPbiAyMDIwLTAxLTA1IDAxOjQ4LCBEbWl0cnkgT3NpcGVua28gd3JvdGU6Cj4gMDUuMDEuMjAy
-MCAwMzowNCwgQmVuIERvb2tzINC/0LjRiNC10YI6Cj4+IFtzbmlwXQo+PiAKPj4gSSd2ZSBqdXN0
-IGdvbmUgdGhyb3VnaCB0ZXN0aW5nLgo+PiAKPj4gU29tZSBzaW1wbGUgZGF0YSB0ZXN0cyBzaG93
-IDE2IGFuZCAzMi1iaXRzIHdvcmsuCj4+IAo+PiBUaGUgMjQgYml0IGNhc2Ugc2VlbXMgdG8gYmUg
-d2VpcmQsIGl0IGxvb2tzIGxpa2UgdGhlIDI0LWJpdCBleHBlY3RzCj4+IDI0IGJpdCBzYW1wbGVz
-IGluIDMyIGJpdCB3b3Jkcy4gSSBjYW4ndCBzZWUgYW55IHBhY2tpbmcgb3B0aW9ucyB0bwo+PiBk
-byAyNCBiaXQgaW4gMjQgYml0LCBzbyB3ZSBtYXkgaGF2ZSB0byByZW1vdmUgMjQgYml0IHNhbXBs
-ZSBzdXBwb3J0Cj4+ICh3aGljaCBpcyBhIHNoYW1lKQo+PiAKPj4gTXkgcHJlZmVyZW5jZSBpcyB0
-byByZW1vdmUgdGhlIDI0LWJpdCBzdXBwb3J0IGFuZCBrZWVwIHRoZSAzMiBiaXQgaW4uCj4+IAo+
-IAo+IEludGVyZXN0aW5nLi4gSm9uLCBjb3VsZCB5b3UgcGxlYXNlIGNvbmZpcm0gdGhhdCAyNGJp
-dCBmb3JtYXQgaXNuJ3QKPiB1c2FibGUgb24gVDMwPwoKSWYgdGhlcmUgaXMgYW4gb3B0aW9uIG9m
-IDI0IHBhY2tlZCBpbnRvIDMyLCB0aGVuIEkgdGhpbmsgdGhhdCB3b3VsZCAKd29yay4KCkkgY2Fu
-IHRyeSB0ZXN0aW5nIHRoYXQgd2l0aCByYXcgZGF0YSBvbiBNb25kYXkuCgotLSAKQmVuCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Apply const prefix at every place where appropriate: the static
+register tables, the volume tables and the callback tables.
+
+Just for minor optimization and no functional changes.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/aoa/codecs/onyx.c           | 4 ++--
+ sound/aoa/codecs/tas-basstreble.h | 4 ++--
+ sound/aoa/codecs/tas-gain-table.h | 2 +-
+ sound/aoa/soundbus/i2sbus/core.c  | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
+index f85bc8a1e2a6..12028b3e2eee 100644
+--- a/sound/aoa/codecs/onyx.c
++++ b/sound/aoa/codecs/onyx.c
+@@ -543,7 +543,7 @@ static const struct snd_kcontrol_new onyx_spdif_ctrl = {
+ 
+ /* our registers */
+ 
+-static u8 register_map[] = {
++static const u8 register_map[] = {
+ 	ONYX_REG_DAC_ATTEN_LEFT,
+ 	ONYX_REG_DAC_ATTEN_RIGHT,
+ 	ONYX_REG_CONTROL,
+@@ -559,7 +559,7 @@ static u8 register_map[] = {
+ 	ONYX_REG_DIG_INFO4
+ };
+ 
+-static u8 initial_values[ARRAY_SIZE(register_map)] = {
++static const u8 initial_values[ARRAY_SIZE(register_map)] = {
+ 	0x80, 0x80, /* muted */
+ 	ONYX_MRST | ONYX_SRST, /* but handled specially! */
+ 	ONYX_MUTE_LEFT | ONYX_MUTE_RIGHT,
+diff --git a/sound/aoa/codecs/tas-basstreble.h b/sound/aoa/codecs/tas-basstreble.h
+index 770935af66af..14dc4e9eea73 100644
+--- a/sound/aoa/codecs/tas-basstreble.h
++++ b/sound/aoa/codecs/tas-basstreble.h
+@@ -13,7 +13,7 @@
+ #define TAS3004_TREBLE_ZERO	36
+ #define TAS3004_BASS_ZERO	36
+ 
+-static u8 tas3004_treble_table[] = {
++static const u8 tas3004_treble_table[] = {
+ 	150, /* -18 dB */
+ 	149,
+ 	148,
+@@ -99,7 +99,7 @@ static inline u8 tas3004_treble(int idx)
+  * I have also ignored completely differences of
+  * +/- 1
+  */
+-static s8 tas3004_bass_diff_to_treble[] = {
++static const s8 tas3004_bass_diff_to_treble[] = {
+ 	2, /* 7 dB, offset 50 */
+ 	2,
+ 	2,
+diff --git a/sound/aoa/codecs/tas-gain-table.h b/sound/aoa/codecs/tas-gain-table.h
+index 77b8e7dc55fd..c9ea01488181 100644
+--- a/sound/aoa/codecs/tas-gain-table.h
++++ b/sound/aoa/codecs/tas-gain-table.h
+@@ -27,7 +27,7 @@ int main() {
+  * as easy as calculating
+  *      hwvalue = 1048576.0*exp(0.057564628*dB*2)
+  * :) */
+-static int tas_gaintable[] = {
++static const int tas_gaintable[] = {
+ 	0x000000, /* -infinity dB */
+ 	0x00014b, /* -70.0 dB */
+ 	0x00015f, /* -69.5 dB */
+diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
+index 17df288fbe98..faf6b03131ee 100644
+--- a/sound/aoa/soundbus/i2sbus/core.c
++++ b/sound/aoa/soundbus/i2sbus/core.c
+@@ -160,7 +160,7 @@ static int i2sbus_add_dev(struct macio_dev *macio,
+ 	static const char *rnames[] = { "i2sbus: %pOFn (control)",
+ 					"i2sbus: %pOFn (tx)",
+ 					"i2sbus: %pOFn (rx)" };
+-	static irq_handler_t ints[] = {
++	static const irq_handler_t ints[] = {
+ 		i2sbus_bus_intr,
+ 		i2sbus_tx_intr,
+ 		i2sbus_rx_intr
+-- 
+2.16.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
