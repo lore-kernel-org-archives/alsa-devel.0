@@ -2,80 +2,61 @@ Return-Path: <SRS0=7vEg=22=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE849C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 16:06:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17B46C33C9A
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 16:07:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6620E21582
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 16:06:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9007E222C4
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 16:07:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SjRg5qf/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="y/Boz9n+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6620E21582
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="evINUyHx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9007E222C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BF13170E;
-	Sun,  5 Jan 2020 17:05:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BF13170E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 548911841;
+	Sun,  5 Jan 2020 16:29:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 548911841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578240402;
-	bh=ObMU/sNZ4fWLhicAd6XO9Rn6ZQ/D6+AstxFfTrm4s0c=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1578238195;
+	bh=/DDIBMefje2SxifJtdfnsAWfKoSTPkGG6R4NQTQNKoI=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SjRg5qf/EyekVjeCd34CCNhPVv/E8iGadsKcFGfRC30pbkuEyLznmqz+wf+E/HoYE
-	 TitVueEoxTI95o6DVRuXVE7yD0r+CA3rq+fpCUz3Xq809buPdqUl8nGt5DvFCArJmt
-	 CiSLHD/SaI9d3wNzdXZFIkZl8mwrmAEenUHJbKTo=
+	b=evINUyHxQTBgrQcMp24G4Rk/auVfH9C9dSXE8IBTBrnp+BvmtO9uHaBCrv1XnKKEE
+	 TJzEIWdInclZgQGwnzebyl7iGIHhzPhEKrPiOLZZZ9sAQrGM1AYlcuVjYd/Fev3JK9
+	 0lYw0wlrbOST30UK5hszn38P3b3XQI3ybdbR+9jY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6265F80116;
-	Sun,  5 Jan 2020 17:05:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BFAAF805C7;
+	Sun,  5 Jan 2020 15:50:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 740D5F8014A; Sun,  5 Jan 2020 17:05:50 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id A44E3F803EA; Sun,  5 Jan 2020 15:49:59 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03C7CF80116
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 17:05:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03C7CF80116
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="y/Boz9n+"
-Received: from localhost (unknown [73.61.17.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 118A020801;
- Sun,  5 Jan 2020 15:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1578238239;
- bh=ZkiRfHZglT0lasFVG7b5RxLqwyxF3NGLHxSOFnCrxxQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=y/Boz9n+QZFqJvZXiDOTGT1J4y5Cku/sHK2PGokgmCnWvaWBOAGfqF4sun7a5m2XR
- CUQC3OcssriFtWn5V2KNeeN7watuCxX7IAfLPd/hveaaJkkG0KguuQ51A5bgZ0PAxT
- 7IKDfIBo4LE0LQrM6bjCDbqrtLTGpKzsfQ5O7ZHo=
-Date: Sun, 5 Jan 2020 10:30:38 -0500
-From: Sasha Levin <sashal@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Message-ID: <20200105153038.GO16372@sasha-vm>
-References: <20191227174055.4923-1-sashal@kernel.org>
- <20191227174055.4923-6-sashal@kernel.org>
- <20191227224430.GO27497@sirena.org.uk>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191227224430.GO27497@sirena.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Tzung-Bi Shih <tzungbi@google.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH AUTOSEL 5.4 006/187] ASoC: max98090: exit
- workaround earlier if PLL is locked
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63DFEF802F7
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63DFEF802F7
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id CAF97B2CE
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:34 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Date: Sun,  5 Jan 2020 15:48:18 +0100
+Message-Id: <20200105144823.29547-64-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
+References: <20200105144823.29547-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 63/68] ALSA: ens137x: More constification
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,29 +69,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Dec 27, 2019 at 10:44:30PM +0000, Mark Brown wrote:
->On Fri, Dec 27, 2019 at 12:37:54PM -0500, Sasha Levin wrote:
->> From: Tzung-Bi Shih <tzungbi@google.com>
->>
->> [ Upstream commit 6f49919d11690a9b5614445ba30fde18083fdd63 ]
->>
->> According to the datasheet, PLL lock time typically takes 2 msec and
->> at most takes 7 msec.
->
->Same here and for the other max98090 patch - once things are
->fixed it'll be OK.
+Apply const prefix to the quirk entry, forgotten in the previous fix.
 
-I've dropped both. Could you ping me when this is settled and I'll grab
-these and any follow up fixes?
+Just for minor optimization and no functional changes.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/ens1370.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
+index 7ef9b7a1b2e6..d9acef0826a9 100644
+--- a/sound/pci/ens1370.c
++++ b/sound/pci/ens1370.c
+@@ -1574,7 +1574,7 @@ static int es1371_quirk_lookup(struct ensoniq *ensoniq,
+ 	return 0;
+ }
+ 
+-static struct es1371_quirk es1371_spdif_present[] = {
++static const struct es1371_quirk es1371_spdif_present[] = {
+ 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_C },
+ 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_D },
+ 	{ .vid = PCI_VENDOR_ID_ENSONIQ, .did = PCI_DEVICE_ID_ENSONIQ_CT5880, .rev = CT5880REV_CT5880_E },
 -- 
-Thanks,
-Sasha
+2.16.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
