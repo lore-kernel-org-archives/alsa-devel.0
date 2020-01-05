@@ -2,53 +2,89 @@ Return-Path: <SRS0=7vEg=22=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7892AC32767
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 00:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAD43C32767
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 01:49:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F98720801
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 00:05:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E29D524655
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 01:49:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Rn86H3Cb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F98720801
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="apAbBYMh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="u8C5/gnQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E29D524655
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4ED68175E;
-	Sun,  5 Jan 2020 01:04:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ED68175E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C352172D;
+	Sun,  5 Jan 2020 02:48:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C352172D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578182718;
-	bh=c+46kNlYiz/uJFiZz0vybCUQyqfyGivYJdfNN0BsR1E=;
+	s=default; t=1578188977;
+	bh=5oZcMPd6oPjzHQj7gS4Z/EQl9bg/SrMLLjMevqI938A=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Rn86H3CbqC+zOXuX8Cid1/6X7VEqXZ19ODz4qEbZEfNNGXwSW4CB52ta0zLynYHJc
-	 6mnka8/AY9il+pBqCoWrQ1dMeWpsTSvY4G64PZUNzlaj7zHQsGV8BzFb0Fk2crPOfW
-	 V5A90SceO/irRNbIwK2rVFtd3cEMcfnIorbaSGO0=
+	b=apAbBYMhVqPFSOzFfma8Q+0pMET1bQBw7mZbFE5xACJFWtYhI46Q9wkhncIjoqW/M
+	 rTFMBYXN/SUnWQwp9MbwXCW+3DR2MSAzclgw0yqdhA98c4r/j0rKhfyrPFUsZULB0e
+	 zz5fsYIUzBU7MxLo5mt8fV4B5XDm++gbMJz/WWcA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8016F8014F;
-	Sun,  5 Jan 2020 01:04:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27D4FF80100;
+	Sun,  5 Jan 2020 02:48:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFE76F80157; Sun,  5 Jan 2020 01:04:23 +0100 (CET)
-Received: from imap2.colo.codethink.co.uk (imap2.colo.codethink.co.uk
- [78.40.148.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1D86BF80157; Sun,  5 Jan 2020 02:48:45 +0100 (CET)
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com
+ [IPv6:2a00:1450:4864:20::241])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51068F80100
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 01:04:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51068F80100
-Received: from [167.98.27.226] (helo=[10.35.5.173])
- by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
- id 1intOn-0006kh-GO; Sun, 05 Jan 2020 00:04:05 +0000
-To: Dmitry Osipenko <digetx@gmail.com>, Jon Hunter <jonathanh@nvidia.com>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4916DF80100
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 02:48:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4916DF80100
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="u8C5/gnQ"
+Received: by mail-lj1-x241.google.com with SMTP id y6so39430378lji.0
+ for <alsa-devel@alsa-project.org>; Sat, 04 Jan 2020 17:48:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=YYag+Bc8AuQ7klC6LwKp3Hqd/h8+XJbeqg437KyxSlA=;
+ b=u8C5/gnQacpAqtDL/CmqTIYYzjgQHBG0/50u/4qrhiaFI6jaqtiZim+Cm8sK6HtLYn
+ cx6aggoW001ADqCIW1ikAc3NdzHazWvQkCiI1W+FjL0kSmQDpwChCekTYrZpEqCivhz1
+ +stTvqeCxVdwRi/QdJJiSw1YwPQprgTL1zbIewtrJDU9VUOlFtlqLCVhe1zGXCON3pEI
+ Ufr2CZ7/yeqohf/PVG2yrzCKD5lWl04tWqDkUzQx4+qSLu8fCrM/H1QYPDIT6LcIGKT6
+ XwLonkvX2jonmgz49vG+TOiLCMIMML+0orlspr8sQJIcvV2wdvFRo5naJuWg/L+37tqn
+ voSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=YYag+Bc8AuQ7klC6LwKp3Hqd/h8+XJbeqg437KyxSlA=;
+ b=ANf3hMwbmXa2vbpe/WVmumC3foG/QtKsxEuN04nTZKGN3Tcb3QBKGH3qviWrgELhhc
+ bxaz8wpZQWyzluuPIBgg06El9f863wczZ7xaWod8KqBzJbAheT+GTWL70CMtF5/Ly6et
+ cnY5xL9ntq6cMgT320ELtnYoE6Etz5e+6yqQrMfomrsoA6zKHUJbpOhpcs/WCuDLCCEu
+ yt2YylaKeX0bT4uVjTitxS1kWEgjgdLK4GnntX2/P/L5MptcddfBqwql8+2ZYdtGdSWc
+ uSvtd5KX3Vu0liSKXQujCvo4mhETHHQr2a+L5irIZWcNmFIrFURd94vRnVpMC5Xh8+6G
+ LL6A==
+X-Gm-Message-State: APjAAAWp9ARdOwjGh7vMyLXrT+5q+eNMErd+nNcDvyGxN4jnnmN8XqQ1
+ LBddM5fEwA7uKWftaClKNZ0=
+X-Google-Smtp-Source: APXvYqzc/NcJedpT9MyHDjIJJxCle4dtSZ4sBeS25vT4lpq+Siy29EZNy3T13RozFRPJ8GprmHgUaA==
+X-Received: by 2002:a2e:5304:: with SMTP id h4mr58319418ljb.75.1578188921055; 
+ Sat, 04 Jan 2020 17:48:41 -0800 (PST)
+Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
+ [79.139.233.37])
+ by smtp.googlemail.com with ESMTPSA id t27sm27192468ljd.26.2020.01.04.17.48.39
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 04 Jan 2020 17:48:40 -0800 (PST)
+To: Ben Dooks <ben.dooks@codethink.co.uk>, Jon Hunter <jonathanh@nvidia.com>, 
  linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -69,15 +105,15 @@ References: <20191018154833.7560-1-ben.dooks@codethink.co.uk>
  <37beb96a-a525-c72f-a7e1-e9ef5d61f3b2@gmail.com>
  <29db3df4-6f51-7c0f-1eef-90171f1d233a@codethink.co.uk>
  <9a5447e2-155c-7e6e-b8f1-95523c6f42c6@gmail.com>
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
-Date: Sun, 5 Jan 2020 00:04:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <680e2dfd-6f4f-5c96-63b7-97520961dc82@gmail.com>
+Date: Sun, 5 Jan 2020 04:48:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <9a5447e2-155c-7e6e-b8f1-95523c6f42c6@gmail.com>
-Content-Language: en-GB
+In-Reply-To: <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
+Content-Language: en-US
 Cc: linux-kernel@lists.codethink.co.uk,
  Edward Cragg <edward.cragg@codethink.co.uk>
 Subject: Re: [alsa-devel] [PATCH v5 2/7] ASoC: tegra: Allow 24bit and 32bit
@@ -94,30 +130,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-[snip]
-
-I've just gone through testing.
-
-Some simple data tests show 16 and 32-bits work.
-
-The 24 bit case seems to be weird, it looks like the 24-bit expects
-24 bit samples in 32 bit words. I can't see any packing options to
-do 24 bit in 24 bit, so we may have to remove 24 bit sample support
-(which is a shame)
-
-My preference is to remove the 24-bit support and keep the 32 bit in.
-
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+MDUuMDEuMjAyMCAwMzowNCwgQmVuIERvb2tzINC/0LjRiNC10YI6Cj4gW3NuaXBdCj4gCj4gSSd2
+ZSBqdXN0IGdvbmUgdGhyb3VnaCB0ZXN0aW5nLgo+IAo+IFNvbWUgc2ltcGxlIGRhdGEgdGVzdHMg
+c2hvdyAxNiBhbmQgMzItYml0cyB3b3JrLgo+IAo+IFRoZSAyNCBiaXQgY2FzZSBzZWVtcyB0byBi
+ZSB3ZWlyZCwgaXQgbG9va3MgbGlrZSB0aGUgMjQtYml0IGV4cGVjdHMKPiAyNCBiaXQgc2FtcGxl
+cyBpbiAzMiBiaXQgd29yZHMuIEkgY2FuJ3Qgc2VlIGFueSBwYWNraW5nIG9wdGlvbnMgdG8KPiBk
+byAyNCBiaXQgaW4gMjQgYml0LCBzbyB3ZSBtYXkgaGF2ZSB0byByZW1vdmUgMjQgYml0IHNhbXBs
+ZSBzdXBwb3J0Cj4gKHdoaWNoIGlzIGEgc2hhbWUpCj4gCj4gTXkgcHJlZmVyZW5jZSBpcyB0byBy
+ZW1vdmUgdGhlIDI0LWJpdCBzdXBwb3J0IGFuZCBrZWVwIHRoZSAzMiBiaXQgaW4uCj4gCgpJbnRl
+cmVzdGluZy4uIEpvbiwgY291bGQgeW91IHBsZWFzZSBjb25maXJtIHRoYXQgMjRiaXQgZm9ybWF0
+IGlzbid0CnVzYWJsZSBvbiBUMzA/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
