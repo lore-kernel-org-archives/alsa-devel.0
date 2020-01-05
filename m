@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92725C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83EADC33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:18:42 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CCF82085B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:18:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CCF82085B
+	by mail.kernel.org (Postfix) with ESMTPS id 130D421582
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:18:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 130D421582
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E7AE1782;
-	Sun,  5 Jan 2020 16:17:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E7AE1782
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32258180E;
+	Sun,  5 Jan 2020 16:17:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32258180E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578237480;
-	bh=UPvCa473rtao3DUOLqnd3rLuGSWX930vEUUfms0sF5k=;
+	s=default; t=1578237520;
+	bh=CiFByOchg7hcqioGy9UxO260imf7Pzj44IYmWYzyXjU=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lyqkP2DQfdXE9335Eunihwz+NCE4DAWqr5BLrzpnShSzZkiAk9+gg3nQs9LaoPHTM
-	 var8YilAj8JORT+tBM0n4tSwf1Gf/2uCc2brivUxShkV71meBjGHqR+zgzospBkGzm
-	 ZN8kq5srvP1VTSZV1MsOh6rSILgxwRea1BZI+Gmc=
+	b=rQOD8d3wwmpjsTg8OjsLHZaGhE8Bfg09AHCvNhMHU1tnTVMFoPfeaNAeo5BesZSKH
+	 vIAU1Jx2DOndEwfjV5R6jxxfdoLIx1/wWExY3L7euCv9xgSszOq5trmlg+GSTVkliq
+	 p2d4BihorXTab5trHqKG2RWeHKBmJcngn7y54cbE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A54FCF804BB;
-	Sun,  5 Jan 2020 15:50:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C81C8F804CF;
+	Sun,  5 Jan 2020 15:50:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98259F802A7; Sun,  5 Jan 2020 15:49:37 +0100 (CET)
+ id 7B657F80393; Sun,  5 Jan 2020 15:49:38 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB8C8F802BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1109DF802BD
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB8C8F802BC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1109DF802BD
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id BDFACB2BD
+ by mx2.suse.de (Postfix) with ESMTP id A5124B2BB
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:33 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:59 +0100
-Message-Id: <20200105144823.29547-45-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:57 +0100
+Message-Id: <20200105144823.29547-43-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 44/68] ALSA: cs423x: More constification
+Subject: [alsa-devel] [PATCH 42/68] ALSA: opl3: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,28 +73,60 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to the static mapping table.
+Apply const prefix to the static tables for drum, volume and notes.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/cs423x/cs4236_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/drivers/opl3/opl3_drums.c | 2 +-
+ sound/drivers/opl3/opl3_midi.c  | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/isa/cs423x/cs4236_lib.c b/sound/isa/cs423x/cs4236_lib.c
-index ca6646f9b58d..4a028f42bb74 100644
---- a/sound/isa/cs423x/cs4236_lib.c
-+++ b/sound/isa/cs423x/cs4236_lib.c
-@@ -80,7 +80,7 @@
-  *
+diff --git a/sound/drivers/opl3/opl3_drums.c b/sound/drivers/opl3/opl3_drums.c
+index 318cd8a2ee3a..ccc49f39404d 100644
+--- a/sound/drivers/opl3/opl3_drums.c
++++ b/sound/drivers/opl3/opl3_drums.c
+@@ -7,7 +7,7 @@
+ 
+ #include "opl3_voice.h"
+ 
+-static char snd_opl3_drum_table[47] =
++static const char snd_opl3_drum_table[47] =
+ {
+ 	OPL3_BASSDRUM_ON,  OPL3_BASSDRUM_ON,  OPL3_HIHAT_ON,	/* 35 - 37 */
+ 	OPL3_SNAREDRUM_ON, OPL3_HIHAT_ON,     OPL3_SNAREDRUM_ON, /* 38 - 40 */
+diff --git a/sound/drivers/opl3/opl3_midi.c b/sound/drivers/opl3/opl3_midi.c
+index 280cc79870cf..2f6e8023e05c 100644
+--- a/sound/drivers/opl3/opl3_midi.c
++++ b/sound/drivers/opl3/opl3_midi.c
+@@ -23,7 +23,7 @@ static void snd_opl3_note_off_unsafe(void *p, int note, int vel,
+  * it saves a lot of log() calculations. (Rob Hooft <hooft@chem.ruu.nl>)
   */
  
--static unsigned char snd_cs4236_ext_map[18] = {
-+static const unsigned char snd_cs4236_ext_map[18] = {
- 	/* CS4236_LEFT_LINE */		0xff,
- 	/* CS4236_RIGHT_LINE */		0xff,
- 	/* CS4236_LEFT_MIC */		0xdf,
+-static char opl3_volume_table[128] =
++static const char opl3_volume_table[128] =
+ {
+ 	-63, -48, -40, -35, -32, -29, -27, -26,
+ 	-24, -23, -21, -20, -19, -18, -18, -17,
+@@ -69,7 +69,7 @@ void snd_opl3_calc_volume(unsigned char *volbyte, int vel,
+ /*
+  * Converts the note frequency to block and fnum values for the FM chip
+  */
+-static short opl3_note_table[16] =
++static const short opl3_note_table[16] =
+ {
+ 	305, 323,	/* for pitch bending, -2 semitones */
+ 	343, 363, 385, 408, 432, 458, 485, 514, 544, 577, 611, 647,
+@@ -266,7 +266,7 @@ static void snd_opl3_start_timer(struct snd_opl3 *opl3)
+ /* ------------------------------ */
+ 
+ 
+-static int snd_opl3_oss_map[MAX_OPL3_VOICES] = {
++static const int snd_opl3_oss_map[MAX_OPL3_VOICES] = {
+ 	0, 1, 2, 9, 10, 11, 6, 7, 8, 15, 16, 17, 3, 4 ,5, 12, 13, 14
+ };
+ 
 -- 
 2.16.4
 
