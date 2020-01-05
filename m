@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCAB6C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:12:39 +0000 (UTC)
-Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F330C33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:13:30 +0000 (UTC)
+Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3CCC92085B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:12:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B3A1B2085B
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 15:13:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LswheXxL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CCC92085B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C24BOq7s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3A1B2085B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
-Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 875581791;
-	Sun,  5 Jan 2020 16:11:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 875581791
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1232517FE;
+	Sun,  5 Jan 2020 16:12:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1232517FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578237157;
-	bh=suRfIxX9pHtq+baQ1XODtzsJm02HljeJjJmNsj0cvIc=;
+	s=default; t=1578237208;
+	bh=KhFodNJKAI5/iD2zq2pvHuC8alTWlDOr6YCMK9liQRc=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LswheXxL/z9Ln7V3PhFjUICwkoGgxgJElor9iYlz1XoOudwvlitZNxdQWSGpSiJGW
-	 dSL2HEjsZlZvd8wSncT9m1F4IjmI4C6+gmazeqxiRsGZPbCGjc8QOm/16OBAFKt9FN
-	 FsEX1ZuYZzTNWst2eFw3sif6e7VO4HhtEWUaayWw=
+	b=C24BOq7s1/tQx9kxImRP6mGqxaQdP6eswfKUqbD2OXq1Jibzk04U0CxUX2RnDQukH
+	 7dKYw2sNwvXDLB3NFwpcXe+N/F0X8vllAbhaIWGLsJVUyKtE12faHJIRjuWv1VoZU0
+	 v7a3V+31p7+Du+fDSqL+3TR513J0rit5sXpfx118=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97789F80445;
-	Sun,  5 Jan 2020 15:50:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32EFCF8046C;
+	Sun,  5 Jan 2020 15:50:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6BAEEF80290; Sun,  5 Jan 2020 15:49:25 +0100 (CET)
+ id 5F214F80370; Sun,  5 Jan 2020 15:49:26 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 924EFF80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47F6FF802A1
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 924EFF80290
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47F6FF802A1
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 046DFB249
+ by mx2.suse.de (Postfix) with ESMTP id 63D97B2B4
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:33 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:42 +0100
-Message-Id: <20200105144823.29547-28-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:51 +0100
+Message-Id: <20200105144823.29547-37-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 27/68] ALSA: nm256: More constifications
+Subject: [alsa-devel] [PATCH 36/68] ALSA: cmipci: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,60 +75,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to the static tables coefs and init registers.
+Apply const prefix to the static tables for rates, ports and
+registers.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/nm256/nm256.c      | 4 ++--
- sound/pci/nm256/nm256_coef.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/cmipci.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
-index 25275a98e950..1726f2959ae8 100644
---- a/sound/pci/nm256/nm256.c
-+++ b/sound/pci/nm256/nm256.c
-@@ -299,7 +299,7 @@ snd_nm256_writel(struct nm256 *chip, int offset, u32 val)
- }
+diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+index 7f91742ed6f0..7363d61eaec2 100644
+--- a/sound/pci/cmipci.c
++++ b/sound/pci/cmipci.c
+@@ -586,7 +586,7 @@ static int snd_cmipci_clear_bit_b(struct cmipci *cm, unsigned int cmd, unsigned
+  * calculate frequency
+  */
  
- static inline void
--snd_nm256_write_buffer(struct nm256 *chip, void *src, int offset, int size)
-+snd_nm256_write_buffer(struct nm256 *chip, const void *src, int offset, int size)
+-static unsigned int rates[] = { 5512, 11025, 22050, 44100, 8000, 16000, 32000, 48000 };
++static const unsigned int rates[] = { 5512, 11025, 22050, 44100, 8000, 16000, 32000, 48000 };
+ 
+ static unsigned int snd_cmipci_rate_freq(unsigned int rate)
  {
- 	offset -= chip->buffer_start;
- #ifdef CONFIG_SND_DEBUG
-@@ -1179,7 +1179,7 @@ struct initialValues {
- 	unsigned short value;
+@@ -2826,7 +2826,7 @@ static void query_chip(struct cmipci *cm)
+ #ifdef SUPPORT_JOYSTICK
+ static int snd_cmipci_create_gameport(struct cmipci *cm, int dev)
+ {
+-	static int ports[] = { 0x201, 0x200, 0 }; /* FIXME: majority is 0x201? */
++	static const int ports[] = { 0x201, 0x200, 0 }; /* FIXME: majority is 0x201? */
+ 	struct gameport *gp;
+ 	struct resource *r = NULL;
+ 	int i, io_port = 0;
+@@ -3289,7 +3289,7 @@ static void snd_cmipci_remove(struct pci_dev *pci)
+ /*
+  * power management
+  */
+-static unsigned char saved_regs[] = {
++static const unsigned char saved_regs[] = {
+ 	CM_REG_FUNCTRL1, CM_REG_CHFORMAT, CM_REG_LEGACY_CTRL, CM_REG_MISC_CTRL,
+ 	CM_REG_MIXER0, CM_REG_MIXER1, CM_REG_MIXER2, CM_REG_MIXER3, CM_REG_PLL,
+ 	CM_REG_CH0_FRAME1, CM_REG_CH0_FRAME2,
+@@ -3297,7 +3297,7 @@ static unsigned char saved_regs[] = {
+ 	CM_REG_INT_STATUS, CM_REG_INT_HLDCLR, CM_REG_FUNCTRL0,
  };
  
--static struct initialValues nm256_ac97_init_val[] =
-+static const struct initialValues nm256_ac97_init_val[] =
- {
- 	{ AC97_MASTER, 		0x8000 },
- 	{ AC97_HEADPHONE,	0x8000 },
-diff --git a/sound/pci/nm256/nm256_coef.c b/sound/pci/nm256/nm256_coef.c
-index c757252119b1..f0599dbe8492 100644
---- a/sound/pci/nm256/nm256_coef.c
-+++ b/sound/pci/nm256/nm256_coef.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #define NM_TOTAL_COEFF_COUNT 0x3158
- 
--static char coefficients[NM_TOTAL_COEFF_COUNT * 4] = { 
-+static const char coefficients[NM_TOTAL_COEFF_COUNT * 4] = {
- 	0xFF, 0xFF, 0x2F, 0x00, 0x4B, 0xFF, 0xA5, 0x01, 0xEF, 0xFC, 0x21,
- 	0x05, 0x87, 0xF7, 0x62, 0x11, 0xE9, 0x45, 0x5E, 0xF9, 0xB5, 0x01,
- 	0xDE, 0xFF, 0xA4, 0xFF, 0x60, 0x00, 0xCA, 0xFF, 0x0D, 0x00, 0xFD,
-@@ -4598,7 +4598,7 @@ static char coefficients[NM_TOTAL_COEFF_COUNT * 4] = {
- 	0x01, 0x8D, 0xFF, 0x0F, 0x00 
- };
- 
--static u16
-+static const u16
- coefficient_sizes[8 * 2] = {
- 	/* Playback */
- 	0x00C0, 0x5000, 0x0060, 0x2800, 0x0040, 0x0060, 0x1400, 0x0000,
+-static unsigned char saved_mixers[] = {
++static const unsigned char saved_mixers[] = {
+ 	SB_DSP4_MASTER_DEV, SB_DSP4_MASTER_DEV + 1,
+ 	SB_DSP4_PCM_DEV, SB_DSP4_PCM_DEV + 1,
+ 	SB_DSP4_SYNTH_DEV, SB_DSP4_SYNTH_DEV + 1,
 -- 
 2.16.4
 
