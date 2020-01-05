@@ -2,61 +2,57 @@ Return-Path: <SRS0=7vEg=22=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27294C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C2DDC33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:50:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2609C20801
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:49:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2690320801
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:50:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qssLLXcm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2609C20801
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OKGYImza"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2690320801
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCB90174B;
-	Sun,  5 Jan 2020 15:48:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCB90174B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52F811756;
+	Sun,  5 Jan 2020 15:49:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52F811756
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578235771;
-	bh=4Z8+dVOtfKUnUWFyzE3mOW5ypHNHGNUBcH9FwXiXPcU=;
-	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qssLLXcmF0usD1oK4TWAosugwtepQc6BQoQHP/E3VWSYYga6gpyPXLJ7o9lsN7PUT
-	 OHcvsFusm6FRK7Ozzh+QGSBoxslJeUvI39dL3AcjVEmsMitOTGMfjTDCZY/SIIkhhA
-	 1YlZFsxLVLQC6w2lRF5kbw8oiQljN7D5kFReNTJw=
+	s=default; t=1578235824;
+	bh=ojYi14+LcQkJuJ6wU4zi3JvYnCS96GEQdFi5HRei4GA=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OKGYImzaj4ACdxVojliOLOz9PkcuYh08ULmrz8R9JN2kUAeYUBbQONa/D/3b6FACT
+	 4Sq/PJPu77CqKU4ZzEORKg7F4LXTxDWAFUMFFG0ZHYBogTTWCiiHn5k/j/328QCy08
+	 gmLa2dB60Ehw0j1ENt9SjdoZaoFeJXEyu5go4l/Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C99BF802DD;
-	Sun,  5 Jan 2020 15:48:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63BC4F8010D;
+	Sun,  5 Jan 2020 15:48:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09CAFF80278; Sun,  5 Jan 2020 15:48:35 +0100 (CET)
+ id 1C131F8028C; Sun,  5 Jan 2020 15:48:37 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8379F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA88AF80140
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8379F80116
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA88AF80140
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A2458ADF0
+ by mx2.suse.de (Postfix) with ESMTP id 9ABAEAD5F
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:31 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:17 +0100
-Message-Id: <20200105144823.29547-3-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:15 +0100
+Message-Id: <20200105144823.29547-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
-References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 02/68] ALSA: aoa: More constifications
+Subject: [alsa-devel] [PATCH 00/68] ALSA: Constifications, take #2
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,89 +71,238 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix at every place where appropriate: the static
-register tables, the volume tables and the callback tables.
+Hi,
 
-Just for minor optimization and no functional changes.
+this is the next series of patches for adding more const prefix
+allover the places.  They do just nothing but adding cost.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/aoa/codecs/onyx.c           | 4 ++--
- sound/aoa/codecs/tas-basstreble.h | 4 ++--
- sound/aoa/codecs/tas-gain-table.h | 2 +-
- sound/aoa/soundbus/i2sbus/core.c  | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
-index f85bc8a1e2a6..12028b3e2eee 100644
---- a/sound/aoa/codecs/onyx.c
-+++ b/sound/aoa/codecs/onyx.c
-@@ -543,7 +543,7 @@ static const struct snd_kcontrol_new onyx_spdif_ctrl = {
- 
- /* our registers */
- 
--static u8 register_map[] = {
-+static const u8 register_map[] = {
- 	ONYX_REG_DAC_ATTEN_LEFT,
- 	ONYX_REG_DAC_ATTEN_RIGHT,
- 	ONYX_REG_CONTROL,
-@@ -559,7 +559,7 @@ static u8 register_map[] = {
- 	ONYX_REG_DIG_INFO4
- };
- 
--static u8 initial_values[ARRAY_SIZE(register_map)] = {
-+static const u8 initial_values[ARRAY_SIZE(register_map)] = {
- 	0x80, 0x80, /* muted */
- 	ONYX_MRST | ONYX_SRST, /* but handled specially! */
- 	ONYX_MUTE_LEFT | ONYX_MUTE_RIGHT,
-diff --git a/sound/aoa/codecs/tas-basstreble.h b/sound/aoa/codecs/tas-basstreble.h
-index 770935af66af..14dc4e9eea73 100644
---- a/sound/aoa/codecs/tas-basstreble.h
-+++ b/sound/aoa/codecs/tas-basstreble.h
-@@ -13,7 +13,7 @@
- #define TAS3004_TREBLE_ZERO	36
- #define TAS3004_BASS_ZERO	36
- 
--static u8 tas3004_treble_table[] = {
-+static const u8 tas3004_treble_table[] = {
- 	150, /* -18 dB */
- 	149,
- 	148,
-@@ -99,7 +99,7 @@ static inline u8 tas3004_treble(int idx)
-  * I have also ignored completely differences of
-  * +/- 1
-  */
--static s8 tas3004_bass_diff_to_treble[] = {
-+static const s8 tas3004_bass_diff_to_treble[] = {
- 	2, /* 7 dB, offset 50 */
- 	2,
- 	2,
-diff --git a/sound/aoa/codecs/tas-gain-table.h b/sound/aoa/codecs/tas-gain-table.h
-index 77b8e7dc55fd..c9ea01488181 100644
---- a/sound/aoa/codecs/tas-gain-table.h
-+++ b/sound/aoa/codecs/tas-gain-table.h
-@@ -27,7 +27,7 @@ int main() {
-  * as easy as calculating
-  *      hwvalue = 1048576.0*exp(0.057564628*dB*2)
-  * :) */
--static int tas_gaintable[] = {
-+static const int tas_gaintable[] = {
- 	0x000000, /* -infinity dB */
- 	0x00014b, /* -70.0 dB */
- 	0x00015f, /* -69.5 dB */
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index 17df288fbe98..faf6b03131ee 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -160,7 +160,7 @@ static int i2sbus_add_dev(struct macio_dev *macio,
- 	static const char *rnames[] = { "i2sbus: %pOFn (control)",
- 					"i2sbus: %pOFn (tx)",
- 					"i2sbus: %pOFn (rx)" };
--	static irq_handler_t ints[] = {
-+	static const irq_handler_t ints[] = {
- 		i2sbus_bus_intr,
- 		i2sbus_tx_intr,
- 		i2sbus_rx_intr
+Takashi
+
+===
+
+Takashi Iwai (68):
+  ALSA: Allow const arrays for legacy resource management helpers
+  ALSA: aoa: More constifications
+  ALSA: hda/realtek - More constifications
+  ALSA: dummy: More constifications
+  ALSA: pcm: More constifications
+  ALSA: seq: More constifications
+  ALSA: vx: More constifications
+  ALSA: intel8x0: More constifications
+  ALSA: hda: More constifications
+  ALSA: ac97: More constifications
+  ALSA: usb-audio: More constifications
+  ALSA: caiaq: More constifications
+  ALSA: au88x0: More constifications
+  ALSA: emu10k1: More constifications
+  ALSA: riptide: More constifications
+  ALSA: ice1712: More constifications
+  ALSA: ppc: More constifications
+  ALSA: hdsp: More constifications
+  ALSA: hdspm: More constifications
+  ALSA: rme9652: More constifications
+  ALSA: emux: More constifications
+  ALSA: usx2y: More constifications
+  ALSA: pcxhr: More constifications
+  ALSA: mixart: More constifications
+  ALSA: ymfpci: More constifications
+  ALSA: bcd2000: More constifications
+  ALSA: nm256: More constifications
+  ALSA: korg1212: More constifications
+  ALSA: cs46xx: More constifications
+  ALSA: ca0106: More constifications
+  ALSA: ctxfi: More constifications
+  ALSA: asihpi: More constifications
+  ALSA: atiixp: More constifications
+  ALSA: es1938: More constifications
+  ALSA: es1968: More constifications
+  ALSA: cmipci: More constifications
+  ALSA: sparc: More constifications
+  ALSA: info: More constifications
+  ALSA: jack: More constification
+  ALSA: oss: More constifications
+  ALSA: rawmidi: More constification
+  ALSA: opl3: More constifications
+  ALSA: cmi8328: More constifications
+  ALSA: cs423x: More constification
+  ALSA: sb: More constifications
+  ALSA: cmi8330: More constifications
+  ALSA: es1688: More constifications
+  ALSA: es18xx: More constifications
+  ALSA: gus: More constifications
+  ALSA: opti9xx: More constifications
+  ALSA: wss: More constifications
+  ALSA: sc6000: More constification
+  ALSA: mts64: More constifications
+  ALSA: aw2: More constifications
+  ALSA: lx6464es: More constifications
+  ALSA: arm: More constification
+  ALSA: opl4: More constification
+  ALSA: serial-u16550: More constification
+  ALSA: ak4531: More constification
+  ALSA: azt3328: More constification
+  ALSA: cs4281: More constification
+  ALSA: echoaudio: More constification
+  ALSA: ens137x: More constification
+  ALSA: fm801: More constification
+  ALSA: via82xx: More constification
+  ALSA: pdaudiocf: More constification
+  ALSA: spi: More constification
+  ALSA: sh: Fix compile warning wrt const
+
+ include/sound/initval.h                 |   6 +-
+ sound/aoa/codecs/onyx.c                 |   4 +-
+ sound/aoa/codecs/tas-basstreble.h       |   4 +-
+ sound/aoa/codecs/tas-gain-table.h       |   2 +-
+ sound/aoa/soundbus/i2sbus/core.c        |   2 +-
+ sound/arm/aaci.c                        |   2 +-
+ sound/core/info.c                       |   4 +-
+ sound/core/jack.c                       |   2 +-
+ sound/core/oss/mixer_oss.c              |   2 +-
+ sound/core/oss/pcm_plugin.c             |   2 +-
+ sound/core/pcm.c                        |  12 ++--
+ sound/core/pcm_lib.c                    |   2 +-
+ sound/core/pcm_misc.c                   |   5 +-
+ sound/core/rawmidi.c                    |   2 +-
+ sound/core/seq/oss/seq_oss_init.c       |   4 +-
+ sound/core/seq/seq_midi_emul.c          |   6 +-
+ sound/core/seq/seq_midi_event.c         |   6 +-
+ sound/drivers/dummy.c                   |  24 +++----
+ sound/drivers/mts64.c                   |   4 +-
+ sound/drivers/opl3/opl3_drums.c         |   2 +-
+ sound/drivers/opl3/opl3_midi.c          |   6 +-
+ sound/drivers/opl4/opl4_synth.c         |   2 +-
+ sound/drivers/serial-u16550.c           |   2 +-
+ sound/drivers/vx/vx_cmd.c               |   2 +-
+ sound/drivers/vx/vx_core.c              |  12 ++--
+ sound/drivers/vx/vx_hwdep.c             |   2 +-
+ sound/drivers/vx/vx_mixer.c             |   2 +-
+ sound/hda/hdac_device.c                 |   4 +-
+ sound/hda/hdmi_chmap.c                  |   2 +-
+ sound/hda/intel-nhlt.c                  |   2 +-
+ sound/isa/cmi8328.c                     |  24 +++----
+ sound/isa/cmi8330.c                     |   8 +--
+ sound/isa/cs423x/cs4236_lib.c           |   2 +-
+ sound/isa/es1688/es1688.c               |   6 +-
+ sound/isa/es1688/es1688_lib.c           |   4 +-
+ sound/isa/es18xx.c                      |  10 +--
+ sound/isa/gus/gus_io.c                  |   2 +-
+ sound/isa/gus/gus_main.c                |   4 +-
+ sound/isa/gus/gus_volume.c              |   9 +--
+ sound/isa/gus/gusclassic.c              |   6 +-
+ sound/isa/gus/gusextreme.c              |  10 +--
+ sound/isa/gus/gusmax.c                  |   6 +-
+ sound/isa/gus/interwave.c               |  10 +--
+ sound/isa/opti9xx/miro.c                |  18 ++---
+ sound/isa/opti9xx/opti92x-ad1848.c      |  18 ++---
+ sound/isa/sb/emu8000.c                  |  16 ++---
+ sound/isa/sb/jazz16.c                   |  10 +--
+ sound/isa/sb/sb16.c                     |   8 +--
+ sound/isa/sb/sb8.c                      |   2 +-
+ sound/isa/sb/sb_mixer.c                 |  38 +++++-----
+ sound/isa/sc6000.c                      |   4 +-
+ sound/isa/wss/wss_lib.c                 |   6 +-
+ sound/pci/ac97/ac97_codec.c             |  10 +--
+ sound/pci/ac97/ac97_patch.c             |  26 +++----
+ sound/pci/ac97/ac97_pcm.c               |   4 +-
+ sound/pci/ak4531_codec.c                |   2 +-
+ sound/pci/asihpi/asihpi.c               |   4 +-
+ sound/pci/asihpi/hpimsgx.c              |   2 +-
+ sound/pci/atiixp.c                      |   2 +-
+ sound/pci/atiixp_modem.c                |   2 +-
+ sound/pci/au88x0/au88x0_core.c          |   2 +-
+ sound/pci/au88x0/au88x0_eq.c            |  22 +++---
+ sound/pci/au88x0/au88x0_eqdata.c        |  18 ++---
+ sound/pci/au88x0/au88x0_pcm.c           |   4 +-
+ sound/pci/aw2/aw2-tsl.c                 |   4 +-
+ sound/pci/azt3328.c                     |   2 +-
+ sound/pci/ca0106/ca0106_main.c          |   4 +-
+ sound/pci/ca0106/ca0106_mixer.c         |  14 ++--
+ sound/pci/cmipci.c                      |   8 +--
+ sound/pci/cs4281.c                      |   2 +-
+ sound/pci/cs46xx/cs46xx_lib.c           |   2 +-
+ sound/pci/cs46xx/dsp_spos.c             |   4 +-
+ sound/pci/cs46xx/dsp_spos_scb_lib.c     |   6 +-
+ sound/pci/ctxfi/ctdaio.c                |   4 +-
+ sound/pci/ctxfi/ctresource.c            |   2 +-
+ sound/pci/echoaudio/echoaudio.c         |   2 +-
+ sound/pci/emu10k1/emu10k1_main.c        |  12 ++--
+ sound/pci/emu10k1/emufx.c               |  14 ++--
+ sound/pci/emu10k1/emumixer.c            |  28 ++++----
+ sound/pci/emu10k1/emuproc.c             |  16 ++---
+ sound/pci/emu10k1/io.c                  |   4 +-
+ sound/pci/ens1370.c                     |   2 +-
+ sound/pci/es1938.c                      |   8 ++-
+ sound/pci/es1968.c                      |   4 +-
+ sound/pci/fm801.c                       |   2 +-
+ sound/pci/hda/hda_codec.c               |   6 +-
+ sound/pci/hda/hda_eld.c                 |   6 +-
+ sound/pci/hda/hda_intel.c               |   8 +--
+ sound/pci/hda/hda_proc.c                |   2 +-
+ sound/pci/hda/hda_sysfs.c               |   2 +-
+ sound/pci/hda/patch_analog.c            |   2 +-
+ sound/pci/hda/patch_ca0132.c            |  18 ++---
+ sound/pci/hda/patch_realtek.c           | 118 ++++++++++++++++----------------
+ sound/pci/ice1712/aureon.c              |   8 +--
+ sound/pci/ice1712/juli.c                |   6 +-
+ sound/pci/ice1712/maya44.c              |  10 +--
+ sound/pci/ice1712/phase.c               |   4 +-
+ sound/pci/ice1712/pontis.c              |   2 +-
+ sound/pci/ice1712/prodigy192.c          |   2 +-
+ sound/pci/ice1712/prodigy_hifi.c        |  16 ++---
+ sound/pci/ice1712/psc724.c              |   2 +-
+ sound/pci/ice1712/quartet.c             |   8 +--
+ sound/pci/ice1712/se.c                  |   8 +--
+ sound/pci/ice1712/vt1720_mobo.c         |   4 +-
+ sound/pci/ice1712/wtm.c                 |   6 +-
+ sound/pci/intel8x0.c                    |  28 ++++----
+ sound/pci/intel8x0m.c                   |  12 ++--
+ sound/pci/korg1212/korg1212.c           |   8 +--
+ sound/pci/lx6464es/lx_core.c            |   4 +-
+ sound/pci/mixart/mixart_hwdep.c         |   2 +-
+ sound/pci/mixart/mixart_mixer.c         |   4 +-
+ sound/pci/nm256/nm256.c                 |   4 +-
+ sound/pci/nm256/nm256_coef.c            |   4 +-
+ sound/pci/pcxhr/pcxhr.c                 |   2 +-
+ sound/pci/pcxhr/pcxhr_core.c            |   6 +-
+ sound/pci/pcxhr/pcxhr_hwdep.c           |   2 +-
+ sound/pci/riptide/riptide.c             |  60 ++++++++--------
+ sound/pci/rme9652/hdsp.c                |  14 ++--
+ sound/pci/rme9652/hdspm.c               |  66 +++++++++---------
+ sound/pci/rme9652/rme9652.c             |  10 +--
+ sound/pci/via82xx.c                     |   2 +-
+ sound/pci/vx222/vx222_ops.c             |   4 +-
+ sound/pci/ymfpci/ymfpci_main.c          |   8 +--
+ sound/pcmcia/pdaudiocf/pdaudiocf_core.c |   2 +-
+ sound/pcmcia/vx/vxp_ops.c               |   2 +-
+ sound/ppc/beep.c                        |   2 +-
+ sound/ppc/pmac.c                        |   8 +--
+ sound/ppc/pmac.h                        |   2 +-
+ sound/ppc/tumbler.c                     |  20 +++---
+ sound/ppc/tumbler_volume.h              |  12 ++--
+ sound/sh/aica.c                         |   4 +-
+ sound/sparc/cs4231.c                    |   4 +-
+ sound/sparc/dbri.c                      |   2 +-
+ sound/spi/at73c213.c                    |   2 +-
+ sound/synth/emux/emux_nrpn.c            |   4 +-
+ sound/synth/emux/emux_synth.c           |  10 +--
+ sound/synth/emux/soundfont.c            |   8 +--
+ sound/usb/bcd2000/bcd2000.c             |   4 +-
+ sound/usb/caiaq/audio.c                 |   2 +-
+ sound/usb/caiaq/control.c               |  20 +++---
+ sound/usb/caiaq/input.c                 |  10 +--
+ sound/usb/mixer.c                       |  60 ++++++++--------
+ sound/usb/mixer_maps.c                  |  56 +++++++--------
+ sound/usb/mixer_quirks.c                |   6 +-
+ sound/usb/mixer_scarlett.c              |  14 ++--
+ sound/usb/proc.c                        |   2 +-
+ sound/usb/stream.c                      |   4 +-
+ sound/usb/usx2y/usX2Yhwdep.c            |   2 +-
+ sound/usb/usx2y/usbusx2yaudio.c         |   6 +-
+ sound/usb/validate.c                    |   4 +-
+ 150 files changed, 677 insertions(+), 669 deletions(-)
+
 -- 
 2.16.4
 
