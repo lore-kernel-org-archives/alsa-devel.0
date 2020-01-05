@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F76C33C8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:57:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 545ECC33C8C
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:58:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3A5D2077B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:57:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C0AB521582
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jan 2020 14:58:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sLd2zfHO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3A5D2077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NGeukjTd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0AB521582
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F29EE1759;
-	Sun,  5 Jan 2020 15:57:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F29EE1759
+	by alsa0.perex.cz (Postfix) with ESMTPS id E292A1755;
+	Sun,  5 Jan 2020 15:57:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E292A1755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578236277;
-	bh=ccccHVtIm56mAsnDrwTQUxmTz8JQa0pDaQPSWeaawUQ=;
+	s=default; t=1578236316;
+	bh=xwqN5Z4Mgu5ClbFxcVgMxPo+JTtx4L5+07tJjcNSoQ0=;
 	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sLd2zfHORmtoA2MsQNKsdYo3L5cwaUuPyl0LEQsTqqHRKUi64fMaRcaMLUUE/ZU8B
-	 hG1gPxHQyfNZVJY8uz65SxwofnqRf81pXdwFtu+EDzE9zBPs2X9Oy6SAJVjm9KZqLd
-	 dL88Hk9u3W591fNYGauGBjfXZQBeEfGpTHO1Dbsk=
+	b=NGeukjTd4LWwDP+cablqohJOs+HImWCEqTMeaE8y8M9hRGmgJB/0HTlRmYlCugeVP
+	 Otdi1oWn3P33rHmjyc53XG+5B1W9jzuJeVg+QhRwWGfI0xeAsZwwq8xTuT9yLy+WXg
+	 guFfP/bb3Dc58a5U95h1Qq/ALy5cL5Xj+5fCQBCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E231F8035F;
-	Sun,  5 Jan 2020 15:49:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F696F80367;
+	Sun,  5 Jan 2020 15:49:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2870AF8032A; Sun,  5 Jan 2020 15:48:55 +0100 (CET)
+ id 98D34F8032A; Sun,  5 Jan 2020 15:48:56 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9E6FF8026F
- for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9E6FF8026F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BC97F80116
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 15:48:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BC97F80116
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0459DB191
+ by mx2.suse.de (Postfix) with ESMTP id A77EAB22A
  for <alsa-devel@alsa-project.org>; Sun,  5 Jan 2020 14:48:32 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Date: Sun,  5 Jan 2020 15:47:24 +0100
-Message-Id: <20200105144823.29547-10-tiwai@suse.de>
+Date: Sun,  5 Jan 2020 15:47:35 +0100
+Message-Id: <20200105144823.29547-21-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200105144823.29547-1-tiwai@suse.de>
 References: <20200105144823.29547-1-tiwai@suse.de>
-Subject: [alsa-devel] [PATCH 09/68] ALSA: hda: More constifications
+Subject: [alsa-devel] [PATCH 20/68] ALSA: rme9652: More constifications
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,298 +75,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply const prefix to the remaining possible places: the string
-tables, the rate tables, the verb tables, the index tables, etc.
+Apply const prefix to the channel map tables.
 
 Just for minor optimization and no functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/hda/hdac_device.c      |  4 ++--
- sound/hda/hdmi_chmap.c       |  2 +-
- sound/hda/intel-nhlt.c       |  2 +-
- sound/pci/hda/hda_codec.c    |  6 +++---
- sound/pci/hda/hda_eld.c      |  6 +++---
- sound/pci/hda/hda_intel.c    |  8 ++++----
- sound/pci/hda/hda_proc.c     |  2 +-
- sound/pci/hda/hda_sysfs.c    |  2 +-
- sound/pci/hda/patch_analog.c |  2 +-
- sound/pci/hda/patch_ca0132.c | 18 +++++++++---------
- 10 files changed, 26 insertions(+), 26 deletions(-)
+ sound/pci/rme9652/rme9652.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 9f3e37511408..b4f8725f5ddf 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -637,7 +637,7 @@ struct hda_vendor_id {
- 	const char *name;
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 2cb5b03f84d3..c20e590eb570 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -229,7 +229,7 @@ struct snd_rme9652 {
+ 	int last_spdif_sample_rate;	/* so that we can catch externally ... */
+ 	int last_adat_sample_rate;	/* ... induced rate changes            */
+ 
+-        char *channel_map;
++	const char *channel_map;
+ 
+ 	struct snd_card *card;
+ 	struct snd_pcm *pcm;
+@@ -246,12 +246,12 @@ struct snd_rme9652 {
+    where the data for that channel can be read/written from/to.
+ */
+ 
+-static char channel_map_9652_ss[26] = {
++static const char channel_map_9652_ss[26] = {
+ 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+ 	18, 19, 20, 21, 22, 23, 24, 25
  };
  
--static struct hda_vendor_id hda_vendor_ids[] = {
-+static const struct hda_vendor_id hda_vendor_ids[] = {
- 	{ 0x1002, "ATI" },
- 	{ 0x1013, "Cirrus Logic" },
- 	{ 0x1057, "Motorola" },
-@@ -692,7 +692,7 @@ struct hda_rate_tbl {
- 	(AC_FMT_BASE_##base##K | (((mult) - 1) << AC_FMT_MULT_SHIFT) | \
- 	 (((div) - 1) << AC_FMT_DIV_SHIFT))
- 
--static struct hda_rate_tbl rate_bits[] = {
-+static const struct hda_rate_tbl rate_bits[] = {
- 	/* rate in Hz, ALSA rate bitmask, HDA format value */
- 
- 	/* autodetected value used in snd_hda_query_supported_pcm */
-diff --git a/sound/hda/hdmi_chmap.c b/sound/hda/hdmi_chmap.c
-index 886cb7811bd6..5fd6d575e123 100644
---- a/sound/hda/hdmi_chmap.c
-+++ b/sound/hda/hdmi_chmap.c
-@@ -59,7 +59,7 @@ static const char * const cea_speaker_allocation_names[] = {
- /*
-  * ELD SA bits in the CEA Speaker Allocation data block
-  */
--static int eld_speaker_allocation_bits[] = {
-+static const int eld_speaker_allocation_bits[] = {
- 	[0] = FL | FR,
- 	[1] = LFE,
- 	[2] = FC,
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index 097ff6c10099..99a23fe7fab9 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -7,7 +7,7 @@
- #define NHLT_ACPI_HEADER_SIG	"NHLT"
- 
- /* Unique identification for getting NHLT blobs */
--static guid_t osc_guid =
-+static const guid_t osc_guid =
- 	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
- 		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
- 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index d039eeec080f..4377b2aba835 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3201,7 +3201,7 @@ static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
- 	/* assigned to static slots up to dev#10; if more needed, assign
- 	 * the later slot dynamically (when CONFIG_SND_DYNAMIC_MINORS=y)
- 	 */
--	static int audio_idx[HDA_PCM_NTYPES][5] = {
-+	static const int audio_idx[HDA_PCM_NTYPES][5] = {
- 		[HDA_PCM_TYPE_AUDIO] = { 0, 2, 4, 5, -1 },
- 		[HDA_PCM_TYPE_SPDIF] = { 1, -1 },
- 		[HDA_PCM_TYPE_HDMI]  = { 3, 7, 8, 9, -1 },
-@@ -3869,7 +3869,7 @@ EXPORT_SYMBOL_GPL(snd_hda_get_default_vref);
- unsigned int snd_hda_correct_pin_ctl(struct hda_codec *codec,
- 				     hda_nid_t pin, unsigned int val)
- {
--	static unsigned int cap_lists[][2] = {
-+	static const unsigned int cap_lists[][2] = {
- 		{ AC_PINCTL_VREF_100, AC_PINCAP_VREF_100 },
- 		{ AC_PINCTL_VREF_80, AC_PINCAP_VREF_80 },
- 		{ AC_PINCTL_VREF_50, AC_PINCAP_VREF_50 },
-@@ -4014,7 +4014,7 @@ void snd_hda_bus_reset_codecs(struct hda_bus *bus)
-  */
- void snd_print_pcm_bits(int pcm, char *buf, int buflen)
- {
--	static unsigned int bits[] = { 8, 16, 20, 24, 32 };
-+	static const unsigned int bits[] = { 8, 16, 20, 24, 32 };
- 	int i, j;
- 
- 	for (i = 0, j = 0; i < ARRAY_SIZE(bits); i++)
-diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-index d081fb2880a0..bb46c89b7f63 100644
---- a/sound/pci/hda/hda_eld.c
-+++ b/sound/pci/hda/hda_eld.c
-@@ -98,7 +98,7 @@ static const char * const cea_audio_coding_type_names[] = {
- /*
-  * SS1:SS0 index => sample size
-  */
--static int cea_sample_sizes[4] = {
-+static const int cea_sample_sizes[4] = {
- 	0,	 		/* 0: Refer to Stream Header */
- 	AC_SUPPCM_BITS_16,	/* 1: 16 bits */
- 	AC_SUPPCM_BITS_20,	/* 2: 20 bits */
-@@ -108,7 +108,7 @@ static int cea_sample_sizes[4] = {
- /*
-  * SF2:SF1:SF0 index => sampling frequency
-  */
--static int cea_sampling_frequencies[8] = {
-+static const int cea_sampling_frequencies[8] = {
- 	0,			/* 0: Refer to Stream Header */
- 	SNDRV_PCM_RATE_32000,	/* 1:  32000Hz */
- 	SNDRV_PCM_RATE_44100,	/* 2:  44100Hz */
-@@ -352,7 +352,7 @@ int snd_hdmi_get_eld(struct hda_codec *codec, hda_nid_t nid,
-  */
- static void hdmi_print_pcm_rates(int pcm, char *buf, int buflen)
- {
--	static unsigned int alsa_rates[] = {
-+	static const unsigned int alsa_rates[] = {
- 		5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000,
- 		88200, 96000, 176400, 192000, 384000
- 	};
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 49f1638969e3..617143a44a10 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -372,7 +372,7 @@ enum {
- 
- #define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
- 
--static char *driver_short_names[] = {
-+static const char * const driver_short_names[] = {
- 	[AZX_DRIVER_ICH] = "HDA Intel",
- 	[AZX_DRIVER_PCH] = "HDA Intel PCH",
- 	[AZX_DRIVER_SCH] = "HDA Intel MID",
-@@ -499,7 +499,7 @@ static void bxt_reduce_dma_latency(struct azx *chip)
- static int intel_get_lctl_scf(struct azx *chip)
- {
- 	struct hdac_bus *bus = azx_bus(chip);
--	static int preferred_bits[] = { 2, 3, 1, 4, 5 };
-+	static const int preferred_bits[] = { 2, 3, 1, 4, 5 };
- 	u32 val, t;
- 	int i;
- 
-@@ -1564,7 +1564,7 @@ static int check_position_fix(struct azx *chip, int fix)
- 
- static void assign_position_fix(struct azx *chip, int fix)
- {
--	static azx_get_pos_callback_t callbacks[] = {
-+	static const azx_get_pos_callback_t callbacks[] = {
- 		[POS_FIX_AUTO] = NULL,
- 		[POS_FIX_LPIB] = azx_get_pos_lpib,
- 		[POS_FIX_POSBUF] = azx_get_pos_posbuf,
-@@ -2231,7 +2231,7 @@ static void set_default_power_save(struct azx *chip)
- }
- 
- /* number of codec slots for each chipset: 0 = default slots (i.e. 4) */
--static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
-+static const unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
- 	[AZX_DRIVER_NVIDIA] = 8,
- 	[AZX_DRIVER_TERA] = 1,
- };
-diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
-index 468836c65445..0631f31ef87f 100644
---- a/sound/pci/hda/hda_proc.c
-+++ b/sound/pci/hda/hda_proc.c
-@@ -160,7 +160,7 @@ static void print_amp_vals(struct snd_info_buffer *buffer,
- 
- static void print_pcm_rates(struct snd_info_buffer *buffer, unsigned int pcm)
- {
--	static unsigned int rates[] = {
-+	static const unsigned int rates[] = {
- 		8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200,
- 		96000, 176400, 192000, 384000
- 	};
-diff --git a/sound/pci/hda/hda_sysfs.c b/sound/pci/hda/hda_sysfs.c
-index fcc34417cbce..0607ed5d1959 100644
---- a/sound/pci/hda/hda_sysfs.c
-+++ b/sound/pci/hda/hda_sysfs.c
-@@ -611,7 +611,7 @@ struct hda_patch_item {
- 	void (*parser)(char *buf, struct hda_bus *bus, struct hda_codec **retc);
+-static char channel_map_9636_ss[26] = {
++static const char channel_map_9636_ss[26] = {
+ 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
+ 	/* channels 16 and 17 are S/PDIF */
+ 	24, 25,
+@@ -259,7 +259,7 @@ static char channel_map_9636_ss[26] = {
+ 	-1, -1, -1, -1, -1, -1, -1, -1
  };
  
--static struct hda_patch_item patch_items[NUM_LINE_MODES] = {
-+static const struct hda_patch_item patch_items[NUM_LINE_MODES] = {
- 	[LINE_MODE_CODEC] = {
- 		.tag = "[codec]",
- 		.parser = parse_codec_mode,
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index c64895f99299..88c46b051d14 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -812,7 +812,7 @@ static int ad1988_add_spdif_mux_ctl(struct hda_codec *codec)
- 	/* we create four static faked paths, since AD codecs have odd
- 	 * widget connections regarding the SPDIF out source
- 	 */
--	static struct nid_path fake_paths[4] = {
-+	static const struct nid_path fake_paths[4] = {
- 		{
- 			.depth = 3,
- 			.path = { 0x02, 0x1d, 0x1b },
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 250534f90ce0..46e105244ad3 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -3768,7 +3768,7 @@ static const unsigned int float_xbass_xover_lookup[] = {
- /* The following are for tuning of products */
- #ifdef ENABLE_TUNING_CONTROLS
- 
--static unsigned int voice_focus_vals_lookup[] = {
-+static const unsigned int voice_focus_vals_lookup[] = {
- 0x41A00000, 0x41A80000, 0x41B00000, 0x41B80000, 0x41C00000, 0x41C80000,
- 0x41D00000, 0x41D80000, 0x41E00000, 0x41E80000, 0x41F00000, 0x41F80000,
- 0x42000000, 0x42040000, 0x42080000, 0x420C0000, 0x42100000, 0x42140000,
-@@ -3798,7 +3798,7 @@ static unsigned int voice_focus_vals_lookup[] = {
- 0x43300000, 0x43310000, 0x43320000, 0x43330000, 0x43340000
+-static char channel_map_9652_ds[26] = {
++static const char channel_map_9652_ds[26] = {
+ 	/* ADAT channels are remapped */
+ 	1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23,
+ 	/* channels 12 and 13 are S/PDIF */
+@@ -268,7 +268,7 @@ static char channel_map_9652_ds[26] = {
+ 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
  };
  
--static unsigned int mic_svm_vals_lookup[] = {
-+static const unsigned int mic_svm_vals_lookup[] = {
- 0x00000000, 0x3C23D70A, 0x3CA3D70A, 0x3CF5C28F, 0x3D23D70A, 0x3D4CCCCD,
- 0x3D75C28F, 0x3D8F5C29, 0x3DA3D70A, 0x3DB851EC, 0x3DCCCCCD, 0x3DE147AE,
- 0x3DF5C28F, 0x3E051EB8, 0x3E0F5C29, 0x3E19999A, 0x3E23D70A, 0x3E2E147B,
-@@ -3818,7 +3818,7 @@ static unsigned int mic_svm_vals_lookup[] = {
- 0x3F75C28F, 0x3F7851EC, 0x3F7AE148, 0x3F7D70A4, 0x3F800000
- };
- 
--static unsigned int equalizer_vals_lookup[] = {
-+static const unsigned int equalizer_vals_lookup[] = {
- 0xC1C00000, 0xC1B80000, 0xC1B00000, 0xC1A80000, 0xC1A00000, 0xC1980000,
- 0xC1900000, 0xC1880000, 0xC1800000, 0xC1700000, 0xC1600000, 0xC1500000,
- 0xC1400000, 0xC1300000, 0xC1200000, 0xC1100000, 0xC1000000, 0xC0E00000,
-@@ -3831,7 +3831,7 @@ static unsigned int equalizer_vals_lookup[] = {
- };
- 
- static int tuning_ctl_set(struct hda_codec *codec, hda_nid_t nid,
--			  unsigned int *lookup, int idx)
-+			  const unsigned int *lookup, int idx)
- {
- 	int i = 0;
- 
-@@ -7642,14 +7642,14 @@ static void ca0132_init_unsol(struct hda_codec *codec)
-  */
- 
- /* Sends before DSP download. */
--static struct hda_verb ca0132_base_init_verbs[] = {
-+static const struct hda_verb ca0132_base_init_verbs[] = {
- 	/*enable ct extension*/
- 	{0x15, VENDOR_CHIPIO_CT_EXTENSIONS_ENABLE, 0x1},
- 	{}
- };
- 
- /* Send at exit. */
--static struct hda_verb ca0132_base_exit_verbs[] = {
-+static const struct hda_verb ca0132_base_exit_verbs[] = {
- 	/*set afg to D3*/
- 	{0x01, AC_VERB_SET_POWER_STATE, 0x03},
- 	/*disable ct extension*/
-@@ -7659,7 +7659,7 @@ static struct hda_verb ca0132_base_exit_verbs[] = {
- 
- /* Other verbs tables. Sends after DSP download. */
- 
--static struct hda_verb ca0132_init_verbs0[] = {
-+static const struct hda_verb ca0132_init_verbs0[] = {
- 	/* chip init verbs */
- 	{0x15, 0x70D, 0xF0},
- 	{0x15, 0x70E, 0xFE},
-@@ -7692,7 +7692,7 @@ static struct hda_verb ca0132_init_verbs0[] = {
- };
- 
- /* Extra init verbs for desktop cards. */
--static struct hda_verb ca0132_init_verbs1[] = {
-+static const struct hda_verb ca0132_init_verbs1[] = {
- 	{0x15, 0x70D, 0x20},
- 	{0x15, 0x70E, 0x19},
- 	{0x15, 0x707, 0x00},
-@@ -8869,7 +8869,7 @@ static int patch_ca0132(struct hda_codec *codec)
- /*
-  * patch entries
-  */
--static struct hda_device_id snd_hda_id_ca0132[] = {
-+static const struct hda_device_id snd_hda_id_ca0132[] = {
- 	HDA_CODEC_ENTRY(0x11020011, "CA0132", patch_ca0132),
- 	{} /* terminator */
- };
+-static char channel_map_9636_ds[26] = {
++static const char channel_map_9636_ds[26] = {
+ 	/* ADAT channels are remapped */
+ 	1, 3, 5, 7, 9, 11, 13, 15,
+ 	/* channels 8 and 9 are S/PDIF */
 -- 
 2.16.4
 
