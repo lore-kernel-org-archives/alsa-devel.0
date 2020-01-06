@@ -2,81 +2,65 @@ Return-Path: <SRS0=qF1Q=23=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B769C33C8C
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:08:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 333DAC3F68F
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 18:56:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC4CA2081E
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 16:08:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A0DC2070E
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 18:55:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GVYkpItQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC4CA2081E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oHtmifl2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A0DC2070E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE5C5167E;
-	Mon,  6 Jan 2020 17:07:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5C5167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EACA17B2;
+	Mon,  6 Jan 2020 19:55:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EACA17B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578326916;
-	bh=a+/Rumkk3gDcRK+MNCoW8jOJ8R26vLYHogT4lPiE8Mw=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1578336957;
+	bh=ufB9geZsCfvnSKgnPkPZa5ksHzmT0FbinuIvscUpn1Y=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GVYkpItQ8ZhPnytHC5CdL4Q1TAXUxqPKG7SY2Lt9+UT+pXZLLtDfG2he1ZHYZWC+j
-	 DeruBng+nVyrn0rh0OsnlVY70HmdXpH/vrng/cJ+zUaJ1lNTcK4sJHQIShzUYowtG1
-	 s9tURrgpY6iLF3uh4DUZENzgG2yOFQMmPEPg1ddE=
+	b=oHtmifl2sUiaG3pdG8Op/7fgAhKt/EcCbSB5NfRj4xfoH3Ukq/OS+JO62eNOQ+7vY
+	 YBO7mdDQ/ze51aWu2Ll+Cib9XAb/9e8E3I9UPkPLpkrM8DC3/+VTnPMu1fbcZ+mWN/
+	 Nnoqfx5GWVR6cdN/5sz+DKynvzvS8F8UmQr3xjBA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7F37F8021C;
-	Mon,  6 Jan 2020 17:06:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84A04F80149;
+	Mon,  6 Jan 2020 19:55:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3638AF80159; Mon,  6 Jan 2020 17:06:52 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 57516F80159; Mon,  6 Jan 2020 19:55:04 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DAFEF80149
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 17:06:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DAFEF80149
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 06 Jan 2020 08:06:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,403,1571727600"; d="scan'208";a="216866407"
-Received: from cwpinto-mobl.amr.corp.intel.com (HELO [10.252.199.187])
- ([10.252.199.187])
- by fmsmga007.fm.intel.com with ESMTP; 06 Jan 2020 08:06:41 -0800
-To: Vinod Koul <vkoul@kernel.org>
-References: <20191217210314.20410-1-pierre-louis.bossart@linux.intel.com>
- <20191217210314.20410-10-pierre-louis.bossart@linux.intel.com>
- <20191227090826.GM3006@vkoul-mobl>
- <5be4d9df-0f46-d36f-471c-aae9e1f55cc0@linux.intel.com>
- <20200106054221.GN2818@vkoul-mobl>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <32ae46a7-59ee-4815-270a-a519ff462345@linux.intel.com>
-Date: Mon, 6 Jan 2020 08:51:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20200106054221.GN2818@vkoul-mobl>
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v5 09/17] soundwire: intel: remove platform
- devices and use 'Master Devices' instead
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43BC5F8010C
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 19:55:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43BC5F8010C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7FB80AC1C;
+ Mon,  6 Jan 2020 18:54:59 +0000 (UTC)
+Date: Mon, 06 Jan 2020 19:54:58 +0100
+Message-ID: <s5hh818h0u5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20200106130202.GA6448@sirena.org.uk>
+References: <20200106130202.GA6448@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [alsa-devel] [GIT PULL] ASoC fixes for v5.5
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,111 +73,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
->>>> +		/* let the SoundWire master driver to its probe */
->>>> +		md->driver->probe(md, link);
->>>
->>> So you are invoking driver probe here.. That is typically role of driver
->>> core to do that.. If we need that, make driver core do that for you!
->>>
->>> That reminds me I am missing match code for master driver...
->>
->> There is no match for the master because it doesn't have an existence in
->> ACPI. There are no _ADR or HID that can be used, the only thing that exists
->> is the Controller which has 4 sublinks. Each master must be added  by hand.
->>
->> Also the SoundWire master cannot be enumerated or matched against a
->> SoundWire bus, since it controls the bus itself (that would be a chicken and
->> egg problem). The SoundWire master would need to be matched on a parent bus
->> (which does not exist for Intel) since the hardware is embedded in a larger
->> audio cluster that's visible on PCI only.
->>
->> Currently for Intel platforms, the SoundWire master device is created by the
->> SOF driver (via the abstraction in intel_init.c).
+On Mon, 06 Jan 2020 14:02:02 +0100,
+Mark Brown wrote:
 > 
-> That is okay for me, the thing that is bit confusing is having a probe
-> etc and no match.. (more below)..
+> The following changes since commit 556672d75ff486e0b6786056da624131679e0576:
 > 
->>> So we seem to be somewhere is middle wrt driver probing here! IIUC this
->>> is not a full master driver, thats okay, but then it is not
->>> completely transparent either...
->>>
->>> I was somehow thinking that the driver will continue to be
->>> 'platform/acpi/of' driver and master device abstraction will be
->>> handled in the core (for example see how the busses like i2c handle
->>> this). The master device is created and used to represent but driver
->>> probing etc is not done
->>
->> I2C controllers are typically PCI devices or have some sort of ACPI
->> description. This is not the case for SoundWire masters on Intel platforms,
+>   ASoC: wm8962: fix lambda value (2019-12-16 11:47:28 +0000)
 > 
-> Well the world is not PCI/ACPI... We have controllers which are DT
-> described and work in same manner as a PCI device.
-Both DT and PCI would use a DIFFERENT matching on the parent bus, not a 
-matching provided by the SoundWire subsystem itself.
-
+> are available in the Git repository at:
 > 
->> so even if I wanted to I would have no ability to implement any matching or
->> parent bus registration.
->>
->> Also the notion of 'probe' does not necessarily mean that the device is
->> attached to a bus, we use DAI 'drivers' in ASoC and still have probe/remove
->> callbacks.
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.5-rc5
 > 
-> The "big" difference is that probe is called by core (asoc) and not by
-> driver onto themselves.. IMO that needs to go away.
-
-What I did is not different from what existed already with platform 
-devices. They were manually created, weren't they?
-
+> for you to fetch changes up to ff3b57417012fcc963ec281f5705bed837e4b1ac:
 > 
->> And if you look at the definitions, we added additional callbacks since
->> probe/remove are not enough to deal with hardware restrictions:
->>
->> For Intel platforms, we have a startup() callback which is only invoked once
->> the DSP is powered and the rails stable. Likewise we added an
->> 'autonomous_clock_stop()' callback which will be needed when the Linux
->> driver hands-over control of the hardware to the DSP firmware, e.g. to deal
->> with in-band wakes in D0i3.
->>
->> FWIW, the implementation here follows what was suggested for Greybus 'Host
->> Devices' [1] [2], so it's not like I am creating any sort of dangerous
->> precedent.
->>
->> [1]
->> https://elixir.bootlin.com/linux/latest/source/drivers/greybus/es2.c#L1275
->> [2] https://elixir.bootlin.com/linux/latest/source/drivers/greybus/hd.c#L124
+>   ASoC: Intel: boards: Fix compile-testing RT1011/RT5682 (2020-01-03 00:56:47 +0000)
 > 
-> And if you look closely all this work is done by core not by drivers!
-> Drivers _should_ never do all this, it is the job of core to do that for
-> you.
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.5
+> 
+> More fixes that have been collected, nothing super remarkable here - the
+> few core fixes are mainly error handling related as are many of the
+> driver fixes.
 
-Please look at the code again, you have a USB probe that will manually 
-call the GreyBus device creation.
-
-static int ap_probe(struct usb_interface *interface,
-		    const struct usb_device_id *id)
-{
-	hd = gb_hd_create(&es2_driver, &udev->dev, 	
+Pulled now.  Thanks!
 
 
-static struct usb_driver es2_ap_driver = {
-	.name =		"es2_ap_driver",
-	.probe =	ap_probe, <<< code above
-	.disconnect =	ap_disconnect,
-	.id_table =	id_table,
-	.soft_unbind =	1,
-};
-
-The master device probe suggested here is also called as part of the 
-parent SOF PCI device probe, same as this USB example. I really don't 
-see what your objection is, given that there is no way to deal with the 
-SoundWire controller as a independent entity for Intel platforms.
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
