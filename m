@@ -2,67 +2,81 @@ Return-Path: <SRS0=qF1Q=23=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD543C33C8C
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 21:42:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8404C33C8C
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 21:56:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4AD7A208C4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 21:42:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9C2B207FF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 21:56:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NtyrM6bh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AD7A208C4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=Fries.net
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BTHGbcRJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9C2B207FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A106017B5;
-	Mon,  6 Jan 2020 22:41:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A106017B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9125C17DC;
+	Mon,  6 Jan 2020 22:56:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9125C17DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578346950;
-	bh=fZuPiOJ9iN00YepaRASXXue4zUAI1B2FA0Z64LRtYtM=;
-	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NtyrM6bhkbWYIbX02ax519XdQr0kk309trWap3OqgjTVYsoHtlOXJRIKio631Tu+9
-	 +KIZVobqsS6DNvwjbPm3bbwzJ5Q9m/KmgvwXQ75d43DeAPStAXsNyKYcT7xTzztfx9
-	 KvPeHst2+aKiAWwmqzVFtfLLCQfAqtgrLhpiQM9o=
+	s=default; t=1578347815;
+	bh=GwxpxZg1yYr/ro+YZH/wxPUx6WROYwycKmKrjk0kTLE=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BTHGbcRJulBUHJ3r1R2R7JWdCN8YLffZ6wQHome9hwWtbll2ojUK9VUyi37OPBbbj
+	 EB7gAwlAE/lSJitjj3REr8wuxkfBPL/BKxZqIMI85Pt71NZH5NLpqoO9WS5dWUyuOB
+	 vr5eZ64aoJJjH3UVMLtnhBw8TK+73ZGRlkxfGG68=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB154F80116;
-	Mon,  6 Jan 2020 22:41:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FA62F80149;
+	Mon,  6 Jan 2020 22:56:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BE7CF80159; Mon,  6 Jan 2020 22:41:37 +0100 (CET)
-Received: from SpacedOut.fries.net (spacedout.fries.net
- [IPv6:2001:470:3832:200::1])
+ id ABA67F80116; Mon,  6 Jan 2020 22:56:03 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00C66F80116
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 22:41:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00C66F80116
-Received: from SpacedOut.fries.net (ip6-localhost [IPv6:0:0:0:0:0:0:0:1])
- by SpacedOut.fries.net (8.15.2/8.15.2/Debian-8) with ESMTPS id 006LfVhj008772
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2020 15:41:31 -0600
-Received: (from david@localhost)
- by SpacedOut.fries.net (8.15.2/8.15.2/Submit) id 006LfTJB008771
- for alsa-devel@alsa-project.org; Mon, 6 Jan 2020 15:41:29 -0600
-Date: Mon, 6 Jan 2020 15:41:29 -0600
-From: David Fries <David@Fries.net>
-To: alsa-devel@alsa-project.org
-Message-ID: <20200106214129.fnrokzkh4qnbvzdl@spacedout.fries.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE338F80116
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 22:55:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE338F80116
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 06 Jan 2020 13:55:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,403,1571727600"; d="scan'208";a="245719807"
+Received: from chewang-mobl.amr.corp.intel.com (HELO [10.254.185.10])
+ ([10.254.185.10])
+ by fmsmga004.fm.intel.com with ESMTP; 06 Jan 2020 13:55:53 -0800
+To: Jon Hunter <jonathanh@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+ Mark Brown <broonie@kernel.org>
+References: <20191210195333.648018-1-arnd@arndb.de>
+ <d739240f-aaa6-c310-9c68-16c1a08ce759@nvidia.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9c9169cc-0da5-f247-c8f7-f6913ca2bfb5@linux.intel.com>
+Date: Mon, 6 Jan 2020 15:55:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Disposition: inline
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.5.11
- (SpacedOut.fries.net [IPv6:::1]); Mon, 06 Jan 2020 15:41:31 -0600 (CST)
-Subject: [alsa-devel] [PATCH] mixer: Fix memory leak for more than 16 file
-	descriptor case
+In-Reply-To: <d739240f-aaa6-c310-9c68-16c1a08ce759@nvidia.com>
+Content-Language: en-US
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, linux-tegra@vger.kernel.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Ben Zhang <benzh@chromium.org>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ Curtis Malainey <cujomalainey@chromium.org>,
+ linux-arm-kernel@lists.infradead.org,
+ KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt5677: add SPI_MASTER dependency
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,41 +89,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
----
-I saw this when digging through the source code, wrote up a test case,
-and verified with valgrind. I don't have that many sound cards so I
-modified mixer.c to always take the conditional. alloca seemed like
-the least effort way to fix this. Other thoughts were to test pfds !=
-spfds and free, but given how little bytes would be allocated putting
-on the stack seems reasonable.
 
-I also created the github pull request 20.
-https://github.com/alsa-project/alsa-lib/pull/20
 
- src/mixer/mixer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 12/11/19 4:59 AM, Jon Hunter wrote:
+> 
+> On 10/12/2019 19:52, Arnd Bergmann wrote:
+>> When CONFIG_SPI is disabled, the newly added code for the DSP
+>> firmware loading fails to link:
+>>
+>> ERROR: "rt5677_spi_hotword_detected" [sound/soc/codecs/snd-soc-rt5677.ko] undefined!
+>> ERROR: "rt5677_spi_write" [sound/soc/codecs/snd-soc-rt5677.ko] undefined!
+> 
+> Would it be better if the above functions or the functions that call
+> these are conditional on CONFIG_SND_SOC_RT5677_SPI?
 
-diff --git a/src/mixer/mixer.c b/src/mixer/mixer.c
-index 82056474..b1af9945 100644
---- a/src/mixer/mixer.c
-+++ b/src/mixer/mixer.c
-@@ -767,7 +767,7 @@ int snd_mixer_wait(snd_mixer_t *mixer, int timeout)
- 	if (count < 0)
- 		return count;
- 	if ((unsigned int) count > sizeof(spfds) / sizeof(spfds[0])) {
--		pfds = malloc(count * sizeof(*pfds));
-+		pfds = alloca(count * sizeof(*pfds));
- 		if (!pfds)
- 			return -ENOMEM;
- 		err = snd_mixer_poll_descriptors(mixer, pfds, 
--- 
-2.11.0
+they are already conditional, with a fallback provided:
 
+#if IS_ENABLED(CONFIG_SND_SOC_RT5677_SPI)
+int rt5677_spi_read(u32 addr, void *rxbuf, size_t len);
+int rt5677_spi_write(u32 addr, const void *txbuf, size_t len);
+int rt5677_spi_write_firmware(u32 addr, const struct firmware *fw);
+void rt5677_spi_hotword_detected(void);
+#else
+static inline int rt5677_spi_read(u32 addr, void *rxbuf, size_t len)
+{
+	return -EINVAL;
+}
+static inline int rt5677_spi_write(u32 addr, const void *txbuf, size_t len)
+{
+	return -EINVAL;
+}
+static inline int rt5677_spi_write_firmware(u32 addr, const struct 
+firmware *fw)
+{
+	return -EINVAL;
+}
+static inline void rt5677_spi_hotword_detected(void){}
+#endif
+
+and since we have the following definition
+
+config SND_SOC_RT5677_SPI
+	tristate
+	default SND_SOC_RT5677 && SPI
+
+in theory if SPI is not enabled the fallback static inlines would always 
+be selected?
+
+Arnd, if you can share the .config that exposes this problem it'd be nice
+
+FWIW, there are other missing dependencies, the SPI controller was not 
+explicitly enabled so depending on the Kconfigs used by a distro the 
+machine driver probe could fail with the spi-RT5677AA component never 
+registered. The patch below seems to work for me (more testing needed)
+
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index b149e28a2076..cf1a2fde4c47 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -50,6 +50,9 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
+         depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
+         depends on GPIOLIB || COMPILE_TEST
+         depends on X86_INTEL_LPSS || COMPILE_TEST
++       depends on SPI_MASTER
++       select SPI_PXA2XX
++       select SND_SOC_RT5677_SPI
+         select SND_SOC_RT5677
+         help
+           This adds support for Intel Broadwell platform based boards with
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
