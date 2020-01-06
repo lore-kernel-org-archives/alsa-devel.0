@@ -6,61 +6,60 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DDB1C33C8C
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 20:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FA69C33C8C
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 20:53:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 280A821744
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 20:52:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AC9FF21744
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 20:53:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O4FEzJjL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 280A821744
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FYuIr8Gg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC9FF21744
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7268617F5;
-	Mon,  6 Jan 2020 21:52:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7268617F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B2281676;
+	Mon,  6 Jan 2020 21:52:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B2281676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578343973;
-	bh=ZCAmuyok3rHqXyplDdlYHfzhYh/ppkynCQeEwQQ9O14=;
+	s=default; t=1578344016;
+	bh=RS7WsuEfyx7p7PGYE12fB4ZdJv4sXAgyZDIgbiTErlw=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=O4FEzJjLgEUQmIbCLBykHE34YAxLyacCmdZs+KFkaZt6RjttM8g2n9bExMMAi7c+D
-	 ovGOPW1dm1f1lYLKMa2LT/6uOJI8QwU3eq4DfUGS1y5K9+UrsnX60Z2Qf6Natf0lb1
-	 xibo6EHdEXB6hm5BHTdNukthPr1imFeHmDPzi5tk=
+	b=FYuIr8Gg+sd97MNZEVxmTkLhvpApDJAHMLVN4q/l6Y+cxtxlX1VfX1DjDRcjLfZRt
+	 VbLT/yPXYese/tpoSuVnTtG65fRYw5v/iAoZANa5VsILtg75mfqy8ao7OOoyzly42o
+	 56TOjWlG+MjeJdjao+NwUOhbfmGJULQXV0W3eilc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2FBDF801F2;
-	Mon,  6 Jan 2020 21:51:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 128F2F8024A;
+	Mon,  6 Jan 2020 21:51:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06F58F801F2; Mon,  6 Jan 2020 21:51:03 +0100 (CET)
+ id 6D539F8021D; Mon,  6 Jan 2020 21:51:05 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5BA1DF80116
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 21:50:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BA1DF80116
+ by alsa1.perex.cz (Postfix) with ESMTP id 0B673F8010C
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 21:51:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B673F8010C
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A151DA7;
- Mon,  6 Jan 2020 12:50:58 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99A46106F;
+ Mon,  6 Jan 2020 12:51:00 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5CF73F534;
- Mon,  6 Jan 2020 12:50:57 -0800 (PST)
-Date: Mon, 06 Jan 2020 20:50:56 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 230483F534;
+ Mon,  6 Jan 2020 12:50:59 -0800 (PST)
+Date: Mon, 06 Jan 2020 20:50:58 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20200106113903.279394-1-hdegoede@redhat.com>
-Message-Id: <applied-20200106113903.279394-1-hdegoede@redhat.com>
+To: Dmitry Osipenko <digetx@gmail.com>
+In-Reply-To: <20200106014707.11378-1-digetx@gmail.com>
+Message-Id: <applied-20200106014707.11378-1-digetx@gmail.com>
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, russianneuromancer@ya.ru,
- Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, stable@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: Intel: bytcht_es8316: Fix Irbis NB41
-	netbook quirk" to the asoc tree
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-tegra@vger.kernel.org, Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] Applied "ASoC: rt5640: Fix NULL dereference on module
+	unload" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,7 +80,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: bytcht_es8316: Fix Irbis NB41 netbook quirk
+   ASoC: rt5640: Fix NULL dereference on module unload
 
 has been applied to the asoc tree at
 
@@ -106,44 +105,39 @@ to this mail.
 Thanks,
 Mark
 
-From 869bced7a055665e3ddb1ba671a441ce6f997bf1 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Mon, 6 Jan 2020 12:39:03 +0100
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: Fix Irbis NB41 netbook quirk
+From 89b71b3f02d8ae5a08a1dd6f4a2098b7b868d498 Mon Sep 17 00:00:00 2001
+From: Dmitry Osipenko <digetx@gmail.com>
+Date: Mon, 6 Jan 2020 04:47:07 +0300
+Subject: [PATCH] ASoC: rt5640: Fix NULL dereference on module unload
 
-When a quirk for the Irbis NB41 netbook was added, to override the defaults
-for this device, I forgot to add/keep the BYT_CHT_ES8316_SSP0 part of the
-defaults, completely breaking audio on this netbook.
+The rt5640->jack is NULL if jack is already disabled at the time of
+driver's module unloading.
 
-This commit adds the BYT_CHT_ES8316_SSP0 flag to the Irbis NB41 netbook
-quirk, making audio work again.
-
-Cc: stable@vger.kernel.org
-Cc: russianneuromancer@ya.ru
-Fixes: aa2ba991c420 ("ASoC: Intel: bytcht_es8316: Add quirk for Irbis NB41 netbook")
-Reported-and-tested-by: russianneuromancer@ya.ru
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200106113903.279394-1-hdegoede@redhat.com
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20200106014707.11378-1-digetx@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5640.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 46612331f5ea..54e97455d7f6 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -442,7 +442,8 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "IRBIS"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "NB41"),
- 		},
--		.driver_data = (void *)(BYT_CHT_ES8316_INTMIC_IN2_MAP
-+		.driver_data = (void *)(BYT_CHT_ES8316_SSP0
-+					| BYT_CHT_ES8316_INTMIC_IN2_MAP
- 					| BYT_CHT_ES8316_JD_INVERTED),
- 	},
- 	{	/* Teclast X98 Plus II */
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index adbae1f36a8a..747ca248bf10 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2432,6 +2432,13 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
+ {
+ 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
+ 
++	/*
++	 * soc_remove_component() force-disables jack and thus rt5640->jack
++	 * could be NULL at the time of driver's module unloading.
++	 */
++	if (!rt5640->jack)
++		return;
++
+ 	disable_irq(rt5640->irq);
+ 	rt5640_cancel_work(rt5640);
+ 
 -- 
 2.20.1
 
