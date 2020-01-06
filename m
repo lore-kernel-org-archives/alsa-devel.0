@@ -2,88 +2,60 @@ Return-Path: <SRS0=qF1Q=23=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E5F1C33C8C
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 11:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7921CC33C8C
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 13:03:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D9992071A
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 11:40:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 89A1F2075A
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jan 2020 13:03:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tz9f+iSc";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GE+tSq/7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D9992071A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h6XcwS/w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89A1F2075A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 482A317C0;
-	Mon,  6 Jan 2020 12:39:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 482A317C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51B8217DC;
+	Mon,  6 Jan 2020 14:02:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51B8217DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578310809;
-	bh=vNyN7Wapxw12mvicvMa7O1bxzM36FhzNIqSp0fk16k8=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1578315781;
+	bh=JQsX23FzCduqbTgNhniqE/PT42F00KH34hnUaeNjFV8=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=tz9f+iScRayCcSiZpIgrRCCMYjF5fXUG5QwIKrGApREX/WE+yLiryYG54KxfEl3VJ
-	 M158jJKcJmbemtjmgpJ+Wv5voragGjgrKUAOIhBIl4AAEF+MQj1Lp7twKm8jTq4V7C
-	 rIUedwCnKgkUEJ86/xfsLbGBDLXKtOIKX2Lf0J9w=
+	b=h6XcwS/w3B1pVOdTGMSUT+mKx6QTEFbV1Sc/8V2NnzStjSFoOtDJvr9K2wpLkH2Sp
+	 2xyevxVDitG/S1FEszddtiCSkxtZiLXHVi7lMTyyi5jhFTGT7d5ufsl746Srp+YO36
+	 5MczN/3X0xXN9TZOUBrYs+spxGcFotCSXUpOV9ro=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7CAEF80149;
-	Mon,  6 Jan 2020 12:39:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDBFBF80149;
+	Mon,  6 Jan 2020 14:02:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 821A8F80159; Mon,  6 Jan 2020 12:39:17 +0100 (CET)
-Received: from us-smtp-1.mimecast.com (us-smtp-delivery-1.mimecast.com
- [207.211.31.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B38EEF8010D
- for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 12:39:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B38EEF8010D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="GE+tSq/7"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1578310752;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=7QnDS0wMpWsHdmbYrxKZ8IKh1lRAwVHzJpC+uPoDwz8=;
- b=GE+tSq/7alD9rIzPdAaGxJIhwDHNiM9LjZoAJuL09qe/G0YzTSDPjQMbJ4JL7lAnnDHIFl
- F0JxS0+Ts2s8Y1i0lmd0HuBzzS7golCJy2iuRVi/asRhj+N5liJBAPf7wE263/YrqVD2Sc
- ankfAUl0xneoHJNDtWcdP/HY2A//9Jw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-Z24N8wNUPDiyB4Y_xwyr8w-1; Mon, 06 Jan 2020 06:39:09 -0500
-X-MC-Unique: Z24N8wNUPDiyB4Y_xwyr8w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
- [10.5.11.23])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35429DB65;
- Mon,  6 Jan 2020 11:39:07 +0000 (UTC)
-Received: from shalem.localdomain.com (ovpn-116-130.ams2.redhat.com
- [10.36.116.130])
- by smtp.corp.redhat.com (Postfix) with ESMTP id C463F271BA;
- Mon,  6 Jan 2020 11:39:04 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Date: Mon,  6 Jan 2020 12:39:03 +0100
-Message-Id: <20200106113903.279394-1-hdegoede@redhat.com>
+ id 4F016F80159; Mon,  6 Jan 2020 14:02:09 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0E47FF8010C
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jan 2020 14:02:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E47FF8010C
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F34C2328;
+ Mon,  6 Jan 2020 05:02:03 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 784ED3F534;
+ Mon,  6 Jan 2020 05:02:03 -0800 (PST)
+Date: Mon, 6 Jan 2020 13:02:02 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20200106130202.GA6448@sirena.org.uk>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- stable@vger.kernel.org, russianneuromancer@ya.ru
-Subject: [alsa-devel] [PATCH] ASoC: Intel: bytcht_es8316: Fix Irbis NB41
-	netbook quirk
+X-Cookie: It's later than you think.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: [alsa-devel] [GIT PULL] ASoC fixes for v5.5
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,45 +68,107 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5084857113339622359=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When a quirk for the Irbis NB41 netbook was added, to override the defaults
-for this device, I forgot to add/keep the BYT_CHT_ES8316_SSP0 part of the
-defaults, completely breaking audio on this netbook.
 
-This commit adds the BYT_CHT_ES8316_SSP0 flag to the Irbis NB41 netbook
-quirk, making audio work again.
+--===============5084857113339622359==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="VS++wcV0S1rZb1Fb"
+Content-Disposition: inline
 
-Cc: stable@vger.kernel.org
-Cc: russianneuromancer@ya.ru
-Fixes: aa2ba991c420 ("ASoC: Intel: bytcht_es8316: Add quirk for Irbis NB41 netbook")
-Reported-and-tested-by: russianneuromancer@ya.ru
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcht_es8316.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 46612331f5ea..54e97455d7f6 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -442,7 +442,8 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "IRBIS"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "NB41"),
- 		},
--		.driver_data = (void *)(BYT_CHT_ES8316_INTMIC_IN2_MAP
-+		.driver_data = (void *)(BYT_CHT_ES8316_SSP0
-+					| BYT_CHT_ES8316_INTMIC_IN2_MAP
- 					| BYT_CHT_ES8316_JD_INVERTED),
- 	},
- 	{	/* Teclast X98 Plus II */
--- 
-2.24.1
+--VS++wcV0S1rZb1Fb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 556672d75ff486e0b6786056da624131679e0576:
+
+  ASoC: wm8962: fix lambda value (2019-12-16 11:47:28 +0000)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.5-rc5
+
+for you to fetch changes up to ff3b57417012fcc963ec281f5705bed837e4b1ac:
+
+  ASoC: Intel: boards: Fix compile-testing RT1011/RT5682 (2020-01-03 00:56:47 +0000)
+
+----------------------------------------------------------------
+ASoC: Fixes for v5.5
+
+More fixes that have been collected, nothing super remarkable here - the
+few core fixes are mainly error handling related as are many of the
+driver fixes.
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      ASoC: Intel: boards: Fix compile-testing RT1011/RT5682
+
+Chuhong Yuan (1):
+      ASoC: fsl_audmix: add missed pm_runtime_disable
+
+Colin Ian King (1):
+      ASoC: SOF: imx8: fix memory allocation failure check on priv->pd_dev
+
+Daniel Baluta (2):
+      ASoC: soc-core: Set dpcm_playback / dpcm_capture
+      ASoC: SOF: imx8: Fix dsp_box offset
+
+Dragos Tarcatu (1):
+      ASoC: topology: Prevent use-after-free in snd_soc_get_pcm_runtime()
+
+Kai Vehmanen (1):
+      ASoC: SOF: fix fault at driver unload after failed probe
+
+Olivier Moysan (3):
+      ASoC: stm32: spdifrx: fix inconsistent lock state
+      ASoC: stm32: spdifrx: fix race condition in irq handler
+      ASoC: stm32: spdifrx: fix input pin state management
+
+Pierre-Louis Bossart (1):
+      ASoC: SOF: Intel: hda: hda-dai: fix oops on hda_link .hw_free
+
+Takashi Iwai (1):
+      ASoC: core: Fix access to uninitialized list heads
+
+ sound/soc/fsl/fsl_audmix.c                 |  9 ++++++-
+ sound/soc/intel/boards/cml_rt1011_rt5682.c |  1 -
+ sound/soc/soc-core.c                       | 14 ++++++-----
+ sound/soc/soc-topology.c                   |  6 ++---
+ sound/soc/sof/imx/imx8.c                   |  5 +++-
+ sound/soc/sof/intel/hda-dai.c              | 11 ++++++--
+ sound/soc/sof/ipc.c                        |  3 +++
+ sound/soc/stm/stm32_spdifrx.c              | 40 +++++++++++++++++++-----------
+ 8 files changed, 61 insertions(+), 28 deletions(-)
+
+--VS++wcV0S1rZb1Fb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4TL8kACgkQJNaLcl1U
+h9Dorgf+P7tk1hvYIA7ejrrUXYuu3J6jDFTlRHIWUk8CFkyHSFgm6K371YjrEZn7
+aKMvn98NMjWZ5+pdsaWRcxUPHdIzrJo1xeCYu7U8CH82nNMESqswtH53L5HTYpB9
+JAiRmSVWg3ZmkndBdZAWPjUjwsSYPPVERAukdtVwuNUfywR/ZsLgoLUqwa4K+HPh
+0KOSPu57rp7npror0QX3Zthr43l6mQ5qFGE0fSEihPEBYcpq5kosjBZWe0aWzKcR
+3pMKoqsLan6i4T75bfGO1820eOtI3X0s1eV/cKnmtvWaYAoBFbXQw+r+2bFDY2Ig
+HNPjfrctaptbG/zeCg9VEez2YsRm9g==
+=A9dP
+-----END PGP SIGNATURE-----
+
+--VS++wcV0S1rZb1Fb--
+
+--===============5084857113339622359==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5084857113339622359==--
