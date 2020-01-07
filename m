@@ -6,83 +6,83 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBEA8C33C99
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 09:48:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 529D1C33C99
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 09:49:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 530992187F
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 09:48:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE35B2080A
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 09:49:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mlkz71ml";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cjBKRspf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 530992187F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pv1QHtCg";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qtI5LJo3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE35B2080A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0799E180C;
-	Tue,  7 Jan 2020 10:47:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0799E180C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D362C1810;
+	Tue,  7 Jan 2020 10:48:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D362C1810
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578390495;
-	bh=s+zO32lC7HyTp4lgNbIkwZK9nz4RHuXbZOYFcCitqnI=;
+	s=default; t=1578390561;
+	bh=1PcpiKpFZWaiSnL1DqvC+fLOWBA9xvvHoduGEVDqRcE=;
 	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mlkz71ml5sBIToWmEwiO/aUrPNc5zL6kR4CecTxmI0tzaEJlcnOiYapjUESDAhfHN
-	 9635IznXrqUp/QlcR3h8AajwWZ8sczEG7rY6kEASIig4A/5ExFREs6hera2XyXtB+1
-	 JW/TR9UhVjdcTe7LMwgiKw/EoZ4SSWEunvzVpWRw=
+	b=pv1QHtCgpAL/xR1SN1jW8wK4RsageUAF/VRExgqJuBHDukyLTFz0uhHXT5V/wOaUq
+	 5qk2hkNaxuN1dM7GGExBe5yYk8cS0jYJvJHPK4y5OsiuFlv5ATVNwSDcmxkN6OTrDe
+	 7z2QNwVaJPTT49+PyhFmJstYd6dtP0KL5cC5QY8g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14C4FF80140;
-	Tue,  7 Jan 2020 10:47:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4ED07F8010B;
+	Tue,  7 Jan 2020 10:48:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39651F80172; Tue,  7 Jan 2020 10:47:22 +0100 (CET)
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com
- [IPv6:2a00:1450:4864:20::242])
+ id 0526EF8014A; Tue,  7 Jan 2020 10:48:28 +0100 (CET)
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com
+ [IPv6:2a00:1450:4864:20::143])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D497F80140
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2020 10:47:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D497F80140
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D189F8010B
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2020 10:48:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D189F8010B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="cjBKRspf"
-Received: by mail-lj1-x242.google.com with SMTP id u1so53996768ljk.7
- for <alsa-devel@alsa-project.org>; Tue, 07 Jan 2020 01:47:19 -0800 (PST)
+ header.b="qtI5LJo3"
+Received: by mail-lf1-x143.google.com with SMTP id l18so30253639lfc.1
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jan 2020 01:48:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=GKAgR/S5tBz772raWFJYIXfn8TDQH+brFFCBErQ1zuE=;
- b=cjBKRspfACIPeQVMLJLGEfJDGZNyVnna+Twaa3iVAAHS8U+oy2m9Nb9/ySkIfP+83o
- 6Nd+hf5KKEqfByAC7lMtKr9MvuGv4ZYfIANPqsQW1zPiN5oxYMfRen8GL8vHrREQCf5P
- fYFZ94xQTN2WhdOAGXCHEi1T/VuirSxPZ6wRmCw0bCG5HY6x4Sze6nl/zikjeqkOFPAg
- UbCPoMUGD0dJ2CrJo+iVFMjdnIbuI1koYD3fO6igDmWt304aS6EprJ/qmbHAXwZABxbW
- oJaq9ofupn1axmEw/P6QHZ/7dsm+wYsFMYfHNSOgbT6x3HPRZCo0hphOZb+D2FfMEDmI
- Ml6A==
+ :cc; bh=57yyaLukCeYKAR+EhYGKNLb0YJSXe31eGECRa1cvyNQ=;
+ b=qtI5LJo3/WvWrVIOP518oxDc3sCuQZBRfr9C5k+6doCxp3MzxLMN6EKtFZgGos+b45
+ LkDrzheTzcH8ElGC1D31coYR3J0ag0BydTOCnkr0keaP+7TP+453ZoSSijAkFO2Jn1ns
+ DNdC6m9acz9YM+LvrQD5aWwTHN9J/0xtaN/wa6UdUP77zaUcnKO8GMK4A0X+UZtyuYfn
+ Dojan9A7M8+5unJ7aoUrDc47Ap1APgA/gtyvSA7dLOqWIWFwN1g/8EJ7ozI0vLP2h50c
+ GKOWEwNT6+mgWVJ7cN5Kj5Q8b64XwtQVqTm3ZukPYVhj6NAOIjZbqLym6VSOgAH+u1qH
+ GQ+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=GKAgR/S5tBz772raWFJYIXfn8TDQH+brFFCBErQ1zuE=;
- b=GcahdPqruaq76HAhvTHmQn9X7xHjP3vvkNfSsWCom7U+BQyQOEkgUXcFc5cha88ev/
- S5czdX/nGq+mzbSowxv+QJjItcKhojIdtarbvUNqa03r5ZsR2D/ThyVI9bP66p6slb7y
- Lt0Gph+AD4UL+jReSZF0h4qjtVRWV9vSNCLOiPxq//pk3ElU07ZDm+Zz9QSgfd5bwX1h
- sNCRaKNszPvLMPdwz48Lba/MogMIH8s+x3t94Y+bv4G9wlOSpNx+7SyviU+mhK/DCYv3
- +0Rgn0yfHF0ZD7B5B95qlNCm8COirguVQhU8sHtlFYY6WRFbes1JWG7Ld63jw4BJ58aW
- 0qGQ==
-X-Gm-Message-State: APjAAAW/cGz68hzmfOzMMULZRuqaZQqzvOVwqamHAIrl5GT0XmLUZWQ4
- YCetrRXkQEGiV5PiCJuwhYUPPdf0RtRGIzOlqPOuYA==
-X-Google-Smtp-Source: APXvYqz0CNhEmsacDTRcEPmfxQ/oGL27kQqghbLjNnpafVZ5FskeP2/QqmHESgY8kC+PmcK3Ux3RyArBjry1NP4YanU=
-X-Received: by 2002:a2e:85cd:: with SMTP id h13mr61135533ljj.191.1578390438453; 
- Tue, 07 Jan 2020 01:47:18 -0800 (PST)
+ bh=57yyaLukCeYKAR+EhYGKNLb0YJSXe31eGECRa1cvyNQ=;
+ b=gYy5E0O6wTMAeVyBep/HLkDxXnqTIC3X6ofElflURkK+ZefPhvR52EoxyPfkYIY4Ss
+ 0fxqzej7lSnqK3Mryt0Q/mLzci6faRAxL1i3oA4ldbvPW9V7lRDVlhW36UIQaug71cZ6
+ VywJwM6B7JSr5d3bWYv2q6wqqC21acgWA9cgrIiUl6kEsq7CNC75HgyYq7ia1d7lqq5R
+ I3vHpfgR5YG3RI8ZqBktqedjZPw6re4fux9IK6fD1BKoVsekyLMDq/WLcUd+bqZg3GMm
+ 3DJ9KQRk9sH5h0P3q07wx6tmAGrFEZgsokqUFEYB6vCI51dai1VujoADjqjyS7OU3g8M
+ XB5Q==
+X-Gm-Message-State: APjAAAXigJmeexnMR8mH/7YLzYuodeezbE7dvhp5m5VEEWf2vB1OTCF+
+ wIrSUbxTDYEbotCYzkjV80JW4ERcFUtVos9dA1lm9w==
+X-Google-Smtp-Source: APXvYqwJ4NEleHWVj49bXWx9f2Reukpm63SdKPnvrbrbdsGZZiFUSvBsk8NVHRhgjrknGj8ifWCADNENNBxCswle48I=
+X-Received: by 2002:a19:c648:: with SMTP id w69mr58882108lff.44.1578390504987; 
+ Tue, 07 Jan 2020 01:48:24 -0800 (PST)
 MIME-Version: 1.0
 References: <20191219103153.14875-1-srinivas.kandagatla@linaro.org>
- <20191219103153.14875-9-srinivas.kandagatla@linaro.org>
-In-Reply-To: <20191219103153.14875-9-srinivas.kandagatla@linaro.org>
+ <20191219103153.14875-10-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20191219103153.14875-10-srinivas.kandagatla@linaro.org>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 7 Jan 2020 10:47:07 +0100
-Message-ID: <CACRpkdYc-kB4Kx690FnU=3CwnjFdQhdxofGguFAAs_j==C=nmQ@mail.gmail.com>
+Date: Tue, 7 Jan 2020 10:48:14 +0100
+Message-ID: <CACRpkdaoU9B+981iF4wvLgY-QNNnsNUE=CYVmfX8zNtUuOtKfQ@mail.gmail.com>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: Rob Herring <robh@kernel.org>,
  "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
@@ -93,8 +93,8 @@ Cc: Rob Herring <robh@kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
  Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v6 08/11] dt-bindings: gpio: wcd934x: Add
-	bindings for gpio
+Subject: Re: [alsa-devel] [PATCH v6 09/11] gpio: wcd934x: Add support to
+	wcd934x gpio controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,16 +115,15 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On Thu, Dec 19, 2019 at 11:33 AM Srinivas Kandagatla
 <srinivas.kandagatla@linaro.org> wrote:
 
-> Qualcomm Technologies Inc WCD9340/WCD9341 Audio Codec has integrated
-> gpio controller to control 5 gpios on the chip. This patch adds
-> required device tree bindings for it.
+> This patch adds support to wcd934x gpio block found in
+> WCD9340/WC9341 Audio codecs.
 >
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I think I reviewed an earlier version of the patch set yesterday,
+the comments are still valid for this version.
 
-Tell me if you want me to merge this patch through the GPIO tree.
+Sorry for lag in my reviews :/
 
 Yours,
 Linus Walleij
