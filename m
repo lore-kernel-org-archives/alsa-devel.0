@@ -2,87 +2,93 @@ Return-Path: <SRS0=M4Y+=24=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB8F0C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 10:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDECEC33C99
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 10:40:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B94E1207E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 10:36:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E0CD2077B
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 10:40:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P+z2cQh5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B94E1207E0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=codethink.co.uk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="be58JgZp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E0CD2077B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arndb.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B3F01811;
-	Tue,  7 Jan 2020 11:35:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B3F01811
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AEC4181F;
+	Tue,  7 Jan 2020 11:39:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AEC4181F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578393375;
-	bh=0tZE0ilu/tS0MeRrapHEG/zPtBOwm3ldHLjyEDiXyj8=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1578393615;
+	bh=47prFzq6NQSAomil+gbOKDA8itgTtQ1MwRHfj9I4scE=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P+z2cQh53gLkJlN3AYWDIrx+9B3QIeg+B8uhIJwPgsyUbQJjYeEzw39419sMKAZid
-	 L81yhRvbSzi/7a1vPtByi1DPcKTtULi9w3V3cjpw4z3RhG1KOT5SJyHTD2SQjdAmgF
-	 3fylU2Ltky74qmGBLhG1iIdgbHVtsNDdk+iE2GXI=
+	b=be58JgZpLwkWZmnA1t4M2JP+GLYWZ3ePPWtNWf3+L3+aMX6KPT24hw8IgMBGJDRWr
+	 epx7Mtbrawa4oUkuS5esHJPAMQs8EjNNr9jOfqc3YVU44OO79LNhj3g++VUsTWkH9B
+	 WsCS7KCzDHhJ2PzUfUE+1bGIv8wAX+8o7DPHZg6E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FE5AF80140;
-	Tue,  7 Jan 2020 11:35:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34D04F8014A;
+	Tue,  7 Jan 2020 11:39:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18D5CF8014A; Tue,  7 Jan 2020 11:35:24 +0100 (CET)
-Received: from imap2.colo.codethink.co.uk (imap2.colo.codethink.co.uk
- [78.40.148.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 36F86F8014A; Tue,  7 Jan 2020 11:39:23 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40CEFF8010D
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2020 11:35:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40CEFF8010D
-Received: from [167.98.27.226] (helo=[10.35.5.173])
- by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
- id 1iomCe-0003ow-4C; Tue, 07 Jan 2020 10:35:12 +0000
-To: Jon Hunter <jonathanh@nvidia.com>, Dmitry Osipenko <digetx@gmail.com>
-References: <20191018154833.7560-1-ben.dooks@codethink.co.uk>
- <d2110a1f-c1de-e2c5-a1ff-5eb4c5d3e1da@gmail.com>
- <b4e2ec44-bc89-b5ca-cfa7-a6d5c45a9c94@codethink.co.uk>
- <a11ba33e-5ffb-c5c6-04f5-0e031877c55f@gmail.com>
- <621fa27d-9259-2949-9cf5-d2eda5cb0677@gmail.com>
- <a0f027d9-e9e0-d76c-1e40-002fdc37eb5f@nvidia.com>
- <d43d518d-9336-a011-2a69-3f9331f6d0b4@codethink.co.uk>
- <aba4edd6-0ea5-5e95-c5a0-9e749587c763@nvidia.com>
- <449bdc3c-bf82-7cc4-6704-440dd100ca3a@gmail.com>
- <5d3ae629-5d30-0930-5dd1-15161e64926e@codethink.co.uk>
- <9daeeb94-2b90-18b8-2e1e-daae5acf079d@gmail.com>
- <fd73f68c-80f5-ac80-f6e4-42256d3df76d@codethink.co.uk>
- <37beb96a-a525-c72f-a7e1-e9ef5d61f3b2@gmail.com>
- <29db3df4-6f51-7c0f-1eef-90171f1d233a@codethink.co.uk>
- <9a5447e2-155c-7e6e-b8f1-95523c6f42c6@gmail.com>
- <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
- <680e2dfd-6f4f-5c96-63b7-97520961dc82@gmail.com>
- <0e0cd260e39ad293edb881da1c565510@codethink.co.uk>
- <eb90ee78-e462-401a-de60-4a9bfc2a00c4@nvidia.com>
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <79ce7519-a544-9c22-15c7-865c56a1a57c@codethink.co.uk>
-Date: Tue, 7 Jan 2020 10:35:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA65BF8010B
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2020 11:39:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA65BF8010B
+Received: from mail-qt1-f181.google.com ([209.85.160.181]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MuDsZ-1jh0FX2AqT-00uXdS for <alsa-devel@alsa-project.org>; Tue, 07 Jan
+ 2020 11:39:18 +0100
+Received: by mail-qt1-f181.google.com with SMTP id g1so4556497qtr.13
+ for <alsa-devel@alsa-project.org>; Tue, 07 Jan 2020 02:39:18 -0800 (PST)
+X-Gm-Message-State: APjAAAWsvTd3rlDK2rH77TPGUai4S58LeIvX/0wNBRsr/yrEFph0xNVb
+ WXJpyO3nTnekQLu3zPImdyf86gH0OgMS6KFTxiw=
+X-Google-Smtp-Source: APXvYqyZhmN1eLl6pt96KksAU6g7g17LqbBD1ix7k6Tl4UknhAbwyEGN+KnksbzRm55kVluXwuoazvSU6xkSWIKNn+U=
+X-Received: by 2002:ac8:47d3:: with SMTP id d19mr77340587qtr.142.1578393557482; 
+ Tue, 07 Jan 2020 02:39:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <eb90ee78-e462-401a-de60-4a9bfc2a00c4@nvidia.com>
-Content-Language: en-GB
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
- Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH v5 2/7] ASoC: tegra: Allow 24bit and 32bit
-	samples
+References: <20191218163701.171914-1-arnd@arndb.de>
+ <CACRpkdbqzLUNUjx_kt3-7JLZym2RZ47edW5qp0MgXmpW4-Xf9Q@mail.gmail.com>
+In-Reply-To: <CACRpkdbqzLUNUjx_kt3-7JLZym2RZ47edW5qp0MgXmpW4-Xf9Q@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 7 Jan 2020 11:39:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2BoVcdgRZqYutA=_SVHLtJwQzP3mKKN-q8n1ROj_iPgw@mail.gmail.com>
+Message-ID: <CAK8P3a2BoVcdgRZqYutA=_SVHLtJwQzP3mKKN-q8n1ROj_iPgw@mail.gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+X-Provags-ID: V03:K1:KzwVab4sF4ncM0UCr0rZa1TgG8j6hLpw21yFIqfGz575Cvog3KI
+ 4i+O4pYkFMAebrVpBlpAADXKeQ56+L/zVn8R2rktOB9TFm6uNIgugTLASDvNq9GCvl9h0H5
+ +vJyUfRxAlEBPOn8CS3BChs5NAHSBK3T49PslKvCYAvE9sLml1dtNWBXnAWNIAGJjReo6kJ
+ RYjFRzqKoNoZdE8tmZAMQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:GfQP1XaPnZk=:Je5LX+G7indbKnesktahR4
+ 2e1lZakdP4rSTTk6P60F6YZDY1XHJrqPLZhMYx9aQhLODaFNoVe0ot2j0h/P1yelS9viN5HTS
+ QfgpZBYUDgXQtXbT1I9xOWXjH69W27jpVAdHVNqH60uMjtYotahvU80H5uM8yuyWUUj0MizZL
+ hzx9k4SnWTkTI1CM57ol1vftn4JVGAbiqk5QAQrWWWnItietTrjF2fs8TckRxFnI0OjhDe2t+
+ l+9R34n5fSTufyRMSctjeD2iEcomCsQUsUHUFXPjNqtwV6frgzN6JkB9qeqg9G4ltEIXHfsgm
+ q0kMOt975Rw8UxoUpVXgm5cJfuNkdCxiwKiPyPM2eRycB8faidWmWvfePvI6G1w3eIywuiHKJ
+ GO7feR4sfhWjtsO1a5uA0FyU6FUSdZXmRaruH70wo5zYR79pX7JDj2x0xGvD7Q27BGTuf3iQC
+ 4YQqzid/BCWEmm9p/WW5haMoC0Bke7taB7JK8FHpfgg9IjoaJdIzZ1wPhrPZrUG0uo0Pnxol6
+ tria9+5tB6qKG/peoFc6ftfnaRTWThKCeOCNaFOYJseVRxbqNTaIQApoNH27Kn8xbw9IeWdqg
+ mq/bkAvmSHPbyJxQ5qv4L3HrCZgp16r6EdFF359pj05eb6bWK18HdMjGr+KDuhTSQca+6KOVQ
+ xDliMKRgutUgaFsJhp+WMZInDyHA0IcnQLa0DB5yOc1Bj8S3bnc36A5y2OmvzMnGSUAgwZr56
+ gRd3hMjp0AIum48RIqyozHt46er/oAlwwueimbaMcbzoiJvtptLX8j3AtCoopB3pjIKrRsR6O
+ 9/H1p6Xw5XqG3BHnDz0cNii7xUVEqfZDzNXioK6gvy6UDccFcOnj9wgvEaIoipF56tG3ui2Ny
+ y2iehlTgRgUMWAu+fImg==
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ patches@opensource.cirrus.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [alsa-devel] [PATCH] pinctrl: lochnagar: select GPIOLIB
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,36 +101,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gMDcvMDEvMjAyMCAxMDoyOSwgSm9uIEh1bnRlciB3cm90ZToKPiAKPiBPbiAwNS8wMS8yMDIw
-IDEwOjUzLCBCZW4gRG9va3Mgd3JvdGU6Cj4+Cj4+Cj4+IE9uIDIwMjAtMDEtMDUgMDE6NDgsIERt
-aXRyeSBPc2lwZW5rbyB3cm90ZToKPj4+IDA1LjAxLjIwMjAgMDM6MDQsIEJlbiBEb29rcyDQv9C4
-0YjQtdGCOgo+Pj4+IFtzbmlwXQo+Pj4+Cj4+Pj4gSSd2ZSBqdXN0IGdvbmUgdGhyb3VnaCB0ZXN0
-aW5nLgo+Pj4+Cj4+Pj4gU29tZSBzaW1wbGUgZGF0YSB0ZXN0cyBzaG93IDE2IGFuZCAzMi1iaXRz
-IHdvcmsuCj4+Pj4KPj4+PiBUaGUgMjQgYml0IGNhc2Ugc2VlbXMgdG8gYmUgd2VpcmQsIGl0IGxv
-b2tzIGxpa2UgdGhlIDI0LWJpdCBleHBlY3RzCj4+Pj4gMjQgYml0IHNhbXBsZXMgaW4gMzIgYml0
-IHdvcmRzLiBJIGNhbid0IHNlZSBhbnkgcGFja2luZyBvcHRpb25zIHRvCj4+Pj4gZG8gMjQgYml0
-IGluIDI0IGJpdCwgc28gd2UgbWF5IGhhdmUgdG8gcmVtb3ZlIDI0IGJpdCBzYW1wbGUgc3VwcG9y
-dAo+Pj4+ICh3aGljaCBpcyBhIHNoYW1lKQo+Pj4+Cj4+Pj4gTXkgcHJlZmVyZW5jZSBpcyB0byBy
-ZW1vdmUgdGhlIDI0LWJpdCBzdXBwb3J0IGFuZCBrZWVwIHRoZSAzMiBiaXQgaW4uCj4+Pj4KPj4+
-Cj4+PiBJbnRlcmVzdGluZy4uIEpvbiwgY291bGQgeW91IHBsZWFzZSBjb25maXJtIHRoYXQgMjRi
-aXQgZm9ybWF0IGlzbid0Cj4+PiB1c2FibGUgb24gVDMwPwo+Pgo+PiBJZiB0aGVyZSBpcyBhbiBv
-cHRpb24gb2YgMjQgcGFja2VkIGludG8gMzIsIHRoZW4gSSB0aGluayB0aGF0IHdvdWxkIHdvcmsu
-Cj4+Cj4+IEkgY2FuIHRyeSB0ZXN0aW5nIHRoYXQgd2l0aCByYXcgZGF0YSBvbiBNb25kYXkuCj4g
-Cj4gSSB3aWxsIGNoZWNrIG9uIHRoaXMuIEkgd291bGQgaGF2ZSB0aG91Z2h0IHRoYXQgUzI0X0xF
-ICgyNC1iaXRzIHBhY2tlZAo+IGludG8gMzItYml0IGVsZW1lbnRzKSB3b3VsZCBiZSBmaW5lLiBU
-eXBpY2FsbHkgd2UgZG9uJ3Qgc3VwcG9ydCBTMjRfM0xFCj4gKDI0LWJpdHMgaW4gMjQtYml0IGVs
-ZW1lbnRzKS4KCkkgd2lsbCBoYXZlIGEgbG9vayBhZ2FpbiwgSSB0aG91Z2h0IFMyNCB3YXMgMjQt
-aW4tMjQsIHNvIHdyb3RlIG15IHRlc3QKZ2VuZXJhdG9yIGNvZGUgdG8gZG8gdGhhdC4gSSdsbCBn
-byBhbmQgc2VlIGlmIEkgY2FuIHJlLXRlc3QgdGhpcyBhcyBzb29uCmFzIHBvc3NpYmxlIChtYXkg
-YmUgV2VkL1RodSBieSB0aGUgdGltZSBJIGNhbiBnZXQgdG8gY2hlY2sgaXQpCgotLSAKQmVuIERv
-b2tzCQkJCWh0dHA6Ly93d3cuY29kZXRoaW5rLmNvLnVrLwpTZW5pb3IgRW5naW5lZXIJCQkJQ29k
-ZXRoaW5rIC0gUHJvdmlkaW5nIEdlbml1cwoKaHR0cHM6Ly93d3cuY29kZXRoaW5rLmNvLnVrL3By
-aXZhY3kuaHRtbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On Tue, Jan 7, 2020 at 10:45 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Wed, Dec 18, 2019 at 5:37 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > I wonder if GPIOLIB should just become mandatory when enabling the pinctrl
+> > subsystem, or if there are still good reasons for leaving it disabled
+> > on any machine that uses CONFIG_PINCTRL.
+>
+> Hm that is a tricky question, they almost always come in pair but are
+> technically speaking separate subsystems.
+
+I think there are a number of use cases for GPIOLIB drivers without PINCTRL, but
+are there any examples of the reverse?
+
+       Arnd
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
