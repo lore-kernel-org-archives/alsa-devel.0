@@ -2,66 +2,65 @@ Return-Path: <SRS0=M4Y+=24=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB66C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 13:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54027C33C8C
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 13:08:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3ADF2081E
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 13:04:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1E032072A
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jan 2020 13:08:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iwaBvzxp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3ADF2081E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c6GyziV9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1E032072A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3A78182D;
-	Tue,  7 Jan 2020 14:03:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3A78182D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A2C9182D;
+	Tue,  7 Jan 2020 14:07:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A2C9182D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578402285;
-	bh=7SGoRX12AV7mzND9yvomXhNE0Qb60t4dwV6FSgRM0ho=;
+	s=default; t=1578402528;
+	bh=k3i+CZvmjve81B//Xq622RDypDq08q0T/GS0ToW6uEA=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iwaBvzxpTRBB4D1bQsjrseNHS2qCnU55Z887eIQUNu+enjPZmTvvHi+s6Ic3hXmG0
-	 MyPuXpmqZDRu1EK7ueAsV7aVZ9LTs4VXEdoX/+pxthuhOExBt+IPvNHeMgmW89/IbC
-	 BUPtGl0gX/vD+xtBOwkPrKwKTqh2LSS2Dxy+mtbw=
+	b=c6GyziV9XlEZmRW4mSJaMYgVUIhEoGwPWBT9cUcHJSgXxgj0HpIO2fMLOmntTUKKN
+	 9D4GPknMmJ7k1WR9ETeTBfCnEK+FRMKONVT/n+FhUAG6tEyKqlyvjj30P6zTtcsZ5D
+	 D6WMOMxHnoiX5v7Zyp4na/GT0IURQ0daDjTdT6e8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 591E8F8010D;
-	Tue,  7 Jan 2020 14:03:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7A21F80140;
+	Tue,  7 Jan 2020 14:07:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03990F8014A; Tue,  7 Jan 2020 14:03:53 +0100 (CET)
+ id C3406F8014A; Tue,  7 Jan 2020 14:07:56 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A978F8010D
- for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2020 14:03:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A978F8010D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7585AF8010B
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jan 2020 14:07:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7585AF8010B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E0ED3B089;
- Tue,  7 Jan 2020 13:03:48 +0000 (UTC)
-Date: Tue, 07 Jan 2020 14:03:48 +0100
-Message-ID: <s5hd0bvquyz.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7CBD2AC69;
+ Tue,  7 Jan 2020 13:07:53 +0000 (UTC)
+Date: Tue, 07 Jan 2020 14:07:53 +0100
+Message-ID: <s5ha76zqus6.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: David Fries <David@Fries.net>
-In-Reply-To: <20200106214129.fnrokzkh4qnbvzdl@spacedout.fries.net>
-References: <20200106214129.fnrokzkh4qnbvzdl@spacedout.fries.net>
+To: David Ward <david.ward@ll.mit.edu>
+In-Reply-To: <1576906331-5212-1-git-send-email-david.ward@ll.mit.edu>
+References: <1576906331-5212-1-git-send-email-david.ward@ll.mit.edu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] mixer: Fix memory leak for more than 16
-	file	descriptor case
+Subject: Re: [alsa-devel] [PATCH alsa-utils 00/11] alsa-info.sh: Improve
+	output	and fix file upload issues
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,55 +78,26 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 06 Jan 2020 22:41:29 +0100,
-David Fries wrote:
+On Sat, 21 Dec 2019 06:32:00 +0100,
+David Ward wrote:
 > 
-> ---
-> I saw this when digging through the source code, wrote up a test case,
-> and verified with valgrind. I don't have that many sound cards so I
-> modified mixer.c to always take the conditional. alloca seemed like
-> the least effort way to fix this. Other thoughts were to test pfds !=
-> spfds and free, but given how little bytes would be allocated putting
-> on the stack seems reasonable.
+> David Ward (11):
+>   alsa-info.sh: Consolidate PCI device output
+>   alsa-info.sh: Read from /proc/modules and sort the result
+>   alsa-info.sh: Simplify iteration over cards when calling amixer
+>   alsa-info.sh: Use existing function to print ALSA configuration files
+>   alsa-info.sh: Exit script after writing information to stdout
+>   alsa-info.sh: Replace gauge with infobox for upload dialog
+>   alsa-info.sh: Remove progress spinner during upload without dialog
+>   alsa-info.sh: Condense nested commands for file upload
+>   alsa-info.sh: Condense nested commands for formatting upload result
+>   alsa-info.sh: Perform test for wget earlier
+>   alsa-info.sh: Warn after actual upload failure; do not ping server
 
-Looks good to me.
+Applied all patches now.  Thanks!
 
-Could you give your sign-off?  It's not strictly needed for alsa-lib,
-but we prefer having it.
-
-
-thanks,
 
 Takashi
-
-> 
-> I also created the github pull request 20.
-> https://github.com/alsa-project/alsa-lib/pull/20
-> 
->  src/mixer/mixer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/src/mixer/mixer.c b/src/mixer/mixer.c
-> index 82056474..b1af9945 100644
-> --- a/src/mixer/mixer.c
-> +++ b/src/mixer/mixer.c
-> @@ -767,7 +767,7 @@ int snd_mixer_wait(snd_mixer_t *mixer, int timeout)
->  	if (count < 0)
->  		return count;
->  	if ((unsigned int) count > sizeof(spfds) / sizeof(spfds[0])) {
-> -		pfds = malloc(count * sizeof(*pfds));
-> +		pfds = alloca(count * sizeof(*pfds));
->  		if (!pfds)
->  			return -ENOMEM;
->  		err = snd_mixer_poll_descriptors(mixer, pfds, 
-> -- 
-> 2.11.0
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
