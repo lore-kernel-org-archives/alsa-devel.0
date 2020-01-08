@@ -2,67 +2,58 @@ Return-Path: <SRS0=reWy=25=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3190DC282DD
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 14:08:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D042AC282DD
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 15:35:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FE522070E
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 14:08:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1780020720
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 15:35:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="USu2wOmb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FE522070E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j+vm/bp2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1780020720
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BDEA1668;
-	Wed,  8 Jan 2020 15:07:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BDEA1668
+	by alsa0.perex.cz (Postfix) with ESMTPS id C065E1726;
+	Wed,  8 Jan 2020 16:34:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C065E1726
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578492520;
-	bh=dP9i+NLmsU9N3I5wygHIM7zm+Bf2ZbGau0/EsVQPReU=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=USu2wOmbx0IsMWJ6BTcOCeGyiIl8ucJv+/4QcJa9jbZq4ubtVjr5H9NMkji+9joXj
-	 X6AVsJ0my5avu/jS7gBtc6UsDTve8ZJ5MI2b5l+S2aRj1VN9IyFpn1ddcI3O+OuXmw
-	 rgX7CJ8nv6XK4VAK6yt1Po5ZllDIhEBhyLV4V1+4=
+	s=default; t=1578497728;
+	bh=V30pq39G3vWJP2rvw9cW7Cxdq6Ci2LJnyvC/tecs42U=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=j+vm/bp29k/+rc0nyQsubEs8DNzpRcsAMN4XCWtZwxqvIH/VMTUiKO/o8xZyXe4yi
+	 /YxjNk+Fa2c16i/WHn2i/ZPPBwsyIcJOLeRFG87sjljRiTr7g2xLeqQk7Jl8HVT8yN
+	 GZzoaK9KhtSRVWG8wa+7on0qBbkYcTaLk/OOFzaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97B57F8010B;
-	Wed,  8 Jan 2020 15:07:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 481D0F80149;
+	Wed,  8 Jan 2020 16:34:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1BC13F80159; Wed,  8 Jan 2020 15:07:48 +0100 (CET)
+ id 94F21F80159; Wed,  8 Jan 2020 16:34:36 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 809D5F8010B
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 15:07:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 809D5F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7AF73F80116
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 16:34:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AF73F80116
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 9DB2CAC69;
- Wed,  8 Jan 2020 14:07:43 +0000 (UTC)
-Date: Wed, 08 Jan 2020 15:07:43 +0100
-Message-ID: <s5h5zhmoxcg.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id E359FACE3
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 15:34:31 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20200108125803.45584-1-yuehaibing@huawei.com>
-References: <20200108125803.45584-1-yuehaibing@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kjlu@umn.edu,
- hslester96@gmail.com, tiwai@suse.com, rfontana@redhat.com, tglx@linutronix.de,
- allison@lohutok.net
-Subject: Re: [alsa-devel] [PATCH -next] ALSA: pci: echoaudio: remove set but
-	not used variable 'chip'
+To: alsa-devel@alsa-project.org
+Date: Wed,  8 Jan 2020 16:34:30 +0100
+Message-Id: <20200108153430.31456-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+Subject: [alsa-devel] [PATCH] ALSA: hda: Fix a typo in comments
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,30 +66,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 08 Jan 2020 13:58:03 +0100,
-YueHaibing wrote:
-> 
-> sound/pci/echoaudio/echoaudio.c: In function snd_echo_mixer_info:
-> sound/pci/echoaudio/echoaudio.c:1233:20: warning: variable chip set but not used [-Wunused-but-set-variable]
-> sound/pci/echoaudio/echoaudio.c: In function 'snd_echo_vmixer_info':
-> sound/pci/echoaudio/echoaudio.c:1300:20: warning: variable 'chip' set but not used [-Wunused-but-set-variable]
-> 
-> commit e67c3f0fd44c ("ALSA: pci: echoaudio: remove usage
-> of dimen menber of elem_value structure") left behind this
-> unused variable.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/hda/hdac_regmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks.
+diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
+index 286361ecd640..0c8188a48a00 100644
+--- a/sound/hda/hdac_regmap.c
++++ b/sound/hda/hdac_regmap.c
+@@ -508,7 +508,7 @@ int snd_hdac_regmap_read_raw_uncached(struct hdac_device *codec,
+  * snd_hdac_regmap_update_raw - update a pseudo register with power mgmt
+  * @codec: the codec object
+  * @reg: pseudo register
+- * @mask: bit mask to udpate
++ * @mask: bit mask to update
+  * @val: value to update
+  *
+  * Returns zero if successful or a negative error code.
+-- 
+2.16.4
 
-
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
