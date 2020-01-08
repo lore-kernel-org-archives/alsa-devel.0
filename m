@@ -2,108 +2,73 @@ Return-Path: <SRS0=reWy=25=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 065E8C00523
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 05:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DE85C00523
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 06:18:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 184BF2067D
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 05:38:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2159B2070E
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 06:18:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f3IpU2KD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="hOkYN8eW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 184BF2067D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JJSkLYiK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2159B2070E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1085C17C0;
-	Wed,  8 Jan 2020 06:37:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1085C17C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id F367F1667;
+	Wed,  8 Jan 2020 07:17:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F367F1667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578461913;
-	bh=p+q8jlR+0ZKwXH3rfuahSzVUeVl0UjTFVHCULkMQgwk=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=f3IpU2KD5CuCWW3wQfbpc3Py9x8qZiuqA2Imsu+JjEK1m8lVn25H9lS+dM0AOYFnE
-	 1vF4ImXZ/QITHTpufpNyaO9gbo9j2VDjAOMGrH4GCBjbNVnI7KolguweC5jVO4iivK
-	 /OLRtXH+5+ABwmxHjLE5UB4SVivW58jJjcAGo3Mg=
+	s=default; t=1578464319;
+	bh=HmRHHt4pVhRKP48Si0iZqdYqKyEvWVQmWjHKF00uWZE=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JJSkLYiK1euXFsMDAVlcBiVsyUmGU8BkFKd4XW2jfL4q4T/drJ3U6IWoXzDweQ83i
+	 8Nkw64Jq2qQ6fYfiFYkGAHhUQPdAi/XSNSaOCuXLcJSMfsujh391fXgobPFe54PXFe
+	 L/AIWdrKftOeErzC1nC57E1Y1LRB1qvH+TQ+3DJo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D301F80149;
-	Wed,  8 Jan 2020 06:37:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3645CF80149;
+	Wed,  8 Jan 2020 07:17:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7323F80159; Wed,  8 Jan 2020 06:37:39 +0100 (CET)
-Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 667D1F80159; Wed,  8 Jan 2020 07:17:46 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09446F8010B
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 06:37:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09446F8010B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="hOkYN8eW"
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0085TWaA082176;
- Wed, 8 Jan 2020 05:37:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=6yMY9tCUW+Zz3vJLeZlb0YXm9NayUfaLZuZW64OoMlo=;
- b=hOkYN8eWa/48COhJMrpIBVha8j5ZX3fSaF4lgvH+h5qFsP1VNHWMVNLt7lLUTP4HMgxU
- Dy2K61ciPeDIpkONf55XhOyGOVBthnR43k+rgXpuWcWbdph9FHXogngtVAlYbQ2vhWh1
- SyhiAaq+91jJ/t+Nma2qDi4MrV7jRIXC7JvuU8uwQud8JjJwfCKo1YTYFonuaD8vzEbH
- T3HHKYusRnnoLXDW5VswS1L4Zbd5WjJtrhmdIbzVHahjyphdNGoXWmO21Ub29aV8edES
- /OwJ9f6VHc8CQuqrK8DsOr40bsFsOWr4qv7h9q6zznwNvMrka6fgJfwZn3hBWkKi7yyK Yw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2120.oracle.com with ESMTP id 2xakbqsk1u-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 08 Jan 2020 05:37:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0085Xojf187905;
- Wed, 8 Jan 2020 05:37:31 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
- by aserp3020.oracle.com with ESMTP id 2xcqbk90vf-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 08 Jan 2020 05:37:31 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
- by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0085bEQ3011993;
- Wed, 8 Jan 2020 05:37:18 GMT
-Received: from kili.mountain (/129.205.23.165)
- by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Tue, 07 Jan 2020 21:37:13 -0800
-Date: Wed, 8 Jan 2020 08:37:06 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Message-ID: <20200108053706.h3hcnvmnf62wkjac@kili.mountain>
-MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=971
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001080048
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493
- signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001080048
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Kirill Smelkov <kirr@nexedi.com>, Allison Randal <allison@lohutok.net>
-Subject: [alsa-devel] [PATCH] ALSA: control: potential uninitialized return
-	value
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8BF2F8010B
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 07:17:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8BF2F8010B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id B5333ADDD;
+ Wed,  8 Jan 2020 06:17:37 +0000 (UTC)
+Date: Wed, 08 Jan 2020 07:17:37 +0100
+Message-ID: <s5hwoa2o4ji.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: <Lucien_Kao@compal.com>
+In-Reply-To: <bbbfbfa04bd046c78bba621974c9186f@TPEMBX03.compal.com>
+References: <d7aba6970fbd48f2b32e2bc6d838ab20@TPEMBX01.compal.com>
+ <s5hwoa8j3xi.wl-tiwai@suse.de>
+ <5aff22f1e36e484fa52e17c855e8ddc8@TPEMBX03.compal.com>
+ <20200107172457.GA18938@nc-hades.jf.intel.com>
+ <s5h7e23p01c.wl-tiwai@suse.de>
+ <bbbfbfa04bd046c78bba621974c9186f@TPEMBX03.compal.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: nathan.d.ciobanu@linux.intel.com, AJ_Cheng@compal.com,
+ alsa-devel@alsa-project.org, CindyXT_Wang@compal.com,
+ intel-gfx@lists.freedesktop.org, Nelson_Ye@compal.com, Shane_Yap@compal.com,
+ Evan_Tseng@compal.com
+Subject: Re: [alsa-devel] USB Type-C monitor flashes once when play a video
+	file after unplug and re-plug the monitor
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,30 +86,123 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Smatch complains that "ret" might be uninitialized.
+On Wed, 08 Jan 2020 04:07:17 +0100,
+<Lucien_Kao@compal.com> wrote:
+> 
+> Hi Takashi
+> 
+> Is the attachment what you suspect? That merged to our kernel v4.19 already, have any suggestions? Thanks.
 
-Fixes: fbd3eb7f66c5 ("ALSA: control: Add verification for kctl accesses")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- sound/core/control.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Then I have no concrete idea.  It might be some other changes in HDMI
+codec driver or it might be a fix in i915 graphics side, or even
+thunderbolt or whatever, too...
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index d06033d418a8..aa0c0cf182af 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -896,7 +896,7 @@ static int sanity_check_elem_value(struct snd_card *card,
- 				   u32 pattern)
- {
- 	size_t offset;
--	int i, ret;
-+	int i, ret = 0;
- 	u32 *p;
- 
- 	switch (info->type) {
--- 
-2.11.0
 
+Takashi
+
+> 
+> -----Original Message-----
+> From: Takashi Iwai <tiwai@suse.de> 
+> Sent: Wednesday, January 8, 2020 2:57 AM
+> To: Nathan Ciobanu <nathan.d.ciobanu@linux.intel.com>
+> Cc: Kao. Lucien (TPE) <Lucien_Kao@compal.com>; Cheng. AJ (TPE) <AJ_Cheng@compal.com>; intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; Wang. CindyXT (TPE) <CindyXT_Wang@compal.com>; Ye. Nelson (TPE) <Nelson_Ye@compal.com>; Yap. Shane (TPE) <Shane_Yap@compal.com>; Tseng. Evan (TPE) <Evan_Tseng@compal.com>
+> Subject: Re: [alsa-devel] USB Type-C monitor flashes once when play a video file after unplug and re-plug the monitor
+> 
+> On Tue, 07 Jan 2020 18:24:57 +0100,
+> Nathan Ciobanu wrote:
+> > 
+> > On Mon, Jan 06, 2020 at 08:08:04AM +0000, Lucien_Kao@compal.com wrote:
+> > > Hi Takashi
+> > > 
+> > > We verified on Ubuntu 19.10 with kernel 5.4.0.0-050400-generic (please refer to attachment), the result is positive which symptom doesn't happen anymore once I played music or video sound output through Dell S2718D Type-C monitor. It seems had some fix in latest kernel.
+> > 
+> > Takashi, can you point to the patch series you suspect may have fixed this issue? 
+> 
+> The first suspect would be
+> 2756d9143aa517b97961e85412882b8ce31371a6
+>     ALSA: hda - Fix intermittent CORB/RIRB stall on Intel chips
+> 
+> Takashi
+> 
+> > 
+> > Thanks,
+> > Nathan
+> > > 
+> > > Thanks.
+> > > 
+> > > 
+> > > -----Original Message-----
+> > > From: Takashi Iwai <tiwai@suse.de>
+> > > Sent: Friday, January 3, 2020 5:16 PM
+> > > To: Cheng. AJ (TPE) <AJ_Cheng@compal.com>
+> > > Cc: intel-gfx@lists.freedesktop.org; alsa-devel@alsa-project.org; 
+> > > nathan.d.ciobanu@linux.intel.com; Wang. CindyXT (TPE) 
+> > > <CindyXT_Wang@compal.com>; Ye. Nelson (TPE) <Nelson_Ye@compal.com>; 
+> > > Yap. Shane (TPE) <Shane_Yap@compal.com>; Kao. Lucien (TPE) 
+> > > <Lucien_Kao@compal.com>; Tseng. Evan (TPE) <Evan_Tseng@compal.com>
+> > > Subject: Re: [alsa-devel] USB Type-C monitor flashes once when play 
+> > > a video file after unplug and re-plug the monitor
+> > > 
+> > > On Fri, 03 Jan 2020 02:57:03 +0100,
+> > > <AJ_Cheng@compal.com> wrote:
+> > > > 
+> > > > Hi Sirs,
+> > > >         Here is chromebook SW team from Compal.
+> > > > As the mail title, we hit issue that the external monitor will flash once when play video after hot pluging.
+> > > > We can reproduce not only on chromebook but also ubuntu 16.04.
+> > > > There has higher failure rate with Dell Solomon dock and Dell S2718D monitor.
+> > > > 
+> > > > We found adding the delay in "sound/pci/hda/patch_hdmi.c " can fix 
+> > > > this issue.(as the attachment) May need your help to review and advice. Thanks.
+> > > > 
+> > > > Here is the issue number in gitlab for more detail.
+> > > > https://gitlab.freedesktop.org/drm/intel/issues/318
+> > > 
+> > > Could you check whether it still happens with the latest upstream kernel, at least 5.4.y, if it wasn't tested yet?
+> > > 
+> > > I don't want to put a long delay just because of random reason unless it's really mandatory.  I'm wondering whether the recent write-sync change improves the situation, so let's check the recent code.
+> > > 
+> > > 
+> > > thanks,
+> > > 
+> > > Takashi
+> > > 
+> > > > 
+> > > > 
+> > > > 
+> > > > AJ Cheng
+> > > > NID/NID1
+> > > > e-mail: AJ_Cheng@compal.com<mailto:AJ_Cheng@compal.com>
+> > > > Tel:  +886-2-8797-8599 ext. 17561
+> > > > Mobile : +886-932827829
+> > > > COMPAL Electronics, Inc.
+> > > > 
+> > > > [2 flash_once.diff <application/octet-stream (base64)>]
+> > > > 
+> > > > _______________________________________________
+> > > > Alsa-devel mailing list
+> > > > Alsa-devel@alsa-project.org
+> > > > https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> > 
+> 
+> ==============================================================================
+> =================================
+> This message may contain information which is private, privileged or
+> confidential of Compal Electronics, Inc.
+> If you are not the intended recipient of this message, please notify the
+> sender and destroy/delete the message.
+> Any review, retransmission, dissemination or other use of, or taking of any
+> action in reliance upon this information,
+> by persons or entities other than the intended recipient is prohibited.
+> ==============================================================================
+> =================================
+> 
+> 
+> [1.2  <text/plain; us-ascii (base64)>]
+> 
+> [2 0001-UPSTREAM-ALSA-hda-Fix-intermittent-CORB-RIRB-stall-o.patch <application/octet-stream (base64)>]
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
