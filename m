@@ -2,77 +2,64 @@ Return-Path: <SRS0=reWy=25=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B148C3F68F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 18:00:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD5CEC282DD
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 18:10:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4C0720720
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 18:00:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AC3F20656
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 18:10:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dtIWdkDS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4C0720720
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M/DhpoHN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AC3F20656
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED7421775;
-	Wed,  8 Jan 2020 18:59:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED7421775
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9529E174D;
+	Wed,  8 Jan 2020 19:09:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9529E174D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578506411;
-	bh=TzL1sRtUuB60T9Y4fU8OedESuNQxTbZNNF3vd5l39x0=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dtIWdkDSmH5+6NPep9j78Osa473OtY1d2axRtu7KrTKtc3vN66mmenKXiJQ8o/cis
-	 q5NZ6HKSephVayBsAZvIAAIiI2pOws6nK0/I24m+ZbWBY9fbkq9fG3aORCoDoX3bhu
-	 EE7TK9szF8cl1fT5o9h6GuyilZhtoWiJq1m71n2c=
+	s=default; t=1578506999;
+	bh=tm3DC72KQUTnm618pTXABN5kZHKF9Cs6t5TTKTTU0aQ=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=M/DhpoHNohW6gFK3faMTk00kXieqK/ERdyjfPJnOAm9qRkYPeC4VnXpS6PBH45/kR
+	 wI+xHJ0ZqmRVCAJ0kOyj1uhIyDAlJbvX2e0wA8OLCap5FELExca0wxmt3qsE9ETiwT
+	 Qwy9VikA61GwP7rDERLyGDf+Gp4Pp8SbVIQQaRy0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4064EF80299;
-	Wed,  8 Jan 2020 18:55:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01A18F80159;
+	Wed,  8 Jan 2020 19:09:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 471ACF80277; Wed,  8 Jan 2020 18:55:14 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id F1FC4F80116; Wed,  8 Jan 2020 19:09:06 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9537BF8026F
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 18:55:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9537BF8026F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 034E3F80116
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 19:09:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 034E3F80116
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 08 Jan 2020 09:55:08 -0800
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 08 Jan 2020 10:09:00 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,410,1571727600"; d="scan'208";a="211617417"
-Received: from cozturk-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.17.77])
- by orsmga007.jf.intel.com with ESMTP; 08 Jan 2020 09:55:06 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+X-IronPort-AV: E=Sophos;i="5.69,410,1571727600"; d="scan'208";a="218134343"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga008.fm.intel.com with ESMTP; 08 Jan 2020 10:08:59 -0800
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed,  8 Jan 2020 11:54:38 -0600
-Message-Id: <20200108175438.13121-7-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200108175438.13121-1-pierre-louis.bossart@linux.intel.com>
-References: <20200108175438.13121-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH 6/6] soundwire: stream: don't program ports for
-	a stream that has not been prepared
+Date: Wed,  8 Jan 2020 20:08:56 +0200
+Message-Id: <20200108180856.5194-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: tiwai@suse.de, kai.vehmanen@linux.intel.com
+Subject: [alsa-devel] [PATCH] ALSA: hda: enable regmap internal locking
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,118 +72,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+This reverts commit 42ec336f1f9d ("ALSA: hda: Disable regmap
+internal locking").
 
-In the Intel QA multi-pipelines test case, there are two pipelines for
-playback and capture on the same bus. The test fails with an error
-when setting port params:
+Without regmap locking, there is a race between snd_hda_codec_amp_init()
+and PM callbacks issuing regcache_sync(). This was caught by
+following kernel warning trace:
 
-[  599.224812] rt711 sdw:0:25d:711:0: invalid dpn_prop direction 1 port_num 0
-[  599.224815] sdw_program_slave_port_params failed -22
-[  599.224819] intel-sdw sdw-master-0: Program transport params failed: -22
-[  599.224822] intel-sdw sdw-master-0: Program params failed: -22
-[  599.224828] sdw_enable_stream: SDW0 Pin2-Playback: done
+<4> [358.080081] WARNING: CPU: 2 PID: 4157 at drivers/base/regmap/regcache.c:498 regcache_cache_only+0xf5/0x130
+[...]
+<4> [358.080148] Call Trace:
+<4> [358.080158]  snd_hda_codec_amp_init+0x4e/0x100 [snd_hda_codec]
+<4> [358.080169]  snd_hda_codec_amp_init_stereo+0x40/0x80 [snd_hda_codec]
 
-This problem is root-caused to the programming of the capture stream
-ports while it is not yet prepared, the calling sequence is:
-
-(1) hw_params for playback. The playback stream provide the port
-    information to Bus.
-(2) stream_prepare for playback, Transport and port parameters
-    are computed for playback.
-(3) hw_params for capture. The capture stream provide the port
-    information to Bus, but it has not been prepared so is not
-    accounted for in the bandwidth allocation.
-(4) stream_enable for playback. Program transport and port parameters
-    for all masters and slaves. Since the transport and port parameters
-    are not computed for capture stream, sdw_program_slave_port_params
-    will generate a error when setting port params for capture.
-
-in step (4), we should only program the ports for the stream that have
-been prepared. A stream that is only in CONFIGURED state should be
-ignored, its ports will be programmed when it becomes PREPARED.
-
-Tested on Comet Lake.
-
-GitHub issue: https://github.com/thesofproject/linux/issues/1637
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+BugLink: https://gitlab.freedesktop.org/drm/intel/issues/592
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- drivers/soundwire/stream.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ sound/hda/hdac_regmap.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index da10f38298c0..198372977187 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -604,12 +604,23 @@ static int sdw_notify_config(struct sdw_master_runtime *m_rt)
-  *
-  * @bus: SDW bus instance
-  */
--static int sdw_program_params(struct sdw_bus *bus)
-+static int sdw_program_params(struct sdw_bus *bus, bool prepare)
- {
- 	struct sdw_master_runtime *m_rt;
- 	int ret = 0;
+diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
+index 906b1e20bae0..286361ecd640 100644
+--- a/sound/hda/hdac_regmap.c
++++ b/sound/hda/hdac_regmap.c
+@@ -363,7 +363,6 @@ static const struct regmap_config hda_regmap_cfg = {
+ 	.reg_write = hda_reg_write,
+ 	.use_single_read = true,
+ 	.use_single_write = true,
+-	.disable_locking = true,
+ };
  
- 	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
-+
-+		/*
-+		 * this loop walks through all master runtimes for a
-+		 * bus, but the ports can only be configured while
-+		 * explicitly preparing a stream or handling an
-+		 * already-prepared stream otherwise.
-+		 */
-+		if (!prepare &&
-+		    m_rt->stream->state == SDW_STREAM_CONFIGURED)
-+			continue;
-+
- 		ret = sdw_program_port_params(m_rt);
- 		if (ret < 0) {
- 			dev_err(bus->dev,
-@@ -1502,7 +1513,7 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream,
- 
- program_params:
- 		/* Program params */
--		ret = sdw_program_params(bus);
-+		ret = sdw_program_params(bus, true);
- 		if (ret < 0) {
- 			dev_err(bus->dev, "Program params failed: %d\n", ret);
- 			goto restore_params;
-@@ -1602,7 +1613,7 @@ static int _sdw_enable_stream(struct sdw_stream_runtime *stream)
- 		bus = m_rt->bus;
- 
- 		/* Program params */
--		ret = sdw_program_params(bus);
-+		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
- 			dev_err(bus->dev, "Program params failed: %d\n", ret);
- 			return ret;
-@@ -1687,7 +1698,7 @@ static int _sdw_disable_stream(struct sdw_stream_runtime *stream)
- 		struct sdw_bus *bus = m_rt->bus;
- 
- 		/* Program params */
--		ret = sdw_program_params(bus);
-+		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
- 			dev_err(bus->dev, "Program params failed: %d\n", ret);
- 			return ret;
-@@ -1769,7 +1780,7 @@ static int _sdw_deprepare_stream(struct sdw_stream_runtime *stream)
- 			m_rt->ch_count * m_rt->stream->params.bps;
- 
- 		/* Program params */
--		ret = sdw_program_params(bus);
-+		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
- 			dev_err(bus->dev, "Program params failed: %d\n", ret);
- 			return ret;
+ /**
 -- 
-2.20.1
+2.17.1
 
 _______________________________________________
 Alsa-devel mailing list
