@@ -2,65 +2,65 @@ Return-Path: <SRS0=reWy=25=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB4F0C00523
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 08:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C639C00523
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 09:10:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F5AC20705
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 08:51:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 889F62067D
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Jan 2020 09:10:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I218TGB9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F5AC20705
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AMVF2KXU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 889F62067D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8525616FF;
-	Wed,  8 Jan 2020 09:50:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8525616FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 491901701;
+	Wed,  8 Jan 2020 10:10:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 491901701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578473476;
-	bh=3S1++fRPnlry1avSOPO1BywjY6sCvhwqzFooAua99AY=;
+	s=default; t=1578474652;
+	bh=x7ILURNFKFrR04fn4ld8u+Q/ZnM76Wx320daby/WLbg=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I218TGB9MNkWmleaUeZ5Z+pOZvRv3FJ+WYXgLscEwIqPzi6aEj//r++ETVrd6SEUp
-	 SKjHLvDuvm8qFqm94cCM7iQfP9BC4fqWj5ifOi/dZlpPmdBMUTrdLkwd1EvyI2M7Uv
-	 00uxy0r9y+q6ushxupvfRM0TPlnNUgKmVhEDQ1Lc=
+	b=AMVF2KXUuHEG9x26shAHS/RMyRbYmK95FBtFkviGh2SZFQMyxEi0vUPfBStBnGelI
+	 rpp0S70KVwDUH3Sjn7SkcH+Vgau7GQmNexk6+0qb1l/uwyUxw22Fo50w+9svzlspQf
+	 RJUmMlkiyIdymuXWUx9e2heZiLYkDHv3XXrqWn8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DE7DF80149;
-	Wed,  8 Jan 2020 09:50:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A619CF80149;
+	Wed,  8 Jan 2020 10:10:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7D55F80159; Wed,  8 Jan 2020 09:50:24 +0100 (CET)
+ id EF801F80159; Wed,  8 Jan 2020 10:09:59 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51375F80116
- for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 09:50:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51375F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D66DF8010A
+ for <alsa-devel@alsa-project.org>; Wed,  8 Jan 2020 10:09:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D66DF8010A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 1C0D9B249;
- Wed,  8 Jan 2020 08:50:18 +0000 (UTC)
-Date: Wed, 08 Jan 2020 09:50:17 +0100
-Message-ID: <s5h7e22nxh2.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 8A5CCAFBE;
+ Wed,  8 Jan 2020 09:09:56 +0000 (UTC)
+Date: Wed, 08 Jan 2020 10:09:55 +0100
+Message-ID: <s5h36cqnwkc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: David Fries <David@Fries.net>
-In-Reply-To: <20200107151810.pzthoz3w2y3wqae7@spacedout.fries.net>
-References: <20200107151810.pzthoz3w2y3wqae7@spacedout.fries.net>
+To: Kailang <kailang@realtek.com>
+In-Reply-To: <5bc3822076d444febdc864f94716e55f@realtek.com>
+References: <5bc3822076d444febdc864f94716e55f@realtek.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] mixer: Fix memory leak for more than 16
-	file descriptor case
+Cc: Hui Wang <hui.wang@canonical.com>,
+ " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Set EAPD control to default for ALC222
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,11 +78,18 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 07 Jan 2020 16:18:10 +0100,
-David Fries wrote:
+On Wed, 08 Jan 2020 09:41:57 +0100,
+Kailang wrote:
 > 
-> Signed-off-by: David Fries <David@Fries.net>
-> Reviewed-by: Takashi Iwai <tiwai@suse.de>
+> Hi Takashi,
+> 
+> Add Set EAPD control to default for ALC222.
+> 
+> Many Thanks.
+> 
+> BR,
+> 
+> Kailang
 
 Applied now.  Thanks.
 
