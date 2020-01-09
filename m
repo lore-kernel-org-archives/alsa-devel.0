@@ -2,97 +2,67 @@ Return-Path: <SRS0=ks7i=26=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE590C32771
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 05:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D2E9C32771
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 05:56:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF7A8206ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 05:37:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1C9A920678
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 05:56:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d+oNicqG";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="huiN23DI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF7A8206ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kOPR+o2B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C9A920678
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1B3E1705;
-	Thu,  9 Jan 2020 06:36:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1B3E1705
+	by alsa0.perex.cz (Postfix) with ESMTPS id F376E174D;
+	Thu,  9 Jan 2020 06:55:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F376E174D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578548252;
-	bh=re43v0I2paeyl1NmMcsW40rlmiAcotJ+2aDSRfVvyQY=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1578549400;
+	bh=lGpTmW/F8fUIZckZ0Kdi0m5v/M51dl9tkcZQ6Yp7S5c=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d+oNicqGb74RxQGyBmsmLvtjdwuRPEFyRGuOmcqPOKSXtN1O5FA7NNAglHBi4+ALw
-	 pVU5PzYro+LOwD+Cgacovy9/ls+HW9QguohwksfwRhPADm2R0t64zLhSOSKG+nKjM1
-	 Q0dWo/c4bCAOka+Tco85wdTbDTNLuQ5xo5FpfsaI=
+	b=kOPR+o2B+D4bCMWDnuUP+kQCVaElOmT9rh3TRFL/ij6lsB7I7xaQw4zxjtDA7affF
+	 k3jRDchwg5EIiARNJX4lZN/tbaYIieF0WR9ZRV2/u8yg9toYUDhJJMlwKn1GAePVXh
+	 hsU6RViLP8PY4uRKWVdLkKto4llSBI6rDLANH01E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CB35F8014E;
-	Thu,  9 Jan 2020 06:36:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E568F8014E;
+	Thu,  9 Jan 2020 06:55:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B4A2F8015B; Thu,  9 Jan 2020 06:36:39 +0100 (CET)
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com
- [IPv6:2607:f8b0:4864:20::144])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A19AF80101
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2020 06:36:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A19AF80101
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="huiN23DI"
-Received: by mail-il1-x144.google.com with SMTP id s15so4727908iln.1
- for <alsa-devel@alsa-project.org>; Wed, 08 Jan 2020 21:36:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=sAHhoFZ0iYCPxYt+rh/Px3+8GOp5DO3V29oeS42DXAM=;
- b=huiN23DIYcPHVv1KglkNFE9hwhktEqKgtWXiSkSJK5LmJDTbV3ps3AzdNKFwbVyRLU
- j6622puSU0EYgKiTBzKbjnldBj6p+SqrQ5IAZDpUi8Mwg/UESiWJuv042WLDon1jb0fb
- eG6eNsVZVo3F6z3ivbqJ842nbgPQHAGVoqVTN2RjedMNDHo32ifXrKlI4YvixtBl7NHU
- 2st3DsieNEM8T0b4/zNVLJJWvpkuCbrnmBaRNyYuw+F/Eviulg7v7aA8N2/pQkL2Ybet
- g/9n823BtG2EUxnmgbY6Vzbo5Id0yUpX+Kfy4DlJQVetjj4ZGHYyMnjKI3X+dy7LGIYJ
- LJyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=sAHhoFZ0iYCPxYt+rh/Px3+8GOp5DO3V29oeS42DXAM=;
- b=gF2WRvK54GoGkcq30n4Yjk0HkhhqpM0eZJD1CdfJXrpbZ8z87F5B2lIMxekcyOtwNy
- fpG8lSHoNcz1W3Y1MLZ3RL8QsJ3UMsWKx/StX1J5tw1m6z2LKRtE9Pa8vcb5dDPrNOG/
- ovh8dyTi73v7yyrpY2obFiUV4VtNddK+shuTB1Q2XL3uSKsZFv6R0uSbaINVTW4x9oGN
- lW9LpeaCsyHcFEI7Y9l/2O6VTpfgvW44jDe7zuNEj82kzq91h7Jm8Ik+B/sZZO3WKb0K
- ecGj9Gwi/slPmooXWo2sMj0qzpjbkZsFE4hQLEBl6f5Jr8Jm8ys8vrQmNyMTzDeS/6CH
- nTBA==
-X-Gm-Message-State: APjAAAVC98gtlCsIJmin5Iaai4HPBQjgYnYQNDSC8oQ77LMhlsD83+VZ
- Dj1emd16enchaYZg1O1dr2s0LsBl9z+cZ+TjmtkdvA==
-X-Google-Smtp-Source: APXvYqzFc89SrQMcMWBXOOpciBA/UbRyMnmDTvKUFY09Y6diFKdpRQB/cIzzntYu/ZXrqm6Imlk1zgpmom3NbH7Nup8=
-X-Received: by 2002:a92:981b:: with SMTP id l27mr7483819ili.118.1578548194052; 
- Wed, 08 Jan 2020 21:36:34 -0800 (PST)
-MIME-Version: 1.0
-References: <CGME20200108115027eucas1p1d3645ba53703780679c662921efbca78@eucas1p1.samsung.com>
- <20200108115007.31095-1-m.szyprowski@samsung.com>
- <20200108115007.31095-2-m.szyprowski@samsung.com>
-In-Reply-To: <20200108115007.31095-2-m.szyprowski@samsung.com>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Thu, 9 Jan 2020 13:36:22 +0800
-Message-ID: <CA+Px+wXkFE5b_8bLz7-c95TvEdqHGD5s-XKRYMVr40xQkqTWxQ@mail.gmail.com>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>, Dylan Reid <dgreid@google.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: max98090: fix lockdep warning
+ id 80D2BF8015B; Thu,  9 Jan 2020 06:55:47 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id B7D9AF80101
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2020 06:55:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7D9AF80101
+Date: 09 Jan 2020 14:55:38 +0900
+X-IronPort-AV: E=Sophos;i="5.69,412,1571670000"; d="scan'208";a="36048248"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 09 Jan 2020 14:55:38 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0A36B400D4C8;
+ Thu,  9 Jan 2020 14:55:38 +0900 (JST)
+Message-ID: <87h815rx5x.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <CAL_JsqJTKZ224Uw5WmY6acvQkbbzZDHB2BY90o2kQ4krn-N6qA@mail.gmail.com>
+References: <87pnftsd93.wl-kuninori.morimoto.gx@renesas.com>
+ <CAL_JsqJTKZ224Uw5WmY6acvQkbbzZDHB2BY90o2kQ4krn-N6qA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH][resend] ASoC: simple-card: switch to yaml
+	base Documentation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,72 +80,76 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 8, 2020 at 7:50 PM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
-> Fix this by introducing a separate mutex only for serializing the SHDN
-> hardware register related operations.
 
-This fix makes less sense to me.  We used dapm_mutex intentionally
-because: both DAPM and userspace mixer control would change SHDN bit
-at the same time.
+Hi Rob
 
-> This fixes the following lockdep warning observed on Exynos4412-based
-> Odroid U3 board:
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.5.0-rc5-next-20200107 #166 Not tainted
-> ------------------------------------------------------
-> alsactl/1104 is trying to acquire lock:
-> ed0d50f4 (&card->dapm_mutex){+.+.}, at: max98090_shdn_save+0x1c/0x28
->
-> but task is already holding lock:
-> edb4b49c (&card->controls_rwsem){++++}, at: snd_ctl_ioctl+0xcc/0xbb8
->
-> which lock already depends on the new lock.
->
-> the existing dependency chain (in reverse order) is:
->
-> -> #1 (&card->controls_rwsem){++++}:
->        snd_ctl_add_replace+0x3c/0x84
->        dapm_create_or_share_kcontrol+0x24c/0x2e0
->        snd_soc_dapm_new_widgets+0x308/0x594
->        snd_soc_bind_card+0x80c/0xad4
->        devm_snd_soc_register_card+0x34/0x6c
->        odroid_audio_probe+0x288/0x34c
->        platform_drv_probe+0x6c/0xa4
->        really_probe+0x200/0x490
->        driver_probe_device+0x78/0x1f8
->        bus_for_each_drv+0x74/0xb8
->        __device_attach+0xd4/0x16c
->        bus_probe_device+0x88/0x90
->        deferred_probe_work_func+0x3c/0xd0
->        process_one_work+0x22c/0x7c4
->        worker_thread+0x44/0x524
->        kthread+0x130/0x164
->        ret_from_fork+0x14/0x20
->        0x0
->
-> -> #0 (&card->dapm_mutex){+.+.}:
->        lock_acquire+0xe8/0x270
->        __mutex_lock+0x9c/0xb18
->        mutex_lock_nested+0x1c/0x24
->        max98090_shdn_save+0x1c/0x28
->        max98090_put_enum_double+0x20/0x40
->        snd_ctl_ioctl+0x190/0xbb8
->        ksys_ioctl+0x470/0xaf8
->        ret_fast_syscall+0x0/0x28
->        0xbefaa564
+Thank you for reviewing
 
-As the stack trace suggested: when the card was still registering,
-alsactl can see the mixer control and try to change it.
+> If you want things reviewed in a timely fashion, use
+> get_maintainers.pl and send to the right lists. Otherwise you can just
+> hope I happen to see it.
 
-We have a discussion on an older thread
-(https://mailman.alsa-project.org/pipermail/alsa-devel/2019-December/160454.html).
-It is weird: userspace should not see things (e.g. no controlC0) until
-snd_card_register( ).
+OK, will do from now.
 
-I would like to spend some time to find the root cause.  It would be a
-little challenging though (I have no real runtime to test...).
+> > +    description: CPU node
+> > +    $ref: "#/definitions/dai"
+> 
+> This is $ref is a description and another $ref. Just do away with 'definitions'.
+
+Sorry, but I don't understand about this.
+Do you mean like this ?
+	
+    description: CPU node
+    $ref: "#/dai"
+
+> > patternProperties:
+(snip)
+> > +  # common properties
+> > +  "^simple-audio-card,frame-master$":
+> 
+> Not a pattern. Put these under 'properties'.
+
+I put it here because it doesn't work
+if I put it under "properties".
+I'm not 100% understanding, but it seems
+using "," at property and "#/definitions/xxx" in the same time
+is the reason.
+
+This works for me
+
+	definitions:
+	  ...
+	  frame-master:
+	    description: Indicates dai-link frame master.
+	    $ref: /schemas/types.yaml#/definitions/phandle-array
+	  ...	  
+
+	patternProperties:
+	  ...
+	  "^simple-audio-card,frame-master$":
+	  $ref: "#/definitions/frame-master"
+
+This works too
+
+	properties:
+	  ...
+	  simple-audio-card,frame-master:
+	    description: Indicates dai-link frame master.
+	    $ref: /schemas/types.yaml#/definitions/phandle-array
+
+But, this doesn't work
+
+	properties:
+	  ...
+	  simple-audio-card,frame-master:
+	    $ref: "#/definitions/frame-master"
+
+How to solve it ??
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
