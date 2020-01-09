@@ -2,59 +2,86 @@ Return-Path: <SRS0=ks7i=26=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C165C32771
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 08:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84211C33CA2
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 08:33:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 389482073A
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 08:21:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 130102077C
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jan 2020 08:33:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Cy7l/aSP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 389482073A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UP1ACvsP";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BjYJn2wI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 130102077C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F6BD1756;
-	Thu,  9 Jan 2020 09:20:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F6BD1756
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A690175F;
+	Thu,  9 Jan 2020 09:32:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A690175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578558096;
-	bh=bQbHvU1eIWrY/q7d4kTsrSgE23TRHVAcXnEaE/rZYUg=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1578558781;
+	bh=6CibdlS5pHKX7SbQBZVUTRQ3TwPnqku5l+U7TQYMe9A=;
+	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Cy7l/aSPl7eiudqnubdIbkqc1j+Q0F5Zcs8BcYL7p2ZYphE9dKiPrBdoELJTNpWbE
-	 a2vtCx4he+uvylzsehh4ZOfbePjA0WtGKisjohZ8t+7pXVLfgxwEEJ3sy8T3q9Gksb
-	 BHEMLZWDbQwOrokCQ4QU8g2MKAU8A2keUuWUmgeU=
+	b=UP1ACvsPINoB+Ar0GbMMg1lcslD+7mXtRMJGJtcKeCK7dnuZO2QMJ6U6jGfvBbGs4
+	 /hjx0b/wQFpqvEyhQ0wvn3q55kItTHJbVoifcauZHik1YgSsoTxi1xBH1TPc8E0hCg
+	 P0jdhh9RuTPF+RhNG5OcCinbKeKsJeMY60dq49CE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BC4BF8014E;
-	Thu,  9 Jan 2020 09:20:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E69EF80101;
+	Thu,  9 Jan 2020 09:32:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BC52F8015B; Thu,  9 Jan 2020 09:20:44 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 33C79F8015B; Thu,  9 Jan 2020 09:32:09 +0100 (CET)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 782EEF800E4
- for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2020 09:20:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 782EEF800E4
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D324EB1DB;
- Thu,  9 Jan 2020 08:20:13 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 776A7F80101
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2020 09:32:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 776A7F80101
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="BjYJn2wI"
+Received: by mail-lf1-x12b.google.com with SMTP id 203so4522407lfa.12
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2020 00:32:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=uJve4snUPmUSpawppJTMpPSQrfqBOYV7ulYZNa0BJdk=;
+ b=BjYJn2wIVW90qheAuR6uOH1BpZNu2dQtZ0/xrWXncPnZ36MsHNVAkJJApWkypNC7y8
+ nzPoawjziAVXafsUkATP9xAnkTp9TuZlcw2wCFxkz23ouNS/lqoQtGk4gVNn/SvSNhaR
+ Oj1P5i7c3zUBFGYBDSMT603JgIWUmhtTjotfPMzdiW+dfvBpdI5tlqjn5iI1lZxOp7iY
+ 3t2cjeAwPAcuIKsiPzjQoB1aFc4rAoO8a0fp6I7NrNp12eiuvwdznkwfIopsMQujy2ed
+ 3Rc+/DGNUiLVAly/cm85V3lSdFlww92608lLMdScQnq5Jc2ZKHC8pxhFO/7N3lst7ERF
+ P4VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=uJve4snUPmUSpawppJTMpPSQrfqBOYV7ulYZNa0BJdk=;
+ b=cpkhVazfSrdp15vWL+gTtG7tOgPicNsM0cnmVE2hkHa/ZfOvX4ZuWD1VZKBADFXb1c
+ jPnkq0F2blISqXldMYkYT76bLsPeV+Aj796FadAU861GgtFjDjFSyhZigecYdKDFPObi
+ zPVc8AIK0K6eBo3O4Kmf8lyrISbINaFyOw4uECQc2k2CMV+3v4Y77qk0P3RpF2GV2XNr
+ LGnPdh51t3ZplsmhWLo4zVmO7Vt3vnFMOy9F4WItLlHA9BDx19w+EXUdCfFcfKjMe25s
+ bTrB7TBt81TGU/fMUTebH0lhY3kx02Z33ibGvL+TD16aJ8fsQtxIqmeu82PrgZf5/5Oc
+ wQ1A==
+X-Gm-Message-State: APjAAAVX/cnNaz5UPsxB0SWI5xCglXFzN795E28K4YHSrxx19bc72TmT
+ 48rBlBeXmIMHdzvaMyhKQGOzlgsj/buxp+T6F4W0hywR
+X-Google-Smtp-Source: APXvYqxSiPiNLkw8ZlwX5TkRwwdoU0owC+Dp0y8iCMWeSffe31ocQx4/KOMJ+oIrUooBsoMpZbHG5zAYeNUcqAOd7ZE=
+X-Received: by 2002:ac2:4adc:: with SMTP id m28mr5402196lfp.26.1578558725048; 
+ Thu, 09 Jan 2020 00:32:05 -0800 (PST)
+MIME-Version: 1.0
+From: Gabriele Zampieri <gabbla.malist@gmail.com>
+Date: Thu, 9 Jan 2020 09:31:54 +0100
+Message-ID: <CAAx3WaD_W7qUq7u7rvN44cT9hg6a4Ae8D=2C=6PumsnXopnnbQ@mail.gmail.com>
 To: alsa-devel@alsa-project.org
-Date: Thu,  9 Jan 2020 09:20:00 +0100
-Message-Id: <20200109082000.26729-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH] ALSA: hda: Rename back to dmic_detect option
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Subject: [alsa-devel] Playback/Capture on a codec-to-codec link
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,79 +94,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We've got quite a few bug reports showing the SOF driver being loaded
-unintentionally recently, and the reason seems to be that users didn't
-know the module option change: with the recent kernel, a new option
-dsp_driver=1 has to be passed to a new module snd-intel-dspcfg
-instead of snd_hda_intel.dmic_detect=0 option.
+Dear all,
 
-That is, actually there are two tricky things here:
-- We changed the whole detection in another module and another
-  option semantics.
-- The existing option for skipping the DSP probe was also renamed.
+I'm working on a board that is equipped with a Bluetooth chip and a gsm
+phone, both connected to the CPU (AM3352) on 2 different pcm. I wrote the
+codecs and they are working (read as: I can play/record on both devices).
+What I want to achieve now is to route those pcm together and still being
+able to (at least) play audio on both. I tried alsaloop, but it eats too
+much CPU (80% +) even in half duplex loop (BT capture => GSM playback), and
+it was the only application running. In [1] I saw that I should be able to
+route the codec together in kernel space (to avoid data copy between user
+and kernel spaces). I did not tried that solution yet because it's not
+really clear to me how to implement it, any suggestions/examples? If I
+follow that solution, can I still use those PCM to playback my audio file
+(I see that I can disconnect that link through a mixer control, so this
+should be possible)?
 
-For avoiding the confusion and giving user more hint, this patch
-reverts the renamed option dsp_driver back to dmic_detect for
-snd-hda-intel module, and show the warning about the module option
-change when the non-default value is passed.
+Again any suggestion is really appreciated.
 
-Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+Best regards,
+Gabriele
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 5b92f290cbb0..8ef223aa1e37 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -125,7 +125,7 @@ static char *patch[SNDRV_CARDS];
- static bool beep_mode[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] =
- 					CONFIG_SND_HDA_INPUT_BEEP_MODE};
- #endif
--static bool dsp_driver = 1;
-+static bool dmic_detect = 1;
- 
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
-@@ -160,9 +160,10 @@ module_param_array(beep_mode, bool, NULL, 0444);
- MODULE_PARM_DESC(beep_mode, "Select HDA Beep registration mode "
- 			    "(0=off, 1=on) (default=1).");
- #endif
--module_param(dsp_driver, bool, 0444);
--MODULE_PARM_DESC(dsp_driver, "Allow DSP driver selection (bypass this driver) "
--			     "(0=off, 1=on) (default=1)");
-+module_param(dmic_detect, bool, 0444);
-+MODULE_PARM_DESC(dmic_detect, "Allow DSP driver selection (bypass this driver) "
-+			     "(0=off, 1=on) (default=1); "
-+		 "deprecated, use snd-intel-dspcfg.dsp_driver option instead");
- 
- #ifdef CONFIG_PM
- static int param_set_xint(const char *val, const struct kernel_param *kp);
-@@ -2099,11 +2100,13 @@ static int azx_probe(struct pci_dev *pci,
- 	/*
- 	 * stop probe if another Intel's DSP driver should be activated
- 	 */
--	if (dsp_driver) {
-+	if (dmic_detect) {
- 		err = snd_intel_dsp_driver_probe(pci);
- 		if (err != SND_INTEL_DSP_DRIVER_ANY &&
- 		    err != SND_INTEL_DSP_DRIVER_LEGACY)
- 			return -ENODEV;
-+	} else {
-+		dev_warn(&pci->dev, "dmic_detect option is deprecated, pass snd-intel-dspcfg.dsp_driver=1 option instead\n");
- 	}
- 
- 	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
--- 
-2.16.4
-
+[1]:
+https://www.kernel.org/doc/html/latest/sound/soc/dpcm.html#hostless-pcm-streams
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
