@@ -2,65 +2,84 @@ Return-Path: <SRS0=qOpI=3C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15112C33CA8
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C25C9C33CAB
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:55:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89D4F2081E
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:51:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D90921569
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:55:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rpz/mlK0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89D4F2081E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bCZAI0FE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D90921569
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4019165E;
-	Mon, 13 Jan 2020 10:50:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4019165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AC8215E4;
+	Mon, 13 Jan 2020 10:54:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AC8215E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578909105;
-	bh=NaNXtEeX1PQqi5NvhqKZRoqrV3Fr5J87zoMVh61VsME=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rpz/mlK0zLtpkzcAEXguC5P796Pw1TQ5UPqytYKR6HhfBvdHe4ZIGSlEh/bkMm+Mu
-	 UDr/09dJuBg3PUpaFI6cmet2T36l8wJjgMxp5VE+aqU72T+fwbmaAvFTrmJ5HJe/yX
-	 TRFdSTHv1O1izZZkc5SU7j3hRa42bhwkUiUYI/7w=
+	s=default; t=1578909341;
+	bh=WJ4cqJkyZTB0XrIWHcLmWOMBO0VADIfKzNWaETI7nRo=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bCZAI0FEz9BNn2T+CkC4Cqb3jNNLI5IK/jIZp+uae+nnPUQpYvn/mToZ+Nef/nsy6
+	 h+AKqAGlohnyB91IcPb9RjEqei4avWjmHGfub9o89skILoRCHe7uH0+QWF4NosGpSO
+	 XvkpE87O/zVOZ8RNUQzb6kfTwJo3sYW1QFvoRj3E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 758DEF801EB;
-	Mon, 13 Jan 2020 10:49:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6FCBF8014B;
+	Mon, 13 Jan 2020 10:54:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7114F80228; Mon, 13 Jan 2020 10:49:30 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 39864F8015B; Thu,  9 Jan 2020 20:14:46 +0100 (CET)
+Received: from mail-pj1-f68.google.com (mail-pj1-f68.google.com
+ [209.85.216.68])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02F4AF801EB
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 10:49:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02F4AF801EB
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 32B17ABE7;
- Mon, 13 Jan 2020 09:49:27 +0000 (UTC)
-Date: Mon, 13 Jan 2020 10:49:26 +0100
-Message-ID: <s5hpnfnk7o9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
-In-Reply-To: <20200112102358.18085-1-alexander@tsoy.me>
-References: <20200112102358.18085-1-alexander@tsoy.me>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH v3] ALSA: usb-audio: Add boot quirk for
-	MOTU M Series
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33CCEF800E4
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jan 2020 20:14:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33CCEF800E4
+Received: by mail-pj1-f68.google.com with SMTP id r67so1537489pjb.0
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jan 2020 11:14:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=s3LJptmK9f7+9WJnS7yopofDmxgol9ron4gYXPeKTGM=;
+ b=OnTc+Lv9qXdhKCurzcWJajuyiNhiRDqXSor8wI7B+aijMABUaNwok4Bmg2LB2sgrBN
+ y6Hnk9qb7Kg9fOq1FIpShF4uP+tpYPlIAGaUDJdHw6vsQvBvqY56OEkrupqWxb+UaX1N
+ eszLA0QgHc6oW+ZRCpzsPntgGdS/6yT5Hk1OJOrcR2lOSxKOWqyE6zedU08um3+5T3mX
+ 6F+/tU3Mrmon5fEYduM+S0rryYKd1B+X8hFRiVe8oXm8i/uoz7lMk4VGkLGMTwp27EEz
+ nF4Whi4SESHK7cqcXed0YKOtZ8JsEvajn/OUWw+ICAS+xLREW0oBe6iqWnES6xLmR7c0
+ YRDg==
+X-Gm-Message-State: APjAAAVQn18yPRyyZOU9X77r+d6/wDaB/xX0YprEIaf1bKiNQ7AArtex
+ Fh8IzaUc3q4/Ww+yoGWlqwYagudt9qdMIg==
+X-Google-Smtp-Source: APXvYqxYcjRb0U/scJSGha0DadOM9jLQu+g5X/UfWfmPyJgWzpay36OgvgbouiChitpx5/9aNiM74w==
+X-Received: by 2002:a17:90a:660d:: with SMTP id
+ l13mr7069498pjj.23.1578597280531; 
+ Thu, 09 Jan 2020 11:14:40 -0800 (PST)
+Received: from pburton-laptop.mipstec.com
+ (MIPS-TECHNO.ear1.SanJose1.Level3.net. [4.15.122.74])
+ by smtp.gmail.com with ESMTPSA id z26sm7720263pgu.80.2020.01.09.11.14.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 09 Jan 2020 11:14:39 -0800 (PST)
+From: Paul Burton <paulburton@kernel.org>
+To: alsa-devel@alsa-project.org
+Date: Thu,  9 Jan 2020 11:14:22 -0800
+Message-Id: <20200109191422.334516-1-paulburton@kernel.org>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+X-Mailman-Approved-At: Mon, 13 Jan 2020 10:54:48 +0100
+Cc: Paul Burton <paulburton@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH] ASoC: txx9: Remove unused rtd variable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,27 +97,46 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 12 Jan 2020 11:23:58 +0100,
-Alexander Tsoy wrote:
-> 
-> Add delay to make sure that audio urbs are not sent too early.
-> Otherwise the device hangs. Windows driver makes ~2s delay, so use
-> about the same time delay value.
-> 
-> snd_usb_apply_boot_quirk() is called 3 times for my MOTU M4, which
-> is an overkill. Thus a quirk that is called only once is implemented.
-> 
-> Also send two vendor-specific control messages before and after
-> the delay. This behaviour is blindly copied from the Windows driver.
-> 
-> Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
-> ---
-> v3 changes: fixed identations once more
+Commit a857e073ffc6 ("ASoC: txx9: txx9aclc: remove snd_pcm_ops") removed
+the last use of the rtd variable but didn't remove its definition,
+leading to the following warning/error for MIPS rbtx49xx_defconfig
+builds:
 
-Applied now.  Thanks.
+sound/soc/txx9/txx9aclc.c: In function 'txx9aclc_pcm_hw_params':
+sound/soc/txx9/txx9aclc.c:54:30: error: unused variable 'rtd'
+    [-Werror=unused-variable]
+  struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+                              ^~~
 
+Resolve this by removing the unused variable.
 
-Takashi
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Fixes: a857e073ffc6 ("ASoC: txx9: txx9aclc: remove snd_pcm_ops")
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/txx9/txx9aclc.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index 33c78d33e5a1..9a55926ebf07 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -51,7 +51,6 @@ static int txx9aclc_pcm_hw_params(struct snd_soc_component *component,
+ 				  struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct txx9aclc_dmadata *dmadata = runtime->private_data;
+ 	int ret;
+-- 
+2.24.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
