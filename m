@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5E08C282DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86958C282DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:36:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61BC7206DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:34:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 125162072E
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:36:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tpvaoAEN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61BC7206DA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WBZWDRPB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 125162072E
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5B316B0;
-	Fri, 10 Jan 2020 19:33:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5B316B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51A6816B0;
+	Fri, 10 Jan 2020 19:35:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51A6816B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578681254;
-	bh=CukM4UTVG/4d0w3pTbgTXtAdnmKNiVeJd68mAGhqq5k=;
+	s=default; t=1578681399;
+	bh=4vFsPJi1mCsRHP45V4UsTStwdfkrQT9WN/ipJJ81R0U=;
 	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tpvaoAENo5JbQlRmzDLilZBkN/YCDz2oZ8MvirPuw3NRUJQsCy4r6BDwTnpPu54/h
-	 CNoNKxT0lHim4ZyQJF+Qlyb+YtrN4udr5T+rgmbetEUHF62/YhlXc0OPNUavwXs6kf
-	 5lnS2Eyv+MfDJ+c5v5wuzbidBc0aUL80jp/rMc5U=
+	b=WBZWDRPB/+r90zy0YYtwC/EpCSqAXxh9E5Xa0ofeZCfpUZt1bsK7hOoG9b1rpInh4
+	 DWrp7ZoIcfmxjIEVHPrqylN92P31+rcgdW3+raY+XXJduX3STqX8D2tC24tRvHE9H4
+	 bV0pt46wIXcvr5ZAWM6A3+58AO0GHvKGfw3HTcQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFDE3F8011C;
-	Fri, 10 Jan 2020 19:33:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA59EF80130;
+	Fri, 10 Jan 2020 19:35:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88490F80130; Fri, 10 Jan 2020 19:33:21 +0100 (CET)
+ id ED775F8010B; Fri, 10 Jan 2020 19:35:46 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id CCCBCF800E4
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 19:33:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCCBCF800E4
+ by alsa1.perex.cz (Postfix) with ESMTP id 15DABF8010B
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 19:35:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15DABF8010B
 MIME-Version: 1.0
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1578681198128108978-webhooks-bot@alsa-project.org>
-References: <1578681198128108978-webhooks-bot@alsa-project.org>
-Message-Id: <20200110183321.88490F80130@alsa1.perex.cz>
-Date: Fri, 10 Jan 2020 19:33:21 +0100 (CET)
+In-Reply-To: <1578681343533937931-webhooks-bot@alsa-project.org>
+References: <1578681343533937931-webhooks-bot@alsa-project.org>
+Message-Id: <20200110183546.ED775F8010B@alsa1.perex.cz>
+Date: Fri, 10 Jan 2020 19:35:46 +0100 (CET)
 Subject: [alsa-devel] When storing settings which contain a [ or ],
 	the setting is not quoted.
 X-BeenThere: alsa-devel@alsa-project.org
@@ -114,13 +114,16 @@ control.28 {
                 }
         }
 ```
+Manually fixing this file by adding '' around the items which miss quotes fixes the issue, and allows restoring it.
+
+**How this leads to alsa-lib and where the issue is located**
 
 Creation of the output data and writing it to a file is handled by the save_state method in alsactl: https://github.com/alsa-project/alsa-utils/blob/master/alsactl/state.c#L1539
 This code in turn calls snd_config_save in the alsa-lib project: https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L3080
 Then further to string_print: https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L1508
 And then in this loop which decides which characters need to be quoted: https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L1523
 
-*Proposed solution*
+**Proposed solution**
 The characters `[` and `]` should be a reason to put text between quotes.
 These characters should be added to the switch statement in print_string here:
 https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L1535
