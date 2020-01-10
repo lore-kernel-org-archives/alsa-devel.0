@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C083C282DD
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 00:02:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02C3CC282DD
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 00:03:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1DF962053B
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 00:02:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8216D2053B
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 00:03:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZrsHKc1y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1DF962053B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JJl9sOT6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8216D2053B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E18016CE;
-	Sat, 11 Jan 2020 01:01:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E18016CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD6E016BB;
+	Sat, 11 Jan 2020 01:02:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD6E016BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578700966;
-	bh=tXlGX68zrXI8OLfz6nJX0nv8+E2VV0sEiobIea5C0j8=;
+	s=default; t=1578701002;
+	bh=+a4IQIOkW48mip2Ezdl7gcfTo0cfDlFIy24iFR2BafU=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZrsHKc1y6f7XyT7aLjuBCR06hWlHUp2+ZQ6ftD7lBOudGZFcF4o0xX7ZZUVoIQnnV
-	 1AhqpM5x4X9RGZu4+FCOMN3zu6Uh1nqmHcPjRLWZ/h/2Zb4xKtmi2xoIq7dYbENDbQ
-	 Ld+RkRmwupmEezkBUpWobvrEs0zWPQmNH4vZnwR0=
+	b=JJl9sOT6TMXd2F1erKh1b49R1dIzBBZH0Et/Jbx61jJRt2Igxy8lGIjvRMX7+V5H6
+	 sIGB9eeRACTQrL/YYaZB0ej10J9cafEoFDlE+B/RobmShfjC0KkfH0sc4YLJxWEDaS
+	 S9To+eJL7Sedva1BscJJyYwAaL47dBCk4Kv1qROg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E9CAF8028F;
-	Sat, 11 Jan 2020 00:58:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9345DF8029A;
+	Sat, 11 Jan 2020 00:58:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8F6EF80161; Sat, 11 Jan 2020 00:58:18 +0100 (CET)
+ id D831DF80273; Sat, 11 Jan 2020 00:58:21 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6983AF8010B
- for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2020 00:58:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6983AF8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62582F801F4
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2020 00:58:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62582F801F4
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Jan 2020 15:58:10 -0800
+ 10 Jan 2020 15:58:12 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,418,1571727600"; d="scan'208";a="224345301"
+X-IronPort-AV: E=Sophos;i="5.69,418,1571727600"; d="scan'208";a="224345307"
 Received: from jrderube-mobl5.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.155.251])
- by orsmga003.jf.intel.com with ESMTP; 10 Jan 2020 15:58:09 -0800
+ by orsmga003.jf.intel.com with ESMTP; 10 Jan 2020 15:58:11 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri, 10 Jan 2020 17:57:48 -0600
-Message-Id: <20200110235751.3404-6-pierre-louis.bossart@linux.intel.com>
+Date: Fri, 10 Jan 2020 17:57:51 -0600
+Message-Id: <20200110235751.3404-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200110235751.3404-1-pierre-louis.bossart@linux.intel.com>
 References: <20200110235751.3404-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 5/8] ASoC: SOF: Intel: lower print level to dbg
-	if we will reinit DSP
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: [alsa-devel] [PATCH 8/8] ASoC: hdac_hda: Fix error in driver
+	removal after failed probe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,39 +85,51 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard liao <yung-chuan.liao@linux.intel.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-We will reinit DSP in a loop when it fails to initialize the first
-time, as recommended. So, it is not an error before we finally give
-up. And reorder the trace to make it more readable.
+In case system has multiple HDA codecs, and codec probe fails for
+at least one but not all codecs, driver will end up cancelling
+a non-initialized timer context upon driver removal.
 
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Call trace of typical case:
+
+[   60.593646] WARNING: CPU: 1 PID: 1147 at kernel/workqueue.c:3032
+__flush_work+0x18b/0x1a0
+[...]
+[   60.593670]  __cancel_work_timer+0x11f/0x1a0
+[   60.593673]  hdac_hda_dev_remove+0x25/0x30 [snd_soc_hdac_hda]
+[   60.593674]  device_release_driver_internal+0xe0/0x1c0
+[   60.593675]  bus_remove_device+0xd6/0x140
+[   60.593677]  device_del+0x175/0x3e0
+[   60.593679]  ? widget_tree_free.isra.7+0x90/0xb0 [snd_hda_core]
+[   60.593680]  snd_hdac_device_unregister+0x34/0x50 [snd_hda_core]
+[   60.593682]  snd_hdac_ext_bus_device_remove+0x2a/0x60 [snd_hda_ext_core]
+[   60.593684]  hda_dsp_remove+0x26/0x100 [snd_sof_intel_hda_common]
+[   60.593686]  snd_sof_device_remove+0x84/0xa0 [snd_sof]
+[   60.593687]  sof_pci_remove+0x10/0x30 [snd_sof_pci]
+[   60.593689]  pci_device_remove+0x36/0xb0
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-loader.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdac_hda.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 1782f5092639..8852184a2569 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -328,13 +328,13 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 		if (!ret)
- 			break;
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index 4e0f4afe6ddc..de003acb1951 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -604,7 +604,9 @@ static int hdac_hda_dev_remove(struct hdac_device *hdev)
+ 	struct hdac_hda_priv *hda_pvt;
  
--		dev_err(sdev->dev, "error: Error code=0x%x: FW status=0x%x\n",
-+		dev_dbg(sdev->dev, "iteration %d of Core En/ROM load failed: %d\n",
-+			i, ret);
-+		dev_dbg(sdev->dev, "Error code=0x%x: FW status=0x%x\n",
- 			snd_sof_dsp_read(sdev, HDA_DSP_BAR,
- 					 HDA_DSP_SRAM_REG_ROM_ERROR),
- 			snd_sof_dsp_read(sdev, HDA_DSP_BAR,
- 					 HDA_DSP_SRAM_REG_ROM_STATUS));
--		dev_err(sdev->dev, "error: iteration %d of Core En/ROM load failed: %d\n",
--			i, ret);
- 	}
+ 	hda_pvt = dev_get_drvdata(&hdev->dev);
+-	cancel_delayed_work_sync(&hda_pvt->codec.jackpoll_work);
++	if (hda_pvt && hda_pvt->codec.registered)
++		cancel_delayed_work_sync(&hda_pvt->codec.jackpoll_work);
++
+ 	return 0;
+ }
  
- 	if (i == HDA_FW_BOOT_ATTEMPTS) {
 -- 
 2.20.1
 
