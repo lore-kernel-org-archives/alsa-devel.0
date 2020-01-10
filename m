@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E25C282DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5E08C282DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:34:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E0E92080D
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:27:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 61BC7206DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:34:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XwBnTiTR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E0E92080D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tpvaoAEN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61BC7206DA
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3491416B2;
-	Fri, 10 Jan 2020 19:26:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3491416B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5B316B0;
+	Fri, 10 Jan 2020 19:33:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5B316B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578680866;
-	bh=gisHcOxv5Uc1r3NBL3xCSWKFN/n4TvneiPrTKqlyRW8=;
+	s=default; t=1578681254;
+	bh=CukM4UTVG/4d0w3pTbgTXtAdnmKNiVeJd68mAGhqq5k=;
 	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XwBnTiTRP+ly7WquBv8vuRuejqO6llXVItYuxpYIbWkEQPo7CFuegAz+9qmGB3+36
-	 pDI4TrhA0gfAhF1C6DK43y8hCfAUoGphD+19YOWDlcW8Vhy/rl1VQm1a0tmmnpV1nK
-	 t27QiLHlayVgM1AXgfJEqoNgy95iOXAHt9r8uVS0=
+	b=tpvaoAENo5JbQlRmzDLilZBkN/YCDz2oZ8MvirPuw3NRUJQsCy4r6BDwTnpPu54/h
+	 CNoNKxT0lHim4ZyQJF+Qlyb+YtrN4udr5T+rgmbetEUHF62/YhlXc0OPNUavwXs6kf
+	 5lnS2Eyv+MfDJ+c5v5wuzbidBc0aUL80jp/rMc5U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93256F800E4;
-	Fri, 10 Jan 2020 19:26:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFDE3F8011C;
+	Fri, 10 Jan 2020 19:33:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 242BFF8011C; Fri, 10 Jan 2020 19:26:54 +0100 (CET)
+ id 88490F80130; Fri, 10 Jan 2020 19:33:21 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 14D0BF8010B
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 19:26:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14D0BF8010B
+ by alsa1.perex.cz (Postfix) with ESMTP id CCCBCF800E4
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 19:33:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCCBCF800E4
 MIME-Version: 1.0
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1578680809235691071-webhooks-bot@alsa-project.org>
-References: <1578680809235691071-webhooks-bot@alsa-project.org>
-Message-Id: <20200110182654.242BFF8011C@alsa1.perex.cz>
-Date: Fri, 10 Jan 2020 19:26:54 +0100 (CET)
+In-Reply-To: <1578681198128108978-webhooks-bot@alsa-project.org>
+References: <1578681198128108978-webhooks-bot@alsa-project.org>
+Message-Id: <20200110183321.88490F80130@alsa1.perex.cz>
+Date: Fri, 10 Jan 2020 19:33:21 +0100 (CET)
 Subject: [alsa-devel] When storing settings which contain a [ or ],
 	the setting is not quoted.
 X-BeenThere: alsa-devel@alsa-project.org
@@ -69,10 +69,12 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #22 was opened from Bertware:
+alsa-project/alsa-lib issue #22 was edited from Bertware:
 
 I am using a Raspberry Pi 1 B+ with a Hifiberry DAC+ADC Pro HAT.
-This hat contains a PCM5122 Stereo DAC and an ADC. Now to the issue: The ADC has parameters such as `VINR1[SE]` and `VINR2[SE] + VINR1[SE]`. When using `alsactl store` or`alsactl restore`, restoring will fail due to an invalid file.
+This HAT contains a PCM5122 Stereo DAC and an ADC.
+
+ Now to the issue: The ADC has parameters such as `VINR1[SE]` and `VINR2[SE] + VINR1[SE]`. When using `alsactl store` or`alsactl restore`, restoring will fail due to an invalid file.
 
 `ALSA lib conf.c:1887:(_snd_config_load_with_include) _toplevel_:354:30:Unexpected char`
 
