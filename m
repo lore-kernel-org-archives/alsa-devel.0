@@ -2,80 +2,69 @@ Return-Path: <SRS0=QJW1=27=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C1B9C33CA2
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 09:44:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A06AC33CA2
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 09:57:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 849312072A
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 09:44:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA48B20721
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 09:57:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bgt9ey5Q";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="veb+mi8N"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 849312072A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aZlpSK7D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA48B20721
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DD2C1711;
-	Fri, 10 Jan 2020 10:43:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DD2C1711
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BE5C1710;
+	Fri, 10 Jan 2020 10:56:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BE5C1710
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578649470;
-	bh=wz4Z8+hjd85yyN0YVnTiCRXpUxEkSw4YjJBQVNrbTXc=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1578650221;
+	bh=3XeiUUF3czL4T9gGFUozeuYV7IJwgpJzV1PY8Oj5bx4=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bgt9ey5QxfTDPxQW2W9nky1L2DJbHe5bYrSnbViq6MB0PeCtAMzTU6TV6NZFuiUMB
-	 RaCEp/dX4gNT89V0xY3XyUvSC9sHUfKnZLQK+cukhD5SOYYv23biU4BEwdKLdLgeVJ
-	 4DtnkFFwCkmbv3wtidHjaBselH7AHQpV/LzbWAp0=
+	b=aZlpSK7DYBIl+og69sfE+0NCPfUWJdeaEzyI3IjLOJzpmYdg3V4cbsM6w3R+Tyk5V
+	 e0PxoCHjAFVAv6UI0NTZ1MpP3N0o7SRChZlDAloKDMGFfiaiuPOIJhJbpnrQ2Nq2Gm
+	 FdfdA4Y5GNjqAw7JGwlPp0kB0pQihiQ6XDag2l9Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9A17F80116;
-	Fri, 10 Jan 2020 10:43:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85494F80116;
+	Fri, 10 Jan 2020 10:56:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F361DF8011C; Fri, 10 Jan 2020 10:43:37 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 4A2B8F8011C; Fri, 10 Jan 2020 10:56:09 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76848F800E4
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 10:43:33 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 477EEA003F;
- Fri, 10 Jan 2020 10:43:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 477EEA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1578649413; bh=PWmIHEghTU1BU+I0q/9CNp37xpdRYOruF+56lY2aRWM=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=veb+mi8NwaztLeFbSWAPaOm6BXPvetTynnMLIo9EGfHpV+sge99LmtWNxl/R+B9iO
- B7gTZ1be1tuUbY95XA8gP1L2eRsEnQhkQNYQVLyuRx9dNxmDFBrtbj0QQhhAHUCyWl
- jiJe+NRGULxb1NHmf3aSgqzrKErbm2GY+2rs3maM=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 10 Jan 2020 10:43:27 +0100 (CET)
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>, bhelgaas@google.com,
- tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFC89F800E4
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 10:56:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFC89F800E4
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4E966AE87;
+ Fri, 10 Jan 2020 09:56:04 +0000 (UTC)
+Date: Fri, 10 Jan 2020 10:56:03 +0100
+Message-ID: <s5ha76vmy8c.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <10e35320-b7a8-0bcf-92d1-61aa5c057f58@perex.cz>
 References: <20191018073848.14590-1-kai.heng.feng@canonical.com>
  <20191018073848.14590-2-kai.heng.feng@canonical.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <10e35320-b7a8-0bcf-92d1-61aa5c057f58@perex.cz>
-Date: Fri, 10 Jan 2020 10:43:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
-MIME-Version: 1.0
-In-Reply-To: <20191018073848.14590-2-kai.heng.feng@canonical.com>
-Content-Language: en-US
-Cc: linux-pci@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ <10e35320-b7a8-0bcf-92d1-61aa5c057f58@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, linux-pci@vger.kernel.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ bhelgaas@google.com
 Subject: Re: [alsa-devel] [PATCH v6 2/2] ALSA: hda: Allow HDA to be runtime
- suspended when dGPU is not bound to a driver
+	suspended when dGPU is not bound to a driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,93 +77,120 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 18. 10. 19 v 9:38 Kai-Heng Feng napsal(a):
-> Nvidia proprietary driver doesn't support runtime power management, so
-> when a user only wants to use the integrated GPU, it's a common practice
-> to let dGPU not to bind any driver, and let its upstream port to be
-> runtime suspended. At the end of runtime suspension the port uses
-> platform power management to disable power through _OFF method of power
-> resource, which is listed by _PR3.
+On Fri, 10 Jan 2020 10:43:26 +0100,
+Jaroslav Kysela wrote:
 > 
-> After commit b516ea586d71 ("PCI: Enable NVIDIA HDA controllers"), when
-> the dGPU comes with an HDA function, the HDA won't be suspended if the
-> dGPU is unbound, so the power resource can't be turned off by its
-> upstream port driver.
+> Dne 18. 10. 19 v 9:38 Kai-Heng Feng napsal(a):
+> > Nvidia proprietary driver doesn't support runtime power management, so
+> > when a user only wants to use the integrated GPU, it's a common practice
+> > to let dGPU not to bind any driver, and let its upstream port to be
+> > runtime suspended. At the end of runtime suspension the port uses
+> > platform power management to disable power through _OFF method of power
+> > resource, which is listed by _PR3.
+> >
+> > After commit b516ea586d71 ("PCI: Enable NVIDIA HDA controllers"), when
+> > the dGPU comes with an HDA function, the HDA won't be suspended if the
+> > dGPU is unbound, so the power resource can't be turned off by its
+> > upstream port driver.
+> >
+> > Commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
+> > discrete GPU") only allows HDA to be runtime suspended once GPU is
+> > bound, to keep APU's HDA working.
+> >
+> > However, HDA on dGPU isn't that useful if dGPU is not bound to any
+> > driver.  So let's relax the runtime suspend requirement for dGPU's HDA
+> > function, to disable the power source to save lots of power.
 > 
-> Commit 37a3a98ef601 ("ALSA: hda - Enable runtime PM only for
-> discrete GPU") only allows HDA to be runtime suspended once GPU is
-> bound, to keep APU's HDA working.
+> This patch breaks the HDMI audio detection at least on some platforms
+> (Lenovo P50 for example) with nouveau and the proprietary nvidia
+> driver. Those laptops have the external HDMI/DP ports connected to
+> dGPU instead the iGPU. The ACPI PR3 is set.
 > 
-> However, HDA on dGPU isn't that useful if dGPU is not bound to any
-> driver.  So let's relax the runtime suspend requirement for dGPU's HDA
-> function, to disable the power source to save lots of power.
-
-This patch breaks the HDMI audio detection at least on some platforms (Lenovo 
-P50 for example) with nouveau and the proprietary nvidia driver. Those laptops 
-have the external HDMI/DP ports connected to dGPU instead the iGPU. The ACPI 
-PR3 is set.
-
-The runtime PM off fixes this problem:
-
-echo on > /sys/bus/pci/devices/0000\:01\:00.1/power/control
-
-But I don't think that it's the best solution. My proposal is to create a pr3 
-check blacklist to keep power for the HDMI audio for those machines. Also we 
-may add a new module parameter for snd-hda-intel to control this. Other ideas?
-
-					Jaroslav
-
-
-> BugLink: https://bugs.launchpad.net/bugs/1840835
-> Fixes: b516ea586d71 ("PCI: Enable NVIDIA HDA controllers")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v5, v6:
-> - No change.
-> v4:
-> - Find upstream port, it's callee's responsibility now.
-> v3:
-> - Make changelog more clear.
-> v2:
-> - Change wording.
-> - Rebase to Tiwai's branch.
->   sound/pci/hda/hda_intel.c | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
+> The runtime PM off fixes this problem:
 > 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 240f4ca76391..e63b871343e5 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1280,11 +1280,17 @@ static void init_vga_switcheroo(struct azx *chip)
->   {
->   	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
->   	struct pci_dev *p = get_bound_vga(chip->pci);
-> +	struct pci_dev *parent;
->   	if (p) {
->   		dev_info(chip->card->dev,
->   			 "Handle vga_switcheroo audio client\n");
->   		hda->use_vga_switcheroo = 1;
-> -		chip->bus.keep_power = 1; /* cleared in either gpu_bound op or codec probe */
-> +
-> +		/* cleared in either gpu_bound op or codec probe, or when its
-> +		 * upstream port has _PR3 (i.e. dGPU).
-> +		 */
-> +		parent = pci_upstream_bridge(p);
-> +		chip->bus.keep_power = parent ? !pci_pr3_present(parent) : 1;
->   		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
->   		pci_dev_put(p);
->   	}
+> echo on > /sys/bus/pci/devices/0000\:01\:00.1/power/control
+
+But this will keep the power of the graphics chip on, and that's what
+the patch was supposed to "fix".
+
+> But I don't think that it's the best solution. My proposal is to
+> create a pr3 check blacklist to keep power for the HDMI audio for
+> those machines. Also we may add a new module parameter for
+> snd-hda-intel to control this. Other ideas?
+
+For nouveau, the best fix is to merge the audio component patch.
+This will make things working without fiddling with the power
+up/down.  The patch has been pending over months under review in DRM
+side, unfortunately...  Please pinging them for driving ahead.
+
+For Nvidia, though, it's no path a binary-only stuff can go with, due
+to the GPL symbol of the component framework.  Those guys know of it
+well, and they seem adding the temporary power up/down procedure by
+poking the proc file from the user-space side at the HDMI connection.
+
+About a module option: I don't think it's much better than the sysfs
+toggle.  You can set up a simple udev rule if needed, too.
+
+
+thanks,
+
+Takashi
+
 > 
-
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 					Jaroslav
+> 
+> 
+> > BugLink: https://bugs.launchpad.net/bugs/1840835
+> > Fixes: b516ea586d71 ("PCI: Enable NVIDIA HDA controllers")
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v5, v6:
+> > - No change.
+> > v4:
+> > - Find upstream port, it's callee's responsibility now.
+> > v3:
+> > - Make changelog more clear.
+> > v2:
+> > - Change wording.
+> > - Rebase to Tiwai's branch.
+> >   sound/pci/hda/hda_intel.c | 8 +++++++-
+> >   1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index 240f4ca76391..e63b871343e5 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -1280,11 +1280,17 @@ static void init_vga_switcheroo(struct azx *chip)
+> >   {
+> >   	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+> >   	struct pci_dev *p = get_bound_vga(chip->pci);
+> > +	struct pci_dev *parent;
+> >   	if (p) {
+> >   		dev_info(chip->card->dev,
+> >   			 "Handle vga_switcheroo audio client\n");
+> >   		hda->use_vga_switcheroo = 1;
+> > -		chip->bus.keep_power = 1; /* cleared in either gpu_bound op or codec probe */
+> > +
+> > +		/* cleared in either gpu_bound op or codec probe, or when its
+> > +		 * upstream port has _PR3 (i.e. dGPU).
+> > +		 */
+> > +		parent = pci_upstream_bridge(p);
+> > +		chip->bus.keep_power = parent ? !pci_pr3_present(parent) : 1;
+> >   		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
+> >   		pci_dev_put(p);
+> >   	}
+> >
+> 
+> 
+> -- 
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
