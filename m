@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA44CC282DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:39:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B020DC33CA3
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:40:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BECC2072A
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:39:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C2102077C
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:40:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NUmOx9A+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BECC2072A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o5qTkito"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C2102077C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A6FF168F;
-	Fri, 10 Jan 2020 14:38:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A6FF168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34E591730;
+	Fri, 10 Jan 2020 14:39:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34E591730
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578663571;
-	bh=sOHOOE49vzf2e93wRTj9QZgdTEb5tFcUyWEW4LN2u8c=;
+	s=default; t=1578663618;
+	bh=5/4VKszxRgGOvbHa/Hpf08eKHUXRjYUJwkRiA57he1U=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NUmOx9A+il9xN9mIqutFnFZV1pExbSrTrlm0of6r2RfXdGseBSBxkOkw7kbyt20qD
-	 abj2tty9+DtMkU08Wt41cq8c/gAeWXQp3SQJKETuv52iS8QfOpsQDzq9JAb1I6Ka+x
-	 f9VRvqOSkl1kKNuchHeNR0XMy5W7U1Pc2idX1r/M=
+	b=o5qTkitog2ugnrRx2SKPA8GJ5PIng9PkshR6uNTCJBoDwucL4fR6nfX/trvgKmRUF
+	 776+n6QJzF2NjgqtJ0xdX7W+E4urK53ZvTAjFPDXU+GlFkbO65tV8QFR49KdsoaShU
+	 Ln/O/PSvJeCAFPqj4idhetGJAk6sSW9Tq3Mfaya4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6873DF80130;
-	Fri, 10 Jan 2020 14:37:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3EF2F80246;
+	Fri, 10 Jan 2020 14:37:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68BC0F80130; Fri, 10 Jan 2020 14:37:46 +0100 (CET)
+ id A1142F801F4; Fri, 10 Jan 2020 14:37:51 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2EB93F800E4
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 14:37:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EB93F800E4
+ by alsa1.perex.cz (Postfix) with ESMTP id 961E5F80130
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 14:37:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 961E5F80130
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99B65DA7;
- Fri, 10 Jan 2020 05:37:41 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D377DA7;
+ Fri, 10 Jan 2020 05:37:46 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 243583F534;
- Fri, 10 Jan 2020 05:37:41 -0800 (PST)
-Date: Fri, 10 Jan 2020 13:37:39 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA0203F534;
+ Fri, 10 Jan 2020 05:37:45 -0800 (PST)
+Date: Fri, 10 Jan 2020 13:37:44 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <871rs8t4uw.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-871rs8t4uw.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874kx4t4v6.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-874kx4t4v6.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-dapm: add
-	snd_soc_dapm_stream_stop()" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-core: do pinctrl_pm_select_xxx() as
+	component" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-dapm: add snd_soc_dapm_stream_stop()
+   ASoC: soc-core: do pinctrl_pm_select_xxx() as component
 
 has been applied to the asoc tree at
 
@@ -101,134 +101,179 @@ to this mail.
 Thanks,
 Mark
 
-From 3f4cf797939cb3ccdb6f989da53f1899d30432dc Mon Sep 17 00:00:00 2001
+From 76c39e867cba338d8982f6372b2c4e3189f6439b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 10 Jan 2020 11:36:23 +0900
-Subject: [PATCH] ASoC: soc-dapm: add snd_soc_dapm_stream_stop()
+Date: Fri, 10 Jan 2020 11:36:13 +0900
+Subject: [PATCH] ASoC: soc-core: do pinctrl_pm_select_xxx() as component
 
-When we stop stream, if it was Playback, we might need to care
-about power down time. In such case, we need to use delayed work.
+ALSA SoC need to care pinctrl_pm_select_xxx().
+It is called at soc-core and soc-pcm.
+soc-pcm  is controlling it for activate DAI.
+soc-core is controlling it for whole system
+(= suspend/resume/probe/poweroff).
 
-We have same implementation for it at soc-pcm.c and soc-compress.c,
-but we don't want to have duplicate code.
-This patch adds snd_soc_dapm_stream_stop(), and share same code.
+If we focus to soc-core side, it need to care about BIAS level.
+Then, snd_soc_suspend() only is controlling it by Component base (a).
+Other functions are DAI base (b).
+
+(a)	pinctrl_pm_select_xxx(component->dev, xxx);
+(b)	pinctrl_pm_select_xxx(dai->dev, xxx);
+
+Because of these unbalance, the code is confusable.
+Here, dai->dev and component->dev are same pointer.
+Thus, we can replace it component base.
+
+One note here is that it cared DAI (= CPU/Codec) pin before this patch,
+after this patch, it cares Component (= CPU/Codec/Platform) pin.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-By: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/871rs8t4uw.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/874kx4t4v6.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dapm.h |  1 +
- sound/soc/soc-compress.c | 18 +-----------------
- sound/soc/soc-dapm.c     | 23 +++++++++++++++++++++++
- sound/soc/soc-pcm.c      | 19 +------------------
- 4 files changed, 26 insertions(+), 35 deletions(-)
+ sound/soc/soc-core.c | 46 +++++++++++---------------------------------
+ sound/soc/soc-pcm.c  | 23 ++++++++--------------
+ 2 files changed, 19 insertions(+), 50 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 6e8a31225383..1b6afbc1a4ed 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -434,6 +434,7 @@ void snd_soc_dapm_reset_cache(struct snd_soc_dapm_context *dapm);
- /* dapm events */
- void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- 	int event);
-+void snd_soc_dapm_stream_stop(struct snd_soc_pcm_runtime *rtd, int stream);
- void snd_soc_dapm_shutdown(struct snd_soc_card *card);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 191b68732e56..3c729eaf0bbf 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -727,25 +727,16 @@ int snd_soc_resume(struct device *dev)
+ 	struct snd_soc_card *card = dev_get_drvdata(dev);
+ 	bool bus_control = false;
+ 	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_dai *codec_dai;
+-	int i;
++	struct snd_soc_component *component;
  
- /* external DAPM widget events */
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 72494717dde3..392a1c5b15d3 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -259,23 +259,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->shutdown)
- 		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
+ 	/* If the card is not initialized yet there is nothing to do */
+ 	if (!card->instantiated)
+ 		return 0;
  
--	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
--		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
--			snd_soc_dapm_stream_event(rtd,
--						  SNDRV_PCM_STREAM_PLAYBACK,
--						  SND_SOC_DAPM_STREAM_STOP);
--		} else {
--			rtd->pop_wait = 1;
--			queue_delayed_work(system_power_efficient_wq,
--					   &rtd->delayed_work,
--					   msecs_to_jiffies(rtd->pmdown_time));
+ 	/* activate pins from sleep state */
+-	for_each_card_rtds(card, rtd) {
+-		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-
+-		if (cpu_dai->active)
+-			pinctrl_pm_select_default_state(cpu_dai->dev);
+-
+-		for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-			if (codec_dai->active)
+-				pinctrl_pm_select_default_state(codec_dai->dev);
 -		}
--	} else {
--		/* capture streams can be powered down now */
--		snd_soc_dapm_stream_event(rtd,
--					  SNDRV_PCM_STREAM_CAPTURE,
--					  SND_SOC_DAPM_STREAM_STOP);
 -	}
-+	snd_soc_dapm_stream_stop(rtd, stream);
++	for_each_card_components(card, component)
++		if (component->active)
++			pinctrl_pm_select_default_state(component->dev);
  
- 	mutex_unlock(&rtd->card->pcm_mutex);
+ 	/*
+ 	 * DAIs that also act as the control bus master might have other drivers
+@@ -1885,6 +1876,7 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
+ static int snd_soc_bind_card(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_component *component;
+ 	struct snd_soc_dai_link *dai_link;
+ 	int ret, i, card_probed = 0;
  
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b6378f025836..442846f12cd4 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -4447,6 +4447,29 @@ void snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- 	mutex_unlock(&card->dapm_mutex);
+@@ -2036,17 +2028,9 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
+ 	snd_soc_dapm_sync(&card->dapm);
+ 
+ 	/* deactivate pins to sleep state */
+-	for_each_card_rtds(card, rtd) {
+-		struct snd_soc_dai *dai;
+-
+-		for_each_rtd_codec_dai(rtd, i, dai) {
+-			if (!dai->active)
+-				pinctrl_pm_select_sleep_state(dai->dev);
+-		}
+-
+-		if (!rtd->cpu_dai->active)
+-			pinctrl_pm_select_sleep_state(rtd->cpu_dai->dev);
+-	}
++	for_each_card_components(card, component)
++		if (!component->active)
++			pinctrl_pm_select_sleep_state(component->dev);
+ 
+ probe_end:
+ 	if (ret < 0)
+@@ -2092,7 +2076,7 @@ static int soc_remove(struct platform_device *pdev)
+ int snd_soc_poweroff(struct device *dev)
+ {
+ 	struct snd_soc_card *card = dev_get_drvdata(dev);
+-	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_component *component;
+ 
+ 	if (!card->instantiated)
+ 		return 0;
+@@ -2106,16 +2090,8 @@ int snd_soc_poweroff(struct device *dev)
+ 	snd_soc_dapm_shutdown(card);
+ 
+ 	/* deactivate pins to sleep state */
+-	for_each_card_rtds(card, rtd) {
+-		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-		struct snd_soc_dai *codec_dai;
+-		int i;
+-
+-		pinctrl_pm_select_sleep_state(cpu_dai->dev);
+-		for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-			pinctrl_pm_select_sleep_state(codec_dai->dev);
+-		}
+-	}
++	for_each_card_components(card, component)
++		pinctrl_pm_select_sleep_state(component->dev);
+ 
+ 	return 0;
  }
- 
-+void snd_soc_dapm_stream_stop(struct snd_soc_pcm_runtime *rtd, int stream)
-+{
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
-+			/* powered down playback stream now */
-+			snd_soc_dapm_stream_event(rtd,
-+						  SNDRV_PCM_STREAM_PLAYBACK,
-+						  SND_SOC_DAPM_STREAM_STOP);
-+		} else {
-+			/* start delayed pop wq here for playback streams */
-+			rtd->pop_wait = 1;
-+			queue_delayed_work(system_power_efficient_wq,
-+					   &rtd->delayed_work,
-+					   msecs_to_jiffies(rtd->pmdown_time));
-+		}
-+	} else {
-+		/* capture streams can be powered down now */
-+		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
-+					  SND_SOC_DAPM_STREAM_STOP);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_stream_stop);
-+
- /**
-  * snd_soc_dapm_enable_pin_unlocked - enable pin.
-  * @dapm: DAPM context
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ad908e008b2f..dfff2ddb469a 100644
+index 9c6c7533a508..68f72051f8e3 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -672,24 +672,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+@@ -487,9 +487,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	const char *codec_dai_name = "multicodec";
+ 	int i, ret = 0;
  
- 	soc_pcm_components_close(substream, NULL);
+-	pinctrl_pm_select_default_state(cpu_dai->dev);
+-	for_each_rtd_codec_dai(rtd, i, codec_dai)
+-		pinctrl_pm_select_default_state(codec_dai->dev);
++	for_each_rtd_components(rtd, i, component)
++		pinctrl_pm_select_default_state(component->dev);
  
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
--			/* powered down playback stream now */
--			snd_soc_dapm_stream_event(rtd,
--						  SNDRV_PCM_STREAM_PLAYBACK,
--						  SND_SOC_DAPM_STREAM_STOP);
--		} else {
--			/* start delayed pop wq here for playback streams */
--			rtd->pop_wait = 1;
--			queue_delayed_work(system_power_efficient_wq,
--					   &rtd->delayed_work,
--					   msecs_to_jiffies(rtd->pmdown_time));
--		}
--	} else {
--		/* capture streams can be powered down now */
--		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
--					  SND_SOC_DAPM_STREAM_STOP);
+ 	for_each_rtd_components(rtd, i, component)
+ 		pm_runtime_get_sync(component->dev);
+@@ -618,12 +617,9 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		pm_runtime_put_autosuspend(component->dev);
+ 	}
+ 
+-	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		if (!codec_dai->active)
+-			pinctrl_pm_select_sleep_state(codec_dai->dev);
 -	}
-+	snd_soc_dapm_stream_stop(rtd, substream->stream);
+-	if (!cpu_dai->active)
+-		pinctrl_pm_select_sleep_state(cpu_dai->dev);
++	for_each_rtd_components(rtd, i, component)
++		if (!component->active)
++			pinctrl_pm_select_sleep_state(component->dev);
  
- 	mutex_unlock(&rtd->card->pcm_mutex);
+ 	return ret;
+ }
+@@ -728,12 +724,9 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 		pm_runtime_put_autosuspend(component->dev);
+ 	}
  
+-	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-		if (!codec_dai->active)
+-			pinctrl_pm_select_sleep_state(codec_dai->dev);
+-	}
+-	if (!cpu_dai->active)
+-		pinctrl_pm_select_sleep_state(cpu_dai->dev);
++	for_each_rtd_components(rtd, i, component)
++		if (!component->active)
++			pinctrl_pm_select_sleep_state(component->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
 
