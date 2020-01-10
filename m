@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 717D3C32771
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 02:39:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03970C32771
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 02:40:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EF1582073A
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 02:39:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D5BD2072E
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 02:40:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fagd0A1l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF1582073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TA7mzLNu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D5BD2072E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1ED7B17A4;
-	Fri, 10 Jan 2020 03:38:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ED7B17A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD1C517B5;
+	Fri, 10 Jan 2020 03:39:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD1C517B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578623983;
-	bh=BEys/RThzfNwbtGXCFYOau8Rj5KfEAXcQ1vQK0/+jHw=;
+	s=default; t=1578624024;
+	bh=zGFTBkh/FFwIsUontH70RvRwC+qDbYyWiubqkVt5iGU=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fagd0A1lbGD5Isi6Gg0c0B0vm4BvBWv2dZDTUknI9Zs0OeOHScJxl3+OqiMb10VZu
-	 +ygrk6W2K2PXcbbnWhGIWtvXNA814Lb6b85AtzSd7v74u2Dt+W5h3oYPOWlDu68pCm
-	 Zn17lKNSim2/yScjMwC6zrERhgeusJHTpUDbA8i0=
+	b=TA7mzLNusetesHvu/FfaqoQBzUU6uYUueU/V3kvmNXm/nfGFsi6T9exn5GPg5w5mm
+	 4JmEekBWVSRHjHF5koK9vkWDY8rb73WU3Rk9ncjl1kA37BuPcMbvSwPsJnkmP7b5JY
+	 xjqKHorw9uVAVoWMKS8sjWOmeG8jnTdIILfa/qPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8064F80299;
-	Fri, 10 Jan 2020 03:36:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F194F802A2;
+	Fri, 10 Jan 2020 03:36:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32901F8029A; Fri, 10 Jan 2020 03:36:19 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 75984F8028E
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 03:36:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75984F8028E
-Date: 10 Jan 2020 11:36:13 +0900
-X-IronPort-AV: E=Sophos;i="5.69,414,1571670000"; d="scan'208";a="36341546"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 10 Jan 2020 11:36:13 +0900
+ id 3F20BF802A1; Fri, 10 Jan 2020 03:36:23 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 086AAF8028E
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 03:36:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 086AAF8028E
+Date: 10 Jan 2020 11:36:17 +0900
+X-IronPort-AV: E=Sophos;i="5.69,414,1571670000"; d="scan'208";a="36125242"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 10 Jan 2020 11:36:17 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 095C2400F4FD;
- Fri, 10 Jan 2020 11:36:13 +0900 (JST)
-Message-ID: <874kx4t4v6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5C9D4415FA5B;
+ Fri, 10 Jan 2020 11:36:17 +0900 (JST)
+Message-ID: <8736cot4v2.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,8 +58,8 @@ In-Reply-To: <87blrct4xg.wl-kuninori.morimoto.gx@renesas.com>
 References: <87blrct4xg.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v3 resend 5/8] ASoC: soc-core: do
-	pinctrl_pm_select_xxx() as component
+Subject: [alsa-devel] [PATCH v3 resend 6/8] ASoC: soc-core: add
+	snd_soc_close_delayed_work()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,172 +79,166 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-ALSA SoC need to care pinctrl_pm_select_xxx().
-It is called at soc-core and soc-pcm.
-soc-pcm  is controlling it for activate DAI.
-soc-core is controlling it for whole system
-(= suspend/resume/probe/poweroff).
-
-If we focus to soc-core side, it need to care about BIAS level.
-Then, snd_soc_suspend() only is controlling it by Component base (a).
-Other functions are DAI base (b).
-
-(a)	pinctrl_pm_select_xxx(component->dev, xxx);
-(b)	pinctrl_pm_select_xxx(dai->dev, xxx);
-
-Because of these unbalance, the code is confusable.
-Here, dai->dev and component->dev are same pointer.
-Thus, we can replace it component base.
-
-One note here is that it cared DAI (= CPU/Codec) pin before this patch,
-after this patch, it cares Component (= CPU/Codec/Platform) pin.
+We need to setup rtd->close_delayed_work_func.
+It will be set at snd_soc_dai_compress_new() or soc_new_pcm().
+But these setups close_delayed_work() which is same name /
+same implemantaion, but different local code.
+To reduce duplicate code, this patch moves it as
+snd_soc_close_delayed_work() and share same code.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-By: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/soc-core.c | 46 +++++++++++-----------------------------------
- sound/soc/soc-pcm.c  | 23 ++++++++---------------
- 2 files changed, 19 insertions(+), 50 deletions(-)
+ include/sound/soc.h      |  1 +
+ sound/soc/soc-compress.c | 29 +----------------------------
+ sound/soc/soc-core.c     | 28 ++++++++++++++++++++++++++++
+ sound/soc/soc-pcm.c      | 28 +---------------------------
+ 4 files changed, 31 insertions(+), 55 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 191b687..3c729ea 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -727,25 +727,16 @@ int snd_soc_resume(struct device *dev)
- 	struct snd_soc_card *card = dev_get_drvdata(dev);
- 	bool bus_control = false;
- 	struct snd_soc_pcm_runtime *rtd;
--	struct snd_soc_dai *codec_dai;
--	int i;
-+	struct snd_soc_component *component;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 0513f30..f0e4f36 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1159,6 +1159,7 @@ struct snd_soc_pcm_runtime {
+ #define for_each_rtd_codec_dai_rollback(rtd, i, dai)		\
+ 	for (; ((--i) >= 0) && ((dai) = rtd->codec_dais[i]);)
  
- 	/* If the card is not initialized yet there is nothing to do */
- 	if (!card->instantiated)
- 		return 0;
++void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd);
  
- 	/* activate pins from sleep state */
--	for_each_card_rtds(card, rtd) {
--		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--
--		if (cpu_dai->active)
--			pinctrl_pm_select_default_state(cpu_dai->dev);
--
--		for_each_rtd_codec_dai(rtd, i, codec_dai) {
--			if (codec_dai->active)
--				pinctrl_pm_select_default_state(codec_dai->dev);
--		}
--	}
-+	for_each_card_components(card, component)
-+		if (component->active)
-+			pinctrl_pm_select_default_state(component->dev);
- 
- 	/*
- 	 * DAIs that also act as the control bus master might have other drivers
-@@ -1885,6 +1876,7 @@ static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
- static int snd_soc_bind_card(struct snd_soc_card *card)
- {
- 	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_soc_component *component;
- 	struct snd_soc_dai_link *dai_link;
- 	int ret, i, card_probed = 0;
- 
-@@ -2036,17 +2028,9 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 	snd_soc_dapm_sync(&card->dapm);
- 
- 	/* deactivate pins to sleep state */
--	for_each_card_rtds(card, rtd) {
--		struct snd_soc_dai *dai;
--
--		for_each_rtd_codec_dai(rtd, i, dai) {
--			if (!dai->active)
--				pinctrl_pm_select_sleep_state(dai->dev);
--		}
--
--		if (!rtd->cpu_dai->active)
--			pinctrl_pm_select_sleep_state(rtd->cpu_dai->dev);
--	}
-+	for_each_card_components(card, component)
-+		if (!component->active)
-+			pinctrl_pm_select_sleep_state(component->dev);
- 
- probe_end:
- 	if (ret < 0)
-@@ -2092,7 +2076,7 @@ static int soc_remove(struct platform_device *pdev)
- int snd_soc_poweroff(struct device *dev)
- {
- 	struct snd_soc_card *card = dev_get_drvdata(dev);
--	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_soc_component *component;
- 
- 	if (!card->instantiated)
- 		return 0;
-@@ -2106,16 +2090,8 @@ int snd_soc_poweroff(struct device *dev)
- 	snd_soc_dapm_shutdown(card);
- 
- 	/* deactivate pins to sleep state */
--	for_each_card_rtds(card, rtd) {
--		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--		struct snd_soc_dai *codec_dai;
--		int i;
--
--		pinctrl_pm_select_sleep_state(cpu_dai->dev);
--		for_each_rtd_codec_dai(rtd, i, codec_dai) {
--			pinctrl_pm_select_sleep_state(codec_dai->dev);
--		}
--	}
-+	for_each_card_components(card, component)
-+		pinctrl_pm_select_sleep_state(component->dev);
- 
- 	return 0;
- }
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 9c6c753..68f7205 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -487,9 +487,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	const char *codec_dai_name = "multicodec";
- 	int i, ret = 0;
- 
--	pinctrl_pm_select_default_state(cpu_dai->dev);
--	for_each_rtd_codec_dai(rtd, i, codec_dai)
--		pinctrl_pm_select_default_state(codec_dai->dev);
-+	for_each_rtd_components(rtd, i, component)
-+		pinctrl_pm_select_default_state(component->dev);
- 
- 	for_each_rtd_components(rtd, i, component)
- 		pm_runtime_get_sync(component->dev);
-@@ -618,12 +617,9 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		pm_runtime_put_autosuspend(component->dev);
- 	}
- 
--	for_each_rtd_codec_dai(rtd, i, codec_dai) {
--		if (!codec_dai->active)
--			pinctrl_pm_select_sleep_state(codec_dai->dev);
--	}
--	if (!cpu_dai->active)
--		pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+	for_each_rtd_components(rtd, i, component)
-+		if (!component->active)
-+			pinctrl_pm_select_sleep_state(component->dev);
- 
+ /* mixer control */
+ struct soc_mixer_control {
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 16fe086..7249471 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -226,33 +226,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
  	return ret;
  }
-@@ -728,12 +724,9 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 		pm_runtime_put_autosuspend(component->dev);
+ 
+-/*
+- * Power down the audio subsystem pmdown_time msecs after close is called.
+- * This is to ensure there are no pops or clicks in between any music tracks
+- * due to DAPM power cycling.
+- */
+-static void close_delayed_work(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+-
+-	dev_dbg(rtd->dev,
+-		"Compress ASoC: pop wq checking: %s status: %s waiting: %s\n",
+-		codec_dai->driver->playback.stream_name,
+-		codec_dai->playback_active ? "active" : "inactive",
+-		rtd->pop_wait ? "yes" : "no");
+-
+-	/* are we waiting on this codec DAI stream */
+-	if (rtd->pop_wait == 1) {
+-		rtd->pop_wait = 0;
+-		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
+-					  SND_SOC_DAPM_STREAM_STOP);
+-	}
+-
+-	mutex_unlock(&rtd->card->pcm_mutex);
+-}
+-
+ static int soc_compr_free(struct snd_compr_stream *cstream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+@@ -941,7 +914,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
  	}
  
--	for_each_rtd_codec_dai(rtd, i, codec_dai) {
--		if (!codec_dai->active)
--			pinctrl_pm_select_sleep_state(codec_dai->dev);
--	}
--	if (!cpu_dai->active)
--		pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+	for_each_rtd_components(rtd, i, component)
-+		if (!component->active)
-+			pinctrl_pm_select_sleep_state(component->dev);
+ 	/* DAPM dai link stream work */
+-	rtd->close_delayed_work_func = close_delayed_work;
++	rtd->close_delayed_work_func = snd_soc_close_delayed_work;
  
- 	return 0;
+ 	rtd->compr = compr;
+ 	compr->private_data = rtd;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 3c729ea..acf6f14 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -359,6 +359,34 @@ struct snd_soc_pcm_runtime
  }
+ EXPORT_SYMBOL_GPL(snd_soc_get_pcm_runtime);
+ 
++/*
++ * Power down the audio subsystem pmdown_time msecs after close is called.
++ * This is to ensure there are no pops or clicks in between any music tracks
++ * due to DAPM power cycling.
++ */
++void snd_soc_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++
++	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++
++	dev_dbg(rtd->dev,
++		"ASoC: pop wq checking: %s status: %s waiting: %s\n",
++		codec_dai->driver->playback.stream_name,
++		codec_dai->playback_active ? "active" : "inactive",
++		rtd->pop_wait ? "yes" : "no");
++
++	/* are we waiting on this codec DAI stream */
++	if (rtd->pop_wait == 1) {
++		rtd->pop_wait = 0;
++		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
++					  SND_SOC_DAPM_STREAM_STOP);
++	}
++
++	mutex_unlock(&rtd->card->pcm_mutex);
++}
++EXPORT_SYMBOL_GPL(snd_soc_close_delayed_work);
++
+ static void soc_release_rtd_dev(struct device *dev)
+ {
+ 	/* "dev" means "rtd->dev" */
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 68f7205..ad908e0 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -624,32 +624,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	return ret;
+ }
+ 
+-/*
+- * Power down the audio subsystem pmdown_time msecs after close is called.
+- * This is to ensure there are no pops or clicks in between any music tracks
+- * due to DAPM power cycling.
+- */
+-static void close_delayed_work(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_dai *codec_dai = rtd->codec_dais[0];
+-
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+-
+-	dev_dbg(rtd->dev, "ASoC: pop wq checking: %s status: %s waiting: %s\n",
+-		 codec_dai->driver->playback.stream_name,
+-		 codec_dai->playback_active ? "active" : "inactive",
+-		 rtd->pop_wait ? "yes" : "no");
+-
+-	/* are we waiting on this codec DAI stream */
+-	if (rtd->pop_wait == 1) {
+-		rtd->pop_wait = 0;
+-		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
+-					  SND_SOC_DAPM_STREAM_STOP);
+-	}
+-
+-	mutex_unlock(&rtd->card->pcm_mutex);
+-}
+-
+ static void codec2codec_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	/*
+@@ -2956,7 +2930,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	if (rtd->dai_link->params)
+ 		rtd->close_delayed_work_func = codec2codec_close_delayed_work;
+ 	else
+-		rtd->close_delayed_work_func = close_delayed_work;
++		rtd->close_delayed_work_func = snd_soc_close_delayed_work;
+ 
+ 	pcm->nonatomic = rtd->dai_link->nonatomic;
+ 	rtd->pcm = pcm;
 -- 
 2.7.4
 
