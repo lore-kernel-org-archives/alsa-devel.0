@@ -2,77 +2,56 @@ Return-Path: <SRS0=QJW1=27=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA448C282DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 16:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E25C282DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:27:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 358EB205F4
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 16:36:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5E0E92080D
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 18:27:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YE1jShh6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 358EB205F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XwBnTiTR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E0E92080D
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73F1A16A3;
-	Fri, 10 Jan 2020 17:35:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73F1A16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3491416B2;
+	Fri, 10 Jan 2020 19:26:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3491416B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578674179;
-	bh=Zv6eRERD+piDoHSDDMiHStZ8PpKK49gXXZbBe+WO6Jw=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1578680866;
+	bh=gisHcOxv5Uc1r3NBL3xCSWKFN/n4TvneiPrTKqlyRW8=;
+	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YE1jShh6RIhrsXDF1yBpD+peHKUh4nyLtRyopqv8hgUE6aEKwvg+6RklVc7wQKL07
-	 Yj9vIPUmuB2sjc3LVaXMRJA8L+KbOAF27Asqmmq63HTPltiiX6MBX04madDG8CcvcJ
-	 IYuShaTStIuDUocwt6KehONDIeKujcnVTMKyurzM=
+	b=XwBnTiTRP+ly7WquBv8vuRuejqO6llXVItYuxpYIbWkEQPo7CFuegAz+9qmGB3+36
+	 pDI4TrhA0gfAhF1C6DK43y8hCfAUoGphD+19YOWDlcW8Vhy/rl1VQm1a0tmmnpV1nK
+	 t27QiLHlayVgM1AXgfJEqoNgy95iOXAHt9r8uVS0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E176DF80116;
-	Fri, 10 Jan 2020 17:35:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93256F800E4;
+	Fri, 10 Jan 2020 19:26:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85E8EF8011C; Fri, 10 Jan 2020 17:35:27 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30230F8010B
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 17:35:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30230F8010B
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Jan 2020 08:35:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,417,1571727600"; d="scan'208";a="224242394"
-Received: from nehudak-mobl1.amr.corp.intel.com (HELO [10.251.145.164])
- ([10.251.145.164])
- by orsmga003.jf.intel.com with ESMTP; 10 Jan 2020 08:35:19 -0800
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
-References: <20191219092842.10885-1-srinivas.kandagatla@linaro.org>
- <20191219092842.10885-3-srinivas.kandagatla@linaro.org>
- <c791e241-cd71-4c05-dac5-04e3ecaaf995@linux.intel.com>
- <a5315861-d9b8-0852-8a3a-012f60cc3a44@linaro.org>
- <4dab7ee8-dc0e-bf61-24db-3e227c459575@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <94aefed4-9f0d-f81a-b5c0-0ad4cafc6a96@linux.intel.com>
-Date: Fri, 10 Jan 2020 10:35:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ id 242BFF8011C; Fri, 10 Jan 2020 19:26:54 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 14D0BF8010B
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 19:26:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14D0BF8010B
 MIME-Version: 1.0
-In-Reply-To: <4dab7ee8-dc0e-bf61-24db-3e227c459575@linaro.org>
-Content-Language: en-US
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- spapothi@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH v5 2/2] soundwire: qcom: add support for
- SoundWire controller
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1578680809235691071-webhooks-bot@alsa-project.org>
+References: <1578680809235691071-webhooks-bot@alsa-project.org>
+Message-Id: <20200110182654.242BFF8011C@alsa1.perex.cz>
+Date: Fri, 10 Jan 2020 19:26:54 +0100 (CET)
+Subject: [alsa-devel] When storing settings which contain a [ or ],
+	the setting is not quoted.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,33 +64,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Cj4+Pj4gK8KgwqDCoCBpZiAoc3RzICYgU1dSTV9JTlRFUlJVUFRfU1RBVFVTX0NNRF9FUlJPUikg
-ewo+Pj4+ICvCoMKgwqDCoMKgwqDCoCBjdHJsLT5yZWdfcmVhZChjdHJsLCBTV1JNX0NNRF9GSUZP
-X1NUQVRVUywgJnZhbHVlKTsKPj4+PiArwqDCoMKgwqDCoMKgwqAgZGV2X2Vycl9yYXRlbGltaXRl
-ZChjdHJsLT5kZXYsCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICJDTUQgZXJyb3IsIGZpZm8gc3RhdHVzIDB4JXhcbiIsCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdmFsdWUpOwo+Pj4+ICvCoMKgwqDCoMKgwqDCoCBjdHJs
-LT5yZWdfd3JpdGUoY3RybCwgU1dSTV9DTURfRklGT19DTUQsIDB4MSk7Cj4+Pj4gK8KgwqDCoCB9
-Cj4+Pj4gKwo+Pj4+ICvCoMKgwqAgaWYgKChzdHMgJiBTV1JNX0lOVEVSUlVQVF9TVEFUVVNfTkVX
-X1NMQVZFX0FUVEFDSEVEKSB8fAo+Pj4+ICvCoMKgwqDCoMKgwqDCoCBzdHMgJiBTV1JNX0lOVEVS
-UlVQVF9TVEFUVVNfQ0hBTkdFX0VOVU1fU0xBVkVfU1RBVFVTKQo+Pj4+ICvCoMKgwqDCoMKgwqDC
-oCBzY2hlZHVsZV93b3JrKCZjdHJsLT5zbGF2ZV93b3JrKTsKPj4+PiArCj4+Pj4gK8KgwqDCoCBj
-dHJsLT5yZWdfd3JpdGUoY3RybCwgU1dSTV9JTlRFUlJVUFRfQ0xFQVIsIHN0cyk7Cj4+Pgo+Pj4g
-aXMgaXQgaW50ZW50aW9uYWwgdG8gY2xlYXIgdGhlIGludGVycnVwdHMgZmlyc3QsIGJlZm9yZSBk
-b2luZyAKPj4+IGFkZGl0aW9uYWwgY2hlY2tzPwo+Pj4KPj4KPj4gTm8sIEkgY2FuIG1vdmUgaXQg
-dG8gcmlnaHQgdG8gdGhlIGVuZCEKPiAKPiBSZWFzb24gd2h5IEkgZGlkIHRoaXMgd2FzIHRoYXQg
-aWYgd2UgcnVuIGNvbXBsZXRlKCkgYmVmb3JlIGlycSBpcyAKPiBjbGVhcmVkIGNvbXBsZXRlIG1p
-Z2h0IHRyaWdnZXIgYW5vdGhlciByZWFkL3dyaXRlIHdoaWNoIGNhbiByYWlzZSBhbiAKPiBpbnRl
-cnJ1cHQuIEFuZCB3aXRoIGludGVycnVwdCBzdGF0dXMgbm90IGNsZWFyZWQgd2UgbWlnaHQgbWlz
-cyBpdC4gVGhpcyAKPiBpcyB2ZXJ5IG11Y2ggdGltaW5nIGRlcGVuZGVudCBzcGVjaWFsbHkgd2l0
-aCB0aGUgdGhyZWFkZWQgaXJxLgo+IAo+IFNvIGNvZGUgbmVlZHMgbm8gY2hhbmdlIGF0bSEKCm9r
-LCBhIGNvbW1lbnQgdG8ga2VlcCB0cmFjayBvZiB0aGlzIHRpbWluZyBkZXBlbmRlbmN5IGNvdWxk
-IGhlbHAgZnV0dXJlIApnZW5lcmF0aW9ucyB0aGVuLi4uCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+alsa-project/alsa-lib issue #22 was opened from Bertware:
+
+I am using a Raspberry Pi 1 B+ with a Hifiberry DAC+ADC Pro HAT.
+This hat contains a PCM5122 Stereo DAC and an ADC. Now to the issue: The ADC has parameters such as `VINR1[SE]` and `VINR2[SE] + VINR1[SE]`. When using `alsactl store` or`alsactl restore`, restoring will fail due to an invalid file.
+
+`ALSA lib conf.c:1887:(_snd_config_load_with_include) _toplevel_:354:30:Unexpected char`
+
+This error points to the parameter `VINR1[SE]`, which is not surrounded by quotes. The other parameters, which also contain other special characters such as spaces, are surrounded by quotes.
+
+An excerpt of the file is included below. This clearly illustrates which names were encapsulated between quotes.
+
+```
+
+control.28 {
+                iface MIXER
+                name 'ADC Right Capture Source'
+                value VINR1[SE]
+                comment {
+                        access 'read write'
+                        type ENUMERATED
+                        count 1
+                        item.0 'No Select'
+                        item.1 VINR1[SE]
+                        item.2 VINR2[SE]
+                        item.3 'VINR2[SE] + VINR1[SE]'
+                        item.4 VINR3[SE]
+                        item.5 'VINR3[SE] + VINR1[SE]'
+                        item.6 'VINR3[SE] + VINR2[SE]'
+                        item.7 'VINR3[SE] + VINR2[SE] + VINR1[SE]'
+                        item.8 VINR4[SE]
+                        item.9 'VINR4[SE] + VINR1[SE]'
+                        item.10 'VINR4[SE] + VINR2[SE]'
+                        item.11 'VINR4[SE] + VINR2[SE] + VINR1[SE]'
+                        item.12 'VINR4[SE] + VINR3[SE]'
+                        item.13 'VINR4[SE] + VINR3[SE] + VINR1[SE]'
+                        item.14 'VINR4[SE] + VINR3[SE] + VINR2[SE]'
+                        item.15 'VINR4[SE] + VINR3[SE] + VINR2[SE] + VINR1[SE]'
+                        item.16 '{VIN2P, VIN2M}[DIFF]'
+                        item.17 '{VIN3P, VIN3M}[DIFF]'
+                        item.18 '{VIN2P, VIN2M}[DIFF] + {VIN3P, VIN3M}[DIFF]'
+                }
+        }
+```
+
+Creation of the output data and writing it to a file is handled by the save_state method in alsactl: https://github.com/alsa-project/alsa-utils/blob/master/alsactl/state.c#L1539
+This code in turn calls snd_config_save in the alsa-lib project: https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L3080
+Then further to string_print: https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L1508
+And then in this loop which decides which characters need to be quoted: https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L1523
+
+*Proposed solution*
+The characters `[` and `]` should be a reason to put text between quotes.
+These characters should be added to the switch statement in print_string here:
+https://github.com/alsa-project/alsa-lib/blob/b20b400e2f598c86abaf697d66396cecd49b3e14/src/conf.c#L1535
+
+Regards,
+Bert
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/22
+Repository URL: https://github.com/alsa-project/alsa-lib
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
