@@ -2,63 +2,83 @@ Return-Path: <SRS0=QJW1=27=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFDFDC282DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:45:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A385FC282DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 16:09:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A0B12080D
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:45:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B690920673
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 16:09:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NHSVF4HH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A0B12080D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L9MJ9SLD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B690920673
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CE78172E;
-	Fri, 10 Jan 2020 14:44:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CE78172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE60916A9;
+	Fri, 10 Jan 2020 17:09:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE60916A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578663916;
-	bh=KondMZGJNgkQQjtgCEiskGi2iCh+RX+p+56c4984avQ=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=NHSVF4HHpKh8kW8J0Rs+kb40yS2kVFRdhRy9uPhZ8KWA2eKn++7gczmFKcjloeVj4
-	 bpzGtdp6DALZcE6Nqf6ja2nYwYirJH+ws2mTGKq8vRi/0SLoiDgDWqfjGcX/O7Jfs9
-	 N96GjZvYjF29uQ/Jvv+KVtnD7QKMl3YxwgiklpSQ=
+	s=default; t=1578672593;
+	bh=C3wIsxm4KmCfMLbk+eVgEUlDd37UXyAC9ia83VtBz4E=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=L9MJ9SLDjejfLomH1oFI9jRmACSr4aVITAEdAC9ai4zgN50s++tpP5G5IKdRcyhhB
+	 xLhFPPH+tI+QDxfa/dmeeLynV1kRQzyGzu1AuZOYwAGwK8+r5H6Dl3XwWl/hjLndYR
+	 xy0cn1A7pZHdD1hkbq5O/1Y6+KKY+A4JdH0Et8q8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86EBBF802E9;
-	Fri, 10 Jan 2020 14:38:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30C85F80116;
+	Fri, 10 Jan 2020 17:09:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65A1BF802E7; Fri, 10 Jan 2020 14:38:12 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7D4B1F802A8
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 14:38:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D4B1F802A8
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB29C1063;
- Fri, 10 Jan 2020 05:38:02 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BCB93F534;
- Fri, 10 Jan 2020 05:38:02 -0800 (PST)
-Date: Fri, 10 Jan 2020 13:38:01 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Olivier Moysan <olivier.moysan@st.com>
-In-Reply-To: <20200110131131.3191-1-olivier.moysan@st.com>
-Message-Id: <applied-20200110131131.3191-1-olivier.moysan@st.com>
-X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com,
- tiwai@suse.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, mcoquelin.stm32@gmail.com,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: stm32: dfsdm: fix 16 bits record" to
-	the asoc tree
+ id 6250AF8011C; Fri, 10 Jan 2020 17:09:01 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8569FF800E4
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 17:08:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8569FF800E4
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 10 Jan 2020 08:08:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,417,1571727600"; d="scan'208";a="224235858"
+Received: from nehudak-mobl1.amr.corp.intel.com (HELO [10.251.145.164])
+ ([10.251.145.164])
+ by orsmga003.jf.intel.com with ESMTP; 10 Jan 2020 08:08:52 -0800
+To: Vinod Koul <vkoul@kernel.org>
+References: <20191217210314.20410-1-pierre-louis.bossart@linux.intel.com>
+ <20191217210314.20410-10-pierre-louis.bossart@linux.intel.com>
+ <20191227090826.GM3006@vkoul-mobl>
+ <5be4d9df-0f46-d36f-471c-aae9e1f55cc0@linux.intel.com>
+ <20200106054221.GN2818@vkoul-mobl>
+ <32ae46a7-59ee-4815-270a-a519ff462345@linux.intel.com>
+ <20200110064303.GX2818@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <39000dd7-3f77-bc33-0ad3-aa47ba2360f7@linux.intel.com>
+Date: Fri, 10 Jan 2020 10:08:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200110064303.GX2818@vkoul-mobl>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v5 09/17] soundwire: intel: remove platform
+ devices and use 'Master Devices' instead
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,101 +91,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: stm32: dfsdm: fix 16 bits record
+>>> The "big" difference is that probe is called by core (asoc) and not by
+>>> driver onto themselves.. IMO that needs to go away.
+>>
+>> What I did is not different from what existed already with platform devices.
+>> They were manually created, weren't they?
+> 
+> Manual creation of device based on a requirement is different, did I ask
+> you why you are creating device :)
+> 
+> I am simple asking you not to call probe in the driver. If you need
+> that, move it to core! We do not want these kind of things in the
+> drivers...
 
-has been applied to the asoc tree at
+What core are you talking about?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+The SOF intel driver needs to create a device, which will then be bound 
+with a SoundWire master driver.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+What I am doing is no different from what your team did with 
+platform_register_device, I am really lost on what you are asking.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>>>> FWIW, the implementation here follows what was suggested for Greybus 'Host
+>>>> Devices' [1] [2], so it's not like I am creating any sort of dangerous
+>>>> precedent.
+>>>>
+>>>> [1]
+>>>> https://elixir.bootlin.com/linux/latest/source/drivers/greybus/es2.c#L1275
+>>>> [2] https://elixir.bootlin.com/linux/latest/source/drivers/greybus/hd.c#L124
+>>>
+>>> And if you look closely all this work is done by core not by drivers!
+>>> Drivers _should_ never do all this, it is the job of core to do that for
+>>> you.
+>>
+>> Please look at the code again, you have a USB probe that will manually call
+>> the GreyBus device creation.
+>>
+>> static int ap_probe(struct usb_interface *interface,
+>> 		    const struct usb_device_id *id)
+>> {
+>> 	hd = gb_hd_create(&es2_driver, &udev->dev, 	
+>>
+>>
+>> static struct usb_driver es2_ap_driver = {
+>> 	.name =		"es2_ap_driver",
+>> 	.probe =	ap_probe, <<< code above
+>> 	.disconnect =	ap_disconnect,
+>> 	.id_table =	id_table,
+>> 	.soft_unbind =	1,
+>> };
+> 
+> Look closely the driver es2 calls into greybus core hd.c and gets the
+> work done, subtle but a big differances in the approaches..
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I am sorry, I have absolutely no idea what you are referring to.
 
-Thanks,
-Mark
-
-From 8e55ea19125b65cffe42747359af99d545e85f2f Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Fri, 10 Jan 2020 14:11:31 +0100
-Subject: [PATCH] ASoC: stm32: dfsdm: fix 16 bits record
-
-In stm32_afsdm_pcm_cb function, the transfer size is provided in bytes.
-However, samples are copied as 16 bits words from iio buffer.
-Divide by two the transfer size, to copy the right number of samples.
-
-Fixes: 1e7f6e1c69f0 ("ASoC: stm32: dfsdm: add 16 bits audio record support")
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20200110131131.3191-1-olivier.moysan@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/stm/stm32_adfsdm.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index 81c407da15c5..08696a4adb69 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -153,13 +153,13 @@ static const struct snd_soc_component_driver stm32_adfsdm_dai_component = {
- 	.name = "stm32_dfsdm_audio",
- };
- 
--static void memcpy_32to16(void *dest, const void *src, size_t n)
-+static void stm32_memcpy_32to16(void *dest, const void *src, size_t n)
- {
- 	unsigned int i = 0;
- 	u16 *d = (u16 *)dest, *s = (u16 *)src;
- 
- 	s++;
--	for (i = n; i > 0; i--) {
-+	for (i = n >> 1; i > 0; i--) {
- 		*d++ = *s++;
- 		s++;
- 	}
-@@ -186,8 +186,8 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
- 
- 	if ((priv->pos + src_size) > buff_size) {
- 		if (format == SNDRV_PCM_FORMAT_S16_LE)
--			memcpy_32to16(&pcm_buff[priv->pos], src_buff,
--				      buff_size - priv->pos);
-+			stm32_memcpy_32to16(&pcm_buff[priv->pos], src_buff,
-+					    buff_size - priv->pos);
- 		else
- 			memcpy(&pcm_buff[priv->pos], src_buff,
- 			       buff_size - priv->pos);
-@@ -196,8 +196,8 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
- 	}
- 
- 	if (format == SNDRV_PCM_FORMAT_S16_LE)
--		memcpy_32to16(&pcm_buff[priv->pos],
--			      &src_buff[src_size - cur_size], cur_size);
-+		stm32_memcpy_32to16(&pcm_buff[priv->pos],
-+				    &src_buff[src_size - cur_size], cur_size);
- 	else
- 		memcpy(&pcm_buff[priv->pos], &src_buff[src_size - cur_size],
- 		       cur_size);
--- 
-2.20.1
+The code I copy/pasted here makes no call to the greybus core, it's 
+ap_probe -> gb_hd_create. No core involved. If I am mistaken, please 
+show me what I got wrong.
 
 _______________________________________________
 Alsa-devel mailing list
