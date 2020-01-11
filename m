@@ -2,72 +2,82 @@ Return-Path: <SRS0=uq2S=3A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1861C282DD
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 00:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 034B4C33C9E
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 12:19:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A05E2077C
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 00:04:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0F83B2072E
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 12:19:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nk3uKkII"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A05E2077C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i5yUB5b/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F83B2072E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E24116B2;
-	Sat, 11 Jan 2020 01:04:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E24116B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD1BD16A5;
+	Sat, 11 Jan 2020 13:18:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD1BD16A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578701092;
-	bh=L1NWtnvAP8TpXFrbJXQjWctO7z4C+BWuHkVYFZvv8Z8=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1578745168;
+	bh=1l9TVqTWTK5vWYjEg6sxPbXX/htU3EvVCqjn54XTG6Y=;
+	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nk3uKkII2fUASvIpxvJSIMInDpvrZvwnyALzvWuWqMlW/UhZ2vVZcq5ImN5q6rZ0Y
-	 7uW0Vjyn8/LsYx1bsKLmmmO6Q36DW2Jw1F2OIInd4gA1kf3JoH6J1sKBxqhJPoAsm+
-	 VvWCK+AjOYTUrC4LeelmxwB55DmELV9xasYdL3C0=
+	b=i5yUB5b/X8wlbDiFZ36ghN3NeVwLrkMIsBytzqXXaj0NzWW+jvMlMbs1iiwPcoeQT
+	 nIQMjxktjEM0WSsD4zEMRldf/GoCYxQ9n6V2h5qd5iWCHCRPYoBjZvi7BCSidq22Zc
+	 mY4QX6IwIkZma61W5lRLBPdTFeSagCcFZree6yqw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9114FF802BE;
-	Sat, 11 Jan 2020 00:58:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39C33F80172;
+	Sat, 11 Jan 2020 13:18:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F26CF8024A; Sat, 11 Jan 2020 00:58:22 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id D3B31F800B9; Sat, 11 Jan 2020 13:18:35 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF678F80116
- for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2020 00:58:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF678F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66CC0F800B9
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2020 13:18:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66CC0F800B9
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 10 Jan 2020 15:58:11 -0800
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 11 Jan 2020 04:18:28 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,418,1571727600"; d="scan'208";a="224345304"
-Received: from jrderube-mobl5.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.155.251])
- by orsmga003.jf.intel.com with ESMTP; 10 Jan 2020 15:58:10 -0800
+X-IronPort-AV: E=Sophos;i="5.69,421,1571727600"; d="scan'208";a="396689983"
+Received: from syamada-mobl.amr.corp.intel.com (HELO [10.255.229.5])
+ ([10.255.229.5])
+ by orsmga005.jf.intel.com with ESMTP; 11 Jan 2020 04:18:26 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Fri, 10 Jan 2020 17:57:49 -0600
-Message-Id: <20200110235751.3404-7-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200110235751.3404-1-pierre-louis.bossart@linux.intel.com>
-References: <20200110235751.3404-1-pierre-louis.bossart@linux.intel.com>
+To: Vinod Koul <vkoul@kernel.org>
+References: <20200108175438.13121-1-pierre-louis.bossart@linux.intel.com>
+ <20200108175438.13121-3-pierre-louis.bossart@linux.intel.com>
+ <20200110064838.GY2818@vkoul-mobl>
+ <a18c668f-4628-0fb9-ffa0-b24cdad1cc8b@linux.intel.com>
+Message-ID: <69ad48b0-fa3c-904a-4106-5cd9bd18de5c@linux.intel.com>
+Date: Sat, 11 Jan 2020 05:30:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] [PATCH 6/8] ASoC: SOF: fix PCM playback through ALSA
-	OSS emulation
+In-Reply-To: <a18c668f-4628-0fb9-ffa0-b24cdad1cc8b@linux.intel.com>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, Jonathan Corbet <corbet@lwn.net>,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 2/6] soundwire: stream: update state
+ machine and add state checks
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,116 +90,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-
-Any app using ALSA OSS emulation on top of SOF will fail
-to error from OSS SNDCTL_DSP_SETFMT ioctl. Reported initially
-as an issue with xournalpp (application using PortAudio with
-an OSS backend), but applies more generally to other apps
-using OSS as well.
-
-Problem is caused by SOF PCM not supporting repeated calls
-to hw_params(), without matching calls to pcm_free(). This
-is however exactly what the ALSA OSS PCM code is doing when
-it is handling the OSS ioctls.
-
-The problem will lead to leaking of DSP resources and eventual
-failure of DSP PCM_PARAMS IPC.
-
-BugLink: https://github.com/thesofproject/linux/issues/1510
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/pcm.c | 53 ++++++++++++++++++++++++++-------------------
- 1 file changed, 31 insertions(+), 22 deletions(-)
-
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 9bb6388742e1..314f3095c12f 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -92,7 +92,27 @@ void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream)
- }
- EXPORT_SYMBOL(snd_sof_pcm_period_elapsed);
- 
--/* this may get called several times by oss emulation */
-+static int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream,
-+				struct snd_sof_dev *sdev,
-+				struct snd_sof_pcm *spcm)
-+{
-+	struct sof_ipc_stream stream;
-+	struct sof_ipc_reply reply;
-+	int ret;
-+
-+	stream.hdr.size = sizeof(stream);
-+	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
-+	stream.comp_id = spcm->stream[substream->stream].comp_id;
-+
-+	/* send IPC to the DSP */
-+	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
-+				 sizeof(stream), &reply, sizeof(reply));
-+	if (!ret)
-+		spcm->prepared[substream->stream] = false;
-+
-+	return ret;
-+}
-+
- static int sof_pcm_hw_params(struct snd_soc_component *component,
- 			     struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
-@@ -113,6 +133,16 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
- 	if (!spcm)
- 		return -EINVAL;
- 
-+	/*
-+	 * Handle repeated calls to hw_params() without free_pcm() in
-+	 * between. At least ALSA OSS emulation depends on this.
-+	 */
-+	if (spcm->prepared[substream->stream]) {
-+		ret = sof_pcm_dsp_pcm_free(substream, sdev, spcm);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	dev_dbg(component->dev, "pcm: hw params stream %d dir %d\n",
- 		spcm->pcm.pcm_id, substream->stream);
- 
-@@ -201,27 +231,6 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
- 	return ret;
- }
- 
--static int sof_pcm_dsp_pcm_free(struct snd_pcm_substream *substream,
--				struct snd_sof_dev *sdev,
--				struct snd_sof_pcm *spcm)
--{
--	struct sof_ipc_stream stream;
--	struct sof_ipc_reply reply;
--	int ret;
--
--	stream.hdr.size = sizeof(stream);
--	stream.hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_FREE;
--	stream.comp_id = spcm->stream[substream->stream].comp_id;
--
--	/* send IPC to the DSP */
--	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
--				 sizeof(stream), &reply, sizeof(reply));
--	if (!ret)
--		spcm->prepared[substream->stream] = false;
--
--	return ret;
--}
--
- static int sof_pcm_hw_free(struct snd_soc_component *component,
- 			   struct snd_pcm_substream *substream)
- {
--- 
-2.20.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CgpPbiAxLzEwLzIwIDEwOjMwIEFNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiAKPj4+
+IC3CoCBpbnQgc2R3X3ByZXBhcmVfc3RyZWFtKHN0cnVjdCBzZHdfc3RyZWFtX3J1bnRpbWUgKiBz
+dHJlYW0pOwo+Pj4gK8KgIGludCBzZHdfcHJlcGFyZV9zdHJlYW0oc3RydWN0IHNkd19zdHJlYW1f
+cnVudGltZSAqIHN0cmVhbSwgYm9vbCAKPj4+IHJlc3VtZSk7Cj4+Cj4+IHNvIHdoYXQgZG9lcyB0
+aGUgYWRkaXRpb25hbCBhcmd1bWVudCBvZiByZXN1bWUgZG8uLj8KPj4KPj4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL3NvdW5kd2lyZS9zdHJlYW0uYyBiL2RyaXZlcnMvc291bmR3aXJlL3N0cmVhbS5j
+Cj4+PiBpbmRleCAxNzhhZTkyYjhjYzEuLjZhYTBiNWQzNzBjMCAxMDA2NDQKPj4+IC0tLSBhL2Ry
+aXZlcnMvc291bmR3aXJlL3N0cmVhbS5jCj4+PiArKysgYi9kcml2ZXJzL3NvdW5kd2lyZS9zdHJl
+YW0uYwo+Pj4gQEAgLTE1NTMsOCArMTU1MywxOCBAQCBpbnQgc2R3X3ByZXBhcmVfc3RyZWFtKHN0
+cnVjdCAKPj4+IHNkd19zdHJlYW1fcnVudGltZSAqc3RyZWFtKQo+Pgo+PiBhbmQgaXQgaXMgbm90
+IG1vZGlmaWVkIGhlcmUsIHNvIGlzIHRoZSBkb2MgY29ycmVjdCBvciB0aGlzLi4/Cj4gCj4gdGhl
+IGRvYyBpcyBjb3JyZWN0IGFuZCB0aGUgY29kZSBpcyB1cGRhdGVkIGluCj4gCj4gW1BBVENIIDQv
+Nl0gc291bmR3aXJlOiBzdHJlYW06IGRvIG5vdCB1cGRhdGUgcGFyYW1ldGVycyBkdXJpbmcgCj4g
+RElTQUJMRUQtUFJFUEFSRUQgdHJhbnNpdGlvbgoKU29ycnksIHdyb25nIGFuc3dlciwgbXkgYmFk
+LiBUaGUgY29kZSBibG9jayBpbiB0aGUgZG9jdW1lbnRhdGlvbiBpcyAKaW5jb3JyZWN0LgoKVGhl
+IFBhdGNoIDQvNiBpbXBsZW1lbnRzIHRoZSB0cmFuc2l0aW9uIG1lbnRpb25lZCBpbiB0aGUgZG9j
+dW1lbnRhdGlvbiwgCmJ1dCB0aGUgZXh0cmEgcGFyYW1ldGVyIGlzIGEgbGVmdC1vdmVyIGZyb20g
+YW4gZWFybGllciB2ZXJzaW9uLiBUaGlzIApjYXNlIGlzIG5vdyBoYW5kbGVkIGludGVybmFsbHku
+IFdlIGRpZCByZXZlcnQgdG8gdGhlIGluaXRpYWwgcHJvdG90eXBlIAphZnRlciBmaW5kaW5nIG91
+dCB0aGF0IGRlYWxpbmcgd2l0aCB0cmFuc2l0aW9ucyBpbiB0aGUgY2FsbGVyIGlzIAplcnJvci1w
+cm9uZS4KCldpbGwgZml4IGluIHYyLCB0aGFua3MgZm9yIHNwb3R0aW5nIHRoaXMuCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
