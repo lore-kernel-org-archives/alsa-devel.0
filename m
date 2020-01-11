@@ -2,95 +2,86 @@ Return-Path: <SRS0=uq2S=3A=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45A7CC282DD
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 16:32:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72F4BC282DD
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 16:41:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 591D32084D
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 16:32:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EFF2620866
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jan 2020 16:41:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PAHmFBi9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ppTqZL0k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 591D32084D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NLQlmrvm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="QOvoEQgj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFF2620866
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24617167E;
-	Sat, 11 Jan 2020 17:31:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24617167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3710916A5;
+	Sat, 11 Jan 2020 17:40:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3710916A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578760360;
-	bh=xRJoxNqcJIaM61a7QyFVyadybFedn0GquHLU0wBPL/4=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PAHmFBi9OS19cxm4x7kPUjw9JhIXdSGPNE2VbztrnGk61peF6ntcuo9hLrbzsIkc1
-	 776YotzFxRSdjXN/rjJHSp54dMsoDGD33U1xDZHvgqqSfwy9/TfQXiIQg2uicO7Lj7
-	 iARrzZZxHr6qSfu1Yle8AbGHvqmsHhnby1CRhOPo=
+	s=default; t=1578760907;
+	bh=NLGY+3zk8F5ivKaScWM1d/0kLoo3ghrxEXzvd437iUU=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NLQlmrvmatGMUVgGbbNUgzGCe7YDOSA7LsLsCcL47kB6/zP4AVt/hOknQL47+dOdw
+	 KqXkHfd2PckIpszTmwPPhsEIoFgP2QyhKXWO/Mkb+LpvZgmG5ARrSsawqFRB69YrH9
+	 gtq2KkdLhmMCjNoyrNa/CO6ysd3kW1aMDwlBKONU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89E32F80172;
-	Sat, 11 Jan 2020 17:31:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F72FF801F5;
+	Sat, 11 Jan 2020 17:40:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8405F801F4; Sat, 11 Jan 2020 17:31:47 +0100 (CET)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 79328F80214; Sat, 11 Jan 2020 17:40:54 +0100 (CET)
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5301::4])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 362E7F8010B
- for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2020 17:31:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 362E7F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B20BF800B9
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2020 17:40:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B20BF800B9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ppTqZL0k"
-Received: by mail-pg1-x541.google.com with SMTP id k3so2526816pgc.3
- for <alsa-devel@alsa-project.org>; Sat, 11 Jan 2020 08:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id;
- bh=f1vRmHhrV08XFgVnUDwocso32DPdXB96AAdJZ+4F8qM=;
- b=ppTqZL0kzWaBSg6qpBFaHk1o9lIXhnNlrcYC+nmG75Ay95+W/DGgXe+6spz5sj3n+R
- CcwFdOpG/Bd0mZrgYn+M+cj95xnecldiD943L5eyPwx3Oq60xqdhJO8Xyu9khyN0dLNQ
- ZJR4mvMJljAKDVZo+zTcGhhsourgZBxuByW0gJwV14P3k6kUOkmyie4IYbw8qR2czVXU
- VFbUNcnZKQ+3r0fgDO/x9IekbuiwP9tFtqQUfS47CzErUCPL1t0dcpG7M/o0s+nvhP90
- 01HyYpaHxnvh/h2RBBuc8l34v2t9KFNOrPXk5FvunhaLJrI0JwVfP3OXUXhIZdf8LLie
- BQwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=f1vRmHhrV08XFgVnUDwocso32DPdXB96AAdJZ+4F8qM=;
- b=VSxuKbP1DExkHXlSBBDqcdSzRtbIspQ47DIGcYS5lINAg4FhM0Z35bRTnzyP88lQsg
- s/H3XPoHmDu/k2dVf2BjQCaOLLZM1XHqPqFLdgHCLGHF49I5BFaSP+nOVosdlwYjgFcf
- wGipRqEj4u830OWfEw3gdtqgS+RwzDZLw9KCRIW7UclDp+VOJr4P7LY+i64DmZU9Pf8L
- xuaBVvhDvrXJJLxEWo8t0L7PPZBEUI835VYJXj4+Jh8paLMAEDjtpJapqegR3CT9q8ya
- 3c1+x8KQy1RwlGKo9GYJ0WlRceGZtTOsc37KJ1rySirkYgVfdXNt9SHAg1x1YbQtHV1t
- /wuQ==
-X-Gm-Message-State: APjAAAXp9TizQ49BA/JCujdZzti+ECGsrI4mRKZhvQLwsPay/8tBdUPW
- LDo98fWrntKF493CKXYGnHU=
-X-Google-Smtp-Source: APXvYqyvooAPj6DJQGAiHR9lnZWvJc3ZiAu4Zkp5EWGFQLtiGlZu7YHmVbXWUscLpX6sSiTaH67AIw==
-X-Received: by 2002:a63:6ac1:: with SMTP id
- f184mr11698153pgc.133.1578760301054; 
- Sat, 11 Jan 2020 08:31:41 -0800 (PST)
-Received: from oslab.tsinghua.edu.cn ([166.111.139.172])
- by smtp.gmail.com with ESMTPSA id b65sm7347072pgc.18.2020.01.11.08.31.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 11 Jan 2020 08:31:40 -0800 (PST)
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-To: perex@perex.cz, tiwai@suse.com, rfontana@redhat.com, tglx@linutronix.de,
- allison@lohutok.net
-Date: Sun, 12 Jan 2020 00:30:27 +0800
-Message-Id: <20200111163027.27135-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
-Cc: alsa-devel@alsa-project.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH] ALSA: cmipci: Fix possible a data race in
-	snd_cmipci_interrupt()
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="QOvoEQgj"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1578760850;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=JbtMA7M+1Pr79NFgEOqzzOkHqAQ9r23m/hFlkn4N/Qg=;
+ b=QOvoEQgjy1FnB4LlgkPZGBBXsaU/PmaFkWT/dBN9JDwYbCqc47bJhBS/ms7Bx9HsQ4
+ DUFH4gH+RBSR65i1gL54zT4+aeg4+H+Gy6NsI1bbKCIm0XEaTCaBG3Xkb6KVxSxsB2AA
+ pWrbuxBgsCufHqhJtqpMwy3almwncOf6B+Pbh8taGmowBvVSO7V4yUnUwyQPN705/+g2
+ OfOtkWNL3wVWOp/DlypbNUzkSEKpfIDlBmIITYjGVUMLghvuKOa9humv/TDKIDwBEjQQ
+ RpRhMxj1KogVSLOmwQUYvTU5eK3En6cq184baPrClH/Hemtql5ogIgAEW+ogntAea0+W
+ 3uQQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQrEOHTIXsMv5qxJRCe0="
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
+ with ESMTPSA id h048a6w0BGemFq8
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Sat, 11 Jan 2020 17:40:48 +0100 (CET)
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Mark Brown <broonie@kernel.org>
+Date: Sat, 11 Jan 2020 17:40:03 +0100
+Message-Id: <20200111164006.43074-2-stephan@gerhold.net>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200111164006.43074-1-stephan@gerhold.net>
+References: <20200111164006.43074-1-stephan@gerhold.net>
+MIME-Version: 1.0
+Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht
+Subject: [alsa-devel] [PATCH 1/4] ASoC: msm8916-wcd-analog: Fix selected
+	events for MIC BIAS External1
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,68 +94,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The functions snd_cmipci_interrupt() and snd_cmipci_capture_trigger()
-may be concurrently executed.
+MIC BIAS External1 sets pm8916_wcd_analog_enable_micbias_ext1()
+as event handler, which ends up in pm8916_wcd_analog_enable_micbias_ext().
 
-The function snd_cmipci_capture_trigger() calls
-snd_cmipci_pcm_trigger(). In snd_cmipci_pcm_trigger(), the variable
-rec->running is written with holding a spinlock cm->reg_lock. But in
-snd_cmipci_interrupt(), the identical variable cm->channel[0].running
-or cm->channel[1].running is read without holding this spinlock. Thus,
-a possible data race may occur.
+But pm8916_wcd_analog_enable_micbias_ext() only handles the POST_PMU
+event, which is not specified in the event flags for MIC BIAS External1.
+This means that the code in the event handler is never actually run.
 
-To fix this data race, in snd_cmipci_interrupt(), the variables
-cm->channel[0].running and cm->channel[1].running are read with holding 
-the spinlock cm->reg_lock.
+Set SND_SOC_DAPM_POST_PMU as the only event for the handler to fix this.
 
-This data race is found by the runtime testing of our tool DILP-2.
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- sound/pci/cmipci.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
-index dd9d62e2b633..f791152ec48f 100644
---- a/sound/pci/cmipci.c
-+++ b/sound/pci/cmipci.c
-@@ -1430,7 +1430,7 @@ static int snd_cmipci_capture_spdif_hw_free(struct snd_pcm_substream *subs)
- static irqreturn_t snd_cmipci_interrupt(int irq, void *dev_id)
- {
- 	struct cmipci *cm = dev_id;
--	unsigned int status, mask = 0;
-+	unsigned int run_flag0, run_flag1, status, mask = 0;
- 	
- 	/* fastpath out, to ease interrupt sharing */
- 	status = snd_cmipci_read(cm, CM_REG_INT_STATUS);
-@@ -1445,15 +1445,17 @@ static irqreturn_t snd_cmipci_interrupt(int irq, void *dev_id)
- 		mask |= CM_CH1_INT_EN;
- 	snd_cmipci_clear_bit(cm, CM_REG_INT_HLDCLR, mask);
- 	snd_cmipci_set_bit(cm, CM_REG_INT_HLDCLR, mask);
-+	run_flag0 = cm->channel[0].running;
-+	run_flag1 = cm->channel[1].running;
- 	spin_unlock(&cm->reg_lock);
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index f53235be77d9..30b19f12fabc 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -938,10 +938,10 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
  
- 	if (cm->rmidi && (status & CM_UARTINT))
- 		snd_mpu401_uart_interrupt(irq, cm->rmidi->private_data);
+ 	SND_SOC_DAPM_SUPPLY("MIC BIAS External1", CDC_A_MICB_1_EN, 7, 0,
+ 			    pm8916_wcd_analog_enable_micbias_ext1,
+-			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++			    SND_SOC_DAPM_POST_PMU),
+ 	SND_SOC_DAPM_SUPPLY("MIC BIAS External2", CDC_A_MICB_2_EN, 7, 0,
+ 			    pm8916_wcd_analog_enable_micbias_ext2,
+-			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
++			    SND_SOC_DAPM_POST_PMU),
  
- 	if (cm->pcm) {
--		if ((status & CM_CHINT0) && cm->channel[0].running)
-+		if ((status & CM_CHINT0) && run_flag0)
- 			snd_pcm_period_elapsed(cm->channel[0].substream);
--		if ((status & CM_CHINT1) && cm->channel[1].running)
-+		if ((status & CM_CHINT1) && run_flag1)
- 			snd_pcm_period_elapsed(cm->channel[1].substream);
- 	}
- 	return IRQ_HANDLED;
+ 	SND_SOC_DAPM_ADC_E("ADC1", NULL, CDC_A_TX_1_EN, 7, 0,
+ 			   pm8916_wcd_analog_enable_adc,
 -- 
-2.17.1
+2.24.1
 
 _______________________________________________
 Alsa-devel mailing list
