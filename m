@@ -2,56 +2,66 @@ Return-Path: <SRS0=xNGQ=3B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1554C32771
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 07:06:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 570C9C3F68F
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:21:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A68E20842
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 07:06:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51B892064C
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:21:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GhVJhRyy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A68E20842
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mWW8nVQm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51B892064C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1659168C;
-	Sun, 12 Jan 2020 08:05:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1659168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CBCA168C;
+	Sun, 12 Jan 2020 09:20:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CBCA168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578812795;
-	bh=YJ8zZSflyH/GU31TSLqj9f4RX6gJG2DKedyUzEX/5eg=;
-	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
+	s=default; t=1578817275;
+	bh=R3YgpoGcyNzeVMXBdCJSUorR3LIKA7FTgpIYPUHRRXg=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GhVJhRyys2e3j50F6a3qVQf7+Hklxh6C3KDHAcWZoHALOaV+pj/c3cXYV+3mk7tTG
-	 xPPxo46CD5xGPS9xzN3R/Rjp0Eg8JpiOYDUBy8sMMBhdxOawTKMGlkO/kswm0mfP6f
-	 APfXDY/gWF692L8neDPL8Cq6R9Pf+QDdZEv3Mq+A=
+	b=mWW8nVQm9cbBKxK6By3uNCUsaPG1ujg+BxGSaGSltT7FkXd680WNBb1c22Z7jrdSj
+	 qmcvWotGFTPvytZJO3l06SZh2In2XMUp+ZviErKWWbCNSOfnqGZONsPVxy0GkiA5J5
+	 ASQPhftdpLJOocPaq2dilT1OuiLdJt5CySmmZg5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4281DF8014D;
-	Sun, 12 Jan 2020 08:05:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 808A5F8014D;
+	Sun, 12 Jan 2020 09:20:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49FE7F8014E; Sun, 12 Jan 2020 08:05:43 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C9F96F8012E
- for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 08:05:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9F96F8012E
-MIME-Version: 1.0
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1578812739066721916-webhooks-bot@alsa-project.org>
-References: <1578812739066721916-webhooks-bot@alsa-project.org>
-Message-Id: <20200112070543.49FE7F8014E@alsa1.perex.cz>
-Date: Sun, 12 Jan 2020 08:05:43 +0100 (CET)
-Subject: [alsa-devel] alsa-gobject: ctl: fix wrong operation for values in
- enumerated type of element
+ id 7A60CF8014E; Sun, 12 Jan 2020 09:20:22 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B245F80103
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 09:20:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B245F80103
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 1B2C5B03D;
+ Sun, 12 Jan 2020 08:20:18 +0000 (UTC)
+Date: Sun, 12 Jan 2020 09:20:17 +0100
+Message-ID: <s5h5zhhkrwe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jia-Ju Bai <baijiaju1990@gmail.com>
+In-Reply-To: <20200111163027.27135-1-baijiaju1990@gmail.com>
+References: <20200111163027.27135-1-baijiaju1990@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ rfontana@redhat.com, tglx@linutronix.de, allison@lohutok.net
+Subject: Re: [alsa-devel] [PATCH] ALSA: cmipci: Fix possible a data race in
+	snd_cmipci_interrupt()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,20 +79,83 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-gobject pull request #4 was opened from takaswie:
+On Sat, 11 Jan 2020 17:30:27 +0100,
+Jia-Ju Bai wrote:
+> 
+> The functions snd_cmipci_interrupt() and snd_cmipci_capture_trigger()
+> may be concurrently executed.
+> 
+> The function snd_cmipci_capture_trigger() calls
+> snd_cmipci_pcm_trigger(). In snd_cmipci_pcm_trigger(), the variable
+> rec->running is written with holding a spinlock cm->reg_lock. But in
+> snd_cmipci_interrupt(), the identical variable cm->channel[0].running
+> or cm->channel[1].running is read without holding this spinlock. Thus,
+> a possible data race may occur.
+> 
+> To fix this data race, in snd_cmipci_interrupt(), the variables
+> cm->channel[0].running and cm->channel[1].running are read with holding 
+> the spinlock cm->reg_lock.
+> 
+> This data race is found by the runtime testing of our tool DILP-2.
+> 
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-The 'snd_ctl_elem_value' structure includes union member for values.
-Although it includes 'enumerated' member for values in enumerated type
-of element, current implementation of alsactl library uses 'integer'
-member to pick up the values. As a result, in any 64 bit System V ABI,
-the library fails to get/set values for the enumerated type of
-element. This commit fixes the bug.
+Thanks for the patch.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+That's indeed a kind of race, but this change won't fix anything in
+practice, though.  The inconsistent running flag between those places,
+there are two cases:
 
-Request URL   : https://github.com/alsa-project/alsa-gobject/pull/4
-Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/4.patch
-Repository URL: https://github.com/alsa-project/alsa-gobject
+- running became 0 to 1; this cannot happen, as the irq isn't issued
+  before the stream gets started
+
+- running became 1 to 0; this means that the stream gets stopped
+  between two points, and it's not better to call
+  snd_pcm_period_elapsed() for an already stopped stream.
+
+
+Takashi
+
+> ---
+>  sound/pci/cmipci.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+> index dd9d62e2b633..f791152ec48f 100644
+> --- a/sound/pci/cmipci.c
+> +++ b/sound/pci/cmipci.c
+> @@ -1430,7 +1430,7 @@ static int snd_cmipci_capture_spdif_hw_free(struct snd_pcm_substream *subs)
+>  static irqreturn_t snd_cmipci_interrupt(int irq, void *dev_id)
+>  {
+>  	struct cmipci *cm = dev_id;
+> -	unsigned int status, mask = 0;
+> +	unsigned int run_flag0, run_flag1, status, mask = 0;
+>  	
+>  	/* fastpath out, to ease interrupt sharing */
+>  	status = snd_cmipci_read(cm, CM_REG_INT_STATUS);
+> @@ -1445,15 +1445,17 @@ static irqreturn_t snd_cmipci_interrupt(int irq, void *dev_id)
+>  		mask |= CM_CH1_INT_EN;
+>  	snd_cmipci_clear_bit(cm, CM_REG_INT_HLDCLR, mask);
+>  	snd_cmipci_set_bit(cm, CM_REG_INT_HLDCLR, mask);
+> +	run_flag0 = cm->channel[0].running;
+> +	run_flag1 = cm->channel[1].running;
+>  	spin_unlock(&cm->reg_lock);
+>  
+>  	if (cm->rmidi && (status & CM_UARTINT))
+>  		snd_mpu401_uart_interrupt(irq, cm->rmidi->private_data);
+>  
+>  	if (cm->pcm) {
+> -		if ((status & CM_CHINT0) && cm->channel[0].running)
+> +		if ((status & CM_CHINT0) && run_flag0)
+>  			snd_pcm_period_elapsed(cm->channel[0].substream);
+> -		if ((status & CM_CHINT1) && cm->channel[1].running)
+> +		if ((status & CM_CHINT1) && run_flag1)
+>  			snd_pcm_period_elapsed(cm->channel[1].substream);
+>  	}
+>  	return IRQ_HANDLED;
+> -- 
+> 2.17.1
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
