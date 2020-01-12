@@ -2,66 +2,66 @@ Return-Path: <SRS0=xNGQ=3B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 917A6C32771
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:43:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21F20C32771
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:44:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5AEF20848
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:43:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A163220848
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:44:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a5Q8974n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5AEF20848
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rxBN8tv8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A163220848
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 913841688;
-	Sun, 12 Jan 2020 09:43:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 913841688
+	by alsa0.perex.cz (Postfix) with ESMTPS id C58E516AB;
+	Sun, 12 Jan 2020 09:44:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C58E516AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578818630;
-	bh=9Ns6NfQZBhIada4Yp8+29exhsHJm9tcPXwkQ+Aecmqw=;
+	s=default; t=1578818693;
+	bh=KxcpMbBnLnhBHrSGaSWtx6LvqtiRv+pGsA4EsS7tigA=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a5Q8974nRdEcnRrtV203Do7wjfeu0kdGWWnhPqmjCsOtm9Jtb8sJtRbSB7/Vu6LAH
-	 j0HqBiemJDDF30pM5qyNKVv1vYQ1suQMcEVwFxOYmGDiwMAmGnJ1/GpDk2FF2xav5i
-	 P3R7ik3h65aTc87Om6arNoh1K0RkWMUZ6UKTdieY=
+	b=rxBN8tv8BgcShPRerG1Pzq3SzhYYMwPlJdXCp982c4ajTO5Udgl9VTLmC7LXFbSu1
+	 8UBjm48pK9GtzpjvAu1TuLgZxt56cVw0E9lOtovmMWxtA9NFeSIBAFIsv7sdUdPR7C
+	 zqY131nEKO6Uk+QjBuCzFF0/jJoDsnXglQKVrXEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 088A0F80103;
-	Sun, 12 Jan 2020 09:43:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E760DF80272;
+	Sun, 12 Jan 2020 09:43:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF1AFF8014E; Sun, 12 Jan 2020 09:42:57 +0100 (CET)
+ id D848CF80273; Sun, 12 Jan 2020 09:43:38 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F806F80103
- for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 09:42:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F806F80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 612EDF80271
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 09:43:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 612EDF80271
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id AB697B28F;
- Sun, 12 Jan 2020 08:42:53 +0000 (UTC)
-Date: Sun, 12 Jan 2020 09:42:52 +0100
-Message-ID: <s5h4kx1kqur.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id E1146B28F;
+ Sun, 12 Jan 2020 08:43:35 +0000 (UTC)
+Date: Sun, 12 Jan 2020 09:43:34 +0100
+Message-ID: <s5h36clkqtl.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: mickflemm@gmail.com
-In-Reply-To: <5e1a08b3.1c69fb81.ca5a.f66f@mx.google.com>
-References: <5e1a08b3.1c69fb81.ca5a.f66f@mx.google.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200111203325.20498-1-pierre-louis.bossart@linux.intel.com>
+References: <20200111203325.20498-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH v2] ALSA: usb-audio: Add support for
-	Presonus Studio 1810c
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>
+Subject: Re: [alsa-devel] [PATCH] ALSA: timer: fix nsec/sec initialization
+	confusion
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,122 +74,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 11 Jan 2020 18:40:56 +0100,
-mickflemm@gmail.com wrote:
-> 
-> This patch adds support for Presonus Studio 1810c, a usb interface
-> that's UAC2 compliant with a few quirks and a few extra hw-specific
-> controls. I've tested all 3 altsettings and the added switch
-> controls and they work as expected.
-> 
-> More infos on the card:
-> https://www.presonus.com/products/Studio-1810c
-> 
-> Note that this work is based on packet inspection with
-> usbmon. I just wanted to get this card to work for using
-> it on our open-source radio station:
-> https://github.com/UoC-Radio
-> 
-> v2 address issues reported by Takashi:
-> * Properly get/set enum type controls
-> * Prevent race condition on switch_get/set
-> * Various control naming changes
-> * Various coding style fixes
-> 
-> Signed-off-by: Nick Kossifidis <mickflemm@gmail.com>
-
-Thanks, the patch looks almost good for merge, just a couple of
-nitpicks:
-
-> --- a/sound/usb/format.c
-> +++ b/sound/usb/format.c
-> @@ -262,6 +262,23 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
->  		}
->  
->  		for (rate = min; rate <= max; rate += res) {
-> +
-> +			/*
-> +			 * Presonus Studio 1810c anounces invalid
-> +			 * sampling rates for its streams.
-> +			 */
-> +			if (chip->usb_id == USB_ID(0x0194f, 0x010c) &&
-> +			((rate > 48000 && fp->altsetting == 1) ||
-> +			 ((rate < 88200 || rate > 96000)
-> +			  && fp->altsetting == 2) ||
-> +			 ((rate < 176400 || rate > 192000)
-> +			  && fp->altsetting == 3))) {
-
-I still find it too hard to read.  Maybe better to factor out this
-check into a function.  Also it's clearer in a form of something like:
-
-static bool sc1810c_valid_sample_rate()
-{
-	switch (fp->altsetting) {
-	case 1:
-		return rate <= 48000;
-	case 2:
-		return rate >= 88200 && rate <= 96000;
-	case 3:
-		return rate >= 176400 && rate <= 192000;
-	default:
-		return true;
-	}
-}
-
-> --- /dev/null
-> +++ b/sound/usb/mixer_s1810c.c
-> @@ -0,0 +1,595 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Presonus Studio 1810c driver for ALSA
-> + * Copyright (C) 2019 Nick Kossifidis <mickflemm@gmail.com>
-> + *
-> + * Based on reverse engineering of the communication protocol
-> + * between the windows driver / Univeral Control (UC) program
-> + * and the device, through usbmon.
-> + *
-> + * For now this bypasses the mixer, with all channels split,
-> + * so that the software can mix with greater flexibility.
-> + * It also adds controls for the 4 buttons on the front of
-> + * the device.
-> + */
-> +
-> +#include <linux/usb.h>
-> +#include <linux/usb/audio-v2.h>
-> +#include <linux/slab.h>
-> +#include <sound/core.h>
-> +#include <sound/control.h>
-> +
-> +#include "usbaudio.h"
-> +#include "mixer.h"
-> +#include "mixer_quirks.h"
-> +#include "helper.h"
-
-Include mixer_s1810c.h here, too, for the function declaration.
-
-> +static const struct snd_kcontrol_new snd_s1810c_line_sw = {
-> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-> +	.name = "Line 1/2 Source Type Switch",
-
-This one is with an enum, so better to avoid "Switch" suffix.
-The user-space expects a "Switch" suffix is for a boolean blindly.
-Either omit the switch suffix, or use "Route" suffix, in any.
-
-Also, when I apply with git-am, the author is taken from From: line,
-which doesn't contain your full name .  The best would to submit the
-patch with git-send-email, then it'll add a proper From: line if
-needed.
-
-
-thanks,
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gU2F0LCAxMSBKYW4gMjAyMCAyMTozMzoyNSArMDEwMCwKUGllcnJlLUxvdWlzIEJvc3NhcnQg
+d3JvdGU6Cj4gCj4gR0NDIHJlcG9ydHMgYSB3YXJuaW5nIHdpdGggVz0xOgo+IAo+IHNvdW5kL2Nv
+cmUvdGltZXIuYzogSW4gZnVuY3Rpb24g4oCYc25kX3RpbWVyX3VzZXJfcmVhZOKAmToKPiBzb3Vu
+ZC9jb3JlL3RpbWVyLmM6MjIxOToxOTogd2FybmluZzogaW5pdGlhbGl6ZWQgZmllbGQgb3Zlcndy
+aXR0ZW4KPiBbLVdvdmVycmlkZS1pbml0XQo+ICAyMjE5IHwgICAgIC50c3RhbXBfc2VjID0gdHJl
+YWQtPnRzdGFtcF9uc2VjLAo+ICAgICAgIHwgICAgICAgICAgICAgICAgICAgXn5+fn4KPiBzb3Vu
+ZC9jb3JlL3RpbWVyLmM6MjIxOToxOTogbm90ZTogKG5lYXIgaW5pdGlhbGl6YXRpb24gZm9yCj4g
+4oCYKGFub255bW91cykudHN0YW1wX3NlY+KAmSkKPiAKPiBBc3NpZ25pbmcgbnNlYyB2YWx1ZXMg
+dG8gc2VjIGZpZWxkcyBpcyBwcm9ibGVtYXRpYyBpbiBnZW5lcmFsLCBldmVuCj4gbW9yZSBzbyB3
+aGVuIHRoZSBpbml0aWFsIGdvYWwgd2FzIHRvIHN1cnZpdmUgdGhlIDIwMzAgdGltZXIKPiBhcm1h
+Z2VkZG9uLgo+IAo+IEZpeCBieSB1c2luZyB0aGUgcHJvcGVyIGZpZWxkIGluIHRoZSBpbml0aWFs
+aXphdGlvbgo+IAo+IENjOiBCYW9saW4gV2FuZyA8YmFvbGluLndhbmdAbGluYXJvLm9yZz4KPiBD
+YzogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4KPiBGaXhlczogMDcwOTRhZTZmOTUyNyAo
+IkFMU0E6IEF2b2lkIHVzaW5nIHRpbWVzcGVjIGZvciBzdHJ1Y3Qgc25kX3RpbWVyX3RyZWFkIikK
+PiBTaWduZWQtb2ZmLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3Nh
+cnRAbGludXguaW50ZWwuY29tPgoKQXBwbGllZCBub3cuICBUaGFua3MuCgoKVGFrYXNoaQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
