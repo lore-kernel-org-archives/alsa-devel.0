@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AEC3C32771
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 10:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3360C32771
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 10:24:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D78F2222D9
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 10:06:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD77021569
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 10:24:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qNgZFirv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="Tjv6Y002"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D78F2222D9
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ohgSzWE3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=tsoy.me header.i=@tsoy.me header.b="SZ1kCcrF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD77021569
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tsoy.me
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8860D166E;
-	Sun, 12 Jan 2020 11:05:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8860D166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D9911686;
+	Sun, 12 Jan 2020 11:24:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D9911686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578823595;
-	bh=XjX44ETR78pMdnW9NR1iJKLXuMWEeplS6cfr47eszjY=;
+	s=default; t=1578824695;
+	bh=WbP36HnSAAkI2qIV+Y/m09JHsPtA1O8KEd4Sv416Y3U=;
 	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qNgZFirvFxxC7XsOvtLeU/e2DEGiJgB0BDDZyD7/pzkxsuggIMsEvWDEBVrJO/5dc
-	 NZNVl+8qRYefO1lLb0DjVnT9CZmj3KGzQZuTjf+vElUiX7+IrsAZO9vu0C2WRWdrK/
-	 9YMjsosgKebGEhPuI9BMXduc+wea2zUH7J9KhHlo=
+	b=ohgSzWE3VHT35g+s/dFZWNAkzD772L6xZ96SlJcau3AKI5OeePbnWVVL7SfDuEYLp
+	 4kvLcv4/A6l+1cMXpRXN2jZhXBV85oEt17QsepahDEBVa4qdmhffxWbfJKA+IRApI1
+	 PZFwCd3bVecivmjVvo+tKNtUl/muBcSmc1TaCPVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3E62F8014D;
-	Sun, 12 Jan 2020 11:05:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E933EF8014D;
+	Sun, 12 Jan 2020 11:24:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E9B5F8014E; Sun, 12 Jan 2020 11:05:42 +0100 (CET)
+ id 965A6F8014E; Sun, 12 Jan 2020 11:24:03 +0100 (CET)
 Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D54C9F80103
- for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 11:05:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D54C9F80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 727ACF8012E
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 11:24:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 727ACF8012E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=tsoy.me header.i=@tsoy.me
- header.b="Tjv6Y002"
+ header.b="SZ1kCcrF"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
  s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
  Subject:Cc:To:From:Reply-To:Content-Type:Content-ID:Content-Description:
  Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
  In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
  List-Post:List-Owner:List-Archive;
- bh=XRuQ1Ec43AOpcYkWIHpHMpSLiTLtzY5fULqhDCxhpxw=; b=Tjv6Y00277n60xxfahqpsf3Vq0
- xwdisgMW6WszCojDnD3/mBm03gF6MIzdC/to43KYiNJ+onriSa69O4kBCSwam5YT9K5lFQF6TDy/2
- c+vlXBUt9psalbFDqY+7imUMRlSJgDDcvWJ1kbfajWE9LIDpCrJIx7m74iFGUvpR5QP0=;
+ bh=dK431S3O7AAgm9RpJ+oQkojxtlhjUtDIZXAxvgxuEKg=; b=SZ1kCcrFamXMqvtixGxqfThqMU
+ IPpvph6smvMwkL/MY+DnXEVLs5EaYtF+EhKLfyFzPQghx361D0nJyG1TEbpMFBaKmB/RXSCIfnvMS
+ +dYdlV+VSEy4ZlD2XTHLxhwdpqrP4nWt/C5WejfZvjzeTPpBwYQsPYIaidpc68Bvnbtc=;
 Received: from [2a00:1370:8125:8203:1dce:4cab:baac:10ca]
  (helo=home.puleglot.ru)
  by puleglot.ru with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
  (Exim 4.92.3) (envelope-from <puleglot@puleglot.ru>)
- id 1iqa7m-000uTW-Fz; Sun, 12 Jan 2020 13:05:38 +0300
+ id 1iqaPX-000ufe-ES; Sun, 12 Jan 2020 13:23:59 +0300
 From: Alexander Tsoy <alexander@tsoy.me>
 To: alsa-devel@alsa-project.org
-Date: Sun, 12 Jan 2020 13:05:36 +0300
-Message-Id: <20200112100536.17326-1-alexander@tsoy.me>
+Date: Sun, 12 Jan 2020 13:23:58 +0300
+Message-Id: <20200112102358.18085-1-alexander@tsoy.me>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [alsa-devel] [PATCH v2] ALSA: usb-audio: Add boot quirk for MOTU M
+Subject: [alsa-devel] [PATCH v3] ALSA: usb-audio: Add boot quirk for MOTU M
 	Series
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -100,7 +100,7 @@ the delay. This behaviour is blindly copied from the Windows driver.
 
 Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
 ---
-v2 changes: indentation fixes
+v3 changes: fixed identations once more
 
  sound/usb/card.c   |  4 ++++
  sound/usb/quirks.c | 38 ++++++++++++++++++++++++++++++++++++++
@@ -179,7 +179,7 @@ index 82184036437b..0464df785f2e 100644
   * check if the device uses big-endian samples
   */
 diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
-index a80e0ddd0736..b46b108769e8 100644
+index a80e0ddd0736..df0355843a4c 100644
 --- a/sound/usb/quirks.h
 +++ b/sound/usb/quirks.h
 @@ -20,6 +20,11 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
@@ -187,9 +187,9 @@ index a80e0ddd0736..b46b108769e8 100644
  			     unsigned int usb_id);
  
 +int snd_usb_apply_boot_quirk_once(struct usb_device *dev,
-+			     struct usb_interface *intf,
-+			     const struct snd_usb_audio_quirk *quirk,
-+			     unsigned int usb_id);
++				  struct usb_interface *intf,
++				  const struct snd_usb_audio_quirk *quirk,
++				  unsigned int usb_id);
 +
  void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
  			      struct audioformat *fmt);
