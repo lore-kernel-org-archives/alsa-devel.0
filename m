@@ -2,66 +2,66 @@ Return-Path: <SRS0=xNGQ=3B=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 570C9C3F68F
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:21:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 917A6C32771
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:43:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51B892064C
-	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:21:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5AEF20848
+	for <alsa-devel@archiver.kernel.org>; Sun, 12 Jan 2020 08:43:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mWW8nVQm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51B892064C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a5Q8974n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5AEF20848
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CBCA168C;
-	Sun, 12 Jan 2020 09:20:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CBCA168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 913841688;
+	Sun, 12 Jan 2020 09:43:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 913841688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578817275;
-	bh=R3YgpoGcyNzeVMXBdCJSUorR3LIKA7FTgpIYPUHRRXg=;
+	s=default; t=1578818630;
+	bh=9Ns6NfQZBhIada4Yp8+29exhsHJm9tcPXwkQ+Aecmqw=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mWW8nVQm9cbBKxK6By3uNCUsaPG1ujg+BxGSaGSltT7FkXd680WNBb1c22Z7jrdSj
-	 qmcvWotGFTPvytZJO3l06SZh2In2XMUp+ZviErKWWbCNSOfnqGZONsPVxy0GkiA5J5
-	 ASQPhftdpLJOocPaq2dilT1OuiLdJt5CySmmZg5o=
+	b=a5Q8974nRdEcnRrtV203Do7wjfeu0kdGWWnhPqmjCsOtm9Jtb8sJtRbSB7/Vu6LAH
+	 j0HqBiemJDDF30pM5qyNKVv1vYQ1suQMcEVwFxOYmGDiwMAmGnJ1/GpDk2FF2xav5i
+	 P3R7ik3h65aTc87Om6arNoh1K0RkWMUZ6UKTdieY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 808A5F8014D;
-	Sun, 12 Jan 2020 09:20:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 088A0F80103;
+	Sun, 12 Jan 2020 09:43:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A60CF8014E; Sun, 12 Jan 2020 09:20:22 +0100 (CET)
+ id CF1AFF8014E; Sun, 12 Jan 2020 09:42:57 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B245F80103
- for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 09:20:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B245F80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F806F80103
+ for <alsa-devel@alsa-project.org>; Sun, 12 Jan 2020 09:42:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F806F80103
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 1B2C5B03D;
- Sun, 12 Jan 2020 08:20:18 +0000 (UTC)
-Date: Sun, 12 Jan 2020 09:20:17 +0100
-Message-ID: <s5h5zhhkrwe.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id AB697B28F;
+ Sun, 12 Jan 2020 08:42:53 +0000 (UTC)
+Date: Sun, 12 Jan 2020 09:42:52 +0100
+Message-ID: <s5h4kx1kqur.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jia-Ju Bai <baijiaju1990@gmail.com>
-In-Reply-To: <20200111163027.27135-1-baijiaju1990@gmail.com>
-References: <20200111163027.27135-1-baijiaju1990@gmail.com>
+To: mickflemm@gmail.com
+In-Reply-To: <5e1a08b3.1c69fb81.ca5a.f66f@mx.google.com>
+References: <5e1a08b3.1c69fb81.ca5a.f66f@mx.google.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- rfontana@redhat.com, tglx@linutronix.de, allison@lohutok.net
-Subject: Re: [alsa-devel] [PATCH] ALSA: cmipci: Fix possible a data race in
-	snd_cmipci_interrupt()
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH v2] ALSA: usb-audio: Add support for
+	Presonus Studio 1810c
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,83 +79,116 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 11 Jan 2020 17:30:27 +0100,
-Jia-Ju Bai wrote:
+On Sat, 11 Jan 2020 18:40:56 +0100,
+mickflemm@gmail.com wrote:
 > 
-> The functions snd_cmipci_interrupt() and snd_cmipci_capture_trigger()
-> may be concurrently executed.
+> This patch adds support for Presonus Studio 1810c, a usb interface
+> that's UAC2 compliant with a few quirks and a few extra hw-specific
+> controls. I've tested all 3 altsettings and the added switch
+> controls and they work as expected.
 > 
-> The function snd_cmipci_capture_trigger() calls
-> snd_cmipci_pcm_trigger(). In snd_cmipci_pcm_trigger(), the variable
-> rec->running is written with holding a spinlock cm->reg_lock. But in
-> snd_cmipci_interrupt(), the identical variable cm->channel[0].running
-> or cm->channel[1].running is read without holding this spinlock. Thus,
-> a possible data race may occur.
+> More infos on the card:
+> https://www.presonus.com/products/Studio-1810c
 > 
-> To fix this data race, in snd_cmipci_interrupt(), the variables
-> cm->channel[0].running and cm->channel[1].running are read with holding 
-> the spinlock cm->reg_lock.
+> Note that this work is based on packet inspection with
+> usbmon. I just wanted to get this card to work for using
+> it on our open-source radio station:
+> https://github.com/UoC-Radio
 > 
-> This data race is found by the runtime testing of our tool DILP-2.
+> v2 address issues reported by Takashi:
+> * Properly get/set enum type controls
+> * Prevent race condition on switch_get/set
+> * Various control naming changes
+> * Various coding style fixes
 > 
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> Signed-off-by: Nick Kossifidis <mickflemm@gmail.com>
 
-Thanks for the patch.
+Thanks, the patch looks almost good for merge, just a couple of
+nitpicks:
 
-That's indeed a kind of race, but this change won't fix anything in
-practice, though.  The inconsistent running flag between those places,
-there are two cases:
+> --- a/sound/usb/format.c
+> +++ b/sound/usb/format.c
+> @@ -262,6 +262,23 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
+>  		}
+>  
+>  		for (rate = min; rate <= max; rate += res) {
+> +
+> +			/*
+> +			 * Presonus Studio 1810c anounces invalid
+> +			 * sampling rates for its streams.
+> +			 */
+> +			if (chip->usb_id == USB_ID(0x0194f, 0x010c) &&
+> +			((rate > 48000 && fp->altsetting == 1) ||
+> +			 ((rate < 88200 || rate > 96000)
+> +			  && fp->altsetting == 2) ||
+> +			 ((rate < 176400 || rate > 192000)
+> +			  && fp->altsetting == 3))) {
 
-- running became 0 to 1; this cannot happen, as the irq isn't issued
-  before the stream gets started
+I still find it too hard to read.  Maybe better to factor out this
+check into a function.  Also it's clearer in a form of something like:
 
-- running became 1 to 0; this means that the stream gets stopped
-  between two points, and it's not better to call
-  snd_pcm_period_elapsed() for an already stopped stream.
+static bool sc1810c_valid_sample_rate()
+{
+	switch (fp->altsetting) {
+	case 1:
+		return rate <= 48000;
+	case 2:
+		return rate >= 88200 && rate <= 96000;
+	case 3:
+		return rate >= 176400 && rate <= 192000;
+	default:
+		return true;
+	}
+}
 
+> --- /dev/null
+> +++ b/sound/usb/mixer_s1810c.c
+> @@ -0,0 +1,595 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Presonus Studio 1810c driver for ALSA
+> + * Copyright (C) 2019 Nick Kossifidis <mickflemm@gmail.com>
+> + *
+> + * Based on reverse engineering of the communication protocol
+> + * between the windows driver / Univeral Control (UC) program
+> + * and the device, through usbmon.
+> + *
+> + * For now this bypasses the mixer, with all channels split,
+> + * so that the software can mix with greater flexibility.
+> + * It also adds controls for the 4 buttons on the front of
+> + * the device.
+> + */
+> +
+> +#include <linux/usb.h>
+> +#include <linux/usb/audio-v2.h>
+> +#include <linux/slab.h>
+> +#include <sound/core.h>
+> +#include <sound/control.h>
+> +
+> +#include "usbaudio.h"
+> +#include "mixer.h"
+> +#include "mixer_quirks.h"
+> +#include "helper.h"
+
+Include mixer_s1810c.h here, too, for the function declaration.
+
+> +static const struct snd_kcontrol_new snd_s1810c_line_sw = {
+> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+> +	.name = "Line 1/2 Source Type Switch",
+
+This one is with an enum, so better to avoid "Switch" suffix.
+The user-space expects a "Switch" suffix is for a boolean blindly.
+Either omit the switch suffix, or use "Route" suffix, in any.
+
+Also, when I apply with git-am, the author is taken from From: line,
+which doesn't contain your full name .  The best would to submit the
+patch with git-send-email, then it'll add a proper From: line if
+needed.
+
+
+thanks,
 
 Takashi
-
-> ---
->  sound/pci/cmipci.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
-> index dd9d62e2b633..f791152ec48f 100644
-> --- a/sound/pci/cmipci.c
-> +++ b/sound/pci/cmipci.c
-> @@ -1430,7 +1430,7 @@ static int snd_cmipci_capture_spdif_hw_free(struct snd_pcm_substream *subs)
->  static irqreturn_t snd_cmipci_interrupt(int irq, void *dev_id)
->  {
->  	struct cmipci *cm = dev_id;
-> -	unsigned int status, mask = 0;
-> +	unsigned int run_flag0, run_flag1, status, mask = 0;
->  	
->  	/* fastpath out, to ease interrupt sharing */
->  	status = snd_cmipci_read(cm, CM_REG_INT_STATUS);
-> @@ -1445,15 +1445,17 @@ static irqreturn_t snd_cmipci_interrupt(int irq, void *dev_id)
->  		mask |= CM_CH1_INT_EN;
->  	snd_cmipci_clear_bit(cm, CM_REG_INT_HLDCLR, mask);
->  	snd_cmipci_set_bit(cm, CM_REG_INT_HLDCLR, mask);
-> +	run_flag0 = cm->channel[0].running;
-> +	run_flag1 = cm->channel[1].running;
->  	spin_unlock(&cm->reg_lock);
->  
->  	if (cm->rmidi && (status & CM_UARTINT))
->  		snd_mpu401_uart_interrupt(irq, cm->rmidi->private_data);
->  
->  	if (cm->pcm) {
-> -		if ((status & CM_CHINT0) && cm->channel[0].running)
-> +		if ((status & CM_CHINT0) && run_flag0)
->  			snd_pcm_period_elapsed(cm->channel[0].substream);
-> -		if ((status & CM_CHINT1) && cm->channel[1].running)
-> +		if ((status & CM_CHINT1) && run_flag1)
->  			snd_pcm_period_elapsed(cm->channel[1].substream);
->  	}
->  	return IRQ_HANDLED;
-> -- 
-> 2.17.1
-> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
