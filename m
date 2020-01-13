@@ -2,59 +2,74 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA515C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40FEBC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50DA024670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50DA024670
+	by mail.kernel.org (Postfix) with ESMTPS id D05E724670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D05E724670
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B46C23C9;
-	Mon, 13 Jan 2020 22:08:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B46C23C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3127A2115;
+	Mon, 13 Jan 2020 16:28:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3127A2115
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41AE7F800B9;
-	Mon, 13 Jan 2020 22:05:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9ABCEF801F8;
+	Mon, 13 Jan 2020 16:22:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13CC0F8028A; Mon, 13 Jan 2020 22:04:56 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 777DFF80227; Mon, 13 Jan 2020 16:22:29 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DCAEDF801F7
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCAEDF801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1928F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:22:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1928F800B9
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:44 -0800
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Jan 2020 07:22:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112666"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:43 -0800
+X-IronPort-AV: E=Sophos;i="5.69,429,1571727600"; d="scan'208";a="304865985"
+Received: from bcoogan-mobl1.amr.corp.intel.com (HELO [10.252.137.69])
+ ([10.252.137.69])
+ by orsmga001.jf.intel.com with ESMTP; 13 Jan 2020 07:22:15 -0800
+To: Vinod Koul <vkoul@kernel.org>
+References: <20191217210314.20410-1-pierre-louis.bossart@linux.intel.com>
+ <20191217210314.20410-10-pierre-louis.bossart@linux.intel.com>
+ <20191227090826.GM3006@vkoul-mobl>
+ <5be4d9df-0f46-d36f-471c-aae9e1f55cc0@linux.intel.com>
+ <20200106054221.GN2818@vkoul-mobl>
+ <32ae46a7-59ee-4815-270a-a519ff462345@linux.intel.com>
+ <20200110064303.GX2818@vkoul-mobl>
+ <39000dd7-3f77-bc33-0ad3-aa47ba2360f7@linux.intel.com>
+ <20200113051800.GP2818@vkoul-mobl>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:14 -0600
-Message-Id: <20200113210428.27457-5-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
+Message-ID: <d77dcdfd-2b33-d533-e0b2-564c12223eec@linux.intel.com>
+Date: Mon, 13 Jan 2020 09:22:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 04/18] ASoC: Intel: glk_rt5682_max98357a:
-	removed unused variables
+In-Reply-To: <20200113051800.GP2818@vkoul-mobl>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v5 09/17] soundwire: intel: remove platform
+ devices and use 'Master Devices' instead
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,29 +82,142 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Rml4IEdDQyB3YXJuaW5nIHdpdGggVz0xCgpzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2dsa19ydDU2
-ODJfbWF4OTgzNTdhLmM6MjU2OjQ4OiB3YXJuaW5nOgrigJhjb25zdHJhaW50c19jaGFubmVsc+KA
-mSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtY29uc3QtdmFyaWFibGU9XQoKU2lnbmVk
-LW9mZi1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4
-LmludGVsLmNvbT4KLS0tCiBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2dsa19ydDU2ODJfbWF4OTgz
-NTdhLmMgfCAxMCAtLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTAgZGVsZXRpb25zKC0pCgpk
-aWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9nbGtfcnQ1NjgyX21heDk4MzU3YS5j
-IGIvc291bmQvc29jL2ludGVsL2JvYXJkcy9nbGtfcnQ1NjgyX21heDk4MzU3YS5jCmluZGV4IDJi
-ZmM0MzY1ZDk1Ny4uNGE2ZDExN2VhN2FmIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvYm9h
-cmRzL2dsa19ydDU2ODJfbWF4OTgzNTdhLmMKKysrIGIvc291bmQvc29jL2ludGVsL2JvYXJkcy9n
-bGtfcnQ1NjgyX21heDk4MzU3YS5jCkBAIC0yNDksMTYgKzI0OSw2IEBAIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgc25kX3BjbV9od19jb25zdHJhaW50X2xpc3QgY29uc3RyYWludHNfcmF0ZXMgPSB7CiAJ
-Lm1hc2sgPSAwLAogfTsKIAotc3RhdGljIGNvbnN0IHVuc2lnbmVkIGludCBjaGFubmVsc1tdID0g
-ewotCURVQUxfQ0hBTk5FTCwKLX07Ci0KLXN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjbV9od19j
-b25zdHJhaW50X2xpc3QgY29uc3RyYWludHNfY2hhbm5lbHMgPSB7Ci0JLmNvdW50ID0gQVJSQVlf
-U0laRShjaGFubmVscyksCi0JLmxpc3QgPSBjaGFubmVscywKLQkubWFzayA9IDAsCi19OwotCiBz
-dGF0aWMgdW5zaWduZWQgaW50IGNoYW5uZWxzX3F1YWRbXSA9IHsKIAlRVUFEX0NIQU5ORUwsCiB9
-OwotLSAKMi4yMC4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+
+
+On 1/12/20 11:18 PM, Vinod Koul wrote:
+> On 10-01-20, 10:08, Pierre-Louis Bossart wrote:
+>>
+>>>>> The "big" difference is that probe is called by core (asoc) and not by
+>>>>> driver onto themselves.. IMO that needs to go away.
+>>>>
+>>>> What I did is not different from what existed already with platform devices.
+>>>> They were manually created, weren't they?
+>>>
+>>> Manual creation of device based on a requirement is different, did I ask
+>>> you why you are creating device :)
+>>>
+>>> I am simple asking you not to call probe in the driver. If you need
+>>> that, move it to core! We do not want these kind of things in the
+>>> drivers...
+>>
+>> What core are you talking about?
+> 
+> soundwire core ofcourse! IMO All that which goes into soundwire-bus-objs is
+> considered as soundwire core part and rest are drivers intel, qc, so on!
+This master code was added to the bus:   v
+                                          v
+soundwire-bus-objs := bus_type.o bus.o master.o slave.o mipi_disco.o 
+stream.o
+obj-$(CONFIG_SOUNDWIRE) += soundwire-bus.o
+
+and the API is also part of the sdw.h include file. That seems to meet 
+exactly what you describe above, no?
+
+git grep sdw_master_device_add (reformatted output)
+
+drivers/soundwire/intel_init.c:
+md = sdw_master_device_add(&intel_sdw_driver,
+
+drivers/soundwire/master.c:
+*sdw_master_device_add(struct sdw_master_driver *driver,
+
+drivers/soundwire/master.c:
+EXPORT_SYMBOL_GPL(sdw_master_device_add);
+
+include/linux/soundwire/sdw.h:
+*sdw_master_device_add(struct sdw_master_driver *driver,
+
+So, what exactly is the issue?
+
+We are not 'calling the probe in the [Intel] driver' as you state it, we 
+use a SoundWire core API which in turn will create a device. The device 
+core takes care of calling the probe, see the master.c code which is NOT 
+Intel-specific.
+
+>>
+>> The SOF intel driver needs to create a device, which will then be bound with
+>> a SoundWire master driver.
+>>
+>> What I am doing is no different from what your team did with
+>> platform_register_device, I am really lost on what you are asking.
+> 
+> Again repeating myself, you call an API to do that is absolutely fine,
+> but we don't do that in drivers or open code these things
+That is still quite unclear, what 'open-coding' are you referring to?
+
+I am starting to wonder if you missed the addition of the master 
+functionality in the previous patch:
+
+[PATCH v5 08/17] soundwire: add initial definitions for sdw_master_device
+
+What this patch 9 does is call the core-defined API and implement the 
+intel-specific master driver.
+
+> 
+>>>>>> FWIW, the implementation here follows what was suggested for Greybus 'Host
+>>>>>> Devices' [1] [2], so it's not like I am creating any sort of dangerous
+>>>>>> precedent.
+>>>>>>
+>>>>>> [1]
+>>>>>> https://elixir.bootlin.com/linux/latest/source/drivers/greybus/es2.c#L1275
+>>>>>> [2] https://elixir.bootlin.com/linux/latest/source/drivers/greybus/hd.c#L124
+>>>>>
+>>>>> And if you look closely all this work is done by core not by drivers!
+>>>>> Drivers _should_ never do all this, it is the job of core to do that for
+>>>>> you.
+>>>>
+>>>> Please look at the code again, you have a USB probe that will manually call
+>>>> the GreyBus device creation.
+>>>>
+>>>> static int ap_probe(struct usb_interface *interface,
+>>>> 		    const struct usb_device_id *id)
+>>>> {
+>>>> 	hd = gb_hd_create(&es2_driver, &udev->dev, 	
+>>>>
+>>>>
+>>>> static struct usb_driver es2_ap_driver = {
+>>>> 	.name =		"es2_ap_driver",
+>>>> 	.probe =	ap_probe, <<< code above
+>>>> 	.disconnect =	ap_disconnect,
+>>>> 	.id_table =	id_table,
+>>>> 	.soft_unbind =	1,
+>>>> };
+>>>
+>>> Look closely the driver es2 calls into greybus core hd.c and gets the
+>>> work done, subtle but a big differances in the approaches..
+>>
+>> I am sorry, I have absolutely no idea what you are referring to.
+>>
+>> The code I copy/pasted here makes no call to the greybus core, it's ap_probe
+>> -> gb_hd_create. No core involved. If I am mistaken, please show me what I
+>> got wrong.
+> 
+> 1. es2_ap_driver is host controller driver
+> 
+> 2. gb_hd_create() is an API provided by greybus core!
+
+same in my code...
+
+> 
+> es2 driver doesn't open code creation like you are doing in intel driver,
+> it doesn't call probe on its own, greybus does that
+> 
+> This is very common pattern in linux kernel subsytems, drivers dont do
+> these things, the respective subsystem core does that... see about es2
+> driver and implementation of gb_hd_create(). See callers of
+> platform_register_device() and its implementation.
+> 
+> I don't know how else I can explain this to you, is something wrong in
+> how I conveyed this info or you... or something else, I dont know!!!
+the new 'master' functionality is part of the bus code, so please 
+clarify what you see as problematic for the partition.
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
