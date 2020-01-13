@@ -6,55 +6,55 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F24F8C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD8EC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A40D207FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A40D207FD
+	by mail.kernel.org (Postfix) with ESMTPS id 5292424658
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5292424658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D4F425CD;
-	Mon, 13 Jan 2020 22:17:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D4F425CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7566B2486;
+	Mon, 13 Jan 2020 22:11:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7566B2486
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31016F80349;
-	Mon, 13 Jan 2020 22:05:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F012BF802E3;
+	Mon, 13 Jan 2020 22:05:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5EF96F802EA; Mon, 13 Jan 2020 22:05:16 +0100 (CET)
+ id D07D5F80291; Mon, 13 Jan 2020 22:05:01 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81E2DF80227
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81E2DF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3EF90F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EF90F800B9
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:54 -0800
+ 13 Jan 2020 13:04:45 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112700"
+X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112671"
 Received: from pboliset-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:52 -0800
+ by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:44 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:27 -0600
-Message-Id: <20200113210428.27457-18-pierre-louis.bossart@linux.intel.com>
+Date: Mon, 13 Jan 2020 15:04:15 -0600
+Message-Id: <20200113210428.27457-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 17/18] ASoC: Intel: bytcr_rt5640: remove unused
-	variable
+Subject: [alsa-devel] [PATCH 05/18] ASoC: Intel: kbl_da7219_max98357a:
+	rename shadowed variable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,28 +67,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Rml4IEdDQyB3YXJuaW5nIHdpdGggVz0xCgpzb3VuZC9zb2MvaW50ZWwvL2JvYXJkcy9ieXRjcl9y
-dDU2NDAuYzo5MzY6NDA6IHdhcm5pbmc6CuKAmGJ5dF9ydDU2NDBfZGFpX3BhcmFtc+KAmSBkZWZp
-bmVkIGJ1dCBub3QgdXNlZApbLVd1bnVzZWQtY29uc3QtdmFyaWFibGU9XQoKU2lnbmVkLW9mZi1i
-eTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVs
-LmNvbT4KLS0tCiBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIHwgOCAtLS0t
-LS0tLQogMSBmaWxlIGNoYW5nZWQsIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYyBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMv
-Ynl0Y3JfcnQ1NjQwLmMKaW5kZXggYWI1ODZhNDg2ODM5Li5kZDYzMTBmZTg5MTQgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmMKKysrIGIvc291bmQvc29j
-L2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwpAQCAtOTMzLDE0ICs5MzMsNiBAQCBzdGF0aWMg
-aW50IGJ5dF9ydDU2NDBfaW5pdChzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnVudGltZSkK
-IAlyZXR1cm4gMDsKIH0KIAotc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX3BjbV9zdHJlYW0g
-Ynl0X3J0NTY0MF9kYWlfcGFyYW1zID0gewotCS5mb3JtYXRzID0gU05EUlZfUENNX0ZNVEJJVF9T
-MjRfTEUsCi0JLnJhdGVfbWluID0gNDgwMDAsCi0JLnJhdGVfbWF4ID0gNDgwMDAsCi0JLmNoYW5u
-ZWxzX21pbiA9IDIsCi0JLmNoYW5uZWxzX21heCA9IDIsCi19OwotCiBzdGF0aWMgaW50IGJ5dF9y
-dDU2NDBfY29kZWNfZml4dXAoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCwKIAkJCSAg
-ICBzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcykKIHsKLS0gCjIuMjAuMQoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Fix cppcheck warning:
+
+[sound/soc/intel/boards/kbl_da7219_max98357a.c:257] ->
+[sound/soc/intel/boards/kbl_da7219_max98357a.c:144]: (style) Local
+variable 'channels' shadows outer variable
+
+[sound/soc/intel/boards/kbl_da7219_max98357a.c:257] ->
+[sound/soc/intel/boards/kbl_da7219_max98357a.c:308]: (style) Local
+variable 'channels' shadows outer variable
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index 0d55319a0773..bc7f9a9ce9af 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -141,13 +141,13 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 
+ 	/* The ADSP will convert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+-	channels->min = channels->max = DUAL_CHANNEL;
++	chan->min = chan->max = DUAL_CHANNEL;
+ 
+ 	/* set SSP to 24 bit */
+ 	snd_mask_none(fmt);
+@@ -305,7 +305,7 @@ static const struct snd_soc_ops kabylake_da7219_fe_ops = {
+ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		struct snd_pcm_hw_params *params)
+ {
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 				SNDRV_PCM_HW_PARAM_CHANNELS);
+ 
+ 	/*
+@@ -313,9 +313,9 @@ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	 */
+ 
+ 	if (params_channels(params) == 2)
+-		channels->min = channels->max = 2;
++		chan->min = chan->max = 2;
+ 	else
+-		channels->min = channels->max = 4;
++		chan->min = chan->max = 4;
+ 
+ 	return 0;
+ }
+-- 
+2.20.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
