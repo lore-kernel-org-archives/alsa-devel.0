@@ -6,68 +6,65 @@ X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 381E3C33CB1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA056C33CB3
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7AB724670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A7D624670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="EoBk7b6s"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7AB724670
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="oPcVr1n1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A7D624670
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A8D11933;
-	Mon, 13 Jan 2020 16:14:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A8D11933
+	by alsa0.perex.cz (Postfix) with ESMTPS id 972DC207F;
+	Mon, 13 Jan 2020 16:26:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 972DC207F
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 896FFF80274;
-	Mon, 13 Jan 2020 16:13:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EFE65F80347;
+	Mon, 13 Jan 2020 16:13:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A55B6F8025A; Mon, 13 Jan 2020 16:13:11 +0100 (CET)
+ id BACC8F80292; Mon, 13 Jan 2020 16:13:39 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFBBEF800B9
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFBBEF800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A949F80299
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A949F80299
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="EoBk7b6s"
+ header.b="oPcVr1n1"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=DKRb1YKPOfd0uXdy6IoYdUTbJ+/l2DprT+iIqLNsjfw=; b=EoBk7b6sFgmU
- X5GW/7tFSh/71rKuBOjyIKumxXtrnclWrIsdj4NiUPVKsJjEyUTUzplr+vayxgkWnBDScWe/e8CWR
- KOqNNqvZZdnYWRO4KbMm41aS0TvTpvq++0hVXw/UyMjLzGoZzyWcfVyvsMgTJ9lHz7A8eGCHbHZ6G
- OpCxE=;
+ List-Archive; bh=3zu6dTj/sd32hCPozZLFXVy73z4Ck7UQjRwNDruJ1jU=; b=oPcVr1n1vslT
+ VKg1GrPqg1tG9XKOvakZ4d01S5jCKrFIpnpxyQ/HxytVlwjrXdMWIdXFNw4lRWu1GNCF2JAU7fMAY
+ zEHpVtxWr3Z9K+TplaRZMY1cjb8A7s5YR2eWsb1eUkq6MxRdmIzn8bjNQ8026CCxMMwMkAUQKhRsE
+ sZlkA=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1ir1Oo-0003Kn-5b; Mon, 13 Jan 2020 15:13:02 +0000
+ id 1ir1P2-0003MJ-O4; Mon, 13 Jan 2020 15:13:16 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id E183DD01965; Mon, 13 Jan 2020 15:13:01 +0000 (GMT)
+ id 643C5D01AE4; Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-In-Reply-To: <20200111164006.43074-3-stephan@gerhold.net>
-Message-Id: <applied-20200111164006.43074-3-stephan@gerhold.net>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200110235751.3404-3-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200110235751.3404-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:01 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- ~postmarketos/upstreaming@lists.sr.ht
-Subject: [alsa-devel] Applied "ASoC: msm8916-wcd-analog: Fix MIC BIAS
-	Internal1" to the asoc tree
+Date: Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: Intel: bdw-rt5677: change cpu_dai and
+	platform components for SOF" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,11 +85,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: msm8916-wcd-analog: Fix MIC BIAS Internal1
+   ASoC: Intel: bdw-rt5677: change cpu_dai and platform components for SOF
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -113,69 +110,50 @@ to this mail.
 Thanks,
 Mark
 
-From 057efcf9faea4769cf1020677d93d040db9b23f3 Mon Sep 17 00:00:00 2001
-From: Stephan Gerhold <stephan@gerhold.net>
-Date: Sat, 11 Jan 2020 17:40:04 +0100
-Subject: [PATCH] ASoC: msm8916-wcd-analog: Fix MIC BIAS Internal1
+From 4865bde187b29e42b3f572d9610dfca9a57c30b9 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 10 Jan 2020 17:57:45 -0600
+Subject: [PATCH] ASoC: Intel: bdw-rt5677: change cpu_dai and platform
+ components for SOF
 
-MIC BIAS Internal1 is broken at the moment because we always
-enable the internal rbias resistor to the TX2 line (connected to
-the headset microphone), rather than enabling the resistor connected
-to TX1.
+The legacy driver uses dummy cpu_dai and platform, SOF requires actual
+values to bind.
 
-Move the RBIAS code to pm8916_wcd_analog_enable_micbias_int1/2()
-to fix this.
-
-Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200111164006.43074-3-stephan@gerhold.net
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200110235751.3404-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bdw-rt5677.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 30b19f12fabc..1f7964beb20c 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -396,9 +396,6 @@ static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_component
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index 2af8e5a62da8..bb643c99069d 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -295,6 +295,14 @@ SND_SOC_DAILINK_DEF(platform,
+ SND_SOC_DAILINK_DEF(be,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-RT5677CE:00", "rt5677-aif1")));
  
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
--				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
--				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
- 		snd_soc_component_update_bits(component, reg, MICB_1_EN_PULL_DOWN_EN_MASK, 0);
- 		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
- 				    MICB_1_EN_OPA_STG2_TAIL_CURR_MASK,
-@@ -448,6 +445,14 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
- 
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
-+				    MICB_1_INT_TX1_INT_RBIAS_EN_MASK,
-+				    MICB_1_INT_TX1_INT_RBIAS_EN_ENABLE);
-+		break;
-+	}
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
++SND_SOC_DAILINK_DEF(ssp0_port,
++	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
++#else
++SND_SOC_DAILINK_DEF(ssp0_port,
++	    DAILINK_COMP_ARRAY(COMP_DUMMY()));
++#endif
 +
- 	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
- 						     wcd->micbias1_cap_mode);
- }
-@@ -558,6 +563,11 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
- 	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
+ /* Wake on voice interface */
+ SND_SOC_DAILINK_DEFS(dsp,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("spi-RT5677AA:00")),
+@@ -342,7 +350,7 @@ static struct snd_soc_dai_link bdw_rt5677_dais[] = {
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 		.init = bdw_rt5677_init,
+-		SND_SOC_DAILINK_REG(dummy, be, dummy),
++		SND_SOC_DAILINK_REG(ssp0_port, be, platform),
+ 	},
+ };
  
- 	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
-+				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
-+				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
-+		break;
- 	case SND_SOC_DAPM_POST_PMU:
- 		pm8916_mbhc_configure_bias(wcd, true);
- 		break;
 -- 
 2.20.1
 
