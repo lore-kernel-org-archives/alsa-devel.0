@@ -7,104 +7,104 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E683C33CAB
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 07:36:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A1E8C33CAB
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 07:37:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF68A2082E
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 07:36:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D95672053B
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 07:37:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XFIlRoMb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="oUVazhM0";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DkijYsVt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF68A2082E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FWNYWDjD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="WTcfEPHM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tGBH+IXl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D95672053B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 065EF15F8;
-	Mon, 13 Jan 2020 08:35:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 065EF15F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D34901657;
+	Mon, 13 Jan 2020 08:36:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D34901657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578900978;
-	bh=g/3hwdarh07IE24m5+By2Y62Sn1v2DL4g0uqlf63ECQ=;
+	s=default; t=1578901024;
+	bh=K6pe6pWdU9DDE60yjUtBkbZjfyoNn0mNgzNv2d9uHEU=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XFIlRoMbpQN5JerbqVRbbxP4C6Czar6RAr0H2/jSErGPK6Az0HoNX5/tIhYeZPQqE
-	 uOmSz95XuZAbzTyL+88+l+NjshGmpKcG7p78H/BeydQogy9oWll1NmHrKhluMnd5yT
-	 GKOcNvaiVUHuIo6q8d2U190buzzzjNebNmIqxnvk=
+	b=FWNYWDjDP21YhDSwjrWtjA4++Xh3dj3yk7WP5g5wC+5gcpf4iaY1RHUxOaYh313Sn
+	 N9B7XW9Jj81g3IYVSEAJnYNTDPA4MTqFk325pzoYt5bw23folupprzUu3X3W3EdUUA
+	 dddeRGcE0LHU6AKzoj8OcIsLp/B2cz0mBEqnPk/0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8743F801F8;
-	Mon, 13 Jan 2020 08:34:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26BFAF80271;
+	Mon, 13 Jan 2020 08:34:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D851CF801F8; Mon, 13 Jan 2020 08:34:31 +0100 (CET)
+ id 3E63EF801F7; Mon, 13 Jan 2020 08:34:32 +0100 (CET)
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6C20F80149
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 08:34:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6C20F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C34CF8014B
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 08:34:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C34CF8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="oUVazhM0"; 
+ header.b="WTcfEPHM"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="DkijYsVt"
+ header.i=@messagingengine.com header.b="tGBH+IXl"
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 65C8121C1B;
- Mon, 13 Jan 2020 02:34:24 -0500 (EST)
+ by mailout.nyi.internal (Postfix) with ESMTP id 521BF21CDD;
+ Mon, 13 Jan 2020 02:34:23 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute1.internal (MEProxy); Mon, 13 Jan 2020 02:34:24 -0500
+ by compute1.internal (MEProxy); Mon, 13 Jan 2020 02:34:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=8XDTIEIYZrwCV
- oRrztFG1cjsBG5dxTldL2QcWaLfLcU=; b=oUVazhM0C0mKs1t+deNSneRJtYpgk
- S8hWk2KtisyDwhqsP/jooQomEzAOBWSaiNEXqnmZja+xTWUgDQUILcrdwKKQelhG
- W5IKPCbxt5xB3FObk8bu97UbQRw6GdgoIFvo20uUwyywpP6fgshccrQdgBPiud6v
- AmHnKcrDdC+NDHsh0NO6tn89fRe6zmwdggfOrMoSKL4armq9u21Z6/cG1qNzU0i9
- 49gf4ExeK9nWcMHkWtl0lrjR1x4dPS8h13lXHDO/GqElLYgMTMWZ0RVNS3k/YjG6
- St/eM6kEVl0odrRDrOHIxc2l6Xyt68oYgOezvmxPVCTN18zuSGSegHgIw==
+ :mime-version:content-transfer-encoding; s=fm3; bh=OYHWOKhpnrw2r
+ FWQhbLAa/+wRbfWT8iDhIic779Z0xs=; b=WTcfEPHMD9xI9m9q9CDY6xRMQfsnF
+ zJx9+FyQYXy8O+IMlMZ6bx75FcMUnXWXok3sS/dM+BLsx7atM63WdQQiEv/YJhZm
+ P6asKEL7PmU7qPhUZTMDTpNZJWEBwAXMqSb04R562Oxgvyna2/ZeaVTY9ZCfQ4rf
+ Fiw2fbGVmJV6S4NcC41LuxuKOBcUYuaJjLMSbIuMYAX29wDB8D/IkH2I6YTXwA0K
+ whz5u5/7miYV6g01lwg4CATUBkVa11BgCAYklOAZbpjk4nDhLb1p0HIFXNYp2CFK
+ XbV8DXBbvSpis4bgATTKJed0n+vZf+HhnE2ftK8VrRGow3JvBYVVGwzLw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm1; bh=8XDTIEIYZrwCVoRrztFG1cjsBG5dxTldL2QcWaLfLcU=; b=DkijYsVt
- WibwoS9Jm9BRY4EqtcnzhndIAndq8u+UrJSGhlPM8d6IEdw5K7ZZR3JjJtSUmFHz
- GkMzzF3I1pIXSBCKBAL3x3KC46j8SL38vE0XrX+OnqfzKrLal/Xz+0xNZ6nE0LBR
- KToCzCt3s5JZaX4W9psgUKkn3/g8GNJakqAMFaRMeoWx7eItPnLGqihSv1M3Ebkm
- uKhCI0YR9RND85oo3+cGPwhTuGde8t1iDZqSoZmjYvXO2SFJkjUe+VDYlJbk3BKg
- z1BQlRw5xJB3rBEuPlpUYwe1p6G8x7gff+yHDIj20xkvHYh5V+mwGJDopCXji12h
- cfLE1NNYD+Kxvg==
-X-ME-Sender: <xms:gB0cXqlCUGn3F8TcSvSNfsr2BsjnmfqL4_Jhdd2msdeetV1kxmr0og>
+ fm1; bh=OYHWOKhpnrw2rFWQhbLAa/+wRbfWT8iDhIic779Z0xs=; b=tGBH+IXl
+ 7MgEdXpl/I+5wUAa0vTHzzMW+eLxsOs3OrG4bHUvjyxH/DJIYDrie8nuTmEC2+oe
+ 2z2kopYTeIlcWz4q7z961ozBttmG1WcNYDOyljTWgSnROuagsc9jyB5HwF5sPp81
+ +B3tEBUTzQTwCwieDtmHQGKtMhve8Ey3RSFGC/3bgZPrY+V3Itjzg99tY5GuLVYo
+ jhJBBfCtPe4iqTeS7TErTAdupBuTCGnWXg2sTKhpSyk04XmiNqwgL0o99Ik2+TkA
+ bfW/mK48IuiSDQnkKC6Nar85gX86SnGxKJxwfVYcHtojST744IMb97GneygPNMtQ
+ VMuHzIk+CTSJtw==
+X-ME-Sender: <xms:fx0cXmB6BWSZLWL8Pp_gDrlUiMrAA5gduRAe6MwoIcakfjajFgpS1Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvdeiledgudduudcutefuodetggdotefrod
  ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
  necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
  ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
  rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucfkphepudegrdefrdejhedrudekud
  enucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggt
- hhhirdhjphenucevlhhushhtvghrufhiiigvpedu
-X-ME-Proxy: <xmx:gB0cXlFAWil6Sa3NFoUqGmxYam83RaGQiKdPG6D0N1ZZ2hJHUJymAQ>
- <xmx:gB0cXiGsrCKBxmPNTWgsb2Yc3K7jvTVgJS5iqfWahPaJAmRxAr1Zug>
- <xmx:gB0cXqNr-JyO51Es9VoRrLcGheuQMKtKBm03bE4YRvBAzitKJjQ6Ww>
- <xmx:gB0cXkmA8WYWQStSGyb8WXU9OMCiO4ubqcoV8q_-vFegzE1gsOuRoQ>
+ hhhirdhjphenucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:fx0cXsCklsfNfSC1oNO0kSOQQuj2vzJSZnb8nudeXftrXdAYcQYzDA>
+ <xmx:fx0cXgnp_AOf-2PTASTRnQ_PHSJd_71sKRuIfHbgU8dvlC0jr9W4xQ>
+ <xmx:fx0cXttULgey7mVn9etLssdnjrKSr8i-21Ub6mfbvlAq3ZaHytgGPw>
+ <xmx:fx0cXvbBIj1d-Re00MXgoJpwRbldIQaEryXJNHTBMlW7zV51ntXVKA>
 Received: from workstation.flets-east.jp (ae075181.dynamic.ppp.asahi-net.or.jp
  [14.3.75.181])
- by mail.messagingengine.com (Postfix) with ESMTPA id 7A67B80065;
- Mon, 13 Jan 2020 02:34:23 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 5DC0F80065;
+ Mon, 13 Jan 2020 02:34:22 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Date: Mon, 13 Jan 2020 16:34:17 +0900
-Message-Id: <20200113073418.24622-3-o-takashi@sakamocchi.jp>
+Date: Mon, 13 Jan 2020 16:34:16 +0900
+Message-Id: <20200113073418.24622-2-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200113073418.24622-1-o-takashi@sakamocchi.jp>
 References: <20200113073418.24622-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 2/3] ALSA: oxfw: don't add MIDI/PCM interface
-	when packet streaming is unavailable
+Subject: [alsa-devel] [PATCH 1/3] ALSA: oxfw: use ENXIO for not-supported
+	cases
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,113 +122,105 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Stanton SCS.1d doesn't support packet streaming even if it has plugs for
-isochronous communication.
+When AV/C command returns 'NOT IMPLEMENTED' status in its response, ALSA
+oxfw driver uses ENOSYS as error code. However, it's expected just to be
+used for missing system call number.
 
-This commit is a preparation for this case. The 'has_input' member is
-added to specific structure, and MIDI/PCM interfaces are not added when
-the member is false.
+This commit replaces it with ENXIO.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw-stream.c |  2 ++
- sound/firewire/oxfw/oxfw.c        | 39 +++++++++++++++++--------------
- sound/firewire/oxfw/oxfw.h        |  1 +
- 3 files changed, 25 insertions(+), 17 deletions(-)
+ sound/firewire/oxfw/oxfw-command.c |  6 +++---
+ sound/firewire/oxfw/oxfw-stream.c  | 12 ++++++------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/sound/firewire/oxfw/oxfw-command.c b/sound/firewire/oxfw/oxfw-command.c
+index 16dc337c7093..d2e57c76070d 100644
+--- a/sound/firewire/oxfw/oxfw-command.c
++++ b/sound/firewire/oxfw/oxfw-command.c
+@@ -38,7 +38,7 @@ int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
+ 	else if (err < len + 10)
+ 		err = -EIO;
+ 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
+-		err = -ENOSYS;
++		err = -ENXIO;
+ 	else if (buf[0] == 0x0a) /* REJECTED */
+ 		err = -EINVAL;
+ 	else
+@@ -83,7 +83,7 @@ int avc_stream_get_format(struct fw_unit *unit,
+ 	else if (err < 12)
+ 		err = -EIO;
+ 	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
+-		err = -ENOSYS;
++		err = -ENXIO;
+ 	else if (buf[0] == 0x0a)	/* REJECTED */
+ 		err = -EINVAL;
+ 	else if (buf[0] == 0x0b)	/* IN TRANSITION */
+@@ -147,7 +147,7 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
+ 	else if (err < 8)
+ 		err = -EIO;
+ 	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
+-		err = -ENOSYS;
++		err = -ENXIO;
+ 	if (err < 0)
+ 		goto end;
+ 
 diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index 692324670c78..36c3dd84d189 100644
+index 501a80094bf7..692324670c78 100644
 --- a/sound/firewire/oxfw/oxfw-stream.c
 +++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -772,6 +772,8 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw)
- 			if (formation.midi > 0)
- 				oxfw->midi_output_ports = 1;
- 		}
-+
-+		oxfw->has_input = true;
+@@ -513,7 +513,7 @@ int snd_oxfw_stream_parse_format(u8 *format,
+ 	 *  Level 1:	AM824 Compound  (0x40)
+ 	 */
+ 	if ((format[0] != 0x90) || (format[1] != 0x40))
+-		return -ENOSYS;
++		return -ENXIO;
+ 
+ 	/* check the sampling rate */
+ 	for (i = 0; i < ARRAY_SIZE(avc_stream_rate_table); i++) {
+@@ -521,7 +521,7 @@ int snd_oxfw_stream_parse_format(u8 *format,
+ 			break;
  	}
- end:
- 	return err;
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index fb6df3fc018e..1f1e3236efb8 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -118,7 +118,8 @@ static void oxfw_card_free(struct snd_card *card)
- {
- 	struct snd_oxfw *oxfw = card->private_data;
+ 	if (i == ARRAY_SIZE(avc_stream_rate_table))
+-		return -ENOSYS;
++		return -ENXIO;
  
--	snd_oxfw_stream_destroy_duplex(oxfw);
-+	if (oxfw->has_output || oxfw->has_input)
-+		snd_oxfw_stream_destroy_duplex(oxfw);
+ 	formation->rate = oxfw_rate_table[i];
+ 
+@@ -565,13 +565,13 @@ int snd_oxfw_stream_parse_format(u8 *format,
+ 		/* Don't care */
+ 		case 0xff:
+ 		default:
+-			return -ENOSYS;	/* not supported */
++			return -ENXIO;	/* not supported */
+ 		}
+ 	}
+ 
+ 	if (formation->pcm  > AM824_MAX_CHANNELS_FOR_PCM ||
+ 	    formation->midi > AM824_MAX_CHANNELS_FOR_MIDI)
+-		return -ENOSYS;
++		return -ENXIO;
+ 
+ 	return 0;
  }
+@@ -656,7 +656,7 @@ static int fill_stream_formats(struct snd_oxfw *oxfw,
+ 	/* get first entry */
+ 	len = AVC_GENERIC_FRAME_MAXIMUM_BYTES;
+ 	err = avc_stream_get_format_list(oxfw->unit, dir, 0, buf, &len, 0);
+-	if (err == -ENOSYS) {
++	if (err == -ENXIO) {
+ 		/* LIST subfunction is not implemented */
+ 		len = AVC_GENERIC_FRAME_MAXIMUM_BYTES;
+ 		err = assume_stream_formats(oxfw, dir, pid, buf, &len,
+@@ -728,7 +728,7 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw)
+ 			err);
+ 		goto end;
+ 	} else if ((plugs[0] == 0) && (plugs[1] == 0)) {
+-		err = -ENOSYS;
++		err = -ENXIO;
+ 		goto end;
+ 	}
  
- static int detect_quirks(struct snd_oxfw *oxfw)
-@@ -206,23 +207,25 @@ static void do_registration(struct work_struct *work)
- 	if (err < 0)
- 		goto error;
- 
--	err = snd_oxfw_stream_init_duplex(oxfw);
--	if (err < 0)
--		goto error;
-+	if (oxfw->has_output || oxfw->has_input) {
-+		err = snd_oxfw_stream_init_duplex(oxfw);
-+		if (err < 0)
-+			goto error;
- 
--	err = snd_oxfw_create_pcm(oxfw);
--	if (err < 0)
--		goto error;
-+		err = snd_oxfw_create_pcm(oxfw);
-+		if (err < 0)
-+			goto error;
- 
--	snd_oxfw_proc_init(oxfw);
-+		snd_oxfw_proc_init(oxfw);
- 
--	err = snd_oxfw_create_midi(oxfw);
--	if (err < 0)
--		goto error;
-+		err = snd_oxfw_create_midi(oxfw);
-+		if (err < 0)
-+			goto error;
- 
--	err = snd_oxfw_create_hwdep(oxfw);
--	if (err < 0)
--		goto error;
-+		err = snd_oxfw_create_hwdep(oxfw);
-+		if (err < 0)
-+			goto error;
-+	}
- 
- 	err = snd_card_register(oxfw->card);
- 	if (err < 0)
-@@ -274,9 +277,11 @@ static void oxfw_bus_reset(struct fw_unit *unit)
- 	fcp_bus_reset(oxfw->unit);
- 
- 	if (oxfw->registered) {
--		mutex_lock(&oxfw->mutex);
--		snd_oxfw_stream_update_duplex(oxfw);
--		mutex_unlock(&oxfw->mutex);
-+		if (oxfw->has_output || oxfw->has_input) {
-+			mutex_lock(&oxfw->mutex);
-+			snd_oxfw_stream_update_duplex(oxfw);
-+			mutex_unlock(&oxfw->mutex);
-+		}
- 
- 		if (oxfw->entry->vendor_id == OUI_STANTON)
- 			snd_oxfw_scs1x_update(oxfw);
-diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index c30e537087b0..fa2d7f9e2dc3 100644
---- a/sound/firewire/oxfw/oxfw.h
-+++ b/sound/firewire/oxfw/oxfw.h
-@@ -45,6 +45,7 @@ struct snd_oxfw {
- 
- 	bool wrong_dbs;
- 	bool has_output;
-+	bool has_input;
- 	u8 *tx_stream_formats[SND_OXFW_STREAM_FORMAT_ENTRIES];
- 	u8 *rx_stream_formats[SND_OXFW_STREAM_FORMAT_ENTRIES];
- 	bool assumed;
 -- 
 2.20.1
 
