@@ -2,56 +2,66 @@ Return-Path: <SRS0=qOpI=3C=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74218C33CAB
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 489D4C33CA8
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:42:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 972F62082E
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:26:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C1562075B
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 09:42:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oQPTjdrc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 972F62082E
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ldEeBEqe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C1562075B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77E9284C;
-	Mon, 13 Jan 2020 10:25:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77E9284C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C01785D;
+	Mon, 13 Jan 2020 10:41:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C01785D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578907589;
-	bh=4UT+3arMoRUl76/eMF3KRvoJcIul+zz3OSRRjyVmzko=;
-	h=From:To:In-Reply-To:References:Date:Subject:List-Id:
+	s=default; t=1578908532;
+	bh=07HqteFP+a31AhXEf37Q7EKblieDJnAgi8siNIDe4NQ=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oQPTjdrcDSSM5P9HkdzU1sZVLxetePtLCmzevV1/E9H2F1yi0m13j/PG43LnkAE9G
-	 hsGCzAJ+3231FK0fsojcacGUd94FmQtmWs6OC1XYSlHdmxsmEfEIeMatLZJPPCUYEQ
-	 VEu2XeWM7EquohCZ8ROGfSrMUDyVa72QDKWNnqss=
+	b=ldEeBEqeVyq+Bj0lduDlLSUck+w7UKyQAnhVyWBaaj0JioMsefu1dMng+7ImA0Q0z
+	 R8HkbYRhiT860nEa2QZ8c/SxNsD9cZuq/ltok2dZUxiAWaDWAn0xi3xo5vS5Y86280
+	 eqOmiL8S6ktCDq9H04Ig/T0Ep3CvNkXs//b7MDSk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1DFEF8014B;
-	Mon, 13 Jan 2020 10:25:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8863FF8014B;
+	Mon, 13 Jan 2020 10:41:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85513F801EB; Mon, 13 Jan 2020 10:25:37 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B8B45F80122
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 10:25:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8B45F80122
-MIME-Version: 1.0
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1578907534036149025-webhooks-bot@alsa-project.org>
-References: <1578907534036149025-webhooks-bot@alsa-project.org>
-Message-Id: <20200113092537.85513F801EB@alsa1.perex.cz>
-Date: Mon, 13 Jan 2020 10:25:37 +0100 (CET)
-Subject: [alsa-devel] Quote strings containing [ or ] when saving an alsa
-	config
+ id 0A735F800B9; Mon, 13 Jan 2020 10:41:19 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E5D7F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 10:41:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E5D7F800B9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 3C6C1AFCE;
+ Mon, 13 Jan 2020 09:41:15 +0000 (UTC)
+Date: Mon, 13 Jan 2020 10:41:15 +0100
+Message-ID: <s5h1rs3lmmc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+In-Reply-To: <20200113085719.26788-1-o-takashi@sakamocchi.jp>
+References: <20200113085719.26788-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, Scott Bahling <sbahling@suse.com>,
+ stable@vger.kernel.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: firewire-tascam: fix corruption due
+	to spin lock without restoration in SoftIRQ context
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,17 +79,21 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib pull request #23 was opened from Bertware:
+On Mon, 13 Jan 2020 09:57:19 +0100,
+Takashi Sakamoto wrote:
+> 
+> ALSA firewire-tascam driver can bring corruption due to spin lock without
+> restoration of IRQ flag in SoftIRQ context. This commit fixes the bug.
+> 
+> Cc: Scott Bahling <sbahling@suse.com>
+> Cc: <stable@vger.kernel.org> # v4.21
+> Fixes: d7167422433c ("ALSA: firewire-tascam: queue events for change of control surface")
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-This pull request will fix issue #22.
+Applied, thanks.
 
-When saving the configuration for a control, values containing square brackets should be quoted. Please review and test as this code hasn't been tested yet. 
 
-Note: does the '+' character also need quotes? If so, now might be a good time to add it to this list.
-
-Request URL   : https://github.com/alsa-project/alsa-lib/pull/23
-Patch URL     : https://github.com/alsa-project/alsa-lib/pull/23.patch
-Repository URL: https://github.com/alsa-project/alsa-lib
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
