@@ -2,70 +2,59 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 914ECC33CB2
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88F7AC33CB2
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E994214AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E994214AF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=timakro.de
+	by mail.kernel.org (Postfix) with ESMTPS id 1421024658
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1421024658
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD4D71881;
-	Mon, 13 Jan 2020 15:28:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD4D71881
+	by alsa0.perex.cz (Postfix) with ESMTPS id A530F23A5;
+	Mon, 13 Jan 2020 22:07:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A530F23A5
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2999AF8014B;
-	Mon, 13 Jan 2020 15:28:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5431F80272;
+	Mon, 13 Jan 2020 22:05:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63B5AF801EB; Mon, 13 Jan 2020 15:28:00 +0100 (CET)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B9517F80278; Mon, 13 Jan 2020 22:04:54 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F173F80122
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 15:27:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F173F80122
-Received: from localhost ([130.83.5.183]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis) id
- 1MK3a4-1j5m7e1XFm-00LTid; Mon, 13 Jan 2020 15:27:56 +0100
-Date: Mon, 13 Jan 2020 15:27:53 +0100
-From: Tim Schumacher <tim@timakro.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <20200113142753.GA22538@impa>
-References: <20200109221032.GA74081@impa>
- <7294fce2-716e-00c2-665f-587424b96eb0@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 980FDF80149
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 980FDF80149
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Jan 2020 13:04:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112663"
+Received: from pboliset-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
+ by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:43 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Date: Mon, 13 Jan 2020 15:04:13 -0600
+Message-Id: <20200113210428.27457-4-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
+References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7294fce2-716e-00c2-665f-587424b96eb0@perex.cz>
-X-Provags-ID: V03:K1:2odCcj3ieWPjU2jlQz8hhq/V+beJegbGesNpHRX53zhuaJpOkn2
- NMcprsMo4P0hQ2dZL8zcdcO5lUdte8zW6wmaBce+l+JjxkuoMYiAVONDMEw1A2msUDtcbCR
- j3dczoSkkTRthIXZxfqQJfPbhBxvpUW3B35/u6880411mhd1tSa43z4K0n4JBsshkeLFae9
- O3vFwTYxTuJK8t0nCnPfQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0CwlWdJoECI=:X04HOV3DmzL4GA55QSRqUY
- 0m805v9cNwK4FSVBtMIxscqWmpGakrjjoourkvF+GC7OXMacKi5rOv82q7jmvUL2Twztvwnue
- 7NXys7L6cKNhSwXB8HWXGoabf9SEcv4KeSZaAgYuUhGHNksyG8f8hIb/OZFqhUtcHq7shmbbr
- jXo+Q3L7c9UMSf7lcGpmgnrBMl33SP3MSFLonYmyHC7EWpcmxL/sdfXH5tASSmaeN0A8LQPtP
- L+U8MjrkW0Uo6Q7ukYdJMQeWAYmVA7hLb9jPA6Iu2Cml8SeElPMwu5zszhCP/kuINwnvU3kvE
- Rhg9+g49CtmcNZhaSvH6lMaKuwd+VYseSDBmXPng4MePiABjfpkr+YvYB2iC7YBO3qkg/WZ7S
- gzeY+OEwL1LDk840GXKQJvRBmKn9lCDNFNkJxQw1XXN5okJRlfeueLEMMElouwPVvRP/W/nuY
- b1eOjtBeX1JoRbwfojLYLQDh4bUkxgVz2Q4z8s6OBuk/uM8llzDPz/elTGoRru2xxNar2sw/R
- Qfz0SAZyXWB42gElU6R5cV4w3A/O/3nssedz4Bskh5t+4W2FeO4ys5jy1+GkJrdr8TAyUio4P
- zXvkhVTWuJrc+7KPrxcOWPA3klm8ZJeAwteSTZX5MCxDw8Ag42Zt4qk+8HhP04whZ4OsevKId
- Hy46zTg5FCFYw2YEPj30kBaXIhRhGykUTSUYK21GFWaQGA83uOi+49CDQ3y3Ls97d/+nLKAmu
- 2AZ0P+XwxfK7s/An1LgQ7yr5mr9MMOF7cdOeKeovcbDnmhGc69IMVlGDgJuNr4y7E/RyBt8eG
- oRwr/5S0jsfKlkt5tRzrHj6fm5ddPiOCDyy9zS8SZZN8wl7w6hzwTKSAcrxRZffkjjotyfgBk
- jn8B8FDNywtLTu97d4nQ==
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Bug report for changes in ucm2 with chtrt5645 card
- on Lenovo Miix 320
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH 03/18] ASoC: Intel: glk_rt5682_max98357a:
+	rename shadowed variable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,47 +72,58 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch doesn't help unfortunately. Deleting
-LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf still works with the
-patch installed. Can I help debug this somehow?
+[sound/soc/intel/boards/glk_rt5682_max98357a.c:252] ->
+[sound/soc/intel/boards/glk_rt5682_max98357a.c:121]: (style) Local
+variable 'channels' shadows outer variable
 
-- Tim
+[sound/soc/intel/boards/glk_rt5682_max98357a.c:252] ->
+[sound/soc/intel/boards/glk_rt5682_max98357a.c:275]: (style) Local
+variable 'channels' shadows outer variable
 
-On 2020-01-13, Jaroslav Kysela wrote:
-> Dne 09. 01. 20 v 23:10 Tim Schumacher napsal(a):
-> > Hi alsa devs,
-> > 
-> > I'm on Arch Linux on a rather uncommon laptop (Lenovo Miix 320) and my sound
-> > stopped working on the upgrade from alsa-lib 1.1.9 to 1.2.1. wabbits on
-> > IRC helped me track down the problem to a change in the
-> > /usr/share/alsa/ucm (now /usr/share/alsa/ucm2) files. It seems like
-> > /usr/share/alsa/ucm2/chtrt5645/HiFi-dmic2.conf and a symlink at
-> > /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
-> > were specifically added for this laptop but in the contrary they break the
-> > sound for me.
-> > 
-> > After the upgrade to alsa-lib 1.2.1 the sound is not working. The commands play no sound:
-> > 
-> >      pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,0
-> >      pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,1
-> > 
-> > And this is the alsa-info.sh output http://alsa-project.org/db/?f=f883910a5c5101b4b1ea4202d1fe84ccd139f796
-> > 
-> > After deleting the /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
-> > symlink both commands from above play sound and this is the alsa-info.sh
-> > output http://alsa-project.org/db/?f=e759eb9118a191b6c3b8c021fed58abc9cf95076
-> 
-> Thanks. I forgot to fix the file path in chtrt5645/chtrt5645-dmic2.conf .
-> Could you test this patch?
-> 
-> https://github.com/alsa-project/alsa-ucm-conf/commit/74f2a0f0884df7b9f2d08d07456a3bc37d1a512e
-> 
-> 				Jaroslav
-> 
-> -- 
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-> 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index b36264d1d1cd..2bfc4365d957 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -118,13 +118,13 @@ static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 
+ 	/* The ADSP will convert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+-	channels->min = channels->max = DUAL_CHANNEL;
++	chan->min = chan->max = DUAL_CHANNEL;
+ 
+ 	/* set SSP to 24 bit */
+ 	snd_mask_none(fmt);
+@@ -272,13 +272,13 @@ static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
+ static int geminilake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		struct snd_pcm_hw_params *params)
+ {
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 				SNDRV_PCM_HW_PARAM_CHANNELS);
+ 
+ 	/*
+ 	 * set BE channel constraint as user FE channels
+ 	 */
+-	channels->min = channels->max = 4;
++	chan->min = chan->max = 4;
+ 
+ 	return 0;
+ }
+-- 
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
