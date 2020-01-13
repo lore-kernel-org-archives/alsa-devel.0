@@ -4,60 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FDD2C33CB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BCC7C33CB2
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A3012467D
+	by mail.kernel.org (Postfix) with ESMTPS id B9A082467D
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A3012467D
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9A082467D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BE4D2706;
-	Mon, 13 Jan 2020 23:57:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BE4D2706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B6AD2419;
+	Mon, 13 Jan 2020 22:09:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B6AD2419
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F5FBF80149;
-	Mon, 13 Jan 2020 23:57:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F28DF801F7;
+	Mon, 13 Jan 2020 22:05:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2E02F801EB; Mon, 13 Jan 2020 23:57:03 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 7E25EF8028F; Mon, 13 Jan 2020 22:04:58 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 830F5F80149
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 23:56:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 830F5F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id D29EEF80227
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D29EEF80227
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 14:56:57 -0800
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Jan 2020 13:04:46 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="304974676"
+X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112677"
 Received: from pboliset-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga001.jf.intel.com with ESMTP; 13 Jan 2020 14:56:55 -0800
+ by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:45 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 16:56:37 -0600
-Message-Id: <20200113225637.17313-1-pierre-louis.bossart@linux.intel.com>
+Date: Mon, 13 Jan 2020 15:04:17 -0600
+Message-Id: <20200113210428.27457-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
+References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: [alsa-devel] [PATCH] soundwire: bus: fix device number leak on
-	errors
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH 07/18] ASoC: Intel: kbl_da7219_max98927: rename
+	shadowed variable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,101 +72,73 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the programming of the dev_number fails due to an IO error, a new
-device_number will be assigned, resulting in a leak.
+Fix cppcheck warning:
 
-Make sure we only assign a device_number once per Slave device.
+[sound/soc/intel/boards/kbl_da7219_max98927.c:432] ->
+[sound/soc/intel/boards/kbl_da7219_max98927.c:282]: (style) Local
+variable 'channels' shadows outer variable
+
+[sound/soc/intel/boards/kbl_da7219_max98927.c:432] ->
+[sound/soc/intel/boards/kbl_da7219_max98927.c:494]: (style) Local
+variable 'channels' shadows outer variable
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c       | 37 ++++++++++++++++++++++-------------
- include/linux/soundwire/sdw.h |  4 +++-
- 2 files changed, 26 insertions(+), 15 deletions(-)
+ sound/soc/intel/boards/kbl_da7219_max98927.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index be5d437058ed..8f973e70e6f7 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -456,26 +456,35 @@ static int sdw_get_device_num(struct sdw_slave *slave)
- static int sdw_assign_device_num(struct sdw_slave *slave)
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index e8b2ec60fb03..f8cf5de5ba09 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -279,7 +279,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
  {
- 	int ret, dev_num;
-+	bool new_device = false;
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	struct snd_soc_dpcm *dpcm = container_of(
+@@ -298,7 +298,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		!strcmp(rtd->card->name, "kblmax98373")) {
+ 		/* The ADSP will convert the FE rate to 48k, stereo */
+ 		rate->min = rate->max = 48000;
+-		channels->min = channels->max = DUAL_CHANNEL;
++		chan->min = chan->max = DUAL_CHANNEL;
  
- 	/* check first if device number is assigned, if so reuse that */
- 	if (!slave->dev_num) {
--		mutex_lock(&slave->bus->bus_lock);
--		dev_num = sdw_get_device_num(slave);
--		mutex_unlock(&slave->bus->bus_lock);
--		if (dev_num < 0) {
--			dev_err(slave->bus->dev, "Get dev_num failed: %d\n",
--				dev_num);
--			return dev_num;
-+		if (!slave->dev_num_sticky) {
-+			mutex_lock(&slave->bus->bus_lock);
-+			dev_num = sdw_get_device_num(slave);
-+			mutex_unlock(&slave->bus->bus_lock);
-+			if (dev_num < 0) {
-+				dev_err(slave->bus->dev, "Get dev_num failed: %d\n",
-+					dev_num);
-+				return dev_num;
-+			}
-+			slave->dev_num = dev_num;
-+			slave->dev_num_sticky = dev_num;
-+			new_device = true;
-+		} else {
-+			slave->dev_num = slave->dev_num_sticky;
- 		}
--	} else {
-+	}
-+
-+	if (!new_device)
- 		dev_info(slave->bus->dev,
--			 "Slave already registered dev_num:%d\n",
-+			 "Slave already registered, reusing dev_num:%d\n",
- 			 slave->dev_num);
- 
--		/* Clear the slave->dev_num to transfer message on device 0 */
--		dev_num = slave->dev_num;
--		slave->dev_num = 0;
--	}
-+	/* Clear the slave->dev_num to transfer message on device 0 */
-+	dev_num = slave->dev_num;
-+	slave->dev_num = 0;
- 
- 	ret = sdw_write(slave, SDW_SCP_DEVNUMBER, dev_num);
- 	if (ret < 0) {
-@@ -485,7 +494,7 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
+ 		/* set SSP to 24 bit */
+ 		snd_mask_none(fmt);
+@@ -313,7 +313,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+ 	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
+ 		rate->min = rate->max = 48000;
+-		channels->min = channels->max = 2;
++		chan->min = chan->max = 2;
+ 		snd_mask_none(fmt);
+ 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
  	}
+@@ -494,7 +494,7 @@ static const struct snd_soc_ops kabylake_da7219_fe_ops = {
+ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		struct snd_pcm_hw_params *params)
+ {
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 				SNDRV_PCM_HW_PARAM_CHANNELS);
  
- 	/* After xfer of msg, restore dev_num */
--	slave->dev_num = dev_num;
-+	slave->dev_num = slave->dev_num_sticky;
+ 	/*
+@@ -502,9 +502,9 @@ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	 */
+ 
+ 	if (params_channels(params) == 2)
+-		channels->min = channels->max = 2;
++		chan->min = chan->max = 2;
+ 	else
+-		channels->min = channels->max = 4;
++		chan->min = chan->max = 4;
  
  	return 0;
  }
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index b7c9eca4332a..b451bb622335 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -546,7 +546,8 @@ struct sdw_slave_ops {
-  * @debugfs: Slave debugfs
-  * @node: node for bus list
-  * @port_ready: Port ready completion flag for each Slave port
-- * @dev_num: Device Number assigned by Bus
-+ * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
-+ * @dev_num_sticky: one-time static Device Number assigned by Bus
-  * @probed: boolean tracking driver state
-  * @probe_complete: completion utility to control potential races
-  * on startup between driver probe/initialization and SoundWire
-@@ -575,6 +576,7 @@ struct sdw_slave {
- 	struct list_head node;
- 	struct completion *port_ready;
- 	u16 dev_num;
-+	u16 dev_num_sticky;
- 	bool probed;
- 	struct completion probe_complete;
- 	struct completion enumeration_complete;
 -- 
 2.20.1
 
