@@ -6,55 +6,55 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95C1DC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FD0CC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BE3A24670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BE3A24670
+	by mail.kernel.org (Postfix) with ESMTPS id 1519B24670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1519B24670
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B3B12535;
-	Mon, 13 Jan 2020 22:14:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B3B12535
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C7772368;
+	Mon, 13 Jan 2020 22:05:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C7772368
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CEEEF80322;
-	Mon, 13 Jan 2020 22:05:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D3F9F801F8;
+	Mon, 13 Jan 2020 22:04:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7D8EF80291; Mon, 13 Jan 2020 22:05:07 +0100 (CET)
+ id 54D89F8026F; Mon, 13 Jan 2020 22:04:51 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5385FF80278
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5385FF80278
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41AD0F801EB
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41AD0F801EB
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:50 -0800
+ 13 Jan 2020 13:04:43 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112690"
+X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112662"
 Received: from pboliset-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:50 -0800
+ by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:42 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:24 -0600
-Message-Id: <20200113210428.27457-15-pierre-louis.bossart@linux.intel.com>
+Date: Mon, 13 Jan 2020 15:04:12 -0600
+Message-Id: <20200113210428.27457-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 14/18] ASoC: Intel: skl_nau88l25_ssm4567:
-	rename shadowed variable
+Subject: [alsa-devel] [PATCH 02/18] ASoC: Intel: bxt_rt298: rename shadowed
+	variable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,32 +72,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix cppcheck warning
+Fix cppcheck warning:
 
-[sound/soc/intel/boards/skl_nau88l25_ssm4567.c:277] ->
-[sound/soc/intel/boards/skl_nau88l25_ssm4567.c:320]: (style) Local
-variable 'channels' shadows outer variable
+[sound/soc/intel/boards/bxt_rt298.c:291] ->
+[sound/soc/intel/boards/bxt_rt298.c:209]: (style) Local variable
+'channels' shadows outer variable
 
-[sound/soc/intel/boards/skl_nau88l25_ssm4567.c:277] ->
-[sound/soc/intel/boards/skl_nau88l25_ssm4567.c:337]: (style) Local
-variable 'channels' shadows outer variable
+[sound/soc/intel/boards/bxt_rt298.c:291] ->
+[sound/soc/intel/boards/bxt_rt298.c:258]: (style) Local variable
+'channels' shadows outer variable
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/bxt_rt298.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index b96b014e8c9e..c99c8b23e509 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -317,13 +317,13 @@ static int skylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index eabf9d8468ae..067a97e7e6a8 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -206,13 +206,13 @@ static int broxton_ssp5_fixup(struct snd_soc_pcm_runtime *rtd,
  {
  	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
+ 					SNDRV_PCM_HW_PARAM_RATE);
 -	struct snd_interval *channels = hw_param_interval(params,
 +	struct snd_interval *chan = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
+ 					SNDRV_PCM_HW_PARAM_CHANNELS);
  	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
  
  	/* The ADSP will covert the FE rate to 48k, stereo */
@@ -105,21 +105,17 @@ index b96b014e8c9e..c99c8b23e509 100644
 -	channels->min = channels->max = 2;
 +	chan->min = chan->max = 2;
  
- 	/* set SSP0 to 24 bit */
+ 	/* set SSP5 to 24 bit */
  	snd_mask_none(fmt);
-@@ -334,12 +334,12 @@ static int skylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 			struct snd_pcm_hw_params *params)
+@@ -255,9 +255,9 @@ static const struct snd_pcm_hw_constraint_list constraints_rates = {
+ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 				struct snd_pcm_hw_params *params)
  {
 -	struct snd_interval *channels = hw_param_interval(params,
 +	struct snd_interval *chan = hw_param_interval(params,
  						SNDRV_PCM_HW_PARAM_CHANNELS);
- 	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
--		channels->min = channels->max = 2;
-+		chan->min = chan->max = 2;
- 	else
--		channels->min = channels->max = 4;
-+		chan->min = chan->max = 4;
+-	channels->min = channels->max = 4;
++	chan->min = chan->max = 4;
  
  	return 0;
  }
