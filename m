@@ -2,59 +2,69 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 740A1C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30211C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 018B324676
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 018B324676
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id AAEF72467D
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:41 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="EhHHd/fu"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAEF72467D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D5FE250F;
-	Mon, 13 Jan 2020 22:13:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D5FE250F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A5702135;
+	Mon, 13 Jan 2020 16:29:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A5702135
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF5B0F80308;
-	Mon, 13 Jan 2020 22:05:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEAADF801F7;
+	Mon, 13 Jan 2020 16:22:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84655F80291; Mon, 13 Jan 2020 22:05:06 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2A5F4F80271; Mon, 13 Jan 2020 16:22:51 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1858F80276
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1858F80276
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112685"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:48 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:22 -0600
-Message-Id: <20200113210428.27457-13-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80A03F8026A
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:22:47 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 73B1DA003F;
+ Mon, 13 Jan 2020 16:22:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 73B1DA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1578928967; bh=x8J2xsr4cqZCSOkoJ09KQur/D9Pi6/lWHpAUBPlMOVM=;
+ h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+ b=EhHHd/fu8+7facf0UHow2rFAGYc7EPNZg2wruIvuGuKfpjsp4x8xmZ2PKwes/TOIj
+ LbzymSqUbHqu2fbLTp9EF9H7N1n5etn17wu3YLwBGjdEBy99s2Ljh1h8MQCE7qP1o6
+ DFa8TIiKnDkLwSAuVkfeWNf4eBeSj8FEcRxNAqLI=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon, 13 Jan 2020 16:22:45 +0100 (CET)
+To: Tim Schumacher <tim@timakro.de>
+References: <20200109221032.GA74081@impa>
+ <7294fce2-716e-00c2-665f-587424b96eb0@perex.cz> <20200113142753.GA22538@impa>
+ <6d433182-fb2a-d883-a9b3-80110efb89c2@perex.cz> <20200113145904.GA30843@impa>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <17b002d5-2cc6-ba4a-1a92-4e9be2798f08@perex.cz>
+Date: Mon, 13 Jan 2020 16:22:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 12/18] ASOC: Intel: kbl_rt5663_rt5514_max98927:
-	remove useless initialization
+In-Reply-To: <20200113145904.GA30843@impa>
+Content-Language: en-US
+Cc: ALSA development <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Bug report for changes in ucm2 with chtrt5645 card
+ on Lenovo Miix 320
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,37 +77,88 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix cppcheck warning:
+Dne 13. 01. 20 v 15:59 Tim Schumacher napsal(a):
+> 'alsaucm set _verb HiFi' gives
+> 
+>      ALSA lib utils.c:261:(uc_mgr_config_load) could not open configuration file /usr/share/alsa/ucm2/HDA Intel PCH/HDA Intel PCH.conf
+>      alsaucm: unable to obtain card list: No such file or directory
+> 
+> but that seems unrelated to the problem because it's the same
+> output whether I delete LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+> and the sound works or I try your patch.
 
-[sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c:764]: (style)
-Variable 'ret' is assigned a value that is never used.
+Ok, try 'alsaucm -c hw:0 set _verb HiFi'.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+					Jaroslav
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 952616ffbc16..96c814f36458 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -761,7 +761,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
- {
- 	struct kbl_codec_private *ctx;
- 	struct snd_soc_acpi_mach *mach;
--	int ret = 0;
-+	int ret;
- 
- 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
- 	if (!ctx)
+> 
+> - Tim
+> 
+> On 2020-01-13, Jaroslav Kysela wrote:
+>> Dne 13. 01. 20 v 15:27 Tim Schumacher napsal(a):
+>>> The patch doesn't help unfortunately. Deleting
+>>> LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf still works with the
+>>> patch installed. Can I help debug this somehow?
+>>
+>> If you have latest alsa-utils, the command 'alsaucm dump text' should work,
+>> otherwise try 'alsaucm set _verb HiFi'.
+>>
+>> 					Jaroslav
+>>
+>>>
+>>> - Tim
+>>>
+>>> On 2020-01-13, Jaroslav Kysela wrote:
+>>>> Dne 09. 01. 20 v 23:10 Tim Schumacher napsal(a):
+>>>>> Hi alsa devs,
+>>>>>
+>>>>> I'm on Arch Linux on a rather uncommon laptop (Lenovo Miix 320) and my sound
+>>>>> stopped working on the upgrade from alsa-lib 1.1.9 to 1.2.1. wabbits on
+>>>>> IRC helped me track down the problem to a change in the
+>>>>> /usr/share/alsa/ucm (now /usr/share/alsa/ucm2) files. It seems like
+>>>>> /usr/share/alsa/ucm2/chtrt5645/HiFi-dmic2.conf and a symlink at
+>>>>> /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+>>>>> were specifically added for this laptop but in the contrary they break the
+>>>>> sound for me.
+>>>>>
+>>>>> After the upgrade to alsa-lib 1.2.1 the sound is not working. The commands play no sound:
+>>>>>
+>>>>>        pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,0
+>>>>>        pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,1
+>>>>>
+>>>>> And this is the alsa-info.sh output http://alsa-project.org/db/?f=f883910a5c5101b4b1ea4202d1fe84ccd139f796
+>>>>>
+>>>>> After deleting the /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+>>>>> symlink both commands from above play sound and this is the alsa-info.sh
+>>>>> output http://alsa-project.org/db/?f=e759eb9118a191b6c3b8c021fed58abc9cf95076
+>>>>
+>>>> Thanks. I forgot to fix the file path in chtrt5645/chtrt5645-dmic2.conf .
+>>>> Could you test this patch?
+>>>>
+>>>> https://github.com/alsa-project/alsa-ucm-conf/commit/74f2a0f0884df7b9f2d08d07456a3bc37d1a512e
+>>>>
+>>>> 				Jaroslav
+>>>>
+>>>> -- 
+>>>> Jaroslav Kysela <perex@perex.cz>
+>>>> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>>>>
+>>
+>>
+>> -- 
+>> Jaroslav Kysela <perex@perex.cz>
+>> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>>
+
+
 -- 
-2.20.1
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
