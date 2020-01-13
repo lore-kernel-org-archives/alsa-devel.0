@@ -2,75 +2,70 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0A1C33CB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 112E2C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE62B2467A
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 918912467D
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="XIEG32IJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE62B2467A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="oZc69Drf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 918912467D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8838F2F75;
-	Tue, 14 Jan 2020 12:27:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8838F2F75
+	by alsa0.perex.cz (Postfix) with ESMTPS id 803A81FAF;
+	Mon, 13 Jan 2020 16:22:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 803A81FAF
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26EE7F802C3;
-	Tue, 14 Jan 2020 12:23:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1DD0F8029A;
+	Mon, 13 Jan 2020 16:13:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82258F8027C; Tue, 14 Jan 2020 12:23:12 +0100 (CET)
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5302::11])
+ id 7D880F802E0; Mon, 13 Jan 2020 16:13:31 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83E84F8023E;
- Tue, 14 Jan 2020 12:22:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83E84F8023E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A575EF8027B
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A575EF8027B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="XIEG32IJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579000976;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=cO79n30r7dHzozUPgz++lM22L44zcrhWHZMtMwLAfLY=;
- b=XIEG32IJ/muG2LlPwX14GeLZFJe48D143Bt39R43QodETmbJp2GXD9l8tcAkk+SzjF
- Ta5uIC8+lwp2CqwI1PRKN+i1kdQ8sSEPSB5YN6GB+A0eZ2G6ycxGSLtkeGDWzD7FM5sb
- 7L61p1AShonN+ueWY0Bk3N9vmabEWAHFV7bAgqB43CzgnPLW9PRjBQeIqJF02Lv3w8fy
- UcXF1RlgqvUumOy7Luzq+TPA+sM8LBg2hIJCiP4wvK8QEjUwp3pCpA0EFaaTaxJk+cKs
- axQR/sjC5CE3vbHYnIwCY7h92gRsGLU+Njra5U6P3i5Z/0ZVauplTcJuBQXnlvPAcCvy
- aI8w==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7IOGU5qzCB3a93viaVr"
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0EBMuULI
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Jan 2020 12:22:56 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Jaroslav Kysela <perex@perex.cz>
-Date: Tue, 14 Jan 2020 12:21:10 +0100
-Message-Id: <20200114112110.51983-8-stephan@gerhold.net>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114112110.51983-1-stephan@gerhold.net>
-References: <20200114112110.51983-1-stephan@gerhold.net>
-MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH alsa-ucm-conf 7/7] codecs/msm8916-wcd: Add
-	ConflictingDevice for capture devices
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="oZc69Drf"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=qH3wJVHNkevVt6wsdWBiypegSsCqb1gZ63agiI3Meio=; b=oZc69Drfv/kW
+ TbzjvLOVWZjNR9s7QI+ZuC+rDe9tOf09EHXZHsU5X9f+QggKdyjWdmUOJkPxCXCPISj59ob+xj8DD
+ iZPBQlR9EYRz1fws+OHVFjPQhlA4tgh3+xJVMWCYkc0AagEdlMLFnANwjKzt95C6ZnwRVSsBv9iCE
+ 0tLSU=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir1P2-0003ME-HB; Mon, 13 Jan 2020 15:13:16 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 3FC83D01965; Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Pan Xiuli <xiuli.pan@linux.intel.com>
+In-Reply-To: <20200110235751.3404-4-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200110235751.3404-4-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Date: Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: Intel: broadwell: change cpu_dai and
+	platform components for SOF" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,93 +78,86 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-At the moment, all capture devices are configured to go through DEC1,
-so there is no way to use more than one of the microphones at a time.
+The patch
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+   ASoC: Intel: broadwell: change cpu_dai and platform components for SOF
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 64df6afa0dab5eda95cc4cc2269e3d4e83b6b6ce Mon Sep 17 00:00:00 2001
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
+Date: Fri, 10 Jan 2020 17:57:46 -0600
+Subject: [PATCH] ASoC: Intel: broadwell: change cpu_dai and platform
+ components for SOF
+
+The legacy driver uses dummy cpu_dai and platform, SOF requires actual
+values to bind.
+
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200110235751.3404-4-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- ucm2/codecs/msm8916-wcd/DigitalMic.conf   | 6 ++++++
- ucm2/codecs/msm8916-wcd/HeadsetMic.conf   | 6 ++++++
- ucm2/codecs/msm8916-wcd/PrimaryMic.conf   | 6 ++++++
- ucm2/codecs/msm8916-wcd/SecondaryMic.conf | 6 ++++++
- 4 files changed, 24 insertions(+)
+ sound/soc/intel/boards/broadwell.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/ucm2/codecs/msm8916-wcd/DigitalMic.conf b/ucm2/codecs/msm8916-wcd/DigitalMic.conf
-index 35dfb1b..3446506 100644
---- a/ucm2/codecs/msm8916-wcd/DigitalMic.conf
-+++ b/ucm2/codecs/msm8916-wcd/DigitalMic.conf
-@@ -1,6 +1,12 @@
- SectionDevice."DigitalMic" {
- 	Comment "Digital Microphone"
+diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
+index db7e1e87156d..b9c12e24c70b 100644
+--- a/sound/soc/intel/boards/broadwell.c
++++ b/sound/soc/intel/boards/broadwell.c
+@@ -164,6 +164,14 @@ SND_SOC_DAILINK_DEF(platform,
+ SND_SOC_DAILINK_DEF(codec,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-INT343A:00", "rt286-aif1")));
  
-+	ConflictingDevice [
-+		"PrimaryMic"
-+		"SecondaryMic"
-+		"HeadsetMic"
-+	]
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
++SND_SOC_DAILINK_DEF(ssp0_port,
++	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
++#else
++SND_SOC_DAILINK_DEF(ssp0_port,
++	    DAILINK_COMP_ARRAY(COMP_DUMMY()));
++#endif
 +
- 	EnableSequence [
- 		cset "name='DEC1 MUX' DMIC1"
- 		cset "name='CIC1 MUX' DMIC"
-diff --git a/ucm2/codecs/msm8916-wcd/HeadsetMic.conf b/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
-index 538d895..2a96e49 100644
---- a/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
-+++ b/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
-@@ -1,6 +1,12 @@
- SectionDevice."HeadsetMic" {
- 	Comment "Headset Microphone"
+ /* broadwell digital audio interface glue - connects codec <--> CPU */
+ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ 	/* Front End DAI links */
+@@ -218,7 +226,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+ 		.ops = &broadwell_rt286_ops,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+-		SND_SOC_DAILINK_REG(dummy, codec, dummy),
++		SND_SOC_DAILINK_REG(ssp0_port, codec, platform),
+ 	},
+ };
  
-+	ConflictingDevice [
-+		"PrimaryMic"
-+		"SecondaryMic"
-+		"DigitalMic"
-+	]
-+
- 	EnableSequence [
- 		cset "name='DEC1 MUX' ADC2"
- 		cset "name='CIC1 MUX' AMIC"
-diff --git a/ucm2/codecs/msm8916-wcd/PrimaryMic.conf b/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
-index 6998458..9d549ef 100644
---- a/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
-+++ b/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
-@@ -1,6 +1,12 @@
- SectionDevice."PrimaryMic" {
- 	Comment "Primary Microphone"
- 
-+	ConflictingDevice [
-+		"SecondaryMic"
-+		"HeadsetMic"
-+		"DigitalMic"
-+	]
-+
- 	EnableSequence [
- 		cset "name='DEC1 MUX' ADC1"
- 		cset "name='CIC1 MUX' AMIC"
-diff --git a/ucm2/codecs/msm8916-wcd/SecondaryMic.conf b/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
-index fdc5df8..d81324c 100644
---- a/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
-+++ b/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
-@@ -1,6 +1,12 @@
- SectionDevice."SecondaryMic" {
- 	Comment "Secondary Microphone"
- 
-+	ConflictingDevice [
-+		"PrimaryMic"
-+		"HeadsetMic"
-+		"DigitalMic"
-+	]
-+
- 	EnableSequence [
- 		cset "name='DEC1 MUX' ADC2"
- 		cset "name='CIC1 MUX' AMIC"
 -- 
-2.24.1
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
