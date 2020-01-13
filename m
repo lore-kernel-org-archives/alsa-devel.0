@@ -2,75 +2,88 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 154DEC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4487C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9699324670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 600AA24670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="bpJWK7/X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9699324670
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="t76HvVnH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 600AA24670
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 383AF1760;
-	Mon, 13 Jan 2020 14:10:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 383AF1760
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39A4C21FA;
+	Mon, 13 Jan 2020 17:20:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39A4C21FA
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6D99F8014B;
-	Mon, 13 Jan 2020 14:10:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84A69F8014B;
+	Mon, 13 Jan 2020 17:20:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92CF0F801EB; Mon, 13 Jan 2020 14:10:49 +0100 (CET)
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5301::6])
+ id 9612BF801EB; Mon, 13 Jan 2020 17:20:22 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53DA7F80149
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 14:10:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53DA7F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D869F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 17:20:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D869F800B9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="bpJWK7/X"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1578921042;
- s=strato-dkim-0002; d=gerhold.net;
- h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=CZ/ItoagmVarxZ9Rm+9gJpemMc/V2vXvYV32eIOTk8w=;
- b=bpJWK7/XBAYgUPNFVGq2kMnEAUrNZAG0LDc8sib9mgVjjWKi3IV3UgN9+WBe/LILV9
- 0331kaNWYsOerXJX9CX4FhStyuHwHArkDGUBasrpwFDqBkMiGVrR8D/1sGrL2bVfUdZU
- hVRR9sG154XFmRqQQEjBvcSGqBrjuwgTowo8xxD29Mu8F/TKff+Ev44j494jUnURdTrC
- DeiGxr57aUZWAGv/HTYMoBAAEWBU9AD28hvWgY29zHWQFRtElLGEw1+ZIE79lEuXBp5J
- n+ILVUL7lEYx3Q8LsUXe0eCm7E3WQ7dbakj+f4FKMX9Mlu0j1ehJ7mgTla6RpsWN25+1
- x0UA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zH4phNhJA0AIphrNzqA=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0DDAdNx1
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Mon, 13 Jan 2020 14:10:39 +0100 (CET)
-Date: Mon, 13 Jan 2020 14:10:34 +0100
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <20200113131034.GA12166@gerhold.net>
-References: <20200105102753.83108-1-stephan@gerhold.net>
- <33e68247-ff11-6c0c-b91c-9b406f9607cd@linaro.org>
+ dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="t76HvVnH"
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 00DGIYXl021897; Mon, 13 Jan 2020 17:20:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=from : to : subject :
+ date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=YXhJQvwHgKOjRoApdSqrtMOVX0SqxojByXlRGb3oW1E=;
+ b=t76HvVnHAT76rLL3tIfg3pqAhn5js6eenVTCt8xiKZZpuhbwpua52tjQPL9UibgIEh4i
+ hlG5lJfo/LhKsOCRHD8fh7SNyrue++dUZS9cOWeytGIeQ6+b73E0DvMBFI+xulZwF7gt
+ nd5l5ezmz7iwBEr9BaWvXPBlTExKI+KxTJYHPOiysphG96tmB6P8w4r0oYmzAdYxqD6D
+ 2R3nlCfxMPGqE7BwgLrDd+Wup9jmJSA8XhtJRHtRWqoI50GgLauxUgF6+2ZwPRL73efh
+ /TQH4c0O5D7UNjHN2Q7qyZNwpQsu7uRuNsge5J0TYOaIws03zqtVND5O/eOGyILRlGYk sA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 2xf78s116g-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 13 Jan 2020 17:20:18 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 883A410002A;
+ Mon, 13 Jan 2020 17:20:13 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 58F622D3791;
+ Mon, 13 Jan 2020 17:20:13 +0100 (CET)
+Received: from localhost (10.75.127.45) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2;
+ Mon, 13 Jan 2020 17:20:12 +0100
+From: Olivier Moysan <olivier.moysan@st.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <mcoquelin.stm32@gmail.com>,
+ <alexandre.torgue@st.com>, <alsa-devel@alsa-project.org>,
+ <robh@kernel.org>, <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-kernel@vger.kernel.org>, <olivier.moysan@st.com>
+Date: Mon, 13 Jan 2020 17:19:54 +0100
+Message-ID: <20200113161954.29779-1-olivier.moysan@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <33e68247-ff11-6c0c-b91c-9b406f9607cd@linaro.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [alsa-devel] [PATCH] ASoC: msm8916-wcd-digital: Reset RX
- interpolation path after use
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.572
+ definitions=2020-01-13_05:2020-01-13,
+ 2020-01-13 signatures=0
+Subject: [alsa-devel] [PATCH] ASoC: dt-bindings: stm32: convert spdfirx to
+	json-schema
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,84 +101,167 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Jan 13, 2020 at 11:30:48AM +0000, Srinivas Kandagatla wrote:
-> 
-> 
-> On 05/01/2020 10:27, Stephan Gerhold wrote:
-> > For some reason, attempting to route audio through QDSP6 on MSM8916
-> > causes the RX interpolation path to get "stuck" after playing audio
-> > a few times. In this situation, the analog codec part is still working,
-> > but the RX path in the digital codec stops working, so you only hear
-> > the analog parts powering up. After a reboot everything works again.
-> > 
-> > So far I was not able to reproduce the problem when using lpass-cpu.
-> > 
-> > The downstream kernel driver avoids this by resetting the RX
-> > interpolation path after use. In mainline we do something similar
-> > for the TX decimator (LPASS_CDC_CLK_TX_RESET_B1_CTL), but the
-> > interpolator reset (LPASS_CDC_CLK_RX_RESET_CTL) got lost when the
-> > msm8916-wcd driver was split into analog and digital.
-> > 
-> > Fix this problem by adding the reset to
-> > msm8916_wcd_digital_enable_interpolator().
-> > 
-> > Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
-> > Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> 
-> Thanks for the patch and testing it with QDSP6.
-> 
-> > ---
-> > Tested on msm8916-samsung-a5u:
-> >    - qdsp6 does no longer stop working after playing audio a few times
-> >    - lpass-cpu is still working fine (no difference)
-> > ---
-> >   sound/soc/codecs/msm8916-wcd-digital.c | 6 ++++++
-> >   1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-> > index 58b2468fb2a7..09fccacadd6b 100644
-> > --- a/sound/soc/codecs/msm8916-wcd-digital.c
-> > +++ b/sound/soc/codecs/msm8916-wcd-digital.c
-> > @@ -586,6 +586,12 @@ static int msm8916_wcd_digital_enable_interpolator(
-> >   		snd_soc_component_write(component, rx_gain_reg[w->shift],
-> >   			      snd_soc_component_read32(component, rx_gain_reg[w->shift]));
-> >   		break;
-> > +	case SND_SOC_DAPM_POST_PMD:
-> 
-> We should do this in SND_SOC_DAPM_PRE_PMU rather than in power down
-> sequence.
-> 
+Convert the STM32 SPDIFRX bindings to DT schema format using json-schema.
 
-Thanks for the suggestion! Any particular reason for this?
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ .../bindings/sound/st,stm32-spdifrx.txt       | 56 -------------
+ .../bindings/sound/st,stm32-spdifrx.yaml      | 80 +++++++++++++++++++
+ 2 files changed, 80 insertions(+), 56 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
 
-I used earlier versions of your msm8916-wcd patch series and the
-downstream driver as a base, and it does this in POST_PMD:
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+deleted file mode 100644
+index 33826f2459fa..000000000000
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-STMicroelectronics STM32 S/PDIF receiver (SPDIFRX).
+-
+-The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
+-IEC-60958 and IEC-61937.
+-
+-Required properties:
+-  - compatible: should be "st,stm32h7-spdifrx"
+-  - reg: cpu DAI IP base address and size
+-  - clocks: must contain an entry for kclk (used as S/PDIF signal reference)
+-  - clock-names: must contain "kclk"
+-  - interrupts: cpu DAI interrupt line
+-  - dmas: DMA specifiers for audio data DMA and iec control flow DMA
+-    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
+-  - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
+-
+-Optional properties:
+-  - resets: Reference to a reset controller asserting the SPDIFRX
+-
+-The device node should contain one 'port' child node with one child 'endpoint'
+-node, according to the bindings defined in Documentation/devicetree/bindings/
+-graph.txt.
+-
+-Example:
+-spdifrx: spdifrx@40004000 {
+-	compatible = "st,stm32h7-spdifrx";
+-	reg = <0x40004000 0x400>;
+-	clocks = <&rcc SPDIFRX_CK>;
+-	clock-names = "kclk";
+-	interrupts = <97>;
+-	dmas = <&dmamux1 2 93 0x400 0x0>,
+-	       <&dmamux1 3 94 0x400 0x0>;
+-	dma-names = "rx", "rx-ctrl";
+-	pinctrl-0 = <&spdifrx_pins>;
+-	pinctrl-names = "default";
+-
+-	spdifrx_port: port {
+-		cpu_endpoint: endpoint {
+-			remote-endpoint = <&codec_endpoint>;
+-		};
+-	};
+-};
+-
+-spdif_in: spdif-in {
+-	compatible = "linux,spdif-dir";
+-
+-	codec_port: port {
+-		codec_endpoint: endpoint {
+-			remote-endpoint = <&cpu_endpoint>;
+-		};
+-	};
+-};
+-
+-soundcard {
+-	compatible = "audio-graph-card";
+-	dais = <&spdifrx_port>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+new file mode 100644
+index 000000000000..ab8e9d74ac3c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/st,stm32-spdifrx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STMicroelectronics STM32 S/PDIF receiver (SPDIFRX)
++
++maintainers:
++  - Olivier Moysan <olivier.moysan@st.com>
++
++description: |
++  The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
++  IEC-60958 and IEC-61937.
++
++properties:
++  compatible:
++    enum:
++      - st,stm32h7-spdifrx
++
++  "#sound-dai-cells":
++    const: 0
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: kclk
++
++  interrupts:
++    maxItems: 1
++
++  dmas:
++    items:
++      - description: audio data capture DMA
++      - description: IEC status bits capture DMA
++    minItems: 1
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: rx
++      - const: rx-ctrl
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - "#sound-dai-cells"
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++  - dmas
++  - dma-names
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/stm32mp1-clks.h>
++    spdifrx: spdifrx@40004000 {
++        compatible = "st,stm32h7-spdifrx";
++        #sound-dai-cells = <0>;
++        reg = <0x40004000 0x400>;
++        clocks = <&rcc SPDIF_K>;
++        clock-names = "kclk";
++        interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
++        dmas = <&dmamux1 2 93 0x400 0x0>,
++               <&dmamux1 3 94 0x400 0x0>;
++        dma-names = "rx", "rx-ctrl";
++        pinctrl-0 = <&spdifrx_pins>;
++        pinctrl-names = "default";
++    };
++
++...
+-- 
+2.17.1
 
-https://source.codeaurora.org/quic/la/kernel/msm-3.10/tree/sound/soc/codecs/msm8x16-wcd.c?h=LA.BR.1.2.9.1-02310-8x16.0#n3773
-
-For msm8916_wcd_digital_enable_dec() we also do it in POST_PMD:
-
-	/* ... */
-	case SND_SOC_DAPM_POST_PMD:
-		snd_soc_component_update_bits(component, dec_reset_reg, 1 << w->shift,
-				    1 << w->shift);
-		snd_soc_component_update_bits(component, dec_reset_reg, 1 << w->shift, 0x0);
-		/* ... */
-
-I don't mind testing if moving it to PRE_PMU works, I'm just wondering
-if doing it in PRE_PMU has any advantages. 
-
-> 
-> > +		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-> > +					      1 << w->shift, 1 << w->shift);
-> > +		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-> > +					      1 << w->shift, 0x0);
-> > +		break;
-> >   	}
-> >   	return 0;
-> >   }
-> > 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
