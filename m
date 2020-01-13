@@ -2,70 +2,75 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBB1EC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 154DEC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B76424670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9699324670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="knA6pbM2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B76424670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="bpJWK7/X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9699324670
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39AE81ADE;
-	Mon, 13 Jan 2020 16:16:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39AE81ADE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 383AF1760;
+	Mon, 13 Jan 2020 14:10:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 383AF1760
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B93DFF802BC;
-	Mon, 13 Jan 2020 16:13:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6D99F8014B;
+	Mon, 13 Jan 2020 14:10:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B865F80273; Mon, 13 Jan 2020 16:13:16 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id 92CF0F801EB; Mon, 13 Jan 2020 14:10:49 +0100 (CET)
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5301::6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 583C8F8025A
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 583C8F8025A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53DA7F80149
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 14:10:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53DA7F80149
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="knA6pbM2"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=+odNWUg+RU67s4t5cFtA6tHOpeGPGcPlDJAZxEbsxok=; b=knA6pbM2q05U
- EE2QeVy/3olXgOesQ2hFkVdUDFY5C2TLV7q7O8lY4BI4rKud4NsviKj+8+KJF8zjVUJM+RjWpznVV
- cR9+kBjWsAAoFfaaIgylJcVsEZzbucAzr1rYJPvdCHOIIW8SZA+pCwjxOvGvqP9MQZwi930SLB/4d
- Y8m3I=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1Ox-0003LP-NF; Mon, 13 Jan 2020 15:13:11 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 7114FD01965; Mon, 13 Jan 2020 15:13:11 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20200110235751.3404-9-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200110235751.3404-9-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:11 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: hdac_hda: Fix error in driver removal
-	after failed probe" to the asoc tree
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="bpJWK7/X"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1578921042;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=CZ/ItoagmVarxZ9Rm+9gJpemMc/V2vXvYV32eIOTk8w=;
+ b=bpJWK7/XBAYgUPNFVGq2kMnEAUrNZAG0LDc8sib9mgVjjWKi3IV3UgN9+WBe/LILV9
+ 0331kaNWYsOerXJX9CX4FhStyuHwHArkDGUBasrpwFDqBkMiGVrR8D/1sGrL2bVfUdZU
+ hVRR9sG154XFmRqQQEjBvcSGqBrjuwgTowo8xxD29Mu8F/TKff+Ev44j494jUnURdTrC
+ DeiGxr57aUZWAGv/HTYMoBAAEWBU9AD28hvWgY29zHWQFRtElLGEw1+ZIE79lEuXBp5J
+ n+ILVUL7lEYx3Q8LsUXe0eCm7E3WQ7dbakj+f4FKMX9Mlu0j1ehJ7mgTla6RpsWN25+1
+ x0UA==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zH4phNhJA0AIphrNzqA=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net by smtp.strato.de (RZmta 46.1.4 AUTH)
+ with ESMTPSA id h048a6w0DDAdNx1
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Mon, 13 Jan 2020 14:10:39 +0100 (CET)
+Date: Mon, 13 Jan 2020 14:10:34 +0100
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <20200113131034.GA12166@gerhold.net>
+References: <20200105102753.83108-1-stephan@gerhold.net>
+ <33e68247-ff11-6c0c-b91c-9b406f9607cd@linaro.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <33e68247-ff11-6c0c-b91c-9b406f9607cd@linaro.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [alsa-devel] [PATCH] ASoC: msm8916-wcd-digital: Reset RX
+ interpolation path after use
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,93 +83,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Mon, Jan 13, 2020 at 11:30:48AM +0000, Srinivas Kandagatla wrote:
+> 
+> 
+> On 05/01/2020 10:27, Stephan Gerhold wrote:
+> > For some reason, attempting to route audio through QDSP6 on MSM8916
+> > causes the RX interpolation path to get "stuck" after playing audio
+> > a few times. In this situation, the analog codec part is still working,
+> > but the RX path in the digital codec stops working, so you only hear
+> > the analog parts powering up. After a reboot everything works again.
+> > 
+> > So far I was not able to reproduce the problem when using lpass-cpu.
+> > 
+> > The downstream kernel driver avoids this by resetting the RX
+> > interpolation path after use. In mainline we do something similar
+> > for the TX decimator (LPASS_CDC_CLK_TX_RESET_B1_CTL), but the
+> > interpolator reset (LPASS_CDC_CLK_RX_RESET_CTL) got lost when the
+> > msm8916-wcd driver was split into analog and digital.
+> > 
+> > Fix this problem by adding the reset to
+> > msm8916_wcd_digital_enable_interpolator().
+> > 
+> > Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
+> > Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> 
+> Thanks for the patch and testing it with QDSP6.
+> 
+> > ---
+> > Tested on msm8916-samsung-a5u:
+> >    - qdsp6 does no longer stop working after playing audio a few times
+> >    - lpass-cpu is still working fine (no difference)
+> > ---
+> >   sound/soc/codecs/msm8916-wcd-digital.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+> > index 58b2468fb2a7..09fccacadd6b 100644
+> > --- a/sound/soc/codecs/msm8916-wcd-digital.c
+> > +++ b/sound/soc/codecs/msm8916-wcd-digital.c
+> > @@ -586,6 +586,12 @@ static int msm8916_wcd_digital_enable_interpolator(
+> >   		snd_soc_component_write(component, rx_gain_reg[w->shift],
+> >   			      snd_soc_component_read32(component, rx_gain_reg[w->shift]));
+> >   		break;
+> > +	case SND_SOC_DAPM_POST_PMD:
+> 
+> We should do this in SND_SOC_DAPM_PRE_PMU rather than in power down
+> sequence.
+> 
 
-   ASoC: hdac_hda: Fix error in driver removal after failed probe
+Thanks for the suggestion! Any particular reason for this?
 
-has been applied to the asoc tree at
+I used earlier versions of your msm8916-wcd patch series and the
+downstream driver as a base, and it does this in POST_PMD:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+https://source.codeaurora.org/quic/la/kernel/msm-3.10/tree/sound/soc/codecs/msm8x16-wcd.c?h=LA.BR.1.2.9.1-02310-8x16.0#n3773
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+For msm8916_wcd_digital_enable_dec() we also do it in POST_PMD:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+	/* ... */
+	case SND_SOC_DAPM_POST_PMD:
+		snd_soc_component_update_bits(component, dec_reset_reg, 1 << w->shift,
+				    1 << w->shift);
+		snd_soc_component_update_bits(component, dec_reset_reg, 1 << w->shift, 0x0);
+		/* ... */
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I don't mind testing if moving it to PRE_PMU works, I'm just wondering
+if doing it in PRE_PMU has any advantages. 
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 552b1a85da9f63856e7e341b81c16e0e078204f1 Mon Sep 17 00:00:00 2001
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Date: Fri, 10 Jan 2020 17:57:51 -0600
-Subject: [PATCH] ASoC: hdac_hda: Fix error in driver removal after failed
- probe
-
-In case system has multiple HDA codecs, and codec probe fails for
-at least one but not all codecs, driver will end up cancelling
-a non-initialized timer context upon driver removal.
-
-Call trace of typical case:
-
-[   60.593646] WARNING: CPU: 1 PID: 1147 at kernel/workqueue.c:3032
-__flush_work+0x18b/0x1a0
-[...]
-[   60.593670]  __cancel_work_timer+0x11f/0x1a0
-[   60.593673]  hdac_hda_dev_remove+0x25/0x30 [snd_soc_hdac_hda]
-[   60.593674]  device_release_driver_internal+0xe0/0x1c0
-[   60.593675]  bus_remove_device+0xd6/0x140
-[   60.593677]  device_del+0x175/0x3e0
-[   60.593679]  ? widget_tree_free.isra.7+0x90/0xb0 [snd_hda_core]
-[   60.593680]  snd_hdac_device_unregister+0x34/0x50 [snd_hda_core]
-[   60.593682]  snd_hdac_ext_bus_device_remove+0x2a/0x60 [snd_hda_ext_core]
-[   60.593684]  hda_dsp_remove+0x26/0x100 [snd_sof_intel_hda_common]
-[   60.593686]  snd_sof_device_remove+0x84/0xa0 [snd_sof]
-[   60.593687]  sof_pci_remove+0x10/0x30 [snd_sof_pci]
-[   60.593689]  pci_device_remove+0x36/0xb0
-
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200110235751.3404-9-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hda.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index 6803d39e09a5..43110151e928 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -588,7 +588,9 @@ static int hdac_hda_dev_remove(struct hdac_device *hdev)
- 	struct hdac_hda_priv *hda_pvt;
- 
- 	hda_pvt = dev_get_drvdata(&hdev->dev);
--	cancel_delayed_work_sync(&hda_pvt->codec.jackpoll_work);
-+	if (hda_pvt && hda_pvt->codec.registered)
-+		cancel_delayed_work_sync(&hda_pvt->codec.jackpoll_work);
-+
- 	return 0;
- }
- 
--- 
-2.20.1
-
+> 
+> > +		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
+> > +					      1 << w->shift, 1 << w->shift);
+> > +		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
+> > +					      1 << w->shift, 0x0);
+> > +		break;
+> >   	}
+> >   	return 0;
+> >   }
+> > 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
