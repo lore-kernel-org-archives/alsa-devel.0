@@ -7,104 +7,103 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72D6DC33CA8
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 08:49:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76B54C33CA8
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 08:50:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F382020678
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 08:49:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F19DF20678
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 08:50:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sSg7RnQ+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="zFLRPveE";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZNVhJpr0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F382020678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FxMzSeRK";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="uHcMwzC6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KwVirmWj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F19DF20678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 417271668;
-	Mon, 13 Jan 2020 09:48:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 417271668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BD55166A;
+	Mon, 13 Jan 2020 09:49:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BD55166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578905362;
-	bh=uBclgG+mWUlWHp6tsEwqt21+Fke2yV+exfc1jv4oKyM=;
+	s=default; t=1578905405;
+	bh=imguVCRxFKALYYcyXeJvyju+FvgPgqvOWBsBBDKFVuw=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sSg7RnQ+7OUjml6DgNPA2izsGAv1ptXtn46nFaFofH81T8pY4okDjhJBBaHxbA3F3
-	 cR76qS2LHZ9ohLmCn+hCX2vo3O935kYaVmEvLHnUrc7FLJ8RMNdUvtuv1o6zXG6EVZ
-	 OYP49dDM4XT+TcUQNk/II7+QLqn/2kHD54qshGNU=
+	b=FxMzSeRKnhSNvHqtrC1pa2Z4iVFlBRrbB0Pmwhgr3sesBydQVRSTI6t9MYxpVRMP4
+	 TtCHCFzGqjhFVUAHs9VR4khH2PY6+fGpEpPuIc4SPbWltXqCWqhi2Rfx3LUvbeEdo9
+	 jC4SjingbzmUpwjbxVlLugErosIrhl1br5kVAGDo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 320F9F80274;
-	Mon, 13 Jan 2020 09:46:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48356F8027D;
+	Mon, 13 Jan 2020 09:46:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D339F80227; Mon, 13 Jan 2020 09:46:43 +0100 (CET)
+ id 671C3F801F7; Mon, 13 Jan 2020 09:46:44 +0100 (CET)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
  [66.111.4.27])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A8D3F8014B
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 09:46:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A8D3F8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C0A5F801F7
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 09:46:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C0A5F801F7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="zFLRPveE"; 
+ header.b="uHcMwzC6"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ZNVhJpr0"
+ header.i=@messagingengine.com header.b="KwVirmWj"
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id EC3A322015;
- Mon, 13 Jan 2020 03:46:36 -0500 (EST)
+ by mailout.nyi.internal (Postfix) with ESMTP id 20ADD21C29;
+ Mon, 13 Jan 2020 03:46:38 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Mon, 13 Jan 2020 03:46:36 -0500
+ by compute1.internal (MEProxy); Mon, 13 Jan 2020 03:46:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm3; bh=v8OgXzbeCcKFo
- FG1ZVh0kIlliEtxH3Bv3UMR5RkbquI=; b=zFLRPveEtmbhkYS753LP7IsnsPjTt
- R1ohg3CfMigH3lQVZ2ck3WLPUF2hYuQwUilf571BcNKO8N9LZwjiF4ihO0iCrH/x
- U0cxcy89reYl4jjp32HIe/3Irt+VKCgaQs1u1M45eAv5az6JkKfcFe2wizgdy8ZC
- Mcg3yWlNF4Ku1Tvs+Wo2wwzDeLm7usAAaevyh4ser2Z+ZtoigMeXvDie91Lc9QIm
- L/Hmd4tCwdaoqNlK2R/viZJM3Bjf3cR/THM/yGBP7wcI0ffygefUyQxX2fjP2mXE
- +hxnACVyGlGZ0oXgbJ94yIm2AM6VpABLpJOcXfWJn5IJadbUMCunpkQ9Q==
+ :mime-version:content-transfer-encoding; s=fm3; bh=BsyZbZCrzJkjx
+ nB3ZVt/jUv7SRpCLvPP/Oiq/RXnzm4=; b=uHcMwzC6rVBvhuCWb0QL0AuDObD/m
+ QeaEMkRgqZy0FIBTFI4DYSbLSBlp9BeQj9aQ9tScZBpJDiWDPG4eg32OtV3zjOAy
+ P8D2TFHxOG335DIR9dImB2cxXQVe74FziWsALLOSWE467yApID39sApqG3WbY5fd
+ ZNTrjiQgnliL+es6SFyiFMxd6mROQGw7txGTFH4RFJDWbz05KMggpT5iccsOkb8o
+ I+hsDIV7RVG8/KSgnZa1zM7GiaUPckvEhEDQayhCvGz0+VM11n/JXliU04/1AyI0
+ Ek9U5c8VVgFjgELamTMP+fTdDcMLHZRBvDdfAdm/5h11ZZsCtxFh0XxOg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm1; bh=v8OgXzbeCcKFoFG1ZVh0kIlliEtxH3Bv3UMR5RkbquI=; b=ZNVhJpr0
- +c45y7+xO0TIWCUS73P+d5PIBpRZXMqdV9TSCQCE08OZftm5rd/ebTl70LuHc+kD
- e5uRmP2dnkvyePiJyFraHn9TZRdve6IO7HdESbqpaVOvNWsGHFOKsGf1Gtp0Cyfn
- aoZWxuG/93g67vtGxp6eoGCgpf2tZu1Y+bkb3rrDIbAcP+AK/InYqIDXtSVW4PWK
- K9RzySrDFI93BCiDyK5CbuiaBC73C8GyhWJibEmlr39sto+ZvM3LuYbF1n0I8ZBw
- XoqPQtZqjFZyDf2kUp5BqsgGRtMViOhdj3aEm4g5GVJSpOun9A3ByUUFUXnIQqN1
- pMJeSHVebzSnKw==
-X-ME-Sender: <xms:bC4cXoLMuCO499s_o3pebWZ4b1957SjydBdEttui2u35VAQrMWt7XA>
+ fm1; bh=BsyZbZCrzJkjxnB3ZVt/jUv7SRpCLvPP/Oiq/RXnzm4=; b=KwVirmWj
+ GADNhLFNgQQQPvbiltf0rY5Frb3jG6jj3fVM3+EkTTJy4oROCB0VMquL6m7NAQyw
+ KKeTtZlqGJuKTpVTUPoVIaD3qoGc2Z/iBmdEHjoCBaPldixoIQTH6e7cI4LpA0XK
+ CMoTre03J/4Ey+3H5io4wJz5FvTF0Td3VRVi3u+pfDhdQ7ELsGm2OqT7HwMxrxFo
+ re2tVsx8qmoqtIJBBX939qszsszBypMQ4/xQyRoFUmYzxbpCkqbRZcl9KkjbV9cC
+ KQZ/iw2h1xOV9wFKze3PsinKWJEyMc86PJP2HUJxWXhlqaYb8I5CpTuOJgduhgO5
+ g4YZQZaaS3OeGg==
+X-ME-Sender: <xms:bi4cXhAGo15U-rfOC8Fsnc2-W-6dqdMbMDQVvb8s6QILqS-bdr71pw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvdeiledguddvhecutefuodetggdotefrod
  ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
  necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
  ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
  rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucfkphepudegrdefrdejhedrudekud
  enucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggt
- hhhirdhjphenucevlhhushhtvghrufhiiigvpedt
-X-ME-Proxy: <xmx:bC4cXvhVTI-ZGxTGnmAripWjEhcQDYb0WYtsdrWzNUt9lGhFWvKNNQ>
- <xmx:bC4cXuRuK-gAYcUR8Q25vnRIsCqGSq5qkVJUxtmLD0w991B389bWgA>
- <xmx:bC4cXhXrkr2fQKOFHfmQ7JXR19Kr5E-NGL7ueiT1cy8xo1G3DkHqOg>
- <xmx:bC4cXlEwX_igAA6zOubxkpYhkMWy25GLXocGwyr_11s7HQgWUFPjlg>
+ hhhirdhjphenucevlhhushhtvghrufhiiigvpedv
+X-ME-Proxy: <xmx:bi4cXikA4UDHBIAg4hUwHzwrXmlACopQnBABsc1G3wP_P7ZRX9_WWg>
+ <xmx:bi4cXqoL2mzwf5s_O_QzFoMhk8iF3LJuvDpQQ1ezGnch5kJSzFDw3A>
+ <xmx:bi4cXvPzURK8ZqTxxXHnGw0TyzwRQpzS7G1eSoJ-h1bSIOf1o-FJCw>
+ <xmx:bi4cXkAOv_vbjB9OEbSpRVB7K_9VQ7WdN4drfoTYwEjiU5IdM5Rgnw>
 Received: from workstation.flets-east.jp (ae075181.dynamic.ppp.asahi-net.or.jp
  [14.3.75.181])
- by mail.messagingengine.com (Postfix) with ESMTPA id 0219430607B4;
- Mon, 13 Jan 2020 03:46:35 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 2D2043060783;
+ Mon, 13 Jan 2020 03:46:36 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Date: Mon, 13 Jan 2020 17:46:29 +0900
-Message-Id: <20200113084630.14305-3-o-takashi@sakamocchi.jp>
+Date: Mon, 13 Jan 2020 17:46:30 +0900
+Message-Id: <20200113084630.14305-4-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200113084630.14305-1-o-takashi@sakamocchi.jp>
 References: <20200113084630.14305-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 2/3] dice: loosen stream format check for MIDI
-	conformant data channel
+Subject: [alsa-devel] [PATCH 3/3] dice: add support for Alesis MasterControl
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,62 +121,152 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ALSA dice driver expects devices to multiplex MIDI messages into first
-port of isochronous communication. Actually devices perform for it.
-However, check of stream format is invalid for second port of isochronous
-communication. As a result, when the device supports two ports for
-isochronous communication and the stream format is hard-coded, ALSA
-dice driver fails to start packet streaming.
+Alesis MasterControl was shipped 2009 and already discontinued. This model
+consists of:
+ * TSB41AB2 for physical layer of IEEE 1394
+ * WaveFront Dice II STD for link layer and protocol implementation
+ * FreeScale DSPB56374AE
 
-This commit loosens stream format check for MIDI conformant data channel.
+Although the firmware of this model can respond against read transaction
+to address space for TCAT extension protocol, the content is not valid
+for protocol extension. This results in sound card without any PCM/MIDI
+interfaces.
+
+$ ./firewire-request /dev/fw1 read 0xffffe0200000 0x48
+result: 000: 00 00 00 20 00 00 04 94 00 00 04 b4 00 00 00 b4
+result: 010: 00 00 05 68 00 00 00 24 00 00 05 8c 00 00 00 48
+result: 020: 00 00 00 20 00 00 00 08 00 00 00 20 00 00 00 20
+result: 030: 00 00 00 10 00 00 00 08 00 00 00 08 00 00 00 04
+result: 040: 00 00 00 00 00 00 00 00
+
+This commit adds support the model by adding hard-coded stream formats.
+
+$ python3 ~/git/linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  04041ad7  bus_info_length 4, crc_length 4, crc 6871
+404  31333934  bus_name "1394"
+408  e0ff8112  irmc 1, cmc 1, isc 1, bmc 0, pmc 0, cyc_clk_acc 255,
+               max_rec 8 (512), max_rom 1, gen 1, spd 2 (S400)
+40c  00059504  company_id 000595     | Alesis Corporation
+410  008003f5  device_id 04008003f5  | EUI-64 00059504008003f5
+
+               root directory
+               -----------------------------------------------------------------
+414  0006a620  directory_length 6, crc 42528
+418  03000595  vendor: Alesis Corporation
+41c  8100000a  --> descriptor leaf at 444
+420  17000002  model
+424  8100000d  --> descriptor leaf at 458
+428  0c0087c0  node capabilities per IEEE 1394
+42c  d1000001  --> unit directory at 430
+
+               unit directory at 430
+               -----------------------------------------------------------------
+430  00041b9f  directory_length 4, crc 7071
+434  12000595  specifier id: Alesis Corporation
+438  13000001  version: audio
+43c  17000002  model
+440  8100000d  --> descriptor leaf at 474
+
+               descriptor leaf at 444
+               -----------------------------------------------------------------
+444  000494c2  leaf_length 4, crc 38082
+448  00000000  textual descriptor
+44c  00000000  minimal ASCII
+450  416c6573  "Ales"
+454  69730000  "is"
+
+               descriptor leaf at 458
+               -----------------------------------------------------------------
+458  0006c2ec  leaf_length 6, crc 49900
+45c  00000000  textual descriptor
+460  00000000  minimal ASCII
+464  4d617374  "Mast"
+468  6572436f  "erCo"
+46c  6e74726f  "ntro"
+470  6c000000  "l"
+
+               descriptor leaf at 474
+               -----------------------------------------------------------------
+474  0006c2ec  leaf_length 6, crc 49900
+478  00000000  textual descriptor
+47c  00000000  minimal ASCII
+480  4d617374  "Mast"
+484  6572436f  "erCo"
+488  6e74726f  "ntro"
+48c  6c000000  "l"
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-stream.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/firewire/dice/dice-alesis.c | 24 ++++++++++++++++++++++++
+ sound/firewire/dice/dice.c        |  8 ++++++++
+ sound/firewire/dice/dice.h        |  1 +
+ 3 files changed, 33 insertions(+)
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 6a3d60913e10..8e0c0380b4c4 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -224,7 +224,6 @@ static int keep_dual_resources(struct snd_dice *dice, unsigned int rate,
- 		struct amdtp_stream *stream;
- 		struct fw_iso_resources *resources;
- 		unsigned int pcm_cache;
--		unsigned int midi_cache;
- 		unsigned int pcm_chs;
- 		unsigned int midi_ports;
+diff --git a/sound/firewire/dice/dice-alesis.c b/sound/firewire/dice/dice-alesis.c
+index f5b325263b67..0916864511d5 100644
+--- a/sound/firewire/dice/dice-alesis.c
++++ b/sound/firewire/dice/dice-alesis.c
+@@ -50,3 +50,27 @@ int snd_dice_detect_alesis_formats(struct snd_dice *dice)
  
-@@ -233,7 +232,6 @@ static int keep_dual_resources(struct snd_dice *dice, unsigned int rate,
- 			resources = &dice->tx_resources[i];
+ 	return 0;
+ }
++
++int snd_dice_detect_alesis_mastercontrol_formats(struct snd_dice *dice)
++{
++	int i;
++
++	dice->tx_pcm_chs[0][SND_DICE_RATE_MODE_LOW]	= 16;
++	dice->tx_pcm_chs[1][SND_DICE_RATE_MODE_LOW]	= 12;
++	dice->tx_pcm_chs[0][SND_DICE_RATE_MODE_MIDDLE]	= 12;
++	dice->tx_pcm_chs[1][SND_DICE_RATE_MODE_MIDDLE]	= 4;
++	dice->tx_pcm_chs[0][SND_DICE_RATE_MODE_HIGH]	= 8;
++	dice->tx_pcm_chs[1][SND_DICE_RATE_MODE_HIGH]	= 0;
++
++	for (i = 0; i < SND_DICE_RATE_MODE_COUNT; ++i) {
++		dice->rx_pcm_chs[0][i] = 6;
++		dice->rx_pcm_chs[1][i] = 0;
++	}
++
++	for (i = 0; i < MAX_STREAMS; ++i) {
++		dice->tx_midi_ports[i] = 2;
++		dice->rx_midi_ports[i] = 2;
++	}
++
++	return 0;
++}
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 13eeb3f52bb6..06c94f009dfb 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -355,6 +355,14 @@ static const struct ieee1394_device_id dice_id_table[] = {
+ 		.model_id	= MODEL_ALESIS_IO_BOTH,
+ 		.driver_data = (kernel_ulong_t)snd_dice_detect_alesis_formats,
+ 	},
++	// Alesis MasterControl.
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_ALESIS,
++		.model_id	= 0x000002,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_alesis_mastercontrol_formats,
++	},
+ 	/* Mytek Stereo 192 DSD-DAC. */
+ 	{
+ 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index 16366773e22e..7fbffcab94c2 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -229,6 +229,7 @@ int snd_dice_create_midi(struct snd_dice *dice);
  
- 			pcm_cache = dice->tx_pcm_chs[i][mode];
--			midi_cache = dice->tx_midi_ports[i];
- 			err = snd_dice_transaction_read_tx(dice,
- 					params->size * i + TX_NUMBER_AUDIO,
- 					reg, sizeof(reg));
-@@ -242,7 +240,6 @@ static int keep_dual_resources(struct snd_dice *dice, unsigned int rate,
- 			resources = &dice->rx_resources[i];
- 
- 			pcm_cache = dice->rx_pcm_chs[i][mode];
--			midi_cache = dice->rx_midi_ports[i];
- 			err = snd_dice_transaction_read_rx(dice,
- 					params->size * i + RX_NUMBER_AUDIO,
- 					reg, sizeof(reg));
-@@ -253,10 +250,10 @@ static int keep_dual_resources(struct snd_dice *dice, unsigned int rate,
- 		midi_ports = be32_to_cpu(reg[1]);
- 
- 		// These are important for developer of this driver.
--		if (pcm_chs != pcm_cache || midi_ports != midi_cache) {
-+		if (pcm_chs != pcm_cache) {
- 			dev_info(&dice->unit->device,
--				 "cache mismatch: pcm: %u:%u, midi: %u:%u\n",
--				 pcm_chs, pcm_cache, midi_ports, midi_cache);
-+				 "cache mismatch: pcm: %u:%u, midi: %u\n",
-+				 pcm_chs, pcm_cache, midi_ports);
- 			return -EPROTO;
- 		}
- 
+ int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice);
+ int snd_dice_detect_alesis_formats(struct snd_dice *dice);
++int snd_dice_detect_alesis_mastercontrol_formats(struct snd_dice *dice);
+ int snd_dice_detect_extension_formats(struct snd_dice *dice);
+ int snd_dice_detect_mytek_formats(struct snd_dice *dice);
+ int snd_dice_detect_presonus_formats(struct snd_dice *dice);
 -- 
 2.20.1
 
