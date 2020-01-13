@@ -2,92 +2,68 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F606C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2FCBC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F7C124670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 30A1C24684
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rJmtVmX5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F7C124670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="aP9XkUgD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30A1C24684
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DEE01660;
-	Mon, 13 Jan 2020 12:30:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DEE01660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AD5518A3;
+	Mon, 13 Jan 2020 15:34:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AD5518A3
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5417F8014B;
-	Mon, 13 Jan 2020 12:30:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBD3EF8014B;
+	Mon, 13 Jan 2020 15:34:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E08F8F801EB; Mon, 13 Jan 2020 12:30:54 +0100 (CET)
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com
- [IPv6:2a00:1450:4864:20::344])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 229DDF801EB; Mon, 13 Jan 2020 15:34:25 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F135F80122
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 12:30:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F135F80122
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="rJmtVmX5"
-Received: by mail-wm1-x344.google.com with SMTP id u2so9210628wmc.3
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 03:30:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=L9J6bdgSQjodLI23YpSiTesx0n9B3HndOvra4M8+p7k=;
- b=rJmtVmX5YKzQhdTnqWIDt0Sd7hRfyDZ9J2/r7AgrnRy+LnIovCP86RslmsEr+2/7HK
- J/SKbxZYfjjBgawUJkeQI47bODPEW9k2Yued/The+xcicFpPCZOKzRvUVa1gWbllfa4V
- 7SnQvUJoGE4rWnEaE7YWJxfrNCWNUwWSt6UI8ni1fYPw0MYPCZyslpfHTbGY22MjcCkS
- 7A/lojLQb9M4Aant41VIH4xrR4xE3xuAZfAbJ5nr63S2aQ2jgVBk/PkA9LU0J6EuBPTk
- HVlKkDWboTipYxPCwf4y7vop7zhR8rZn5uwcAsawQ+6LWOj9z249IYDF+ZxCwJVWKDXg
- d82w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=L9J6bdgSQjodLI23YpSiTesx0n9B3HndOvra4M8+p7k=;
- b=X5DxbKFf4Hc8zJ4prSXOsQ4Tm6X9YVDCtULAzINIcShjxgVSfJMNMfp9NoE+Qu9/4/
- OAFJ2/jMz/RfL8ey8fF/eoJPcxFZsRBse7E7ndaUv2zoXyYGx4ph6cpZOx2kFqrCji1E
- QgqgYFilZ7b9Mr1mzVAwCFQtA3Dcqq7U9LVLHuDYKmx89dUsNz3nXqT/OLZNTBSWFWmM
- GgFJgruT7RoRDXK2dcA/2vMH4cfvzP32I1+YI3oylQZdYz8tHFYfKL5ytJ6jf3zdCaCq
- QW7z4cgvMuQl6K4gYOoYD6d9MjucgOJoerkfjabZR87UOTH0UpZaxBk+tgPA6dX0YPiF
- mErg==
-X-Gm-Message-State: APjAAAW6qQNYdzhSC9BOit2JRp5BHVXxVE1ua+VEbUH+ejItkXMyF1tu
- BkHE1B9uagcCFLUS9xb3jFeKFQ==
-X-Google-Smtp-Source: APXvYqwzfJShA35mlKYnLzNK54JVIn52v5SM+atzIQ1r2mhhM94/PF6eqTGKTUqYGhEgmy5gqGc+4w==
-X-Received: by 2002:a1c:b603:: with SMTP id g3mr19010718wmf.133.1578915050398; 
- Mon, 13 Jan 2020 03:30:50 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.googlemail.com with ESMTPSA id k11sm13455223wmc.20.2020.01.13.03.30.49
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 13 Jan 2020 03:30:49 -0800 (PST)
-To: Stephan Gerhold <stephan@gerhold.net>, Mark Brown <broonie@kernel.org>
-References: <20200105102753.83108-1-stephan@gerhold.net>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <33e68247-ff11-6c0c-b91c-9b406f9607cd@linaro.org>
-Date: Mon, 13 Jan 2020 11:30:48 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA46CF80122
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 15:34:21 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E6288A0042;
+ Mon, 13 Jan 2020 15:34:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E6288A0042
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1578926060; bh=6sHMlq39e2f1hMNVGLdvZwLf/8etIrHFZkaMDtn8Nus=;
+ h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+ b=aP9XkUgDTWejyIecGA8hthSUn6jJlTKqOeqImnyBj6B+KKGu9WDfPawlniSLoMQLK
+ dwZVdkEoCE9Ofd4riW6bLPzcKpMBLQYETLczrFAhBl0JXPGVRgqiBow2M2RQB49Ehx
+ 3ocuaJqOe50T+CjttfR3qTNSpYHLEtqbSSaU6Kv0=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Mon, 13 Jan 2020 15:34:18 +0100 (CET)
+To: Tim Schumacher <tim@timakro.de>
+References: <20200109221032.GA74081@impa>
+ <7294fce2-716e-00c2-665f-587424b96eb0@perex.cz> <20200113142753.GA22538@impa>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <6d433182-fb2a-d883-a9b3-80110efb89c2@perex.cz>
+Date: Mon, 13 Jan 2020 15:34:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200105102753.83108-1-stephan@gerhold.net>
+In-Reply-To: <20200113142753.GA22538@impa>
 Content-Language: en-US
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [alsa-devel] [PATCH] ASoC: msm8916-wcd-digital: Reset RX
- interpolation path after use
+Cc: ALSA development <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Bug report for changes in ucm2 with chtrt5645 card
+ on Lenovo Miix 320
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,63 +81,59 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Dne 13. 01. 20 v 15:27 Tim Schumacher napsal(a):
+> The patch doesn't help unfortunately. Deleting
+> LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf still works with the
+> patch installed. Can I help debug this somehow?
 
+If you have latest alsa-utils, the command 'alsaucm dump text' should work, 
+otherwise try 'alsaucm set _verb HiFi'.
 
-On 05/01/2020 10:27, Stephan Gerhold wrote:
-> For some reason, attempting to route audio through QDSP6 on MSM8916
-> causes the RX interpolation path to get "stuck" after playing audio
-> a few times. In this situation, the analog codec part is still working,
-> but the RX path in the digital codec stops working, so you only hear
-> the analog parts powering up. After a reboot everything works again.
+					Jaroslav
+
 > 
-> So far I was not able to reproduce the problem when using lpass-cpu.
+> - Tim
 > 
-> The downstream kernel driver avoids this by resetting the RX
-> interpolation path after use. In mainline we do something similar
-> for the TX decimator (LPASS_CDC_CLK_TX_RESET_B1_CTL), but the
-> interpolator reset (LPASS_CDC_CLK_RX_RESET_CTL) got lost when the
-> msm8916-wcd driver was split into analog and digital.
-> 
-> Fix this problem by adding the reset to
-> msm8916_wcd_digital_enable_interpolator().
-> 
-> Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> On 2020-01-13, Jaroslav Kysela wrote:
+>> Dne 09. 01. 20 v 23:10 Tim Schumacher napsal(a):
+>>> Hi alsa devs,
+>>>
+>>> I'm on Arch Linux on a rather uncommon laptop (Lenovo Miix 320) and my sound
+>>> stopped working on the upgrade from alsa-lib 1.1.9 to 1.2.1. wabbits on
+>>> IRC helped me track down the problem to a change in the
+>>> /usr/share/alsa/ucm (now /usr/share/alsa/ucm2) files. It seems like
+>>> /usr/share/alsa/ucm2/chtrt5645/HiFi-dmic2.conf and a symlink at
+>>> /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+>>> were specifically added for this laptop but in the contrary they break the
+>>> sound for me.
+>>>
+>>> After the upgrade to alsa-lib 1.2.1 the sound is not working. The commands play no sound:
+>>>
+>>>       pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,0
+>>>       pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,1
+>>>
+>>> And this is the alsa-info.sh output http://alsa-project.org/db/?f=f883910a5c5101b4b1ea4202d1fe84ccd139f796
+>>>
+>>> After deleting the /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+>>> symlink both commands from above play sound and this is the alsa-info.sh
+>>> output http://alsa-project.org/db/?f=e759eb9118a191b6c3b8c021fed58abc9cf95076
+>>
+>> Thanks. I forgot to fix the file path in chtrt5645/chtrt5645-dmic2.conf .
+>> Could you test this patch?
+>>
+>> https://github.com/alsa-project/alsa-ucm-conf/commit/74f2a0f0884df7b9f2d08d07456a3bc37d1a512e
+>>
+>> 				Jaroslav
+>>
+>> -- 
+>> Jaroslav Kysela <perex@perex.cz>
+>> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+>>
 
-Thanks for the patch and testing it with QDSP6.
 
-> ---
-> Tested on msm8916-samsung-a5u:
->    - qdsp6 does no longer stop working after playing audio a few times
->    - lpass-cpu is still working fine (no difference)
-> ---
->   sound/soc/codecs/msm8916-wcd-digital.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-> index 58b2468fb2a7..09fccacadd6b 100644
-> --- a/sound/soc/codecs/msm8916-wcd-digital.c
-> +++ b/sound/soc/codecs/msm8916-wcd-digital.c
-> @@ -586,6 +586,12 @@ static int msm8916_wcd_digital_enable_interpolator(
->   		snd_soc_component_write(component, rx_gain_reg[w->shift],
->   			      snd_soc_component_read32(component, rx_gain_reg[w->shift]));
->   		break;
-> +	case SND_SOC_DAPM_POST_PMD:
-
-We should do this in SND_SOC_DAPM_PRE_PMU rather than in power down 
-sequence.
-
-
-> +		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-> +					      1 << w->shift, 1 << w->shift);
-> +		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-> +					      1 << w->shift, 0x0);
-> +		break;
->   	}
->   	return 0;
->   }
-> 
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
