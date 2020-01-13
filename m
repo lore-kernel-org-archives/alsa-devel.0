@@ -2,73 +2,59 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22168C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4260C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A377C24670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:10 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="YHz+pZ1l"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A377C24670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2BD5724670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BD5724670
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED77F21A8;
-	Mon, 13 Jan 2020 16:53:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED77F21A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1D9824CD;
+	Mon, 13 Jan 2020 22:12:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1D9824CD
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78036F8014B;
-	Mon, 13 Jan 2020 16:53:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF8E9F802F9;
+	Mon, 13 Jan 2020 22:05:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B5E6F801EB; Mon, 13 Jan 2020 16:53:37 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id A1BF8F802A0; Mon, 13 Jan 2020 22:05:05 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 090C4F800B9
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:53:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 090C4F800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="YHz+pZ1l"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=aEQXcauEtwtBTMlxbZX7udfUWpI37znKKr88yDEAqxQ=; b=YHz+pZ1lLirdpU1tTN1eAEZ2r
- IKMucJkzS5KpRS42TeZub17Go3/m4+Xkn5fk9nhWtKp4qqjQyjd1r3LaIiKeX6KJXflCOXbC1xFzR
- tmuyU8lo7BM7sfjZHKTJFEx0qmxLii1sMLT3GN3YFn9kxPMQCfVmki8F+sTgc5FHcSKYk=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir221-0003bw-8n; Mon, 13 Jan 2020 15:53:33 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id A2941D01965; Mon, 13 Jan 2020 15:53:32 +0000 (GMT)
-Date: Mon, 13 Jan 2020 15:53:32 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jeff Chang <richtek.jeff.chang@gmail.com>
-Message-ID: <20200113155332.GO3897@sirena.org.uk>
-References: <1578644496-16575-1-git-send-email-richtek.jeff.chang@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57CA6F8026F
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57CA6F8026F
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Jan 2020 13:04:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112683"
+Received: from pboliset-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
+ by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:48 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Date: Mon, 13 Jan 2020 15:04:21 -0600
+Message-Id: <20200113210428.27457-12-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
+References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1578644496-16575-1-git-send-email-richtek.jeff.chang@gmail.com>
-X-Cookie: Programming is an unnatural act.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, jeff_chang@richtek.com, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [alsa-devel] [PATCH v5] ASoC: Add MediaTek MT6660 Speaker Amp
-	Driver
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH 11/18] ASoC: Intel: kbl_rt5663_rt5514_max98927:
+	rename shadowed variable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,76 +67,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7422197128449167042=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Fix cppcheck warning:
 
---===============7422197128449167042==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/TUrtqMIkCP4YtJm"
-Content-Disposition: inline
+[sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c:293] ->
+[sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c:336]: (style)
+Local variable 'channels' shadows outer variable
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---/TUrtqMIkCP4YtJm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jan 10, 2020 at 04:21:36PM +0800, Jeff Chang wrote:
-
-> +	- rt,init_setting_num : The initial register setting element number.
-> +
-> +	- rt,init_setting_addr : the addreses array for INIT Setting table.
-> +
-> +	- rt,init_setting_mask : the mask array for INIT Setting table.
-> +
-> +	- rt,init_setting_val : the value array for INIT Setting table.
-
-I'm not 100% clear what this is indended to be used for but given
-that it's just raw register writes it's hard to see how it can be
-used well in a general driver - it basically means we have no
-idea how the chip might be configured in any given system which
-*might* be fine but it could break some assumption the driver
-makes about the state of the system on some particular OS or
-version.  If there are some system specific tuning parameters
-that need to be set as raw values it would be safer to do that by
-just including the data in DT (eg, "X bytes of data to be written
-starting at register Y to tune component Z" type stuff) or by
-exposing individual parameters for things that are documentable.
-Allowing a completely unconstrained sequence of register writes
-doesn't seem like a good idea.
-
-If possible it might be best to send a version of the driver that
-doesn't let this stuff be configured at all then a patch on top
-of that which configures all this stuff, the rest of the driver
-looks good now.
-
---/TUrtqMIkCP4YtJm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4cknsACgkQJNaLcl1U
-h9BTeAf8C55cmcfxY+HHqvC1iVVcYfUzf1wTdh3zed7cpd624wm6yrjvr2UzzcR4
-t/LEvnTIeZTPFvorQNMaZLDM5KWU8YWrll6SM6deiXo2dv5uAFzs2XGY+eRvTnN3
-HjcX+dnQlvd7ZCekd/b7M03IhNGIx5VY3QDDhbDTDrHA26wpil5GT3seJhV0yXsM
-w1+ITl4WshJ1kDwE8+jIBG5j7FfR/4ig3ZDb2iP2frIKn7r12AJDlQXfM/pf3vpm
-IXFs+JX8tyuHEU35AyG1vMOoReF0/UDGvgKI0m0hiV7E9W37FHfB+bJS64sSmnTv
-4EUo2bTKPCiJv7BxPJVngMSK1D+qeA==
-=xYed
------END PGP SIGNATURE-----
-
---/TUrtqMIkCP4YtJm--
-
---===============7422197128449167042==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index e2b0a027f5a1..952616ffbc16 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -333,7 +333,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	struct snd_soc_dpcm *dpcm = container_of(
+@@ -348,15 +348,15 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+ 	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
+ 		rate->min = rate->max = 48000;
+-		channels->min = channels->max = 2;
++		chan->min = chan->max = 2;
+ 		snd_mask_none(fmt);
+ 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
+ 	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
+ 		if (params_channels(params) == 2 ||
+ 				DMIC_CH(dmic_constraints) == 2)
+-			channels->min = channels->max = 2;
++			chan->min = chan->max = 2;
+ 		else
+-			channels->min = channels->max = 4;
++			chan->min = chan->max = 4;
+ 	}
+ 	/*
+ 	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7422197128449167042==--
