@@ -2,71 +2,55 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0DB2C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:27:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64F3AC33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:27:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E170207FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:27:10 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="evne6lx6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E170207FD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id F3E63207FD
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:27:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3E63207FD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DBE52C27;
-	Tue, 14 Jan 2020 07:37:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DBE52C27
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BDF51732;
+	Mon, 13 Jan 2020 13:42:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BDF51732
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F33AF8014D;
-	Tue, 14 Jan 2020 07:37:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A51E8F8014B;
+	Mon, 13 Jan 2020 13:42:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7EC48F8014D; Tue, 14 Jan 2020 07:37:47 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 92140F801EB; Mon, 13 Jan 2020 13:42:15 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B75DF800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 07:37:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B75DF800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="evne6lx6"
-Received: from localhost (unknown [49.207.51.160])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 84FBF207FD;
- Tue, 14 Jan 2020 06:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1578983862;
- bh=NBIza/ymMVuUCaPXacKYwhUHlMW1KvmRdb+puHl++z0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=evne6lx6eGCVUOFd4izSpN2llgzRkiJK5XATRjbordGx98m5YSbiX3nWlx1xHgo3O
- hS+nBOSpmAhra3jWnzS4vuBkT4ySiFB6eXb6d5oRHSwXmJ+jFExefT/twUSZuwFWvk
- /e0Xa/BPdQZ6BfL5ge0nvLdikwUtIvop2Ps37jKw=
-Date: Tue, 14 Jan 2020 12:07:38 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20200114063738.GG2818@vkoul-mobl>
-References: <20200113225637.17313-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200113225637.17313-1-pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: bus: fix device number leak on
-	errors
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC39DF80149
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 13:42:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC39DF80149
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 8DCD4ABEA;
+ Mon, 13 Jan 2020 12:42:11 +0000 (UTC)
+Date: Mon, 13 Jan 2020 13:42:11 +0100
+Message-ID: <s5hblr7jzoc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <alpine.DEB.2.21.2001131425180.2957@eliteleevi.tm.intel.com>
+References: <20200109090104.26073-1-tiwai@suse.de>
+ <alpine.DEB.2.21.2001131425180.2957@eliteleevi.tm.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH for-5.6] ALSA: hda: Manage concurrent reg
+	access more properly
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,21 +68,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 13-01-20, 16:56, Pierre-Louis Bossart wrote:
-> If the programming of the dev_number fails due to an IO error, a new
-> device_number will be assigned, resulting in a leak.
+On Mon, 13 Jan 2020 13:33:10 +0100,
+Kai Vehmanen wrote:
 > 
-> Make sure we only assign a device_number once per Slave device.
+> Hi,
+> 
+> On Thu, 9 Jan 2020, Takashi Iwai wrote:
+> 
+> > In the commit 8e85def5723e ("ALSA: hda: enable regmap internal
+> > locking"), we re-enabled the regmap lock due to the reported
+> > regression that showed the possible concurrent accesses.  It was a
+> > temporary workaround, and there are still a few opened races even
+> > after the revert.  In this patch, we cover those still opened windows
+> > with a proper mutex lock and disable the regmap internal lock again.
+> 
+> I've been running tests on multiple HDA machines plus submitted the patch 
+> through the GFX CI (that found the original problem) and no issues have 
+> been found. So with that:
+> 
+> Tested-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Although I am not sure if this would be a leak, we assign a new num and
-old number should have gotten recycled as they would be unattached
-status.
+Thanks, now the patch is queued into for-next branch.
 
-Anyway this is good improvement as it helps to debug having same
-dev_num, so Applied, thanks
+> One minor nit from checkpatch:
+> 
+> > +/* a helper macro to call @func_call; retry with power-up if failed */
+> > +#define CALL_RAW_FUNC(codec, func_call)				\
+> > +	({							\
+> > +		int _err = func_call;				\
+> > +		if (_err == -EAGAIN) {				\
+> > +			_err = snd_hdac_power_up_pm(codec);	\
+> > +			if (_err >= 0)				\
+> > +				_err = func_call;		\
+> > +			snd_hdac_power_down_pm(codec);		\
+> > +		}						\
+> > +		_err;})
+> 
+> Checkpatch --strict doesn't like this:
+> 
+> ERROR: space required after that ';' (ctx:VxV)
+> #121: FILE: sound/hda/hdac_regmap.c:450:
+> +               _err;})
+>                     ^
 
--- 
-~Vinod
+It's in a hackish macro code, and checkpatch is no bible, so some
+errors or warnings can be ignored if you know that it's OK :)
+
+
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
