@@ -2,57 +2,70 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CBE3C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6614AC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E31B222C4
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E31B222C4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id E704B207FD
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NJ5ycc2C"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E704B207FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 710EE27AD;
-	Tue, 14 Jan 2020 02:17:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 710EE27AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id F29601F49;
+	Mon, 13 Jan 2020 16:20:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F29601F49
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F14D3F8014B;
-	Tue, 14 Jan 2020 02:17:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B1E2F802EB;
+	Mon, 13 Jan 2020 16:13:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4FAA4F801EB; Tue, 14 Jan 2020 02:17:56 +0100 (CET)
-Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
+ id 76BADF802BC; Mon, 13 Jan 2020 16:13:26 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63303F800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:17:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63303F800B9
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
- by Forcepoint Email with ESMTP id D0C395293E302764A76E;
- Tue, 14 Jan 2020 09:17:48 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 14 Jan 2020 09:17:42 +0800
-From: YueHaibing <yuehaibing@huawei.com>
-To: Shuming Fan <shumingf@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Date: Tue, 14 Jan 2020 01:13:19 +0000
-Message-ID: <20200114011319.173401-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
-Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
- YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH -next] ASoC: rt700: remove unused including
-	<linux/version.h>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E1D0F80276
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E1D0F80276
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="NJ5ycc2C"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=LQ1X6Qf6cMDMtvhJHEFivDie9FfTlKLr75x0YeJgkNw=; b=NJ5ycc2CUVde
+ 6jzZICJH+YcfR9lyr58hvRXQV0iaoywhjVi6fOMMs9LEmYKLJa9YyICan+5uKV1Mmeic/3vaD42Ut
+ LOLE0+OgkFHCr4PMDiKQXmtjVw8MYaAuVOS8e77WTOUUsfzMeoWDTZWs2wJG1WqPE1CDxn87ziKSO
+ Vuuyw=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir1P1-0003Lu-Qk; Mon, 13 Jan 2020 15:13:15 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 8CE1CD01AE4; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200110222530.30303-4-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200110222530.30303-4-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: Intel: common: add match tables for ICL
+	w/ SoundWire" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -65,32 +78,166 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove including <linux/version.h> that don't need it.
+The patch
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+   ASoC: Intel: common: add match tables for ICL w/ SoundWire
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 4313dd3efe5751238f85dd7069bee3a8bbcdbe2f Mon Sep 17 00:00:00 2001
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+Date: Fri, 10 Jan 2020 16:25:27 -0600
+Subject: [PATCH] ASoC: Intel: common: add match tables for ICL w/ SoundWire
+
+The two configurations are with the Realtek 3-in-1 board requiring all
+4 links to be enabled, or basic configuration with the on-board RT700
+using link0.
+
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200110222530.30303-4-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt700.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../intel/common/soc-acpi-intel-icl-match.c   | 98 +++++++++++++++++++
+ 1 file changed, 98 insertions(+)
 
-diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
-index b1830c1ebf8a..ff68f0e4f629 100644
---- a/sound/soc/codecs/rt700.c
-+++ b/sound/soc/codecs/rt700.c
-@@ -8,7 +8,6 @@
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 38977669b576..67e9da4635f2 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -33,5 +33,103 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_machines);
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
-
-
++static const u64 rt700_0_adr[] = {
++	0x000010025D070000
++};
++
++static const struct snd_soc_acpi_link_adr icl_rvp[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt700_0_adr),
++		.adr = rt700_0_adr,
++	},
++	{}
++};
++
++static const u64 rt711_0_adr[] = {
++	0x000010025D071100
++};
++
++static const u64 rt1308_1_adr[] = {
++	0x000110025D130800
++};
++
++static const u64 rt1308_2_adr[] = {
++	0x000210025D130800
++};
++
++static const u64 rt715_3_adr[] = {
++	0x000310025D715000
++};
++
++static const struct snd_soc_acpi_link_adr icl_3_in_1_default[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt711_0_adr),
++		.adr = rt711_0_adr,
++	},
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt1308_1_adr),
++		.adr = rt1308_1_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(rt1308_2_adr),
++		.adr = rt1308_2_adr,
++	},
++	{
++		.mask = BIT(3),
++		.num_adr = ARRAY_SIZE(rt715_3_adr),
++		.adr = rt715_3_adr,
++	},
++	{}
++};
++
++static const struct snd_soc_acpi_link_adr icl_3_in_1_mono_amp[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt711_0_adr),
++		.adr = rt711_0_adr,
++	},
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt1308_1_adr),
++		.adr = rt1308_1_adr,
++	},
++	{
++		.mask = BIT(3),
++		.num_adr = ARRAY_SIZE(rt715_3_adr),
++		.adr = rt715_3_adr,
++	},
++	{}
++};
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_sdw_machines[] = {
++	{
++		.link_mask = 0xF, /* 4 active links required */
++		.links = icl_3_in_1_default,
++		.drv_name = "sdw_rt711_rt1308_rt715",
++		.sof_fw_filename = "sof-icl.ri",
++		.sof_tplg_filename = "sof-icl-rt711-rt1308-rt715.tplg",
++	},
++	{
++		.link_mask = 0xB, /* 3 active links required */
++		.links = icl_3_in_1_mono_amp,
++		.drv_name = "sdw_rt711_rt1308_rt715",
++		.sof_fw_filename = "sof-icl.ri",
++		.sof_tplg_filename = "sof-icl-rt711-rt1308-rt715-mono.tplg",
++	},
++	{
++		.link_mask = 0x1, /* rt700 connected on link0 */
++		.links = icl_rvp,
++		.drv_name = "sdw_rt700",
++		.sof_fw_filename = "sof-icl.ri",
++		.sof_tplg_filename = "sof-icl-rt700.tplg",
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_sdw_machines);
++
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Intel Common ACPI Match module");
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
