@@ -2,68 +2,74 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2FCBC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ABD3C33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30A1C24684
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 16D5F214AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="aP9XkUgD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30A1C24684
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="O+eep0PK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16D5F214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AD5518A3;
-	Mon, 13 Jan 2020 15:34:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AD5518A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53F6F1916;
+	Mon, 13 Jan 2020 16:14:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53F6F1916
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBD3EF8014B;
-	Mon, 13 Jan 2020 15:34:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AD77F80228;
+	Mon, 13 Jan 2020 16:13:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 229DDF801EB; Mon, 13 Jan 2020 15:34:25 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 0E59AF8026A; Mon, 13 Jan 2020 16:13:08 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA46CF80122
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 15:34:21 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E6288A0042;
- Mon, 13 Jan 2020 15:34:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E6288A0042
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1578926060; bh=6sHMlq39e2f1hMNVGLdvZwLf/8etIrHFZkaMDtn8Nus=;
- h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
- b=aP9XkUgDTWejyIecGA8hthSUn6jJlTKqOeqImnyBj6B+KKGu9WDfPawlniSLoMQLK
- dwZVdkEoCE9Ofd4riW6bLPzcKpMBLQYETLczrFAhBl0JXPGVRgqiBow2M2RQB49Ehx
- 3ocuaJqOe50T+CjttfR3qTNSpYHLEtqbSSaU6Kv0=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 13 Jan 2020 15:34:18 +0100 (CET)
-To: Tim Schumacher <tim@timakro.de>
-References: <20200109221032.GA74081@impa>
- <7294fce2-716e-00c2-665f-587424b96eb0@perex.cz> <20200113142753.GA22538@impa>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <6d433182-fb2a-d883-a9b3-80110efb89c2@perex.cz>
-Date: Mon, 13 Jan 2020 15:34:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
-MIME-Version: 1.0
-In-Reply-To: <20200113142753.GA22538@impa>
-Content-Language: en-US
-Cc: ALSA development <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] Bug report for changes in ucm2 with chtrt5645 card
- on Lenovo Miix 320
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CD20F801F7
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CD20F801F7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="O+eep0PK"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=c5J9qc4h8pH18cTk38z36ZrKwJaZxSaR5F4bNDe5Ibk=; b=O+eep0PKHpkk
+ MYs62CvT7DKdaquFH0GeGkGyREC9ysyqdn00ZoJ3Hao+MyxNqxaCYHptfs0tznIKK2xaRoGiFxPdW
+ 4d7eBA364pw2xyQJWnNkuBtVby+Gs0hQHZ5PQMv89mG/PEW+oNrB5n/EJFk8qQGLzZlJ0D7pHNau0
+ raWYM=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir1Oq-0003Kz-U1; Mon, 13 Jan 2020 15:13:04 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id A6B71D01965; Mon, 13 Jan 2020 15:13:04 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+In-Reply-To: <20200112054900.236576-1-yuhsuan@chromium.org>
+Message-Id: <applied-20200112054900.236576-1-yuhsuan@chromium.org>
+X-Patchwork-Hint: ignore
+Date: Mon, 13 Jan 2020 15:13:04 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Tzung-Bi Shih <tzungbi@chromium.org>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Akshu Agrawal <akshu.agrawal@amd.com>,
+ Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [alsa-devel] Applied "ASoC: cros_ec_codec: Make the device acpi
+	compatible" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,64 +82,86 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 13. 01. 20 v 15:27 Tim Schumacher napsal(a):
-> The patch doesn't help unfortunately. Deleting
-> LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf still works with the
-> patch installed. Can I help debug this somehow?
+The patch
 
-If you have latest alsa-utils, the command 'alsaucm dump text' should work, 
-otherwise try 'alsaucm set _verb HiFi'.
+   ASoC: cros_ec_codec: Make the device acpi compatible
 
-					Jaroslav
+has been applied to the asoc tree at
 
-> 
-> - Tim
-> 
-> On 2020-01-13, Jaroslav Kysela wrote:
->> Dne 09. 01. 20 v 23:10 Tim Schumacher napsal(a):
->>> Hi alsa devs,
->>>
->>> I'm on Arch Linux on a rather uncommon laptop (Lenovo Miix 320) and my sound
->>> stopped working on the upgrade from alsa-lib 1.1.9 to 1.2.1. wabbits on
->>> IRC helped me track down the problem to a change in the
->>> /usr/share/alsa/ucm (now /usr/share/alsa/ucm2) files. It seems like
->>> /usr/share/alsa/ucm2/chtrt5645/HiFi-dmic2.conf and a symlink at
->>> /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
->>> were specifically added for this laptop but in the contrary they break the
->>> sound for me.
->>>
->>> After the upgrade to alsa-lib 1.2.1 the sound is not working. The commands play no sound:
->>>
->>>       pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,0
->>>       pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,1
->>>
->>> And this is the alsa-info.sh output http://alsa-project.org/db/?f=f883910a5c5101b4b1ea4202d1fe84ccd139f796
->>>
->>> After deleting the /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
->>> symlink both commands from above play sound and this is the alsa-info.sh
->>> output http://alsa-project.org/db/?f=e759eb9118a191b6c3b8c021fed58abc9cf95076
->>
->> Thanks. I forgot to fix the file path in chtrt5645/chtrt5645-dmic2.conf .
->> Could you test this patch?
->>
->> https://github.com/alsa-project/alsa-ucm-conf/commit/74f2a0f0884df7b9f2d08d07456a3bc37d1a512e
->>
->> 				Jaroslav
->>
->> -- 
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
->>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From 877167ef343de2a9be3d31cdd5c41122e61190dd Mon Sep 17 00:00:00 2001
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Sun, 12 Jan 2020 13:49:00 +0800
+Subject: [PATCH] ASoC: cros_ec_codec: Make the device acpi compatible
+
+Add ACPI entry for cros_ec_codec.
+
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Link: https://lore.kernel.org/r/20200112054900.236576-1-yuhsuan@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cros_ec_codec.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index dd14caf9091a..bc31e5a9a2a7 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -10,6 +10,7 @@
+ 
+ #include <crypto/hash.h>
+ #include <crypto/sha.h>
++#include <linux/acpi.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/io.h>
+@@ -1047,10 +1048,17 @@ static const struct of_device_id cros_ec_codec_of_match[] = {
+ MODULE_DEVICE_TABLE(of, cros_ec_codec_of_match);
+ #endif
+ 
++static const struct acpi_device_id cros_ec_codec_acpi_id[] = {
++	{ "GOOG0013", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, cros_ec_codec_acpi_id);
++
+ static struct platform_driver cros_ec_codec_platform_driver = {
+ 	.driver = {
+ 		.name = "cros-ec-codec",
+ 		.of_match_table = of_match_ptr(cros_ec_codec_of_match),
++		.acpi_match_table = ACPI_PTR(cros_ec_codec_acpi_id),
+ 	},
+ 	.probe = cros_ec_codec_platform_probe,
+ };
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.20.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
