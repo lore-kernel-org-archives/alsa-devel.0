@@ -2,70 +2,93 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6614AC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0086FC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:27:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E704B207FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 83AA4207FD
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:27:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="NJ5ycc2C"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E704B207FD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="id32scTt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 83AA4207FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F29601F49;
-	Mon, 13 Jan 2020 16:20:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F29601F49
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2C5F185F;
+	Mon, 13 Jan 2020 15:08:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2C5F185F
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B1E2F802EB;
-	Mon, 13 Jan 2020 16:13:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E17FF8014B;
+	Mon, 13 Jan 2020 15:08:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76BADF802BC; Mon, 13 Jan 2020 16:13:26 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0AC11F801EB; Mon, 13 Jan 2020 15:08:40 +0100 (CET)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E1D0F80276
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E1D0F80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E4C9F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 15:08:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E4C9F800B9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="NJ5ycc2C"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=LQ1X6Qf6cMDMtvhJHEFivDie9FfTlKLr75x0YeJgkNw=; b=NJ5ycc2CUVde
- 6jzZICJH+YcfR9lyr58hvRXQV0iaoywhjVi6fOMMs9LEmYKLJa9YyICan+5uKV1Mmeic/3vaD42Ut
- LOLE0+OgkFHCr4PMDiKQXmtjVw8MYaAuVOS8e77WTOUUsfzMeoWDTZWs2wJG1WqPE1CDxn87ziKSO
- Vuuyw=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1P1-0003Lu-Qk; Mon, 13 Jan 2020 15:13:15 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 8CE1CD01AE4; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-In-Reply-To: <20200110222530.30303-4-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200110222530.30303-4-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: common: add match tables for ICL
-	w/ SoundWire" to the asoc tree
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="id32scTt"
+Received: by mail-wr1-x444.google.com with SMTP id d16so8695350wre.10
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 06:08:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=6brqNIXVo1X+/WBaKssbUapnE1dHmqqu6FP7b2WIQ5c=;
+ b=id32scTtrrtfO7CyDkdlCH7EkcUDthTQFmSQbzFz/NAY8OmyeF2PcoHgdmkDjJh1vM
+ 2wCIDTFZfFpZodp6ftTBnhIQTVM+PQVSVAoNuYqnVgb45BaREz43QE+Mces+m0bohY7Q
+ IBsfvS31qLtphLSyLO/mJSTH7wUQyn7uzaIViP7cSXf1Has5q1FrQzgfe2WGXDT3gmoV
+ 5tSlsJWSJHfSxvw8WVnVGRLsHkNHI9KO40JwUAbnOj/ibO8zwlXwBlDWaMaFgIfaFD3x
+ CKdlS5R4G3YOVBf0EjmfHM2WBgpO37M6P1T9yi/dSjlC0bdn3Q3RZhlTMAECDNmuJtyd
+ 7gjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=6brqNIXVo1X+/WBaKssbUapnE1dHmqqu6FP7b2WIQ5c=;
+ b=oYBgrauzDcpwEDwSngo8bYDT5998hHbuFGLkG1Cqo5s3TevZOt5KQOTLwOtBWjzO1J
+ q5BYIwGHkpvZowy2TVi4o9JYakS2AsneSBUu5Lm7vbS6x5zub9/0T9Rj/tOwhmwxDQA9
+ 0VBOTSqXV417+ZxuZCY4WB0W0M+iKMO+oCEAYGerNhYdhlgFYRByK1o7dpJPB1bT46kK
+ RtD2v1wk8pDL44bkIlDyZiCy3IkH9GRRoC62ojwHjL48ePFjjLGNZLxTonfYHcka3zwP
+ sjZzMsCdv8H6Aq9AaZP6kkrIQVLTIGKmxkKPE7KJjcmFHvKOq536nRkHs6pBBVamnoav
+ Yx0w==
+X-Gm-Message-State: APjAAAUJrkV4VRz+cc/cmzQfErih4cAVo60nPdaEJ7KY2wVBheRBN8Nz
+ 4v4etq/6h3KbeJRrwdxCAhnxmQ==
+X-Google-Smtp-Source: APXvYqzXvkK6eyrdk98XbNT11Vg/d+Fd1hjAAc5Oi0ry63EBpw4YxmkhWTxZ8lMb8G4ryS8fxQ75JA==
+X-Received: by 2002:a5d:5283:: with SMTP id c3mr19500191wrv.148.1578924515464; 
+ Mon, 13 Jan 2020 06:08:35 -0800 (PST)
+Received: from [192.168.86.34]
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.googlemail.com with ESMTPSA id n67sm14944863wmf.46.2020.01.13.06.08.34
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 13 Jan 2020 06:08:34 -0800 (PST)
+To: Stephan Gerhold <stephan@gerhold.net>, Mark Brown <broonie@kernel.org>
+References: <20200111164006.43074-1-stephan@gerhold.net>
+ <20200111164006.43074-3-stephan@gerhold.net>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <faf8cd28-999b-54c2-2ee6-b5179a917aef@linaro.org>
+Date: Mon, 13 Jan 2020 14:08:33 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200111164006.43074-3-stephan@gerhold.net>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: msm8916-wcd-analog: Fix MIC BIAS
+	Internal1
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,167 +101,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
 
-   ASoC: Intel: common: add match tables for ICL w/ SoundWire
 
-has been applied to the asoc tree at
+On 11/01/2020 16:40, Stephan Gerhold wrote:
+> MIC BIAS Internal1 is broken at the moment because we always
+> enable the internal rbias resistor to the TX2 line (connected to
+> the headset microphone), rather than enabling the resistor connected
+> to TX1.
+> 
+> Move the RBIAS code to pm8916_wcd_analog_enable_micbias_int1/2()
+> to fix this.
+> 
+> Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+LGTM,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 4313dd3efe5751238f85dd7069bee3a8bbcdbe2f Mon Sep 17 00:00:00 2001
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-Date: Fri, 10 Jan 2020 16:25:27 -0600
-Subject: [PATCH] ASoC: Intel: common: add match tables for ICL w/ SoundWire
-
-The two configurations are with the Realtek 3-in-1 board requiring all
-4 links to be enabled, or basic configuration with the on-board RT700
-using link0.
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200110222530.30303-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../intel/common/soc-acpi-intel-icl-match.c   | 98 +++++++++++++++++++
- 1 file changed, 98 insertions(+)
-
-diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-index 38977669b576..67e9da4635f2 100644
---- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-@@ -33,5 +33,103 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_machines);
- 
-+static const u64 rt700_0_adr[] = {
-+	0x000010025D070000
-+};
-+
-+static const struct snd_soc_acpi_link_adr icl_rvp[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt700_0_adr),
-+		.adr = rt700_0_adr,
-+	},
-+	{}
-+};
-+
-+static const u64 rt711_0_adr[] = {
-+	0x000010025D071100
-+};
-+
-+static const u64 rt1308_1_adr[] = {
-+	0x000110025D130800
-+};
-+
-+static const u64 rt1308_2_adr[] = {
-+	0x000210025D130800
-+};
-+
-+static const u64 rt715_3_adr[] = {
-+	0x000310025D715000
-+};
-+
-+static const struct snd_soc_acpi_link_adr icl_3_in_1_default[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_0_adr),
-+		.adr = rt711_0_adr,
-+	},
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1308_1_adr),
-+		.adr = rt1308_1_adr,
-+	},
-+	{
-+		.mask = BIT(2),
-+		.num_adr = ARRAY_SIZE(rt1308_2_adr),
-+		.adr = rt1308_2_adr,
-+	},
-+	{
-+		.mask = BIT(3),
-+		.num_adr = ARRAY_SIZE(rt715_3_adr),
-+		.adr = rt715_3_adr,
-+	},
-+	{}
-+};
-+
-+static const struct snd_soc_acpi_link_adr icl_3_in_1_mono_amp[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_0_adr),
-+		.adr = rt711_0_adr,
-+	},
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1308_1_adr),
-+		.adr = rt1308_1_adr,
-+	},
-+	{
-+		.mask = BIT(3),
-+		.num_adr = ARRAY_SIZE(rt715_3_adr),
-+		.adr = rt715_3_adr,
-+	},
-+	{}
-+};
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_sdw_machines[] = {
-+	{
-+		.link_mask = 0xF, /* 4 active links required */
-+		.links = icl_3_in_1_default,
-+		.drv_name = "sdw_rt711_rt1308_rt715",
-+		.sof_fw_filename = "sof-icl.ri",
-+		.sof_tplg_filename = "sof-icl-rt711-rt1308-rt715.tplg",
-+	},
-+	{
-+		.link_mask = 0xB, /* 3 active links required */
-+		.links = icl_3_in_1_mono_amp,
-+		.drv_name = "sdw_rt711_rt1308_rt715",
-+		.sof_fw_filename = "sof-icl.ri",
-+		.sof_tplg_filename = "sof-icl-rt711-rt1308-rt715-mono.tplg",
-+	},
-+	{
-+		.link_mask = 0x1, /* rt700 connected on link0 */
-+		.links = icl_rvp,
-+		.drv_name = "sdw_rt700",
-+		.sof_fw_filename = "sof-icl.ri",
-+		.sof_tplg_filename = "sof-icl-rt700.tplg",
-+	},
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_sdw_machines);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Intel Common ACPI Match module");
--- 
-2.20.1
-
+> ---
+>   sound/soc/codecs/msm8916-wcd-analog.c | 16 +++++++++++++---
+>   1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+> index 30b19f12fabc..1f7964beb20c 100644
+> --- a/sound/soc/codecs/msm8916-wcd-analog.c
+> +++ b/sound/soc/codecs/msm8916-wcd-analog.c
+> @@ -396,9 +396,6 @@ static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_component
+>   
+>   	switch (event) {
+>   	case SND_SOC_DAPM_PRE_PMU:
+> -		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
+> -				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
+> -				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
+>   		snd_soc_component_update_bits(component, reg, MICB_1_EN_PULL_DOWN_EN_MASK, 0);
+>   		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
+>   				    MICB_1_EN_OPA_STG2_TAIL_CURR_MASK,
+> @@ -448,6 +445,14 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
+>   	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+>   	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
+>   
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
+> +				    MICB_1_INT_TX1_INT_RBIAS_EN_MASK,
+> +				    MICB_1_INT_TX1_INT_RBIAS_EN_ENABLE);
+> +		break;
+> +	}
+> +
+>   	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
+>   						     wcd->micbias1_cap_mode);
+>   }
+> @@ -558,6 +563,11 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
+>   	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
+>   
+>   	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
+> +				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
+> +				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
+> +		break;
+>   	case SND_SOC_DAPM_POST_PMU:
+>   		pm8916_mbhc_configure_bias(wcd, true);
+>   		break;
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
