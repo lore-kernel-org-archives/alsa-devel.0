@@ -2,96 +2,91 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93584C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93167C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA14224670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2075A24670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="Ijd9tvkN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KBTEE+hi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA14224670
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="br/eDHQd"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2075A24670
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87F09275F;
-	Tue, 14 Jan 2020 00:37:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87F09275F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85DFA17B1;
+	Mon, 13 Jan 2020 14:23:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85DFA17B1
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE11CF8014B;
-	Tue, 14 Jan 2020 00:37:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B3D6F80228;
+	Mon, 13 Jan 2020 14:22:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F265CF801EB; Tue, 14 Jan 2020 00:37:43 +0100 (CET)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 06460F801F7; Mon, 13 Jan 2020 14:22:10 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3D51F800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 00:37:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3D51F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8197F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 14:22:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8197F800B9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="Ijd9tvkN"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="KBTEE+hi"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.nyi.internal (Postfix) with ESMTP id 2D30C2233F;
- Mon, 13 Jan 2020 18:37:37 -0500 (EST)
-Received: from imap22 ([10.202.2.72])
- by compute1.internal (MEProxy); Mon, 13 Jan 2020 18:37:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=mime-version:message-id:in-reply-to:references:date:from:to
- :cc:subject:content-type; s=fm3; bh=Fw9v3VOx7uIzlqhVg/L2CyTDbOYe
- 49WRhGhXfUpOrHk=; b=Ijd9tvkNNKS+/GRC8AygwCl8wUUh+gfjj1wuR6Egze8a
- el/5eHY/LTSlLuu4uLmTIsvv3x4xeHwcT8vZPdfek1Xscw1sayxpo+aqcP2rzJHK
- llEH4BGxwxqrEnW4UKyKCKsCeEXZZgOv4EONoGAtiS/8urQXyHzEcHwH3fA6Nc7g
- 6xmFD04BabYlX7AJWDoUv7xpmFtk2YZtS6WKJcLQHzL5QGkSoW68iiAKSYj3EHlL
- M0exYbEWzZ8hi8JXC7tXTiSlrX58m0Mvn+6HOJyZ8cWXDeHCYgoenilTDjbDMnQX
- koyMt2wDkdSpQcPgCEIgjLoMxBfv+eXzCHkdevUZZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Fw9v3V
- Ox7uIzlqhVg/L2CyTDbOYe49WRhGhXfUpOrHk=; b=KBTEE+hiQ/ioxH7/VWVkDn
- QAPtEJ5uK+P8s3DELUqoJgrE0Ps98Ln6LLal2jB8DPtRy05rH8sJnJVcJs9WJaiH
- cslEXGawWtA5GP+xFBBClBxfZoe1isD17E13g5bNy5M9k4LmGeIrXGHiqm1cXi6J
- WxvcffqQGLJ5Q9XvD4gfC9+CwIPaFUDlPZtvMG8EBOOMsduv+lzlc8DatgsiScwB
- uqqQtTTLHyUp6EO5Tv80Ci1brshKnY1zqMBaWzmEnlU5JMInNEZQz2PAwukfZrVv
- MmcmKHjmyJzT7aTVR5zr+OddJxJ+lIXmTxXQ08HbmF3zl7xGe7VlrGh23ldb9ZkA
- ==
-X-ME-Sender: <xms:QP8cXmmHOV7RecTWUgd6xssXWvwM9on-8BtJ5uIYCneQRkuXmrxXHQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvdejuddgudduucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfvrghk
- rghshhhiucfurghkrghmohhtohdfuceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthh
- hirdhjpheqnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghk
- rghmohgttghhihdrjhhpnecuvehluhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:QP8cXoYL3R59vacGfJA8YHckARPYZo9uGiTfekmaFQO9Xwlk_jbxbA>
- <xmx:QP8cXhNaIGlz6O3L8tR5m7uf0C7-SbOy60A0VnQXA-JKR0FYciGZuA>
- <xmx:QP8cXtaheARjyjLJRoN7yiwU-GEYTPc76SqUgLy449F-t2NK9zqKuQ>
- <xmx:Qf8cXgmgMqRWLfFebLII4PBlQK5Lu3jvD5wp3uoE0q_4pPwgCmLFsQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
- id 62652668005F; Mon, 13 Jan 2020 18:37:36 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.1.7-754-g09d1619-fmstable-20200113v1
-Mime-Version: 1.0
-Message-Id: <3e94aabb-4689-4364-a16f-738c7b487b26@www.fastmail.com>
-In-Reply-To: <trinity-bee95b09-4805-4082-91a4-86c5665827a8-1578935257838@3c-app-webde-bs21>
-References: <trinity-bee95b09-4805-4082-91a4-86c5665827a8-1578935257838@3c-app-webde-bs21>
-Date: Tue, 14 Jan 2020 08:37:16 +0900
-From: "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
-To: "Yannic Korten" <y.korten@web.de>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Github MOTU PCI 324; Motu 2408; Motu 1224
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="br/eDHQd"
+Received: by mail-wr1-x443.google.com with SMTP id t2so8571696wrr.1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 05:22:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=D/zgSAoCVsSdiweHMVDrK8nA0R60nkQkJQGcdVDh1og=;
+ b=br/eDHQd0x8llbigzrXZRlqJaZX4duJUbmWjYqwd6ceNQXZqaYjEKm1XaVvs2g21F8
+ WGS6IDf2LUG3cUeTFs5gqTZJu7My373rI4HdsE8Tw8w+ok9gqdYL7plKzMDSEc8tfI0b
+ j0VD3yzShNdDf5sdoGjSVMTWgT+9VXXybvYtqtwSghYdxtkeMiKsEMDNztVhmHDRft3w
+ zBx1zXcFCjgcqSOC5aoAaGBkbfOQhRtDKKVM/D4x8tQFS3TtOTSeUwrt/I/WyKl7cDN6
+ BgtKLNrfxZR+r5YhKHPIyzzQTyBCWNiEi0i9lQLio+4FSr3qcEnuH6Cx/n7rO8ElSGCe
+ FRZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=D/zgSAoCVsSdiweHMVDrK8nA0R60nkQkJQGcdVDh1og=;
+ b=lcpP4vGtc6uY1yNQYglDcikGlcdPnwiZHnLU+R1/Tbuh1RAweozFwfUU7kF5d6AbSG
+ Haf3GhpWYz9YqYY/AnfqsbN6ULaDNAXFQgmFMgBcH/HB1mHkFM8FwXaAJVjDIcVZqiuQ
+ EcI9gH4t3O2biXObkWgQyoUIaaUjOqTOKlBlZiJLABNpdFaVtJ3NlaHka5x8mkk+B2Te
+ IvoJEXQiU2+M7y1n8oPQWnos7CCl3C+VYDMS6z/QhAKDaUxhIN1mUWDqf59DLMXWng5D
+ znbsFXJPNuC0PRk78kl2Mjkc7RGQwp9vNXJZYoot5wswppV/09IBlbCK0J00z7HuDo4Q
+ JAfA==
+X-Gm-Message-State: APjAAAW/wnsTCVE4fgpJPC63SATHsFetb4U2ad/yVhs2KBKgw1dnJI4n
+ R6L9zH38yMVQg1BF+iGDigdzVA==
+X-Google-Smtp-Source: APXvYqzyzFsiGyOdKPbaEpxrkE10+1dd2DXNa3Y7sYoWXOI+M+TDGld2VQUrm5tt76IELexF439+dQ==
+X-Received: by 2002:a5d:4692:: with SMTP id u18mr18989285wrq.206.1578921726858; 
+ Mon, 13 Jan 2020 05:22:06 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id u18sm14692987wrt.26.2020.01.13.05.22.05
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Jan 2020 05:22:06 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: vkoul@kernel.org
+Date: Mon, 13 Jan 2020 13:21:52 +0000
+Message-Id: <20200113132153.27239-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200113132153.27239-1-srinivas.kandagatla@linaro.org>
+References: <20200113132153.27239-1-srinivas.kandagatla@linaro.org>
+MIME-Version: 1.0
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ linux-kernel@vger.kernel.org, spapothi@codeaurora.org,
+ pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [alsa-devel] [PATCH v6 1/2] dt-bindings: soundwire: add bindings
+	for Qcom controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,64 +104,195 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Yan,
-(CCed to alsa-devel)
+This patch adds bindings for Qualcomm soundwire controller.
 
-On Tue, Jan 14, 2020, at 02:07, Yannic Korten wrote:
-> Hey Mr. Takashi,
-> I'm new to Linux and new to Github. If you think this is spam or you 
-> wanted to be in private: See this mail as spam - ignore and just delete 
-> it. I'm sorry then.
-> But I have a problem and don't know whom to contact. It seems like you 
-> have much experience with coding and the usage of ALSA (which seems to 
-> be your project).
-> So, my setup is the following:
-> Ubuntu Studio 19.10
-> MOTU 324 PCI Card (detected as 'Multimedia audio controller: Mark of 
-> the Unicorn Inc PCI-324 Audiowire Interface (rev 0a)')
-> MOTU 1224
-> MOTU 2408
-> So I tried to install your files from github but it seems not to be 
-> working. Either it's because it's just the support for some newer MOTU 
-> devices or I'm to dumb.
-> Is it possible to get the above devices fully running on linux with 
-> your "drivers"? Or are they not supporting?
-> Will it be possible to insert them to the code (easily)? Or is it way 
-> to much expenditure for that old devices?
-> 
-> Thanks for help
-> Greetings from Germany
->  Yan
+Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
+either integrated as part of WCD audio codecs via slimbus or
+as part of SOC I/O.
 
-I'm an author/maintainer of ALSA firewire stack which includes snd-firewire-motu
-driver. The driver can handle MOTU's FireWire series for IEEE 1394 bus; e.g.
-MOTU 828mkII. Unfortunately, the driver is unavailable for your model.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/soundwire/qcom,sdw.txt           | 167 ++++++++++++++++++
+ 1 file changed, 167 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
 
-Your model is not compliant to IEEE 1394. It's for 'AudioWire', which is proprietary
-protocol developed by MOTU. Like 1394 OHCI card is for IEEE 1394 bus,
-PCI-324/424 ASIC card is for 'AudioWire'. The ASIC is designed by MOTU itself
-(Precisely S&S Research, Inc.) and the detail is closed.
+diff --git a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+new file mode 100644
+index 000000000000..436547f3b155
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+@@ -0,0 +1,167 @@
++Qualcomm SoundWire Controller Bindings
++
++
++This binding describes the Qualcomm SoundWire Controller along with its
++board specific bus parameters.
++
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: must be "qcom,soundwire-v<MAJOR>.<MINOR>.<STEP>",
++		    Example:
++			"qcom,soundwire-v1.3.0"
++			"qcom,soundwire-v1.5.0"
++			"qcom,soundwire-v1.6.0"
++- reg:
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: the base address and size of SoundWire controller
++		    address space.
++
++- interrupts:
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: should specify the SoundWire Controller IRQ
++
++- clock-names:
++	Usage: required
++	Value type: <stringlist>
++	Definition: should be "iface" for SoundWire Controller interface clock
++
++- clocks:
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: should specify the SoundWire Controller interface clock
++
++- #sound-dai-cells:
++	Usage: required
++	Value type: <u32>
++	Definition: must be 1 for digital audio interfaces on the controller.
++
++- qcom,dout-ports:
++	Usage: required
++	Value type: <u32>
++	Definition: must be count of data out ports
++
++- qcom,din-ports:
++	Usage: required
++	Value type: <u32>
++	Definition: must be count of data in ports
++
++- qcom,ports-offset1:
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: should specify payload transport window offset1 of each
++		    data port. Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-offset2:
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: should specify payload transport window offset2 of each
++		    data port. Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-sinterval-low:
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: should be sample interval low of each data port.
++		    Out ports followed by In ports. Used for Sample Interval
++		    calculation.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-word-length:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: should be size of payload channel sample.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-block-pack-mode:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: should be 0 or 1 to indicate the block packing mode.
++		    0 to indicate Blocks are per Channel
++		    1 to indicate Blocks are per Port.
++		    Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-block-group-count:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: should be in range 1 to 4 to indicate how many sample
++		    intervals are combined into a payload.
++		    Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-lane-control:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: should be in range 0 to 7 to identify which	data lane
++		    the data port uses.
++		    Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-hstart:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: should be number identifying lowerst numbered coloum in
++		    SoundWire Frame, i.e. left edge of the Transport sub-frame
++		    for each port. Values between 0 and 15 are valid.
++		    Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,ports-hstop:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: should be number identifying highest numbered coloum in
++		    SoundWire Frame, i.e. the right edge of the Transport
++		    sub-frame for each port. Values between 0 and 15 are valid.
++		    Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++- qcom,dports-type:
++	Usage: optional
++	Value type: <prop-encoded-array>
++	Definition: should be one of the following types
++		    0 for reduced port
++		    1 for simple ports
++		    2 for full port
++		    Out ports followed by In ports.
++		    More info in MIPI Alliance SoundWire 1.0 Specifications.
++
++Note:
++	More Information on detail of encoding of these fields can be
++found in MIPI Alliance SoundWire 1.0 Specifications.
++
++= SoundWire devices
++Each subnode of the bus represents SoundWire device attached to it.
++The properties of these nodes are defined by the individual bindings.
++
++= EXAMPLE
++The following example represents a SoundWire controller on DB845c board
++which has controller integrated inside WCD934x codec on SDM845 SoC.
++
++soundwire: soundwire@c85 {
++	compatible = "qcom,soundwire-v1.3.0";
++	reg = <0xc85 0x20>;
++	interrupts = <20 IRQ_TYPE_EDGE_RISING>;
++	clocks = <&wcc>;
++	clock-names = "iface";
++	#sound-dai-cells = <1>;
++	qcom,dports-type = <0>;
++	qcom,dout-ports	= <6>;
++	qcom,din-ports	= <2>;
++	qcom,ports-sinterval-low = /bits/ 8  <0x07 0x1F 0x3F 0x7 0x1F 0x3F 0x0F 0x0F>;
++	qcom,ports-offset1 = /bits/ 8 <0x01 0x02 0x0C 0x6 0x12 0x0D 0x07 0x0A >;
++	qcom,ports-offset2 = /bits/ 8 <0x00 0x00 0x1F 0x00 0x00 0x1F 0x00 0x00>;
++
++	/* Left Speaker */
++	left{
++		....
++	};
++
++	/* Right Speaker */
++	right{
++		....
++	};
++};
+-- 
+2.21.0
 
-Although PCI-324/424 card has physical ports into which IEEE 1394 cables can
-connect, and actually AudioWire uses the same cable of IEEE 1394a, signals in the
-cable is completely different from IEEE 1394. In the summer of 2015, I bought
-AudioWire-based model (it's really cheep in used market) and attempted to
-connect it to my IEEE 1394 bus analyzer. As I expected, nothing can be detected.
-
-I guess that PCI-324/424 ASIC integrates a sort of computing core (e.g. ARM7TDMI)
-with PCI interface for AudioWire protocol. For this kind of device, people need to
-work for reverse-engineering by analyze MOTU driver's behaviour in memory space
-mapped to host system, and write new driver to emulate the behaviour.
-
-However, this is a kind of 'adventure' and no guarantee to achieve. On the other hand,
-it certainly consumes the batch of developer's resources, unless getting enough
-assists by vendors. This is a reason that you cannot see AudioWire compliant drivers
-as Open Source Software.
-
-
-Regards
-
-Takashi Sakamoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
