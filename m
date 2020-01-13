@@ -2,59 +2,70 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08146C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37379C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76BB424676
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76BB424676
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id BA6BF24670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:26 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GpqzSfcn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA6BF24670
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C163F255E;
-	Mon, 13 Jan 2020 22:15:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C163F255E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C507F1F05;
+	Mon, 13 Jan 2020 16:18:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C507F1F05
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 619B8F80328;
-	Mon, 13 Jan 2020 22:05:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8B71F80292;
+	Mon, 13 Jan 2020 16:13:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22A1FF802BD; Mon, 13 Jan 2020 22:05:10 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 9B17BF802BC; Mon, 13 Jan 2020 16:13:25 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9ED1CF8014B
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ED1CF8014B
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112695"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:50 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:25 -0600
-Message-Id: <20200113210428.27457-16-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 15/18] ASoC: Intel: skl_rt286: rename shadowed
-	variable
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60286F8027C
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60286F8027C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="GpqzSfcn"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=wJGBky9ZD5YbOt7v6t+V5IxqDLh08jYSXir470UXvIs=; b=GpqzSfcnrm9l
+ QLrGUVZ1YAa2QFMvUdSmGvxbCt9KC/SWvS3n4eQdYNI3mji6givkfFY1NuN5WEXaWTqUO6nzSDZeY
+ DAaQ+01SaOWGPRTehw7RGCvB8ZI/djHDuBwdc/EuZcShyy/EqzsKmxcChrOIpcZ2eqsDvX7RNVZ/y
+ nW/UQ=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir1P2-0003M1-3Q; Mon, 13 Jan 2020 15:13:16 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id CDF07D01965; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200110222530.30303-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200110222530.30303-2-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Bard liao <yung-chuan.liao@linux.intel.com>
+Subject: [alsa-devel] Applied "ASoC: soc-acpi: add _ADR-based link
+	descriptors" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,62 +78,124 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix cppcheck warning:
+The patch
 
-[sound/soc/intel/boards/skl_rt286.c:171] ->
-[sound/soc/intel/boards/skl_rt286.c:214]: (style) Local variable
-'channels' shadows outer variable
+   ASoC: soc-acpi: add _ADR-based link descriptors
 
-[sound/soc/intel/boards/skl_rt286.c:171] ->
-[sound/soc/intel/boards/skl_rt286.c:250]: (style) Local variable
-'channels' shadows outer variable
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From efb6f3159e874f09992b7318cea12e8e27e8389b Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 10 Jan 2020 16:25:25 -0600
+Subject: [PATCH] ASoC: soc-acpi: add _ADR-based link descriptors
+
+For SoundWire support, we added a 'link_mask' to describe the PCB hardware
+layout. This helped form a signature that can be used as a first-order way
+of detecting the hardware and selecting the machine driver.
+
+The concept of link_mask is however not enough. Some BIOS enable all links,
+even when there are no devices physically connected. We can also see
+variations with multiple devices attached on one link, or different types
+of devices connected on the same link. To accurately represent the
+hardware, we need to build static tables where each link exposes a list of
+expected devices represented by the 64-bit _ADR field (which uniquely
+identifies each device).
+
+The new 'links' field is optional when the link_mask is sufficient to
+represent a platform in a unique way.
+
+The existing mechanism to support I2C devices is left as is, it'd be too
+invasive to change the existing support for _HID and the notion of link is
+not relevant either.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20200110222530.30303-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_rt286.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/sound/soc-acpi.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index 231349a47cc9..a9aec66a2351 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -211,13 +211,13 @@ static int skylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index c4c997bd0379..a217a87cae86 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -61,6 +61,8 @@ static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
+  * @platform: string used for HDaudio codec support
+  * @codec_mask: used for HDAudio support
+  * @common_hdmi_codec_drv: use commom HDAudio HDMI codec driver
++ * @link_mask: links enabled on the board
++ * @links: array of link _ADR descriptors, null terminated
+  */
+ struct snd_soc_acpi_mach_params {
+ 	u32 acpi_ipc_irq_index;
+@@ -68,6 +70,23 @@ struct snd_soc_acpi_mach_params {
+ 	u32 codec_mask;
+ 	u32 dmic_num;
+ 	bool common_hdmi_codec_drv;
++	u32 link_mask;
++	const struct snd_soc_acpi_link_adr *links;
++};
++
++/**
++ * snd_soc_acpi_link_adr: ACPI-based list of _ADR, with a variable
++ * number of devices per link
++ *
++ * @mask: one bit set indicates the link this list applies to
++ * @num_adr: ARRAY_SIZE of adr
++ * @adr: array of _ADR (represented as u64).
++ */
++
++struct snd_soc_acpi_link_adr {
++	const u32 mask;
++	const u32 num_adr;
++	const u64 *adr;
+ };
  
- 	/* The output is 48KHz, stereo, 16bits */
- 	rate->min = rate->max = 48000;
--	channels->min = channels->max = 2;
-+	chan->min = chan->max = 2;
- 
- 	/* set SSP0 to 24 bit */
- 	snd_mask_none(fmt);
-@@ -247,12 +247,12 @@ static const struct snd_soc_ops skylake_rt286_ops = {
- static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 				struct snd_pcm_hw_params *params)
- {
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
- 	if (params_channels(params) == 2)
--		channels->min = channels->max = 2;
-+		chan->min = chan->max = 2;
- 	else
--		channels->min = channels->max = 4;
-+		chan->min = chan->max = 4;
- 
- 	return 0;
- }
+ /**
+@@ -78,6 +97,7 @@ struct snd_soc_acpi_mach_params {
+  *
+  * @id: ACPI ID (usually the codec's) used to find a matching machine driver.
+  * @link_mask: describes required board layout, e.g. for SoundWire.
++ * @links: array of link _ADR descriptors, null terminated.
+  * @drv_name: machine driver name
+  * @fw_filename: firmware file name. Used when SOF is not enabled.
+  * @board: board name
+@@ -94,6 +114,7 @@ struct snd_soc_acpi_mach_params {
+ struct snd_soc_acpi_mach {
+ 	const u8 id[ACPI_ID_LEN];
+ 	const u32 link_mask;
++	const struct snd_soc_acpi_link_adr *links;
+ 	const char *drv_name;
+ 	const char *fw_filename;
+ 	const char *board;
 -- 
 2.20.1
 
