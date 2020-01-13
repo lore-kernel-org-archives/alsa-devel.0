@@ -2,75 +2,70 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7412C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BB85C33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 314452465A
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B10F2467D
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="KVd+3A58"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 314452465A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="tHh56mz5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B10F2467D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 006F22EB7;
-	Tue, 14 Jan 2020 12:24:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 006F22EB7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03FCB209E;
+	Mon, 13 Jan 2020 16:26:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03FCB209E
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5241FF80272;
-	Tue, 14 Jan 2020 12:23:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF857F80349;
+	Mon, 13 Jan 2020 16:13:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B454EF8026A; Tue, 14 Jan 2020 12:23:03 +0100 (CET)
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5301::8])
+ id F319DF802E1; Mon, 13 Jan 2020 16:13:40 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EEBD9F8014D;
- Tue, 14 Jan 2020 12:22:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEBD9F8014D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12532F8029B
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12532F8029B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="KVd+3A58"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579000975;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=9b4rut5pXi4QNHAkPipy/MGbf+b448qzHQmOW9B8bJY=;
- b=KVd+3A58lYxtJ3kO9Vm6+t0PTRVvrxTg0cSidcY1bCEGZMRQCUc3/tP94TPlXEfG1c
- CQx5fw+8Sy7wT2tXF0pdg3c/7DFgMvaODyje5FB2DxAVGWDZnZkxBw+XPUC743V8JnZC
- FfuVR6mucP+5K1amv9wjYXfO40f28J+j/5KR46a5O2B0a47sDULRHn2I0SSMyc9fujUJ
- WAvCYBrgzWCLTyJ1LNsi4pRudTtaZunAiED2jvVqygsHtCIDuJcEyfgrnqMWT4QecE26
- reGA6pTn01tlNC8A97NdzSTalIL9TdNyYBfYM9bMwPY5P0n80EXovcqwDcKUos4lPYX5
- CnIw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7IOGU5qzCB3a93viaVr"
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0EBMsULC
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Jan 2020 12:22:54 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Jaroslav Kysela <perex@perex.cz>
-Date: Tue, 14 Jan 2020 12:21:05 +0100
-Message-Id: <20200114112110.51983-3-stephan@gerhold.net>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114112110.51983-1-stephan@gerhold.net>
-References: <20200114112110.51983-1-stephan@gerhold.net>
-MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH alsa-ucm-conf 2/7] DB410c: Split devices into
-	re-usable fragments in codecs/msm8916-wcd
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="tHh56mz5"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=P160kz5oOUxO24cjyirJQJ5SmvkB9iSYTMlT/Aswafs=; b=tHh56mz5r2q2
+ ujDBPz+Vmc3GwqrIXPucDMxZiMCj+LXvJR//bbSTO4xrWx7n2Ww/w8VbQhbG2UdFNLyPskP5QYkCH
+ aFKTNxPuMawROpL8dlnDuMq62lzxF6na602jvxXN6j/HattgOep4omB6fY9PR2Qjl45YfltMN2q/D
+ e5ev0=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir1P1-0003Lo-IB; Mon, 13 Jan 2020 15:13:15 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 45D05D01ECC; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200110222530.30303-6-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200110222530.30303-6-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Rander Wang <rander.wang@intel.com>
+Subject: [alsa-devel] Applied "ASoC: Intel: common: add match tables for TGL
+	w/ SoundWire" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,340 +78,130 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The DB410c use case configuration is also useful for other MSM8916 devices.
+The patch
 
-However, the available devices usually depend on the exact device model.
-For example, DB410c has nothing connected to the Earpiece,
-most MSM8916 smartphones do not have a DigitalMic, and some use
-a custom speaker amplifier (connected via I2S) instead of the
-speaker amplifier provided by PM8916.
+   ASoC: Intel: common: add match tables for TGL w/ SoundWire
 
-Similar differences across devices are handled using re-usable
-device fragments in the codecs/ directory. Do the same for msm8916-wcd
-and move the device fragments to codecs/msm8916-wcd.
+has been applied to the asoc tree at
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From d985d208bf8f079979f284864a6d08900597ee04 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 10 Jan 2020 16:25:29 -0600
+Subject: [PATCH] ASoC: Intel: common: add match tables for TGL w/ SoundWire
+
+RT711 is in SoundWire mode on link0.
+RT1308 is either on SSP2 or on SoundWire link1 (depending on hardware
+reworks).
+
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200110222530.30303-6-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- ucm2/DB410c/HiFi.conf                     | 128 +---------------------
- ucm2/codecs/msm8916-wcd/DigitalMic.conf   |  12 ++
- ucm2/codecs/msm8916-wcd/Earpiece.conf     |   8 ++
- ucm2/codecs/msm8916-wcd/Headphones.conf   |  30 +++++
- ucm2/codecs/msm8916-wcd/HeadsetMic.conf   |  16 +++
- ucm2/codecs/msm8916-wcd/PrimaryMic.conf   |  14 +++
- ucm2/codecs/msm8916-wcd/SecondaryMic.conf |  16 +++
- ucm2/codecs/msm8916-wcd/Speaker.conf      |  20 ++++
- 8 files changed, 122 insertions(+), 122 deletions(-)
- create mode 100644 ucm2/codecs/msm8916-wcd/DigitalMic.conf
- create mode 100644 ucm2/codecs/msm8916-wcd/Earpiece.conf
- create mode 100644 ucm2/codecs/msm8916-wcd/Headphones.conf
- create mode 100644 ucm2/codecs/msm8916-wcd/HeadsetMic.conf
- create mode 100644 ucm2/codecs/msm8916-wcd/PrimaryMic.conf
- create mode 100644 ucm2/codecs/msm8916-wcd/SecondaryMic.conf
- create mode 100644 ucm2/codecs/msm8916-wcd/Speaker.conf
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 51 ++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 2 deletions(-)
 
-diff --git a/ucm2/DB410c/HiFi.conf b/ucm2/DB410c/HiFi.conf
-index a0ef42c..4b82fbf 100644
---- a/ucm2/DB410c/HiFi.conf
-+++ b/ucm2/DB410c/HiFi.conf
-@@ -13,126 +13,10 @@ SectionVerb {
- 	}
- }
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index b4687a5d1962..5984dd151f3e 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -14,12 +14,46 @@ static struct snd_soc_acpi_codecs tgl_codecs = {
+ 	.codecs = {"MX98357A"}
+ };
  
-+<codecs/msm8916-wcd/Speaker.conf>
-+<codecs/msm8916-wcd/Headphones.conf>
++static const u64 rt711_0_adr[] = {
++	0x000010025D071100
++};
++
++static const u64 rt1308_1_adr[] = {
++	0x000120025D130800,
++	0x000122025D130800
++};
++
++static const struct snd_soc_acpi_link_adr tgl_i2s_rt1308[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt711_0_adr),
++		.adr = rt711_0_adr,
++	},
++	{}
++};
++
++static const struct snd_soc_acpi_link_adr tgl_rvp[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt711_0_adr),
++		.adr = rt711_0_adr,
++	},
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt1308_1_adr),
++		.adr = rt1308_1_adr,
++	},
++	{}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ 	{
+ 		.id = "10EC1308",
+-		.drv_name = "tgl_rt1308",
++		.drv_name = "rt711_rt1308",
++		.link_mask = 0x1, /* RT711 on SoundWire link0 */
++		.links = tgl_i2s_rt1308,
+ 		.sof_fw_filename = "sof-tgl.ri",
+-		.sof_tplg_filename = "sof-tgl-rt1308.tplg",
++		.sof_tplg_filename = "sof-tgl-rt711-rt1308.tplg",
+ 	},
+ 	{
+ 		.id = "10EC5682",
+@@ -33,5 +67,18 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_machines);
  
--SectionDevice."Speaker" {
--	Comment "Speaker playback"
--
--	ConflictingDevice [
--		"Headphones"
--		"Earpiece"
--	]
--
--	EnableSequence [
--		cset "name='SPK DAC Switch' 1"
--		cset "name='RX3 MIX1 INP1' RX1"
--		## gain to  0dB
--		cset "name='RX3 Digital Volume' 128"
--	]
--
--	DisableSequence [
--		cset "name='SPK DAC Switch' 0"
--		cset "name='RX3 MIX1 INP1' ZERO"
--	]
--}
--
--
--SectionDevice."Headphones" {
--	Comment "Headphones playback"
--
--	ConflictingDevice [
--		"Speaker"
--		"Earpiece"
--	]
--	EnableSequence [
--		cset "name='RX1 MIX1 INP1' RX1"
--		cset "name='RX2 MIX1 INP1' RX2"
--		cset "name='RDAC2 MUX' RX2"
--		cset "name='HPHL' 1"
--		cset "name='HPHR' 1"
--		## gain to  0dB
--		cset "name='RX1 Digital Volume' 128"
--		## gain to  0dB
--		cset "name='RX2 Digital Volume' 128"
--	]
--
--	DisableSequence [
--		cset "name='RX1 Digital Volume' 0"
--		cset "name='RX2 Digital Volume' 0"
--		cset "name='HPHL' 0"
--		cset "name='HPHR' 0"
--		cset "name='RDAC2 MUX' ZERO"
--		cset "name='RX1 MIX1 INP1' ZERO"
--		cset "name='RX2 MIX1 INP1' ZERO"
--	]
--}
--
--SectionDevice."Earpiece" {
--	Comment "Earpiece playback"
--
--	ConflictingDevice [
--		"Speaker"
--		"Headphones"
--	]
--}
--
--SectionDevice."HeadsetMic" {
--	Comment "Headset Microphone"
--
--	EnableSequence [
--		cset "name='DEC1 MUX' ADC2"
--		cset "name='CIC1 MUX' AMIC"
--		cset "name='ADC2 Volume' 8"
--		cset "name='ADC2 MUX' INP2"
--	]
--
--	DisableSequence [
--		cset "name='ADC2 MUX' ZERO"
--		cset "name='ADC2 Volume' 0"
--		cset "name='DEC1 MUX' ZERO"
--	]
--}
--
--SectionDevice."PrimaryMic" {
--	Comment "Primary Microphone"
--
--	EnableSequence [
--		cset "name='DEC1 MUX' ADC1"
--		cset "name='CIC1 MUX' AMIC"
--		cset "name='ADC1 Volume' 8"
--	]
--
--	DisableSequence [
--		cset "name='DEC1 MUX' ZERO"
--		cset "name='ADC1 Volume' 0"
--	]
--}
--
--SectionDevice."SecondaryMic" {
--	Comment "Secondary Microphone"
--
--	EnableSequence [
--		cset "name='DEC1 MUX' ADC2"
--		cset "name='CIC1 MUX' AMIC"
--		cset "name='ADC2 Volume' 8"
--		cset "name='ADC2 MUX' INP2"
--	]
--
--	DisableSequence [
--		cset "name='DEC1 MUX' ZERO"
--		cset "name='ADC2 Volume' 0"
--		cset "name='ADC2 MUX' ZERO"
--	]
--}
--
--SectionDevice."DigitalMic" {
--	Comment "Digital Microphone"
--
--	EnableSequence [
--		cset "name='DEC1 MUX' DMIC1"
--		cset "name='CIC1 MUX' DMIC"
--	]
--
--	DisableSequence [
--		cset "name='DEC1 MUX' ZERO"
--	]
--}
-+<codecs/msm8916-wcd/PrimaryMic.conf>
-+<codecs/msm8916-wcd/HeadsetMic.conf>
-+<codecs/msm8916-wcd/SecondaryMic.conf>
-+<codecs/msm8916-wcd/DigitalMic.conf>
-diff --git a/ucm2/codecs/msm8916-wcd/DigitalMic.conf b/ucm2/codecs/msm8916-wcd/DigitalMic.conf
-new file mode 100644
-index 0000000..35dfb1b
---- /dev/null
-+++ b/ucm2/codecs/msm8916-wcd/DigitalMic.conf
-@@ -0,0 +1,12 @@
-+SectionDevice."DigitalMic" {
-+	Comment "Digital Microphone"
++/* this table is used when there is no I2S codec present */
++struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
++	{
++		.link_mask = 0x3, /* rt711 on link 0 and 2 rt1308s on link 1 */
++		.links = tgl_rvp,
++		.drv_name = "sdw_rt711_rt1308_rt715",
++		.sof_fw_filename = "sof-tgl.ri",
++		.sof_tplg_filename = "sof-tgl-rt711-rt1308.tplg",
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_sdw_machines);
 +
-+	EnableSequence [
-+		cset "name='DEC1 MUX' DMIC1"
-+		cset "name='CIC1 MUX' DMIC"
-+	]
-+
-+	DisableSequence [
-+		cset "name='DEC1 MUX' ZERO"
-+	]
-+}
-diff --git a/ucm2/codecs/msm8916-wcd/Earpiece.conf b/ucm2/codecs/msm8916-wcd/Earpiece.conf
-new file mode 100644
-index 0000000..e9f8b9d
---- /dev/null
-+++ b/ucm2/codecs/msm8916-wcd/Earpiece.conf
-@@ -0,0 +1,8 @@
-+SectionDevice."Earpiece" {
-+	Comment "Earpiece playback"
-+
-+	ConflictingDevice [
-+		"Speaker"
-+		"Headphones"
-+	]
-+}
-diff --git a/ucm2/codecs/msm8916-wcd/Headphones.conf b/ucm2/codecs/msm8916-wcd/Headphones.conf
-new file mode 100644
-index 0000000..7a2090e
---- /dev/null
-+++ b/ucm2/codecs/msm8916-wcd/Headphones.conf
-@@ -0,0 +1,30 @@
-+SectionDevice."Headphones" {
-+	Comment "Headphones playback"
-+
-+	ConflictingDevice [
-+		"Speaker"
-+		"Earpiece"
-+	]
-+
-+	EnableSequence [
-+		cset "name='RX1 MIX1 INP1' RX1"
-+		cset "name='RX2 MIX1 INP1' RX2"
-+		cset "name='RDAC2 MUX' RX2"
-+		cset "name='HPHL' 1"
-+		cset "name='HPHR' 1"
-+		## gain to  0dB
-+		cset "name='RX1 Digital Volume' 128"
-+		## gain to  0dB
-+		cset "name='RX2 Digital Volume' 128"
-+	]
-+
-+	DisableSequence [
-+		cset "name='RX1 Digital Volume' 0"
-+		cset "name='RX2 Digital Volume' 0"
-+		cset "name='HPHL' 0"
-+		cset "name='HPHR' 0"
-+		cset "name='RDAC2 MUX' ZERO"
-+		cset "name='RX1 MIX1 INP1' ZERO"
-+		cset "name='RX2 MIX1 INP1' ZERO"
-+	]
-+}
-diff --git a/ucm2/codecs/msm8916-wcd/HeadsetMic.conf b/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
-new file mode 100644
-index 0000000..538d895
---- /dev/null
-+++ b/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
-@@ -0,0 +1,16 @@
-+SectionDevice."HeadsetMic" {
-+	Comment "Headset Microphone"
-+
-+	EnableSequence [
-+		cset "name='DEC1 MUX' ADC2"
-+		cset "name='CIC1 MUX' AMIC"
-+		cset "name='ADC2 Volume' 8"
-+		cset "name='ADC2 MUX' INP2"
-+	]
-+
-+	DisableSequence [
-+		cset "name='ADC2 MUX' ZERO"
-+		cset "name='ADC2 Volume' 0"
-+		cset "name='DEC1 MUX' ZERO"
-+	]
-+}
-diff --git a/ucm2/codecs/msm8916-wcd/PrimaryMic.conf b/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
-new file mode 100644
-index 0000000..6998458
---- /dev/null
-+++ b/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
-@@ -0,0 +1,14 @@
-+SectionDevice."PrimaryMic" {
-+	Comment "Primary Microphone"
-+
-+	EnableSequence [
-+		cset "name='DEC1 MUX' ADC1"
-+		cset "name='CIC1 MUX' AMIC"
-+		cset "name='ADC1 Volume' 8"
-+	]
-+
-+	DisableSequence [
-+		cset "name='DEC1 MUX' ZERO"
-+		cset "name='ADC1 Volume' 0"
-+	]
-+}
-diff --git a/ucm2/codecs/msm8916-wcd/SecondaryMic.conf b/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
-new file mode 100644
-index 0000000..7811509
---- /dev/null
-+++ b/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
-@@ -0,0 +1,16 @@
-+SectionDevice."SecondaryMic" {
-+	Comment "Secondary Microphone"
-+
-+	EnableSequence [
-+		cset "name='DEC1 MUX' ADC2"
-+		cset "name='CIC1 MUX' AMIC"
-+		cset "name='ADC2 Volume' 8"
-+		cset "name='ADC2 MUX' INP2"
-+	]
-+
-+	DisableSequence [
-+		cset "name='DEC1 MUX' ZERO"
-+		cset "name='ADC2 Volume' 0"
-+		cset "name='ADC2 MUX' ZERO"
-+	]
-+}
-diff --git a/ucm2/codecs/msm8916-wcd/Speaker.conf b/ucm2/codecs/msm8916-wcd/Speaker.conf
-new file mode 100644
-index 0000000..2b1dd8a
---- /dev/null
-+++ b/ucm2/codecs/msm8916-wcd/Speaker.conf
-@@ -0,0 +1,20 @@
-+SectionDevice."Speaker" {
-+	Comment "Speaker playback"
-+
-+	ConflictingDevice [
-+		"Headphones"
-+		"Earpiece"
-+	]
-+
-+	EnableSequence [
-+		cset "name='SPK DAC Switch' 1"
-+		cset "name='RX3 MIX1 INP1' RX1"
-+		## gain to  0dB
-+		cset "name='RX3 Digital Volume' 128"
-+	]
-+
-+	DisableSequence [
-+		cset "name='SPK DAC Switch' 0"
-+		cset "name='RX3 MIX1 INP1' ZERO"
-+	]
-+}
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Intel Common ACPI Match module");
 -- 
-2.24.1
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
