@@ -2,70 +2,62 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 112E2C33CB1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FDD2C33CB3
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 918912467D
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:54 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="oZc69Drf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 918912467D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2A3012467D
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A3012467D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 803A81FAF;
-	Mon, 13 Jan 2020 16:22:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 803A81FAF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BE4D2706;
+	Mon, 13 Jan 2020 23:57:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BE4D2706
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1DD0F8029A;
-	Mon, 13 Jan 2020 16:13:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F5FBF80149;
+	Mon, 13 Jan 2020 23:57:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D880F802E0; Mon, 13 Jan 2020 16:13:31 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id F2E02F801EB; Mon, 13 Jan 2020 23:57:03 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A575EF8027B
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A575EF8027B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="oZc69Drf"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=qH3wJVHNkevVt6wsdWBiypegSsCqb1gZ63agiI3Meio=; b=oZc69Drfv/kW
- TbzjvLOVWZjNR9s7QI+ZuC+rDe9tOf09EHXZHsU5X9f+QggKdyjWdmUOJkPxCXCPISj59ob+xj8DD
- iZPBQlR9EYRz1fws+OHVFjPQhlA4tgh3+xJVMWCYkc0AagEdlMLFnANwjKzt95C6ZnwRVSsBv9iCE
- 0tLSU=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1P2-0003ME-HB; Mon, 13 Jan 2020 15:13:16 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 3FC83D01965; Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Pan Xiuli <xiuli.pan@linux.intel.com>
-In-Reply-To: <20200110235751.3404-4-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200110235751.3404-4-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: broadwell: change cpu_dai and
-	platform components for SOF" to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id 830F5F80149
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 23:56:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 830F5F80149
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Jan 2020 14:56:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="304974676"
+Received: from pboliset-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
+ by orsmga001.jf.intel.com with ESMTP; 13 Jan 2020 14:56:55 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Date: Mon, 13 Jan 2020 16:56:37 -0600
+Message-Id: <20200113225637.17313-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
+ slawomir.blauciak@intel.com, Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: [alsa-devel] [PATCH] soundwire: bus: fix device number leak on
+	errors
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,84 +70,106 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+If the programming of the dev_number fails due to an IO error, a new
+device_number will be assigned, resulting in a leak.
 
-   ASoC: Intel: broadwell: change cpu_dai and platform components for SOF
+Make sure we only assign a device_number once per Slave device.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 64df6afa0dab5eda95cc4cc2269e3d4e83b6b6ce Mon Sep 17 00:00:00 2001
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
-Date: Fri, 10 Jan 2020 17:57:46 -0600
-Subject: [PATCH] ASoC: Intel: broadwell: change cpu_dai and platform
- components for SOF
-
-The legacy driver uses dummy cpu_dai and platform, SOF requires actual
-values to bind.
-
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200110235751.3404-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/broadwell.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/soundwire/bus.c       | 37 ++++++++++++++++++++++-------------
+ include/linux/soundwire/sdw.h |  4 +++-
+ 2 files changed, 26 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index db7e1e87156d..b9c12e24c70b 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -164,6 +164,14 @@ SND_SOC_DAILINK_DEF(platform,
- SND_SOC_DAILINK_DEF(codec,
- 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-INT343A:00", "rt286-aif1")));
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index be5d437058ed..8f973e70e6f7 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -456,26 +456,35 @@ static int sdw_get_device_num(struct sdw_slave *slave)
+ static int sdw_assign_device_num(struct sdw_slave *slave)
+ {
+ 	int ret, dev_num;
++	bool new_device = false;
  
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
-+SND_SOC_DAILINK_DEF(ssp0_port,
-+	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
-+#else
-+SND_SOC_DAILINK_DEF(ssp0_port,
-+	    DAILINK_COMP_ARRAY(COMP_DUMMY()));
-+#endif
+ 	/* check first if device number is assigned, if so reuse that */
+ 	if (!slave->dev_num) {
+-		mutex_lock(&slave->bus->bus_lock);
+-		dev_num = sdw_get_device_num(slave);
+-		mutex_unlock(&slave->bus->bus_lock);
+-		if (dev_num < 0) {
+-			dev_err(slave->bus->dev, "Get dev_num failed: %d\n",
+-				dev_num);
+-			return dev_num;
++		if (!slave->dev_num_sticky) {
++			mutex_lock(&slave->bus->bus_lock);
++			dev_num = sdw_get_device_num(slave);
++			mutex_unlock(&slave->bus->bus_lock);
++			if (dev_num < 0) {
++				dev_err(slave->bus->dev, "Get dev_num failed: %d\n",
++					dev_num);
++				return dev_num;
++			}
++			slave->dev_num = dev_num;
++			slave->dev_num_sticky = dev_num;
++			new_device = true;
++		} else {
++			slave->dev_num = slave->dev_num_sticky;
+ 		}
+-	} else {
++	}
 +
- /* broadwell digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link broadwell_rt286_dais[] = {
- 	/* Front End DAI links */
-@@ -218,7 +226,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
- 		.ops = &broadwell_rt286_ops,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
--		SND_SOC_DAILINK_REG(dummy, codec, dummy),
-+		SND_SOC_DAILINK_REG(ssp0_port, codec, platform),
- 	},
- };
++	if (!new_device)
+ 		dev_info(slave->bus->dev,
+-			 "Slave already registered dev_num:%d\n",
++			 "Slave already registered, reusing dev_num:%d\n",
+ 			 slave->dev_num);
  
+-		/* Clear the slave->dev_num to transfer message on device 0 */
+-		dev_num = slave->dev_num;
+-		slave->dev_num = 0;
+-	}
++	/* Clear the slave->dev_num to transfer message on device 0 */
++	dev_num = slave->dev_num;
++	slave->dev_num = 0;
+ 
+ 	ret = sdw_write(slave, SDW_SCP_DEVNUMBER, dev_num);
+ 	if (ret < 0) {
+@@ -485,7 +494,7 @@ static int sdw_assign_device_num(struct sdw_slave *slave)
+ 	}
+ 
+ 	/* After xfer of msg, restore dev_num */
+-	slave->dev_num = dev_num;
++	slave->dev_num = slave->dev_num_sticky;
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index b7c9eca4332a..b451bb622335 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -546,7 +546,8 @@ struct sdw_slave_ops {
+  * @debugfs: Slave debugfs
+  * @node: node for bus list
+  * @port_ready: Port ready completion flag for each Slave port
+- * @dev_num: Device Number assigned by Bus
++ * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
++ * @dev_num_sticky: one-time static Device Number assigned by Bus
+  * @probed: boolean tracking driver state
+  * @probe_complete: completion utility to control potential races
+  * on startup between driver probe/initialization and SoundWire
+@@ -575,6 +576,7 @@ struct sdw_slave {
+ 	struct list_head node;
+ 	struct completion *port_ready;
+ 	u16 dev_num;
++	u16 dev_num_sticky;
+ 	bool probed;
+ 	struct completion probe_complete;
+ 	struct completion enumeration_complete;
 -- 
 2.20.1
 
