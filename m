@@ -1,61 +1,70 @@
-Return-Path: <SRS0=QJW1=27=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC73C282DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:46:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 975F5C33CB2
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AC21B206ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jan 2020 13:46:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2708124676
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fD3zawV0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC21B206ED
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ojO4gmNB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2708124676
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
-Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
+Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE1C516ED;
-	Fri, 10 Jan 2020 14:45:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE1C516ED
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578663965;
-	bh=KyuDcu5ngReGbJSeC7XFOev+MAKDLOm+Ldd8EAkWJwU=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=fD3zawV0XAJXdTkGR82AUUctDqpeT0L/Z3CtJvaRt4WM+e4re9TY2oA4uTOnOOsa/
-	 u5S9SgdxLQqVaywoCeHV7H04x/pD37yIFbxW1xNlF2DeBibHpBFw6CGdX/+I33MrHA
-	 u9hTk26efUlgmz2Em6kW0NNiB0X/7Yxg61xqhY1Y=
+	by alsa0.perex.cz (Postfix) with ESMTPS id 332D31A9B;
+	Mon, 13 Jan 2020 16:15:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 332D31A9B
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 284D6F802FF;
-	Fri, 10 Jan 2020 14:38:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E69A4F80290;
+	Mon, 13 Jan 2020 16:13:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEC9EF802F7; Fri, 10 Jan 2020 14:38:14 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8E805F802C4
- for <alsa-devel@alsa-project.org>; Fri, 10 Jan 2020 14:38:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E805F802C4
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D74E3DA7;
- Fri, 10 Jan 2020 05:38:06 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 59C4B3F534;
- Fri, 10 Jan 2020 05:38:06 -0800 (PST)
-Date: Fri, 10 Jan 2020 13:38:04 +0000
+ id 051E1F801F7; Mon, 13 Jan 2020 16:13:12 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB0D6F80228
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB0D6F80228
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="ojO4gmNB"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=Iy5cD4DUQqsz92dRX/VUa+WyGFLlB2ukYYEXq+sj6ik=; b=ojO4gmNBP0zn
+ UhlTSY2XxeSV6BcHQS3EqVWXTKyGOp6MOhEG6ZISK7oGonVOpQ2L5lyX6tu7jMBJG7xZU4FfK4oNm
+ z/ziikNBUZGujHiubOpDffJAUdOEknP1Y+jIzpu6TtGnyTauc0yh+ZyHIc+FxESL0qWwNA/eIIDro
+ V2dCM=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir1Ot-0003L8-Sl; Mon, 13 Jan 2020 15:13:07 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 9A9AED01965; Mon, 13 Jan 2020 15:13:07 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Mark Brown <broonie@kernel.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 In-Reply-To: 
 Message-Id: 
 X-Patchwork-Hint: ignore
-Cc: alsa-devel@alsa-project.org, Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [alsa-devel] Applied "ASoC: max98090: Drop incorrectly applied
-	duplicate commit" to the asoc tree
+Date: Mon, 13 Jan 2020 15:13:07 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: sti: fix possible sleep-in-atomic" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,11 +82,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-Message-ID: <20200110133804.7r9lmPokYnIV9kLIHFh8qbE8nYkxgNNCz1yRQQCxXI0@z>
+Message-ID: <20200113151307.BOpjg-0Jl6xhbA0nyBbO1jkYGbVH152JkR-wXo7DmbQ@z>
 
 The patch
 
-   ASoC: max98090: Drop incorrectly applied duplicate commit
+   ASoC: sti: fix possible sleep-in-atomic
 
 has been applied to the asoc tree at
 
@@ -102,33 +111,69 @@ to this mail.
 Thanks,
 Mark
 
-From a84188eced6109983af54f9435a26d21eac3f8cc Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Fri, 10 Jan 2020 13:24:02 +0000
-Subject: [PATCH] ASoC: max98090: Drop incorrectly applied duplicate commit
+From ce780a47c3c01e1e179d0792df6b853a913928f1 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Date: Mon, 13 Jan 2020 11:04:00 +0100
+Subject: [PATCH] ASoC: sti: fix possible sleep-in-atomic
 
-This reverts commit 4e93c1294f4b051 (ASoC: max98090: fix incorrect
-helper in max98090_dapm_put_enum_double()) which was misapplied.
+Change mutex and spinlock management to avoid sleep
+in atomic issue.
 
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Link: https://lore.kernel.org/r/20200113100400.30472-1-arnaud.pouliquen@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sti/uniperif_player.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index ba0e3ba162f8..454cb8e5b0a1 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -98,7 +98,7 @@ static int max98090_put_enum_double(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component =
--		snd_soc_dapm_kcontrol_component(kcontrol);
-+		snd_soc_kcontrol_component(kcontrol);
- 	struct max98090_priv *max98090 =
- 		snd_soc_component_get_drvdata(component);
- 	int ret;
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index 48ea915b24ba..2ed92c990b97 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -226,7 +226,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
+ 	 * sampling frequency. If no sample rate is already specified, then
+ 	 * set one.
+ 	 */
+-	mutex_lock(&player->ctrl_lock);
+ 	if (runtime) {
+ 		switch (runtime->rate) {
+ 		case 22050:
+@@ -303,7 +302,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
+ 		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
+ 		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
+ 	}
+-	mutex_unlock(&player->ctrl_lock);
+ 
+ 	/* Update the channel status */
+ 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+@@ -365,8 +363,10 @@ static int uni_player_prepare_iec958(struct uniperif *player,
+ 
+ 	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
+ 
++	mutex_lock(&player->ctrl_lock);
+ 	/* Update the channel status */
+ 	uni_player_set_channel_status(player, runtime);
++	mutex_unlock(&player->ctrl_lock);
+ 
+ 	/* Clear the user validity user bits */
+ 	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
+@@ -598,7 +598,6 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
+ 	iec958->status[1] = ucontrol->value.iec958.status[1];
+ 	iec958->status[2] = ucontrol->value.iec958.status[2];
+ 	iec958->status[3] = ucontrol->value.iec958.status[3];
+-	mutex_unlock(&player->ctrl_lock);
+ 
+ 	spin_lock_irqsave(&player->irq_lock, flags);
+ 	if (player->substream && player->substream->runtime)
+@@ -608,6 +607,8 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
+ 		uni_player_set_channel_status(player, NULL);
+ 
+ 	spin_unlock_irqrestore(&player->irq_lock, flags);
++	mutex_unlock(&player->ctrl_lock);
++
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
 
