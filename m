@@ -2,69 +2,56 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC48CC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFC6EC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A48C20678
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:13 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="UeS0TZTh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A48C20678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 59F9B20678
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59F9B20678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4F891F27;
-	Mon, 13 Jan 2020 16:19:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4F891F27
+	by alsa0.perex.cz (Postfix) with ESMTPS id B758A22AF;
+	Mon, 13 Jan 2020 21:41:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B758A22AF
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11301F8029B;
-	Mon, 13 Jan 2020 16:13:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C360F8014B;
+	Mon, 13 Jan 2020 21:41:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82133F802A9; Mon, 13 Jan 2020 16:13:26 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id 7AB15F801EB; Mon, 13 Jan 2020 21:41:02 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B20FF8025A
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B20FF8025A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="UeS0TZTh"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=jU7xVwB8a0JBwdzgrWjKKK8+ac+BeTSLUjqz0QvDa5k=; b=UeS0TZThTkiP
- fScok7i2g9MUuRcyzw5HX0IJ/3ASSOfHzBiorxD2eH0JqVhBxM+DwDg9vURzgItGj1Ykd9SK9F555
- RSE/zxvNyYVsmlE+sgoVoqXsvbkVYcmZGXd7txIJk0+6rCGv+oLs5Opa45f/bCgdRyDU9I2CNO5wb
- AOpY0=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1P1-0003Lj-DP; Mon, 13 Jan 2020 15:13:15 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 25443D01AE4; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200110222530.30303-7-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200110222530.30303-7-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: reference SoundWire machine
-	lists" to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8624DF800B9
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 21:40:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8624DF800B9
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 13 Jan 2020 12:40:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="242219851"
+Received: from pboliset-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
+ by orsmga002.jf.intel.com with ESMTP; 13 Jan 2020 12:40:53 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Date: Mon, 13 Jan 2020 14:40:49 -0600
+Message-Id: <20200113204049.7819-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Cc: tiwai@suse.de, Jack Yu <jack.yu@realtek.com>, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH] ASoC: rt715: use dev_to_sdw_dev() macro
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,97 +64,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+The driver used a macro which was renamed during the joint
+Intel/SoundWire development, but since those renames were not merged
+by the SoundWire maintainer we have to revert to the original macros
+as done with the other Realtek codecs.
 
-   ASoC: SOF: Intel: reference SoundWire machine lists
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 5732c0fc53eb45565c485a886d027c0b1f86d4c5 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 10 Jan 2020 16:25:30 -0600
-Subject: [PATCH] ASoC: SOF: Intel: reference SoundWire machine lists
-
-Use static tables to automatically select the relevant configurations.
-
+Fixes: d1ede0641b05e4 ("ASoC: rt715: add RT715 codec driver")
+Cc: Jack Yu <jack.yu@realtek.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200110222530.30303-7-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/sof-pci-dev.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/rt715-sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 9993be36d105..d855bc2b76ad 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -118,6 +118,7 @@ static const struct sof_dev_desc tng_desc = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_CANNONLAKE)
- static const struct sof_dev_desc cnl_desc = {
- 	.machines		= snd_soc_acpi_intel_cnl_machines,
-+	.alt_machines		= snd_soc_acpi_intel_cnl_sdw_machines,
- 	.resindex_lpe_base	= 0,
- 	.resindex_pcicfg_base	= -1,
- 	.resindex_imr_base	= -1,
-@@ -135,6 +136,7 @@ static const struct sof_dev_desc cnl_desc = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
- static const struct sof_dev_desc cfl_desc = {
- 	.machines		= snd_soc_acpi_intel_cfl_machines,
-+	.alt_machines		= snd_soc_acpi_intel_cfl_sdw_machines,
- 	.resindex_lpe_base	= 0,
- 	.resindex_pcicfg_base	= -1,
- 	.resindex_imr_base	= -1,
-@@ -154,6 +156,7 @@ static const struct sof_dev_desc cfl_desc = {
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index c35591fd281b..18868e4ae6e8 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -565,7 +565,7 @@ static int rt715_dev_suspend(struct device *dev)
  
- static const struct sof_dev_desc cml_desc = {
- 	.machines		= snd_soc_acpi_intel_cml_machines,
-+	.alt_machines		= snd_soc_acpi_intel_cml_sdw_machines,
- 	.resindex_lpe_base	= 0,
- 	.resindex_pcicfg_base	= -1,
- 	.resindex_imr_base	= -1,
-@@ -171,6 +174,7 @@ static const struct sof_dev_desc cml_desc = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
- static const struct sof_dev_desc icl_desc = {
- 	.machines               = snd_soc_acpi_intel_icl_machines,
-+	.alt_machines		= snd_soc_acpi_intel_icl_sdw_machines,
- 	.resindex_lpe_base      = 0,
- 	.resindex_pcicfg_base   = -1,
- 	.resindex_imr_base      = -1,
-@@ -188,6 +192,7 @@ static const struct sof_dev_desc icl_desc = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
- static const struct sof_dev_desc tgl_desc = {
- 	.machines               = snd_soc_acpi_intel_tgl_machines,
-+	.alt_machines		= snd_soc_acpi_intel_tgl_sdw_machines,
- 	.resindex_lpe_base      = 0,
- 	.resindex_pcicfg_base   = -1,
- 	.resindex_imr_base      = -1,
+ static int rt715_dev_resume(struct device *dev)
+ {
+-	struct sdw_slave *slave = to_sdw_slave_device(dev);
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct rt715_priv *rt715 = dev_get_drvdata(dev);
+ 	unsigned long time;
+ 
 -- 
 2.20.1
 
