@@ -1,96 +1,70 @@
-Return-Path: <SRS0=qOpI=3C=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0EE4C33C9A
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 10:05:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22C85C3F68F
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1404920661
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jan 2020 10:05:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A5DE824676
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:13:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dkGkGy2J";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="ENANPwQA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1404920661
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="TtbOqJCo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5DE824676
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
-Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
+Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3290685D;
-	Mon, 13 Jan 2020 11:05:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3290685D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1578909950;
-	bh=3EcZtyNFBRNJrDqhSmia2/z/BSzBBCIPE8wTYVsUhvM=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=dkGkGy2JijiaU04I7xk8JdZd0F/x0fnCQN7dY5iLclCFZHr9jvRU5Yt3VdKRTQiQl
-	 26ud+kQeC4XInOGhPUEczEyhKw+x7zFqx6UUe8lViE4FA1FtsNCmfVt09J0D+ckdJS
-	 m1Km6aiBF8qiMbBVu1pghNxrXriDEo0EA+bbEphM=
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37107203A;
+	Mon, 13 Jan 2020 16:24:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37107203A
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B176DF8014B;
-	Mon, 13 Jan 2020 11:04:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89F70F8033D;
+	Mon, 13 Jan 2020 16:13:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34E44F80149; Mon, 13 Jan 2020 11:04:58 +0100 (CET)
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94])
+ id 7EB8CF802E2; Mon, 13 Jan 2020 16:13:36 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70267F80149
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 11:04:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70267F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EACBF80292
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EACBF80292
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="ENANPwQA"
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 00DA4Y0d020212; Mon, 13 Jan 2020 11:04:54 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=uAmD+cLKEDeaQ5sIIegoK01hcED8wf+eyuSy31R7770=;
- b=ENANPwQAAJvqiLBkWg+qrgjJhKC2mHUcF5Ukx3zedKUd/OtoDeORtma6EtqoqAIz72AS
- R4tVkLPoyfVvKezPUqXxD1ImPSytdHDBXWXOzr5wEt3rUzgStBJSEOekhHaoJWFgDGWN
- bpniChCPxN9Tkm5+ulZiIGQ7ypTaNKRvmL5oQPtqpVoANXJSkVQPz9DYJLsRu+LHBqF8
- 6uMrV6LQNxxRqjY56zyuuFOPZagB13tqiG65LqAVbLsaznFZqRs8a5vGpOHz4UOPfYz1
- /o/LzrJb8Z7naNVVq8P0asDDc9aSKfgXUxBBuj3mHxMXlbLn8anDCES+AO2sxji4jHft 6A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 2xf77aqk5s-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 13 Jan 2020 11:04:54 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C000510003B;
- Mon, 13 Jan 2020 11:04:53 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 943DB2A896E;
- Mon, 13 Jan 2020 11:04:53 +0100 (CET)
-Received: from localhost (10.75.127.44) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jan 2020 11:04:53
- +0100
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-To: <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam
- Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>
-Date: Mon, 13 Jan 2020 11:04:00 +0100
-Message-ID: <20200113100400.30472-1-arnaud.pouliquen@st.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.572
- definitions=2020-01-13_02:2020-01-13,
- 2020-01-13 signatures=0
-Cc: arnaud.pouliquen@st.com, Olivier Moysan <olivier.moysan@st.com>,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [alsa-devel] [PATCH v2] asoc: sti: fix possible sleep-in-atomic
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="TtbOqJCo"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
+ Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+ List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+ List-Archive; bh=vqANW8NMcQQtkPv8FVoHp6MnMXFRJDsHayHdqXOfSeE=; b=TtbOqJCocItS
+ +LrffmLe7GNtpFrmPr+HsRjsUWmoOtpgi2KeMqy8TNdKogjTFOq77EMJhwFtVmVBFZUQcudWKvPjv
+ tPtNSMngxeEZTec2/BB8Aq+8JILiALawem7aGYDWnmP5/7FiP+bmieezhbI9GS18E/QWWumcBrBcH
+ NYa60=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1ir1P2-0003M9-D7; Mon, 13 Jan 2020 15:13:16 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 1D00DD01F2F; Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200110235751.3404-5-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200110235751.3404-5-pierre-louis.bossart@linux.intel.com>
+X-Patchwork-Hint: ignore
+Date: Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: Intel: bdw-rt5650: change cpu_dai and
+	platform components for SOF" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,71 +77,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Change mutex and spinlock management to avoid sleep
-in atomic issue.
+The patch
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+   ASoC: Intel: bdw-rt5650: change cpu_dai and platform components for SOF
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+From a40acc6bfcebb59fdf6a71c4740c46880ed5c0b4 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 10 Jan 2020 17:57:47 -0600
+Subject: [PATCH] ASoC: Intel: bdw-rt5650: change cpu_dai and platform
+ components for SOF
+
+The legacy driver uses dummy cpu_dai and platform, SOF requires actual
+values to bind.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200110235751.3404-5-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-V1 to V2 suppress unexpected [INTERNAL REVIEW] tag in subject
+ sound/soc/intel/boards/bdw-rt5650.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
- sound/soc/sti/uniperif_player.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 48ea915b24ba..2ed92c990b97 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -226,7 +226,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 	 * sampling frequency. If no sample rate is already specified, then
- 	 * set one.
- 	 */
--	mutex_lock(&player->ctrl_lock);
- 	if (runtime) {
- 		switch (runtime->rate) {
- 		case 22050:
-@@ -303,7 +302,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
- 		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
- 		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
- 	}
--	mutex_unlock(&player->ctrl_lock);
+diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+index ba3fc1ef900a..1a302436d450 100644
+--- a/sound/soc/intel/boards/bdw-rt5650.c
++++ b/sound/soc/intel/boards/bdw-rt5650.c
+@@ -223,6 +223,14 @@ SND_SOC_DAILINK_DEF(platform,
+ SND_SOC_DAILINK_DEF(be,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5650:00", "rt5645-aif1")));
  
- 	/* Update the channel status */
- 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
-@@ -365,8 +363,10 @@ static int uni_player_prepare_iec958(struct uniperif *player,
- 
- 	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
- 
-+	mutex_lock(&player->ctrl_lock);
- 	/* Update the channel status */
- 	uni_player_set_channel_status(player, runtime);
-+	mutex_unlock(&player->ctrl_lock);
- 
- 	/* Clear the user validity user bits */
- 	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
-@@ -598,7 +598,6 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
- 	iec958->status[1] = ucontrol->value.iec958.status[1];
- 	iec958->status[2] = ucontrol->value.iec958.status[2];
- 	iec958->status[3] = ucontrol->value.iec958.status[3];
--	mutex_unlock(&player->ctrl_lock);
- 
- 	spin_lock_irqsave(&player->irq_lock, flags);
- 	if (player->substream && player->substream->runtime)
-@@ -608,6 +607,8 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
- 		uni_player_set_channel_status(player, NULL);
- 
- 	spin_unlock_irqrestore(&player->irq_lock, flags);
-+	mutex_unlock(&player->ctrl_lock);
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
++SND_SOC_DAILINK_DEF(ssp0_port,
++	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
++#else
++SND_SOC_DAILINK_DEF(ssp0_port,
++	    DAILINK_COMP_ARRAY(COMP_DUMMY()));
++#endif
 +
- 	return 0;
- }
+ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+ 	/* Front End DAI links */
+ 	{
+@@ -256,7 +264,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 		.init = bdw_rt5650_init,
+-		SND_SOC_DAILINK_REG(dummy, be, dummy),
++		SND_SOC_DAILINK_REG(ssp0_port, be, platform),
+ 	},
+ };
  
 -- 
-2.17.1
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
