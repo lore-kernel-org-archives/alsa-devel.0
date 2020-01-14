@@ -6,73 +6,73 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 038F7C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:20:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4B36C33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:20:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 800D024655
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:20:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 41325214AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:20:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gZJLyleh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="kVOArby/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 800D024655
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PHPNrhhU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BY45EJO/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41325214AF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB54F185C;
-	Tue, 14 Jan 2020 17:19:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB54F185C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99C4A1829;
+	Tue, 14 Jan 2020 17:20:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99C4A1829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579018813;
-	bh=2bVLukanGKkB2aSHjE1NsE5kobFa5XxNiphCBBRGi7U=;
+	s=default; t=1579018851;
+	bh=wT7FPzsG4nooiUsgYYDWL9RoC+iO9Mj1D5oW5eq/Gtg=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=gZJLylehY7mMc/1AlLn0YPbQ3Wu84bB9V2dmzUfJSPTGjKAlprnMESlDsXGTN03rq
-	 eFCUghXCsJKt6ulf9Xfcl+z80R8Nw3oMrOBLIBGS4fEUbsUOynQdAZ8GCFxUHVqhv+
-	 vxWnDP6rPBlqJ4YwLzY2WJaqbIQJIAqmtjWl3K58=
+	b=PHPNrhhUBxqBYGS0ZSsiNTxVQoBaxK1MAb3Opfjum9X/w+z0wr4ZHfToXi/aiRyBx
+	 aKf+HbECGHdgKAMK52BWJdwBvfufIbFhZ/HDt9ECA1rNQULSclAYU/KLTZpq5gztkS
+	 0x8ophS6PmJ7uGBbavcunM9V6NO5cNHYUzE10ri0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9C47F8028D;
-	Tue, 14 Jan 2020 17:10:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8347F80348;
+	Tue, 14 Jan 2020 17:10:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEF08F80323; Tue, 14 Jan 2020 17:10:00 +0100 (CET)
+ id 37A4FF80328; Tue, 14 Jan 2020 17:10:03 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34A69F80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id E88C4F80274
  for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34A69F80276
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E88C4F80274
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="kVOArby/"
+ header.b="BY45EJO/"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=APIk5lJ+a4rm8ViclZBCljGmJAbAqNTlB8LuL3N5dMo=; b=kVOArby/Jk8x
- ym+Lg7jnF4N8EsvdCSHO3AoSgWY3gt7uTfzp50YsRsc6Fp2+H+FiB+BaKsBGqHzpWWqmttU6l3Y9g
- cvaxjNPmSh39iMLs0fnP1v5Dt2WKR8sv5d+HilrRcSJskD7gMuT0LvzFgVIdnebONwM2TjeMjOtcI
- BHh3E=;
+ List-Archive; bh=5WPgdKsI1p3N1leiO2B/mTiAvE33onnwgIpMhufe9mc=; b=BY45EJO/xEZO
+ RfKalFR/d+8/Ju1hlXjcfZi21mndXIS1+UK3YHr1z+n7aL/g3xKEW5O6flLQuKhtF683gfiOFfafT
+ yIge0z388iu9+aDQzpAS/GSxI/W8pEi/gLkzsTJZw/OsAcSpGxjmRbsKA6EkrG2VG+xgJoAfrOgTm
+ ctkAA=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1irOkf-0001Vr-BO; Tue, 14 Jan 2020 16:09:09 +0000
+ id 1irOke-0001Vb-Ty; Tue, 14 Jan 2020 16:09:08 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 08B61D02C77; Tue, 14 Jan 2020 16:09:09 +0000 (GMT)
+ id 91A80D02C77; Tue, 14 Jan 2020 16:09:08 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200113210428.27457-11-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200113210428.27457-11-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200113210428.27457-14-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200113210428.27457-14-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Date: Tue, 14 Jan 2020 16:09:09 +0000 (GMT)
+Date: Tue, 14 Jan 2020 16:09:08 +0000 (GMT)
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: Intel: kbl_rt5663_max98927: rename
+Subject: [alsa-devel] Applied "ASoC: Intel: skl_nau88l25_max98357a: rename
 	shadowed variable" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -94,7 +94,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: kbl_rt5663_max98927: rename shadowed variable
+   ASoC: Intel: skl_nau88l25_max98357a: rename shadowed variable
 
 has been applied to the asoc tree at
 
@@ -119,33 +119,33 @@ to this mail.
 Thanks,
 Mark
 
-From 13a5d5edcf0607ec1584b2c05b1bf3e6600f6533 Mon Sep 17 00:00:00 2001
+From 119cc7841403d1f1889ce17358ed98de023bf387 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 13 Jan 2020 15:04:20 -0600
-Subject: [PATCH] ASoC: Intel: kbl_rt5663_max98927: rename shadowed variable
+Date: Mon, 13 Jan 2020 15:04:23 -0600
+Subject: [PATCH] ASoC: Intel: skl_nau88l25_max98357a: rename shadowed variable
 
 Fix cppcheck warning:
 
-[sound/soc/intel/boards/kbl_rt5663_max98927.c:358] ->
-[sound/soc/intel/boards/kbl_rt5663_max98927.c:401]: (style) Local
+[sound/soc/intel/boards/skl_nau88l25_max98357a.c:257] ->
+[sound/soc/intel/boards/skl_nau88l25_max98357a.c:142]: (style) Local
 variable 'channels' shadows outer variable
 
-[sound/soc/intel/boards/kbl_rt5663_max98927.c:358] ->
-[sound/soc/intel/boards/kbl_rt5663_max98927.c:457]: (style) Local
+[sound/soc/intel/boards/skl_nau88l25_max98357a.c:257] ->
+[sound/soc/intel/boards/skl_nau88l25_max98357a.c:318]: (style) Local
 variable 'channels' shadows outer variable
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200113210428.27457-11-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200113210428.27457-14-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 10 +++++-----
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index cd748d6f4af3..d8f2ff7139a9 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -398,7 +398,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 3ce8efbeed12..e6de3b28d840 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -139,13 +139,13 @@ static int skylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
  {
  	struct snd_interval *rate = hw_param_interval(params,
  			SNDRV_PCM_HW_PARAM_RATE);
@@ -153,18 +153,16 @@ index cd748d6f4af3..d8f2ff7139a9 100644
 +	struct snd_interval *chan = hw_param_interval(params,
  			SNDRV_PCM_HW_PARAM_CHANNELS);
  	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
- 	struct snd_soc_dpcm *dpcm = container_of(
-@@ -413,7 +413,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
- 	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
- 		rate->min = rate->max = 48000;
--		channels->min = channels->max = 2;
-+		chan->min = chan->max = 2;
- 		snd_mask_none(fmt);
- 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
- 	}
-@@ -454,13 +454,13 @@ static struct snd_soc_ops kabylake_rt5663_ops = {
- static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	/* The ADSP will covert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+-	channels->min = channels->max = 2;
++	chan->min = chan->max = 2;
+ 
+ 	/* set SSP0 to 24 bit */
+ 	snd_mask_none(fmt);
+@@ -315,13 +315,13 @@ static const struct snd_soc_ops skylake_nau8825_ops = {
+ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
  		struct snd_pcm_hw_params *params)
  {
 -	struct snd_interval *channels = hw_param_interval(params,
