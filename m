@@ -2,70 +2,62 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37379C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAA39C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA6BF24670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:26 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GpqzSfcn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA6BF24670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7A97824670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A97824670
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C507F1F05;
-	Mon, 13 Jan 2020 16:18:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C507F1F05
+	by alsa0.perex.cz (Postfix) with ESMTPS id C20C62689;
+	Tue, 14 Jan 2020 12:18:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C20C62689
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8B71F80292;
-	Mon, 13 Jan 2020 16:13:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34A7BF800E9;
+	Tue, 14 Jan 2020 12:18:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B17BF802BC; Mon, 13 Jan 2020 16:13:25 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id 7C9E0F8014E; Tue, 14 Jan 2020 12:18:44 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60286F8027C
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60286F8027C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="GpqzSfcn"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=wJGBky9ZD5YbOt7v6t+V5IxqDLh08jYSXir470UXvIs=; b=GpqzSfcnrm9l
- QLrGUVZ1YAa2QFMvUdSmGvxbCt9KC/SWvS3n4eQdYNI3mji6givkfFY1NuN5WEXaWTqUO6nzSDZeY
- DAaQ+01SaOWGPRTehw7RGCvB8ZI/djHDuBwdc/EuZcShyy/EqzsKmxcChrOIpcZ2eqsDvX7RNVZ/y
- nW/UQ=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1P2-0003M1-3Q; Mon, 13 Jan 2020 15:13:16 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id CDF07D01965; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200110222530.30303-2-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200110222530.30303-2-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: soc-acpi: add _ADR-based link
-	descriptors" to the asoc tree
+ by alsa1.perex.cz (Postfix) with ESMTPS id A74CDF800E9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 12:18:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A74CDF800E9
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 14 Jan 2020 03:18:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,432,1571727600"; d="scan'208";a="397478197"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.237.137.172])
+ ([10.237.137.172])
+ by orsmga005.jf.intel.com with ESMTP; 14 Jan 2020 03:18:32 -0800
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20200113114054.9716-1-cezary.rojewski@intel.com>
+ <f8e6c1b8-5508-fc5e-57ce-fc2c54e23414@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <6bf3ef29-aed8-d69d-8bb6-9e81253e5547@intel.com>
+Date: Tue, 14 Jan 2020 12:18:31 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+MIME-Version: 1.0
+In-Reply-To: <f8e6c1b8-5508-fc5e-57ce-fc2c54e23414@linux.intel.com>
+Content-Language: en-US
+Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: hda: Fix SKL dai count
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,127 +70,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On 2020-01-13 16:30, Pierre-Louis Bossart wrote:
+> On 1/13/20 5:40 AM, Cezary Rojewski wrote:
+>> With fourth pin added for iDisp for skl_dai, update SOF_SKL_DAI_NUM to
+>> account for the change. Without this, dais from the bottom of the list
+>> are skipped. In current state that's the case for 'Alt Analog CPU DAI'.
+> 
+> Can you clarify if you are fixing an issue on TGL - which isn't 
+> supported in the mainline? Or fixing an issue with SKL w/ HDaudio support?
 
-   ASoC: soc-acpi: add _ADR-based link descriptors
+This is not strictly connected to TGL but to any platform making use of 
+'skl_dai[]' within /sof/intel. Encountered this issue when playing with 
+probes - my BEs added at the bottom of the list were omitted during 
+component registration. Once debug flags in asoc were enabled, 
+root-cause presented itself clearly.
 
-has been applied to the asoc tree at
+> FWIW, I couldn't make HDaudio codec support work on KBL, with the 
+> changes in ASoC core, the HDaudio support is broken with the SKL driver 
+> (or depends on an unreleased topology). See traces at:
+> 
+> https://github.com/thesofproject/linux/pull/1667/commits/ae584cf633f232d9cf828bb599a1b620cd0b4fe0 
+> 
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+We do have working cAVS 1.5 machines (e.g.: SKL, KBL, KBL-R, ABL..) with 
+HDA on our end.
+Will checkout the existing "vanilla skylake" to filter the least amount 
+of changes needed to enable it. However, this can lead to topology 
+binary needed to be updated.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Czarek
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From efb6f3159e874f09992b7318cea12e8e27e8389b Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 10 Jan 2020 16:25:25 -0600
-Subject: [PATCH] ASoC: soc-acpi: add _ADR-based link descriptors
-
-For SoundWire support, we added a 'link_mask' to describe the PCB hardware
-layout. This helped form a signature that can be used as a first-order way
-of detecting the hardware and selecting the machine driver.
-
-The concept of link_mask is however not enough. Some BIOS enable all links,
-even when there are no devices physically connected. We can also see
-variations with multiple devices attached on one link, or different types
-of devices connected on the same link. To accurately represent the
-hardware, we need to build static tables where each link exposes a list of
-expected devices represented by the 64-bit _ADR field (which uniquely
-identifies each device).
-
-The new 'links' field is optional when the link_mask is sufficient to
-represent a platform in a unique way.
-
-The existing mechanism to support I2C devices is left as is, it'd be too
-invasive to change the existing support for _HID and the notion of link is
-not relevant either.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20200110222530.30303-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc-acpi.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index c4c997bd0379..a217a87cae86 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -61,6 +61,8 @@ static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
-  * @platform: string used for HDaudio codec support
-  * @codec_mask: used for HDAudio support
-  * @common_hdmi_codec_drv: use commom HDAudio HDMI codec driver
-+ * @link_mask: links enabled on the board
-+ * @links: array of link _ADR descriptors, null terminated
-  */
- struct snd_soc_acpi_mach_params {
- 	u32 acpi_ipc_irq_index;
-@@ -68,6 +70,23 @@ struct snd_soc_acpi_mach_params {
- 	u32 codec_mask;
- 	u32 dmic_num;
- 	bool common_hdmi_codec_drv;
-+	u32 link_mask;
-+	const struct snd_soc_acpi_link_adr *links;
-+};
-+
-+/**
-+ * snd_soc_acpi_link_adr: ACPI-based list of _ADR, with a variable
-+ * number of devices per link
-+ *
-+ * @mask: one bit set indicates the link this list applies to
-+ * @num_adr: ARRAY_SIZE of adr
-+ * @adr: array of _ADR (represented as u64).
-+ */
-+
-+struct snd_soc_acpi_link_adr {
-+	const u32 mask;
-+	const u32 num_adr;
-+	const u64 *adr;
- };
- 
- /**
-@@ -78,6 +97,7 @@ struct snd_soc_acpi_mach_params {
-  *
-  * @id: ACPI ID (usually the codec's) used to find a matching machine driver.
-  * @link_mask: describes required board layout, e.g. for SoundWire.
-+ * @links: array of link _ADR descriptors, null terminated.
-  * @drv_name: machine driver name
-  * @fw_filename: firmware file name. Used when SOF is not enabled.
-  * @board: board name
-@@ -94,6 +114,7 @@ struct snd_soc_acpi_mach_params {
- struct snd_soc_acpi_mach {
- 	const u8 id[ACPI_ID_LEN];
- 	const u32 link_mask;
-+	const struct snd_soc_acpi_link_adr *links;
- 	const char *drv_name;
- 	const char *fw_filename;
- 	const char *board;
--- 
-2.20.1
-
+> 
+>>
+>> Fixes: ac42b142cd76 ("ASoC: SOF: Intel: hda: Add iDisp4 DAI")
+>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
