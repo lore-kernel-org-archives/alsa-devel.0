@@ -2,74 +2,70 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6AD4C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA81C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D4DF222C4
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D4DF222C4
+	by mail.kernel.org (Postfix) with ESMTPS id 56B4320678
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:36 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CNJnEb9s"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56B4320678
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEB2A2D5F;
-	Tue, 14 Jan 2020 09:40:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEB2A2D5F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2035A2B33;
+	Tue, 14 Jan 2020 07:24:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2035A2B33
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 442A7F8014D;
-	Tue, 14 Jan 2020 09:40:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12151F8014D;
+	Tue, 14 Jan 2020 07:24:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBA78F8014E; Tue, 14 Jan 2020 09:40:11 +0100 (CET)
-Received: from mail-lj1-f194.google.com (mail-lj1-f194.google.com
- [209.85.208.194])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id AE225F8014E; Tue, 14 Jan 2020 07:24:27 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F43FF800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 09:40:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F43FF800B9
-Received: by mail-lj1-f194.google.com with SMTP id a13so13315465ljm.10
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 00:40:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=zm6dxfwwxxsUgoQx/Ixs6f65hoaWz7f2fI6es/3Ijns=;
- b=I48lflIKnL1dA84jDugYX/1FVmCiNXwcLRr5SIHEIJnqjSfVClpgIOYo2OJpRksdTl
- N/P3poAHbd7aNGd5VrwncZu1Wgqay1ANjxHx0HECWTrg/fZ8s605LmRaLMSRx5rpWN0u
- YBvl8TTvvLnh5CEAPzuaNLG8KB258XrBimOXYb4XELOOoi0PxLp+wVBDjsR4NFAKjyKW
- u4kCBZUhELh5eS+zMUk0jN74qmxAN3Hs510IHgr5/Tr1C7eo51exAEfJBq1aPnVHM2gA
- eu+kLYXKvO/JQS8Ec8LfxX3BS+7Q1plgm2Xxaj0vvDltcbsXFk6p0KDars1reWSjz375
- lsVA==
-X-Gm-Message-State: APjAAAW5OgngPikSYkiHKQlqVsSXFdtSw0lgIURhJC1wrdH9MgSdh+oN
- fAfw8Y93i8zTMUDfEx+owV4=
-X-Google-Smtp-Source: APXvYqxK2dS7w47TFeRL1ZrMAWZXamRgxsgmqFsDFdxveqSAiv1L06WR5SP8UeZYWuXxDExwsvy0yQ==
-X-Received: by 2002:a2e:910b:: with SMTP id m11mr12819480ljg.213.1578991208043; 
- Tue, 14 Jan 2020 00:40:08 -0800 (PST)
-Received: from xi.terra (c-14b8e655.07-184-6d6c6d4.bbcust.telenor.se.
- [85.230.184.20])
- by smtp.gmail.com with ESMTPSA id b14sm6840893lff.68.2020.01.14.00.40.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Jan 2020 00:40:07 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.92.3)
- (envelope-from <johan@xi.terra>)
- id 1irHk7-0000Ia-26; Tue, 14 Jan 2020 09:40:07 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 14 Jan 2020 09:39:53 +0100
-Message-Id: <20200114083953.1106-1-johan@kernel.org>
-X-Mailer: git-send-email 2.24.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67D5FF800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 07:24:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67D5FF800B9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="CNJnEb9s"
+Received: from localhost (unknown [49.207.51.160])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1A71D2075B;
+ Tue, 14 Jan 2020 06:24:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1578983057;
+ bh=ZUoD3INw3Cu1YQ8pRQNik1wtXlHt3I/Pl/C+78OpQ9s=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=CNJnEb9sJbszhRJ/LdyyK39ZrDf0LsrzhzRwCROpsPaA0jJlq4nSgSTe8JWNKk0Ix
+ PCgFJR9EPtFyQ8KstpowsaTpMTXiAsVMG7n4oP+oEFw9dz3sR4OcjelGRIbPRDkh9Q
+ CwR8ehwUqeqeT0690lxuYbkAC0zlVZk1yxFAUKAQ=
+Date: Tue, 14 Jan 2020 11:54:12 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20200114062412.GC2818@vkoul-mobl>
+References: <20200110215731.30747-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, Johan Hovold <johan@kernel.org>,
- linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>
-Subject: [alsa-devel] [PATCH] ALSA: usb-audio: fix sync-ep altsetting sanity
-	check
+Content-Disposition: inline
+In-Reply-To: <20200110215731.30747-1-pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 0/6] soundwire: cadence: better logs and
+	error handling
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +83,20 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The altsetting sanity check in set_sync_ep_implicit_fb_quirk() was
-checking for there to be at least one altsetting but then went on to
-access the second one, which may not exist.
+On 10-01-20, 15:57, Pierre-Louis Bossart wrote:
+> This is a stand-alone set of patches to improve error handling and
+> provide better information to the platform integrator.
+> 
+> As suggested by Vinod, these patches are shared first - with the risk
+> that they are separated from the actual steps where they are needed.
+> 
+> For reference, the complete set of 100+ patches required for SoundWire
+> on Intel platforms is available here:
 
-This could lead to random slab data being used to initialise the sync
-endpoint in snd_usb_add_endpoint().
+Applied all, thanks
 
-Fixes: c75a8a7ae565 ("ALSA: snd-usb: add support for implicit feedback")
-Fixes: ca10a7ebdff1 ("ALSA: usb-audio: FT C400 sync playback EP to capture EP")
-Fixes: 5e35dc0338d8 ("ALSA: usb-audio: add implicit fb quirk for Behringer UFX1204")
-Fixes: 17f08b0d9aaf ("ALSA: usb-audio: add implicit fb quirk for Axe-Fx II")
-Fixes: 103e9625647a ("ALSA: usb-audio: simplify set_sync_ep_implicit_fb_quirk")
-Cc: stable <stable@vger.kernel.org>     # 3.5
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- sound/usb/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index a11c8150af58..0e4eab96e23e 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -370,7 +370,7 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
- add_sync_ep_from_ifnum:
- 	iface = usb_ifnum_to_if(dev, ifnum);
- 
--	if (!iface || iface->num_altsetting == 0)
-+	if (!iface || iface->num_altsetting < 2)
- 		return -EINVAL;
- 
- 	alts = &iface->altsetting[1];
 -- 
-2.24.1
-
+~Vinod
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
