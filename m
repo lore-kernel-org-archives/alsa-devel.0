@@ -2,75 +2,72 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AD55C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5F41C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 918F720678
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 52FE220678
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="aRf6Qgc9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 918F720678
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="VzzCnZs/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52FE220678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D8272F1B;
-	Tue, 14 Jan 2020 12:26:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D8272F1B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 622412BAC;
+	Tue, 14 Jan 2020 07:26:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 622412BAC
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38411F8028A;
-	Tue, 14 Jan 2020 12:23:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2864F80121;
+	Tue, 14 Jan 2020 07:26:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1025BF80276; Tue, 14 Jan 2020 12:23:10 +0100 (CET)
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5301::9])
+ id 574E3F8014E; Tue, 14 Jan 2020 07:26:15 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F343F80121
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 07:26:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F343F80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="VzzCnZs/"
+Received: from localhost (unknown [49.207.51.160])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59F91F8016F;
- Tue, 14 Jan 2020 12:22:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59F91F8016F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="aRf6Qgc9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579000975;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=L+8ky1yIDg/H2S1NbVCrXsVVmbdReTNhzWO7np4SWfY=;
- b=aRf6Qgc9ndbIwJmKQ9o8ZtF6SE5fZArEvvWoTE29Gr01ydGn0bokt55GFBjxFP+pw8
- oo511aSDyfbTxecGB/epByI020OGN5ZLOScvNPwYPrVVfcomyTKPVKXI72Z/ffC1mbsP
- /mAgCPZ9ik4r1okv351u+pbgBctx/GshdmKc2eo2vUs+ilslZhpKROg14VoKrizvmW/J
- DtajcRVUtKvHlR2O+D7TMtgDzQrhxtrpW9HaGa9rdS261fAuKUQJY9ANAjQ1FExJHu7s
- tat7SQoLIliolaMEo01poAuiWO6Fkz55hJwEE+COqxmDiIgh3rOGI26dQm3oyNAG/Zlr
- MQmg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7IOGU5qzCB3a93viaVr"
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0EBMsULD
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Jan 2020 12:22:54 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Jaroslav Kysela <perex@perex.cz>
-Date: Tue, 14 Jan 2020 12:21:06 +0100
-Message-Id: <20200114112110.51983-4-stephan@gerhold.net>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114112110.51983-1-stephan@gerhold.net>
-References: <20200114112110.51983-1-stephan@gerhold.net>
+ by mail.kernel.org (Postfix) with ESMTPSA id EC6C220678;
+ Tue, 14 Jan 2020 06:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1578983169;
+ bh=mxczTMmm2Pg7j2c9xrST05zaDM8ERDYB9c1YmyaS3VM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=VzzCnZs/bXszwYJhlH0/Q+3HqrsYS0QlHJUgcEEdrVNoaLATlyVxn9/CeuIXWvCBo
+ taTGVPmhzSqDBkQ7Ie/kW2ZVHpH1B2psOM6r2yr8ny4aLcv+jpak19PQHzTli77rnd
+ Ftfr/ir+2XFglll1NWQU6ZK7jGO6ozBJ6bDlyi5g=
+Date: Tue, 14 Jan 2020 11:56:05 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20200114062605.GD2818@vkoul-mobl>
+References: <20200110220016.30887-1-pierre-louis.bossart@linux.intel.com>
+ <a70c54c0-c691-d8eb-4f99-da1bb9306c2f@linux.intel.com>
 MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH alsa-ucm-conf 3/7] codecs/msm8916-wcd: Speaker:
-	Reset volume on disable
+Content-Disposition: inline
+In-Reply-To: <a70c54c0-c691-d8eb-4f99-da1bb9306c2f@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] soundwire: intel: report slave_ids for
+ each link to SOF driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,30 +85,32 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For Headphones we reset the Digital Volume back to 0 when disabling
-the device; do the same for the Speaker.
+On 10-01-20, 16:31, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 1/10/20 4:00 PM, Pierre-Louis Bossart wrote:
+> > From: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > 
+> > The existing link_mask flag is no longer sufficient to detect the
+> > hardware and identify which topology file and a machine driver to load.
+> > 
+> > By reporting the slave_ids exposed in ACPI tables, the parent SOF
+> > driver will be able to compare against a set of static configurations.
+> > 
+> > This patch only adds the interface change, the functionality is added
+> > in future patches.
+> 
+> Vinod, this patch would need to be shared as an immutable tag for Mark, once
+> this is done I can share the SOF parts that make use of the information (cf.
+> https://github.com/thesofproject/linux/pull/1692 for reference)
+> 
+> Sorry we missed this in the earlier interface changes, we didn't think we
+> would have so many hardware variations so quickly.
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- ucm2/codecs/msm8916-wcd/Speaker.conf | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/ucm2/codecs/msm8916-wcd/Speaker.conf b/ucm2/codecs/msm8916-wcd/Speaker.conf
-index 2b1dd8a..1e0dfa6 100644
---- a/ucm2/codecs/msm8916-wcd/Speaker.conf
-+++ b/ucm2/codecs/msm8916-wcd/Speaker.conf
-@@ -14,6 +14,7 @@ SectionDevice."Speaker" {
- 	]
- 
- 	DisableSequence [
-+		cset "name='RX3 Digital Volume' 0"
- 		cset "name='SPK DAC Switch' 0"
- 		cset "name='RX3 MIX1 INP1' ZERO"
- 	]
+do you want the tag now..? I can provide... We are already in -rc6
+and i will send PR to greg later this week...
 -- 
-2.24.1
-
+~Vinod
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
