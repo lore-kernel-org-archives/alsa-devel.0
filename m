@@ -2,71 +2,54 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A9D7C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42E35C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:23:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B60020678
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:23:32 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="X6QSLXh+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B60020678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id CCDA5222C4
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:23:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCDA5222C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBBAC1F8D;
-	Mon, 13 Jan 2020 16:21:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBBAC1F8D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD53527F3;
+	Tue, 14 Jan 2020 02:32:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD53527F3
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DA95F802FF;
-	Mon, 13 Jan 2020 16:13:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B36EFF80228;
+	Tue, 14 Jan 2020 02:31:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 071D9F802BE; Mon, 13 Jan 2020 16:13:28 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C492F80277
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C492F80277
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="X6QSLXh+"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=0re133n7XROeXu5TXZhs1mUxt+3hxGwPZlD/yIIrNGc=; b=X6QSLXh+8onS
- f5ahp3EeW2fhxcMoxajqNRYwn+Dj3sfzko8EmSVurfIc2npdGdwRtwgUdqjD89MqeGSfjKpinST5K
- Q+3IGxkoT60UVY9phCBhnJ/b9zEF8XyE/Pgg9/l4Lh7r8OaYm+l/aElLg0c13Z8JlocvVlHPk+Dmh
- ZCASw=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1P1-0003Lr-MV; Mon, 13 Jan 2020 15:13:15 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 6B13CD01965; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Rander Wang <rander.wang@linux.intel.com>
-In-Reply-To: <20200110222530.30303-5-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200110222530.30303-5-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: common: add match tables for
-	CNL/CFL/CML w/ SoundWire" to the asoc tree
+ id BE169F80228; Tue, 14 Jan 2020 02:31:45 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id BACD7F801F8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:31:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BACD7F801F8
+Date: 14 Jan 2020 10:31:38 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36588809"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jan 2020 10:31:38 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4D3B64148247;
+ Tue, 14 Jan 2020 10:31:38 +0900 (JST)
+Message-ID: <87eew2hlhh.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 01/16] ASoC: atmel: atmel_ssc_dai: move
+	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,194 +62,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-   ASoC: Intel: common: add match tables for CNL/CFL/CML w/ SoundWire
+There is no big difference at implementation for .suspend/.resume
+between DAI driver and Component driver.
+But because some driver is using DAI version, thus ALSA SoC needs
+to keep supporting it, hence, framework becoming verbose.
+If we can switch all DAI driver .suspend/.resume to Component driver,
+we can remove verbose code from ALSA SoC.
 
-has been applied to the asoc tree at
+Driver is getting its private data via dai->dev.
+But dai->dev and component->dev are same dev, thus, we can convert
+these. For same reason, we can convert dai->active to
+component->active if necessary.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+This patch moves DAI driver .suspend/.resume to Component driver
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From db0b9efb989f01aa7145d30bcdbfb6b07e238875 Mon Sep 17 00:00:00 2001
-From: Rander Wang <rander.wang@linux.intel.com>
-Date: Fri, 10 Jan 2020 16:25:28 -0600
-Subject: [PATCH] ASoC: Intel: common: add match tables for CNL/CFL/CML w/
- SoundWire
-
-The two configurations are with the Realtek 3-in-1 board requiring all
-4 links to be enabled, or basic configuration with the on-board
-RT700 using link1.
-
-For now we only have definitions for CML. CNL and CFL are just
-placeholders.
-
-Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200110222530.30303-5-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- .../intel/common/soc-acpi-intel-cfl-match.c   |  5 ++
- .../intel/common/soc-acpi-intel-cml-match.c   | 89 +++++++++++++++++++
- .../intel/common/soc-acpi-intel-cnl-match.c   |  5 ++
- 3 files changed, 99 insertions(+)
+ sound/soc/atmel/atmel_ssc_dai.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cfl-match.c b/sound/soc/intel/common/soc-acpi-intel-cfl-match.c
-index d6fd2026d0b8..ff9d6938b9f6 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cfl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cfl-match.c
-@@ -14,5 +14,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cfl_machines[] = {
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cfl_machines);
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index ca60339..1073f46 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -760,12 +760,12 @@ static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+ }
  
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_cfl_sdw_machines[] = {
-+	{}
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cfl_sdw_machines);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Intel Common ACPI Match module");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cml-match.c b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-index fb9ba8819706..f55634c4c2e8 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cml-match.c
-@@ -59,5 +59,94 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_machines[] = {
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cml_machines);
+ #ifdef CONFIG_PM
+-static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
++static int atmel_ssc_suspend(struct snd_soc_component *component)
+ {
+ 	struct atmel_ssc_info *ssc_p;
+-	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
++	struct platform_device *pdev = to_platform_device(component->dev);
  
-+static const u64 rt711_0_adr[] = {
-+	0x000010025D071100
-+};
-+
-+static const u64 rt1308_1_adr[] = {
-+	0x000110025D130800
-+};
-+
-+static const u64 rt1308_2_adr[] = {
-+	0x000210025D130800
-+};
-+
-+static const u64 rt715_3_adr[] = {
-+	0x000310025D071500
-+};
-+
-+static const struct snd_soc_acpi_link_adr cml_3_in_1_default[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_0_adr),
-+		.adr = rt711_0_adr,
-+	},
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1308_1_adr),
-+		.adr = rt1308_1_adr,
-+	},
-+	{
-+		.mask = BIT(2),
-+		.num_adr = ARRAY_SIZE(rt1308_2_adr),
-+		.adr = rt1308_2_adr,
-+	},
-+	{
-+		.mask = BIT(3),
-+		.num_adr = ARRAY_SIZE(rt715_3_adr),
-+		.adr = rt715_3_adr,
-+	},
-+	{}
-+};
-+
-+static const struct snd_soc_acpi_link_adr cml_3_in_1_mono_amp[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_0_adr),
-+		.adr = rt711_0_adr,
-+	},
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1308_1_adr),
-+		.adr = rt1308_1_adr,
-+	},
-+	{
-+		.mask = BIT(3),
-+		.num_adr = ARRAY_SIZE(rt715_3_adr),
-+		.adr = rt715_3_adr,
-+	},
-+	{}
-+};
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_cml_sdw_machines[] = {
-+	{
-+		.link_mask = 0xF, /* 4 active links required */
-+		.links = cml_3_in_1_default,
-+		.drv_name = "sdw_rt711_rt1308_rt715",
-+		.sof_fw_filename = "sof-cml.ri",
-+		.sof_tplg_filename = "sof-cml-rt711-rt1308-rt715.tplg",
-+	},
-+	{
-+		/*
-+		 * link_mask should be 0xB, but all links are enabled by BIOS.
-+		 * This entry will be selected if there is no rt1308 exposed
-+		 * on link2 since it will fail to match the above entry.
-+		 */
-+		.link_mask = 0xF,
-+		.links = cml_3_in_1_mono_amp,
-+		.drv_name = "sdw_rt711_rt1308_rt715",
-+		.sof_fw_filename = "sof-cml.ri",
-+		.sof_tplg_filename = "sof-cml-rt711-rt1308-mono-rt715.tplg",
-+	},
-+	{
-+		.link_mask = 0x2, /* RT700 connected on Link1 */
-+		.drv_name = "sdw_rt700",
-+		.sof_fw_filename = "sof-cml.ri",
-+		.sof_tplg_filename = "sof-cml-rt700.tplg",
-+	},
-+	{}
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cml_sdw_machines);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Intel Common ACPI Match module");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-index 27588841c8b0..828980d5630d 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
-@@ -27,5 +27,10 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_machines);
+-	if (!cpu_dai->active)
++	if (!component->active)
+ 		return 0;
  
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_sdw_machines[] = {
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_sdw_machines);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Intel Common ACPI Match module");
+ 	ssc_p = &ssc_info[pdev->id];
+@@ -787,15 +787,13 @@ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+ 	return 0;
+ }
+ 
+-
+-
+-static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
++static int atmel_ssc_resume(struct snd_soc_component *component)
+ {
+ 	struct atmel_ssc_info *ssc_p;
+-	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
++	struct platform_device *pdev = to_platform_device(component->dev);
+ 	u32 cr;
+ 
+-	if (!cpu_dai->active)
++	if (!component->active)
+ 		return 0;
+ 
+ 	ssc_p = &ssc_info[pdev->id];
+@@ -839,8 +837,6 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ };
+ 
+ static struct snd_soc_dai_driver atmel_ssc_dai = {
+-		.suspend = atmel_ssc_suspend,
+-		.resume = atmel_ssc_resume,
+ 		.playback = {
+ 			.channels_min = 1,
+ 			.channels_max = 2,
+@@ -860,6 +856,8 @@ static struct snd_soc_dai_driver atmel_ssc_dai = {
+ 
+ static const struct snd_soc_component_driver atmel_ssc_component = {
+ 	.name		= "atmel-ssc",
++	.suspend	= atmel_ssc_suspend,
++	.resume		= atmel_ssc_resume,
+ };
+ 
+ static int asoc_ssc_init(struct device *dev)
 -- 
-2.20.1
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
