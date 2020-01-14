@@ -6,75 +6,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E4F9C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B40D5C33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:27:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1979207FF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:26:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 401E824658
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:27:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZHaf4A54";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="GULWAFCa"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B1979207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dDHPCRCy";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="gcQjI3Qg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 401E824658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C7AB16F5;
-	Tue, 14 Jan 2020 17:25:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C7AB16F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DC851850;
+	Tue, 14 Jan 2020 17:26:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DC851850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579019197;
-	bh=7CYEjnVA5fJLbSYhpFjhRVNtbSUEWIZwKJRZXyS+hWE=;
+	s=default; t=1579019235;
+	bh=BxOAgC/yuPaGfHY+uFYLPQ598UQ8+fjMfDiphv3X1Js=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ZHaf4A54kK0LzIMXazkkOK0nZiJEwBC36iIxrcrpRPEIctUv1IvEm6wkDhB8jvI+V
-	 N2W55NEbth7K7I1ZIuXkNVNfPsZo4tFdQYEiOY2u2E50WzMGhU+1pg7GDqLx/55zVo
-	 AfeyBb0u8eaUxijKnRwhXLw3OhoFBL83j58xkdY4=
+	b=dDHPCRCy+KFvPuLED0Hu5MoRpDILIA620baD7mJ7GebB0pjmqYvSHx9i5oQsPbcjX
+	 DKPGrfyyEuomG0mMa4ABmbWnydd0bohnVqrzmd55qPjdSx1+ow2DmYyldHGcoDyhFg
+	 6CuyF0gu2Aby/BOHbmRIT97k1w50/Z9+Phe2oZqI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C70DCF80390;
-	Tue, 14 Jan 2020 17:10:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F6C4F803A6;
+	Tue, 14 Jan 2020 17:10:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA6DCF8034C; Tue, 14 Jan 2020 17:10:28 +0100 (CET)
+ id 980E3F8034D; Tue, 14 Jan 2020 17:10:32 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3AECF8028C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8DC1F8028F
  for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3AECF8028C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8DC1F8028F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="GULWAFCa"
+ header.b="gcQjI3Qg"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=MrfHrCDtC/1Qb0+KFH23JtgltZ0KtLK+J2WUwSyl4I4=; b=GULWAFCaDwk4
- vjOa4+GrZJtO/MKCGwy+Qf/lZ3X7cqj80xKwdU7lyv7u8/2VlxwaqsOT615Z0SshzOVkVLm9LtbsC
- h5o/AnUAGXWHd6qnSN3dYSSsqilCUehHV4L8oBrFansaqFEm2FJg3oI5Tv7mDMz0S6AfHW9AFvpU1
- FWiRs=;
+ List-Archive; bh=8/WqxFHy2Ytd5C4FKv/N0pMfrEZe2O729R2vIMu6ob4=; b=gcQjI3QgVBaT
+ XV8AOhwzfxJo1M/siUpxloNjSM14jjBldwx6YR7tKy97IUdJd/0uZZjBTPPO3z4Y8fGOY/HPCjKtt
+ aJhj2PEb6FOxLjQBrhknrV4JNv7iVWMwYzJPuisxJZqBlB9eYAQlAz8cQjdLKW7B4EVR1jpgYMpqy
+ 1d1ow=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1irOkh-0001Wp-Bw; Tue, 14 Jan 2020 16:09:11 +0000
+ id 1irOkh-0001Wk-5m; Tue, 14 Jan 2020 16:09:11 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 8B6EAD02C77; Tue, 14 Jan 2020 16:09:10 +0000 (GMT)
+ id 67D3ED02C7D; Tue, 14 Jan 2020 16:09:10 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200113205620.27285-1-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200113205620.27285-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200113210428.27457-2-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200113210428.27457-2-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Date: Tue, 14 Jan 2020 16:09:10 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda-dai: fix compilation
-	warning in pcm_prepare" to the asoc tree
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: Intel: bxt_da7219_max98357a: rename
+	shadowed variable" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,16 +87,14 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3298283574337309522=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---===============3298283574337309522==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: SOF: Intel: hda-dai: fix compilation warning in pcm_prepare
+   ASoC: Intel: bxt_da7219_max98357a: rename shadowed variable
 
 has been applied to the asoc tree at
 
@@ -122,66 +119,68 @@ to this mail.
 Thanks,
 Mark
 
-From d873997192ddcacb5333575502be2f91ea4b47b8 Mon Sep 17 00:00:00 2001
+From 01bfee0d1d945a24061b12b8a9268365fceef518 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 13 Jan 2020 14:56:20 -0600
-Subject: [PATCH] ASoC: SOF: Intel: hda-dai: fix compilation warning in
- pcm_prepare
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Mon, 13 Jan 2020 15:04:11 -0600
+Subject: [PATCH] ASoC: Intel: bxt_da7219_max98357a: rename shadowed variable
 
-Fix GCC warning with W=1, previous cleanup did not remove unnecessary
-variable.
+Fix cppcheck warning:
 
-sound/soc/sof/intel/hda-dai.c: In function ‘hda_link_pcm_prepare’:
+[sound/soc/intel/boards/bxt_da7219_max98357a.c:265] ->
+[sound/soc/intel/boards/bxt_da7219_max98357a.c:164]: (style) Local
+variable 'channels' shadows outer variable
 
-sound/soc/sof/intel/hda-dai.c:265:31: warning: variable ‘hda_stream’
-set but not used [-Wunused-but-set-variable]
-  265 |  struct sof_intel_hda_stream *hda_stream;
-      |                               ^~~~~~~~~~
+[sound/soc/intel/boards/bxt_da7219_max98357a.c:265] ->
+[sound/soc/intel/boards/bxt_da7219_max98357a.c:316]: (style) Local
+variable 'channels' shadows outer variable
 
-Fixes: a3ebccb52efdf ("ASoC: SOF: Intel: hda: reset link DMA state in prepare")
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200113205620.27285-1-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200113210428.27457-2-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-dai.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 313611dcb5e4..9c6e3f990ee3 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -262,14 +262,11 @@ static int hda_link_pcm_prepare(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 5873abb46441..33b13f3ca152 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -161,13 +161,13 @@ static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
  {
- 	struct hdac_ext_stream *link_dev =
- 				snd_soc_dai_get_dma_data(dai, substream);
--	struct sof_intel_hda_stream *hda_stream;
- 	struct snd_sof_dev *sdev =
- 				snd_soc_component_get_drvdata(dai->component);
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	int stream = substream->stream;
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
  
--	hda_stream = hstream_to_sof_hda_stream(link_dev);
--
- 	if (link_dev->link_prepared)
- 		return 0;
+ 	/* The ADSP will convert the FE rate to 48k, stereo */
+ 	rate->min = rate->max = 48000;
+-	channels->min = channels->max = DUAL_CHANNEL;
++	chan->min = chan->max = DUAL_CHANNEL;
  
+ 	/* set SSP to 24 bit */
+ 	snd_mask_none(fmt);
+@@ -313,12 +313,12 @@ static const struct snd_soc_ops broxton_da7219_fe_ops = {
+ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			struct snd_pcm_hw_params *params)
+ {
+-	struct snd_interval *channels = hw_param_interval(params,
++	struct snd_interval *chan = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	if (params_channels(params) == 2)
+-		channels->min = channels->max = 2;
++		chan->min = chan->max = 2;
+ 	else
+-		channels->min = channels->max = 4;
++		chan->min = chan->max = 4;
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
-
-
---===============3298283574337309522==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3298283574337309522==--
