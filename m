@@ -2,82 +2,78 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42257C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:56:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF9C0C33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 17:39:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B60AD2084D
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:56:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6130224658
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 17:39:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RYZb8To3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="pQngAnbH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B60AD2084D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jEox2rT2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6130224658
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=timakro.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1B9F1884;
-	Tue, 14 Jan 2020 17:55:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1B9F1884
+	by alsa0.perex.cz (Postfix) with ESMTPS id B835517E5;
+	Tue, 14 Jan 2020 18:39:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B835517E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579021010;
-	bh=ll2igscCXd1uX7x3JI2dx+wF730Xpyq7WOCsuiG3hzU=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RYZb8To3juVbNqVhu9U9KxvxImXHObjRhJNZVgkumMBVURvcjfDnGhXaI17U/IGUd
-	 DXy+IQRM9AcAJaNDE1hT7G3fH6A3hQRki6pSFDS6o3ELOTWuiBb1gVHCKTraYpR3XJ
-	 lafr/zZknYtBu/juEiFwK93SncY/Kw3JmKH2M4Zk=
+	s=default; t=1579023592;
+	bh=DceKehGXOIvt2jHh5Kdf3xxx8uRDWO7gLm+79PXEghQ=;
+	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=jEox2rT2cek/GLdFHCUkFOjKOYksUFfpKvoZ/bdySPJWlHPfduVVz18G5thMPFDuh
+	 IXqaVp/xj41Yda0SuWHMCYjATzrSqZy9CQYsnjLXGwSZuJS+N9JHs+8AIV2fmoATro
+	 XNjsEADO+4E+TtlykuCYPpoylzcuS+InfD7Ju3dU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9D5CF80121;
-	Tue, 14 Jan 2020 17:55:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6F30F8014D;
+	Tue, 14 Jan 2020 18:39:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD585F80271; Tue, 14 Jan 2020 17:55:47 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D2E12F8014E; Tue, 14 Jan 2020 18:38:59 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 897A6F8014E
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:55:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 897A6F8014E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="pQngAnbH"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
- MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=kdjRJJ6vmtiCtOfqfPeKPm50+bI3uacHwWf3Vd4Ty40=; b=pQngAnbHgIExJaaMli9iyU3FW
- Ju4nowG5tt3qaIikF93aLF2VDFf4cCOTgG9Y22zZNtAMXaAqxQCrk+lcBbcZ9UX3KtugYgDiukFXC
- r58VL2YTf11YCcfF2SzxAUllGUW/uCttD4GOZKNjFjvpdKWuwr1gZfFsIqb4OdQz72MFo=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1irPTh-0001hE-2E; Tue, 14 Jan 2020 16:55:41 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id B6A60D01965; Tue, 14 Jan 2020 16:55:40 +0000 (GMT)
-Date: Tue, 14 Jan 2020 16:55:40 +0000
-From: Mark Brown <broonie@kernel.org>
-To: jack.yu@realtek.com
-Message-ID: <20200114165540.GB3897@sirena.org.uk>
-References: <20200114025628.4241-1-jack.yu@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E715F800E9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 18:38:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E715F800E9
+Received: from localhost ([130.83.5.183]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis) id
+ 1MrxfX-1jTRza3v3l-00o1Nx; Tue, 14 Jan 2020 18:38:51 +0100
+Date: Tue, 14 Jan 2020 18:38:48 +0100
+From: Tim Schumacher <tim@timakro.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <20200114173848.GA28085@impa>
 MIME-Version: 1.0
-In-Reply-To: <20200114025628.4241-1-jack.yu@realtek.com>
-X-Cookie: Programming is an unnatural act.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
- kenny_chen@realtek.com, lgirdwood@gmail.com, mingjane_hsieh@realtek.com,
- flove@realtek.com
-Subject: Re: [alsa-devel] [PATCH] ASoC: rt1015: add rt1015 amplifier driver
+Content-Disposition: inline
+In-Reply-To: <6d433182-fb2a-d883-a9b3-80110efb89c2@perex.cz>
+X-Provags-ID: V03:K1:tYIhtaTngBD9x5FrtnmTsF8PSXOJVmZ69UESrYftf/5DMoYueL8
+ dImVrnlou0N9l0T2oQWrxEBP+uItDAO5BU52NwNJ71JHLkT78oDIe8pueryKFEK5lp5QsUM
+ rGAbArD8uUCX7qlHZLKNo9Phg3A9fjtk/OJEjCgS1GqVv6exzRgXa2Db2HmQXwBTSZlzaXu
+ e4LNX7CWHepe/65ImmJ2g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MslzDjTGa3c=:KIHxw1NYD8SI6XHgfkPAyz
+ 1JYxF3B48C/G6OWNlIljgIPHE8PK74B16/eGkk9v/xA1T+EA+htTdDy4K36ZoIitWTouWFn0i
+ TUjHWw9lZYAv7vH8WAgVSODXk4N8Bcf1LlYlcni3swyJ6PMZu8ywxNN0V7Rc0mfuIeMSld8xJ
+ C3DH9/zcau4DoE/E55mPynBnelsBRufifKa8ABhRrwP0mouHJHL/iYFhBQzbAGfCw6+U6B8E3
+ TRezSrD5SFfcDvKq3pSlX7kAXRzReehqr8QUOSs9fSn4AFXndqRI/eWqbLMgn0dNKfzYVKXFi
+ 2iVUd+VXYt+pPfUKldUsllwY+Etk+zlMHHv+VZVeMsBkQhjJ7oBgCBjQNCJBm5Ls3pBW4tfWD
+ 07nICPhNvqiuccUj9az5RIb7b5kwtuYD9+DDazmUX2UowUHirTUSY5LXK45XxNbc4HopsH1/a
+ 7oUeJY65I0gOqmI+i4H7mB4h44UkEOkkS2AWJo36pFge9oGlR7aR9ysD9QbB4iRPigWMV75aj
+ e1S7rdHSodXgn5YpOvVmM7IeGUZNIpcYPDuZyuSKUiV0qXXUVnrGfyW89JYxjb5f+HzNmwF3j
+ cJjMuHhDymYSm0VkeEJLyr5V94JKxcoIpaY6ItAXfuInnpt+K8Inv/f4rNVbHLA4jMDi/eNuM
+ 80no5DuSWLWHG2j7qZpEb9utQF/GXvVE0egDlyJjCcrbC/+6rW21WT4Ah4ET4fvGy+/orCL8j
+ QHtf9iacELXdjJ3uF2wXkHVzUDHUX7cTxdwZs3ovSd0Bs52caUbPCdL28upmPycO7lxk+sRXB
+ DpA8Rogi+xCxSbSyxg6Fy74NJUDWIJsTd/dAOB25Dity3S/mP0f+jrJ9sOC9rpNEHc9PnturE
+ fCeiJUA6MSbYOjdESKoA==
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Bug report for changes in ucm2 with chtrt5645 card
+ on Lenovo Miix 320
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,124 +86,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4404629627378234853=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---===============4404629627378234853==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1y/7ip9Z0l6NTTti"
-Content-Disposition: inline
+sending the mail CC to the mailing list again because I messed this up
+last time. This is the output from 'alsaucm -c hw:0 set _verb HiFi'.
 
+ALSA lib utils.c:261:(uc_mgr_config_load) could not open configuration file /usr/share/alsa/ucm2/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi-dmic2.conf
+ALSA lib parser.c:1190:(parse_verb_file) error: failed to open verb file /usr/share/alsa/ucm2/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi-dmic2.conf : -2
+ALSA lib main.c:960:(snd_use_case_mgr_open) error: failed to import hw:0 use case configuration -2
+alsaucm: error failed to open sound card hw:0: No such file or directory
 
---1y/7ip9Z0l6NTTti
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+- Tim
 
-On Tue, Jan 14, 2020 at 10:56:28AM +0800, jack.yu@realtek.com wrote:
-
-> +++ b/sound/soc/codecs/rt1015.c
-> @@ -0,0 +1,1016 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * rt1015.c  --  RT1015 ALSA SoC audio amplifier driver
-> + *
-
-Please make the entire comment a C++ so things look more
-consistent.
-
-> +static const struct reg_sequence init_list[] = {
-> +	{ 0x0000, 0x0000 },
-> +	{ 0x0104, 0xA213 },
-> +	{ 0x010E, 0x0058 },
-> +	{ 0x0111, 0x2000 },
-> +	{ 0x0322, 0xF7DF },
-> +	{ 0x1302, 0x12F7 },
-> +	{ 0x0336, 0x0010 },
-> +	{ 0x04FC, 0x35CF },
-> +	{ 0x0102, 0xed02 },
-> +};
-
-What's this doing?  Some of these (all that I checked) are normal
-registers not undocumented registers or anything and you're
-changing their default values in here as well as doing a reset.
-If we're setting values on normal registers we should at least do
-it through explicit, documented writes.
-
-> +#define RT1015_INIT_REG_LEN ARRAY_SIZE(init_list)
-
-Not sure this define is worth the effort?
-
-> +	rt1015->boost_mode = ucontrol->value.integer.value[0];
-> +	if (rt1015->boost_mode == 0) {
-> +		/* Bypass */
-> +		snd_soc_component_update_bits(component,
-> +			RT1015_SMART_BST_CTRL1, RT1015_ABST_AUTO_EN_MASK |
-> +			RT1015_ABST_FIX_TGT_MASK | RT1015_BYPASS_SWR_REG_MASK,
-> +			RT1015_ABST_REG_MODE | RT1015_ABST_FIX_TGT_DIS |
-> +			RT1015_BYPASS_SWRREG_BYPASS);
-> +	} else if (rt1015->boost_mode == 1) {
-> +		/* Adaptive */
-> +		snd_soc_component_update_bits(component,
-> +			RT1015_SMART_BST_CTRL1, RT1015_ABST_AUTO_EN_MASK |
-> +			RT1015_ABST_FIX_TGT_MASK | RT1015_BYPASS_SWR_REG_MASK,
-> +			RT1015_ABST_AUTO_MODE | RT1015_ABST_FIX_TGT_DIS |
-> +			RT1015_BYPASS_SWRREG_PASS);
-> +	} else {
-> +		/* Fixed Adaptive */
-> +		snd_soc_component_update_bits(component,
-> +			RT1015_SMART_BST_CTRL1, RT1015_ABST_AUTO_EN_MASK |
-> +			RT1015_ABST_FIX_TGT_MASK | RT1015_BYPASS_SWR_REG_MASK,
-> +			RT1015_ABST_AUTO_MODE | RT1015_ABST_FIX_TGT_EN |
-> +			RT1015_BYPASS_SWRREG_PASS);
-> +	}
-
-This should be a switch statement and should reject invalid
-values.
-
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		if (rt1015->bypass_boost == 0) {
-> +			snd_soc_component_write(component,
-> +				RT1015_SYS_RST1, 0x05f7);
-> +			snd_soc_component_write(component,
-> +				RT1015_GAT_BOOST, 0xacfe);
-> +			snd_soc_component_write(component,
-> +				RT1015_PWR9, 0xaa00);
-> +			snd_soc_component_write(component,
-> +				RT1015_GAT_BOOST, 0xecfe);
-> +		} else {
-
-Do we need some sort of lock out to prevent applications changing
-the bypass boost mode while the amp is powered up?
-
---1y/7ip9Z0l6NTTti
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4d8osACgkQJNaLcl1U
-h9C7hwf+NxXoWjViJnU4QJ37xrnXmDS8Flk2pAYx1NmSByjmtTYDVqwHRX3h3jtW
-8quR//9DbCkVfi2cbe+JwDmUAEC26cWzwF1RjD6oz8n5QLpW2EeC17EXFcK0mm57
-qY0Q+ervzW9/3+3+8c6Nzk4OP7DVXotKxul1SKzoLXlrpD4iBop2ZJvZFNup1b9n
-WxMOR2lV4MemWci1gfseO3vQ5HOi9W2xSIkDevxvVF3/8LttfZoPm1aDoui3Of90
-W/+Z6EMnb+7/7lJn50t4EfflCkyrBXmD5FWGOadLOgUN5IUctvg3XPkXKXZIjIEr
-dUqDz+7iZ/grSj1fzmntnS/dASBjSQ==
-=ZLw0
------END PGP SIGNATURE-----
-
---1y/7ip9Z0l6NTTti--
-
---===============4404629627378234853==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+On 2020-01-13, Jaroslav Kysela wrote:
+> Dne 13. 01. 20 v 15:27 Tim Schumacher napsal(a):
+> > The patch doesn't help unfortunately. Deleting
+> > LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf still works with the
+> > patch installed. Can I help debug this somehow?
+> 
+> If you have latest alsa-utils, the command 'alsaucm dump text' should work,
+> otherwise try 'alsaucm set _verb HiFi'.
+> 
+> 					Jaroslav
+> 
+> > 
+> > - Tim
+> > 
+> > On 2020-01-13, Jaroslav Kysela wrote:
+> > > Dne 09. 01. 20 v 23:10 Tim Schumacher napsal(a):
+> > > > Hi alsa devs,
+> > > > 
+> > > > I'm on Arch Linux on a rather uncommon laptop (Lenovo Miix 320) and my sound
+> > > > stopped working on the upgrade from alsa-lib 1.1.9 to 1.2.1. wabbits on
+> > > > IRC helped me track down the problem to a change in the
+> > > > /usr/share/alsa/ucm (now /usr/share/alsa/ucm2) files. It seems like
+> > > > /usr/share/alsa/ucm2/chtrt5645/HiFi-dmic2.conf and a symlink at
+> > > > /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+> > > > were specifically added for this laptop but in the contrary they break the
+> > > > sound for me.
+> > > > 
+> > > > After the upgrade to alsa-lib 1.2.1 the sound is not working. The commands play no sound:
+> > > > 
+> > > >       pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,0
+> > > >       pasuspender -- speaker-test --nloops=1 --channels=2 --test=wav --device=hw:0,1
+> > > > 
+> > > > And this is the alsa-info.sh output http://alsa-project.org/db/?f=f883910a5c5101b4b1ea4202d1fe84ccd139f796
+> > > > 
+> > > > After deleting the /usr/share/alsa/ucm2/chtrt5645/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+> > > > symlink both commands from above play sound and this is the alsa-info.sh
+> > > > output http://alsa-project.org/db/?f=e759eb9118a191b6c3b8c021fed58abc9cf95076
+> > > 
+> > > Thanks. I forgot to fix the file path in chtrt5645/chtrt5645-dmic2.conf .
+> > > Could you test this patch?
+> > > 
+> > > https://github.com/alsa-project/alsa-ucm-conf/commit/74f2a0f0884df7b9f2d08d07456a3bc37d1a512e
+> > > 
+> > > 				Jaroslav
+> > > 
+> > > -- 
+> > > Jaroslav Kysela <perex@perex.cz>
+> > > Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> > > 
+> 
+> 
+> -- 
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4404629627378234853==--
