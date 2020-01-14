@@ -2,78 +2,66 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89CD0C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F473C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:17:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0D4A9207FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BEEA824680
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:17:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HZAEDsdh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D4A9207FD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
-Received: from alsa1.perex.cz (unknown [207.180.221.201])
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NNYJ+Opv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEEA824680
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
+Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FAA92273;
-	Mon, 13 Jan 2020 18:48:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FAA92273
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05AE81B08;
+	Tue, 14 Jan 2020 15:16:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05AE81B08
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
+	s=default; t=1579011449;
+	bh=+AUJl9VxuCHvHSvGt8eAnYtZ0i6bl0HtiIDzCHKEYiU=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NNYJ+Opvqhdiruk/P+FPcgXsKvZlbKlTPithuQGYK0TOXtm7gJO1uQSSLTfkzVW5e
+	 zceU8spcr/6spOgU/gZGc4pNlKPdRucfRhcTdUHsiFWnMD4KWtmDu7B2EOWuB4wC94
+	 kGlom2y7QTNqiZ8qxt2Ln6nVXGS7Uxdbwcb/fA+o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BC6AF80149;
-	Mon, 13 Jan 2020 18:48:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B7C4F8014D;
+	Tue, 14 Jan 2020 15:16:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02FADF80122; Mon, 13 Jan 2020 18:47:59 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id C8F0DF8014E; Tue, 14 Jan 2020 15:16:36 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC7C0F80122
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 18:47:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC7C0F80122
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HZAEDsdh"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com
- [209.85.160.171])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0C3EB207FF
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 17:47:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1578937671;
- bh=420Be14jKaTH32OurZrKPNIQub47Hpo3uK0ctqQ8RIM=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=HZAEDsdhMVkPgxk6sb7TF2ekZG229gzq4+PBS2A/m3G2TCWXNzC39KnHeSACk7336
- CQX0GWK2slaqnHbGILb1N878XJMWsU20XFD9mUIUOsu7QsrJI0reGoCOrQB7env8N6
- 9QX59R4Q7fiJ3w/Ms3WKIyGmRjpoePslWtcw1fjk=
-Received: by mail-qt1-f171.google.com with SMTP id g1so9801209qtr.13
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 09:47:51 -0800 (PST)
-X-Gm-Message-State: APjAAAVQ01x9rY62jJ5fEbml6yqGYYbd8Mwb+s/WUsD5RQ6ghaFHiQej
- e2jaL/SONAuNOWsxoRTTzXXTbj7ZWdsJDda0LA==
-X-Google-Smtp-Source: APXvYqyOP02EFeQzZVGOkKcmkWThEByr7yBqlkAW9V7YQ/fRph85ZPueN+tEQJW0P3g/2yrWKgBl4HogT1hbWsd2r8c=
-X-Received: by 2002:ac8:5513:: with SMTP id j19mr15250352qtq.143.1578937670237; 
- Mon, 13 Jan 2020 09:47:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20200107135929.3267-1-srinivas.kandagatla@linaro.org>
- <20200107135929.3267-2-srinivas.kandagatla@linaro.org>
-In-Reply-To: <20200107135929.3267-2-srinivas.kandagatla@linaro.org>
-From: Rob Herring <robh@kernel.org>
-Date: Mon, 13 Jan 2020 11:47:39 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+a5idL=R88u=iHfiK_M9wCUn7MLcOJC1v0QXzYV7A-Lw@mail.gmail.com>
-Message-ID: <CAL_Jsq+a5idL=R88u=iHfiK_M9wCUn7MLcOJC1v0QXzYV7A-Lw@mail.gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, spapothi@codeaurora.org,
- Liam Girdwood <lgirdwood@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vinod <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v11 1/2] dt-bindings: ASoC: Add WSA881x
-	bindings
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29261F800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 15:16:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29261F800B9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4E04DB280;
+ Tue, 14 Jan 2020 14:16:32 +0000 (UTC)
+Date: Tue, 14 Jan 2020 15:16:32 +0100
+Message-ID: <s5hd0bmcedb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Tobias <toszlanyi@yahoo.de>
+In-Reply-To: <8653a13c-ef08-4e0f-8375-baa6a3b4faa8@yahoo.de>
+References: <9457db14-4084-c0dd-5c89-821b35c3db66@yahoo.de>
+ <8653a13c-ef08-4e0f-8375-baa6a3b4faa8@yahoo.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] USB Audio Interface / Denon MC7000 and
+	MC8000	controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,36 +74,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 7, 2020 at 7:59 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
-> This patch adds bindings for WSA8810/WSA8815 Class-D Smart Speaker
-> Amplifier. This Amplifier also has a simple thermal sensor for
-> over temperature and speaker protection.
->
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/sound/qcom,wsa881x.yaml          | 68 +++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-
-This schema now is applied to the soundwire-controller.yaml example and fails:
-
-Documentation/devicetree/bindings/soundwire/soundwire-controller.example.dt.yaml:
-speaker@0,1: '#sound-dai-cells' is a required property
-Documentation/devicetree/bindings/soundwire/soundwire-controller.example.dt.yaml:
-speaker@0,2: '#sound-dai-cells' is a required property
-
-Please fix.
-
-Rob
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gTW9uLCAxMyBKYW4gMjAyMCAxNDo1ODo1MyArMDEwMCwKVG9iaWFzIHdyb3RlOgo+IAo+IEhl
+bGxvIGRlYXIgQUxTQSBkZXZlbG9wZXJzIC0gaXMgdGhlcmUgYW55IGNoYW5jZSB0byBnZXQgdGhl
+IERlbm9uCj4gTUM3MDAwIGFuZCBNQzgwMDAgVVNCIEF1ZGlvIGRldmljZXMgc3VwcG9ydGVkPyBT
+ZWUgcHJldmlvdXMgbWVzc2FnZQo+IGZvciBkZXRhaWxzLgoKV2hpY2gga2VybmVsIGRpZCB5b3Ug
+dHJ5PyAgSU9XLCBkb2VzIHRoZSBwcm9ibGVtIHN0aWxsIHBlcnNpc3Qgd2l0aAp0aGUgcmVjZW50
+IGtlcm5lbD8KCklmIHllcywgaG93IHdhcyB0aGUgbGFzdCBxdWVzdGlvbiBDbGVtZW5zIHBvaW50
+ZWQgaW4gdGhlIGZvcnVtIHlvdQpjaXRlZD8KCgp0aGFua3MsCgpUYWthc2hpCgo+IFRoYW5rcyBh
+IGxvdAo+IFRvYmlhcwo+IAo+IAo+IAo+IEFtIDE0LjEyLjE5IHVtIDA5OjI0IHNjaHJpZWIgVG9i
+aWFzOgo+ID4gSGVsbG8gZGVhciBBTFNBIGRldmVsb3BlcnMuCj4gPgo+ID4gSSBoYXZlIHB1cmNo
+YXNlZCBhIE1DNzAwMCBjb250cm9sbGVyIGluIG9yZGVyIHRvIGNvbnRyb2wgTUlYWFggb24KPiA+
+IFVidW50dSAxNi4wNC4gQWNjb3JkaW5nIHRvIHRoZSBEZW5vbiBzcGVjaWZpY2F0aW9uIHRoZSBj
+b250cm9sbGVyCj4gPiBzaG91bGQgaGF2ZSBiZWVuIGNsYXNzIGNvbXBsaWFudCBidXQgdGhlcmUg
+aXMgYW4gaXNzdWUgd2l0aCB0aGUKPiA+IEF1ZGlvIGludGVyZmFjZSB0byB3b3JrIHByb3Blcmx5
+IGdpdmluZyBmb2xsb3dpbmcgbWVzc2FnZSAuLi4KPiA+Cj4gPiAkIGRtZXNnCj4gPiAuLi4KPiA+
+IHxbwqAgwqA3NC41MjI4MzFdIHVzYiAxLTEuMzogbmV3IGhpZ2gtc3BlZWQgVVNCIGRldmljZSBu
+dW1iZXIgNiB1c2luZwo+ID4geGhjaV9oY2QKPiA+IFvCoCDCoDc0LjYyMzc4NF0gdXNiIDEtMS4z
+OiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MTVlNCwKPiA+IGlkUHJvZHVjdD04MDA0
+Cj4gPiBbwqAgwqA3NC42MjM3ODldIHVzYiAxLTEuMzogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczog
+TWZyPTEsIFByb2R1Y3Q9MiwKPiA+IFNlcmlhbE51bWJlcj0zCj4gPiBbwqAgwqA3NC42MjM3OTNd
+IHVzYiAxLTEuMzogUHJvZHVjdDogREVOT04gREogTUM3MDAwCj4gPiBbwqAgwqA3NC42MjM3OTZd
+IHVzYiAxLTEuMzogTWFudWZhY3R1cmVyOiBERU5PTiBESgo+ID4gW8KgIMKgNzQuNjIzNzk4XSB1
+c2IgMS0xLjM6IFNlcmlhbE51bWJlcjogMjAxNjAzCj4gPiBbwqAgwqA3NC42MjUxMzRdIHVzYiAx
+LTEuMzogY2xvY2sgc291cmNlIDY1IGlzIG5vdCB2YWxpZCwgY2Fubm90IHVzZQo+ID4KPiA+ICJ8
+fHxjbG9jayBzb3VyY2UgNjUgaXMgbm90IHZhbGlkLCBjYW5ub3QgdXNlIiBpcyByZXBlYXRlZAo+
+ID4gdW5jb3VudGFibGUgdGltZXMgdGhlbgo+ID4KPiA+Cj4gPiB8SSBmb3VuZCBhIGRpc2N1c3Np
+b24gaGVyZSBmb3IgdGhlIE1DODAwMCBBdWRpbyBpbnRlcmZhY2Ugd2hpY2ggd2FzCj4gPiBub3Qg
+d29ya2luZyBhbmQgc2hvd2luZyB0aGUgc2FtZSBlcnJvciBtZXNzYWdlOgo+ID4KPiA+IGh0dHBz
+Oi8vYWxzYS11c2VyLm5hcmtpdmUuY29tLzJ0REFPODdmL3Ryb3VibGVzaG9vdGluZy1uZXctdXNi
+LWF1ZGlvLWRldmljZSNwb3N0OCAKPiA+Cj4gPgo+ID4gVGhlIHNvbHV0aW9uIHdhcyB0byBjaGFu
+Z2Ugc291bmQvdXNiL2Nsb2NrLmMgYW5kIHJlY29tcGlsZSB0aGUga2VybmVsLgo+ID4gVGhpcyBp
+cyBub3QgcHJhY3RpY2FsIGZvciBkYWlseSB1c2UgY2FzZSBzbyBJIHdvdWxkIGxpa2UgdG8gYXNr
+IGlmCj4gPiB0aGUgQUxTQSB0ZWFtIGNvdWxkIHBvc3NpYmx5IGZpbmQgYSBwZXJtYW5lbnQgZml4
+IGZvciBvcmRpbmFyeQo+ID4gdXNlcnMuCj4gPgo+ID4gVG8gZ2V0IG15IG91dHB1dHMgZm9yCj4g
+Pgo+ID4gYXBsYXkgLWwKPiA+IGFwbGF5IC1MCj4gPiB8fHxhcGxheSAtRCBwbHVnaHc6Q0FSRD1N
+QzcwMDAsREVWPTAgR3JpbW1hbGRpa2EtTWFrZUJlbGlldmUud2F2Cj4gPiB8bHN1c2IgLXYKPiA+
+IG1peHh4IC0tY29udHJvbGxlckRlYnVnfHwKPiA+IEphY2tTZXJ2ZXIgZXJyb3IgbWVzc2FnZXwK
+PiA+Cj4gPiB5b3UgbWF5IGhhdmUgYSBsb29rIGF0IHRoZSBNaXh4eCBDb21tdW5pdHkgRm9ydW1z
+IGhlcmUoanVzdCBvbiBwYWdlLAo+ID4geW91IGRvbid0IG5lZWQgdG8gZmluZCBhbmQgcmVhZCBv
+biBtdWx0aXBsZSBwYWdlcykKPiA+Cj4gPiBodHRwczovL3d3dy5taXh4eC5vcmcvZm9ydW1zL3Zp
+ZXd0b3BpYy5waHA/Zj03JnQ9MTI5NjImc3RhcnQ9MTAKPiA+Cj4gPiBJZiB5b3UgbmVlZCBhbnkg
+bW9yZSBpbmZvcm1hdGlvbiB0aGVuIHBsZWFzZSBsZXQgbWUga25vdy4KPiA+Cj4gPiBUaGFua3Mg
+YSBsb3QgZm9yIHlvdXIgc3VwcG9ydCBvbiB0aGlzIG1hdHRlci4KPiA+Cj4gPiBDaGVlcnMhCj4g
+PiBPc1oKPiA+IHx8Cj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwo+IGh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
