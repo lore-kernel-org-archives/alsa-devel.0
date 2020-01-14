@@ -2,75 +2,54 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8C5FC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B811C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F08A24680
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:19 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="M/g8E33y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F08A24680
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	by mail.kernel.org (Postfix) with ESMTPS id 11E0F20678
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:22:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11E0F20678
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BE522E91;
-	Tue, 14 Jan 2020 12:23:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BE522E91
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B3A82935;
+	Tue, 14 Jan 2020 02:38:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B3A82935
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44A43F8021E;
-	Tue, 14 Jan 2020 12:23:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9784F802E9;
+	Tue, 14 Jan 2020 02:32:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 313ECF8026F; Tue, 14 Jan 2020 12:23:02 +0100 (CET)
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5301::5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3CC8F80121;
- Tue, 14 Jan 2020 12:22:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3CC8F80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="M/g8E33y"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579000975;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=X+OWkKL+QIgQaAWCoXnWN108mmrFk+pANvEAC/RGGmI=;
- b=M/g8E33yR9spmYHy3Y1OF8AXE5VL/SI3xxSdLdPvFexS2Hw3FJ1yNAV+tUfFbHBzNx
- fgIJZciv+NpG8pAELLv9nbrT240z8YUk43pmxnQ8ciy8hwG1/W4N0xYqdz+EjXl4SrPu
- 5U8tINyqbasvukVTR0evUPFwfRqc6ewnVONKVPbIMY3WjYi5FVl/B08f8MXmtPH4duS7
- EXGYfkvT9euKe911GAl8EmOkmW2B64jR5MqcN0O0cdLOiTybxy8NRgsejt+JbdL8rFnh
- 251u0Sl6O22HKRbA5InzWpW+PLXHUaG/OjyoVaZs5kFLasChbdfLToiKWslnPtA449es
- EYfw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7IOGU5qzCB3a93viaVr"
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0EBMsULA
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Jan 2020 12:22:54 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Jaroslav Kysela <perex@perex.cz>
-Date: Tue, 14 Jan 2020 12:21:04 +0100
-Message-Id: <20200114112110.51983-2-stephan@gerhold.net>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114112110.51983-1-stephan@gerhold.net>
-References: <20200114112110.51983-1-stephan@gerhold.net>
-MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH alsa-ucm-conf 1/7] DB410c: Rename Handset to
-	HeadsetMic
+ id DC28BF802EA; Tue, 14 Jan 2020 02:32:31 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 352F0F802C2
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:32:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 352F0F802C2
+Date: 14 Jan 2020 10:32:24 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36372136"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 14 Jan 2020 10:32:24 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 02B954148465;
+ Tue, 14 Jan 2020 10:32:24 +0900 (JST)
+Message-ID: <8736cihlg8.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 09/16] ASoC: ti: omap-mcpdm: move
+	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,35 +67,85 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The "Handset" device actually configures the headset microphone,
-as indicated in the comment.
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-The actual "Handset" microphone used for voice calls is usually
-internal and connected to PrimaryMic.
+There is no big difference at implementation for .suspend/.resume
+between DAI driver and Component driver.
+But because some driver is using DAI version, thus ALSA SoC needs
+to keep supporting it, hence, framework becoming verbose.
+If we can switch all DAI driver .suspend/.resume to Component driver,
+we can remove verbose code from ALSA SoC.
 
-Rename the current "Handset" device to "HeadsetMic" for clarity.
+Driver is getting its private data via dai->dev.
+But dai->dev and component->dev are same dev, thus, we can convert
+these. For same reason, we can convert dai->active to
+component->active if necessary.
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+This patch moves DAI driver .suspend/.resume to Component driver
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- ucm2/DB410c/HiFi.conf | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ti/omap-mcpdm.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/ucm2/DB410c/HiFi.conf b/ucm2/DB410c/HiFi.conf
-index 848d02f..a0ef42c 100644
---- a/ucm2/DB410c/HiFi.conf
-+++ b/ucm2/DB410c/HiFi.conf
-@@ -75,7 +75,7 @@ SectionDevice."Earpiece" {
- 	]
+diff --git a/sound/soc/ti/omap-mcpdm.c b/sound/soc/ti/omap-mcpdm.c
+index b8c8290..a726cd7 100644
+--- a/sound/soc/ti/omap-mcpdm.c
++++ b/sound/soc/ti/omap-mcpdm.c
+@@ -458,11 +458,11 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
  }
  
--SectionDevice."Handset" {
-+SectionDevice."HeadsetMic" {
- 	Comment "Headset Microphone"
+ #ifdef CONFIG_PM_SLEEP
+-static int omap_mcpdm_suspend(struct snd_soc_dai *dai)
++static int omap_mcpdm_suspend(struct snd_soc_component *component)
+ {
+-	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
++	struct omap_mcpdm *mcpdm = snd_soc_component_get_drvdata(component);
  
- 	EnableSequence [
+-	if (dai->active) {
++	if (component->active) {
+ 		omap_mcpdm_stop(mcpdm);
+ 		omap_mcpdm_close_streams(mcpdm);
+ 	}
+@@ -476,15 +476,15 @@ static int omap_mcpdm_suspend(struct snd_soc_dai *dai)
+ 	return 0;
+ }
+ 
+-static int omap_mcpdm_resume(struct snd_soc_dai *dai)
++static int omap_mcpdm_resume(struct snd_soc_component *component)
+ {
+-	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
++	struct omap_mcpdm *mcpdm = snd_soc_component_get_drvdata(component);
+ 
+ 	if (mcpdm->pm_active_count) {
+ 		while (mcpdm->pm_active_count--)
+ 			pm_runtime_get_sync(mcpdm->dev);
+ 
+-		if (dai->active) {
++		if (component->active) {
+ 			omap_mcpdm_open_streams(mcpdm);
+ 			omap_mcpdm_start(mcpdm);
+ 		}
+@@ -504,8 +504,6 @@ static int omap_mcpdm_resume(struct snd_soc_dai *dai)
+ static struct snd_soc_dai_driver omap_mcpdm_dai = {
+ 	.probe = omap_mcpdm_probe,
+ 	.remove = omap_mcpdm_remove,
+-	.suspend = omap_mcpdm_suspend,
+-	.resume = omap_mcpdm_resume,
+ 	.probe_order = SND_SOC_COMP_ORDER_LATE,
+ 	.remove_order = SND_SOC_COMP_ORDER_EARLY,
+ 	.playback = {
+@@ -527,6 +525,8 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
+ 
+ static const struct snd_soc_component_driver omap_mcpdm_component = {
+ 	.name		= "omap-mcpdm",
++	.suspend	= omap_mcpdm_suspend,
++	.resume		= omap_mcpdm_resume,
+ };
+ 
+ void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
 -- 
-2.24.1
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
