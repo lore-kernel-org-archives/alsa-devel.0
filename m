@@ -6,74 +6,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFD1CC3F68F
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:12:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66FE6C33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:13:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C66C2187F
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:12:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8F1024658
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:13:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="feXyWXsK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="a27QKhi7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C66C2187F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uONpEgNw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="jYIdDtc0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8F1024658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38A701837;
-	Tue, 14 Jan 2020 17:11:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38A701837
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE0AA183F;
+	Tue, 14 Jan 2020 17:12:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE0AA183F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579018358;
-	bh=DEr8euIVmf60gTwnslCMv6CSWZzBTTWHB+2SPx3X6iw=;
+	s=default; t=1579018405;
+	bh=qxWGtzWucbmN3gO3w4ZRVMnPjd8vu7SJtSGOy6MKJQY=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=feXyWXsKUjPE74mjn5a7cUmsJ0kT5UswyK1WiogAVwFwGDJlpe3IUcJrI2VIdQnS2
-	 7icNB7XCYdDv9TOrwTHhOy2++Wc11HeWVT7/tN6k1lr+U2T/8F5i8bFTk314yPT9qZ
-	 mKjLufxsM7XDqH/1UDVH7FrshP2zhpJPOeyv2FWI=
+	b=uONpEgNw0kZrpm97tsLoMNK4BG0tcNOGeAmP2pXdhwJ5wEPjr7JghFDexizk1BnuC
+	 dcw7O9Rh1TtkcrToc2MpYzi54YnEba2r51cTpEG9JfSK2OL2dnk+U5w64v9zPz/0/O
+	 C0LRdGVqiJIXz2sq136VHeoPM1d926oDpLcbodho=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9424F802D2;
-	Tue, 14 Jan 2020 17:09:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7CFBF802E0;
+	Tue, 14 Jan 2020 17:09:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 778EBF802C2; Tue, 14 Jan 2020 17:09:25 +0100 (CET)
+ id 76F36F802C3; Tue, 14 Jan 2020 17:09:26 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB434F8021E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A20C8F8016F
  for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB434F8021E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A20C8F8016F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="a27QKhi7"
+ header.b="jYIdDtc0"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=RTiqxE5qKQHAKRtrjE+tg0J0qXOkdRkCcDly6kU+EFc=; b=a27QKhi73NVB
- p3y11yLHoeFltrWgesTRhf9ohltesyHEbaMOP8BfbMkXBODY+iAdnfTOl8PT2NMwGjSf6k6QdGb9n
- llIXb1qyp3EBvi9qdibVR6ComTqUVXqwgdPoen5ERKnyKYlNsfJAn1Zp1ELVKrwhnd/4AiZWFfJQn
- bZxEo=;
+ List-Archive; bh=GOU6b3l0J/q7CajAd4LcvR8zIEL0TEFRi/JTP/OOKXg=; b=jYIdDtc0/m+d
+ RVmF5TK9eu7GLBwJ0zVRa5f/mP7lkDO1BEhc0Vye+V6QbL9MB7fmNxFWWK8qL/FtpJ/yRqIcOBZX9
+ mIAQaZiT0p9v2Ss05B+UTNjOhhtd6MTvWbexpCGPSTGbOGfTaZtOuaZCMw+BsKGW6lu7bLNJct/O9
+ o8XC8=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1irOke-0001VC-5t; Tue, 14 Jan 2020 16:09:08 +0000
+ id 1irOkd-0001Uz-Ja; Tue, 14 Jan 2020 16:09:07 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id CF517D02C7B; Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
+ id 2F8C4D02C77; Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200113210428.27457-19-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200113210428.27457-19-pierre-louis.bossart@linux.intel.com>
+To: Marek Vasut <marex@denx.de>
+In-Reply-To: <20191220164450.1395038-1-marex@denx.de>
+Message-Id: <applied-20191220164450.1395038-1-marex@denx.de>
 X-Patchwork-Hint: ignore
 Date: Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: Intel: bytcr_rt5651: remove unused
-	variable" to the asoc tree
+Cc: alsa-devel@alsa-project.org, Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Igor Opaniuk <igor.opaniuk@toradex.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+ Mark Brown <broonie@kernel.org>, festevam@gmail.com
+Subject: [alsa-devel] Applied "regulator: core: Add regulator_is_equal()
+	helper" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,20 +90,18 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5545873983752377362=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---===============5545873983752377362==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: Intel: bytcr_rt5651: remove unused variable
+   regulator: core: Add regulator_is_equal() helper
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -121,59 +122,87 @@ to this mail.
 Thanks,
 Mark
 
-From c1b34230a37d6c167bee0fc2c7204871cf5e875f Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 13 Jan 2020 15:04:28 -0600
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: remove unused variable
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From b059b7e0ec3208ff1e17cff6387d75a9fbab4e02 Mon Sep 17 00:00:00 2001
+From: Marek Vasut <marex@denx.de>
+Date: Fri, 20 Dec 2019 17:44:49 +0100
+Subject: [PATCH] regulator: core: Add regulator_is_equal() helper
 
-Fix GCC warning with W=1
+Add regulator_is_equal() helper to compare whether two regulators are
+the same. This is useful for checking whether two separate regulators
+in a driver are actually the same supply.
 
-sound/soc/intel//boards/bytcr_rt5651.c:659:40: warning:
-‘byt_rt5651_dai_params’ defined but not used
-[-Wunused-const-variable=]
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200113210428.27457-19-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Igor Opaniuk <igor.opaniuk@toradex.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Link: https://lore.kernel.org/r/20191220164450.1395038-1-marex@denx.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/regulator/helpers.c        | 14 ++++++++++++++
+ include/linux/regulator/consumer.h |  7 +++++++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index c0d322a859f7..3bb2732a9f7e 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -656,14 +656,6 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 	return 0;
+diff --git a/drivers/regulator/helpers.c b/drivers/regulator/helpers.c
+index ca3dc3f3bb29..bb16c465426e 100644
+--- a/drivers/regulator/helpers.c
++++ b/drivers/regulator/helpers.c
+@@ -13,6 +13,8 @@
+ #include <linux/regulator/driver.h>
+ #include <linux/module.h>
+ 
++#include "internal.h"
++
+ /**
+  * regulator_is_enabled_regmap - standard is_enabled() for regmap users
+  *
+@@ -881,3 +883,15 @@ void regulator_bulk_set_supply_names(struct regulator_bulk_data *consumers,
+ 		consumers[i].supply = supply_names[i];
+ }
+ EXPORT_SYMBOL_GPL(regulator_bulk_set_supply_names);
++
++/**
++ * regulator_is_equal - test whether two regulators are the same
++ *
++ * @reg1: first regulator to operate on
++ * @reg2: second regulator to operate on
++ */
++bool regulator_is_equal(struct regulator *reg1, struct regulator *reg2)
++{
++	return reg1->rdev == reg2->rdev;
++}
++EXPORT_SYMBOL_GPL(regulator_is_equal);
+diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
+index 337a46391527..2c89d886595c 100644
+--- a/include/linux/regulator/consumer.h
++++ b/include/linux/regulator/consumer.h
+@@ -287,6 +287,8 @@ void regulator_bulk_set_supply_names(struct regulator_bulk_data *consumers,
+ 				     const char *const *supply_names,
+ 				     unsigned int num_supplies);
+ 
++bool regulator_is_equal(struct regulator *reg1, struct regulator *reg2);
++
+ #else
+ 
+ /*
+@@ -593,6 +595,11 @@ regulator_bulk_set_supply_names(struct regulator_bulk_data *consumers,
+ {
  }
  
--static const struct snd_soc_pcm_stream byt_rt5651_dai_params = {
--	.formats = SNDRV_PCM_FMTBIT_S24_LE,
--	.rate_min = 48000,
--	.rate_max = 48000,
--	.channels_min = 2,
--	.channels_max = 2,
--};
--
- static int byt_rt5651_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 			    struct snd_pcm_hw_params *params)
- {
++static inline bool
++regulator_is_equal(struct regulator *reg1, struct regulator *reg2);
++{
++	return false;
++}
+ #endif
+ 
+ static inline int regulator_set_voltage_triplet(struct regulator *regulator,
 -- 
 2.20.1
-
-
---===============5545873983752377362==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5545873983752377362==--
