@@ -2,59 +2,54 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C30AEC33CB2
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BFF3C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51A8624680
+	by mail.kernel.org (Postfix) with ESMTPS id E855124680
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:20:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51A8624680
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E855124680
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 550D426AB;
-	Mon, 13 Jan 2020 22:21:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 550D426AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 586BC299F;
+	Tue, 14 Jan 2020 02:39:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 586BC299F
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60FE6F802A0;
-	Mon, 13 Jan 2020 22:14:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B07C7F80307;
+	Tue, 14 Jan 2020 02:32:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6B89F802A0; Mon, 13 Jan 2020 22:14:25 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 234A7F80290
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:14:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 234A7F80290
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:14:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="218775932"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by fmsmga007.fm.intel.com with ESMTP; 13 Jan 2020 13:14:16 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:14:05 -0600
-Message-Id: <20200113211405.28070-3-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200113211405.28070-1-pierre-louis.bossart@linux.intel.com>
-References: <20200113211405.28070-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 2/2] ALSA: HDA: patch_hdmi: remove warnings
-	with empty body
+ id 231BEF80308; Tue, 14 Jan 2020 02:32:46 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7FE0BF802E8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:32:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FE0BF802E8
+Date: 14 Jan 2020 10:32:38 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36588961"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jan 2020 10:32:38 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 52201400A0F3;
+ Tue, 14 Jan 2020 10:32:38 +0900 (JST)
+Message-ID: <87y2uag6vd.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 12/16] ASoC: samsung: i2s: move
+	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,29 +62,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-bWFrZSBXPTEgcmVwb3J0cyB0aGUgZm9sbG93aW5nIHdhcm5pbmdzLCBmaXggYXMgc3VnZ2VzdGVk
-Cgpzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYzogSW4gZnVuY3Rpb24g4oCYaGRtaV9ub25faW50
-cmluc2ljX2V2ZW504oCZOgpzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYzo4MjQ6Mzogd2Fybmlu
-Zzogc3VnZ2VzdCBicmFjZXMgYXJvdW5kIGVtcHR5CmJvZHkgaW4gYW4g4oCYaWbigJkgc3RhdGVt
-ZW50IFstV2VtcHR5LWJvZHldCiAgODI0IHwgICA7CiAgICAgIHwgICBeCnNvdW5kL3BjaS9oZGEv
-cGF0Y2hfaGRtaS5jOjgyNjozOiB3YXJuaW5nOiBzdWdnZXN0IGJyYWNlcyBhcm91bmQgZW1wdHkK
-Ym9keSBpbiBhbiDigJhpZuKAmSBzdGF0ZW1lbnQgWy1XZW1wdHktYm9keV0KICA4MjYgfCAgIDsK
-ICAgICAgfCAgIF4KClNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUt
-bG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+Ci0tLQogc291bmQvcGNpL2hkYS9wYXRjaF9o
-ZG1pLmMgfCA2ICsrKystLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMiBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyBiL3NvdW5k
-L3BjaS9oZGEvcGF0Y2hfaGRtaS5jCmluZGV4IDNhMThmYTRmOGMyMS4uY2UzYzIxMmVlNDY3IDEw
-MDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYworKysgYi9zb3VuZC9wY2kvaGRh
-L3BhdGNoX2hkbWkuYwpAQCAtODIwLDEwICs4MjAsMTIgQEAgc3RhdGljIHZvaWQgaGRtaV9ub25f
-aW50cmluc2ljX2V2ZW50KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCB1bnNpZ25lZCBpbnQgcmVz
-KQogCQljcF9yZWFkeSk7CiAKIAkvKiBUT0RPICovCi0JaWYgKGNwX3N0YXRlKQorCWlmIChjcF9z
-dGF0ZSkgewogCQk7Ci0JaWYgKGNwX3JlYWR5KQorCX0KKwlpZiAoY3BfcmVhZHkpIHsKIAkJOwor
-CX0KIH0KIAogCi0tIAoyLjIwLjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+There is no big difference at implementation for .suspend/.resume
+between DAI driver and Component driver.
+But because some driver is using DAI version, thus ALSA SoC needs
+to keep supporting it, hence, framework becoming verbose.
+If we can switch all DAI driver .suspend/.resume to Component driver,
+we can remove verbose code from ALSA SoC.
+
+Driver is getting its private data via dai->dev.
+But dai->dev and component->dev are same dev, thus, we can convert
+these. For same reason, we can convert dai->active to
+component->active if necessary.
+
+This patch moves DAI driver .suspend/.resume to Component driver
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/samsung/i2s.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 9722940..a57bb989 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1024,14 +1024,14 @@ i2s_delay(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ }
+ 
+ #ifdef CONFIG_PM
+-static int i2s_suspend(struct snd_soc_dai *dai)
++static int i2s_suspend(struct snd_soc_component *component)
+ {
+-	return pm_runtime_force_suspend(dai->dev);
++	return pm_runtime_force_suspend(component->dev);
+ }
+ 
+-static int i2s_resume(struct snd_soc_dai *dai)
++static int i2s_resume(struct snd_soc_component *component)
+ {
+-	return pm_runtime_force_resume(dai->dev);
++	return pm_runtime_force_resume(component->dev);
+ }
+ #else
+ #define i2s_suspend NULL
+@@ -1140,6 +1140,9 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
+ 
+ 	.dapm_routes = samsung_i2s_dapm_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(samsung_i2s_dapm_routes),
++
++	.suspend = i2s_suspend,
++	.resume = i2s_resume,
+ };
+ 
+ #define SAMSUNG_I2S_FMTS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -1171,8 +1174,6 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 
+ 		dai_drv->probe = samsung_i2s_dai_probe;
+ 		dai_drv->remove = samsung_i2s_dai_remove;
+-		dai_drv->suspend = i2s_suspend;
+-		dai_drv->resume = i2s_resume;
+ 
+ 		dai_drv->symmetric_rates = 1;
+ 		dai_drv->ops = &samsung_i2s_dai_ops;
+-- 
+2.7.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
