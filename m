@@ -2,72 +2,54 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8C79C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A696C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5373120678
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:13 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="vWj6l2ii"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5373120678
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id B3AB320678
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:21:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3AB320678
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4A331FCF;
-	Mon, 13 Jan 2020 16:22:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4A331FCF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7BC02903;
+	Tue, 14 Jan 2020 02:37:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7BC02903
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D3A3F80317;
-	Mon, 13 Jan 2020 16:13:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 544CBF802D2;
+	Tue, 14 Jan 2020 02:32:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1320F802E2; Mon, 13 Jan 2020 16:13:32 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 719D0F8028E
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 719D0F8028E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="vWj6l2ii"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Uds9IlvygoQkBb6AABSXjxIdm8TETD8gSOhUHY61HNw=; b=vWj6l2iiY9Ql
- O99UW7WwqPWi/cZsfHGvUqZqxe5v9WFXHQdyOGY/VZAjquUR4Sx2AsTZn+iTuSY1oabF6UqjWWnRs
- jW5mzwXkC3mKz0+xsFwCWyEDEF9r7WLnHNFuKYVw7CM0wogVutw8cpbL+oEdzKJboC79sZV5rjiGh
- GKqsQ=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1P2-0003MW-Vt; Mon, 13 Jan 2020 15:13:17 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id A6E79D01965; Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20200113013123.47561-1-yuehaibing@huawei.com>
-Message-Id: <applied-20200113013123.47561-1-yuehaibing@huawei.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:16 +0000 (GMT)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Shuming Fan <shumingf@realtek.com>
-Subject: [alsa-devel] Applied "ASoC: rt711: remove unused including
-	<linux/version.h>" to the asoc tree
+ id 6D98FF802D2; Tue, 14 Jan 2020 02:32:25 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 43296F80291
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:32:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43296F80291
+Date: 14 Jan 2020 10:32:19 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36588906"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jan 2020 10:32:19 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0CBDD4148261;
+ Tue, 14 Jan 2020 10:32:19 +0900 (JST)
+Message-ID: <874kwyhlgc.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 08/16] ASoC: sti: sti_uniperif: move
+	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,67 +62,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-   ASoC: rt711: remove unused including <linux/version.h>
+There is no big difference at implementation for .suspend/.resume
+between DAI driver and Component driver.
+But because some driver is using DAI version, thus ALSA SoC needs
+to keep supporting it, hence, framework becoming verbose.
+If we can switch all DAI driver .suspend/.resume to Component driver,
+we can remove verbose code from ALSA SoC.
 
-has been applied to the asoc tree at
+Driver is getting its private data via dai->dev.
+But dai->dev and component->dev are same dev, thus, we can convert
+these. For same reason, we can convert dai->active to
+component->active if necessary.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+This patch moves DAI driver .suspend/.resume to Component driver
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 62d28dcb65fd5ca12994207f17187545923d4f3d Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Mon, 13 Jan 2020 01:31:23 +0000
-Subject: [PATCH] ASoC: rt711: remove unused including <linux/version.h>
-
-Remove including <linux/version.h> that don't need it.
-
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200113013123.47561-1-yuehaibing@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/rt711.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sti/sti_uniperif.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 3bebba7a63be..2daed7692a3b 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -8,7 +8,6 @@
+diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
+index ee4a0151..7b9169f 100644
+--- a/sound/soc/sti/sti_uniperif.c
++++ b/sound/soc/sti/sti_uniperif.c
+@@ -308,9 +308,9 @@ int sti_uniperiph_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
+-static int sti_uniperiph_dai_suspend(struct snd_soc_dai *dai)
++static int sti_uniperiph_suspend(struct snd_soc_component *component)
+ {
+-	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct sti_uniperiph_data *priv = snd_soc_component_get_drvdata(component);
+ 	struct uniperif *uni = priv->dai_data.uni;
+ 	int ret;
+ 
+@@ -330,9 +330,9 @@ static int sti_uniperiph_dai_suspend(struct snd_soc_dai *dai)
+ 	return ret;
+ }
+ 
+-static int sti_uniperiph_dai_resume(struct snd_soc_dai *dai)
++static int sti_uniperiph_resume(struct snd_soc_component *component)
+ {
+-	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct sti_uniperiph_data *priv = snd_soc_component_get_drvdata(component);
+ 	struct uniperif *uni = priv->dai_data.uni;
+ 	int ret;
+ 
+@@ -370,12 +370,12 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
+ 
+ static const struct snd_soc_dai_driver sti_uniperiph_dai_template = {
+ 	.probe = sti_uniperiph_dai_probe,
+-	.suspend = sti_uniperiph_dai_suspend,
+-	.resume = sti_uniperiph_dai_resume
+ };
+ 
+ static const struct snd_soc_component_driver sti_uniperiph_dai_component = {
+ 	.name = "sti_cpu_dai",
++	.suspend = sti_uniperiph_suspend,
++	.resume = sti_uniperiph_resume
+ };
+ 
+ static int sti_uniperiph_cpu_dai_of(struct device_node *node,
 -- 
-2.20.1
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
