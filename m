@@ -2,56 +2,87 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B849C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:25:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3EF4C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:25:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC542222C4
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:25:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC542222C4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2A42920678
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:25:41 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IQMFSASc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A42920678
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 272502668;
-	Mon, 13 Jan 2020 22:19:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 272502668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78E192DCB;
+	Tue, 14 Jan 2020 10:48:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78E192DCB
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 490C5F8028C;
-	Mon, 13 Jan 2020 22:14:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1ACEF8014D;
+	Tue, 14 Jan 2020 10:48:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C88DF8028A; Mon, 13 Jan 2020 22:14:21 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D85C0F8014E; Tue, 14 Jan 2020 10:48:15 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 408BAF80227
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:14:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 408BAF80227
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:14:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="218775928"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by fmsmga007.fm.intel.com with ESMTP; 13 Jan 2020 13:14:15 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:14:03 -0600
-Message-Id: <20200113211405.28070-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD741F800E9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 10:48:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD741F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="IQMFSASc"
+Received: by mail-wm1-x341.google.com with SMTP id d73so12954288wmd.1
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 01:48:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Av6R897MwPJYaUFbeySb8X+lrEgD6Ka/Lapd1oVQYxQ=;
+ b=IQMFSAScN6150muQWE3TPyVLfIYy0czJHjwNWVAgkyvZgWPfBZ+eHuwWrjU1XkCaIP
+ DK/TXzdz1mtJgYtcji134GMFQefvifRjx7TqE8h36Lj4HSs/GsBOaYILyJehZmDsajIg
+ t9uAfiqDLs4MKErEtIrh9nKww4ji7pd2U1GEXPelhtjGAVG6ICG1HLRphdUhdUxFITFg
+ Z1BdJJu8eGpHBCF/WmOeTlFtACpLVc0Ue6IhkfuXapPqfUjR94BFfuGBrkLNGJiCO0Rk
+ 6+ZZBu7YwK982Nr0ckvTTz8CjmqNjbQ4TK77dvdEQJo2QWw0Zb4T0Z3ivkC4LyB/u3tC
+ FHMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Av6R897MwPJYaUFbeySb8X+lrEgD6Ka/Lapd1oVQYxQ=;
+ b=UqmYG4E3YC0fzthOejCqPtgfpVC7jmtvwTt5Wi91BIP2Uekv+Q2lsbdk+/MiTN1Ksj
+ fIunbWc/D69q+LrekRzE+7J31VlTfs2zhp/dgr+AWH+T3GzdVEwG8A5jIw/fTgDlE/aX
+ mT7WF/PDlX9f3y/Jcj2oGmL4qqHBtm3f6nLTsCN5lv79FaJYMH2JFO9SAFY23DJA2YL5
+ GCa7caHkKd2BibBO0hYKw68euiBwxHLaecg+p4oKoQNyP1FwsHbRDp3UmXfNG4ZOU2ZT
+ iFq3sLcWbJ5R87QunJRxoYGCyBKk7cmQ11RD/Gkuyk92y5ByaYRden3tG5mrQJ/7qbzN
+ Tw1w==
+X-Gm-Message-State: APjAAAUqSnpFO4lAyzBD2BlKNWjmiNEdVXkzXtEpcn/G8ZR9Yl5fMw3L
+ gLeZWUpXL5zpJIlI3J6WyGfHEA==
+X-Google-Smtp-Source: APXvYqxf5aQ6H3nRjfBxIr795lLJZTMPfkO87+3kIpo/fctg5qDkW97JHna4R1IxAedKKdSVGpwsXQ==
+X-Received: by 2002:a7b:c851:: with SMTP id c17mr26738795wml.71.1578995291824; 
+ Tue, 14 Jan 2020 01:48:11 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+ by smtp.gmail.com with ESMTPSA id k16sm19277659wru.0.2020.01.14.01.48.10
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 14 Jan 2020 01:48:11 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: vkoul@kernel.org
+Date: Tue, 14 Jan 2020 09:48:06 +0000
+Message-Id: <20200114094806.15846-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 0/2] ALSA: HDA: remove warnings with make W=1
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH] dt-bindings: soundwire: fix example
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,22 +100,43 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Last series to make the sound subsystem report next to zero warnings
-(at least for the parts used by Intel).
+As wsa881x schema mentions #sound-dai-cells as required property,
+so update soundwire-controller.yaml example so that dt_bindings_check
+does not fail as below:
 
-Pierre-Louis Bossart (2):
-  ALSA: HDA: correct kernel-doc parameter descriptions
-  ALSA: HDA: patch_hdmi: remove warnings with empty body
+Documentation/devicetree/bindings/soundwire/soundwire-controller.example.dt.yaml:
+speaker@0,1: '#sound-dai-cells' is a required property
+Documentation/devicetree/bindings/soundwire/soundwire-controller.example.dt.yaml:
+speaker@0,2: '#sound-dai-cells' is a required property
 
- sound/pci/hda/hda_codec.c    | 1 +
- sound/pci/hda/hda_generic.c  | 5 +++++
- sound/pci/hda/hda_jack.c     | 2 ++
- sound/pci/hda/patch_ca0132.c | 1 +
- sound/pci/hda/patch_hdmi.c   | 6 ++++--
- 5 files changed, 13 insertions(+), 2 deletions(-)
+Reported-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../devicetree/bindings/soundwire/soundwire-controller.yaml     | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+index 1b43993bccdb..330924b8618e 100644
+--- a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
++++ b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+@@ -69,6 +69,7 @@ examples:
+             reg = <0 1>;
+             powerdown-gpios = <&wcdpinctrl 2 0>;
+             #thermal-sensor-cells = <0>;
++            #sound-dai-cells = <0>;
+         };
+ 
+         speaker@0,2 {
+@@ -76,6 +77,7 @@ examples:
+             reg = <0 2>;
+             powerdown-gpios = <&wcdpinctrl 2 0>;
+             #thermal-sensor-cells = <0>;
++            #sound-dai-cells = <0>;
+         };
+     };
+ 
 -- 
-2.20.1
+2.21.0
 
 _______________________________________________
 Alsa-devel mailing list
