@@ -6,55 +6,53 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD8EC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CBE3C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5292424658
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5292424658
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3E31B222C4
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:26:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E31B222C4
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7566B2486;
-	Mon, 13 Jan 2020 22:11:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7566B2486
+	by alsa0.perex.cz (Postfix) with ESMTPS id 710EE27AD;
+	Tue, 14 Jan 2020 02:17:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 710EE27AD
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F012BF802E3;
-	Mon, 13 Jan 2020 22:05:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F14D3F8014B;
+	Tue, 14 Jan 2020 02:17:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D07D5F80291; Mon, 13 Jan 2020 22:05:01 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 4FAA4F801EB; Tue, 14 Jan 2020 02:17:56 +0100 (CET)
+Received: from huawei.com (szxga06-in.huawei.com [45.249.212.32])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3EF90F800B9
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EF90F800B9
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112671"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:44 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:15 -0600
-Message-Id: <20200113210428.27457-6-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63303F800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:17:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63303F800B9
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id D0C395293E302764A76E;
+ Tue, 14 Jan 2020 09:17:48 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.439.0; Tue, 14 Jan 2020 09:17:42 +0800
+From: YueHaibing <yuehaibing@huawei.com>
+To: Shuming Fan <shumingf@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Date: Tue, 14 Jan 2020 01:13:19 +0000
+Message-ID: <20200114011319.173401-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 05/18] ASoC: Intel: kbl_da7219_max98357a:
-	rename shadowed variable
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
+Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
+ YueHaibing <yuehaibing@huawei.com>, linux-kernel@vger.kernel.org
+Subject: [alsa-devel] [PATCH -next] ASoC: rt700: remove unused including
+	<linux/version.h>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,64 +70,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix cppcheck warning:
+Remove including <linux/version.h> that don't need it.
 
-[sound/soc/intel/boards/kbl_da7219_max98357a.c:257] ->
-[sound/soc/intel/boards/kbl_da7219_max98357a.c:144]: (style) Local
-variable 'channels' shadows outer variable
-
-[sound/soc/intel/boards/kbl_da7219_max98357a.c:257] ->
-[sound/soc/intel/boards/kbl_da7219_max98357a.c:308]: (style) Local
-variable 'channels' shadows outer variable
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/rt700.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 0d55319a0773..bc7f9a9ce9af 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -141,13 +141,13 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
+index b1830c1ebf8a..ff68f0e4f629 100644
+--- a/sound/soc/codecs/rt700.c
++++ b/sound/soc/codecs/rt700.c
+@@ -8,7 +8,6 @@
  
- 	/* The ADSP will convert the FE rate to 48k, stereo */
- 	rate->min = rate->max = 48000;
--	channels->min = channels->max = DUAL_CHANNEL;
-+	chan->min = chan->max = DUAL_CHANNEL;
- 
- 	/* set SSP to 24 bit */
- 	snd_mask_none(fmt);
-@@ -305,7 +305,7 @@ static const struct snd_soc_ops kabylake_da7219_fe_ops = {
- static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 		struct snd_pcm_hw_params *params)
- {
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 				SNDRV_PCM_HW_PARAM_CHANNELS);
- 
- 	/*
-@@ -313,9 +313,9 @@ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 	 */
- 
- 	if (params_channels(params) == 2)
--		channels->min = channels->max = 2;
-+		chan->min = chan->max = 2;
- 	else
--		channels->min = channels->max = 4;
-+		chan->min = chan->max = 4;
- 
- 	return 0;
- }
--- 
-2.20.1
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+
+
 
 _______________________________________________
 Alsa-devel mailing list
