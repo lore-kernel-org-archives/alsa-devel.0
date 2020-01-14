@@ -2,87 +2,56 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37578C33CB6
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22951C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:25:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC6582465A
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:24:53 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=yahoo.de header.i=@yahoo.de header.b="iGY/ViGh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC6582465A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=yahoo.de
+	by mail.kernel.org (Postfix) with ESMTPS id A63AE24658
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:25:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A63AE24658
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BD991839;
-	Mon, 13 Jan 2020 14:59:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BD991839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CFC32D17;
+	Tue, 14 Jan 2020 08:44:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CFC32D17
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F18CF8014B;
-	Mon, 13 Jan 2020 14:59:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48917F8014D;
+	Tue, 14 Jan 2020 08:44:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CE44F801EB; Mon, 13 Jan 2020 14:59:01 +0100 (CET)
-Received: from sonic307-53.consmr.mail.ir2.yahoo.com
- (sonic307-53.consmr.mail.ir2.yahoo.com [87.248.110.30])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1938BF8014E; Tue, 14 Jan 2020 08:44:30 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6C9BF800B9
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 14:58:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6C9BF800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=yahoo.de header.i=@yahoo.de
- header.b="iGY/ViGh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.de; s=s2048;
- t=1578923936; bh=N4wShNSwIN3DZVGJ1flJkDKgr5ceee1qifaGqxIzro8=;
- h=Subject:From:To:References:Date:In-Reply-To:From:Subject;
- b=iGY/ViGh0Gj8RZZDUGjodC5/x+eYuTc6tQENsiaITK6P031eJWNk0OKFKw4O6X9xyTyN02NNx9E47iz5/RkkXRYm3ST7e7ykCibQ9wI8Jbj6SJgaLCPlumsouowoRSR2iFhNWOZbZ/ELR2sQ9IAh1kJ4uTe/4H5Dk84VZ+6qr3+dMvVIJ0EvSAhZZYFk6vAmy+lhllCdIyLizdLgr31zpqyIET9JI6TK1okFjZ102nE28hBy9T4aeOtjYKYmTW3/psbsxtS1AL1u1vbS0eiNIb7zMNpz0uX65xRDwIMaFcqeRVi8srd1flXR8pPOnMSh/pXSVjdABcVg2p1eZb3ROg==
-X-YMail-OSG: F3tWKb4VM1k9Er6J_hPtkH0OYadxV.P8wRWMegepMjx7aIFtfRThGY6EjfHgfo2
- 0PsNeVKlmNYQ92.Upu4WqaBdDIU6f6.uV_3ur5frOLR4CSlAfBMTO_zXTF44ZtXL3DS7BG2vT3XR
- o4HjOjMWJPuYYN16mm2u4JvbOGsYKTm7NtdMFBUd_MDcMn7ZbndksyIWKAGKWdFqyjfb9wU1JTtj
- hDicUvAseaOWY5_JUC8jx3ZVXLXqgjSkaY2SZK9cBFerhsmVYNgJD1kjlCs2LG9sW6wpe8Jo7Yvd
- Zieh89LMX6gtf9A_HxfIGx9ZGeEzYaCmOTbk1lmX6UDm0Hf.i5UcPj4VJVt38Zf8KlVOVr.1J5yO
- KdmBQyTNkHfeKcP_EppXucrIzvZ4vUMm6PnDaDzT44aN0Yy1oLCWcNfsHhkdq40SuleFBlbyAc.S
- EQt.T6OdbEyJEHCtSETeVv0f4DuioedroggVmzXbtmW3_K1AFnzC9bTP7wyCIQrEt0Dtqcn6a_Zc
- dCXPuJq2NGTfMw1rZ2kztFD1UE865lVCE45OUHybj3PVAAemsM8Cb92fBu2du7bCvVGaU.35Hq4R
- 25k_ey1G7YYJ5J4ZqhjAVQvqpF3.d1PPYVUlwk.a0o.5KBT.og6PQjNbKWLmrIDnpD.94oO2aC67
- fPO1dD488Oz.4Hyer.TzmHkFO5htFhEZN.lj3hBGspoLNqA5YixtTWUmoD1ujMEOLdFi.v0oeMmf
- O2iV43xAwoBy2apL98OHee1trMe6GbdWM.Y3afKgjPQJHpQUNK2NMfImAG8Yu_zplDRsiDeE5y0x
- 5fLjmqYM506sanfFRWuPSRyY0goPswF9EeOzIXuF7jAbf8oXNz426RZJCsvkPHHEQhpwFkS3twan
- hhw5VRvPNs72gOeeqHE5j6Zap3YKZKOjtcBMchhZU6O7WsbUWwPN0xL03dwBT48oGX.sSmd59HRB
- 0dOKGWfusjqGKZGsY6MLXAG5DqjYWPvrJiJXAKw3AJ883DuL50OfcAJBNQqyCargK9mJWlOQmQup
- IFcazBjudiy1dRptKywh1aVBxO84cFl7ZWpXmqsu1hpYr2tq8FoNsVvgg46yB7zM1AHE0IzRN2Cg
- lxEtPYvXtSi3E1.xLiRnU4CyosnfgN5XDSXpfOKDsSctCRvybJpNHLgsMrJbF4slW6jBrIv1T4yz
- qCy15QG.SWNDedRdZXfobMcuEFcx1Ljakc17RMA_QSDulPIaXLzHNlX_2mqj1sumpcvHvYD_43Xe
- I6e1JFsX76tYpD09SOJN_opIIU1ZU9ZXwGXrRmFDakAZOzMrChUETJD8sEpPXJBJZfzR.LQ2PVm9
- 2niSFQq1GmsJ5ofwVnRnyhYegiH4DiT25hapxTz6gjSv7qeRyl274_Q19QGGVwnOubqUwbaPJM3Q
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by
- sonic307.consmr.mail.ir2.yahoo.com with HTTP; Mon, 13 Jan 2020 13:58:56 +0000
-Received: by smtp413.mail.ir2.yahoo.com (Oath Hermes SMTP Server) with ESMTPA
- ID 7f2295bad415329f1eee64ebe26b55bf; 
- Mon, 13 Jan 2020 13:58:53 +0000 (UTC)
-From: Tobias <toszlanyi@yahoo.de>
-To: alsa-devel@alsa-project.org
-References: <9457db14-4084-c0dd-5c89-821b35c3db66@yahoo.de>
-Message-ID: <8653a13c-ef08-4e0f-8375-baa6a3b4faa8@yahoo.de>
-Date: Mon, 13 Jan 2020 14:58:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <9457db14-4084-c0dd-5c89-821b35c3db66@yahoo.de>
-Content-Language: en-US
-X-Mailer: WebService/1.1.14873 hermes Apache-HttpAsyncClient/4.1.4
- (Java/1.8.0_181)
-Subject: Re: [alsa-devel] USB Audio Interface / Denon MC7000 and MC8000
-	controller
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67120F800E9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 08:44:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67120F800E9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 9B5D4AC6E;
+ Tue, 14 Jan 2020 07:44:23 +0000 (UTC)
+Date: Tue, 14 Jan 2020 08:44:22 +0100
+Message-ID: <s5htv4yfpnt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jeff Chang <richtek.jeff.chang@gmail.com>
+In-Reply-To: <1578968526-13191-1-git-send-email-richtek.jeff.chang@gmail.com>
+References: <1578968526-13191-1-git-send-email-richtek.jeff.chang@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, jeff_chang@richtek.com, broonie@kernel.org,
+ matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH v6] ASoC: Add MediaTek MT6660 Speaker Amp
+	Driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,47 +64,204 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGVsbG8gZGVhciBBTFNBIGRldmVsb3BlcnMgLSBpcyB0aGVyZSBhbnkgY2hhbmNlIHRvIGdldCB0
-aGUgRGVub24gTUM3MDAwIAphbmQgTUM4MDAwIFVTQiBBdWRpbyBkZXZpY2VzIHN1cHBvcnRlZD8g
-U2VlIHByZXZpb3VzIG1lc3NhZ2UgZm9yIGRldGFpbHMuCgpUaGFua3MgYSBsb3QKVG9iaWFzCgoK
-CkFtIDE0LjEyLjE5IHVtIDA5OjI0IHNjaHJpZWIgVG9iaWFzOgo+IEhlbGxvIGRlYXIgQUxTQSBk
-ZXZlbG9wZXJzLgo+Cj4gSSBoYXZlIHB1cmNoYXNlZCBhIE1DNzAwMCBjb250cm9sbGVyIGluIG9y
-ZGVyIHRvIGNvbnRyb2wgTUlYWFggb24gCj4gVWJ1bnR1IDE2LjA0LiBBY2NvcmRpbmcgdG8gdGhl
-IERlbm9uIHNwZWNpZmljYXRpb24gdGhlIGNvbnRyb2xsZXIgCj4gc2hvdWxkIGhhdmUgYmVlbiBj
-bGFzcyBjb21wbGlhbnQgYnV0IHRoZXJlIGlzIGFuIGlzc3VlIHdpdGggdGhlIEF1ZGlvIAo+IGlu
-dGVyZmFjZSB0byB3b3JrIHByb3Blcmx5IGdpdmluZyBmb2xsb3dpbmcgbWVzc2FnZSAuLi4KPgo+
-ICQgZG1lc2cKPiAuLi4KPiB8W8KgIMKgNzQuNTIyODMxXSB1c2IgMS0xLjM6IG5ldyBoaWdoLXNw
-ZWVkIFVTQiBkZXZpY2UgbnVtYmVyIDYgdXNpbmcgCj4geGhjaV9oY2QKPiBbwqAgwqA3NC42MjM3
-ODRdIHVzYiAxLTEuMzogTmV3IFVTQiBkZXZpY2UgZm91bmQsIGlkVmVuZG9yPTE1ZTQsIAo+IGlk
-UHJvZHVjdD04MDA0Cj4gW8KgIMKgNzQuNjIzNzg5XSB1c2IgMS0xLjM6IE5ldyBVU0IgZGV2aWNl
-IHN0cmluZ3M6IE1mcj0xLCBQcm9kdWN0PTIsIAo+IFNlcmlhbE51bWJlcj0zCj4gW8KgIMKgNzQu
-NjIzNzkzXSB1c2IgMS0xLjM6IFByb2R1Y3Q6IERFTk9OIERKIE1DNzAwMAo+IFvCoCDCoDc0LjYy
-Mzc5Nl0gdXNiIDEtMS4zOiBNYW51ZmFjdHVyZXI6IERFTk9OIERKCj4gW8KgIMKgNzQuNjIzNzk4
-XSB1c2IgMS0xLjM6IFNlcmlhbE51bWJlcjogMjAxNjAzCj4gW8KgIMKgNzQuNjI1MTM0XSB1c2Ig
-MS0xLjM6IGNsb2NrIHNvdXJjZSA2NSBpcyBub3QgdmFsaWQsIGNhbm5vdCB1c2UKPgo+ICJ8fHxj
-bG9jayBzb3VyY2UgNjUgaXMgbm90IHZhbGlkLCBjYW5ub3QgdXNlIiBpcyByZXBlYXRlZCB1bmNv
-dW50YWJsZSAKPiB0aW1lcyB0aGVuCj4KPgo+IHxJIGZvdW5kIGEgZGlzY3Vzc2lvbiBoZXJlIGZv
-ciB0aGUgTUM4MDAwIEF1ZGlvIGludGVyZmFjZSB3aGljaCB3YXMgCj4gbm90IHdvcmtpbmcgYW5k
-IHNob3dpbmcgdGhlIHNhbWUgZXJyb3IgbWVzc2FnZToKPgo+IGh0dHBzOi8vYWxzYS11c2VyLm5h
-cmtpdmUuY29tLzJ0REFPODdmL3Ryb3VibGVzaG9vdGluZy1uZXctdXNiLWF1ZGlvLWRldmljZSNw
-b3N0OCAKPgo+Cj4gVGhlIHNvbHV0aW9uIHdhcyB0byBjaGFuZ2Ugc291bmQvdXNiL2Nsb2NrLmMg
-YW5kIHJlY29tcGlsZSB0aGUga2VybmVsLgo+IFRoaXMgaXMgbm90IHByYWN0aWNhbCBmb3IgZGFp
-bHkgdXNlIGNhc2Ugc28gSSB3b3VsZCBsaWtlIHRvIGFzayBpZiB0aGUgCj4gQUxTQSB0ZWFtIGNv
-dWxkIHBvc3NpYmx5IGZpbmQgYSBwZXJtYW5lbnQgZml4IGZvciBvcmRpbmFyeSB1c2Vycy4KPgo+
-IFRvIGdldCBteSBvdXRwdXRzIGZvcgo+Cj4gYXBsYXkgLWwKPiBhcGxheSAtTAo+IHx8fGFwbGF5
-IC1EIHBsdWdodzpDQVJEPU1DNzAwMCxERVY9MCBHcmltbWFsZGlrYS1NYWtlQmVsaWV2ZS53YXYK
-PiB8bHN1c2IgLXYKPiBtaXh4eCAtLWNvbnRyb2xsZXJEZWJ1Z3x8Cj4gSmFja1NlcnZlciBlcnJv
-ciBtZXNzYWdlfAo+Cj4geW91IG1heSBoYXZlIGEgbG9vayBhdCB0aGUgTWl4eHggQ29tbXVuaXR5
-IEZvcnVtcyBoZXJlKGp1c3Qgb24gcGFnZSwgCj4geW91IGRvbid0IG5lZWQgdG8gZmluZCBhbmQg
-cmVhZCBvbiBtdWx0aXBsZSBwYWdlcykKPgo+IGh0dHBzOi8vd3d3Lm1peHh4Lm9yZy9mb3J1bXMv
-dmlld3RvcGljLnBocD9mPTcmdD0xMjk2MiZzdGFydD0xMAo+Cj4gSWYgeW91IG5lZWQgYW55IG1v
-cmUgaW5mb3JtYXRpb24gdGhlbiBwbGVhc2UgbGV0IG1lIGtub3cuCj4KPiBUaGFua3MgYSBsb3Qg
-Zm9yIHlvdXIgc3VwcG9ydCBvbiB0aGlzIG1hdHRlci4KPgo+IENoZWVycyEKPiBPc1oKPiB8fAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, 14 Jan 2020 03:22:06 +0100,
+Jeff Chang wrote:
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index 229cc89..f135fbb 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -1465,6 +1466,16 @@ config SND_SOC_MT6358
+>  	  Enable support for the platform which uses MT6358 as
+>  	  external codec device.
+>  
+> +config SND_SOC_MT6660
+> +	tristate "Mediatek MT6660 Speaker Amplifier"
+> +	depends on I2C
+> +	help
+> +	  MediaTek MT6660 is a smart power amplifier which contain
+> +	  speaker protection, multi-band DRC, equalizer functions.
+> +	  Select N if you don't have MT6660 on board.
+> +	  Select M to build this as module.
+> +
+> +
+
+One blank line too much here.
+
+> --- /dev/null
+> +++ b/sound/soc/codecs/mt6660.c
+> @@ -0,0 +1,533 @@
+> +// SPDX-License-Identifier: GPL-2.0 //
+> +
+> +// Copyright (c) 2019 MediaTek Inc.
+> +
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include <linux/version.h>
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/delay.h>
+> +#include <sound/soc.h>
+> +#include <sound/tlv.h>
+> +#include <sound/pcm_params.h>
+> +#include <linux/debugfs.h>
+
+Move linux/*.h above sound/*.h inclusion.
+
+> +
+> +#include "mt6660.h"
+> +
+> +#pragma pack(push, 1)
+
+Actually packing makes little sense for those use cases.
+As I mentioned earlier, packing is useful only for either saving some
+memory (e.g. for a large array) or a strict size definition like ABI.
+
+> +struct codec_reg_val {
+> +	u32 addr;
+> +	u32 mask;
+> +	u32 data;
+> +};
+
+Is this struct used anywhere?  If not, kill it.
+
+> +static struct regmap_config mt6660_regmap_config = {
+
+This can be const.
+
+> +static int mt6660_codec_dac_event(struct snd_soc_dapm_widget *w,
+> +	struct snd_kcontrol *kcontrol, int event)
+> +{
+> +
+
+A superfluous blank line.
+
+> +static int mt6660_component_get_volsw(struct snd_kcontrol *kcontrol,
+> +				  struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_kcontrol_component(kcontrol);
+> +	struct mt6660_chip *chip = (struct mt6660_chip *)
+> +		snd_soc_component_get_drvdata(component);
+> +	int ret = -EINVAL;
+> +
+> +	if (!strcmp(kcontrol->id.name, "Chip Rev")) {
+> +		ucontrol->value.integer.value[0] = chip->chip_rev & 0x0f;
+> +		ret = 0;
+> +	}
+> +	return ret;
+
+So, "T0 SEL" control gets always an error when reading?
+Then can't we pass simply NULL for get ops instead?
+
+> +static int _mt6660_chip_power_on(struct mt6660_chip *chip, int on_off)
+> +{
+> +	u8 reg_data;
+> +	int ret;
+> +
+> +	ret = i2c_smbus_read_byte_data(chip->i2c, MT6660_REG_SYSTEM_CTRL);
+> +	if (ret < 0)
+> +		return ret;
+> +	reg_data = (u8)ret;
+> +	if (on_off)
+> +		reg_data &= (~0x01);
+> +	else
+> +		reg_data |= 0x01;
+> +	return regmap_write(chip->regmap, MT6660_REG_SYSTEM_CTRL, reg_data);
+
+Hm, this looks like an open-code of forced update bits via regmap.
+But interestingly there is no corresponding standard helper for that.
+Essentially it should be regmap_update_bits_base() with force=1.
+
+Mark?
+
+> +static int mt6660_component_aif_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
+> +{
+> +	int word_len = params_physical_width(hw_params);
+> +	int aud_bit = params_width(hw_params);
+....
+> +	switch (aud_bit) {
+> +	case 16:
+> +		reg_data = 3;
+> +		break;
+> +	case 18:
+> +		reg_data = 2;
+> +		break;
+> +	case 20:
+> +		reg_data = 1;
+> +		break;
+> +	case 24:
+> +	case 32:
+> +		reg_data = 0;
+> +		break;
+
+So here both 24 and 32 bits data are handled equally, and...
+
+....
+> +	ret = snd_soc_component_update_bits(dai->component,
+> +		MT6660_REG_TDM_CFG3, 0x3f0, word_len << 4);
+
+... word_len is same for both S32 and S24 formats, so there can be no
+difference between S24 and S32 format handling in the code.
+Meanwhile, the supported formats are:
+
+> +#define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
+> +			SNDRV_PCM_FMTBIT_U16_LE | \
+> +			SNDRV_PCM_FMTBIT_S24_LE | \
+> +			SNDRV_PCM_FMTBIT_U24_LE | \
+> +			SNDRV_PCM_FMTBIT_S32_LE | \
+> +			SNDRV_PCM_FMTBIT_U32_LE)
+
+Are you sure that S24_* formats really work properly?
+
+Also, the code has no check / setup of the format signedness.
+Do unsigned formats (U16, U24, etc) really work as expected, too?
+
+> +static inline int _mt6660_chip_id_check(struct mt6660_chip *chip)
+
+Drop unnecessary inline (here and other places).
+Compiler optimizes well by itself.
+
+> +static inline int _mt6660_chip_sw_reset(struct mt6660_chip *chip)
+> +{
+> +	int ret;
+> +
+> +	/* turn on main pll first, then trigger reset */
+> +	ret = regmap_write(chip->regmap, 0x03, 0x00);
+
+It's MT6660_REG_SYSTEM_CTRL, right?
+
+> +	if (ret < 0)
+> +		return ret;
+> +	ret = regmap_write(chip->regmap, MT6660_REG_SYSTEM_CTRL, 0x80);
+> +	if (ret < 0)
+> +		return ret;
+> +	msleep(30);
+> +	return 0;
+> +}
+> +
+> +static inline int _mt6660_read_chip_revision(struct mt6660_chip *chip)
+> +{
+> +	u8 reg_data[2];
+> +	int ret;
+> +
+> +	ret = i2c_smbus_read_i2c_block_data(
+> +		chip->i2c, MT6660_REG_DEVID, 2, reg_data);
+
+Why avoiding regmap here?  This and chip_id_check() use the raw access
+by some reason...
+
+
+thanks,
+
+Takashi
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
