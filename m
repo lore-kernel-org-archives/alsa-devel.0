@@ -2,59 +2,54 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5731CC33CB2
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 793F0C33CB2
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D596024670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D596024670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 079EC24670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 079EC24670
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E07CA243F;
-	Mon, 13 Jan 2020 22:09:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E07CA243F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E07EB297B;
+	Tue, 14 Jan 2020 02:39:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E07EB297B
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD58EF802C3;
-	Mon, 13 Jan 2020 22:05:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62C3AF802FF;
+	Tue, 14 Jan 2020 02:32:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A11D6F80271; Mon, 13 Jan 2020 22:04:59 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACF88F80272
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACF88F80272
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112681"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:46 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:19 -0600
-Message-Id: <20200113210428.27457-10-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 09/18] ASoC: Intel: kbl_rt5660: rename shadowed
-	variable
+ id EAC77F802FF; Tue, 14 Jan 2020 02:32:39 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id CF64EF802E8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:32:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF64EF802E8
+Date: 14 Jan 2020 10:32:33 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36372158"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 14 Jan 2020 10:32:33 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A4B774148474;
+ Tue, 14 Jan 2020 10:32:33 +0900 (JST)
+Message-ID: <87zheqg6vi.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 11/16] ASoC: dwc: dwc-i2s: move
+	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,39 +67,106 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix cppcheck warning:
 
-[sound/soc/intel/boards/kbl_rt5660.c:282] ->
-[sound/soc/intel/boards/kbl_rt5660.c:141]: (style) Local variable
-'channels' shadows outer variable
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+There is no big difference at implementation for .suspend/.resume
+between DAI driver and Component driver.
+But because some driver is using DAI version, thus ALSA SoC needs
+to keep supporting it, hence, framework becoming verbose.
+If we can switch all DAI driver .suspend/.resume to Component driver,
+we can remove verbose code from ALSA SoC.
+
+Driver is getting its private data via dai->dev.
+But dai->dev and component->dev are same dev, thus, we can convert
+these. For same reason, we can convert dai->active to
+component->active if necessary.
+
+This patch moves DAI driver .suspend/.resume to Component driver
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/intel/boards/kbl_rt5660.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/dwc/dwc-i2s.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5660.c b/sound/soc/intel/boards/kbl_rt5660.c
-index 74fe1f3a5479..e23dea9ab79a 100644
---- a/sound/soc/intel/boards/kbl_rt5660.c
-+++ b/sound/soc/intel/boards/kbl_rt5660.c
-@@ -138,13 +138,13 @@ static int kabylake_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 65112b9..7eeca21 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -390,10 +390,6 @@ static const struct snd_soc_dai_ops dw_i2s_dai_ops = {
+ 	.set_fmt	= dw_i2s_set_fmt,
+ };
+ 
+-static const struct snd_soc_component_driver dw_i2s_component = {
+-	.name		= "dw-i2s",
+-};
+-
+ #ifdef CONFIG_PM
+ static int dw_i2s_runtime_suspend(struct device *dev)
  {
- 	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+@@ -413,26 +409,30 @@ static int dw_i2s_runtime_resume(struct device *dev)
+ 	return 0;
+ }
  
- 	/* The ADSP will convert the FE rate to 48k, stereo */
- 	rate->min = rate->max = 48000;
--	channels->min = channels->max = DUAL_CHANNEL;
-+	chan->min = chan->max = DUAL_CHANNEL;
+-static int dw_i2s_suspend(struct snd_soc_dai *dai)
++static int dw_i2s_suspend(struct snd_soc_component *component)
+ {
+-	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
++	struct dw_i2s_dev *dev = snd_soc_component_get_drvdata(component);
  
- 	/* set SSP0 to 24 bit */
- 	snd_mask_none(fmt);
+ 	if (dev->capability & DW_I2S_MASTER)
+ 		clk_disable(dev->clk);
+ 	return 0;
+ }
+ 
+-static int dw_i2s_resume(struct snd_soc_dai *dai)
++static int dw_i2s_resume(struct snd_soc_component *component)
+ {
+-	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
++	struct dw_i2s_dev *dev = snd_soc_component_get_drvdata(component);
++	struct snd_soc_dai *dai;
+ 
+ 	if (dev->capability & DW_I2S_MASTER)
+ 		clk_enable(dev->clk);
+ 
+-	if (dai->playback_active)
+-		dw_i2s_config(dev, SNDRV_PCM_STREAM_PLAYBACK);
+-	if (dai->capture_active)
+-		dw_i2s_config(dev, SNDRV_PCM_STREAM_CAPTURE);
++	for_each_component_dais(component, dai) {
++		if (dai->playback_active)
++			dw_i2s_config(dev, SNDRV_PCM_STREAM_PLAYBACK);
++		if (dai->capture_active)
++			dw_i2s_config(dev, SNDRV_PCM_STREAM_CAPTURE);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -441,6 +441,12 @@ static int dw_i2s_resume(struct snd_soc_dai *dai)
+ #define dw_i2s_resume	NULL
+ #endif
+ 
++static const struct snd_soc_component_driver dw_i2s_component = {
++	.name		= "dw-i2s",
++	.suspend	= dw_i2s_suspend,
++	.resume		= dw_i2s_resume,
++};
++
+ /*
+  * The following tables allow a direct lookup of various parameters
+  * defined in the I2S block's configuration in terms of sound system
+@@ -629,8 +635,6 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	dw_i2s_dai->ops = &dw_i2s_dai_ops;
+-	dw_i2s_dai->suspend = dw_i2s_suspend;
+-	dw_i2s_dai->resume = dw_i2s_resume;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	dev->i2s_base = devm_ioremap_resource(&pdev->dev, res);
 -- 
-2.20.1
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
