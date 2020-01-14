@@ -4,80 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5AF5C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:11:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFD1CC3F68F
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:12:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 675562187F
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:11:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5C66C2187F
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:12:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r9GiHXyS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="OHnhLjdj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 675562187F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="feXyWXsK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="a27QKhi7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C66C2187F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3BA1181F;
-	Tue, 14 Jan 2020 17:11:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3BA1181F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38A701837;
+	Tue, 14 Jan 2020 17:11:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38A701837
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579018316;
-	bh=c07fM4yNTXT64MDKLwMFKIUh2JWBYqpUYyRLu2RMbPM=;
+	s=default; t=1579018358;
+	bh=DEr8euIVmf60gTwnslCMv6CSWZzBTTWHB+2SPx3X6iw=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=r9GiHXySHU7Zg+12pgBJQp1V/2XjvFxgfyFAnYUDmEVToCgoi0AVoDoYnL1rqOU72
-	 oq4JDegXjqDreGSE9ZDfkFnKJlmp6Dt/qvhi5osm5TxPnw4+bAdOPwOkHdpf2rWQ65
-	 axbtqJbYdRMdMbIuvUPUv7mU1movag31tl3a+RLU=
+	b=feXyWXsKUjPE74mjn5a7cUmsJ0kT5UswyK1WiogAVwFwGDJlpe3IUcJrI2VIdQnS2
+	 7icNB7XCYdDv9TOrwTHhOy2++Wc11HeWVT7/tN6k1lr+U2T/8F5i8bFTk314yPT9qZ
+	 mKjLufxsM7XDqH/1UDVH7FrshP2zhpJPOeyv2FWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F490F8021E;
-	Tue, 14 Jan 2020 17:09:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9424F802D2;
+	Tue, 14 Jan 2020 17:09:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D19FF802C3; Tue, 14 Jan 2020 17:09:24 +0100 (CET)
+ id 778EBF802C2; Tue, 14 Jan 2020 17:09:25 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4024EF8014D
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4024EF8014D
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB434F8021E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB434F8021E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="OHnhLjdj"
+ header.b="a27QKhi7"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Pq8REMESzpH6q41kFJ7Xdz/mnGbbiWifWQ5pOJY+B+Q=; b=OHnhLjdjRfDE
- kHG9H27H5hJUUcJEp0KyT9sVJyzX6cjHyOJWj4gQGxmIj4whuU4H4uDSeymP86e03vIWog6BZzEaU
- JgmQDDltYrFCLUFhX3chRHWM2fDzk+uSgUkfTIDNTxDCD3qz5p1m6f5NVvHJURx4hjjC3/Kh0W5Kf
- on50A=;
+ List-Archive; bh=RTiqxE5qKQHAKRtrjE+tg0J0qXOkdRkCcDly6kU+EFc=; b=a27QKhi73NVB
+ p3y11yLHoeFltrWgesTRhf9ohltesyHEbaMOP8BfbMkXBODY+iAdnfTOl8PT2NMwGjSf6k6QdGb9n
+ llIXb1qyp3EBvi9qdibVR6ComTqUVXqwgdPoen5ERKnyKYlNsfJAn1Zp1ELVKrwhnd/4AiZWFfJQn
+ bZxEo=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1irOkb-0001Ul-Ic; Tue, 14 Jan 2020 16:09:05 +0000
+ id 1irOke-0001VC-5t; Tue, 14 Jan 2020 16:09:08 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 40A1AD02C7B; Tue, 14 Jan 2020 16:09:05 +0000 (GMT)
+ id CF517D02C7B; Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <b9352edb014c1ee8530c0fd8829c2b044b3da649.1575452454.git.shengjiu.wang@nxp.com>
-Message-Id: <applied-b9352edb014c1ee8530c0fd8829c2b044b3da649.1575452454.git.shengjiu.wang@nxp.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200113210428.27457-19-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200113210428.27457-19-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Date: Tue, 14 Jan 2020 16:09:05 +0000 (GMT)
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, timur@kernel.org, Rob Herring <robh@kernel.org>,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
- robh+dt@kernel.org, linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com,
- Mark Brown <broonie@kernel.org>, Xiubo.Lee@gmail.com, festevam@gmail.com
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: fsl_asrc: add compatible
-	string for imx8qm & imx8qxp" to the asoc tree
+Date: Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: Intel: bytcr_rt5651: remove unused
+	variable" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,14 +87,16 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5545873983752377362=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+--===============5545873983752377362==
+Content-Type: text/plain
+
 The patch
 
-   ASoC: dt-bindings: fsl_asrc: add compatible string for imx8qm & imx8qxp
+   ASoC: Intel: bytcr_rt5651: remove unused variable
 
 has been applied to the asoc tree at
 
@@ -123,61 +121,59 @@ to this mail.
 Thanks,
 Mark
 
-From 8441f87eadf6d6bba542e7a5bf3888595248d888 Mon Sep 17 00:00:00 2001
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-Date: Wed, 4 Dec 2019 20:00:18 +0800
-Subject: [PATCH] ASoC: dt-bindings: fsl_asrc: add compatible string for imx8qm
- & imx8qxp
+From c1b34230a37d6c167bee0fc2c7204871cf5e875f Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 13 Jan 2020 15:04:28 -0600
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: remove unused variable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Add compatible string "fsl,imx8qm-asrc" for imx8qm platform,
-"fsl,imx8qxp-asrc" for imx8qxp platform.
+Fix GCC warning with W=1
 
-There are two asrc modules in imx8qm & imx8qxp, the clock mapping is
-different for each other, so add new property "fsl,asrc-clk-map"
-to distinguish them.
+sound/soc/intel//boards/bytcr_rt5651.c:659:40: warning:
+‘byt_rt5651_dai_params’ defined but not used
+[-Wunused-const-variable=]
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/b9352edb014c1ee8530c0fd8829c2b044b3da649.1575452454.git.shengjiu.wang@nxp.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200113210428.27457-19-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/fsl,asrc.txt | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-index 1d4d9f938689..cb9a25165503 100644
---- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-@@ -8,7 +8,12 @@ three substreams within totally 10 channels.
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index c0d322a859f7..3bb2732a9f7e 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -656,14 +656,6 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 	return 0;
+ }
  
- Required properties:
- 
--  - compatible		: Contains "fsl,imx35-asrc" or "fsl,imx53-asrc".
-+  - compatible		: Compatible list, should contain one of the following
-+			  compatibles:
-+			  "fsl,imx35-asrc",
-+			  "fsl,imx53-asrc",
-+			  "fsl,imx8qm-asrc",
-+			  "fsl,imx8qxp-asrc",
- 
-   - reg			: Offset and length of the register set for the device.
- 
-@@ -35,6 +40,11 @@ Required properties:
- 
-    - fsl,asrc-width	: Defines a mutual sample width used by DPCM Back Ends.
- 
-+   - fsl,asrc-clk-map   : Defines clock map used in driver. which is required
-+			  by imx8qm/imx8qxp platform
-+			  <0> - select the map for asrc0 in imx8qm/imx8qxp
-+			  <1> - select the map for asrc1 in imx8qm/imx8qxp
-+
- Optional properties:
- 
-    - big-endian		: If this property is absent, the little endian mode
+-static const struct snd_soc_pcm_stream byt_rt5651_dai_params = {
+-	.formats = SNDRV_PCM_FMTBIT_S24_LE,
+-	.rate_min = 48000,
+-	.rate_max = 48000,
+-	.channels_min = 2,
+-	.channels_max = 2,
+-};
+-
+ static int byt_rt5651_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			    struct snd_pcm_hw_params *params)
+ {
 -- 
 2.20.1
+
+
+--===============5545873983752377362==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5545873983752377362==--
