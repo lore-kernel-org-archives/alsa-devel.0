@@ -2,73 +2,86 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99C34C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 17:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A86F1C33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 17:53:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3138B24656
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 17:51:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 37FF524656
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 17:53:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sfKzKkPB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3138B24656
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B9F8QWnb";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gateworks-com.20150623.gappssmtp.com header.i=@gateworks-com.20150623.gappssmtp.com header.b="DD+Ohg+5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37FF524656
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gateworks.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75DF9184D;
-	Tue, 14 Jan 2020 18:51:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75DF9184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 842C917E5;
+	Tue, 14 Jan 2020 18:52:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 842C917E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579024310;
-	bh=Ji9UJLEN6KApxu/eoSOfFx0JfcIRO5ZqPU0FpNtWzC8=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sfKzKkPBwD5/Z/oVk21tntAgcglSwjoYFToO9w6+j4MTmhvfCUy3kC2PiEIhNn77v
-	 I1D5E8/qCKFTUhFGsEYS9wMLoewo0QnGcuBrmiwdikr1IWY2o3zeX652fwyfllQYLL
-	 vr8mtYr5de7hhT7cObdzb0PMgdLKg9ZHgpDNFf9o=
+	s=default; t=1579024403;
+	bh=zdyO40yhXoE/V8VAqqR4iHDvbk7BKUiLAfm87zf24Ig=;
+	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=B9F8QWnb5yDr/FmXjMD6P+UY/eJ9zAVxSuyjsEAejJWGXgagi7j8ufzl2l3Xj5jdU
+	 LVtF8HtHM7j9voXUi0XcAC7OxcHqanO3kxlRiDaiHyeXPV/4Zvr4f8tNwjVgpVqrpP
+	 NXeX9/ioieZFRAxddcKcmTHorTrfxA8dYsUJz/LI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B1C9F80274;
-	Tue, 14 Jan 2020 18:48:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12342F8014D;
+	Tue, 14 Jan 2020 18:52:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76C8DF8014E; Tue, 14 Jan 2020 18:48:34 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 41AAEF8014E; Tue, 14 Jan 2020 18:52:30 +0100 (CET)
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com
+ [IPv6:2607:f8b0:4864:20::329])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C239F8014D
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 18:48:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C239F8014D
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 14 Jan 2020 09:48:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,319,1574150400"; d="scan'208";a="225285571"
-Received: from snathamg-mobl.amr.corp.intel.com (HELO [10.252.136.159])
- ([10.252.136.159])
- by orsmga003.jf.intel.com with ESMTP; 14 Jan 2020 09:48:26 -0800
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200113114054.9716-1-cezary.rojewski@intel.com>
- <f8e6c1b8-5508-fc5e-57ce-fc2c54e23414@linux.intel.com>
- <6bf3ef29-aed8-d69d-8bb6-9e81253e5547@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <2870108c-0484-ce5e-f04c-ce353f939e98@linux.intel.com>
-Date: Tue, 14 Jan 2020 10:13:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECD57F80121
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 18:52:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECD57F80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gateworks-com.20150623.gappssmtp.com
+ header.i=@gateworks-com.20150623.gappssmtp.com header.b="DD+Ohg+5"
+Received: by mail-ot1-x329.google.com with SMTP id r27so13457055otc.8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 09:52:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=i3LxDiMV6aun6yiL6tjUXyDycZcUqNGEQFgaII9F85g=;
+ b=DD+Ohg+5kQOqsUeljospO9RVb+EX2MfwPFZhEtnIb08Ai4MethsvH5oXew93vd3xmk
+ BUYhPH08f6D6gmYKIW0H6+vKQO7FkOSU2yNg9VMQ7uoKwEWzL0/pbfR3wz+xDEcNe/8q
+ gEJyrwBUutf3G/XQb/vr5of66c7TGc22ChAV/aSJyVDhK2EWRP846EEL7kUJz7A82urE
+ gyk9QtdyblyS3CyubnPtcLo9R1gtQLekva2hijsVPe8AU3qumWOUXqr4Dvi20hTFEXOT
+ cApTYPKc/kCrmtf+Gg8RonkXC1r6gVbk2unB3XN5MtPLe4pXS+9Tw6HvJHviqkbGhvcq
+ HJKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=i3LxDiMV6aun6yiL6tjUXyDycZcUqNGEQFgaII9F85g=;
+ b=PX1zsRv5mI02rFc3nnoahe96X9dKOhhDnZ/1n1qHOUvDEcvxYYc7TC9sZvVuBIXzt3
+ 0NjlqDdwZMTiDIMWrmd+t6Lu1pqoeAe93BgUdhhvb0s+Sym3W4ehMXND120VywzxOlRi
+ Fj03EkD96GY2DLUfuwN8hhB+g2OLJbSoTvx/mNx0D0YjWZbx9Eza2d/tJSWdDkjntaFM
+ U3pfqORew7EcuCrt/dh3n1ZtUzTBS51BMWQM4z5pmU8JKkoowRXiUfE5z+Ek3eDeLEG/
+ kpLLgaG+bDhhznHIYh5M0ApA68uLEP4fyqMYcoDedO2nEjoJAyuW6+TT2s2+nLWvK+MA
+ LAEg==
+X-Gm-Message-State: APjAAAUh0ZDf5kwrrI2EqZC+22cuFrmPaeEnQl03VwgS1WbwVpUcC3/W
+ TzuAz2FesGJvaPYy+3hsalCP3AbJ8cB7vejQKoByV8nj
+X-Google-Smtp-Source: APXvYqx7CNFnCFuqK8gtbaEReOf7UoMLQ/rZLr4uJ9fVfXIYKprNB7sQjmz2QKK7iIV7IfJMhcn/PO+U09OxQwjL8hs=
+X-Received: by 2002:a9d:32c7:: with SMTP id u65mr18199936otb.224.1579024343245; 
+ Tue, 14 Jan 2020 09:52:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <6bf3ef29-aed8-d69d-8bb6-9e81253e5547@intel.com>
-Content-Language: en-US
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
-Subject: Re: [alsa-devel] [PATCH] ASoC: SOF: Intel: hda: Fix SKL dai count
+From: Tim Harvey <tharvey@gateworks.com>
+Date: Tue, 14 Jan 2020 09:52:12 -0800
+Message-ID: <CAJ+vNU2ArU4mo-9_SE_x-_AfdTNKvun=DpfxRsKRv20CaEKqSA@mail.gmail.com>
+To: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] how to use DPCM to alter audio path between headphones
+	and speaker
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,51 +94,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Greetings,
 
+I'm working with a board that has a TI TLV320AIC3105 codec connected
+to an IMX6 SSI with a headphone jack and a TS3A227E headphone detect
+chip (HPROUT/HPLOUT), mono speaker amp output (RIGHT_LOP/RIGHT_LOM),
+and mic in (MIC1L). It seems that Dynamic PCM allows for the automatic
+routing of audio to change between headphone out and speaker out
+depending on jack insertion/removal event but I'm not clear how to
+configure that. Can this be done via simple-audio-card bindings or
+does it require a modified machine driver?
 
-On 1/14/20 5:18 AM, Cezary Rojewski wrote:
-> On 2020-01-13 16:30, Pierre-Louis Bossart wrote:
->> On 1/13/20 5:40 AM, Cezary Rojewski wrote:
->>> With fourth pin added for iDisp for skl_dai, update SOF_SKL_DAI_NUM to
->>> account for the change. Without this, dais from the bottom of the list
->>> are skipped. In current state that's the case for 'Alt Analog CPU DAI'.
->>
->> Can you clarify if you are fixing an issue on TGL - which isn't 
->> supported in the mainline? Or fixing an issue with SKL w/ HDaudio 
->> support?
-> 
-> This is not strictly connected to TGL but to any platform making use of 
-> 'skl_dai[]' within /sof/intel. Encountered this issue when playing with 
-> probes - my BEs added at the bottom of the list were omitted during 
-> component registration. Once debug flags in asoc were enabled, 
-> root-cause presented itself clearly.
+Any pointers or references are greatly appreciated!
 
-ok.
+Best Regards,
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> 
->> FWIW, I couldn't make HDaudio codec support work on KBL, with the 
->> changes in ASoC core, the HDaudio support is broken with the SKL 
->> driver (or depends on an unreleased topology). See traces at:
->>
->> https://github.com/thesofproject/linux/pull/1667/commits/ae584cf633f232d9cf828bb599a1b620cd0b4fe0 
->>
-> 
-> We do have working cAVS 1.5 machines (e.g.: SKL, KBL, KBL-R, ABL..) with 
-> HDA on our end.
-> Will checkout the existing "vanilla skylake" to filter the least amount 
-> of changes needed to enable it. However, this can lead to topology 
-> binary needed to be updated.
-
-yes, that's the problem I faced, and since I don't have a clue how to 
-change the topology on SKL I commented out the hard-coded parts in the 
-machine driver.
+Tim
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
