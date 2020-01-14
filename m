@@ -4,89 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93167C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0A1C33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2075A24670
+	by mail.kernel.org (Postfix) with ESMTPS id BE62B2467A
 	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="br/eDHQd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2075A24670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="XIEG32IJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE62B2467A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85DFA17B1;
-	Mon, 13 Jan 2020 14:23:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85DFA17B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8838F2F75;
+	Tue, 14 Jan 2020 12:27:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8838F2F75
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B3D6F80228;
-	Mon, 13 Jan 2020 14:22:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26EE7F802C3;
+	Tue, 14 Jan 2020 12:23:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06460F801F7; Mon, 13 Jan 2020 14:22:10 +0100 (CET)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 82258F8027C; Tue, 14 Jan 2020 12:23:12 +0100 (CET)
+Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de
+ [IPv6:2a01:238:20a:202:5302::11])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8197F800B9
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 14:22:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8197F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83E84F8023E;
+ Tue, 14 Jan 2020 12:22:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83E84F8023E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="br/eDHQd"
-Received: by mail-wr1-x443.google.com with SMTP id t2so8571696wrr.1
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 05:22:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=D/zgSAoCVsSdiweHMVDrK8nA0R60nkQkJQGcdVDh1og=;
- b=br/eDHQd0x8llbigzrXZRlqJaZX4duJUbmWjYqwd6ceNQXZqaYjEKm1XaVvs2g21F8
- WGS6IDf2LUG3cUeTFs5gqTZJu7My373rI4HdsE8Tw8w+ok9gqdYL7plKzMDSEc8tfI0b
- j0VD3yzShNdDf5sdoGjSVMTWgT+9VXXybvYtqtwSghYdxtkeMiKsEMDNztVhmHDRft3w
- zBx1zXcFCjgcqSOC5aoAaGBkbfOQhRtDKKVM/D4x8tQFS3TtOTSeUwrt/I/WyKl7cDN6
- BgtKLNrfxZR+r5YhKHPIyzzQTyBCWNiEi0i9lQLio+4FSr3qcEnuH6Cx/n7rO8ElSGCe
- FRZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=D/zgSAoCVsSdiweHMVDrK8nA0R60nkQkJQGcdVDh1og=;
- b=lcpP4vGtc6uY1yNQYglDcikGlcdPnwiZHnLU+R1/Tbuh1RAweozFwfUU7kF5d6AbSG
- Haf3GhpWYz9YqYY/AnfqsbN6ULaDNAXFQgmFMgBcH/HB1mHkFM8FwXaAJVjDIcVZqiuQ
- EcI9gH4t3O2biXObkWgQyoUIaaUjOqTOKlBlZiJLABNpdFaVtJ3NlaHka5x8mkk+B2Te
- IvoJEXQiU2+M7y1n8oPQWnos7CCl3C+VYDMS6z/QhAKDaUxhIN1mUWDqf59DLMXWng5D
- znbsFXJPNuC0PRk78kl2Mjkc7RGQwp9vNXJZYoot5wswppV/09IBlbCK0J00z7HuDo4Q
- JAfA==
-X-Gm-Message-State: APjAAAW/wnsTCVE4fgpJPC63SATHsFetb4U2ad/yVhs2KBKgw1dnJI4n
- R6L9zH38yMVQg1BF+iGDigdzVA==
-X-Google-Smtp-Source: APXvYqzyzFsiGyOdKPbaEpxrkE10+1dd2DXNa3Y7sYoWXOI+M+TDGld2VQUrm5tt76IELexF439+dQ==
-X-Received: by 2002:a5d:4692:: with SMTP id u18mr18989285wrq.206.1578921726858; 
- Mon, 13 Jan 2020 05:22:06 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id u18sm14692987wrt.26.2020.01.13.05.22.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jan 2020 05:22:06 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org
-Date: Mon, 13 Jan 2020 13:21:52 +0000
-Message-Id: <20200113132153.27239-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200113132153.27239-1-srinivas.kandagatla@linaro.org>
-References: <20200113132153.27239-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="XIEG32IJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579000976;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+ X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+ bh=cO79n30r7dHzozUPgz++lM22L44zcrhWHZMtMwLAfLY=;
+ b=XIEG32IJ/muG2LlPwX14GeLZFJe48D143Bt39R43QodETmbJp2GXD9l8tcAkk+SzjF
+ Ta5uIC8+lwp2CqwI1PRKN+i1kdQ8sSEPSB5YN6GB+A0eZ2G6ycxGSLtkeGDWzD7FM5sb
+ 7L61p1AShonN+ueWY0Bk3N9vmabEWAHFV7bAgqB43CzgnPLW9PRjBQeIqJF02Lv3w8fy
+ UcXF1RlgqvUumOy7Luzq+TPA+sM8LBg2hIJCiP4wvK8QEjUwp3pCpA0EFaaTaxJk+cKs
+ axQR/sjC5CE3vbHYnIwCY7h92gRsGLU+Njra5U6P3i5Z/0ZVauplTcJuBQXnlvPAcCvy
+ aI8w==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7IOGU5qzCB3a93viaVr"
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
+ with ESMTPSA id h048a6w0EBMuULI
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Tue, 14 Jan 2020 12:22:56 +0100 (CET)
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Jaroslav Kysela <perex@perex.cz>
+Date: Tue, 14 Jan 2020 12:21:10 +0100
+Message-Id: <20200114112110.51983-8-stephan@gerhold.net>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200114112110.51983-1-stephan@gerhold.net>
+References: <20200114112110.51983-1-stephan@gerhold.net>
 MIME-Version: 1.0
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- linux-kernel@vger.kernel.org, spapothi@codeaurora.org,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] [PATCH v6 1/2] dt-bindings: soundwire: add bindings
-	for Qcom controller
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Stephan Gerhold <stephan@gerhold.net>
+Subject: [alsa-devel] [PATCH alsa-ucm-conf 7/7] codecs/msm8916-wcd: Add
+	ConflictingDevice for capture devices
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,194 +88,88 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds bindings for Qualcomm soundwire controller.
+At the moment, all capture devices are configured to go through DEC1,
+so there is no way to use more than one of the microphones at a time.
 
-Qualcomm SoundWire Master controller is present in most Qualcomm SoCs
-either integrated as part of WCD audio codecs via slimbus or
-as part of SOC I/O.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- .../bindings/soundwire/qcom,sdw.txt           | 167 ++++++++++++++++++
- 1 file changed, 167 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+ ucm2/codecs/msm8916-wcd/DigitalMic.conf   | 6 ++++++
+ ucm2/codecs/msm8916-wcd/HeadsetMic.conf   | 6 ++++++
+ ucm2/codecs/msm8916-wcd/PrimaryMic.conf   | 6 ++++++
+ ucm2/codecs/msm8916-wcd/SecondaryMic.conf | 6 ++++++
+ 4 files changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-new file mode 100644
-index 000000000000..436547f3b155
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
-@@ -0,0 +1,167 @@
-+Qualcomm SoundWire Controller Bindings
+diff --git a/ucm2/codecs/msm8916-wcd/DigitalMic.conf b/ucm2/codecs/msm8916-wcd/DigitalMic.conf
+index 35dfb1b..3446506 100644
+--- a/ucm2/codecs/msm8916-wcd/DigitalMic.conf
++++ b/ucm2/codecs/msm8916-wcd/DigitalMic.conf
+@@ -1,6 +1,12 @@
+ SectionDevice."DigitalMic" {
+ 	Comment "Digital Microphone"
+ 
++	ConflictingDevice [
++		"PrimaryMic"
++		"SecondaryMic"
++		"HeadsetMic"
++	]
 +
+ 	EnableSequence [
+ 		cset "name='DEC1 MUX' DMIC1"
+ 		cset "name='CIC1 MUX' DMIC"
+diff --git a/ucm2/codecs/msm8916-wcd/HeadsetMic.conf b/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
+index 538d895..2a96e49 100644
+--- a/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
++++ b/ucm2/codecs/msm8916-wcd/HeadsetMic.conf
+@@ -1,6 +1,12 @@
+ SectionDevice."HeadsetMic" {
+ 	Comment "Headset Microphone"
+ 
++	ConflictingDevice [
++		"PrimaryMic"
++		"SecondaryMic"
++		"DigitalMic"
++	]
 +
-+This binding describes the Qualcomm SoundWire Controller along with its
-+board specific bus parameters.
+ 	EnableSequence [
+ 		cset "name='DEC1 MUX' ADC2"
+ 		cset "name='CIC1 MUX' AMIC"
+diff --git a/ucm2/codecs/msm8916-wcd/PrimaryMic.conf b/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
+index 6998458..9d549ef 100644
+--- a/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
++++ b/ucm2/codecs/msm8916-wcd/PrimaryMic.conf
+@@ -1,6 +1,12 @@
+ SectionDevice."PrimaryMic" {
+ 	Comment "Primary Microphone"
+ 
++	ConflictingDevice [
++		"SecondaryMic"
++		"HeadsetMic"
++		"DigitalMic"
++	]
 +
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,soundwire-v<MAJOR>.<MINOR>.<STEP>",
-+		    Example:
-+			"qcom,soundwire-v1.3.0"
-+			"qcom,soundwire-v1.5.0"
-+			"qcom,soundwire-v1.6.0"
-+- reg:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: the base address and size of SoundWire controller
-+		    address space.
+ 	EnableSequence [
+ 		cset "name='DEC1 MUX' ADC1"
+ 		cset "name='CIC1 MUX' AMIC"
+diff --git a/ucm2/codecs/msm8916-wcd/SecondaryMic.conf b/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
+index fdc5df8..d81324c 100644
+--- a/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
++++ b/ucm2/codecs/msm8916-wcd/SecondaryMic.conf
+@@ -1,6 +1,12 @@
+ SectionDevice."SecondaryMic" {
+ 	Comment "Secondary Microphone"
+ 
++	ConflictingDevice [
++		"PrimaryMic"
++		"HeadsetMic"
++		"DigitalMic"
++	]
 +
-+- interrupts:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: should specify the SoundWire Controller IRQ
-+
-+- clock-names:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: should be "iface" for SoundWire Controller interface clock
-+
-+- clocks:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: should specify the SoundWire Controller interface clock
-+
-+- #sound-dai-cells:
-+	Usage: required
-+	Value type: <u32>
-+	Definition: must be 1 for digital audio interfaces on the controller.
-+
-+- qcom,dout-ports:
-+	Usage: required
-+	Value type: <u32>
-+	Definition: must be count of data out ports
-+
-+- qcom,din-ports:
-+	Usage: required
-+	Value type: <u32>
-+	Definition: must be count of data in ports
-+
-+- qcom,ports-offset1:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: should specify payload transport window offset1 of each
-+		    data port. Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-offset2:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: should specify payload transport window offset2 of each
-+		    data port. Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-sinterval-low:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: should be sample interval low of each data port.
-+		    Out ports followed by In ports. Used for Sample Interval
-+		    calculation.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-word-length:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: should be size of payload channel sample.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-block-pack-mode:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: should be 0 or 1 to indicate the block packing mode.
-+		    0 to indicate Blocks are per Channel
-+		    1 to indicate Blocks are per Port.
-+		    Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-block-group-count:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: should be in range 1 to 4 to indicate how many sample
-+		    intervals are combined into a payload.
-+		    Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-lane-control:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: should be in range 0 to 7 to identify which	data lane
-+		    the data port uses.
-+		    Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-hstart:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: should be number identifying lowerst numbered coloum in
-+		    SoundWire Frame, i.e. left edge of the Transport sub-frame
-+		    for each port. Values between 0 and 15 are valid.
-+		    Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,ports-hstop:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: should be number identifying highest numbered coloum in
-+		    SoundWire Frame, i.e. the right edge of the Transport
-+		    sub-frame for each port. Values between 0 and 15 are valid.
-+		    Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+- qcom,dports-type:
-+	Usage: optional
-+	Value type: <prop-encoded-array>
-+	Definition: should be one of the following types
-+		    0 for reduced port
-+		    1 for simple ports
-+		    2 for full port
-+		    Out ports followed by In ports.
-+		    More info in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+Note:
-+	More Information on detail of encoding of these fields can be
-+found in MIPI Alliance SoundWire 1.0 Specifications.
-+
-+= SoundWire devices
-+Each subnode of the bus represents SoundWire device attached to it.
-+The properties of these nodes are defined by the individual bindings.
-+
-+= EXAMPLE
-+The following example represents a SoundWire controller on DB845c board
-+which has controller integrated inside WCD934x codec on SDM845 SoC.
-+
-+soundwire: soundwire@c85 {
-+	compatible = "qcom,soundwire-v1.3.0";
-+	reg = <0xc85 0x20>;
-+	interrupts = <20 IRQ_TYPE_EDGE_RISING>;
-+	clocks = <&wcc>;
-+	clock-names = "iface";
-+	#sound-dai-cells = <1>;
-+	qcom,dports-type = <0>;
-+	qcom,dout-ports	= <6>;
-+	qcom,din-ports	= <2>;
-+	qcom,ports-sinterval-low = /bits/ 8  <0x07 0x1F 0x3F 0x7 0x1F 0x3F 0x0F 0x0F>;
-+	qcom,ports-offset1 = /bits/ 8 <0x01 0x02 0x0C 0x6 0x12 0x0D 0x07 0x0A >;
-+	qcom,ports-offset2 = /bits/ 8 <0x00 0x00 0x1F 0x00 0x00 0x1F 0x00 0x00>;
-+
-+	/* Left Speaker */
-+	left{
-+		....
-+	};
-+
-+	/* Right Speaker */
-+	right{
-+		....
-+	};
-+};
+ 	EnableSequence [
+ 		cset "name='DEC1 MUX' ADC2"
+ 		cset "name='CIC1 MUX' AMIC"
 -- 
-2.21.0
+2.24.1
 
 _______________________________________________
 Alsa-devel mailing list
