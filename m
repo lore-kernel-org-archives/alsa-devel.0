@@ -2,59 +2,43 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4260C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17C9AC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BD5724670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BD5724670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id CB40A24676
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:19:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB40A24676
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1D9824CD;
-	Mon, 13 Jan 2020 22:12:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1D9824CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6E112B17;
+	Tue, 14 Jan 2020 04:51:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6E112B17
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF8E9F802F9;
-	Mon, 13 Jan 2020 22:05:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29008F8014D;
+	Tue, 14 Jan 2020 04:51:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1BF8F802A0; Mon, 13 Jan 2020 22:05:05 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57CA6F8026F
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 22:04:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57CA6F8026F
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 13:04:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="213112683"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga007.jf.intel.com with ESMTP; 13 Jan 2020 13:04:48 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 15:04:21 -0600
-Message-Id: <20200113210428.27457-12-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
-References: <20200113210428.27457-1-pierre-louis.bossart@linux.intel.com>
+ id DBA18F8014E; Tue, 14 Jan 2020 04:51:21 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 48375F80121
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 04:51:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48375F80121
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 11/18] ASoC: Intel: kbl_rt5663_rt5514_max98927:
-	rename shadowed variable
+From: GitHub issues - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1578973876973015070-webhooks-bot@alsa-project.org>
+References: <1578973876973015070-webhooks-bot@alsa-project.org>
+Message-Id: <20200114035123.DBA18F8014E@alsa1.perex.cz>
+Date: Tue, 14 Jan 2020 04:51:21 +0100 (CET)
+Subject: [alsa-devel] MIDI 2.0 universal packet protocol
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,52 +56,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix cppcheck warning:
+alsa-project/alsa-lib issue #24 was edited from symdeb:
 
-[sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c:293] ->
-[sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c:336]: (style)
-Local variable 'channels' shadows outer variable
+Since MIDI 2.0 only support USB and not over DIN (for now), will MIDI 2.0 need a new or updated OS class driver for the 32/64 bit universal packet interface and device descriptor for devices ? Page 16 of the USB MIDI class driver spec defines support for 1,2 or 3 bytes transfers only, How will this have to be implemented by MIDI USB device manufacturers and well as on the Linux OSes side ?  How will this impact Linux ALSA ? Would the first byte of the message with b7=0 not confuse the driver of running status ? 
+Link universal packet format 
+https://www.midi.org/articles-old/details-about-midi-2-0-midi-ci-profiles-and-property-exchange)
+Link first MIDI 2.0 Ready product: Roland A-88MKII
+https://www.midi.org/articles-old/roland-announces
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index e2b0a027f5a1..952616ffbc16 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -333,7 +333,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
- 	struct snd_soc_dpcm *dpcm = container_of(
-@@ -348,15 +348,15 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
- 	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
- 		rate->min = rate->max = 48000;
--		channels->min = channels->max = 2;
-+		chan->min = chan->max = 2;
- 		snd_mask_none(fmt);
- 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
- 	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
- 		if (params_channels(params) == 2 ||
- 				DMIC_CH(dmic_constraints) == 2)
--			channels->min = channels->max = 2;
-+			chan->min = chan->max = 2;
- 		else
--			channels->min = channels->max = 4;
-+			chan->min = chan->max = 4;
- 	}
- 	/*
- 	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
--- 
-2.20.1
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/24
+Repository URL: https://github.com/alsa-project/alsa-lib
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
