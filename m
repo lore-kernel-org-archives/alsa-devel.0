@@ -2,88 +2,71 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4036C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21DD0C33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F30224670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:14:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D79F24676
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:15:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZkykLhU+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F30224670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sn/9uUIi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D79F24676
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF0CD1794;
-	Mon, 13 Jan 2020 14:22:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF0CD1794
+	by alsa0.perex.cz (Postfix) with ESMTPS id C64FA2C43;
+	Tue, 14 Jan 2020 07:38:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C64FA2C43
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3017DF801EB;
-	Mon, 13 Jan 2020 14:22:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 810CFF8021E;
+	Tue, 14 Jan 2020 07:38:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A5F2F801F7; Mon, 13 Jan 2020 14:22:10 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5B3D5F8021E; Tue, 14 Jan 2020 07:38:00 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88692F80149
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 14:22:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88692F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BBD9F80171
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 07:37:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BBD9F80171
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="ZkykLhU+"
-Received: by mail-wr1-x444.google.com with SMTP id z3so8551312wru.3
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 05:22:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=8OvYQMaM+qpSXl2Z3EMu15jl+wVMWjq32vRPQAxhLSk=;
- b=ZkykLhU+OsnUN1GehXkbcpCYyeCOdnKd6x/WUPP3MD7JgzvICS+iQxO5b8v3hai3el
- 6csFmPQpBEG5gLRECVAbPYdSQWgHWJV4mx3muHf2Di63wKiTAtxdTkpaSK8oaS91gqgL
- xVjlm/ZHg1TCJn2v5LcMNBB5Fy3uhp03mZkWQX9FAslcngPp5JdivcZWcMbMnhJH4iQn
- 4ro3iEPaHKYI6XUuzEezt4ZvlcsU2I632TQcFZte2y6dk9i4XmRSwL+CCKqynPSQprmQ
- av7iDcqh4ZD8Gv6Lq3yZQwaKREtwAUy5NDSi/iYXGgntSp/t32wlkcj2cgy96neiOxas
- yBDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=8OvYQMaM+qpSXl2Z3EMu15jl+wVMWjq32vRPQAxhLSk=;
- b=TycCG47oqErCTsxKBdDDMs0gRm+GdRJh6WuVwN444uDvD1QXGkOExaTDV0vccE8m7G
- h88veqP5/fdoTOhq7hAe1YZyGxcFLsIvJRfxQsqVKHSOTCDvSuk2snM3xI8//wmF17rC
- vcqL+VSUilqqX+HNvwPDXgQeUA/47IgF9sdB2TDbYBfT/AR/sHmP+v+Z3na4yQ1rQByz
- +6ekvCUz8Cq5VfInf4yaUpHzT9uUYOnFRU2rw2GC0dgiQhDFFe9IhKgAvq29t4xPeWyT
- TvV4Aq/CaKxasZMvHqo6VdgyQxqJYnEEpM1+Em/pBEp/V2rQU+EQai6ePIduBNQgOilU
- vKOA==
-X-Gm-Message-State: APjAAAU3JXCmXnA2e1mT4WM5AYj1N9L8EEqf7BFwDYwNnJp7+4KwnIAi
- ztLimCEVt/kLkthXKMssYTLYAA==
-X-Google-Smtp-Source: APXvYqxdcQ2PDL0YCpFyVPDf3ql9zwKH6H5+6A68p38o4+HfpXHoYJM/8izNu9mByQSMjK7151oWMQ==
-X-Received: by 2002:adf:ebc1:: with SMTP id v1mr18140793wrn.351.1578921725612; 
- Mon, 13 Jan 2020 05:22:05 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
- by smtp.gmail.com with ESMTPSA id u18sm14692987wrt.26.2020.01.13.05.22.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 13 Jan 2020 05:22:04 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org
-Date: Mon, 13 Jan 2020 13:21:51 +0000
-Message-Id: <20200113132153.27239-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Sn/9uUIi"
+Received: from localhost (unknown [49.207.51.160])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id DC477207FD;
+ Tue, 14 Jan 2020 06:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1578983875;
+ bh=d3TptTQMxcOQaiVXM++PdRKb60BDi4ryItpKb/Jtenw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Sn/9uUIiMRtAUXrO57mkE70lQ2OvA5iO4sUEivrOwSlgOJkFnw1+6Atndni8cjfsQ
+ 7NSgb5U6ZrVvHUXB5f2ZXVptE71t6dE6czVS0z6TkBqK1VV+c9zQ7mJ/cEf4t6xA02
+ kf+1bx6WncHdRfrOxRLJfptBNcUNA+FvoNAOE7UU=
+Date: Tue, 14 Jan 2020 12:07:51 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20200114063751.GH2818@vkoul-mobl>
+References: <20200113231129.19049-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- linux-kernel@vger.kernel.org, spapothi@codeaurora.org,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [alsa-devel] [PATCH v6 0/2] soundwire: Add support to Qualcomm
-	SoundWire master
+Content-Disposition: inline
+In-Reply-To: <20200113231129.19049-1-pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] soundwire: intel: fix factor of two in
+	MCLK handling
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,49 +84,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks for reviewing the v5 patchset.
-Here is new patchset addressing all the comments from v5
+On 13-01-20, 17:11, Pierre-Louis Bossart wrote:
+> From: Bard Liao <yung-chuan.liao@linux.intel.com>
+> 
+> Somehow Intel folks were confused, the property is 2x what the mclk
+> frequency actually is (checked the actual bus frequency with a scope)
 
-This patchset adds support for Qualcomm SoundWire Master Controller
-found in most of Qualcomm SoCs and WCD audio codecs.
-
-This driver along with WCD934x codec and WSA881x Class-D Smart Speaker
-Amplifier drivers is tested on on DragonBoard DB845c based of SDM845
-SoC and Lenovo YOGA C630 Laptop based on SDM850.
-
-SoundWire controller on SDM845 is integrated in WCD934x audio codec via
-SlimBus interface.
-
-Currently this driver is very minimal and only supports PDM.
-
-Most of the code in this driver is rework of Qualcomm downstream drivers
-used in Andriod. Credits to Banajit Goswami and Patrick Lai's Team.
-
-TODO:
-	Test and add PCM support.
-
-Thanks,
-srini
-
-Changes since v5:
-	-No code changes.
-	-Add extra comment in interrupt handler as suggested by Pierre
-
-Srinivas Kandagatla (2):
-  dt-bindings: soundwire: add bindings for Qcom controller
-  soundwire: qcom: add support for SoundWire controller
-
- .../bindings/soundwire/qcom,sdw.txt           | 167 ++++
- drivers/soundwire/Kconfig                     |   9 +
- drivers/soundwire/Makefile                    |   4 +
- drivers/soundwire/qcom.c                      | 861 ++++++++++++++++++
- 4 files changed, 1041 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
- create mode 100644 drivers/soundwire/qcom.c
+Applied, thanks
 
 -- 
-2.21.0
-
+~Vinod
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
