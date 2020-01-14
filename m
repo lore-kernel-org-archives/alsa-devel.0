@@ -2,75 +2,55 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A5FEC33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5281C33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0956624676
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="ITpgSGCJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0956624676
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	by mail.kernel.org (Postfix) with ESMTPS id 40BB624676
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40BB624676
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46B3A2644;
-	Tue, 14 Jan 2020 12:25:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46B3A2644
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49B122D82;
+	Tue, 14 Jan 2020 09:42:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49B122D82
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 141FCF8027B;
-	Tue, 14 Jan 2020 12:23:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D19FFF8014D;
+	Tue, 14 Jan 2020 09:42:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9B82F80277; Tue, 14 Jan 2020 12:23:09 +0100 (CET)
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5302::5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C931CF8014E; Tue, 14 Jan 2020 09:42:34 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 466F6F80171;
- Tue, 14 Jan 2020 12:22:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 466F6F80171
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="ITpgSGCJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579000976;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=wHoJ/wPFOHNOLp15KZ+GLTWKe4KtsJJ+wXC+HluvpnE=;
- b=ITpgSGCJXE3CgzLZ7FhvdDTbQy4Q3biZeEelX7a4DEfQBZz3TOIfK0Ww15yN2maB4/
- uidck2D4BYuVCUPD4Wmly9eGNohEPUctyntxeRiUGcfneQ99ENPE/iaNfTmy5wZXhAGL
- PQ0h0OYBxS5GVteckioKVcaRdPqMoukc8VDaQedpeh2Nk0IJuXfmEMytFMDKiX58c6cu
- 1r6EwshMWJUmmNpgUHHDDLp0C3UzATKtgNCvuOmdrsyXNyO1NUyWpdl8SJt5WCmoMy5r
- Eg0vcZ33+9uCWBGZWgM5w1UhdMbQOj7+mF2uCDZcqWiNInv4ODNkA3vjWocBYkOk4iRg
- QE7g==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7IOGU5qzCB3a93viaVr"
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0EBMtULF
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Jan 2020 12:22:55 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Jaroslav Kysela <perex@perex.cz>
-Date: Tue, 14 Jan 2020 12:21:08 +0100
-Message-Id: <20200114112110.51983-6-stephan@gerhold.net>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114112110.51983-1-stephan@gerhold.net>
-References: <20200114112110.51983-1-stephan@gerhold.net>
-MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH alsa-ucm-conf 5/7] codecs/msm8916-wcd:
-	Earpiece: Add missing Enable/DisableSequence
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAAC1F800E9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 09:42:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAAC1F800E9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E7998AF65;
+ Tue, 14 Jan 2020 08:42:30 +0000 (UTC)
+Date: Tue, 14 Jan 2020 09:42:30 +0100
+Message-ID: <s5hmuaqfmyx.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Johan Hovold <johan@kernel.org>
+In-Reply-To: <20200114083953.1106-1-johan@kernel.org>
+References: <20200114083953.1106-1-johan@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable <stable@vger.kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: fix sync-ep altsetting
+	sanity check
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,42 +68,28 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since commit 7d2f70f248ab ("ASoC: msm8916-wcd-analog: Add earpiece")
-in the Linux kernel, the Earpiece in msm8916-wcd is now supported.
-Add the necessary Enable/DisableSequence for it.
+On Tue, 14 Jan 2020 09:39:53 +0100,
+Johan Hovold wrote:
+> 
+> The altsetting sanity check in set_sync_ep_implicit_fb_quirk() was
+> checking for there to be at least one altsetting but then went on to
+> access the second one, which may not exist.
+> 
+> This could lead to random slab data being used to initialise the sync
+> endpoint in snd_usb_add_endpoint().
+> 
+> Fixes: c75a8a7ae565 ("ALSA: snd-usb: add support for implicit feedback")
+> Fixes: ca10a7ebdff1 ("ALSA: usb-audio: FT C400 sync playback EP to capture EP")
+> Fixes: 5e35dc0338d8 ("ALSA: usb-audio: add implicit fb quirk for Behringer UFX1204")
+> Fixes: 17f08b0d9aaf ("ALSA: usb-audio: add implicit fb quirk for Axe-Fx II")
+> Fixes: 103e9625647a ("ALSA: usb-audio: simplify set_sync_ep_implicit_fb_quirk")
+> Cc: stable <stable@vger.kernel.org>     # 3.5
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- ucm2/codecs/msm8916-wcd/Earpiece.conf | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Thanks, applied now.
 
-diff --git a/ucm2/codecs/msm8916-wcd/Earpiece.conf b/ucm2/codecs/msm8916-wcd/Earpiece.conf
-index e9f8b9d..726b436 100644
---- a/ucm2/codecs/msm8916-wcd/Earpiece.conf
-+++ b/ucm2/codecs/msm8916-wcd/Earpiece.conf
-@@ -5,4 +5,18 @@ SectionDevice."Earpiece" {
- 		"Speaker"
- 		"Headphones"
- 	]
-+
-+	EnableSequence [
-+		cset "name='RX1 MIX1 INP1' RX1"
-+		cset "name='RDAC2 MUX' RX1"
-+		cset "name='EAR_S' 1"
-+		## gain to  0dB
-+		cset "name='RX1 Digital Volume' 128"
-+	]
-+
-+	DisableSequence [
-+		cset "name='RX1 Digital Volume' 0"
-+		cset "name='EAR_S' 0"
-+		cset "name='RX1 MIX1 INP1' ZERO"
-+	]
- }
--- 
-2.24.1
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
