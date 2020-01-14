@@ -2,70 +2,43 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BB85C33CB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E6B0C3F68F
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B10F2467D
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="tHh56mz5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B10F2467D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id DEDC62465A
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:29:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEDC62465A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03FCB209E;
-	Mon, 13 Jan 2020 16:26:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03FCB209E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 088CA2A58;
+	Tue, 14 Jan 2020 04:00:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 088CA2A58
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF857F80349;
-	Mon, 13 Jan 2020 16:13:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5ACADF8014D;
+	Tue, 14 Jan 2020 04:00:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F319DF802E1; Mon, 13 Jan 2020 16:13:40 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12532F8029B
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 16:13:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12532F8029B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="tHh56mz5"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=P160kz5oOUxO24cjyirJQJ5SmvkB9iSYTMlT/Aswafs=; b=tHh56mz5r2q2
- ujDBPz+Vmc3GwqrIXPucDMxZiMCj+LXvJR//bbSTO4xrWx7n2Ww/w8VbQhbG2UdFNLyPskP5QYkCH
- aFKTNxPuMawROpL8dlnDuMq62lzxF6na602jvxXN6j/HattgOep4omB6fY9PR2Qjl45YfltMN2q/D
- e5ev0=;
-Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1ir1P1-0003Lo-IB; Mon, 13 Jan 2020 15:13:15 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 45D05D01ECC; Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200110222530.30303-6-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200110222530.30303-6-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Date: Mon, 13 Jan 2020 15:13:15 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Rander Wang <rander.wang@intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: common: add match tables for TGL
-	w/ SoundWire" to the asoc tree
+ id A023EF8014E; Tue, 14 Jan 2020 04:00:40 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 43275F80121
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 04:00:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43275F80121
+MIME-Version: 1.0
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1578970828615752935-webhooks-bot@alsa-project.org>
+References: <1578970828615752935-webhooks-bot@alsa-project.org>
+Message-Id: <20200114030040.A023EF8014E@alsa1.perex.cz>
+Date: Tue, 14 Jan 2020 04:00:40 +0100 (CET)
+Subject: [alsa-devel] MIDI 2.0 universal packet protocol
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,131 +51,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+alsa-project/alsa-lib issue #24 was opened from symdeb:
 
-   ASoC: Intel: common: add match tables for TGL w/ SoundWire
+Since MIDI 2.0 only support USB and non MIDI DIN (for now), will MIDI 2.0 need a new or updated OS class driver for the 32/64 bit universal packet interface and device descriptor for devices ? Page 16 of the USB MIDI class driver spec defines support for 1,2 or 3 bytes transfers only, How will this have to be implemented by MIDI USB device manufacturers and well as on the Linux OSes side ?  How will this impact Linux ALSA ? Would the first byte of the message with b7=0 not confuse the driver of running status ? Reference for packet format : [https://www.midi.org/articles-old/details-about-midi-2-0-midi-ci-profiles-and-property-exchange](url)
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From d985d208bf8f079979f284864a6d08900597ee04 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 10 Jan 2020 16:25:29 -0600
-Subject: [PATCH] ASoC: Intel: common: add match tables for TGL w/ SoundWire
-
-RT711 is in SoundWire mode on link0.
-RT1308 is either on SSP2 or on SoundWire link1 (depending on hardware
-reworks).
-
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200110222530.30303-6-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../intel/common/soc-acpi-intel-tgl-match.c   | 51 ++++++++++++++++++-
- 1 file changed, 49 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-index b4687a5d1962..5984dd151f3e 100644
---- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-@@ -14,12 +14,46 @@ static struct snd_soc_acpi_codecs tgl_codecs = {
- 	.codecs = {"MX98357A"}
- };
- 
-+static const u64 rt711_0_adr[] = {
-+	0x000010025D071100
-+};
-+
-+static const u64 rt1308_1_adr[] = {
-+	0x000120025D130800,
-+	0x000122025D130800
-+};
-+
-+static const struct snd_soc_acpi_link_adr tgl_i2s_rt1308[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_0_adr),
-+		.adr = rt711_0_adr,
-+	},
-+	{}
-+};
-+
-+static const struct snd_soc_acpi_link_adr tgl_rvp[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_0_adr),
-+		.adr = rt711_0_adr,
-+	},
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1308_1_adr),
-+		.adr = rt1308_1_adr,
-+	},
-+	{}
-+};
-+
- struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
- 	{
- 		.id = "10EC1308",
--		.drv_name = "tgl_rt1308",
-+		.drv_name = "rt711_rt1308",
-+		.link_mask = 0x1, /* RT711 on SoundWire link0 */
-+		.links = tgl_i2s_rt1308,
- 		.sof_fw_filename = "sof-tgl.ri",
--		.sof_tplg_filename = "sof-tgl-rt1308.tplg",
-+		.sof_tplg_filename = "sof-tgl-rt711-rt1308.tplg",
- 	},
- 	{
- 		.id = "10EC5682",
-@@ -33,5 +67,18 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_machines);
- 
-+/* this table is used when there is no I2S codec present */
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
-+	{
-+		.link_mask = 0x3, /* rt711 on link 0 and 2 rt1308s on link 1 */
-+		.links = tgl_rvp,
-+		.drv_name = "sdw_rt711_rt1308_rt715",
-+		.sof_fw_filename = "sof-tgl.ri",
-+		.sof_tplg_filename = "sof-tgl-rt711-rt1308.tplg",
-+	},
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_sdw_machines);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Intel Common ACPI Match module");
--- 
-2.20.1
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/24
+Repository URL: https://github.com/alsa-project/alsa-lib
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
