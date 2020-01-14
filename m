@@ -2,68 +2,88 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73525C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 887C7C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:50:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE83B24680
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:45:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0E2B82072B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:50:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EYJw3BP6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE83B24680
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C63O12Ok";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="amMLuROl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E2B82072B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76C241B04;
-	Tue, 14 Jan 2020 14:27:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76C241B04
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DF36193E;
+	Tue, 14 Jan 2020 15:49:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DF36193E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579008512;
-	bh=KZGZstTSvDUFvjSffJ6BiIxdICr048+yHOPZaHhIdss=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1579013447;
+	bh=PT0xvoQGiNtYN5L7b2uZ0uBR7/Jqg3YftlrZyk+K2Wc=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EYJw3BP60gHM/Z3c/Va6lpfgJDMGMcMCyzFqFzDQMtPVXqcB/4LrQUnGz8fzxLEZv
-	 UgCcvTSEd+H9Ia0/6dWYu3wHPx1mkldQPvwlGH12PWelV1dH+DWOxFupxijzx4lBIg
-	 P6PXko6Az42YdOzQ/2Q7AOimKZQsT0FWWssGev7E=
+	b=C63O12Ok9/Be0/ebcbkbMgM0s+fpcfI1SIT3Hv/BWTN1q4bbEWXb14v19XI2BLJpO
+	 EpJnWHmIzaD/eA7IMhBD24olP9U2FSK/lS01rhOtfi8JclYVKwb5LTZW4Z6oRIS9nB
+	 I3B1M/OWwrWf1uXCr6dY7ngttJbdj7JSsLV4AO7U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23F79F8016F;
-	Tue, 14 Jan 2020 14:27:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1B33F8014D;
+	Tue, 14 Jan 2020 15:49:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9ECF5F8026F; Tue, 14 Jan 2020 14:27:38 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C8CFBF8014E; Tue, 14 Jan 2020 15:49:55 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06FCEF800E9
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 14:27:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06FCEF800E9
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 006AFAC9A;
- Tue, 14 Jan 2020 13:27:18 +0000 (UTC)
-Date: Tue, 14 Jan 2020 14:27:18 +0100
-Message-ID: <s5hh80ycgnd.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20200114124744.GT3897@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45561F80121
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 15:49:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45561F80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
+ header.b="amMLuROl"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+ MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+ Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+ List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=6nJUJhhumQt0VjlRrHEVPz0UIG6WR97W9B6Dcn2o5bo=; b=amMLuROlHT/tLBsR+5kwzWHb7
+ naLAfg3uDbdvdIcSpnBKTj9lHHnRZCrjQukY2soUdDUpHasEnZRnagbYgTHyiHQlKJeHF//0nrZFK
+ WLr+qr0loLSfVMA5aBNaftPEU3fCh1PvgjHcwFkbtPPYOHhak//E+0XGT2DyOyHtjc3GM=;
+Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
+ helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <broonie@sirena.org.uk>)
+ id 1irNVp-0008Pd-SH; Tue, 14 Jan 2020 14:49:45 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+ id 32656D01965; Tue, 14 Jan 2020 14:49:45 +0000 (GMT)
+Date: Tue, 14 Jan 2020 14:49:45 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Message-ID: <20200114144945.GU3897@sirena.org.uk>
 References: <1578968526-13191-1-git-send-email-richtek.jeff.chang@gmail.com>
  <s5htv4yfpnt.wl-tiwai@suse.de>
- <20200114124744.GT3897@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, Jeff Chang <richtek.jeff.chang@gmail.com>,
- jeff_chang@richtek.com, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
+ <36357249c6ed4a989cd11535fdefef6e@ex1.rt.l>
+ <s5hwo9uqrbu.wl-tiwai@suse.de>
+MIME-Version: 1.0
+In-Reply-To: <s5hwo9uqrbu.wl-tiwai@suse.de>
+X-Cookie: Programming is an unnatural act.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Jeff Chang <richtek.jeff.chang@gmail.com>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ jeff_chang <jeff_chang@richtek.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 Subject: Re: [alsa-devel] [PATCH v6] ASoC: Add MediaTek MT6660 Speaker Amp
 	Driver
 X-BeenThere: alsa-devel@alsa-project.org
@@ -78,39 +98,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8734989415564864318=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 14 Jan 2020 13:47:44 +0100,
-Mark Brown wrote:
-> 
-> On Tue, Jan 14, 2020 at 08:44:22AM +0100, Takashi Iwai wrote:
-> > Jeff Chang wrote:
-> 
-> > > +	if (ret < 0)
-> > > +		return ret;
-> > > +	reg_data = (u8)ret;
-> > > +	if (on_off)
-> > > +		reg_data &= (~0x01);
-> > > +	else
-> > > +		reg_data |= 0x01;
-> > > +	return regmap_write(chip->regmap, MT6660_REG_SYSTEM_CTRL, reg_data);
-> 
-> > Hm, this looks like an open-code of forced update bits via regmap.
-> > But interestingly there is no corresponding standard helper for that.
-> > Essentially it should be regmap_update_bits_base() with force=1.
-> 
-> > Mark?
-> 
-> regmap_write_bits().
 
-Oh that obvious one, thanks :)
+--===============8734989415564864318==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/7+LvQqw8N5lf/3J"
+Content-Disposition: inline
 
 
-Takashi
+--/7+LvQqw8N5lf/3J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 14, 2020 at 11:12:53AM +0100, Takashi Iwai wrote:
+
+> So, for the codec, it doesn't matter at all about the signedness and
+> the alingment of 32bit / 24bit of the incoming signals, but magically
+> handled as is?  Interesting...
+
+On the playback side CODECs sometimes don't care that much, they
+clock data in and if it stops early they just go on to the next
+sample with the width being used to configure filters or
+something.
+
+The signedness is a bit more surprising I have to say :/
+
+--/7+LvQqw8N5lf/3J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4d1PgACgkQJNaLcl1U
+h9D7qgf+KdBUSPJ38rdTjpyt2K7lYvMyXL5+ZUVws3WSh8Mf6NKFkc2TRAtLJLMm
+cqQxLWHy6m4R7X+tZtn2iwoi5f+RDi8uYHOcvSfU9qoI5KQeCgHQjXwaU6tnx7fx
+UeeJ0kwtqgsO3xcGpn6DUjoujSvxI9dyr83h0MS3EhX216xvzEDBgF/ujsbnYfCj
+ukYd9ZB/jD9aFtelkTHgJh6zeKPkcLTLhBB+/i3AalSM+yBR2eLgXkVUGBB7pPMD
+k4LL/2R2f91ziU7J/6NgZuO+X6RzXAmYNDs2nH28v9sQotj1KTXXFl3/t5L42zm7
+3XPg4S+5Q5SefOGfY4kvylDWjank2A==
+=ff88
+-----END PGP SIGNATURE-----
+
+--/7+LvQqw8N5lf/3J--
+
+--===============8734989415564864318==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8734989415564864318==--
