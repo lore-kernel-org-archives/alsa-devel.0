@@ -2,58 +2,54 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 631C3C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 092F1C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E272924670
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E272924670
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8DC8A24670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:18:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DC8A24670
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6A8422E4;
-	Mon, 13 Jan 2020 21:56:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6A8422E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7DC322A2;
+	Tue, 14 Jan 2020 02:40:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7DC322A2
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 720EFF80149;
-	Mon, 13 Jan 2020 21:56:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CEAEF80321;
+	Tue, 14 Jan 2020 02:32:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DF87F801EB; Mon, 13 Jan 2020 21:56:34 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3BABF80149
- for <alsa-devel@alsa-project.org>; Mon, 13 Jan 2020 21:56:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3BABF80149
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2020 12:56:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,430,1571727600"; d="scan'208";a="397270458"
-Received: from pboliset-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.251.152.72])
- by orsmga005.jf.intel.com with ESMTP; 13 Jan 2020 12:56:27 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 13 Jan 2020 14:56:20 -0600
-Message-Id: <20200113205620.27285-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] [PATCH] ASoC: SOF: Intel: hda-dai: fix compilation
-	warning in pcm_prepare
+ id D988DF80317; Tue, 14 Jan 2020 02:32:48 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id B5B3AF80304
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:32:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5B3AF80304
+Date: 14 Jan 2020 10:32:43 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36588969"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jan 2020 10:32:43 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4E68B4148465;
+ Tue, 14 Jan 2020 10:32:43 +0900 (JST)
+Message-ID: <87wo9ug6v8.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 13/16] ASoC: ux500: ux500_msp_dai: remove
+	unused DAI .suspend/.resume
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,35 +62,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Rml4IEdDQyB3YXJuaW5nIHdpdGggVz0xLCBwcmV2aW91cyBjbGVhbnVwIGRpZCBub3QgcmVtb3Zl
-IHVubmVjZXNzYXJ5CnZhcmlhYmxlLgoKc291bmQvc29jL3NvZi9pbnRlbC9oZGEtZGFpLmM6IElu
-IGZ1bmN0aW9uIOKAmGhkYV9saW5rX3BjbV9wcmVwYXJl4oCZOgoKc291bmQvc29jL3NvZi9pbnRl
-bC9oZGEtZGFpLmM6MjY1OjMxOiB3YXJuaW5nOiB2YXJpYWJsZSDigJhoZGFfc3RyZWFt4oCZCnNl
-dCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWJ1dC1zZXQtdmFyaWFibGVdCiAgMjY1IHwgIHN0cnVj
-dCBzb2ZfaW50ZWxfaGRhX3N0cmVhbSAqaGRhX3N0cmVhbTsKICAgICAgfCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBefn5+fn5+fn5+CgpGaXhlczogYTNlYmNjYjUyZWZkZiAoIkFTb0M6
-IFNPRjogSW50ZWw6IGhkYTogcmVzZXQgbGluayBETUEgc3RhdGUgaW4gcHJlcGFyZSIpCkNjOiBL
-YWkgVmVobWFuZW4gPGthaS52ZWhtYW5lbkBsaW51eC5pbnRlbC5jb20+ClNpZ25lZC1vZmYtYnk6
-IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5j
-b20+Ci0tLQogc291bmQvc29jL3NvZi9pbnRlbC9oZGEtZGFpLmMgfCAzIC0tLQogMSBmaWxlIGNo
-YW5nZWQsIDMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvZi9pbnRlbC9o
-ZGEtZGFpLmMgYi9zb3VuZC9zb2Mvc29mL2ludGVsL2hkYS1kYWkuYwppbmRleCAzMTM2MTFkY2I1
-ZTQuLjljNmUzZjk5MGVlMyAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvZi9pbnRlbC9oZGEtZGFp
-LmMKKysrIGIvc291bmQvc29jL3NvZi9pbnRlbC9oZGEtZGFpLmMKQEAgLTI2MiwxNCArMjYyLDEx
-IEBAIHN0YXRpYyBpbnQgaGRhX2xpbmtfcGNtX3ByZXBhcmUoc3RydWN0IHNuZF9wY21fc3Vic3Ry
-ZWFtICpzdWJzdHJlYW0sCiB7CiAJc3RydWN0IGhkYWNfZXh0X3N0cmVhbSAqbGlua19kZXYgPQog
-CQkJCXNuZF9zb2NfZGFpX2dldF9kbWFfZGF0YShkYWksIHN1YnN0cmVhbSk7Ci0Jc3RydWN0IHNv
-Zl9pbnRlbF9oZGFfc3RyZWFtICpoZGFfc3RyZWFtOwogCXN0cnVjdCBzbmRfc29mX2RldiAqc2Rl
-diA9CiAJCQkJc25kX3NvY19jb21wb25lbnRfZ2V0X2RydmRhdGEoZGFpLT5jb21wb25lbnQpOwog
-CXN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQgPSBzbmRfcGNtX3N1YnN0cmVhbV9jaGlw
-KHN1YnN0cmVhbSk7CiAJaW50IHN0cmVhbSA9IHN1YnN0cmVhbS0+c3RyZWFtOwogCi0JaGRhX3N0
-cmVhbSA9IGhzdHJlYW1fdG9fc29mX2hkYV9zdHJlYW0obGlua19kZXYpOwotCiAJaWYgKGxpbmtf
-ZGV2LT5saW5rX3ByZXBhcmVkKQogCQlyZXR1cm4gMDsKIAotLSAKMi4yMC4xCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+This patch removes unused DAI driver .suspend/.resume
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/ux500/ux500_msp_dai.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
+index dec065f..2105237 100644
+--- a/sound/soc/ux500/ux500_msp_dai.c
++++ b/sound/soc/ux500/ux500_msp_dai.c
+@@ -719,8 +719,6 @@ static const struct snd_soc_dai_ops ux500_msp_dai_ops[] = {
+ 
+ static struct snd_soc_dai_driver ux500_msp_dai_drv = {
+ 	.probe                 = ux500_msp_dai_probe,
+-	.suspend               = NULL,
+-	.resume                = NULL,
+ 	.playback.channels_min = UX500_MSP_MIN_CHANNELS,
+ 	.playback.channels_max = UX500_MSP_MAX_CHANNELS,
+ 	.playback.rates        = UX500_I2S_RATES,
+-- 
+2.7.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
