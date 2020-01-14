@@ -2,76 +2,72 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08890C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50AD1C33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88E0724676
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D416F24676
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="K7YmquUJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88E0724676
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ecCzcFXt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D416F24676
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9358D2FD3;
-	Tue, 14 Jan 2020 13:08:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9358D2FD3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FD7F289F;
+	Tue, 14 Jan 2020 07:15:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FD7F289F
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AEE0F8014D;
-	Tue, 14 Jan 2020 13:08:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB4D9F8014D;
+	Tue, 14 Jan 2020 07:15:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0577CF80121; Tue, 14 Jan 2020 13:08:35 +0100 (CET)
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5302::3])
+ id D4881F8014E; Tue, 14 Jan 2020 07:15:13 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AFA7AF80121
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 07:15:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFA7AF80121
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ecCzcFXt"
+Received: from localhost (unknown [49.207.51.160])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D2FBF80121
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 13:08:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D2FBF80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="K7YmquUJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579003707;
- s=strato-dkim-0002; d=gerhold.net;
- h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=w0hCOs0pUCXzBGfEbGi023I9TPLGyinZfevmistvGHE=;
- b=K7YmquUJH/3O2JtUBApy4XIloM5aUgfQ2WzZtbt6Qo9aiVCWoa+n2FRUiNvSlCX4to
- eRkb5T8HwqphpNXuKl39S3qELvdIlakdRkFnZdT/r3MWSYn8VNV3dC7JF93+qLDHby9R
- y8ZP+W/1NIAVqaiTrUxOPyJ8R24uGePZe2E7QJT8SwtY+xUMnZX2ZURRJRwsAPESqhJB
- 1qHQ2o3iOnRBQS983A6LWQUuF1TLQdL6v+a5ogUs4xeHBOXOdOh1ZWshjJwc44/EedMs
- WS2cPyuoTwfZ7BPcQHTFAmtjZ86vFlFrHj6Ypf5ZtQlmSRoGkyzjIj5heU5u2ek3rapD
- SyCw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267EpF+OQRc4oDWF5yUxHE="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0EC8OUdL
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Jan 2020 13:08:24 +0100 (CET)
-Date: Tue, 14 Jan 2020 13:08:17 +0100
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <20200114120817.GA52379@gerhold.net>
-References: <20200111164006.43074-1-stephan@gerhold.net>
- <20200111164006.43074-4-stephan@gerhold.net>
- <314b9a9b-13cd-94f5-0967-f0d4e66d65a1@linaro.org>
+ by mail.kernel.org (Postfix) with ESMTPSA id 3B12E2084D;
+ Tue, 14 Jan 2020 06:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1578982508;
+ bh=Bvg/p2APBIXoLXN92+QfE3MG7q8+n3xAIpTyfePVQ9E=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ecCzcFXtAc1P9IgW3Tg2kmrIZV/ocoYgiCF/WjlbiW/73Ub0eugd9hOHa38I20TKa
+ X+yjnXBFIDq3NuM3DTlGf2hytbj0DDUO1Ok2Ftcqz6T5OMDqPvM+5PfXdtptVVuN6m
+ 7m7IJUJBZEgov+WQkKH5QenGMOeO1M1mDJOjnjhs=
+Date: Tue, 14 Jan 2020 11:44:41 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <20200114061441.GB2818@vkoul-mobl>
+References: <20200110214609.30356-1-pierre-louis.bossart@linux.intel.com>
+ <20200110214609.30356-5-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <314b9a9b-13cd-94f5-0967-f0d4e66d65a1@linaro.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- ~postmarketos/upstreaming@lists.sr.ht, Nikita Travkin <nikitos.tr@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 3/4] ASoC: msm8916-wcd-analog: Simplify MIC
-	BIAS Internal
+In-Reply-To: <20200110214609.30356-5-pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 4/5] soundwire: intel: add sdw_stream_setup
+ helper for .startup callback
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,197 +85,117 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 14, 2020 at 10:54:44AM +0000, Srinivas Kandagatla wrote:
+On 10-01-20, 15:46, Pierre-Louis Bossart wrote:
+> From: Rander Wang <rander.wang@linux.intel.com>
 > 
+> The sdw stream is allocated and stored in dai to share the sdw runtime
+> information.
 > 
-> On 11/01/2020 16:40, Stephan Gerhold wrote:
-> > At the moment, MIC BIAS Internal* and MIC BIAS External* both reference
-> > the same register, and have a part of their initialization sequence
-> > duplicated.
-> > 
-> > In general, the sequence for enabling MIC BIAS InternalX seems to be:
-> >    1. Enable MIC BIAS ExternalX
-> >    2. Enable internal RBIAS resistor
+> Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/intel.c | 65 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 65 insertions(+)
 > 
-> Does not sound correct to me.
-> 
-> What external means here is if the MICBIAS has external pull up resistor or
-> not. And this is very much board specific. In order for driver to
-> enable/disable internal pull up resistor in such cases we use two dapm paths
-> to differentiate it.
-> 
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index aa80c46156cb..f4554386d832 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -617,6 +617,69 @@ static int intel_post_bank_switch(struct sdw_bus *bus)
+>   * DAI routines
+>   */
+>  
+> +static int sdw_stream_setup(struct snd_pcm_substream *substream,
+> +			    struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct sdw_stream_runtime *sdw_stream = NULL;
+> +	char *name;
+> +	int i, ret;
+> +
+> +	name = kzalloc(32, GFP_KERNEL);
+> +	if (!name)
+> +		return -ENOMEM;
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		snprintf(name, 32, "%s-Playback", dai->name);
+> +	else
+> +		snprintf(name, 32, "%s-Capture", dai->name);
 
-You are right. Maybe the naming is a bit confusing here.
-Let me try to clarify it:
+How about use DAI_SIZE instead of 32 here and above few places? Lets not
+code number like this please
 
-If I understand it correctly, setting the MICB_EN bit in CDC_A_MICB_1_EN
-enables the MIC_BIAS1 supply. This supply can be either used with an
-external pull up resistor ("MIC BIAS External1") or with the internal
-pull up resistor ("MIC BIAS Internal1"). Which one of them, is board-specific.
+> +
+> +	sdw_stream = sdw_alloc_stream(name);
+> +	if (!sdw_stream) {
+> +		dev_err(dai->dev, "alloc stream failed for DAI %s", dai->name);
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	/* Set stream pointer on CPU DAI */
+> +	ret = snd_soc_dai_set_sdw_stream(dai, sdw_stream, substream->stream);
+> +	if (ret < 0) {
+> +		dev_err(dai->dev, "failed to set stream pointer on cpu dai %s",
+> +			dai->name);
+> +		goto release_stream;
+> +	}
+> +
+> +	/* Set stream pointer on all CODEC DAIs */
+> +	for (i = 0; i < rtd->num_codecs; i++) {
+> +		ret = snd_soc_dai_set_sdw_stream(rtd->codec_dais[i], sdw_stream,
+> +						 substream->stream);
+> +		if (ret < 0) {
+> +			dev_err(dai->dev, "failed to set stream pointer on codec dai %s",
+> +				rtd->codec_dais[i]->name);
+> +			goto release_stream;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +release_stream:
+> +	sdw_release_stream(sdw_stream);
+> +error:
+> +	kfree(name);
+> +	return ret;
+> +}
+> +
+> +static int intel_startup(struct snd_pcm_substream *substream,
+> +			 struct snd_soc_dai *dai)
+> +{
+> +	/*
+> +	 * TODO: add pm_runtime support here, the startup callback
+> +	 * will make sure the IP is 'active'
+> +	 */
+> +
+> +	return sdw_stream_setup(substream, dai);
+> +}
+> +
+>  static int intel_hw_params(struct snd_pcm_substream *substream,
+>  			   struct snd_pcm_hw_params *params,
+>  			   struct snd_soc_dai *dai)
+> @@ -796,6 +859,7 @@ static int intel_pdm_set_sdw_stream(struct snd_soc_dai *dai,
+>  }
+>  
+>  static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+> +	.startup = intel_startup,
+>  	.hw_params = intel_hw_params,
+>  	.prepare = intel_prepare,
+>  	.trigger = intel_trigger,
+> @@ -805,6 +869,7 @@ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+>  };
+>  
+>  static const struct snd_soc_dai_ops intel_pdm_dai_ops = {
+> +	.startup = intel_startup,
+>  	.hw_params = intel_hw_params,
+>  	.prepare = intel_prepare,
+>  	.trigger = intel_trigger,
+> -- 
+> 2.20.1
 
-To use the internal pull up resistor, we need to set the TX1_INT_RBIAS_EN
-bit in CDC_A_MICB_1_INT_RBIAS additionally.
-
-In other words, the sequence for enabling MIC BIAS Internal1 is:
-  I1. Enable MIC_BIAS1 supply (MICB_EN bit in CDC_A_MICB_1_EN)
-  I2. Enable internal RBIAS (TX1_INT_RBIAS_EN bit in CDC_A_MICB_1_INT_RBIAS)
-
-The sequence for enabling MIC BIAS External1 is:
-  E1. Enable MIC_BIAS1 supply (MICB_EN bit in CDC_A_MICB_1_EN)
-
-Right now we have:
-  SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_EN, 7, 0, ...) // I1
-  SND_SOC_DAPM_SUPPLY("MIC BIAS External1", CDC_A_MICB_1_EN, 7, 0, ...) // E1
-
-I2 is done in the PM event handler (pm8916_wcd_analog_enable_micbias_int1).
-
-The idea of this patch is to simplify this, and use one DAPM supply
-that handles the common (I1/E1), and one DAPM supply that handles (I2).
-
-Translated to code we get:
-  SND_SOC_DAPM_SUPPLY("MIC BIAS1", CDC_A_MICB_1_EN, 7, 0, ...) // I1/E1
-  SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_INT_RBIAS, 7, 0, ...) // I2
-  SND_SOC_DAPM_SUPPLY("MIC BIAS External1", SND_SOC_NOPM, ...) // dummy
-
-And the routes:
-  {"MIC BIAS Internal1", NULL, "MIC BIAS1"} // If I2, also do I1
-  {"MIC BIAS External1", NULL, "MIC BIAS1"} // Only do E1
-
-As you can see, for "MIC BIAS External1" we just do "MIC BIAS1".
-The confusing element of this patch might be that I simplified it a bit
-further and combined "MIC BIAS1" with "MIC BIAS External1".
-This works because we don't do anything extra for "MIC BIAS External1".
-
-Does that make sense?
-
-Thanks for taking the time to review all my patches.
-Stephan
-
-> 
-> --srini
-> 
-> 
-> 
-> 
-> > 
-> > This means that we can simplify the code by modelling MIC BIAS InternalX
-> > as supply connected to MIC BIAS ExternalX. MIC BIAS InternalX is only
-> > responsible for enabling the internal RBIAS resistor (2). The DAPM enable
-> > sequence will automatically enable MIC BIAS ExternalX (1).
-> > 
-> > This makes it much easier to add support for MIC BIAS Internal3
-> > as a next step.
-> > 
-> > Tested-by: Nikita Travkin <nikitos.tr@gmail.com> # longcheer-l8150
-> > Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> >   sound/soc/codecs/msm8916-wcd-analog.c | 57 ++++++---------------------
-> >   1 file changed, 13 insertions(+), 44 deletions(-)
-> > 
-> > diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-> > index 1f7964beb20c..930baae6eff5 100644
-> > --- a/sound/soc/codecs/msm8916-wcd-analog.c
-> > +++ b/sound/soc/codecs/msm8916-wcd-analog.c
-> > @@ -389,23 +389,17 @@ static int pm8916_wcd_analog_enable_micbias_ext(struct snd_soc_component
-> >   	return 0;
-> >   }
-> > -static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_component
-> > -						 *component, int event,
-> > -						 int reg, u32 cap_mode)
-> > +static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_dapm_widget *w,
-> > +						struct snd_kcontrol *kcontrol,
-> > +						int event)
-> >   {
-> > +	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-> >   	switch (event) {
-> >   	case SND_SOC_DAPM_PRE_PMU:
-> > -		snd_soc_component_update_bits(component, reg, MICB_1_EN_PULL_DOWN_EN_MASK, 0);
-> >   		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
-> >   				    MICB_1_EN_OPA_STG2_TAIL_CURR_MASK,
-> >   				    MICB_1_EN_OPA_STG2_TAIL_CURR_1_60UA);
-> > -
-> > -		break;
-> > -	case SND_SOC_DAPM_POST_PMU:
-> > -		pm8916_wcd_analog_micbias_enable(component);
-> > -		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
-> > -				    MICB_1_EN_BYP_CAP_MASK, cap_mode);
-> >   		break;
-> >   	}
-> > @@ -437,26 +431,6 @@ static int pm8916_wcd_analog_enable_micbias_ext2(struct
-> >   }
-> > -static int pm8916_wcd_analog_enable_micbias_int1(struct
-> > -						  snd_soc_dapm_widget
-> > -						  *w, struct snd_kcontrol
-> > -						  *kcontrol, int event)
-> > -{
-> > -	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-> > -	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
-> > -
-> > -	switch (event) {
-> > -	case SND_SOC_DAPM_PRE_PMU:
-> > -		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
-> > -				    MICB_1_INT_TX1_INT_RBIAS_EN_MASK,
-> > -				    MICB_1_INT_TX1_INT_RBIAS_EN_ENABLE);
-> > -		break;
-> > -	}
-> > -
-> > -	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
-> > -						     wcd->micbias1_cap_mode);
-> > -}
-> > -
-> >   static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
-> >   				      bool micbias2_enabled)
-> >   {
-> > @@ -564,9 +538,8 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
-> >   	switch (event) {
-> >   	case SND_SOC_DAPM_PRE_PMU:
-> > -		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
-> > -				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
-> > -				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
-> > +		snd_soc_component_update_bits(component, CDC_A_MICB_2_EN,
-> > +					      CDC_A_MICB_2_PULL_DOWN_EN_MASK, 0);
-> >   		break;
-> >   	case SND_SOC_DAPM_POST_PMU:
-> >   		pm8916_mbhc_configure_bias(wcd, true);
-> > @@ -576,8 +549,7 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
-> >   		break;
-> >   	}
-> > -	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
-> > -						     wcd->micbias2_cap_mode);
-> > +	return pm8916_wcd_analog_enable_micbias_int(w, kcontrol, event);
-> >   }
-> >   static int pm8916_wcd_analog_enable_adc(struct snd_soc_dapm_widget *w,
-> > @@ -878,12 +850,10 @@ static const struct snd_soc_dapm_route pm8916_wcd_analog_audio_map[] = {
-> >   	{"SPK PA", NULL, "SPK DAC"},
-> >   	{"SPK DAC", "Switch", "PDM_RX3"},
-> > -	{"MIC BIAS Internal1", NULL, "INT_LDO_H"},
-> > -	{"MIC BIAS Internal2", NULL, "INT_LDO_H"},
-> > +	{"MIC BIAS Internal1", NULL, "MIC BIAS External1"},
-> > +	{"MIC BIAS Internal2", NULL, "MIC BIAS External2"},
-> >   	{"MIC BIAS External1", NULL, "INT_LDO_H"},
-> >   	{"MIC BIAS External2", NULL, "INT_LDO_H"},
-> > -	{"MIC BIAS Internal1", NULL, "vdd-micbias"},
-> > -	{"MIC BIAS Internal2", NULL, "vdd-micbias"},
-> >   	{"MIC BIAS External1", NULL, "vdd-micbias"},
-> >   	{"MIC BIAS External2", NULL, "vdd-micbias"},
-> >   };
-> > @@ -937,11 +907,10 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
-> >   	SND_SOC_DAPM_SUPPLY("RX_BIAS", CDC_A_RX_COM_BIAS_DAC, 7, 0, NULL, 0),
-> >   	/* TX */
-> > -	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_EN, 7, 0,
-> > -			    pm8916_wcd_analog_enable_micbias_int1,
-> > -			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-> > -			    SND_SOC_DAPM_POST_PMD),
-> > -	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal2", CDC_A_MICB_2_EN, 7, 0,
-> > +	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_INT_RBIAS, 7, 0,
-> > +			    pm8916_wcd_analog_enable_micbias_int,
-> > +			    SND_SOC_DAPM_PRE_PMU),
-> > +	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal2", CDC_A_MICB_1_INT_RBIAS, 4, 0,
-> >   			    pm8916_wcd_analog_enable_micbias_int2,
-> >   			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
-> >   			    SND_SOC_DAPM_POST_PMD),
-> > 
+-- 
+~Vinod
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
