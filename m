@@ -7,68 +7,68 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 771CBC33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B14CC33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:31:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01D7024656
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:30:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 861FD24658
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:31:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YrX3yg06";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="METh4cwV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01D7024656
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OojVSHmi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="TPzPQi3a"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 861FD24658
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A5E41870;
-	Tue, 14 Jan 2020 17:30:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A5E41870
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE4831881;
+	Tue, 14 Jan 2020 17:30:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE4831881
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579019455;
-	bh=nEm8o6z+L1APKfDOTtJrmob8roB79tkBWvX0jHyHH0I=;
+	s=default; t=1579019492;
+	bh=KMmrgLFp75ZQGxK4PV7I+XoChDFgzOEnC792bae0Dzc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YrX3yg06N7m+H3bVVxvK6OrpOaOD4fHZECIy3NWGhEpuAstHF2cuoZATP/MI5tSGS
-	 laqjhjbOAc79EnBzxSc7+VtEZkEGs5lQWlpehmPPqzCSUeotoS3/ihT31/wYMq58IH
-	 2E2/9Gjo62J5+ccNjQIwssvy8IAL70dIio1zJYwY=
+	b=OojVSHmiP3Hu5PLkGu0adv2EVXpYCvaiavT731LT1/yCXSGLtBCyTgeYNjkkaEwgK
+	 nmLL3EXAufwKfo5NBGui2chzbuGtex6lnuC7SgCE87po+OWnPuIdtmcHo/4lKpX4Ny
+	 /F0+SjJnk9DYkhjlOfDBfVx/XPSwTGslm/fTpWrc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F122F80274;
-	Tue, 14 Jan 2020 17:19:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E146F80291;
+	Tue, 14 Jan 2020 17:19:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 732C2F8026F; Tue, 14 Jan 2020 17:18:52 +0100 (CET)
+ id B6989F8022B; Tue, 14 Jan 2020 17:18:52 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 192BAF8016F
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:18:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 192BAF8016F
+ by alsa1.perex.cz (Postfix) with ESMTPS id B04B9F8014E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:18:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B04B9F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="METh4cwV"
+ header.b="TPzPQi3a"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 00EG83Oo018646; Tue, 14 Jan 2020 10:18:44 -0600
+ 00EG83Op018646; Tue, 14 Jan 2020 10:18:44 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=PODMain02222019;
- bh=DQLKQOu4BtXKVvPfzldzgrsq5nrr4jZi1LC3b1CwU/g=;
- b=METh4cwVKcTvV/W2RuxmPwHcfvNqwYWcooDdC3xzZYMnqnodYlb+Yy1lrRYDQE8DgAby
- OK/dihmryhNHNSmGYfG70iHbM4Z3+eZxT91x25okWYwOdfEr6UHjAcfOGkFoFcEMzMTb
- hcveINubNfYNQ2VFT9xdf4z2ra2M2f+sO3S5MDGrjr7FEQESV3kGcruc3PJ9Ue0hwWaJ
- nnXgQMq0u/+/ht8unE5AR73foDmalJ0Go1LFqp1ecee5B7kvpCH6hUN8ZAOHF6nQUoYA
- 3Z7dsxdMsbpvqI1766sK648wUCQflwXleCPkL6tr5PDCpPHSrdxIFPxswkNjU3C64Ejs wg== 
+ bh=/0EyhYUwrK1tyrWh5I0cDhLjW+CWpmR1o+Hel6XcHkw=;
+ b=TPzPQi3aWBdYw/c+Cl9XpwjzTHRscNPDgVC7+pwkdpNWGe+JHQCAUXAb8VVzvUNkiw+l
+ rnLrZKS+VV+k/o+OFo3u7p5b6wSmIkRBazzSuMK4+De5+qiZ3pQgH/2QZsoKqUJjImwL
+ PXYMetIeJ8tK2ISbsSNdpCpqn5xTk6N7e6PEUznyiquXuhBfL99csXyqpWRLk0+UuBag
+ ofRfpyCuktptx8Veaz9W81Z+4pUFEwf+72zVh8j+HXxVpeMgouM52Qcav2DOec5ny50O
+ ZswchiJpJz+jEFVG+GA5m4X74Ve0+mJ9WcdDMUWdkPjmSHg0Q6OGRfLmilCu8HXd+hP8 bg== 
 Authentication-Results: ppops.net;
  spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
 Received: from ediex01.ad.cirrus.com ([5.172.152.52])
- by mx0a-001ae601.pphosted.com with ESMTP id 2xfcn7vrvp-1
+ by mx0a-001ae601.pphosted.com with ESMTP id 2xfcn7vrvp-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 14 Jan 2020 10:18:43 -0600
+ Tue, 14 Jan 2020 10:18:44 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Tue, 14 Jan
@@ -77,12 +77,12 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
  Frontend Transport; Tue, 14 Jan 2020 16:18:41 +0000
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AEF442B1;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A9BB32DC;
  Tue, 14 Jan 2020 16:18:41 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Date: Tue, 14 Jan 2020 16:18:40 +0000
-Message-ID: <20200114161841.451-3-ckeepax@opensource.cirrus.com>
+Date: Tue, 14 Jan 2020 16:18:39 +0000
+Message-ID: <20200114161841.451-2-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200114161841.451-1-ckeepax@opensource.cirrus.com>
 References: <20200114161841.451-1-ckeepax@opensource.cirrus.com>
@@ -93,13 +93,13 @@ X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  lowpriorityscore=0 malwarescore=0
  impostorscore=0 phishscore=0 clxscore=1015 bulkscore=0 spamscore=0
- adultscore=0 mlxlogscore=764 priorityscore=1501 mlxscore=0 suspectscore=1
+ adultscore=0 mlxlogscore=762 priorityscore=1501 mlxscore=0 suspectscore=1
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1910280000
  definitions=main-2001140137
 Cc: li.xu@cirrus.com, patches@opensource.cirrus.com,
  alsa-devel@alsa-project.org, lgirdwood@gmail.com, david.rhodes@cirrus.com
-Subject: [alsa-devel] [PATCH 3/4] ASoC: madera: Correct error path handling
-	in madera_out1_demux_put
+Subject: [alsa-devel] [PATCH 2/4] ASoC: madera: Correct DMIC only input hook
+	ups
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,27 +117,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Should the write to MADERA_OUTPUT_ENABLES_1 fail and out_clamp[0] not be
-set an additional error message will be printed. Clear the ret variable
-to avoid this.
+Both the data and clock should be connected to both the left and right
+inputs for DMIC only inputs, add the missing routes.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/madera.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cs47l85.c | 6 ++++++
+ sound/soc/codecs/cs47l90.c | 4 ++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index 12dc468ae6bf0..2be64422adf9b 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -575,6 +575,7 @@ int madera_out1_demux_put(struct snd_kcontrol *kcontrol,
- 	usleep_range(2000, 3000); /* wait for wseq to complete */
+diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
+index f85581a97bdc3..05445abcb470b 100644
+--- a/sound/soc/codecs/cs47l85.c
++++ b/sound/soc/codecs/cs47l85.c
+@@ -2008,12 +2008,18 @@ static const struct snd_soc_dapm_route cs47l85_dapm_routes[] = {
+ 	{ "IN3R", NULL, "IN3R Mode" },
  
- 	/* change demux setting */
-+	ret = 0;
- 	if (madera->out_clamp[0])
- 		ret = regmap_update_bits(madera->regmap,
- 					 MADERA_OUTPUT_ENABLES_1,
+ 	{ "IN4L", NULL, "DMICCLK4" },
++	{ "IN4L", NULL, "DMICDAT4" },
++	{ "IN4R", NULL, "DMICCLK4" },
+ 	{ "IN4R", NULL, "DMICDAT4" },
+ 
+ 	{ "IN5L", NULL, "DMICCLK5" },
++	{ "IN5L", NULL, "DMICDAT5" },
++	{ "IN5R", NULL, "DMICCLK5" },
+ 	{ "IN5R", NULL, "DMICDAT5" },
+ 
+ 	{ "IN6L", NULL, "DMICCLK6" },
++	{ "IN6L", NULL, "DMICDAT6" },
++	{ "IN6R", NULL, "DMICCLK6" },
+ 	{ "IN6R", NULL, "DMICDAT6" },
+ 
+ 	MADERA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
+diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
+index c3b6f4d41005b..35ff5a923e282 100644
+--- a/sound/soc/codecs/cs47l90.c
++++ b/sound/soc/codecs/cs47l90.c
+@@ -1941,9 +1941,13 @@ static const struct snd_soc_dapm_route cs47l90_dapm_routes[] = {
+ 	{ "IN3R", NULL, "DMICDAT3" },
+ 
+ 	{ "IN4L", NULL, "DMICCLK4" },
++	{ "IN4L", NULL, "DMICDAT4" },
++	{ "IN4R", NULL, "DMICCLK4" },
+ 	{ "IN4R", NULL, "DMICDAT4" },
+ 
+ 	{ "IN5L", NULL, "DMICCLK5" },
++	{ "IN5L", NULL, "DMICDAT5" },
++	{ "IN5R", NULL, "DMICCLK5" },
+ 	{ "IN5R", NULL, "DMICDAT5" },
+ 
+ 	MADERA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
 -- 
 2.11.0
 
