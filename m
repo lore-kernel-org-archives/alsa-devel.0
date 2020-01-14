@@ -4,76 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4B36C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2761DC33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:21:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 41325214AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:20:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A39AA24655
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:21:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PHPNrhhU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BY45EJO/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41325214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qw7jl3f8";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="HrKBts6E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A39AA24655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99C4A1829;
-	Tue, 14 Jan 2020 17:20:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99C4A1829
+	by alsa0.perex.cz (Postfix) with ESMTPS id F35161833;
+	Tue, 14 Jan 2020 17:20:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F35161833
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579018851;
-	bh=wT7FPzsG4nooiUsgYYDWL9RoC+iO9Mj1D5oW5eq/Gtg=;
+	s=default; t=1579018890;
+	bh=S1i1xPZMXX3lYZvsKqCk/6vj1fvFbXvUvvbvaaXkrCE=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=PHPNrhhUBxqBYGS0ZSsiNTxVQoBaxK1MAb3Opfjum9X/w+z0wr4ZHfToXi/aiRyBx
-	 aKf+HbECGHdgKAMK52BWJdwBvfufIbFhZ/HDt9ECA1rNQULSclAYU/KLTZpq5gztkS
-	 0x8ophS6PmJ7uGBbavcunM9V6NO5cNHYUzE10ri0=
+	b=qw7jl3f8Z+lvPj8yZEWOdtRsb1miOwwcA6ZomPZuXjsOsMepNaS+BtqNxN9nfR3e8
+	 NYGQn58oGWnTL8LKrJ6RTDUxz891SgcIfHdbP3otC9zC6IvaDwCfIFsZ11CcDbIfeP
+	 c+loYKFZbFdtCxrCVxtWY87kdJCbNYiogCtU8pTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8347F80348;
-	Tue, 14 Jan 2020 17:10:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BD4FF8028F;
+	Tue, 14 Jan 2020 17:10:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37A4FF80328; Tue, 14 Jan 2020 17:10:03 +0100 (CET)
+ id 64305F80329; Tue, 14 Jan 2020 17:10:08 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E88C4F80274
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E88C4F80274
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05742F8027C
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05742F8027C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="BY45EJO/"
+ header.b="HrKBts6E"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=5WPgdKsI1p3N1leiO2B/mTiAvE33onnwgIpMhufe9mc=; b=BY45EJO/xEZO
- RfKalFR/d+8/Ju1hlXjcfZi21mndXIS1+UK3YHr1z+n7aL/g3xKEW5O6flLQuKhtF683gfiOFfafT
- yIge0z388iu9+aDQzpAS/GSxI/W8pEi/gLkzsTJZw/OsAcSpGxjmRbsKA6EkrG2VG+xgJoAfrOgTm
- ctkAA=;
+ List-Archive; bh=lXZ19upwkhMk+xRdcs/ZKINinzvJGBfvwuhk1R5K6ok=; b=HrKBts6EZ6Y2
+ HhKdy+HyppzSh2qUsV25EXnLXGXcSbt4olOUJ2QhcbljR6GDb500c/UAb8qFGn+7BeoBSGfudUnQN
+ ZSzFTecc3oKH+kmuPCn96xWN1nIaXumUJ6wPd9jIO2MMrqS9KZlwdHAN+bd6zWpW7raYZUOytEHJM
+ hmbb0=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1irOke-0001Vb-Ty; Tue, 14 Jan 2020 16:09:08 +0000
+ id 1irOkd-0001V7-Vw; Tue, 14 Jan 2020 16:09:08 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 91A80D02C77; Tue, 14 Jan 2020 16:09:08 +0000 (GMT)
+ id A8EE7D02C77; Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200113210428.27457-14-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200113210428.27457-14-pierre-louis.bossart@linux.intel.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+In-Reply-To: <20200103011754.GA260926@dtor-ws>
+Message-Id: <applied-20200103011754.GA260926@dtor-ws>
 X-Patchwork-Hint: ignore
-Date: Tue, 14 Jan 2020 16:09:08 +0000 (GMT)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: Intel: skl_nau88l25_max98357a: rename
-	shadowed variable" to the asoc tree
+Date: Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: Intel: bytcr_rt5651: switch to using
+	devm_fwnode_gpiod_get()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: skl_nau88l25_max98357a: rename shadowed variable
+   ASoC: Intel: bytcr_rt5651: switch to using devm_fwnode_gpiod_get()
 
 has been applied to the asoc tree at
 
@@ -119,65 +123,58 @@ to this mail.
 Thanks,
 Mark
 
-From 119cc7841403d1f1889ce17358ed98de023bf387 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 13 Jan 2020 15:04:23 -0600
-Subject: [PATCH] ASoC: Intel: skl_nau88l25_max98357a: rename shadowed variable
+From e26c4e900b1a75b1e0c9e19e1f807666a8ad2fa1 Mon Sep 17 00:00:00 2001
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Date: Thu, 2 Jan 2020 17:17:54 -0800
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: switch to using
+ devm_fwnode_gpiod_get()
 
-Fix cppcheck warning:
+devm_fwnode_get_index_gpiod_from_child() is going away as the name is
+too unwieldy, let's switch to using the new devm_fwnode_gpiod_get().
 
-[sound/soc/intel/boards/skl_nau88l25_max98357a.c:257] ->
-[sound/soc/intel/boards/skl_nau88l25_max98357a.c:142]: (style) Local
-variable 'channels' shadows outer variable
-
-[sound/soc/intel/boards/skl_nau88l25_max98357a.c:257] ->
-[sound/soc/intel/boards/skl_nau88l25_max98357a.c:318]: (style) Local
-variable 'channels' shadows outer variable
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200113210428.27457-14-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Link: https://lore.kernel.org/r/20200103011754.GA260926@dtor-ws
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 3ce8efbeed12..e6de3b28d840 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -139,13 +139,13 @@ static int skylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *rate = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 3bb2732a9f7e..6d71352ea864 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -990,10 +990,11 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  
- 	/* The ADSP will covert the FE rate to 48k, stereo */
- 	rate->min = rate->max = 48000;
--	channels->min = channels->max = 2;
-+	chan->min = chan->max = 2;
- 
- 	/* set SSP0 to 24 bit */
- 	snd_mask_none(fmt);
-@@ -315,13 +315,13 @@ static const struct snd_soc_ops skylake_nau8825_ops = {
- static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 		struct snd_pcm_hw_params *params)
- {
--	struct snd_interval *channels = hw_param_interval(params,
-+	struct snd_interval *chan = hw_param_interval(params,
- 				SNDRV_PCM_HW_PARAM_CHANNELS);
- 
- 	if (params_channels(params) == 2 || DMIC_CH(dmic_constraints) == 2)
--		channels->min = channels->max = 2;
-+		chan->min = chan->max = 2;
- 	else
--		channels->min = channels->max = 4;
-+		chan->min = chan->max = 4;
- 
- 	return 0;
- }
+ 	if (byt_rt5651_gpios) {
+ 		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
+-		priv->ext_amp_gpio = devm_fwnode_get_index_gpiod_from_child(
+-						&pdev->dev, "ext-amp-enable", 0,
+-						codec_dev->fwnode,
+-						GPIOD_OUT_LOW, "speaker-amp");
++		priv->ext_amp_gpio = devm_fwnode_gpiod_get(&pdev->dev,
++							   codec_dev->fwnode,
++							   "ext-amp-enable",
++							   GPIOD_OUT_LOW,
++							   "speaker-amp");
+ 		if (IS_ERR(priv->ext_amp_gpio)) {
+ 			ret_val = PTR_ERR(priv->ext_amp_gpio);
+ 			switch (ret_val) {
+@@ -1009,10 +1010,11 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 				return ret_val;
+ 			}
+ 		}
+-		priv->hp_detect = devm_fwnode_get_index_gpiod_from_child(
+-						&pdev->dev, "hp-detect", 0,
+-						codec_dev->fwnode,
+-						GPIOD_IN, "hp-detect");
++		priv->hp_detect = devm_fwnode_gpiod_get(&pdev->dev,
++							codec_dev->fwnode,
++							"hp-detect",
++							GPIOD_IN,
++							"hp-detect");
+ 		if (IS_ERR(priv->hp_detect)) {
+ 			ret_val = PTR_ERR(priv->hp_detect);
+ 			switch (ret_val) {
 -- 
 2.20.1
 
