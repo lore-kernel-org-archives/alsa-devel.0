@@ -6,76 +6,74 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75F17C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D15CC33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:29:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00D8224655
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:28:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ABDAF24656
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:29:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ibAX6cjI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LlrOO7oX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00D8224655
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZprDDWSQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="QD7qtdq0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABDAF24656
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53584184A;
-	Tue, 14 Jan 2020 17:28:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53584184A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F47216BE;
+	Tue, 14 Jan 2020 17:28:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F47216BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579019332;
-	bh=EfPLY+DajgiDbh7QYjOw3MCsaL9OxNNHyg3hv0mxUkY=;
+	s=default; t=1579019371;
+	bh=ubtFLXS3rebKm8IiFRV5jVVlrag3NnlOF60FmTwm/ek=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=ibAX6cjIlOjk86a4FW9LtoG7NcZZng0JQV7hVeB/PpawRxvFfaNbu5Z+PalwBIpWc
-	 0dtSYWoOBst6WIQKLVYV5qeAQTcUV+rCRhalpx4O2JwtHa9yfBmgf8FTLgw3yr4XRF
-	 PhZKiYFtKPtqcyOCOPuvzjKmkFZW8jrzkefxqEYg=
+	b=ZprDDWSQj/+jIG5nQ+c0PyQbvaqAhbkiEbsYIEfGKkCcsLoPoQX4Z9XwARK+VZVVD
+	 nZSOd7dJgsojNpuo2vQKMdTPZmtxh1nJwh1LXS0MrnKpVAa1ZB1SgFX9K2gqnP+bEk
+	 O+YuHh9gxpfTISHTHTQEafxuUe6numyyhvLfLW4w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60C0DF803D6;
-	Tue, 14 Jan 2020 17:10:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6882F803EA;
+	Tue, 14 Jan 2020 17:10:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B0B9F8034E; Tue, 14 Jan 2020 17:10:34 +0100 (CET)
+ id 86937F8035E; Tue, 14 Jan 2020 17:10:36 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9D43F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B413F8028E
  for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9D43F80121
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B413F8028E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="LlrOO7oX"
+ header.b="QD7qtdq0"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=GHzTVMVBF94ZwOFU8U5VP1k9TerbuAdkk43kRxNrbUM=; b=LlrOO7oXUFt1
- lPa2l9xQOwKssDCLDOHYXBgW6gY5NIaZWlHq+emJTeu2Rfwr08/kVqhpUfeL7VNXBPHp4OTRH0WXF
- 8jgCdTQRLrBWOebZ3DoZifyPfuWA783LV9jlqQQWEo5eT9rhOeYUyVs187VJEPS1zPShti4EKg4Pl
- Ov7WE=;
+ List-Archive; bh=5gVGuMNMcEAQXGHHkly9WTjxDNYkcV113uzeDZ2hJ6o=; b=QD7qtdq0R3tv
+ KULMEpMEUfOFPYtHfLcO9nyXooNL3oaP2JUMsFniMOZ76RAw4U6RRqFvnBBr2dGbi2s6HKclC5d3O
+ n6i7Ogx9Gp8GjBJ5EjtzFGf54U9sBxeA1Dkge4XtvqD46giYhjnewKRGxU1mlnXyN5SRRork640Wv
+ OULu8=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1irOkh-0001Wz-FJ; Tue, 14 Jan 2020 16:09:11 +0000
+ id 1irOkh-0001Wv-DB; Tue, 14 Jan 2020 16:09:11 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id D4FF5D02C7B; Tue, 14 Jan 2020 16:09:10 +0000 (GMT)
+ id B0296D02C7E; Tue, 14 Jan 2020 16:09:10 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87h80yhm9p.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-87h80yhm9p.wl-kuninori.morimoto.gx@renesas.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200113223625.15995-1-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200113223625.15995-1-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Date: Tue, 14 Jan 2020 16:09:10 +0000 (GMT)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- ard Liao <bardliao@realtek.com>
-Subject: [alsa-devel] Applied "ASoC: rt715: use dev_to_sdw_dev() instead of
-	to_sdw_slave_device()" to the asoc tree
+Cc: tiwai@suse.de, Jack Yu <jack.yu@realtek.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: rt715: remove warnings" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +94,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt715: use dev_to_sdw_dev() instead of to_sdw_slave_device()
+   ASoC: rt715: remove warnings
 
 has been applied to the asoc tree at
 
@@ -121,47 +119,53 @@ to this mail.
 Thanks,
 Mark
 
-From 2c72943dc359c9592747c3fd82cda30e7c89714c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 14 Jan 2020 10:14:42 +0900
-Subject: [PATCH] ASoC: rt715: use dev_to_sdw_dev() instead of
- to_sdw_slave_device()
+From fed4383c4586a895dc8cd62e3a71814f16ba0e2d Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 13 Jan 2020 16:36:25 -0600
+Subject: [PATCH] ASoC: rt715: remove warnings
 
-This patch fixup this error
+make W=1 reports defined-but-not-used and kernel-doc formatting issues.
 
-  CC      sound/soc/codecs/rt715-sdw.o
-linux/sound/soc/codecs/rt715-sdw.c: In function 'rt715_dev_resume':
-linux/sound/soc/codecs/rt715-sdw.c:568:28: error: implicit declaration\
- of function 'to_sdw_slave_device'; did you mean 'sdw_slave_modalias'?\
-[-Werror=implicit-function-declaration]
-  struct sdw_slave *slave = to_sdw_slave_device(dev);
-                            ^~~~~~~~~~~~~~~~~~~
-                            sdw_slave_modalias
-linux/sound/soc/codecs/rt715-sdw.c:568:28: warning: initialization of\
- 'struct sdw_slave *' from 'int' makes pointer from integer without a\
- cast [-Wint-conversion]
-cc1: some warnings being treated as errors
+No functionality change.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87h80yhm9p.wl-kuninori.morimoto.gx@renesas.com
+Fixes: d1ede0641b05e4 ("ASoC: rt715: add RT715 codec driver")
+Cc: Jack Yu <jack.yu@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200113223625.15995-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt715-sdw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt715.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
-index c35591fd281b..18868e4ae6e8 100644
---- a/sound/soc/codecs/rt715-sdw.c
-+++ b/sound/soc/codecs/rt715-sdw.c
-@@ -565,7 +565,7 @@ static int rt715_dev_suspend(struct device *dev)
+diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+index 5c6f05b8d8ab..4c746938a062 100644
+--- a/sound/soc/codecs/rt715.c
++++ b/sound/soc/codecs/rt715.c
+@@ -203,7 +203,6 @@ static int rt715_set_amp_gain_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
- static int rt715_dev_resume(struct device *dev)
- {
--	struct sdw_slave *slave = to_sdw_slave_device(dev);
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	struct rt715_priv *rt715 = dev_get_drvdata(dev);
- 	unsigned long time;
+-static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -6525, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -1725, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
  
+@@ -366,7 +365,7 @@ static const char * const adc_22_23_mux_text[] = {
+ 	"DMIC4",
+ };
+ 
+-/**
++/*
+  * Due to mux design for nid 24 (MUX_IN3)/25 (MUX_IN4), connection index 0 and
+  * 1 will be connected to the same dmic source, therefore we skip index 1 to
+  * avoid misunderstanding on usage of dapm routing.
+@@ -404,6 +403,7 @@ static SOC_ENUM_SINGLE_DECL(
+ static SOC_VALUE_ENUM_SINGLE_DECL(rt715_adc24_enum,
+ 	RT715_MUX_IN3, 0, 0xf,
+ 	adc_24_mux_text, rt715_adc_24_25_values);
++
+ static SOC_VALUE_ENUM_SINGLE_DECL(rt715_adc25_enum,
+ 	RT715_MUX_IN4, 0, 0xf,
+ 	adc_25_mux_text, rt715_adc_24_25_values);
 -- 
 2.20.1
 
