@@ -2,75 +2,50 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56BC1C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75C3FC33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEBAC2467A
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="E5Izllmj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEBAC2467A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	by mail.kernel.org (Postfix) with ESMTPS id 0D74624670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D74624670
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B6EF2ED9;
-	Tue, 14 Jan 2020 12:24:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B6EF2ED9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84D6827D1;
+	Tue, 14 Jan 2020 02:31:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84D6827D1
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 112F5F80276;
-	Tue, 14 Jan 2020 12:23:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07997F8014B;
+	Tue, 14 Jan 2020 02:31:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B65E9F80277; Tue, 14 Jan 2020 12:23:08 +0100 (CET)
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de
- [IPv6:2a01:238:20a:202:5301::4])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04B21F800E9;
- Tue, 14 Jan 2020 12:22:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04B21F800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="E5Izllmj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1579000976;
- s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
- X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
- bh=5yTE7cLlgXleUHOY2MlqK1MoBnw7WgPHiBcoPkvG1SQ=;
- b=E5IzllmjtQwZl12arc8rrozgtdw0WxwiWOdhdO6Lx3cSfx4eWxzQQJa3yKd7M4tMbw
- KkOSDk6QiiCYxtz9APJ6QXyfPAhYGhnM8Gv3SN3Vil0BFTtCN0uwjPWQnLi7c1d2IvAz
- cNsGIc/mA70xTaKPQaVKDMux5vQmIKwT76fVO7/5sHghKHaAgxy+S+H66vf3rTkXqpm4
- rNChH1x1LmuEtleQUb6omBAlr8h8A3D44Xp6noLYi3m2N9PY1sXrqLs+hu6AfF+4XN0j
- n3qIKnXelXcgP8Nm+Zll2HKJKssOaw7dzfzw4gbJpOIoxfTdPtDDrjUCqRViISIjzBl8
- 2kOQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXQ7IOGU5qzCB3a93viaVr"
-X-RZG-CLASS-ID: mo00
-Received: from localhost.localdomain by smtp.strato.de (RZmta 46.1.4 AUTH)
- with ESMTPSA id h048a6w0EBMtULE
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 14 Jan 2020 12:22:55 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Jaroslav Kysela <perex@perex.cz>
-Date: Tue, 14 Jan 2020 12:21:07 +0100
-Message-Id: <20200114112110.51983-5-stephan@gerhold.net>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200114112110.51983-1-stephan@gerhold.net>
-References: <20200114112110.51983-1-stephan@gerhold.net>
-MIME-Version: 1.0
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH alsa-ucm-conf 4/7] codecs/msm8916-wcd:
-	Headphones: Drop invalid RDAC2 MUX value
+ id 9B4E8F801EB; Tue, 14 Jan 2020 02:31:16 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A359DF800B9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:31:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A359DF800B9
+Date: 14 Jan 2020 10:31:07 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36588738"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 14 Jan 2020 10:31:07 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 18A47414805F;
+ Tue, 14 Jan 2020 10:31:07 +0900 (JST)
+Message-ID: <87ftgihlic.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 00/16] ASoC: remove DAI suspend/resume
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,30 +63,84 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As of commit 9110d1b0e229c ("ASoC: msm8916-wcd-analog: Fix RX1 selection in RDAC2 MUX")
-in the Linux kernel, the RDAC2 MUX mixer can be only set to RX1 or RX2.
-Drop the invalid value from the UCM configuration.
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- ucm2/codecs/msm8916-wcd/Headphones.conf | 1 -
- 1 file changed, 1 deletion(-)
+Hi Mark
 
-diff --git a/ucm2/codecs/msm8916-wcd/Headphones.conf b/ucm2/codecs/msm8916-wcd/Headphones.conf
-index 7a2090e..380787d 100644
---- a/ucm2/codecs/msm8916-wcd/Headphones.conf
-+++ b/ucm2/codecs/msm8916-wcd/Headphones.conf
-@@ -23,7 +23,6 @@ SectionDevice."Headphones" {
- 		cset "name='RX2 Digital Volume' 0"
- 		cset "name='HPHL' 0"
- 		cset "name='HPHR' 0"
--		cset "name='RDAC2 MUX' ZERO"
- 		cset "name='RX1 MIX1 INP1' ZERO"
- 		cset "name='RX2 MIX1 INP1' ZERO"
- 	]
+Now, ALSA SoC calls 2 type of suspend/resume
+
+	suspend/resume for Component
+	suspend/resume for DAI
+
+When ALSA SoC calls suspend/resume, its orders are
+
+	1) Suspend/Resume all CPU DAI if bus-control was 0
+	2) Suspend/Resume all Component
+	3) Suspend/Resume all CPU DAI if bus-control was 1
+
+Historically 2)'s "Component" was "Codec", before.
+In total,
+CPU   has 3 chance to suspend/resume(= 1/2/3), but
+Codec has 1 chance to suspend/resume(= 2).
+
+And now, no driver which is supporting suspend/resume has bus-control.
+This means 3) is never used.
+
+Almost all drivers which is using DAI suspend/resume can simply switch
+to Component suspend/resume.
+Few drivers want to use/keep DAI, but, we can call all DAI from Component
+by using this if needed
+
+	for_each_component_dais()
+
+These patches switches all DAI's suspend/resume to Component one,
+and removes it.
+
+Kuninori Morimoto (16):
+  ASoC: atmel: atmel_ssc_dai: move .suspend/.resume to component
+  ASoC: bcm: cygnus-ssp: move .suspend/.resume to component
+  ASoC: cirrus: ep93xx-i2s: move .suspend/.resume to component
+  ASoC: jz4740: jz4740-i2s: move .suspend/.resume to component
+  ASoC: mediatek: move .suspend/.resume to component
+  ASoC: samsung: s3c24xx-i2s: move .suspend/.resume to component
+  ASoC: samsung: spdif: move .suspend/.resume to component
+  ASoC: sti: sti_uniperif: move .suspend/.resume to component
+  ASoC: ti: omap-mcpdm: move .suspend/.resume to component
+  ASoC: uniphier: move .suspend/.resume to component
+  ASoC: dwc: dwc-i2s: move .suspend/.resume to component
+  ASoC: samsung: i2s: move .suspend/.resume to component
+  ASoC: ux500: ux500_msp_dai: remove unused DAI .suspend/.resume
+  ASoC: pxa: pxa-ssp: move .suspend/.resume to component
+  ASoC: pxa: pxa2xx-i2s: move .suspend/.resume to component
+  ASoC: soc-core: remove DAI suspend/resume
+
+ include/sound/soc-dai.h                    |  2 --
+ sound/soc/atmel/atmel_ssc_dai.c            | 18 ++++++-------
+ sound/soc/bcm/cygnus-ssp.c                 | 39 +++++++++++++++++++++++-----
+ sound/soc/cirrus/ep93xx-i2s.c              | 16 ++++++------
+ sound/soc/dwc/dwc-i2s.c                    | 32 +++++++++++++----------
+ sound/soc/jz4740/jz4740-i2s.c              | 18 ++++++-------
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 12 ++++-----
+ sound/soc/mediatek/common/mtk-afe-fe-dai.h |  4 +--
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 14 ++--------
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 10 +++-----
+ sound/soc/pxa/pxa-ssp.c                    | 16 ++++++------
+ sound/soc/pxa/pxa2xx-i2s.c                 | 12 ++++-----
+ sound/soc/samsung/i2s.c                    | 13 +++++-----
+ sound/soc/samsung/s3c24xx-i2s.c            |  8 +++---
+ sound/soc/samsung/spdif.c                  | 18 ++++++++-----
+ sound/soc/soc-core.c                       | 41 ------------------------------
+ sound/soc/soc-dai.c                        | 12 ---------
+ sound/soc/sti/sti_uniperif.c               | 12 ++++-----
+ sound/soc/ti/omap-mcpdm.c                  | 16 ++++++------
+ sound/soc/uniphier/aio-cpu.c               | 31 +++++++++++++++++++---
+ sound/soc/uniphier/aio-ld11.c              | 18 -------------
+ sound/soc/uniphier/aio-pxs2.c              | 14 ----------
+ sound/soc/uniphier/aio.h                   |  2 --
+ sound/soc/ux500/ux500_msp_dai.c            |  2 --
+ 24 files changed, 167 insertions(+), 213 deletions(-)
+
 -- 
-2.24.1
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
