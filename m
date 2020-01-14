@@ -2,72 +2,52 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50AD1C33CB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53933C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D416F24676
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:16:42 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ecCzcFXt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D416F24676
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id DBB6F24670
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 13:17:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBB6F24670
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FD7F289F;
-	Tue, 14 Jan 2020 07:15:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FD7F289F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98A98278A;
+	Tue, 14 Jan 2020 02:14:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98A98278A
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB4D9F8014D;
-	Tue, 14 Jan 2020 07:15:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B4CEF80149;
+	Tue, 14 Jan 2020 02:14:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4881F8014E; Tue, 14 Jan 2020 07:15:13 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFA7AF80121
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 07:15:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFA7AF80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ecCzcFXt"
-Received: from localhost (unknown [49.207.51.160])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3B12E2084D;
- Tue, 14 Jan 2020 06:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1578982508;
- bh=Bvg/p2APBIXoLXN92+QfE3MG7q8+n3xAIpTyfePVQ9E=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ecCzcFXtAc1P9IgW3Tg2kmrIZV/ocoYgiCF/WjlbiW/73Ub0eugd9hOHa38I20TKa
- X+yjnXBFIDq3NuM3DTlGf2hytbj0DDUO1Ok2Ftcqz6T5OMDqPvM+5PfXdtptVVuN6m
- 7m7IJUJBZEgov+WQkKH5QenGMOeO1M1mDJOjnjhs=
-Date: Tue, 14 Jan 2020 11:44:41 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20200114061441.GB2818@vkoul-mobl>
-References: <20200110214609.30356-1-pierre-louis.bossart@linux.intel.com>
- <20200110214609.30356-5-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200110214609.30356-5-pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 4/5] soundwire: intel: add sdw_stream_setup
- helper for .startup callback
+ id B1D68F801EB; Tue, 14 Jan 2020 02:14:51 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9AA61F80149
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 02:14:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AA61F80149
+Date: 14 Jan 2020 10:14:42 +0900
+X-IronPort-AV: E=Sophos;i="5.69,431,1571670000"; d="scan'208";a="36369846"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 14 Jan 2020 10:14:42 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 838A04140BE3;
+ Tue, 14 Jan 2020 10:14:42 +0900 (JST)
+Message-ID: <87h80yhm9p.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Oder Chiou <oder_chiou@realtek.com>, ard Liao <bardliao@realtek.com>,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: [alsa-devel] [PATCH] ASoC: rt715: use dev_to_sdw_dev() instead of
+	to_sdw_slave_device()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,117 +65,44 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 10-01-20, 15:46, Pierre-Louis Bossart wrote:
-> From: Rander Wang <rander.wang@linux.intel.com>
-> 
-> The sdw stream is allocated and stored in dai to share the sdw runtime
-> information.
-> 
-> Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/soundwire/intel.c | 65 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 65 insertions(+)
-> 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index aa80c46156cb..f4554386d832 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -617,6 +617,69 @@ static int intel_post_bank_switch(struct sdw_bus *bus)
->   * DAI routines
->   */
->  
-> +static int sdw_stream_setup(struct snd_pcm_substream *substream,
-> +			    struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct sdw_stream_runtime *sdw_stream = NULL;
-> +	char *name;
-> +	int i, ret;
-> +
-> +	name = kzalloc(32, GFP_KERNEL);
-> +	if (!name)
-> +		return -ENOMEM;
-> +
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		snprintf(name, 32, "%s-Playback", dai->name);
-> +	else
-> +		snprintf(name, 32, "%s-Capture", dai->name);
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-How about use DAI_SIZE instead of 32 here and above few places? Lets not
-code number like this please
+This patch fixup this error
 
-> +
-> +	sdw_stream = sdw_alloc_stream(name);
-> +	if (!sdw_stream) {
-> +		dev_err(dai->dev, "alloc stream failed for DAI %s", dai->name);
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	/* Set stream pointer on CPU DAI */
-> +	ret = snd_soc_dai_set_sdw_stream(dai, sdw_stream, substream->stream);
-> +	if (ret < 0) {
-> +		dev_err(dai->dev, "failed to set stream pointer on cpu dai %s",
-> +			dai->name);
-> +		goto release_stream;
-> +	}
-> +
-> +	/* Set stream pointer on all CODEC DAIs */
-> +	for (i = 0; i < rtd->num_codecs; i++) {
-> +		ret = snd_soc_dai_set_sdw_stream(rtd->codec_dais[i], sdw_stream,
-> +						 substream->stream);
-> +		if (ret < 0) {
-> +			dev_err(dai->dev, "failed to set stream pointer on codec dai %s",
-> +				rtd->codec_dais[i]->name);
-> +			goto release_stream;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +release_stream:
-> +	sdw_release_stream(sdw_stream);
-> +error:
-> +	kfree(name);
-> +	return ret;
-> +}
-> +
-> +static int intel_startup(struct snd_pcm_substream *substream,
-> +			 struct snd_soc_dai *dai)
-> +{
-> +	/*
-> +	 * TODO: add pm_runtime support here, the startup callback
-> +	 * will make sure the IP is 'active'
-> +	 */
-> +
-> +	return sdw_stream_setup(substream, dai);
-> +}
-> +
->  static int intel_hw_params(struct snd_pcm_substream *substream,
->  			   struct snd_pcm_hw_params *params,
->  			   struct snd_soc_dai *dai)
-> @@ -796,6 +859,7 @@ static int intel_pdm_set_sdw_stream(struct snd_soc_dai *dai,
->  }
->  
->  static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
-> +	.startup = intel_startup,
->  	.hw_params = intel_hw_params,
->  	.prepare = intel_prepare,
->  	.trigger = intel_trigger,
-> @@ -805,6 +869,7 @@ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
->  };
->  
->  static const struct snd_soc_dai_ops intel_pdm_dai_ops = {
-> +	.startup = intel_startup,
->  	.hw_params = intel_hw_params,
->  	.prepare = intel_prepare,
->  	.trigger = intel_trigger,
-> -- 
-> 2.20.1
+  CC      sound/soc/codecs/rt715-sdw.o
+linux/sound/soc/codecs/rt715-sdw.c: In function 'rt715_dev_resume':
+linux/sound/soc/codecs/rt715-sdw.c:568:28: error: implicit declaration\
+ of function 'to_sdw_slave_device'; did you mean 'sdw_slave_modalias'?\
+[-Werror=implicit-function-declaration]
+  struct sdw_slave *slave = to_sdw_slave_device(dev);
+                            ^~~~~~~~~~~~~~~~~~~
+                            sdw_slave_modalias
+linux/sound/soc/codecs/rt715-sdw.c:568:28: warning: initialization of\
+ 'struct sdw_slave *' from 'int' makes pointer from integer without a\
+ cast [-Wint-conversion]
+cc1: some warnings being treated as errors
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/codecs/rt715-sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index c35591f..18868e4 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -565,7 +565,7 @@ static int rt715_dev_suspend(struct device *dev)
+ 
+ static int rt715_dev_resume(struct device *dev)
+ {
+-	struct sdw_slave *slave = to_sdw_slave_device(dev);
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct rt715_priv *rt715 = dev_get_drvdata(dev);
+ 	unsigned long time;
+ 
 -- 
-~Vinod
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
