@@ -2,69 +2,70 @@ Return-Path: <SRS0=6Vr6=3D=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1E48C33CB1
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73525C33CB1
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:45:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 262822467D
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:40:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CE83B24680
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 14:45:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xPVWTHDV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 262822467D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EYJw3BP6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE83B24680
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
-Received: from alsa1.perex.cz (unknown [207.180.221.201])
+Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 038452C0B;
-	Tue, 14 Jan 2020 07:33:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 038452C0B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76C241B04;
+	Tue, 14 Jan 2020 14:27:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76C241B04
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
+	s=default; t=1579008512;
+	bh=KZGZstTSvDUFvjSffJ6BiIxdICr048+yHOPZaHhIdss=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EYJw3BP60gHM/Z3c/Va6lpfgJDMGMcMCyzFqFzDQMtPVXqcB/4LrQUnGz8fzxLEZv
+	 UgCcvTSEd+H9Ia0/6dWYu3wHPx1mkldQPvwlGH12PWelV1dH+DWOxFupxijzx4lBIg
+	 P6PXko6Az42YdOzQ/2Q7AOimKZQsT0FWWssGev7E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4CB9F8014D;
-	Tue, 14 Jan 2020 07:33:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23F79F8016F;
+	Tue, 14 Jan 2020 14:27:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99BE6F8014E; Tue, 14 Jan 2020 07:33:24 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 9ECF5F8026F; Tue, 14 Jan 2020 14:27:38 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9ECC7F800B9
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 07:33:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ECC7F800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xPVWTHDV"
-Received: from localhost (unknown [49.207.51.160])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 095E620678;
- Tue, 14 Jan 2020 06:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1578983600;
- bh=KMrOVHv1qWtzxvvNmnvYPUneA1sRJDbNdAG71gbQ56A=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=xPVWTHDVqhRNWraqNh1zTEH85tOBtOHAgdj08l5WQJiSwCafKOHkFh+rn7xOIwLsZ
- ebGSN0iXI6DPh4yidBJ2BQsQxcRcJ3p96gflQsWg2syKfcFvkkC+Ax3GQ9C8uRd132
- mEo4LRY/1lSBmpIdpGfs+tBlyljLL0wZZbnCi4Bw=
-Date: Tue, 14 Jan 2020 12:03:00 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20200114063300.GF2818@vkoul-mobl>
-References: <20200113211025.27973-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200113211025.27973-1-pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 0/2] soundwire: cadence: remove warnings
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06FCEF800E9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 14:27:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06FCEF800E9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 006AFAC9A;
+ Tue, 14 Jan 2020 13:27:18 +0000 (UTC)
+Date: Tue, 14 Jan 2020 14:27:18 +0100
+Message-ID: <s5hh80ycgnd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20200114124744.GT3897@sirena.org.uk>
+References: <1578968526-13191-1-git-send-email-richtek.jeff.chang@gmail.com>
+ <s5htv4yfpnt.wl-tiwai@suse.de>
+ <20200114124744.GT3897@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, Jeff Chang <richtek.jeff.chang@gmail.com>,
+ jeff_chang@richtek.com, matthias.bgg@gmail.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [alsa-devel] [PATCH v6] ASoC: Add MediaTek MT6660 Speaker Amp
+	Driver
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +83,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 13-01-20, 15:10, Pierre-Louis Bossart wrote:
-> Fix warnings reported by cppcheck and make W=1
+On Tue, 14 Jan 2020 13:47:44 +0100,
+Mark Brown wrote:
+> 
+> On Tue, Jan 14, 2020 at 08:44:22AM +0100, Takashi Iwai wrote:
+> > Jeff Chang wrote:
+> 
+> > > +	if (ret < 0)
+> > > +		return ret;
+> > > +	reg_data = (u8)ret;
+> > > +	if (on_off)
+> > > +		reg_data &= (~0x01);
+> > > +	else
+> > > +		reg_data |= 0x01;
+> > > +	return regmap_write(chip->regmap, MT6660_REG_SYSTEM_CTRL, reg_data);
+> 
+> > Hm, this looks like an open-code of forced update bits via regmap.
+> > But interestingly there is no corresponding standard helper for that.
+> > Essentially it should be regmap_update_bits_base() with force=1.
+> 
+> > Mark?
+> 
+> regmap_write_bits().
 
-Applied, thanks
+Oh that obvious one, thanks :)
 
--- 
-~Vinod
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
