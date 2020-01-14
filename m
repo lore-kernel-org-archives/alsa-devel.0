@@ -4,79 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38BA7C33C9E
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:13:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F025AC33C9E
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:14:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B59AC2187F
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:13:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BC3524655
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jan 2020 16:14:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="POLg49vb";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="RnX0cGel"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B59AC2187F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kbRzJvN0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="W+VolGKv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BC3524655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 065C81829;
-	Tue, 14 Jan 2020 17:13:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 065C81829
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4564183F;
+	Tue, 14 Jan 2020 17:13:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4564183F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579018433;
-	bh=YyqeXOlxiHbzviKI1cxT84ULu0cJlr5e6zH0Pr99tXc=;
+	s=default; t=1579018475;
+	bh=XmnxZQCTYIZQbWtN84pFsO7a2pga90PbJFUiBe8KVFc=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=POLg49vbFZHaNV7ujrAftI+HcZXhD14IsAJwSYW3gpgR6yVRVSgbBUEdVceeN+Wu4
-	 Py6c7J3xdE4sOepLaWbNjHVXBGMOr2ztGzGY3BskZxdM9Xpv8zaCZCXSFqBI6GV6N7
-	 CaA3+K+uK+tZzSwNKJ4H9Hdz9fJFJlUwLsbcpfVg=
+	b=kbRzJvN0GQg2aeHsK6IHV+Xd5KBGua/PvZQNn2ffsC9ilbkfwk0qUgwUkcao4E4NU
+	 FapnMd+IOojeXt6NELg4d/0GvdYCbsrA8qNChHs4o4T5h3vLh/v2x4uqek0eJ6ZD16
+	 HHw/IszILd1KjV1ExPUnPNH8b+eixK0eSURXEpVU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E9F4F802E7;
-	Tue, 14 Jan 2020 17:09:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F852F8023E;
+	Tue, 14 Jan 2020 17:09:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1B0FF802BD; Tue, 14 Jan 2020 17:09:27 +0100 (CET)
+ id EABB8F802E3; Tue, 14 Jan 2020 17:09:34 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66E69F8014E
- for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66E69F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51301F80171
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jan 2020 17:09:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51301F80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="RnX0cGel"
+ header.b="W+VolGKv"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=PL4q4saA2/5hcYaIEYDv2N6RnvzTXQ5f0CStk5GfbSE=; b=RnX0cGelf9IM
- WbVdpWTjBKuRSzT2EwQ7UDfXnqbUmt1XoIyRW08vWg3vQQVUuqWOzWgVTTLPJs3tIMSecZDbC4R+1
- EWA/a3p5oIhMSBiQfzaQtsBrOXtSzOPLNIyBmVvIsO4O6xbXdKpgh9mx4Y8LPW4kzctZQw0Wx8bxl
- 6LIGg=;
+ List-Archive; bh=2OlB23U0LJMzgyqgfwI5Cwh65IS5QweO6cfTWhLxam8=; b=W+VolGKvoYkh
+ 8NR+VUqWvSrKt2O9mwEhcyVFN9VdShEk1mxC3zXa1wJm2oCdfyeqE4IbUsa+dIEQHPsQ7qZgTH1Gi
+ F7zya2SDgIlaz809I8UjllTqbl3hgFXPXEdJeEUGI4cMZ/RDUpvOsPI7J2nj3R2i3L/CypDhUDKCO
+ VYSDc=;
 Received: from fw-tnat-cam7.arm.com ([217.140.106.55]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1irOkd-0001V2-QD; Tue, 14 Jan 2020 16:09:07 +0000
+ id 1irOkf-0001Vh-0s; Tue, 14 Jan 2020 16:09:09 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 80462D02C7C; Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
+ id B5E1CD02C7B; Tue, 14 Jan 2020 16:09:08 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>
-In-Reply-To: <20191224002708.1207884-1-paul@crapouillou.net>
-Message-Id: <applied-20191224002708.1207884-1-paul@crapouillou.net>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200113210428.27457-13-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200113210428.27457-13-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
-Date: Tue, 14 Jan 2020 16:09:07 +0000 (GMT)
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, od@zcrc.me, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "dt-bindings: sound: Convert jz47*-codec doc
-	to YAML" to the asoc tree
+Date: Tue, 14 Jan 2020 16:09:08 +0000 (GMT)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASOC: Intel: kbl_rt5663_rt5514_max98927:
+	remove useless initialization" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,7 +94,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   dt-bindings: sound: Convert jz47*-codec doc to YAML
+   ASOC: Intel: kbl_rt5663_rt5514_max98927: remove useless initialization
 
 has been applied to the asoc tree at
 
@@ -122,142 +119,37 @@ to this mail.
 Thanks,
 Mark
 
-From 30bcb1f264bfdd49561cc7a974b67c4d712b3668 Mon Sep 17 00:00:00 2001
-From: Paul Cercueil <paul@crapouillou.net>
-Date: Tue, 24 Dec 2019 01:27:07 +0100
-Subject: [PATCH] dt-bindings: sound: Convert jz47*-codec doc to YAML
+From 38e58021a950a108215107e22148dfe04a30728a Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 13 Jan 2020 15:04:22 -0600
+Subject: [PATCH] ASOC: Intel: kbl_rt5663_rt5514_max98927: remove useless
+ initialization
 
-Convert ingenic,jz4740-codec.txt and ingenic,jz4725b-codec.txt to one
-single ingenic,codec.yaml file, since they share the same binding.
+Fix cppcheck warning:
 
-Add the ingenic,jz4770-codec compatible string in the process.
+[sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c:764]: (style)
+Variable 'ret' is assigned a value that is never used.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20191224002708.1207884-1-paul@crapouillou.net
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200113210428.27457-13-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/ingenic,codec.yaml         | 55 +++++++++++++++++++
- .../bindings/sound/ingenic,jz4725b-codec.txt  | 20 -------
- .../bindings/sound/ingenic,jz4740-codec.txt   | 20 -------
- 3 files changed, 55 insertions(+), 40 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/ingenic,codec.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
- delete mode 100644 Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ingenic,codec.yaml b/Documentation/devicetree/bindings/sound/ingenic,codec.yaml
-new file mode 100644
-index 000000000000..eb4be86464bb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ingenic,codec.yaml
-@@ -0,0 +1,55 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ingenic,codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Ingenic JZ47xx internal codec DT bindings
-+
-+maintainers:
-+  - Paul Cercueil <paul@crapouillou.net>
-+
-+properties:
-+  $nodename:
-+    pattern: '^audio-codec@.*'
-+
-+  compatible:
-+    oneOf:
-+      - const: ingenic,jz4770-codec
-+      - const: ingenic,jz4725b-codec
-+      - const: ingenic,jz4740-codec
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: aic
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - '#sound-dai-cells'
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/jz4740-cgu.h>
-+    codec: audio-codec@10020080 {
-+      compatible = "ingenic,jz4740-codec";
-+      reg = <0x10020080 0x8>;
-+      #sound-dai-cells = <0>;
-+      clocks = <&cgu JZ4740_CLK_AIC>;
-+      clock-names = "aic";
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
-deleted file mode 100644
-index 05adc0d47b13..000000000000
---- a/Documentation/devicetree/bindings/sound/ingenic,jz4725b-codec.txt
-+++ /dev/null
-@@ -1,20 +0,0 @@
--Ingenic JZ4725B codec controller
--
--Required properties:
--- compatible : "ingenic,jz4725b-codec"
--- reg : codec registers location and length
--- clocks : phandle to the AIC clock.
--- clock-names: must be set to "aic".
--- #sound-dai-cells: Must be set to 0.
--
--Example:
--
--codec: audio-codec@100200a4 {
--	compatible = "ingenic,jz4725b-codec";
--	reg = <0x100200a4 0x8>;
--
--	#sound-dai-cells = <0>;
--
--	clocks = <&cgu JZ4725B_CLK_AIC>;
--	clock-names = "aic";
--};
-diff --git a/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt b/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
-deleted file mode 100644
-index 1ffcade87e7b..000000000000
---- a/Documentation/devicetree/bindings/sound/ingenic,jz4740-codec.txt
-+++ /dev/null
-@@ -1,20 +0,0 @@
--Ingenic JZ4740 codec controller
--
--Required properties:
--- compatible : "ingenic,jz4740-codec"
--- reg : codec registers location and length
--- clocks : phandle to the AIC clock.
--- clock-names: must be set to "aic".
--- #sound-dai-cells: Must be set to 0.
--
--Example:
--
--codec: audio-codec@10020080 {
--	compatible = "ingenic,jz4740-codec";
--	reg = <0x10020080 0x8>;
--
--	#sound-dai-cells = <0>;
--
--	clocks = <&cgu JZ4740_CLK_AIC>;
--	clock-names = "aic";
--};
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 952616ffbc16..96c814f36458 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -761,7 +761,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct kbl_codec_private *ctx;
+ 	struct snd_soc_acpi_mach *mach;
+-	int ret = 0;
++	int ret;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
 -- 
 2.20.1
 
