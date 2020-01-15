@@ -6,64 +6,72 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 829AAC33CB1
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 13:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4713EC33CB2
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 14:16:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B6C1222C3
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 13:48:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CADC32467A
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 14:15:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qmriufdh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B6C1222C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O6qOm2+Z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="DExYLSFj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CADC32467A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48EE217A3;
-	Wed, 15 Jan 2020 14:47:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48EE217A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CE1417AA;
+	Wed, 15 Jan 2020 15:15:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CE1417AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579096103;
-	bh=FhugRagA62P1vxL+yl4Gq1/ajKIM2W5eJqQl8aizemI=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Qmriufdhbtr4voP4aifD5QG68BbQCJjobXvK2ijF5k8J/ZKB9I3QY7DaAcUtUXDVh
-	 EhwRcAEIUUUX9IadWBvYR5gZELz2wyc7ZOV0sm9W5mL2w4NRgmhDyTWN4u33VrvC9s
-	 Qc8qFA28OLu+Eptn10N0jHN2eftiMZWcjQ2lA82Y=
+	s=default; t=1579097758;
+	bh=SVVDwFn4gVqtGqjILOICHmsRnxz9VlkFAfCNuxpmuUU=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=O6qOm2+Z1ANkhSXbIJT5VAVp+F+cqYw5kpkvD+YaOQOftg/AldpRs9JuztXuG055r
+	 xRrznpVfgNIJUsWMOhO/9iwioHElfQD5w8sKNi/LF/6KwS+K2W0bC17ceM6HlKROok
+	 y8UQPOJFNcnsVl9Gt2sXyvMQ8lYD8emtcB4Jzjek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9AD4BF8014B;
-	Wed, 15 Jan 2020 14:47:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60EE1F800CC;
+	Wed, 15 Jan 2020 15:15:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 179B5F801EB; Wed, 15 Jan 2020 14:47:30 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A71A9F801EB; Wed, 15 Jan 2020 15:15:04 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BE13F800CC
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 14:47:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BE13F800CC
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 15 Jan 2020 05:47:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,322,1574150400"; 
- d="scan'208,217";a="397887113"
-Received: from unknown (HELO [10.237.142.238]) ([10.237.142.238])
- by orsmga005.jf.intel.com with ESMTP; 15 Jan 2020 05:47:19 -0800
-From: "Rajwa, Marcin" <marcin.rajwa@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Message-ID: <7ae52bb6-1af4-897f-7de1-34196d0ed1f0@linux.intel.com>
-Date: Wed, 15 Jan 2020 14:47:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E06DF800CC
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 15:14:58 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 9EED6A0040;
+ Wed, 15 Jan 2020 15:14:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 9EED6A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1579097697; bh=Z6ZddNF8ebt7qH7i7Uos4iG6kI651L+g+C/dCGB/r4w=;
+ h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+ b=DExYLSFjkCvyhMNazNm+Y8gomzgsBw2G7+EjrFfw73EtzS4uWwOykn5JdQURITvL/
+ 9LsP9B34JUOl+DPOxj3+eH0wDCpPMY3k/x8p6OwECps11PA1KMfWojTslJi3ex2RNY
+ zRPRTZ14txjo4/l9fUf5ygsJBcgJOjSuHOEqK8v8=
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 15 Jan 2020 15:14:55 +0100 (CET)
+To: "Rajwa, Marcin" <marcin.rajwa@linux.intel.com>
+References: <7ae52bb6-1af4-897f-7de1-34196d0ed1f0@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <1b9a57ab-b3e1-c811-241a-3e149f92d7dd@perex.cz>
+Date: Wed, 15 Jan 2020 15:14:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
+In-Reply-To: <7ae52bb6-1af4-897f-7de1-34196d0ed1f0@linux.intel.com>
 Content-Language: en-US
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Subject: [alsa-devel] arecord: buffer-size dependency on period-size and
-	other params
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] arecord: buffer-size dependency on period-size and
+ other params
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,42 +89,52 @@ Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGVsbG8sCgpJIGhhdmUgc3BvdHRlZCBzdHJhbmdlIGJlaGF2aW9yIG9mIGFsc2EtbGliIHdoZW4g
-SSB0cnkgdG8gc2V0IApidWZmZXItc2l6ZSBpbiBhcmVjb3JkLiBJdCBsb29rcyBsaWtlIHRoZSBz
-aXplIG9mIHRoZSBidWZmZXIgaXMgdmVyeSAKZGVwZW5kZW50IG9uIG90aGVyIHBhcmFtZXRlcnMg
-bGlrZSBwZXJpb2Qtc2l6ZSBhbmQgcmF0ZSBmb3IgZXhhbXBsZS4gQXQgCmZpcnN0IGl0IHNvdW5k
-cyBsaWtlIG5vcm1hbCBiZWhhdmlvdXIsIGFmdGVyIGFsbCBidWZmZXIgc2l6ZSBzbWFsbGVyIAp0
-aGFuIHBlcmlvZCBzaXplIGRvZXNu4oCZdCBtYWtlIG11Y2ggc2Vuc2UuIEhvd2V2ZXIgd2hhdCBp
-ZiB3ZSBnbyBpbiB0aGUgCnJldmVyc2UgZGlyZWN0aW9uIGFuZCBzZXQgYnVmZmVyLXNpemUgbXVj
-aCBsYXJnZXIgdGhhbiBwZXJpb2Qgc2l6ZT8gVGhlbiAKSSBzZWUgbm8gcmVhc29uIHRvIGZvcmJp
-ZCBzdWNoIHJlcXVlc3QgKGF0IGxlYXN0IG9uIHRoZSB1c2VyIHNwYWNlIApsZXZlbCkuIFNvIHRv
-IGJlIHNwZWNpZmljIEkgaXNzdWUgc3VjaCBjb21tYW5kOiBhcmVjb2QgLURwbHVnaHc6MCw4IC1y
-IAoxNjAwMCAtYyAyIC1mIFMyNF9MRSAtLWJ1ZmZlcl9zaXplIDEyODAwMDAgdG1wLndhdiAtdnZ2
-LiBUaGUgYXJlY29yZCAKcmVzcG9uc2UgZm9yIHRoaXMgaXMgYnVmZmVyIHNpemUgb2YgMzE5OTIg
-ZnJhbWVzLCAyNTU5MzYgYnl0ZXMuIE5vdyBsZXQgCm1lIGFsc28gdGVsbCB0aGUgYnVmZmVyIHNp
-emUgb2YgMTI4MDAwMCBieXRlcyBpcyB0aGUgbWF4aW11bSBidWZmZXIgc2l6ZSAKb3VyIGRyaXZl
-ciBhbGxvd3MsIGxpa2V3aXNlIG1heCBwZXJpb2QgaXMgMjY4ODAwIGJ5dGVzLiBOb3cgaWYgaW5z
-aWRlIApvdXIgZHJpdmVyIEkgZG91YmxlIG1heCBwZXJpb2Qgc2l6ZSBsaW1pdCBJIGdldCBidWZm
-ZXIgc2l6ZSBhY2NvcmRpbmdseSAKYmlnZ2VyLiBTaW1pbGFybHksIGlmIEkgY2hhbmdlIHRoZSBm
-b3JtYXQgaW4gdGhlIGNvbW1hbmQgbGluZSByZXF1ZXN0IApmcm9tIFMyNF9MRSB0byBpLmUgUzE2
-X0xFIHRoZW4gYWdhaW4gSSB3aWxsIGdldCBidWZmZXIgc2l6ZSBjbG9zZXIgdG8gbXkgCnJlcXVl
-c3QgKGJpZ2dlcikuIFNvIGJlbG93IGFyZSBteSBxdWVzdGlvbnM6CgogMS4gV2h5IGFsc2EtbGli
-IGJlaGF2ZXMgaW4gYSB3YXkgSSBkZXNjcmliZWQgYWJvdmU/IFdoeSBJIGNhbiBub3QKICAgIGNv
-bnRyb2wgYnVmZmVyIHNpemUgaW5kZXBlbmRlbnRseSBmcm9tIG90aGVyIHBhcmFtZXRlcnMgKHBy
-b3ZpZGluZwogICAgaXQgaGFzIHBoeXNpY2FsIHNlbnNlKS4KIDIuIEl0IGxvb2tzIGxpa2UgYWxz
-YS1saWIgZmlyc3QgY2FsY3VsYXRlcyBpbml0aWFsIGJ1ZmZlci1zaXplIGJhc2Ugb24KICAgIG90
-aGVyIGlucHV0IHBhcmFtcyBsaWtlIG1lbnRpb25lZCBwZXJpb2Qgc2l6ZSBvciBzYW1wbGluZyBy
-YXRlIGFuZAogICAgdGhlbiBhc2sgZHJpdmVyIHRvIHJlZmluZSBpdCBhY2NvcmRpbmcgdG8gaXRz
-IGNhcGFiaWxpdGllcy4gSXMgdGhhdAogICAgdGhlIGNhc2U/CiAzLiBJIGFsc28gdHJpZWQgdG8g
-ZHVtcCBodyBjYXBhYmlsaXRpZXMgYnkgYWRkaW5nIOKAk2R1bXAtaHctcGFyYW0gZmxhZwogICAg
-dG8gbXkgY29tbWFuZCBsaW5lIHJlcXVlc3QgYW5kIGhlcmUgeWV0IGFub3RoZXIgc3VycHJpc2Ug
-4oCTIGluIGEgcm93CiAgICBkZWRpY2F0ZWQgZm9yIGJ1ZmZlciBzaXplIGl0IHNheXMg4oCcQlVG
-RkVSX1NJWkUgWzEyIDQyOTQ5NjcyOTRd4oCdLgogICAgV2hlcmUgaXMgdGhpcyDigJw0Mjk0OTY3
-Mjk04oCdIGNvbWVzIGZyb20sIGFuZCBvbiB3aGF0IGJhc2ljcyBpcyBpdAogICAgY2FsY3VsYXRl
-ZD8gSSB3b3VsZCBleHBlY3QgYXQgdGhlIGJhcmUgbWluaW11bSBpdCBzaG91bGQgYXNrIGRyaXZl
-cgogICAgYnV0IGluIHRoZSBzbmRfcGNtX2h3X3BhcmFtX2R1bXAoKSBmdW5jdGlvbiBJIGRvbuKA
-mXQgc2VlIGFueQogICAgY29tbXVuaWNhdGlvbiB3aXRoIHRoZSBkcml2ZXIuCgpLaW5kIFJlZ2Fy
-ZHMsCgpNYXJjaW4gUmFqd2EKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+RG5lIDE1LiAwMS4gMjAgdiAxNDo0NyBSYWp3YSwgTWFyY2luIG5hcHNhbChhKToKPiBIZWxsbywK
+PiAKPiBJIGhhdmUgc3BvdHRlZCBzdHJhbmdlIGJlaGF2aW9yIG9mIGFsc2EtbGliIHdoZW4gSSB0
+cnkgdG8gc2V0Cj4gYnVmZmVyLXNpemUgaW4gYXJlY29yZC4gSXQgbG9va3MgbGlrZSB0aGUgc2l6
+ZSBvZiB0aGUgYnVmZmVyIGlzIHZlcnkKPiBkZXBlbmRlbnQgb24gb3RoZXIgcGFyYW1ldGVycyBs
+aWtlIHBlcmlvZC1zaXplIGFuZCByYXRlIGZvciBleGFtcGxlLiBBdAo+IGZpcnN0IGl0IHNvdW5k
+cyBsaWtlIG5vcm1hbCBiZWhhdmlvdXIsIGFmdGVyIGFsbCBidWZmZXIgc2l6ZSBzbWFsbGVyCj4g
+dGhhbiBwZXJpb2Qgc2l6ZSBkb2VzbuKAmXQgbWFrZSBtdWNoIHNlbnNlLiBIb3dldmVyIHdoYXQg
+aWYgd2UgZ28gaW4gdGhlCj4gcmV2ZXJzZSBkaXJlY3Rpb24gYW5kIHNldCBidWZmZXItc2l6ZSBt
+dWNoIGxhcmdlciB0aGFuIHBlcmlvZCBzaXplPyBUaGVuCj4gSSBzZWUgbm8gcmVhc29uIHRvIGZv
+cmJpZCBzdWNoIHJlcXVlc3QgKGF0IGxlYXN0IG9uIHRoZSB1c2VyIHNwYWNlCj4gbGV2ZWwpLiBT
+byB0byBiZSBzcGVjaWZpYyBJIGlzc3VlIHN1Y2ggY29tbWFuZDogYXJlY29kIC1EcGx1Z2h3OjAs
+OCAtcgo+IDE2MDAwIC1jIDIgLWYgUzI0X0xFIC0tYnVmZmVyX3NpemUgMTI4MDAwMCB0bXAud2F2
+IC12dnYuIFRoZSBhcmVjb3JkCj4gcmVzcG9uc2UgZm9yIHRoaXMgaXMgYnVmZmVyIHNpemUgb2Yg
+MzE5OTIgZnJhbWVzLCAyNTU5MzYgYnl0ZXMuIE5vdyBsZXQKPiBtZSBhbHNvIHRlbGwgdGhlIGJ1
+ZmZlciBzaXplIG9mIDEyODAwMDAgYnl0ZXMgaXMgdGhlIG1heGltdW0gYnVmZmVyIHNpemUKPiBv
+dXIgZHJpdmVyIGFsbG93cywgbGlrZXdpc2UgbWF4IHBlcmlvZCBpcyAyNjg4MDAgYnl0ZXMuIE5v
+dyBpZiBpbnNpZGUKPiBvdXIgZHJpdmVyIEkgZG91YmxlIG1heCBwZXJpb2Qgc2l6ZSBsaW1pdCBJ
+IGdldCBidWZmZXIgc2l6ZSBhY2NvcmRpbmdseQo+IGJpZ2dlci4gU2ltaWxhcmx5LCBpZiBJIGNo
+YW5nZSB0aGUgZm9ybWF0IGluIHRoZSBjb21tYW5kIGxpbmUgcmVxdWVzdAo+IGZyb20gUzI0X0xF
+IHRvIGkuZSBTMTZfTEUgdGhlbiBhZ2FpbiBJIHdpbGwgZ2V0IGJ1ZmZlciBzaXplIGNsb3NlciB0
+byBteQo+IHJlcXVlc3QgKGJpZ2dlcikuIFNvIGJlbG93IGFyZSBteSBxdWVzdGlvbnM6Cj4gCj4g
+ICAxLiBXaHkgYWxzYS1saWIgYmVoYXZlcyBpbiBhIHdheSBJIGRlc2NyaWJlZCBhYm92ZT8gV2h5
+IEkgY2FuIG5vdAo+ICAgICAgY29udHJvbCBidWZmZXIgc2l6ZSBpbmRlcGVuZGVudGx5IGZyb20g
+b3RoZXIgcGFyYW1ldGVycyAocHJvdmlkaW5nCj4gICAgICBpdCBoYXMgcGh5c2ljYWwgc2Vuc2Up
+Lgo+ICAgMi4gSXQgbG9va3MgbGlrZSBhbHNhLWxpYiBmaXJzdCBjYWxjdWxhdGVzIGluaXRpYWwg
+YnVmZmVyLXNpemUgYmFzZSBvbgo+ICAgICAgb3RoZXIgaW5wdXQgcGFyYW1zIGxpa2UgbWVudGlv
+bmVkIHBlcmlvZCBzaXplIG9yIHNhbXBsaW5nIHJhdGUgYW5kCj4gICAgICB0aGVuIGFzayBkcml2
+ZXIgdG8gcmVmaW5lIGl0IGFjY29yZGluZyB0byBpdHMgY2FwYWJpbGl0aWVzLiBJcyB0aGF0Cj4g
+ICAgICB0aGUgY2FzZT8KClllcy4gSXQgYXBwZWFycyBsaWtlIGFuIGlzc3VlIGluIHRoZSByZWZp
+bmUgbWVjaGFuaXNtLgoKPiAgIDMuIEkgYWxzbyB0cmllZCB0byBkdW1wIGh3IGNhcGFiaWxpdGll
+cyBieSBhZGRpbmcg4oCTZHVtcC1ody1wYXJhbSBmbGFnCj4gICAgICB0byBteSBjb21tYW5kIGxp
+bmUgcmVxdWVzdCBhbmQgaGVyZSB5ZXQgYW5vdGhlciBzdXJwcmlzZSDigJMgaW4gYSByb3cKPiAg
+ICAgIGRlZGljYXRlZCBmb3IgYnVmZmVyIHNpemUgaXQgc2F5cyDigJxCVUZGRVJfU0laRSBbMTIg
+NDI5NDk2NzI5NF3igJ0uCj4gICAgICBXaGVyZSBpcyB0aGlzIOKAnDQyOTQ5NjcyOTTigJ0gY29t
+ZXMgZnJvbSwgYW5kIG9uIHdoYXQgYmFzaWNzIGlzIGl0Cj4gICAgICBjYWxjdWxhdGVkPyBJIHdv
+dWxkIGV4cGVjdCBhdCB0aGUgYmFyZSBtaW5pbXVtIGl0IHNob3VsZCBhc2sgZHJpdmVyCj4gICAg
+ICBidXQgaW4gdGhlIHNuZF9wY21faHdfcGFyYW1fZHVtcCgpIGZ1bmN0aW9uIEkgZG9u4oCZdCBz
+ZWUgYW55Cj4gICAgICBjb21tdW5pY2F0aW9uIHdpdGggdGhlIGRyaXZlci4KClRoaXMgdmFsdWUg
+bWF5IGJlIC0yIChvciAtRU5PRU5UKSAtIG5vIGlkZWEuIEl0IG1heSBhbHNvIGJlIGFuIG92ZXJm
+bG93IHNvbWV3aGVyZS4KCkkgd291bGQgc3RhcnQgdG8gdXNlIG9ubHkgdGhlIGRpcmVjdCAnaHc6
+WCcgZGV2aWNlIGZvciB0ZXN0cy4gSWYgaXQgd29ya3MsIHRoZSAKcHJvYmxlbSBpcyB3aXRoIHRo
+ZSBwbHVnIHBsdWdpbiAoYXV0b21hdGljIGZvcm1hdCBjb252ZXJzaW9uIGluc2lkZSBhbHNhLWxp
+YikuIApUaGVyZSBhcmUgc2V2ZXJhbCBkZWJ1ZyBkZWZpbmVzIGluIHNyYy9wY20vcGNtX3BhcmFt
+cy5jIC4gWW91IG1heSB1c2UgCkxEX1BSRUxPQUQgdG8gZGVidWcgdGhpcyBwcm9ibGVtLgoKCQkJ
+CQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBT
+b3VuZCBNYWludGFpbmVyOyBBTFNBIFByb2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
