@@ -2,59 +2,72 @@ Return-Path: <SRS0=eswj=3E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92628C32771
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 20:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3547EC32771
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 22:15:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FF562084D
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 20:38:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B295122522
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 22:15:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EGf9JcCF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FF562084D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W6ZvWzGA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B295122522
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68F41179F;
-	Wed, 15 Jan 2020 21:37:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68F41179F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3A9E17A4;
+	Wed, 15 Jan 2020 23:14:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3A9E17A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579120710;
-	bh=j/kLo3D0XTle8HFAiP9r8rvhIkJiwaWDJIEiZ2Uo8Rw=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EGf9JcCFIYEOhXmeENH8MRnKw/gA6/sBC0G845fEegLwqUVdwFZBc2zPxrBziPi2r
-	 8dV81SG1D0n7tv8Y2VJEuyWeq5GTX6iOohX6p322nei1I+7DOWt+GnYLSlLjG7p9KA
-	 vSqHzSr0Salkr/pdFOnDHXORXmB2UcFPFzk5ymGo=
+	s=default; t=1579126501;
+	bh=wVKTCpDTtACpeqXIplbylGX542zvGNwcu3Bu4KeSIB4=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=W6ZvWzGAYtAv5nzaAkVZ7xT7Cs3pYIeaCYFTZDv6/XBYQiOr8T4jgdJNngi0+Cv33
+	 zJLddnOSQW1WfoLWYcltJVzpEr3jbuJYf2Clyk1Da00GcXWvCLpTFk5nuo9B7KxpPw
+	 DcJx6ZwT8nT0fB8UV7omyGcGU7jzBzj4a6QqJ1JM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4779F8014B;
-	Wed, 15 Jan 2020 21:37:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35C1DF801EB;
+	Wed, 15 Jan 2020 23:14:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60DA3F801EB; Wed, 15 Jan 2020 21:37:38 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B8AC1F801EB; Wed, 15 Jan 2020 23:14:08 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5ACB4F800CC
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 21:37:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ACB4F800CC
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5FCBFB021
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 20:37:34 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Wed, 15 Jan 2020 21:37:33 +0100
-Message-Id: <20200115203733.26530-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: seq: Fix racy access for queue timer in
-	proc read
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77D67F800E9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 23:14:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77D67F800E9
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 15 Jan 2020 14:14:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,323,1574150400"; d="scan'208";a="257028943"
+Received: from sbreyer-mobl.amr.corp.intel.com (HELO [10.255.228.18])
+ ([10.255.228.18])
+ by fmsmga002.fm.intel.com with ESMTP; 15 Jan 2020 14:13:59 -0800
+To: Bard liao <yung-chuan.liao@linux.intel.com>, broonie@kernel.org,
+ tiwai@suse.de
+References: <20200114175152.3291-1-yung-chuan.liao@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a1d68a98-adab-32e6-c837-165c135f83ef@linux.intel.com>
+Date: Wed, 15 Jan 2020 16:13:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200114175152.3291-1-yung-chuan.liao@linux.intel.com>
+Content-Language: en-US
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org,
+ bard.liao@intel.com, kuninori.morimoto.gx@renesas.com
+Subject: Re: [alsa-devel] [PATCH RFC v2 0/4] ASoC: Add Multi CPU DAI support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,59 +80,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_seq_info_timer_read() reads the information of the timer assigned
-for each queue, but it's done in a racy way which may lead to UAF as
-spotted by syzkaller.
 
-This patch applies the missing q->timer_mutex lock while accessing the
-timer object as well as a slight code change to adapt the standard
-coding style.
 
-Reported-by: syzbot+2b2ef983f973e5c40943@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/seq/seq_timer.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+On 1/14/20 11:51 AM, Bard liao wrote:
+> As discussed in [1], ASoC core supports multi codec DAIs
+> on a DAI link. However it does not do so for CPU DAIs.
+> 
+> So, add support for multi CPU DAIs on a DAI Link by adding
+> multi CPU DAI in Card instantiation, suspend and resume
+> functions, PCM ops, stream handling functions and DAPM.
 
-diff --git a/sound/core/seq/seq_timer.c b/sound/core/seq/seq_timer.c
-index 63dc7bdb622d..be59b59c9be4 100644
---- a/sound/core/seq/seq_timer.c
-+++ b/sound/core/seq/seq_timer.c
-@@ -471,15 +471,19 @@ void snd_seq_info_timer_read(struct snd_info_entry *entry,
- 		q = queueptr(idx);
- 		if (q == NULL)
- 			continue;
--		if ((tmr = q->timer) == NULL ||
--		    (ti = tmr->timeri) == NULL) {
--			queuefree(q);
--			continue;
--		}
-+		mutex_lock(&q->timer_mutex);
-+		tmr = q->timer;
-+		if (!tmr)
-+			goto unlock;
-+		ti = tmr->timeri;
-+		if (!ti)
-+			goto unlock;
- 		snd_iprintf(buffer, "Timer for queue %i : %s\n", q->queue, ti->timer->name);
- 		resolution = snd_timer_resolution(ti) * tmr->ticks;
- 		snd_iprintf(buffer, "  Period time : %lu.%09lu\n", resolution / 1000000000, resolution % 1000000000);
- 		snd_iprintf(buffer, "  Skew : %u / %u\n", tmr->skew, tmr->skew_base);
-+unlock:
-+		mutex_unlock(&q->timer_mutex);
- 		queuefree(q);
-  	}
- }
--- 
-2.16.4
+Maybe a tangential question, but I am a bit confused on the code cleanups.
 
+After this series of patches is applied, we have this in soc.h:
+
+	struct snd_soc_dai *codec_dai;
+	struct snd_soc_dai *cpu_dai;
+
+	struct snd_soc_dai **codec_dais;
+	unsigned int num_codecs;
+
+	struct snd_soc_dai **cpu_dais;
+	unsigned int num_cpus;
+
+What is the intent behind keeping the two fields codec_dai and cpu_dai?
+
+Shouldn't we use the multi-dai structures in all cases, possible 
+degraded to a single element rather than maintaining what looks like 
+duplicate ways of accessing the same element?
+
+If removing these fields across all drivers is just too invasive for 
+now, shouldn't we start defining access macros so that those fields can 
+be deprecated and removed at a later time, platform-by-platform?
+
+Thanks
+-Pierre
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
