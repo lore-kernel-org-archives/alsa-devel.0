@@ -2,69 +2,79 @@ Return-Path: <SRS0=eswj=3E=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6192FC33CB1
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 14:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B544C33CB2
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 15:08:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCF092084D
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 14:53:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 161672187F
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jan 2020 15:08:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XkaK+V2Y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCF092084D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=axis.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YUybQKS0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 161672187F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BE1B17A1;
-	Wed, 15 Jan 2020 15:52:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BE1B17A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C45817A1;
+	Wed, 15 Jan 2020 16:07:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C45817A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579100019;
-	bh=uqrwwcoUU46ap0zjdE8PMsICy2vQeCutUe740cIw/78=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1579100897;
+	bh=ODzR4l3tpJ5efAVoqjYyZ4AT3DoRSe2QRrra6ktTJNA=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XkaK+V2YBLNtL99F7fNXUhVlE3kLhJMg4ghAejRi7XTnFZlWCf4N3TzOx52EbcqqU
-	 x0eWyy9lKrfXKRSRdw9DpjSzXAE4yuExZvsZRNhyZrUg+Z/wG/rZ8k14O8ydDkv3l9
-	 tZK9btOc2YaZ08ZLAl2nLnku1oVBYbGYG97XXr4w=
+	b=YUybQKS025IxWWzXS0MCvL2z9+A0poGPppuT5X1IhF1hTZePCCEdzlaFhI+wm/nrU
+	 iQDYiFEKFkrahfffDXJtRTjRPs4TqpwkdPSoGpHXE7xbBOJSYAqgwOCJXSQb05exll
+	 AzUx27cmRfYOT2TnB23mpQAv2qY0kJ98UJvXUhDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84F24F8014B;
-	Wed, 15 Jan 2020 15:52:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B61C6F8014B;
+	Wed, 15 Jan 2020 16:07:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32CF9F801EB; Wed, 15 Jan 2020 15:52:47 +0100 (CET)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ id BF436F801EB; Wed, 15 Jan 2020 16:07:24 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0CDFF800E9
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 15:52:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0CDFF800E9
-IronPort-SDR: 8tmAY/Rwf9VwTq3FV25rHYhD5uVUP/CpREY+lVL8+Sz1UVCHhwLqE3Jj5V03GADVb+7+ZP1hOO
- XvaNFrV/2CWGR55nZvUGsjUjKxkWFbOS8l+3KNw8gt5+lkwXE6VhnUEtlATu+ANx8awMzWAqC6
- hJHJYZjWZZHjGd9T8U45WEWwIhGfscqnUz/LolSN0tM80QAb1RWhVRIFnKNIy7ZWmAvYHmkVBz
- Obx5ePVWCJR1HICCTtf3BgvKux/wUOTSN6G8jI+Kbcn8svhobb7969ZWw3iGVjhgYgGU5s5ujN
- ZBM=
-X-IronPort-AV: E=Sophos;i="5.70,322,1574118000"; 
-   d="scan'208";a="4440738"
-Date: Wed, 15 Jan 2020 15:52:34 +0100
-From: Ricard Wanderlof <ricardw@axis.com>
-X-X-Sender: ricardw@lnxricardw1.se.axis.com
-To: "Rajwa, Marcin" <marcin.rajwa@linux.intel.com>
-In-Reply-To: <7ae52bb6-1af4-897f-7de1-34196d0ed1f0@linux.intel.com>
-Message-ID: <alpine.DEB.2.20.2001151550140.9118@lnxricardw1.se.axis.com>
-References: <7ae52bb6-1af4-897f-7de1-34196d0ed1f0@linux.intel.com>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FBA5F800CC
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 16:07:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FBA5F800CC
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 15 Jan 2020 07:07:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,322,1574150400"; 
+ d="diff'?scan'208";a="256802220"
+Received: from sbreyer-mobl.amr.corp.intel.com (HELO [10.255.228.18])
+ ([10.255.228.18])
+ by fmsmga002.fm.intel.com with ESMTP; 15 Jan 2020 07:07:15 -0800
+To: ojab // <ojab@ojab.ru>
+References: <CAKzrAgTD2oeyajKGOaPea98vZ-uKJOn6uOqABA+CKtpvYpWYvQ@mail.gmail.com>
+ <CAKzrAgTCE4btXr04pkvLUG6PPbtn9dm5h_9rjqDYG0HrTZ0zbg@mail.gmail.com>
+ <87h80x8t41.wl-kuninori.morimoto.gx@renesas.com>
+ <130af222-1086-ebcf-6a0f-9a390f9afbc3@linux.intel.com>
+ <CAKzrAgRJZd4UZjt411vA8WwUv1KyVahVTNyUS8nA1TbKsA57dg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <14259e97-72f5-439f-b2f1-356b6e45bcfb@linux.intel.com>
+Date: Wed, 15 Jan 2020 09:07:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: XBOX01.axis.com (10.0.5.15) To XBOX03.axis.com (10.0.5.17)
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] arecord: buffer-size dependency on period-size and
- other params
+In-Reply-To: <CAKzrAgRJZd4UZjt411vA8WwUv1KyVahVTNyUS8nA1TbKsA57dg@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------97225A65C771DFF3C8326034"
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [alsa-devel] No sound since 5.4 on skl_n88l25_s4567
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,30 +87,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This is a multi-part message in MIME format.
+--------------97225A65C771DFF3C8326034
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 15 Jan 2020, Rajwa, Marcin wrote:
 
-> level). So to be specific I issue such command: arecod -Dplughw:0,8 -r
-> 16000 -c 2 -f S24_LE --buffer_size 1280000 tmp.wav -vvv. The arecord
-> response for this is buffer size of 31992 frames, 255936 bytes. Now let
-> me also tell the buffer size of 1280000 bytes is the maximum buffer size
-> our driver allows, likewise max period is 268800 bytes. Now if inside
 
-Not an answer to your problem, but just a note: according to arecord -h, 
-the --buffer_size parameter is in frames (in your case, with S24_LE and 2 
-channels, the frame size is 4*2 = 8 bytes), not bytes.
+On 1/15/20 5:57 AM, ojab // wrote:
+> On Wed, Jan 15, 2020 at 4:41 AM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>> Please post the results of alsa-info.sh somewhere so that we can take a
+>> look.
 
-/Ricard
--- 
-Ricard Wolf Wanderlof                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks, I think that confirms my theory.
+
+> 5.3.0: http://alsa-project.org/db/?f=d82b3ef237a5050dfb73231ba114e45a6a4420ef
+
+In this case, there's a warning on the routes:
+
+[   22.364318] skl_n88l25_s4567 skl_n88l25_s4567: ASoC: Failed to add 
+route iDisp3_out -> direct -> iDisp3 Tx
+
+> 5.4.0: http://alsa-project.org/db/?f=d922b77306a1287eae3624d241f3d46d347c8098
+
+And we know that in 5.4 errors on routes caused the card registration to 
+stop. I *think* the patch was  daa480bde6b3a9 ("ASoC: soc-core: tidyup 
+for snd_soc_dapm_add_routes()")
+
+This patch won't revert cleanly, can you try the following hack on v5.4 
+to see if this improves the card registration? Thanks!
+
+
+
+--------------97225A65C771DFF3C8326034
+Content-Type: text/x-patch; charset=UTF-8;
+ name="routes.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="routes.diff"
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 88978a3036c4..796d14feab4d 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1076,8 +1076,8 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	ret = snd_soc_dapm_add_routes(dapm,
+ 				      component->driver->dapm_routes,
+ 				      component->driver->num_dapm_routes);
+-	if (ret < 0)
+-		goto err_probe;
++	//if (ret < 0)
++	//	goto err_probe;
+ 
+ 	/* see for_each_card_components */
+ 	list_add(&component->card_list, &card->component_dev_list);
+@@ -2065,13 +2065,13 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 
+ 	ret = snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+ 				      card->num_dapm_routes);
+-	if (ret < 0)
+-		goto probe_end;
++	//if (ret < 0)
++	//	goto probe_end;
+ 
+ 	ret = snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
+-				      card->num_of_dapm_routes);
+-	if (ret < 0)
+-		goto probe_end;
++					      card->num_of_dapm_routes);
++	//if (ret < 0)
++	//	goto probe_end;
+ 
+ 	/* try to set some sane longname if DMI is available */
+ 	snd_soc_set_dmi_name(card, NULL);
+
+--------------97225A65C771DFF3C8326034
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------97225A65C771DFF3C8326034--
