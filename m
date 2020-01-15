@@ -6,78 +6,87 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36D93C33CB1
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98F45C33CB1
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:17:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7B082072B
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:10:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2396F20684
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:17:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gWWUVBrO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7B082072B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sSbSEQ8Y";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ojab.ru header.i=@ojab.ru header.b="KR51ay5x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2396F20684
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ojab.ru
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E86031686;
-	Sun, 19 Jan 2020 08:09:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E86031686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D54B16B6;
+	Sun, 19 Jan 2020 08:16:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D54B16B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579417817;
-	bh=UChYZMkINO/v59AaJ/5F4RpOUNSJlAVaa6TccEDKX0w=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1579418215;
+	bh=CRoOW0SJOKAp0/WN7WhWCI2tk7b5geCQ5a0oqMfOXX4=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gWWUVBrO6WJNtwpR6exwwZcaOAZ/dCQueMSGeuVxZs2UPGY/GtQF7pV0d2HW9Tllx
-	 sI0FpIgZ9YjnddB7uD0yETJyV6oFLpZQAtzhgUSX4eI7q1mvDY6oWkAhxGU5e8S4al
-	 KUJnTilY1z577+Z+HGt+ChZ8TtqokyZZj+FGsP2M=
+	b=sSbSEQ8Yb2dDuXRqVBp4RxJ/f9IEANNAsLrvuWFGP5BgPWmi6oKGNIrmvB7sKyMVf
+	 INZYP6WqiNmj2Vrty0x5eZew/WwNpC8erJxIj95xQbhKfF4oNBsuSYSI6LRRyrsOUe
+	 9NV7xVSLrVeib79hYFUYBtE+dhgQm7uZRSU83XZo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB781F80143;
-	Sun, 19 Jan 2020 08:09:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07E6FF8011E;
+	Sun, 19 Jan 2020 08:14:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CCF26F801D9; Sun, 19 Jan 2020 08:09:22 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BA494F800E9; Wed, 15 Jan 2020 12:57:51 +0100 (CET)
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com
+ [IPv6:2607:f8b0:4864:20::92e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6D16F8013E
- for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2020 08:09:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6D16F8013E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E215AADE2;
- Sun, 19 Jan 2020 07:09:15 +0000 (UTC)
-Date: Sun, 19 Jan 2020 08:09:15 +0100
-Message-ID: <s5himl7orc4.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <7c6bb315-1ffc-665d-ff5e-e5e440f3e609@linux.intel.com>
-References: <20200116045318.5498-1-yang.jie@linux.intel.com>
- <s5hd0bjq3cu.wl-tiwai@suse.de>
- <97bbe88d1a6b63fe8e9b02bf0c5ce4a80553c48d.camel@linux.intel.com>
- <s5hsgkf7l2e.wl-tiwai@suse.de>
- <3c0a0067043d614cd4491b28acf6d49640746b15.camel@linux.intel.com>
- <s5hh80v7h82.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A96F98EDB4@SHSMSX105.ccr.corp.intel.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A96F98EE27@SHSMSX105.ccr.corp.intel.com>
- <c70934a1-b838-5029-6573-bf76a34c4cb9@linux.intel.com>
- <93ac843a-bad5-550e-f427-e2a94bd3e8ef@linux.intel.com>
- <b6b55180-b846-96e7-4521-7d3b03881d06@linux.intel.com>
- <3374dc7d-e969-5380-581a-f6801a2fe50f@linux.intel.com>
- <s5hzhemo6ku.wl-tiwai@suse.de>
- <68e008e2-6796-f893-35ed-d76a2bf92587@linux.intel.com>
- <s5ho8v249rk.wl-tiwai@suse.de>
- <7c6bb315-1ffc-665d-ff5e-e5e440f3e609@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rajwa,
- Marcin" <marcin.rajwa@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: fix buffer_bytes max
-	constrained by preallocated bytes issue
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26DACF800E9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 12:57:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26DACF800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ojab.ru header.i=@ojab.ru
+ header.b="KR51ay5x"
+Received: by mail-ua1-x92e.google.com with SMTP id 1so6124203uao.1
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 03:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ojab.ru; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=nddCGnFcsW03zjGmL23O/qk8Jk0qrXfu8kieJSLgTQo=;
+ b=KR51ay5xJcjsVPkMXjiN4574KJ9Wp/h9QUlsmHpVckzZf+/yC2FErv24sLJG76j3Pv
+ 6HH78UsGAlpLIXtprK8pcmIpgLJHIPnx+isQNltkNaUuVcn/qBs6Ba+B3RkmjblFGZE0
+ wr7Rl4ao7AKbZTGfhweKIX6gaNBfaxBwGkRMw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=nddCGnFcsW03zjGmL23O/qk8Jk0qrXfu8kieJSLgTQo=;
+ b=RxvXddPj4/YRVQ2hsCTUNNDfhpQHV9MXHBmcpHP47JH1H5VfGh/ZXmaRehrwqfdtyJ
+ Q+AGkJwgkodCgzQHrWJMhjUbShHcHkW5pP9cpqspobn16NyVRxAbRiJaHFW+sreLOz/g
+ lLgsCJW75UmBz/sOoVHs+BpE9i3WQ/LCea6vwh6/8JYDGQcP7CW5DImYbPhxTu8TczwG
+ 4JpPhl0emKh5RE/wmUmd1utIR1Hc45031/LtLnVNvzc7qpI1dZAUg2GYrCse2ELM/0tb
+ mVF6pB3T2Y9b3NIv857Cm9IXk4yAJnBEs5Y7mN2xvt3Pw4ctsdVBCsDZQ5B3wy5GNsn8
+ TwCg==
+X-Gm-Message-State: APjAAAWzN5wQ5Xyjyt1BFv/mYLdIsSjGGxxgha4FiNBIhLn2Luant6pK
+ gGwcJCPZ00aG08W+devt769heoKdgrLUSGMf2FKjoQ==
+X-Google-Smtp-Source: APXvYqxGYB16wj3rhXSZFKPHpojQcWDonSjuAHFIx1TqtXkPJVqcVS7B1OZHp/V9HpOtt+JelW5Vm83oCwqw8XSFCcY=
+X-Received: by 2002:ab0:7411:: with SMTP id r17mr14348263uap.31.1579089464851; 
+ Wed, 15 Jan 2020 03:57:44 -0800 (PST)
+MIME-Version: 1.0
+References: <CAKzrAgTD2oeyajKGOaPea98vZ-uKJOn6uOqABA+CKtpvYpWYvQ@mail.gmail.com>
+ <CAKzrAgTCE4btXr04pkvLUG6PPbtn9dm5h_9rjqDYG0HrTZ0zbg@mail.gmail.com>
+ <87h80x8t41.wl-kuninori.morimoto.gx@renesas.com>
+ <130af222-1086-ebcf-6a0f-9a390f9afbc3@linux.intel.com>
+In-Reply-To: <130af222-1086-ebcf-6a0f-9a390f9afbc3@linux.intel.com>
+From: "ojab //" <ojab@ojab.ru>
+Date: Wed, 15 Jan 2020 14:57:33 +0300
+Message-ID: <CAKzrAgRJZd4UZjt411vA8WwUv1KyVahVTNyUS8nA1TbKsA57dg@mail.gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+X-Mailman-Approved-At: Sun, 19 Jan 2020 08:13:54 +0100
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [alsa-devel] No sound since 5.4 on skl_n88l25_s4567
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,50 +99,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gU3VuLCAxOSBKYW4gMjAyMCAwNDo1Mjo1NSArMDEwMCwKS2V5b24gSmllIHdyb3RlOgo+IAo+
-IAo+IE9uIDIwMjAvMS8xNyDkuIvljYg3OjEyLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiBPbiBG
-cmksIDE3IEphbiAyMDIwIDExOjQzOjI0ICswMTAwLAo+ID4gS2V5b24gSmllIHdyb3RlOgo+ID4+
-Cj4gPj4gSW4gU09GIGRyaXZlciwgd2UgZG9uJ3QgdXNlIGtlcm5lbCBjb25maWcgaXRlbSBsaWtl
-Cj4gPj4gQ09ORklHX1NORF9IREFfUFJFQUxMT0NfU0laRSBmb3IgSERBLCB0aGUgY29kZSBmb3Ig
-aXQgaXM6Cj4gPj4KPiA+PiAJc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXMocGNtLT5zdHJl
-YW1zW3N0cmVhbV0uc3Vic3RyZWFtLAo+ID4+IAkJCQkgICAgICBTTkRSVl9ETUFfVFlQRV9ERVZf
-U0csIHNkZXYtPmRldiwKPiA+PiAJCQkJbGUzMl90b19jcHUoY2Fwcy0+YnVmZmVyX3NpemVfbWlu
-KSwKPiA+PiAJCQkJbGUzMl90b19jcHUoY2Fwcy0+YnVmZmVyX3NpemVfbWF4KSk7Cj4gPj4KPiA+
-PiBTbyB0aGUgcHJlYWxsb2NhdGVkIHNpemUgaXMgY29uZmlndXJlZCB2aWEgdG9wb2xvZ3kgZmls
-ZSwgdGhhdCBpcwo+ID4+IGNhcHMtPmJ1ZmZlcl9zaXplX21pbiwgbm8gY2hhbmNlIGZvciBQdWxz
-ZUF1ZGlvIHRvIHJlY29uZmlndXJlIGl0Lgo+ID4+Cj4gPj4gU28sIGl0IGxvb2tzIGxpa2Ugd2Ug
-aGF2ZSB0byBjaGFuZ2UgaXQgdG8gdGhpcyBpZiB3ZSBkb24ndCBjaGFuZ2UgdGhlCj4gPj4gQUxT
-QSBjb3JlOgo+ID4+Cj4gPj4gCXNuZF9wY21fbGliX3ByZWFsbG9jYXRlX3BhZ2VzKHBjbS0+c3Ry
-ZWFtc1tzdHJlYW1dLnN1YnN0cmVhbSwKPiA+PiAJCQkJICAgICAgU05EUlZfRE1BX1RZUEVfREVW
-X1NHLCBzZGV2LT5kZXYsCj4gPj4gLQkJCQlsZTMyX3RvX2NwdShjYXBzLT5idWZmZXJfc2l6ZV9t
-aW4pLAo+ID4+ICsJCQkJbGUzMl90b19jcHUoY2Fwcy0+YnVmZmVyX3NpemVfbWF4KSwKPiA+PiAJ
-CQkJbGUzMl90b19jcHUoY2Fwcy0+YnVmZmVyX3NpemVfbWF4KSk7Cj4gPgo+ID4gWWVzLCBwYXNz
-aW5nIGJ1ZmZlcl9zaXplX21pbiBmb3IgdGhlIHByZWFsbG9jYXRpb24gc291bmRzIGFscmVhZHkK
-PiA+IGJhZC4gIFRoZSBkZWZhdWx0IHZhbHVlIHNob3VsZCBiZSBzdWZmaWNpZW50IGZvciB1c3Vh
-bCBvcGVyYXRpb25zLCBub3QKPiA+IHRoZSBjb3N0LWN1dHRpbmcgbWluaW11bS4gIE90aGVyd2lz
-ZSB0aGVyZSBpcyBubyBtZXJpdCBvZgo+ID4gcHJlYWxsb2NhdGlvbi4KPiA+Cj4gPiBBbHRlcm5h
-dGl2ZWx5LCB3ZSBtYXkgcGFzcyAwIHRoZXJlLCBpbmRpY2F0aW5nIG5vIGxpbWl0YXRpb24sIHRv
-by4KPiA+IEJ1dCwgdGhpcyB3b3VsZCBuZWVkIGEgYml0IG90aGVyIGFkanVzdG1lbnQsIGUuZy4g
-c25kX3BjbV9oYXJkd2FyZQo+ID4gc2hvdWxkIGhhdmUgbG93ZXIgYnVmZmVyX2J5dGVzX21heC4K
-PiAKPiBUaGFuayB5b3UgVGFrYXNoaSwgdGhlbiBsZXQncyBmb2xsb3cgaXQgdG8gcHJlLWFsbG9j
-YXRlIHdpdGgKPiBjYXBzLT5idWZmZXJfc2l6ZV9tYXgsIGFzIHdlIGRvbid0IHNwZWNpZnkgYW55
-IGxpbWl0YXRpb25zIGluCj4gc25kX3BjbV9oYXJkd2FyZSB0b2RheSwgd2Ugd2FudCB0byBsZWF2
-ZSBpdCBjb25maWd1cmFibGUgdG8gZWFjaAo+IHNwZWNpZmljIHRvcG9sb2d5IGZpbGUgZm9yIGRp
-ZmZlcmVudCBtYWNoaW5lcy4KCkhvdyBiaWcgaXMgY2Fwcy0+YnVmZmVyX3NpemVfbWF4PyAgUGFz
-c2luZyB0aGUgdmFsdWUgdGhlcmUgbWVhbnMKYWN0dWFsbHkgdHJ5aW5nIHRvIGFsbG9jYXRlIHRo
-ZSBnaXZlbiBzaXplIGFzIGRlZmF1bHQsIGFuZCBpdCdkIGJlIGEKbG90IG9mIHdhc3RlIGlmIGEg
-dG9vIGxhcmdlIHZhbHVlIChlLmcuIDMyTUIpIGlzIHBhc3NlZCB0aGVyZS4KCkkgdGhpbmsgd2Ug
-Y2FuIGdvIGZvciBwYXNzaW5nIHplcm8gYXMgZGVmYXVsdCwgd2hpY2ggbWVhbnMgc2tpcHBpbmcK
-cHJlYWxsb2NhdGlvbi4gIEluIGFkZGl0aW9uLCB3ZSBtYXkgYWRkIGFuIHVwcGVyIGxpbWl0IG9m
-IHRoZSB0b3RhbAphbW91bnQgb2YgYWxsb2NhdGlvbiBwZXIgY2FyZCwgY29udHJvbGxlZCBpbiBw
-Y21fbWVtb3J5LmMsIGZvcgpleGFtcGxlLiAgVGhpcyBsb2dpYyBjYW4gYmUgYXBwbGllZCB0byB0
-aGUgbGVnYWN5IEhEQSwgdG9vLgoKVGhpcyBzaG91bGQgYmUgcmVsYXRpdmVseSBlYXN5LCBhbmQg
-SSdsbCBwcm92aWRlIHRoZSBwYXRjaCBpbiB0aGUgbmV4dAp3ZWVrLgoKClRha2FzaGkKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Jan 15, 2020 at 4:41 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> Please post the results of alsa-info.sh somewhere so that we can take a
+> look.
+
+5.3.0: http://alsa-project.org/db/?f=d82b3ef237a5050dfb73231ba114e45a6a4420ef
+5.4.0: http://alsa-project.org/db/?f=d922b77306a1287eae3624d241f3d46d347c8098
+
+//wbr ojab
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
