@@ -2,69 +2,65 @@ Return-Path: <SRS0=iD9L=3F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 892DFC33CB1
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 07:04:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F11CAC33CB1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 07:16:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 143A12077B
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 07:04:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7D4E020748
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 07:16:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hZmFRx0V"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 143A12077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eSxMvK5T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D4E020748
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 500EC17A2;
-	Thu, 16 Jan 2020 08:03:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 500EC17A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A8EA17A2;
+	Thu, 16 Jan 2020 08:15:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A8EA17A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579158261;
-	bh=eLSrRSWmGoBk+2DNmN5jDmbpu2dNzPtlvxuiI0RGnAY=;
+	s=default; t=1579158976;
+	bh=MnGifb+J7Y6OZWGIOHLgtMqaCxPF2QDW9IlyNlCEKzE=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hZmFRx0VlLI9dxIvYXnZgEFIV5HT8vvsh6+uHUCpvzpWgE1gl0twgVytMFEGr37Dn
-	 Sndy4QGOcqgPIzTi4yB4S+Dai08G3lpZvQMJ9nvm/1AlcxPxE4GUl05vfCxNLAhz/8
-	 reOxZLc0xGNs0X5HUDhNFuf3RYQU+HPO2QWBluIg=
+	b=eSxMvK5TePnT2orZwoemD8/nSvUu4me1zDaKnUDMy0lP8eS20Ydq7H/stUf4R93lx
+	 DxW7yYqLHaIJG9nj053CJB4pmH2YXXVYE+BJkKbKqNIPVG//yxVqGDYCErAhctSFwV
+	 g5CjPvieWeJv5lD98IVkBZQRgyjSOlFJqDDhyhX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE447F800B9;
-	Thu, 16 Jan 2020 08:03:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82F0AF8014D;
+	Thu, 16 Jan 2020 08:15:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18020F8014E; Thu, 16 Jan 2020 08:03:28 +0100 (CET)
+ id EEF30F8014E; Thu, 16 Jan 2020 08:15:22 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B465F800B9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 08:03:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B465F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C07DF800B9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 08:15:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C07DF800B9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id ACC31AE39;
- Thu, 16 Jan 2020 07:03:20 +0000 (UTC)
-Date: Thu, 16 Jan 2020 08:03:20 +0100
-Message-ID: <s5heevzq3wn.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D901DADDF;
+ Thu, 16 Jan 2020 07:15:13 +0000 (UTC)
+Date: Thu, 16 Jan 2020 08:15:13 +0100
+Message-ID: <s5hd0bjq3cu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-In-Reply-To: <CAFQqKeWu+Xmg_j7CgETnu_Y-dcFMXWbC5jyaXR6N7v-d5GwzwA@mail.gmail.com>
-References: <CAFQqKeV3fG8=DaV4_rGDL3QH7gG9zEHwS9T41aOag+-cNN9wnQ@mail.gmail.com>
- <s5hlfq8pkza.wl-tiwai@suse.de>
- <CAFQqKeWu+Xmg_j7CgETnu_Y-dcFMXWbC5jyaXR6N7v-d5GwzwA@mail.gmail.com>
+To: Keyon Jie <yang.jie@linux.intel.com>
+In-Reply-To: <20200116045318.5498-1-yang.jie@linux.intel.com>
+References: <20200116045318.5498-1-yang.jie@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: "Vehmanen, Kai" <kai.vehmanen@intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, "Uimonen,
- Jaska" <jaska.uimonen@intel.com>,
- Pierre-louis Bossart <pierre-louis.bossart@intel.com>
-Subject: Re: [alsa-devel] Question about runtime PM for HDA codecs
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: fix buffer_bytes max
+	constrained by preallocated bytes issue
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,72 +73,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gV2VkLCAxNSBKYW4gMjAyMCAyMToyODoyMCArMDEwMCwKU3JpZGhhcmFuLCBSYW5qYW5pIHdy
-b3RlOgo+IAo+IFsxICA8dGV4dC9wbGFpbjsgVVRGLTggKDdiaXQpPl0KPiAKPiBPbiBXZWQsIEph
-biAxNSwgMjAyMCBhdCAxMTo0MCBBTSBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3Rl
-Ogo+IAo+ICAgICBPbiBXZWQsIDE1IEphbiAyMDIwIDE5OjE1OjQwICswMTAwLAo+ICAgICBTcmlk
-aGFyYW4sIFJhbmphbmkgd3JvdGU6Cj4gICAgID4KPiAgICAgPiBIaSBUYWthc2hpLAo+ICAgICA+
-Cj4gICAgID4gQ2FuIEkgcGxlYXNlIGJvdGhlciB5b3Ugd2l0aCBhIHF1ZXN0aW9uIGFib3V0IGhv
-dyB0byBoYW5kbGUgdGhlCj4gICAgIHNpdHVhdGlvbgo+ICAgICA+IHdpdGggcnVudGltZSBQTSBm
-b3IgSERBIGNvZGVjIG9uIG9uZSBvZiB0aGUgSW50ZWwgQ01MLWJhc2VkIHBsYXRmb3Jtcwo+ICAg
-ICB3aXRoCj4gICAgID4gYW4gQUxDMjg1IGNvZGVjLgo+ICAgICA+IEJhc2ljYWxseSwgdGhlIHBy
-b2JsZW0gd2UncmUgZmFjaW5nIGlzIHRoYXQgd2hlbiB1c2luZyB0aGUgU09GIGRyaXZlciwKPiAg
-ICAgPiBqYWNrIGRldGVjdGlvbiBkb2Vzbid0IHNlZW0gdG8gd29yayBhcyBpbnRlbmRlZCBiZWNh
-dXNlIHRoZSBjb2RlYyBnZXRzCj4gICAgID4gc3VzcGVuZGVkIHJpZ2h0IGFmdGVyIHRoZSBoZWFk
-c2V0IGlzIHBsdWdnZWQgaW4uCj4gICAgCj4gICAgIFRoZSBjb2RlYyBnb2luZyB0byB0aGUgcnVu
-dGltZSBzdXNwZW5kIGlzIGFjdHVhbGx5IHRoZSByaWdodAo+ICAgICBiZWhhdmlvci7CoCBFdmVu
-IHRoZSBidXMgZ29lcyBkb3duIGlmIHRoZSBjb2RlYyBoYXMgQUNfUFdSU1RfQ0xLU1RPUAo+ICAg
-ICBhbmQgQUNfUFdSU1RfRVBTUyBjYXBhYmlsaXRpZXMsIHRoZSBsaW5rIGdvZXMgYWxzbyBkb3du
-LsKgIEJ1dCB0aGlzCj4gICAgIG1lYW5zIHRoYXQgdGhlIGlycSBpcyBzdGlsbCB0cmlnZ2VyZWQg
-dXBvbiB0aGUgamFjayBkZXRlY3Rpb24gZXZlbnQKPiAgICAgZXZlbiBpbiBEMyBzdGF0ZS4KPiAg
-ICAgSSBndWVzcyB0aGlzIGltcGxlbWVudGF0aW9uIGlzIG1pc3NpbmcgaW4gU09GIERTUCBzaWRl
-Lgo+IAo+IFdlIGRvIGhhdmUgdGhlIFdBS0VFTiBmZWF0dXJlIGltcGxlbWVudGVkIGluIFNPRiBm
-b3IgY2FwdHVyaW5nIHRoZSBqYWNrCj4gZGV0ZWN0aW5nIGV2ZW50cyB3aGVuIHRoZSBTT0YgZGV2
-aWNlIGlzIGluIEQzLiBXZSBoYXZlIHRoaXMgZmVhdHVyZSB3b3JraW5nIGFzCj4gZXhwZWN0ZWQg
-b24gc29tZSBwcmV2aW91cyBwbGF0Zm9ybXMuCgpXaGljaCBjb2RlYyB3YXMgaXQ/Cgo+IFRoZSBw
-cm9ibGVtIHNwZWNpZmljIHRvIHRoZSBBTEMyODUgY29kZWMuCgpBRkFJSywgdGhlcmUgaXMgbm8g
-c3BlY2lmaWMgY2hhbmdlIHRvIEFMQzI4NSB0aGF0IGlzIHJlbGV2YW50IHdpdGgKcnVudGltZSBQ
-TS4KCgo+ICAgICA+IEFmdGVyIGEgYml0IG9mIGV4cGVyaW1lbnRpbmcsIHdoYXQgd2UgZm91bmQg
-d2FzIHRoYXQgY2FsbGluZwo+ICAgICA+IHNuZF9oZGFfc2V0X3Bvd2VyX3NhdmUoKSB3aXRoIGEg
-ZGVsYXkgb2YgMCBvciBzb21ldGhpbmcgPiAwLCBib3RoIGhlbHAKPiAgICAgd2l0aAo+ICAgICA+
-IGZpeGluZyB0aGUgcHJvYmxlbS4KPiAgICAgPgo+ICAgICA+IEJ1dCwgSSBoYXZlIGEgYmFzaWMg
-cXVlc3Rpb24gYWJvdXQgdGhpcy4gV2hhdCBpcyB0aGUgZXhwZWN0YXRpb24gZm9yCj4gICAgID4g
-ZW5hYmxpbmcgdGhlIGNvZGVjIHJ1bnRpbWUgUE0/Cj4gICAgID4gSSBzZWUgdGhhdCB0aGUgbGVn
-YWN5IGRyaXZlciBjYWxscyBzbmRfaGRhX3NldF9wb3dlcl9zYXZlKCkgYmFzZWQgb24gdGhlCj4g
-ICAgID4gQ09ORklHX1NORF9IREFfUE9XRVJfU0FWRV9ERUZBVUxUIHZhbHVlLiBJbiB0aGUgY2Fz
-ZSBvZiBTT0YsIHdlIGRvIG5vdAo+ICAgICA+IGV4cGxpY2l0bHkgc2V0IHRoaXMgdmFsdWUgc28g
-aXQgaXMgMCBieSBkZWZhdWx0LiBBbHNvLCB3aGVuIHRoZSBjb2RlYyBpcwo+ICAgICA+IHJlZ2lz
-dGVyZWQsIHRoZSBydW50aW1lIFBNIGZvciB0aGUgY29kZWMgaXMgZW5hYmxlZCBieSBkZWZhdWx0
-IHdpdGhvdXQKPiAgICAgPiBjaGVja2luZyBpZiB0aGUgcG93ZXJfc2F2ZSBkZWxheSBpcyBzZXQg
-dG8gMCBvciBub3QuIEFuZCBsYXRlciB3aGVuIHRoZQo+ICAgICA+IHNuZF9oZGFfc2V0X3Bvd2Vy
-X3NhdmUoKSBpcyBjYWxsZWQgZnJvbSB0aGUgbGVnYWN5IEhEQSBkcml2ZXIgcHJvYmUsIGl0Cj4g
-ICAgID4gc2V0cyB0aGUgdXNlIG9mIGF1dG8gc3VzcGVuZCBhbmQgdGhlIGRlbGF5IHRvIGJlIHVz
-ZWQgYmFzZWQgb24gdGhlCj4gICAgIGNvbmZpZy4KPiAgICAKPiAgICAgVGhlIHJ1bnRpbWUgc2V0
-dXAgcHVyZWx5IGRlcGVuZHMgb24gdGhlIHVzZXIncyBjb25maWd1cmF0aW9uLsKgIEFzCj4gICAg
-IGRlZmF1bHQsIGtlcm5lbCBtYXkgc2V0IHRvIGNlcnRhaW4gdmFsdWUgdmlhIEtjb25maWcsIGFu
-ZCBzb21lIGNvZGVjcwo+ICAgICAoZS5nLiBIRE1JKSBwcmVmZXIgdGhlIHJ1bnRpbWUgUE0gZW5h
-YmxlbWVudCBhcyBkZWZhdWx0LsKgIE90aGVyIHRoYW4KPiAgICAgdGhhdCwgaXQncyBzdXBwb3Nl
-ZCB0byBiZSBzZXQgZXhwbGljaXRseSB2aWEgc3lzZnMsIHR5cGljYWxseSBmcm9tCj4gICAgIHVk
-ZXYgcnVsZXMuCj4gICAgCj4gICAgIFRoZSBkcml2ZXIgaW5pdGlhbCBjb2RlIGRvZXMgc2V0IHVw
-IHNvbWUgZGVmYXVsdCB2YWx1ZSBmcm9tIGhpc3RvcmljYWwKPiAgICAgcmVhc29ucywgYnV0IGJh
-c2ljYWxseSB0aGUgc2V0dXAgaXMgZG9uZSBmcm9tIHVzZXItc3BhY2UuCj4gICAgCj4gICAgID4g
-V291bGQgaXQgYmUgY29ycmVjdCB0byByZW1vdmUgdGhlIHBtX3J1bnRpbWVfZW5hYmxlKCkgY2Fs
-bAo+ICAgICA+IGluIHNuZF9oZGFfY29kZWNfcmVnaXN0ZXIoKSBhbmQgbGV0IHRoZSBjb2RlYyBy
-dW50aW1lIFBNIGVuYWJsaW5nIGJlIHNldAo+ICAgICA+IHdpdGggdGhlIGNhbGwgdG8gc25kX2hk
-YV9zZXRfcG93ZXJfc2F2ZSgpIGZvciBib3RoIHRoZSBsZWdhY3kgSERBIGRyaXZlcgo+ICAgICA+
-IGFuZCB0aGUgU09GIGRyaXZlcj8KPiAgICAKPiAgICAgVGhlIGJhc2ljIHByb2JsZW0gaXNuJ3Qg
-YWJvdXQgaG93IHRoZSBydW50aW1lIFBNIGlzIHNldC7CoCBJdCBjYW4gYmUKPiAgICAgY2hhbmdl
-ZCBhdCBhbnkgdGltZSwgYW5kIHRoZSBkcml2ZXIgc2hvdWxkIHdvcmsgbm8gbWF0dGVyIGhvdyBp
-dCBpcwo+ICAgICBzZXQuCj4gCj4gSW4gdGhpcyBjYXNlIHRoZW4sIEkgc3VwcG9zZSBpdCBpcyB1
-cCB0byB0aGUgU09GIGRyaXZlciB0byBzZXQgdGhlIGF1dG8KPiBzdXNwZW5kIGRlbGF5IHRvIGRl
-ZmluZSB0aGUgZXhwZWN0ZWQgZGVmYXVsdCBiZWhhdmlvdXI/CgpZZXMgYW5kIG5vLiAgVXNlciBj
-YW4gc3RpbGwgc2V0IHRoZSB2YWx1ZSBhbmQgdGhlIGRyaXZlciBzdGlsbCBuZWVkcwp0byBiZWhh
-dmUgY29ycmVjdGx5IG5vIG1hdHRlciB3aGF0IHZhbHVlIGlzIHNldC4KCgp0aGFua3MsCgpUYWth
-c2hpCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, 16 Jan 2020 05:53:18 +0100,
+Keyon Jie wrote:
+> 
+> With today's code, we preallocate DMA buffer for substreams at pcm_new()
+> stage, and the substream->buffer_bytes_max and substream->dma_max will
+> save as the actually preallocated buffer size and maximum size that the
+> dma buffer can be expanded by at hw_params() state, correspondingly.
+
+No, it's other way round: the former, buffer_bytes_max, is the max
+size defined by the driver (i.e. passed in snd_pcm_hardware) and the
+latter, dma_max, is the max preallocation size (passed to
+preallocation helper).
+
+> At pcm_open() stage, the maximum constraint of HW_PARAM_BUFFER_BYTES is
+> set to substream->buffer_bytes_max and returned to user space as the max
+> interval of the HW_PARAM_BUFFER_BYTES, this will lead to issue that user
+> can't choose any buffer-bytes larger than the preallocated buffer size,
+> and the buffer reallocation will never happen actually.
+> 
+> Here change to use substream->dma_max as the maximum constraint of the
+> HW_PARAM_BUFFER_BYTES and fix the issue mentioned above.
+
+I don't think the logic in the current code you're changing is wrong.
+If there is any, it must be something else.
+
+This might be rather the FIXME code found in
+snd_pcm_hw_constraints_complete()?
+
+
+thanks,
+
+Takashi
+
+> Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+> ---
+>  sound/core/pcm_native.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index c375c41496f8..326e921006e7 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -2301,7 +2301,7 @@ static int snd_pcm_hw_rule_buffer_bytes_max(struct snd_pcm_hw_params *params,
+>  	struct snd_interval t;
+>  	struct snd_pcm_substream *substream = rule->private;
+>  	t.min = 0;
+> -	t.max = substream->buffer_bytes_max;
+> +	t.max = substream->dma_max;
+>  	t.openmin = 0;
+>  	t.openmax = 0;
+>  	t.integer = 1;
+> -- 
+> 2.20.1
+> 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
