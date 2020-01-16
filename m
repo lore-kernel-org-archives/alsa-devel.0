@@ -6,76 +6,79 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D5B3C33CB6
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3B75C33CB6
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:50:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E4EC22468D
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:49:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 56165246A0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:50:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D0Eb9T/c";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uhx07Bv2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4EC22468D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vIXyvVGE";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="p+Z0oPUh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56165246A0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40AAB1826;
-	Thu, 16 Jan 2020 18:48:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40AAB1826
+	by alsa0.perex.cz (Postfix) with ESMTPS id A872017B8;
+	Thu, 16 Jan 2020 18:49:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A872017B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579196979;
-	bh=QGbybOKOwNV+rb9HGKVKUirHaZdd3NHWJwLJ1Ho2AGk=;
+	s=default; t=1579197018;
+	bh=xdx9AqM8kkJWrHZth0YPsBhI+7fi3DpvRG5ZFy1x8Ug=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D0Eb9T/cJZtEavFrh292f1VQQjHhjMEZ0MoqIR0h2Ye5x2wG7zZm3apipn+zJHxu1
-	 72c9JMHF72vNZY0E14SOH9jKLnL8HMf6BuyFDevu3HPc7wbsxSuXrnYnH8izBJ1V7B
-	 WDFJEldT/pDo0OFHEev2DR81jA84VO3wMwJDk3A8=
+	b=vIXyvVGE1igfBT2ZfiLopNf6q2hcOHUEhTdFYwxGbrVE8qViJVTLhrcMLkwLPQBP6
+	 n22Z0Zmd2MjndlKrCwO7wZTB7I4v0B0z9iZ5LjFNiyKEmelvj2N2viCM6q88TWKgHv
+	 Rd1u9iF1tTAXpV3Vbp+FjeZNMaabPdYSIpYdi/Dc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF533F8021E;
-	Thu, 16 Jan 2020 18:43:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2B8EF80277;
+	Thu, 16 Jan 2020 18:43:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78796F8014E; Thu, 16 Jan 2020 18:43:02 +0100 (CET)
+ id 126C1F80278; Thu, 16 Jan 2020 18:43:45 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0FB2F800B9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:42:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0FB2F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id A73C9F80272
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:43:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A73C9F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Uhx07Bv2"
+ header.b="p+Z0oPUh"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A29EB20728;
- Thu, 16 Jan 2020 17:42:56 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D22BA246B6;
+ Thu, 16 Jan 2020 17:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579196577;
- bh=OrMNX1uLlv82W6tGFkTa+kfFkYiYi9GgSKXUK6E0HIg=;
+ s=default; t=1579196617;
+ bh=tdBSwxxCeitoPSZ6ScJGChgxmx8QvubbLNKi1Z1+VLQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Uhx07Bv2J39zqCgIoKyMoRJyLjydvR1SF/RJCHAZEYokvIZx50ST1QuAU/Md5Mt3J
- CiXDwmDCdQKnKm1xzjE7EOQTgb6pwgtJx49GR2NlARrI7WcKdqBavGoFHFAgFzI+qo
- dEpxWdU/6X81wKaZEyGeOCTYPIw0ETcQkCbv+xwI=
+ b=p+Z0oPUhZ5JVgelWW7wu+uAPuik7eljPUrHZIzDmQtexCKalAfHVNYKjNxnZ+dtry
+ TM/2JVsKQs0+WibkrrTzHJg/Uo5z93ebERPr8c30vifbT9xLAyoyc/Ri9/Hh0msYCA
+ fAZgivf3PhhobRhlZOIrQ7in/7PJeR8hK8qRe8d8=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:40:01 -0500
-Message-Id: <20200116174251.24326-4-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:40:31 -0500
+Message-Id: <20200116174251.24326-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
 References: <20200116174251.24326-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Nicolas Huaman <nicolas@herochao.de>, Takashi Iwai <tiwai@suse.de>,
- alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.4 004/174] ALSA: usb-audio: update
-	quirk for B&W PX to remove microphone
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Daniel Baluta <daniel.baluta@nxp.com>, linuxppc-dev@lists.ozlabs.org,
+ Stefan Agner <stefan@agner.ch>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH AUTOSEL 4.4 034/174] ASoC: imx-sgtl5000: put of
+	nodes if finding codec fails
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,62 +96,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Nicolas Huaman <nicolas@herochao.de>
+From: Stefan Agner <stefan@agner.ch>
 
-[ Upstream commit c369c8db15d51fa175d2ba85928f79d16af6b562 ]
+[ Upstream commit d9866572486802bc598a3e8576a5231378d190de ]
 
-A quirk in snd-usb-audio was added to automate setting sample rate to
-4800k and remove the previously exposed nonfunctional microphone for
-the Bowers & Wilkins PX:
-commit 240a8af929c7c57dcde28682725b29cf8474e8e5
-https://lore.kernel.org/patchwork/patch/919689/
+Make sure to properly put the of node in case finding the codec
+fails.
 
-However the headphones where updated shortly after that to remove the
-unintentional microphone functionality. I guess because of this the
-headphones now crash when connecting them via USB while the quirk is
-active. Dmesg:
-
-snd-usb-audio: probe of 2-3:1.0 failed with error -22
-usb 2-3: 2:1: cannot get min/max values for control 2 (id 2)
-
-This patch removes the microfone and allows the headphones to connect
-and work out of the box. It is based on the current mainline kernel
- and successfully applied an tested on my machine (4.18.10.arch1-1).
-
-Fixes: 240a8af929c7 ("ALSA: usb-audio: Add a quirck for B&W PX headphones")
-Signed-off-by: Nicolas Huaman <nicolas@herochao.de>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 81e8e4926167 ("ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000")
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks-table.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/soc/fsl/imx-sgtl5000.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index d32727c74a16..c892b4d1e733 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3293,19 +3293,14 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 				.ifnum = 0,
- 				.type = QUIRK_AUDIO_STANDARD_MIXER,
- 			},
--			/* Capture */
--			{
--				.ifnum = 1,
--				.type = QUIRK_IGNORE_INTERFACE,
--			},
- 			/* Playback */
- 			{
--				.ifnum = 2,
-+				.ifnum = 1,
- 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
- 				.data = &(const struct audioformat) {
- 					.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 					.channels = 2,
--					.iface = 2,
-+					.iface = 1,
- 					.altsetting = 1,
- 					.altset_idx = 1,
- 					.attributes = UAC_EP_CS_ATTR_FILL_MAX |
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index 8e525f7ac08d..3d99a8579c99 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -119,7 +119,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
+ 	codec_dev = of_find_i2c_device_by_node(codec_np);
+ 	if (!codec_dev) {
+ 		dev_err(&pdev->dev, "failed to find codec platform device\n");
+-		return -EPROBE_DEFER;
++		ret = -EPROBE_DEFER;
++		goto fail;
+ 	}
+ 
+ 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
 -- 
 2.20.1
 
