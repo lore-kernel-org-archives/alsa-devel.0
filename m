@@ -6,76 +6,74 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B415C33CAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20B59C33CAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:16:36 +0000 (UTC)
 Received: from alsa0.perex.cz (unknown [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE2902075B
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:15:45 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RWrbvaR/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rZKb/mhg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE2902075B
+	by mail.kernel.org (Postfix) with ESMTPS id A85E920730
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:16:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A85E920730
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=tempfail smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 384C6180B;
-	Thu, 16 Jan 2020 18:14:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 384C6180B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB4EA17E8;
+	Thu, 16 Jan 2020 18:15:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4EA17E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579194944;
-	bh=A4tBFImjKelPBjffczRdTsy/TUiKXYvXb4SqnUNQnp0=;
+	s=default; t=1579194994;
+	bh=1W1pt/y/ZO55sZ0Htd2OVsNG33oTO9kH2ycOeqTxHWg=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RWrbvaR/OZac2cxKlgU3hRzHBoW8qN/kGFuJys771ChTSNH414hlJXGNPnwYJgV+3
-	 tYHLiWpgVDArilIyTd/l1UlzfLtB4hJfkWm1Xw6Uccql2Xjs3KGn518vNPbVD9ovbz
-	 PnQWXvIiSgPqeVfknNCpBZACoV+HkFxzWBLZwImI=
+	b=ZAPs8VEbiaOYCLMpefapCr991H84QHXBzLgHGLmn5xN8r4HmGVnCkPmVAfWmu9Tk0
+	 qpAocpBUVq8ULKtoxQaUEAGjDiA1hBWtwijNUOONvXfNQYzm9A+i8Zb6Uep7q9MJwH
+	 qd2WlKcCwiRkuwM7z5kcOF4/9CDtUFuL10kgIhz4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 478F0F80292;
-	Thu, 16 Jan 2020 18:10:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04D2DF802E0;
+	Thu, 16 Jan 2020 18:10:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6710AF8028B; Thu, 16 Jan 2020 18:10:38 +0100 (CET)
+ id 58F4FF802E1; Thu, 16 Jan 2020 18:10:48 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D465F80277
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:10:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D465F80277
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87D17F802DC
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:10:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87D17F802DC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rZKb/mhg"
+ header.b="BPuhKN9A"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 00CAB24683;
- Thu, 16 Jan 2020 17:10:29 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 218F020684;
+ Thu, 16 Jan 2020 17:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579194630;
- bh=QhRsUq9msnENjXA9Ib0cZ115aEFwzDmLlcwdVXqiUkY=;
+ s=default; t=1579194643;
+ bh=qqkdZRDf7pL7NtpFXCo/nXi2C6V+PmmiKiloW5jVw7Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rZKb/mhg8C+6V+WNufOg4CeBXr1/rUtXmue4R+oECb8rU/kzvsO/raj7U0rFsKhma
- NJwGChr6V2em1Imu3TozB2su14csAuRuOnpbUD73taKXQ1IH1iqqqRJUC9kREzB6/M
- PA9wkxgWQeS8U2m/vBqPrJ6+Dcozk0YtmJhLA2Tg=
+ b=BPuhKN9AyK+wNrmmlkgDWd6TDqFWcDRky5ruCSy8cN8SkgvpRugXnRYYG4Jo0+O+H
+ G1iliwxI+vhcj+oHekuK9LyOeUyrzL0DIEJfgqCKcRmpll+C59k6d2tLX9G22piBC6
+ Z8tLZl4/ARWJ9gQ21N8prd1K6N5Tjf5SvkPpWuxo=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:02:08 -0500
-Message-Id: <20200116170509.12787-227-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:02:18 -0500
+Message-Id: <20200116170509.12787-237-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 490/671] ASoC: es8328: Fix
-	copy-paste error in es8328_right_line_controls
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 500/671] ASoC: sun4i-i2s: RX and
+	TX counter registers are swapped
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,35 +91,36 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-[ Upstream commit 630742c296341a8cfe00dfd941392025ba8dd4e8 ]
+[ Upstream commit cf2c0e1ce9544df42170fb921f12da82dc0cc8d6 ]
 
-It seems 'es8328_rline_enum' should be used
-in es8328_right_line_controls
+The RX and TX counters registers offset have been swapped, fix that.
 
-Fixes: 567e4f98922c ("ASoC: add es8328 codec driver")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815092300.68712-1-yuehaibing@huawei.com
+Fixes: fa7c0d13cb26 ("ASoC: sunxi: Add Allwinner A10 Digital Audio driver")
+Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Link: https://lore.kernel.org/r/8b26477560ad5fd8f69e037b167c5e61de5c26a3.1566242458.git-series.maxime.ripard@bootlin.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8328.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index e9fc2fd97d2f..3afa163f7652 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -231,7 +231,7 @@ static const struct soc_enum es8328_rline_enum =
- 			      ARRAY_SIZE(es8328_line_texts),
- 			      es8328_line_texts);
- static const struct snd_kcontrol_new es8328_right_line_controls =
--	SOC_DAPM_ENUM("Route", es8328_lline_enum);
-+	SOC_DAPM_ENUM("Route", es8328_rline_enum);
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 18cf8404d27c..f248e563986c 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -80,8 +80,8 @@
+ #define SUN4I_I2S_CLK_DIV_MCLK_MASK		GENMASK(3, 0)
+ #define SUN4I_I2S_CLK_DIV_MCLK(mclk)			((mclk) << 0)
  
- /* Left Mixer */
- static const struct snd_kcontrol_new es8328_left_mixer_controls[] = {
+-#define SUN4I_I2S_RX_CNT_REG		0x28
+-#define SUN4I_I2S_TX_CNT_REG		0x2c
++#define SUN4I_I2S_TX_CNT_REG		0x28
++#define SUN4I_I2S_RX_CNT_REG		0x2c
+ 
+ #define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
+ #define SUN4I_I2S_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
 -- 
 2.20.1
 
