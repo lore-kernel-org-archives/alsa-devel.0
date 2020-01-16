@@ -2,82 +2,65 @@ Return-Path: <SRS0=iD9L=3F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14865C47409
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 12:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07BB0C33CB3
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 13:17:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9797D206D5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 12:47:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8AADB20748
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 13:17:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cWH8piXm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cyWIfQa7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9797D206D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WRaZ+wRx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AADB20748
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B35617CE;
-	Thu, 16 Jan 2020 13:46:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B35617CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A68A717BD;
+	Thu, 16 Jan 2020 14:16:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A68A717BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579178855;
-	bh=+ATZUvwMPPVsp2jVVcBARJ7WnOZhcaS+II/Dl525cZw=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1579180618;
+	bh=Hs6hlLp3bcqsENpxT+N0Py7/CZq9UlSHL6qAnqDZ3ro=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cWH8piXmEc6Qq3KDBxCXvWN/Py2g+WLzJgH7tJJzQj3Gc9GBtnPu2T6e5Lpq+evVr
-	 dKpqXTqEZGukbHZ6vBJraERouMKNWz/5AWEoP6H7xZRREeS/QNMZeFOUKBBHMeSNJj
-	 m0X/PU0hZYI1hGE61e3Tidw6p/Bc1rb0W7q7VaSQ=
+	b=WRaZ+wRx4XbQ11Rg22YLlY3c4BdxMzfR1JQzAbs/QSJ4FGeXEK7wUbNUQtjRJUOqh
+	 xEWI1SyV2Ki0fko8tyQUWe0S81t3hYHN8FwW7dxQW9cn33QReUWP4e+RIi6MxOlSYr
+	 CYt/RwhSxM6530UNzeqj2YC5SHv5YGbgeikHGo2k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5164F801F2;
-	Thu, 16 Jan 2020 13:45:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A84BF800E9;
+	Thu, 16 Jan 2020 14:16:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB7F5F8021E; Thu, 16 Jan 2020 13:45:52 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 15B6FF800E9; Thu, 16 Jan 2020 14:16:06 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3A34F800B9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 13:45:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3A34F800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cyWIfQa7"
-Received: from localhost (unknown [223.226.122.163])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C11A82075B;
- Thu, 16 Jan 2020 12:09:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579176565;
- bh=kYzkOEmCDFe62a7WuBff4raLrGb2r2xPUtR2Sr2MPTI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=cyWIfQa78sWdoZCbKCO+81DnbHCnlIUxwC0VvYv6raWoCBzmbApTn6jHKO9It6VwC
- p+vvDgh6e/pP/svKhamE3fkQA0gnbDE7amC3MJHYdX53nL22eCNiUNC2jaGqd3PZco
- +6d776W26zvyKPuB57R26Rq4chYXifN3kBMEQUDc=
-Date: Thu, 16 Jan 2020 17:39:18 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20200116120918.GR2818@vkoul-mobl>
-References: <20200114233124.13888-1-pierre-louis.bossart@linux.intel.com>
- <20200116120459.GP2818@vkoul-mobl>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20200116120459.GP2818@vkoul-mobl>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, jank@cadence.com, slawomir.blauciak@intel.com,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: cadence: fix kernel-doc
-	parameter descriptions
+ by alsa1.perex.cz (Postfix) with ESMTPS id 847C3F800E9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 14:16:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 847C3F800E9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E4517B1C6;
+ Thu, 16 Jan 2020 13:16:00 +0000 (UTC)
+Date: Thu, 16 Jan 2020 14:16:00 +0100
+Message-ID: <s5hd0bj7d9r.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20200116122548.GP3897@sirena.org.uk>
+References: <20200116122548.GP3897@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [alsa-devel] [GIT PULL] ASoC fixes for v5.5
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,26 +73,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gMTYtMDEtMjAsIDE3OjM1LCBWaW5vZCBLb3VsIHdyb3RlOgo+IE9uIDE0LTAxLTIwLCAxNzoz
-MSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gPiBGaXggcHJldmlvdXMgdXBkYXRlLCBi
-YWQgZ2l0IG1lcmdlIGxpa2VseS4gb29wcy4KPiAKPiBBcHBsaWVkLCB0aGFua3MKCkJ0dyBJIHN0
-aWxsIGhhdmUgdGhlc2Ugd2FybnMgb24gbXkgbmV4dCB3aXRoIFc9MQoKZHJpdmVycy9zb3VuZHdp
-cmUvaW50ZWxfaW5pdC5jOjE5Mzo3OiB3YXJuaW5nOiBubyBwcmV2aW91cyBwcm90b3R5cGUgZm9y
-IOKAmHNkd19pbnRlbF9pbml04oCZIFstV21pc3NpbmctcHJvdG90eXBlc10KIHZvaWQgKnNkd19p
-bnRlbF9pbml0KGFjcGlfaGFuZGxlICpwYXJlbnRfaGFuZGxlLCBzdHJ1Y3Qgc2R3X2ludGVsX3Jl
-cyAqcmVzKQogICAgICAgXn5+fn5+fn5+fn5+fn4KZHJpdmVycy9zb3VuZHdpcmUvY2FkZW5jZV9t
-YXN0ZXIuYzoxMDIyOiB3YXJuaW5nOiBGdW5jdGlvbiBwYXJhbWV0ZXIgb3IgbWVtYmVyICdjbG9j
-a19zdG9wX2V4aXQnIG5vdCBkZXNjcmliZWQgaW4gJ3Nkd19jZG5zX2luaXQnCiAgTEQgW01dICBk
-cml2ZXJzL3NvdW5kd2lyZS9zb3VuZHdpcmUtY2FkZW5jZS5vCmRyaXZlcnMvc291bmR3aXJlL2lu
-dGVsX2luaXQuYzoyMTQ6IHdhcm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ2N0
-eCcgbm90IGRlc2NyaWJlZCBpbiAnc2R3X2ludGVsX2V4aXQnCmRyaXZlcnMvc291bmR3aXJlL2lu
-dGVsX2luaXQuYzoyMTQ6IHdhcm5pbmc6IEV4Y2VzcyBmdW5jdGlvbiBwYXJhbWV0ZXIgJ2FyZycg
-ZGVzY3JpcHRpb24gaW4gJ3Nkd19pbnRlbF9leGl0JwoKLS0gCn5WaW5vZApfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, 16 Jan 2020 13:25:48 +0100,
+Mark Brown wrote:
+> 
+> The following changes since commit ff3b57417012fcc963ec281f5705bed837e4b1ac:
+> 
+>   ASoC: Intel: boards: Fix compile-testing RT1011/RT5682 (2020-01-03 00:56:47 +0000)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.5-rc6
+> 
+> for you to fetch changes up to 85578bbd642f65065039b1765ebe1a867d5435b0:
+> 
+>   ASoC: msm8916-wcd-digital: Reset RX interpolation path after use (2020-01-13 15:12:28 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.5
+> 
+> This is mostly driver specific fixes, plus an error handling fix
+> in the core.  There is a rather large diffstat for the stm32 SAI
+> driver, this is a very large but mostly mechanical update which
+> wraps every register access in the driver to allow a fix to the
+> locking which avoids circular locks, the active change is much
+> smaller and more reasonably sized.
+
+Pulled now.  Thanks.
+
+
+Takashi
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
