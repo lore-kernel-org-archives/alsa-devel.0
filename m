@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5673DC33CAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 557A0C33CAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:07:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D556C205F4
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:06:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D65B62192A
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:07:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lX+ESYGi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1uokLzt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D556C205F4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mCWUyQCn";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCjhhJoc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D65B62192A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 353F11732;
-	Thu, 16 Jan 2020 18:05:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 353F11732
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02EF417D8;
+	Thu, 16 Jan 2020 18:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02EF417D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579194399;
-	bh=tQC6ZqkWR63OW+l2cLYDv0iNyrJZlx4eFBZJSfkWsik=;
+	s=default; t=1579194453;
+	bh=DWluhN2ID0TZ6FOAw5L3wkdZWae07mSrM1Re7MyFa9w=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lX+ESYGi8R6Ij3jenXWujtRgnfH3bIfVY1rkQL4dVQEEyhtNWuC81dwCVTalnG7hn
-	 4A6uy77YAwJdEUW/w7rSeLPF6E2jbDQZx0DaV+JcV549/XEbpIQ+OZ4rQHhSNnASaH
-	 0qf4mbCPbF3aZGIkSXxtsyNQ7PhV5A41vgoMTvVI=
+	b=mCWUyQCnbnzyDSWaU0u6ercwzPAqGo1mxCOclLzA7soU93HVr1lMJfoR0InHfqgcH
+	 ulTtQmym3irsmW6n27G/n+xJ00XUAWC6mNV6tKWyJAazf9U9DQcAt8WqN6uJaR1lE8
+	 sQMgZ0Qp0ongt/9ZIxe5KEk5ismkqiEl8xX/qaBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C10E4F8016F;
-	Thu, 16 Jan 2020 18:05:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27A0BF80216;
+	Thu, 16 Jan 2020 18:05:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 786A2F80171; Thu, 16 Jan 2020 18:05:47 +0100 (CET)
+ id 08ED6F80216; Thu, 16 Jan 2020 18:05:49 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8909AF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AF95F8014D
  for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:05:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8909AF800E9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AF95F8014D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="l1uokLzt"
+ header.b="CCjhhJoc"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BF6652467A;
- Thu, 16 Jan 2020 16:55:36 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1F579217F4;
+ Thu, 16 Jan 2020 16:48:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579193737;
- bh=x8IBTbMc7q0xygme5mT2prwtW8teTHQaE5Z0R5c1sgQ=;
+ s=default; t=1579193312;
+ bh=Eb4Vx2wML0CMCDuQwZW50JnG/4Jh8yN2N0fN2PjlhQE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=l1uokLztaLSfQlxKIWgQwwbY7h1ETRJrYGBWSfn92GmyhGw2X5LHWzPlabJIycTXm
- Fm7OaBmQd5Y7CKoN6MJftXISn5mgwsOWB0XfsGp99pBpBDu0a1Mc8WWoxchtfpCh/i
- 4IFf1mN3G56wvLk7C+338ma0+DK4BtaQ9ZRd75E8=
+ b=CCjhhJoco2webzQpPlRQGrX/KPBcVI5f9M1cXZSQLRKWX1rcQ2Mic/FceHLa0M533
+ ZXVU2Hw9Cb06silmEQ96m/pP7DwLVIyjEd3oT/+bsi1x6rJR1HvM9fkplG7UBTGDyz
+ BOF4sOkVUjKOdMdy35nuISTRoKZoovhzveCYViBY=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 11:44:20 -0500
-Message-Id: <20200116165502.8838-29-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 11:40:47 -0500
+Message-Id: <20200116164300.6705-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116165502.8838-1-sashal@kernel.org>
-References: <20200116165502.8838-1-sashal@kernel.org>
+In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
+References: <20200116164300.6705-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Nicolas Huaman <nicolas@herochao.de>, Takashi Iwai <tiwai@suse.de>,
- alsa-devel@alsa-project.org, Sasha Levin <sashal@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 029/671] ALSA: usb-audio: update
-	quirk for B&W PX to remove microphone
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 072/205] ASoC: fsl_esai: Add spin
+	lock to protect reset, stop and start
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,62 +94,102 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Nicolas Huaman <nicolas@herochao.de>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit c369c8db15d51fa175d2ba85928f79d16af6b562 ]
+[ Upstream commit 35dac627471938eda89fa39ee4ead1f7667e0f57 ]
 
-A quirk in snd-usb-audio was added to automate setting sample rate to
-4800k and remove the previously exposed nonfunctional microphone for
-the Bowers & Wilkins PX:
-commit 240a8af929c7c57dcde28682725b29cf8474e8e5
-https://lore.kernel.org/patchwork/patch/919689/
+xrun may happen at the end of stream, the
+trigger->fsl_esai_trigger_stop maybe called in the middle of
+fsl_esai_hw_reset, this may cause esai in wrong state
+after stop, and there may be endless xrun interrupt.
 
-However the headphones where updated shortly after that to remove the
-unintentional microphone functionality. I guess because of this the
-headphones now crash when connecting them via USB while the quirk is
-active. Dmesg:
+This issue may also happen with trigger->fsl_esai_trigger_start.
 
-snd-usb-audio: probe of 2-3:1.0 failed with error -22
-usb 2-3: 2:1: cannot get min/max values for control 2 (id 2)
+So Add spin lock to lock those functions.
 
-This patch removes the microfone and allows the headphones to connect
-and work out of the box. It is based on the current mainline kernel
- and successfully applied an tested on my machine (4.18.10.arch1-1).
-
-Fixes: 240a8af929c7 ("ALSA: usb-audio: Add a quirck for B&W PX headphones")
-Signed-off-by: Nicolas Huaman <nicolas@herochao.de>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 7ccafa2b3879 ("ASoC: fsl_esai: recover the channel swap after xrun")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/52e92c4221a83e39a84a6cd92fc3d5479b44894c.1572252321.git.shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks-table.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 65f9c4ba62ee..90d4f61cc230 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3349,19 +3349,14 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 				.ifnum = 0,
- 				.type = QUIRK_AUDIO_STANDARD_MIXER,
- 			},
--			/* Capture */
--			{
--				.ifnum = 1,
--				.type = QUIRK_IGNORE_INTERFACE,
--			},
- 			/* Playback */
- 			{
--				.ifnum = 2,
-+				.ifnum = 1,
- 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
- 				.data = &(const struct audioformat) {
- 					.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 					.channels = 2,
--					.iface = 2,
-+					.iface = 1,
- 					.altsetting = 1,
- 					.altset_idx = 1,
- 					.attributes = UAC_EP_CS_ATTR_FILL_MAX |
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index a78e4ab478df..c7a49d03463a 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -33,6 +33,7 @@
+  * @fsysclk: system clock source to derive HCK, SCK and FS
+  * @spbaclk: SPBA clock (optional, depending on SoC design)
+  * @task: tasklet to handle the reset operation
++ * @lock: spin lock between hw_reset() and trigger()
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
+  * @slots: number of slots
+@@ -56,6 +57,7 @@ struct fsl_esai {
+ 	struct clk *fsysclk;
+ 	struct clk *spbaclk;
+ 	struct tasklet_struct task;
++	spinlock_t lock; /* Protect hw_reset and trigger */
+ 	u32 fifo_depth;
+ 	u32 slot_width;
+ 	u32 slots;
+@@ -676,8 +678,10 @@ static void fsl_esai_hw_reset(unsigned long arg)
+ {
+ 	struct fsl_esai *esai_priv = (struct fsl_esai *)arg;
+ 	bool tx = true, rx = false, enabled[2];
++	unsigned long lock_flags;
+ 	u32 tfcr, rfcr;
+ 
++	spin_lock_irqsave(&esai_priv->lock, lock_flags);
+ 	/* Save the registers */
+ 	regmap_read(esai_priv->regmap, REG_ESAI_TFCR, &tfcr);
+ 	regmap_read(esai_priv->regmap, REG_ESAI_RFCR, &rfcr);
+@@ -715,6 +719,8 @@ static void fsl_esai_hw_reset(unsigned long arg)
+ 		fsl_esai_trigger_start(esai_priv, tx);
+ 	if (enabled[rx])
+ 		fsl_esai_trigger_start(esai_priv, rx);
++
++	spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
+ }
+ 
+ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+@@ -722,6 +728,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	unsigned long lock_flags;
+ 
+ 	esai_priv->channels[tx] = substream->runtime->channels;
+ 
+@@ -729,12 +736,16 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		spin_lock_irqsave(&esai_priv->lock, lock_flags);
+ 		fsl_esai_trigger_start(esai_priv, tx);
++		spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		spin_lock_irqsave(&esai_priv->lock, lock_flags);
+ 		fsl_esai_trigger_stop(esai_priv, tx);
++		spin_unlock_irqrestore(&esai_priv->lock, lock_flags);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -1002,6 +1013,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(&pdev->dev, esai_priv);
+ 
++	spin_lock_init(&esai_priv->lock);
+ 	ret = fsl_esai_hw_init(esai_priv);
+ 	if (ret)
+ 		return ret;
 -- 
 2.20.1
 
