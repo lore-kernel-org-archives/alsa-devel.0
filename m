@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16CB5C33CAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:37:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D9A4C3F68F
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:38:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 932A9246BA
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:37:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A2A25246E7
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:38:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dcTvCcch";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ll3ljfwk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 932A9246BA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eZjD8n0C";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xjqQ8Ql8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2A25246E7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9F711801;
-	Thu, 16 Jan 2020 18:36:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9F711801
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBFE017FF;
+	Thu, 16 Jan 2020 18:37:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBFE017FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579196253;
-	bh=L2xbe+FOA8njVgd6XLPQEIDgUPq3yjfh19vpdNIFqsc=;
+	s=default; t=1579196299;
+	bh=sQ2E3lLey2WeXhpSMsvRcxOZ20QtziJpsbRffpRdUrw=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dcTvCcchy5H91rv68s01JbUomlhsaW1qLaV7dRuuzIMCDF3bZwT/qZepqBGbYyj4M
-	 drvUsVPLvfEqLOXtWY9QlyXQd3yPaGddqIXczaifh8HqWaMET9R9qClxg8q663qsxz
-	 R06uFWJz3hlqjTucwIukNAXS4F4QWS7EMp4RfIts=
+	b=eZjD8n0Cmnv40csf2eEuic8dp23i5T36r9CXGI25TI0SstBWV50lCoe8FYAdsBaCe
+	 HoeoxlU+rveRkkr6M3237tGAzAnxll0vRyazkeooqPBVUIAT6jVxUWk/VuzYAWpBNN
+	 bZdfMfDUuAQ3jejU/beSkY3L0ACJJrVSaZZEtaUU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C0D1F8026F;
-	Thu, 16 Jan 2020 18:35:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B1BFF80276;
+	Thu, 16 Jan 2020 18:35:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46280F80276; Thu, 16 Jan 2020 18:35:48 +0100 (CET)
+ id D564EF8027C; Thu, 16 Jan 2020 18:35:50 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 985B7F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4E9DF80271
  for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:35:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 985B7F800B9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4E9DF80271
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ll3ljfwk"
+ header.b="xjqQ8Ql8"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 69AAA246FE;
- Thu, 16 Jan 2020 17:28:42 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C00CD246D0;
+ Thu, 16 Jan 2020 17:28:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579195723;
- bh=7u2xx0KUBFoZYEwAEZ31izFTLLCxSqCPxlUd+abSnWY=;
+ s=default; t=1579195711;
+ bh=VgOQDA71uRDSsos4UvyhHQ5aQa7agYA/TfWi29gk9ks=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Ll3ljfwkPuhzzixFxoz8sAuaVv+RT71r7rw/BGzywnCJF1mqxzcMkOQIzo7zg0LRE
- QnSeyeABnRzRhl5Cu3H6Wk3CjOdbPcUYfYLl2ZlA7cQZA5fc9iFFUWUuUVr6WKX4T+
- Bo585mRvvIfaRLhGDONazr5yE4fMbya2Qs8em0HM=
+ b=xjqQ8Ql8jB03xs4SSwa8kd77FohHA24RLJBLmu5An4mulFzhilgzv/AoO937R3vea
+ 4dy9jG51VIlNx5t6gvoTlZ5YmS/gYfXcUgecHhnV7CzL+05fwdjcRSFVsJ/az4sHYS
+ kUfaj7pRcuVjxy8AaWwXJsyeb9SUzXIjYcc5eaaQ=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:22:17 -0500
-Message-Id: <20200116172403.18149-208-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:22:09 -0500
+Message-Id: <20200116172403.18149-200-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
 References: <20200116172403.18149-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.14 265/371] ASoC: es8328: Fix
-	copy-paste error in es8328_right_line_controls
+Cc: Sasha Levin <sashal@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+ Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
+Subject: [alsa-devel] [PATCH AUTOSEL 4.14 257/371] ALSA: aoa: onyx: always
+	initialize register read value
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,35 +94,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Johannes Berg <johannes@sipsolutions.net>
 
-[ Upstream commit 630742c296341a8cfe00dfd941392025ba8dd4e8 ]
+[ Upstream commit f474808acb3c4b30552d9c59b181244e0300d218 ]
 
-It seems 'es8328_rline_enum' should be used
-in es8328_right_line_controls
+A lot of places in the driver use onyx_read_register() without
+checking the return value, and it's been working OK for ~10 years
+or so, so probably never fails ... Rather than trying to check the
+return value everywhere, which would be relatively intrusive, at
+least make sure we don't use an uninitialized value.
 
-Fixes: 567e4f98922c ("ASoC: add es8328 codec driver")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20190815092300.68712-1-yuehaibing@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: f3d9478b2ce4 ("[ALSA] snd-aoa: add snd-aoa")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8328.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/aoa/codecs/onyx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index bcdb8914ec16..e2f44fa46262 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -231,7 +231,7 @@ static const struct soc_enum es8328_rline_enum =
- 			      ARRAY_SIZE(es8328_line_texts),
- 			      es8328_line_texts);
- static const struct snd_kcontrol_new es8328_right_line_controls =
--	SOC_DAPM_ENUM("Route", es8328_lline_enum);
-+	SOC_DAPM_ENUM("Route", es8328_rline_enum);
- 
- /* Left Mixer */
- static const struct snd_kcontrol_new es8328_left_mixer_controls[] = {
+diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
+index d2d96ca082b7..6224fd3bbf7c 100644
+--- a/sound/aoa/codecs/onyx.c
++++ b/sound/aoa/codecs/onyx.c
+@@ -74,8 +74,10 @@ static int onyx_read_register(struct onyx *onyx, u8 reg, u8 *value)
+ 		return 0;
+ 	}
+ 	v = i2c_smbus_read_byte_data(onyx->i2c, reg);
+-	if (v < 0)
++	if (v < 0) {
++		*value = 0;
+ 		return -1;
++	}
+ 	*value = (u8)v;
+ 	onyx->cache[ONYX_REG_CONTROL-FIRSTREGISTER] = *value;
+ 	return 0;
 -- 
 2.20.1
 
