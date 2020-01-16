@@ -6,79 +6,80 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9209FC33CB3
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:00:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64361C33CB3
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:01:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C9452081E
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:00:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8AED21582
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:01:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o+GX9Da+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ICh4YzJW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C9452081E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BZ1adeX5";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="izVDGGLP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8AED21582
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6606C38;
-	Thu, 16 Jan 2020 18:00:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6606C38
+	by alsa0.perex.cz (Postfix) with ESMTPS id C85C017D4;
+	Thu, 16 Jan 2020 18:00:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C85C017D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579194051;
-	bh=clCsUR3BVB1sgiezSBoK7STqj3dlQzngS4lWuENA9H4=;
+	s=default; t=1579194105;
+	bh=f7tKnFBXD1YnxvL6zhtyI3prrJqlVf0yKNM0Yzeubv4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o+GX9Da+iGqmziZEfA/YRy70jLd7ygam/oIf+6AKDCPdNQY2myxJHAM734kxoAods
-	 VMMnREwvTImGH0TLS9sC4GxzRZskJFvNV3gDqZjqgP+4pNvVksFoxtvPYG1DQ5VNZL
-	 vXtlenLrXHBisVbwTl7Vo+HDFfH6cwl31i8ApSYw=
+	b=BZ1adeX59KmNqgUX1BDGXLUGBVhNLHFtXpfDns1VKQAMroDUjQH668d4atDurdTo0
+	 HeobUF5SRPlMXkjmvexs4f2MH6bGjugiVncfbFLtjf+t+VobpbcfmUVHF4YQGesRNN
+	 3CSeez4AyGctBvne7jkzI34Cl+UI3lJEURpAEH+E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA242F8014D;
-	Thu, 16 Jan 2020 18:00:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DF46F8014D;
+	Thu, 16 Jan 2020 18:00:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7437DF8014E; Thu, 16 Jan 2020 17:59:59 +0100 (CET)
+ id D79F5F8022B; Thu, 16 Jan 2020 18:00:50 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06D70F800E9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 17:59:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06D70F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 881B8F8016F
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:00:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 881B8F8016F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ICh4YzJW"
+ header.b="izVDGGLP"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CDBB420730;
- Thu, 16 Jan 2020 16:59:50 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E10CE2073A;
+ Thu, 16 Jan 2020 16:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579193992;
- bh=M25l5xEyU2CXWnx++Hc+OTNJB8R2zrnDtnpkuUnr77I=;
+ s=default; t=1579193637;
+ bh=vQOnwgcSUZ3IxlVxZdTcxxPpd0marI6QGKQVbOiDRiM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ICh4YzJWe1O71r7IAPNziGrizVDNT+FpvDi9cTs8UwZA6mnkbYVHmss6Ia0LMA+qC
- nK0hUeZLojX5wFZPHPM09i9MAHkmvS29kaWA856k5R8CjPVAi7yXj7Za3mkBGUY1ZE
- ybJvN7aljzaNlNwIXFdezRslTuSwaW3u75P8n+f8=
+ b=izVDGGLPYEIER6Dujtnnkp4QpVBX4Fch0ABxsIbhm/b+FTLFkAKm9YWf2AvWfQcA/
+ E0Dcx6T9LcGvkrNeZjDkAaZWrwuP8FKlYfsTLmTSj7R0sGLzS7sjeQgX6kU6j8Qdck
+ PtxAuiO+Ux+dt4tyfASTQTVJrXEGLaPIe4N0onPM=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 11:50:31 -0500
-Message-Id: <20200116165940.10720-5-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 11:42:25 -0500
+Message-Id: <20200116164300.6705-170-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116165940.10720-1-sashal@kernel.org>
-References: <20200116165940.10720-1-sashal@kernel.org>
+In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
+References: <20200116164300.6705-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Daniel Baluta <daniel.baluta@nxp.com>, linuxppc-dev@lists.ozlabs.org,
- Stefan Agner <stefan@agner.ch>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 122/671] ASoC: imx-sgtl5000: put
-	of nodes if finding codec fails
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Jiada Wang <jiada_wang@mentor.com>,
+ Nilkanth Ahirrao <anilkanth@jp.adit-jv.com>, Mark Brown <broonie@kernel.org>,
+ Eugeniu Rosca <erosca@de.adit-jv.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 170/205] ASoC: rsnd: fix DALIGN
+	register for SSIU
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,47 +92,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Agner <stefan@agner.ch>
-
-[ Upstream commit d9866572486802bc598a3e8576a5231378d190de ]
-
-Make sure to properly put the of node in case finding the codec
-fails.
-
-Fixes: 81e8e4926167 ("ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/fsl/imx-sgtl5000.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index 9b9a7ec52905..4bd8da3a5f5b 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -112,7 +112,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
- 	codec_dev = of_find_i2c_device_by_node(codec_np);
- 	if (!codec_dev) {
- 		dev_err(&pdev->dev, "failed to find codec platform device\n");
--		return -EPROBE_DEFER;
-+		ret = -EPROBE_DEFER;
-+		goto fail;
- 	}
- 
- 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
--- 
-2.20.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+RnJvbTogTmlsa2FudGggQWhpcnJhbyA8YW5pbGthbnRoQGpwLmFkaXQtanYuY29tPgoKWyBVcHN0
+cmVhbSBjb21taXQgZWY4ZTE0Nzk0MzA4YTQyOGIxOTRmOGIwNmFkOWFlMDZiNDM0NjZlNCBdCgpU
+aGUgY3VycmVudCBkcml2ZXIgb25seSBzZXRzIDB4NzY1NDMyMTAgYW5kIDB4Njc0NTIzMDEgZm9y
+IERBTElHTi4KVGhpcyBkb2VzbuKAmXQgd29yayB3ZWxsIGZvciBURE0gc3BsaXQgYW5kIGV4LXNw
+bGl0IG1vZGUgZm9yIGFsbCBTU0lVLgpUaGlzIHBhdGNoIHByb2dyYW1zIHRoZSBEQUxJR04gcmVn
+aXN0ZXJzIGJhc2VkIG9uIHRoZSBTU0lVIG51bWJlci4KCkNjOiBLdW5pbm9yaSBNb3JpbW90byA8
+a3VuaW5vcmkubW9yaW1vdG8uZ3hAcmVuZXNhcy5jb20+CkNjOiBKaWFkYSBXYW5nIDxqaWFkYV93
+YW5nQG1lbnRvci5jb20+CkNjOiBBbmRyZXcgR2FiYmFzb3YgPGFuZHJld19nYWJiYXNvdkBtZW50
+b3IuY29tPgpGaXhlczogYTkxNGU0NDY5M2Q0MWIgKCJBU29DOiByc25kOiBtb3JlIGNsZWFyIHJz
+bmRfZ2V0X2RhbGlnbigpIGZvciBEQUxJR04iKQpTaWduZWQtb2ZmLWJ5OiBOaWxrYW50aCBBaGly
+cmFvIDxhbmlsa2FudGhAanAuYWRpdC1qdi5jb20+ClNpZ25lZC1vZmYtYnk6IEV1Z2VuaXUgUm9z
+Y2EgPGVyb3NjYUBkZS5hZGl0LWp2LmNvbT4KQWNrZWQtYnk6IEt1bmlub3JpIE1vcmltb3RvIDxr
+dW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5l
+bC5vcmcvci8yMDE5MTEyMTExMTAyMy4xMDk3Ni0xLWVyb3NjYUBkZS5hZGl0LWp2LmNvbQpTaWdu
+ZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+ClNpZ25lZC1vZmYtYnk6
+IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBzb3VuZC9zb2Mvc2gvcmNhci9j
+b3JlLmMgfCAyMCArKysrKysrKysrKysrKysrKystLQogMSBmaWxlIGNoYW5nZWQsIDE4IGluc2Vy
+dGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NoL3JjYXIv
+Y29yZS5jIGIvc291bmQvc29jL3NoL3JjYXIvY29yZS5jCmluZGV4IGU5NTk2YzIwOTZjZC4uYTZj
+MWNmOTg3ZTZlIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc2gvcmNhci9jb3JlLmMKKysrIGIvc291
+bmQvc29jL3NoL3JjYXIvY29yZS5jCkBAIC0zNzYsNiArMzc2LDE3IEBAIHUzMiByc25kX2dldF9h
+ZGlucl9iaXQoc3RydWN0IHJzbmRfbW9kICptb2QsIHN0cnVjdCByc25kX2RhaV9zdHJlYW0gKmlv
+KQogICovCiB1MzIgcnNuZF9nZXRfZGFsaWduKHN0cnVjdCByc25kX21vZCAqbW9kLCBzdHJ1Y3Qg
+cnNuZF9kYWlfc3RyZWFtICppbykKIHsKKwlzdGF0aWMgY29uc3QgdTMyIGRhbGlnbl92YWx1ZXNb
+OF1bMl0gPSB7CisJCXsweDc2NTQzMjEwLCAweDY3NDUyMzAxfSwKKwkJezB4MDAwMDAwMzIsIDB4
+MDAwMDAwMjN9LAorCQl7MHgwMDAwNzY1NCwgMHgwMDAwNjc0NX0sCisJCXsweDAwMDAwMDc2LCAw
+eDAwMDAwMDY3fSwKKwkJezB4ZmVkY2JhOTgsIDB4ZWZjZGFiODl9LAorCQl7MHgwMDAwMDBiYSwg
+MHgwMDAwMDBhYn0sCisJCXsweDAwMDBmZWRjLCAweDAwMDBlZmNkfSwKKwkJezB4MDAwMDAwZmUs
+IDB4MDAwMDAwZWZ9LAorCX07CisJaW50IGlkID0gMCwgaW52OwogCXN0cnVjdCByc25kX21vZCAq
+c3NpdSA9IHJzbmRfaW9fdG9fbW9kX3NzaXUoaW8pOwogCXN0cnVjdCByc25kX21vZCAqdGFyZ2V0
+OwogCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSByc25kX2lvX3RvX3J1bnRpbWUo
+aW8pOwpAQCAtNDExLDEzICs0MjIsMTggQEAgdTMyIHJzbmRfZ2V0X2RhbGlnbihzdHJ1Y3QgcnNu
+ZF9tb2QgKm1vZCwgc3RydWN0IHJzbmRfZGFpX3N0cmVhbSAqaW8pCiAJCXRhcmdldCA9IGNtZCA/
+IGNtZCA6IHNzaXU7CiAJfQogCisJaWYgKG1vZCA9PSBzc2l1KQorCQlpZCA9IHJzbmRfbW9kX2lk
+X3N1Yihtb2QpOworCiAJLyogTm9uIHRhcmdldCBtb2Qgb3Igbm9uIDE2Yml0IG5lZWRzIG5vcm1h
+bCBEQUxJR04gKi8KIAlpZiAoKHNuZF9wY21fZm9ybWF0X3dpZHRoKHJ1bnRpbWUtPmZvcm1hdCkg
+IT0gMTYpIHx8CiAJICAgIChtb2QgIT0gdGFyZ2V0KSkKLQkJcmV0dXJuIDB4NzY1NDMyMTA7CisJ
+CWludiA9IDA7CiAJLyogVGFyZ2V0IG1vZCBuZWVkcyBpbnZlcnRlZCBEQUxJR04gd2hlbiAxNmJp
+dCAqLwogCWVsc2UKLQkJcmV0dXJuIDB4Njc0NTIzMDE7CisJCWludiA9IDE7CisKKwlyZXR1cm4g
+ZGFsaWduX3ZhbHVlc1tpZF1baW52XTsKIH0KIAogdTMyIHJzbmRfZ2V0X2J1c2lmX3NoaWZ0KHN0
+cnVjdCByc25kX2RhaV9zdHJlYW0gKmlvLCBzdHJ1Y3QgcnNuZF9tb2QgKm1vZCkKLS0gCjIuMjAu
+MQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
