@@ -2,75 +2,72 @@ Return-Path: <SRS0=iD9L=3F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2961C33CB6
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 12:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F3D7C33CB1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 12:06:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6300920663
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 12:04:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D778420663
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 12:06:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="grhiPsVw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jKjXit/0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6300920663
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hYVTLjqL";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="G3qNDd+z"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D778420663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC35217B3;
-	Thu, 16 Jan 2020 13:03:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC35217B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31DE517D1;
+	Thu, 16 Jan 2020 13:05:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31DE517D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579176286;
-	bh=3yjZ7hHKPrQrN+IZTGGowCV6I0OCN6PrObOHbCQ87GM=;
+	s=default; t=1579176360;
+	bh=UR+yfvhmmuagSARJiLqnITKDPFsIcyzAqZ00GusuhQA=;
 	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=grhiPsVwH9BkK1IBbJdknx3Y2SoD4iFVV2vzUFbUnP11SdA78ur/ZbQ1owL3qsr8E
-	 KCL6l+or4eMkHHoGp7vnq7t02ODbWxQZLRU4y/QEE8PO+mmmrdvahggAlYehtpi8aA
-	 ckWa+II3dFHo4DZRwXEcBaGPIJEwJJeLIV868/o8=
+	b=hYVTLjqLyNRRDc9pPN5IPXFRdCHsmIpTG4aYE4to/C0RAl9yMCnN6Do65dYsQXOet
+	 yriQYgfWQ4smgKhE+sKZymd1FzzrnEW2FJ7HCIiDZKJxFk4MsyZ4dbzIc6gvwZ89hq
+	 fyGfHpevCw2/pnQaVi8PAHd4X/KTEpgfOceV4k6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34D7AF800E9;
-	Thu, 16 Jan 2020 13:03:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3795F80086;
+	Thu, 16 Jan 2020 13:05:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51DEEF8014E; Thu, 16 Jan 2020 13:03:55 +0100 (CET)
+ id 0C896F80171; Thu, 16 Jan 2020 13:05:08 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42BEEF800E9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 13:03:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42BEEF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 577B6F80086
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 13:05:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 577B6F80086
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jKjXit/0"
+ header.b="G3qNDd+z"
 Received: from localhost (unknown [223.226.122.163])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 49FC920663;
- Thu, 16 Jan 2020 12:03:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id CFF6A20663;
+ Thu, 16 Jan 2020 12:05:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579176230;
- bh=KtX5tJKy5Hk3+x2VzUvP3+AgfvpKUSFz7vDwZZvkPO0=;
+ s=default; t=1579176303;
+ bh=Ye1+UG3M999GBdvHyzVG7SyBKkNJZ2O4bs+/AbBdoqk=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jKjXit/0EUNKfr25VxztK6cSK/DlonwNmDSBhZMLAbORjYVE/+GZ3eAQs2zAAvjcU
- Ch9tr6BUblYK4vlYJtdBjjVJw3fmV+RRQpruB/WUC69HKqCRJPnReedsfiSef+tx/S
- e3F/mCoBt68OtSTFrdJytuEGq1NHpTqOxOvncTtw=
-Date: Thu, 16 Jan 2020 17:33:44 +0530
+ b=G3qNDd+z0TpJeegASC2kB0iOsLKBwD7+4GtXLK7MjDeNbeH/9luaDCQVgp0b9+/fZ
+ 4yGO/1TXQ0McC4CY5tH6NcEukOrKPs4NbALZheS00cvmwhIm8adx/l/T8ivnrLTPD1
+ NqO/pa2N06M58q7HdZmVxsc3CrvK1L2WknQxuhwU=
+Date: Thu, 16 Jan 2020 17:34:59 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20200116120344.GO2818@vkoul-mobl>
-References: <20200110220016.30887-1-pierre-louis.bossart@linux.intel.com>
- <a70c54c0-c691-d8eb-4f99-da1bb9306c2f@linux.intel.com>
- <20200114062605.GD2818@vkoul-mobl>
- <7a2e514c-edd1-fbeb-3ebb-df289c7436e2@linux.intel.com>
+Message-ID: <20200116120459.GP2818@vkoul-mobl>
+References: <20200114233124.13888-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <7a2e514c-edd1-fbeb-3ebb-df289c7436e2@linux.intel.com>
+In-Reply-To: <20200114233124.13888-1-pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
@@ -78,8 +75,8 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  Sanyog Kale <sanyog.r.kale@intel.com>,
  Bard liao <yung-chuan.liao@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] soundwire: intel: report slave_ids for
- each link to SOF driver
+Subject: Re: [alsa-devel] [PATCH] soundwire: cadence: fix kernel-doc
+	parameter descriptions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,34 +94,10 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 14-01-20, 10:05, Pierre-Louis Bossart wrote:
-> On 1/14/20 12:26 AM, Vinod Koul wrote:
-> > On 10-01-20, 16:31, Pierre-Louis Bossart wrote:
-> > > On 1/10/20 4:00 PM, Pierre-Louis Bossart wrote:
-> > > > From: Bard Liao <yung-chuan.liao@linux.intel.com>
-> > > > 
-> > > > The existing link_mask flag is no longer sufficient to detect the
-> > > > hardware and identify which topology file and a machine driver to load.
-> > > > 
-> > > > By reporting the slave_ids exposed in ACPI tables, the parent SOF
-> > > > driver will be able to compare against a set of static configurations.
-> > > > 
-> > > > This patch only adds the interface change, the functionality is added
-> > > > in future patches.
-> > > 
-> > > Vinod, this patch would need to be shared as an immutable tag for Mark, once
-> > > this is done I can share the SOF parts that make use of the information (cf.
-> > > https://github.com/thesofproject/linux/pull/1692 for reference)
-> > > 
-> > > Sorry we missed this in the earlier interface changes, we didn't think we
-> > > would have so many hardware variations so quickly.
-> > 
-> > do you want the tag now..? I can provide... We are already in -rc6
-> > and i will send PR to greg later this week...
-> 
-> yes please, I'd like to send the SOF patches this week as well.
+On 14-01-20, 17:31, Pierre-Louis Bossart wrote:
+> Fix previous update, bad git merge likely. oops.
 
-Applied now and pushed tag 'sdw_interfaces_2_5.6' for this, thanks
+Applied, thanks
 
 -- 
 ~Vinod
