@@ -3,64 +3,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12734C33CB1
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 09:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C894EC33CB1
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 10:28:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 879A020661
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 09:47:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5532720661
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 10:28:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QvYyivsG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 879A020661
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Qbuzxrfw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5532720661
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC35B17A3;
-	Thu, 16 Jan 2020 10:46:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC35B17A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BD7C1752;
+	Thu, 16 Jan 2020 11:27:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BD7C1752
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579168052;
-	bh=kRV0Djg8awvWzlQ2JK+JE75rEvIwSTdgz2a7UOzycM4=;
+	s=default; t=1579170514;
+	bh=itRQEmYIfPlHnET/M2/mycagB8L7LLbXVvMhNk/aZiw=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QvYyivsGUdVIzk2+Ad0OCSpLTZR6cxxnaGMLE2tDxZiZlpd1SjaVDkOUjDupoWSCy
-	 udyD7FUUb3MAPulJhTiTETJRAl888lFoSVf+c7EMF58rTPFM06m2LFe/NYFJBdvJOw
-	 FaWBiiYAT3ISzDTHPeeSRoEAYi5nBSgCT2ft0O4A=
+	b=QbuzxrfwRDdLL/Ig4UTxFFcwYugC/wL9eT9PnvTzz9CpTHeqsQwsGXAr4+lwvjP8q
+	 5p6Uj6qYy5o9BxH9ejlDychQ9CkKm4f/tyKKJkhyt4VC3H67lrPxxo84C7tHuSPlbI
+	 1He2PxIsgr+bfml9pmeHzW7u2oVDXv3bBk4Olj+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F40DF8014D;
-	Thu, 16 Jan 2020 10:46:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F0FCF8014D;
+	Thu, 16 Jan 2020 11:27:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47314F8014E; Thu, 16 Jan 2020 10:46:40 +0100 (CET)
+ id CC27EF8014E; Thu, 16 Jan 2020 11:27:42 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FCA4F800E9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 10:46:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FCA4F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D23FF800B9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 11:27:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D23FF800B9
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3A795AF3F;
- Thu, 16 Jan 2020 09:46:35 +0000 (UTC)
-Date: Thu, 16 Jan 2020 10:46:34 +0100
-Message-ID: <s5hwo9r7myt.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 4083AADCF;
+ Thu, 16 Jan 2020 10:27:38 +0000 (UTC)
+Date: Thu, 16 Jan 2020 11:27:37 +0100
+Message-ID: <s5hsgkf7l2e.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Alexander Tsoy <alexander@tsoy.me>
-In-Reply-To: <20200115151358.56672-1-alexander@tsoy.me>
-References: <20200115151358.56672-1-alexander@tsoy.me>
+To: Keyon Jie <yang.jie@linux.intel.com>
+In-Reply-To: <97bbe88d1a6b63fe8e9b02bf0c5ce4a80553c48d.camel@linux.intel.com>
+References: <20200116045318.5498-1-yang.jie@linux.intel.com>
+ <s5hd0bjq3cu.wl-tiwai@suse.de>
+ <97bbe88d1a6b63fe8e9b02bf0c5ce4a80553c48d.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: usb-audio: add implicit fb quirk for
-	MOTU M Series
+Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: fix buffer_bytes max
+	constrained by preallocated bytes issue
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,28 +80,144 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Jan 2020 16:13:58 +0100,
-Alexander Tsoy wrote:
+On Thu, 16 Jan 2020 10:50:33 +0100,
+Keyon Jie wrote:
 > 
-> This fixes crackling sound during playback.
+> On Thu, 2020-01-16 at 08:15 +0100, Takashi Iwai wrote:
+> > On Thu, 16 Jan 2020 05:53:18 +0100,
+> > Keyon Jie wrote:
+> > > With today's code, we preallocate DMA buffer for substreams at
+> > > pcm_new()
+> > > stage, and the substream->buffer_bytes_max and substream->dma_max
+> > > will
+> > > save as the actually preallocated buffer size and maximum size that
+> > > the
+> > > dma buffer can be expanded by at hw_params() state,
+> > > correspondingly.
+> > 
+> > No, it's other way round: the former, buffer_bytes_max, is the max
+> > size defined by the driver (i.e. passed in snd_pcm_hardware) and the
+> > latter, dma_max, is the max preallocation size (passed to
+> > preallocation helper).
 > 
-> Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
-> ---
+> Hi Takashi, thanks for your comment.
 > 
-> MOTU is known for reusing Product IDs for different devices or different
-> generations of the device (e.g. MicroBook I/II/IIc shares a single Product
-> ID). This patch was only tested with M4 audio interface, but the same
-> Product ID is also used by M2. Hope it will work for M2 as well.
+> First of all, have you ever hit issue I mentioned in the commit message
+> that we can't set buffer_bytes larger than the preallocated dma bytes?
+> 
+> I found this issue in kinds of platforms, not only on SOF/SoC ones, but
+> also on legacy HDA ones.
+> 
+> Secondly, I am not clear about the design intention of the substream-
+> >buffer_bytes_max and substream->dma_max, if it is as you commented
+> above, can you help answer my questions below inline the code?
+> 
+> void snd_pcm_lib_preallocate_pages(struct snd_pcm_substream *substream,
+> 				  int type, struct device *data,
+> 				  size_t size, size_t max)
+> 
+> static void preallocate_pages(struct snd_pcm_substream *substream,
+> 			      int type, struct device *data,
+> 			      size_t size, size_t max, bool managed)
+> {
+> ...
+> 	if (substream->dma_buffer.bytes > 0)
+> 		substream->buffer_bytes_max = substream-
+> >dma_buffer.bytes;//Keyon: this is the actual allocated buffer bytes,
+> what is the intention here and why it is assigned to buffer_bytes_max
+> which will be used to constrain on the _HW_PARAM_BUFFER_BYTES later?
+> 
+> 	substream->dma_max = max; //Keyon: looks here it is where the
+> *max* param used only if we don't define SND_VERBOSE_PROCFS? what
+> relationship can we have with the preallocation itself?
+> ...
+> }
 
-Applied now.
+Oh, you're right, and I completely misread the patch.
 
-I copied this note to the changelog as it's a pretty useful
-information, too.
+Now I took a coffee and can tell you the story behind the scene.
+
+I believe the current code is intentionally limiting the size to the
+preallocated size.  This limitation was brought for not trying to
+allocate a larger buffer when the buffer has been preallocated.  In
+the past, most hardware allocated the continuous pages for a buffer
+and the allocation of a large buffer fails quite likely.  This was the
+reason of the buffer preallocation.  So, the driver wanted to tell the
+user-space the limit.  If user needs to have an extra large buffer,
+they are supposed to fiddle with prealloc procfs (either setting zero
+to clear the preallocation or setting a large enough buffer
+beforehand).
+
+For SG-buffers, though, limitation makes less sense than continuous
+pages.  e.g. a patch below removes the limitation for SG-buffers.
+But changing this would definitely cause the behavior difference, and
+I don't know whether it's a reasonable move -- I'm afraid that apps
+would start hogging too much memory if the limitation is gone.
 
 
 thanks,
 
 Takashi
+
+---
+diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
+index d4702cc1d376..6a6c3469bbcd 100644
+--- a/sound/core/pcm_memory.c
++++ b/sound/core/pcm_memory.c
+@@ -96,6 +96,29 @@ void snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm)
+ }
+ EXPORT_SYMBOL(snd_pcm_lib_preallocate_free_for_all);
+ 
++/* set up substream->buffer_bytes_max, which is used in hw_constraint */
++static void set_buffer_bytes_max(struct snd_pcm_substream *substream,
++				 size_t size)
++{
++	substream->buffer_bytes_max = UINT_MAX;
++
++	if (!size)
++		return; /* no preallocation */
++
++	/* for SG-buffers, no limitation is needed */
++	switch (substream->dma_buffer.dev.type) {
++#ifdef CONFIG_SND_DMA_SGBUF
++	case SNDRV_DMA_TYPE_DEV_SG:
++	case SNDRV_DMA_TYPE_DEV_UC_SG:
++#endif
++	case SNDRV_DMA_TYPE_VMALLOC:
++		return;
++	}
++
++	/* for continuous buffers, limit to the preallocated size */
++	substream->buffer_bytes_max = size;
++}
++
+ #ifdef CONFIG_SND_VERBOSE_PROCFS
+ /*
+  * read callback for prealloc proc file
+@@ -156,10 +179,8 @@ static void snd_pcm_lib_preallocate_proc_write(struct snd_info_entry *entry,
+ 				buffer->error = -ENOMEM;
+ 				return;
+ 			}
+-			substream->buffer_bytes_max = size;
+-		} else {
+-			substream->buffer_bytes_max = UINT_MAX;
+ 		}
++		set_buffer_bytes_max(substream, size);
+ 		if (substream->dma_buffer.area)
+ 			snd_dma_free_pages(&substream->dma_buffer);
+ 		substream->dma_buffer = new_dmab;
+@@ -206,10 +227,8 @@ static void preallocate_pages(struct snd_pcm_substream *substream,
+ 
+ 	if (size > 0 && preallocate_dma && substream->number < maximum_substreams)
+ 		preallocate_pcm_pages(substream, size);
+-
+-	if (substream->dma_buffer.bytes > 0)
+-		substream->buffer_bytes_max = substream->dma_buffer.bytes;
+ 	substream->dma_max = max;
++	set_buffer_bytes_max(substream, substream->dma_buffer.bytes);
+ 	if (max > 0)
+ 		preallocate_info_init(substream);
+ 	if (managed)
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
