@@ -2,81 +2,82 @@ Return-Path: <SRS0=iD9L=3F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D28C33CAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:47:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AA8CC33CB6
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:48:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB5AD246B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:47:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A1AFE2468D
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:48:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SQsFILrr";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dGUZY0Jt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB5AD246B4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZB7wEAmK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1AFE2468D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4508317EE;
-	Thu, 16 Jan 2020 18:46:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4508317EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2CC517D3;
+	Thu, 16 Jan 2020 18:47:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2CC517D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579196857;
-	bh=Fwwz2ClBVcaBqPSdIdBt+m179oEDfWyoiVp8djLWAGA=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1579196896;
+	bh=iea3bNSyuS50GMc7EUBQtru+cZ4Q5qJjMWbUt9LGFE8=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SQsFILrrenYw8QHn8rlscPqz8Y2AFPpwolFzgvZtwPvMcrIBIrtCxCoyk/Ugb5g1O
-	 OGmrcz6EUyRm4CP2dBJeE9qMclgzBQhViizicNWaVokofCn0tanahgexD+YHXXQNd4
-	 dnl6JxZTh4NvigHWJG5a1rrWIWZSf9z4oajW9VHU=
+	b=ZB7wEAmKZg50ITmaUs7JuZGPH6XFxOYkoYUMxuX87RINuY0Coc6HKAZY4RGjTzZbF
+	 kMrC+6cuQlimOysimCzTW+vXrSvbIoIEzolpI/kUBBZK2Czq/Lg7QEXfHvMxqiPGPU
+	 U4rYbbXlEF8RkfvnI4dz/o8ZRqK8Yx8DiBqqJjvQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA2FBF802EA;
-	Thu, 16 Jan 2020 18:40:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38E00F802FD;
+	Thu, 16 Jan 2020 18:40:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A9E7F802F8; Thu, 16 Jan 2020 18:40:19 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 36A32F802FE; Thu, 16 Jan 2020 18:40:38 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CFE9F802A0
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:40:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CFE9F802A0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dGUZY0Jt"
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
- [73.47.72.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6354E24705;
- Thu, 16 Jan 2020 17:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579196411;
- bh=AiKD26N73+dcE/BuuQ0MMJHJKa0NJr0JAFQM6yaVb+M=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=dGUZY0JtOXbp5lvM/O/I7AhqCEmdFf0VYlRksCtJk0h1dO8TTjZrTO35iw7ioP322
- K/5D7G6QHfWZPp9rof/sr4adD9j7C3zRWd3fI4QT1cfrOZzT2iI9Ii2lCVFY1h9NBl
- wMvaMI/PAiOPJxxzJKAtE4DKaUqnMva3TWnNHeYg=
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:35:33 -0500
-Message-Id: <20200116173641.22137-144-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116173641.22137-1-sashal@kernel.org>
-References: <20200116173641.22137-1-sashal@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CB17F802F7
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:40:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CB17F802F7
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 16 Jan 2020 09:40:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,327,1574150400"; d="scan'208";a="274092350"
+Received: from frederic-mobl1.amr.corp.intel.com (HELO [10.251.150.187])
+ ([10.251.150.187])
+ by FMSMGA003.fm.intel.com with ESMTP; 16 Jan 2020 09:40:26 -0800
+To: "Rajwa, Marcin" <marcin.rajwa@linux.intel.com>,
+ "Jie, Yang" <yang.jie@intel.com>, Takashi Iwai <tiwai@suse.de>,
+ Keyon Jie <yang.jie@linux.intel.com>
+References: <20200116045318.5498-1-yang.jie@linux.intel.com>
+ <s5hd0bjq3cu.wl-tiwai@suse.de>
+ <97bbe88d1a6b63fe8e9b02bf0c5ce4a80553c48d.camel@linux.intel.com>
+ <s5hsgkf7l2e.wl-tiwai@suse.de>
+ <3c0a0067043d614cd4491b28acf6d49640746b15.camel@linux.intel.com>
+ <s5hh80v7h82.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A96F98EDB4@SHSMSX105.ccr.corp.intel.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A96F98EE27@SHSMSX105.ccr.corp.intel.com>
+ <c70934a1-b838-5029-6573-bf76a34c4cb9@linux.intel.com>
+ <93ac843a-bad5-550e-f427-e2a94bd3e8ef@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b6b55180-b846-96e7-4521-7d3b03881d06@linux.intel.com>
+Date: Thu, 16 Jan 2020 11:40:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH AUTOSEL 4.9 184/251] ASoC: sun4i-i2s: RX and TX
-	counter registers are swapped
+In-Reply-To: <93ac843a-bad5-550e-f427-e2a94bd3e8ef@linux.intel.com>
+Content-Language: en-US
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: fix buffer_bytes max
+ constrained by preallocated bytes issue
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,44 +90,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Maxime Ripard <maxime.ripard@bootlin.com>
 
-[ Upstream commit cf2c0e1ce9544df42170fb921f12da82dc0cc8d6 ]
+>>>> So, do you suggest not doing preallocation(or calling it with 0 
+>>>> size) for all
+>>>> driver with TYPE_SG? I am fine if this is the recommended method, I 
+>>>> can try
+>>>> this on SOF I2S platform to see if it can work as we required for 
+>>>> very large
+>>>> buffer size.
+>>
+>> Keyon, for the rest of us to follow this patch, would you mind 
+>> clarifying what drives the need for a 'very large buffer size', and 
+>> what order of magnitude this very large size would be.
+>>
+>> FWIW, we've measured consistently on different Windows/Linux 
+>> platforms, maybe 10 years ago, that once you reach a buffer of 1s (384 
+>> kB) the benefits from increasing that buffer size further are marginal 
+>> in terms of power consumption, and generate all kinds of issues with 
+>> volume updates and deferred routing changes.
+>>
+> We need bigger buffer on host side to compensate the wake up time from 
+> d0ix to d0 which takes ~2 seconds on my setup. So, wiith smaller buffer 
+> sizes like < 2 seconds we overwrite data since FW keeps copping while 
+> host doesn't read until its up and running again.
 
-The RX and TX counters registers offset have been swapped, fix that.
-
-Fixes: fa7c0d13cb26 ("ASoC: sunxi: Add Allwinner A10 Digital Audio driver")
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Link: https://lore.kernel.org/r/8b26477560ad5fd8f69e037b167c5e61de5c26a3.1566242458.git-series.maxime.ripard@bootlin.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/sunxi/sun4i-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 15c92400cea4..02c373c65e19 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -78,8 +78,8 @@
- #define SUN4I_I2S_CLK_DIV_MCLK_MASK		GENMASK(3, 0)
- #define SUN4I_I2S_CLK_DIV_MCLK(mclk)			((mclk) << 0)
- 
--#define SUN4I_I2S_RX_CNT_REG		0x28
--#define SUN4I_I2S_TX_CNT_REG		0x2c
-+#define SUN4I_I2S_TX_CNT_REG		0x28
-+#define SUN4I_I2S_RX_CNT_REG		0x2c
- 
- #define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
- #define SUN4I_I2S_TX_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
--- 
-2.20.1
-
+Right, that's a valid case, but that's 256 kB, not 'very large' or 
+likely to ever trigger an OOM case.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
