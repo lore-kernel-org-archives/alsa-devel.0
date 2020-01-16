@@ -6,77 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B831C33CB6
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:45:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6AE8C33CB6
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:45:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ADBF32476B
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:45:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 35050246A0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:45:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k3uW01SI";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R01jFIGb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADBF32476B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="o7n1CqYp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQk7Pfqq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35050246A0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2D391813;
-	Thu, 16 Jan 2020 18:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2D391813
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71F5D17FF;
+	Thu, 16 Jan 2020 18:44:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71F5D17FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579196704;
-	bh=TUXx7b9SL4t2NfTOUBD3vOgTW9KmO9r9VlwkbufAoJ0=;
+	s=default; t=1579196744;
+	bh=iJjgWNk4itwmq+OUGg0Zq84FK/5+r9yNLdxIr6/9VxM=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k3uW01SIrHtBPA+GlcwJoDkugGidivmMhWiMZrlIX+pEw1921xa4lSSl60Qekdj23
-	 +YcEE/ScvsAVFCiRt6AbLtMnUv9SoSpa8QlJarfkrXT3VvqllwphCwfxxfO3sJhEWS
-	 wCPYxLJC2W/kljGzApBsgDJgG374Yoo0GaByo9JY=
+	b=o7n1CqYpbF5x369rQqJiwLvIwJF90myWb5Tl7f3lH7EUhQX7jk/O6FlckMxCAujYc
+	 z1DOK/0EL0KvSVXGEU4Cou4aGbn7u8zJ/hXOEWp4dEs2kizHQuKTPh9eAafIG9b5C+
+	 6D0czjdNSsQjI5vMQ6cpds6M+PBrEiW0skFXBRFI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C0EDF80290;
-	Thu, 16 Jan 2020 18:40:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19AB2F802A9;
+	Thu, 16 Jan 2020 18:40:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB9CBF802D2; Thu, 16 Jan 2020 18:39:59 +0100 (CET)
+ id 8122AF802E0; Thu, 16 Jan 2020 18:40:10 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE739F80290
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:39:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE739F80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CC5BF802A0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:40:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CC5BF802A0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="R01jFIGb"
+ header.b="UQk7Pfqq"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5A24524710;
- Thu, 16 Jan 2020 17:39:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id D7BBC246FC;
+ Thu, 16 Jan 2020 17:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579196395;
- bh=vF+m8hLWBYBYcX86G22Uo9puk7KaPTDLePvT7xAYpJk=;
+ s=default; t=1579196405;
+ bh=WyWH7LNQJ0NSwvH5kHYfLW+98iJEQECuZ3jEX0WehT4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=R01jFIGb0WxH+xGSZ+9xQy2HmiACQS+SpxIQ2I73//4w2fViwozpy9dkKIl7TtjW8
- EWfQf0CWvYFmCoMD6HwR4zQpEXKdxYOfLzPR1DMkUhK4nBv51gkXTh8faM0msoZnR0
- KCtdZ++nnjojnztLKqWUFOag6xF4XxPm6FbhD0hw=
+ b=UQk7Pfqqpx7QdJzoOMJwxk1mYf96oPmPy+C5CnFEqfVKHX2i+Nsh+AMmaHJDjvVaF
+ kfbI8EirTrZbr4REXG5AutFQPyd4/DlFQCcmRNRDDS2s+5BB3Ltqnji/WdoIfV+Y58
+ Hnd8dTElYVKdG86jNrHNZCWonGV4xNw1v8p4zvg4=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:35:23 -0500
-Message-Id: <20200116173641.22137-134-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:35:30 -0500
+Message-Id: <20200116173641.22137-141-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116173641.22137-1-sashal@kernel.org>
 References: <20200116173641.22137-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
- Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
-Subject: [alsa-devel] [PATCH AUTOSEL 4.9 174/251] ALSA: aoa: onyx: always
-	initialize register read value
+Cc: Sasha Levin <sashal@kernel.org>, Hulk Robot <hulkci@huawei.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ YueHaibing <yuehaibing@huawei.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.9 181/251] ASoC: cs4349: Use PM ops
+	'cs4349_runtime_pm'
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,41 +94,38 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Johannes Berg <johannes@sipsolutions.net>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit f474808acb3c4b30552d9c59b181244e0300d218 ]
+[ Upstream commit 9b4275c415acca6264a3d7f1182589959c93d530 ]
 
-A lot of places in the driver use onyx_read_register() without
-checking the return value, and it's been working OK for ~10 years
-or so, so probably never fails ... Rather than trying to check the
-return value everywhere, which would be relatively intrusive, at
-least make sure we don't use an uninitialized value.
+sound/soc/codecs/cs4349.c:358:32: warning:
+ cs4349_runtime_pm defined but not used [-Wunused-const-variable=]
 
-Fixes: f3d9478b2ce4 ("[ALSA] snd-aoa: add snd-aoa")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+cs4349_runtime_pm ops already defined, it seems
+we should enable it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: e40da86 ("ASoC: cs4349: Add support for Cirrus Logic CS4349")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/r/20190815090157.70036-1-yuehaibing@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/aoa/codecs/onyx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs4349.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
-index a04edff8b729..ae50d59fb810 100644
---- a/sound/aoa/codecs/onyx.c
-+++ b/sound/aoa/codecs/onyx.c
-@@ -74,8 +74,10 @@ static int onyx_read_register(struct onyx *onyx, u8 reg, u8 *value)
- 		return 0;
- 	}
- 	v = i2c_smbus_read_byte_data(onyx->i2c, reg);
--	if (v < 0)
-+	if (v < 0) {
-+		*value = 0;
- 		return -1;
-+	}
- 	*value = (u8)v;
- 	onyx->cache[ONYX_REG_CONTROL-FIRSTREGISTER] = *value;
- 	return 0;
+diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
+index 231ca935cdf3..c232c42ccead 100644
+--- a/sound/soc/codecs/cs4349.c
++++ b/sound/soc/codecs/cs4349.c
+@@ -380,6 +380,7 @@ static struct i2c_driver cs4349_i2c_driver = {
+ 	.driver = {
+ 		.name		= "cs4349",
+ 		.of_match_table	= cs4349_of_match,
++		.pm = &cs4349_runtime_pm,
+ 	},
+ 	.id_table	= cs4349_i2c_id,
+ 	.probe		= cs4349_i2c_probe,
 -- 
 2.20.1
 
