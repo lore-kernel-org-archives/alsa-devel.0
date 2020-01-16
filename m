@@ -6,77 +6,76 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 194E2C33CB3
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:40:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C928C33CB3
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:41:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EA9A2472A
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:40:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E74A2469A
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:40:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ODQ09ApW";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="G29w+FI3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EA9A2472A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TAdTCrwD";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="SUntbJuU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E74A2469A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECD141803;
-	Thu, 16 Jan 2020 18:39:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECD141803
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8F26180A;
+	Thu, 16 Jan 2020 18:40:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8F26180A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579196415;
-	bh=TTpWt4fPOIjdPy/lLSuWsdQtYBUWflNXvAbGWy37bSA=;
+	s=default; t=1579196458;
+	bh=/a968h2ySUGKmvmaYEq0uB5z7jLybuf0C2/Aaa1SrxM=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ODQ09ApWURK0KFKIMbPu1pikLVgR3pd7GPfeyWGEHAa3PaBROKxvpUsqkX07C/gUS
-	 IsCZjns4byiMfqPwanw+8PfgduNaUKYMOFGvypVPZIJ+rF2SraRIvzfd10ehbwz9jo
-	 4gRLpLoIIgCaDUncZb7lckltV6Bwk31VXiOSQhdo=
+	b=TAdTCrwDPH4bLbQp1Ml8S5XlR9NV7qWIAqYZyRUgG0ACnocuYmf/5kVSUQeNUT8LC
+	 xyyiOEgrKCTbZemmqzv3NBYXnbNdPP25E0mrTtMcNRQbKAbqtFNVgFA8Qe3JAnWuYR
+	 EpqofFjdAobk6VwdT9UdqBlWcSp6QpB8KHTylha4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF227F802A7;
-	Thu, 16 Jan 2020 18:35:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54BECF802BC;
+	Thu, 16 Jan 2020 18:36:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F11BF80272; Thu, 16 Jan 2020 18:35:55 +0100 (CET)
+ id E9BA5F8028D; Thu, 16 Jan 2020 18:35:54 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A635F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26474F80273
  for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:35:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A635F80272
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26474F80273
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="G29w+FI3"
+ header.b="SUntbJuU"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id B84C8246E8;
- Thu, 16 Jan 2020 17:28:51 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 660EE246E1;
+ Thu, 16 Jan 2020 17:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579195732;
- bh=wp8H6JrP5r7Xu478e+qmlSSOd3BEKvsKmv9Oq1SZ05c=;
+ s=default; t=1579195678;
+ bh=J6zFKzHIeidi6nmeByR1vyewnAIdLUrm5WXXVok04+I=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=G29w+FI3OaFUaIAQ4BncKp3AsyDqEEI+KfgpuY4WdL0MZhwLgOLJx4ve2IBhlsec8
- sHicx6vpsyGs/S2K3obNMA5zyH92tygbRCu+6Kr3nDwkKTqHDBy5G1tu4Eec0Wu9OK
- i0hUOG9xyfitbDrMKjj3GTN8KbHM+w4XmdL75iHw=
+ b=SUntbJuUDikzbOeDbVlZJPSlJWWXObaY4yhIgxP0j+EOv37adprVmmZ1gdzoNHmyF
+ fCejT0wc6BIJzUQPoanT5wcQ2v7Qse57O4PJKTyvx5OyT2seatBzk3yf/mZTPjSIxu
+ ebQawoNIPYs8KkNV/jR5mgj+7AhGZ7SSmIEsimpY=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:22:23 -0500
-Message-Id: <20200116172403.18149-214-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:21:45 -0500
+Message-Id: <20200116172403.18149-176-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
 References: <20200116172403.18149-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Maxime Ripard <maxime.ripard@bootlin.com>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH AUTOSEL 4.14 271/371] ASoC: sun4i-i2s: RX and
-	TX counter registers are swapped
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.14 233/371] ASoC: ti: davinci-mcasp:
+	Fix slot mask settings when using multiple AXRs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,36 +93,48 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Maxime Ripard <maxime.ripard@bootlin.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-[ Upstream commit cf2c0e1ce9544df42170fb921f12da82dc0cc8d6 ]
+[ Upstream commit fd14f4436fd47d5418023c90e933e66d3645552e ]
 
-The RX and TX counters registers offset have been swapped, fix that.
+If multiple serializers are connected in the system and the number of
+channels will need to use more than one serializer the mask to enable the
+serializers were left to 0 if tdm_mask is provided
 
-Fixes: fa7c0d13cb26 ("ASoC: sunxi: Add Allwinner A10 Digital Audio driver")
-Signed-off-by: Maxime Ripard <maxime.ripard@bootlin.com>
-Link: https://lore.kernel.org/r/8b26477560ad5fd8f69e037b167c5e61de5c26a3.1566242458.git-series.maxime.ripard@bootlin.com
+Fixes: dd55ff8346a97 ("ASoC: davinci-mcasp: Add set_tdm_slots() support")
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index da0a2083e12a..d2802fd8c1dd 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -80,8 +80,8 @@
- #define SUN4I_I2S_CLK_DIV_MCLK_MASK		GENMASK(3, 0)
- #define SUN4I_I2S_CLK_DIV_MCLK(mclk)			((mclk) << 0)
- 
--#define SUN4I_I2S_RX_CNT_REG		0x28
--#define SUN4I_I2S_TX_CNT_REG		0x2c
-+#define SUN4I_I2S_TX_CNT_REG		0x28
-+#define SUN4I_I2S_RX_CNT_REG		0x2c
- 
- #define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
- #define SUN4I_I2S_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 07bac9ea65c4..e10e03800cce 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -882,14 +882,13 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 		active_slots = hweight32(mcasp->tdm_mask[stream]);
+ 		active_serializers = (channels + active_slots - 1) /
+ 			active_slots;
+-		if (active_serializers == 1) {
++		if (active_serializers == 1)
+ 			active_slots = channels;
+-			for (i = 0; i < total_slots; i++) {
+-				if ((1 << i) & mcasp->tdm_mask[stream]) {
+-					mask |= (1 << i);
+-					if (--active_slots <= 0)
+-						break;
+-				}
++		for (i = 0; i < total_slots; i++) {
++			if ((1 << i) & mcasp->tdm_mask[stream]) {
++				mask |= (1 << i);
++				if (--active_slots <= 0)
++					break;
+ 			}
+ 		}
+ 	} else {
 -- 
 2.20.1
 
