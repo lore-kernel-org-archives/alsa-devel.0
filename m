@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A1E8C33CAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:11:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2864C33CAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:11:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EA9624697
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:11:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3817224697
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:11:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="h+7ftP8D";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tuGnI9+c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9EA9624697
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Hzje1i8/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="19eyt+c3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3817224697
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F15B217F0;
-	Thu, 16 Jan 2020 18:10:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F15B217F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78F3917FA;
+	Thu, 16 Jan 2020 18:10:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78F3917FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579194669;
-	bh=p3icqmvFgk8L5M1EcrMPGTJstz6T9ul5bxiq9jSMdsM=;
+	s=default; t=1579194705;
+	bh=zYCYp2borAjfCLPMbj3cwS1rjNsfdsgeksFamrQBw6Q=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h+7ftP8DO1ySTCXhkffrpj3+wKtHkL8B8vj66XvarpYgIIBQkJJn/PFMl6WI/EeEd
-	 KzmoNRRBAIyqZR75TQCHIkNyKRGcHwgUBD77D7Qis4oDAVIgkjNr7sAdNsZ9pBSGTN
-	 oER/4/q12z4Ey2uUC3mJaHGyKSyLykkOGSBnP7GQ=
+	b=Hzje1i8/6Y3OG9ZffHq6nXaQs/05Zxjub8rNIZcd03lfZo18FM42WUzFY6PfyMen3
+	 bjgqc7zWERaTXdbXMDDV/Y80yjADH+LOSs/IQygZktWSd7fSZQew92T853WWzujI9R
+	 2LchCk+Ps7nHUBGcyCyehoi/PA91ynP/mJq+GjlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9377F802A1;
-	Thu, 16 Jan 2020 18:07:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1ECBDF8014E;
+	Thu, 16 Jan 2020 18:08:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8337F802A2; Thu, 16 Jan 2020 18:07:14 +0100 (CET)
+ id 92A66F80216; Thu, 16 Jan 2020 18:08:45 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C286AF802A0
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:07:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C286AF802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7113FF8014D
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:08:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7113FF8014D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tuGnI9+c"
+ header.b="19eyt+c3"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 26D1A205F4;
- Thu, 16 Jan 2020 17:07:06 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id EA08224679;
+ Thu, 16 Jan 2020 17:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579194427;
- bh=bogbFyIWYY0db2aF3q1qJ65vkmKxitFEOw8bigE2K2Y=;
+ s=default; t=1579194517;
+ bh=ReAQEzj5hLQFBno/uujqCnk9F+WLv6Flh5nmz/OvuiY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tuGnI9+czYv1YxtcZIhxBfWZ7DHtTrQ9ehTc9NPg7xsXjqBqz7gloCuDHCPjX0MUT
- C7zqO37tfqZmZfeFGszhapJhCVtKTwiEWZyTIdTr2sWI47jewm76XTHd163+mAz4oV
- Zu/2iIFcb5j9nCg1+iEFbMTKolUOu5F/SSAGmXic=
+ b=19eyt+c3z0BfOVdybRP1mx7eCZShGwJWReUFi8MosZuzt6oyjpnFCfy545V6H4UMK
+ zPL3LsfPgqUIb1BHrC/WchTqc/W3KnwDPm0e6mv6xIZvstV0cVvrPUJTlq7IRUNjDu
+ uLY4+BwKFFDN0WIIQQ9l2o6cqqn4KBKNCeFtseTc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 11:59:42 -0500
-Message-Id: <20200116170509.12787-81-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:00:48 -0500
+Message-Id: <20200116170509.12787-147-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 344/671] ALSA: aica: Fix a
-	long-time build breakage
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 410/671] ASoC: meson: axg-tdmin:
+	right_j is not supported
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,68 +94,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit 534420c6ff87d3052540f1fd346e0adcff440819 ]
+[ Upstream commit 47c317b786b6c1efc2cb3cdb894fd323422fe5ea ]
 
-The build of aica sound driver has been broken since the timer API
-conversion and some code rewrite.  This patch fixes the breakage by
-using the common substream field, as well as a bit cleaning up wrt the
-timer handling in the code.
+Right justified format is actually not supported by the amlogic tdm input
+decoder.
 
-Fixes: d522bb6a105f ("ALSA: sh: aica: Convert timers to use timer_setup()")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 13a22e6a98f8 ("ASoC: meson: add tdm input driver")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/sh/aica.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/meson/axg-tdmin.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/sh/aica.c b/sound/sh/aica.c
-index 2b26311405a4..ad3f71358486 100644
---- a/sound/sh/aica.c
-+++ b/sound/sh/aica.c
-@@ -303,7 +303,7 @@ static void aica_period_elapsed(struct timer_list *t)
- {
- 	struct snd_card_aica *dreamcastcard = from_timer(dreamcastcard,
- 							      t, timer);
--	struct snd_pcm_substream *substream = dreamcastcard->timer_substream;
-+	struct snd_pcm_substream *substream = dreamcastcard->substream;
- 	/*timer function - so cannot sleep */
- 	int play_period;
- 	struct snd_pcm_runtime *runtime;
-@@ -335,13 +335,6 @@ static void spu_begin_dma(struct snd_pcm_substream *substream)
- 	dreamcastcard = substream->pcm->private_data;
- 	/*get the queue to do the work */
- 	schedule_work(&(dreamcastcard->spu_dma_work));
--	/* Timer may already be running */
--	if (unlikely(dreamcastcard->timer_substream)) {
--		mod_timer(&dreamcastcard->timer, jiffies + 4);
--		return;
--	}
--	timer_setup(&dreamcastcard->timer, aica_period_elapsed, 0);
--	dreamcastcard->timer_substream = substream;
- 	mod_timer(&dreamcastcard->timer, jiffies + 4);
- }
+diff --git a/sound/soc/meson/axg-tdmin.c b/sound/soc/meson/axg-tdmin.c
+index bbac44c81688..37207bbebb2a 100644
+--- a/sound/soc/meson/axg-tdmin.c
++++ b/sound/soc/meson/axg-tdmin.c
+@@ -119,7 +119,6 @@ static int axg_tdmin_prepare(struct regmap *map, struct axg_tdm_stream *ts)
+ 		break;
  
-@@ -379,8 +372,8 @@ static int snd_aicapcm_pcm_close(struct snd_pcm_substream
- {
- 	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
- 	flush_work(&(dreamcastcard->spu_dma_work));
--	if (dreamcastcard->timer_substream)
--		del_timer(&dreamcastcard->timer);
-+	del_timer(&dreamcastcard->timer);
-+	dreamcastcard->substream = NULL;
- 	kfree(dreamcastcard->channel);
- 	spu_disable();
- 	return 0;
-@@ -615,6 +608,7 @@ static int snd_aica_probe(struct platform_device *devptr)
- 	       "Yamaha AICA Super Intelligent Sound Processor for SEGA Dreamcast");
- 	/* Prepare to use the queue */
- 	INIT_WORK(&(dreamcastcard->spu_dma_work), run_spu_dma);
-+	timer_setup(&dreamcastcard->timer, aica_period_elapsed, 0);
- 	/* Load the PCM 'chip' */
- 	err = snd_aicapcmchip(dreamcastcard, 0);
- 	if (unlikely(err < 0))
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-	case SND_SOC_DAIFMT_RIGHT_J:
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		val = TDMIN_CTRL_IN_BIT_SKEW(2);
+ 		break;
 -- 
 2.20.1
 
