@@ -2,82 +2,70 @@ Return-Path: <SRS0=iD9L=3F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD98C33CAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F6C4C33CAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 20:29:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E7F224681
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:57:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2A7D82073A
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 20:29:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a7pGT8C7";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="P2IebU6K"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E7F224681
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rkjFI84A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A7D82073A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7FCA1868;
-	Thu, 16 Jan 2020 18:56:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7FCA1868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A06E17CE;
+	Thu, 16 Jan 2020 21:28:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A06E17CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579197431;
-	bh=3bcc1hDXlATOmRPzNBIPaJdQOQ+BY62iGzkqD6Ia85I=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1579206569;
+	bh=tlSxt9cyR2McXFIhcppPFEKrXcRcvDKUw4MvIdZ1nNM=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a7pGT8C7vDtD+xkLFI6n62eo3jdO+a+ETm439ACswt9M8vFsucEl9A2MXjBwvtj4c
-	 MVXzCTl1NPwAj1RbYFCzgOqn/enmPEyQY7hUHxscj/klygFLC2ExujbfTGOfkSdQvL
-	 RlaavNOm9BqyT5yw5PTxFGXw2SnnxIZgdsGQSjZk=
+	b=rkjFI84AbMq9Jugq83BtZwWs4g51eI4RtPg5kYFSSnC7zDYzhD02ZD5qlEZHaBBtC
+	 picmUvRNqvIrevRXpYeJWtcYFk0KkvoAs3wAe3n+AMMi4SBlnCs6QjCqZ5HwP2Ovqv
+	 tPaauQOtl/Z0WqdB6H9dxaMERWwA621rwTvyWXFA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1D78F8034D;
-	Thu, 16 Jan 2020 18:45:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDDEBF8014D;
+	Thu, 16 Jan 2020 21:28:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C2C3F80335; Thu, 16 Jan 2020 18:45:49 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 9203CF8014E; Thu, 16 Jan 2020 21:28:32 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 488FDF80329
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:45:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 488FDF80329
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="P2IebU6K"
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
- [73.47.72.35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id F0FCA2478D;
- Thu, 16 Jan 2020 17:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579196741;
- bh=cqjn5jMaYHSe51uIwrnkRtASULWXpQYZWh94y+2SXFE=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=P2IebU6KcnlP8F5kwSksLsHTuo98/f9ReY4zwR3DJdfrnVAHcTFKu0FvrarnjWCqp
- PkCYMOWFNKnoO9ozc2j+5p/xJ/PdlRrpUeCF/BNomxLVxR3UYVB560cdoAUFry6Q+j
- r1XTsToIQtS2cOYhO5TmXpyEgFrae1k+lASzSjkA=
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:41:59 -0500
-Message-Id: <20200116174251.24326-122-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
-References: <20200116174251.24326-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- YueHaibing <yuehaibing@huawei.com>, Hulk Robot <hulkci@huawei.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.4 122/174] ASoC: wm8737: Fix
-	copy-paste error in wm8737_snd_controls
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15206F80086
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 21:28:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15206F80086
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id CE71CB233;
+ Thu, 16 Jan 2020 20:28:24 +0000 (UTC)
+Date: Thu, 16 Jan 2020 21:28:24 +0100
+Message-ID: <s5h8sm7p2mv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Tobias <toszlanyi@yahoo.de>
+In-Reply-To: <3987a58d-a4bd-374e-d177-99ad5949e664@yahoo.de>
+References: <9457db14-4084-c0dd-5c89-821b35c3db66@yahoo.de>
+ <8653a13c-ef08-4e0f-8375-baa6a3b4faa8@yahoo.de>
+ <s5hd0bmcedb.wl-tiwai@suse.de>
+ <c3904fd3-5e02-fa20-bf82-46b7ee324245@yahoo.de>
+ <s5h7e1r7btj.wl-tiwai@suse.de>
+ <3987a58d-a4bd-374e-d177-99ad5949e664@yahoo.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] USB Audio Interface / Denon MC7000 and MC8000
+	controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,42 +83,27 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: YueHaibing <yuehaibing@huawei.com>
+On Thu, 16 Jan 2020 18:45:28 +0100,
+Tobias wrote:
+> 
+> I applied the patch and when connecting the Denon MC7000 the attached
+> is what dmesg shows...
+> Hope you can find something useful in there.
 
-[ Upstream commit 554b75bde64bcad9662530726d1483f7ef012069 ]
+Thanks.  This shows the validation error reported repeatedly at each
+access.  Hmm.
 
-sound/soc/codecs/wm8737.c:112:29: warning:
- high_3d defined but not used [-Wunused-const-variable=]
+> Please let me know, if I can be of any more help.
 
-'high_3d' should be used for 3D High Cut-off.
+Please give lsusb -v output for the device, too, as well as
+alsa-info.sh output (run with --no-upload option).
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 2a9ae13a2641 ("ASoC: Add initial WM8737 driver")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20190815091920.64480-1-yuehaibing@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/codecs/wm8737.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And, be prepared for building the more recent kernel.  At least, the
+latest 5.4.y would be good -- otherwise there can be a chance you
+overlook something that was fixed already.
 
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index e7807601e675..ae69cb790ac3 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -170,7 +170,7 @@ SOC_DOUBLE("Polarity Invert Switch", WM8737_ADC_CONTROL, 5, 6, 1, 0),
- SOC_SINGLE("3D Switch", WM8737_3D_ENHANCE, 0, 1, 0),
- SOC_SINGLE("3D Depth", WM8737_3D_ENHANCE, 1, 15, 0),
- SOC_ENUM("3D Low Cut-off", low_3d),
--SOC_ENUM("3D High Cut-off", low_3d),
-+SOC_ENUM("3D High Cut-off", high_3d),
- SOC_SINGLE_TLV("3D ADC Volume", WM8737_3D_ENHANCE, 7, 1, 1, adc_tlv),
- 
- SOC_SINGLE("Noise Gate Switch", WM8737_NOISE_GATE, 0, 1, 0),
--- 
-2.20.1
 
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
