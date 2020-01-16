@@ -2,59 +2,79 @@ Return-Path: <SRS0=iD9L=3F=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ADAFC33CB1
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 16:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6065EC33CB6
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 16:41:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22AFA206D5
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 16:29:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D9E632073A
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 16:41:01 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OHOoTKpT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22AFA206D5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WecI+TSS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9E632073A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 674C917B4;
-	Thu, 16 Jan 2020 17:28:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 674C917B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CBFB17BD;
+	Thu, 16 Jan 2020 17:40:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CBFB17BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579192163;
-	bh=TmrGJcaJClcCRWCdHAoDEy0BZNiu3+8f4QIYBqkB9sQ=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=OHOoTKpTJOD2g+AQ5PJkg5nGu8hSW0ery+t7Mqi1Wn1tYAv74DyO+5aPSD/LhZ44S
-	 yXSlcYsN24zfUTl0dZwiPJrifIfBD/RcU6qB+dltm8aI4mPjlSD1BBjqzXQHh3zh+T
-	 NnIPPMXuXZQEiCYNkSaQ8s+Vbs8MSt13f6PielWQ=
+	s=default; t=1579192860;
+	bh=xGmGCDwRi3zw+FLkM4K1M7gswC37lOnOr3eLvWQh92k=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WecI+TSSvfHjPoXCBUyMQdKUtF7o4EX5gis8FsN15oZGgIs+8wcaK03ysUUiCbL0q
+	 c0HbTmKvg98zyXCqQDS0LKGdJ4ugF3JFZ+K0p53HIXQRCXsw1Mi0jw6TgLe0wdEZrE
+	 c+dhj65GfEyU+0z/EF2wdb0qVdic1m5AacM2Xqu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEA50F8014D;
-	Thu, 16 Jan 2020 17:28:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55570F800E9;
+	Thu, 16 Jan 2020 17:40:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 311AAF8014E; Thu, 16 Jan 2020 17:28:31 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A4FB4F8014E; Thu, 16 Jan 2020 17:40:07 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AD9FF800B9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 17:28:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AD9FF800B9
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 22CD3B2C05
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 16:28:27 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Thu, 16 Jan 2020 17:28:25 +0100
-Message-Id: <20200116162825.24792-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: pcm: Make snd_pcm_hw_constraints_init()
-	and _complete() static
+ by alsa1.perex.cz (Postfix) with ESMTPS id 308AFF800E9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 17:39:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 308AFF800E9
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 16 Jan 2020 08:39:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,326,1574150400"; d="scan'208";a="274058700"
+Received: from frederic-mobl1.amr.corp.intel.com (HELO [10.251.150.187])
+ ([10.251.150.187])
+ by FMSMGA003.fm.intel.com with ESMTP; 16 Jan 2020 08:39:56 -0800
+To: "Jie, Yang" <yang.jie@intel.com>, Takashi Iwai <tiwai@suse.de>,
+ Keyon Jie <yang.jie@linux.intel.com>
+References: <20200116045318.5498-1-yang.jie@linux.intel.com>
+ <s5hd0bjq3cu.wl-tiwai@suse.de>
+ <97bbe88d1a6b63fe8e9b02bf0c5ce4a80553c48d.camel@linux.intel.com>
+ <s5hsgkf7l2e.wl-tiwai@suse.de>
+ <3c0a0067043d614cd4491b28acf6d49640746b15.camel@linux.intel.com>
+ <s5hh80v7h82.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A96F98EDB4@SHSMSX105.ccr.corp.intel.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A96F98EE27@SHSMSX105.ccr.corp.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <c70934a1-b838-5029-6573-bf76a34c4cb9@linux.intel.com>
+Date: Thu, 16 Jan 2020 10:39:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A96F98EE27@SHSMSX105.ccr.corp.intel.com>
+Content-Language: en-US
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: fix buffer_bytes max
+ constrained by preallocated bytes issue
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,61 +87,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Both snd_pcm_hw_constraints_init() and _complete() functions are
-called only from pcm_native.c, hence they can be static for further
-optimization.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_local.h  | 3 ---
- sound/core/pcm_native.c | 4 ++--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+>> So, do you suggest not doing preallocation(or calling it with 0 size) for all
+>> driver with TYPE_SG? I am fine if this is the recommended method, I can try
+>> this on SOF I2S platform to see if it can work as we required for very large
+>> buffer size.
 
-diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
-index 384efd002984..17a1a5d87098 100644
---- a/sound/core/pcm_local.h
-+++ b/sound/core/pcm_local.h
-@@ -20,9 +20,6 @@ void snd_interval_muldivk(const struct snd_interval *a,
- void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
- 			  const struct snd_interval *b, struct snd_interval *c);
- 
--int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream);
--int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
--
- int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime,
- 			       snd_pcm_hw_param_t var, u_int32_t mask);
- 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index c375c41496f8..bb23f5066654 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2308,7 +2308,7 @@ static int snd_pcm_hw_rule_buffer_bytes_max(struct snd_pcm_hw_params *params,
- 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
- }		
- 
--int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
-+static int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
-@@ -2432,7 +2432,7 @@ int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
-+static int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_pcm_hardware *hw = &runtime->hw;
--- 
-2.16.4
+Keyon, for the rest of us to follow this patch, would you mind 
+clarifying what drives the need for a 'very large buffer size', and what 
+order of magnitude this very large size would be.
 
+FWIW, we've measured consistently on different Windows/Linux platforms, 
+maybe 10 years ago, that once you reach a buffer of 1s (384 kB) the 
+benefits from increasing that buffer size further are marginal in terms 
+of power consumption, and generate all kinds of issues with volume 
+updates and deferred routing changes.
+
+Thanks
+-Pierre
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
