@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D83C7C33CAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80720C47409
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:03:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 670652077B
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:02:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1027B2467E
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:03:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EAJ4pBGi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qegqH12d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 670652077B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RxfyA+m6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1528iOCw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1027B2467E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB11717CA;
-	Thu, 16 Jan 2020 18:01:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB11717CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F09617B3;
+	Thu, 16 Jan 2020 18:02:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F09617B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579194154;
-	bh=cOLuhSEYtFTkEe9EwBb2lhRAHwvJKtdO2xGJKT11dXE=;
+	s=default; t=1579194200;
+	bh=CgXkJl4foq6wPNNzq7tlMb4NcAcHrKiLcOwb4qU9cTI=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EAJ4pBGi/jFKkrZi/x+7FJq10vQaDK/TAW4yaCtFHen74mETVsrsBcxDNr2ykn1Z+
-	 +LDdZkk9IF1dPFRvDX+wadQlNG6okeIIboNQxAKiMa270ANCjAhtxy48JGauD1kgPt
-	 srJnCXiA7dasVijBwLMS1SpyfbpkUtHIXtUYg9xs=
+	b=RxfyA+m659m6mt9/dMQISh5uq7ry3s4sFMBSTrfP+UrTdDkNozi/eDhIYL7/dsjCd
+	 S5m4P3xDs23JaiXBIVEKHL7vxnK7ROZwoyt4917rHda0QFtuzAoHDXucGM0cOa7WLr
+	 zbd4xn43TCL/jXfPsdIm4TVi60I05Yz8puCFKD0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D06CF8026F;
-	Thu, 16 Jan 2020 18:00:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85339F80274;
+	Thu, 16 Jan 2020 18:00:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA093F8016F; Thu, 16 Jan 2020 18:00:51 +0100 (CET)
+ id ED31CF80274; Thu, 16 Jan 2020 18:00:55 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C6AEF800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32ED8F801F2
  for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:00:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C6AEF800B9
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32ED8F801F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qegqH12d"
+ header.b="1528iOCw"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 668D524653;
- Thu, 16 Jan 2020 16:52:53 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7078D2464B;
+ Thu, 16 Jan 2020 16:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579193574;
- bh=KA6r6uhzWScbjS1G8ybuqW922xv9nzdxSFBb9Cr0Z7w=;
+ s=default; t=1579193723;
+ bh=PFjH3ZbA6H/pJdTWTzfP5SXvIjQF07uUkr1TpxSry/w=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qegqH12dvY1XY/Gw98fWlc6udRJq0biK27t9rsvyKzQ04J8OfpeRT6H+bFZ7Q39+b
- 9I4HvgkGp7KEfnVjnEdiQyxM9FXmeKm0nOt1hqP9HCy3CMWYMSbZESO08SoS6sYcHC
- RVm7x4VpKY0r5bCDyFAkbYmBYIX02UMFftLciIAI=
+ b=1528iOCwCWfLHPCqt11PdHIE93YqIzzPQdVhopacYOz78WsIPIsGZCIWLtppJV1UE
+ GMOLvluRsCUSLNvxuYE6sQwTgHixoNiVQIvKDWgKkmJStToZpEEF5j/uI9StXJRrQh
+ aFEYZU0DLif7EcDpcNhapxQ7O6avoGN678z1Z7jc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 11:41:32 -0500
-Message-Id: <20200116164300.6705-117-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 11:44:08 -0500
+Message-Id: <20200116165502.8838-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
-References: <20200116164300.6705-1-sashal@kernel.org>
+In-Reply-To: <20200116165502.8838-1-sashal@kernel.org>
+References: <20200116165502.8838-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 117/205] ASoC: core: Fix compile
-	warning with CONFIG_DEBUG_FS=n
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, Arnd Bergmann <arnd@arndb.de>,
+ patches@opensource.cirrus.com, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 017/671] ASoC: wm9712: fix unused
+	variable warning
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,28 +89,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-RnJvbTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgoKWyBVcHN0cmVhbSBjb21taXQgYmQw
-YjYwOWUwYzMzNjJjYjE2N2M1MWQ0YmQ0MzMwZDc5ZmMwMDk4NyBdCgpQYXBlciBvdmVyIGEgY29t
-cGlsZSB3YXJuaW5nOgogIHNvdW5kL3NvYy9zb2MtcGNtLmM6MTE4NTo4OiB3YXJuaW5nOiB1bnVz
-ZWQgdmFyaWFibGUg4oCYbmFtZeKAmQoKRml4ZXM6IDA2MzJmYTA0MjU0MSAoIkFTb0M6IGNvcmU6
-IEZpeCBwY20gY29kZSBkZWJ1Z2ZzIGVycm9yIikKU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2Fp
-IDx0aXdhaUBzdXNlLmRlPgpMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMTkxMTA3
-MTM0ODMzLjE1MDItMS10aXdhaUBzdXNlLmRlClNpZ25lZC1vZmYtYnk6IE1hcmsgQnJvd24gPGJy
-b29uaWVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogU2FzaGEgTGV2aW4gPHNhc2hhbEBrZXJu
-ZWwub3JnPgotLS0KIHNvdW5kL3NvYy9zb2MtcGNtLmMgfCAyICsrCiAxIGZpbGUgY2hhbmdlZCwg
-MiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NvYy1wY20uYyBiL3NvdW5k
-L3NvYy9zb2MtcGNtLmMKaW5kZXggYTZlOTZjZjFkOGZmLi5kMDcwMjZhODQ2YjkgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3NvYy9zb2MtcGNtLmMKKysrIGIvc291bmQvc29jL3NvYy1wY20uYwpAQCAtMTE0
-OCw3ICsxMTQ4LDkgQEAgc3RhdGljIGludCBkcGNtX2JlX2Nvbm5lY3Qoc3RydWN0IHNuZF9zb2Nf
-cGNtX3J1bnRpbWUgKmZlLAogewogCXN0cnVjdCBzbmRfc29jX2RwY20gKmRwY207CiAJdW5zaWdu
-ZWQgbG9uZyBmbGFnczsKKyNpZmRlZiBDT05GSUdfREVCVUdfRlMKIAljaGFyICpuYW1lOworI2Vu
-ZGlmCiAKIAkvKiBvbmx5IGFkZCBuZXcgZHBjbXMgKi8KIAlmb3JfZWFjaF9kcGNtX2JlKGZlLCBz
-dHJlYW0sIGRwY20pIHsKLS0gCjIuMjAuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+From: Arnd Bergmann <arnd@arndb.de>
+
+[ Upstream commit 18380dcc52cc8965e5144ce33fdfad7e168679a5 ]
+
+The 'ret' variable is now only used in an #ifdef, and causes a
+warning if it is declared outside of that block:
+
+sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
+sound/soc/codecs/wm9712.c:641:6: error: unused variable 'ret' [-Werror=unused-variable]
+
+Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/wm9712.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index ade34c26ad2f..e873baa9e778 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -638,13 +638,14 @@ static int wm9712_soc_probe(struct snd_soc_component *component)
+ {
+ 	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
+ 	struct regmap *regmap;
+-	int ret;
+ 
+ 	if (wm9712->mfd_pdata) {
+ 		wm9712->ac97 = wm9712->mfd_pdata->ac97;
+ 		regmap = wm9712->mfd_pdata->regmap;
+ 	} else {
+ #ifdef CONFIG_SND_SOC_AC97_BUS
++		int ret;
++
+ 		wm9712->ac97 = snd_soc_new_ac97_component(component, WM9712_VENDOR_ID,
+ 						      WM9712_VENDOR_ID_MASK);
+ 		if (IS_ERR(wm9712->ac97)) {
+-- 
+2.20.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
