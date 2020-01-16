@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F92C3F68F
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:44:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B831C33CB6
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:45:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7355524766
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:44:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ADBF32476B
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 17:45:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u4fQ1MDX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WxvAY+Ra"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7355524766
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="k3uW01SI";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R01jFIGb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADBF32476B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB0A91810;
-	Thu, 16 Jan 2020 18:43:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB0A91810
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2D391813;
+	Thu, 16 Jan 2020 18:44:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2D391813
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579196660;
-	bh=Ffk/JfFk+t8pys2Ja7P2VwFXea+CXqK1OiP+ee42Ay0=;
+	s=default; t=1579196704;
+	bh=TUXx7b9SL4t2NfTOUBD3vOgTW9KmO9r9VlwkbufAoJ0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u4fQ1MDXl3zJsUM32TVUGFsbCiYn77cW5zedbc6zq9YxuFRkvWhDsBaepH3bm+2vG
-	 Vtu0KQB5kFGspkJUOki3DpblssiTtoar5l/vVZMduk2MH4bLDHUtEkC+ouTeBHr47E
-	 if44B2lHLbZFG+sbuEXIFEihmWKwGpPUNL9Tsf5s=
+	b=k3uW01SIrHtBPA+GlcwJoDkugGidivmMhWiMZrlIX+pEw1921xa4lSSl60Qekdj23
+	 +YcEE/ScvsAVFCiRt6AbLtMnUv9SoSpa8QlJarfkrXT3VvqllwphCwfxxfO3sJhEWS
+	 wCPYxLJC2W/kljGzApBsgDJgG374Yoo0GaByo9JY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82746F8028F;
-	Thu, 16 Jan 2020 18:39:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C0EDF80290;
+	Thu, 16 Jan 2020 18:40:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4C18F8028F; Thu, 16 Jan 2020 18:39:34 +0100 (CET)
+ id DB9CBF802D2; Thu, 16 Jan 2020 18:39:59 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C818F80290
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:39:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C818F80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE739F80290
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 18:39:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE739F80290
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WxvAY+Ra"
+ header.b="R01jFIGb"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 44BE62470F;
- Thu, 16 Jan 2020 17:39:28 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5A24524710;
+ Thu, 16 Jan 2020 17:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579196369;
- bh=VxrCQjCuJ5WPHJo7eLOFipENYOqC2MhtfzeAsgK4+3Q=;
+ s=default; t=1579196395;
+ bh=vF+m8hLWBYBYcX86G22Uo9puk7KaPTDLePvT7xAYpJk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WxvAY+RaNxRi2w9jm1cfJxYDCSj4my024fEFZst18LjYTvUMVcYrhABfXsA1j+YnX
- pnE5ZI7/x6EDc8esPEMAvZ+JYTcqZeefx8l3jvinJtT3vMjkl09/4BkEPyoN8ZWyAB
- Rp4HN945Dkko98fNd8CYmUZDbMjmoJDV5MtqKT2I=
+ b=R01jFIGb0WxH+xGSZ+9xQy2HmiACQS+SpxIQ2I73//4w2fViwozpy9dkKIl7TtjW8
+ EWfQf0CWvYFmCoMD6HwR4zQpEXKdxYOfLzPR1DMkUhK4nBv51gkXTh8faM0msoZnR0
+ KCtdZ++nnjojnztLKqWUFOag6xF4XxPm6FbhD0hw=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Thu, 16 Jan 2020 12:35:05 -0500
-Message-Id: <20200116173641.22137-116-sashal@kernel.org>
+Date: Thu, 16 Jan 2020 12:35:23 -0500
+Message-Id: <20200116173641.22137-134-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116173641.22137-1-sashal@kernel.org>
 References: <20200116173641.22137-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.9 156/251] ASoC: ti: davinci-mcasp:
-	Fix slot mask settings when using multiple AXRs
+Cc: Sasha Levin <sashal@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
+ Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
+Subject: [alsa-devel] [PATCH AUTOSEL 4.9 174/251] ALSA: aoa: onyx: always
+	initialize register read value
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,48 +94,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Johannes Berg <johannes@sipsolutions.net>
 
-[ Upstream commit fd14f4436fd47d5418023c90e933e66d3645552e ]
+[ Upstream commit f474808acb3c4b30552d9c59b181244e0300d218 ]
 
-If multiple serializers are connected in the system and the number of
-channels will need to use more than one serializer the mask to enable the
-serializers were left to 0 if tdm_mask is provided
+A lot of places in the driver use onyx_read_register() without
+checking the return value, and it's been working OK for ~10 years
+or so, so probably never fails ... Rather than trying to check the
+return value everywhere, which would be relatively intrusive, at
+least make sure we don't use an uninitialized value.
 
-Fixes: dd55ff8346a97 ("ASoC: davinci-mcasp: Add set_tdm_slots() support")
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: f3d9478b2ce4 ("[ALSA] snd-aoa: add snd-aoa")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/aoa/codecs/onyx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 624c209c9498..d1935c5c3602 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -882,14 +882,13 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
- 		active_slots = hweight32(mcasp->tdm_mask[stream]);
- 		active_serializers = (channels + active_slots - 1) /
- 			active_slots;
--		if (active_serializers == 1) {
-+		if (active_serializers == 1)
- 			active_slots = channels;
--			for (i = 0; i < total_slots; i++) {
--				if ((1 << i) & mcasp->tdm_mask[stream]) {
--					mask |= (1 << i);
--					if (--active_slots <= 0)
--						break;
--				}
-+		for (i = 0; i < total_slots; i++) {
-+			if ((1 << i) & mcasp->tdm_mask[stream]) {
-+				mask |= (1 << i);
-+				if (--active_slots <= 0)
-+					break;
- 			}
- 		}
- 	} else {
+diff --git a/sound/aoa/codecs/onyx.c b/sound/aoa/codecs/onyx.c
+index a04edff8b729..ae50d59fb810 100644
+--- a/sound/aoa/codecs/onyx.c
++++ b/sound/aoa/codecs/onyx.c
+@@ -74,8 +74,10 @@ static int onyx_read_register(struct onyx *onyx, u8 reg, u8 *value)
+ 		return 0;
+ 	}
+ 	v = i2c_smbus_read_byte_data(onyx->i2c, reg);
+-	if (v < 0)
++	if (v < 0) {
++		*value = 0;
+ 		return -1;
++	}
+ 	*value = (u8)v;
+ 	onyx->cache[ONYX_REG_CONTROL-FIRSTREGISTER] = *value;
+ 	return 0;
 -- 
 2.20.1
 
