@@ -6,67 +6,62 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EC74C32771
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 00:33:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 010F1C32771
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 00:48:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A70C207FF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 00:33:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F963222C3
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jan 2020 00:48:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ODa3B8hF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A70C207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vYUeczNr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F963222C3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32B1717A3;
-	Thu, 16 Jan 2020 01:32:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32B1717A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8CEA17A4;
+	Thu, 16 Jan 2020 01:47:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8CEA17A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579134796;
-	bh=cjFhojI/x+tw0v7onAFXayAqj7e+A9AYfFQnmiYLw3g=;
+	s=default; t=1579135719;
+	bh=kYTVcfnah/YKFzW0YiSIib0CyuRfZVOgkyP4iozZ1Ug=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ODa3B8hFHV4wlX560UcF4JjEjqYX0ERF1wZZIElsTZOzJsOlmhhb5j0uqfu7u+B9u
-	 qDRhBJJkBrfHRGinzTk78uRKKBS4AtOqLoAgCbbR552pczZQb/ezB+nDFJ41ZzAGC0
-	 1FzY7XQF9DTJxyWMDrtmfQ3Rlxd64qJS6XlFC6NA=
+	b=vYUeczNrJUykaTY7DgSn45Hh3+HS/LMrhlwlMqc+iwp4r4c+e7OZgeRXz2lFDw/3p
+	 62AuC70oEyKU3NzYRplNegKdiw7mLgkURq3cW+wveKHLu61PK8staidBYQV+71kybr
+	 ClQIwQ9sGiEAWC2JnVnGPEf6vjvb3g0fhkmqtrX8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86116F8014B;
-	Thu, 16 Jan 2020 01:32:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B9DEF8014B;
+	Thu, 16 Jan 2020 01:47:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25BF4F801EB; Thu, 16 Jan 2020 01:32:23 +0100 (CET)
+ id 8ECCBF801EB; Thu, 16 Jan 2020 01:47:47 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id AEFB8F800B9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 01:32:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEFB8F800B9
-Date: 16 Jan 2020 09:32:13 +0900
-X-IronPort-AV: E=Sophos;i="5.70,323,1574089200"; d="scan'208";a="36783075"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 16 Jan 2020 09:32:13 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id DFD26F800CC
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jan 2020 01:47:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFD26F800CC
+Date: 16 Jan 2020 09:47:35 +0900
+X-IronPort-AV: E=Sophos;i="5.70,323,1574089200"; d="scan'208";a="36784424"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 16 Jan 2020 09:47:35 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0E7E7411CC77;
- Thu, 16 Jan 2020 09:32:13 +0900 (JST)
-Message-ID: <87r2001bsi.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B4E1B400C9E9;
+ Thu, 16 Jan 2020 09:47:35 +0900 (JST)
+Message-ID: <87pnfk1b2w.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <7de214eb-d6a0-3f86-9eb3-76488f0ec99f@linux.intel.com>
-References: <CAKzrAgTD2oeyajKGOaPea98vZ-uKJOn6uOqABA+CKtpvYpWYvQ@mail.gmail.com>
- <CAKzrAgTCE4btXr04pkvLUG6PPbtn9dm5h_9rjqDYG0HrTZ0zbg@mail.gmail.com>
- <87h80x8t41.wl-kuninori.morimoto.gx@renesas.com>
- <130af222-1086-ebcf-6a0f-9a390f9afbc3@linux.intel.com>
- <CAKzrAgRJZd4UZjt411vA8WwUv1KyVahVTNyUS8nA1TbKsA57dg@mail.gmail.com>
- <14259e97-72f5-439f-b2f1-356b6e45bcfb@linux.intel.com>
- <CAKzrAgQR0iZWPCudQ6k+RNWGk3L-=UU792RW6s7LxF+8wOPDUw@mail.gmail.com>
- <7de214eb-d6a0-3f86-9eb3-76488f0ec99f@linux.intel.com>
+In-Reply-To: <a1d68a98-adab-32e6-c837-165c135f83ef@linux.intel.com>
+References: <20200114175152.3291-1-yung-chuan.liao@linux.intel.com>
+ <a1d68a98-adab-32e6-c837-165c135f83ef@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- ojab // <ojab@ojab.ru>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] No sound since 5.4 on skl_n88l25_s4567
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com,
+ broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>,
+ bard.liao@intel.com
+Subject: Re: [alsa-devel] [PATCH RFC v2 0/4] ASoC: Add Multi CPU DAI support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,38 +81,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 Hi Pierre-Louis
-Cc Mark
 
-> a) remove the error handling after soc_dapm_add_routes() to be
-> backwards compatible with Intel problematic machine drivers. Not
-> really nice for everyone else.
+> After this series of patches is applied, we have this in soc.h:
 > 
-> b) remove this error conditionally so that legacy Intel solutions
-> still work but new ones deal with errors upfront.
+> 	struct snd_soc_dai *codec_dai;
+> 	struct snd_soc_dai *cpu_dai;
 > 
-> I am not sure if there's a 'clean' way to implement b), maybe with a
-> Kconfig selected by some machine drivers? Morimito-san, any
-> suggestions now that we've root caused the problem (copied again below
-> for reference)?
+> 	struct snd_soc_dai **codec_dais;
+> 	unsigned int num_codecs;
+> 
+> 	struct snd_soc_dai **cpu_dais;
+> 	unsigned int num_cpus;
+> 
+> What is the intent behind keeping the two fields codec_dai and cpu_dai?
+> 
+> Shouldn't we use the multi-dai structures in all cases, possible
+> degraded to a single element rather than maintaining what looks like
+> duplicate ways of accessing the same element?
+> 
+> If removing these fields across all drivers is just too invasive for
+> now, shouldn't we start defining access macros so that those fields
+> can be deprecated and removed at a later time, platform-by-platform?
 
-Is it possible to *real* fixup in the future, some day ?
-We need correct code, but backward compatibility is also needed.
-Not only Intel but some machine might have similar issue,
-so, how about to indicate WARNING, and comment ?
+Actually, I have this patch (= remove cpu_dai/codec_dai from all drivers,
+and use macro for it), and have plan to post it.
 
-Like this
-
-         ret = snd_soc_dapm_add_routes(dapm,
-                                       component->driver->dapm_routes,
-                                       component->driver->num_dapm_routes);
-        if (ret < 0)
- -               goto err_probe;
- +               /*
- +                * This is error, but legacy Intel want
- +                * compatibility until xxxx.
- +                * call "goto err_probe" after that
- +                */
- +               dev_warn(dev, "DAPM route add failed.")
+But, I have many extra cleanup patches in my tree,
+and I want to post it before that
+(to avoid extra re-ordering dpendency break).
 
 Thank you for your help !!
 Best regards
