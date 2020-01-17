@@ -6,68 +6,60 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A2E6C33CAF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 00:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 690E9C33CAF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 01:15:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C98F820748
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 00:46:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EB1ED20728
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 01:15:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="drMUDKTQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C98F820748
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YliCkPbk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB1ED20728
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CB0517D2;
-	Fri, 17 Jan 2020 01:45:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CB0517D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D19E17D6;
+	Fri, 17 Jan 2020 02:14:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D19E17D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579221972;
-	bh=Bnuyf7VW5NGcihkv4hFo0PZkMTLOUtyeetsOrqiHHks=;
+	s=default; t=1579223716;
+	bh=Se9G9NMcTvlox6cZ3hu7IUk2aD1mCm0QKq/5Le+1vZY=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=drMUDKTQR4h8X4ukzv+UONRYAmkY9TX7MM8sLYJIgEH0VgqsAZGOf3CBAHtdzag0C
-	 IboNpnDCyjcI3XwSJVrfu7WKwBSM995Uf/onby4i28DrkpRNc0QstZSOpJfVtwU4Dh
-	 zz4wrUszdqAd6qADgA5S7TLFpXdUKPagmRoaS4hg=
+	b=YliCkPbkUQEF9bId9A/uHKKUWJ11mc4yRe2rttozU382oVprCNVQDV3DNedjKOf2Q
+	 6R8I52RtR4+wJQtIMgb5y4x2v7i7J/5hc71qWek/WPmG7MYCFcijzKdKrFMV/aOrUj
+	 1SqsuREipzLTLJB8XP1aHNvn2dkt2LAgtMsHGPeg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ED1FF8014D;
-	Fri, 17 Jan 2020 01:45:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1C29F8014D;
+	Fri, 17 Jan 2020 02:14:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 452E0F8014E; Fri, 17 Jan 2020 01:45:19 +0100 (CET)
+ id 03EA2F8014E; Fri, 17 Jan 2020 02:14:24 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B8598F800B9
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 01:45:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8598F800B9
-Date: 17 Jan 2020 09:45:09 +0900
-X-IronPort-AV: E=Sophos;i="5.70,327,1574089200"; d="scan'208";a="36884732"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 17 Jan 2020 09:45:09 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 08B3AF800B9
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 02:14:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08B3AF800B9
+Date: 17 Jan 2020 10:14:16 +0900
+X-IronPort-AV: E=Sophos;i="5.70,327,1574089200"; d="scan'208";a="36887910"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 17 Jan 2020 10:14:16 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7DCAC400F924;
- Fri, 17 Jan 2020 09:45:09 +0900 (JST)
-Message-ID: <87sgkerjvu.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0E7BA4144403;
+ Fri, 17 Jan 2020 10:14:16 +0900 (JST)
+Message-ID: <87r1zyrijb.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "Liao, Bard" <bard.liao@intel.com>
-In-Reply-To: <0dbffd0c1b904a1eb57045ff3b5e40b2@intel.com>
-References: <20200114175152.3291-1-yung-chuan.liao@linux.intel.com>
- <20200114175152.3291-5-yung-chuan.liao@linux.intel.com>
- <35fbbfcf-8741-ac4c-56b1-2fd7e19e1a7d@linux.intel.com>
- <0dbffd0c1b904a1eb57045ff3b5e40b2@intel.com>
+To: Daniel Baluta <daniel.baluta@gmail.com>
+In-Reply-To: <CAEnQRZCfC-D_gA95b+qO-quu6sLDQWftJUUt5jew7W32Ji39yQ@mail.gmail.com>
+References: <CAEnQRZCfC-D_gA95b+qO-quu6sLDQWftJUUt5jew7W32Ji39yQ@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tiwai@suse.de" <tiwai@suse.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- Bard liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH RFC v2 4/4] ASoC: add warning if the
-	function is not support multi cpu yet.
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] simple-card: DAI link creation
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,44 +78,50 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Liao
+Hi Daniel
 
-> > > 223cd045719e..bf9d6a21bcd9 100644
-> > > --- a/sound/soc/soc-compress.c
-> > > +++ b/sound/soc/soc-compress.c
-> > > @@ -810,10 +810,11 @@ int snd_soc_new_compress(struct
-> > snd_soc_pcm_runtime *rtd, int num)
-> > >   	int playback = 0, capture = 0;
-> > >   	int i;
-> > >
-> > > -	if (rtd->num_codecs > 1) {
-> > > +	if (rtd->num_cpus > 1 ||
-> > > +	    rtd->num_codecs) {
-> > >   		dev_err(rtd->card->dev,
-> > > -			"Compress ASoC: Multicodec not supported\n");
-> > > -		return -EINVAL;
-> > > +			"Compress ASoC: Multi CPU/Codec not supported\n");
-> > > +		return -ENOTSUPP;
-> > 
-> > so this is an error...
-> 
-> Changing to -ENOTSUPP will prevent below to return error in
-> soc_init_pcm_runtime().
-> 
-> /* create compress_device if possible */
-> ret = snd_soc_dai_compress_new(cpu_dai, rtd, num);
-> if (ret != -ENOTSUPP) {
-> 	if (ret < 0)
-> 		dev_err(card->dev, "ASoC: can't create compress %s\n",
-> 			dai_link->stream_name);
-> 	return ret;
-> }
-> 
-> So it is to prevent an error actually. But I agree it is better to return
-> an error when we have an unexpected number of cpu dais. What do you
-> think? @Morimoto-san
+Thank you for contacting me
 
-Yes, it should return error (= should not prevent error) I think
+> link->cpus->of_node  = <&my_dai>;
+> link->codecs->of_node = <&my_codec>;
+> link->platforms->of_node = <&my_platform>;
+> link->no_pcm = 1;
+> 
+> Somehow, similar with qcom_snd_parse_of from
+> sound/soc/qcom/common.c.
+> 
+> Do you think it would be OK to create another file to handle this case
+> in sound/soc/generic?
+
+Or having extra flag for it ?
+
+	static const struct of_device_id simple_of_match[] = {
+		{ .compatible = "simple-audio-card", },
+		{ .compatible = "simple-scu-audio-card",
+		  .data = (void *)DPCM_SELECTABLE },
++		{ .compatible = "simple-xxx-audio-card",
++		  .data = (void *)DPCM_WITH_PLATFORM },
+		{},
+	};
+
+This idea is adding new feature on simple-card.
+But, in sound card case, many patterns exist,
+thus, adding new feature into simple-card will be difficult.
+
+So having new file is not bad idea.
+But, I'm thinking some Card driver want to create new driver,
+but want to share simple-card code.
+Actually, simple-card-utils.c is for it.
+But, maybe someone want to share simple-card.c code itself ?
+
+Some overwrite technic can be nice idea.
+
+# Now I'm focusing cleanup ALSA SoC
+# Current framework has "normal sound" and "DPCM sound",
+# and it makes code/DT difficult.
+# But if all cleanup could be done, these can be merged,
+# and can have more flexible connection.
+# Then, I want to create new simple-card with *really* simple code :)
 
 Thank you for your help !!
 Best regards
