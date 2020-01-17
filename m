@@ -2,81 +2,97 @@ Return-Path: <SRS0=jvLf=3G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B25FC33CB6
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3922FC33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 17:05:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDA5520842
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:56:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B8A3B2072B
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 17:05:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L2cMn+kK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="CadoOQjo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDA5520842
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MVadcjrD";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="W3mHfGce"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8A3B2072B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4211B1804;
-	Fri, 17 Jan 2020 16:55:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4211B1804
+	by alsa0.perex.cz (Postfix) with ESMTPS id 181D617CE;
+	Fri, 17 Jan 2020 18:04:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 181D617CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276591;
-	bh=hFDavGMfMVIVcWfg9xHERqg6TqF8DW4XRJgx/AkCmGQ=;
-	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=L2cMn+kKRdOimuaasxTP8ZYW0MWhsGj3BcMw4J5KtY3WrNunitGFoNI6H8SlPLUkR
-	 zuiKUGWOM/Tj3piOX5bZY38x/wKqEynAoPYnn2VO++VMaCyNIEzjbHx2Jtwr+vYtkq
-	 yjPu2ZzLNWLuKfIoKIFewyLimbDiXZJ6DDpxF2gM=
+	s=default; t=1579280703;
+	bh=RUHGciaZABHwEu0vgJNOarjNm80o6cQCK72HjhFeLgo=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MVadcjrD2KDDo0BlQLFsJCRaf/QgYH0wTrgxXxcjB/a+r69h2yNNXsHu/fB5foTXx
+	 APRQZJ1cGDP4LFalV+H2ntXsrFRDMAUeSVh8r6EOn7O+olNml/zB6KP2pNvz5WF+25
+	 rqTkKbwgUmfeLOJAGwDdEBin1GPfhdI/YR05kHlc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A90FBF80321;
-	Fri, 17 Jan 2020 16:46:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AFD9F8014B;
+	Fri, 17 Jan 2020 18:04:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5714F801EB; Fri, 17 Jan 2020 16:44:26 +0100 (CET)
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
+ id 422AEF801EB; Fri, 17 Jan 2020 18:04:11 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCA37F80273
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCA37F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id 796A3F80086
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 18:04:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 796A3F80086
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="CadoOQjo"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
- Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
- List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=CXLAXq5OnNkw2oK7sCOLUl2OUZIsuk5m0e5961P04rU=; b=CadoOQjovv6g
- uOHFZIOmX+1bcCTkFy4P/75wDF6crePxwTgPgd4ykp7G49TsYqjIitd3UGbLZIzC8FDRag302TJhk
- hfgBiG/LeUZg1x8wkuq8upzKrfem5Wy5UpTDGE2+85bJtaU3xCciXm4kaB4nWWqBgP426umsThusM
- na9SI=;
-Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
- helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <broonie@sirena.org.uk>)
- id 1isTn9-0006ru-Mo; Fri, 17 Jan 2020 15:44:11 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 5A029D02A2A; Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
-From: Mark Brown <broonie@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-In-Reply-To: <20200114181229.42302-1-stephan@gerhold.net>
-Message-Id: <applied-20200114181229.42302-1-stephan@gerhold.net>
-X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- ~postmarketos/upstreaming@lists.sr.ht, Nikita Travkin <nikitos.tr@gmail.com>
-Subject: [alsa-devel] Applied "ASoC: msm8916-wcd-analog: Simplify MIC BIAS
-	Internal" to the asoc tree
+ dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="W3mHfGce"
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 00HH2uJ1009670; Fri, 17 Jan 2020 18:04:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=from : to : subject :
+ date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=2SUWeiNhV6oNErDN+s1Xmml+Kuc8NdnwiZ6aj9UFf4U=;
+ b=W3mHfGceOea4n98Lrzj+LiyDzCa5aICL0+rhY58p2pPGmoqJmfPKKcMB5xhmUchZv7iq
+ gFaq0hzj99NyKri4GS2528mFiW276I63t3w/afiKtkJQIdksHayrbQoQpNW1ICPDXpLd
+ rTesoHPFq4t7UeBbP2/Ze+0rYfcdYH0IksMbLKUGRbZBNcErU1LWRWWzsqz3BkPzNmyR
+ IStn8Ya2fQwQikP3SOxe9NUgsiXSPHWxyFibcXiZq+xgJ+p+mhHPDPnclzLM3o+9Px4z
+ xIRgfX2YW3WuZn/iX5aYidKR1LbsX754+/b1MMwYOmzU8LpW9dCutLHP4c7JVQKSmjkN gA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 2xk0qy4kcs-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 17 Jan 2020 18:04:04 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7C198100038;
+ Fri, 17 Jan 2020 18:04:02 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C93BE22168E;
+ Fri, 17 Jan 2020 18:04:02 +0100 (CET)
+Received: from localhost (10.75.127.47) by SFHDAG6NODE2.st.com (10.75.127.17)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2;
+ Fri, 17 Jan 2020 18:04:02 +0100
+From: Olivier Moysan <olivier.moysan@st.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <mcoquelin.stm32@gmail.com>,
+ <alexandre.torgue@st.com>, <alsa-devel@alsa-project.org>,
+ <robh@kernel.org>, <mark.rutland@arm.com>,
+ <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-kernel@vger.kernel.org>, <olivier.moysan@st.com>
+Date: Fri, 17 Jan 2020 18:03:52 +0100
+Message-ID: <20200117170352.16040-1-olivier.moysan@st.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG6NODE2.st.com
+ (10.75.127.17)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.572
+ definitions=2020-01-17_04:2020-01-16,
+ 2020-01-17 signatures=0
+Subject: [alsa-devel] [PATCH v3] ASoC: dt-bindings: stm32: convert spdfirx
+	to json-schema
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,269 +105,178 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Convert the STM32 SPDIFRX bindings to DT schema format using json-schema.
 
-   ASoC: msm8916-wcd-analog: Simplify MIC BIAS Internal
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From 65fe457e7bafcbb844c66e8c54a414f090967eaa Mon Sep 17 00:00:00 2001
-From: Stephan Gerhold <stephan@gerhold.net>
-Date: Tue, 14 Jan 2020 19:12:28 +0100
-Subject: [PATCH] ASoC: msm8916-wcd-analog: Simplify MIC BIAS Internal
-
-At the moment, MIC BIAS Internal* and MIC BIAS External* both reference
-the same register, and have a part of their initialization sequence
-duplicated.
-
-For example, the sequence for enabling MIC BIAS Internal1 is:
-  I1. Enable MIC_BIAS1 supply (MICB_EN bit in CDC_A_MICB_1_EN)
-  I2. Enable internal RBIAS (TX1_INT_RBIAS_EN bit in CDC_A_MICB_1_INT_RBIAS)
-
-The sequence for enabling MIC BIAS External1 is:
-  E1. Enable MIC_BIAS1 supply (MICB_EN bit in CDC_A_MICB_1_EN)
-  (E2. Ideally, make sure internal RBIAS is disabled. However, this should
-   not happen in practice because DAPM will disable unused supplies...)
-
-Right now we have:
-  SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_EN, 7, 0, ...) // I1
-  SND_SOC_DAPM_SUPPLY("MIC BIAS External1", CDC_A_MICB_1_EN, 7, 0, ...) // E1
-and I2 is done in the PM event handler (pm8916_wcd_analog_enable_micbias_int1).
-
-We can simplify this by defining a common DAPM supply for I1/E1 ("MIC_BIAS1"),
-and one DAPM supply for I2 ("MIC BIAS Internal1"). Additional DAPM routes
-ensure that we also enable the MIC_BIAS1 supply for the internal and external
-pull up resistor.
-
-Another advantage of this is that we now disable the internal RBIAS
-when it is not needed. This makes it much easier to add support for
-MIC BIAS Internal3 as a next step.
-
-Tested-by: Nikita Travkin <nikitos.tr@gmail.com> # longcheer-l8150
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200114181229.42302-1-stephan@gerhold.net
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 112 ++++++++++----------------
- 1 file changed, 42 insertions(+), 70 deletions(-)
+Changes in v2:
+- Add "additionalProperties: false"
+- Also change minItems to 2 for dmas property, as both DMAs are required.
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 1f7964beb20c..d6d727f5bae5 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -374,9 +374,8 @@ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_component *component
- 
- }
- 
--static int pm8916_wcd_analog_enable_micbias_ext(struct snd_soc_component
--						 *component, int event,
--						 int reg, unsigned int cap_mode)
-+static int pm8916_wcd_analog_enable_micbias(struct snd_soc_component *component,
-+					    int event, unsigned int cap_mode)
- {
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
-@@ -389,72 +388,44 @@ static int pm8916_wcd_analog_enable_micbias_ext(struct snd_soc_component
- 	return 0;
- }
- 
--static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_component
--						 *component, int event,
--						 int reg, u32 cap_mode)
-+static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_dapm_widget *w,
-+						struct snd_kcontrol *kcontrol,
-+						int event)
- {
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_component_update_bits(component, reg, MICB_1_EN_PULL_DOWN_EN_MASK, 0);
- 		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
- 				    MICB_1_EN_OPA_STG2_TAIL_CURR_MASK,
- 				    MICB_1_EN_OPA_STG2_TAIL_CURR_1_60UA);
+Changes in v3:
+- Drop minItems/maxItems for dmas property, remove ref to stm32-dma.txt.
+---
+ .../bindings/sound/st,stm32-spdifrx.txt       | 56 -------------
+ .../bindings/sound/st,stm32-spdifrx.yaml      | 80 +++++++++++++++++++
+ 2 files changed, 80 insertions(+), 56 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+deleted file mode 100644
+index 33826f2459fa..000000000000
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-STMicroelectronics STM32 S/PDIF receiver (SPDIFRX).
 -
--		break;
--	case SND_SOC_DAPM_POST_PMU:
--		pm8916_wcd_analog_micbias_enable(component);
--		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
--				    MICB_1_EN_BYP_CAP_MASK, cap_mode);
- 		break;
- 	}
- 
- 	return 0;
- }
- 
--static int pm8916_wcd_analog_enable_micbias_ext1(struct
--						  snd_soc_dapm_widget
--						  *w, struct snd_kcontrol
--						  *kcontrol, int event)
-+static int pm8916_wcd_analog_enable_micbias1(struct snd_soc_dapm_widget *w,
-+					     struct snd_kcontrol *kcontrol,
-+					     int event)
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
- 
--	return pm8916_wcd_analog_enable_micbias_ext(component, event, w->reg,
--						     wcd->micbias1_cap_mode);
-+	return pm8916_wcd_analog_enable_micbias(component, event,
-+						wcd->micbias1_cap_mode);
- }
- 
--static int pm8916_wcd_analog_enable_micbias_ext2(struct
--						  snd_soc_dapm_widget
--						  *w, struct snd_kcontrol
--						  *kcontrol, int event)
--{
--	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
--	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
+-The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
+-IEC-60958 and IEC-61937.
 -
--	return pm8916_wcd_analog_enable_micbias_ext(component, event, w->reg,
--						     wcd->micbias2_cap_mode);
+-Required properties:
+-  - compatible: should be "st,stm32h7-spdifrx"
+-  - reg: cpu DAI IP base address and size
+-  - clocks: must contain an entry for kclk (used as S/PDIF signal reference)
+-  - clock-names: must contain "kclk"
+-  - interrupts: cpu DAI interrupt line
+-  - dmas: DMA specifiers for audio data DMA and iec control flow DMA
+-    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
+-  - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
 -
--}
+-Optional properties:
+-  - resets: Reference to a reset controller asserting the SPDIFRX
 -
--static int pm8916_wcd_analog_enable_micbias_int1(struct
--						  snd_soc_dapm_widget
--						  *w, struct snd_kcontrol
--						  *kcontrol, int event)
-+static int pm8916_wcd_analog_enable_micbias2(struct snd_soc_dapm_widget *w,
-+					     struct snd_kcontrol *kcontrol,
-+					     int event)
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
- 
--	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
--				    MICB_1_INT_TX1_INT_RBIAS_EN_MASK,
--				    MICB_1_INT_TX1_INT_RBIAS_EN_ENABLE);
--		break;
--	}
-+	return pm8916_wcd_analog_enable_micbias(component, event,
-+						wcd->micbias2_cap_mode);
- 
--	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
--						     wcd->micbias1_cap_mode);
- }
- 
- static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
-@@ -564,9 +535,8 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
--				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
--				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
-+		snd_soc_component_update_bits(component, CDC_A_MICB_2_EN,
-+					      CDC_A_MICB_2_PULL_DOWN_EN_MASK, 0);
- 		break;
- 	case SND_SOC_DAPM_POST_PMU:
- 		pm8916_mbhc_configure_bias(wcd, true);
-@@ -576,8 +546,7 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
- 		break;
- 	}
- 
--	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
--						     wcd->micbias2_cap_mode);
-+	return pm8916_wcd_analog_enable_micbias_int(w, kcontrol, event);
- }
- 
- static int pm8916_wcd_analog_enable_adc(struct snd_soc_dapm_widget *w,
-@@ -878,14 +847,15 @@ static const struct snd_soc_dapm_route pm8916_wcd_analog_audio_map[] = {
- 	{"SPK PA", NULL, "SPK DAC"},
- 	{"SPK DAC", "Switch", "PDM_RX3"},
- 
--	{"MIC BIAS Internal1", NULL, "INT_LDO_H"},
--	{"MIC BIAS Internal2", NULL, "INT_LDO_H"},
--	{"MIC BIAS External1", NULL, "INT_LDO_H"},
--	{"MIC BIAS External2", NULL, "INT_LDO_H"},
--	{"MIC BIAS Internal1", NULL, "vdd-micbias"},
--	{"MIC BIAS Internal2", NULL, "vdd-micbias"},
--	{"MIC BIAS External1", NULL, "vdd-micbias"},
--	{"MIC BIAS External2", NULL, "vdd-micbias"},
-+	{"MIC_BIAS1", NULL, "INT_LDO_H"},
-+	{"MIC_BIAS2", NULL, "INT_LDO_H"},
-+	{"MIC_BIAS1", NULL, "vdd-micbias"},
-+	{"MIC_BIAS2", NULL, "vdd-micbias"},
+-The device node should contain one 'port' child node with one child 'endpoint'
+-node, according to the bindings defined in Documentation/devicetree/bindings/
+-graph.txt.
+-
+-Example:
+-spdifrx: spdifrx@40004000 {
+-	compatible = "st,stm32h7-spdifrx";
+-	reg = <0x40004000 0x400>;
+-	clocks = <&rcc SPDIFRX_CK>;
+-	clock-names = "kclk";
+-	interrupts = <97>;
+-	dmas = <&dmamux1 2 93 0x400 0x0>,
+-	       <&dmamux1 3 94 0x400 0x0>;
+-	dma-names = "rx", "rx-ctrl";
+-	pinctrl-0 = <&spdifrx_pins>;
+-	pinctrl-names = "default";
+-
+-	spdifrx_port: port {
+-		cpu_endpoint: endpoint {
+-			remote-endpoint = <&codec_endpoint>;
+-		};
+-	};
+-};
+-
+-spdif_in: spdif-in {
+-	compatible = "linux,spdif-dir";
+-
+-	codec_port: port {
+-		codec_endpoint: endpoint {
+-			remote-endpoint = <&cpu_endpoint>;
+-		};
+-	};
+-};
+-
+-soundcard {
+-	compatible = "audio-graph-card";
+-	dais = <&spdifrx_port>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+new file mode 100644
+index 000000000000..b7f7dc452231
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/st,stm32-spdifrx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	{"MIC BIAS External1", NULL, "MIC_BIAS1"},
-+	{"MIC BIAS Internal1", NULL, "MIC_BIAS1"},
-+	{"MIC BIAS External2", NULL, "MIC_BIAS2"},
-+	{"MIC BIAS Internal2", NULL, "MIC_BIAS2"},
- };
- 
- static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
-@@ -937,22 +907,24 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("RX_BIAS", CDC_A_RX_COM_BIAS_DAC, 7, 0, NULL, 0),
- 
- 	/* TX */
--	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_EN, 7, 0,
--			    pm8916_wcd_analog_enable_micbias_int1,
--			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
--			    SND_SOC_DAPM_POST_PMD),
--	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal2", CDC_A_MICB_2_EN, 7, 0,
-+	SND_SOC_DAPM_SUPPLY("MIC_BIAS1", CDC_A_MICB_1_EN, 7, 0,
-+			    pm8916_wcd_analog_enable_micbias1,
-+			    SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_SUPPLY("MIC_BIAS2", CDC_A_MICB_2_EN, 7, 0,
-+			    pm8916_wcd_analog_enable_micbias2,
-+			    SND_SOC_DAPM_POST_PMU),
++title: STMicroelectronics STM32 S/PDIF receiver (SPDIFRX)
 +
-+	SND_SOC_DAPM_SUPPLY("MIC BIAS External1", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MIC BIAS External2", SND_SOC_NOPM, 0, 0, NULL, 0),
++maintainers:
++  - Olivier Moysan <olivier.moysan@st.com>
 +
-+	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_INT_RBIAS, 7, 0,
-+			    pm8916_wcd_analog_enable_micbias_int,
-+			    SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal2", CDC_A_MICB_1_INT_RBIAS, 4, 0,
- 			    pm8916_wcd_analog_enable_micbias_int2,
- 			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
- 			    SND_SOC_DAPM_POST_PMD),
- 
--	SND_SOC_DAPM_SUPPLY("MIC BIAS External1", CDC_A_MICB_1_EN, 7, 0,
--			    pm8916_wcd_analog_enable_micbias_ext1,
--			    SND_SOC_DAPM_POST_PMU),
--	SND_SOC_DAPM_SUPPLY("MIC BIAS External2", CDC_A_MICB_2_EN, 7, 0,
--			    pm8916_wcd_analog_enable_micbias_ext2,
--			    SND_SOC_DAPM_POST_PMU),
--
- 	SND_SOC_DAPM_ADC_E("ADC1", NULL, CDC_A_TX_1_EN, 7, 0,
- 			   pm8916_wcd_analog_enable_adc,
- 			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++description: |
++  The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
++  IEC-60958 and IEC-61937.
++
++properties:
++  compatible:
++    enum:
++      - st,stm32h7-spdifrx
++
++  "#sound-dai-cells":
++    const: 0
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: kclk
++
++  interrupts:
++    maxItems: 1
++
++  dmas:
++    items:
++      - description: audio data capture DMA
++      - description: IEC status bits capture DMA
++
++  dma-names:
++    items:
++      - const: rx
++      - const: rx-ctrl
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - "#sound-dai-cells"
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/stm32mp1-clks.h>
++    spdifrx: spdifrx@40004000 {
++        compatible = "st,stm32h7-spdifrx";
++        #sound-dai-cells = <0>;
++        reg = <0x40004000 0x400>;
++        clocks = <&rcc SPDIF_K>;
++        clock-names = "kclk";
++        interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
++        dmas = <&dmamux1 2 93 0x400 0x0>,
++               <&dmamux1 3 94 0x400 0x0>;
++        dma-names = "rx", "rx-ctrl";
++        pinctrl-0 = <&spdifrx_pins>;
++        pinctrl-names = "default";
++    };
++
++...
 -- 
-2.20.1
+2.17.1
 
 _______________________________________________
 Alsa-devel mailing list
