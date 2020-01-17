@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4858BC33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E87A7C33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:51:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4FCB2083E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:50:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6F8812072E
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:51:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P/VINhBX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="VGDNqk/y"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4FCB2083E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QrEQaPML";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="vlNXxdig"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F8812072E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D46017FC;
-	Fri, 17 Jan 2020 16:49:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D46017FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B3CE1704;
+	Fri, 17 Jan 2020 16:50:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B3CE1704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276238;
-	bh=c4t3USfChB9o4ALwYktEZPbtZYHoKyfK3oLngQewdaw=;
+	s=default; t=1579276284;
+	bh=TDGeh6VVJ4emIaKHVUPr/K6S1lGNsSeIrddHWU5HwoY=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=P/VINhBXftG4ssGJUVBpG2IAJIR/dYxGUM7w2URG7r8DK3BKu0+WDjmvnlhyzf3Mp
-	 f+7R7y94GkgPLuIdHaTHYq9II313mVgCTy8irrM8fIiJPg9LXyyHoP1CLtWwloL6Mk
-	 LZTeeQBuReyh5b0uAxxOWK3SwtWjIYkTemuMZ7sM=
+	b=QrEQaPMLFSzbrxPlFbmUmubz+OEFiO9JkxWh0Gyzns03MBbLj7+mezI+xIul+yGL2
+	 jHmjS9z5hldU2j0HIivtj0k5qv+pv0w5xN5+8BnIUJrB0NfJdoRCN1eAMtbAuc860u
+	 HUR+JsFUtEMsFsvw/xcGzOb0A5PoGaYKCGw0Nm5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 249E1F8029A;
-	Fri, 17 Jan 2020 16:45:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BF6AF802A0;
+	Fri, 17 Jan 2020 16:45:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC84EF800E9; Fri, 17 Jan 2020 16:44:20 +0100 (CET)
+ id 8C682F8014B; Fri, 17 Jan 2020 16:44:21 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 144E9F8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A61AF801F8
  for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 144E9F8014B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A61AF801F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="VGDNqk/y"
+ header.b="vlNXxdig"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=PnI/PQTjjediv1Dzh6nRabOY57QlvqvVoMoR9cUX4gU=; b=VGDNqk/yzJRy
- yyE5Fjf2D+mJN9l7PEacsPDmIk01+Gr/RUQarCDP/aZnFLKs+oyRrz9SdueumpxKqRuu8AxKwaakY
- MjqbD/6/Et/KgSReOMBNVrzbXo4MS8MmuqE0GniFPlrVAxc4wXDoHDjvhukcvjSwJwgJLPrr5pekg
- LSNa0=;
+ List-Archive; bh=YLlnZQ7obo9hm7ntSycOnGTHd4uSo2u5L5NqtVkSEhU=; b=vlNXxdigELV6
+ g+TmlfBvaYktTTmvTvB6lO2W01Mpb4sLJoFC4eT8H1IX+DWWgMIyZYRF9NlCFLurMoewuBxZNMCZj
+ ENwui7VJMvxkrKTb25IdXUylDXd9EAoxHsIFp/5e3UqL4qr8BnMVFHJ7AS8HK0m42A8LQOcPuPAEU
+ r0bMo=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTnA-0006sO-Pf; Fri, 17 Jan 2020 15:44:12 +0000
+ id 1isTnA-0006s0-1O; Fri, 17 Jan 2020 15:44:12 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 82324D02C26; Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
+ id B1237D02BD9; Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20200114161841.451-3-ckeepax@opensource.cirrus.com>
-Message-Id: <applied-20200114161841.451-3-ckeepax@opensource.cirrus.com>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+In-Reply-To: <20200117024149.75515-1-weiyongjun1@huawei.com>
+Message-Id: <applied-20200117024149.75515-1-weiyongjun1@huawei.com>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, david.rhodes@cirrus.com, Mark Brown <broonie@kernel.org>,
- li.xu@cirrus.com
-Subject: [alsa-devel] Applied "ASoC: madera: Correct error path handling in
-	madera_out1_demux_put" to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] Applied "ASoC: rt715: fix return value check in
+	rt715_sdw_probe()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: madera: Correct error path handling in madera_out1_demux_put
+   ASoC: rt715: fix return value check in rt715_sdw_probe()
 
 has been applied to the asoc tree at
 
@@ -121,35 +123,38 @@ to this mail.
 Thanks,
 Mark
 
-From 4061fdc89ff7704a71dc6df8e5841f861138e7e1 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 14 Jan 2020 16:18:40 +0000
-Subject: [PATCH] ASoC: madera: Correct error path handling in
- madera_out1_demux_put
+From f9f5bbf5783cd63369d3e6c8cf27e2bd7c5ac2c3 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Fri, 17 Jan 2020 02:41:49 +0000
+Subject: [PATCH] ASoC: rt715: fix return value check in rt715_sdw_probe()
 
-Should the write to MADERA_OUTPUT_ENABLES_1 fail and out_clamp[0] not be
-set an additional error message will be printed. Clear the ret variable
-to avoid this.
+In case of error, the function devm_regmap_init() returns ERR_PTR() and
+never returns NULL. The NULL test in the return value check should be
+replaced with IS_ERR().
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200114161841.451-3-ckeepax@opensource.cirrus.com
+Fixes: d1ede0641b05 ("ASoC: rt715: add RT715 codec driver")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Link: https://lore.kernel.org/r/20200117024149.75515-1-weiyongjun1@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/madera.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt715-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index 12dc468ae6bf..2be64422adf9 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -575,6 +575,7 @@ int madera_out1_demux_put(struct snd_kcontrol *kcontrol,
- 	usleep_range(2000, 3000); /* wait for wseq to complete */
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 18868e4ae6e8..6d892c44c522 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -535,8 +535,8 @@ static int rt715_sdw_probe(struct sdw_slave *slave,
  
- 	/* change demux setting */
-+	ret = 0;
- 	if (madera->out_clamp[0])
- 		ret = regmap_update_bits(madera->regmap,
- 					 MADERA_OUTPUT_ENABLES_1,
+ 	regmap = devm_regmap_init(&slave->dev, NULL, &slave->dev,
+ 		&rt715_regmap);
+-	if (!regmap)
+-		return -EINVAL;
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
+ 
+ 	rt715_init(&slave->dev, sdw_regmap, regmap, slave);
+ 
 -- 
 2.20.1
 
