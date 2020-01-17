@@ -4,80 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E87A7C33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:51:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B5A8C33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:52:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F8812072E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:51:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB9932083E
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:52:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QrEQaPML";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="vlNXxdig"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F8812072E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tna3XTZG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="cvGMJRaN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB9932083E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B3CE1704;
-	Fri, 17 Jan 2020 16:50:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B3CE1704
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1184417FF;
+	Fri, 17 Jan 2020 16:51:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1184417FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276284;
-	bh=TDGeh6VVJ4emIaKHVUPr/K6S1lGNsSeIrddHWU5HwoY=;
+	s=default; t=1579276332;
+	bh=LAvzNdFxJCne5rw6Recg0nb3HD0FEKKF2kaIi8LhPmI=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=QrEQaPMLFSzbrxPlFbmUmubz+OEFiO9JkxWh0Gyzns03MBbLj7+mezI+xIul+yGL2
-	 jHmjS9z5hldU2j0HIivtj0k5qv+pv0w5xN5+8BnIUJrB0NfJdoRCN1eAMtbAuc860u
-	 HUR+JsFUtEMsFsvw/xcGzOb0A5PoGaYKCGw0Nm5A=
+	b=tna3XTZGeYR+ba+dsZ1wZElIdIajzIiIrqmXJTzghHOORKR5UltA8UOFsHCxuSufm
+	 zdjRWMiXY3gyIU2sOB27WtUrhEtDl3+r5a2mXPWvFdHMrOkvqxe4uLAulSNqQvq9bW
+	 9cQ6XcBGevmlmTG860+MTMeipUjF0NUGGsXfeQHA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BF6AF802A0;
-	Fri, 17 Jan 2020 16:45:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08F25F802BC;
+	Fri, 17 Jan 2020 16:45:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C682F8014B; Fri, 17 Jan 2020 16:44:21 +0100 (CET)
+ id 96595F800E9; Fri, 17 Jan 2020 16:44:21 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A61AF801F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id A222BF80227
  for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A61AF801F8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A222BF80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="vlNXxdig"
+ header.b="cvGMJRaN"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=YLlnZQ7obo9hm7ntSycOnGTHd4uSo2u5L5NqtVkSEhU=; b=vlNXxdigELV6
- g+TmlfBvaYktTTmvTvB6lO2W01Mpb4sLJoFC4eT8H1IX+DWWgMIyZYRF9NlCFLurMoewuBxZNMCZj
- ENwui7VJMvxkrKTb25IdXUylDXd9EAoxHsIFp/5e3UqL4qr8BnMVFHJ7AS8HK0m42A8LQOcPuPAEU
- r0bMo=;
+ List-Archive; bh=PJ16TCfg2m6xxtu5/PKJEnpHqtv5vF7NWIs0DxBsvp0=; b=cvGMJRaNEJPl
+ 7DiyicxFO0VDGQU30S8A85MsO1/mQIiwx1UwIVWH+WqiWI8lYq6b1tkvNKt0bOira2Z7qDKKjkkqg
+ McP9lZRyGACheIUwTBglYhApvs86OZTGe0vEyCc8T3tvo+cSWZDMsc4BBTcZV6Ltm/Xvys2X83kmg
+ zSD7Q=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTnA-0006s0-1O; Fri, 17 Jan 2020 15:44:12 +0000
+ id 1isTnA-0006sR-Vx; Fri, 17 Jan 2020 15:44:13 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id B1237D02BD9; Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
+ id A6B8BD02BD9; Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Wei Yongjun <weiyongjun1@huawei.com>
-In-Reply-To: <20200117024149.75515-1-weiyongjun1@huawei.com>
-Message-Id: <applied-20200117024149.75515-1-weiyongjun1@huawei.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+In-Reply-To: <20200113114054.9716-1-cezary.rojewski@intel.com>
+Message-Id: <applied-20200113114054.9716-1-cezary.rojewski@intel.com>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Bard Liao <bardliao@realtek.com>
-Subject: [alsa-devel] Applied "ASoC: rt715: fix return value check in
-	rt715_sdw_probe()" to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
+Subject: [alsa-devel] Applied "ASoC: SOF: Intel: hda: Fix SKL dai count" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,11 +95,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt715: fix return value check in rt715_sdw_probe()
+   ASoC: SOF: Intel: hda: Fix SKL dai count
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -123,38 +120,37 @@ to this mail.
 Thanks,
 Mark
 
-From f9f5bbf5783cd63369d3e6c8cf27e2bd7c5ac2c3 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Fri, 17 Jan 2020 02:41:49 +0000
-Subject: [PATCH] ASoC: rt715: fix return value check in rt715_sdw_probe()
+From a6947c9d86bcfd61b758b5693eba58defe7fd2ae Mon Sep 17 00:00:00 2001
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Date: Mon, 13 Jan 2020 12:40:54 +0100
+Subject: [PATCH] ASoC: SOF: Intel: hda: Fix SKL dai count
 
-In case of error, the function devm_regmap_init() returns ERR_PTR() and
-never returns NULL. The NULL test in the return value check should be
-replaced with IS_ERR().
+With fourth pin added for iDisp for skl_dai, update SOF_SKL_DAI_NUM to
+account for the change. Without this, dais from the bottom of the list
+are skipped. In current state that's the case for 'Alt Analog CPU DAI'.
 
-Fixes: d1ede0641b05 ("ASoC: rt715: add RT715 codec driver")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20200117024149.75515-1-weiyongjun1@huawei.com
+Fixes: ac42b142cd76 ("ASoC: SOF: Intel: hda: Add iDisp4 DAI")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200113114054.9716-1-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt715-sdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
-index 18868e4ae6e8..6d892c44c522 100644
---- a/sound/soc/codecs/rt715-sdw.c
-+++ b/sound/soc/codecs/rt715-sdw.c
-@@ -535,8 +535,8 @@ static int rt715_sdw_probe(struct sdw_slave *slave,
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 18d7e72bf9b7..8981c00c4d94 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -345,7 +345,7 @@
  
- 	regmap = devm_regmap_init(&slave->dev, NULL, &slave->dev,
- 		&rt715_regmap);
--	if (!regmap)
--		return -EINVAL;
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
- 	rt715_init(&slave->dev, sdw_regmap, regmap, slave);
- 
+ /* Number of DAIs */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-#define SOF_SKL_NUM_DAIS		14
++#define SOF_SKL_NUM_DAIS		15
+ #else
+ #define SOF_SKL_NUM_DAIS		8
+ #endif
 -- 
 2.20.1
 
