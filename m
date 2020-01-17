@@ -6,78 +6,78 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EB66C33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:52:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E8BAC33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:53:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAC93214AF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:52:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 993262064C
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:53:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MWpHpSrV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="bK8g+eoi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAC93214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WjCdAff1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LEYYaC/4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 993262064C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4095517EF;
-	Fri, 17 Jan 2020 16:51:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4095517EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E872317FF;
+	Fri, 17 Jan 2020 16:52:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E872317FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276354;
-	bh=DpwiwGNqGW8X/J8Qy+pxA7VFh3mZxW9K21mbipceqBM=;
+	s=default; t=1579276396;
+	bh=ec9nHo6eoy4h6RgNiEXBcgMHKOOBstJ0jjMSGTrIL7k=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=MWpHpSrV7BbrGKfz+aD0sNME9KHIL+IIuZDhzbzLPWqpgGjuJwSMAnn2tCxTOiv9D
-	 uJnlKTIdm8ED5wZ77MFJi3Blfabi7E0c/eCuO53Jm4/bmNahVM5OK+2UDvZKFLRExh
-	 SIsw4+aIENG2eGPTCps3o3+/DmE7YAnJpoEcTmfw=
+	b=WjCdAff1kxswTpoQtirvxLspD7IGi4LUmZi4GKfPUVp/ML3EPQuMlmbfaSeGYq+BZ
+	 V0WQHr+WMxBlYS0fVKNzmq2vf3XlEN2z3Eh8qtwd22rSd1QWfRUDdq1QOEtjqVvDP9
+	 0eR+xAVZnA8wAQfkkKimoWxyBhdmjriS8JS8s8RU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED874F802C4;
-	Fri, 17 Jan 2020 16:45:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A30CF802E1;
+	Fri, 17 Jan 2020 16:45:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2E0EF801EB; Fri, 17 Jan 2020 16:44:21 +0100 (CET)
+ id 36900F800AA; Fri, 17 Jan 2020 16:44:22 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00657F801F7
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00657F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FBFAF80271
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FBFAF80271
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="bK8g+eoi"
+ header.b="LEYYaC/4"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=nTgcYnW1bBqfkqgXrC6bADcDL5m+JJlT4b9lz90Hafo=; b=bK8g+eoibs1c
- sshSw5ILQoPvUH2r+fGkJP36wgQioTIfHtdNDfPbwWA9DmXb/4rq0s+zW/8lr66WUmrgq4UzBGnrj
- GBnZUn9FN81lrYV3PnDWFEtBW9Pb1HIP22SVx5Qbi4ooTjqCeBqgp46ujjrM/Ck9Vok6c6HgwOERw
- Id7wc=;
+ List-Archive; bh=8Fd9JrGlzE97H+p1Gp47dQ7I2EhtuAf7Is5IfV90Dvo=; b=LEYYaC/4VbEt
+ dMy1I46NGPyVv290D7iyYXUSukX01id+emmBuxvHngWLF3u+52RogaXqY2H53SOWeX/Vfh57YmCLn
+ KawFKtpcVKRDt5jYpeUsrSJhUIFZj68lNp2j7fzbsEE4agOhRpqQ7Qs0pP1fZuqmdW0M/v8Mh4IZ6
+ g9Fjw=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTn9-0006rx-Qz; Fri, 17 Jan 2020 15:44:11 +0000
+ id 1isTnA-0006s9-Bg; Fri, 17 Jan 2020 15:44:12 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 83ED6D02C26; Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
+ id 0E693D02C26; Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-In-Reply-To: <1579261510-12580-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-Message-Id: <applied-1579261510-12580-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+In-Reply-To: <20200115143027.94364-1-weiyongjun1@huawei.com>
+Message-Id: <applied-20200115143027.94364-1-weiyongjun1@huawei.com>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- moderated@sirena.org.uk, "Cc:"@sirena.org.uk, Mark Brown <broonie@kernel.org>,
- Ravulapati@sirena.org.uk, Alexander.Deucher@amd.com,
- Dan Carpenter <dan.carpenter@oracle.com>, Vishnu@sirena.org.uk
-Subject: [alsa-devel] Applied "ASoC: amd: Additional DAI for I2S SP
-	instance." to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Shuming Fan <shumingf@realtek.com>,
+ Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] Applied "ASoC: rt700: fix return value check in
+	rt700_sdw_probe()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: amd: Additional DAI for I2S SP instance.
+   ASoC: rt700: fix return value check in rt700_sdw_probe()
 
 has been applied to the asoc tree at
 
@@ -123,54 +123,38 @@ to this mail.
 Thanks,
 Mark
 
-From a174a6c226796824cb2f78157c0b183ed472fa3f Mon Sep 17 00:00:00 2001
-From: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Date: Fri, 17 Jan 2020 17:15:09 +0530
-Subject: [PATCH] ASoC: amd: Additional DAI for I2S SP instance.
+From 20435df1c1d708b44f58da17653f2ea609aee790 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Wed, 15 Jan 2020 14:30:27 +0000
+Subject: [PATCH] ASoC: rt700: fix return value check in rt700_sdw_probe()
 
-I2S SP instance has separate BCLK and LRCLK for Tx and Rx.
-Creating additional DAI for Rx.
+In case of error, the function devm_regmap_init() returns ERR_PTR() and
+never returns NULL. The NULL test in the return value check should be
+replaced with IS_ERR().
 
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-Link: https://lore.kernel.org/r/1579261510-12580-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com
+Fixes: 7d2a5f9ae41e ("ASoC: rt700: add rt700 codec driver")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Link: https://lore.kernel.org/r/20200115143027.94364-1-weiyongjun1@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/raven/acp3x.h     | 2 +-
- sound/soc/amd/raven/pci-acp3x.c | 8 +++++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt700-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/raven/acp3x.h b/sound/soc/amd/raven/acp3x.h
-index b6a80dc0b641..21e7ac017f2b 100644
---- a/sound/soc/amd/raven/acp3x.h
-+++ b/sound/soc/amd/raven/acp3x.h
-@@ -13,7 +13,7 @@
- #define TDM_ENABLE 1
- #define TDM_DISABLE 0
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index 314103601af3..a4b95425886f 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -460,8 +460,8 @@ static int rt700_sdw_probe(struct sdw_slave *slave,
  
--#define ACP3x_DEVS		3
-+#define ACP3x_DEVS		4
- #define ACP3x_PHY_BASE_ADDRESS 0x1240000
- #define	ACP3x_I2S_MODE	0
- #define	ACP3x_REG_START	0x1240000
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index 2f9f52905853..65330bb50e74 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -225,7 +225,13 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 		pdevinfo[2].id = 1;
- 		pdevinfo[2].parent = &pci->dev;
- 		pdevinfo[2].num_res = 1;
--		pdevinfo[2].res = &adata->res[2];
-+		pdevinfo[2].res = &adata->res[1];
-+
-+		pdevinfo[3].name = "acp3x_i2s_playcap";
-+		pdevinfo[3].id = 2;
-+		pdevinfo[3].parent = &pci->dev;
-+		pdevinfo[3].num_res = 1;
-+		pdevinfo[3].res = &adata->res[2];
- 		for (i = 0; i < ACP3x_DEVS; i++) {
- 			adata->pdev[i] =
- 				platform_device_register_full(&pdevinfo[i]);
+ 	regmap = devm_regmap_init(&slave->dev, NULL,
+ 		&slave->dev, &rt700_regmap);
+-	if (!regmap)
+-		return -EINVAL;
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
+ 
+ 	rt700_init(&slave->dev, sdw_regmap, regmap, slave);
+ 
 -- 
 2.20.1
 
