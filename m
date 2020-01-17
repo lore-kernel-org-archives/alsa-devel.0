@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E8BAC33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D8D8C33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:53:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 993262064C
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:53:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB5EA2064C
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:53:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WjCdAff1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="LEYYaC/4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 993262064C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eCwJviiA";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ZK0ptVpi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB5EA2064C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E872317FF;
-	Fri, 17 Jan 2020 16:52:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E872317FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C43217EC;
+	Fri, 17 Jan 2020 16:53:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C43217EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276396;
-	bh=ec9nHo6eoy4h6RgNiEXBcgMHKOOBstJ0jjMSGTrIL7k=;
+	s=default; t=1579276437;
+	bh=6ZegIluii0Y4jFV+lgw06OkxiED4qewT15pmho8Ys0M=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=WjCdAff1kxswTpoQtirvxLspD7IGi4LUmZi4GKfPUVp/ML3EPQuMlmbfaSeGYq+BZ
-	 V0WQHr+WMxBlYS0fVKNzmq2vf3XlEN2z3Eh8qtwd22rSd1QWfRUDdq1QOEtjqVvDP9
-	 0eR+xAVZnA8wAQfkkKimoWxyBhdmjriS8JS8s8RU=
+	b=eCwJviiAVI+FgffDXM5SRx0ZhVEGsUhwoPaZ0JVaxpRe5Lz3prR3JQFDSxXXHuo87
+	 1xfacNZhIftDuEQMy275YnNAnFqK1DKcX7/p6gy9NJf9xCR3Y3+9IEqPpRqLQHdGlR
+	 wYh32YdldgYZuvBKqPPF+6TAvj8n10gXH9dVZm7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A30CF802E1;
-	Fri, 17 Jan 2020 16:45:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BEBDF802E9;
+	Fri, 17 Jan 2020 16:45:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36900F800AA; Fri, 17 Jan 2020 16:44:22 +0100 (CET)
+ id B7A03F8014B; Fri, 17 Jan 2020 16:44:25 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FBFAF80271
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FBFAF80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE771F8022B
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE771F8022B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="LEYYaC/4"
+ header.b="ZK0ptVpi"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=8Fd9JrGlzE97H+p1Gp47dQ7I2EhtuAf7Is5IfV90Dvo=; b=LEYYaC/4VbEt
- dMy1I46NGPyVv290D7iyYXUSukX01id+emmBuxvHngWLF3u+52RogaXqY2H53SOWeX/Vfh57YmCLn
- KawFKtpcVKRDt5jYpeUsrSJhUIFZj68lNp2j7fzbsEE4agOhRpqQ7Qs0pP1fZuqmdW0M/v8Mh4IZ6
- g9Fjw=;
+ List-Archive; bh=jGqngOh+Xf5gmoMJRDS9WQhgl46mcJ/CdI8nQzlJyzA=; b=ZK0ptVpiVb+R
+ MOJpsyulSCBAgtbEZKhG0ekOkAK4A4TrmKMZ0WnCc0GMPC7+TrixQzsj+0A1wli1Apyi96iMPn03Q
+ DOQdHFuYUj2UfQAwIFloEycEVz7wXmguxG0TbOkDcZ/Dqww1oKuh6z2x6T90x51AWUZn+WwIItXWu
+ evCpw=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTnA-0006s9-Bg; Fri, 17 Jan 2020 15:44:12 +0000
+ id 1isTn5-0006rX-OA; Fri, 17 Jan 2020 15:44:07 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 0E693D02C26; Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
+ id 35D99D02A2A; Fri, 17 Jan 2020 15:44:07 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Wei Yongjun <weiyongjun1@huawei.com>
-In-Reply-To: <20200115143027.94364-1-weiyongjun1@huawei.com>
-Message-Id: <applied-20200115143027.94364-1-weiyongjun1@huawei.com>
+To: Jordy Ubink <jordyubink@hotmail.nl>
+In-Reply-To: <20200115164619.101705-4-hdegoede@redhat.com>
+Message-Id: <applied-20200115164619.101705-4-hdegoede@redhat.com>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Shuming Fan <shumingf@realtek.com>,
- Bard Liao <bardliao@realtek.com>
-Subject: [alsa-devel] Applied "ASoC: rt700: fix return value check in
-	rt700_sdw_probe()" to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:07 +0000 (GMT)
+Cc: Nariman Etemadi <narimantos@gmail.com>, alsa-devel@alsa-project.org,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Damian van Soelen <dj.vsoelen@gmail.com>,
+ Erik Bussing <eabbussing@outlook.com>
+Subject: [alsa-devel] Applied "ASoC: Intel: bytcr_rt5651: Remove unnecessary
+	string buffers and snprintf calls" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,11 +101,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt700: fix return value check in rt700_sdw_probe()
+   ASoC: Intel: bytcr_rt5651: Remove unnecessary string buffers and snprintf calls
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -123,38 +126,71 @@ to this mail.
 Thanks,
 Mark
 
-From 20435df1c1d708b44f58da17653f2ea609aee790 Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Wed, 15 Jan 2020 14:30:27 +0000
-Subject: [PATCH] ASoC: rt700: fix return value check in rt700_sdw_probe()
+From fcce38d85cb865346da9b8f2d87c9427153dc5ca Mon Sep 17 00:00:00 2001
+From: Jordy Ubink <jordyubink@hotmail.nl>
+Date: Wed, 15 Jan 2020 17:46:18 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Remove unnecessary string buffers
+ and snprintf calls
 
-In case of error, the function devm_regmap_init() returns ERR_PTR() and
-never returns NULL. The NULL test in the return value check should be
-replaced with IS_ERR().
+The snprintf calls filling byt_rt56*_codec_aif_name/byt_rt56*_cpu_dai_name
+always fill them with the same string ("rt56*-aif2" resp. ssp0-port").
+So instead of keeping these buffers around and making codecs->dai_name /
+cpus->dai_name point to them, simply update the *->dai_name pointers to
+directly point to a string constant containing the desired string.
 
-Fixes: 7d2a5f9ae41e ("ASoC: rt700: add rt700 codec driver")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20200115143027.94364-1-weiyongjun1@huawei.com
+Signed-off-by: Jordy Ubink <jordyubink@hotmail.nl>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20200115164619.101705-4-hdegoede@redhat.com
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt700-sdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
-index 314103601af3..a4b95425886f 100644
---- a/sound/soc/codecs/rt700-sdw.c
-+++ b/sound/soc/codecs/rt700-sdw.c
-@@ -460,8 +460,8 @@ static int rt700_sdw_probe(struct sdw_slave *slave,
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 6d71352ea864..5074bb53f98e 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -787,8 +787,6 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
  
- 	regmap = devm_regmap_init(&slave->dev, NULL,
- 		&slave->dev, &rt700_regmap);
--	if (!regmap)
--		return -EINVAL;
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
+ /* SoC card */
+ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+-static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+-static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
+ #endif
+@@ -1037,26 +1035,12 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	log_quirks(&pdev->dev);
  
- 	rt700_init(&slave->dev, sdw_regmap, regmap, slave);
+ 	if ((byt_rt5651_quirk & BYT_RT5651_SSP2_AIF2) ||
+-	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2)) {
+-		/* fixup codec aif name */
+-		snprintf(byt_rt5651_codec_aif_name,
+-			sizeof(byt_rt5651_codec_aif_name),
+-			"%s", "rt5651-aif2");
+-
+-		byt_rt5651_dais[dai_index].codecs->dai_name =
+-			byt_rt5651_codec_aif_name;
+-	}
++	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2))
++		byt_rt5651_dais[dai_index].codecs->dai_name = "rt5651-aif2";
  
+ 	if ((byt_rt5651_quirk & BYT_RT5651_SSP0_AIF1) ||
+-	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2)) {
+-		/* fixup cpu dai name name */
+-		snprintf(byt_rt5651_cpu_dai_name,
+-			sizeof(byt_rt5651_cpu_dai_name),
+-			"%s", "ssp0-port");
+-
+-		byt_rt5651_dais[dai_index].cpus->dai_name =
+-			byt_rt5651_cpu_dai_name;
+-	}
++	    (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2))
++		byt_rt5651_dais[dai_index].cpus->dai_name = "ssp0-port";
+ 
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+ 		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
 -- 
 2.20.1
 
