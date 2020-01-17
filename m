@@ -2,72 +2,116 @@ Return-Path: <SRS0=jvLf=3G=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F79CC33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:27:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E838C33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:40:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC08A2082F
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:27:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 21A6120748
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:40:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DqPm3bLq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC08A2082F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I+9h8W0H";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="L32wOJpY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21A6120748
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2343A17EB;
-	Fri, 17 Jan 2020 09:26:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2343A17EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B17117C7;
+	Fri, 17 Jan 2020 09:32:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B17117C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579249622;
-	bh=H7wL5g4X1CxhcxoDbgoCYT5XlMG2dRlkP6C62HUFHv0=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DqPm3bLqD+9nXp4fsB4Sc8eHs3bukZp6zd+rTxCrcDIeVUbTkSj31tEfVCXZ2MS0y
-	 M+RhuECeR0VoQStgDZdAoL7tIb77zYFVfGJwpScNRnkpbPr4HFBoPVonE6ouzR2hN6
-	 sSF+P7i+Mq69gPh1CVvUn6mQS0v+NOaquQ8TqXPw=
+	s=default; t=1579250029;
+	bh=ftumhCRVj9BE8C/cJgUv1uvN+AOPt3yMR9L1MdubgwE=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=I+9h8W0HR1g/jsIZuVn/Yam6AiA+c96asOTK0/E+LQqgt7kYBe3rvxzvgk2cOZ9vk
+	 VxyWSspq3U4okhlntEfxtA5C7DyvOy/myCHe2O5BqPY0ojbT8LDqNh28XTPZ8S28qz
+	 pz5muX/mCEJ9RaK8mS+FvvBbUHxGjPgnudeMPtpw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E635F802A0;
-	Fri, 17 Jan 2020 09:23:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 162C7F8014B;
+	Fri, 17 Jan 2020 09:32:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A403F801F7; Fri, 17 Jan 2020 09:23:12 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 2BA19F801EB; Fri, 17 Jan 2020 09:32:57 +0100 (CET)
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05on2054.outbound.protection.outlook.com [40.107.22.54])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8FC9F801F8
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 09:22:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8FC9F801F8
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 17 Jan 2020 00:22:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,329,1574150400"; d="scan'208";a="274295705"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by FMSMGA003.fm.intel.com with ESMTP; 17 Jan 2020 00:22:38 -0800
-From: Bard liao <yung-chuan.liao@linux.intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.de
-Date: Fri, 17 Jan 2020 04:26:20 +0800
-Message-Id: <20200116202620.7401-5-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200116202620.7401-1-yung-chuan.liao@linux.intel.com>
-References: <20200116202620.7401-1-yung-chuan.liao@linux.intel.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org,
- bard.liao@intel.com, pierre-louis.bossart@linux.intel.com,
- kuninori.morimoto.gx@renesas.com
-Subject: [alsa-devel] [PATCH RFC v3 4/4] ASoC: return error if the function
-	is not support multi cpu yet.
+ by alsa1.perex.cz (Postfix) with ESMTPS id 399A4F800AA
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 09:32:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 399A4F800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="L32wOJpY"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PvxSGjBtAaXHLyktqaiw4XUYr75qloZYrEvpqSAfOtp3vZRQU4Nbt+UKGgQgV2EaxX1S7PKsaEW26pc9H/XhhYjGXPqKzq8mRVpSgVpSbIxzrimLAmE2L7VheXE8nTQ1Y7sojJNrDqNMLPjzxSkfwSUFW9kfuMv/y1MmQek5q/rgz+Ad9Vz/1zuLFHP8fisnsLARAwnh2X+BzBl3uLFe5RCgODAYrVVlAP3vUzJorJ/gwetVVR75O1nBWgaucfkfmThxC5OcGAjudGmdAnbd5sTJ+jPeGhYdyACMyy3kjnGXEPZRjmcjxDNG6CZck5raRPAlzdTJZk8pnTzqbHrY1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/UW+UfMph/ycEJJ4KCxHZtRxX8+udXquxuHfUCqXY+A=;
+ b=Z0M8VCUul+luG/lSUgST8iz0IG3JPvFDBZmXLNLOdd5k6Ra0NxcFZ1z6smrjUvGHEm5mfU+O+Pg+KkHzs2ZpQ+YHCCrmJTAKr4EJHKqi4aySnc+A4SfbnyCKPemKRBMfos4QNTlvRtAw5eA8029A4/BgrK2/c76RMGnMhCWqObrymzSjfUUilF7ZFnq/ArWiPJzUNJmbtXm+UG/muE4WnIVkKamxGamtM9J4vDBqz4ArhX3AMAwAdYOgs0ZJrNwHH1B+HWHJRYOYyEb6H3nSSzIh+uVbDqhVrzzDUeeON7ohs3a/XJmS8LCQLj9tnkQaDsC2j8HYT4SQRyZUmOfBMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/UW+UfMph/ycEJJ4KCxHZtRxX8+udXquxuHfUCqXY+A=;
+ b=L32wOJpYz4uHaAGZzM4/XCB85GM/jepDoucnQbkkardb5OXIb7G2tD1TCOOzas1xTi9Aa9O8yZdiYzsOUBQDpTzNl6J6U9IGAS1cFlcEo+Jd9oUur46dZO2qGxEorBJ/c9KkLZ0OjCyTa3MhJ/Spd9yDUdOegYe+3BRouQo1smo=
+Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com (52.134.16.147) by
+ VI1PR0402MB3584.eurprd04.prod.outlook.com (52.134.5.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.20; Fri, 17 Jan 2020 08:32:50 +0000
+Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com
+ ([fe80::8881:e155:f058:c0d1]) by VI1PR0402MB3839.eurprd04.prod.outlook.com
+ ([fe80::8881:e155:f058:c0d1%4]) with mapi id 15.20.2623.018; Fri, 17 Jan 2020
+ 08:32:50 +0000
+From: Daniel Baluta <daniel.baluta@nxp.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Thread-Topic: soc-core: Questions about cpus->name && cpus->of_node
+Thread-Index: AQHVzRBzEGrRZE7OyEypH5Ci95j5Gg==
+Date: Fri, 17 Jan 2020 08:32:50 +0000
+Message-ID: <VI1PR0402MB38390D33CFFE4CC0D6AD59AEF9310@VI1PR0402MB3839.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=daniel.baluta@nxp.com; 
+x-originating-ip: [89.37.124.34]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7a07db83-099d-45b4-e1dd-08d79b27d6bd
+x-ms-traffictypediagnostic: VI1PR0402MB3584:
+x-microsoft-antispam-prvs: <VI1PR0402MB358428CFEE9B008EF239D5AAF9310@VI1PR0402MB3584.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0285201563
+x-forefront-antispam-report: SFV:NSPM;
+ SFS:(10009020)(4636009)(346002)(376002)(39860400002)(396003)(136003)(366004)(199004)(189003)(6916009)(71200400001)(9686003)(55016002)(66476007)(26005)(2906002)(86362001)(66556008)(44832011)(6506007)(186003)(76116006)(66446008)(66946007)(64756008)(7696005)(478600001)(52536014)(4744005)(33656002)(4326008)(81156014)(8676002)(8936002)(5660300002)(316002)(81166006);
+ DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR0402MB3584;
+ H:VI1PR0402MB3839.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
+ PTR:InfoNoRecords; A:1; MX:1; 
+received-spf: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N3QHKjxJS+ampqj4tdtEgJyvxnPKv7BkE0Q1Mp06yeSnxYQm3motzYUs2dLdTH2aZj4sOTDZi1fvP3ahUg1HfKKN5lF8Uhd1q6T7n1uNr4GIuuTk6fHdQWxHSRORYWWh6HrfRqYMW0xeJJtfvBIVCSorHKVdM+sYNUJ7WTpUgpnOw1PaWofGtzG1nRdw0hT4VcXUCKhq1ev25ITXbRSTe0I49by1/o1GYa79SbinTojMExL63Hckd3t4zh6y+/7hClnosZteUK8xfPTAI8Ht2mbicLmp9G2sfm3pETTKQlzgnKnYYlwrFHnsE2+g7R78JW48Gk4+BnWUBz7K4SPCvnHk3jQGyeVEJAkGZosI9kxeiSgxY1faXLb24mAe78RD+dmLKurclmlOEySbM1gildpHpRm9uC7etm1wVDQ3MtDXTZKBNLJM62lcl+sTNpQV
+x-ms-exchange-transport-forked: True
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a07db83-099d-45b4-e1dd-08d79b27d6bd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2020 08:32:50.4223 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q9pKyT0h8dmyAg/xiDCm5VdMpnR6FS/Yd8EbK9NmA1EtHnCc/BNafSDF6jGvzqNwZqnBTRnBq2I5vlpEDbRkHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3584
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] soc-core: Questions about cpus->name && cpus->of_node
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,128 +124,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Multi cpu is not supported by all functions yet. Add an error message
-and return.
+Hello Morimoto-san,
 
-Suggested-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Bard liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/soc-compress.c              |  5 +++--
- sound/soc/soc-generic-dmaengine-pcm.c | 18 ++++++++++++++++++
- sound/soc/soc-pcm.c                   | 18 ++++++++++++++++++
- 3 files changed, 39 insertions(+), 2 deletions(-)
+I have a question about this snippet from sound/soc/soc-core.c
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 223cd045719e..4bdef7f6d968 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -810,9 +810,10 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	int playback = 0, capture = 0;
- 	int i;
- 
--	if (rtd->num_codecs > 1) {
-+	if (rtd->num_cpus > 1 ||
-+	    rtd->num_codecs) {
- 		dev_err(rtd->card->dev,
--			"Compress ASoC: Multicodec not supported\n");
-+			"Compress ASoC: Multi CPU/Codec not supported\n");
- 		return -EINVAL;
- 	}
- 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index df57ec47ad60..781752b67e90 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -62,6 +62,12 @@ int snd_dmaengine_pcm_prepare_slave_config(struct snd_pcm_substream *substream,
- 	struct snd_dmaengine_dai_dma_data *dma_data;
- 	int ret;
- 
-+	if (rtd->num_cpus > 1) {
-+		dev_err(rtd->dev,
-+			 "%s doesn't support Multi CPU yet\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	ret = snd_hwparams_to_dma_slave_config(substream, params, slave_config);
-@@ -119,6 +125,12 @@ dmaengine_pcm_set_runtime_hwparams(struct snd_soc_component *component,
- 	struct snd_pcm_hardware hw;
- 	int ret;
- 
-+	if (rtd->num_cpus > 1) {
-+		dev_err(rtd->dev,
-+			 "%s doesn't support Multi CPU yet\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	if (pcm->config && pcm->config->pcm_hardware)
- 		return snd_soc_set_runtime_hwparams(substream,
- 				pcm->config->pcm_hardware);
-@@ -183,6 +195,12 @@ static struct dma_chan *dmaengine_pcm_compat_request_channel(
- 	struct snd_dmaengine_dai_dma_data *dma_data;
- 	dma_filter_fn fn = NULL;
- 
-+	if (rtd->num_cpus > 1) {
-+		dev_err(rtd->dev,
-+			 "%s doesn't support Multi CPU yet\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX) && pcm->chan[0])
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ae1017637e86..1932115cf4ba 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1469,6 +1469,12 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
- 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
- 	int paths;
- 
-+	if (fe->num_cpus > 1) {
-+		dev_err(fe->dev,
-+			 "%s doesn't support Multi CPU yet\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	/* get number of valid DAI paths and their widgets */
- 	paths = snd_soc_dapm_dai_get_connected_widgets(cpu_dai, stream, list,
- 			dpcm_end_walk_at_be);
-@@ -2808,6 +2814,12 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
- 	struct snd_soc_dapm_widget_list *list;
- 	int count, paths;
- 
-+	if (fe->num_cpus > 1) {
-+		dev_err(fe->dev,
-+			 "%s doesn't support Multi CPU yet\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	if (!fe->dai_link->dynamic)
- 		return 0;
- 
-@@ -3364,6 +3376,12 @@ static ssize_t dpcm_state_read_file(struct file *file, char __user *user_buf,
- 	ssize_t out_count = PAGE_SIZE, offset = 0, ret = 0;
- 	char *buf;
- 
-+	if (fe->num_cpus > 1) {
-+		dev_err(fe->dev,
-+			 "%s doesn't support Multi CPU yet\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	buf = kmalloc(out_count, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
--- 
-2.17.1
+=BB       /*
+=BB        * CPU device may be specified by either name or OF node, but
+=BB        * can be left unspecified, and will be matched based on DAI
+=BB        * name alone..
+=BB        */
+=BB       if (link->cpus->name && link->cpus->of_node) {
+=BB       =BB       dev_err(card->dev,
+=BB       =BB       =BB       "ASoC: Neither/both cpu name/of_node are set =
+for %s\n",
+=BB       =BB       =BB       link->name);
+=BB       =BB       return -EINVAL;
+=BB       }
+
+Here either the warning message is wrong OR the if () condition is wrong.
+
+If the link->cpus->name =3D NULL && link->cpus->of_node =3D=3D NULL =
+
+the warning message will be not be printed. =
+
 
 _______________________________________________
 Alsa-devel mailing list
