@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A86D2C33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F872C33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:50:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 351B72083E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:49:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EF2332072E
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:50:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="leGQKaQG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="BMXXUnIR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 351B72083E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="r8DVADXg";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Sngr38co"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF2332072E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EAEF17E6;
-	Fri, 17 Jan 2020 16:48:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EAEF17E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 484B117E3;
+	Fri, 17 Jan 2020 16:49:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 484B117E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276179;
-	bh=KQrKEDktVnzBhKQZutSA8K+YbTYTw2ExSLFFrIVIND8=;
+	s=default; t=1579276202;
+	bh=X77OsaJobodmiZGSvDGZxKIKUop5BqnrEMaZpTwcKck=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=leGQKaQGSkzTXWKlPSEA2u0fpWm9j0bnfI1O2r9MusEvvsHBvGssBFDGLMGFJlDVF
-	 0f03P9w9E6qk82L2sAmwWSgaZbhEJvTXu+t20QT6k83Pl/gxCJe3QFk+2xdgpCrbf6
-	 4X0KG6AvvMK4e0XKPwy/2Vuhsjys23YsEHhH7rro=
+	b=r8DVADXgJ5rG607TRkpOt7n5f7UAiueNrNMfuhvpyPanhYmlUZrcbnqr0PpAYK7F9
+	 XebkDcrnZjyH2Gin57Byys43bxWPc9ejX/2MKvuFr4EYWxIeKeKYRBZ5leZjGmkA2N
+	 m7sf+1iXsvCQqUCdaoGN3k+pdSldH9VPZNDBstRs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 059BFF8028A;
-	Fri, 17 Jan 2020 16:45:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACA05F8028F;
+	Fri, 17 Jan 2020 16:45:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 089BAF80274; Fri, 17 Jan 2020 16:44:19 +0100 (CET)
+ id 4DC40F801EB; Fri, 17 Jan 2020 16:44:19 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98D6DF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02C96F8021D
  for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98D6DF800AA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02C96F8021D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="BMXXUnIR"
+ header.b="Sngr38co"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=8JbL/qXmZ0lzqykGcRECrxItwlIMHg9Qasw691Y7IFE=; b=BMXXUnIR2DLq
- pkhy1gWc6m3J7TaBQP5jW+sYm4fZnGYwePqrp0E6xTazsTnEgutNnYBWVAOLjMbsWteHoR3SbIQeD
- G2rkz3UMJ0fhviU+WmHCnBi9Yjh+pWi+VlTKvngaVVGJHB6VMuhGtBpIyh7pQ10kPmwhKV9vxzV4E
- kJO6I=;
+ List-Archive; bh=vjW9mfK4aBXhMLu/88Xq/Y/8N/0IQECf/VG4X1TRQ58=; b=Sngr38compYj
+ RHDGlp3gH9V+G0MndtzaUuLMEPCCFNCJpTPpioCmrD503bn7sqgyw/C/kgkjK+uY8ZGR8Lh8u0Pkd
+ wLr5w7vFuBWYG06BgJ+ErYfN/xqYrzIbePChu83QQOnC9aWA2ZSFHUU93m+Wy3FQbSJIw4eD8VfEF
+ Sy/Bc=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTnA-0006sJ-Lj; Fri, 17 Jan 2020 15:44:12 +0000
+ id 1isTnA-0006s5-5q; Fri, 17 Jan 2020 15:44:12 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 5BC91D02A2A; Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
+ id DAA68D02A2A; Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Shuming Fan <shumingf@realtek.com>
-In-Reply-To: <20200116091854.18095-1-shumingf@realtek.com>
-Message-Id: <applied-20200116091854.18095-1-shumingf@realtek.com>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+In-Reply-To: <20200115143034.94492-1-weiyongjun1@huawei.com>
+Message-Id: <applied-20200115143034.94492-1-weiyongjun1@huawei.com>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- derek.fang@realtek.com, sathya.prakash.m.r@intel.com, flove@realtek.com
-Subject: [alsa-devel] Applied "ASoC: rt1011: set the different setting for
-	QFN/WLCSP package" to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Shuming Fan <shumingf@realtek.com>,
+ Bard Liao <bardliao@realtek.com>
+Subject: [alsa-devel] Applied "ASoC: rt711: fix return value check in
+	rt711_sdw_probe()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,7 +98,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt1011: set the different setting for QFN/WLCSP package
+   ASoC: rt711: fix return value check in rt711_sdw_probe()
 
 has been applied to the asoc tree at
 
@@ -121,85 +123,38 @@ to this mail.
 Thanks,
 Mark
 
-From 0e4ba0290e5851833f17b2b56deab6a28827bb07 Mon Sep 17 00:00:00 2001
-From: Shuming Fan <shumingf@realtek.com>
-Date: Thu, 16 Jan 2020 17:18:54 +0800
-Subject: [PATCH] ASoC: rt1011: set the different setting for QFN/WLCSP package
+From b03c29c1b13afa18ee88cce07bbe87298eb0d3a3 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Wed, 15 Jan 2020 14:30:34 +0000
+Subject: [PATCH] ASoC: rt711: fix return value check in rt711_sdw_probe()
 
-The QFN package is a new one.
-There is a different initial setting to the chip of QFN and WLCSP package.
+In case of error, the function devm_regmap_init() returns ERR_PTR() and
+never returns NULL. The NULL test in the return value check should be
+replaced with IS_ERR().
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20200116091854.18095-1-shumingf@realtek.com
+Fixes: 320b8b0d13b8 ("ASoC: rt711: add rt711 codec driver")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Link: https://lore.kernel.org/r/20200115143034.94492-1-weiyongjun1@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1011.c | 17 +++++++++++++++--
- sound/soc/codecs/rt1011.h |  1 +
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt711-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1011.c b/sound/soc/codecs/rt1011.c
-index 2552073e54ce..dec5638060c3 100644
---- a/sound/soc/codecs/rt1011.c
-+++ b/sound/soc/codecs/rt1011.c
-@@ -40,7 +40,6 @@ static const struct reg_sequence init_list[] = {
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index e28dc84ede5b..85e62e1059cd 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -460,8 +460,8 @@ static int rt711_sdw_probe(struct sdw_slave *slave,
  
- 	{ RT1011_ADC_SET_5, 0x0a20 },
- 	{ RT1011_DAC_SET_2, 0xa032 },
--	{ RT1011_ADC_SET_1, 0x2925 },
+ 	regmap = devm_regmap_init(&slave->dev, NULL,
+ 		&slave->dev, &rt711_regmap);
+-	if (!regmap)
+-		return -EINVAL;
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
  
- 	{ RT1011_SPK_PRO_DC_DET_1, 0xb00c },
- 	{ RT1011_SPK_PRO_DC_DET_2, 0xcccc },
-@@ -2186,7 +2185,6 @@ static int rt1011_calibrate(struct rt1011_priv *rt1011, unsigned char cali_flag)
- 	/* ADC/DAC setting */
- 	regmap_write(rt1011->regmap, RT1011_ADC_SET_5, 0x0a20);
- 	regmap_write(rt1011->regmap, RT1011_DAC_SET_2, 0xe232);
--	regmap_write(rt1011->regmap, RT1011_ADC_SET_1, 0x2925);
- 	regmap_write(rt1011->regmap, RT1011_ADC_SET_4, 0xc000);
+ 	rt711_init(&slave->dev, sdw_regmap, regmap, slave);
  
- 	/* DC detection */
-@@ -2235,8 +2233,18 @@ static int rt1011_calibrate(struct rt1011_priv *rt1011, unsigned char cali_flag)
- 	dc_offset |= (value & 0xffff);
- 	dev_info(dev, "Gain1 offset=0x%x\n", dc_offset);
- 
-+	/* check the package info. */
-+	regmap_read(rt1011->regmap, RT1011_EFUSE_MATCH_DONE, &value);
-+	if (value & 0x4)
-+		rt1011->pack_id = 1;
- 
- 	if (cali_flag) {
-+
-+		if (rt1011->pack_id)
-+			regmap_write(rt1011->regmap, RT1011_ADC_SET_1, 0x292c);
-+		else
-+			regmap_write(rt1011->regmap, RT1011_ADC_SET_1, 0x2925);
-+
- 		/* Class D on */
- 		regmap_write(rt1011->regmap, RT1011_CLASS_D_POS, 0x010e);
- 		regmap_write(rt1011->regmap,
-@@ -2361,6 +2369,11 @@ static void rt1011_calibration_work(struct work_struct *work)
- 
- 		rt1011_r0_load(rt1011);
- 	}
-+
-+	if (rt1011->pack_id)
-+		snd_soc_component_write(component, RT1011_ADC_SET_1, 0x292c);
-+	else
-+		snd_soc_component_write(component, RT1011_ADC_SET_1, 0x2925);
- }
- 
- static int rt1011_parse_dp(struct rt1011_priv *rt1011, struct device *dev)
-diff --git a/sound/soc/codecs/rt1011.h b/sound/soc/codecs/rt1011.h
-index 68fadc15fa8c..f3a9a96640f1 100644
---- a/sound/soc/codecs/rt1011.h
-+++ b/sound/soc/codecs/rt1011.h
-@@ -692,6 +692,7 @@ struct rt1011_priv {
- 	unsigned int r0_reg, cali_done;
- 	unsigned int r0_calib, temperature_calib;
- 	int recv_spk_mode;
-+	unsigned int pack_id; /* 0: WLCSP; 1: QFN */
- };
- 
- #endif		/* end of _RT1011_H_ */
 -- 
 2.20.1
 
