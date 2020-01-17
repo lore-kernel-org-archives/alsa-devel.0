@@ -6,81 +6,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76FA4C33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:48:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11590C3F68F
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:48:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 019842072E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:48:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 93B772072E
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:48:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TvPOEful";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="SnQtmnm0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 019842072E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SeobibOY";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="Iaesy9aU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93B772072E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D33917F4;
-	Fri, 17 Jan 2020 16:47:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D33917F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA1617E3;
+	Fri, 17 Jan 2020 16:48:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA1617E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276083;
-	bh=PP9aSVr7dSi8YB4sCEOdu7g5Te0AHr+7xzG5HXqhlxY=;
+	s=default; t=1579276130;
+	bh=cprpzYlFxVAVbbsaYfoEkNKW703CaWgsQZ8mmjeXLKg=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=TvPOEfulwKm0zoY2gTIyDJgOilPtoVceD0teTlR2cSexwqR3nr04iRHDLpJFvTiwz
-	 8OHrd94DkxJKEOVmYU6im90ERvNxRoKJ9Jyjj+6MHGjfa3ggqh8dvtXg856BWpAh6T
-	 E3xygJWJP0NmJRLAG9bFIFwybve5cf1Mmc+ypAG0=
+	b=SeobibOYrjPu2Kv8xQ4a4IKij95Gxeec/UIu3v8Q5rfauBgRpMb+lKDfOYuCG1klR
+	 FgA2LytJtVBGXdJBnd9PMWNZkMJHV3kAzbinlYRNS8sYgH/jfZ620w+0BeMXK9Pm9U
+	 aLHI5+FiS5DKnwhXFRcDXYiXmRIm1jtRjR332Ao8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1490BF80271;
-	Fri, 17 Jan 2020 16:45:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDD14F80274;
+	Fri, 17 Jan 2020 16:45:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40905F80276; Fri, 17 Jan 2020 16:44:16 +0100 (CET)
+ id 3DD3DF80276; Fri, 17 Jan 2020 16:44:18 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64C33F800E9
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64C33F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 876FBF801EB
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 876FBF801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="SnQtmnm0"
+ header.b="Iaesy9aU"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=Bgb8haFM1MqLs2ofNHjdAIGF+bo92QgFo6WBUAiLL/M=; b=SnQtmnm02mbj
- A25rvFuRikccNbmD2Xf9lGob6xADyt6aK7KL2dJzoQPQQeNwcvZgLv5VLOFDDSvjpXcotv7/MJOR1
- 2nZtlQyPckoAKYbX/OWvQTjVQk5UoEaS1/7RKpfmnRr9qu7N1Us5Xyv99z/GQ21ZmxX+X71YxhX3s
- /gv4I=;
+ List-Archive; bh=Y4i+ypY7iyDxaYo+Tar2NamJmn/oGTJMXx3UeAwgJZc=; b=Iaesy9aUdgGp
+ Wp6ZVcolAcaoew6XUe1utex33FjYUxYJslIo2Fstsw1ATCd1qxbXPf4qzUX3NR3ZdHGHnAPDlLI1s
+ OK/HsS9AwOgpXGlDP1cv5YN+IhZw/EzIlOM5wj7Af29t2TGE9OTd7iWIMrh5IyV0HBB6VOjC7hvoh
+ en+gs=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTn7-0006rc-7R; Fri, 17 Jan 2020 15:44:09 +0000
+ id 1isTn9-0006rr-Fp; Fri, 17 Jan 2020 15:44:11 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id EEBC4D02A2A; Fri, 17 Jan 2020 15:44:08 +0000 (GMT)
+ id 30793D02BD9; Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Nariman Etemadi <narimantos@gmail.com>
-In-Reply-To: <20200115164619.101705-3-hdegoede@redhat.com>
-Message-Id: <applied-20200115164619.101705-3-hdegoede@redhat.com>
+To: Stephan Gerhold <stephan@gerhold.net>
+In-Reply-To: <20200114181229.42302-2-stephan@gerhold.net>
+Message-Id: <applied-20200114181229.42302-2-stephan@gerhold.net>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:08 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, Jordy Ubink <jordyubink@hotmail.nl>,
- Jie Yang <yang.jie@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Damian van Soelen <dj.vsoelen@gmail.com>,
- Erik Bussing <eabbussing@outlook.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: bytcr_rt5640: Remove unnecessary
-	string buffers and snprintf calls" to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht, Nikita Travkin <nikitos.tr@gmail.com>
+Subject: [alsa-devel] Applied "ASoC: msm8916-wcd-analog: Add MIC BIAS
+	Internal3" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,11 +97,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: Remove unnecessary string buffers and snprintf calls
+   ASoC: msm8916-wcd-analog: Add MIC BIAS Internal3
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -126,73 +122,54 @@ to this mail.
 Thanks,
 Mark
 
-From 296868315c692a1f63465a9ec27cdfa3a46ec840 Mon Sep 17 00:00:00 2001
-From: Nariman Etemadi <narimantos@gmail.com>
-Date: Wed, 15 Jan 2020 17:46:17 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Remove unnecessary string buffers
- and snprintf calls
+From 00d852326e524214f046a5e1301eee84535a6863 Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Tue, 14 Jan 2020 19:12:29 +0100
+Subject: [PATCH] ASoC: msm8916-wcd-analog: Add MIC BIAS Internal3
 
-The snprintf calls filling byt_rt56*_codec_aif_name/byt_rt56*_cpu_dai_name
-always fill them with the same string ("rt56*-aif2" resp. ssp0-port").
-So instead of keeping these buffers around and making codecs->dai_name /
-cpus->dai_name point to them, simply update the *->dai_name pointers to
-directly point to a string constant containing the desired string.
+PM8916 has three TX inputs that each have an (optional) internal
+RBIAS resistor. MIC BIAS Internal1/2 (for TX1/2) are already supported.
+TX3 does not have its own MIC BIAS supply, instead it is also supplied
+from MIC_BIAS1.
 
-Signed-off-by: Nariman Etemadi <narimantos@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20200115164619.101705-3-hdegoede@redhat.com
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Now that we have simplified the MIC BIAS Internal* implementation
+we can easily add support for it:
+
+Add a MIC BIAS Internal3 supply that enables the internal RBIAS
+resistor on TX3, and make sure to also enable the MIC_BIAS1 supply.
+
+Tested-by: Nikita Travkin <nikitos.tr@gmail.com> # longcheer-l8150
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200114181229.42302-2-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index c19ae4fbf955..6bd9ae813be2 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1054,8 +1054,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index d6d727f5bae5..85bc7ae4d267 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -856,6 +856,7 @@ static const struct snd_soc_dapm_route pm8916_wcd_analog_audio_map[] = {
+ 	{"MIC BIAS Internal1", NULL, "MIC_BIAS1"},
+ 	{"MIC BIAS External2", NULL, "MIC_BIAS2"},
+ 	{"MIC BIAS Internal2", NULL, "MIC_BIAS2"},
++	{"MIC BIAS Internal3", NULL, "MIC_BIAS1"},
+ };
  
- /* SoC card */
- static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
--static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
--static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
- static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
- #endif
-@@ -1239,28 +1237,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	log_quirks(&pdev->dev);
+ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
+@@ -924,6 +925,9 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
+ 			    pm8916_wcd_analog_enable_micbias_int2,
+ 			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+ 			    SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal3", CDC_A_MICB_1_INT_RBIAS, 1, 0,
++			    pm8916_wcd_analog_enable_micbias_int,
++			    SND_SOC_DAPM_PRE_PMU),
  
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
--	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
--
--		/* fixup codec aif name */
--		snprintf(byt_rt5640_codec_aif_name,
--			sizeof(byt_rt5640_codec_aif_name),
--			"%s", "rt5640-aif2");
--
--		byt_rt5640_dais[dai_index].codecs->dai_name =
--			byt_rt5640_codec_aif_name;
--	}
-+	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
-+		byt_rt5640_dais[dai_index].codecs->dai_name = "rt5640-aif2";
- 
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
--	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
--
--		/* fixup cpu dai name name */
--		snprintf(byt_rt5640_cpu_dai_name,
--			sizeof(byt_rt5640_cpu_dai_name),
--			"%s", "ssp0-port");
--
--		byt_rt5640_dais[dai_index].cpus->dai_name =
--			byt_rt5640_cpu_dai_name;
--	}
-+	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
-+		byt_rt5640_dais[dai_index].cpus->dai_name = "ssp0-port";
- 
- 	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
- 		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
+ 	SND_SOC_DAPM_ADC_E("ADC1", NULL, CDC_A_TX_1_EN, 7, 0,
+ 			   pm8916_wcd_analog_enable_adc,
 -- 
 2.20.1
 
