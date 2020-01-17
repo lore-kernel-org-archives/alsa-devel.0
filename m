@@ -6,74 +6,61 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 162B7C33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:01:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C181C33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:03:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91D172073A
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:01:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 18BE82073A
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 08:03:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gKOZ98U/"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91D172073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="af1iz1AD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18BE82073A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC08517C8;
-	Fri, 17 Jan 2020 09:00:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC08517C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C94017C8;
+	Fri, 17 Jan 2020 09:02:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C94017C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579248106;
-	bh=KzNr4IZLe40GPKbcCy1NVLf53GJ6IZKtn24ypwW5Whs=;
+	s=default; t=1579248206;
+	bh=Z6S0qLfXdHywex2PdxzjIX/ThdInWjsEyxpzEovn/qk=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gKOZ98U/8l1jhjadptu5AVXOVT050v3JDB7xT8f2zVViJFLGfyreXyftWmY1aIazh
-	 JOlvbHy5rK4Es4EO+uqJE5RjT9A/Ti7Ywqnle5YQ8IWAD8io8W9/MAVIUXezOGxkbK
-	 IUbDufTQdH4rFUNU/+9p44DoMik9Q+l77W863DpM=
+	b=af1iz1AD7N/I3zKCACeBoEuh+AKmXvTCa1lQ+ZZA0FehhXOWJVmTS2RnQuwuqSgYg
+	 9IyZqSd9n8ipoV0ujofd9dZ1fD6N7YfXEALBfee4L5gOL8ATmB8l0n8nq6ja8xBxk5
+	 IzlhtMeXu9BzQSunG+kEtKjoEZ7J4TOM2ciQ65RE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56533F8014B;
-	Fri, 17 Jan 2020 09:00:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E61D6F8014B;
+	Fri, 17 Jan 2020 09:02:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93E53F801EB; Fri, 17 Jan 2020 09:00:54 +0100 (CET)
+ id F089AF801F8; Fri, 17 Jan 2020 09:02:34 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D21B9F80086
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 09:00:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D21B9F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 584E0F800AA
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 09:02:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 584E0F800AA
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5C50EAD7F;
- Fri, 17 Jan 2020 08:00:50 +0000 (UTC)
-Date: Fri, 17 Jan 2020 09:00:49 +0100
-Message-ID: <s5hzhemo6ku.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A111EAD8E;
+ Fri, 17 Jan 2020 08:02:27 +0000 (UTC)
+Date: Fri, 17 Jan 2020 09:02:26 +0100
+Message-ID: <s5hy2u6o6i5.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Keyon Jie <yang.jie@linux.intel.com>
-In-Reply-To: <3374dc7d-e969-5380-581a-f6801a2fe50f@linux.intel.com>
-References: <20200116045318.5498-1-yang.jie@linux.intel.com>
- <s5hd0bjq3cu.wl-tiwai@suse.de>
- <97bbe88d1a6b63fe8e9b02bf0c5ce4a80553c48d.camel@linux.intel.com>
- <s5hsgkf7l2e.wl-tiwai@suse.de>
- <3c0a0067043d614cd4491b28acf6d49640746b15.camel@linux.intel.com>
- <s5hh80v7h82.wl-tiwai@suse.de>
- <E7B1D079BA13FB44A978CC8F69C7D6A96F98EDB4@SHSMSX105.ccr.corp.intel.com>
- <E7B1D079BA13FB44A978CC8F69C7D6A96F98EE27@SHSMSX105.ccr.corp.intel.com>
- <c70934a1-b838-5029-6573-bf76a34c4cb9@linux.intel.com>
- <93ac843a-bad5-550e-f427-e2a94bd3e8ef@linux.intel.com>
- <b6b55180-b846-96e7-4521-7d3b03881d06@linux.intel.com>
- <3374dc7d-e969-5380-581a-f6801a2fe50f@linux.intel.com>
+To: Kailang <kailang@realtek.com>
+In-Reply-To: <1afdc37edb8c4c6ca07b73322117cc7b@realtek.com>
+References: <1afdc37edb8c4c6ca07b73322117cc7b@realtek.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rajwa,
- Marcin" <marcin.rajwa@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: fix buffer_bytes max
-	constrained by preallocated bytes issue
+Cc: Hui Wang <hui.wang@canonical.com>, Chih-Hsyuan Ho <chih.ho@canonical.com>,
+ " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] HP ALC671 support headset Mic
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,46 +73,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gRnJpLCAxNyBKYW4gMjAyMCAwNjozNzoxNiArMDEwMCwKS2V5b24gSmllIHdyb3RlOgo+IAo+
-IE9uIDIwMjAvMS8xNyDkuIrljYgxOjQwLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiA+
-Cj4gPj4+Pj4gU28sIGRvIHlvdSBzdWdnZXN0IG5vdCBkb2luZyBwcmVhbGxvY2F0aW9uKG9yIGNh
-bGxpbmcgaXQgd2l0aCAwCj4gPj4+Pj4gc2l6ZSkgZm9yIGFsbAo+ID4+Pj4+IGRyaXZlciB3aXRo
-IFRZUEVfU0c/IEkgYW0gZmluZSBpZiB0aGlzIGlzIHRoZSByZWNvbW1lbmRlZAo+ID4+Pj4+IG1l
-dGhvZCwgSSBjYW4gdHJ5Cj4gPj4+Pj4gdGhpcyBvbiBTT0YgSTJTIHBsYXRmb3JtIHRvIHNlZSBp
-ZiBpdCBjYW4gd29yayBhcyB3ZSByZXF1aXJlZAo+ID4+Pj4+IGZvciB2ZXJ5IGxhcmdlCj4gPj4+
-Pj4gYnVmZmVyIHNpemUuCj4gPj4+Cj4gPj4+IEtleW9uLCBmb3IgdGhlIHJlc3Qgb2YgdXMgdG8g
-Zm9sbG93IHRoaXMgcGF0Y2gsIHdvdWxkIHlvdSBtaW5kCj4gPj4+IGNsYXJpZnlpbmcgd2hhdCBk
-cml2ZXMgdGhlIG5lZWQgZm9yIGEgJ3ZlcnkgbGFyZ2UgYnVmZmVyIHNpemUnLAo+ID4+PiBhbmQg
-d2hhdCBvcmRlciBvZiBtYWduaXR1ZGUgdGhpcyB2ZXJ5IGxhcmdlIHNpemUgd291bGQgYmUuCj4g
-Pj4+Cj4gPj4+IEZXSVcsIHdlJ3ZlIG1lYXN1cmVkIGNvbnNpc3RlbnRseSBvbiBkaWZmZXJlbnQg
-V2luZG93cy9MaW51eAo+ID4+PiBwbGF0Zm9ybXMsIG1heWJlIDEwIHllYXJzIGFnbywgdGhhdCBv
-bmNlIHlvdSByZWFjaCBhIGJ1ZmZlciBvZiAxcwo+ID4+PiAoMzg0IGtCKSB0aGUgYmVuZWZpdHMg
-ZnJvbSBpbmNyZWFzaW5nIHRoYXQgYnVmZmVyIHNpemUgZnVydGhlciBhcmUKPiA+Pj4gbWFyZ2lu
-YWwgaW4gdGVybXMgb2YgcG93ZXIgY29uc3VtcHRpb24sIGFuZCBnZW5lcmF0ZSBhbGwga2luZHMg
-b2YKPiA+Pj4gaXNzdWVzIHdpdGggdm9sdW1lIHVwZGF0ZXMgYW5kIGRlZmVycmVkIHJvdXRpbmcg
-Y2hhbmdlcy4KPiA+Pj4KPiA+PiBXZSBuZWVkIGJpZ2dlciBidWZmZXIgb24gaG9zdCBzaWRlIHRv
-IGNvbXBlbnNhdGUgdGhlIHdha2UgdXAgdGltZQo+ID4+IGZyb20gZDBpeCB0byBkMCB3aGljaCB0
-YWtlcyB+MiBzZWNvbmRzIG9uIG15IHNldHVwLiBTbywgd2lpdGgKPiA+PiBzbWFsbGVyIGJ1ZmZl
-ciBzaXplcyBsaWtlIDwgMiBzZWNvbmRzIHdlIG92ZXJ3cml0ZSBkYXRhIHNpbmNlIEZXCj4gPj4g
-a2VlcHMgY29wcGluZyB3aGlsZSBob3N0IGRvZXNuJ3QgcmVhZCB1bnRpbCBpdHMgdXAgYW5kIHJ1
-bm5pbmcKPiA+PiBhZ2Fpbi4KPiA+Cj4gPiBSaWdodCwgdGhhdCdzIGEgdmFsaWQgY2FzZSwgYnV0
-IHRoYXQncyAyNTYga0IsIG5vdCAndmVyeSBsYXJnZScgb3IKPiA+IGxpa2VseSB0byBldmVyIHRy
-aWdnZXIgYW4gT09NIGNhc2UuCj4gCj4gRm9yIFMyNF9MRSwgaXQgaXMgNTEyS0IsIHRoZSBwb2lu
-dCBpcyB0aGF0IGlmIHdlIGNhbid0IHJlLWFsbG9jYXRlCj4gYnVmZmVyIGF0IGh3X3BhcmFtcygp
-IHN0YWdlLCB0aGVuIHdlIG5lZWQgZm9sbG93IGEgQktNIHRoYXQgd2UgaGF2ZSB0bwo+IHByZWFs
-bG9jYXRlIHRoZSBsYXJnZXN0IERNQSBidWZmZXIgdGhhdCB3ZSBjbGFpbSB0byBzdXBwb3J0IGF0
-Cj4gcGNtX25ldygpLCBJIHRoaW5rIHRoaXMgaXMgYWN0dWFsbHkgYW5vdGhlciBraW5kIG9mIHdh
-c3Qgd2l0aCB0aGVzZQo+IGxhcmdlc3QgcGlubmVkIGJ1ZmZlciB0aGF0IGNhbid0IGJlIHN3YXBw
-ZWQgb3V0Li4uCgpXZWxsLCB0aGF0J3MgdGhlIGNhc2UgeW91J2QgbmVlZCBhIGxhcmdlciBwcmVh
-bGxvY2F0aW9uLgpJIGd1ZXNzIG1hbnkgZGlzdHJvcyBhbHJlYWR5IHNldCBpdCB0byBhIGhpZ2hl
-ciB2YWx1ZSBmb3IgUHVsc2VBdWRpby4KVGhlIGRlZmF1bHQgNjRrQiBpcyBqdXN0IGZyb20gaGlz
-dG9yaWNhbCBhbmQgY29tcGF0aWJpbGl0eSByZWFzb24sIGFuZAp3ZSBtYXkgZXh0ZW5kIGl0IHRv
-IDFNQiBvciBzbyBub3cuCgoKVGFrYXNoaQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+On Fri, 17 Jan 2020 07:14:46 +0100,
+Kailang wrote:
+On Fri, 17 Jan 2020 07:14:46 +0100,
+Kailang wrote:
+> 
+> Hi Takashi,
+> 
+> HP cPC need to support headset Mic.
+> Attach patch was the support patch.
+> 
+> BR,
+> Kailang
+> [2 0005-hp-alc671-headset-mic.patch <application/octet-stream (base64)>]
+
+Thanks, but the patch contains:
+> Fixes: d2cd795c4ece ("ALSA: hda - fixup for the bass speaker on Lenovo Carbon X1 7th gen")
+
+This doesn't look correct to me.  It's not about Lenovo X1, right?
+
+
+Takashi
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
