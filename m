@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0695AC33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:55:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B25FC33CB6
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:56:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 858BE2083E
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:55:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DDA5520842
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:56:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X3ztZ1wX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="uURExAX8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 858BE2083E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L2cMn+kK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="CadoOQjo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDA5520842
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0EC4180D;
-	Fri, 17 Jan 2020 16:55:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0EC4180D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4211B1804;
+	Fri, 17 Jan 2020 16:55:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4211B1804
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276551;
-	bh=DJnkFrFaueeJK2+P0TY4neLR1uyeuvUAlF1NBD553WA=;
+	s=default; t=1579276591;
+	bh=hFDavGMfMVIVcWfg9xHERqg6TqF8DW4XRJgx/AkCmGQ=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=X3ztZ1wXXUjtnpYbeXqMrvtgsQrfSPW9mT1fksBzkrYk79sq7NnTF+P9UeOr7FuC/
-	 kPZVU+azqy6ic35yQxX18HNiaPE58WQ+m2J0udMp4xi05l3APmxEIXWw3Q7uwpucd4
-	 dQPvyI18xE3DpY7DuvrmKDCfoDn1wV7Y8MLAtHbg=
+	b=L2cMn+kKRdOimuaasxTP8ZYW0MWhsGj3BcMw4J5KtY3WrNunitGFoNI6H8SlPLUkR
+	 zuiKUGWOM/Tj3piOX5bZY38x/wKqEynAoPYnn2VO++VMaCyNIEzjbHx2Jtwr+vYtkq
+	 yjPu2ZzLNWLuKfIoKIFewyLimbDiXZJ6DDpxF2gM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEF89F80307;
-	Fri, 17 Jan 2020 16:46:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A90FBF80321;
+	Fri, 17 Jan 2020 16:46:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E472F8014B; Fri, 17 Jan 2020 16:44:26 +0100 (CET)
+ id E5714F801EB; Fri, 17 Jan 2020 16:44:26 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40FC6F80272
- for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40FC6F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCA37F80273
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCA37F80273
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="uURExAX8"
+ header.b="CadoOQjo"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=dV0fjoYY7tLWGhUV1CdLE/kwDSlyncCacWZYqWOsxx0=; b=uURExAX8+Deo
- XG37ZaxnAVlIROX9TiXKHjFt55QgZQYpNp3Bv/kJ/kQBvn54FNRUc2Q9kS/IozzJ1EQ+9v824kTQ1
- f3Z6GqvRUfdNmtt2mFrLSPKafELQ3p+/u+H/2TzofWGkOuUf/2NWVaFzfa38lNvcufgDy8+AnpRl8
- 9i3m0=;
+ List-Archive; bh=CXLAXq5OnNkw2oK7sCOLUl2OUZIsuk5m0e5961P04rU=; b=CadoOQjovv6g
+ uOHFZIOmX+1bcCTkFy4P/75wDF6crePxwTgPgd4ykp7G49TsYqjIitd3UGbLZIzC8FDRag302TJhk
+ hfgBiG/LeUZg1x8wkuq8upzKrfem5Wy5UpTDGE2+85bJtaU3xCciXm4kaB4nWWqBgP426umsThusM
+ na9SI=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTnB-0006sb-Ap; Fri, 17 Jan 2020 15:44:13 +0000
+ id 1isTn9-0006ru-Mo; Fri, 17 Jan 2020 15:44:11 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 07E21D02BD9; Fri, 17 Jan 2020 15:44:13 +0000 (GMT)
+ id 5A029D02A2A; Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20200114161841.451-1-ckeepax@opensource.cirrus.com>
-Message-Id: <applied-20200114161841.451-1-ckeepax@opensource.cirrus.com>
+To: Stephan Gerhold <stephan@gerhold.net>
+In-Reply-To: <20200114181229.42302-1-stephan@gerhold.net>
+Message-Id: <applied-20200114181229.42302-1-stephan@gerhold.net>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:13 +0000 (GMT)
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, david.rhodes@cirrus.com, Mark Brown <broonie@kernel.org>,
- li.xu@cirrus.com
-Subject: [alsa-devel] Applied "ASoC: wm_adsp: Correct cache handling of new
-	kernel control API" to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:11 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht, Nikita Travkin <nikitos.tr@gmail.com>
+Subject: [alsa-devel] Applied "ASoC: msm8916-wcd-analog: Simplify MIC BIAS
+	Internal" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,11 +97,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: wm_adsp: Correct cache handling of new kernel control API
+   ASoC: msm8916-wcd-analog: Simplify MIC BIAS Internal
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -121,217 +122,234 @@ to this mail.
 Thanks,
 Mark
 
-From 73ecf1a673d3502dff1445f06675aba65ff20ce7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 14 Jan 2020 16:18:38 +0000
-Subject: [PATCH] ASoC: wm_adsp: Correct cache handling of new kernel control
- API
+From 65fe457e7bafcbb844c66e8c54a414f090967eaa Mon Sep 17 00:00:00 2001
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Tue, 14 Jan 2020 19:12:28 +0100
+Subject: [PATCH] ASoC: msm8916-wcd-analog: Simplify MIC BIAS Internal
 
-The recently added API that exposes firmware mixer controls to the
-kernel is missing cache handling and all writes bypass the cache, this
-obviously causes the cache to get out of sync with the hardware. Factor
-out the cache handling into two new helper functions and call those from
-both the normal ALSA control handlers and the new kernel API.
+At the moment, MIC BIAS Internal* and MIC BIAS External* both reference
+the same register, and have a part of their initialization sequence
+duplicated.
 
-Fixes: eb65ccdb0836 ("ASoC: wm_adsp: Expose mixer control API")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200114161841.451-1-ckeepax@opensource.cirrus.com
+For example, the sequence for enabling MIC BIAS Internal1 is:
+  I1. Enable MIC_BIAS1 supply (MICB_EN bit in CDC_A_MICB_1_EN)
+  I2. Enable internal RBIAS (TX1_INT_RBIAS_EN bit in CDC_A_MICB_1_INT_RBIAS)
+
+The sequence for enabling MIC BIAS External1 is:
+  E1. Enable MIC_BIAS1 supply (MICB_EN bit in CDC_A_MICB_1_EN)
+  (E2. Ideally, make sure internal RBIAS is disabled. However, this should
+   not happen in practice because DAPM will disable unused supplies...)
+
+Right now we have:
+  SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_EN, 7, 0, ...) // I1
+  SND_SOC_DAPM_SUPPLY("MIC BIAS External1", CDC_A_MICB_1_EN, 7, 0, ...) // E1
+and I2 is done in the PM event handler (pm8916_wcd_analog_enable_micbias_int1).
+
+We can simplify this by defining a common DAPM supply for I1/E1 ("MIC_BIAS1"),
+and one DAPM supply for I2 ("MIC BIAS Internal1"). Additional DAPM routes
+ensure that we also enable the MIC_BIAS1 supply for the internal and external
+pull up resistor.
+
+Another advantage of this is that we now disable the internal RBIAS
+when it is not needed. This makes it much easier to add support for
+MIC BIAS Internal3 as a next step.
+
+Tested-by: Nikita Travkin <nikitos.tr@gmail.com> # longcheer-l8150
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200114181229.42302-1-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 98 ++++++++++++++++++++------------------
- 1 file changed, 51 insertions(+), 47 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 112 ++++++++++----------------
+ 1 file changed, 42 insertions(+), 70 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 2a9b610f6d43..d3d32b501aca 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1030,8 +1030,8 @@ static int wm_coeff_write_acked_control(struct wm_coeff_ctl *ctl,
- 	return -ETIMEDOUT;
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 1f7964beb20c..d6d727f5bae5 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -374,9 +374,8 @@ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_component *component
+ 
  }
  
--static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
--				  const void *buf, size_t len)
-+static int wm_coeff_write_ctrl_raw(struct wm_coeff_ctl *ctl,
-+				   const void *buf, size_t len)
+-static int pm8916_wcd_analog_enable_micbias_ext(struct snd_soc_component
+-						 *component, int event,
+-						 int reg, unsigned int cap_mode)
++static int pm8916_wcd_analog_enable_micbias(struct snd_soc_component *component,
++					    int event, unsigned int cap_mode)
  {
- 	struct wm_adsp *dsp = ctl->dsp;
- 	void *scratch;
-@@ -1061,6 +1061,23 @@ static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -389,72 +388,44 @@ static int pm8916_wcd_analog_enable_micbias_ext(struct snd_soc_component
  	return 0;
  }
  
-+static int wm_coeff_write_ctrl(struct wm_coeff_ctl *ctl,
-+			       const void *buf, size_t len)
-+{
-+	int ret = 0;
-+
-+	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
-+		ret = -EPERM;
-+	else if (buf != ctl->cache)
-+		memcpy(ctl->cache, buf, len);
-+
-+	ctl->set = 1;
-+	if (ctl->enabled && ctl->dsp->running)
-+		ret = wm_coeff_write_ctrl_raw(ctl, buf, len);
-+
-+	return ret;
-+}
-+
- static int wm_coeff_put(struct snd_kcontrol *kctl,
- 			struct snd_ctl_elem_value *ucontrol)
+-static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_component
+-						 *component, int event,
+-						 int reg, u32 cap_mode)
++static int pm8916_wcd_analog_enable_micbias_int(struct snd_soc_dapm_widget *w,
++						struct snd_kcontrol *kcontrol,
++						int event)
  {
-@@ -1071,16 +1088,7 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- 	int ret = 0;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
  
- 	mutex_lock(&ctl->dsp->pwr_lock);
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_component_update_bits(component, reg, MICB_1_EN_PULL_DOWN_EN_MASK, 0);
+ 		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
+ 				    MICB_1_EN_OPA_STG2_TAIL_CURR_MASK,
+ 				    MICB_1_EN_OPA_STG2_TAIL_CURR_1_60UA);
 -
--	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
--		ret = -EPERM;
--	else
--		memcpy(ctl->cache, p, ctl->len);
--
--	ctl->set = 1;
--	if (ctl->enabled && ctl->dsp->running)
--		ret = wm_coeff_write_control(ctl, p, ctl->len);
--
-+	ret = wm_coeff_write_ctrl(ctl, p, ctl->len);
- 	mutex_unlock(&ctl->dsp->pwr_lock);
- 
- 	return ret;
-@@ -1096,15 +1104,10 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
- 
- 	mutex_lock(&ctl->dsp->pwr_lock);
- 
--	if (copy_from_user(ctl->cache, bytes, size)) {
-+	if (copy_from_user(ctl->cache, bytes, size))
- 		ret = -EFAULT;
--	} else {
--		ctl->set = 1;
--		if (ctl->enabled && ctl->dsp->running)
--			ret = wm_coeff_write_control(ctl, ctl->cache, size);
--		else if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
--			ret = -EPERM;
--	}
-+	else
-+		ret = wm_coeff_write_ctrl(ctl, ctl->cache, size);
- 
- 	mutex_unlock(&ctl->dsp->pwr_lock);
- 
-@@ -1135,8 +1138,8 @@ static int wm_coeff_put_acked(struct snd_kcontrol *kctl,
- 	return ret;
- }
- 
--static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
--				 void *buf, size_t len)
-+static int wm_coeff_read_ctrl_raw(struct wm_coeff_ctl *ctl,
-+				  void *buf, size_t len)
- {
- 	struct wm_adsp *dsp = ctl->dsp;
- 	void *scratch;
-@@ -1166,29 +1169,37 @@ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
- 	return 0;
- }
- 
--static int wm_coeff_get(struct snd_kcontrol *kctl,
--			struct snd_ctl_elem_value *ucontrol)
-+static int wm_coeff_read_ctrl(struct wm_coeff_ctl *ctl, void *buf, size_t len)
- {
--	struct soc_bytes_ext *bytes_ext =
--		(struct soc_bytes_ext *)kctl->private_value;
--	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
--	char *p = ucontrol->value.bytes.data;
- 	int ret = 0;
- 
--	mutex_lock(&ctl->dsp->pwr_lock);
--
- 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
- 		if (ctl->enabled && ctl->dsp->running)
--			ret = wm_coeff_read_control(ctl, p, ctl->len);
-+			return wm_coeff_read_ctrl_raw(ctl, buf, len);
- 		else
--			ret = -EPERM;
-+			return -EPERM;
- 	} else {
- 		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
--			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
-+			ret = wm_coeff_read_ctrl_raw(ctl, ctl->cache, ctl->len);
- 
--		memcpy(p, ctl->cache, ctl->len);
-+		if (buf != ctl->cache)
-+			memcpy(buf, ctl->cache, len);
+-		break;
+-	case SND_SOC_DAPM_POST_PMU:
+-		pm8916_wcd_analog_micbias_enable(component);
+-		snd_soc_component_update_bits(component, CDC_A_MICB_1_EN,
+-				    MICB_1_EN_BYP_CAP_MASK, cap_mode);
+ 		break;
  	}
  
-+	return ret;
-+}
-+
-+static int wm_coeff_get(struct snd_kcontrol *kctl,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_bytes_ext *bytes_ext =
-+		(struct soc_bytes_ext *)kctl->private_value;
-+	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
-+	char *p = ucontrol->value.bytes.data;
-+	int ret;
-+
-+	mutex_lock(&ctl->dsp->pwr_lock);
-+	ret = wm_coeff_read_ctrl(ctl, p, ctl->len);
- 	mutex_unlock(&ctl->dsp->pwr_lock);
- 
- 	return ret;
-@@ -1204,15 +1215,7 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
- 
- 	mutex_lock(&ctl->dsp->pwr_lock);
- 
--	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
--		if (ctl->enabled && ctl->dsp->running)
--			ret = wm_coeff_read_control(ctl, ctl->cache, size);
--		else
--			ret = -EPERM;
--	} else {
--		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
--			ret = wm_coeff_read_control(ctl, ctl->cache, size);
--	}
-+	ret = wm_coeff_read_ctrl_raw(ctl, ctl->cache, size);
- 
- 	if (!ret && copy_to_user(bytes, ctl->cache, size))
- 		ret = -EFAULT;
-@@ -1340,7 +1343,7 @@ static int wm_coeff_init_control_caches(struct wm_adsp *dsp)
- 		 * created so we don't need to do anything.
- 		 */
- 		if (!ctl->flags || (ctl->flags & WMFW_CTL_FLAG_READABLE)) {
--			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
-+			ret = wm_coeff_read_ctrl_raw(ctl, ctl->cache, ctl->len);
- 			if (ret < 0)
- 				return ret;
- 		}
-@@ -1358,7 +1361,8 @@ static int wm_coeff_sync_controls(struct wm_adsp *dsp)
- 		if (!ctl->enabled)
- 			continue;
- 		if (ctl->set && !(ctl->flags & WMFW_CTL_FLAG_VOLATILE)) {
--			ret = wm_coeff_write_control(ctl, ctl->cache, ctl->len);
-+			ret = wm_coeff_write_ctrl_raw(ctl, ctl->cache,
-+						      ctl->len);
- 			if (ret < 0)
- 				return ret;
- 		}
-@@ -2048,7 +2052,7 @@ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
- 	if (len > ctl->len)
- 		return -EINVAL;
- 
--	ret = wm_coeff_write_control(ctl, buf, len);
-+	ret = wm_coeff_write_ctrl(ctl, buf, len);
- 
- 	kcontrol = snd_soc_card_get_kcontrol(dsp->component->card, ctl->name);
- 	snd_ctl_notify(dsp->component->card->snd_card,
-@@ -2070,7 +2074,7 @@ int wm_adsp_read_ctl(struct wm_adsp *dsp, const char *name, int type,
- 	if (len > ctl->len)
- 		return -EINVAL;
- 
--	return wm_coeff_read_control(ctl, buf, len);
-+	return wm_coeff_read_ctrl(ctl, buf, len);
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(wm_adsp_read_ctl);
  
+-static int pm8916_wcd_analog_enable_micbias_ext1(struct
+-						  snd_soc_dapm_widget
+-						  *w, struct snd_kcontrol
+-						  *kcontrol, int event)
++static int pm8916_wcd_analog_enable_micbias1(struct snd_soc_dapm_widget *w,
++					     struct snd_kcontrol *kcontrol,
++					     int event)
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
+ 
+-	return pm8916_wcd_analog_enable_micbias_ext(component, event, w->reg,
+-						     wcd->micbias1_cap_mode);
++	return pm8916_wcd_analog_enable_micbias(component, event,
++						wcd->micbias1_cap_mode);
+ }
+ 
+-static int pm8916_wcd_analog_enable_micbias_ext2(struct
+-						  snd_soc_dapm_widget
+-						  *w, struct snd_kcontrol
+-						  *kcontrol, int event)
+-{
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+-	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
+-
+-	return pm8916_wcd_analog_enable_micbias_ext(component, event, w->reg,
+-						     wcd->micbias2_cap_mode);
+-
+-}
+-
+-static int pm8916_wcd_analog_enable_micbias_int1(struct
+-						  snd_soc_dapm_widget
+-						  *w, struct snd_kcontrol
+-						  *kcontrol, int event)
++static int pm8916_wcd_analog_enable_micbias2(struct snd_soc_dapm_widget *w,
++					     struct snd_kcontrol *kcontrol,
++					     int event)
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 	struct pm8916_wcd_analog_priv *wcd = snd_soc_component_get_drvdata(component);
+ 
+-	switch (event) {
+-	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
+-				    MICB_1_INT_TX1_INT_RBIAS_EN_MASK,
+-				    MICB_1_INT_TX1_INT_RBIAS_EN_ENABLE);
+-		break;
+-	}
++	return pm8916_wcd_analog_enable_micbias(component, event,
++						wcd->micbias2_cap_mode);
+ 
+-	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
+-						     wcd->micbias1_cap_mode);
+ }
+ 
+ static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
+@@ -564,9 +535,8 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_component_update_bits(component, CDC_A_MICB_1_INT_RBIAS,
+-				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
+-				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
++		snd_soc_component_update_bits(component, CDC_A_MICB_2_EN,
++					      CDC_A_MICB_2_PULL_DOWN_EN_MASK, 0);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		pm8916_mbhc_configure_bias(wcd, true);
+@@ -576,8 +546,7 @@ static int pm8916_wcd_analog_enable_micbias_int2(struct
+ 		break;
+ 	}
+ 
+-	return pm8916_wcd_analog_enable_micbias_int(component, event, w->reg,
+-						     wcd->micbias2_cap_mode);
++	return pm8916_wcd_analog_enable_micbias_int(w, kcontrol, event);
+ }
+ 
+ static int pm8916_wcd_analog_enable_adc(struct snd_soc_dapm_widget *w,
+@@ -878,14 +847,15 @@ static const struct snd_soc_dapm_route pm8916_wcd_analog_audio_map[] = {
+ 	{"SPK PA", NULL, "SPK DAC"},
+ 	{"SPK DAC", "Switch", "PDM_RX3"},
+ 
+-	{"MIC BIAS Internal1", NULL, "INT_LDO_H"},
+-	{"MIC BIAS Internal2", NULL, "INT_LDO_H"},
+-	{"MIC BIAS External1", NULL, "INT_LDO_H"},
+-	{"MIC BIAS External2", NULL, "INT_LDO_H"},
+-	{"MIC BIAS Internal1", NULL, "vdd-micbias"},
+-	{"MIC BIAS Internal2", NULL, "vdd-micbias"},
+-	{"MIC BIAS External1", NULL, "vdd-micbias"},
+-	{"MIC BIAS External2", NULL, "vdd-micbias"},
++	{"MIC_BIAS1", NULL, "INT_LDO_H"},
++	{"MIC_BIAS2", NULL, "INT_LDO_H"},
++	{"MIC_BIAS1", NULL, "vdd-micbias"},
++	{"MIC_BIAS2", NULL, "vdd-micbias"},
++
++	{"MIC BIAS External1", NULL, "MIC_BIAS1"},
++	{"MIC BIAS Internal1", NULL, "MIC_BIAS1"},
++	{"MIC BIAS External2", NULL, "MIC_BIAS2"},
++	{"MIC BIAS Internal2", NULL, "MIC_BIAS2"},
+ };
+ 
+ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
+@@ -937,22 +907,24 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("RX_BIAS", CDC_A_RX_COM_BIAS_DAC, 7, 0, NULL, 0),
+ 
+ 	/* TX */
+-	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_EN, 7, 0,
+-			    pm8916_wcd_analog_enable_micbias_int1,
+-			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+-			    SND_SOC_DAPM_POST_PMD),
+-	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal2", CDC_A_MICB_2_EN, 7, 0,
++	SND_SOC_DAPM_SUPPLY("MIC_BIAS1", CDC_A_MICB_1_EN, 7, 0,
++			    pm8916_wcd_analog_enable_micbias1,
++			    SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SUPPLY("MIC_BIAS2", CDC_A_MICB_2_EN, 7, 0,
++			    pm8916_wcd_analog_enable_micbias2,
++			    SND_SOC_DAPM_POST_PMU),
++
++	SND_SOC_DAPM_SUPPLY("MIC BIAS External1", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS External2", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal1", CDC_A_MICB_1_INT_RBIAS, 7, 0,
++			    pm8916_wcd_analog_enable_micbias_int,
++			    SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_SUPPLY("MIC BIAS Internal2", CDC_A_MICB_1_INT_RBIAS, 4, 0,
+ 			    pm8916_wcd_analog_enable_micbias_int2,
+ 			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+ 			    SND_SOC_DAPM_POST_PMD),
+ 
+-	SND_SOC_DAPM_SUPPLY("MIC BIAS External1", CDC_A_MICB_1_EN, 7, 0,
+-			    pm8916_wcd_analog_enable_micbias_ext1,
+-			    SND_SOC_DAPM_POST_PMU),
+-	SND_SOC_DAPM_SUPPLY("MIC BIAS External2", CDC_A_MICB_2_EN, 7, 0,
+-			    pm8916_wcd_analog_enable_micbias_ext2,
+-			    SND_SOC_DAPM_POST_PMU),
+-
+ 	SND_SOC_DAPM_ADC_E("ADC1", NULL, CDC_A_TX_1_EN, 7, 0,
+ 			   pm8916_wcd_analog_enable_adc,
+ 			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
 -- 
 2.20.1
 
