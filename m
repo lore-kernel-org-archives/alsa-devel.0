@@ -6,77 +6,76 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DB62C33CB1
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0695AC33CB1
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:55:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD1302064C
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:55:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 858BE2083E
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jan 2020 15:55:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Kavr2oVA";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="ojMo5/Qg"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD1302064C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X3ztZ1wX";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk header.b="uURExAX8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 858BE2083E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09E1317ED;
-	Fri, 17 Jan 2020 16:54:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09E1317ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0EC4180D;
+	Fri, 17 Jan 2020 16:55:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0EC4180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579276509;
-	bh=LLgqs1yvqz7YtOSvL24baDXUkbMfxDgZEIF5XUlZZwM=;
+	s=default; t=1579276551;
+	bh=DJnkFrFaueeJK2+P0TY4neLR1uyeuvUAlF1NBD553WA=;
 	h=From:To:In-Reply-To:Date:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Kavr2oVAv7B/eBev9JOqvGGQveEfqhYPXl8xhtscHjfS5QlYS8QFekvxjQ7F1c41k
-	 hcNt46NnKKAF6Hmx4VxCn81HlM3vUaO38In0RnhTOjYXjYtxxA2uUPw4NOZcq4q7mG
-	 hlgB5kpHagewTpbKuVSe2d7uZavGpqC2i2CHI09M=
+	b=X3ztZ1wXXUjtnpYbeXqMrvtgsQrfSPW9mT1fksBzkrYk79sq7NnTF+P9UeOr7FuC/
+	 kPZVU+azqy6ic35yQxX18HNiaPE58WQ+m2J0udMp4xi05l3APmxEIXWw3Q7uwpucd4
+	 dQPvyI18xE3DpY7DuvrmKDCfoDn1wV7Y8MLAtHbg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EDFBF802FB;
-	Fri, 17 Jan 2020 16:45:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEF89F80307;
+	Fri, 17 Jan 2020 16:46:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06861F800AA; Fri, 17 Jan 2020 16:44:25 +0100 (CET)
+ id 9E472F8014B; Fri, 17 Jan 2020 16:44:26 +0100 (CET)
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E8A1F80228
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40FC6F80272
  for <alsa-devel@alsa-project.org>; Fri, 17 Jan 2020 16:44:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E8A1F80228
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40FC6F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=sirena.org.uk header.i=@sirena.org.uk
- header.b="ojMo5/Qg"
+ header.b="uURExAX8"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=sirena.org.uk; s=20170815-heliosphere; h=Date:Message-Id:In-Reply-To:
  Subject:Cc:To:From:Sender:Reply-To:MIME-Version:Content-Type:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
  List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
- List-Archive; bh=uAGC0c7m8VYsjJ2F+efHvKBc4dyIiGeg7UGw0hyyBcs=; b=ojMo5/QgSeye
- 3shLOZmmkNr/ErnwmM7bQhBx4TGjoV+Ozq9rXd6SEDneekw0LJj7v6nVoEs8t9vkepXOcFNWZ+23v
- 0TaOW8tqy42/LwQCsL9yJq822gF7AELtuvaBx05quPv6IfyY63euzzmRXHozrit/52a3ayYSgOvzi
- tXnwQ=;
+ List-Archive; bh=dV0fjoYY7tLWGhUV1CdLE/kwDSlyncCacWZYqWOsxx0=; b=uURExAX8+Deo
+ XG37ZaxnAVlIROX9TiXKHjFt55QgZQYpNp3Bv/kJ/kQBvn54FNRUc2Q9kS/IozzJ1EQ+9v824kTQ1
+ f3Z6GqvRUfdNmtt2mFrLSPKafELQ3p+/u+H/2TzofWGkOuUf/2NWVaFzfa38lNvcufgDy8+AnpRl8
+ 9i3m0=;
 Received: from fw-tnat-cam4.arm.com ([217.140.106.52]
  helo=fitzroy.sirena.org.uk) by heliosphere.sirena.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <broonie@sirena.org.uk>)
- id 1isTnA-0006sD-HC; Fri, 17 Jan 2020 15:44:12 +0000
+ id 1isTnB-0006sb-Ap; Fri, 17 Jan 2020 15:44:13 +0000
 Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
- id 33758D02BD9; Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
+ id 07E21D02BD9; Fri, 17 Jan 2020 15:44:13 +0000 (GMT)
 From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-In-Reply-To: <20200116021142.149000-1-yuehaibing@huawei.com>
-Message-Id: <applied-20200116021142.149000-1-yuehaibing@huawei.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+In-Reply-To: <20200114161841.451-1-ckeepax@opensource.cirrus.com>
+Message-Id: <applied-20200114161841.451-1-ckeepax@opensource.cirrus.com>
 X-Patchwork-Hint: ignore
-Date: Fri, 17 Jan 2020 15:44:12 +0000 (GMT)
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Liam@sirena.org.uk, Jaroslav@sirena.org.uk, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: rt715: remove unused including
-	<linux/version.h>" to the asoc tree
+Date: Fri, 17 Jan 2020 15:44:13 +0000 (GMT)
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ lgirdwood@gmail.com, david.rhodes@cirrus.com, Mark Brown <broonie@kernel.org>,
+ li.xu@cirrus.com
+Subject: [alsa-devel] Applied "ASoC: wm_adsp: Correct cache handling of new
+	kernel control API" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,11 +96,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: rt715: remove unused including <linux/version.h>
+   ASoC: wm_adsp: Correct cache handling of new kernel control API
 
 has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -122,32 +121,217 @@ to this mail.
 Thanks,
 Mark
 
-From a62c449f4cc1498d040d84e6210209c474b5c746 Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Thu, 16 Jan 2020 02:11:42 +0000
-Subject: [PATCH] ASoC: rt715: remove unused including <linux/version.h>
+From 73ecf1a673d3502dff1445f06675aba65ff20ce7 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 14 Jan 2020 16:18:38 +0000
+Subject: [PATCH] ASoC: wm_adsp: Correct cache handling of new kernel control
+ API
 
-Remove including <linux/version.h> that don't need it.
+The recently added API that exposes firmware mixer controls to the
+kernel is missing cache handling and all writes bypass the cache, this
+obviously causes the cache to get out of sync with the hardware. Factor
+out the cache handling into two new helper functions and call those from
+both the normal ALSA control handlers and the new kernel API.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/r/20200116021142.149000-1-yuehaibing@huawei.com
+Fixes: eb65ccdb0836 ("ASoC: wm_adsp: Expose mixer control API")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200114161841.451-1-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt715.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 98 ++++++++++++++++++++------------------
+ 1 file changed, 51 insertions(+), 47 deletions(-)
 
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index 4c746938a062..2cbc57b16b13 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -10,7 +10,6 @@
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 2a9b610f6d43..d3d32b501aca 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1030,8 +1030,8 @@ static int wm_coeff_write_acked_control(struct wm_coeff_ctl *ctl,
+ 	return -ETIMEDOUT;
+ }
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
+-static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
+-				  const void *buf, size_t len)
++static int wm_coeff_write_ctrl_raw(struct wm_coeff_ctl *ctl,
++				   const void *buf, size_t len)
+ {
+ 	struct wm_adsp *dsp = ctl->dsp;
+ 	void *scratch;
+@@ -1061,6 +1061,23 @@ static int wm_coeff_write_control(struct wm_coeff_ctl *ctl,
+ 	return 0;
+ }
+ 
++static int wm_coeff_write_ctrl(struct wm_coeff_ctl *ctl,
++			       const void *buf, size_t len)
++{
++	int ret = 0;
++
++	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
++		ret = -EPERM;
++	else if (buf != ctl->cache)
++		memcpy(ctl->cache, buf, len);
++
++	ctl->set = 1;
++	if (ctl->enabled && ctl->dsp->running)
++		ret = wm_coeff_write_ctrl_raw(ctl, buf, len);
++
++	return ret;
++}
++
+ static int wm_coeff_put(struct snd_kcontrol *kctl,
+ 			struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -1071,16 +1088,7 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
+ 	int ret = 0;
+ 
+ 	mutex_lock(&ctl->dsp->pwr_lock);
+-
+-	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
+-		ret = -EPERM;
+-	else
+-		memcpy(ctl->cache, p, ctl->len);
+-
+-	ctl->set = 1;
+-	if (ctl->enabled && ctl->dsp->running)
+-		ret = wm_coeff_write_control(ctl, p, ctl->len);
+-
++	ret = wm_coeff_write_ctrl(ctl, p, ctl->len);
+ 	mutex_unlock(&ctl->dsp->pwr_lock);
+ 
+ 	return ret;
+@@ -1096,15 +1104,10 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
+ 
+ 	mutex_lock(&ctl->dsp->pwr_lock);
+ 
+-	if (copy_from_user(ctl->cache, bytes, size)) {
++	if (copy_from_user(ctl->cache, bytes, size))
+ 		ret = -EFAULT;
+-	} else {
+-		ctl->set = 1;
+-		if (ctl->enabled && ctl->dsp->running)
+-			ret = wm_coeff_write_control(ctl, ctl->cache, size);
+-		else if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
+-			ret = -EPERM;
+-	}
++	else
++		ret = wm_coeff_write_ctrl(ctl, ctl->cache, size);
+ 
+ 	mutex_unlock(&ctl->dsp->pwr_lock);
+ 
+@@ -1135,8 +1138,8 @@ static int wm_coeff_put_acked(struct snd_kcontrol *kctl,
+ 	return ret;
+ }
+ 
+-static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
+-				 void *buf, size_t len)
++static int wm_coeff_read_ctrl_raw(struct wm_coeff_ctl *ctl,
++				  void *buf, size_t len)
+ {
+ 	struct wm_adsp *dsp = ctl->dsp;
+ 	void *scratch;
+@@ -1166,29 +1169,37 @@ static int wm_coeff_read_control(struct wm_coeff_ctl *ctl,
+ 	return 0;
+ }
+ 
+-static int wm_coeff_get(struct snd_kcontrol *kctl,
+-			struct snd_ctl_elem_value *ucontrol)
++static int wm_coeff_read_ctrl(struct wm_coeff_ctl *ctl, void *buf, size_t len)
+ {
+-	struct soc_bytes_ext *bytes_ext =
+-		(struct soc_bytes_ext *)kctl->private_value;
+-	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
+-	char *p = ucontrol->value.bytes.data;
+ 	int ret = 0;
+ 
+-	mutex_lock(&ctl->dsp->pwr_lock);
+-
+ 	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
+ 		if (ctl->enabled && ctl->dsp->running)
+-			ret = wm_coeff_read_control(ctl, p, ctl->len);
++			return wm_coeff_read_ctrl_raw(ctl, buf, len);
+ 		else
+-			ret = -EPERM;
++			return -EPERM;
+ 	} else {
+ 		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
+-			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
++			ret = wm_coeff_read_ctrl_raw(ctl, ctl->cache, ctl->len);
+ 
+-		memcpy(p, ctl->cache, ctl->len);
++		if (buf != ctl->cache)
++			memcpy(buf, ctl->cache, len);
+ 	}
+ 
++	return ret;
++}
++
++static int wm_coeff_get(struct snd_kcontrol *kctl,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_bytes_ext *bytes_ext =
++		(struct soc_bytes_ext *)kctl->private_value;
++	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
++	char *p = ucontrol->value.bytes.data;
++	int ret;
++
++	mutex_lock(&ctl->dsp->pwr_lock);
++	ret = wm_coeff_read_ctrl(ctl, p, ctl->len);
+ 	mutex_unlock(&ctl->dsp->pwr_lock);
+ 
+ 	return ret;
+@@ -1204,15 +1215,7 @@ static int wm_coeff_tlv_get(struct snd_kcontrol *kctl,
+ 
+ 	mutex_lock(&ctl->dsp->pwr_lock);
+ 
+-	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
+-		if (ctl->enabled && ctl->dsp->running)
+-			ret = wm_coeff_read_control(ctl, ctl->cache, size);
+-		else
+-			ret = -EPERM;
+-	} else {
+-		if (!ctl->flags && ctl->enabled && ctl->dsp->running)
+-			ret = wm_coeff_read_control(ctl, ctl->cache, size);
+-	}
++	ret = wm_coeff_read_ctrl_raw(ctl, ctl->cache, size);
+ 
+ 	if (!ret && copy_to_user(bytes, ctl->cache, size))
+ 		ret = -EFAULT;
+@@ -1340,7 +1343,7 @@ static int wm_coeff_init_control_caches(struct wm_adsp *dsp)
+ 		 * created so we don't need to do anything.
+ 		 */
+ 		if (!ctl->flags || (ctl->flags & WMFW_CTL_FLAG_READABLE)) {
+-			ret = wm_coeff_read_control(ctl, ctl->cache, ctl->len);
++			ret = wm_coeff_read_ctrl_raw(ctl, ctl->cache, ctl->len);
+ 			if (ret < 0)
+ 				return ret;
+ 		}
+@@ -1358,7 +1361,8 @@ static int wm_coeff_sync_controls(struct wm_adsp *dsp)
+ 		if (!ctl->enabled)
+ 			continue;
+ 		if (ctl->set && !(ctl->flags & WMFW_CTL_FLAG_VOLATILE)) {
+-			ret = wm_coeff_write_control(ctl, ctl->cache, ctl->len);
++			ret = wm_coeff_write_ctrl_raw(ctl, ctl->cache,
++						      ctl->len);
+ 			if (ret < 0)
+ 				return ret;
+ 		}
+@@ -2048,7 +2052,7 @@ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
+ 	if (len > ctl->len)
+ 		return -EINVAL;
+ 
+-	ret = wm_coeff_write_control(ctl, buf, len);
++	ret = wm_coeff_write_ctrl(ctl, buf, len);
+ 
+ 	kcontrol = snd_soc_card_get_kcontrol(dsp->component->card, ctl->name);
+ 	snd_ctl_notify(dsp->component->card->snd_card,
+@@ -2070,7 +2074,7 @@ int wm_adsp_read_ctl(struct wm_adsp *dsp, const char *name, int type,
+ 	if (len > ctl->len)
+ 		return -EINVAL;
+ 
+-	return wm_coeff_read_control(ctl, buf, len);
++	return wm_coeff_read_ctrl(ctl, buf, len);
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp_read_ctl);
+ 
 -- 
 2.20.1
 
