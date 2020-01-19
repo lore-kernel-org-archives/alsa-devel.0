@@ -2,94 +2,66 @@ Return-Path: <SRS0=BOfx=3I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FE6BC33CB1
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AB97C33CB1
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:20:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BC3020684
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:18:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 18DA120684
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:20:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="faEg90F0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ojab.ru header.i=@ojab.ru header.b="G4E4sNN6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BC3020684
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ojab.ru
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U6QXT2dK"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18DA120684
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CB4A169A;
-	Sun, 19 Jan 2020 08:18:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CB4A169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 825A616AC;
+	Sun, 19 Jan 2020 08:19:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 825A616AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579418335;
-	bh=z3z4OsmbRi+RrLj1eM/malT3gpAPWSVbmcXf+B3BLcQ=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=faEg90F0T1cqkhk80mVHFKkO0/0sgn8oN+TKVZ3rP5sJf0/YmCMSHMlePNmsxO1iJ
-	 gH/tNZxET4vXpQvFbZf5gdY5SY6zNpHzUKQ4aBdW+o+SkuyNq3ziDt+15JqqkCvPvv
-	 V3XTCYrTTINSO2w4/SbXQdKQZNJNglcFHAiknFYs=
+	s=default; t=1579418417;
+	bh=OIn7w66u2TeEoHy64YiN6hZTZHAw6Vp4ugqAm7/SyJg=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=U6QXT2dKX+KBmT8PmLXZTrGFYipmR3I1U5g3Y0lvT4qh+WmYdaGPryH2vf4jJDBIJ
+	 T2Cq6p2Y5vcaJ9S7bxt5B5HVw2Vd31QWnHjwEz060T5Uf4blF7pP17g5pIM17NTSKZ
+	 TDE3axFyjJDTS13yz7eTSI9aDjiCuJWfbCpNWsa4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 830D1F8028F;
-	Sun, 19 Jan 2020 08:14:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03824F802A7;
+	Sun, 19 Jan 2020 08:14:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A5B1F801EB; Wed, 15 Jan 2020 18:54:29 +0100 (CET)
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com
- [IPv6:2607:f8b0:4864:20::a43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9BA62F80126; Sun, 19 Jan 2020 03:05:00 +0100 (CET)
+Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5122F800B9
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 18:54:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5122F800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ojab.ru header.i=@ojab.ru
- header.b="G4E4sNN6"
-Received: by mail-vk1-xa43.google.com with SMTP id s142so4942566vkd.9
- for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2020 09:54:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ojab.ru; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=o6kw58+U2mtXZICtFUKfcDE2XztIofSoUdMpa7WV9is=;
- b=G4E4sNN6MBUytB5O0tTdHgH1Wq+YIF7L9D3NoJVl+6JWAdcpVZ+RYd0EB5gtzJjCbz
- HCkovNWB3TQViJDegXYEVJLwiOO+7UXTZKADYbq2ok9r4xZDiL+IJNt9bKf/7+XpA7/s
- bAW8seXn2A17fKzTKSbrneGEBHT8JCqf/JJfs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=o6kw58+U2mtXZICtFUKfcDE2XztIofSoUdMpa7WV9is=;
- b=aACz04WWu2AbtSGppB8u7pCRLYchE+a15yEnXtUTC+bMF3ppQDQ/5SwdAAZ/nowfGo
- iNWiF/7gCCqkxbV4pILS57EKVwE25wjIAIrjpFPm6ew7nf8ih8ZKT3Ghkko+6UogAzoi
- xmp8fbm2LHsfhLMozf2SXSesYvUyA1vd7FDcaeIzSwXDj9F/PFhQHPJfWTuTPSz/FUTf
- Z2xf/YyxXtllsmhXvbAASCOJ2ELw1OaVDszBN85yG24dEdRjM0TQ+wGuflM/nT5oF0ep
- HDHvTMLFmtPiCrgyIU4OlSjq8l6N0nZVV6n/3zEldXx+uQrq/cvpkLd76s/kXrjBBlJy
- rYKg==
-X-Gm-Message-State: APjAAAX//kGYvszpdppvixMG3UsmdYNRGKwEEyXPEaM8L4vVTHpPcAL0
- L95e/XYY1mvWMxZ7zFgQJ7PNZ3aWNqdJdf6IRsvCAg==
-X-Google-Smtp-Source: APXvYqweRUi5QFggY4p+x8NvtvZCvGb8J4FWkkrMLW9KgjZfRicptQfPBQztxRDErT8PDBRw1r/RXfcSrb/xZEUnv7Y=
-X-Received: by 2002:a1f:8fc3:: with SMTP id r186mr18796768vkd.87.1579110860547; 
- Wed, 15 Jan 2020 09:54:20 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A68DF80126
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2020 03:04:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A68DF80126
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+ by Forcepoint Email with ESMTP id 5000E5E974F6F5BF8FB1;
+ Sun, 19 Jan 2020 10:04:45 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Sun, 19 Jan 2020
+ 10:04:38 +0800
+From: y00444492 <yebin10@huawei.com>
+To: <broonie@opensource.wolfsonmicro.com>, <codrin.ciubotariu@microchip.com>
+Date: Sun, 19 Jan 2020 10:03:20 +0800
+Message-ID: <20200119020320.27075-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-References: <CAKzrAgTD2oeyajKGOaPea98vZ-uKJOn6uOqABA+CKtpvYpWYvQ@mail.gmail.com>
- <CAKzrAgTCE4btXr04pkvLUG6PPbtn9dm5h_9rjqDYG0HrTZ0zbg@mail.gmail.com>
- <87h80x8t41.wl-kuninori.morimoto.gx@renesas.com>
- <130af222-1086-ebcf-6a0f-9a390f9afbc3@linux.intel.com>
- <CAKzrAgRJZd4UZjt411vA8WwUv1KyVahVTNyUS8nA1TbKsA57dg@mail.gmail.com>
- <14259e97-72f5-439f-b2f1-356b6e45bcfb@linux.intel.com>
-In-Reply-To: <14259e97-72f5-439f-b2f1-356b6e45bcfb@linux.intel.com>
-From: "ojab //" <ojab@ojab.ru>
-Date: Wed, 15 Jan 2020 20:54:09 +0300
-Message-ID: <CAKzrAgQR0iZWPCudQ6k+RNWGk3L-=UU792RW6s7LxF+8wOPDUw@mail.gmail.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-X-Mailman-Approved-At: Sun, 19 Jan 2020 08:13:54 +0100
-Cc: alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [alsa-devel] No sound since 5.4 on skl_n88l25_s4567
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
+X-Mailman-Approved-At: Sun, 19 Jan 2020 08:13:53 +0100
+Cc: alsa-devel@alsa-project.org, Ye Bin <yebin10@huawei.com>,
+ linux-sound@vger.kernel.org
+Subject: [alsa-devel] [PATCH] ASoC: atmel-pcm: Fix build error
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,15 +79,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 15, 2020 at 6:07 PM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> This patch won't revert cleanly, can you try the following hack on v5.4
-> to see if this improves the card registration? Thanks!
+From: Ye Bin <yebin10@huawei.com>
 
+If SND_ATMEL_SOC_SSC is y and SND_ATMEL_SOC_PDC is m, building fails:
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
+(.text+0x6f6): undefined reference to `atmel_pcm_pdc_platform_register'
 
-Yep, it works with the patch.
+Select SND_ATMEL_SOC_PDC to fix this.
 
-//wbr ojab
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 92dfa6198623 ("ASoC: atmel-pcm: split into two file")
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ sound/soc/atmel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index f118c229ed82..78e7d40c3c24 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -19,11 +19,11 @@ config SND_ATMEL_SOC_DMA
+ 
+ config SND_ATMEL_SOC_SSC
+ 	tristate
++	select SND_ATMEL_SOC_PDC
+ 
+ config SND_ATMEL_SOC_SSC_PDC
+ 	tristate "SoC PCM DAI support for AT91 SSC controller using PDC"
+ 	depends on ATMEL_SSC
+-	select SND_ATMEL_SOC_PDC
+ 	select SND_ATMEL_SOC_SSC
+ 	help
+ 	  Say Y or M if you want to add support for Atmel SSC interface
+-- 
+2.17.2
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
