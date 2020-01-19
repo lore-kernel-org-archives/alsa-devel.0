@@ -2,87 +2,88 @@ Return-Path: <SRS0=BOfx=3I=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F10DAC33CB1
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:21:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CA36C33CB1
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 08:03:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78B4620684
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 07:21:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 949B920730
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jan 2020 08:03:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SUYMTZRB";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nostatic-org.20150623.gappssmtp.com header.i=@nostatic-org.20150623.gappssmtp.com header.b="nt7VQA7r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78B4620684
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nostatic.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IaxbMgWh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 949B920730
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F054316D9;
-	Sun, 19 Jan 2020 08:20:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F054316D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEB7516A6;
+	Sun, 19 Jan 2020 09:02:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEB7516A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579418464;
-	bh=naGZM0mtK8T6itG3BXjzWrzBpixe6s4M+Ki9kdsVqUo=;
-	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SUYMTZRB5H90UaBvD0TaPAdPfhRZjFfrA7/WeHQRq067b4ArrZqwEJAd33MumoaKv
-	 eyXzK1SArr3BxexqDR9puI3HY8Nb7htywDShIfXy00CyQ2zvWBkth1ED4g6vUY4RpJ
-	 vNgEyQItcDqq4ye2x1ZPmIVUMvWCeWEo0/8+Swag=
+	s=default; t=1579420986;
+	bh=f1/p2aDyOtYvcYA3XR+dGfw2SBua4jf5oeVOwsUSr9Q=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IaxbMgWhw0Hhrr5jkgZ4ktSo7agylvmf7sYd8M4kEQpBYLAtDcD6MxN++mxCzuk5/
+	 CzMxCgYW9og/p7EdJz0wOnzjlxGD/r12O+D51wVAoaoCVVqgr4SZqy0Joo6o+xAezW
+	 21yMI/ah6oVufoGo6moNQHU7aHSYPSbwEIMbYOv8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A4A5F802BD;
-	Sun, 19 Jan 2020 08:14:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6239EF8013E;
+	Sun, 19 Jan 2020 09:02:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DF3EF8014E; Sun, 19 Jan 2020 00:34:25 +0100 (CET)
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com
- [IPv6:2607:f8b0:4864:20::d41])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B135FF80143; Sun, 19 Jan 2020 09:02:14 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C78DF80126
- for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2020 00:34:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C78DF80126
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nostatic-org.20150623.gappssmtp.com
- header.i=@nostatic-org.20150623.gappssmtp.com header.b="nt7VQA7r"
-Received: by mail-io1-xd41.google.com with SMTP id t26so29939402ioi.13
- for <alsa-devel@alsa-project.org>; Sat, 18 Jan 2020 15:34:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=nostatic-org.20150623.gappssmtp.com; s=20150623;
- h=mime-version:from:date:message-id:subject:to;
- bh=bLjVanf0Z937OnesgrvWPlxQpFRsWbQr3VEqMJ42Rdw=;
- b=nt7VQA7re5lSGoO3XPdYS3tWEEeGRrvYTcwhOEf9L+gvM9VhXWIxYIQQdEvfiXsgw6
- Tn4IkWH05C0NXOxwUXgAqZf/K9FCFA2UV62gFVk0VMDpwbArjeny+JHZwCTFt7gDuLZh
- Z/W9w8PN/TlhSbN1u7w9Ub4lYyPtWscs2ZTXSoKC/8gMjha4Pfs8/rJ86ircr3yHzbpo
- m9BAt4CZEvbL1fGwhh6pr9PQtOV5whPW3bG/9R4r4GsYYcXNwO0CyrU1VR0X7HsurzjI
- bZ/5Y8Q4h2EW8JxDjIZPpQahBzfJSFaDaCGLIEfzaLeMArvIUJQ2zqptDi+0D5LVVIRh
- ChmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=bLjVanf0Z937OnesgrvWPlxQpFRsWbQr3VEqMJ42Rdw=;
- b=BEpe62ipMbgus2zv+hfbpYT6AteP36ZnYH02BcEXkORgDfGw3B+LY800DtQ7JMdq4A
- t/snLGDSzmug5wfFR0az0eu//N4q9A5M/ZOviPMI/FoONJb5yq5oVumSx+wjE8iI7jp4
- Hx3unsg7W/o33bWALV8ORpJy95f/WrhxAtQKon73P4jgM6PuA5xtfzWGhDipV2cpM6Hy
- 0u29DFpCsOks1dEYNBGBlPa1olcdNzD0lZtgVSYXS+hNRu9kEH9KcSHU46Cu3J+S4ZVA
- 28/PU/ZdlCxa9ai0UmF8ygqS045O4zCeAT8enzYcDLnubueXaJowP8j7ZAkP9mIb8w70
- VF4Q==
-X-Gm-Message-State: APjAAAXyvh2zr1KW1onZqQ1kChrXbN6ltFI4LhhXpLsmlx/l4ctnMVQk
- TZMa/yaHFCSsA4rEC3ow4lGGY5fGrDz8PYSLinT61KBPpAc=
-X-Google-Smtp-Source: APXvYqwdX8CzdQF0FXRDPBHAtvTQUNpNhmdgsJMB9T4yhEvQMMjnXJPm3v4lovQrSAvXQ32DtPr1XQqBTz7bMlud/jM=
-X-Received: by 2002:a6b:6c0f:: with SMTP id a15mr37685204ioh.13.1579390457483; 
- Sat, 18 Jan 2020 15:34:17 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C15FF8011E
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jan 2020 09:02:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C15FF8011E
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2020 00:02:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,337,1574150400"; d="scan'208";a="214943242"
+Received: from keyon-x299.sh.intel.com (HELO [10.239.159.75]) ([10.239.159.75])
+ by orsmga007.jf.intel.com with ESMTP; 19 Jan 2020 00:02:05 -0800
+To: Takashi Iwai <tiwai@suse.de>
+References: <20200116045318.5498-1-yang.jie@linux.intel.com>
+ <s5hd0bjq3cu.wl-tiwai@suse.de>
+ <97bbe88d1a6b63fe8e9b02bf0c5ce4a80553c48d.camel@linux.intel.com>
+ <s5hsgkf7l2e.wl-tiwai@suse.de>
+ <3c0a0067043d614cd4491b28acf6d49640746b15.camel@linux.intel.com>
+ <s5hh80v7h82.wl-tiwai@suse.de>
+ <E7B1D079BA13FB44A978CC8F69C7D6A96F98EDB4@SHSMSX105.ccr.corp.intel.com>
+ <E7B1D079BA13FB44A978CC8F69C7D6A96F98EE27@SHSMSX105.ccr.corp.intel.com>
+ <c70934a1-b838-5029-6573-bf76a34c4cb9@linux.intel.com>
+ <93ac843a-bad5-550e-f427-e2a94bd3e8ef@linux.intel.com>
+ <b6b55180-b846-96e7-4521-7d3b03881d06@linux.intel.com>
+ <3374dc7d-e969-5380-581a-f6801a2fe50f@linux.intel.com>
+ <s5hzhemo6ku.wl-tiwai@suse.de>
+ <68e008e2-6796-f893-35ed-d76a2bf92587@linux.intel.com>
+ <s5ho8v249rk.wl-tiwai@suse.de>
+ <7c6bb315-1ffc-665d-ff5e-e5e440f3e609@linux.intel.com>
+ <s5himl7orc4.wl-tiwai@suse.de>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Message-ID: <c7a64462-1cc1-234b-ac96-7774e6116118@linux.intel.com>
+Date: Sun, 19 Jan 2020 16:11:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-From: Mike Oliphant <oliphant@nostatic.org>
-Date: Sat, 18 Jan 2020 15:34:06 -0800
-Message-ID: <CAHXb3beWDCNvpRPTt7xahBvhRDaZ2bYL3dBH0QSXjgxXXs=VWw@mail.gmail.com>
-To: alsa-devel@alsa-project.org
-X-Mailman-Approved-At: Sun, 19 Jan 2020 08:13:54 +0100
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Subject: [alsa-devel] BOSS GT-1 USB audio and implicit feedback
+In-Reply-To: <s5himl7orc4.wl-tiwai@suse.de>
+Content-Language: en-US
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Rajwa,
+ Marcin" <marcin.rajwa@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: pcm: fix buffer_bytes max
+ constrained by preallocated bytes issue
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,245 +96,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-I've been digging around in the USB audio section of the kernel for the
-past month or so trying unsuccessfully to get audio on my BOSS GT-1
-pedalboard to work in Linux.
-
-The device is recognized by the current kernel, but aplay just hangs when
-trying to output to it.
-
-My searches led me to this now-resolved issue with implicit feedback quirk
-handling on BOSS Katana amplifiers:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=195223
-
-I have patched pcm.c with a similar fix for the GT-1 in
-set_sync_ep_implicit_fb_quirk():
-
-        case USB_ID(0x0582, 0x01d6): /* BOSS GT-1 */
-                return 0;
-
-This results in successful playback, but with frequent pops/clicks in the
-audio - even with high buffer sizes under very low load - likely
-attributable to the lack of implicit feedback.
-
-The GT-1 has come up on the mailing list before - some good information is
-here, but no resolution:
-
-https://mailman.alsa-project.org/pipermail/alsa-devel/2018-January/130957.html
-
-My understanding from what I think I know about implicit feedback and the
-output of lsusb, is that the device is designed to operate with
-simultaneous capture/playback, with feedback being provided in the capture
-stream to be used to sync both capture and playback.
-
-It seems like this is what the feedback quirk might be trying to do, since
-this is what I see from dmesg when trying to play audio with aplay on the
-stock kernel:
-
-[  218.530738] usb 1-1.1: setting usb interface 1:1
-[  218.530753] Creating new playback data endpoint #d
-[  218.530772] Creating new capture data endpoint #8e
-[  218.531687] usb 1-1.1: Setting params for ep #d (type 0, 12 urbs), ret=0
-[  218.531706] usb 1-1.1: match_endpoint_audioformats: (fmt @ed1fbd45)
-score 2
-[  218.531840] usb 1-1.1: Setting params for ep #8e (type 0, 12 urbs), ret=0
-[  218.531855] usb 1-1.1: Starting data EP @f114d201
-[  218.532514] usb 1-1.1: Starting sync EP @984e9cce
-
-I have also tried to manually set the feedback endpoint in
-set_sync_ep_implicit_fb_quirk():
-
-        case USB_ID(0x0582, 0x01d6): /* BOSS GT-1 */
-                ep = 0x8e;
-                ifnum = 2;
-                goto add_sync_ep_from_ifnum;
-
-but this results in the same behavior.
-
-Any suggestions on what else to try would be much appreciated. It seems
-like the device is *very* close to working properly.
-
-Output from lsusb for the interface follows.
-
-Thanks!
-
-Mike
-
----
-Output from lsusb:
-
-Bus 001 Device 003: ID 0582:01d6 Roland Corp.
-Couldn't open device, some information will be missing
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass          255 Vendor Specific Class
-  bDeviceSubClass         0
-  bDeviceProtocol       255
-  bMaxPacketSize0        64
-  idVendor           0x0582 Roland Corp.
-  idProduct          0x01d6
-  bcdDevice            0.00
-  iManufacturer           1
-  iProduct                2
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength       0x00bc
-    bNumInterfaces          4
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0xc0
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass    255 Vendor Specific Subclass
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      2
-      iInterface              0
-      ** UNRECOGNIZED:  06 24 f1 01 00 00
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      2
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 01 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 44 ac 00
-      ** UNRECOGNIZED:  06 24 f1 04 16 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x0d  EP 13 OUT
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x0038  1x 56 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      1
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      2
-      bInterfaceProtocol      1
-      iInterface              0
-      ** UNRECOGNIZED:  07 24 01 07 00 01 00
-      ** UNRECOGNIZED:  0b 24 02 01 02 04 18 01 44 ac 00
-      ** UNRECOGNIZED:  06 24 f1 04 16 00
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x8e  EP 14 IN
-        bmAttributes           37
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Implicit feedback Data
-        wMaxPacketSize     0x0038  1x 56 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      3
-      bInterfaceProtocol      0
-      iInterface              0
-      ** UNRECOGNIZED:  06 24 f1 02 01 01
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x84  EP 4 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      3
-      bInterfaceProtocol      0
-      iInterface              0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               4
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0200  1x 512 bytes
-        bInterval               4
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gMjAyMC8xLzE5IOS4i+WNiDM6MDksIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTdW4sIDE5
+IEphbiAyMDIwIDA0OjUyOjU1ICswMTAwLAo+IEtleW9uIEppZSB3cm90ZToKPj4KPj4KPj4gT24g
+MjAyMC8xLzE3IOS4i+WNiDc6MTIsIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IE9uIEZyaSwgMTcg
+SmFuIDIwMjAgMTE6NDM6MjQgKzAxMDAsCj4+PiBLZXlvbiBKaWUgd3JvdGU6Cj4+Pj4KPj4+PiBJ
+biBTT0YgZHJpdmVyLCB3ZSBkb24ndCB1c2Uga2VybmVsIGNvbmZpZyBpdGVtIGxpa2UKPj4+PiBD
+T05GSUdfU05EX0hEQV9QUkVBTExPQ19TSVpFIGZvciBIREEsIHRoZSBjb2RlIGZvciBpdCBpczoK
+Pj4+Pgo+Pj4+IAlzbmRfcGNtX2xpYl9wcmVhbGxvY2F0ZV9wYWdlcyhwY20tPnN0cmVhbXNbc3Ry
+ZWFtXS5zdWJzdHJlYW0sCj4+Pj4gCQkJCSAgICAgIFNORFJWX0RNQV9UWVBFX0RFVl9TRywgc2Rl
+di0+ZGV2LAo+Pj4+IAkJCQlsZTMyX3RvX2NwdShjYXBzLT5idWZmZXJfc2l6ZV9taW4pLAo+Pj4+
+IAkJCQlsZTMyX3RvX2NwdShjYXBzLT5idWZmZXJfc2l6ZV9tYXgpKTsKPj4+Pgo+Pj4+IFNvIHRo
+ZSBwcmVhbGxvY2F0ZWQgc2l6ZSBpcyBjb25maWd1cmVkIHZpYSB0b3BvbG9neSBmaWxlLCB0aGF0
+IGlzCj4+Pj4gY2Fwcy0+YnVmZmVyX3NpemVfbWluLCBubyBjaGFuY2UgZm9yIFB1bHNlQXVkaW8g
+dG8gcmVjb25maWd1cmUgaXQuCj4+Pj4KPj4+PiBTbywgaXQgbG9va3MgbGlrZSB3ZSBoYXZlIHRv
+IGNoYW5nZSBpdCB0byB0aGlzIGlmIHdlIGRvbid0IGNoYW5nZSB0aGUKPj4+PiBBTFNBIGNvcmU6
+Cj4+Pj4KPj4+PiAJc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXMocGNtLT5zdHJlYW1zW3N0
+cmVhbV0uc3Vic3RyZWFtLAo+Pj4+IAkJCQkgICAgICBTTkRSVl9ETUFfVFlQRV9ERVZfU0csIHNk
+ZXYtPmRldiwKPj4+PiAtCQkJCWxlMzJfdG9fY3B1KGNhcHMtPmJ1ZmZlcl9zaXplX21pbiksCj4+
+Pj4gKwkJCQlsZTMyX3RvX2NwdShjYXBzLT5idWZmZXJfc2l6ZV9tYXgpLAo+Pj4+IAkJCQlsZTMy
+X3RvX2NwdShjYXBzLT5idWZmZXJfc2l6ZV9tYXgpKTsKPj4+Cj4+PiBZZXMsIHBhc3NpbmcgYnVm
+ZmVyX3NpemVfbWluIGZvciB0aGUgcHJlYWxsb2NhdGlvbiBzb3VuZHMgYWxyZWFkeQo+Pj4gYmFk
+LiAgVGhlIGRlZmF1bHQgdmFsdWUgc2hvdWxkIGJlIHN1ZmZpY2llbnQgZm9yIHVzdWFsIG9wZXJh
+dGlvbnMsIG5vdAo+Pj4gdGhlIGNvc3QtY3V0dGluZyBtaW5pbXVtLiAgT3RoZXJ3aXNlIHRoZXJl
+IGlzIG5vIG1lcml0IG9mCj4+PiBwcmVhbGxvY2F0aW9uLgo+Pj4KPj4+IEFsdGVybmF0aXZlbHks
+IHdlIG1heSBwYXNzIDAgdGhlcmUsIGluZGljYXRpbmcgbm8gbGltaXRhdGlvbiwgdG9vLgo+Pj4g
+QnV0LCB0aGlzIHdvdWxkIG5lZWQgYSBiaXQgb3RoZXIgYWRqdXN0bWVudCwgZS5nLiBzbmRfcGNt
+X2hhcmR3YXJlCj4+PiBzaG91bGQgaGF2ZSBsb3dlciBidWZmZXJfYnl0ZXNfbWF4Lgo+Pgo+PiBU
+aGFuayB5b3UgVGFrYXNoaSwgdGhlbiBsZXQncyBmb2xsb3cgaXQgdG8gcHJlLWFsbG9jYXRlIHdp
+dGgKPj4gY2Fwcy0+YnVmZmVyX3NpemVfbWF4LCBhcyB3ZSBkb24ndCBzcGVjaWZ5IGFueSBsaW1p
+dGF0aW9ucyBpbgo+PiBzbmRfcGNtX2hhcmR3YXJlIHRvZGF5LCB3ZSB3YW50IHRvIGxlYXZlIGl0
+IGNvbmZpZ3VyYWJsZSB0byBlYWNoCj4+IHNwZWNpZmljIHRvcG9sb2d5IGZpbGUgZm9yIGRpZmZl
+cmVudCBtYWNoaW5lcy4KPiAKPiBIb3cgYmlnIGlzIGNhcHMtPmJ1ZmZlcl9zaXplX21heD8gIFBh
+c3NpbmcgdGhlIHZhbHVlIHRoZXJlIG1lYW5zCj4gYWN0dWFsbHkgdHJ5aW5nIHRvIGFsbG9jYXRl
+IHRoZSBnaXZlbiBzaXplIGFzIGRlZmF1bHQsIGFuZCBpdCdkIGJlIGEKPiBsb3Qgb2Ygd2FzdGUg
+aWYgYSB0b28gbGFyZ2UgdmFsdWUgKGUuZy4gMzJNQikgaXMgcGFzc2VkIHRoZXJlLgoKSXQgdmFy
+aWVzIGZvciBlYWNoIHN0cmVhbSwgbW9zdCBvZiB0aGVtIGFyZSA2NTUzNiBCeXRlcyBvbmx5LCB3
+aGVyZWFzIApvbmUgZm9yIFdha2UtT24tVm9pY2UgbWlnaHQgbmVlZCBhID4gNCBTZWNvbmRzIGJ1
+ZmZlciBjb3VsZCBiZSB1cCB0byAKYWJvdXQgMX4yTUJ5dGVzLCBhbmQgYW5vdGhlciBvbmUgZm9y
+IGRlZXAtYnVmZmVyIHBsYXliYWNrIGNhbiBiZSB1cCB0byAKYWJvdXQgOE1CeXRlcy4KCj4gCj4g
+SSB0aGluayB3ZSBjYW4gZ28gZm9yIHBhc3NpbmcgemVybyBhcyBkZWZhdWx0LCB3aGljaCBtZWFu
+cyBza2lwcGluZwo+IHByZWFsbG9jYXRpb24uICBJbiBhZGRpdGlvbiwgd2UgbWF5IGFkZCBhbiB1
+cHBlciBsaW1pdCBvZiB0aGUgdG90YWwKCkp1c3QgZGlkIGFuIGV4cGVyaW1lbnQgYW5kIHRoaXMg
+d29ya3MgZm9yIG1lLCBJIGJlbGlldmUgd2Ugc3RpbGwgbmVlZCB0byAKY2FsbCBzbmRfcGNtX3Nl
+dF9tYW5hZ2VkX2J1ZmZlcigpIHRob3VnaCB0aGUgcHJlYWxsb2NhdGlvbiBpcyBza2lwcGVkIGlu
+IAp0aGlzLCByaWdodD8KCj4gYW1vdW50IG9mIGFsbG9jYXRpb24gcGVyIGNhcmQsIGNvbnRyb2xs
+ZWQgaW4gcGNtX21lbW9yeS5jLCBmb3IKPiBleGFtcGxlLiAgVGhpcyBsb2dpYyBjYW4gYmUgYXBw
+bGllZCB0byB0aGUgbGVnYWN5IEhEQSwgdG9vLgo+IAo+IFRoaXMgc2hvdWxkIGJlIHJlbGF0aXZl
+bHkgZWFzeSwgYW5kIEknbGwgcHJvdmlkZSB0aGUgcGF0Y2ggaW4gdGhlIG5leHQKPiB3ZWVrLgoK
+T0ssIHRoYXQncyBmaW5lIGZvciBtZSBhbHNvLCB0aGFuayB5b3UuCgp+S2V5b24KCj4gCj4gCj4g
+VGFrYXNoaQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+PiBodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwKPiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBz
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
