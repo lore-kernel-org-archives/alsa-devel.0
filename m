@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCE5CC33CAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:13:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFF6FC33CAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:14:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 675B920678
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:13:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3BBB920678
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:14:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YJ8i4ieY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 675B920678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WqXQ67L4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BBB920678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C24421698;
-	Mon, 20 Jan 2020 02:12:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C24421698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BD88167F;
+	Mon, 20 Jan 2020 02:13:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BD88167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579482823;
-	bh=kfaZiwZP79GAe6IN2beVFYGtGkVlH0s1JkJ4N96i2WU=;
+	s=default; t=1579482857;
+	bh=RiDdi5Yt1Zo+xTIKx2QnTdSQzpcWdWy2P1uKIzbekYw=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YJ8i4ieYyOfyx7q0t6Euq82s7bg5G5Xt54SU+cNusW6/c0B9WoiGjlabKB5MGISys
-	 lBozJponlVl2DFdRBo/QyfbqIDRQl+6SjSpM3qCLUTijbui2wcQ2XWM0FX/MeeLfy6
-	 SXp+1/zO94gLt0Jg/lVqTj96wSwPTB3t8x33WCnE=
+	b=WqXQ67L4VzhZbYNfEDIPUiHGjVvnZwALovDx9LXgNbg8zDpyAaML1ZsWaenmPEd0x
+	 lpRVHagz9y6xpawJ+08msYHZFtquctp0DiT0qkQfStrCyTr3LE+c9C3UxalrVBn/mY
+	 L4dNqYvqaqyEQ91telV7Ch0kSQaY/qwOkO04oTho=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72FB1F8032A;
-	Mon, 20 Jan 2020 02:05:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62363F80333;
+	Mon, 20 Jan 2020 02:05:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 062FAF80331; Mon, 20 Jan 2020 02:04:59 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E0CD6F80303
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0CD6F80303
-Date: 20 Jan 2020 10:04:52 +0900
-X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="36865560"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:52 +0900
+ id 5F96DF80336; Mon, 20 Jan 2020 02:05:05 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3713DF80333
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3713DF80333
+Date: 20 Jan 2020 10:04:59 +0900
+X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="37083230"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:59 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 608B14102B76;
- Mon, 20 Jan 2020 10:04:52 +0900 (JST)
-Message-ID: <87tv4rx7ij.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0F54140083DC;
+ Mon, 20 Jan 2020 10:04:59 +0900 (JST)
+Message-ID: <87sgkbx7ic.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +58,7 @@ In-Reply-To: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 References: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 14/17] ASoC: pxa: pxa-ssp: move
+Subject: [alsa-devel] [PATCH v2 15/17] ASoC: pxa: pxa2xx-i2s: move
 	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -83,7 +83,7 @@ There is no big difference at implementation for .suspend/.resume
 between DAI driver and Component driver.
 But because some driver is using DAI version, thus ALSA SoC needs
 to keep supporting it, hence, framework becoming verbose.
-If we can swtcih all DAI driver .suspend/.resume to Component driver,
+If we can switch all DAI driver .suspend/.resume to Component driver,
 we can remove verbose code from ALSA SoC.
 
 Driver is getting its private data via dai->dev.
@@ -91,72 +91,62 @@ But dai->dev and component->dev are same dev, thus, we can convert
 these. For same reason, we can convert dai->active to
 component->active if necessary.
 
-This patch moves DAI driver .suspend/.resume to Component driver
-
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/pxa/pxa-ssp.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/pxa/pxa2xx-i2s.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index f37ea0f..e615aca 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -133,12 +133,12 @@ static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index d9d366a..5f1c477 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -261,7 +261,7 @@ static void pxa2xx_i2s_shutdown(struct snd_pcm_substream *substream,
+ }
  
  #ifdef CONFIG_PM
- 
--static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
-+static int pxa_ssp_suspend(struct snd_soc_component *component)
+-static int pxa2xx_i2s_suspend(struct snd_soc_dai *dai)
++static int pxa2xx_soc_pcm_suspend(struct snd_soc_component *component)
  {
--	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct ssp_priv *priv = snd_soc_component_get_drvdata(component);
- 	struct ssp_device *ssp = priv->ssp;
- 
--	if (!cpu_dai->active)
-+	if (!component->active)
- 		clk_prepare_enable(ssp->clk);
- 
- 	priv->cr0 = __raw_readl(ssp->mmio_base + SSCR0);
-@@ -151,9 +151,9 @@ static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ 	/* store registers */
+ 	pxa_i2s.sacr0 = SACR0;
+@@ -275,7 +275,7 @@ static int pxa2xx_i2s_suspend(struct snd_soc_dai *dai)
  	return 0;
  }
  
--static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
-+static int pxa_ssp_resume(struct snd_soc_component *component)
+-static int pxa2xx_i2s_resume(struct snd_soc_dai *dai)
++static int pxa2xx_soc_pcm_resume(struct snd_soc_component *component)
  {
--	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct ssp_priv *priv = snd_soc_component_get_drvdata(component);
- 	struct ssp_device *ssp = priv->ssp;
- 	uint32_t sssr = SSSR_ROR | SSSR_TUR | SSSR_BCE;
+ 	pxa_i2s_wait();
  
-@@ -165,7 +165,7 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
- 	__raw_writel(priv->to,  ssp->mmio_base + SSTO);
- 	__raw_writel(priv->psp, ssp->mmio_base + SSPSP);
+@@ -290,8 +290,8 @@ static int pxa2xx_i2s_resume(struct snd_soc_dai *dai)
+ }
  
--	if (cpu_dai->active)
-+	if (component->active)
- 		pxa_ssp_enable(ssp);
- 	else
- 		clk_disable_unprepare(ssp->clk);
-@@ -850,8 +850,6 @@ static const struct snd_soc_dai_ops pxa_ssp_dai_ops = {
- static struct snd_soc_dai_driver pxa_ssp_dai = {
- 		.probe = pxa_ssp_probe,
- 		.remove = pxa_ssp_remove,
--		.suspend = pxa_ssp_suspend,
--		.resume = pxa_ssp_resume,
- 		.playback = {
- 			.channels_min = 1,
- 			.channels_max = 8,
-@@ -879,6 +877,8 @@ static const struct snd_soc_component_driver pxa_ssp_component = {
+ #else
+-#define pxa2xx_i2s_suspend	NULL
+-#define pxa2xx_i2s_resume	NULL
++#define pxa2xx_soc_pcm_suspend	NULL
++#define pxa2xx_soc_pcm_resume	NULL
+ #endif
+ 
+ static int pxa2xx_i2s_probe(struct snd_soc_dai *dai)
+@@ -342,8 +342,6 @@ static const struct snd_soc_dai_ops pxa_i2s_dai_ops = {
+ static struct snd_soc_dai_driver pxa_i2s_dai = {
+ 	.probe = pxa2xx_i2s_probe,
+ 	.remove = pxa2xx_i2s_remove,
+-	.suspend = pxa2xx_i2s_suspend,
+-	.resume = pxa2xx_i2s_resume,
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+@@ -370,6 +368,8 @@ static const struct snd_soc_component_driver pxa_i2s_component = {
  	.trigger	= pxa2xx_soc_pcm_trigger,
  	.pointer	= pxa2xx_soc_pcm_pointer,
  	.mmap		= pxa2xx_soc_pcm_mmap,
-+	.suspend	= pxa_ssp_suspend,
-+	.resume		= pxa_ssp_resume,
++	.suspend	= pxa2xx_soc_pcm_suspend,
++	.resume		= pxa2xx_soc_pcm_resume,
  };
  
- #ifdef CONFIG_OF
+ static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
 -- 
 2.7.4
 
