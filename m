@@ -2,56 +2,55 @@ Return-Path: <SRS0=II5U=3J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DC56C33CAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7296AC33CB6
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:06:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F195B206B7
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:05:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 02C6D206B7
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:06:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DavL8tR7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F195B206B7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FCJqcmVD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02C6D206B7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB6A4168C;
-	Mon, 20 Jan 2020 02:04:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB6A4168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 342CE1673;
+	Mon, 20 Jan 2020 02:05:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 342CE1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579482321;
-	bh=EUV5vwQ1BJZpMpwVmO63eKYY/G19GBco+B50/yLAp4s=;
+	s=default; t=1579482374;
+	bh=6POObBxNXBvG3txkTSsqaUeTA+BwJ8lEh9eipDqk4mY=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DavL8tR7fdu6fGEPlxjBFRmKoEXmjlPL2u39QvQ9dOv6MYvDb+JTJGpLv4xMKo/mC
-	 kWTbz4hdxFzvxzGzreL5IgFfE+x6+Wsj3txoNghIQSEohOFX53+qWPcu17SdqLXWpe
-	 xilOSE0g1LukA6c60mP0S0nM+w3fbAnk+RUGVGdM=
+	b=FCJqcmVDum5L5RNf1sdgSz4MVeP5Xv76QPCRZf41bh1VQvMHoLhteZ8TAiOxyKVwY
+	 /9tCDUrxILsNuHM8h4jUYUGd3som6vpKQV8kBmjn4FtfbhXe66p3MNgT/JU47ACWJy
+	 Ah3O6bkGSbQlBbtJPDmeLwJ1KE9gw3tdE2LjBnas=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95122F8021D;
-	Mon, 20 Jan 2020 02:03:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48B4EF8027D;
+	Mon, 20 Jan 2020 02:04:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A20EFF8026F; Mon, 20 Jan 2020 02:03:48 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id BFDBAF800E2
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:03:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFDBAF800E2
-Date: 20 Jan 2020 10:03:43 +0900
-X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="37083057"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jan 2020 10:03:43 +0900
+ id 63288F8027C; Mon, 20 Jan 2020 02:03:57 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 852A2F80272
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:03:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 852A2F80272
+Date: 20 Jan 2020 10:03:50 +0900
+X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="36865424"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2020 10:03:50 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5CCB741025BC;
- Mon, 20 Jan 2020 10:03:43 +0900 (JST)
-Message-ID: <87blqzym4w.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 53CCA40083DC;
+ Mon, 20 Jan 2020 10:03:50 +0900 (JST)
+Message-ID: <87a76jym4p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,7 +58,7 @@ In-Reply-To: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 References: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 02/17] ASoC: bcm: cygnus-ssp: move
+Subject: [alsa-devel] [PATCH v2 03/17] ASoC: cirrus: ep93xx-i2s: move
 	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -96,100 +95,61 @@ This patch moves DAI driver .suspend/.resume to Component driver
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/bcm/cygnus-ssp.c | 39 +++++++++++++++++++++++++++++++++------
- 1 file changed, 33 insertions(+), 6 deletions(-)
+ sound/soc/cirrus/ep93xx-i2s.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-index 2f9357d..257f504 100644
---- a/sound/soc/bcm/cygnus-ssp.c
-+++ b/sound/soc/bcm/cygnus-ssp.c
-@@ -1052,10 +1052,13 @@ static int cygnus_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
+diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
+index 7d9cf67..723f4cf 100644
+--- a/sound/soc/cirrus/ep93xx-i2s.c
++++ b/sound/soc/cirrus/ep93xx-i2s.c
+@@ -364,11 +364,11 @@ static int ep93xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
  }
  
- #ifdef CONFIG_PM_SLEEP
--static int cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
-+static int __cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ #ifdef CONFIG_PM
+-static int ep93xx_i2s_suspend(struct snd_soc_dai *dai)
++static int ep93xx_i2s_suspend(struct snd_soc_component *component)
  {
- 	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
+-	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
++	struct ep93xx_i2s_info *info = snd_soc_component_get_drvdata(component);
  
-+	if (!cpu_dai->active)
-+		return 0;
-+
- 	if (!aio->is_slave) {
- 		u32 val;
+-	if (!dai->active)
++	if (!component->active)
+ 		return 0;
  
-@@ -1078,11 +1081,25 @@ static int cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ 	ep93xx_i2s_disable(info, SNDRV_PCM_STREAM_PLAYBACK);
+@@ -377,11 +377,11 @@ static int ep93xx_i2s_suspend(struct snd_soc_dai *dai)
  	return 0;
  }
  
--static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
-+static int cygnus_ssp_suspend(struct snd_soc_component *component)
-+{
-+	struct snd_soc_dai *dai;
-+	int ret = 0;
-+
-+	for_each_component_dais(component, dai)
-+		ret |= __cygnus_ssp_suspend(dai);
-+
-+	return ret;
-+}
-+
-+static int __cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+-static int ep93xx_i2s_resume(struct snd_soc_dai *dai)
++static int ep93xx_i2s_resume(struct snd_soc_component *component)
  {
- 	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
- 	int error;
+-	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
++	struct ep93xx_i2s_info *info = snd_soc_component_get_drvdata(component);
  
-+	if (!cpu_dai->active)
-+		return 0;
-+
- 	if (!aio->is_slave) {
- 		if (aio->clk_trace.cap_clk_en) {
- 			error = clk_prepare_enable(aio->cygaud->
-@@ -1109,6 +1126,18 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+-	if (!dai->active)
++	if (!component->active)
+ 		return 0;
  
- 	return 0;
- }
-+
-+static int cygnus_ssp_resume(struct snd_soc_component *component)
-+{
-+	struct snd_soc_dai *dai;
-+	int ret = 0;
-+
-+	for_each_component_dais(component, dai)
-+		ret |= __cygnus_ssp_resume(dai);
-+
-+	return ret;
-+}
-+
- #else
- #define cygnus_ssp_suspend NULL
- #define cygnus_ssp_resume  NULL
-@@ -1149,8 +1178,6 @@ static const struct snd_soc_dai_ops cygnus_spdif_dai_ops = {
- 				SNDRV_PCM_FMTBIT_S32_LE, \
- 	}, \
- 	.ops = &cygnus_ssp_dai_ops, \
--	.suspend = cygnus_ssp_suspend, \
--	.resume = cygnus_ssp_resume, \
- }
+ 	ep93xx_i2s_enable(info, SNDRV_PCM_STREAM_PLAYBACK);
+@@ -406,8 +406,6 @@ static const struct snd_soc_dai_ops ep93xx_i2s_dai_ops = {
+ static struct snd_soc_dai_driver ep93xx_i2s_dai = {
+ 	.symmetric_rates= 1,
+ 	.probe		= ep93xx_i2s_dai_probe,
+-	.suspend	= ep93xx_i2s_suspend,
+-	.resume		= ep93xx_i2s_resume,
+ 	.playback	= {
+ 		.channels_min	= 2,
+ 		.channels_max	= 2,
+@@ -425,6 +423,8 @@ static struct snd_soc_dai_driver ep93xx_i2s_dai = {
  
- static const struct snd_soc_dai_driver cygnus_ssp_dai_info[] = {
-@@ -1169,14 +1196,14 @@ static const struct snd_soc_dai_driver cygnus_spdif_dai_info = {
- 			SNDRV_PCM_FMTBIT_S32_LE,
- 	},
- 	.ops = &cygnus_spdif_dai_ops,
--	.suspend = cygnus_ssp_suspend,
--	.resume = cygnus_ssp_resume,
+ static const struct snd_soc_component_driver ep93xx_i2s_component = {
+ 	.name		= "ep93xx-i2s",
++	.suspend	= ep93xx_i2s_suspend,
++	.resume		= ep93xx_i2s_resume,
  };
  
- static struct snd_soc_dai_driver cygnus_ssp_dai[CYGNUS_MAX_PORTS];
- 
- static const struct snd_soc_component_driver cygnus_ssp_component = {
- 	.name		= "cygnus-audio",
-+	.suspend	= cygnus_ssp_suspend,
-+	.resume		= cygnus_ssp_resume,
- };
- 
- /*
+ static int ep93xx_i2s_probe(struct platform_device *pdev)
 -- 
 2.7.4
 
