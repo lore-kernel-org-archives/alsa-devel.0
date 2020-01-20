@@ -6,51 +6,51 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CCEFC33CAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:11:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78733C33CAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:12:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 13C1E206D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:11:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 068AE20678
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:12:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d9hH51fG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13C1E206D7
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YjNOfMMg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 068AE20678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FBDC1678;
-	Mon, 20 Jan 2020 02:10:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FBDC1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 611751684;
+	Mon, 20 Jan 2020 02:11:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 611751684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579482689;
-	bh=OXN0lgJ4Gxsjk41AXjG3McKgeR0Iy0b2QP3x8XmB7t0=;
+	s=default; t=1579482731;
+	bh=GDtqcyfw8udQj18NKUzPMUDzExgRoQ83Jmtzl5iwYB8=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d9hH51fGF46+0Jwrw6Dh3wJlU9yKfkiERciK2hHYrFW0UvFO3SxNp3maZqFB/5hkk
-	 WRvBJIfnCtKf+YYhv2osxi3aBhMLF+PX1W8CsaHwaZCfsuNy4O9yuHmUHxUA9gISM1
-	 UnLACKFkF6mIDHppU1NstDOXdH1grswUuuyNBO2Q=
+	b=YjNOfMMgom/6vS5MvYS/bheybGZ2a8TDAixAiQGctAYUMp7Gs20Q81cKrn+m1pO6c
+	 /YT/7aflWvdSQiD7Om4xmvhq5cS5IthF3EEeM+Y+GB5LpSF0vD0JJRm8tsxYlD/Z0h
+	 wbnjqD5iQCV0LLEed81IezzX8088qav5kmzO1Ul0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FA76F802F7;
-	Mon, 20 Jan 2020 02:04:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB441F802FF;
+	Mon, 20 Jan 2020 02:04:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13860F802F8; Mon, 20 Jan 2020 02:04:43 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 69A1EF8021C
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69A1EF8021C
-Date: 20 Jan 2020 10:04:37 +0900
-X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="36865517"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:37 +0900
+ id D624EF802FF; Mon, 20 Jan 2020 02:04:48 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 1CA95F802FB
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CA95F802FB
+Date: 20 Jan 2020 10:04:42 +0900
+X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="37083181"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:42 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1FC844102B70;
- Mon, 20 Jan 2020 10:04:37 +0900 (JST)
-Message-ID: <87y2u3x7iy.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id E283340083F0;
+ Mon, 20 Jan 2020 10:04:42 +0900 (JST)
+Message-ID: <87wo9nx7it.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +58,7 @@ In-Reply-To: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 References: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 11/17] ASoC: dwc: dwc-i2s: move
+Subject: [alsa-devel] [PATCH v2 12/17] ASoC: samsung: i2s: move
 	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -95,85 +95,51 @@ This patch moves DAI driver .suspend/.resume to Component driver
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/dwc/dwc-i2s.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ sound/soc/samsung/i2s.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index 65112b9..7eeca21 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -390,10 +390,6 @@ static const struct snd_soc_dai_ops dw_i2s_dai_ops = {
- 	.set_fmt	= dw_i2s_set_fmt,
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 9722940..a57bb989 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1024,14 +1024,14 @@ i2s_delay(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ }
+ 
+ #ifdef CONFIG_PM
+-static int i2s_suspend(struct snd_soc_dai *dai)
++static int i2s_suspend(struct snd_soc_component *component)
+ {
+-	return pm_runtime_force_suspend(dai->dev);
++	return pm_runtime_force_suspend(component->dev);
+ }
+ 
+-static int i2s_resume(struct snd_soc_dai *dai)
++static int i2s_resume(struct snd_soc_component *component)
+ {
+-	return pm_runtime_force_resume(dai->dev);
++	return pm_runtime_force_resume(component->dev);
+ }
+ #else
+ #define i2s_suspend NULL
+@@ -1140,6 +1140,9 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
+ 
+ 	.dapm_routes = samsung_i2s_dapm_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(samsung_i2s_dapm_routes),
++
++	.suspend = i2s_suspend,
++	.resume = i2s_resume,
  };
  
--static const struct snd_soc_component_driver dw_i2s_component = {
--	.name		= "dw-i2s",
--};
--
- #ifdef CONFIG_PM
- static int dw_i2s_runtime_suspend(struct device *dev)
- {
-@@ -413,26 +409,30 @@ static int dw_i2s_runtime_resume(struct device *dev)
- 	return 0;
- }
+ #define SAMSUNG_I2S_FMTS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -1171,8 +1174,6 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
  
--static int dw_i2s_suspend(struct snd_soc_dai *dai)
-+static int dw_i2s_suspend(struct snd_soc_component *component)
- {
--	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct dw_i2s_dev *dev = snd_soc_component_get_drvdata(component);
+ 		dai_drv->probe = samsung_i2s_dai_probe;
+ 		dai_drv->remove = samsung_i2s_dai_remove;
+-		dai_drv->suspend = i2s_suspend;
+-		dai_drv->resume = i2s_resume;
  
- 	if (dev->capability & DW_I2S_MASTER)
- 		clk_disable(dev->clk);
- 	return 0;
- }
- 
--static int dw_i2s_resume(struct snd_soc_dai *dai)
-+static int dw_i2s_resume(struct snd_soc_component *component)
- {
--	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct dw_i2s_dev *dev = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_dai *dai;
- 
- 	if (dev->capability & DW_I2S_MASTER)
- 		clk_enable(dev->clk);
- 
--	if (dai->playback_active)
--		dw_i2s_config(dev, SNDRV_PCM_STREAM_PLAYBACK);
--	if (dai->capture_active)
--		dw_i2s_config(dev, SNDRV_PCM_STREAM_CAPTURE);
-+	for_each_component_dais(component, dai) {
-+		if (dai->playback_active)
-+			dw_i2s_config(dev, SNDRV_PCM_STREAM_PLAYBACK);
-+		if (dai->capture_active)
-+			dw_i2s_config(dev, SNDRV_PCM_STREAM_CAPTURE);
-+	}
-+
- 	return 0;
- }
- 
-@@ -441,6 +441,12 @@ static int dw_i2s_resume(struct snd_soc_dai *dai)
- #define dw_i2s_resume	NULL
- #endif
- 
-+static const struct snd_soc_component_driver dw_i2s_component = {
-+	.name		= "dw-i2s",
-+	.suspend	= dw_i2s_suspend,
-+	.resume		= dw_i2s_resume,
-+};
-+
- /*
-  * The following tables allow a direct lookup of various parameters
-  * defined in the I2S block's configuration in terms of sound system
-@@ -629,8 +635,6 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	dw_i2s_dai->ops = &dw_i2s_dai_ops;
--	dw_i2s_dai->suspend = dw_i2s_suspend;
--	dw_i2s_dai->resume = dw_i2s_resume;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dev->i2s_base = devm_ioremap_resource(&pdev->dev, res);
+ 		dai_drv->symmetric_rates = 1;
+ 		dai_drv->ops = &samsung_i2s_dai_ops;
 -- 
 2.7.4
 
