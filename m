@@ -2,78 +2,73 @@ Return-Path: <SRS0=II5U=3J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 154A1C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 16:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28AF1C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 16:11:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 95448217F4
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 16:10:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A55A9217F4
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 16:11:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IR92qfe+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95448217F4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pHd3DkU1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A55A9217F4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB842167A;
-	Mon, 20 Jan 2020 17:09:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB842167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 093521687;
+	Mon, 20 Jan 2020 17:10:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 093521687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579536611;
-	bh=zEXyISN/+aqXWum9hqy+2cmL1WTcr55+QdOjqACtTIc=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=IR92qfe+VgfIYGrhYvT4M4fXdk2Eg6J/iE40WRIODgXOjShMjgQ306QD9cMw/ykma
-	 m62+CBnGXpPrHrG1MjDeDVTte8Nl9EUAm8rcNLKxRzOMamEsLfLImPE4fMIngErW29
-	 xLcytLhyogTJcx43UdueH6u17VTy5aRa0HT3QxxY=
+	s=default; t=1579536659;
+	bh=ZhxQ0IKUngvVDBZuAVtLc4WMJ/yhdx7sONLhKgXhRHE=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pHd3DkU1G/cgyHprGnZp6uvlb25A0uCzUqoHbG1YI3UMp0QbhtFdLss9zllshOUpK
+	 5nozcSalHAGS19Ah0FCdYekUXzZNYJtvEyO28x7hNwOnAhR+gEP8vTefl85qalL6eT
+	 uaWYM1hoQY83cqUg236VHopD/oVm/QBj9RDNoUqg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35081F80248;
-	Mon, 20 Jan 2020 17:08:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C26AF8022D;
+	Mon, 20 Jan 2020 17:08:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A90BEF80248; Mon, 20 Jan 2020 17:08:28 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id B4E60F80274; Mon, 20 Jan 2020 17:08:34 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0FE3CF800C6
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 17:08:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FE3CF800C6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 980F4F80249
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 17:08:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 980F4F80249
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2020 08:08:19 -0800
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 20 Jan 2020 08:08:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,342,1574150400"; d="scan'208";a="220704899"
+X-IronPort-AV: E=Sophos;i="5.70,342,1574150400"; d="scan'208";a="374357098"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga007.fm.intel.com with ESMTP; 20 Jan 2020 08:08:16 -0800
+ by orsmga004.jf.intel.com with ESMTP; 20 Jan 2020 08:08:13 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 3F952525; Mon, 20 Jan 2020 18:08:13 +0200 (EET)
+ id CC470107; Mon, 20 Jan 2020 18:08:12 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
  x86@kernel.org, Mark Brown <broonie@kernel.org>,
  linux-kernel@vger.kernel.org
-Date: Mon, 20 Jan 2020 18:08:01 +0200
-Message-Id: <20200120160801.53089-10-andriy.shevchenko@linux.intel.com>
+Date: Mon, 20 Jan 2020 18:07:52 +0200
+Message-Id: <20200120160801.53089-1-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200120160801.53089-1-andriy.shevchenko@linux.intel.com>
-References: <20200120160801.53089-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
  Jie Yang <yang.jie@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [alsa-devel] [PATCH v2 9/9] ASoC: Intel: Switch DMI table match to
-	a test of variable
+Subject: [alsa-devel] [PATCH v2 0/9] x86: Easy way of detecting MS Surface 3
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,8 +86,16 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since we have a common x86 quirk that provides an exported variable,
-use it instead of local DMI table match.
+While working on RTC regression, I noticed that we are using the same DMI check
+over and over in the drivers for MS Surface 3 platform. This series dedicated
+for making it easier in the same way how it's done for Apple machines.
+
+Changelog v2:
+- removed RTC patches for now
+- added couple more clean ups to arch/x86/kernel/quirks.c
+- redone DMI quirk to use driver_data instead of callback
+- simplified check in soc-acpi-intel-cht-match.c to be oneliner
+- added a new patch to cover rt5645 codec driver
 
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -100,65 +103,28 @@ Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: Jie Yang <yang.jie@linux.intel.com>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- .../intel/common/soc-acpi-intel-cht-match.c   | 33 ++-----------------
- 1 file changed, 3 insertions(+), 30 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index d0fb43c2b9f6..c35766125d5e 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -5,31 +5,11 @@
-  * Copyright (c) 2017, Intel Corporation.
-  */
- 
--#include <linux/dmi.h>
-+#include <linux/platform_data/x86/machine.h>
-+
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- 
--static unsigned long cht_machine_id;
--
--#define CHT_SURFACE_MACH 1
--
--static int cht_surface_quirk_cb(const struct dmi_system_id *id)
--{
--	cht_machine_id = CHT_SURFACE_MACH;
--	return 1;
--}
--
--static const struct dmi_system_id cht_table[] = {
--	{
--		.callback = cht_surface_quirk_cb,
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
--		},
--	},
--	{ }
--};
--
- static struct snd_soc_acpi_mach cht_surface_mach = {
- 	.id = "10EC5640",
- 	.drv_name = "cht-bsw-rt5645",
-@@ -41,14 +21,7 @@ static struct snd_soc_acpi_mach cht_surface_mach = {
- 
- static struct snd_soc_acpi_mach *cht_quirk(void *arg)
- {
--	struct snd_soc_acpi_mach *mach = arg;
--
--	dmi_check_system(cht_table);
--
--	if (cht_machine_id == CHT_SURFACE_MACH)
--		return &cht_surface_mach;
--	else
--		return mach;
-+	return x86_microsoft_surface_3_machine ? &cht_surface_mach : arg;
- }
- 
- /* Cherryview-based platforms: CherryTrail and Braswell */
+Andy Shevchenko (9):
+  x86/platform: Rename x86/apple.h -> x86/machine.h
+  x86/quirks: Add missed include to satisfy static checker
+  x86/quirks: Introduce hpet_dev_print_force_hpet_address() helper
+  x86/quirks: Join string literals back
+  x86/quirks: Convert DMI matching to use a table
+  x86/quirks: Add a DMI quirk for Microsoft Surface 3
+  platform/x86: surface3_wmi: Switch DMI table match to a test of
+    variable
+  ASoC: rt5645: Switch DMI table match to a test of variable
+  ASoC: Intel: Switch DMI table match to a test of variable
+
+ arch/x86/kernel/quirks.c                      | 91 +++++++++++++------
+ drivers/platform/x86/surface3-wmi.c           | 16 +---
+ include/linux/platform_data/x86/apple.h       | 14 +--
+ include/linux/platform_data/x86/machine.h     | 20 ++++
+ sound/soc/codecs/rt5645.c                     | 14 ++-
+ .../intel/common/soc-acpi-intel-cht-match.c   | 33 +------
+ 6 files changed, 93 insertions(+), 95 deletions(-)
+ create mode 100644 include/linux/platform_data/x86/machine.h
+
 -- 
 2.24.1
 
