@@ -2,56 +2,55 @@ Return-Path: <SRS0=II5U=3J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AEF7C33CAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8882FC33CAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:10:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9ADF920678
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:09:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 14B6620678
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:10:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EsEOnzYv"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9ADF920678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KgT5/+Xh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14B6620678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 063A5167A;
-	Mon, 20 Jan 2020 02:08:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 063A5167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7157B1687;
+	Mon, 20 Jan 2020 02:09:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7157B1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579482571;
-	bh=mJK/CzTJJoHPv2Jgax8pM9v030mIKQgWFXxMGUjuh0Y=;
+	s=default; t=1579482621;
+	bh=wDu0iBeBowcrUo6tGd5xV5AwY2xaOjUcaZdl1kcCbxA=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EsEOnzYvdmwwEJrNId02kpN43qXsDsRu7jVWrihpZ1GUtheDdITPayNpUWt6jZW7w
-	 pZhrW0FibI/A8cXmrOY36iZw9d+xACQeiTeivarApa0IZ0VgVmmZwozrz+qIQTtlaa
-	 nMujnKbYqxzGLpxE60J6zNZAcOqRFyJLRDkx1bKI=
+	b=KgT5/+Xh3oGKSXtE4iKu51VD+rRnibYhe0YrBzkDuQ1U4+USNLZd5Trm8HXPEWSVG
+	 eNENtg87VrnydFsN4OsTzI3xxSWaEQxbZGoBgb6SIt84S7mWIZTfKwwt0ROtYxAvq9
+	 T9M2g5BO7kuFNWspcISpgADor4EHZXpVwN0gfI/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75141F802C4;
-	Mon, 20 Jan 2020 02:04:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE5F9F801F9;
+	Mon, 20 Jan 2020 02:04:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FFF3F802D2; Mon, 20 Jan 2020 02:04:24 +0100 (CET)
+ id 45167F802E8; Mon, 20 Jan 2020 02:04:31 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0F244F802BC
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F244F802BC
-Date: 20 Jan 2020 10:04:18 +0900
-X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="36865479"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:18 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 735C4F802DC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 735C4F802DC
+Date: 20 Jan 2020 10:04:26 +0900
+X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="36865493"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:26 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D97CE40083F5;
- Mon, 20 Jan 2020 10:04:18 +0900 (JST)
-Message-ID: <8736cbym3x.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 159AF41025BC;
+ Mon, 20 Jan 2020 10:04:26 +0900 (JST)
+Message-ID: <871rrvym3p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,7 +58,7 @@ In-Reply-To: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 References: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 08/17] ASoC: sti: sti_uniperif: move
+Subject: [alsa-devel] [PATCH v2 09/17] ASoC: ti: omap-mcpdm: move
 	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -96,52 +95,65 @@ This patch moves DAI driver .suspend/.resume to Component driver
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sti/sti_uniperif.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/ti/omap-mcpdm.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index ee4a0151..7b9169f 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -308,9 +308,9 @@ int sti_uniperiph_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/ti/omap-mcpdm.c b/sound/soc/ti/omap-mcpdm.c
+index b8c8290..a726cd7 100644
+--- a/sound/soc/ti/omap-mcpdm.c
++++ b/sound/soc/ti/omap-mcpdm.c
+@@ -458,11 +458,11 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+-static int omap_mcpdm_suspend(struct snd_soc_dai *dai)
++static int omap_mcpdm_suspend(struct snd_soc_component *component)
+ {
+-	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
++	struct omap_mcpdm *mcpdm = snd_soc_component_get_drvdata(component);
+ 
+-	if (dai->active) {
++	if (component->active) {
+ 		omap_mcpdm_stop(mcpdm);
+ 		omap_mcpdm_close_streams(mcpdm);
+ 	}
+@@ -476,15 +476,15 @@ static int omap_mcpdm_suspend(struct snd_soc_dai *dai)
  	return 0;
  }
  
--static int sti_uniperiph_dai_suspend(struct snd_soc_dai *dai)
-+static int sti_uniperiph_suspend(struct snd_soc_component *component)
+-static int omap_mcpdm_resume(struct snd_soc_dai *dai)
++static int omap_mcpdm_resume(struct snd_soc_component *component)
  {
--	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct sti_uniperiph_data *priv = snd_soc_component_get_drvdata(component);
- 	struct uniperif *uni = priv->dai_data.uni;
- 	int ret;
+-	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
++	struct omap_mcpdm *mcpdm = snd_soc_component_get_drvdata(component);
  
-@@ -330,9 +330,9 @@ static int sti_uniperiph_dai_suspend(struct snd_soc_dai *dai)
- 	return ret;
- }
+ 	if (mcpdm->pm_active_count) {
+ 		while (mcpdm->pm_active_count--)
+ 			pm_runtime_get_sync(mcpdm->dev);
  
--static int sti_uniperiph_dai_resume(struct snd_soc_dai *dai)
-+static int sti_uniperiph_resume(struct snd_soc_component *component)
- {
--	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
-+	struct sti_uniperiph_data *priv = snd_soc_component_get_drvdata(component);
- 	struct uniperif *uni = priv->dai_data.uni;
- 	int ret;
+-		if (dai->active) {
++		if (component->active) {
+ 			omap_mcpdm_open_streams(mcpdm);
+ 			omap_mcpdm_start(mcpdm);
+ 		}
+@@ -504,8 +504,6 @@ static int omap_mcpdm_resume(struct snd_soc_dai *dai)
+ static struct snd_soc_dai_driver omap_mcpdm_dai = {
+ 	.probe = omap_mcpdm_probe,
+ 	.remove = omap_mcpdm_remove,
+-	.suspend = omap_mcpdm_suspend,
+-	.resume = omap_mcpdm_resume,
+ 	.probe_order = SND_SOC_COMP_ORDER_LATE,
+ 	.remove_order = SND_SOC_COMP_ORDER_EARLY,
+ 	.playback = {
+@@ -527,6 +525,8 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
  
-@@ -370,12 +370,12 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
- 
- static const struct snd_soc_dai_driver sti_uniperiph_dai_template = {
- 	.probe = sti_uniperiph_dai_probe,
--	.suspend = sti_uniperiph_dai_suspend,
--	.resume = sti_uniperiph_dai_resume
+ static const struct snd_soc_component_driver omap_mcpdm_component = {
+ 	.name		= "omap-mcpdm",
++	.suspend	= omap_mcpdm_suspend,
++	.resume		= omap_mcpdm_resume,
  };
  
- static const struct snd_soc_component_driver sti_uniperiph_dai_component = {
- 	.name = "sti_cpu_dai",
-+	.suspend = sti_uniperiph_suspend,
-+	.resume = sti_uniperiph_resume
- };
- 
- static int sti_uniperiph_cpu_dai_of(struct device_node *node,
+ void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
 -- 
 2.7.4
 
