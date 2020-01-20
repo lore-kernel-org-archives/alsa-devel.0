@@ -2,55 +2,56 @@ Return-Path: <SRS0=II5U=3J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93404C33CAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:08:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AEF7C33CAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:09:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EEDC20678
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:08:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9ADF920678
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:09:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R+fOgDKY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EEDC20678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EsEOnzYv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9ADF920678
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 772BE1687;
-	Mon, 20 Jan 2020 02:07:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 772BE1687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 063A5167A;
+	Mon, 20 Jan 2020 02:08:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 063A5167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579482529;
-	bh=9LplLOQaIz0O3L6s61yxEJ6O12sfHpx0NaNgMHjG/MY=;
+	s=default; t=1579482571;
+	bh=mJK/CzTJJoHPv2Jgax8pM9v030mIKQgWFXxMGUjuh0Y=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R+fOgDKYj2zNxx4O/zECin05qizlxU6nCSzw7wP0a1AljUC5ez86wc/1gbMkps83o
-	 BdlZi5EDYMebXPYj7EL/5xNCJWxvbX2+Wtkg6oVR+rWa4XPHuEjFiLFs68yVRC8UwP
-	 yi8VyXN+dnJr9Tte8pwUmGcRcYHF4sgQ2/rZqqmc=
+	b=EsEOnzYvdmwwEJrNId02kpN43qXsDsRu7jVWrihpZ1GUtheDdITPayNpUWt6jZW7w
+	 pZhrW0FibI/A8cXmrOY36iZw9d+xACQeiTeivarApa0IZ0VgVmmZwozrz+qIQTtlaa
+	 nMujnKbYqxzGLpxE60J6zNZAcOqRFyJLRDkx1bKI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F48CF802A9;
-	Mon, 20 Jan 2020 02:04:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75141F802C4;
+	Mon, 20 Jan 2020 02:04:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88C1CF802A9; Mon, 20 Jan 2020 02:04:18 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B5A55F80291
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5A55F80291
-Date: 20 Jan 2020 10:04:13 +0900
-X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="37083114"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:13 +0900
+ id 9FFF3F802D2; Mon, 20 Jan 2020 02:04:24 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0F244F802BC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:04:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F244F802BC
+Date: 20 Jan 2020 10:04:18 +0900
+X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="36865479"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2020 10:04:18 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 50A5541025BC;
- Mon, 20 Jan 2020 10:04:13 +0900 (JST)
-Message-ID: <874kwrym42.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D97CE40083F5;
+ Mon, 20 Jan 2020 10:04:18 +0900 (JST)
+Message-ID: <8736cbym3x.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +59,7 @@ In-Reply-To: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 References: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 07/17] ASoC: samsung: spdif: move
+Subject: [alsa-devel] [PATCH v2 08/17] ASoC: sti: sti_uniperif: move
 	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -95,65 +96,52 @@ This patch moves DAI driver .suspend/.resume to Component driver
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/samsung/spdif.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ sound/soc/sti/sti_uniperif.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
-index 805c579..1a9f08a5 100644
---- a/sound/soc/samsung/spdif.c
-+++ b/sound/soc/samsung/spdif.c
-@@ -91,6 +91,12 @@ struct samsung_spdif_info {
- static struct snd_dmaengine_dai_dma_data spdif_stereo_out;
- static struct samsung_spdif_info spdif_info;
- 
-+static inline struct samsung_spdif_info
-+*component_to_info(struct snd_soc_component *component)
-+{
-+	return snd_soc_component_get_drvdata(component);
-+}
-+
- static inline struct samsung_spdif_info *to_info(struct snd_soc_dai *cpu_dai)
- {
- 	return snd_soc_dai_get_drvdata(cpu_dai);
-@@ -290,9 +296,9 @@ static void spdif_shutdown(struct snd_pcm_substream *substream,
- }
- 
- #ifdef CONFIG_PM
--static int spdif_suspend(struct snd_soc_dai *cpu_dai)
-+static int spdif_suspend(struct snd_soc_component *component)
- {
--	struct samsung_spdif_info *spdif = to_info(cpu_dai);
-+	struct samsung_spdif_info *spdif = component_to_info(component);
- 	u32 con = spdif->saved_con;
- 
- 	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-@@ -307,9 +313,9 @@ static int spdif_suspend(struct snd_soc_dai *cpu_dai)
+diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
+index ee4a0151..7b9169f 100644
+--- a/sound/soc/sti/sti_uniperif.c
++++ b/sound/soc/sti/sti_uniperif.c
+@@ -308,9 +308,9 @@ int sti_uniperiph_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  	return 0;
  }
  
--static int spdif_resume(struct snd_soc_dai *cpu_dai)
-+static int spdif_resume(struct snd_soc_component *component)
+-static int sti_uniperiph_dai_suspend(struct snd_soc_dai *dai)
++static int sti_uniperiph_suspend(struct snd_soc_component *component)
  {
--	struct samsung_spdif_info *spdif = to_info(cpu_dai);
-+	struct samsung_spdif_info *spdif = component_to_info(component);
+-	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct sti_uniperiph_data *priv = snd_soc_component_get_drvdata(component);
+ 	struct uniperif *uni = priv->dai_data.uni;
+ 	int ret;
  
- 	dev_dbg(spdif->dev, "Entered %s\n", __func__);
+@@ -330,9 +330,9 @@ static int sti_uniperiph_dai_suspend(struct snd_soc_dai *dai)
+ 	return ret;
+ }
  
-@@ -343,12 +349,12 @@ static struct snd_soc_dai_driver samsung_spdif_dai = {
- 				SNDRV_PCM_RATE_96000),
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
- 	.ops = &spdif_dai_ops,
--	.suspend = spdif_suspend,
--	.resume = spdif_resume,
+-static int sti_uniperiph_dai_resume(struct snd_soc_dai *dai)
++static int sti_uniperiph_resume(struct snd_soc_component *component)
+ {
+-	struct sti_uniperiph_data *priv = snd_soc_dai_get_drvdata(dai);
++	struct sti_uniperiph_data *priv = snd_soc_component_get_drvdata(component);
+ 	struct uniperif *uni = priv->dai_data.uni;
+ 	int ret;
+ 
+@@ -370,12 +370,12 @@ static int sti_uniperiph_dai_probe(struct snd_soc_dai *dai)
+ 
+ static const struct snd_soc_dai_driver sti_uniperiph_dai_template = {
+ 	.probe = sti_uniperiph_dai_probe,
+-	.suspend = sti_uniperiph_dai_suspend,
+-	.resume = sti_uniperiph_dai_resume
  };
  
- static const struct snd_soc_component_driver samsung_spdif_component = {
- 	.name		= "samsung-spdif",
-+	.suspend	= spdif_suspend,
-+	.resume		= spdif_resume,
+ static const struct snd_soc_component_driver sti_uniperiph_dai_component = {
+ 	.name = "sti_cpu_dai",
++	.suspend = sti_uniperiph_suspend,
++	.resume = sti_uniperiph_resume
  };
  
- static int spdif_probe(struct platform_device *pdev)
+ static int sti_uniperiph_cpu_dai_of(struct device_node *node,
 -- 
 2.7.4
 
