@@ -2,55 +2,56 @@ Return-Path: <SRS0=II5U=3J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62F50C33CB7
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DC56C33CAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:05:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E887320730
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:04:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F195B206B7
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:05:22 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Bn21Pqed"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E887320730
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DavL8tR7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F195B206B7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 208541679;
-	Mon, 20 Jan 2020 02:03:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 208541679
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB6A4168C;
+	Mon, 20 Jan 2020 02:04:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB6A4168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579482277;
-	bh=Qre6JrQzu082xlu30WffJCs8yXd6Qu21CEICsrktzds=;
+	s=default; t=1579482321;
+	bh=EUV5vwQ1BJZpMpwVmO63eKYY/G19GBco+B50/yLAp4s=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bn21Pqedg3NlhHMAw131u5eYMVtfDJKvBJKruwuz4CQq5kGJhpzJaIixkV82NGlFg
-	 6X0G7qLV8O2AVXjc0XBO/3wg3ZlaNcJciuE2sOmRKz2G222zoDXScNkLK5q4/obBp6
-	 XV3pRHHdL/G1ce2LHqkOz6ZD4SRKS86+Z1lfY0ck=
+	b=DavL8tR7fdu6fGEPlxjBFRmKoEXmjlPL2u39QvQ9dOv6MYvDb+JTJGpLv4xMKo/mC
+	 kWTbz4hdxFzvxzGzreL5IgFfE+x6+Wsj3txoNghIQSEohOFX53+qWPcu17SdqLXWpe
+	 xilOSE0g1LukA6c60mP0S0nM+w3fbAnk+RUGVGdM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9584EF801F9;
-	Mon, 20 Jan 2020 02:03:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95122F8021D;
+	Mon, 20 Jan 2020 02:03:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E67D3F801F9; Mon, 20 Jan 2020 02:03:43 +0100 (CET)
+ id A20EFF8026F; Mon, 20 Jan 2020 02:03:48 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id F15D4F8013E
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:03:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F15D4F8013E
-Date: 20 Jan 2020 10:03:36 +0900
-X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="37083040"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jan 2020 10:03:36 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id BFDBAF800E2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:03:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFDBAF800E2
+Date: 20 Jan 2020 10:03:43 +0900
+X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="37083057"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 20 Jan 2020 10:03:43 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D31BE4007F5C;
- Mon, 20 Jan 2020 10:03:36 +0900 (JST)
-Message-ID: <87d0bfym53.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5CCB741025BC;
+ Mon, 20 Jan 2020 10:03:43 +0900 (JST)
+Message-ID: <87blqzym4w.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -58,7 +59,7 @@ In-Reply-To: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 References: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH v2 01/17] ASoC: atmel: atmel_ssc_dai: move
+Subject: [alsa-devel] [PATCH v2 02/17] ASoC: bcm: cygnus-ssp: move
 	.suspend/.resume to component
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -95,66 +96,100 @@ This patch moves DAI driver .suspend/.resume to Component driver
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ sound/soc/bcm/cygnus-ssp.c | 39 +++++++++++++++++++++++++++++++++------
+ 1 file changed, 33 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index ca60339..1073f46 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -760,12 +760,12 @@ static int atmel_ssc_trigger(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index 2f9357d..257f504 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -1052,10 +1052,13 @@ static int cygnus_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
  }
  
- #ifdef CONFIG_PM
--static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
-+static int atmel_ssc_suspend(struct snd_soc_component *component)
+ #ifdef CONFIG_PM_SLEEP
+-static int cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
++static int __cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
  {
- 	struct atmel_ssc_info *ssc_p;
--	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
-+	struct platform_device *pdev = to_platform_device(component->dev);
+ 	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
  
--	if (!cpu_dai->active)
-+	if (!component->active)
- 		return 0;
++	if (!cpu_dai->active)
++		return 0;
++
+ 	if (!aio->is_slave) {
+ 		u32 val;
  
- 	ssc_p = &ssc_info[pdev->id];
-@@ -787,15 +787,13 @@ static int atmel_ssc_suspend(struct snd_soc_dai *cpu_dai)
+@@ -1078,11 +1081,25 @@ static int cygnus_ssp_suspend(struct snd_soc_dai *cpu_dai)
  	return 0;
  }
  
--
--
--static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
-+static int atmel_ssc_resume(struct snd_soc_component *component)
+-static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
++static int cygnus_ssp_suspend(struct snd_soc_component *component)
++{
++	struct snd_soc_dai *dai;
++	int ret = 0;
++
++	for_each_component_dais(component, dai)
++		ret |= __cygnus_ssp_suspend(dai);
++
++	return ret;
++}
++
++static int __cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
  {
- 	struct atmel_ssc_info *ssc_p;
--	struct platform_device *pdev = to_platform_device(cpu_dai->dev);
-+	struct platform_device *pdev = to_platform_device(component->dev);
- 	u32 cr;
+ 	struct cygnus_aio_port *aio = cygnus_dai_get_portinfo(cpu_dai);
+ 	int error;
  
--	if (!cpu_dai->active)
-+	if (!component->active)
- 		return 0;
++	if (!cpu_dai->active)
++		return 0;
++
+ 	if (!aio->is_slave) {
+ 		if (aio->clk_trace.cap_clk_en) {
+ 			error = clk_prepare_enable(aio->cygaud->
+@@ -1109,6 +1126,18 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
  
- 	ssc_p = &ssc_info[pdev->id];
-@@ -839,8 +837,6 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ 	return 0;
+ }
++
++static int cygnus_ssp_resume(struct snd_soc_component *component)
++{
++	struct snd_soc_dai *dai;
++	int ret = 0;
++
++	for_each_component_dais(component, dai)
++		ret |= __cygnus_ssp_resume(dai);
++
++	return ret;
++}
++
+ #else
+ #define cygnus_ssp_suspend NULL
+ #define cygnus_ssp_resume  NULL
+@@ -1149,8 +1178,6 @@ static const struct snd_soc_dai_ops cygnus_spdif_dai_ops = {
+ 				SNDRV_PCM_FMTBIT_S32_LE, \
+ 	}, \
+ 	.ops = &cygnus_ssp_dai_ops, \
+-	.suspend = cygnus_ssp_suspend, \
+-	.resume = cygnus_ssp_resume, \
+ }
+ 
+ static const struct snd_soc_dai_driver cygnus_ssp_dai_info[] = {
+@@ -1169,14 +1196,14 @@ static const struct snd_soc_dai_driver cygnus_spdif_dai_info = {
+ 			SNDRV_PCM_FMTBIT_S32_LE,
+ 	},
+ 	.ops = &cygnus_spdif_dai_ops,
+-	.suspend = cygnus_ssp_suspend,
+-	.resume = cygnus_ssp_resume,
  };
  
- static struct snd_soc_dai_driver atmel_ssc_dai = {
--		.suspend = atmel_ssc_suspend,
--		.resume = atmel_ssc_resume,
- 		.playback = {
- 			.channels_min = 1,
- 			.channels_max = 2,
-@@ -860,6 +856,8 @@ static struct snd_soc_dai_driver atmel_ssc_dai = {
+ static struct snd_soc_dai_driver cygnus_ssp_dai[CYGNUS_MAX_PORTS];
  
- static const struct snd_soc_component_driver atmel_ssc_component = {
- 	.name		= "atmel-ssc",
-+	.suspend	= atmel_ssc_suspend,
-+	.resume		= atmel_ssc_resume,
+ static const struct snd_soc_component_driver cygnus_ssp_component = {
+ 	.name		= "cygnus-audio",
++	.suspend	= cygnus_ssp_suspend,
++	.resume		= cygnus_ssp_resume,
  };
  
- static int asoc_ssc_init(struct device *dev)
+ /*
 -- 
 2.7.4
 
