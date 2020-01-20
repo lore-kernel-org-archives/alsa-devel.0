@@ -6,60 +6,56 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80050C33CAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 00:33:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17704C33CAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:03:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0387920678
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 00:33:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 92F33206B7
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 01:03:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="By7H1ezy"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0387920678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PU0zH8P1"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92F33206B7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40A3A1666;
-	Mon, 20 Jan 2020 01:32:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40A3A1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id D141C166B;
+	Mon, 20 Jan 2020 02:02:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D141C166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579480410;
-	bh=U0wAEnEepOQdv1KSJtNKe1QE2mQFSDxVkOw1k7HKao8=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=By7H1ezy/k+GrFKQ3EgC62iSUUTmgP/2/yAmLKRTwhbm0MJs4ZIiQoOiU6E+YQZtA
-	 MdTgVl2uAJEIBZghlQ1sx7lp4LGnAhQpi7WWKw4Dgp2tgDV990qUudCaHH2JVAOVTC
-	 rqpqNyl/HkuU6sgQR6QhcVbaOVBWhsjJKRR8f+mA=
+	s=default; t=1579482218;
+	bh=7fjil8sorJFpXg6IXjgng7K5r0icWZrGgvs/SxOR+iY=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PU0zH8P18P3HQAzOR1EuThmD7BdUzBJ1/JPKLvkYDzLbfObZTVtWnfbRS3OVQB9KI
+	 ULsH3Z65L4WMJUIxtTGv9ZwTloqGxidf833yPR6p2H+9J2uMtVauNiEYgHShvneN85
+	 LeO+q1yjWqwQ3lkoLZ03lBgRx8ugsa3tdbD2kcq8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B82D4F80143;
-	Mon, 20 Jan 2020 01:32:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EC43F80143;
+	Mon, 20 Jan 2020 02:02:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B450F801D9; Mon, 20 Jan 2020 01:32:35 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 526B6F800E2
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 01:32:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 526B6F800E2
-Date: 20 Jan 2020 09:32:23 +0900
-X-IronPort-AV: E=Sophos;i="5.70,339,1574089200"; d="scan'208";a="37080033"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Jan 2020 09:32:23 +0900
+ id C3752F801D9; Mon, 20 Jan 2020 02:02:46 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6622CF800E2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 02:02:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6622CF800E2
+Date: 20 Jan 2020 10:02:35 +0900
+X-IronPort-AV: E=Sophos;i="5.70,340,1574089200"; d="scan'208";a="36865248"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Jan 2020 10:02:35 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id D805A40FB3AE;
- Mon, 20 Jan 2020 09:32:23 +0900 (JST)
-Message-ID: <87ftgbynl4.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 39C544007F5C;
+ Mon, 20 Jan 2020 10:02:35 +0900 (JST)
+Message-ID: <87eevvym6s.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Daniel Baluta <daniel.baluta@nxp.com>
-In-Reply-To: <VI1PR0402MB38390D33CFFE4CC0D6AD59AEF9310@VI1PR0402MB3839.eurprd04.prod.outlook.com>
-References: <VI1PR0402MB38390D33CFFE4CC0D6AD59AEF9310@VI1PR0402MB3839.eurprd04.prod.outlook.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: Re: [alsa-devel] soc-core: Questions about cpus->name &&
-	cpus->of_node
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH v2 00/17] ASoC: remove DAI suspend/resume
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,50 +68,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Daniel
+Hi Mark
 
-> =BB       /*
-> =BB        * CPU device may be specified by either name or OF node, but
-> =BB        * can be left unspecified, and will be matched based on DAI
-> =BB        * name alone..
-> =BB        */
-> =BB       if (link->cpus->name && link->cpus->of_node) {
-> =BB       =BB       dev_err(card->dev,
-> =BB       =BB       =BB       "ASoC: Neither/both cpu name/of_node are se=
-t for %s\n",
-> =BB       =BB       =BB       link->name);
-> =BB       =BB       return -EINVAL;
-> =BB       }
-> =
+This is v2 of "remove DAI suspend/resume" patch set.
+The difference is it has [17/17] patch, instead of previous [17/16] :)
 
-> Here either the warning message is wrong OR the if () condition is wrong.
-> =
+Kuninori Morimoto (17):
+   1) ASoC: atmel: atmel_ssc_dai: move .suspend/.resume to component
+   2) ASoC: bcm: cygnus-ssp: move .suspend/.resume to component
+   3) ASoC: cirrus: ep93xx-i2s: move .suspend/.resume to component
+   4) ASoC: jz4740: jz4740-i2s: move .suspend/.resume to component
+   5) ASoC: mediatek: move .suspend/.resume to component
+   6) ASoC: samsung: s3c24xx-i2s: move .suspend/.resume to component
+   7) ASoC: samsung: spdif: move .suspend/.resume to component
+   8) ASoC: sti: sti_uniperif: move .suspend/.resume to component
+   9) ASoC: ti: omap-mcpdm: move .suspend/.resume to component
+  10) ASoC: uniphier: move .suspend/.resume to component
+  11) ASoC: dwc: dwc-i2s: move .suspend/.resume to component
+  12) ASoC: samsung: i2s: move .suspend/.resume to component
+  13) ASoC: ux500: ux500_msp_dai: remove unused DAI .suspend/.resume
+  14) ASoC: pxa: pxa-ssp: move .suspend/.resume to component
+  15) ASoC: pxa: pxa2xx-i2s: move .suspend/.resume to component
+  16) ASoC: soc-core: remove DAI suspend/resume
+  17) ASoC: soc-core: remove bus_control
 
-> If the link->cpus->name =3D NULL && link->cpus->of_node =3D=3D NULL =
+ include/sound/soc-dai.h                    |  3 --
+ sound/soc/atmel/atmel_ssc_dai.c            | 18 ++++-----
+ sound/soc/au1x/ac97c.c                     |  1 -
+ sound/soc/au1x/psc-ac97.c                  |  1 -
+ sound/soc/bcm/cygnus-ssp.c                 | 39 +++++++++++++++---
+ sound/soc/cirrus/ep93xx-ac97.c             |  1 -
+ sound/soc/cirrus/ep93xx-i2s.c              | 16 ++++----
+ sound/soc/dwc/dwc-i2s.c                    | 32 ++++++++-------
+ sound/soc/fsl/fsl_ssi.c                    |  1 -
+ sound/soc/fsl/imx-ssi.c                    |  1 -
+ sound/soc/fsl/mpc5200_psc_ac97.c           |  2 -
+ sound/soc/jz4740/jz4740-i2s.c              | 18 ++++-----
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 12 +++---
+ sound/soc/mediatek/common/mtk-afe-fe-dai.h |  4 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 14 +------
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 10 ++---
+ sound/soc/pxa/pxa-ssp.c                    | 16 ++++----
+ sound/soc/pxa/pxa2xx-ac97.c                |  3 --
+ sound/soc/pxa/pxa2xx-i2s.c                 | 12 +++---
+ sound/soc/samsung/i2s.c                    | 13 +++---
+ sound/soc/samsung/s3c24xx-i2s.c            |  8 ++--
+ sound/soc/samsung/spdif.c                  | 18 ++++++---
+ sound/soc/sh/hac.c                         |  1 -
+ sound/soc/soc-core.c                       | 65 ++----------------------------
+ sound/soc/soc-dai.c                        | 12 ------
+ sound/soc/sti/sti_uniperif.c               | 12 +++---
+ sound/soc/tegra/tegra20_ac97.c             |  1 -
+ sound/soc/ti/omap-mcpdm.c                  | 16 ++++----
+ sound/soc/txx9/txx9aclc-ac97.c             |  1 -
+ sound/soc/uniphier/aio-cpu.c               | 31 ++++++++++++--
+ sound/soc/uniphier/aio-ld11.c              | 18 ---------
+ sound/soc/uniphier/aio-pxs2.c              | 14 -------
+ sound/soc/uniphier/aio.h                   |  2 -
+ sound/soc/ux500/ux500_msp_dai.c            |  2 -
+ 34 files changed, 170 insertions(+), 248 deletions(-)
 
-> the warning message will be not be printed. =
+-- 
+2.7.4
 
-
-It seems it was added by this patch
-
-	bc92657a11c0982783979bbb84ceaf58ba222124
-	("ASoC: make snd_soc_dai_link more symmetrical")
-
-it removes
-
-	- if (!!link->cpu_dai_name =3D=3D !!link->cpu_dai_of_node) {
-
-
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
