@@ -1,71 +1,68 @@
-Return-Path: <SRS0=II5U=3J=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=ytyY=3K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58DBAC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 18:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 218D5C32771
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 01:26:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD59322527
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 18:38:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9D14624125
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 01:26:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MGls4yB7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD59322527
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QZ/80PHZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D14624125
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39F601661;
-	Mon, 20 Jan 2020 19:37:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39F601661
+	by alsa0.perex.cz (Postfix) with ESMTPS id DECD9165F;
+	Tue, 21 Jan 2020 02:25:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DECD9165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579545497;
-	bh=GALpppA78tKuyNXjmt1yXvr8rojygmxIWLuPy0KiRxk=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=MGls4yB7veQNlL2K+J5HqsY+eqeUIkJH8/9paS8ov+CT0QM6AZsfIiLv27fMvurZq
-	 dZrhVMkVdWzrWL0DoRePbcVmNVbbTVXvzKriXMTAafr6vSYT+W9GK6jhBj5rTfVvFw
-	 u+qCmNMX/ub8Meh3XKs+z3u3ilJfeeUzvSf+vo6I=
+	s=default; t=1579570000;
+	bh=mMQQmYCs7XRSKmcQPw2BmGjm31TlebijTBoiOGC1X5k=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QZ/80PHZTL8Q4hK3NHoNsptPNJ/ImtTmwyYXE59fZZu5NMTt5VAyG28sk6uKGIK6c
+	 GhNATPBGA6iZqcx+LeI9lTvk73SDCiIkUkmOACgvauCmlmlg4k+pPL3/P7DTZYoWH7
+	 2bd+36IgtZWSoixyqO6EblljkA9yEef8GDTQ/pMM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 934D1F801D8;
-	Mon, 20 Jan 2020 19:37:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FFE8F8022D;
+	Tue, 21 Jan 2020 02:25:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48C69F8020C; Mon, 20 Jan 2020 19:37:24 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9EE02F8013E
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 19:37:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EE02F8013E
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8738C31B;
- Mon, 20 Jan 2020 10:37:18 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 035103F68E;
- Mon, 20 Jan 2020 10:37:17 -0800 (PST)
-Date: Mon, 20 Jan 2020 18:37:16 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Message-ID: <20200120183716.GM6852@sirena.org.uk>
-References: <20200120160117.29130-1-kai.vehmanen@linux.intel.com>
- <20200120160117.29130-4-kai.vehmanen@linux.intel.com>
- <s5hpnfe2hvb.wl-tiwai@suse.de>
- <20200120171718.GG6852@sirena.org.uk>
- <s5hlfq22e3q.wl-tiwai@suse.de>
-MIME-Version: 1.0
-In-Reply-To: <s5hlfq22e3q.wl-tiwai@suse.de>
-X-Cookie: I invented skydiving in 1989!
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: cujomalainey@chromium.org, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 3/3] ALSA: hda/hdmi - add retry logic to
- parse_intel_hdmi()
+ id 1514BF8012F; Tue, 21 Jan 2020 02:25:47 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96459F8012F
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 02:25:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96459F8012F
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 20 Jan 2020 17:25:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,344,1574150400"; d="scan'208";a="258879997"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by fmsmga002.fm.intel.com with ESMTP; 20 Jan 2020 17:25:38 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.de
+Date: Mon, 20 Jan 2020 21:29:22 +0800
+Message-Id: <20200120132928.25257-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org,
+ bard.liao@intel.com, pierre-louis.bossart@linux.intel.com,
+ kuninori.morimoto.gx@renesas.com
+Subject: [alsa-devel] [PATCH RFC v4 0/6] ASoC: Add Multi CPU DAI support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,54 +75,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8426188634622651813=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+As discussed in [1], ASoC core supports multi codec DAIs
+on a DAI link. However it does not do so for CPU DAIs.
 
---===============8426188634622651813==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wKTlTxfx0Fr6BT7S"
-Content-Disposition: inline
+So, add support for multi CPU DAIs on a DAI Link by adding
+multi CPU DAI in Card instantiation, suspend and resume
+functions, PCM ops, stream handling functions and DAPM.
 
+[1]: https://www.spinics.net/lists/alsa-devel/msg71369.html
 
---wKTlTxfx0Fr6BT7S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+changes in v4:
+ - fix "rtd->num_codecs > 1" error in ASoC: Add Multi CPU DAI support
+ - split "ASoC: pcm: check if cpu DAI support the given stream" from
+   "ASoC: Add multiple CPU DAI support for PCM ops"
+ - add helper "ASoC: Add dapm_add_valid_dai_widget helper" for
+   "ASoC: Add multiple CPU DAI support in DAPM" 
 
-On Mon, Jan 20, 2020 at 07:10:33PM +0100, Takashi Iwai wrote:
+Bard Liao (2):
+  ASoC: return error if the function is not support multi cpu yet.
+  ASoC: pcm: check if cpu DAI support the given stream
 
-> In anyway, this fix is really independent from others and has little
-> to do with ASoC itself, so I keep this picked through my tree.
+Shreyas NC (4):
+  ASoC: Add initial support for multiple CPU DAIs
+  ASoC: Add multiple CPU DAI support for PCM ops
+  ASoC: Add dapm_add_valid_dai_widget helper
+  ASoC: Add multiple CPU DAI support in DAPM
 
-Yeah, I don't think there's any problem with taking it separately.
+ include/sound/soc.h                   |  15 +
+ sound/soc/soc-compress.c              |   5 +-
+ sound/soc/soc-core.c                  | 205 +++++-----
+ sound/soc/soc-dapm.c                  | 133 ++++---
+ sound/soc/soc-generic-dmaengine-pcm.c |  18 +
+ sound/soc/soc-pcm.c                   | 554 ++++++++++++++++++--------
+ 6 files changed, 615 insertions(+), 315 deletions(-)
 
---wKTlTxfx0Fr6BT7S
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4l81sACgkQJNaLcl1U
-h9BLwAf/aeCcXbVanvpMhK6SbwHrVgVHlvlVUivnKCslYhTHEeJ+1PE++2g5466C
-wGD2ud0/QUbSk3UNo4qvVQbWXoR6nTLgXLnmtmYVjJhVhTbk0CQ3IxaSoqLCFbLV
-2PYJo+muJuBJGzQikbHmrYLT9qn1WZO3JXEBegafXN79+EnETH74KcZ17kGzm/sO
-XRfVo1+qVCaPh6mZR4iubss3utR8JYta8NOJsx1XEmU9LK2ZLLpXB+yWGYrsa7kZ
-o9w2x9HGhKynNJQhaSx1mVveaPrfV2L/pvnJPn1LVj7X1fkK0tyWI6FSwow0qXnf
-mTrpI685BNnyCmyqdsswkqE1C2XG3w==
-=kJm6
------END PGP SIGNATURE-----
-
---wKTlTxfx0Fr6BT7S--
-
---===============8426188634622651813==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+2.17.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8426188634622651813==--
