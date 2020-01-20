@@ -2,107 +2,69 @@ Return-Path: <SRS0=II5U=3J=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94402C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 15:59:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DAA5C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 16:02:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1AD3622314
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 15:59:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DBE0B2073D
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jan 2020 16:02:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Akl1yYm1";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fP/G9x+L"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1AD3622314
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Jp96qey0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBE0B2073D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EF641666;
-	Mon, 20 Jan 2020 16:58:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EF641666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33820166D;
+	Mon, 20 Jan 2020 17:01:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33820166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579535952;
-	bh=TXL4hv1wYAA4n5teKCKVWK9hmw528kvtheFSP3jOs2U=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1579536142;
+	bh=BV6039R9TfrbNALQOajqzxzfejsJLvWb93qffKG5VV8=;
+	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Akl1yYm1gTXv7IPfxswCWToBJUfwPYvD1rJ8fMsBZhChhGkOwbZxD5m+foSTdS0gM
-	 Ak3MTL7dwF/klX0qgObdnLGbqjpBcIJ4HKZlTEfphN9HhVLM7kc3Qmv7Fh27EY8p4T
-	 vcUeuK9j2A2A9mSZV0bnwCHKR3ZdmVjnUxykQs6k=
+	b=Jp96qey0my0kLL/j1ghRNbueZmsdPCnlHEYgUfz/0i5wGAumrrM+cd4RTT/eT3yZ3
+	 Omz0oPY8Z2wUYxsoK45PMcxDIFei1GsxkhzCwHtr4Lj6zpzB7/7iMRwdPpqaRfwm3m
+	 7u3FZ50a2fVGU30i89xteok3+bfK4SW2Y0Of/dk4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4D0EF801D8;
-	Mon, 20 Jan 2020 16:58:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B357AF800C6;
+	Mon, 20 Jan 2020 17:01:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1100F8020C; Mon, 20 Jan 2020 16:58:18 +0100 (CET)
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
- [IPv6:2a00:1450:4864:20::542])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 98749F8022D; Mon, 20 Jan 2020 17:01:29 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71CA2F8012F
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 16:58:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71CA2F8012F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="fP/G9x+L"
-Received: by mail-ed1-x542.google.com with SMTP id r21so9386edq.0
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 07:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=hCx0FkOyPUAD6FImSxkekqB+LP9ak15a5zOVHzRkbmQ=;
- b=fP/G9x+L9PkgABveHZWoY9IaNc5ecTNODt99ULgbvz4WSGj+RnBE9AphLW93GtkZ3F
- 1JJaEFbixiJRZPRtcGTck/aS3dEh5qIPQaxMRxB2EgifHFzu9s6KQfhgI9PzfbSboilB
- IXo01B8GkrtVd7FFkOOl3Up1RM4ZRrWx+OJ/9NSKwrc9AngKrSVo/8izMGXL+UvzS3Vd
- 8LvD+ure5A3IoxOcaX7RuFrYapJxo/1o86BbhRX+6EtEA167ic6Ecytm9lh9h2EJWyP8
- px4zrGg8O6XS7YbF8EQTkILa04SzPKDDcjT9b8yvTyKs/0yLzcZZ2s/azXsJbH20itbq
- zN5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=hCx0FkOyPUAD6FImSxkekqB+LP9ak15a5zOVHzRkbmQ=;
- b=bsP6U8m/rIQr2dQmksmk/pj7t7R8A9/DfKG0RnxZ9Zdfb8by+89i1f4NsC1ZvIzRGp
- CoHDV1dTpsYtem8y9FdWoIgUSPZbXdVXpnwUXfXfCnxYNiD52CywR5GRMPcmfzNpJz01
- 4GqmiYktEvnnnv7B68FZQclmy2m73BIrXIiF59i4merm0BZQQeEBJlmVTCiLXzggZrdt
- 0oCopaiDnc+mVqaSm7ctawwwEzEUW/L8AkKfj69FIS86yiGHxLntLcF60nmKVX+MK9f+
- Au+kIbUIMVSukgwpi+etAKydWwrnMb+GqYZk7x4cGRvGYWMX6Cq7db4fdUPkw6bc+JZO
- 1VuQ==
-X-Gm-Message-State: APjAAAVOs+MQGGiRfkpqJ9xUlcJb6wQemDOYe7Ub7J/IuwUrbvA0fE/9
- 75crq75P+LJib6oAecoY4+4=
-X-Google-Smtp-Source: APXvYqyWbXRB0TX6y0VmIJ7AAivnItgalHZTSGnWc7Y6DX1cBKxWX2c1pdhOcKTxeWIEECp/nlZ/zA==
-X-Received: by 2002:a17:906:7006:: with SMTP id n6mr53213ejj.1.1579535893494; 
- Mon, 20 Jan 2020 07:58:13 -0800 (PST)
-Received: from [192.168.2.145] (79-139-233-37.dynamic.spd-mgts.ru.
- [79.139.233.37])
- by smtp.googlemail.com with ESMTPSA id r9sm1162950ejx.31.2020.01.20.07.58.11
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 20 Jan 2020 07:58:12 -0800 (PST)
-To: Sameer Pujar <spujar@nvidia.com>, perex@perex.cz, tiwai@suse.com,
- robh+dt@kernel.org
-References: <1579530198-13431-1-git-send-email-spujar@nvidia.com>
- <1579530198-13431-3-git-send-email-spujar@nvidia.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d01ed171-d949-19b2-3390-ee30eada2779@gmail.com>
-Date: Mon, 20 Jan 2020 18:58:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <1579530198-13431-3-git-send-email-spujar@nvidia.com>
-Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, jonathanh@nvidia.com,
- viswanathl@nvidia.com, linux-tegra@vger.kernel.org, broonie@kernel.org,
- atalambedu@nvidia.com, sharadg@nvidia.com, thierry.reding@gmail.com,
- rlokhande@nvidia.com, mkumard@nvidia.com, dramesh@nvidia.com
-Subject: Re: [alsa-devel] [PATCH 2/9] ASoC: tegra: add support for CIF
- programming
+ by alsa1.perex.cz (Postfix) with ESMTPS id EFD57F8012F
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 17:01:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFD57F8012F
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 20 Jan 2020 08:01:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,342,1574150400"; d="scan'208";a="258751436"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga002.fm.intel.com with ESMTP; 20 Jan 2020 08:01:22 -0800
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com
+Date: Mon, 20 Jan 2020 18:01:15 +0200
+Message-Id: <20200120160117.29130-2-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200120160117.29130-1-kai.vehmanen@linux.intel.com>
+References: <20200120160117.29130-1-kai.vehmanen@linux.intel.com>
+Cc: tiwai@suse.de, cujomalainey@chromium.org, kai.vehmanen@linux.intel.com
+Subject: [alsa-devel] [PATCH v2 1/3] ASoC: SOF: Intel: refactor i915_get/put
+	functions
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,27 +77,119 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGVsbG8gU2FtZWVyLAoKMjAuMDEuMjAyMCAxNzoyMywgU2FtZWVyIFB1amFyINC/0LjRiNC10YI6
-Cgpbc25pcF0KCj4gVGVncmEzMCBhbmQgVGVncmExMjQgaGF2ZSBhbiBpZGVudGljYWwgQ0lGIHBy
-b2dyYW1taW5nIGhlbHBlciBmdW5jdGlvbi4KCltzbmlwXQoKPiAtI2RlZmluZSBURUdSQTEyNF9B
-VURJT0NJRl9DVFJMX0ZJRk9fVEhSRVNIT0xEX1NISUZUCTI0Cj4gLSNkZWZpbmUgVEVHUkExMjRf
-QVVESU9DSUZfQ1RSTF9GSUZPX1RIUkVTSE9MRF9NQVNLX1VTCTB4M2YKPiAtI2RlZmluZSBURUdS
-QTEyNF9BVURJT0NJRl9DVFJMX0ZJRk9fVEhSRVNIT0xEX01BU0sJKFRFR1JBMTI0X0FVRElPQ0lG
-X0NUUkxfRklGT19USFJFU0hPTERfTUFTS19VUyA8PCBURUdSQTEyNF9BVURJT0NJRl9DVFJMX0ZJ
-Rk9fVEhSRVNIT0xEX1NISUZUKQo+IC0KPiAtLyogQ2hhbm5lbCBjb3VudCBtaW51cyAxICovCj4g
-LSNkZWZpbmUgVEVHUkEzMF9BVURJT0NJRl9DVFJMX0FVRElPX0NIQU5ORUxTX1NISUZUCTI0Cj4g
-LSNkZWZpbmUgVEVHUkEzMF9BVURJT0NJRl9DVFJMX0FVRElPX0NIQU5ORUxTX01BU0tfVVMJNwo+
-IC0jZGVmaW5lIFRFR1JBMzBfQVVESU9DSUZfQ1RSTF9BVURJT19DSEFOTkVMU19NQVNLCShURUdS
-QTMwX0FVRElPQ0lGX0NUUkxfQVVESU9fQ0hBTk5FTFNfTUFTS19VUyA8PCBURUdSQTMwX0FVRElP
-Q0lGX0NUUkxfQVVESU9fQ0hBTk5FTFNfU0hJRlQpCgpUaGUgQVVESU9DSUZfQ1RSTCBiaXRmaWVs
-ZHMgYXJlIG5vdCB0aGUgc2FtZSBvbiBUMzAgYW5kIFQxMjQsIHdoeSBhcmUKeW91IGNsYWltaW5n
-IHRoYXQgcHJvZ3JhbW1pbmcgaXMgaWRlbnRpY2FsPyBIYXZlIHlvdSBhY3R1YWxseSB0cmllZCB0
-bwp0ZXN0IHRoZXNlIHBhdGNoZXMgb24gVDMwPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+The current interface to control i915 display power is misleading.
+The hda_codec_i915_get() and hda_codec_i915_put() names suggest
+a refcounting based interface. This is confusing as no refcounting
+is done and the underlying HDAC library interface does not support
+refcounts eithers.
+
+Clarify the code by replacing the functions with a single
+hda_codec_i915_display_power() that is aligned with
+snd_hdac_display_power().
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/soc/sof/intel/hda-codec.c | 21 ++++++---------------
+ sound/soc/sof/intel/hda.c       |  2 +-
+ sound/soc/sof/intel/hda.h       |  7 +++----
+ 3 files changed, 10 insertions(+), 20 deletions(-)
+
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 78dfd5f5c034..9106ab8dac6f 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -170,23 +170,14 @@ EXPORT_SYMBOL_NS(hda_codec_probe_bus, SND_SOC_SOF_HDA_AUDIO_CODEC);
+ #if IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI) || \
+ 	IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)
+ 
+-void hda_codec_i915_get(struct snd_sof_dev *sdev)
++void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable)
+ {
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 
+-	dev_dbg(bus->dev, "Turning i915 HDAC power on\n");
+-	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
++	dev_dbg(bus->dev, "Turning i915 HDAC power %d\n", enable);
++	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, enable);
+ }
+-EXPORT_SYMBOL_NS(hda_codec_i915_get, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
+-
+-void hda_codec_i915_put(struct snd_sof_dev *sdev)
+-{
+-	struct hdac_bus *bus = sof_to_bus(sdev);
+-
+-	dev_dbg(bus->dev, "Turning i915 HDAC power off\n");
+-	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+-}
+-EXPORT_SYMBOL_NS(hda_codec_i915_put, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
++EXPORT_SYMBOL_NS(hda_codec_i915_display_power, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
+ 
+ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+ {
+@@ -198,7 +189,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	hda_codec_i915_get(sdev);
++	hda_codec_i915_display_power(sdev, true);
+ 
+ 	return 0;
+ }
+@@ -209,7 +200,7 @@ int hda_codec_i915_exit(struct snd_sof_dev *sdev)
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	int ret;
+ 
+-	hda_codec_i915_put(sdev);
++	hda_codec_i915_display_power(sdev, false);
+ 
+ 	ret = snd_hdac_i915_exit(bus);
+ 
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index d08462f481de..54a7ba881150 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -380,7 +380,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
+ 	/* create codec instances */
+ 	hda_codec_probe_bus(sdev, hda_codec_use_common_hdmi);
+ 
+-	hda_codec_i915_put(sdev);
++	hda_codec_i915_display_power(sdev, false);
+ 
+ 	/*
+ 	 * we are done probing so decrement link counts
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index a4d030bfeee1..6191d9192fae 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -586,15 +586,14 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev);
+ 	(IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI) || \
+ 	 IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+ 
+-void hda_codec_i915_get(struct snd_sof_dev *sdev);
+-void hda_codec_i915_put(struct snd_sof_dev *sdev);
++void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable);
+ int hda_codec_i915_init(struct snd_sof_dev *sdev);
+ int hda_codec_i915_exit(struct snd_sof_dev *sdev);
+ 
+ #else
+ 
+-static inline void hda_codec_i915_get(struct snd_sof_dev *sdev)  { }
+-static inline void hda_codec_i915_put(struct snd_sof_dev *sdev)  { }
++static inline void hda_codec_i915_display_power(struct snd_sof_dev *sdev,
++						bool enable) { }
+ static inline int hda_codec_i915_init(struct snd_sof_dev *sdev) { return 0; }
+ static inline int hda_codec_i915_exit(struct snd_sof_dev *sdev) { return 0; }
+ 
+-- 
+2.17.1
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
