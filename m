@@ -6,57 +6,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 844B4C33CAA
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:36:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EDE0C2D0CE
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:37:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F9B321569
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:36:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E0E4121569
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:37:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RB9v7ae8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F9B321569
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GhqapCXQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0E4121569
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66E1C167B;
-	Tue, 21 Jan 2020 18:35:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66E1C167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5154D1693;
+	Tue, 21 Jan 2020 18:36:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5154D1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579628198;
-	bh=kpShmTPzvEBX1WnKiYwMwvz3vQ3vYXQTA/kdUrDR7oc=;
+	s=default; t=1579628234;
+	bh=6oxGSwZrISzIJupS1GTDU60sb88+K4G3M3BmaLyxQaU=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=RB9v7ae8WTtwtpBuVx6B6ac3e7qLI+wpq8usqLYqRmn09Naa4awZUM4NnnwLrCBdO
-	 priuaTd5e7TkNWp5U0abFq08Mp4u7WNVoAOGJuqfX63JumY625HjkfOcVW/Js4kQDl
-	 JlrNSEbVOdCiKPo65TJuBppOiCGa9Sxdm+2yhGb4=
+	b=GhqapCXQK9/iS1EbMHpBxduhvEFas0bDwyNgePjhIgDPzJa4kOiGC6dkQph3epDoI
+	 bIx1i1ZGKIXhTE2tUY8cVbFbOe/3GyLFNpRyNqtPqgAvoKSg3Sdlq1NHiTsUQnUOMc
+	 p4tLFUbtCATjbtgq/7RVq1J8/w6tRKodCGffsA4A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F9B2F80328;
-	Tue, 21 Jan 2020 18:28:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDA16F80304;
+	Tue, 21 Jan 2020 18:28:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F850F80315; Tue, 21 Jan 2020 18:28:44 +0100 (CET)
+ id 9D7BEF802C2; Tue, 21 Jan 2020 18:28:44 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 16275F802EC
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:28:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16275F802EC
+ by alsa1.perex.cz (Postfix) with ESMTP id 0C840F802C2
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:28:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C840F802C2
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7373830E;
- Tue, 21 Jan 2020 09:28:36 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0132630E;
+ Tue, 21 Jan 2020 09:28:29 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E602F3F6C4;
- Tue, 21 Jan 2020 09:28:35 -0800 (PST)
-Date: Tue, 21 Jan 2020 17:28:34 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74F173F6C4;
+ Tue, 21 Jan 2020 09:28:28 -0800 (PST)
+Date: Tue, 21 Jan 2020 17:28:26 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <871rrvym3p.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-871rrvym3p.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wo9nx7it.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-87wo9nx7it.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: ti: omap-mcpdm: move .suspend/.resume
-	to component" to the asoc tree
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: [alsa-devel] Applied "ASoC: samsung: i2s: move .suspend/.resume to
+	component" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: ti: omap-mcpdm: move .suspend/.resume to component
+   ASoC: samsung: i2s: move .suspend/.resume to component
 
 has been applied to the asoc tree at
 
@@ -102,10 +101,10 @@ to this mail.
 Thanks,
 Mark
 
-From 78dbafbd04ddcc3a21879c4403c57d979689a3fe Mon Sep 17 00:00:00 2001
+From 21385a4faa8469b129af56a8c5a9405e3189c787 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 20 Jan 2020 10:04:26 +0900
-Subject: [PATCH] ASoC: ti: omap-mcpdm: move .suspend/.resume to component
+Date: Mon, 20 Jan 2020 10:04:42 +0900
+Subject: [PATCH] ASoC: samsung: i2s: move .suspend/.resume to component
 
 There is no big difference at implementation for .suspend/.resume
 between DAI driver and Component driver.
@@ -122,69 +121,54 @@ component->active if necessary.
 This patch moves DAI driver .suspend/.resume to Component driver
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/871rrvym3p.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87wo9nx7it.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ti/omap-mcpdm.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/samsung/i2s.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/ti/omap-mcpdm.c b/sound/soc/ti/omap-mcpdm.c
-index b8c8290265c7..a726cd7a8252 100644
---- a/sound/soc/ti/omap-mcpdm.c
-+++ b/sound/soc/ti/omap-mcpdm.c
-@@ -458,11 +458,11 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 9722940da6a4..a57bb989a0ef 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1024,14 +1024,14 @@ i2s_delay(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
  }
  
- #ifdef CONFIG_PM_SLEEP
--static int omap_mcpdm_suspend(struct snd_soc_dai *dai)
-+static int omap_mcpdm_suspend(struct snd_soc_component *component)
+ #ifdef CONFIG_PM
+-static int i2s_suspend(struct snd_soc_dai *dai)
++static int i2s_suspend(struct snd_soc_component *component)
  {
--	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
-+	struct omap_mcpdm *mcpdm = snd_soc_component_get_drvdata(component);
- 
--	if (dai->active) {
-+	if (component->active) {
- 		omap_mcpdm_stop(mcpdm);
- 		omap_mcpdm_close_streams(mcpdm);
- 	}
-@@ -476,15 +476,15 @@ static int omap_mcpdm_suspend(struct snd_soc_dai *dai)
- 	return 0;
+-	return pm_runtime_force_suspend(dai->dev);
++	return pm_runtime_force_suspend(component->dev);
  }
  
--static int omap_mcpdm_resume(struct snd_soc_dai *dai)
-+static int omap_mcpdm_resume(struct snd_soc_component *component)
+-static int i2s_resume(struct snd_soc_dai *dai)
++static int i2s_resume(struct snd_soc_component *component)
  {
--	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
-+	struct omap_mcpdm *mcpdm = snd_soc_component_get_drvdata(component);
+-	return pm_runtime_force_resume(dai->dev);
++	return pm_runtime_force_resume(component->dev);
+ }
+ #else
+ #define i2s_suspend NULL
+@@ -1140,6 +1140,9 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
  
- 	if (mcpdm->pm_active_count) {
- 		while (mcpdm->pm_active_count--)
- 			pm_runtime_get_sync(mcpdm->dev);
- 
--		if (dai->active) {
-+		if (component->active) {
- 			omap_mcpdm_open_streams(mcpdm);
- 			omap_mcpdm_start(mcpdm);
- 		}
-@@ -504,8 +504,6 @@ static int omap_mcpdm_resume(struct snd_soc_dai *dai)
- static struct snd_soc_dai_driver omap_mcpdm_dai = {
- 	.probe = omap_mcpdm_probe,
- 	.remove = omap_mcpdm_remove,
--	.suspend = omap_mcpdm_suspend,
--	.resume = omap_mcpdm_resume,
- 	.probe_order = SND_SOC_COMP_ORDER_LATE,
- 	.remove_order = SND_SOC_COMP_ORDER_EARLY,
- 	.playback = {
-@@ -527,6 +525,8 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
- 
- static const struct snd_soc_component_driver omap_mcpdm_component = {
- 	.name		= "omap-mcpdm",
-+	.suspend	= omap_mcpdm_suspend,
-+	.resume		= omap_mcpdm_resume,
+ 	.dapm_routes = samsung_i2s_dapm_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(samsung_i2s_dapm_routes),
++
++	.suspend = i2s_suspend,
++	.resume = i2s_resume,
  };
  
- void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
+ #define SAMSUNG_I2S_FMTS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -1171,8 +1174,6 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 
+ 		dai_drv->probe = samsung_i2s_dai_probe;
+ 		dai_drv->remove = samsung_i2s_dai_remove;
+-		dai_drv->suspend = i2s_suspend;
+-		dai_drv->resume = i2s_resume;
+ 
+ 		dai_drv->symmetric_rates = 1;
+ 		dai_drv->ops = &samsung_i2s_dai_ops;
 -- 
 2.20.1
 
