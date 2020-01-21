@@ -6,63 +6,64 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03207C2D0CE
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 08:37:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96DB6C2D0CE
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 08:45:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8210C24125
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 08:37:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1EB4424125
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 08:45:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nat6/rHt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8210C24125
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="e99Iwnt3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EB4424125
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DAB4A1673;
-	Tue, 21 Jan 2020 09:36:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAB4A1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58E271674;
+	Tue, 21 Jan 2020 09:45:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58E271674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579595841;
-	bh=mJaAl4Cxma8PswSqbrOqt52Oz0rCQREON6ajV2fJHiA=;
+	s=default; t=1579596351;
+	bh=kKdH7e0it1SgWuBdNSg7UJR3Kq8HzH2G+DKFLVVuiZ8=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nat6/rHtZMXCgEVdJGBJt25N/cisTy85AIAL2TLwg5bUBXga2NwsOOBg2C/bI66wb
-	 2FVz2Nr32OiVQESPYKwEmNdixtN6zfd0LU3M36ZEpRFpj0ba0ocyjd4KJ1k7LfegbW
-	 hYG39+UdXU1r2T/8ddCCTfEK8mZgPgQRFZ5C12gY=
+	b=e99Iwnt3E7wKLS8Wp4AxYOU36xYi54WGVy4Z1Bi1Uov0SOgUzNaKGoei+SrRHSeHi
+	 ib8uuK0DO+Olk6IJh/gMdAbvf1/5AF/0XGo9twJcJW+fR21uCxtq8Cg8wJhmI6n0Uj
+	 bWLnZEqjxPffe2Yo5Zjm21CWedGQb2lRXiiUJr0c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61F50F8015B;
-	Tue, 21 Jan 2020 09:36:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B918CF800CB;
+	Tue, 21 Jan 2020 09:45:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F828F801D9; Tue, 21 Jan 2020 09:36:29 +0100 (CET)
+ id D6C23F801D9; Tue, 21 Jan 2020 09:44:58 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EA5BF800CB
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 09:36:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EA5BF800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 343CCF800CB
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 09:44:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 343CCF800CB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 61F83AF7A;
- Tue, 21 Jan 2020 08:36:25 +0000 (UTC)
-Date: Tue, 21 Jan 2020 09:36:24 +0100
-Message-ID: <s5h5zh52ol3.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1215DADE3;
+ Tue, 21 Jan 2020 08:44:55 +0000 (UTC)
+Date: Tue, 21 Jan 2020 09:44:54 +0100
+Message-ID: <s5h1rrt2o6x.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87y2u1p6ud.wl-kuninori.morimoto.gx@renesas.com>
-References: <87k15l7ewd.wl-kuninori.morimoto.gx@renesas.com>
- <s5ha76h2t4f.wl-tiwai@suse.de>
- <87y2u1p6ud.wl-kuninori.morimoto.gx@renesas.com>
+To: Tobias <toszlanyi@yahoo.de>
+In-Reply-To: <a0e87326-839d-76df-dfd1-6d571017fc27@yahoo.de>
+References: <9457db14-4084-c0dd-5c89-821b35c3db66.ref@yahoo.de>
+ <9457db14-4084-c0dd-5c89-821b35c3db66@yahoo.de>
+ <697208e751dcbcc70cf00af7b625a4109b9c66cb.camel@tsoy.me>
+ <a0e87326-839d-76df-dfd1-6d571017fc27@yahoo.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] Question about snd_pcm_limit_hw_rates() call timing
+Cc: Alexander Tsoy <alexander@tsoy.me>, alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] USB Audio Interface / Denon MC7000 and MC8000
+	controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,50 +76,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Jan 2020 09:11:06 +0100,
-Kuninori Morimoto wrote:
-> 
-> 
-> Hi Takashi
-> 
-> Thank you for feedback
-> 
-> > Actually the question is whether we need snd_pcm_limit_hw_rates() call
-> > or not.  The current code in soc_pcm_init_runtime_hw() assumes that
-> > each cpu and codec dais already set the proper rate_min and rate_max,
-> > and narrow the range accordingly.  So basically the call there is
-> > superfluous.  OTOH, in dpcm_fe_dai_startup(), the call overrides the
-> > existing rate_min/max setup as you mentioned, so it may be wrong.
-> 
-> OK, it is same as my understanding.
-> I want to do (so far) is just cleanup.
-> I will fixup/cleanup it.
-> 
-> I'm posting ALSA SoC cleanup patches to ML.
-> This fixup/cleanup will be added to my ALSA-SoC-cleanup-patch-queue
-
-Actually as Lars pointed out in another reply, the current code of
-soc_pcm_init_runtime_hw() is correct.  It's a bit tricky but smartly
-handling the cases: when rate_min/max are to be overridden by rates
-bits, they are supposed to be zero, and min_not_zero() does the
-trick.  Also, snd_pcm_rate_mask_intersect() sanitizes the bits when
-CONTINUOUS or KNOT is set, so the spurious rate bits won't be
-reflected in snd_pcm_limit_hw_rates(), too.
-
-But still the dpcm_fe_dai_startup() needs to be fixed as you
-mentioned.  Though, I guess we need to fix not there but rather other
-places (e.g. dpcm_set_fe_runtime() itself).
-
-
-thanks,
-
-Takashi
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gVHVlLCAyMSBKYW4gMjAyMCAwOToxNzozNCArMDEwMCwKVG9iaWFzIHdyb3RlOgo+IAo+IFRo
+YW5rcyBhIGxvdCBmb3IgdGhlIGhpbnQgQWxleGFuZGVyLiBBbnlob3csIEkgYW0gbm90IHN1cmUg
+d2hlcmUgdG8KPiBwdXQgdGhhdC4KPiBBbHNvIFRha2FzaGkgSXdhaSB3YXMgaW52b2x2ZWQgYWxy
+ZWFkeSBhbmQgSSB3b3VsZCBsaWtlIHRvIHByZXZlbnQKPiBtaXhpbmcgdXAgdGhpbmdzIG9yIGRv
+dWJsZSB3b3JrLgoKSnVzdCBnbyB0ZXN0aW5nIGFzIEFsZXhhbmRlciBzdWdnZXN0ZWQuICBJJ20g
+dG9vIGJ1c3kgZm9yIG90aGVyIHRhc2tzCmFuZCBoYXZlIGxpdHRsZSB0aW1lIHRvIGludmVzdGln
+YXRlIHlvdXIgZGV2aWNlcyByaWdodCBub3csIGluCmFueXdheS4uLgoKCnRoYW5rcywKClRha2Fz
+aGkKCj4gUGxlYXNlIGFkdmlzZSBpbiBkZXRhaWwgd2hhdCBJIHdvdWxkIG5lZWQgdG8gZG8gYXMg
+SSBhbSBub3QgYSBwcm9ncmFtbWVyLgo+IAo+IFRoYW5rcyBhIGxvdC4KPiBUb2JpYXMKPiAKPiBB
+bSAyMC4wMS4yMCB1bSAwOToyMiBzY2hyaWViIEFsZXhhbmRlciBUc295Ogo+ID4g0JIg0KHQsSwg
+MTQvMTIvMjAxOSDQsiAwOToyNCArMDEwMCwgVG9iaWFzINC/0LjRiNC10YI6Cj4gPj4gSGVsbG8g
+ZGVhciBBTFNBIGRldmVsb3BlcnMuCj4gPj4KPiA+PiBJIGhhdmUgcHVyY2hhc2VkIGEgTUM3MDAw
+IGNvbnRyb2xsZXIgaW4gb3JkZXIgdG8gY29udHJvbCBNSVhYWCBvbgo+ID4+IFVidW50dQo+ID4+
+IDE2LjA0LiBBY2NvcmRpbmcgdG8gdGhlIERlbm9uIHNwZWNpZmljYXRpb24gdGhlIGNvbnRyb2xs
+ZXIgc2hvdWxkCj4gPj4gaGF2ZQo+ID4+IGJlZW4gY2xhc3MgY29tcGxpYW50IGJ1dCB0aGVyZSBp
+cyBhbiBpc3N1ZSB3aXRoIHRoZSBBdWRpbyBpbnRlcmZhY2UKPiA+PiB0bwo+ID4+IHdvcmsgcHJv
+cGVybHkgZ2l2aW5nIGZvbGxvd2luZyBtZXNzYWdlIC4uLgo+ID4+Cj4gPj4gJCBkbWVzZwo+ID4+
+IC4uLgo+ID4+PiBbICAgNzQuNTIyODMxXSB1c2IgMS0xLjM6IG5ldyBoaWdoLXNwZWVkIFVTQiBk
+ZXZpY2UgbnVtYmVyIDYgdXNpbmcKPiA+Pj4geGhjaV9oY2QKPiA+PiBbICAgNzQuNjIzNzg0XSB1
+c2IgMS0xLjM6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0xNWU0LAo+ID4+IGlkUHJv
+ZHVjdD04MDA0Cj4gPj4gWyAgIDc0LjYyMzc4OV0gdXNiIDEtMS4zOiBOZXcgVVNCIGRldmljZSBz
+dHJpbmdzOiBNZnI9MSwgUHJvZHVjdD0yLAo+ID4+IFNlcmlhbE51bWJlcj0zCj4gPj4gWyAgIDc0
+LjYyMzc5M10gdXNiIDEtMS4zOiBQcm9kdWN0OiBERU5PTiBESiBNQzcwMDAKPiA+PiBbICAgNzQu
+NjIzNzk2XSB1c2IgMS0xLjM6IE1hbnVmYWN0dXJlcjogREVOT04gREoKPiA+PiBbICAgNzQuNjIz
+Nzk4XSB1c2IgMS0xLjM6IFNlcmlhbE51bWJlcjogMjAxNjAzCj4gPj4gWyAgIDc0LjYyNTEzNF0g
+dXNiIDEtMS4zOiBjbG9jayBzb3VyY2UgNjUgaXMgbm90IHZhbGlkLCBjYW5ub3QgdXNlCj4gPj4K
+PiA+PiAifHx8Y2xvY2sgc291cmNlIDY1IGlzIG5vdCB2YWxpZCwgY2Fubm90IHVzZSIgaXMgcmVw
+ZWF0ZWQKPiA+PiB1bmNvdW50YWJsZQo+ID4+IHRpbWVzIHRoZW4KPiA+Pgo+ID4gUGxlYXNlIHRy
+eSB0byBhZGQgZGVsYXkgYWZ0ZXIgZWFjaCBjbGFzcyBjb250cm9sIHJlcXVlc3QgaW4KPiA+IHNu
+ZF91c2JfY3RsX21zZ19xdWlyaygpOgo+ID4KPiA+ICAgICAgaWYgKGNoaXAtPnVzYl9pZCA9PSBV
+U0JfSUQoMHgxNWU0LCAweDgwMDQpICYmCj4gPiAgICAgICAgICAocmVxdWVzdHR5cGUgJiBVU0Jf
+VFlQRV9NQVNLKSA9PSBVU0JfVFlQRV9DTEFTUykKPiA+ICAgICAgICAgIG1zbGVlcCgyMCk7Cj4g
+Pgo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
