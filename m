@@ -4,59 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0D2BC2D0CE
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EC05C2D0CE
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8029B206A2
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BEB17206A2
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qCtkMQor"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8029B206A2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YMbQrVfC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEB17206A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D02E71679;
-	Tue, 21 Jan 2020 18:28:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D02E71679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0865D1697;
+	Tue, 21 Jan 2020 18:28:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0865D1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579627746;
-	bh=hVvEDfLIhQkFdSwPswyadZFGiRgde1VZ76eBPVhjJ8A=;
+	s=default; t=1579627781;
+	bh=vxJ5OUgCIyS4x3uvEJfi6pEfnLxVzw7lmkVMINmO880=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=qCtkMQorXbNPNbI3sqLBzTSQ7zRnxmJJx/DXJhhqfZLD/DrLA9aEiegchb10kzrHg
-	 h3uLpjwaU4aNjsDOcCCFpGGeK/faSePuIqrFyDepD1Z7t8M2w55hefwHsHCxUjrakd
-	 Z9ClXTf4LK4xl0C+5SGVqHE8pZxZjmUDwckVMwXY=
+	b=YMbQrVfCdqhUx2hL83KuSW1NSGh8j8rpNitmCRZvuQC3coYr/RYyd7jmo0ha80NNH
+	 stHIJOWvObGX2HSeG1IS0zNoVC96p2+NfVS9JGLIt8w/Igx4yxDdhaiD4cPlVSVVY9
+	 VN7oGpsVzwm9u0+g5tdgD/YoWd2p8FNwJZkfYBkI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57F09F801D9;
-	Tue, 21 Jan 2020 18:28:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CCDDF80271;
+	Tue, 21 Jan 2020 18:28:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED371F801F9; Tue, 21 Jan 2020 18:28:12 +0100 (CET)
+ id B8D43F801F9; Tue, 21 Jan 2020 18:28:14 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id CA992F8015B
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:28:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA992F8015B
+ by alsa1.perex.cz (Postfix) with ESMTP id AD37AF800CB
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:28:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD37AF800CB
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 291C2328;
- Tue, 21 Jan 2020 09:28:09 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8260830E;
+ Tue, 21 Jan 2020 09:28:06 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98E5D3F6C4;
- Tue, 21 Jan 2020 09:28:08 -0800 (PST)
-Date: Tue, 21 Jan 2020 17:28:06 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C82203F6C4;
+ Tue, 21 Jan 2020 09:28:05 -0800 (PST)
+Date: Tue, 21 Jan 2020 17:28:04 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20200117073814.82441-4-tzungbi@google.com>
-Message-Id: <applied-20200117073814.82441-4-tzungbi@google.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20200114150151.8537-1-matthias.bgg@kernel.org>
+Message-Id: <applied-20200114150151.8537-1-matthias.bgg@kernel.org>
 X-Patchwork-Hint: ignore
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
-Subject: [alsa-devel] Applied "ASoC: max98090: fix deadlock in
-	max98090_dapm_put_enum_double()" to the asoc tree
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Nicolas Boichat <drinkcat@chromium.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Daniel Kurtz <djkurtz@chromium.org>,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ hsinyi@chromium.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: [alsa-devel] Applied "ASoC: dt-bindings: rt5645: add suppliers" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +82,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: max98090: fix deadlock in max98090_dapm_put_enum_double()
+   ASoC: dt-bindings: rt5645: add suppliers
 
 has been applied to the asoc tree at
 
@@ -102,41 +107,36 @@ to this mail.
 Thanks,
 Mark
 
-From 294b7380ffe88d4a0626af1fee5843a3db0c913c Mon Sep 17 00:00:00 2001
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 17 Jan 2020 15:38:14 +0800
-Subject: [PATCH] ASoC: max98090: fix deadlock in
- max98090_dapm_put_enum_double()
+From 26aa19174f0d1837cb268b744f6dcb013265ab03 Mon Sep 17 00:00:00 2001
+From: Matthias Brugger <matthias.bgg@gmail.com>
+Date: Tue, 14 Jan 2020 16:01:50 +0100
+Subject: [PATCH] ASoC: dt-bindings: rt5645: add suppliers
 
-Commit 62d5ae4cafb7 ("ASoC: max98090: save and restore SHDN when
-changing sensitive registers SHDN bit") uses dapm_mutex to protect SHDN
-bit.  However, snd_soc_dapm_put_enum_double() in
-max98090_dapm_put_enum_double() acquires the dapm_mutex again which
-cause a deadlock.
+The rt5645 and rt5650 have two suppliers, document them.
 
-Use snd_soc_dapm_put_enum_double_locked() instead to fix the deadlock.
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 
-Fixes: 62d5ae4cafb7 ("ASoC: max98090: save and restore SHDN when changing sensitive registers SHDN bit")
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20200117073814.82441-4-tzungbi@google.com
+Link: https://lore.kernel.org/r/20200114150151.8537-1-matthias.bgg@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/rt5645.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index c01ce4a3f86d..0313e1183167 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -88,7 +88,7 @@ static int max98090_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
- 	int ret;
+diff --git a/Documentation/devicetree/bindings/sound/rt5645.txt b/Documentation/devicetree/bindings/sound/rt5645.txt
+index a03f9a872a71..41a62fd2ae1f 100644
+--- a/Documentation/devicetree/bindings/sound/rt5645.txt
++++ b/Documentation/devicetree/bindings/sound/rt5645.txt
+@@ -10,6 +10,10 @@ Required properties:
  
- 	max98090_shdn_save(max98090);
--	ret = snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
-+	ret = snd_soc_dapm_put_enum_double_locked(kcontrol, ucontrol);
- 	max98090_shdn_restore(max98090);
+ - interrupts : The CODEC's interrupt output.
  
- 	return ret;
++- avdd-supply: Power supply for AVDD, providing 1.8V.
++
++- cpvdd-supply: Power supply for CPVDD, providing 3.5V.
++
+ Optional properties:
+ 
+ - hp-detect-gpios:
 -- 
 2.20.1
 
