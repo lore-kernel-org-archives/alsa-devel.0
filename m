@@ -4,64 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EC05C2D0CE
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF9A1C2D0CE
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:30:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BEB17206A2
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7BBF420882
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:30:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YMbQrVfC"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BEB17206A2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M1HYxf+n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BBF420882
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0865D1697;
-	Tue, 21 Jan 2020 18:28:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0865D1697
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE1401689;
+	Tue, 21 Jan 2020 18:29:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE1401689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579627781;
-	bh=vxJ5OUgCIyS4x3uvEJfi6pEfnLxVzw7lmkVMINmO880=;
+	s=default; t=1579627833;
+	bh=msyoCT7SiLRRTjYp0+ST4l5yJcF8TbVrCzPsBp3SSFo=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=YMbQrVfCdqhUx2hL83KuSW1NSGh8j8rpNitmCRZvuQC3coYr/RYyd7jmo0ha80NNH
-	 stHIJOWvObGX2HSeG1IS0zNoVC96p2+NfVS9JGLIt8w/Igx4yxDdhaiD4cPlVSVVY9
-	 VN7oGpsVzwm9u0+g5tdgD/YoWd2p8FNwJZkfYBkI=
+	b=M1HYxf+nwD8nrBTrlQZzvi7DHTWbXG+zbCNTDmPJ42IYMjlvXOMWyNzfcBrI1w6lG
+	 K7K00M9VW8B8pGf6avoAk37+niwkww+6RUZXk9EdACDCFqftq6RMEKWIpliXnUc1gI
+	 bK/SRT+ciexmWvm0fmyT0S/9f4dei9A1I8Jm8vlw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CCDDF80271;
-	Tue, 21 Jan 2020 18:28:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C491F8027C;
+	Tue, 21 Jan 2020 18:28:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8D43F801F9; Tue, 21 Jan 2020 18:28:14 +0100 (CET)
+ id D959CF800E7; Tue, 21 Jan 2020 18:28:16 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id AD37AF800CB
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:28:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD37AF800CB
+ by alsa1.perex.cz (Postfix) with ESMTP id A195EF800E7
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:28:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A195EF800E7
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8260830E;
- Tue, 21 Jan 2020 09:28:06 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 975EE1007;
+ Tue, 21 Jan 2020 09:28:11 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C82203F6C4;
- Tue, 21 Jan 2020 09:28:05 -0800 (PST)
-Date: Tue, 21 Jan 2020 17:28:04 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 16ADC3F6C4;
+ Tue, 21 Jan 2020 09:28:10 -0800 (PST)
+Date: Tue, 21 Jan 2020 17:28:09 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20200114150151.8537-1-matthias.bgg@kernel.org>
-Message-Id: <applied-20200114150151.8537-1-matthias.bgg@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20200117073814.82441-3-tzungbi@google.com>
+Message-Id: <applied-20200117073814.82441-3-tzungbi@google.com>
 X-Patchwork-Hint: ignore
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Nicolas Boichat <drinkcat@chromium.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Daniel Kurtz <djkurtz@chromium.org>,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- hsinyi@chromium.org, Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] Applied "ASoC: dt-bindings: rt5645: add suppliers" to
-	the asoc tree
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
+Subject: [alsa-devel] Applied "ASoC: dapm: add
+	snd_soc_dapm_put_enum_double_locked" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,7 +77,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: dt-bindings: rt5645: add suppliers
+   ASoC: dapm: add snd_soc_dapm_put_enum_double_locked
 
 has been applied to the asoc tree at
 
@@ -107,36 +102,122 @@ to this mail.
 Thanks,
 Mark
 
-From 26aa19174f0d1837cb268b744f6dcb013265ab03 Mon Sep 17 00:00:00 2001
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Date: Tue, 14 Jan 2020 16:01:50 +0100
-Subject: [PATCH] ASoC: dt-bindings: rt5645: add suppliers
+From 839284e794822ebc8b66f32006a5d4cad863e1fb Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 17 Jan 2020 15:38:13 +0800
+Subject: [PATCH] ASoC: dapm: add snd_soc_dapm_put_enum_double_locked
 
-The rt5645 and rt5650 have two suppliers, document them.
+Adds snd_soc_dapm_put_enum_double_locked() for those use cases if
+dapm_mutex has already locked.
 
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-Link: https://lore.kernel.org/r/20200114150151.8537-1-matthias.bgg@kernel.org
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20200117073814.82441-3-tzungbi@google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5645.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/sound/soc-dapm.h |  2 ++
+ sound/soc/soc-dapm.c     | 54 ++++++++++++++++++++++++++++++----------
+ 2 files changed, 43 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5645.txt b/Documentation/devicetree/bindings/sound/rt5645.txt
-index a03f9a872a71..41a62fd2ae1f 100644
---- a/Documentation/devicetree/bindings/sound/rt5645.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5645.txt
-@@ -10,6 +10,10 @@ Required properties:
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 1b6afbc1a4ed..2a306c6f3fbc 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -392,6 +392,8 @@ int snd_soc_dapm_get_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
++int snd_soc_dapm_put_enum_double_locked(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_dapm_info_pin_switch(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_info *uinfo);
+ int snd_soc_dapm_get_pin_switch(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 442846f12cd4..bc20ad9abf8b 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3441,17 +3441,8 @@ int snd_soc_dapm_get_enum_double(struct snd_kcontrol *kcontrol,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_get_enum_double);
  
- - interrupts : The CODEC's interrupt output.
+-/**
+- * snd_soc_dapm_put_enum_double - dapm enumerated double mixer set callback
+- * @kcontrol: mixer control
+- * @ucontrol: control element information
+- *
+- * Callback to set the value of a dapm enumerated double mixer control.
+- *
+- * Returns 0 for success.
+- */
+-int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
++static int __snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol, int locked)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
+ 	struct snd_soc_card *card = dapm->card;
+@@ -3474,7 +3465,9 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 		mask |= e->mask << e->shift_r;
+ 	}
  
-+- avdd-supply: Power supply for AVDD, providing 1.8V.
+-	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
++	if (!locked)
++		mutex_lock_nested(&card->dapm_mutex,
++				  SND_SOC_DAPM_CLASS_RUNTIME);
+ 
+ 	change = dapm_kcontrol_set_value(kcontrol, val);
+ 
+@@ -3496,15 +3489,50 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 		card->update = NULL;
+ 	}
+ 
+-	mutex_unlock(&card->dapm_mutex);
++	if (!locked)
++		mutex_unlock(&card->dapm_mutex);
+ 
+ 	if (ret > 0)
+ 		soc_dpcm_runtime_update(card);
+ 
+ 	return change;
+ }
 +
-+- cpvdd-supply: Power supply for CPVDD, providing 3.5V.
-+
- Optional properties:
++/**
++ * snd_soc_dapm_put_enum_double - dapm enumerated double mixer set callback
++ * @kcontrol: mixer control
++ * @ucontrol: control element information
++ *
++ * Callback to set the value of a dapm enumerated double mixer control.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	return __snd_soc_dapm_put_enum_double(kcontrol, ucontrol, 0);
++}
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double);
  
- - hp-detect-gpios:
++/**
++ * snd_soc_dapm_put_enum_double_locked - dapm enumerated double mixer set
++ * callback
++ * @kcontrol: mixer control
++ * @ucontrol: control element information
++ *
++ * Callback to set the value of a dapm enumerated double mixer control.
++ * Must acquire dapm_mutex before calling the function.
++ *
++ * Returns 0 for success.
++ */
++int snd_soc_dapm_put_enum_double_locked(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	dapm_assert_locked(snd_soc_dapm_kcontrol_dapm(kcontrol));
++	return __snd_soc_dapm_put_enum_double(kcontrol, ucontrol, 1);
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_put_enum_double_locked);
++
+ /**
+  * snd_soc_dapm_info_pin_switch - Info for a pin switch
+  *
 -- 
 2.20.1
 
