@@ -2,75 +2,61 @@ Return-Path: <SRS0=ytyY=3K=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D092C2D0CE
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0D2BC2D0CE
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCE21206A2
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:28:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8029B206A2
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jan 2020 17:29:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qMeqrr9Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCE21206A2
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qCtkMQor"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8029B206A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A9281664;
-	Tue, 21 Jan 2020 18:27:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A9281664
+	by alsa0.perex.cz (Postfix) with ESMTPS id D02E71679;
+	Tue, 21 Jan 2020 18:28:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D02E71679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579627679;
-	bh=uAuPBPZVySCKwNacwTYOizlDfe6iHdphingqiHgLQuw=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qMeqrr9Zc3dLwc5tBk0XDrwc07ozlt3sEowmInwXRcDCkv1suIkixThOd2DWO0saU
-	 AIJuouOHt+WQQGeswPRwc+IfgOMzT7qnpCRGMZ28rtQonfkwMdgB+0Y0uRKBg97Co9
-	 i+F3tKswYsxHPy+OI47NwCwNOOHABgghg1Lq5K4U=
+	s=default; t=1579627746;
+	bh=hVvEDfLIhQkFdSwPswyadZFGiRgde1VZ76eBPVhjJ8A=;
+	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=qCtkMQorXbNPNbI3sqLBzTSQ7zRnxmJJx/DXJhhqfZLD/DrLA9aEiegchb10kzrHg
+	 h3uLpjwaU4aNjsDOcCCFpGGeK/faSePuIqrFyDepD1Z7t8M2w55hefwHsHCxUjrakd
+	 Z9ClXTf4LK4xl0C+5SGVqHE8pZxZjmUDwckVMwXY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5722F800E7;
-	Tue, 21 Jan 2020 18:27:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57F09F801D9;
+	Tue, 21 Jan 2020 18:28:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7438CF801D9; Tue, 21 Jan 2020 18:27:07 +0100 (CET)
+ id ED371F801F9; Tue, 21 Jan 2020 18:28:12 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2A2D5F800E7
- for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:27:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A2D5F800E7
+ by alsa1.perex.cz (Postfix) with ESMTP id CA992F8015B
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jan 2020 18:28:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA992F8015B
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3040E30E;
- Tue, 21 Jan 2020 09:26:59 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 291C2328;
+ Tue, 21 Jan 2020 09:28:09 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A064B3F6C4;
- Tue, 21 Jan 2020 09:26:58 -0800 (PST)
-Date: Tue, 21 Jan 2020 17:26:57 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98E5D3F6C4;
+ Tue, 21 Jan 2020 09:28:08 -0800 (PST)
+Date: Tue, 21 Jan 2020 17:28:06 +0000
 From: Mark Brown <broonie@kernel.org>
-To: "RAVULAPATI, VISHNU VARDHAN RAO" <Vishnuvardhanrao.Ravulapati@amd.com>
-Message-ID: <20200121172657.GK4656@sirena.org.uk>
-References: <1579603421-24571-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
- <20200121165925.GH4656@sirena.org.uk>
- <DM6PR12MB3868B9744A40D41450155534E70D0@DM6PR12MB3868.namprd12.prod.outlook.com>
- <20200121170811.GJ4656@sirena.org.uk>
- <DM6PR12MB386893EE3876B51B35A1787BE70D0@DM6PR12MB3868.namprd12.prod.outlook.com>
-MIME-Version: 1.0
-In-Reply-To: <DM6PR12MB386893EE3876B51B35A1787BE70D0@DM6PR12MB3868.namprd12.prod.outlook.com>
-X-Cookie: You too can wear a nose mitten.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- open list <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>,
- Colin Ian King <colin.king@canonical.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: amd: Fix for Subsequent Playback
-	issue.
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20200117073814.82441-4-tzungbi@google.com>
+Message-Id: <applied-20200117073814.82441-4-tzungbi@google.com>
+X-Patchwork-Hint: ignore
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
+Subject: [alsa-devel] Applied "ASoC: max98090: fix deadlock in
+	max98090_dapm_put_enum_double()" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,63 +69,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6302148324100255553=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The patch
 
---===============6302148324100255553==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zPXeIxDajdrcF2en"
-Content-Disposition: inline
+   ASoC: max98090: fix deadlock in max98090_dapm_put_enum_double()
 
+has been applied to the asoc tree at
 
---zPXeIxDajdrcF2en
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.6
 
-On Tue, Jan 21, 2020 at 05:12:42PM +0000, RAVULAPATI, VISHNU VARDHAN RAO wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please fix your mailer to quote replies normally, it's hard to read your
-mails.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> In what way is it part of the fix?  This at least needs some sort of
-> explanation somewhere, the changelog at least if not the code.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> When we play subsequently we hear last played sound for moment.kfree clears the structure.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-If the rtd is still being referenced after the kfree() you have a use
-after free bug so there's a serious problem there and this change is
-introducing a bug, you can only free things if they are not in use.  At
-a bare minimum I need the changelog to clearly explain what the cause of
-the clicks is and how the change fixes that.
+Thanks,
+Mark
 
---zPXeIxDajdrcF2en
-Content-Type: application/pgp-signature; name="signature.asc"
+From 294b7380ffe88d4a0626af1fee5843a3db0c913c Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Fri, 17 Jan 2020 15:38:14 +0800
+Subject: [PATCH] ASoC: max98090: fix deadlock in
+ max98090_dapm_put_enum_double()
 
------BEGIN PGP SIGNATURE-----
+Commit 62d5ae4cafb7 ("ASoC: max98090: save and restore SHDN when
+changing sensitive registers SHDN bit") uses dapm_mutex to protect SHDN
+bit.  However, snd_soc_dapm_put_enum_double() in
+max98090_dapm_put_enum_double() acquires the dapm_mutex again which
+cause a deadlock.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4nNGAACgkQJNaLcl1U
-h9CM4wf9HXTZtK9+VuEbzuneGipxxDkweRo9fNWDmS99cGqfZ4b02i/Cudd1lseC
-UFrh2Wdi+7RL5mSZhaGqi9XSgfgrl+rVPtX/MTKZ81OjzU49YIoMBf7jGi5Hvt7f
-8wfoyzpnQ+mPecpWLQr9K2krccs2I/H40U/qOY9YHYraAKq1sM3qYZL0jKa45PYH
-CL80QIqHSVKyf6k3aptNYv045aqVKyZ992lSmGBa2zud+kdsUEimJNtado1bm3fX
-QSthv9uf8J3sOBJZ76yjDPRt9miQ1qt8DSsPCw+dJ9zONy8ZSVN68EshAhFhqMvH
-khbp0nAECP4U9cdYcWW2Ni2gaNqSVA==
-=Bp1m
------END PGP SIGNATURE-----
+Use snd_soc_dapm_put_enum_double_locked() instead to fix the deadlock.
 
---zPXeIxDajdrcF2en--
+Fixes: 62d5ae4cafb7 ("ASoC: max98090: save and restore SHDN when changing sensitive registers SHDN bit")
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20200117073814.82441-4-tzungbi@google.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============6302148324100255553==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index c01ce4a3f86d..0313e1183167 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -88,7 +88,7 @@ static int max98090_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	int ret;
+ 
+ 	max98090_shdn_save(max98090);
+-	ret = snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
++	ret = snd_soc_dapm_put_enum_double_locked(kcontrol, ucontrol);
+ 	max98090_shdn_restore(max98090);
+ 
+ 	return ret;
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============6302148324100255553==--
