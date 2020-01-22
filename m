@@ -2,56 +2,55 @@ Return-Path: <SRS0=vsGj=3L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E226C2D0CE
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:48:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45726C2D0CE
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:48:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F1632253D
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:48:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C5E1D2253D
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:48:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="C8y4uAem"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F1632253D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XdcLXkn6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5E1D2253D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCE56166C;
-	Wed, 22 Jan 2020 01:47:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCE56166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDC3F1657;
+	Wed, 22 Jan 2020 01:48:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDC3F1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579654109;
-	bh=d8IST6ETHNyA0fBBWoCgKXMvKm6X/Xyq8YBXIBvH+H8=;
+	s=default; t=1579654132;
+	bh=pZZ51OHZ2Sc5NgtzBBXZujr2abEzIT2PWVelwU05V9Q=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C8y4uAemIhhNCiEjzSQs0gNjidxsJcHMdv/e3LsnMG1gXRQ7+lAnSXUqgGOKlA3dG
-	 yfyr0wdSfkiOcIMab0bStDpKHvywA4U+tPtNweLbfF26OXhCvtSTvJ8kJ1rWpzpQo2
-	 5rVkfkzIfyQbF3qaFB4Bf1Q1W1oSK6Z3/w7ay274=
+	b=XdcLXkn6yYmwCxzYpvU1v26G3cwvRX1XCxiucQylBFT01WWg3IrBR7sssSt8xO+cq
+	 7sA2G50j4RCS1W8iYZKM5i25ecjkLKlCa9k06j3EQplao8gLxF17+lziJNYi+wDUx9
+	 55bYw+0MAtniH/xD6cuifRfnKX4mASib0zhiWFVA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 146BFF8028A;
-	Wed, 22 Jan 2020 01:44:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 481A5F8028E;
+	Wed, 22 Jan 2020 01:44:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3E7CF8028B; Wed, 22 Jan 2020 01:44:53 +0100 (CET)
+ id D5EABF80290; Wed, 22 Jan 2020 01:44:57 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 61F0BF80271
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 01:44:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61F0BF80271
-Date: 22 Jan 2020 09:44:48 +0900
-X-IronPort-AV: E=Sophos;i="5.70,347,1574089200"; d="scan'208";a="37284291"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 22 Jan 2020 09:44:48 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 46A2CF80271
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 01:44:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46A2CF80271
+Date: 22 Jan 2020 09:44:52 +0900
+X-IronPort-AV: E=Sophos;i="5.70,347,1574089200"; d="scan'208";a="37284293"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 22 Jan 2020 09:44:52 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D2ABA4004BD3;
- Wed, 22 Jan 2020 09:44:48 +0900 (JST)
-Message-ID: <874kwomi9r.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C576D4121891;
+ Wed, 22 Jan 2020 09:44:52 +0900 (JST)
+Message-ID: <8736c8mi9n.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
@@ -59,7 +58,7 @@ In-Reply-To: <87a76gmiar.wl-kuninori.morimoto.gx@renesas.com>
 References: <87a76gmiar.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 4/7] ASoC: soc-pcm: add soc_rtd_hw_params()
+Subject: [alsa-devel] [PATCH 5/7] ASoC: soc-pcm: add soc_rtd_hw_free()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,53 +79,52 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Add soc_rtd_hw_params() to make the code easier to read
+Add soc_rtd_hw_free() to make the code easier to read
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ sound/soc/soc-pcm.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ccd6c9c..d7fc6c5 100644
+index d7fc6c5..718749f 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -54,6 +54,16 @@ static int soc_rtd_prepare(struct snd_soc_pcm_runtime *rtd,
+@@ -64,6 +64,14 @@ static int soc_rtd_hw_params(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
-+static int soc_rtd_hw_params(struct snd_soc_pcm_runtime *rtd,
-+			     struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
++static void soc_rtd_hw_free(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_substream *substream)
 +{
 +	if (rtd->dai_link->ops &&
-+	    rtd->dai_link->ops->hw_params)
-+		return rtd->dai_link->ops->hw_params(substream, params);
-+	return 0;
++	    rtd->dai_link->ops->hw_free)
++		rtd->dai_link->ops->hw_free(substream);
 +}
 +
  /**
   * snd_soc_runtime_activate() - Increment active count for PCM runtime components
   * @rtd: ASoC PCM runtime that is activated
-@@ -826,13 +836,11 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (ret)
- 		goto out;
- 
--	if (rtd->dai_link->ops->hw_params) {
--		ret = rtd->dai_link->ops->hw_params(substream, params);
--		if (ret < 0) {
--			dev_err(rtd->card->dev, "ASoC: machine hw_params"
--				" failed: %d\n", ret);
--			goto out;
--		}
-+	ret = soc_rtd_hw_params(rtd, substream, params);
-+	if (ret < 0) {
-+		dev_err(rtd->card->dev,
-+			"ASoC: machine hw_params failed: %d\n", ret);
-+		goto out;
+@@ -935,8 +943,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		codec_dai->rate = 0;
  	}
  
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+-	if (rtd->dai_link->ops->hw_free)
+-		rtd->dai_link->ops->hw_free(substream);
++	soc_rtd_hw_free(rtd, substream);
+ 
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+ 	return ret;
+@@ -979,8 +986,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	/* free any machine hw params */
+-	if (rtd->dai_link->ops->hw_free)
+-		rtd->dai_link->ops->hw_free(substream);
++	soc_rtd_hw_free(rtd, substream);
+ 
+ 	/* free any component resources */
+ 	soc_pcm_components_hw_free(substream, NULL);
 -- 
 2.7.4
 
