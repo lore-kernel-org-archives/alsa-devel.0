@@ -2,78 +2,65 @@ Return-Path: <SRS0=vsGj=3L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF405C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 865C7C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:33:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7EF1524680
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:26:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0886524680
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:33:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WlQldPJw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EF1524680
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VxYE4pPv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0886524680
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A154916B0;
-	Wed, 22 Jan 2020 12:25:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A154916B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D278820;
+	Wed, 22 Jan 2020 12:32:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D278820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579692397;
-	bh=aqhO27bwIpA6z3GWJ9+5xBSjyPGeyGjwsqj3ljKcE2o=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1579692785;
+	bh=USFbcbP/rgR3WDtXysDJZ47LhWNaSquVLg6OP1gyWO8=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WlQldPJwoVbQfyqNor4lGy2MTJGh5CdKDRN4dF7FmEI3INjgPFmuxp2mHb1tfJGAM
-	 etuc2hk1FDAZ2AnIHPcEpYfLO1iA+pjwz7+keOQDjBeS9oyg82ehD0eVkq1IZYVixb
-	 zkm7MA3lauud4iy+eYcKN7ek0D1SDHqQexM5Z6Uk=
+	b=VxYE4pPvthcgWWLz1aAglYUc9A79FwEz85EoMA9PTjVVE4uzCIbOv9Ug6Zty2Foqe
+	 5SZSE+ubJgHe0Qk+5QKp5+3GdkNpdo5bOU4dV+htgnbMVzpZJ1WEzikiLOqIlRuKpj
+	 paxaCbNBCgPtATQ16QbjNoG88kztbzv/wIY4HUE0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F4EFF80278;
-	Wed, 22 Jan 2020 12:23:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9C12F801D8;
+	Wed, 22 Jan 2020 12:32:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95170F8026F; Wed, 22 Jan 2020 12:23:23 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 12211F8020C; Wed, 22 Jan 2020 12:32:13 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07644F80229
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 12:23:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07644F80229
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Jan 2020 03:23:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,349,1574150400"; d="scan'208";a="227648038"
-Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga003.jf.intel.com with ESMTP; 22 Jan 2020 03:23:11 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
- id AF11C4CA; Wed, 22 Jan 2020 13:23:07 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- x86@kernel.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
-Date: Wed, 22 Jan 2020 13:23:03 +0200
-Message-Id: <20200122112306.64598-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200122112306.64598-1-andriy.shevchenko@linux.intel.com>
-References: <20200122112306.64598-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 6/9] x86/quirks: Add a DMI quirk for
-	Microsoft Surface 3
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB332F800BA
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 12:32:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB332F800BA
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 53E4DAE92;
+ Wed, 22 Jan 2020 11:32:08 +0000 (UTC)
+Date: Wed, 22 Jan 2020 12:32:08 +0100
+Message-ID: <s5h7e1jsp53.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: David Runge <dave@sleepmap.de>
+In-Reply-To: <20200122110926.GF2784@dvzrv.localdomain>
+References: <20200122110926.GF2784@dvzrv.localdomain>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] mixartloader/miXart8.elf lacks full RELRO,
+	PIE and is unstripped
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,69 +78,34 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a DMI quirk for Microsoft Surface 3 which will be utilized by few drivers.
+On Wed, 22 Jan 2020 12:09:26 +0100,
+David Runge wrote:
+> 
+> Hi!
+> 
+> I'm (currently) packaging alsa-firmware for Arch Linux and ran across
+> the mixartloader/miXart8.elf, which turns out to be lacking full RELRO
+> [1], PIE [2] and being unstripped.
+> 
+> Checking the git log it appears, that Jaroslav Kysela added it in 2003.
+> I wonder whether the blob could be rebuilt with full RELRO and PIE and
+> be updated.
+> 
+> Additionally, I'd like to point out, that I don't know, how much of a
+> use-case the Digigram miXart8 cards still are in current times, so maybe
+> the firmware is also a candidate for being dropped (from the package on
+> Arch Linux).
+> 
+> Any hints, suggestions or ideas are very welcome!
 
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Jie Yang <yang.jie@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- arch/x86/kernel/quirks.c                  | 10 ++++++++++
- include/linux/platform_data/x86/machine.h |  5 +++++
- 2 files changed, 15 insertions(+)
+I wonder what's the matter with that.  It's no binary that is executed
+on your CPU but just a blob that is simply passed to the hardware chip
+as-is, so we can't modify anything.
 
-diff --git a/arch/x86/kernel/quirks.c b/arch/x86/kernel/quirks.c
-index 3867f81baae7..88675844b1ab 100644
---- a/arch/x86/kernel/quirks.c
-+++ b/arch/x86/kernel/quirks.c
-@@ -658,6 +658,9 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x2083, quirk_intel_purley_xeon_ras
- bool x86_apple_machine;
- EXPORT_SYMBOL(x86_apple_machine);
- 
-+bool x86_microsoft_surface_3_machine;
-+EXPORT_SYMBOL(x86_microsoft_surface_3_machine);
-+
- static const struct dmi_system_id x86_machine_table[] __initconst = {
- 	{
- 		.ident = "x86 Apple Macintosh",
-@@ -673,6 +676,13 @@ static const struct dmi_system_id x86_machine_table[] __initconst = {
- 		},
- 		.driver_data = &x86_apple_machine,
- 	},
-+	{
-+		.ident = "Microsoft Surface 3",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
-+		},
-+		.driver_data = &x86_microsoft_surface_3_machine,
-+	},
- 	{}
- };
- 
-diff --git a/include/linux/platform_data/x86/machine.h b/include/linux/platform_data/x86/machine.h
-index b1e7a560a046..9bdf5a06b490 100644
---- a/include/linux/platform_data/x86/machine.h
-+++ b/include/linux/platform_data/x86/machine.h
-@@ -8,8 +8,13 @@
-  * x86_apple_machine - whether the machine is an x86 Apple Macintosh
-  */
- extern bool x86_apple_machine;
-+/**
-+ * x86_microsoft_surface_3_machine - whether the machine is Microsoft Surface 3
-+ */
-+extern bool x86_microsoft_surface_3_machine;
- #else
- #define x86_apple_machine			false
-+#define x86_microsoft_surface_3_machine		false
- #endif
- 
- #endif	/* PLATFORM_DATA_X86_MACHINE_H */
--- 
-2.24.1
 
+thanks,
+
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
