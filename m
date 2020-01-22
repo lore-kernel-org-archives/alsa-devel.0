@@ -2,96 +2,69 @@ Return-Path: <SRS0=vsGj=3L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F23B8C33CB6
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 17:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD8D2C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 17:08:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D03524676
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 17:07:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3976F2465A
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 17:08:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="d79cxG6K";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uv9fC4B4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D03524676
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mJavBdmF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3976F2465A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=friiks.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9107616B8;
-	Wed, 22 Jan 2020 18:06:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9107616B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CE6216C0;
+	Wed, 22 Jan 2020 18:07:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CE6216C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579712830;
-	bh=nhRizQauLaKwDVNi9CwNr0n6zxdsdTDtvSzSxpa4c2I=;
-	h=References:In-Reply-To:From:Date:To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=d79cxG6KASXKKudZTsMXcH1kjjR0y+lGV0QLsNBo2PufCM7EqH6ebWDZ5B+AW8dAQ
-	 f1xt1B0BFfX63syWazllqFYOV/wW0CBavt6K3f4rptO7j+RDXH/dV/+ZgeLeXO3fp4
-	 2VcRAafx9C6UMeChg+dYVOvbbaWNp91Y4Bg8Mxus=
+	s=default; t=1579712878;
+	bh=ssaSitb/vewMFE9bZZWTbmgLSdeJrtbar+jIzw8ZkY0=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mJavBdmFpdW/bo307q4A6wVJVHOG7tsPzf7LEDveB+4BWTCecYj3sTwbV+theY7S7
+	 DxQd8/Nf/ndgl+D/FgbQHw5opY5uybkR/syBFX2R+Ofq6bXGNetmbQC6YIQ8ldlwHA
+	 OMg9obwAeitvXAeLGPHfnHAOB9Lo11JfVFayhMiE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D367EF80273;
-	Wed, 22 Jan 2020 18:04:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 178CFF80278;
+	Wed, 22 Jan 2020 18:04:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A6D9F8020C; Mon, 20 Jan 2020 12:42:53 +0100 (CET)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0960FF8020C; Wed, 22 Jan 2020 17:55:46 +0100 (CET)
+Received: from james.theweblords.de (james.theweblords.de [217.11.55.87])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 819E0F800C6
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 12:42:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 819E0F800C6
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Uv9fC4B4"
-Received: by mail-ed1-x536.google.com with SMTP id j17so29177491edp.3
- for <alsa-devel@alsa-project.org>; Mon, 20 Jan 2020 03:42:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
- bh=PloFJQYaek4iGvgPaEPM8icRCVATJalZ4dGbzYGJ3FE=;
- b=Uv9fC4B4d8+B8/kHlhnw9HaXoZGl/CfqXFGo+uSM2nGjtAvg8obW+kLnwm9khlKiff
- w39YqJyYY+30UPFHwisKJlOfyDCdTkUwjBgLqBEsYyEk96WsN0wpruzV+ww6r3t+4YA6
- mJ/qICn+qAxOHWkr9tPwbSJKrw2+gF9Pw5AlMCvQ6cWcBBB6LUtcRMZb8qwlDR9noMLd
- vDsITXRA7CfYxI3GkP8HWEvk2y2qcp8sUCEzjz1aX/WuBV7Z6U5tnwMomH5zmykHW6m/
- HYIzQNNGFKE5jPJD/R8Atee6UBhtlLs/fi3weSUpfchEPZ/QI1M4eQTMGOTnK53A6uLf
- 5uxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to;
- bh=PloFJQYaek4iGvgPaEPM8icRCVATJalZ4dGbzYGJ3FE=;
- b=GZRycaJbXGNmdVRSGtPOFzkCYMOnqQK2A5Iqc0eHz2IyLy8VVChxKJXsoD3Wnnt9Se
- dusfSYeiPjuaxqbUTe5vpcB4j0WWyoivohovaTOmdKzXb3hibo4onIXajlZtMMNqDpNl
- TS3/lOxZSCTfxmVrVolwe1LIgKGWzd1J0Qe2ocjO597OygKECACMVpwNxcjTYgVbDCKo
- ecAYi2pt53xGKDLwu984A3Z1X5lLjay2A1TPAK11q5s/h2JS1uDEO2Q9zE29B+Evxt95
- IP6V2m6j30qlpSfx9Ipea1ma8eQYTBaBZJTIxy85oov2ZtIm4vFBhQLAkuIvqW+VSXFs
- E5TQ==
-X-Gm-Message-State: APjAAAW+NDler+WhrZEIpv0kWmSHtDXDl+LdYVIh7fWBbjiEaLOFb+6d
- NVfl8oVOFIe6zRan7z2GqFSpFFNSSJnJlpifcFasR3/wd48=
-X-Google-Smtp-Source: APXvYqwzAlLlicA8x1gd6F3cROLeGDQ513g8VsMFi02fJCUSOfk2lxGoI+5/G6GZGczs67C4ilWaGVK/RvUdVt4vi2Y=
-X-Received: by 2002:a17:906:494d:: with SMTP id
- f13mr20289957ejt.95.1579520566191; 
- Mon, 20 Jan 2020 03:42:46 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5C7CF800BA
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 17:55:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5C7CF800BA
+Received: (qmail 20135 invoked by uid 210); 22 Jan 2020 16:55:41 -0000
+X-Qmail-Scanner-Diagnostics: from wl-r7-73.rz.tu-ilmenau.de
+ (petronios@theweblords.de@wl-r7-73.rz.tu-ilmenau.de) by james (envelope-from
+ <pegro@friiks.de>, uid 201) with qmail-scanner-2.10st 
+ (mhr: 1.0. spamassassin: 3.4.2. perlscan: 2.10st.  
+ Clear:RC:1(141.24.110.73):. 
+ Processed in 0.049813 secs); 22 Jan 2020 16:55:41 -0000
+Received: from wl-r7-73.rz.tu-ilmenau.de (HELO its-dev2.tu-ilmenau.de)
+ (petronios@theweblords.de@141.24.110.73)
+ by james.theweblords.de with ESMTPA; 22 Jan 2020 16:55:40 -0000
+From: =?UTF-8?q?Peter=20Gro=C3=9Fe?= <pegro@friiks.de>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Date: Wed, 22 Jan 2020 19:01:06 +0100
+Message-Id: <20200122180106.9351-1-pegro@friiks.de>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <CAK5Eu=tVQjBn+YvsHOLqSEir5aV8Q0hA1OgFiJZYdqnspdMz-Q@mail.gmail.com>
- <CAK5Eu=snx3s9r9hoeF4Th0V0YXJYa=7PKUqDn3W4NdWZben-zg@mail.gmail.com>
- <CAK5Eu=v2x+zFhCygKq8DPWd+CH5JTpZEayg=k2NvaTY7DUNA9g@mail.gmail.com>
- <CAK5Eu=ucuW6Pp=+j7afPoYgPUdFXjh+PZ-PK6mc+m61M80ZndA@mail.gmail.com>
- <20200119164335.GA11974@workstation>
-In-Reply-To: <20200119164335.GA11974@workstation>
-From: Daniel Jozsef <daniel.jozsef@gmail.com>
-Date: Mon, 20 Jan 2020 11:42:34 +0000
-Message-ID: <CAK5Eu=sS8kMe5hCPgTx+V6AjzcCo3vN73tEQ1f=kY03Y2_CcJQ@mail.gmail.com>
-To: ffado-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 X-Mailman-Approved-At: Wed, 22 Jan 2020 18:04:36 +0100
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Subject: Re: [alsa-devel] [FFADO-user] Toneweal / Trigaudio FW66 device
+Cc: alsa-devel@alsa-project.org, pegro@friiks.de
+Subject: [alsa-devel] [PATCH] ALSA: hda - Add docking station support for
+	Lenovo Thinkpad T420s
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,126 +77,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
-
-Thanks for the quick reaction, Takashi :) I ran the command you mentioned,
-and your guess was spot on:
-
-daniel@gibbonmoon:~/opt/linux-firewire-utils-0.4/src$ ./firewire-request
-/dev/fw1 read 0xffffc8020000 60
-result: 000: 62 72 69 64 67 65 43 6f 03 00 00 00 00 00 00 00
-bridgeCo........
-result: 010: 00 27 23 00 00 00 00 02 02 00 00 00 00 00 00 00
-.'#.............
-result: 020: 32 30 31 30 30 35 32 35 31 32 31 35 30 34 20 20 20100525121504
-
-result: 030: 02 00 02 00 ff ff ff 00 80 00 0c 40 7c e3 13 00
-...........@|...
-result: 040: 32 30 30 38 31 32 30 32 31 33 34 34 34 38 20 20 20081202134448
-
-result: 050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-................
-
-Daniel
-
-On Sun, Jan 19, 2020 at 4:43 PM Takashi Sakamoto <o-takashi@sakamocchi.jp>
-wrote:
-
-> Hi,
->
-> I'm an author of ALSA bebob driver (snd-bebob).
->
-> On Sun, Jan 19, 2020 at 03:01:00PM +0100, Daniel Jozsef wrote:
-> > It's a Toneweal FW66, a 6x6 in/out 24bit 96kHz audio interface with
-> MIDI. I
-> > kinda like it for its build quality and the time I spent with it. :D The
-> > largest chip in the device is labeled Trigaudio MNP-TA110. I searched for
-> > information on this device, and found very little - it's a Taiwanese
-> > company. There seems evidence that a "Trigaudio FW66" also exists, so the
-> > device may have been sold under different brands in different markets.
->
-> In my opinion, FW66 is an application of ArchWave BeBoB solution for
-> audio and music units on IEEE 1394 bus (ArchWave is formerly known as
-> BridgeCo) since I can find file structure for the solution in driver
-> package shipped by the vendor. I guess that you can see large ASIC
-> labelled with 'BridgeCo' (or 'ArchWave') DM1000/1100/1500 inner the
-> device. If so, the device is possibly handled by implementation of FFADO.
->
-> But as a quick glance to your log, the implementation of FFADO fails to
-> detect it:
->
-> > daniel@gibbonmoon:~$ sudo ffado-test Discover
-> > ...
-> > 02878614308: Warning (bebob_avdevice.cpp)[ 228] discover: Using generic
-> BeBoB support for unsupported device 'ToneWeal FW66'
-> > 02878620133: Debug (bebob_avdevice_subunit.cpp)[  83] discover:
-> Discovering BeBoB::AudioSubunit...
-> > 02878620175: Debug (avc_audiosubunit.cpp)[  56] discover: Discovering
-> BeBoB::AudioSubunit...
-> > 02878620196: Debug (avc_subunit.cpp)[ 108] discoverPlugs: Discovering
-> plugs...
-> > 02878778208: Error (bebob_avplug.cpp)[ 237] discoverPlugType: Plug does
-> not implement extended plug info plug type info command
-> > 02878778236: Error (bebob_avplug.cpp)[ 120] discover: discover: Could
-> not discover plug type (1,1,0,0,1)
-> > 02878778272: Error (avc_subunit.cpp)[ 189] discoverPlugs: plug discover
-> failed
-> > 02878778283: Error (avc_subunit.cpp)[ 131] discoverPlugs: destination
-> plug discovering failed
-> > 02878778301: Error (avc_subunit.cpp)[  99] discover: plug discovery
-> failed
-> > 02878778312: Error (avc_unit.cpp)[ 283] enumerateSubUnits:
-> enumerateSubUnits: Could not discover subunit_id =  0, subunit_type =  1
-> (Audio)
-> > 02878778335: Error (avc_unit.cpp)[ 177] discover: Could not enumerate
-> sub units
-> > 02878778347: Error (bebob_avdevice.cpp)[ 232] discover: Could not
-> discover unit
-> > 02878778376: Error (devicemanager.cpp)[ 628] discover: could not
-> discover device
-> > 02878778419: Debug (devicemanager.cpp)[ 661] discover: Discovery
-> finished...
-> ...
->
-> The reason is the unit returns NOT_IMPLEMENTED response against vendor
-> specific AV/C command (Extended Plug Information command defined by
-> BridgeCo.) for Audio subunit. I guess that the device has no Audio
-> subunit but the implementation performs to use it without checking
-> available subunits.
->
->
-> For my information, would you please clone linux-firewire-utils[1] into
-> your system and build it, then run below command to dump device
-> information:
->
-> $ ./firewire-request /dev/fw1 read 0xffffc8020000 60
-> result: 000: 62 72 69 64 67 65 43 6f 03 00 00 00 00 00 00 00
-> bridgeCo........
-> result: 010: 00 96 14 00 22 03 00 00 19 00 00 00 00 00 00 00
-> ...."...........
-> result: 020: 32 30 30 39 30 36 30 39 31 36 32 39 34 30 20 20 20090609162940
-> result: 030: 00 00 00 19 07 1f 00 00 80 00 0c 40 70 35 14 00
-> ...........@p5..
-> result: 040: 32 30 30 39 30 36 30 39 31 36 32 32 31 39 20 20 20090609162219
-> result: 050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ................
->
-> The above is a sample of Phonic Firefly 202. I expect the first line
-> includes bytes represent 'bridgeCo'.
->
-> [1] https://github.com/cladisch/linux-firewire-utils
->
->
-> Regards
->
-> Takashi Sakamoto
->
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+TGVub3ZvIFRoaW5rcGFkIFQ0MjBzIHVzZXMgdGhlIHNhbWUgY29kZWMgYXMgVDQyMCwgc28gYXBw
+bHkgdGhlCnNhbWUgcXVpcmsgdG8gZW5hYmxlIGF1ZGlvIG91dHB1dCBvbiBhIGRvY2tpbmcgc3Rh
+dGlvbi4KClNpZ25lZC1vZmYtYnk6IFBldGVyIEdyb8OfZSA8cGVncm9AZnJpaWtzLmRlPgotLS0K
+IHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEg
+aW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5j
+IGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCmluZGV4IDkwYWEwZjQwMGE1Ny4uMWUy
+MGU4NWU5YjQ2IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKKysr
+IGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCkBAIC05MjIsNiArOTIyLDcgQEAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGN4dDUwNjZfZml4dXBzW10gPSB7CiAJU05E
+X1BDSV9RVUlSSygweDE3YWEsIDB4MjE1ZiwgIkxlbm92byBUNTEwIiwgQ1hUX1BJTkNGR19MRU5P
+Vk9fVFA0MTApLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDIxY2UsICJMZW5vdm8gVDQyMCIs
+IENYVF9QSU5DRkdfTEVOT1ZPX1RQNDEwKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgyMWNm
+LCAiTGVub3ZvIFQ1MjAiLCBDWFRfUElOQ0ZHX0xFTk9WT19UUDQxMCksCisJU05EX1BDSV9RVUlS
+SygweDE3YWEsIDB4MjFkMiwgIkxlbm92byBUNDIwcyIsIENYVF9QSU5DRkdfTEVOT1ZPX1RQNDEw
+KSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgyMWRhLCAiTGVub3ZvIFgyMjAiLCBDWFRfUElO
+Q0ZHX0xFTk9WT19UUDQxMCksCiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MjFkYiwgIkxlbm92
+byBYMjIwLXRhYmxldCIsIENYVF9QSU5DRkdfTEVOT1ZPX1RQNDEwKSwKIAlTTkRfUENJX1FVSVJL
+KDB4MTdhYSwgMHgzOGFmLCAiTGVub3ZvIElkZWFQYWQgWjU2MCIsIENYVF9GSVhVUF9NVVRFX0xF
+RF9FQVBEKSwKLS0gCjIuMjQuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
