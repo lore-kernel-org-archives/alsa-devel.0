@@ -3,132 +3,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88DB9C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 08:51:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39474C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 09:21:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 126632253D
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 08:51:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BBA9924656
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 09:21:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PmCGo+cT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amdcloud.onmicrosoft.com header.i=@amdcloud.onmicrosoft.com header.b="uYyHpBHe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 126632253D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amd.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LtYY9Owh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="ucm7i3HD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBA9924656
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57F541670;
-	Wed, 22 Jan 2020 09:50:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57F541670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B32A38;
+	Wed, 22 Jan 2020 10:20:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B32A38
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579683108;
-	bh=5bguZYf55iTkDapOyAoFLeoUJhxAEYSN1QogwoSO1qA=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1579684894;
+	bh=9I/CxSd+muFl4kBiFlXUzifWAbbqHcQt2at3Nfp2fOs=;
+	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PmCGo+cTDmWVwzA4lVyZdJd4/Dnjf8NPN+MEN9JtLx0l2DSDPH250ZquVi5II/fPw
-	 kOCSC8szhQAeubSvRA7eRQzeanNdY5r/1LPyqTKrfJ93fFj0PHt9pvxbCx59UZT7IR
-	 pq1I7eQlQCzF/kuhCv2JdZfovZtl+nyGXRC/Jk5M=
+	b=LtYY9OwhyLfwhk7pGizTLEHchOWfaorvdb0ePjpyCNfzDx18TP/7sZ90XpFey2zL3
+	 eSNjmOx2fDt6g29IwEvVJAU9gqJW2KJgeiNWq/u+3y0dqXsCCr6eVaQPLL1X32bRdY
+	 2BbgdamiH69AMW+3mBdRN13bgkxVQT3cd1gqYHjw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6681F8007E;
-	Wed, 22 Jan 2020 09:50:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D6A9F8007E;
+	Wed, 22 Jan 2020 10:20:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE0FCF8020C; Wed, 22 Jan 2020 09:50:55 +0100 (CET)
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com
- (mail-eopbgr690048.outbound.protection.outlook.com [40.107.69.48])
+ id 23A19F8020C; Wed, 22 Jan 2020 10:20:42 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A0C4F8007E
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 09:50:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A0C4F8007E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B9AEF8007E
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 10:20:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B9AEF8007E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="uYyHpBHe"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e9xxZMOHRmc7EjCKZv//AiQDJap7mNfqwsI1+MRXMaSLZOgZLNUtHMIK4cwD8sxQFLe3ymTIKlKpsXdyJZf3kxWacEHrgWA/XTocw9iuQnvxmekGyRV90f7shoJ5tooTi/uGwJCw+ffN4J5SEJ+mCTELxOYVLaRQWM17ppoxABSyjrZ23Pr5EHARZzpansrXlAHWMKnkC++nJLRMBIaHTes43GQhbPRWkV3QDht0kFsay3EHcK+fW2l0NDJiQjn9hppuaJEC5/DEfOgkibfXrKzDz2175dDUKDT9C8dD3hnvRHvF8Jl4fPZHM61GG5Cwa8/SpLpccwLiKCniwOLKbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nF8Cfp88SdEpQHvuOp+YtdFYTjlGfGlX/kQ3LfLFg1Q=;
- b=LGs2hF1xdQxs5SSsBLVubx6xYNbtVZFx3twPQRjs8zklj9wZW1DGFQRuspBxlfmLYB/TxYiLl0n2C9ti1NK56X2dqxSsxTKxI/kegWFcWozC1CGcL1lWxvO2zays9CLxc1+9h1qwg++G0Iwdl01Tfpbou5swZySA3qmUacNm/u39OeTOxtSgRaDdlzGjfJCk+v4Jzi+WmcCYcOugguUFT1dnFRl8cHzV20YG3msPzUStZzkm8jZty+kTYnKat7vUMhbZUZ/Qo2jOssQywA/fOYkjYZ+jAZqAPPFFdfBcA9tUSJvyQ4Lf/hqPLD70J+dvLPbYXYfcVzL2njVmDXyDLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nF8Cfp88SdEpQHvuOp+YtdFYTjlGfGlX/kQ3LfLFg1Q=;
- b=uYyHpBHeCGq449+pPCQcSlafbwRHdW6V55WVC25uqCfqsPL26/qKlyXJ267/PH2E88pZqF+jF3HoIIoszGWraBxn05S6fbbzMrqsj5Cjq21sZbl2uFip9nM8n+fHx0AZpy9R3eH0w736bAoY4+IgyLU21/NQQ3JOLwgzH+3NxAc=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Vishnuvardhanrao.Ravulapati@amd.com; 
-Received: from DM6PR12MB3868.namprd12.prod.outlook.com (10.255.173.213) by
- DM6PR12MB3241.namprd12.prod.outlook.com (20.179.105.153) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.20; Wed, 22 Jan 2020 08:50:48 +0000
-Received: from DM6PR12MB3868.namprd12.prod.outlook.com
- ([fe80::b13a:2561:f1ed:c80f]) by DM6PR12MB3868.namprd12.prod.outlook.com
- ([fe80::b13a:2561:f1ed:c80f%7]) with mapi id 15.20.2644.027; Wed, 22 Jan 2020
- 08:50:48 +0000
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-References: <1579603421-24571-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
- <87d0bcmjob.wl-kuninori.morimoto.gx@renesas.com>
-From: vishnu <vravulap@amd.com>
-Message-ID: <4a0d03a0-8cf8-8b55-0db2-4bbcb606454c@amd.com>
-Date: Wed, 22 Jan 2020 14:18:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
-In-Reply-To: <87d0bcmjob.wl-kuninori.morimoto.gx@renesas.com>
+ dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="ucm7i3HD"
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 00M9E5T0017505; Wed, 22 Jan 2020 10:20:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
+ h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=u/gZg5v5O2lvH7c3i8F88g2U2swQh0X4mBt44nns32Q=;
+ b=ucm7i3HDueX2khE20HpGolwzNFjIa0Puk/Wtek/QfMVSRNXuR46O93vA/F7MaMiI6YtR
+ MvS9+LEBl3UgQe6UrcIUMWfsWkJT9w7MIg8nhQhsefeADdnJNIFtJmH0Z8W4jxwWx3Qv
+ jjWH5313tSr/TywHSg1WyyoqE4wTq1Sn9ffN+gJcrhI+fXag0xJ9llSbvK+PcNZGNTtG
+ dipOtYSoCjk2Y9VgTWchVnZiLVQXWRTXE+FIve35owCPS+JJjFc3O5pMOTZD3Nm+2RCT
+ ElVOBkgxqBld7vOoWEYVewFfiXLuGJuiexxfSqlQFXaC/BX37SkHOaH/RTI8m9bf4vPn pw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 2xkr1e3jkm-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 22 Jan 2020 10:20:38 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 923FE10003E;
+ Wed, 22 Jan 2020 10:20:30 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node3.st.com [10.75.127.9])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36DBC2AB057;
+ Wed, 22 Jan 2020 10:20:30 +0100 (CET)
+Received: from SFHDAG6NODE2.st.com (10.75.127.17) by SFHDAG3NODE3.st.com
+ (10.75.127.9) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 22 Jan
+ 2020 10:20:29 +0100
+Received: from SFHDAG6NODE2.st.com ([fe80::a56f:c186:bab7:13d6]) by
+ SFHDAG6NODE2.st.com ([fe80::a56f:c186:bab7:13d6%20]) with mapi id
+ 15.00.1347.000; Wed, 22 Jan 2020 10:20:29 +0100
+From: Olivier MOYSAN <olivier.moysan@st.com>
+To: Rob Herring <robh@kernel.org>
+Thread-Topic: [PATCH v3] ASoC: dt-bindings: stm32: convert spdfirx to
+ json-schema
+Thread-Index: AQHV0KYwQJhZ3lJcYU6nre5Twze71af2WFCA
+Date: Wed, 22 Jan 2020 09:20:29 +0000
+Message-ID: <6a49bf6c-8851-a65c-5606-563776e07c08@st.com>
+References: <20200117170352.16040-1-olivier.moysan@st.com>
+ <20200121220022.GA12737@bogus>
+In-Reply-To: <20200121220022.GA12737@bogus>
+Accept-Language: en-US
 Content-Language: en-US
-X-ClientProxiedBy: MA1PR01CA0121.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:35::15) To DM6PR12MB3868.namprd12.prod.outlook.com
- (2603:10b6:5:1c8::21)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.45]
+Content-ID: <C57D8D8E50C2B442847FA8C55AFD97B6@st.com>
 MIME-Version: 1.0
-Received: from [10.129.9.175] (165.204.159.251) by
- MA1PR01CA0121.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:35::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.18 via Frontend Transport; Wed, 22 Jan 2020 08:50:44 +0000
-X-Originating-IP: [165.204.159.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4fb91b55-e0ae-4d25-fa79-08d79f182cd3
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3241:|DM6PR12MB3241:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB32419258DA83F6A331E9677BE70C0@DM6PR12MB3241.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-Forefront-PRVS: 029097202E
-X-Forefront-Antispam-Report: SFV:NSPM;
- SFS:(10009020)(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(189003)(199004)(110136005)(5660300002)(66946007)(66476007)(66556008)(81156014)(31696002)(81166006)(54906003)(316002)(16576012)(2906002)(8676002)(6666004)(6636002)(4744005)(52116002)(31686004)(16526019)(36756003)(4326008)(53546011)(2616005)(26005)(186003)(6486002)(478600001)(956004)(8936002)(43062003);
- DIR:OUT; SFP:1101; SCL:1; SRVR:DM6PR12MB3241;
- H:DM6PR12MB3868.namprd12.prod.outlook.com; FPR:; SPF:None; LANG:en;
- PTR:InfoNoRecords; MX:1; A:1; 
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YGs2nD0iN6ThwcX8ynXDDz8GfmuHITDygB+vvkqbnL1NMgWqFjrFRXIe5pdX+1NmQjafNavwbcb6usAtGLevqpuRvKIn2kiHGholsGfL0iOqKiivvolbMClHHuFmbv2XJTqHp293KZ/NnHw9H74EpTSf166O7hflLJq3487OCLl8TI9ifwp+iz9g/ZvQ0QVYZbR6ESnAFJMVIs4jad8bydP5mg2SjfqGPCI6Z3kVmvtvGThP5AHreMmv8lqdlUl3mpQrxwZET4fDSAB4MP+bs3qZltfdxYYYVUw3z4q8b66m+gncAJfIjiIDO/dLn4Qqhtff/3ieCAi5f8uMUCoAWtjxQ9h/JZZ1N/2GUIRQTAuDVwvkA+cB343tKzBVb6mOF0XCoqtFoOVnFmFaSVfDcljMgnsV5R7H4zfzAPDL5ZB8k9FmuJpkc/NjpE5C1n6cF6U71C2gNqME1TbwaRDWzc4cElxviqOqlEEKWqamgGve5fubTT8Wqp+Q1GqswQPw
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fb91b55-e0ae-4d25-fa79-08d79f182cd3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2020 08:50:48.0083 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3JZKWE9/IRoMXJoduNU+I6qNUYJW1tfZIlFETLPmY3q0fhmsYTiLC8wFSLiEECv2VkZyE8jp7dWsplgISNUn3w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3241
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>,
- YueHaibing <yuehaibing@huawei.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com,
- Colin Ian King <colin.king@canonical.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: amd: Fix for Subsequent Playback
-	issue.
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.572
+ definitions=2020-01-17_05:2020-01-16,
+ 2020-01-17 signatures=0
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Alexandre TORGUE <alexandre.torgue@st.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [alsa-devel] [PATCH v3] ASoC: dt-bindings: stm32: convert
+ spdfirx to json-schema
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -141,42 +126,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Rob,
 
+I did not report your reviewed-by tag, as I have made a extra change in v2.
+This change is related to dmas property reported in v2 change log.
+Sorry, this extra change was indeed not clearly highlighted in log comments.
 
-On 22/01/20 5:44 AM, Kuninori Morimoto wrote:
-> 
-> Hi Ravulapati
-> 
->> If we play audio back to back, which kills one playback
->> and immediately start another, we can hear clicks.
->> This patch fixes the issue.
+Regards
+Olivier
+
+On 1/21/20 11:00 PM, Rob Herring wrote:
+> On Fri, 17 Jan 2020 18:03:52 +0100, Olivier Moysan wrote:
+>> Convert the STM32 SPDIFRX bindings to DT schema format using json-schema.
 >>
->> Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+>> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 >> ---
-> (snip)
->> +	kfree(rtd);
-> 
-> Please double check soc_new_pcm_runtime() and
-> soc_free_pcm_runtime() at soc-core.c.
-> Because rtd is created via devm_kzalloc(),
-> and has many related resources which need to be cared when rtd was freed.
-> Just kfree() is not good/enough, I think.
-> 
-> I think you want to use is snd_soc_remove_pcm_runtime()
-> instead of kfree()
-> 
-> Thank you for your help !!
-> Best regards
-> ---
-> Kuninori Morimoto
-> 
-I will create a separate patch for kfree and separate one for subsequent 
-play back issue.
+>> Changes in v2:
+>> - Add "additionalProperties: false"
+>> - Also change minItems to 2 for dmas property, as both DMAs are required.
+>>
+>> Changes in v3:
+>> - Drop minItems/maxItems for dmas property, remove ref to stm32-dma.txt.
+>> ---
+>>   .../bindings/sound/st,stm32-spdifrx.txt       | 56 -------------
+>>   .../bindings/sound/st,stm32-spdifrx.yaml      | 80 +++++++++++++++++++
+>>   2 files changed, 80 insertions(+), 56 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+>>   create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+>>
+> Please add Acked-by/Reviewed-by tags when posting new versions. However,
+> there's no need to repost patches *only* to add the tags. The upstream
+> maintainer will do that for acks received on the version they apply.
+>
+> If a tag was not added on purpose, please state why and what changed.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
