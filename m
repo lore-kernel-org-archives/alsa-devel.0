@@ -2,69 +2,67 @@ Return-Path: <SRS0=vsGj=3L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E35FFC2D0CE
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:15:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7EB8C2D0CE
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:20:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7033E21734
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:15:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DCDA21734
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:20:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SWo0ZGH+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7033E21734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PEoHzaMn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DCDA21734
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8848C1615;
-	Wed, 22 Jan 2020 01:14:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8848C1615
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D3921616;
+	Wed, 22 Jan 2020 01:19:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D3921616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579652132;
-	bh=r5k0+1u2dM9VyNy3OkS5dl0nahuSmx/5Ai2T1VprC5A=;
+	s=default; t=1579652438;
+	bh=WJmq/ZQ4LuyzRvtyAUkwJ6qhR2Aygc3WQRGikTz79lk=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SWo0ZGH+ckNr4HWvvPtzdjGVyJiA0SQNqiZxGGdD93QjdEwzbsOa046yHNX5q6jUh
-	 m5Vlm7jXUqjakL6qJwAMIfufNqVjR2z7qpSw4u0NscaZ0rXnLQGZcIed8nZ3NTPX+9
-	 oj8nn27tah2sbKKLdxla3xTZE3PddmpiNQVgn0qg=
+	b=PEoHzaMnKxMdxIZtC37cUwfpwHDrjoVuJfaNJg4jjAeOGo2+lVtXxlWXpBbm5vJ0B
+	 KEN3exBe1IRaEVIKVX0EE3tUMH8gc1Tk17eFOdGKio3BdYrFZvXK0rqFbhqOfkyZ75
+	 LkGnCznpbZethd/9r1AwzYAxSEnTWZpZm26a+gvM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1577F8015B;
-	Wed, 22 Jan 2020 01:14:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1728F8015B;
+	Wed, 22 Jan 2020 01:19:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE784F801D9; Wed, 22 Jan 2020 01:14:39 +0100 (CET)
+ id C79DDF801D9; Wed, 22 Jan 2020 01:19:46 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 47B73F800E7
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 01:14:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47B73F800E7
-Date: 22 Jan 2020 09:14:28 +0900
-X-IronPort-AV: E=Sophos;i="5.70,347,1574089200"; d="scan'208";a="37281744"
+ by alsa1.perex.cz (Postfix) with ESMTP id 47F77F8012F
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 01:19:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47F77F8012F
+Date: 22 Jan 2020 09:19:39 +0900
+X-IronPort-AV: E=Sophos;i="5.70,347,1574089200"; d="scan'208";a="37282218"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 22 Jan 2020 09:14:28 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 22 Jan 2020 09:19:39 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9BC254111B17;
- Wed, 22 Jan 2020 09:14:28 +0900 (JST)
-Message-ID: <87d0bcmjob.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 888E04112ADC;
+ Wed, 22 Jan 2020 09:19:39 +0900 (JST)
+Message-ID: <87blqwmjfo.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-In-Reply-To: <1579603421-24571-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
-References: <1579603421-24571-1-git-send-email-Vishnuvardhanrao.Ravulapati@amd.com>
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <s5h5zh52ol3.wl-tiwai@suse.de>
+References: <87k15l7ewd.wl-kuninori.morimoto.gx@renesas.com>
+ <s5ha76h2t4f.wl-tiwai@suse.de>
+ <87y2u1p6ud.wl-kuninori.morimoto.gx@renesas.com>
+ <s5h5zh52ol3.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: "moderated list:SOUND - SOC
- LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open
- list <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- broonie@kernel.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Alexander.Deucher@amd.com, Colin Ian King <colin.king@canonical.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: amd: Fix for Subsequent Playback
-	issue.
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] Question about snd_pcm_limit_hw_rates() call timing
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,25 +81,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Ravulapati
+Hi Takashi-san
 
-> If we play audio back to back, which kills one playback
-> and immediately start another, we can hear clicks.
-> This patch fixes the issue.
+> Actually as Lars pointed out in another reply, the current code of
+> soc_pcm_init_runtime_hw() is correct.  It's a bit tricky but smartly
+> handling the cases: when rate_min/max are to be overridden by rates
+> bits, they are supposed to be zero, and min_not_zero() does the
+> trick.  Also, snd_pcm_rate_mask_intersect() sanitizes the bits when
+> CONTINUOUS or KNOT is set, so the spurious rate bits won't be
+> reflected in snd_pcm_limit_hw_rates(), too.
 > 
-> Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
-> ---
-(snip)
-> +	kfree(rtd);
+> But still the dpcm_fe_dai_startup() needs to be fixed as you
+> mentioned.  Though, I guess we need to fix not there but rather other
+> places (e.g. dpcm_set_fe_runtime() itself).
 
-Please double check soc_new_pcm_runtime() and
-soc_free_pcm_runtime() at soc-core.c.
-Because rtd is created via devm_kzalloc(),
-and has many related resources which need to be cared when rtd was freed.
-Just kfree() is not good/enough, I think.
-
-I think you want to use is snd_soc_remove_pcm_runtime()
-instead of kfree()
+Ahh, Yes of course.
+Fixup dpcm_set_fe_runtime() is included in my previous
+"We need to fixup dpcm_fe_dai_startup()" :)
 
 Thank you for your help !!
 Best regards
