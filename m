@@ -6,63 +6,56 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7EB8C2D0CE
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 063F4C2D0CE
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:45:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DCDA21734
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:20:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8504D2253D
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 00:45:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PEoHzaMn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DCDA21734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sW3bW2Cw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8504D2253D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D3921616;
-	Wed, 22 Jan 2020 01:19:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D3921616
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAEB11615;
+	Wed, 22 Jan 2020 01:44:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAEB11615
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579652438;
-	bh=WJmq/ZQ4LuyzRvtyAUkwJ6qhR2Aygc3WQRGikTz79lk=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PEoHzaMnKxMdxIZtC37cUwfpwHDrjoVuJfaNJg4jjAeOGo2+lVtXxlWXpBbm5vJ0B
-	 KEN3exBe1IRaEVIKVX0EE3tUMH8gc1Tk17eFOdGKio3BdYrFZvXK0rqFbhqOfkyZ75
-	 LkGnCznpbZethd/9r1AwzYAxSEnTWZpZm26a+gvM=
+	s=default; t=1579653913;
+	bh=8Rbn0VNvUa4LNGkUJuOlbIvTt5/zOdzlth3kVFPAhgs=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=sW3bW2CwXSqZntOSHsGp9AvzozZbCYm76bgoISJdSud/NHnxkIbTJxEarIMLp6rqh
+	 kQ5EBMLBWQJ0aMC9TjFHy5kPtpQC9PLtol7AB8zd+Z9rttnJcoTdt4nKpvNaOU3+CR
+	 k2+TKEFLg0z76EhetlSQnmYVqMx/Jz1XuvhpCBOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1728F8015B;
-	Wed, 22 Jan 2020 01:19:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 329BAF8015B;
+	Wed, 22 Jan 2020 01:44:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C79DDF801D9; Wed, 22 Jan 2020 01:19:46 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 47F77F8012F
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 01:19:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47F77F8012F
-Date: 22 Jan 2020 09:19:39 +0900
-X-IronPort-AV: E=Sophos;i="5.70,347,1574089200"; d="scan'208";a="37282218"
+ id 59429F801D9; Wed, 22 Jan 2020 01:44:21 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9C24DF8012F
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 01:44:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C24DF8012F
+Date: 22 Jan 2020 09:44:12 +0900
+X-IronPort-AV: E=Sophos;i="5.70,347,1574089200"; d="scan'208";a="37066582"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 22 Jan 2020 09:19:39 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 22 Jan 2020 09:44:12 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 888E04112ADC;
- Wed, 22 Jan 2020 09:19:39 +0900 (JST)
-Message-ID: <87blqwmjfo.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5FA2F41218B0;
+ Wed, 22 Jan 2020 09:44:12 +0900 (JST)
+Message-ID: <87a76gmiar.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <s5h5zh52ol3.wl-tiwai@suse.de>
-References: <87k15l7ewd.wl-kuninori.morimoto.gx@renesas.com>
- <s5ha76h2t4f.wl-tiwai@suse.de>
- <87y2u1p6ud.wl-kuninori.morimoto.gx@renesas.com>
- <s5h5zh52ol3.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] Question about snd_pcm_limit_hw_rates() call timing
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 0/7] ASoC: soc-pcm: add soc_rtd_xxx()
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,28 +74,28 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Takashi-san
+Hi Mark
 
-> Actually as Lars pointed out in another reply, the current code of
-> soc_pcm_init_runtime_hw() is correct.  It's a bit tricky but smartly
-> handling the cases: when rate_min/max are to be overridden by rates
-> bits, they are supposed to be zero, and min_not_zero() does the
-> trick.  Also, snd_pcm_rate_mask_intersect() sanitizes the bits when
-> CONTINUOUS or KNOT is set, so the spurious rate bits won't be
-> reflected in snd_pcm_limit_hw_rates(), too.
-> 
-> But still the dpcm_fe_dai_startup() needs to be fixed as you
-> mentioned.  Though, I guess we need to fix not there but rather other
-> places (e.g. dpcm_set_fe_runtime() itself).
+My ALSA SoC cleanup series focus to soc-pcm as 2nd step :)
+These create new soc_rtd_xxx() function, and cleanup soc-pcm.c
+(It will be more cleanup later)
 
-Ahh, Yes of course.
-Fixup dpcm_set_fe_runtime() is included in my previous
-"We need to fixup dpcm_fe_dai_startup()" :)
+Kuninori Morimoto (7):
+  ASoC: soc-pcm: add soc_rtd_startup()
+  ASoC: soc-pcm: add soc_rtd_shutdown()
+  ASoC: soc-pcm: add soc_rtd_prepare()
+  ASoC: soc-pcm: add soc_rtd_hw_params()
+  ASoC: soc-pcm: add soc_rtd_hw_free()
+  ASoC: soc-pcm: add soc_rtd_trigger()
+  ASoC: soc-core: remove null_snd_soc_ops
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+ sound/soc/soc-core.c |   4 --
+ sound/soc/soc-pcm.c  | 118 ++++++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 79 insertions(+), 43 deletions(-)
+
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
