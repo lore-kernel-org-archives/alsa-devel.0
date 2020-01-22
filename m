@@ -2,93 +2,100 @@ Return-Path: <SRS0=vsGj=3L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D895FC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 10:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5DF9C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 10:42:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61B6820828
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 10:28:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 40F312465B
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 10:42:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D846kCEu";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="UT+V8Myz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61B6820828
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TQBhNIX6";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="qwNlWZdV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40F312465B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B22CA84C;
-	Wed, 22 Jan 2020 11:27:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B22CA84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9691B1670;
+	Wed, 22 Jan 2020 11:41:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9691B1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579688895;
-	bh=LBFsTftv7u1A38xtJeKOj5zJPYSvffU5X9lu0ybemIU=;
-	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=D846kCEuHD4ElbXX7X5GkjmhLZ7qVyNfwpn9TlGz/kutItUni0Tpl8T657QCMKvIN
-	 LF2BHROVK8+tH3Hqg8iS0CqyJcAe+i+7uR3n5QA67vyOwN1g9Oor4ixgnu3z9sChQu
-	 RRBz+DTN0X3H15skrbi+k+3sRD4KSgAPdv3m8Gu4=
+	s=default; t=1579689763;
+	bh=/XJGupLt8NoQsGySnww15dsS0SYF1zakuPiq7ZRwKGU=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TQBhNIX6qOY9tznIr0nnpd+OEv6KL/UwXKF9yx0XrY83qmnUdm7xaUIECgLF75Sc+
+	 lSV9pa+OWLjZtYEH3n2xByxniu4qT/135JLRA0Gecn5SjmP3B5clXErY85Ru1+gKQt
+	 A9T+kpMJPQFvZzCC0MeAV9vR9zepXLXCWQqJeDzc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 030AEF801D8;
-	Wed, 22 Jan 2020 11:27:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAA93F801D8;
+	Wed, 22 Jan 2020 11:41:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57743F8020C; Wed, 22 Jan 2020 11:27:24 +0100 (CET)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 5FDC6F8020C; Wed, 22 Jan 2020 11:41:51 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 924A4F800E7
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 11:27:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 924A4F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 752C1F8007E
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 11:41:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 752C1F8007E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="UT+V8Myz"
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e28235b0000>; Wed, 22 Jan 2020 02:26:35 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate101.nvidia.com (PGP Universal service);
- Wed, 22 Jan 2020 02:27:18 -0800
-X-PGP-Universal: processed;
- by hqpgpgate101.nvidia.com on Wed, 22 Jan 2020 02:27:18 -0800
-Received: from [10.24.44.92] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 22 Jan
- 2020 10:27:17 +0000
-From: Sameer Pujar <spujar@nvidia.com>
-To: <oder_chiou@realtek.com>, <tiwai@suse.com>, <perex@perex.cz>
-References: <1579501059-27936-1-git-send-email-spujar@nvidia.com>
- <74a42452-f19c-1175-9928-da12ccad621d@nvidia.com>
-Message-ID: <c700f22c-a053-7f39-dddf-41abe52cad77@nvidia.com>
-Date: Wed, 22 Jan 2020 15:57:14 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="qwNlWZdV"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
+ 00MAdYk8001300; Wed, 22 Jan 2020 04:41:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=HHfVt/3gw9Cfui0AJ5n7a1cTlXahnB9ZCuVjthOZJLc=;
+ b=qwNlWZdVvigJz2qHGxR6nKIHsRPB5AJdkeUl+QREPkqCDJrpc/GRtXoY2yIwK7AM8cHa
+ sf59wxsWA/0VrzHnIC8xC77p/beiTEVtYfYoIpfpUL70nHIjv3ivjvqW15WVgwjZA99k
+ 5uaiHSwFwyzKIiaMjpVLA4daK7Jcp9W84W8JmBy6T0vSAaiwHQfA4G4QIazeYPBTu4tF
+ qDmG+FHIVsj+iekUhIgdLRPKdw6TeSyxBmDUeQBIurlcheFIq5rSlHAet9onIC3M+s7S
+ avWZRSkWr/Ar67IxyWGxFfwMSlIg2n6LIGUmnbGpMZ/0HHUVD0Mq9eXN9omDub9Y0ps1 8A== 
+Authentication-Results: ppops.net;
+ spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([5.172.152.52])
+ by mx0a-001ae601.pphosted.com with ESMTP id 2xm0a8wc05-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 22 Jan 2020 04:41:45 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1591.10; Wed, 22 Jan
+ 2020 10:41:44 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1591.10 via
+ Frontend Transport; Wed, 22 Jan 2020 10:41:44 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D65BE2AB;
+ Wed, 22 Jan 2020 10:41:43 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Date: Wed, 22 Jan 2020 10:41:43 +0000
+Message-ID: <20200122104143.16725-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-In-Reply-To: <74a42452-f19c-1175-9928-da12ccad621d@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Language: en-GB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1579688795; bh=aOUpxcs01cAOKV7qZxiqe8Ru3nWAKUx3d66imq+9Gc8=;
- h=X-PGP-Universal:CC:Subject:From:To:References:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
- Content-Language;
- b=UT+V8MyzsoZwqaheHe11ny+p2EYWQQpzLLwRbECavHI77aKmrMj65Dn2ZJEr76dpW
- 1ZuCKOlYzS/9zsponl4ftlITWjxKCgTEodFSu/VQynzjMLNWmaZfUbCvqZHsBBg3q1
- RXoAYhQyoxop+j1E9E1D+MBI+bJ8pBrhQpIvNu4GXrQzAq4N4DSCmajmD98k+9z41C
- QHgp3BnGRcLtPXxRq3ht9BLAjRiirgoye/4JDP5U1dWYyJwU4B1uApuwa6RiDAnmdh
- 231OeUlu+uy53fjsersCopfge1onr8U58DKu+2TvZ+X7FBHLtagI2oRk40p7ig7wT/
- tOgTGgjXiA21Q==
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ASoC: rt5659: add S32_LE format
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com
+ include:spf.protection.outlook.com -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ mlxscore=0 suspectscore=1
+ bulkscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=829
+ phishscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1910280000
+ definitions=main-2001220097
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com
+Subject: [alsa-devel] [PATCH v2] ASoC: madera: Correct DMIC only input hook
+	ups
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,48 +108,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SGkgUmV2aWV3ZXJzLAoKS2luZGx5IHJldmlldy4gVGhhbmtzLgoKT24gMS8yMC8yMDIwIDExOjU0
-IEFNLCBTYW1lZXIgUHVqYXIgd3JvdGU6Cj4gUmVtb3ZpbmcgQmFyZChiYXJkbGlhb0ByZWFsdGVr
-LmNvbSkgZnJvbSAidG8iIGxpc3Qgc2luY2UgSSBhbSBnZXR0aW5nIAo+IHVuZGVsaXZlcmVkIG1l
-c3NhZ2UuCj4KPiBPZGVyLAo+IFBsZWFzZSBhZGQgcmlnaHQgZm9sa3MgYXMgeW91IGZlZWwgbmVj
-ZXNzYXJ5LiBUaGFua3MuCj4KPiBPbiAxLzIwLzIwMjAgMTE6NDcgQU0sIFNhbWVlciBQdWphciB3
-cm90ZToKPj4gQUxDNTY1OSBzdXBwb3J0cyBtYXhpbXVtIGRhdGEgbGVuZ3RoIG9mIDI0LWJpdC4g
-Q3VycmVudGx5IGRyaXZlciAKPj4gc3VwcG9ydHMKPj4gUzI0X0xFIHdoaWNoIGlzIGEgMzItYml0
-IGNvbnRhaW5lciB3aXRoIHZhbGlkIGRhdGEgaW4gWzIzOjBdIGFuZCAwcyAKPj4gaW4gTVNCLgo+
-PiBTMjRfM0xFIGlzIG5vdCBjb21tb25seSB1c2VkIGFuZCBpcyBoYXJkIHRvIGZpbmQgYXVkaW8g
-c3RyZWFtcyB3aXRoIHRoaXMKPj4gZm9ybWF0LiBBbHNvIG1hbnkgU29DIEhXIGRvIG5vdCBzdXBw
-b3J0IFMyNF9MRSBhbmQgUzMyX0xFIGlzIHVzZWQgaW4KPj4gZ2VuZXJhbC4gVGhlIDI0LWJpdCBk
-YXRhIGNhbiBiZSByZXByZXNlbnRlZCBpbiBTMzJfTEUgWzMxOjhdIGFuZCAwcyBhcmUKPj4gcGFk
-ZGVkIGluIExTQi4KPj4KPj4gVGhpcyBwYXRjaCBhZGRzIFMzMl9MRSB0byBBTEM1NjU5IGRyaXZl
-ciBhbmQgZGF0YSBsZW5ndGggZm9yIHRoaXMgaXMgc2V0Cj4+IHRvIDI0IGFzIHBlciBjb2RlYydz
-IG1heGltdW0gZGF0YSBsZW5ndGggc3VwcG9ydC4gVGhpcyBoZWxwcyB0byBwbGF5Cj4+IDI0LWJp
-dCBhdWRpbywgcGFja2VkIGluIFMzMl9MRSwgb24gSFcgd2hpY2ggZG8gbm90IHN1cHBvcnQgUzI0
-X0xFLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTYW1lZXIgUHVqYXIgPHNwdWphckBudmlkaWEuY29t
-Pgo+PiAtLS0KPj4gwqAgc291bmQvc29jL2NvZGVjcy9ydDU2NTkuYyB8IDQgKysrLQo+PiDCoCAx
-IGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYg
-LS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY1OS5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2
-NTkuYwo+PiBpbmRleCBmYzc0ZGQ2My4uZjkxMGRkZiAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29j
-L2NvZGVjcy9ydDU2NTkuYwo+PiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY1OS5jCj4+IEBA
-IC0zMzM5LDYgKzMzMzksNyBAQCBzdGF0aWMgaW50IHJ0NTY1OV9od19wYXJhbXMoc3RydWN0IAo+
-PiBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgdmFs
-X2xlbiB8PSBSVDU2NTlfSTJTX0RMXzIwOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+
-IMKgwqDCoMKgwqAgY2FzZSAyNDoKPj4gK8KgwqDCoCBjYXNlIDMyOgo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqAgdmFsX2xlbiB8PSBSVDU2NTlfSTJTX0RMXzI0Owo+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
-YnJlYWs7Cj4+IMKgwqDCoMKgwqAgY2FzZSA4Ogo+PiBAQCAtMzczMyw3ICszNzM0LDggQEAgc3Rh
-dGljIGludCBydDU2NTlfcmVzdW1lKHN0cnVjdCAKPj4gc25kX3NvY19jb21wb25lbnQgKmNvbXBv
-bmVudCkKPj4gwqAgwqAgI2RlZmluZSBSVDU2NTlfU1RFUkVPX1JBVEVTIFNORFJWX1BDTV9SQVRF
-XzgwMDBfMTkyMDAwCj4+IMKgICNkZWZpbmUgUlQ1NjU5X0ZPUk1BVFMgKFNORFJWX1BDTV9GTVRC
-SVRfUzE2X0xFIHwgCj4+IFNORFJWX1BDTV9GTVRCSVRfUzIwXzNMRSB8IFwKPj4gLcKgwqDCoMKg
-wqDCoMKgIFNORFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TOCkKPj4g
-K8KgwqDCoMKgwqDCoMKgIFNORFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwgU05EUlZfUENNX0ZNVEJJ
-VF9TMzJfTEUgfCBcCj4+ICvCoMKgwqDCoMKgwqDCoCBTTkRSVl9QQ01fRk1UQklUX1M4KQo+PiDC
-oCDCoCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFpX29wcyBydDU2NTlfYWlmX2RhaV9v
-cHMgPSB7Cj4+IMKgwqDCoMKgwqAgLmh3X3BhcmFtcyA9IHJ0NTY1OV9od19wYXJhbXMsCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Both the data and clock should be connected to both the left and right
+inputs for DMIC only inputs, add the missing routes.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+
+Changes since v1:
+ - Add routes for DMIC3 on cs47l90 which was missed in v1
+
+Thanks,
+Charles
+
+ sound/soc/codecs/cs47l85.c | 6 ++++++
+ sound/soc/codecs/cs47l90.c | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
+index dac96bf0a2831..bef3471f482d4 100644
+--- a/sound/soc/codecs/cs47l85.c
++++ b/sound/soc/codecs/cs47l85.c
+@@ -2008,12 +2008,18 @@ static const struct snd_soc_dapm_route cs47l85_dapm_routes[] = {
+ 	{ "IN3R", NULL, "IN3R Mode" },
+ 
+ 	{ "IN4L", NULL, "DMICCLK4" },
++	{ "IN4L", NULL, "DMICDAT4" },
++	{ "IN4R", NULL, "DMICCLK4" },
+ 	{ "IN4R", NULL, "DMICDAT4" },
+ 
+ 	{ "IN5L", NULL, "DMICCLK5" },
++	{ "IN5L", NULL, "DMICDAT5" },
++	{ "IN5R", NULL, "DMICCLK5" },
+ 	{ "IN5R", NULL, "DMICDAT5" },
+ 
+ 	{ "IN6L", NULL, "DMICCLK6" },
++	{ "IN6L", NULL, "DMICDAT6" },
++	{ "IN6R", NULL, "DMICCLK6" },
+ 	{ "IN6R", NULL, "DMICDAT6" },
+ 
+ 	MADERA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
+diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
+index d0e191be2c142..266eade827648 100644
+--- a/sound/soc/codecs/cs47l90.c
++++ b/sound/soc/codecs/cs47l90.c
+@@ -1938,12 +1938,18 @@ static const struct snd_soc_dapm_route cs47l90_dapm_routes[] = {
+ 	{ "IN2R", NULL, "IN2R Mode" },
+ 
+ 	{ "IN3L", NULL, "DMICCLK3" },
++	{ "IN3L", NULL, "DMICDAT3" },
++	{ "IN3R", NULL, "DMICCLK3" },
+ 	{ "IN3R", NULL, "DMICDAT3" },
+ 
+ 	{ "IN4L", NULL, "DMICCLK4" },
++	{ "IN4L", NULL, "DMICDAT4" },
++	{ "IN4R", NULL, "DMICCLK4" },
+ 	{ "IN4R", NULL, "DMICDAT4" },
+ 
+ 	{ "IN5L", NULL, "DMICCLK5" },
++	{ "IN5L", NULL, "DMICDAT5" },
++	{ "IN5R", NULL, "DMICCLK5" },
+ 	{ "IN5R", NULL, "DMICDAT5" },
+ 
+ 	MADERA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
+-- 
+2.11.0
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
