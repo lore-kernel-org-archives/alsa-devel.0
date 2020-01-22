@@ -2,96 +2,69 @@ Return-Path: <SRS0=vsGj=3L=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80DA4C32771
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 21:31:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5937DC32771
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 21:33:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0705421835
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 21:31:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C8EA724673
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 21:33:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UrOVIcot";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="bFyN4fxi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0705421835
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GjsxyWxH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8EA724673
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D1A9167F;
-	Wed, 22 Jan 2020 22:30:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D1A9167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD10C167F;
+	Wed, 22 Jan 2020 22:32:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD10C167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579728675;
-	bh=ZEh0pBXJaOBlCGZLSnc08Z0eSdV2jEaHQcWRoSXBGy8=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1579728792;
+	bh=c70oJi8e/8aDlOyuICf6LOlBt78z6Q1rrKWDZ/Ws5PE=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UrOVIcotBYEgYVYU9z3RAymAfsBYrftzx1oi309Xht8JA6FBXIAbggYD7IuRZkgeO
-	 ykUEVNyUfer4rnpGSYnth62Nce0KxQHFYuh/pRflohN9lwq0sTty6k8v+DMe32TRLj
-	 AZSAJH4tiClK5Pdv+5qYawZbaDIaQzjJ61s6jctA=
+	b=GjsxyWxHBU9yvb9Po2P1ItymKYNFZrO3+yq7xcjzYRkdD2tHPZhHOODzaQ2sd0Jxu
+	 zMRHrbpra1SxkmNJCstK2igR/UunxmClb1UjhRxYWqsk3vobv+opfe3b765HMvVEfP
+	 IJHBZXZXyqT18G2JfVJxU77rO3viorN9q88r4fzc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1D4AF801D8;
-	Wed, 22 Jan 2020 22:30:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C6B1F8020C;
+	Wed, 22 Jan 2020 22:32:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D621EF8020C; Wed, 22 Jan 2020 22:30:22 +0100 (CET)
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com
- [IPv6:2607:f8b0:4864:20::144])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC9CCF800BA
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 22:30:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC9CCF800BA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="bFyN4fxi"
-Received: by mail-il1-x144.google.com with SMTP id t8so559387iln.4
- for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 13:30:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=DhLefeNqLeukNBDhmhbZJgA1ak2CJQJmeBa8rPkAeV0=;
- b=bFyN4fxiX7zrizD9YMMKcciofic++lccIO+VmQtFVf/OXEx4v8sh0L1Er1wbxstB75
- Fdv/JR5HDYAtVVd0txcXXQmI1JXXaVRHNjHNnSfQDpgdUKF22nCVLLsEaVALAk+8qvBc
- F4pnbwyTQ+zYNahg22U5KKeJoXiNVRiDJaOWDyNkiJZkjLjOv98+lClWUTJjL2LZ8Dp8
- XWuSX4o6+bo2dbCKDRWLNWexnnVOrCj+g7fxRrkip5tTsQNmfztcKz7QPBctGKJdQXEo
- XbOGOm5Eq/xbU1Pq9oCM68HIwD7wVz/rrIe4rDTx0YWIEZfAT8E8Syd1MckmRU2JBxvG
- xLiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=DhLefeNqLeukNBDhmhbZJgA1ak2CJQJmeBa8rPkAeV0=;
- b=WHMUE16HZdNqt5R8yrloo+xNkHVdhG+5P29wZ9Q1L8tsN8rKi5zzDDsOCOWHmgvrpC
- jKbocVT6Bbz74AuqRDysJRIhKxtb1cyrYwCP2MGZVtn+S4LkryEyKtdTLxXJ3IOfdIxs
- YPWxHGQhEXVzUdLivhaB9JNK3iyqwNgaKcCf3+zZ3CWI8fX7XcEShnRUnjMz2c+g8HcL
- 2pZ9brB4vKJK9jqfiULJoaHr659qqjch2009mPZhBEPxVLzWXvbciqjOgMlf1qhCWN2y
- TOQ22kLrKiUj4S+eYae7h84YKVQoozcGtdUrdtxe/G3dyBQ/QJdk1H3u6x7uc9Xs97we
- QTZA==
-X-Gm-Message-State: APjAAAWkHiHHlgO2Q7UQ3mNHMElrBQP2yyT6tOTQCuitL7HT7K8UWeu6
- Lq73R0KeUTDLZJUGMbDtp9lcreipZal+7cPctUdBeQ==
-X-Google-Smtp-Source: APXvYqyF2PYz1Y234JnbVa/1Tc2Nz7VIz4RZ+eyK68xVbiFQhyxVourP83f/DaZkt8vey56LsNUjB5YLCKLSoNzaUtE=
-X-Received: by 2002:a92:5b49:: with SMTP id p70mr7403916ilb.209.1579728615263; 
- Wed, 22 Jan 2020 13:30:15 -0800 (PST)
-MIME-Version: 1.0
+ id B862AF8020C; Wed, 22 Jan 2020 22:32:20 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4BFA9F800BA
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 22:32:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BFA9F800BA
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E49D5FEC;
+ Wed, 22 Jan 2020 13:32:15 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6023D3F52E;
+ Wed, 22 Jan 2020 13:32:15 -0800 (PST)
+Date: Wed, 22 Jan 2020 21:32:13 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Message-ID: <20200122213213.GH3833@sirena.org.uk>
 References: <20200122181254.22801-1-cezary.rojewski@intel.com>
  <0c4a19c3-f1e3-7b76-be42-e4902645955b@linux.intel.com>
-In-Reply-To: <0c4a19c3-f1e3-7b76-be42-e4902645955b@linux.intel.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Wed, 22 Jan 2020 13:30:04 -0800
-Message-ID: <CAFQqKeVi8OBNc0ON+ogFBv07fYV25G3oK9Hsnydfg-sTwYZx5A@mail.gmail.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+ <CAFQqKeVi8OBNc0ON+ogFBv07fYV25G3oK9Hsnydfg-sTwYZx5A@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CAFQqKeVi8OBNc0ON+ogFBv07fYV25G3oK9Hsnydfg-sTwYZx5A@mail.gmail.com>
+X-Cookie: Sorry.  Nice try.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, tiwai@suse.com,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.com,
  Liam Girdwood <lgirdwood@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
+ Linux-ALSA <alsa-devel@alsa-project.org>
 Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: skl_hda_dsp_common: Fix
  global-out-of-bounds bug
 X-BeenThere: alsa-devel@alsa-project.org
@@ -106,67 +79,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0582101494945569503=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 22, 2020 at 11:58 AM Pierre-Louis Bossart <
-pierre-louis.bossart@linux.intel.com> wrote:
 
->
->
-> On 1/22/20 12:12 PM, Cezary Rojewski wrote:
-> > Definitions for idisp snd_soc_dai_links within skl_hda_dsp_common are
-> > missing platform component. Add it to address following bug reported by
-> > KASAN:
-> >
-> > [   10.538502] BUG: KASAN: global-out-of-bounds in
-> skl_hda_audio_probe+0x13a/0x2b0 [snd_soc_skl_hda_dsp]
-> > [   10.538509] Write of size 8 at addr ffffffffc0606840 by task
-> systemd-udevd/299
-> > (...)
->
-> You could probably skip the call trace, it doesn't really provide much
-> information.
->
-> Kai and Ranjani, do you think this impacts SOF as well? Or does our BE
-> override somehow suppresses the problem?
->
-Hi Pierre/Cezary,
+--===============0582101494945569503==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gTtJ75FAzB1T2CN6"
+Content-Disposition: inline
 
-SOF does have the same problem too but I thought we're allowed to have dai
-links without platform component? An alternative to adding the platform
-component would be to do something like below.
 
-Thanks,
-Ranjani
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index 11eaee9ae41f..dacf8014b870 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -112,6 +112,7 @@ static char hda_soc_components[30];
+--gTtJ75FAzB1T2CN6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- static int skl_hda_fill_card_info(struct snd_soc_acpi_mach_params
-*mach_params)
- {
-+       struct snd_soc_dai_link_component *platform;
-        struct snd_soc_card *card = &hda_soc_card;
-        struct snd_soc_dai_link *dai_link;
-        u32 codec_count, codec_mask;
-@@ -148,7 +149,8 @@ static int skl_hda_fill_card_info(struct
-snd_soc_acpi_mach_params *mach_params)
-        card->num_dapm_routes = num_route;
+On Wed, Jan 22, 2020 at 01:30:04PM -0800, Sridharan, Ranjani wrote:
 
-        for_each_card_prelinks(card, i, dai_link)
--               dai_link->platforms->name = mach_params->platform;
-+               for_each_link_platforms(dai_link, i, platform)
-+                       platform->name = mach_params->platform;
+> SOF does have the same problem too but I thought we're allowed to have dai
+> links without platform component? An alternative to adding the platform
+> component would be to do something like below.
 
-        return 0;
- }
+CODEC to CODEC links are supported.
+
+--gTtJ75FAzB1T2CN6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4ov1wACgkQJNaLcl1U
+h9C/vQf/YdPAMWZlKWXmWV/iPsWXSEkgA/ZlYBRDBnDX6yweQ19SgoGmpkxMCphi
+PY9196wVw1Xb2Eho/ssYHIrTlXXc9ttCc8fp/79NnY6RAws08anwtuWW1Pi4j83C
+j8oTwvtl5KH8wRMTRnTUHdXQsb+2WuUdaWcEne2rrda3L3CnMBAmO2a9pIaOIcyc
+0NTME/n8gqEefhTA6dlvEG2QVjF4Lh1lvW7DTx6SbrMJSUyhn+OVK/8gcw0L+qjK
+9De5n4jHFKe16kI1tNxSd1cCDv1KbcAuDvW9qQvQLmiMIhVlEXxfBvdtCbt2Pjhs
+1LcA0bc4jdX/7J+VXI4/R0D6/ZrvUA==
+=pxI+
+-----END PGP SIGNATURE-----
+
+--gTtJ75FAzB1T2CN6--
+
+--===============0582101494945569503==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0582101494945569503==--
