@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8596DC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF405C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:26:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CACD24684
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:25:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7EF1524680
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jan 2020 11:26:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HdshvdJH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CACD24684
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WlQldPJw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EF1524680
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8F9516B1;
-	Wed, 22 Jan 2020 12:25:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8F9516B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id A154916B0;
+	Wed, 22 Jan 2020 12:25:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A154916B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579692351;
-	bh=beNuLEXnx+Z5RtW9fORBlmJOl32Sv2xtGDjeFygFfkA=;
+	s=default; t=1579692397;
+	bh=aqhO27bwIpA6z3GWJ9+5xBSjyPGeyGjwsqj3ljKcE2o=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HdshvdJHKbxdPLodrfxM4keDnLj0AiI7jYgFfCwVA7eeXqixeB6U1eYmRGyERj8Dw
-	 UPeHvMnc005+zFVDzKpFDq7D1i6DLNmLfnpMyw865DhVV7K0Rg2JkfVfPT0fJcQuD1
-	 Sd4l+UQn4a05+2xCLaqi2BPBcB2ckuaBObGRpkb4=
+	b=WlQldPJwoVbQfyqNor4lGy2MTJGh5CdKDRN4dF7FmEI3INjgPFmuxp2mHb1tfJGAM
+	 etuc2hk1FDAZ2AnIHPcEpYfLO1iA+pjwz7+keOQDjBeS9oyg82ehD0eVkq1IZYVixb
+	 zkm7MA3lauud4iy+eYcKN7ek0D1SDHqQexM5Z6Uk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F9F8F80272;
-	Wed, 22 Jan 2020 12:23:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F4EFF80278;
+	Wed, 22 Jan 2020 12:23:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CDD0F80248; Wed, 22 Jan 2020 12:23:22 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 95170F8026F; Wed, 22 Jan 2020 12:23:23 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 983AFF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07644F80229
  for <alsa-devel@alsa-project.org>; Wed, 22 Jan 2020 12:23:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 983AFF801D8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07644F80229
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 22 Jan 2020 03:23:13 -0800
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 22 Jan 2020 03:23:14 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,349,1574150400"; d="scan'208";a="250586394"
+X-IronPort-AV: E=Sophos;i="5.70,349,1574150400"; d="scan'208";a="227648038"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga004.fm.intel.com with ESMTP; 22 Jan 2020 03:23:11 -0800
+ by orsmga003.jf.intel.com with ESMTP; 22 Jan 2020 03:23:11 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id CBFA4543; Wed, 22 Jan 2020 13:23:07 +0200 (EET)
+ id AF11C4CA; Wed, 22 Jan 2020 13:23:07 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
  x86@kernel.org, Mark Brown <broonie@kernel.org>,
  linux-kernel@vger.kernel.org
-Date: Wed, 22 Jan 2020 13:23:06 +0200
-Message-Id: <20200122112306.64598-10-andriy.shevchenko@linux.intel.com>
+Date: Wed, 22 Jan 2020 13:23:03 +0200
+Message-Id: <20200122112306.64598-7-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200122112306.64598-1-andriy.shevchenko@linux.intel.com>
 References: <20200122112306.64598-1-andriy.shevchenko@linux.intel.com>
@@ -72,8 +72,8 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [alsa-devel] [PATCH v3 9/9] ASoC: Intel: Switch DMI table match to
-	a test of variable
+Subject: [alsa-devel] [PATCH v3 6/9] x86/quirks: Add a DMI quirk for
+	Microsoft Surface 3
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,8 +91,7 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since we have a common x86 quirk that provides an exported variable,
-use it instead of local DMI table match.
+Add a DMI quirk for Microsoft Surface 3 which will be utilized by few drivers.
 
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -101,60 +100,57 @@ Cc: Jie Yang <yang.jie@linux.intel.com>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- .../intel/common/soc-acpi-intel-cht-match.c   | 28 ++-----------------
- 1 file changed, 3 insertions(+), 25 deletions(-)
+ arch/x86/kernel/quirks.c                  | 10 ++++++++++
+ include/linux/platform_data/x86/machine.h |  5 +++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index d0fb43c2b9f6..833d2e130e6e 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -5,31 +5,11 @@
-  * Copyright (c) 2017, Intel Corporation.
-  */
+diff --git a/arch/x86/kernel/quirks.c b/arch/x86/kernel/quirks.c
+index 3867f81baae7..88675844b1ab 100644
+--- a/arch/x86/kernel/quirks.c
++++ b/arch/x86/kernel/quirks.c
+@@ -658,6 +658,9 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x2083, quirk_intel_purley_xeon_ras
+ bool x86_apple_machine;
+ EXPORT_SYMBOL(x86_apple_machine);
  
--#include <linux/dmi.h>
-+#include <linux/platform_data/x86/machine.h>
++bool x86_microsoft_surface_3_machine;
++EXPORT_SYMBOL(x86_microsoft_surface_3_machine);
 +
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
+ static const struct dmi_system_id x86_machine_table[] __initconst = {
+ 	{
+ 		.ident = "x86 Apple Macintosh",
+@@ -673,6 +676,13 @@ static const struct dmi_system_id x86_machine_table[] __initconst = {
+ 		},
+ 		.driver_data = &x86_apple_machine,
+ 	},
++	{
++		.ident = "Microsoft Surface 3",
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
++		},
++		.driver_data = &x86_microsoft_surface_3_machine,
++	},
+ 	{}
+ };
  
--static unsigned long cht_machine_id;
--
--#define CHT_SURFACE_MACH 1
--
--static int cht_surface_quirk_cb(const struct dmi_system_id *id)
--{
--	cht_machine_id = CHT_SURFACE_MACH;
--	return 1;
--}
--
--static const struct dmi_system_id cht_table[] = {
--	{
--		.callback = cht_surface_quirk_cb,
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "Surface 3"),
--		},
--	},
--	{ }
--};
--
- static struct snd_soc_acpi_mach cht_surface_mach = {
- 	.id = "10EC5640",
- 	.drv_name = "cht-bsw-rt5645",
-@@ -43,9 +23,7 @@ static struct snd_soc_acpi_mach *cht_quirk(void *arg)
- {
- 	struct snd_soc_acpi_mach *mach = arg;
+diff --git a/include/linux/platform_data/x86/machine.h b/include/linux/platform_data/x86/machine.h
+index b1e7a560a046..9bdf5a06b490 100644
+--- a/include/linux/platform_data/x86/machine.h
++++ b/include/linux/platform_data/x86/machine.h
+@@ -8,8 +8,13 @@
+  * x86_apple_machine - whether the machine is an x86 Apple Macintosh
+  */
+ extern bool x86_apple_machine;
++/**
++ * x86_microsoft_surface_3_machine - whether the machine is Microsoft Surface 3
++ */
++extern bool x86_microsoft_surface_3_machine;
+ #else
+ #define x86_apple_machine			false
++#define x86_microsoft_surface_3_machine		false
+ #endif
  
--	dmi_check_system(cht_table);
--
--	if (cht_machine_id == CHT_SURFACE_MACH)
-+	if (x86_microsoft_surface_3_machine)
- 		return &cht_surface_mach;
- 	else
- 		return mach;
+ #endif	/* PLATFORM_DATA_X86_MACHINE_H */
 -- 
 2.24.1
 
