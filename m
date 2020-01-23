@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B467C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:39:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3FF8C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:40:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E87A221835
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:39:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7939424655
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:40:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hs4jks+X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E87A221835
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qm4NHDCX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7939424655
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF6A21693;
-	Thu, 23 Jan 2020 13:38:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF6A21693
+	by alsa0.perex.cz (Postfix) with ESMTPS id E00471681;
+	Thu, 23 Jan 2020 13:39:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E00471681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579783163;
-	bh=IXB+s96eOl/oyzAQ6OHjrHTIQ/OdB9IyNCttjSBE4lo=;
+	s=default; t=1579783211;
+	bh=MwCI8x7iKT1ZF3p+LaAsUd+ghsD3o08UFS3tR8Fao8M=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=hs4jks+XrtQmXDR8H4pIXjzQOivfxwZSOqlBQlNxIuY5CDs3uthLfecW4EPc5ITJt
-	 2TwrOWvNzqLBv4z9y/VSMsGCK/6VT8BbmrgB+eay5gpJIO6rVpEIlKJC9KBfqv0L0o
-	 lXbYj5UwgwfGJmnXVQ4a4wUmjFgdszEELxtw+Utk=
+	b=qm4NHDCXWfbA9f/6F43XuXqaxOyojotA5Tia7VV7XyLPBMbGV6+dc2XJJ5DNf+NQV
+	 NkJNvZvsGO1uB+fHotlWFf3lHN52W/Xlcyj6oLKiNtTWjXDVYjUCUiRb8tRfkLvudq
+	 1hNZCJ+u9G3LCinBX0ogpAssgVQEFKcQ9vpxtdu4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29926F80233;
-	Thu, 23 Jan 2020 13:36:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27B03F8028B;
+	Thu, 23 Jan 2020 13:36:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43BA8F80274; Thu, 23 Jan 2020 13:36:08 +0100 (CET)
+ id 554A7F80278; Thu, 23 Jan 2020 13:36:10 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8BB20F801F9
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 13:36:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BB20F801F9
+ by alsa1.perex.cz (Postfix) with ESMTP id 1D556F80233
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 13:36:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D556F80233
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76C4BFEC;
- Thu, 23 Jan 2020 04:36:03 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0545E328;
+ Thu, 23 Jan 2020 04:36:06 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB0883F6C4;
- Thu, 23 Jan 2020 04:36:02 -0800 (PST)
-Date: Thu, 23 Jan 2020 12:36:01 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6308E3F6C4;
+ Thu, 23 Jan 2020 04:36:05 -0800 (PST)
+Date: Thu, 23 Jan 2020 12:36:03 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <874kwomi9r.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-874kwomi9r.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875zh4mi9v.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-875zh4mi9v.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-pcm: add soc_rtd_hw_params()" to
-	the asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-pcm: add soc_rtd_prepare()" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-pcm: add soc_rtd_hw_params()
+   ASoC: soc-pcm: add soc_rtd_prepare()
 
 has been applied to the asoc tree at
 
@@ -101,62 +101,61 @@ to this mail.
 Thanks,
 Mark
 
-From de9ad990284f16a435675e4e73c7ffaaea9ee4b2 Mon Sep 17 00:00:00 2001
+From 44c1a75b0d889b3a5faff9edc837d972806bb46a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 22 Jan 2020 09:44:48 +0900
-Subject: [PATCH] ASoC: soc-pcm: add soc_rtd_hw_params()
+Date: Wed, 22 Jan 2020 09:44:44 +0900
+Subject: [PATCH] ASoC: soc-pcm: add soc_rtd_prepare()
 
-Add soc_rtd_hw_params() to make the code easier to read
+Add soc_rtd_prepare() to make the code easier to read
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/874kwomi9r.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/875zh4mi9v.wl-kuninori.morimoto.gx@renesas.com
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ sound/soc/soc-pcm.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ccd6c9ca55ab..d7fc6c5d7906 100644
+index 8095c64c4e3e..ccd6c9ca55ab 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -54,6 +54,16 @@ static int soc_rtd_prepare(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
+@@ -45,6 +45,15 @@ static void soc_rtd_shutdown(struct snd_soc_pcm_runtime *rtd,
+ 		rtd->dai_link->ops->shutdown(substream);
  }
  
-+static int soc_rtd_hw_params(struct snd_soc_pcm_runtime *rtd,
-+			     struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
++static int soc_rtd_prepare(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_pcm_substream *substream)
 +{
 +	if (rtd->dai_link->ops &&
-+	    rtd->dai_link->ops->hw_params)
-+		return rtd->dai_link->ops->hw_params(substream, params);
++	    rtd->dai_link->ops->prepare)
++		return rtd->dai_link->ops->prepare(substream);
 +	return 0;
 +}
 +
  /**
   * snd_soc_runtime_activate() - Increment active count for PCM runtime components
   * @rtd: ASoC PCM runtime that is activated
-@@ -826,13 +836,11 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (ret)
- 		goto out;
+@@ -716,13 +725,11 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
  
--	if (rtd->dai_link->ops->hw_params) {
--		ret = rtd->dai_link->ops->hw_params(substream, params);
+ 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+ 
+-	if (rtd->dai_link->ops->prepare) {
+-		ret = rtd->dai_link->ops->prepare(substream);
 -		if (ret < 0) {
--			dev_err(rtd->card->dev, "ASoC: machine hw_params"
--				" failed: %d\n", ret);
+-			dev_err(rtd->card->dev, "ASoC: machine prepare error:"
+-				" %d\n", ret);
 -			goto out;
 -		}
-+	ret = soc_rtd_hw_params(rtd, substream, params);
++	ret = soc_rtd_prepare(rtd, substream);
 +	if (ret < 0) {
 +		dev_err(rtd->card->dev,
-+			"ASoC: machine hw_params failed: %d\n", ret);
++			"ASoC: machine prepare error: %d\n", ret);
 +		goto out;
  	}
  
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
+ 	for_each_rtd_components(rtd, i, component) {
 -- 
 2.20.1
 
