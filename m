@@ -6,56 +6,56 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80E2BC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:38:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B467C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:39:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0318721835
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:38:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E87A221835
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:39:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uLZw80Aj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0318721835
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hs4jks+X"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E87A221835
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1FDA169C;
-	Thu, 23 Jan 2020 13:37:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1FDA169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF6A21693;
+	Thu, 23 Jan 2020 13:38:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF6A21693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579783117;
-	bh=TwwGw2iDdM3qJW9QGAXP9A16+UGWuQKmu2jDzR09L6I=;
+	s=default; t=1579783163;
+	bh=IXB+s96eOl/oyzAQ6OHjrHTIQ/OdB9IyNCttjSBE4lo=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=uLZw80Aj6YKZV94GlTAoWQN4M0fAtxF4wHLxLMqbRaq7MK+Gz7+net0TjbZOMhM1X
-	 YPN5LZ9vP8wKPUapnkkdg7w8xgGAfkJqSO36VoDhTDkzCTysQcgfJ+GKcD9Zmyp+r0
-	 ATYlCFe12Nsqpj6K5vjdexp14KcxGUXS8Crn5ygA=
+	b=hs4jks+XrtQmXDR8H4pIXjzQOivfxwZSOqlBQlNxIuY5CDs3uthLfecW4EPc5ITJt
+	 2TwrOWvNzqLBv4z9y/VSMsGCK/6VT8BbmrgB+eay5gpJIO6rVpEIlKJC9KBfqv0L0o
+	 lXbYj5UwgwfGJmnXVQ4a4wUmjFgdszEELxtw+Utk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91624F80273;
-	Thu, 23 Jan 2020 13:36:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29926F80233;
+	Thu, 23 Jan 2020 13:36:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2189EF8026F; Thu, 23 Jan 2020 13:36:06 +0100 (CET)
+ id 43BA8F80274; Thu, 23 Jan 2020 13:36:08 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5BF9EF800E7
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 13:36:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BF9EF800E7
+ by alsa1.perex.cz (Postfix) with ESMTP id 8BB20F801F9
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 13:36:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BB20F801F9
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07E11328;
- Thu, 23 Jan 2020 04:36:01 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76C4BFEC;
+ Thu, 23 Jan 2020 04:36:03 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BBA13F6C4;
- Thu, 23 Jan 2020 04:36:00 -0800 (PST)
-Date: Thu, 23 Jan 2020 12:35:58 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB0883F6C4;
+ Thu, 23 Jan 2020 04:36:02 -0800 (PST)
+Date: Thu, 23 Jan 2020 12:36:01 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <8736c8mi9n.wl-kuninori.morimoto.gx@renesas.com>
-Message-Id: <applied-8736c8mi9n.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <874kwomi9r.wl-kuninori.morimoto.gx@renesas.com>
+Message-Id: <applied-874kwomi9r.wl-kuninori.morimoto.gx@renesas.com>
 X-Patchwork-Hint: ignore
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: soc-pcm: add soc_rtd_hw_free()" to the
-	asoc tree
+Subject: [alsa-devel] Applied "ASoC: soc-pcm: add soc_rtd_hw_params()" to
+	the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,7 +76,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: soc-pcm: add soc_rtd_hw_free()
+   ASoC: soc-pcm: add soc_rtd_hw_params()
 
 has been applied to the asoc tree at
 
@@ -101,61 +101,62 @@ to this mail.
 Thanks,
 Mark
 
-From 49f020e5714d2c48c8ed9a89169ef6a058e54c2f Mon Sep 17 00:00:00 2001
+From de9ad990284f16a435675e4e73c7ffaaea9ee4b2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 22 Jan 2020 09:44:52 +0900
-Subject: [PATCH] ASoC: soc-pcm: add soc_rtd_hw_free()
+Date: Wed, 22 Jan 2020 09:44:48 +0900
+Subject: [PATCH] ASoC: soc-pcm: add soc_rtd_hw_params()
 
-Add soc_rtd_hw_free() to make the code easier to read
+Add soc_rtd_hw_params() to make the code easier to read
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/8736c8mi9n.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/874kwomi9r.wl-kuninori.morimoto.gx@renesas.com
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ sound/soc/soc-pcm.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index d7fc6c5d7906..718749f12979 100644
+index ccd6c9ca55ab..d7fc6c5d7906 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -64,6 +64,14 @@ static int soc_rtd_hw_params(struct snd_soc_pcm_runtime *rtd,
+@@ -54,6 +54,16 @@ static int soc_rtd_prepare(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
-+static void soc_rtd_hw_free(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_pcm_substream *substream)
++static int soc_rtd_hw_params(struct snd_soc_pcm_runtime *rtd,
++			     struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
 +{
 +	if (rtd->dai_link->ops &&
-+	    rtd->dai_link->ops->hw_free)
-+		rtd->dai_link->ops->hw_free(substream);
++	    rtd->dai_link->ops->hw_params)
++		return rtd->dai_link->ops->hw_params(substream, params);
++	return 0;
 +}
 +
  /**
   * snd_soc_runtime_activate() - Increment active count for PCM runtime components
   * @rtd: ASoC PCM runtime that is activated
-@@ -935,8 +943,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		codec_dai->rate = 0;
+@@ -826,13 +836,11 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret)
+ 		goto out;
+ 
+-	if (rtd->dai_link->ops->hw_params) {
+-		ret = rtd->dai_link->ops->hw_params(substream, params);
+-		if (ret < 0) {
+-			dev_err(rtd->card->dev, "ASoC: machine hw_params"
+-				" failed: %d\n", ret);
+-			goto out;
+-		}
++	ret = soc_rtd_hw_params(rtd, substream, params);
++	if (ret < 0) {
++		dev_err(rtd->card->dev,
++			"ASoC: machine hw_params failed: %d\n", ret);
++		goto out;
  	}
  
--	if (rtd->dai_link->ops->hw_free)
--		rtd->dai_link->ops->hw_free(substream);
-+	soc_rtd_hw_free(rtd, substream);
- 
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 	return ret;
-@@ -979,8 +986,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 	}
- 
- 	/* free any machine hw params */
--	if (rtd->dai_link->ops->hw_free)
--		rtd->dai_link->ops->hw_free(substream);
-+	soc_rtd_hw_free(rtd, substream);
- 
- 	/* free any component resources */
- 	soc_pcm_components_hw_free(substream, NULL);
+ 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
 -- 
 2.20.1
 
