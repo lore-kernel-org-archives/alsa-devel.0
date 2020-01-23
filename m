@@ -2,71 +2,97 @@ Return-Path: <SRS0=ePgV=3M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62CB1C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 14:22:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 936D8C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 14:31:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E35E42087E
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 14:22:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E599214AF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 14:31:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fIoxYh6i"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E35E42087E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="M7D4hwr+";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="h0QkYri9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E599214AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A58B169F;
-	Thu, 23 Jan 2020 15:21:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A58B169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4629B166D;
+	Thu, 23 Jan 2020 15:30:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4629B166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579789351;
-	bh=WHWR6T9ox+aSoorhjsj9+41bHcXwsEpDi4kVQSp2ThQ=;
-	h=To:References:From:Date:In-Reply-To:Subject:List-Id:
+	s=default; t=1579789903;
+	bh=4imz5D1cUo3H8/dJUmVWhP1A0ua5yoKWvYdT6Pskun4=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fIoxYh6iGVKEO2GWfxXL1X+Y9uYMvGZJe+mCue17zZBKin0RolqF0gcyptFCJR7Gt
-	 WH1Oaj9CIT6g5sffMjqZsRrgBHJAx4H3qhJ5ypoxKocx9f31cQ9KOcXzDZ8s5dr/NB
-	 JWNkW9HB7Y/P0buCxX31ezMdVw3woWw5YHvVIwYI=
+	b=M7D4hwr+Z+SRvK9QOXDBYFp/RADQKucWXtLsHXVmOvumgJYtO3g5nKNTXso3f6vdT
+	 u3KUF4s04VS11XZlDnZL1bwD15bBKgiWEWz8fvy6TLn6IVYzyttMg1t7RdzTp5K+Qd
+	 cATumfLWrVWtvW8TytBaJ+U4seWy8SRbQnB/y/vk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91ECEF80273;
-	Thu, 23 Jan 2020 15:20:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDBD7F8015B;
+	Thu, 23 Jan 2020 15:30:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5365EF801F9; Thu, 23 Jan 2020 15:20:41 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 11C0FF801D9; Thu, 23 Jan 2020 15:30:51 +0100 (CET)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
+ [IPv6:2607:f8b0:4864:20::d42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 619BBF801F9
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 15:20:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 619BBF801F9
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 23 Jan 2020 06:20:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,354,1574150400"; d="scan'208";a="288391289"
-Received: from mjyoun1x-mobl.amr.corp.intel.com (HELO [10.251.142.125])
- ([10.251.142.125])
- by fmsmga001.fm.intel.com with ESMTP; 23 Jan 2020 06:20:34 -0800
-To: Michal Feix <michal@feix.family>, alsa-devel@alsa-project.org
-References: <ebe959a0-5272-e7bd-6001-1ce598f7f6be@feix.family>
- <44ba763e-f3d2-3fa2-eea6-9ebb7317a3bd@linux.intel.com>
- <cc4fc82d-5b01-d5f9-7771-ba2b5daa5829@feix.family>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <103d4b4e-f234-5704-310d-ad6286575aa1@linux.intel.com>
-Date: Thu, 23 Jan 2020 08:20:34 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF75EF80112
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 15:30:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF75EF80112
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="h0QkYri9"
+Received: by mail-io1-xd42.google.com with SMTP id h8so3163443iob.2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 06:30:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=FRpZc2K8rtySt0g/Uf8aZHkLQ6/PNDol3SnEb8AWinM=;
+ b=h0QkYri9Yp7KyFw2sOYrAifNEyLvX5ywLuinybzXcIUOmd4e1uZBvsVyzisS86YZO7
+ OgQstHaMhtJEOXG9MPrKD9NY9n2aCYvR6l+kPDQzy3XFRmLFGiPSWRlYOenRMkXpqyu8
+ qZpAdmyLek4GTQWSQCQJi7/V/yWmflq1KpLceyUgd15LQH6zb+cxAlmX26JxuM89M9bY
+ ahysNYOoybucdUTaqxWWfuHfkMzqMtGcF+ZnZ+g8jUYW+Jfvwj3kt654o2gOIysbm7kM
+ IUZQMMNYeLOK99R1l4OjYrBKnvgeSk7Mjvk1AfklqkDqSCAVJfsLPllunCf3Uz7NTcXs
+ oEXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=FRpZc2K8rtySt0g/Uf8aZHkLQ6/PNDol3SnEb8AWinM=;
+ b=feCvOSdKtmE5lbQTtEOJGmv476ak2H2tV9lxAueNkDPToC1zf5zW5ArIsiYKADOK0o
+ 6atvoyfkExiaIAf6QYDLPS8HZjMtb9bGGgF16Oq9joLt9juerelzXj24nz+zE/uhwhS+
+ yz30D0WVD/vCRvOPQpbqlb+DQTSAqHoGfg+0GHwrE3aKPFZyL9PyZkveTINwjHdKxDvt
+ AtI2dJ/mV5eL73yazwa926lcK+BxEabDxHB/NGP7QB/WSrUft+7qkrmSi1G9FdgyLKfC
+ vWgMCRcRI1fn9bKRGNEqEK8GD51pcLRmekC8bTGdGy5kTBPT/BBkNBfxqI/scFmbnOmX
+ HEcQ==
+X-Gm-Message-State: APjAAAWU3KF4CkjN6pr6AOMdflgqcJXJAFEj2hwaAoWKPv11qxiAiyS4
+ GMhFgxiXwNk6yS0MsC2oKdcqGXB9bPaEEgi6q0Jj2Q==
+X-Google-Smtp-Source: APXvYqwSf3MBFy40L9z7Lsg8cTAKdWiFqdm9ffUU+sKkZ74cwURCcHJaChpJcdQvwur/o0JvjpEI0xQyxnEzylJxsC0=
+X-Received: by 2002:a5d:8989:: with SMTP id m9mr11378201iol.118.1579789845058; 
+ Thu, 23 Jan 2020 06:30:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cc4fc82d-5b01-d5f9-7771-ba2b5daa5829@feix.family>
-Content-Language: en-US
-Subject: Re: [alsa-devel] ASUS T100TAM UCM
+References: <CGME20200123134100eucas1p1078c46b83d1ef49f9b1616f8f7789cf1@eucas1p1.samsung.com>
+ <20200123134046.9769-1-m.szyprowski@samsung.com>
+In-Reply-To: <20200123134046.9769-1-m.szyprowski@samsung.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 23 Jan 2020 22:30:33 +0800
+Message-ID: <CA+Px+wUHzCixCh7JYu=Reqwx=D+-4aV9Mi8jGzxKYV9LGjjxvA@mail.gmail.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, Dylan Reid <dgreid@google.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: max98090: silence lockdep warning
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,44 +105,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, Jan 23, 2020 at 9:41 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+> Fixes: 08df0d9a00f7 ("ASoC: max98090: revert "ASoC: max98090: fix lockdep warning"")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
 
-> Thanks Pierre. I'm aware of the work done previously on Asus T100. Not 
-> sure, if Asus T100TAM is any significantly different. Just tried your 
-> suggested commands as root user:
-> 
-> # alsaucm -c bytcr-rt5640 set _verb HiFi set _enadev Headphones
-> ALSA lib ucm_subs.c:215:(uc_mgr_get_substituted_value) variable 
-> '${CardComponents}' is not defined in this context!
-> ALSA lib main.c:960:(snd_use_case_mgr_open) error: failed to import 
-> bytcr-rt5640 use case configuration -22
-> alsaucm: error failed to open sound card bytcr-rt5640: Invalid argument
-> 
-> # alsaucm -c bytcr-rt5640 set _verb HiFi set _enadev Speaker
-> ALSA lib ucm_subs.c:215:(uc_mgr_get_substituted_value) variable 
-> '${CardComponents}' is not defined in this context!
-> ALSA lib main.c:960:(snd_use_case_mgr_open) error: failed to import 
-> bytcr-rt5640 use case configuration -22
-> alsaucm: error failed to open sound card bytcr-rt5640: Invalid argument
-> 
-> I also tried this:
-> 
-> # alsaucm listcards
-> ALSA lib utils.c:261:(uc_mgr_config_load) could not open configuration 
-> file /usr/share/alsa/ucm2/HDA Intel PCH/HDA Intel PCH.conf
-> alsaucm: error failed to get card list: No such file or directory
-> 
-> There really is no such file "HDA Intel PCH.conf" in HDA Intel PCH 
-> directory, but I do not see any such file in the alsa-ucm-conf package 
-> downloaded from origin Alsa site.
-
-can you point us to the alsa-info results then? It could indeed be a 
-completely different hardware, where you only have HDaudio support (no 
-I2S codecs), in which case you shouldn't need UCM.
+Thanks for fixing this up.  I guess I can't see the lockdep warning
+messages because my environment is based on v4.4...anyway, thanks.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
