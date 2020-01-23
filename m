@@ -2,61 +2,52 @@ Return-Path: <SRS0=ePgV=3M=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3B02C33CB6
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:44:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7584FC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:50:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B14424686
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:44:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F144424655
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jan 2020 12:50:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mb4BCxr4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B14424686
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Bq8mDM4f"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F144424655
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=feix.family
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4C2D1698;
-	Thu, 23 Jan 2020 13:43:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4C2D1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33F1F1669;
+	Thu, 23 Jan 2020 13:49:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33F1F1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579783483;
-	bh=e3/HzhvwNpwgRiCFrVtj8DIfXct25zy1rTwPHRfUpUw=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Mb4BCxr4gIOYEbxPHW6WQrwqmoczcnY3R6DPDWsRGWHGg2dBpOHPl3QBvSPuHYneP
-	 Q+7kLMCrl9QwUkQINwm5PGAcCjTifzTaviTe2zn0SHsX3DL7bjok8TfiX0EyndvZjn
-	 Td8IO0i4VvIZWAkYbdoPLUAVdBCm3aBSdVRAmIJg=
+	s=default; t=1579783843;
+	bh=LIXmt2h3wN6YoZmyffcxeLmCR5HFFvgThyZdbs1ffsY=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Bq8mDM4fm2LsmEaVrdexBPdUsFULkL/f5PyKg8pD8uGmHWD26MXmcZW5784KJ+4KD
+	 H4JpPdNbHrVN8w7pObegjP42/Zd9Lp44IGzJfDnygwLnA3EeIIMwGfohCn868QMja6
+	 r2J88dmYmbajhjqoigaM574GEm8q0KDWOJFmGoMc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68E2CF802FF;
-	Thu, 23 Jan 2020 13:36:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1F18F8015B;
+	Thu, 23 Jan 2020 13:49:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77AF8F802EC; Thu, 23 Jan 2020 13:36:27 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 71230F802E7
- for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 13:36:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71230F802E7
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD26D106F;
- Thu, 23 Jan 2020 04:36:23 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3CBA83F6C4;
- Thu, 23 Jan 2020 04:36:23 -0800 (PST)
-Date: Thu, 23 Jan 2020 12:36:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20200122104143.16725-1-ckeepax@opensource.cirrus.com>
-Message-Id: <applied-20200122104143.16725-1-ckeepax@opensource.cirrus.com>
-X-Patchwork-Hint: ignore
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
-Subject: [alsa-devel] Applied "ASoC: madera: Correct DMIC only input hook
-	ups" to the asoc tree
+ id CA344F801D9; Thu, 23 Jan 2020 13:49:50 +0100 (CET)
+Received: from server.feix.family (server.feix.family [80.240.19.227])
+ by alsa1.perex.cz (Postfix) with ESMTP id 10DC9F800BA
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jan 2020 13:49:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10DC9F800BA
+From: Michal Feix <michal@feix.family>
+To: alsa-devel@alsa-project.org
+Message-ID: <ebe959a0-5272-e7bd-6001-1ce598f7f6be@feix.family>
+Date: Thu, 23 Jan 2020 13:49:46 +0100
+MIME-Version: 1.0
+Content-Language: cs
+Subject: [alsa-devel] ASUS T100TAM UCM
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,104 +60,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+Hello,
 
-   ASoC: madera: Correct DMIC only input hook ups
+there is no sound working via speakers or headphones jack on Asus T100TAM. Sound works correctly via HDMI or Bluetooth headphones. The chip on this Baytrail machine is correctly recognized as bytcr_rt5640. From dmesg:
 
-has been applied to the asoc tree at
+bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
+bytcr_rt5640 bytcr_rt5640: quirk realtek,jack-detect-source 3
+bytcr_rt5640 bytcr_rt5640: quirk realtek,over-current-threshold-microamp 2000
+bytcr_rt5640 bytcr_rt5640: quirk realtek,over-current-scale-factor 1
+bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
+bytcr_rt5640 bytcr_rt5640: snd-soc-dummy-dai <-> media-cpu-dai mapping ok
+bytcr_rt5640 bytcr_rt5640: snd-soc-dummy-dai <-> deepbuffer-cpu-dai mapping ok
+bytcr_rt5640 bytcr_rt5640: rt5640-aif1 <-> ssp2-port mapping ok
+input: bytcr-rt5640 Headset as /devices/platform/80860F28:00/bytcr_rt5640/sound/card0/input17
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.5
+After bootup, kernel log is filled with: "Baytrail Audio Port: ASoC: no backend DAIs enabled for Baytrail Audio Port" messages. I do understand this is due to the missing UCM profile for the machine.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I've successfully uploaded the output of alsa-info.sh.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I'm on Arch linux, with latest alsa-ucm-conf 1.2.1.2 which seems not to be sufficient to make sound working on this thing. Is there anything I can provide to help smart Alsa people to help with this?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Thank you,
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-From ca34fa860fd34b0b22ff829aeb51884429a3a753 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Wed, 22 Jan 2020 10:41:43 +0000
-Subject: [PATCH] ASoC: madera: Correct DMIC only input hook ups
-
-Both the data and clock should be connected to both the left and right
-inputs for DMIC only inputs, add the missing routes.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200122104143.16725-1-ckeepax@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs47l85.c | 6 ++++++
- sound/soc/codecs/cs47l90.c | 6 ++++++
- 2 files changed, 12 insertions(+)
-
-diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
-index a69311008134..33ecff45bd6e 100644
---- a/sound/soc/codecs/cs47l85.c
-+++ b/sound/soc/codecs/cs47l85.c
-@@ -2005,12 +2005,18 @@ static const struct snd_soc_dapm_route cs47l85_dapm_routes[] = {
- 	{ "IN3R", NULL, "IN3R Mode" },
- 
- 	{ "IN4L", NULL, "DMICCLK4" },
-+	{ "IN4L", NULL, "DMICDAT4" },
-+	{ "IN4R", NULL, "DMICCLK4" },
- 	{ "IN4R", NULL, "DMICDAT4" },
- 
- 	{ "IN5L", NULL, "DMICCLK5" },
-+	{ "IN5L", NULL, "DMICDAT5" },
-+	{ "IN5R", NULL, "DMICCLK5" },
- 	{ "IN5R", NULL, "DMICDAT5" },
- 
- 	{ "IN6L", NULL, "DMICCLK6" },
-+	{ "IN6L", NULL, "DMICDAT6" },
-+	{ "IN6R", NULL, "DMICCLK6" },
- 	{ "IN6R", NULL, "DMICDAT6" },
- 
- 	MADERA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
-diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
-index 5448e4506741..16504d26dcf2 100644
---- a/sound/soc/codecs/cs47l90.c
-+++ b/sound/soc/codecs/cs47l90.c
-@@ -1935,12 +1935,18 @@ static const struct snd_soc_dapm_route cs47l90_dapm_routes[] = {
- 	{ "IN2R", NULL, "IN2R Mode" },
- 
- 	{ "IN3L", NULL, "DMICCLK3" },
-+	{ "IN3L", NULL, "DMICDAT3" },
-+	{ "IN3R", NULL, "DMICCLK3" },
- 	{ "IN3R", NULL, "DMICDAT3" },
- 
- 	{ "IN4L", NULL, "DMICCLK4" },
-+	{ "IN4L", NULL, "DMICDAT4" },
-+	{ "IN4R", NULL, "DMICCLK4" },
- 	{ "IN4R", NULL, "DMICDAT4" },
- 
- 	{ "IN5L", NULL, "DMICCLK5" },
-+	{ "IN5L", NULL, "DMICDAT5" },
-+	{ "IN5R", NULL, "DMICCLK5" },
- 	{ "IN5R", NULL, "DMICDAT5" },
- 
- 	MADERA_MIXER_ROUTES("OUT1L", "HPOUT1L"),
--- 
-2.20.1
-
+--
+Michal
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
