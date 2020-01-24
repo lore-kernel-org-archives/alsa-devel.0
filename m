@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF157C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:21:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76500C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:22:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 581DB2072C
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:21:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 04F84222C2
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:22:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IWNFUy/i";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="v3IjhIpc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 581DB2072C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Zx3Psz9q";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qf+KVs/j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04F84222C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A313C16A3;
-	Fri, 24 Jan 2020 15:20:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A313C16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4917C169E;
+	Fri, 24 Jan 2020 15:21:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4917C169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579875696;
-	bh=Ho9/NqGoqcEKaMbGGUQ5LT5wmkReTsFNQ7G2w3JXyf0=;
+	s=default; t=1579875739;
+	bh=t62mGj5e7D9E5r+bkh9nbCAMKfSjKgyvinHs0YYysnA=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IWNFUy/iTjUhbi9/xqafEtxaOOob1OqlRf6panCIOEnvQQgu3crlvoiJfrP/5egbK
-	 RnFtD+RQswqij3Q33FmZh1aLW1FzeYx2Fk5sh8AiR0k9GfRXow4UXNhERW7few0mCr
-	 /GbsiiEhVXMP52pQqwOR0dKVuFzoGllfYQwx1Lz8=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91D11F8027B;
-	Fri, 24 Jan 2020 15:19:22 +0100 (CET)
+	b=Zx3Psz9qRpyziHhtXjN5ot6scrMZcyUmkhfoL+r9NfsXAfOm9n8IcFZ61qRIGzB9t
+	 iJaiYLbTCKrE583hosy2U3KcQl8mLd8u4/NMYFCeEPckDw6n9E14IylzLgtkpHMLMx
+	 uZRFr9yN2LJ3QbskYNWW2szf6orbotmPSnBqV70M=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 2599AF80290;
+	Fri, 24 Jan 2020 15:19:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F382F800F5; Fri, 24 Jan 2020 15:19:16 +0100 (CET)
+ id E238FF8028E; Fri, 24 Jan 2020 15:19:24 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63C1CF800F5
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:19:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63C1CF800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7764F8028A
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:19:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7764F8028A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="v3IjhIpc"
+ header.b="qf+KVs/j"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E597121734;
- Fri, 24 Jan 2020 14:19:10 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 5E64C22522;
+ Fri, 24 Jan 2020 14:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579875551;
- bh=rsD6dVCbhIVA3iFuTz0rQzx5Xzdw3U6roCRQR2mAAGM=;
+ s=default; t=1579875560;
+ bh=2dCeTe+htp6bYLj6TEvc7v6Uv3nrYBGHsJ2ytgCOJwM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=v3IjhIpc9gGeSWscm+KC+R5yruMMPtOXh3qXX2bK4yFIANXSjC+Z2xa3QaV9bNTZC
- WetaE2ZWz+9dW/gd4STD8AQdFpIAp7WK/JCBQttqdfl/4KHEy5KoMzgqzBt96b+VBP
- HMqzgah8WXWmVq/7fuMg85lfelcpMWxvOHJkhY4U=
+ b=qf+KVs/j+NZdccPeR7K11nfWMilqR/NcCfFKzpcsNUq+kjQ7GbfTakvHykyOen7be
+ qiqSj2eU1nbVSU20SVS+XAmOZdMUssfiKvH9ovQt8hJ2O3ibdMX7KucTZ3x1lqwL0C
+ dVgxSAcUmTs7wLRdFBvoQbYnVfJx4iT5LhIpLONw=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 24 Jan 2020 09:17:16 -0500
-Message-Id: <20200124141817.28793-46-sashal@kernel.org>
+Date: Fri, 24 Jan 2020 09:17:24 -0500
+Message-Id: <20200124141817.28793-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200124141817.28793-1-sashal@kernel.org>
 References: <20200124141817.28793-1-sashal@kernel.org>
@@ -73,10 +73,11 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Olivier Moysan <olivier.moysan@st.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 046/107] ASoC: stm32: dfsdm: fix 16
-	bits record
+ Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 5.4 054/107] ASoC: hdac_hda: Fix error
+	in driver removal after failed probe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,66 +95,56 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Olivier Moysan <olivier.moysan@st.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit 8e55ea19125b65cffe42747359af99d545e85f2f ]
+[ Upstream commit 552b1a85da9f63856e7e341b81c16e0e078204f1 ]
 
-In stm32_afsdm_pcm_cb function, the transfer size is provided in bytes.
-However, samples are copied as 16 bits words from iio buffer.
-Divide by two the transfer size, to copy the right number of samples.
+In case system has multiple HDA codecs, and codec probe fails for
+at least one but not all codecs, driver will end up cancelling
+a non-initialized timer context upon driver removal.
 
-Fixes: 1e7f6e1c69f0 ("ASoC: stm32: dfsdm: add 16 bits audio record support")
+Call trace of typical case:
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20200110131131.3191-1-olivier.moysan@st.com
+[   60.593646] WARNING: CPU: 1 PID: 1147 at kernel/workqueue.c:3032
+__flush_work+0x18b/0x1a0
+[...]
+[   60.593670]  __cancel_work_timer+0x11f/0x1a0
+[   60.593673]  hdac_hda_dev_remove+0x25/0x30 [snd_soc_hdac_hda]
+[   60.593674]  device_release_driver_internal+0xe0/0x1c0
+[   60.593675]  bus_remove_device+0xd6/0x140
+[   60.593677]  device_del+0x175/0x3e0
+[   60.593679]  ? widget_tree_free.isra.7+0x90/0xb0 [snd_hda_core]
+[   60.593680]  snd_hdac_device_unregister+0x34/0x50 [snd_hda_core]
+[   60.593682]  snd_hdac_ext_bus_device_remove+0x2a/0x60 [snd_hda_ext_core]
+[   60.593684]  hda_dsp_remove+0x26/0x100 [snd_sof_intel_hda_common]
+[   60.593686]  snd_sof_device_remove+0x84/0xa0 [snd_sof]
+[   60.593687]  sof_pci_remove+0x10/0x30 [snd_sof_pci]
+[   60.593689]  pci_device_remove+0x36/0xb0
+
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200110235751.3404-9-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/stm/stm32_adfsdm.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/hdac_hda.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index 3c9a9deec9af4..4ecea4913f427 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -153,13 +153,13 @@ static const struct snd_soc_component_driver stm32_adfsdm_dai_component = {
- 	.name = "stm32_dfsdm_audio",
- };
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index 4570f662fb48b..d78f4d856aaff 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -498,7 +498,9 @@ static int hdac_hda_dev_remove(struct hdac_device *hdev)
+ 	struct hdac_hda_priv *hda_pvt;
  
--static void memcpy_32to16(void *dest, const void *src, size_t n)
-+static void stm32_memcpy_32to16(void *dest, const void *src, size_t n)
- {
- 	unsigned int i = 0;
- 	u16 *d = (u16 *)dest, *s = (u16 *)src;
+ 	hda_pvt = dev_get_drvdata(&hdev->dev);
+-	cancel_delayed_work_sync(&hda_pvt->codec.jackpoll_work);
++	if (hda_pvt && hda_pvt->codec.registered)
++		cancel_delayed_work_sync(&hda_pvt->codec.jackpoll_work);
++
+ 	return 0;
+ }
  
- 	s++;
--	for (i = n; i > 0; i--) {
-+	for (i = n >> 1; i > 0; i--) {
- 		*d++ = *s++;
- 		s++;
- 	}
-@@ -186,8 +186,8 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
- 
- 	if ((priv->pos + src_size) > buff_size) {
- 		if (format == SNDRV_PCM_FORMAT_S16_LE)
--			memcpy_32to16(&pcm_buff[priv->pos], src_buff,
--				      buff_size - priv->pos);
-+			stm32_memcpy_32to16(&pcm_buff[priv->pos], src_buff,
-+					    buff_size - priv->pos);
- 		else
- 			memcpy(&pcm_buff[priv->pos], src_buff,
- 			       buff_size - priv->pos);
-@@ -196,8 +196,8 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
- 	}
- 
- 	if (format == SNDRV_PCM_FORMAT_S16_LE)
--		memcpy_32to16(&pcm_buff[priv->pos],
--			      &src_buff[src_size - cur_size], cur_size);
-+		stm32_memcpy_32to16(&pcm_buff[priv->pos],
-+				    &src_buff[src_size - cur_size], cur_size);
- 	else
- 		memcpy(&pcm_buff[priv->pos], &src_buff[src_size - cur_size],
- 		       cur_size);
 -- 
 2.20.1
 
