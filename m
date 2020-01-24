@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5ECDC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:20:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B7BBC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:21:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72AF42072C
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:20:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 25E512072C
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:21:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eGizKIUM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72AF42072C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rmPAMob9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25E512072C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5A9A168B;
-	Fri, 24 Jan 2020 20:20:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5A9A168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87B4D16B9;
+	Fri, 24 Jan 2020 20:20:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87B4D16B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579893653;
-	bh=R8zntK2oflQCjGA9o3xyss2KqrqgSOV8PsbPhqP3/F4=;
+	s=default; t=1579893688;
+	bh=o1M1xBXM99hy0KfJr0QvV8kIRV6vbFjxdGWqL94DKmQ=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eGizKIUMgpzIc36ZiYBiWl+iUgrIc71eGwtKjg6RDeAk4AHwquMGfpTJfiLvDv9O7
-	 j0XNdSO49F2y/J2yqNO4y74VrbZ4idc5FLVbbO5i2K8PWpPrn63flj5iBA2Qcvb70y
-	 9MWhdfmXiCS6YYP3ubPRV9+rnxtjmvVEJdTZLk38=
+	b=rmPAMob9PWBSdFvwR5q9vgq7a20CHL2e1XC7nwUytBidZizkAFSwMdynHE5baK5XE
+	 EsFAF4XEsKvsAy2KqFXorUwB0o1tagQdTvNSsKoYyPWhMLruXjAgR0zEAhYaTbr7hO
+	 9Rp7wyVJ09pAs3ZYG1QwLPk5N5DIFWbnqY7YKw34=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6157F80308;
-	Fri, 24 Jan 2020 20:12:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 235C8F80322;
+	Fri, 24 Jan 2020 20:12:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 351C5F80299; Fri, 24 Jan 2020 20:12:24 +0100 (CET)
+ id 7E608F802A9; Fri, 24 Jan 2020 20:12:26 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA25CF8020C
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 20:12:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA25CF8020C
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE203F800F5
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 20:12:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE203F800F5
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2020 11:04:42 -0800
+ 24 Jan 2020 11:04:41 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="260337246"
+X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="260337240"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2020 11:04:41 -0800
+ by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2020 11:04:39 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri, 24 Jan 2020 20:04:13 +0100
-Message-Id: <20200124190413.18154-13-cezary.rojewski@intel.com>
+Date: Fri, 24 Jan 2020 20:04:12 +0100
+Message-Id: <20200124190413.18154-12-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200124190413.18154-1-cezary.rojewski@intel.com>
 References: <20200124190413.18154-1-cezary.rojewski@intel.com>
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>,
  broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
-Subject: [alsa-devel] [PATCH 12/12] ASoC: Intel: sof_rt5682: Add compress
-	probe DAI links
+Subject: [alsa-devel] [PATCH 11/12] ASoC: SOF: Intel: Add Probe compress CPU
+	DAIs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,61 +83,108 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Assign probe DAI link to actively used SOF machine boards.
-For current upstream, it is only sof_rt5682.
+Declare extraction CPU DAI as well as sof_probe_compr_ops. FE DAIs can
+link against these new CPU DAI to create new compress devices.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 28 ++++++++++++++++++++++++++++
+ sound/soc/sof/intel/hda.h     |  6 ++++++
+ sound/soc/sof/pcm.c           | 11 ++++++++++-
+ 3 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 5d878873a8e0..8c26214b19d3 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -417,6 +417,8 @@ static struct snd_soc_dai_link_component max98357a_component[] = {
- 	}
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 9c6e3f990ee3..ed5e7d2c0d43 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -399,6 +399,19 @@ static const struct snd_soc_dai_ops hda_link_dai_ops = {
+ 	.trigger = hda_link_pcm_trigger,
+ 	.prepare = hda_link_pcm_prepare,
  };
- 
-+SND_SOC_DAILINK_DEF(dummy, DAILINK_COMP_ARRAY(COMP_DUMMY()));
 +
- static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 							  int ssp_codec,
- 							  int ssp_amp,
-@@ -580,8 +582,22 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			if (!links[id].cpus->dai_name)
- 				goto devm_err;
- 		}
-+		id++;
- 	}
- 
 +#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+	links[id].name = "Compress Probe Capture";
-+	links[id].id = id;
-+	links[id].cpus = &cpus[id];
-+	links[id].num_cpus = 1;
-+	links[id].cpus->dai_name = "Probe Extraction CPU DAI";
-+	links[id].codecs = dummy;
-+	links[id].num_codecs = 1;
-+	links[id].platforms = platform_component;
-+	links[id].num_platforms = ARRAY_SIZE(platform_component);
-+	links[id].nonatomic = 1;
++#include "../compress.h"
++
++static struct snd_soc_cdai_ops sof_probe_compr_ops = {
++	.startup	= sof_probe_compr_open,
++	.shutdown	= sof_probe_compr_free,
++	.set_params	= sof_probe_compr_set_params,
++	.trigger	= sof_probe_compr_trigger,
++	.pointer	= sof_probe_compr_pointer,
++};
++
++#endif
+ #endif
+ 
+ /*
+@@ -460,5 +473,20 @@ struct snd_soc_dai_driver skl_dai[] = {
+ 	.name = "Alt Analog CPU DAI",
+ 	.ops = &hda_link_dai_ops,
+ },
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++{
++	.name = "Probe Extraction CPU DAI",
++	.compress_new = snd_soc_new_compress,
++	.cops = &sof_probe_compr_ops,
++	.capture = {
++		.stream_name = "Probe Extraction",
++		.channels_min = 1,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_48000,
++		.rate_min = 48000,
++		.rate_max = 48000,
++	},
++},
++#endif
+ #endif
+ };
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 9eb86311a34c..f107a5134028 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -354,7 +354,13 @@
+ 
+ /* Number of DAIs */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++#define SOF_SKL_NUM_DAIS		16
++#else
+ #define SOF_SKL_NUM_DAIS		15
 +#endif
 +
- 	return links;
- devm_err:
- 	return NULL;
-@@ -656,8 +672,8 @@ static int sof_audio_probe(struct platform_device *pdev)
+ #else
+ #define SOF_SKL_NUM_DAIS		8
+ #endif
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index c3b1d2f7672f..701882edc62f 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -764,6 +764,15 @@ static void sof_pcm_remove(struct snd_soc_component *component)
+ 	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
+ }
  
- 	ssp_codec = sof_rt5682_quirk & SOF_RT5682_SSP_CODEC_MASK;
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
++#include "compress.h"
++
++struct snd_compr_ops sof_compressed_ops = {
++	.copy		= sof_probe_compr_copy,
++};
++EXPORT_SYMBOL(sof_compressed_ops);
++#endif
++
+ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_soc_component_driver *pd = &sdev->plat_drv;
+@@ -783,7 +792,7 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+ 	pd->trigger = sof_pcm_trigger;
+ 	pd->pointer = sof_pcm_pointer;
  
--	/* compute number of dai links */
--	sof_audio_card_rt5682.num_links = 1 + dmic_be_num + hdmi_num;
-+	/* account for SSP and probes when computing total dai link count */
-+	sof_audio_card_rt5682.num_links = 1 + dmic_be_num + hdmi_num + 1;
- 
- 	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
- 		sof_audio_card_rt5682.num_links++;
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMPRESS)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
+ 	pd->compr_ops = &sof_compressed_ops;
+ #endif
+ 	pd->pcm_construct = sof_pcm_new;
 -- 
 2.17.1
 
