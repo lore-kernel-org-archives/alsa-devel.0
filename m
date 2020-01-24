@@ -7,67 +7,66 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB946C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 21:41:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 487E1C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 21:41:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3459D2075D
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 21:41:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C16962071E
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 21:41:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RXxyyocc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3459D2075D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BjAAy2H/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C16962071E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 480371698;
-	Fri, 24 Jan 2020 22:40:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 480371698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D9F016A8;
+	Fri, 24 Jan 2020 22:40:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D9F016A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579902070;
-	bh=nsHFR0GIP9Hjp/2YuSeBa+k/01JykahrgcfNI+KXuE4=;
+	s=default; t=1579902107;
+	bh=rAtiZghYjwpjFbPLN/mmIom8Yl1FQh7tgJajfYYayKM=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RXxyyoccQGHbLVYJvcPVGzz2CiyU5LcQ1w/ZguFo8BbyX7veTtCcgB/8jam1coct0
-	 0B0S8FrgalakDpLl80BWQkML139fo2UsIJEyXl4tjwLO+LYSox4Fo54jIL2wGbjVdw
-	 nOjPGBbB+2pDQ2x9MwQj17bGVbwD6vJpAGtJ4+wU=
+	b=BjAAy2H/7qnWgno25uGbCaJoQqPy8A4d/X4H/wOVHVk7FSMlYx7tnv2btAaOwMoea
+	 dzG3pxvL0WEyhIqOCTBlYfqs3wldQbOLMjpldQIuf/GQDdFRo6ps30uFhdSmSVmkV5
+	 tqeNNVAdHpruHSvyMskkS3nTFpICFOf/3CDvNslc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B037F8028F;
-	Fri, 24 Jan 2020 22:36:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A268AF8029A;
+	Fri, 24 Jan 2020 22:36:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB7D3F800DE; Fri, 24 Jan 2020 22:36:45 +0100 (CET)
+ id 49BE2F80217; Fri, 24 Jan 2020 22:36:47 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B884F80217
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 22:36:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B884F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED0F2F800BA
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 22:36:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED0F2F800BA
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2020 13:36:32 -0800
+ 24 Jan 2020 13:36:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,359,1574150400"; d="scan'208";a="294313482"
+X-IronPort-AV: E=Sophos;i="5.70,359,1574150400"; d="scan'208";a="294313552"
 Received: from sascates-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.251.4.164])
- by fmsmga001.fm.intel.com with ESMTP; 24 Jan 2020 13:36:31 -0800
+ by fmsmga001.fm.intel.com with ESMTP; 24 Jan 2020 13:36:33 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri, 24 Jan 2020 15:36:21 -0600
-Message-Id: <20200124213625.30186-4-pierre-louis.bossart@linux.intel.com>
+Date: Fri, 24 Jan 2020 15:36:23 -0600
+Message-Id: <20200124213625.30186-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200124213625.30186-1-pierre-louis.bossart@linux.intel.com>
 References: <20200124213625.30186-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] [PATCH 3/7] ASoC: SOF: core: release resources on
-	errors in probe_continue
+Cc: tiwai@suse.de, broonie@kernel.org, Pan Xiuli <xiuli.pan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [alsa-devel] [PATCH 5/7] ASoC: SOF: pci: add missing
+	default_fw_name of JasperLake
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,116 +84,29 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The initial intent of releasing resources in the .remove does not work
-well with HDaudio codecs. If the probe_continue() fails in a work
-queue, e.g. due to missing firmware or authentication issues, we don't
-release any resources, and as a result the kernel oopses during
-suspend operations.
+From: Pan Xiuli <xiuli.pan@linux.intel.com>
 
-The suggested fix is to release all resources during errors in
-probe_continue(), and use fw_state to track resource allocation
-state, so that .remove does not attempt to release the same
-hardware resources twice. PM operations are also modified so that
-no action is done if DSP resources have been freed due to
-an error at probe.
+jsl_desc missed default_fw_name, this will fail the probe in
+nocodec or generice HDA mode due the firmware path is intel/sof/(null)
 
-Reported-by: Takashi Iwai <tiwai@suse.de>
-Co-developed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Bugzilla:  http://bugzilla.suse.com/show_bug.cgi?id=1161246
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/core.c | 33 ++++++++++++---------------------
- sound/soc/sof/pm.c   |  4 ++++
- 2 files changed, 16 insertions(+), 21 deletions(-)
+ sound/soc/sof/sof-pci-dev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index f517ab448a1d..34cefbaf2d2a 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -244,7 +244,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 
- 	return 0;
- 
--#if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
- fw_trace_err:
- 	snd_sof_free_trace(sdev);
- fw_run_err:
-@@ -255,22 +254,10 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 	snd_sof_free_debug(sdev);
- dbg_err:
- 	snd_sof_remove(sdev);
--#else
- 
--	/*
--	 * when the probe_continue is handled in a work queue, the
--	 * probe does not fail so we don't release resources here.
--	 * They will be released with an explicit call to
--	 * snd_sof_device_remove() when the PCI/ACPI device is removed
--	 */
--
--fw_trace_err:
--fw_run_err:
--fw_load_err:
--ipc_err:
--dbg_err:
--
--#endif
-+	/* all resources freed, update state to match */
-+	sdev->fw_state = SOF_FW_BOOT_NOT_STARTED;
-+	sdev->first_boot = true;
- 
- 	return ret;
- }
-@@ -353,10 +340,12 @@ int snd_sof_device_remove(struct device *dev)
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
- 		cancel_work_sync(&sdev->probe_work);
- 
--	snd_sof_fw_unload(sdev);
--	snd_sof_ipc_free(sdev);
--	snd_sof_free_debug(sdev);
--	snd_sof_free_trace(sdev);
-+	if (sdev->fw_state > SOF_FW_BOOT_NOT_STARTED) {
-+		snd_sof_fw_unload(sdev);
-+		snd_sof_ipc_free(sdev);
-+		snd_sof_free_debug(sdev);
-+		snd_sof_free_trace(sdev);
-+	}
- 
- 	/*
- 	 * Unregister machine driver. This will unbind the snd_card which
-@@ -364,13 +353,15 @@ int snd_sof_device_remove(struct device *dev)
- 	 * before freeing the snd_card.
- 	 */
- 	snd_sof_machine_unregister(sdev, pdata);
-+
- 	/*
- 	 * Unregistering the machine driver results in unloading the topology.
- 	 * Some widgets, ex: scheduler, attempt to power down the core they are
- 	 * scheduled on, when they are unloaded. Therefore, the DSP must be
- 	 * removed only after the topology has been unloaded.
- 	 */
--	snd_sof_remove(sdev);
-+	if (sdev->fw_state > SOF_FW_BOOT_NOT_STARTED)
-+		snd_sof_remove(sdev);
- 
- 	/* release firmware */
- 	release_firmware(pdata->fw);
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 84290bbeebdd..a0cde053b61a 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -56,6 +56,10 @@ static int sof_resume(struct device *dev, bool runtime_resume)
- 	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
- 		return 0;
- 
-+	/* DSP was never successfully started, nothing to resume */
-+	if (sdev->first_boot)
-+		return 0;
-+
- 	/*
- 	 * if the runtime_resume flag is set, call the runtime_resume routine
- 	 * or else call the system resume routine
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index d855bc2b76ad..bf01b92f0dac 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -235,6 +235,7 @@ static const struct sof_dev_desc jsl_desc = {
+ 	.chip_info = &jsl_chip_info,
+ 	.default_fw_path = "intel/sof",
+ 	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-jsl.ri",
+ 	.nocodec_tplg_filename = "sof-jsl-nocodec.tplg",
+ 	.ops = &sof_cnl_ops,
+ };
 -- 
 2.20.1
 
