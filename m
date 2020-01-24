@@ -6,66 +6,67 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0482C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 20:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 152B0C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 20:27:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 641532072C
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 20:26:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8A7CF2075D
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 20:27:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R3njMgda"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 641532072C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nSm5FmbG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A7CF2075D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBD98169C;
-	Fri, 24 Jan 2020 21:26:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBD98169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7A36169A;
+	Fri, 24 Jan 2020 21:26:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7A36169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579897616;
-	bh=M0rbJProgXqVH00GQmj45zQw1PTh/k+1izWyDxCDpiU=;
+	s=default; t=1579897659;
+	bh=W5TNyMYxkYa0j0EDeUjh1BB87ZIeNL+fh+bm0fxB1e0=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R3njMgdaTAJ1UQ/aOkq1sgXFVZ/cKZYR0/jqI6ExeYG3FIIA4AlIyFR6dp4GhsGyJ
-	 yzakgrElV2VzttMrtH3WmPkXugoTHoKZj/GTBOVXSrZpOXD6R1N0cHBeRKORKFrR7w
-	 QzrZmUAYFMG+IADeQce+wuwnz2YXmOSX5ZIWiBWI=
+	b=nSm5FmbGwdym2GWsLHUHoNkLLeVQyh5fvQumx+OPprdzx0IdKiiNcpl5WA4XxIf6o
+	 DhTRraXEqQjYjL5amH56DR8KBNr8wKt4Q9GvgHHfrvsqgzU2+yum488D5nzaenDpGX
+	 NrZJVhEYjNs9RlAupEE1ojUMK0nqWbz0SQVicKV0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A1E2F8027B;
-	Fri, 24 Jan 2020 21:24:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F2B6F8028B;
+	Fri, 24 Jan 2020 21:24:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F771F80272; Fri, 24 Jan 2020 21:24:18 +0100 (CET)
+ id B2661F801D8; Fri, 24 Jan 2020 21:24:18 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A38DF801D8
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 21:24:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A38DF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F12BF8020C
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 21:24:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F12BF8020C
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2020 12:24:10 -0800
+ 24 Jan 2020 12:24:07 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="400759969"
+X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="400759951"
 Received: from iifeduba-mobl1.amr.corp.intel.com (HELO [10.254.110.26])
  ([10.254.110.26])
- by orsmga005.jf.intel.com with ESMTP; 24 Jan 2020 12:24:09 -0800
+ by orsmga005.jf.intel.com with ESMTP; 24 Jan 2020 12:24:07 -0800
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20200124190413.18154-1-cezary.rojewski@intel.com>
  <20200124190413.18154-9-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d74dc038-78fa-b81c-5014-6ed3668641b1@linux.intel.com>
-Date: Fri, 24 Jan 2020 14:00:34 -0600
+Message-ID: <88fbdc86-01ce-eb44-5523-fc989c0556fe@linux.intel.com>
+Date: Fri, 24 Jan 2020 13:41:54 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
 In-Reply-To: <20200124190413.18154-9-cezary.rojewski@intel.com>
 Content-Language: en-US
-Cc: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, broonie@kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com
 Subject: Re: [alsa-devel] [PATCH 08/12] ASoC: SOF: Generic probe compress
 	operations
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,24 +87,30 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> +int sof_probe_compr_open(struct snd_compr_stream *cstream,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	struct snd_sof_dev *sdev =
-> +				snd_soc_component_get_drvdata(dai->component);
-> +	int ret;
+> +config SND_SOC_SOF_DEBUG_PROBES
+> +	bool "SOF enable data probing"
+> +	select SND_SOC_COMPRESS
+> +	help
+> +	  This option enables the data probing feature that can be used to
+> +	  gather data directly from specific points of the audio pipeline.
+> +	  Say Y if you want to enable probes.
+> +	  If unsure, select "N".
 > +
-> +	ret = snd_sof_probe_compr_assign(sdev, cstream, dai);
-> +	if (ret < 0) {
-> +		dev_err(dai->dev, "Failed to assign probe stream: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	sdev->extractor = ret;
+>   endif ## SND_SOC_SOF_DEBUG
+>   
+>   endif ## SND_SOC_SOF_DEVELOPER_SUPPORT
 
-could you either rename the 'extractor' field to something meaningful or 
-add a comment on what is stored in this field? A stream tag? a device 
-number? It's only used once for the init.
+This one is interesting.
+
+Do we want to limit the PROBES to developers? Or do we want to enable 
+probes on production firmware as well - which could be really useful for 
+people tuning stuff on platform using production keys, i.e. without the 
+ability to re-generate the firmware on their own.
+
+And if the firmware does not include support for probes, we should 
+detect it and I didn't see anything in this series that checks this 
+capability? And if the firmware does not report it then it's a miss in 
+the design.
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
