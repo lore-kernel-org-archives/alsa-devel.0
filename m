@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7DEEC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:18:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CD8AC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:19:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6761F2075D
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:18:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E096D2087E
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:19:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KW7PzZCc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6761F2075D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BU5u3dvG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E096D2087E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD69016B0;
-	Fri, 24 Jan 2020 20:17:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD69016B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 386641670;
+	Fri, 24 Jan 2020 20:18:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 386641670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579893522;
-	bh=NfZXWZNNb1rmAubxwUxwHWP9vSXFoNfy/PGukmojw5o=;
+	s=default; t=1579893555;
+	bh=GGwltM6VynbDurOnRbkqQ8MYAcWzP2tSYvIgTfK2Jlc=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KW7PzZCcMMTZCN8rpZhMrXJN+fEQUWdlAlTacGed8dUgY9dua36802Le1Sqpi/4Y0
-	 4dQ3JWqetjnqRllVtHYC1YZBRlb6G0SA+iKD9hhtRZb4umslkZS6tryTTL+JJgs+1b
-	 OxZS1X9wLkn1Qk6hUVJr3GaAOFcZ8JoAaIlSCmXQ=
+	b=BU5u3dvGy1o5QyE1aZczAktsH/5/P1TgMeOKP68SR+YtIP6h/NNdhZ9IlpTm4D1DG
+	 1E9bFGuEAkBC1hbjFYSbwTfzylFbHqZezAY8jLjRiDNXkQv0OM6o5051SIq1SSy2sX
+	 qJJJT2u9OfhiELRq2UYA6WwQlVlPPgdECi/TOwF4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF158F802DC;
-	Fri, 24 Jan 2020 20:12:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDFBBF802E2;
+	Fri, 24 Jan 2020 20:12:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C6FCF800DE; Fri, 24 Jan 2020 20:12:22 +0100 (CET)
+ id F3637F80292; Fri, 24 Jan 2020 20:12:22 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F2DEF800DE
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 20:12:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F2DEF800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51032F80229
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 20:12:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51032F80229
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2020 11:04:33 -0800
+ 24 Jan 2020 11:04:37 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="260337213"
+X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="260337228"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2020 11:04:32 -0800
+ by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2020 11:04:36 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri, 24 Jan 2020 20:04:08 +0100
-Message-Id: <20200124190413.18154-8-cezary.rojewski@intel.com>
+Date: Fri, 24 Jan 2020 20:04:10 +0100
+Message-Id: <20200124190413.18154-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200124190413.18154-1-cezary.rojewski@intel.com>
 References: <20200124190413.18154-1-cezary.rojewski@intel.com>
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>,
  broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
-Subject: [alsa-devel] [PATCH 07/12] ASoC: SOF: Implement Probe IPC API
+Subject: [alsa-devel] [PATCH 09/12] ASoC: SOF: Intel: Probe compress
+	operations
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,92 +83,101 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add all required types and methods to support each and every request
-that driver could sent to firmware. Probe is one of SOF firmware
-features which allows for data extraction and injection directly from
-or to DMA stream.
-
-Exposes eight IPCs:
-- addition and removal of injection DMAs
-- addition and removal of probe points
-- info retrieval of injection DMAs and probe points
-- probe initialization and cleanup
+Add HDA handlers for soc_compr_ops and snd_compr_ops which cover probe
+related operations. Implementation supports both connection purposes.
+These merely define stream setups as core flow is covered by SOF
+compress core.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/sof/header.h    |  11 ++
- sound/soc/sof/Makefile        |   2 +-
- sound/soc/sof/intel/hda-ipc.c |   4 +-
- sound/soc/sof/probe.c         | 287 ++++++++++++++++++++++++++++++++++
- sound/soc/sof/probe.h         |  85 ++++++++++
- sound/soc/sof/sof-priv.h      |   3 +
- 6 files changed, 390 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/sof/probe.c
- create mode 100644 sound/soc/sof/probe.h
+ sound/soc/sof/intel/Kconfig        |  10 +++
+ sound/soc/sof/intel/Makefile       |   1 +
+ sound/soc/sof/intel/apl.c          |   9 ++
+ sound/soc/sof/intel/cnl.c          |   9 ++
+ sound/soc/sof/intel/hda-compress.c | 132 +++++++++++++++++++++++++++++
+ sound/soc/sof/intel/hda.h          |  24 ++++++
+ 6 files changed, 185 insertions(+)
+ create mode 100644 sound/soc/sof/intel/hda-compress.c
 
-diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
-index bf3edd9c08b4..b79479575cc8 100644
---- a/include/sound/sof/header.h
-+++ b/include/sound/sof/header.h
-@@ -51,6 +51,7 @@
- #define SOF_IPC_GLB_TRACE_MSG			SOF_GLB_TYPE(0x9U)
- #define SOF_IPC_GLB_GDB_DEBUG                   SOF_GLB_TYPE(0xAU)
- #define SOF_IPC_GLB_TEST_MSG			SOF_GLB_TYPE(0xBU)
-+#define SOF_IPC_GLB_PROBE			SOF_GLB_TYPE(0xCU)
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 8c2da6a2c9df..65058f5c808a 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -328,6 +328,16 @@ config SND_SOC_SOF_HDA_AUDIO_CODEC
+ 	  Say Y if you want to enable HDAudio codecs with SOF.
+ 	  If unsure select "N".
  
- /*
-  * DSP Command Message Types
-@@ -102,6 +103,16 @@
- #define SOF_IPC_STREAM_VORBIS_PARAMS		SOF_CMD_TYPE(0x010)
- #define SOF_IPC_STREAM_VORBIS_FREE		SOF_CMD_TYPE(0x011)
- 
-+/* probe */
-+#define SOF_IPC_PROBE_INIT			SOF_CMD_TYPE(0x001)
-+#define SOF_IPC_PROBE_DEINIT			SOF_CMD_TYPE(0x002)
-+#define SOF_IPC_PROBE_DMA_ADD			SOF_CMD_TYPE(0x003)
-+#define SOF_IPC_PROBE_DMA_INFO			SOF_CMD_TYPE(0x004)
-+#define SOF_IPC_PROBE_DMA_REMOVE		SOF_CMD_TYPE(0x005)
-+#define SOF_IPC_PROBE_POINT_ADD		SOF_CMD_TYPE(0x006)
-+#define SOF_IPC_PROBE_POINT_INFO		SOF_CMD_TYPE(0x007)
-+#define SOF_IPC_PROBE_POINT_REMOVE		SOF_CMD_TYPE(0x008)
++config SND_SOC_SOF_HDA_PROBES
++	bool "SOF enable probes over HDA"
++	depends on SND_SOC_SOF_HDA_LINK
++	depends on SND_SOC_SOF_DEBUG_PROBES
++	help
++	  This option enables the data probing for Intel(R).
++		  HDAudio platforms.
++	  Say Y if you want to enable probes.
++	  If unsure, select "N".
 +
- /* trace */
- #define SOF_IPC_TRACE_DMA_PARAMS		SOF_CMD_TYPE(0x001)
- #define SOF_IPC_TRACE_DMA_POSITION		SOF_CMD_TYPE(0x002)
-diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
-index ac83589e3a9c..60f7f13218a7 100644
---- a/sound/soc/sof/Makefile
-+++ b/sound/soc/sof/Makefile
-@@ -3,7 +3,7 @@
- ccflags-y += -DDEBUG
+ config SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1
+ 	bool "SOF enable DMI Link L1"
+ 	help
+diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
+index 587b91bb18b0..398f2e133919 100644
+--- a/sound/soc/sof/intel/Makefile
++++ b/sound/soc/sof/intel/Makefile
+@@ -11,6 +11,7 @@ snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
+ 				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
+ 				 hda-dai.o hda-bus.o \
+ 				 apl.o cnl.o
++snd-sof-intel-hda-common-$(CONFIG_SND_SOC_SOF_HDA_PROBES) += hda-compress.o
  
- snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
--		control.o trace.o utils.o sof-audio.o
-+		control.o probe.o trace.o utils.o sof-audio.o
+ snd-sof-intel-hda-objs := hda-codec.o
  
- snd-sof-pci-objs := sof-pci-dev.o
- snd-sof-acpi-objs := sof-acpi-dev.o
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 1837f66e361f..922052883b0a 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -106,7 +106,9 @@ void hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev)
- 		ret = reply.error;
- 	} else {
- 		/* reply correct size ? */
--		if (reply.hdr.size != msg->reply_size) {
-+		if (reply.hdr.size != msg->reply_size &&
-+			/* getter payload is never known upfront */
-+			!(reply.hdr.cmd & SOF_IPC_GLB_PROBE)) {
- 			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
- 				msg->reply_size, reply.hdr.size);
- 			ret = -EINVAL;
-diff --git a/sound/soc/sof/probe.c b/sound/soc/sof/probe.c
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index 2483b15699e7..02218d22e51f 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -73,6 +73,15 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
+ 	.pcm_trigger	= hda_dsp_pcm_trigger,
+ 	.pcm_pointer	= hda_dsp_pcm_pointer,
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++	/* probe callbacks */
++	.probe_assign	= hda_probe_compr_assign,
++	.probe_free	= hda_probe_compr_free,
++	.probe_set_params	= hda_probe_compr_set_params,
++	.probe_trigger	= hda_probe_compr_trigger,
++	.probe_pointer	= hda_probe_compr_pointer,
++#endif
++
+ 	/* firmware loading */
+ 	.load_firmware = snd_sof_load_firmware_raw,
+ 
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 8a59fec72919..05125cb0be6e 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -284,6 +284,15 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
+ 	.pcm_trigger	= hda_dsp_pcm_trigger,
+ 	.pcm_pointer	= hda_dsp_pcm_pointer,
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++	/* probe callbacks */
++	.probe_assign	= hda_probe_compr_assign,
++	.probe_free	= hda_probe_compr_free,
++	.probe_set_params	= hda_probe_compr_set_params,
++	.probe_trigger	= hda_probe_compr_trigger,
++	.probe_pointer	= hda_probe_compr_pointer,
++#endif
++
+ 	/* firmware loading */
+ 	.load_firmware = snd_sof_load_firmware_raw,
+ 
+diff --git a/sound/soc/sof/intel/hda-compress.c b/sound/soc/sof/intel/hda-compress.c
 new file mode 100644
-index 000000000000..0089f08630cf
+index 000000000000..156da3437c6b
 --- /dev/null
-+++ b/sound/soc/sof/probe.c
-@@ -0,0 +1,287 @@
++++ b/sound/soc/sof/intel/hda-compress.c
+@@ -0,0 +1,132 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -178,388 +188,170 @@ index 000000000000..0089f08630cf
 +// Author: Cezary Rojewski <cezary.rojewski@intel.com>
 +//
 +
-+#include "sof-priv.h"
-+#include "probe.h"
++#include <sound/hdaudio_ext.h>
++#include <sound/soc.h>
++#include "../sof-priv.h"
++#include "hda.h"
 +
-+/**
-+ * sof_ipc_probe_init - initialize data probing
-+ * @sdev:		SOF sound device
-+ * @buffer_size:	DMA buffer size to set for extractor
-+ *
-+ * Host chooses whether extraction is supported or not by providing
-+ * valid stream tag to DSP. Once specified, stream described by that
-+ * tag will be tied to DSP for extraction for the entire lifetime of
-+ * probe.
-+ *
-+ * Probing is initialized only once and each INIT request must be
-+ * matched by DEINIT call.
-+ */
-+int sof_ipc_probe_init(struct snd_sof_dev *sdev,
-+		u32 stream_tag, size_t buffer_size)
++static inline struct hdac_ext_stream *
++hda_compr_get_stream(struct snd_compr_stream *cstream)
 +{
-+	struct sof_ipc_probe_dma_add_params *msg;
-+	struct sof_ipc_reply reply;
-+	size_t size;
-+	int ret;
-+
-+	size = struct_size(msg, dma, 1);
-+	msg = kmalloc(size, GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	msg->hdr.size = sizeof(msg);
-+	msg->hdr.cmd = SOF_IPC_GLB_PROBE | SOF_IPC_PROBE_INIT;
-+	msg->num_elems = 1;
-+	msg->dma[0].stream_tag = stream_tag;
-+	msg->dma[0].dma_buffer_size = buffer_size;
-+
-+	ret = sof_ipc_tx_message(sdev->ipc, msg->hdr.cmd, msg, msg->hdr.size,
-+			&reply, sizeof(reply));
-+	kfree(msg);
-+	return ret;
++	return cstream->runtime->private_data;
 +}
-+EXPORT_SYMBOL(sof_ipc_probe_init);
 +
-+/**
-+ * sof_ipc_probe_deinit - cleanup after data probing
-+ * @sdev:	SOF sound device
-+ *
-+ * Host sends DEINIT request to free previously initialized probe
-+ * on DSP side once it is no longer needed. DEINIT only when there
-+ * are no probes connected and with all injectors detached.
-+ */
-+int sof_ipc_probe_deinit(struct snd_sof_dev *sdev)
++int hda_probe_compr_assign(struct snd_sof_dev *sdev,
++			   struct snd_compr_stream *cstream,
++			   struct snd_soc_dai *dai)
 +{
-+	struct sof_ipc_cmd_hdr msg;
-+	struct sof_ipc_reply reply;
++	struct hdac_ext_stream *stream;
++	struct hdac_bus *bus = sof_to_bus(sdev);
 +
-+	msg.size = sizeof(msg);
-+	msg.cmd = SOF_IPC_GLB_PROBE | SOF_IPC_PROBE_DEINIT;
++	stream = snd_hdac_ext_cstream_assign(bus, cstream);
++	if (!stream)
++		return -EBUSY;
 +
-+	return sof_ipc_tx_message(sdev->ipc, msg.cmd, &msg, msg.size,
-+			&reply, sizeof(reply));
++	hdac_stream(stream)->curr_pos = 0;
++	cstream->runtime->private_data = stream;
++
++	return hdac_stream(stream)->stream_tag;
 +}
-+EXPORT_SYMBOL(sof_ipc_probe_deinit);
 +
-+static int sof_ipc_probe_info(struct snd_sof_dev *sdev, unsigned int cmd,
-+		void **params, size_t *num_params)
++int hda_probe_compr_free(struct snd_sof_dev *sdev,
++			 struct snd_compr_stream *cstream,
++			 struct snd_soc_dai *dai)
 +{
-+	struct sof_ipc_probe_info_params msg = {0};
-+	struct sof_ipc_probe_info_params *reply;
-+	size_t bytes;
-+	int ret;
++	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
 +
-+	*params = NULL;
-+	*num_params = 0;
++	snd_hdac_stream_cleanup(hdac_stream(stream));
++	hdac_stream(stream)->prepared = 0;
++	snd_hdac_ext_stream_release(stream, HDAC_EXT_STREAM_TYPE_HOST);
 +
-+	reply = kzalloc(SOF_IPC_MSG_MAX_SIZE, GFP_KERNEL);
-+	if (!reply)
-+		return -ENOMEM;
-+	msg.rhdr.hdr.size = sizeof(msg);
-+	msg.rhdr.hdr.cmd = SOF_IPC_GLB_PROBE | cmd;
++	return 0;
++}
 +
-+	ret = sof_ipc_tx_message(sdev->ipc, msg.rhdr.hdr.cmd, &msg,
-+			msg.rhdr.hdr.size, reply, SOF_IPC_MSG_MAX_SIZE);
-+	if (ret < 0 || reply->rhdr.error < 0)
-+		goto exit;
++int hda_probe_compr_set_params(struct snd_sof_dev *sdev,
++			       struct snd_compr_stream *cstream,
++			       struct snd_compr_params *params,
++			       struct snd_soc_dai *dai)
++{
++	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
++	unsigned int format_val;
++	int bps, ret;
++	/* compr params do not store bit depth, default to S32_LE */
++	snd_pcm_format_t format = SNDRV_PCM_FORMAT_S32_LE;
 +
-+	if (!reply->num_elems)
-+		goto exit;
++	hdac_stream(stream)->bufsize = 0;
++	hdac_stream(stream)->period_bytes = 0;
++	hdac_stream(stream)->format_val = 0;
 +
-+	bytes = reply->num_elems * sizeof(reply->dma[0]);
-+	*params = kmemdup(&reply->dma[0], bytes, GFP_KERNEL);
-+	if (!*params) {
-+		ret = -ENOMEM;
-+		goto exit;
++	bps = snd_pcm_format_physical_width(format);
++	if (bps < 0)
++		return bps;
++	format_val = snd_hdac_calc_stream_format(params->codec.sample_rate,
++			params->codec.ch_out, format, bps, 0);
++	ret = snd_hdac_stream_set_params(hdac_stream(stream), format_val);
++	if (ret < 0)
++		return ret;
++	ret = snd_hdac_stream_setup(hdac_stream(stream));
++	if (ret < 0)
++		return ret;
++
++	hdac_stream(stream)->prepared = 1;
++
++	return 0;
++}
++
++int hda_probe_compr_trigger(struct snd_sof_dev *sdev,
++			    struct snd_compr_stream *cstream, int cmd,
++			    struct snd_soc_dai *dai)
++{
++	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
++	struct hdac_bus *bus = sof_to_bus(sdev);
++	unsigned long cookie;
++
++	if (!hdac_stream(stream)->prepared)
++		return -EPIPE;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		spin_lock_irqsave(&bus->reg_lock, cookie);
++		snd_hdac_stream_start(hdac_stream(stream), true);
++		spin_unlock_irqrestore(&bus->reg_lock, cookie);
++		break;
++
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		spin_lock_irqsave(&bus->reg_lock, cookie);
++		snd_hdac_stream_stop(hdac_stream(stream));
++		spin_unlock_irqrestore(&bus->reg_lock, cookie);
++		break;
++
++	default:
++		return -EINVAL;
 +	}
-+	*num_params = msg.num_elems;
 +
-+exit:
-+	kfree(reply);
-+	return ret;
++	return 0;
 +}
 +
-+/**
-+ * sof_ipc_probe_dma_info - retrieve list of active injection dmas
-+ * @sdev:	SOF sound device
-+ * @dma:	Returned list of active dmas
-+ * @num_dma:	Returned count of active dmas
-+ *
-+ * Host sends DMA_INFO request to obtain list of injection dmas it
-+ * can use to transfer data over with.
-+ *
-+ * Note that list contains only injection dmas as there is only one
-+ * extractor (dma) and it is always assigned on probing init.
-+ * DSP knows exactly where data from extraction probes is going to,
-+ * which is not the case for injection where multiple streams
-+ * could be engaged.
-+ */
-+int sof_ipc_probe_dma_info(struct snd_sof_dev *sdev,
-+		struct sof_probe_dma **dma, size_t *num_dma)
++int hda_probe_compr_pointer(struct snd_sof_dev *sdev,
++			    struct snd_compr_stream *cstream,
++			    struct snd_compr_tstamp *tstamp,
++			    struct snd_soc_dai *dai)
 +{
-+	return sof_ipc_probe_info(sdev, SOF_IPC_PROBE_DMA_INFO,
-+			(void **)dma, num_dma);
++	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
++	struct snd_soc_pcm_stream *pstream;
++
++	pstream = &dai->driver->capture;
++	tstamp->copied_total = hdac_stream(stream)->curr_pos;
++	tstamp->sampling_rate = snd_pcm_rate_bit_to_rate(pstream->rates);
++
++	return 0;
 +}
-+EXPORT_SYMBOL(sof_ipc_probe_dma_info);
-+
-+/**
-+ * sof_ipc_probe_dma_add - attach to specified dmas
-+ * @sdev:	SOF sound device
-+ * @dma:	List of streams (dmas) to attach to
-+ * @num_dma:	Number of elements in @dma
-+ *
-+ * Contrary to extraction, injection streams are never assigned
-+ * on init. Before attempting any data injection, host is responsible
-+ * for specifying streams which will be later used to transfer data
-+ * to connected probe points.
-+ */
-+int sof_ipc_probe_dma_add(struct snd_sof_dev *sdev,
-+		struct sof_probe_dma *dma, size_t num_dma)
-+{
-+	struct sof_ipc_probe_dma_add_params *msg;
-+	struct sof_ipc_reply reply;
-+	size_t bytes = sizeof(*dma) * num_dma;
-+	int ret;
-+
-+	msg = kmalloc(sizeof(*msg) + bytes, GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+	msg->hdr.size = sizeof(*msg);
-+	msg->num_elems = num_dma;
-+	msg->hdr.cmd = SOF_IPC_GLB_PROBE | SOF_IPC_PROBE_DMA_ADD;
-+	memcpy(&msg->dma[0], dma, bytes);
-+
-+	ret = sof_ipc_tx_message(sdev->ipc, msg->hdr.cmd, msg,
-+			msg->hdr.size + bytes, &reply, sizeof(reply));
-+	kfree(msg);
-+	return ret;
-+}
-+EXPORT_SYMBOL(sof_ipc_probe_dma_add);
-+
-+/**
-+ * sof_ipc_probe_dma_remove - detach from specified dmas
-+ * @sdev:		SOF sound device
-+ * @stream_tag:	List of stream tags to detach from
-+ * @num_stream_tag:	Number of elements in @stream_tag
-+ *
-+ * Host sends DMA_REMOVE request to free previously attached stream
-+ * from being occupied for injection. Each detach operation should
-+ * match equivalent DMA_ADD. Detach only when all probes tied to
-+ * given stream have been disconnected.
-+ */
-+int sof_ipc_probe_dma_remove(struct snd_sof_dev *sdev,
-+		unsigned int *stream_tag, size_t num_stream_tag)
-+{
-+	struct sof_ipc_probe_dma_remove_params *msg;
-+	struct sof_ipc_reply reply;
-+	size_t bytes = sizeof(*stream_tag) * num_stream_tag;
-+	int ret;
-+
-+	msg = kmalloc(sizeof(*msg) + bytes, GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+	msg->hdr.size = sizeof(*msg);
-+	msg->num_elems = num_stream_tag;
-+	msg->hdr.cmd = SOF_IPC_GLB_PROBE | SOF_IPC_PROBE_DMA_REMOVE;
-+	memcpy(&msg->stream_tag[0], stream_tag, bytes);
-+
-+	ret = sof_ipc_tx_message(sdev->ipc, msg->hdr.cmd, msg,
-+			msg->hdr.size + bytes, &reply, sizeof(reply));
-+	kfree(msg);
-+	return ret;
-+}
-+EXPORT_SYMBOL(sof_ipc_probe_dma_remove);
-+
-+/**
-+ * sof_ipc_probe_points_info - retrieve list of active probe points
-+ * @sdev:	SOF sound device
-+ * @desc:	Returned list of active probes
-+ * @num_desc:	Returned count of active probes
-+ *
-+ * Host sends PROBE_POINT_INFO request to obtain list of active probe
-+ * points, valid for disconnection when given probe is no longer
-+ * required.
-+ */
-+int sof_ipc_probe_points_info(struct snd_sof_dev *sdev,
-+		struct sof_probe_point_desc **desc, size_t *num_desc)
-+{
-+	return sof_ipc_probe_info(sdev, SOF_IPC_PROBE_POINT_INFO,
-+				 (void **)desc, num_desc);
-+}
-+EXPORT_SYMBOL(sof_ipc_probe_points_info);
-+
-+/**
-+ * sof_ipc_probe_points_add - connect specified probes
-+ * @sdev:	SOF sound device
-+ * @desc:	List of probe points to connect
-+ * @num_desc:	Number of elements in @desc
-+ *
-+ * Dynamically connects to provided set of endpoints. Immediately
-+ * after connection is established, host must be prepared to
-+ * transfer data from or to target stream given the probing purpose.
-+ *
-+ * Each probe point should be removed using PROBE_POINT_REMOVE
-+ * request when no longer needed.
-+ */
-+int sof_ipc_probe_points_add(struct snd_sof_dev *sdev,
-+		struct sof_probe_point_desc *desc, size_t num_desc)
-+{
-+	struct sof_ipc_probe_point_add_params *msg;
-+	struct sof_ipc_reply reply;
-+	size_t bytes = sizeof(*desc) * num_desc;
-+	int ret;
-+
-+	msg = kmalloc(sizeof(*msg) + bytes, GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+	msg->hdr.size = sizeof(*msg);
-+	msg->num_elems = num_desc;
-+	msg->hdr.cmd = SOF_IPC_GLB_PROBE | SOF_IPC_PROBE_POINT_ADD;
-+	memcpy(&msg->desc[0], desc, bytes);
-+
-+	ret = sof_ipc_tx_message(sdev->ipc, msg->hdr.cmd, msg,
-+			msg->hdr.size + bytes, &reply, sizeof(reply));
-+	kfree(msg);
-+	return ret;
-+}
-+EXPORT_SYMBOL(sof_ipc_probe_points_add);
-+
-+/**
-+ * sof_ipc_probe_points_remove - disconnect specified probes
-+ * @sdev:	SOF sound device
-+ * @desc:	List of probe points to disconnect
-+ * @num_desc:	Number of elements in @desc
-+ *
-+ * Removes previously connected probes from list of active probe
-+ * points and frees all resources on DSP side.
-+ */
-+int sof_ipc_probe_points_remove(struct snd_sof_dev *sdev,
-+		unsigned int *buffer_id, size_t num_buffer_id)
-+{
-+	struct sof_ipc_probe_point_remove_params *msg;
-+	struct sof_ipc_reply reply;
-+	size_t bytes = sizeof(*buffer_id) * num_buffer_id;
-+	int ret;
-+
-+	msg = kmalloc(sizeof(*msg) + bytes, GFP_KERNEL);
-+	if (!msg)
-+		return -ENOMEM;
-+	msg->hdr.size = sizeof(*msg);
-+	msg->num_elems = num_buffer_id;
-+	msg->hdr.cmd = SOF_IPC_GLB_PROBE | SOF_IPC_PROBE_POINT_REMOVE;
-+	memcpy(&msg->buffer_id[0], buffer_id, bytes);
-+
-+	ret = sof_ipc_tx_message(sdev->ipc, msg->hdr.cmd, msg,
-+			msg->hdr.size + bytes, &reply, sizeof(reply));
-+	kfree(msg);
-+	return ret;
-+}
-+EXPORT_SYMBOL(sof_ipc_probe_points_remove);
-diff --git a/sound/soc/sof/probe.h b/sound/soc/sof/probe.h
-new file mode 100644
-index 000000000000..a5cc24405e7e
---- /dev/null
-+++ b/sound/soc/sof/probe.h
-@@ -0,0 +1,85 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2019 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Cezary Rojewski <cezary.rojewski@intel.com>
-+ */
-+
-+#ifndef __SOF_PROBE_H
-+#define __SOF_PROBE_H
-+
-+#include <sound/sof/header.h>
-+
-+struct snd_sof_dev;
-+
-+#define SOF_PROBE_INVALID_NODE_ID UINT_MAX
-+
-+struct sof_probe_dma {
-+	unsigned int stream_tag;
-+	unsigned int dma_buffer_size;
-+} __packed;
-+
-+enum sof_connection_purpose {
-+	SOF_CONNECTION_PURPOSE_EXTRACT = 1,
-+	SOF_CONNECTION_PURPOSE_INJECT,
-+};
-+
-+struct sof_probe_point_desc {
-+	unsigned int buffer_id;
-+	unsigned int purpose;
-+	unsigned int stream_tag;
-+} __packed;
-+
-+struct sof_ipc_probe_dma_add_params {
-+	struct sof_ipc_cmd_hdr hdr;
-+	unsigned int num_elems;
-+	struct sof_probe_dma dma[0];
-+} __packed;
-+
-+struct sof_ipc_probe_info_params {
-+	struct sof_ipc_reply rhdr;
-+	unsigned int num_elems;
-+	union {
-+		struct sof_probe_dma dma[0];
-+		struct sof_probe_point_desc desc[0];
-+	};
-+} __packed;
-+
-+struct sof_ipc_probe_dma_remove_params {
-+	struct sof_ipc_cmd_hdr hdr;
-+	unsigned int num_elems;
-+	unsigned int stream_tag[0];
-+} __packed;
-+
-+struct sof_ipc_probe_point_add_params {
-+	struct sof_ipc_cmd_hdr hdr;
-+	unsigned int num_elems;
-+	struct sof_probe_point_desc desc[0];
-+} __packed;
-+
-+struct sof_ipc_probe_point_remove_params {
-+	struct sof_ipc_cmd_hdr hdr;
-+	unsigned int num_elems;
-+	unsigned int buffer_id[0];
-+} __packed;
-+
-+int sof_ipc_probe_init(struct snd_sof_dev *sdev,
-+		u32 stream_tag, size_t buffer_size);
-+int sof_ipc_probe_deinit(struct snd_sof_dev *sdev);
-+int sof_ipc_probe_dma_info(struct snd_sof_dev *sdev,
-+		struct sof_probe_dma **dma, size_t *num_dma);
-+int sof_ipc_probe_dma_add(struct snd_sof_dev *sdev,
-+		struct sof_probe_dma *dma, size_t num_dma);
-+int sof_ipc_probe_dma_remove(struct snd_sof_dev *sdev,
-+		unsigned int *stream_tag, size_t num_stream_tag);
-+int sof_ipc_probe_points_info(struct snd_sof_dev *sdev,
-+		struct sof_probe_point_desc **desc, size_t *num_desc);
-+int sof_ipc_probe_points_add(struct snd_sof_dev *sdev,
-+		struct sof_probe_point_desc *desc, size_t num_desc);
-+int sof_ipc_probe_points_remove(struct snd_sof_dev *sdev,
-+		unsigned int *buffer_id, size_t num_id);
-+
-+#endif
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 00084471d0de..d9188b82acdc 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -405,6 +405,9 @@ struct snd_sof_dev {
- 	wait_queue_head_t waitq;
- 	int code_loading;
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index a49cc42c9f11..9eb86311a34c 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -13,6 +13,7 @@
  
-+	/* probes */
-+	unsigned int extractor;
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_intel.h>
++#include <sound/compress_driver.h>
+ #include <sound/hda_codec.h>
+ #include <sound/hdaudio_ext.h>
+ #include "shim.h"
+@@ -561,6 +562,29 @@ int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
+ 		       struct snd_pcm_substream *substream,
+ 		       const struct sof_ipc_pcm_params_reply *reply);
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++/*
++ * Probe Compress Operations.
++ */
++int hda_probe_compr_assign(struct snd_sof_dev *sdev,
++			   struct snd_compr_stream *cstream,
++			   struct snd_soc_dai *dai);
++int hda_probe_compr_free(struct snd_sof_dev *sdev,
++			 struct snd_compr_stream *cstream,
++			 struct snd_soc_dai *dai);
++int hda_probe_compr_set_params(struct snd_sof_dev *sdev,
++			       struct snd_compr_stream *cstream,
++			       struct snd_compr_params *params,
++			       struct snd_soc_dai *dai);
++int hda_probe_compr_trigger(struct snd_sof_dev *sdev,
++			    struct snd_compr_stream *cstream, int cmd,
++			    struct snd_soc_dai *dai);
++int hda_probe_compr_pointer(struct snd_sof_dev *sdev,
++			    struct snd_compr_stream *cstream,
++			    struct snd_compr_tstamp *tstamp,
++			    struct snd_soc_dai *dai);
++#endif
 +
- 	/* DMA for Trace */
- 	struct snd_dma_buffer dmatb;
- 	struct snd_dma_buffer dmatp;
+ /*
+  * DSP IPC Operations.
+  */
 -- 
 2.17.1
 
