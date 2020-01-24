@@ -6,66 +6,66 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E8ECC32771
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:28:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F644C32771
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:29:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DE682075D
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:28:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0D6AD20838
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:28:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ugMJaZ2P";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNN/ICvj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DE682075D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="maC9odvi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TtObCB/w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D6AD20838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0BC2169B;
-	Fri, 24 Jan 2020 15:27:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0BC2169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43ECE169C;
+	Fri, 24 Jan 2020 15:28:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43ECE169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579876095;
-	bh=cPBJ2Q7EW5apadgpTK8l56oS3gurSpxSdiggGMRoRTs=;
+	s=default; t=1579876138;
+	bh=9oGVI1tK8BvQPAl0Wmy9svAWfm4Nwwe5+S8eGX5R8F4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ugMJaZ2PTOnCLov11NNFL9au4uIrD13wra9OwwPtFVz8urcrWDcnxi54uj5ig4eUf
-	 qGcPESBWp++mSyxpntSUwY+syaQpElVTRar6+bAwXTSrMb1/tWihg63kheJnyWLSkP
-	 tt56Fwlf0+Wqm1oltDeGrm4QSk3wwwg9bl66tbw8=
+	b=maC9odvi5G71cyvjjcH/A2nl74MY4ZBwnvedt9umdJ0Wm8Dkpni4r89d2Jo50G36H
+	 DW7ebP6TfnknjnZCGEcX6gxsIhKRPjdQQ/M7vN/NlyZqNps1sWDTb/B0gr8r0C5+FS
+	 tiLECwZ4CYlxWoTDVJWPopQ3+9a4MJfgPP0qtCHY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AE57F802E9;
-	Fri, 24 Jan 2020 15:20:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D5D6F802FE;
+	Fri, 24 Jan 2020 15:20:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 122A2F80272; Fri, 24 Jan 2020 15:20:49 +0100 (CET)
+ id 660E9F80273; Fri, 24 Jan 2020 15:20:49 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87A1CF80245
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:20:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87A1CF80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3D83F8022D
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:20:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3D83F8022D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rNN/ICvj"
+ header.b="TtObCB/w"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 73AC324676;
- Fri, 24 Jan 2020 14:20:44 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4F7EF2077C;
+ Fri, 24 Jan 2020 14:20:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579875645;
- bh=E6Fv9O+OegQ5OgqHUfaQME7FUO6QA7TWUMPDerY7pLQ=;
+ s=default; t=1579875642;
+ bh=ZARtiV7XNSFsBAvby64jmeb3X142S4XmBBemf1Q0XTI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rNN/ICvjPLO354inOVoDOAx+Cm20TzM7vV9ckyfxYiwGPwvE6ET+UxPKusuLEqu+d
- misNPT0PFUnVfGmlMf0x30usUyy+q/WEIslIE57LR56d5dRQWzy2oeiBY3lLABBjlj
- esbdli3O91owtR1CTZo9vvuyk3C/VOP8hR6qpWrc=
+ b=TtObCB/w+uyE6zwnusZOe758bCHPM+zfCT06A9td8qcKdGhjIHGUUru9WkdqF11G6
+ ga8vhY0h096sVPuQ0bjyShwFjHdl4kyaC+SS3+yFv2/9oXd8EpNKp8b4DnDQZhm0HX
+ 2s7KebjnoReSW9F3+5D6EC6OsUU3Ag5OUAN9VnX8=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 24 Jan 2020 09:19:44 -0500
-Message-Id: <20200124142012.29752-28-sashal@kernel.org>
+Date: Fri, 24 Jan 2020 09:19:41 -0500
+Message-Id: <20200124142012.29752-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200124142012.29752-1-sashal@kernel.org>
 References: <20200124142012.29752-1-sashal@kernel.org>
@@ -76,8 +76,8 @@ Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
  Mark Brown <broonie@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 28/56] ASoC: msm8916-wcd-digital:
-	Reset RX interpolation path after use
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 25/56] ASoC: msm8916-wcd-analog:
+	Fix selected events for MIC BIAS External1
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,52 +97,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit 85578bbd642f65065039b1765ebe1a867d5435b0 ]
+[ Upstream commit e0beec88397b163c7c4ea6fcfb67e8e07a2671dc ]
 
-For some reason, attempting to route audio through QDSP6 on MSM8916
-causes the RX interpolation path to get "stuck" after playing audio
-a few times. In this situation, the analog codec part is still working,
-but the RX path in the digital codec stops working, so you only hear
-the analog parts powering up. After a reboot everything works again.
+MIC BIAS External1 sets pm8916_wcd_analog_enable_micbias_ext1()
+as event handler, which ends up in pm8916_wcd_analog_enable_micbias_ext().
 
-So far I was not able to reproduce the problem when using lpass-cpu.
+But pm8916_wcd_analog_enable_micbias_ext() only handles the POST_PMU
+event, which is not specified in the event flags for MIC BIAS External1.
+This means that the code in the event handler is never actually run.
 
-The downstream kernel driver avoids this by resetting the RX
-interpolation path after use. In mainline we do something similar
-for the TX decimator (LPASS_CDC_CLK_TX_RESET_B1_CTL), but the
-interpolator reset (LPASS_CDC_CLK_RX_RESET_CTL) got lost when the
-msm8916-wcd driver was split into analog and digital.
+Set SND_SOC_DAPM_POST_PMU as the only event for the handler to fix this.
 
-Fix this problem by adding the reset to
-msm8916_wcd_digital_enable_interpolator().
-
-Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
+Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200105102753.83108-1-stephan@gerhold.net
+Link: https://lore.kernel.org/r/20200111164006.43074-2-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-digital.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/msm8916-wcd-analog.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index 3063dedd21cff..6de2ab6f97068 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -357,6 +357,12 @@ static int msm8916_wcd_digital_enable_interpolator(
- 		snd_soc_component_write(component, rx_gain_reg[w->shift],
- 			      snd_soc_component_read32(component, rx_gain_reg[w->shift]));
- 		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-+					      1 << w->shift, 1 << w->shift);
-+		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-+					      1 << w->shift, 0x0);
-+		break;
- 	}
- 	return 0;
- }
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 4f0497ab1aa80..6083b44ce1c6c 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -885,10 +885,10 @@ static const struct snd_soc_dapm_widget pm8916_wcd_analog_dapm_widgets[] = {
+ 
+ 	SND_SOC_DAPM_SUPPLY("MIC BIAS External1", CDC_A_MICB_1_EN, 7, 0,
+ 			    pm8916_wcd_analog_enable_micbias_ext1,
+-			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++			    SND_SOC_DAPM_POST_PMU),
+ 	SND_SOC_DAPM_SUPPLY("MIC BIAS External2", CDC_A_MICB_2_EN, 7, 0,
+ 			    pm8916_wcd_analog_enable_micbias_ext2,
+-			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
++			    SND_SOC_DAPM_POST_PMU),
+ 
+ 	SND_SOC_DAPM_ADC_E("ADC1", NULL, CDC_A_TX_1_EN, 7, 0,
+ 			   pm8916_wcd_analog_enable_adc,
 -- 
 2.20.1
 
