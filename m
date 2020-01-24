@@ -6,78 +6,76 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38377C32771
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:25:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1A11C35242
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:26:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA2A32077C
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:25:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6DBE221734
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:26:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GmvXe7iH";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cNzIu+hD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA2A32077C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HX6ApaHa";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i2aIZULs"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DBE221734
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22861169C;
-	Fri, 24 Jan 2020 15:24:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22861169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7E941698;
+	Fri, 24 Jan 2020 15:25:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7E941698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579875937;
-	bh=eCk9Ui00bHwJ7X5dYEIwq13KGGPIC7simd8zojXSQRg=;
+	s=default; t=1579875986;
+	bh=p4Kp9iwbzg9LJ7w2XEdmsjQZfCkP8zWWXSte9mc0zRQ=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GmvXe7iHiNlt4DxZgFU5T6tlJWyR8hbWLNOV6JWPbVRUrxKOZKobys8qXBSBeV/dW
-	 chYFg46QTLuiRR1XtbxO2kppGcmrHHnbUDr8DW0gjeanV7W/tS9aBAISwUqMaEsePC
-	 +h+fLy1dp6YKrnTWbOl+j/UpNQS95YC3ZRAA00cE=
+	b=HX6ApaHapuL2N4UkzMyOJeVQS56C8LyXSQj+SceR6pRA96qLgEUTxWXvDuhzhWDjZ
+	 iP7d2425mfWXHep0Qdaxsin2SqyEgz1o+T7jNLBgjseKAft+aCcUdZwW6S2y1DwHrL
+	 DS1daFfXT9/U1qvE6fV+OIru3vRbx3V4xoczv5b4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CF4AF802DC;
-	Fri, 24 Jan 2020 15:19:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3521AF80217;
+	Fri, 24 Jan 2020 15:20:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D97A6F8028D; Fri, 24 Jan 2020 15:19:30 +0100 (CET)
+ id 71333F80229; Fri, 24 Jan 2020 15:20:39 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D890BF8028C
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:19:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D890BF8028C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D1ABF800DE
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:20:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D1ABF800DE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cNzIu+hD"
+ header.b="i2aIZULs"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C536C21569;
- Fri, 24 Jan 2020 14:19:23 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 654762467B;
+ Fri, 24 Jan 2020 14:20:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579875564;
- bh=gHHs2kUz4YcAs+pZE6vf4Iexds6OSisXy+2sGItGX0c=;
+ s=default; t=1579875634;
+ bh=a3q3AfdfpnZz0utkiLplW6HuR5hV2vd1W/olLkrViE0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cNzIu+hD4oxj75HJP1GHxI9hRxe32dI3HdxrLS5niWFXMcoppu9gUimme4R8FIzlo
- jzz53zOgTorBC9yzz2rj4c5MVtdGzHKgtQPHcIGdYTy3mo40drB7gunfw2PXYQCT16
- vngRCyN9jz6mb9mdHJdBKFzLkl1wLDLX8Hqv987c=
+ b=i2aIZULskj195JrkSohACxoSZmhSUm7vMmNu5kZOvvIUotEJLjNHpM4PNBOoWkqDi
+ eFsSLINjtnQRNS6TjG3H/38TgYc0f98FIfKVF0xvMxZAMuCnm5pwyAmlNGLmF5i6b6
+ aa4UbiRZPVTAKw/J+13+4jotLGI966IFanSnCxhc=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 24 Jan 2020 09:17:28 -0500
-Message-Id: <20200124141817.28793-58-sashal@kernel.org>
+Date: Fri, 24 Jan 2020 09:19:34 -0500
+Message-Id: <20200124142012.29752-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200124141817.28793-1-sashal@kernel.org>
-References: <20200124141817.28793-1-sashal@kernel.org>
+In-Reply-To: <20200124142012.29752-1-sashal@kernel.org>
+References: <20200124142012.29752-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
-Subject: [alsa-devel] [PATCH AUTOSEL 5.4 058/107] ASoC: msm8916-wcd-digital:
-	Reset RX interpolation path after use
+Cc: Sasha Levin <sashal@kernel.org>, Dmitry Osipenko <digetx@gmail.com>,
+ Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 18/56] ASoC: rt5640: Fix NULL
+	dereference on module unload
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,54 +93,39 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 85578bbd642f65065039b1765ebe1a867d5435b0 ]
+[ Upstream commit 89b71b3f02d8ae5a08a1dd6f4a2098b7b868d498 ]
 
-For some reason, attempting to route audio through QDSP6 on MSM8916
-causes the RX interpolation path to get "stuck" after playing audio
-a few times. In this situation, the analog codec part is still working,
-but the RX path in the digital codec stops working, so you only hear
-the analog parts powering up. After a reboot everything works again.
+The rt5640->jack is NULL if jack is already disabled at the time of
+driver's module unloading.
 
-So far I was not able to reproduce the problem when using lpass-cpu.
-
-The downstream kernel driver avoids this by resetting the RX
-interpolation path after use. In mainline we do something similar
-for the TX decimator (LPASS_CDC_CLK_TX_RESET_B1_CTL), but the
-interpolator reset (LPASS_CDC_CLK_RX_RESET_CTL) got lost when the
-msm8916-wcd driver was split into analog and digital.
-
-Fix this problem by adding the reset to
-msm8916_wcd_digital_enable_interpolator().
-
-Fixes: 150db8c5afa1 ("ASoC: codecs: Add msm8916-wcd digital codec")
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200105102753.83108-1-stephan@gerhold.net
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20200106014707.11378-1-digetx@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-digital.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/rt5640.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index 58b2468fb2a71..09fccacadd6b1 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -586,6 +586,12 @@ static int msm8916_wcd_digital_enable_interpolator(
- 		snd_soc_component_write(component, rx_gain_reg[w->shift],
- 			      snd_soc_component_read32(component, rx_gain_reg[w->shift]));
- 		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-+					      1 << w->shift, 1 << w->shift);
-+		snd_soc_component_update_bits(component, LPASS_CDC_CLK_RX_RESET_CTL,
-+					      1 << w->shift, 0x0);
-+		break;
- 	}
- 	return 0;
- }
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 27770143ae8f2..974e1a4491723 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2435,6 +2435,13 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
+ {
+ 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
+ 
++	/*
++	 * soc_remove_component() force-disables jack and thus rt5640->jack
++	 * could be NULL at the time of driver's module unloading.
++	 */
++	if (!rt5640->jack)
++		return;
++
+ 	disable_irq(rt5640->irq);
+ 	rt5640_cancel_work(rt5640);
+ 
 -- 
 2.20.1
 
