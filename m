@@ -6,76 +6,76 @@ X-Spam-Status: No, score=-10.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1A11C35242
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EEEAC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:27:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6DBE221734
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:26:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2BAF42075D
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 14:27:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HX6ApaHa";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="i2aIZULs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DBE221734
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gx7uI2Oo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="AtsjL3yl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BAF42075D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7E941698;
-	Fri, 24 Jan 2020 15:25:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7E941698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B18E1686;
+	Fri, 24 Jan 2020 15:26:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B18E1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579875986;
-	bh=p4Kp9iwbzg9LJ7w2XEdmsjQZfCkP8zWWXSte9mc0zRQ=;
+	s=default; t=1579876021;
+	bh=Sv3tcfoLiNrNsjmDUPCDpbt8kdE079vA1jsr3ZoKywE=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HX6ApaHapuL2N4UkzMyOJeVQS56C8LyXSQj+SceR6pRA96qLgEUTxWXvDuhzhWDjZ
-	 iP7d2425mfWXHep0Qdaxsin2SqyEgz1o+T7jNLBgjseKAft+aCcUdZwW6S2y1DwHrL
-	 DS1daFfXT9/U1qvE6fV+OIru3vRbx3V4xoczv5b4=
+	b=gx7uI2OoPUiNASElgpz7kPuZsar14E12rZwQGGpi+oagk1w9he8yG3eQTvh/xN6Yp
+	 YDKkuTRkYJoXxXjwO4pmWFkCFpPezh6xzKix+X8C+AbCi2uxujALpqshBQmbPJ2cQ5
+	 SzDRO54QFZvN/BLA9osISpnE8u9JsHcPlyYyCVZc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3521AF80217;
-	Fri, 24 Jan 2020 15:20:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DC49F8022D;
+	Fri, 24 Jan 2020 15:20:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71333F80229; Fri, 24 Jan 2020 15:20:39 +0100 (CET)
+ id 52805F80274; Fri, 24 Jan 2020 15:20:47 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D1ABF800DE
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:20:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D1ABF800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1C4EF80229
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 15:20:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1C4EF80229
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="i2aIZULs"
+ header.b="AtsjL3yl"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 654762467B;
- Fri, 24 Jan 2020 14:20:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 6292222522;
+ Fri, 24 Jan 2020 14:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1579875634;
- bh=a3q3AfdfpnZz0utkiLplW6HuR5hV2vd1W/olLkrViE0=;
+ s=default; t=1579875643;
+ bh=3UhvI8O3+HQoLTBCTeoSba6nKdJFcCf8MRzo7M4mGKc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=i2aIZULskj195JrkSohACxoSZmhSUm7vMmNu5kZOvvIUotEJLjNHpM4PNBOoWkqDi
- eFsSLINjtnQRNS6TjG3H/38TgYc0f98FIfKVF0xvMxZAMuCnm5pwyAmlNGLmF5i6b6
- aa4UbiRZPVTAKw/J+13+4jotLGI966IFanSnCxhc=
+ b=AtsjL3ylGjppy/K+j2cJ+ByfgISYvIV2mlU0511/C0HEeC83CWC5rUTbzcNwa68F1
+ JTZ9hbD3qFdyGSabazimEskQ/mozp1sm1O1SUsUg4GnRk4q1jfeM7W7bVH4awBvk7N
+ /8nn85LtwA8Jn/0s5BzWSwDwWU+5qO1P6S9ZyUxI=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Date: Fri, 24 Jan 2020 09:19:34 -0500
-Message-Id: <20200124142012.29752-18-sashal@kernel.org>
+Date: Fri, 24 Jan 2020 09:19:42 -0500
+Message-Id: <20200124142012.29752-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200124142012.29752-1-sashal@kernel.org>
 References: <20200124142012.29752-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-Cc: Sasha Levin <sashal@kernel.org>, Dmitry Osipenko <digetx@gmail.com>,
- Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH AUTOSEL 4.19 18/56] ASoC: rt5640: Fix NULL
-	dereference on module unload
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [alsa-devel] [PATCH AUTOSEL 4.19 26/56] ASoC: sti: fix possible
+	sleep-in-atomic
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,38 +93,68 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-[ Upstream commit 89b71b3f02d8ae5a08a1dd6f4a2098b7b868d498 ]
+[ Upstream commit ce780a47c3c01e1e179d0792df6b853a913928f1 ]
 
-The rt5640->jack is NULL if jack is already disabled at the time of
-driver's module unloading.
+Change mutex and spinlock management to avoid sleep
+in atomic issue.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20200106014707.11378-1-digetx@gmail.com
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Link: https://lore.kernel.org/r/20200113100400.30472-1-arnaud.pouliquen@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5640.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/sti/uniperif_player.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 27770143ae8f2..974e1a4491723 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2435,6 +2435,13 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
- {
- 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
+diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+index 313dab2857ef9..4b0beb372cd94 100644
+--- a/sound/soc/sti/uniperif_player.c
++++ b/sound/soc/sti/uniperif_player.c
+@@ -226,7 +226,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
+ 	 * sampling frequency. If no sample rate is already specified, then
+ 	 * set one.
+ 	 */
+-	mutex_lock(&player->ctrl_lock);
+ 	if (runtime) {
+ 		switch (runtime->rate) {
+ 		case 22050:
+@@ -303,7 +302,6 @@ static void uni_player_set_channel_status(struct uniperif *player,
+ 		player->stream_settings.iec958.status[3 + (n * 4)] << 24;
+ 		SET_UNIPERIF_CHANNEL_STA_REGN(player, n, status);
+ 	}
+-	mutex_unlock(&player->ctrl_lock);
  
-+	/*
-+	 * soc_remove_component() force-disables jack and thus rt5640->jack
-+	 * could be NULL at the time of driver's module unloading.
-+	 */
-+	if (!rt5640->jack)
-+		return;
+ 	/* Update the channel status */
+ 	if (player->ver < SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+@@ -365,8 +363,10 @@ static int uni_player_prepare_iec958(struct uniperif *player,
+ 
+ 	SET_UNIPERIF_CTRL_ZERO_STUFF_HW(player);
+ 
++	mutex_lock(&player->ctrl_lock);
+ 	/* Update the channel status */
+ 	uni_player_set_channel_status(player, runtime);
++	mutex_unlock(&player->ctrl_lock);
+ 
+ 	/* Clear the user validity user bits */
+ 	SET_UNIPERIF_USER_VALIDITY_VALIDITY_LR(player, 0);
+@@ -598,7 +598,6 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
+ 	iec958->status[1] = ucontrol->value.iec958.status[1];
+ 	iec958->status[2] = ucontrol->value.iec958.status[2];
+ 	iec958->status[3] = ucontrol->value.iec958.status[3];
+-	mutex_unlock(&player->ctrl_lock);
+ 
+ 	spin_lock_irqsave(&player->irq_lock, flags);
+ 	if (player->substream && player->substream->runtime)
+@@ -608,6 +607,8 @@ static int uni_player_ctl_iec958_put(struct snd_kcontrol *kcontrol,
+ 		uni_player_set_channel_status(player, NULL);
+ 
+ 	spin_unlock_irqrestore(&player->irq_lock, flags);
++	mutex_unlock(&player->ctrl_lock);
 +
- 	disable_irq(rt5640->irq);
- 	rt5640_cancel_work(rt5640);
+ 	return 0;
+ }
  
 -- 
 2.20.1
