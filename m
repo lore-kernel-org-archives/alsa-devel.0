@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA91DC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5ECDC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:20:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7431B2075D
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:20:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 72AF42072C
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 19:20:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WXeg6oah"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7431B2075D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eGizKIUM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72AF42072C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD2DF16B9;
-	Fri, 24 Jan 2020 20:19:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD2DF16B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5A9A168B;
+	Fri, 24 Jan 2020 20:20:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5A9A168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579893613;
-	bh=hqKpgbd7dsvM3p51QS3n5ylail7/9VUZSqr+iEM9x5w=;
+	s=default; t=1579893653;
+	bh=R8zntK2oflQCjGA9o3xyss2KqrqgSOV8PsbPhqP3/F4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WXeg6oahDWVYNDfWGvjwuwLqswYNko2C8xRfbH6oNHD86bUp1uenR69ysQeJib73E
-	 EkSP8HMIl4Y4dDI4WiGihFTjv4ClRoIa2Uo5a3xZxyF81Cd75nP5MRVUHHtIAzzFVB
-	 x3nNYiZ7wtLe6igB3F5QUvTZNN7fEA5ImoBTtNBY=
+	b=eGizKIUMgpzIc36ZiYBiWl+iUgrIc71eGwtKjg6RDeAk4AHwquMGfpTJfiLvDv9O7
+	 j0XNdSO49F2y/J2yqNO4y74VrbZ4idc5FLVbbO5i2K8PWpPrn63flj5iBA2Qcvb70y
+	 9MWhdfmXiCS6YYP3ubPRV9+rnxtjmvVEJdTZLk38=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1B56F80305;
-	Fri, 24 Jan 2020 20:12:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6157F80308;
+	Fri, 24 Jan 2020 20:12:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6769F80292; Fri, 24 Jan 2020 20:12:23 +0100 (CET)
+ id 351C5F80299; Fri, 24 Jan 2020 20:12:24 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6055F801D8
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 20:12:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6055F801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA25CF8020C
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 20:12:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA25CF8020C
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2020 11:04:39 -0800
+ 24 Jan 2020 11:04:42 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="260337235"
+X-IronPort-AV: E=Sophos;i="5.70,358,1574150400"; d="scan'208";a="260337246"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2020 11:04:37 -0800
+ by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2020 11:04:41 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Date: Fri, 24 Jan 2020 20:04:11 +0100
-Message-Id: <20200124190413.18154-11-cezary.rojewski@intel.com>
+Date: Fri, 24 Jan 2020 20:04:13 +0100
+Message-Id: <20200124190413.18154-13-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200124190413.18154-1-cezary.rojewski@intel.com>
 References: <20200124190413.18154-1-cezary.rojewski@intel.com>
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>,
  broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
-Subject: [alsa-devel] [PATCH 10/12] ASoC: SOF: Provide probe debugfs support
+Subject: [alsa-devel] [PATCH 12/12] ASoC: Intel: sof_rt5682: Add compress
+	probe DAI links
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,247 +83,61 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define debugfs subdirectory delegated for IPC communitation with DSP.
-Input format: uint,uint,(...) which are later translated into DWORDS
-sequence and further into instances of struct of interest given the IPC
-type.
-
-For Extractor probes, following have been enabled:
-- PROBE_POINT_ADD (echo <..> probe_points)
-- PROBE_POINT_REMOVE (echo <..> probe_points_remove)
-- PROBE_POINT_INFO (cat probe_points)
+Assign probe DAI link to actively used SOF machine boards.
+For current upstream, it is only sof_rt5682.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/sof/debug.c | 208 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 208 insertions(+)
+ sound/soc/intel/boards/sof_rt5682.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index d2b3b99d3a20..e0fc0735b0d5 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -17,6 +17,203 @@
- #include "sof-priv.h"
- #include "ops.h"
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 5d878873a8e0..8c26214b19d3 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -417,6 +417,8 @@ static struct snd_soc_dai_link_component max98357a_component[] = {
+ 	}
+ };
  
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
-+#include "probe.h"
++SND_SOC_DAILINK_DEF(dummy, DAILINK_COMP_ARRAY(COMP_DUMMY()));
 +
-+/**
-+ * strsplit_u32 - Split string into sequence of u32 tokens
-+ * @buf:	String to split into tokens.
-+ * @delim:	String containing delimiter characters.
-+ * @tkns:	Returned u32 sequence pointer.
-+ * @num_tkns:	Returned number of tokens obtained.
-+ */
-+static int
-+strsplit_u32(char **buf, const char *delim, u32 **tkns, size_t *num_tkns)
-+{
-+	char *s;
-+	u32 *data, *tmp;
-+	size_t count = 0;
-+	size_t cap = 32;
-+	int ret = 0;
-+
-+	*tkns = NULL;
-+	*num_tkns = 0;
-+	data = kcalloc(cap, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	while ((s = strsep(buf, delim)) != NULL) {
-+		ret = kstrtouint(s, 0, data + count);
-+		if (ret)
-+			goto exit;
-+		if (++count >= cap) {
-+			cap *= 2;
-+			tmp = krealloc(data, cap * sizeof(*data), GFP_KERNEL);
-+			if (!tmp) {
-+				ret = -ENOMEM;
-+				goto exit;
-+			}
-+			data = tmp;
-+		}
-+	}
-+
-+	if (!count)
-+		goto exit;
-+	*tkns = kmemdup(data, count * sizeof(*data), GFP_KERNEL);
-+	if (*tkns == NULL) {
-+		ret = -ENOMEM;
-+		goto exit;
-+	}
-+	*num_tkns = count;
-+
-+exit:
-+	kfree(data);
-+	return ret;
-+}
-+
-+static int tokenize_input(const char __user *from, size_t count,
-+		loff_t *ppos, u32 **tkns, size_t *num_tkns)
-+{
-+	char *buf;
-+	int ret;
-+
-+	buf = kmalloc(count + 1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = simple_write_to_buffer(buf, count, ppos, from, count);
-+	if (ret != count) {
-+		ret = ret >= 0 ? -EIO : ret;
-+		goto exit;
-+	}
-+
-+	buf[count] = '\0';
-+	ret = strsplit_u32((char **)&buf, ",", tkns, num_tkns);
-+exit:
-+	kfree(buf);
-+	return ret;
-+}
-+
-+static ssize_t ppoints_read(struct file *file,
-+		char __user *to, size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	struct sof_probe_point_desc *desc;
-+	size_t num_desc, len = 0;
-+	char *buf;
-+	int i, ret;
-+
-+	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = sof_ipc_probe_points_info(dfse->sdev, &desc, &num_desc);
-+	if (ret < 0)
-+		goto exit;
-+
-+	for (i = 0; i < num_desc; i++) {
-+		ret = snprintf(buf + len, PAGE_SIZE - len,
-+			"Id: %#010x  Purpose: %d  Node id: %#x\n",
-+			desc[i].buffer_id, desc[i].purpose, desc[i].stream_tag);
-+		if (ret < 0)
-+			goto free_desc;
-+		len += ret;
-+	}
-+
-+	ret = simple_read_from_buffer(to, count, ppos, buf, len);
-+free_desc:
-+	kfree(desc);
-+exit:
-+	kfree(buf);
-+	return ret;
-+}
-+
-+static ssize_t ppoints_write(struct file *file,
-+		const char __user *from, size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	struct sof_probe_point_desc *desc;
-+	size_t num_tkns, bytes;
-+	u32 *tkns;
-+	int ret;
-+
-+	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-+	if (ret < 0)
-+		return ret;
-+	bytes = sizeof(*tkns) * num_tkns;
-+	if (!num_tkns || (bytes % sizeof(*desc))) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	desc = (struct sof_probe_point_desc *)tkns;
-+	ret = sof_ipc_probe_points_add(dfse->sdev,
-+			desc, bytes / sizeof(*desc));
-+	if (!ret)
-+		ret = count;
-+exit:
-+	kfree(tkns);
-+	return ret;
-+}
-+
-+static const struct file_operations ppoints_fops = {
-+	.open = simple_open,
-+	.read = ppoints_read,
-+	.write = ppoints_write,
-+	.llseek = default_llseek,
-+};
-+
-+static ssize_t ppoints_remove_write(struct file *file,
-+		const char __user *from, size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry *dfse = file->private_data;
-+	size_t num_tkns;
-+	u32 *tkns;
-+	int ret;
-+
-+	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-+	if (ret < 0)
-+		return ret;
-+	if (!num_tkns) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	ret = sof_ipc_probe_points_remove(dfse->sdev, tkns, num_tkns);
-+	if (!ret)
-+		ret = count;
-+exit:
-+	kfree(tkns);
-+	return ret;
-+}
-+
-+static const struct file_operations ppoints_remove_fops = {
-+	.open = simple_open,
-+	.write = ppoints_remove_write,
-+	.llseek = default_llseek,
-+};
-+
-+static int snd_sof_debugfs_probe_item(struct snd_sof_dev *sdev,
-+				 const char *name, mode_t mode,
-+				 const struct file_operations *fops)
-+{
-+	struct snd_sof_dfsentry *dfse;
-+
-+	dfse = devm_kzalloc(sdev->dev, sizeof(*dfse), GFP_KERNEL);
-+	if (!dfse)
-+		return -ENOMEM;
-+
-+	dfse->type = SOF_DFSENTRY_TYPE_BUF;
-+	dfse->sdev = sdev;
-+
-+	debugfs_create_file(name, mode, sdev->debugfs_root, dfse, fops);
-+	/* add to dfsentry list */
-+	list_add(&dfse->list, &sdev->dfsentry_list);
-+
-+	return 0;
-+}
-+#endif
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
- #define MAX_IPC_FLOOD_DURATION_MS 1000
- #define MAX_IPC_FLOOD_COUNT 10000
-@@ -436,6 +633,17 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
- 			return err;
+ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 							  int ssp_codec,
+ 							  int ssp_amp,
+@@ -580,8 +582,22 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			if (!links[id].cpus->dai_name)
+ 				goto devm_err;
+ 		}
++		id++;
  	}
  
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
-+	err = snd_sof_debugfs_probe_item(sdev, "probe_points",
-+			0644, &ppoints_fops);
-+	if (err < 0)
-+		return err;
-+	err = snd_sof_debugfs_probe_item(sdev, "probe_points_remove",
-+			0200, &ppoints_remove_fops);
-+	if (err < 0)
-+		return err;
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++	links[id].name = "Compress Probe Capture";
++	links[id].id = id;
++	links[id].cpus = &cpus[id];
++	links[id].num_cpus = 1;
++	links[id].cpus->dai_name = "Probe Extraction CPU DAI";
++	links[id].codecs = dummy;
++	links[id].num_codecs = 1;
++	links[id].platforms = platform_component;
++	links[id].num_platforms = ARRAY_SIZE(platform_component);
++	links[id].nonatomic = 1;
 +#endif
 +
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
- 	/* create read-write ipc_flood_count debugfs entry */
- 	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
+ 	return links;
+ devm_err:
+ 	return NULL;
+@@ -656,8 +672,8 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 
+ 	ssp_codec = sof_rt5682_quirk & SOF_RT5682_SSP_CODEC_MASK;
+ 
+-	/* compute number of dai links */
+-	sof_audio_card_rt5682.num_links = 1 + dmic_be_num + hdmi_num;
++	/* account for SSP and probes when computing total dai link count */
++	sof_audio_card_rt5682.num_links = 1 + dmic_be_num + hdmi_num + 1;
+ 
+ 	if (sof_rt5682_quirk & SOF_SPEAKER_AMP_PRESENT)
+ 		sof_audio_card_rt5682.num_links++;
 -- 
 2.17.1
 
