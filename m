@@ -1,84 +1,104 @@
-Return-Path: <SRS0=dQ5X=3N=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=22TH=3O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51DEDC2D0CE
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 22:18:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E2EEC32771
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jan 2020 03:21:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEA222071A
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jan 2020 22:18:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C6FC3206D5
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jan 2020 03:21:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mn8Ixt73";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hmsb3vVn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEA222071A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cOpMrN8w";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="XmbNRxix";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YqK8mH6T"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6FC3206D5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27D4F1665;
-	Fri, 24 Jan 2020 23:17:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27D4F1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B6911667;
+	Sat, 25 Jan 2020 04:20:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B6911667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579904283;
-	bh=p6gvG1dZ3yUWIpB3lF86ZGuDo+hJkLzLLH9t6FnkrLM=;
-	h=References:In-Reply-To:From:Date:To:Subject:List-Id:
+	s=default; t=1579922475;
+	bh=hxmcbE3XChq0OE1zZwZPLY8ckPXmrUPRRLPUEVym6Ak=;
+	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mn8Ixt7367A61YDmtiZWcntCKxyKf6O4OIu37NdXfqwvteyegMKO60pISoJ3seVa+
-	 CEetQ7RHX7ZKIgh3KKb373d58qEM1sSgOXUxz0fKPC6bVqfsqOpVERXFu3JFljbYj4
-	 +XtgmUkTj641EdZZdhWEkspwmxSTFAptNlUZErPM=
+	b=cOpMrN8wz1gTJ7nZFpieDIAalUSNIqJHWaOcBvCaMrt5rHQqScOlDCjcIEQ0eqaaR
+	 ymlOlw0gQtGo247G6BfBJhfPUpNIXqVQmDRjgpvXbkSVcqaaL+bqPbY/1YztWTKrAM
+	 ErCF4g+NQQdqjWzua7Jtq1omcJXCtf9C6ok70sA4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 858F5F801D8;
-	Fri, 24 Jan 2020 23:17:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C09AF800BA;
+	Sat, 25 Jan 2020 04:20:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E610BF8020C; Fri, 24 Jan 2020 23:17:10 +0100 (CET)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9C9D5F800F5; Sat, 25 Jan 2020 04:19:36 +0100 (CET)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C465FF800DE
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 23:17:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C465FF800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35541F800BA
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jan 2020 04:18:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35541F800BA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="hmsb3vVn"
-Received: by mail-ed1-x535.google.com with SMTP id r18so4263222edl.1
- for <alsa-devel@alsa-project.org>; Fri, 24 Jan 2020 14:17:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
- bh=VTxLbbBHYeJGRlxS/pxBzZ2jkb86oMujVCZ8Aa521Ug=;
- b=hmsb3vVngAbtjbtSYs0hXPU3lBnuejCVjgj0uKaQzzasWilAV0kBhL4WAbYeNV1xVp
- VX+WAaH0R71HIBbj/X3yEbpa8/ruQOTF33+n0cicpeI56/APCDSmY0TaYGe5L1QHE+3p
- WNKy2oKckWMFzDb9cgBFEyXIchhwmsl4zD5KurIg1/01d/0VPMEyqZQOLcAPZy1F2J2P
- 9WJ+F1191nAJpbQC/YRG4+62pP30g1B8XqRx2Zjy6NsZA9TJCTd5Q7Rpo2+mgUx+hE3t
- 2qgOLp8sIVHZlJlm7iCaqNYV3AeX4JqlruBwifNlPdwSHo5ak0H3/c2fJ4JQ6FQnZvJS
- IJbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to;
- bh=VTxLbbBHYeJGRlxS/pxBzZ2jkb86oMujVCZ8Aa521Ug=;
- b=Gg2pnOowE6AwVoFNMhbd4N2tAlMA1DdSI8YdEvVaYHJFogbskZBTQvaoExnOkILz5T
- KOcvjs8G4eOHGcdJxu49vB+SdnwYWhQ/l2nSh82KiTL8uLS93HFW7yKkL685GLshkyf3
- RQSg33sdTB2pwrA4Hz2eyFv24poGzfc6wwlpDwCai0v5tufDsYrnBwSc5MWJ3aFQxibU
- PQSx2mgRHWhdIQNm2SD9tS50U7llRmkmNBe7TCyn98pvojsRsWh6b5FkUXJz16ENpltm
- cFgzLIsRCi8tJgzRmNIMEK2S8gYe6Pma6EzrMNok+5mtpIOy2jgWg7Cq/C91eLOOtdoW
- TyNA==
-X-Gm-Message-State: APjAAAUPhAjEWGV4GJnf32P2SgW8raqOnw/7l4eXbBQT5unOb5T9tY80
- egf+rYmsKVljG+phFnTnQpLnBZz1xVOyp7QHiUs=
-X-Google-Smtp-Source: APXvYqzfMPTtSyDj/8Tta5LHorHFPhB5t5b/0TKfnGtXY/vsjosVFdtjKtSAfhfCxcjU9ABKMWqIFBz1N2vRwwX39l0=
-X-Received: by 2002:a17:906:4e46:: with SMTP id
- g6mr4277965ejw.309.1579904226457; 
- Fri, 24 Jan 2020 14:17:06 -0800 (PST)
-MIME-Version: 1.0
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="XmbNRxix"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="YqK8mH6T"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 7EF6C21FE0;
+ Fri, 24 Jan 2020 22:18:05 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute1.internal (MEProxy); Fri, 24 Jan 2020 22:18:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm3; bh=gVq9FxlgCweGL7sHRV/q6afWtq8
+ E2uZ8P16S4C4nuog=; b=XmbNRxixqD1y+jn2rvbfXu1dLUwogtzT7nRUb8wF5c9
+ oSKrqChuxDXVkjIZYI3uq6sd+w8qq9xKVueuDUkLqRitC9q1AuyoUZP2S8nyqxqC
+ NhNQ4PL5/m/JqKMTmcJccDjYhdE47BbP4VO+M/TCfjHJznpiaxEvMR4etBN+RjQC
+ kt0YvmJWpaptO77YfYPVSbF1/61pS2tSeQQrdLtX0w7+b87qk0IayWDbEEHdtjrh
+ dmRPq+XjH14O1hkpyk6ePiCrN3YZu5wIuhlwJfqpGbqxxKiUq0C4VGgqGqV7swyK
+ XUEI/5lLAQiVezkVg0uL0YHB+xLvlgORhMYXNjkXeEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=gVq9Fx
+ lgCweGL7sHRV/q6afWtq8E2uZ8P16S4C4nuog=; b=YqK8mH6TbzxZAfCT8eSKEN
+ C+dmu1EQkQfRid3ze33JW490BQkCAL48b6IILCz2VYQ/24LyI7G7HZ0GhCi9NVc0
+ PAzOcXMcPAuwHWPYv4piezbM0bAIivkQ9GKOWYf+BAlNJEMeeIoW+U0Yynb+yPHE
+ 2U2Yanq0dUByky1YAHPsqOTynfE91ubcaJvPt8pV1B7fXEeH2/n9MWKV1YVGo6ee
+ /tdIHfX9dqnmlZ/kECTcyOIquaLIsSUTDxyEQEZSOD4xcBrpKxkM4g2MKyY9VUVu
+ evmBdlFVw+ieLBQIA5RSGrpyASVY4wKVuopXOhRGAtxm8k57KStcRFDX4LidaZAA
+ ==
+X-ME-Sender: <xms:bbMrXqzlR_AYBjwcOs4N1p-fHiwBbduwxwjSnZRiBRuVcPdnpP1GzQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrvdeigdehiecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpefvrghkrghs
+ hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+ hpqeenucfkphepudegrdefrdejgedrudeikeenucevlhhushhtvghrufhiiigvpedtnecu
+ rfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhih
+ drjhhp
+X-ME-Proxy: <xmx:bbMrXvFfP0hSS77N1x2CDqbr149M5hpArD1m32NLUsZxFLlEq76ZYw>
+ <xmx:bbMrXtoQLMGikXRQ3TJG7cRVOeOGodcPylptDWWK20HOJxv9nQq-_A>
+ <xmx:bbMrXlwNDgd0hhKFT-69yRhz8TIYeEPbOZZfQjtEBwe_8eTvFb_I0Q>
+ <xmx:bbMrXpUGGq1HmkV-EUAyZUY-_TlRQY2LgypNSJb9e-eF5fzjnh0vvQ>
+Received: from workstation (ae074168.dynamic.ppp.asahi-net.or.jp [14.3.74.168])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 21B493063DE5;
+ Fri, 24 Jan 2020 22:18:03 -0500 (EST)
+Date: Sat, 25 Jan 2020 12:18:01 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Daniel Jozsef <daniel.jozsef@gmail.com>
+Message-ID: <20200125031801.GA5554@workstation>
+Mail-Followup-To: Daniel Jozsef <daniel.jozsef@gmail.com>,
+ ffado-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 References: <CAK5Eu=tVQjBn+YvsHOLqSEir5aV8Q0hA1OgFiJZYdqnspdMz-Q@mail.gmail.com>
  <CAK5Eu=snx3s9r9hoeF4Th0V0YXJYa=7PKUqDn3W4NdWZben-zg@mail.gmail.com>
  <CAK5Eu=v2x+zFhCygKq8DPWd+CH5JTpZEayg=k2NvaTY7DUNA9g@mail.gmail.com>
@@ -86,13 +106,12 @@ References: <CAK5Eu=tVQjBn+YvsHOLqSEir5aV8Q0hA1OgFiJZYdqnspdMz-Q@mail.gmail.com>
  <20200119164335.GA11974@workstation>
  <CAK5Eu=sS8kMe5hCPgTx+V6AjzcCo3vN73tEQ1f=kY03Y2_CcJQ@mail.gmail.com>
  <20200120141901.GA32472@workstation>
-In-Reply-To: <20200120141901.GA32472@workstation>
-From: Daniel Jozsef <daniel.jozsef@gmail.com>
-Date: Fri, 24 Jan 2020 22:16:53 +0000
-Message-ID: <CAK5Eu=tX=87xD0xt-UdrDWTsxw9Y4xOrvAV8pHKyYC7tau==XA@mail.gmail.com>
-To: Daniel Jozsef <daniel.jozsef@gmail.com>, ffado-user@lists.sourceforge.net, 
- alsa-devel@alsa-project.org
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+ <CAK5Eu=tX=87xD0xt-UdrDWTsxw9Y4xOrvAV8pHKyYC7tau==XA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAK5Eu=tX=87xD0xt-UdrDWTsxw9Y4xOrvAV8pHKyYC7tau==XA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, ffado-user@lists.sourceforge.net
 Subject: Re: [alsa-devel] Toneweal / Trigaudio FW66 device
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -111,92 +130,77 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Takashi,
+Hi,
 
-Thanks for getting involved, I really appreciate it! :D I was away this
-week, but today I was able to run the commands you mentioned.
-
-$ ./firewire-request /dev/fw1 fcp 0x01ff3000ffffffff
-response: 000: 0c ff 30 07 0f 00 23 27                         ..0...#'
-$ ./firewire-request /dev/fw1 fcp 0x01ff3100ffffffff
-response: 000: 0c ff 31 00 08 60 ff ff                         ..1..`..
-$ ./firewire-request /dev/fw1 fcp 0x01ff0200ffffffff
-response: 000: 0c ff 02 00 02 02 04 03                         ........
-$ ./firewire-request /dev/fw1 fcp 0x01080200ffffffff
-response: 000: 0c 08 02 00 04 01 ff ff                         ........
-$ ./firewire-request /dev/fw1 fcp 0x01600200ffffffff
-response: 000: 0c 60 02 00 06 05 ff ff                         .`......
-
-From what I gather from the reference you linked, this seems more or less
-what's expected, though I'm not entirely sure yet what it means for the
-device to have 6 destination and 5 source plugs on the music subunit... :D
-(If I read the specs correctly...)
-
-Daniel
-
-
-On Mon, Jan 20, 2020 at 2:19 PM Takashi Sakamoto <o-takashi@sakamocchi.jp>
-wrote:
-
-> Hi Daniel,
->
-> On Mon, Jan 20, 2020 at 11:42:34AM +0000, Daniel Jozsef wrote:
-> > Thanks for the quick reaction, Takashi :) I ran the command you
-> mentioned,
-> > and your guess was spot on:
-> >
-> > daniel@gibbonmoon:~/opt/linux-firewire-utils-0.4/src$ ./firewire-request
-> > /dev/fw1 read 0xffffc8020000 60
-> > result: 000: 62 72 69 64 67 65 43 6f 03 00 00 00 00 00 00 00
-> bridgeCo........
-> > result: 010: 00 27 23 00 00 00 00 02 02 00 00 00 00 00 00 00
-> .'#.............
-> > result: 020: 32 30 31 30 30 35 32 35 31 32 31 35 30 34 20 20
-> 20100525121504
-> > result: 030: 02 00 02 00 ff ff ff 00 80 00 0c 40 7c e3 13 00
-> ...........@|...
-> > result: 040: 32 30 30 38 31 32 30 32 31 33 34 34 34 38 20 20
-> 20081202134448
-> > result: 050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ................
->
-> Yep, it's an application of BeBoB solution.
->
-> As a next step, please get responses against 5 AV/C commands below:
->
-> (AV/C UNIT INFO command)
+On Fri, Jan 24, 2020 at 10:16:53PM +0000, Daniel Jozsef wrote:
 > $ ./firewire-request /dev/fw1 fcp 0x01ff3000ffffffff
-> response: 000: 0c ff 30 07 0f 00 14 96                         ..0.....
->
-> (AV/C SUBUNIT INFO command)
+> response: 000: 0c ff 30 07 0f 00 23 27                         ..0...#'
 > $ ./firewire-request /dev/fw1 fcp 0x01ff3100ffffffff
 > response: 000: 0c ff 31 00 08 60 ff ff                         ..1..`..
->
-> (AV/C PLUG INFO command for Unit)
 > $ ./firewire-request /dev/fw1 fcp 0x01ff0200ffffffff
-> response: 000: 0c ff 02 00 02 02 01 01                         ........
->
-> (AV/C PLUG INFO command for Audio subunit)
+> response: 000: 0c ff 02 00 02 02 04 03                         ........
 > $ ./firewire-request /dev/fw1 fcp 0x01080200ffffffff
-> response: 000: 0c 08 02 00 02 02 ff ff                         ........
->
-> (AV/C PLUG INFO command for Music subunit)
+> response: 000: 0c 08 02 00 04 01 ff ff                         ........
 > $ ./firewire-request /dev/fw1 fcp 0x01600200ffffffff
-> response: 000: 0c 60 02 00 03 03 ff ff                         .`......
->
-> If you're interested in their contents, please refer to document published
-> by
-> 1394 Trading Association:
->
-> AV/C Digital Interface Command Set General Specification Version 4.2
-> (1394 Trading Association, September 1, 2004)
-> http://1394ta.org/wp-content/uploads/2015/07/2004006.pdf
->
->
-> Thanks
->
-> Takashi Sakamoto
->
+> response: 000: 0c 60 02 00 06 05 ff ff                         .`......
+> 
+> From what I gather from the reference you linked, this seems more or less
+> what's expected, though I'm not entirely sure yet what it means for the
+> device to have 6 destination and 5 source plugs on the music subunit... :D
+> (If I read the specs correctly...)
+
+You got it correctly. Here, let's back to FFADO log:
+
+> Error (bebob_avplug.cpp)[ 237] discoverPlugType: Plug does not implement extended plug info plug type info command
+> Error (bebob_avplug.cpp)[ 120] discover: discover: Could not discover plug type (1,1,0,0,1)
+> Error (avc_subunit.cpp)[ 189] discoverPlugs: plug discover failed
+> Error (avc_subunit.cpp)[ 131] discoverPlugs: destination plug discovering failed
+> Error (avc_subunit.cpp)[  99] discover: plug discovery failed
+> Error (avc_unit.cpp)[ 283] enumerateSubUnits: enumerateSubUnits: Could not discover subunit_id =  0, subunit_type =  1 (Audio)
+> Error (avc_unit.cpp)[ 177] discover: Could not enumerate sub units
+
+It's my mistake to interpret the target subunit to which the command
+fails. It's 'Audio' subunit, not 'Music' subunit...
+
+> plug type (1,1,0,0,1)
+1 = node ID (=0xFF01)
+1 = subunit type (=audio)
+0 = subunit ID
+0 = direction (=input)
+1 = plug ID (=0x01)
+
+The EXTENDED PLUG INFO command is one of specific command for BeBoB
+solution and its specification is closed. In your case, 4 plugs are
+detected as destination plug and 1 plug as source plug in Audio
+subunit by AV/C PLUG INFO command for Audio subunit, thus below
+commands are expected to return valid information as long as
+implemented correctly:
+
+(4 destination plugs = 4 input plugs)
+(AV/C EXTENDED PLUG INFO command for input plugs of Music subunit)
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000100ffff00
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000101ffff00 (<-)
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000102ffff00
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000103ffff00
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000104ffff00 (should fail)
+
+(1 source plug = 1 output plug)
+(AV/C EXTENDED PLUG INFO command for output plugs of Music subunit)
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010100ffff00
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010101ffff00 (should fail)
+
+However, some vendors seem to implement the above with less care of
+compatibility, as long as I know. In your case, below command might
+fail:
+
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000101ffff00 (<-)
+
+I'd like you to execute the above commands and share their responses.
+
+
+Regards
+
+Takashi Sakamoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
