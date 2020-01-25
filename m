@@ -2,66 +2,96 @@ Return-Path: <SRS0=22TH=3O=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7954C35243
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jan 2020 10:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73F02C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jan 2020 13:23:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B0BD218AC
-	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jan 2020 10:50:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E5DFB2071E
+	for <alsa-devel@archiver.kernel.org>; Sat, 25 Jan 2020 13:23:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aYGji5sF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B0BD218AC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cKQzEH39";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P2uuPajM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5DFB2071E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACF7F1670;
-	Sat, 25 Jan 2020 11:49:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACF7F1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3519C1681;
+	Sat, 25 Jan 2020 14:22:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3519C1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1579949402;
-	bh=T9sLVeBTX3jjlLwWN7Yw6g3RHXPp3WkvYoS5XW+WhTU=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aYGji5sF9jb8l9Ck427/gsZuh8ibQ5ZLU9g1944CEsPZNOOjxpG0SkUN/k8mIz4eh
-	 jBby1iHMpmyFTBrI6mFAHwIV2SWZp8fzEgzDl6QCRBkPtRedGf8WX690TmH6rSazVG
-	 Fl6syPVAdbBM9Yvykm89mtltM8bM9xGvHIsgrqc8=
+	s=default; t=1579958623;
+	bh=u/nvzpPFj1++WwLWxy+z8uD1b+aloXR6dtvwBL3QkUk=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cKQzEH39ZqAH/meySR54XkRzXX7U7kWtbsIByw6G39Hn5pd0X6uSKrg4R/XJlzw6Y
+	 EuYvw4eP7pYe9WPCVN1RRZrlej0wEvWyEQhnQ0UJiqE9gB/GVQO5ajZLcBUY2ckBr4
+	 O+oObdkKN+GhAhSXHiXrGccer7hjZS4Is+PLwiH8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32266F800F5;
-	Sat, 25 Jan 2020 11:49:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1F84F801D9;
+	Sat, 25 Jan 2020 14:22:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA0E9F801EC; Sat, 25 Jan 2020 11:49:09 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B5277F801EC; Sat, 25 Jan 2020 14:22:50 +0100 (CET)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
+ [IPv6:2a00:1450:4864:20::444])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CBCAF800F5
- for <alsa-devel@alsa-project.org>; Sat, 25 Jan 2020 11:49:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CBCAF800F5
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E707BB05C;
- Sat, 25 Jan 2020 10:49:06 +0000 (UTC)
-Date: Sat, 25 Jan 2020 11:49:06 +0100
-Message-ID: <s5ho8ur24m5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20200124190413.18154-1-cezary.rojewski@intel.com>
-References: <20200124190413.18154-1-cezary.rojewski@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org,
- tiwai@suse.com, pierre-louis.bossart@linux.intel.com
-Subject: Re: [alsa-devel] [PATCH 00/12] ASoC: SOF: Data probing
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AF6AF800BA
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jan 2020 14:22:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AF6AF800BA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="P2uuPajM"
+Received: by mail-wr1-x444.google.com with SMTP id d16so5366945wre.10
+ for <alsa-devel@alsa-project.org>; Sat, 25 Jan 2020 05:22:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=+v3EjwkxIpFHYP7as2D5uDbL38tR/iLAg6fqBxgy7z8=;
+ b=P2uuPajM/PD2Od4vLhv6YWJ1yomZCUUrHGt20AVWxfC2oYHCVJD8b44/rdk4kIYG1u
+ VwqcLFFwm17F3clX2N/4DeF2Pp+/xng0VwUdMJohlnfqssR+3uoPF53mTucy3RmmdFhX
+ RAjFEkevWaKC/l8hE9jfLHwEhBK81i7ZjA6hzMeZXt14cz+665NtwBIbnr8hKwpIOZSB
+ 2b0D4Azjg/s8LWRpK1x8mnywhOPOAqMPRqxOZTPNMF1cfDtTfYG0SMVkNMs7sfb7Qx3U
+ naHbu+ZmqqSweNsFDY3cAN4WxmhbsY44DAGyRN48vTmrvmPIYXUmOC94/n3cub2PJV6Q
+ xS5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=+v3EjwkxIpFHYP7as2D5uDbL38tR/iLAg6fqBxgy7z8=;
+ b=S8nwViALe0GxBvFQwr36n4b+C4Kwzn22F/MU8g0jmgS8KtUutDwAg0WLv0AtWYiiuo
+ oXsGQKC4FS3jgJ6fVwuYlrVDyU5249UmIZCu2Rl+zpskU5MOoQVUf5oVDzmlkPy3AP96
+ 6iDXnN0aAt26NGiTo4JxQqYA9cSqHfvIaogYhUnuf6RiHHLBvt7LkIn4MOn+0ED9X3DF
+ rUzaxhm7FTNmd39REvEet8HLXRVv6D9m5o6w1HIrZQB0qvXLMakzv0TNg34triNXXORP
+ 4CDBamvM2b0pg74rixcZvJwfXqGzxgegUX6a1tYlrkeBklfrRk+6Rl6iaIVCYxjiJyaI
+ 9+8w==
+X-Gm-Message-State: APjAAAWCAyBj3Noe5Y0fmKcVnvyDfRikWOfEzL97NDGI5ZkSQ9p9SAEz
+ jYhyF5mpnd9XYxjT6OvWhjTnMCte
+X-Google-Smtp-Source: APXvYqx3IO2v19Kk2dLUehRpcVjHwneB0mjo4F5zCZI/1Y9FTeb8jda7rAlcr247F44Q+86o9pvXQg==
+X-Received: by 2002:adf:c54e:: with SMTP id s14mr10057740wrf.385.1579958567103; 
+ Sat, 25 Jan 2020 05:22:47 -0800 (PST)
+Received: from localhost.localdomain ([89.101.231.219])
+ by smtp.gmail.com with ESMTPSA id g9sm11747603wro.67.2020.01.25.05.22.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 25 Jan 2020 05:22:46 -0800 (PST)
+From: Nicola Lunghi <nick83ola@gmail.com>
+To: alsa-devel@alsa-project.org
+Date: Sat, 25 Jan 2020 13:22:27 +0000
+Message-Id: <20200125132226.31277-1-nick83ola@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Cc: Takashi Iwai <tiwai@suse.de>, Carlo Calica <carlo@calica.com>,
+ Nicola Lunghi <nick83ola@gmail.com>
+Subject: [alsa-devel] [PATCH] ALSA: usb-audio: add quirks for Line6 Helix fw
+	2.82
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,51 +109,31 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 24 Jan 2020 20:04:01 +0100,
-Cezary Rojewski wrote:
-> 
-> This set of patches achieves few goals in order to enable data probing
-> feature for audio DSP.
-> 
-> First, provide new and alter existing interfaces (page allocation,
-> runtime flow adjustments) to make them compress friendly.
-> 
-> For HDA part, work has been done to account for compress streams when
-> servicing IRQs, setting up BDLs and assigning DMAs.
-> 
-> Finally, the end goal which are the probe APIs and usage itself. Probes
-> can be treated as endpoints which allow for data extraction from or
-> injection to target module - a great ally when debugging problematic
-> audio issues such as distortions, glitches or gaps.
-> Compress streams are a weapon of choice here to provide a lightweight
-> implementation.
-> 
-> While all available IPCs have been defined, current implementation
-> covers extraction only, with injection scheduled for a later date.
-> 
-> Initial review and development of probes can be found under:
-> https://github.com/thesofproject/linux/pull/1276
-> 
-> with the hda-compress-enable set of patches being separated and
-> reviewed on:
-> https://github.com/thesofproject/linux/pull/1571
-> 
-> Tested on CML-U with rt5682 i2s board.
-> 
-> Cezary Rojewski (12):
->   ALSA: hda: Allow for compress stream to hdac_ext_stream assignment
->   ALSA: hda: Prepare for compress stream support
->   ALSA: hda: Interrupt servicing and BDL setup for compress streams
->   ALSA: core: Expand DMA buffer information
->   ALSA: core: Implement compress page allocation and free routines
+Line6 Helix fw 2.82 still needs a quirk to set the audio rate to 48khz but
+in respect to older firmware has changed the USB ID of the device.
 
-For ALSA hda and core patches:
-  Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Add it to the quirk list for line6 helix family of devices.
 
+Signed-off-by: Nicola Lunghi <nick83ola@gmail.com>
+---
+ sound/usb/format.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks,
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index d79db71305f6..e2b98f181d05 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -296,6 +296,7 @@ static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
+ 	case USB_ID(0x0E41, 0x4242): /* Line6 Helix Rack */
+ 	case USB_ID(0x0E41, 0x4244): /* Line6 Helix LT */
+ 	case USB_ID(0x0E41, 0x4246): /* Line6 HX-Stomp */
++	case USB_ID(0x0E41, 0x4248): /* Line6 Helix >= fw 2.82 */
+ 		/* supported rates: 48Khz */
+ 		kfree(fp->rate_table);
+ 		fp->rate_table = kmalloc(sizeof(int), GFP_KERNEL);
+-- 
+2.20.1
 
-Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
