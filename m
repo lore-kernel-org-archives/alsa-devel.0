@@ -2,61 +2,94 @@ Return-Path: <SRS0=qqgH=3Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3B9AC33CB7
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:16:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 453F3C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:35:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FE7C214AF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:16:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C332A22527
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:35:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i0u2PC5n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FE7C214AF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q4QDKRR4";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="E1W7t4sP"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C332A22527
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99542166C;
-	Mon, 27 Jan 2020 19:15:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99542166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25CE814E;
+	Mon, 27 Jan 2020 19:34:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25CE814E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580148983;
-	bh=TNQvTmNkPrCtwgGAitNzXGdGn4Mu4/Q2nQOUrNkd+V4=;
-	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=i0u2PC5nTeoT/pyFBuXo2/qpWqqYyijdaBwlUkG/4d8DSimBEKpUCewlWgOjZtknv
-	 n59MtCuQsMLkW9KmiINl5cC6HiXu5TmldDWWxmqDev6tN3n/lKfe+McOQciB/nBy7N
-	 vkbRKc9beEv2c2Fzm993G1AnjEG0kS9wMcEK/GiI=
+	s=default; t=1580150147;
+	bh=Kw3OufkOkcMaH6kCfu0esSVPR+zMt/jTmuP3RB4rx9I=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=q4QDKRR47R5mYDBiUP+uaDdzOiQibVDcajgKIHOljkoaV8nJpyd0tkIjUc9XZOOw1
+	 8s3l1TyVHG28d9r5JOwDWPzuxUDfHz93VCLdKhduLB2qPvOcykSoT9FGZr9AkkXTS4
+	 dmeBRlQunsnGK2JDuxSltoSap8gcZwvF4jge/Dss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D19EF8029B;
-	Mon, 27 Jan 2020 19:11:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D4C7F80218;
+	Mon, 27 Jan 2020 19:34:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C2C6F8027D; Mon, 27 Jan 2020 19:11:42 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id DDBEDF80278
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:11:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDBEDF80278
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1004101E;
- Mon, 27 Jan 2020 10:11:37 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 02F543F67D;
- Mon, 27 Jan 2020 10:11:36 -0800 (PST)
-Date: Mon, 27 Jan 2020 18:11:35 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-In-Reply-To: <20200124213625.30186-2-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200124213625.30186-2-pierre-louis.bossart@linux.intel.com>
-X-Patchwork-Hint: ignore
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: fix an Oops,
-	caused by invalid topology" to the asoc tree
+ id 507CDF8021E; Mon, 27 Jan 2020 19:34:54 +0100 (CET)
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com
+ [IPv6:2607:f8b0:4864:20::144])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C3CDF80082
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:34:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C3CDF80082
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="E1W7t4sP"
+Received: by mail-il1-x144.google.com with SMTP id f70so3312099ill.6
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 10:34:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=ypz+NUtpbYS2ggVSJLhA8JF3h3rmKzRu9BWaDcNV4qA=;
+ b=E1W7t4sPQK417tDD3gTB0SHVcAHo7RPGlvCcWXX6ABeZdb08Wyaz9GZ/leZ7MUaCIp
+ lDgawr9SsWuri07j4JrqWt6+jc8au8utAoH4rdH3hC1AyE3RmruZgvdGjbompRRbPP/g
+ PSfZ+Xk3YBTHwVUHXlXIrYZz1GmZ1nUf+TH7vKMLUCBxndp2XPdBld7fTBrCqpa24E2s
+ ULdJ6iF9kTXZtWmbwu1Snd/rpgkDhUVNokUiNW1fiRxIFPTllFz9xVFL2MCJL4pqH3Yy
+ Th48SCo8UuuWpGkRPh9hj0Or6irZKIed4/Avju8gYjFymYSGKB3dZlBZnZgJvIPAMA0C
+ Ia+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=ypz+NUtpbYS2ggVSJLhA8JF3h3rmKzRu9BWaDcNV4qA=;
+ b=HxKlxq6d/DDhzIJ5oxJ2B9VARz08tdluGyPK4I0UkR1yXCtjoeF7A61kk5i7Dl4LE8
+ B0HNBQt5ygcH9ZXGWwJSIwS1H3vv3bLLo0HcQX7yuJCCL4TBNUj9Ds9AttmBxbURTrZo
+ Z4t3IO1gyl4KnEHfBcWLCACjCScDZ3vIEtRkWlWklM81yw0ySQc+nIBNZY60ODy+TmYG
+ zkqiF0uvvSDp3oJVmaTI4eoCmHpDVGka7Eb/nlqyBIB3L5lvSqKz50VfwmCMmEWLHnJd
+ TrIWZFPWi4EOlpOU+oidloi0ukCmHVxWjkVK/f5nxrHTDz6/WO9sKgeENxgahvHvnJeG
+ 415Q==
+X-Gm-Message-State: APjAAAVbECEVMAlaOoDpveWO0B1W+xFOIp+bfd+3fRjqNwwriEGjuZUT
+ D+1cq2dAjRQxWW7ORm0WIEqeEG7UKhOopt8Ajdv3Uw==
+X-Google-Smtp-Source: APXvYqzFXxkcbBSBlz0TpDHPeNldGhwWv9IEDsUqmirKDciCwspyciAqEYaRUHhqgJHOvHPivfJpErqiAJNWl8epeeg=
+X-Received: by 2002:a92:911b:: with SMTP id t27mr16006926ild.142.1580150086953; 
+ Mon, 27 Jan 2020 10:34:46 -0800 (PST)
+MIME-Version: 1.0
+References: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
+ <87zhe9mzx3.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zhe9mzx3.wl-kuninori.morimoto.gx@renesas.com>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Date: Mon, 27 Jan 2020 10:34:36 -0800
+Message-ID: <CAFQqKeUjcgXQv8HdyMyefER+1A3awY3u0wabzeEYp2z5UGF4nQ@mail.gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 5/7] ASoC: soc-pcm: goto error after trying
+ all component open
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,89 +102,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch
+On Sun, Jan 26, 2020 at 5:54 PM Kuninori Morimoto <
+kuninori.morimoto.gx@renesas.com> wrote:
 
-   ASoC: SOF: fix an Oops, caused by invalid topology
+>
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>
+> soc_pcm_components_open() might goto error process *during* opening
+> component loop.
+> In such case, fallback process need to care about operated/non-operated
+> component.
+>
+> But, if it goto error process *after* loop even though error happen
+> during loop, it don't need to care about operated/non-operated.
+> In such case code can be more simple.
+> This patch do it. And this is prepare for soc_snd_open() cleanup
+>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/soc-pcm.c | 41 +++++++++++++----------------------------
+>  1 file changed, 13 insertions(+), 28 deletions(-)
+>
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 57d2f00..1e370ef 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -463,47 +463,32 @@ static void soc_pcm_init_runtime_hw(struct
+> snd_pcm_substream *substream)
+>         hw->rate_max = min_not_zero(hw->rate_max, rate_max);
+>  }
+>
+> -static int soc_pcm_components_open(struct snd_pcm_substream *substream,
+> -                                  struct snd_soc_component **last)
+> +static int soc_pcm_components_open(struct snd_pcm_substream *substream)
+>  {
+>         struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>         struct snd_soc_component *component;
+>         int i, ret = 0;
+>
+>         for_each_rtd_components(rtd, i, component) {
+> -               *last = component;
+> +               ret |= snd_soc_component_module_get_when_open(component);
+> +               ret |= snd_soc_component_open(component, substream);
+> +       }
+>
+> -               ret = snd_soc_component_module_get_when_open(component);
+> -               if (ret < 0) {
+> -                       dev_err(component->dev,
+> -                               "ASoC: can't get module %s\n",
+> -                               component->name);
+> -                       return ret;
+> -               }
+> +       if (ret < 0)
+> +               dev_err(component->dev,
+> +                       "ASoC: error happen during open component %s:
+> %d\n",
+> +                       component->name, ret);
+>
+Hi Morimoto-san,
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Wouldn't the component here always be the last component in the list of rtd
+components? Should this error log be moved inside
+the for_each_rtd_components() {} above?
 
 Thanks,
-Mark
-
-From 4f7f9564a8937f38f97e8624cb7d6a28ee35f7cb Mon Sep 17 00:00:00 2001
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Date: Fri, 24 Jan 2020 15:36:19 -0600
-Subject: [PATCH] ASoC: SOF: fix an Oops, caused by invalid topology
-
-It is possible to create invalid topology that will cause a kernel
-Oops when trying to allocate buffers for a NULL substream.
-Specifically such an Oops was caused by a topology, where a DAI on a
-capture pipeline was referencing the PCM ID from a playback pipeline.
-Fix the Oops by explicitly checking for NULL.
-
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200124213625.30186-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sof/pcm.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 314f3095c12f..29435ba2d329 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -591,6 +591,11 @@ static int sof_pcm_new(struct snd_soc_component *component,
- 		"spcm: allocate %s playback DMA buffer size 0x%x max 0x%x\n",
- 		caps->name, caps->buffer_size_min, caps->buffer_size_max);
- 
-+	if (!pcm->streams[stream].substream) {
-+		dev_err(component->dev, "error: NULL playback substream!\n");
-+		return -EINVAL;
-+	}
-+
- 	snd_pcm_set_managed_buffer(pcm->streams[stream].substream,
- 				   SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
- 				   le32_to_cpu(caps->buffer_size_min),
-@@ -609,6 +614,11 @@ static int sof_pcm_new(struct snd_soc_component *component,
- 		"spcm: allocate %s capture DMA buffer size 0x%x max 0x%x\n",
- 		caps->name, caps->buffer_size_min, caps->buffer_size_max);
- 
-+	if (!pcm->streams[stream].substream) {
-+		dev_err(component->dev, "error: NULL capture substream!\n");
-+		return -EINVAL;
-+	}
-+
- 	snd_pcm_set_managed_buffer(pcm->streams[stream].substream,
- 				   SNDRV_DMA_TYPE_DEV_SG, sdev->dev,
- 				   le32_to_cpu(caps->buffer_size_min),
--- 
-2.20.1
-
+Ranjani
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
