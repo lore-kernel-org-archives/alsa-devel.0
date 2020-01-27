@@ -2,64 +2,91 @@ Return-Path: <SRS0=qqgH=3Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAED3C35240
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 01:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37E62C32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 03:39:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 769B42071E
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 01:55:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B751620720
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 03:39:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QjJHmZED"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 769B42071E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TOuoIYj/";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tcKVr8Fh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B751620720
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C45F116A9;
-	Mon, 27 Jan 2020 02:55:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C45F116A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 022991670;
+	Mon, 27 Jan 2020 04:38:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 022991670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580090156;
-	bh=SX1IecTfI98ykzKUb1Nx6szyBK/+p39su2gw8d36Jo4=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QjJHmZED/RsnXoUW8EWTOzBdn5B7okaY1PqJ3l5Ck23TxvdagJaouxQqgvExUrX+q
-	 aObzXRmQHnRBv5WqziuFochBflwC/IPTw3R/R4FxGa/WFCKjGb/pFbrJ4GEr76azD6
-	 JHYkpDQ9higQWZ9Rs89bof7h4rt3uN90ppDJ/q7o=
+	s=default; t=1580096383;
+	bh=ptzHLuwHat5cpxynKk/sS0qESCrCq1X8ZXvG3ws3LgM=;
+	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TOuoIYj/wrkPOI9JkZLRXpGSEZHq4XttGAhhTzTTP8BS1TRnCuNKdSS0r1V35nxJN
+	 P8SgXldKJgL6Nl+8vxWotyevQqgrNjo0e/Ufd01fu48ID4Em5gxBfiaDq0hg8bCRzS
+	 lATTffkARZgFqiImEilhvTSNEosNoWZe72Lk1Ovc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05801F802A8;
-	Mon, 27 Jan 2020 02:51:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72C1BF800C8;
+	Mon, 27 Jan 2020 04:38:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08A20F80150; Mon, 27 Jan 2020 02:50:30 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 09383F80150
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 02:49:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09383F80150
-Date: 27 Jan 2020 10:49:36 +0900
-X-IronPort-AV: E=Sophos;i="5.70,367,1574089200"; d="scan'208";a="37461148"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 27 Jan 2020 10:49:36 +0900
-Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id BFD3D413AA29;
- Mon, 27 Jan 2020 10:49:36 +0900 (JST)
-Message-ID: <87wo9dmzwv.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
-In-Reply-To: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
-References: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Subject: [alsa-devel] [PATCH 7/7] ASoC: soc-pcm: tidyup soc_pcm_open() order
+ id BEB8BF8021E; Mon, 27 Jan 2020 04:38:49 +0100 (CET)
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
+ [64.147.123.19])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51650F800C8
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 04:38:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51650F800C8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="tcKVr8Fh"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.west.internal (Postfix) with ESMTP id 4C82B41C
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jan 2020 22:38:30 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Sun, 26 Jan 2020 22:38:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-transfer-encoding:content-type
+ :date:from:message-id:mime-version:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=xyUbOr
+ MBrHqeUt/+bCE1wE6Agf4JbuHdM2UV0h4j1dE=; b=tcKVr8FhHMJATiGYJnLniC
+ RRJKNP8k5wwnGgUXDn/0zL8CkTVZmKcfsn/kh4NIC8h4grAFEfnb1MMoozlm/lUE
+ 7odlmgmyua/Aw8tL/Z0FXFW1HFm2PlIRKpoazYXQM+nUi5nX0JhGkvcoBnh8lwev
+ bS5cw27IpZLsontQ6PvdYx4/FvtEV5f+sXg5cGpw4u16glbD8D44T9gYncMRcWb9
+ iiZsSP2Pl5vywd9dFvbEo4GSpSvkXhl1duJiquFams0bxb5yq2TFcxMu7GIKEPH6
+ SR/7argMWy+XV8CX/+yRN/wd4jOqns/bW5GvxQOM7F+tjmnYd3+lvTY2l7G8+9Jw
+ ==
+X-ME-Sender: <xms:NVsuXh1y0I5ujg8AYCYS55-9Zhq2bAhI4RRY1SYLHK9Yt46ZNRApsg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrfedugdeiudcutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecuogfvvgigthfqnhhlhidqqdetfeejfedqtdegucdlhe
+ dtmdenucfjughrpefkuffhvffftggfggfgsehtjeertddtreejnecuhfhrohhmpefvrghn
+ uhcumfgrshhkihhnvghnuceothgrnhhukhesihhkihdrfhhiqeenucffohhmrghinhepph
+ grthhrvghonhdrtghomhdplhhisggvrhgrphgrhidrtghomhenucfkphepudeliedrvdeg
+ gedrudeluddruddugeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+ hlfhhrohhmpehtrghnuhhksehikhhirdhfih
+X-ME-Proxy: <xmx:NVsuXkPTpMZWMbRvwCyn1pbgTl34Y6jKyvdngS-Wxi_DyHebygCKOw>
+ <xmx:NVsuXttxCq6Ycx99Teh0H62KTCBO_-hSQS-BkiEZEtKvK2SDLQ71Bg>
+ <xmx:NVsuXoLX_e-J03B1ypiX7si6ppFZgSS74qGJTJEvqb2-Hxp-AoMwbA>
+ <xmx:NVsuXkXDRw1rD7ZNM3Z59ycoVJHCHGtoujL4Q06j6HdeXkXHQkGuqA>
+Received: from laptop (unknown [196.244.191.114])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 152CE3280059
+ for <alsa-devel@alsa-project.org>; Sun, 26 Jan 2020 22:38:28 -0500 (EST)
+Message-ID: <1b39817bef4a6531d303c171aea1c757046cb4d8.camel@iki.fi>
+From: Tanu Kaskinen <tanuk@iki.fi>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Date: Mon, 27 Jan 2020 05:38:25 +0200
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Subject: [alsa-devel] UCM file lookup logic
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,112 +104,36 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi all,
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+I was looking at the UCM files, and most paths have the following
+structure:
 
-soc_pcm_open() operation order is not good.
-At first, soc_pcm_open() operation order is
+    <cardname>/<cardname>.conf
 
-	1) CPU DAI startup
-	2) Component open
-	3) Codec DAI startup
-	4) rtd startup
+I noticed that the "HDA Intel PCH" configuration uses some other
+scheme:
 
-But here, 2) will call try_module_get() if component has
-module_get_upon_open flags. This means 1) CPU DAI startup
-will be operated *before* its module was loaded.
-DAI should be called *after* Component.
+    HDA Intel PCH/HDAudio-DualCodecs.conf
+    HDA Intel PCH/HDAudio-Gigabyte-ALC1220DualCodecs.conf
+    HDA Intel PCH/HDAudio-Lenovo-DualCodecs.conf
 
-Second, soc_pcm_close() operation order is
-	1) CPU DAI shutdown
-	2) Codec DAI shutdown
-	3) rtd shutdown
-	4) Component close
+How are the directory and file names determined? If I write
+configuration for some random sound card that I don't have myself,
+where do I find the various identifiers in the alsa-info output? I
+don't even really know for sure what the <cardname> in the first
+example is, I've been assuming it's the name that appears in the square
+brackets in /proc/asound/cards.
 
-soc_pcm_open() and soc_pcm_close() are paired function,
-but, its operation order is unbalance.
-This patch tidyup soc_pcm_open() order to Component -> rtd -> DAI.
+I think the lookup logic should be explained in the ucm2/README.md
+file. I can write a patch if someone expains the logic to me, but
+probably it's easier if you just write the patch yourself.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
- sound/soc/soc-pcm.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index b5d2840..d916182 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -563,18 +563,25 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 
- 	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
-+	ret = soc_pcm_components_open(substream);
-+	if (ret < 0)
-+		goto component_err;
-+
-+	ret = soc_rtd_startup(rtd, substream);
-+	if (ret < 0) {
-+		pr_err("ASoC: %s startup failed: %d\n",
-+		       rtd->dai_link->name, ret);
-+		goto rtd_err;
-+	}
-+
- 	/* startup the audio subsystem */
- 	ret = snd_soc_dai_startup(cpu_dai, substream);
- 	if (ret < 0) {
- 		dev_err(cpu_dai->dev, "ASoC: can't open interface %s: %d\n",
- 			cpu_dai->name, ret);
--		goto out;
-+		goto cpu_dai_err;
- 	}
- 
--	ret = soc_pcm_components_open(substream);
--	if (ret < 0)
--		goto component_err;
--
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 		ret |= snd_soc_dai_startup(codec_dai, substream);
- 
-@@ -586,14 +593,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	if (ret < 0) {
- 		dev_err(codec_dai->dev, "ASoC: can't open codec %s: %d\n",
- 			codec_dai->name, ret);
--		goto codec_dai_err;
--	}
--
--	ret = soc_rtd_startup(rtd, substream);
--	if (ret < 0) {
--		pr_err("ASoC: %s startup failed: %d\n",
--		       rtd->dai_link->name, ret);
--		goto codec_dai_err;
-+		goto config_err;
- 	}
- 
- 	/* Dynamic PCM DAI links compat checks use dynamic capabilities */
-@@ -660,17 +660,15 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	return 0;
- 
- config_err:
--	soc_rtd_shutdown(rtd, substream);
--
--codec_dai_err:
- 	for_each_rtd_codec_dai(rtd, i, codec_dai)
- 		snd_soc_dai_shutdown(codec_dai, substream);
--
-+cpu_dai_err:
-+	snd_soc_dai_shutdown(cpu_dai, substream);
-+rtd_err:
-+	soc_rtd_shutdown(rtd, substream);
- component_err:
- 	soc_pcm_components_close(substream);
- 
--	snd_soc_dai_shutdown(cpu_dai, substream);
--out:
- 	mutex_unlock(&rtd->card->pcm_mutex);
- 
- 	for_each_rtd_components(rtd, i, component) {
 -- 
-2.7.4
+Tanu
+
+https://www.patreon.com/tanuk
+https://liberapay.com/tanuk
 
 _______________________________________________
 Alsa-devel mailing list
