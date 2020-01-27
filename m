@@ -2,69 +2,61 @@ Return-Path: <SRS0=qqgH=3Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC3A0C3F68F
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 09:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2CB5C32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 09:33:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 46F6621D7E
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 09:19:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6EC0D2071E
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 09:33:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qp/EYkFD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 46F6621D7E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nVpPwLof"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EC0D2071E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=feix.family
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F40C166D;
-	Mon, 27 Jan 2020 10:18:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F40C166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C465C85D;
+	Mon, 27 Jan 2020 10:33:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C465C85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580116752;
-	bh=GT2R7H6oQUcNafWKBzS2qraqrP14dTy6F32XE1TD1/w=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qp/EYkFDmfzwkV4aIcVaD4KsUpnNzfpz1OHGmOMnW7ZFAuCBkfrIPeH/YHQvkz2qf
-	 ncMtJ4cANtzEgUOUBQfY7Hx4cRNLl4qfmvW0gLq3XQyj/kyLaOFxgLyXQ6AQTYN088
-	 R7hrIvGl0FD8/S/WseafyFHhEBQnCdzLuS75AE6o=
+	s=default; t=1580117635;
+	bh=q31yVrLq5jt8T1BY/yYAzve7HUXdnCNwIW0rKNJAQ+M=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nVpPwLofdNePaS8VBvFBF1kp8YNBpt0Q+aozHyxFi+Tq+VC8f4QWYEbBsOe3OwsB5
+	 6EZw/N2VJlaZXP9LRBAmccv7gkIHmLkJ/Ny7aFPtNO6XGpWo69dReYoArbx8XY42Yl
+	 PXGD3lRg0DVNP/+6jRIc771vO7TM2/IWaFmMTsRA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E868AF80085;
-	Mon, 27 Jan 2020 10:18:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D679F800C8;
+	Mon, 27 Jan 2020 10:33:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EAF9DF8021E; Mon, 27 Jan 2020 10:18:19 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF781F80085
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 10:18:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF781F80085
-Received: from localhost.localdomain
- (p200300CB87166A002102C4F03A4721D7.dip0.t-ipconnect.de
- [IPv6:2003:cb:8716:6a00:2102:c4f0:3a47:21d7])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: dafna)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 561FB29142A;
- Mon, 27 Jan 2020 09:18:15 +0000 (GMT)
-From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 27 Jan 2020 10:18:06 +0100
-Message-Id: <20200127091806.11403-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- dafna.hirschfeld@collabora.com, bleung@chromium.org, dafna3@gmail.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- enric.balletbo@collabora.com, helen.koike@collabora.com, robh+dt@kernel.org,
- broonie@kernel.org, groeck@chromium.org, kernel@collabora.com,
- ezequiel@collabora.com, cychiang@chromium.org
-Subject: [alsa-devel] [PATCH] dt-bindings: Convert the binding file google,
-	cros-ec-codec.txt to yaml format.
+ id 122A6F8021E; Mon, 27 Jan 2020 10:33:03 +0100 (CET)
+Received: from server.feix.family (server.feix.family [80.240.19.227])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2B877F800C8
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 10:32:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B877F800C8
+To: alsa-devel@alsa-project.org, perex@perex.cz
+References: <ebe959a0-5272-e7bd-6001-1ce598f7f6be@feix.family>
+ <44ba763e-f3d2-3fa2-eea6-9ebb7317a3bd@linux.intel.com>
+ <cc4fc82d-5b01-d5f9-7771-ba2b5daa5829@feix.family>
+ <e45892ff-d142-33ef-ee3c-1ce2cc64a0ce@perex.cz>
+ <14ded854-55a2-931f-073a-23a15f745acb@feix.family>
+ <de49ff43-f1e2-18e8-0b54-eeb6d77a65e7@perex.cz>
+From: Michal Feix <michal@feix.family>
+Message-ID: <fa168f85-c94c-fa6a-765e-f1000b0a2d3a@feix.family>
+Date: Mon, 27 Jan 2020 10:32:58 +0100
+MIME-Version: 1.0
+In-Reply-To: <de49ff43-f1e2-18e8-0b54-eeb6d77a65e7@perex.cz>
+Content-Language: en-US
+Cc: pierre-louis.bossart@linux.intel.com
+Subject: Re: [alsa-devel] ASUS T100TAM UCM
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,145 +69,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This was tested and verified with:
-make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- .../bindings/sound/google,cros-ec-codec.txt   | 44 -------------
- .../bindings/sound/google,cros-ec-codec.yaml  | 62 +++++++++++++++++++
- 2 files changed, 62 insertions(+), 44 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
- create mode 100644 Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
-deleted file mode 100644
-index 8ca52dcc5572..000000000000
---- a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.txt
-+++ /dev/null
-@@ -1,44 +0,0 @@
--Audio codec controlled by ChromeOS EC
--
--Google's ChromeOS EC codec is a digital mic codec provided by the
--Embedded Controller (EC) and is controlled via a host-command interface.
--
--An EC codec node should only be found as a sub-node of the EC node (see
--Documentation/devicetree/bindings/mfd/cros-ec.txt).
--
--Required properties:
--- compatible: Must contain "google,cros-ec-codec"
--- #sound-dai-cells: Should be 1. The cell specifies number of DAIs.
--
--Optional properties:
--- reg: Pysical base address and length of shared memory region from EC.
--       It contains 3 unsigned 32-bit integer.  The first 2 integers
--       combine to become an unsigned 64-bit physical address.  The last
--       one integer is length of the shared memory.
--- memory-region: Shared memory region to EC.  A "shared-dma-pool".  See
--                 ../reserved-memory/reserved-memory.txt for details.
--
--Example:
--
--{
--	...
--
--	reserved_mem: reserved_mem {
--		compatible = "shared-dma-pool";
--		reg = <0 0x52800000 0 0x100000>;
--		no-map;
--	};
--}
--
--cros-ec@0 {
--	compatible = "google,cros-ec-spi";
--
--	...
--
--	cros_ec_codec: ec-codec {
--		compatible = "google,cros-ec-codec";
--		#sound-dai-cells = <1>;
--		reg = <0x0 0x10500000 0x80000>;
--		memory-region = <&reserved_mem>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-new file mode 100644
-index 000000000000..94a85d0cbf43
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/google,cros-ec-codec.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/google,cros-ec-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Audio codec controlled by ChromeOS EC
-+
-+maintainers:
-+  - Cheng-Yi Chiang <cychiang@chromium.org>
-+
-+description: |
-+  Google's ChromeOS EC codec is a digital mic codec provided by the
-+  Embedded Controller (EC) and is controlled via a host-command interface.
-+  An EC codec node should only be found as a sub-node of the EC node (see
-+  Documentation/devicetree/bindings/mfd/cros-ec.txt).
-+
-+properties:
-+  compatible:
-+    const: google,cros-ec-codec
-+
-+  "#sound-dai-cells":
-+    const: 1
-+
-+  reg:
-+    items:
-+      - description: |
-+          Physical base address and length of shared memory region from EC.
-+          It contains 3 unsigned 32-bit integer. The first 2 integers
-+          combine to become an unsigned 64-bit physical address.
-+          The last one integer is the length of the shared memory.
-+
-+  memory-region:
-+    $ref: '/schemas/types.yaml#/definitions/phandle'
-+    description: |
-+      Shared memory region to EC.  A "shared-dma-pool".
-+      See ../reserved-memory/reserved-memory.txt for details.
-+
-+required:
-+  - compatible
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    reserved_mem: reserved_mem {
-+        compatible = "shared-dma-pool";
-+        reg = <0 0x52800000 0 0x100000>;
-+        no-map;
-+    };
-+    cros-ec@0 {
-+        compatible = "google,cros-ec-spi";
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+        cros_ec_codec: ec-codec {
-+            compatible = "google,cros-ec-codec";
-+            #sound-dai-cells = <1>;
-+            reg = <0x0 0x10500000 0x80000>;
-+            memory-region = <&reserved_mem>;
-+        };
-+    };
--- 
-2.17.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+RG5lIDI3LiAwMS4gMjAgdiA5OjIxIEphcm9zbGF2IEt5c2VsYSBuYXBzYWwoYSk6Cj4gRG5lIDIz
+LiAwMS4gMjAgdiAxNToyMCBNaWNoYWwgRmVpeCBuYXBzYWwoYSk6Cj4+PiBEbmUgMjMuIDAxLiAy
+MCB2IDE1OjEwIE1pY2hhbCBGZWl4IG5hcHNhbChhKToKPj4+Pj4gT24gMS8yMy8yMCA2OjQ5IEFN
+LCBNaWNoYWwgRmVpeCB3cm90ZToKPj4+Pj4+IEhlbGxvLAo+Pj4+Pj4KPj4+Pj4+IHRoZXJlIGlz
+IG5vIHNvdW5kIHdvcmtpbmcgdmlhIHNwZWFrZXJzIG9yIGhlYWRwaG9uZXMgamFjayBvbiBBc3Vz
+IFQxMDBUQU0uIFNvdW5kIHdvcmtzIGNvcnJlY3RseSB2aWEgSERNSSBvciBCbHVldG9vdGggaGVh
+ZHBob25lcy4gVGhlIGNoaXAgb24gdGhpcyBCYXl0cmFpbCBtYWNoaW5lIGlzIGNvcnJlY3RseSBy
+ZWNvZ25pemVkIGFzIGJ5dGNyX3J0NTY0MC4gwqBGcm9tIGRtZXNnOgo+Pj4+Pj4KPj4+Pj4+IGJ5
+dGNyX3J0NTY0MCBieXRjcl9ydDU2NDA6IHF1aXJrIERNSUMxX01BUCBlbmFibGVkCj4+Pj4+PiBi
+eXRjcl9ydDU2NDAgYnl0Y3JfcnQ1NjQwOiBxdWlyayByZWFsdGVrLGphY2stZGV0ZWN0LXNvdXJj
+ZSAzCj4+Pj4+PiBieXRjcl9ydDU2NDAgYnl0Y3JfcnQ1NjQwOiBxdWlyayByZWFsdGVrLG92ZXIt
+Y3VycmVudC10aHJlc2hvbGQtbWljcm9hbXAgMjAwMAo+Pj4+Pj4gYnl0Y3JfcnQ1NjQwIGJ5dGNy
+X3J0NTY0MDogcXVpcmsgcmVhbHRlayxvdmVyLWN1cnJlbnQtc2NhbGUtZmFjdG9yIDEKPj4+Pj4+
+IGJ5dGNyX3J0NTY0MCBieXRjcl9ydDU2NDA6IHF1aXJrIE1DTEtfRU4gZW5hYmxlZAo+Pj4+Pj4g
+Ynl0Y3JfcnQ1NjQwIGJ5dGNyX3J0NTY0MDogc25kLXNvYy1kdW1teS1kYWkgPC0+IG1lZGlhLWNw
+dS1kYWkgbWFwcGluZyBvawo+Pj4+Pj4gYnl0Y3JfcnQ1NjQwIGJ5dGNyX3J0NTY0MDogc25kLXNv
+Yy1kdW1teS1kYWkgPC0+IGRlZXBidWZmZXItY3B1LWRhaSBtYXBwaW5nIG9rCj4+Pj4+PiBieXRj
+cl9ydDU2NDAgYnl0Y3JfcnQ1NjQwOiBydDU2NDAtYWlmMSA8LT4gc3NwMi1wb3J0IG1hcHBpbmcg
+b2sKPj4+Pj4+IGlucHV0OiBieXRjci1ydDU2NDAgSGVhZHNldCBhcyAvZGV2aWNlcy9wbGF0Zm9y
+bS84MDg2MEYyODowMC9ieXRjcl9ydDU2NDAvc291bmQvY2FyZDAvaW5wdXQxNwo+Pj4+Pj4KPj4+
+Pj4+IEFmdGVyIGJvb3R1cCwga2VybmVsIGxvZyBpcyBmaWxsZWQgd2l0aDogIkJheXRyYWlsIEF1
+ZGlvIFBvcnQ6IEFTb0M6IG5vIGJhY2tlbmQgREFJcyBlbmFibGVkIGZvciBCYXl0cmFpbCBBdWRp
+byBQb3J0IiBtZXNzYWdlcy4gSSBkbyB1bmRlcnN0YW5kIHRoaXMgaXMgZHVlIHRvIHRoZSBtaXNz
+aW5nIFVDTSBwcm9maWxlIGZvciB0aGUgbWFjaGluZS4KPj4+Pj4KPj4+Pj4gd2hhdCBkbyB5b3Ug
+bWVhbiB3aXRoICdtaXNzaW5nIFVDTSBwcm9maWxlJz8gSXQncyBiZWVuIGF2YWlsYWJsZSBmb3Ig
+bWFueSBtb29ucywgYW5kIHdlIHdvcmtlZCB3aXRoIEphcm9zbGF2L0hhbnMgdG8gdXBkYXRlIGZv
+ciBVQ012Mi4KPj4+Pj4KPj4+Pj4gWW91IHNob3VsZCBiZSBhYmxlIHRvIHVzZSBhbHNhLXVjbSBh
+bmQgY29uZmlndXJlIHRoaW5ncyBtYW51YWxseSwgZS5nLgo+Pj4+Pgo+Pj4+PiBhbHNhdWNtIC1j
+IGJ5dGNyLXJ0NTY0MCBzZXQgX3ZlcmIgSGlGaSBzZXQgX2VuYWRldiBIZWFkcGhvbmVzCj4+Pj4+
+Cj4+Pj4+IGFsc2F1Y20gLWMgYnl0Y3ItcnQ1NjQwIHNldCBfdmVyYiBIaUZpIHNldCBfZW5hZGV2
+IFNwZWFrZXIKPj4+Pj4KPj4+Pgo+Pj4+IFRoYW5rcyBQaWVycmUuIEknbSBhd2FyZSBvZiB0aGUg
+d29yayBkb25lIHByZXZpb3VzbHkgb24gQXN1cyBUMTAwLiBOb3Qgc3VyZSwgaWYgQXN1cyBUMTAw
+VEFNIGlzIGFueSBzaWduaWZpY2FudGx5IGRpZmZlcmVudC4gSnVzdCB0cmllZCB5b3VyIHN1Z2dl
+c3RlZCBjb21tYW5kcyBhcyByb290IHVzZXI6Cj4+Pj4KPj4+PiAjIGFsc2F1Y20gLWMgYnl0Y3It
+cnQ1NjQwIHNldCBfdmVyYiBIaUZpIHNldCBfZW5hZGV2IEhlYWRwaG9uZXMKPj4+PiBBTFNBIGxp
+YiB1Y21fc3Vicy5jOjIxNToodWNfbWdyX2dldF9zdWJzdGl0dXRlZF92YWx1ZSkgdmFyaWFibGUg
+JyR7Q2FyZENvbXBvbmVudHN9JyBpcyBub3QgZGVmaW5lZCBpbiB0aGlzIGNvbnRleHQhCj4+Pj4g
+QUxTQSBsaWIgbWFpbi5jOjk2MDooc25kX3VzZV9jYXNlX21ncl9vcGVuKSBlcnJvcjogZmFpbGVk
+IHRvIGltcG9ydCBieXRjci1ydDU2NDAgdXNlIGNhc2UgY29uZmlndXJhdGlvbiAtMjIKPj4+PiBh
+bHNhdWNtOiBlcnJvciBmYWlsZWQgdG8gb3BlbiBzb3VuZCBjYXJkIGJ5dGNyLXJ0NTY0MDogSW52
+YWxpZCBhcmd1bWVudAo+Pj4+Cj4+Pj4gIyBhbHNhdWNtIC1jIGJ5dGNyLXJ0NTY0MCBzZXQgX3Zl
+cmIgSGlGaSBzZXQgX2VuYWRldiBTcGVha2VyCj4+Pj4gQUxTQSBsaWIgdWNtX3N1YnMuYzoyMTU6
+KHVjX21ncl9nZXRfc3Vic3RpdHV0ZWRfdmFsdWUpIHZhcmlhYmxlICcke0NhcmRDb21wb25lbnRz
+fScgaXMgbm90IGRlZmluZWQgaW4gdGhpcyBjb250ZXh0IQo+Pj4+IEFMU0EgbGliIG1haW4uYzo5
+NjA6KHNuZF91c2VfY2FzZV9tZ3Jfb3BlbikgZXJyb3I6IGZhaWxlZCB0byBpbXBvcnQgYnl0Y3It
+cnQ1NjQwIHVzZSBjYXNlIGNvbmZpZ3VyYXRpb24gLTIyCj4+Pj4gYWxzYXVjbTogZXJyb3IgZmFp
+bGVkIHRvIG9wZW4gc291bmQgY2FyZCBieXRjci1ydDU2NDA6IEludmFsaWQgYXJndW1lbnQKPj4+
+Cj4+PiBUcnkgdGhpczoKPj4+Cj4+PiBhbHNhdWNtIC1jIGh3OjAgc2V0IF92ZXJiIEhpRmkgc2V0
+IF9lbmFkZXYgU3BlYWtlcgo+Pj4KPj4+IMKgIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBUaGFuayB5b3UsCj4+PiDCoCDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBKYXJvc2xhdgo+Pj4KPj4KPj4gTm8gbHVjay4KPj4KPj4gIyBhbHNhdWNtIC1jIGh3OjAgc2V0
+IF92ZXJiIEhpRmkgc2V0IF9lbmFkZXYgU3BlYWtlcgo+PiBBTFNBIGxpYiB1Y21fc3Vicy5jOjIx
+NToodWNfbWdyX2dldF9zdWJzdGl0dXRlZF92YWx1ZSkgdmFyaWFibGUgJyR7Q2FyZENvbXBvbmVu
+dHN9JyBpcyBub3QgZGVmaW5lZCBpbiB0aGlzIGNvbnRleHQhCj4+IEFMU0EgbGliIG1haW4uYzo5
+NjA6KHNuZF91c2VfY2FzZV9tZ3Jfb3BlbikgZXJyb3I6IGZhaWxlZCB0byBpbXBvcnQgaHc6MCB1
+c2UgY2FzZSBjb25maWd1cmF0aW9uIC0yMgo+PiBhbHNhdWNtOiBlcnJvciBmYWlsZWQgdG8gb3Bl
+biBzb3VuZCBjYXJkIGh3OjA6IEludmFsaWQgYXJndW1lbnQKPiAKPiBJIHRoaW5rIHRoYXQgdGhp
+cyBpc3N1ZSBpcyBmaXhlZCBpbiB0aGUgbm90LXlldC1yZWxlYXNlZCBjb2RlIGluIGFsc2EtbGli
+LgoKRG9lcyB0aGF0IG1lYW4gdGhhdCBieSBmaXhpbmcgInRoaXMgaXNzdWUiIGFsc2F1Y20gc2hv
+dWxkIGJlIGFibGUgdG8gY29ycmVjdGx5IGxvYWQgdGhlIFVDTTIgcHJvZmlsZSBvbiB0aGlzIEFz
+dXMgZGV2aWNlPyBPciBpcyB0aGlzIGZpeCBzdXBwb3NlZCB0byBtYWtlIGFsc2F1Y20gc2hvd2lu
+ZyBzb21ldGhpbmcgbW9yZSByZWFzb25hYmxlPwoKT24gbXkgb3RoZXIgbWFjaGluZSB3aXRoIGRp
+ZmZlcmVudCBzb3VuZCBjYXJkIChIREEgSW50ZWwgUENIKSAiYWxzYXVjbSBsaXN0Y2FyZHMiIGlz
+IGFsc28gc2hvd2luZyB0aGUgc2FtZSBlcnJvciwgYnV0IHNvdW5kIGlzIHdvcmtpbmcgcGVyZmVj
+dGx5LgoKLS0KTWljaGFsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
