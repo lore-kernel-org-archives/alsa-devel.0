@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FBB9C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:12:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 271E0C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:13:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1DBB21739
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:12:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ABA7C2087F
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:13:12 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A46NPWRD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1DBB21739
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="axVjQ12B"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ABA7C2087F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06D7A14E;
-	Mon, 27 Jan 2020 19:11:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06D7A14E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E42A0847;
+	Mon, 27 Jan 2020 19:12:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E42A0847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580148737;
-	bh=/XgvFhbBB/AudquzeptN4a+W3UXD3YE5ykqUvxWxwug=;
+	s=default; t=1580148791;
+	bh=Zd+cPQlDHN7uVMlMmutHL5wodzXT6zH6WCJwM0hk7eo=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=A46NPWRDJDIvLFp9DkJragEV8+he8O6VcEyDXp5+RLX++AytXe4g+sM/esNy09LvS
-	 EutjFIzYuKGyj+lKuBXHyzjyBnEhNGDrkQXdtr3uAvdpwxvH4sboQvg/Eidgn/BRFR
-	 MzHrWHy8pfMW3z1oPEC8f7cgMmRjmuhj63Zhu5UI=
+	b=axVjQ12BobaVqTFcr7B7WqGSCNqm5/RWY88tkeFyFUdTF2RGSZhlTHAshQXlg8KzR
+	 IUPaK+lpghUONUKnOO6S1IjX0qzvjvGPGQd0RLmCJrOEbtbPUixRdWBR+45QodDbJq
+	 bpKk/i2IOsArnY0oec9d9aNHbhqPxna5MD4NumrM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B62BF80234;
-	Mon, 27 Jan 2020 19:11:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2DBCF80218;
+	Mon, 27 Jan 2020 19:11:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 097C9F8021E; Mon, 27 Jan 2020 19:11:24 +0100 (CET)
+ id 4F269F8023F; Mon, 27 Jan 2020 19:11:26 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id BF3FCF80082
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:11:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF3FCF80082
+ by alsa1.perex.cz (Postfix) with ESMTP id 1ABFDF80218
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:11:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ABFDF80218
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C5A630E;
- Mon, 27 Jan 2020 10:11:18 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C870101E;
+ Mon, 27 Jan 2020 10:11:21 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8AFB3F67D;
- Mon, 27 Jan 2020 10:11:17 -0800 (PST)
-Date: Mon, 27 Jan 2020 18:11:16 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81F6F3F67D;
+ Mon, 27 Jan 2020 10:11:20 -0800 (PST)
+Date: Mon, 27 Jan 2020 18:11:19 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-In-Reply-To: <20200124213625.30186-8-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200124213625.30186-8-pierre-louis.bossart@linux.intel.com>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200124213625.30186-7-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200124213625.30186-7-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: Intel: consistent HDMI codec probing
-	code" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: intel: soc-acpi-intel-icl-match: fix
+	rt715 ADR" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: Intel: consistent HDMI codec probing code
+   ASoC: intel: soc-acpi-intel-icl-match: fix rt715 ADR
 
 has been applied to the asoc tree at
 
@@ -103,224 +103,34 @@ to this mail.
 Thanks,
 Mark
 
-From 98ff5c262f27aafee077a4c096f71a8566e9e948 Mon Sep 17 00:00:00 2001
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Date: Fri, 24 Jan 2020 15:36:25 -0600
-Subject: [PATCH] ASoC: Intel: consistent HDMI codec probing code
+From bd01cf38eedceb87d43f9205a75b259361e056ea Mon Sep 17 00:00:00 2001
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+Date: Fri, 24 Jan 2020 15:36:24 -0600
+Subject: [PATCH] ASoC: intel: soc-acpi-intel-icl-match: fix rt715 ADR
 
-Multiple Intel ASoC machine drivers repeat the same pattern in their
-.late_probe() methods: they first check whether the common HDMI codec
-driver is used, if not, they proceed by linking the legacy HDMI
-driver to each HDMI port. While doing that they use some
-inconsistent code:
+Fix the part id of rt715 (typo with zero in the wrong place)
 
-1. after the loop they check, whether the list contained at least one
-   element and if not, they return an error. However, the earlier
-   code to use the common HDMI driver uses the first element of the
-   same list without checking. To fix this we move the check to the
-   top of the function.
-
-2. some of those .late_probe() implementations execute code, only
-   needed for the common HDMI driver, before checking, whether the
-   driver is used. Move the code to after the check.
-
-3. Some of those functions also perform a redundant initialisation of
-   the "err" variable.
-
-This patch fixes those issues.
-
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200124213625.30186-8-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200124213625.30186-7-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 14 +++++++-------
- sound/soc/intel/boards/bxt_rt298.c            | 14 +++++++-------
- sound/soc/intel/boards/cml_rt1011_rt5682.c    | 13 +++++++------
- sound/soc/intel/boards/glk_rt5682_max98357a.c | 16 ++++++++--------
- sound/soc/intel/boards/sof_rt5682.c           | 15 ++++++++-------
- 5 files changed, 37 insertions(+), 35 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 33b13f3ca152..9177401c37a5 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -617,12 +617,15 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
- 		snd_soc_dapm_add_routes(&card->dapm, broxton_map,
- 					ARRAY_SIZE(broxton_map));
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 67e9da4635f2..752733013d54 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -59,7 +59,7 @@ static const u64 rt1308_2_adr[] = {
+ };
  
--	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
--			       head);
--	component = pcm->codec_dai->component;
-+	if (list_empty(&ctx->hdmi_pcm_list))
-+		return -EINVAL;
+ static const u64 rt715_3_adr[] = {
+-	0x000310025D715000
++	0x000310025D071500
+ };
  
--	if (ctx->common_hdmi_codec_drv)
-+	if (ctx->common_hdmi_codec_drv) {
-+		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
-+				       head);
-+		component = pcm->codec_dai->component;
- 		return hda_dsp_hdmi_build_controls(card, component);
-+	}
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
- 		component = pcm->codec_dai->component;
-@@ -643,9 +646,6 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
- 		i++;
- 	}
- 
--	if (!component)
--		return -EINVAL;
--
- 	return hdac_hdmi_jack_port_init(component, &card->dapm);
- }
- 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 067a97e7e6a8..4b67f261377c 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -529,12 +529,15 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
- 	int err, i = 0;
- 	char jack_name[NAME_SIZE];
- 
--	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
--			       head);
--	component = pcm->codec_dai->component;
-+	if (list_empty(&ctx->hdmi_pcm_list))
-+		return -EINVAL;
- 
--	if (ctx->common_hdmi_codec_drv)
-+	if (ctx->common_hdmi_codec_drv) {
-+		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct bxt_hdmi_pcm,
-+				       head);
-+		component = pcm->codec_dai->component;
- 		return hda_dsp_hdmi_build_controls(card, component);
-+	}
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
- 		component = pcm->codec_dai->component;
-@@ -555,9 +558,6 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
- 		i++;
- 	}
- 
--	if (!component)
--		return -EINVAL;
--
- 	return hdac_hdmi_jack_port_init(component, &card->dapm);
- }
- 
-diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-index d6efc554898c..dd80d0186a6c 100644
---- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
-+++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-@@ -241,12 +241,15 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 	struct hdmi_pcm *pcm;
- 	int ret, i = 0;
- 
--	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct hdmi_pcm,
--			       head);
--	component = pcm->codec_dai->component;
-+	if (list_empty(&ctx->hdmi_pcm_list))
-+		return -EINVAL;
- 
--	if (ctx->common_hdmi_codec_drv)
-+	if (ctx->common_hdmi_codec_drv) {
-+		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct hdmi_pcm,
-+				       head);
-+		component = pcm->codec_dai->component;
- 		return hda_dsp_hdmi_build_controls(card, component);
-+	}
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
- 		component = pcm->codec_dai->component;
-@@ -265,8 +268,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 
- 		i++;
- 	}
--	if (!component)
--		return -EINVAL;
- 
- 	return hdac_hdmi_jack_port_init(component, &card->dapm);
- }
-diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-index 4a6d117ea7af..8e947bad143c 100644
---- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
-+++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
-@@ -534,15 +534,18 @@ static int glk_card_late_probe(struct snd_soc_card *card)
- 	struct snd_soc_component *component = NULL;
- 	char jack_name[NAME_SIZE];
- 	struct glk_hdmi_pcm *pcm;
--	int err = 0;
-+	int err;
- 	int i = 0;
- 
--	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct glk_hdmi_pcm,
--			       head);
--	component = pcm->codec_dai->component;
-+	if (list_empty(&ctx->hdmi_pcm_list))
-+		return -EINVAL;
- 
--	if (ctx->common_hdmi_codec_drv)
-+	if (ctx->common_hdmi_codec_drv) {
-+		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct glk_hdmi_pcm,
-+				       head);
-+		component = pcm->codec_dai->component;
- 		return hda_dsp_hdmi_build_controls(card, component);
-+	}
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
- 		component = pcm->codec_dai->component;
-@@ -563,9 +566,6 @@ static int glk_card_late_probe(struct snd_soc_card *card)
- 		i++;
- 	}
- 
--	if (!component)
--		return -EINVAL;
--
- 	return hdac_hdmi_jack_port_init(component, &card->dapm);
- }
- 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 8a13231dee15..5d878873a8e0 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -273,19 +273,22 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 	struct snd_soc_component *component = NULL;
- 	char jack_name[NAME_SIZE];
- 	struct sof_hdmi_pcm *pcm;
--	int err = 0;
-+	int err;
- 	int i = 0;
- 
- 	/* HDMI is not supported by SOF on Baytrail/CherryTrail */
- 	if (is_legacy_cpu)
- 		return 0;
- 
--	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm,
--			       head);
--	component = pcm->codec_dai->component;
-+	if (list_empty(&ctx->hdmi_pcm_list))
-+		return -EINVAL;
- 
--	if (ctx->common_hdmi_codec_drv)
-+	if (ctx->common_hdmi_codec_drv) {
-+		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm,
-+				       head);
-+		component = pcm->codec_dai->component;
- 		return hda_dsp_hdmi_build_controls(card, component);
-+	}
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
- 		component = pcm->codec_dai->component;
-@@ -305,8 +308,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 
- 		i++;
- 	}
--	if (!component)
--		return -EINVAL;
- 
- 	return hdac_hdmi_jack_port_init(component, &card->dapm);
- }
+ static const struct snd_soc_acpi_link_adr icl_3_in_1_default[] = {
 -- 
 2.20.1
 
