@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72502C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 12:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66793C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 12:20:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F29F22067C
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 12:19:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6E142087F
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 12:20:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ESRrmLiA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F29F22067C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ces+rk31"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6E142087F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 640A11677;
-	Mon, 27 Jan 2020 13:19:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 640A11677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5490C38;
+	Mon, 27 Jan 2020 13:19:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5490C38
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580127596;
-	bh=R0gxYwXup/jFoQrgoY2SDqqpi/KjgAFsoSVRSpq92nI=;
+	s=default; t=1580127620;
+	bh=R5FrKdVtfjdAfW0w6FYizieXf1WWh9N94m0to6j6qaQ=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ESRrmLiA9SXDMqJjwBVnYuTXj268JVazkwRp33t5sWiBQ7cnsgPZEXvktWqFqGDuK
-	 s1f2gJaJgsdHX122VAr1xPMCAzKEfq6nbPJ3bOJFuj4jAEpLMYgb2FzTvEh5D6WUNo
-	 emWITCHOeluMCQZDLY+uCQIyaB+97pIrNC0GUYPU=
+	b=Ces+rk31dG8onNQ/ZA/5viE8DSlQekaPwgGcaCUq6xC71t3yps7T/WpDWDmc71r+W
+	 Il2BMasWoXxiU7t/sPNDTn0q7s7mxi5aFg51Zpa/X2LCrHLUJltJ/ZKMTQiI9yVcq8
+	 kPpSAU8tf1nuyOmbtDHnFQrMd9BvAW2DSTlY6UxQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93E8DF802E0;
-	Mon, 27 Jan 2020 13:13:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDB3CF802E7;
+	Mon, 27 Jan 2020 13:13:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93448F802A8; Mon, 27 Jan 2020 13:13:47 +0100 (CET)
+ id 0ADBDF802A7; Mon, 27 Jan 2020 13:13:48 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9170CF80277
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 13:13:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9170CF80277
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBCEDF8028B
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 13:13:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBCEDF8028B
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2020 04:13:36 -0800
+ 27 Jan 2020 04:13:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,369,1574150400"; d="scan'208";a="261029693"
+X-IronPort-AV: E=Sophos;i="5.70,369,1574150400"; d="scan'208";a="261029706"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga002.fm.intel.com with ESMTP; 27 Jan 2020 04:13:34 -0800
+ by fmsmga002.fm.intel.com with ESMTP; 27 Jan 2020 04:13:38 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org
-Date: Mon, 27 Jan 2020 13:12:41 +0100
-Message-Id: <20200127121243.15813-10-cezary.rojewski@intel.com>
+Date: Mon, 27 Jan 2020 13:12:43 +0100
+Message-Id: <20200127121243.15813-12-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200127121243.15813-1-cezary.rojewski@intel.com>
 References: <20200127121243.15813-1-cezary.rojewski@intel.com>
 Cc: lgirdwood@gmail.com, Cezary Rojewski <cezary.rojewski@intel.com>,
  broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com
-Subject: [alsa-devel] [PATCH v2 09/11] ASoC: SOF: Intel: Probe compress
-	operations
+Subject: [alsa-devel] [PATCH v2 11/11] ASoC: SOF: Intel: Add Probe compress
+	CPU DAIs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,279 +83,108 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add HDA handlers for soc_compr_ops and snd_compr_ops which cover probe
-related operations. Implementation supports both connection purposes.
-These merely define stream setups as core flow is covered by SOF
-compress core.
+Declare extraction CPU DAI as well as sof_probe_compr_ops. FE DAIs can
+link against these new CPU DAI to create new compress devices.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
+ sound/soc/sof/intel/hda-dai.c | 28 ++++++++++++++++++++++++++++
+ sound/soc/sof/intel/hda.h     |  6 ++++++
+ sound/soc/sof/pcm.c           | 11 ++++++++++-
+ 3 files changed, 44 insertions(+), 1 deletion(-)
 
-Changes in v2:
-- probes over HDA no longer require SND_SOC_SOF_HDA_LINK enabled
-
-
- sound/soc/sof/intel/Kconfig        |   9 ++
- sound/soc/sof/intel/Makefile       |   1 +
- sound/soc/sof/intel/apl.c          |   9 ++
- sound/soc/sof/intel/cnl.c          |   9 ++
- sound/soc/sof/intel/hda-compress.c | 132 +++++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h          |  24 ++++++
- 6 files changed, 184 insertions(+)
- create mode 100644 sound/soc/sof/intel/hda-compress.c
-
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 56a837d2cb95..3bc64dee7c39 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -305,6 +305,15 @@ config SND_SOC_SOF_HDA_AUDIO_CODEC
- 	  Say Y if you want to enable HDAudio codecs with SOF.
- 	  If unsure select "N".
- 
-+config SND_SOC_SOF_HDA_PROBES
-+	bool "SOF enable probes over HDA"
-+	depends on SND_SOC_SOF_DEBUG_PROBES
-+	help
-+	  This option enables the data probing for Intel(R).
-+		  Intel(R) Skylake and newer platforms.
-+	  Say Y if you want to enable probes.
-+	  If unsure, select "N".
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 9c6e3f990ee3..ed5e7d2c0d43 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -399,6 +399,19 @@ static const struct snd_soc_dai_ops hda_link_dai_ops = {
+ 	.trigger = hda_link_pcm_trigger,
+ 	.prepare = hda_link_pcm_prepare,
+ };
 +
- config SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1
- 	bool "SOF enable DMI Link L1"
- 	help
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-index b8f58e006e29..cee02a2e00f4 100644
---- a/sound/soc/sof/intel/Makefile
-+++ b/sound/soc/sof/intel/Makefile
-@@ -9,6 +9,7 @@ snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
- 				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
- 				 hda-dai.o hda-bus.o \
- 				 apl.o cnl.o
-+snd-sof-intel-hda-common-$(CONFIG_SND_SOC_SOF_HDA_PROBES) += hda-compress.o
- 
- snd-sof-intel-hda-objs := hda-codec.o
- 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 2483b15699e7..02218d22e51f 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -73,6 +73,15 @@ const struct snd_sof_dsp_ops sof_apl_ops = {
- 	.pcm_trigger	= hda_dsp_pcm_trigger,
- 	.pcm_pointer	= hda_dsp_pcm_pointer,
- 
 +#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+	/* probe callbacks */
-+	.probe_assign	= hda_probe_compr_assign,
-+	.probe_free	= hda_probe_compr_free,
-+	.probe_set_params	= hda_probe_compr_set_params,
-+	.probe_trigger	= hda_probe_compr_trigger,
-+	.probe_pointer	= hda_probe_compr_pointer,
-+#endif
++#include "../compress.h"
 +
- 	/* firmware loading */
- 	.load_firmware = snd_sof_load_firmware_raw,
++static struct snd_soc_cdai_ops sof_probe_compr_ops = {
++	.startup	= sof_probe_compr_open,
++	.shutdown	= sof_probe_compr_free,
++	.set_params	= sof_probe_compr_set_params,
++	.trigger	= sof_probe_compr_trigger,
++	.pointer	= sof_probe_compr_pointer,
++};
++
++#endif
+ #endif
  
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 9e2d8afe0535..74d07a7b5e34 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -259,6 +259,15 @@ const struct snd_sof_dsp_ops sof_cnl_ops = {
- 	.pcm_trigger	= hda_dsp_pcm_trigger,
- 	.pcm_pointer	= hda_dsp_pcm_pointer,
- 
+ /*
+@@ -460,5 +473,20 @@ struct snd_soc_dai_driver skl_dai[] = {
+ 	.name = "Alt Analog CPU DAI",
+ 	.ops = &hda_link_dai_ops,
+ },
 +#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+	/* probe callbacks */
-+	.probe_assign	= hda_probe_compr_assign,
-+	.probe_free	= hda_probe_compr_free,
-+	.probe_set_params	= hda_probe_compr_set_params,
-+	.probe_trigger	= hda_probe_compr_trigger,
-+	.probe_pointer	= hda_probe_compr_pointer,
++{
++	.name = "Probe Extraction CPU DAI",
++	.compress_new = snd_soc_new_compress,
++	.cops = &sof_probe_compr_ops,
++	.capture = {
++		.stream_name = "Probe Extraction",
++		.channels_min = 1,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_48000,
++		.rate_min = 48000,
++		.rate_max = 48000,
++	},
++},
 +#endif
-+
- 	/* firmware loading */
- 	.load_firmware = snd_sof_load_firmware_raw,
- 
-diff --git a/sound/soc/sof/intel/hda-compress.c b/sound/soc/sof/intel/hda-compress.c
-new file mode 100644
-index 000000000000..da7de867d0af
---- /dev/null
-+++ b/sound/soc/sof/intel/hda-compress.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2019-2020 Intel Corporation. All rights reserved.
-+//
-+// Author: Cezary Rojewski <cezary.rojewski@intel.com>
-+//
-+
-+#include <sound/hdaudio_ext.h>
-+#include <sound/soc.h>
-+#include "../sof-priv.h"
-+#include "hda.h"
-+
-+static inline struct hdac_ext_stream *
-+hda_compr_get_stream(struct snd_compr_stream *cstream)
-+{
-+	return cstream->runtime->private_data;
-+}
-+
-+int hda_probe_compr_assign(struct snd_sof_dev *sdev,
-+			   struct snd_compr_stream *cstream,
-+			   struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *stream;
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+
-+	stream = snd_hdac_ext_cstream_assign(bus, cstream);
-+	if (!stream)
-+		return -EBUSY;
-+
-+	hdac_stream(stream)->curr_pos = 0;
-+	cstream->runtime->private_data = stream;
-+
-+	return hdac_stream(stream)->stream_tag;
-+}
-+
-+int hda_probe_compr_free(struct snd_sof_dev *sdev,
-+			 struct snd_compr_stream *cstream,
-+			 struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
-+
-+	snd_hdac_stream_cleanup(hdac_stream(stream));
-+	hdac_stream(stream)->prepared = 0;
-+	snd_hdac_ext_stream_release(stream, HDAC_EXT_STREAM_TYPE_HOST);
-+
-+	return 0;
-+}
-+
-+int hda_probe_compr_set_params(struct snd_sof_dev *sdev,
-+			       struct snd_compr_stream *cstream,
-+			       struct snd_compr_params *params,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
-+	unsigned int format_val;
-+	int bps, ret;
-+	/* compr params do not store bit depth, default to S32_LE */
-+	snd_pcm_format_t format = SNDRV_PCM_FORMAT_S32_LE;
-+
-+	hdac_stream(stream)->bufsize = 0;
-+	hdac_stream(stream)->period_bytes = 0;
-+	hdac_stream(stream)->format_val = 0;
-+
-+	bps = snd_pcm_format_physical_width(format);
-+	if (bps < 0)
-+		return bps;
-+	format_val = snd_hdac_calc_stream_format(params->codec.sample_rate,
-+			params->codec.ch_out, format, bps, 0);
-+	ret = snd_hdac_stream_set_params(hdac_stream(stream), format_val);
-+	if (ret < 0)
-+		return ret;
-+	ret = snd_hdac_stream_setup(hdac_stream(stream));
-+	if (ret < 0)
-+		return ret;
-+
-+	hdac_stream(stream)->prepared = 1;
-+
-+	return 0;
-+}
-+
-+int hda_probe_compr_trigger(struct snd_sof_dev *sdev,
-+			    struct snd_compr_stream *cstream, int cmd,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+	unsigned long cookie;
-+
-+	if (!hdac_stream(stream)->prepared)
-+		return -EPIPE;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		spin_lock_irqsave(&bus->reg_lock, cookie);
-+		snd_hdac_stream_start(hdac_stream(stream), true);
-+		spin_unlock_irqrestore(&bus->reg_lock, cookie);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		spin_lock_irqsave(&bus->reg_lock, cookie);
-+		snd_hdac_stream_stop(hdac_stream(stream));
-+		spin_unlock_irqrestore(&bus->reg_lock, cookie);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+int hda_probe_compr_pointer(struct snd_sof_dev *sdev,
-+			    struct snd_compr_stream *cstream,
-+			    struct snd_compr_tstamp *tstamp,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *stream = hda_compr_get_stream(cstream);
-+	struct snd_soc_pcm_stream *pstream;
-+
-+	pstream = &dai->driver->capture;
-+	tstamp->copied_total = hdac_stream(stream)->curr_pos;
-+	tstamp->sampling_rate = snd_pcm_rate_bit_to_rate(pstream->rates);
-+
-+	return 0;
-+}
+ #endif
+ };
 diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index a4d030bfeee1..80aaf4172e34 100644
+index 80aaf4172e34..955775c4fcda 100644
 --- a/sound/soc/sof/intel/hda.h
 +++ b/sound/soc/sof/intel/hda.h
-@@ -11,6 +11,7 @@
- #ifndef __SOF_INTEL_HDA_H
- #define __SOF_INTEL_HDA_H
+@@ -349,7 +349,13 @@
  
-+#include <sound/compress_driver.h>
- #include <sound/hda_codec.h>
- #include <sound/hdaudio_ext.h>
- #include "shim.h"
-@@ -533,6 +534,29 @@ int hda_ipc_pcm_params(struct snd_sof_dev *sdev,
- 		       struct snd_pcm_substream *substream,
- 		       const struct sof_ipc_pcm_params_reply *reply);
- 
+ /* Number of DAIs */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++
 +#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+/*
-+ * Probe Compress Operations.
-+ */
-+int hda_probe_compr_assign(struct snd_sof_dev *sdev,
-+			   struct snd_compr_stream *cstream,
-+			   struct snd_soc_dai *dai);
-+int hda_probe_compr_free(struct snd_sof_dev *sdev,
-+			 struct snd_compr_stream *cstream,
-+			 struct snd_soc_dai *dai);
-+int hda_probe_compr_set_params(struct snd_sof_dev *sdev,
-+			       struct snd_compr_stream *cstream,
-+			       struct snd_compr_params *params,
-+			       struct snd_soc_dai *dai);
-+int hda_probe_compr_trigger(struct snd_sof_dev *sdev,
-+			    struct snd_compr_stream *cstream, int cmd,
-+			    struct snd_soc_dai *dai);
-+int hda_probe_compr_pointer(struct snd_sof_dev *sdev,
-+			    struct snd_compr_stream *cstream,
-+			    struct snd_compr_tstamp *tstamp,
-+			    struct snd_soc_dai *dai);
++#define SOF_SKL_NUM_DAIS		16
++#else
+ #define SOF_SKL_NUM_DAIS		15
 +#endif
 +
- /*
-  * DSP IPC Operations.
-  */
+ #else
+ #define SOF_SKL_NUM_DAIS		8
+ #endif
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 314f3095c12f..d423fb404a3d 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -756,6 +756,15 @@ static void sof_pcm_remove(struct snd_soc_component *component)
+ 	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
+ }
+ 
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
++#include "compress.h"
++
++struct snd_compr_ops sof_compressed_ops = {
++	.copy		= sof_probe_compr_copy,
++};
++EXPORT_SYMBOL(sof_compressed_ops);
++#endif
++
+ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_soc_component_driver *pd = &sdev->plat_drv;
+@@ -775,7 +784,7 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+ 	pd->trigger = sof_pcm_trigger;
+ 	pd->pointer = sof_pcm_pointer;
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMPRESS)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES)
+ 	pd->compr_ops = &sof_compressed_ops;
+ #endif
+ 	pd->pcm_construct = sof_pcm_new;
 -- 
 2.17.1
 
