@@ -1,113 +1,61 @@
-Return-Path: <SRS0=YQED=3P=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=qqgH=3Q=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E276C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jan 2020 13:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA2EAC35240
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 01:50:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29E3520716
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Jan 2020 13:22:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C77C20842
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 01:50:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nuN2H3Zl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MryoBnrh"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29E3520716
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gncsF8aN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C77C20842
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 758571612;
-	Sun, 26 Jan 2020 14:21:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 758571612
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D3E41612;
+	Mon, 27 Jan 2020 02:50:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D3E41612
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580044948;
-	bh=70adSlA+jn+m7ZQK8eYQIFC6MhYByrnwRPQFpHaYuWo=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nuN2H3ZleKqRNvjeO4yqPH0gLTaHvrzmzOfAHXYbWZEl2Okfpcnbo1Uv9bdbRhmPU
-	 JKxqc8JmO65Tf9XX8egkC6VEaI5kXIaKIctEx9y0kodLMLKadt26jeC6sDJaaxl4ac
-	 wbCHLUKMoDo+G480xPLJ6TnjMsDZKOf/3vNU0Rxo=
+	s=default; t=1580089853;
+	bh=1lFUFZ2ZUW0UEGaz2BkE9Lth1z11MEO0+9iTsA16JhE=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gncsF8aNODPYe+jIVSL5xyotqI9nuMx2JvRYEC7LsFQ0Njx4DiFm/bTFLrrTVz8YC
+	 0lvSJvHXluU/rz6X+WN3zcaqEUuKeEk5mi8gPGAO3KbCn3gkbkfUeZ61XTvTxr/wpc
+	 GWpVE6PtlTup2qK0Uabre/59Y4Y189barYDUEUgg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3CFCF80229;
-	Sun, 26 Jan 2020 14:21:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A122F801EB;
+	Mon, 27 Jan 2020 02:50:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D735EF80255; Sun, 26 Jan 2020 14:21:26 +0100 (CET)
-Received: from us-smtp-delivery-1.mimecast.com (us-smtp-2.mimecast.com
- [207.211.31.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E3F2F800BA
- for <alsa-devel@alsa-project.org>; Sun, 26 Jan 2020 14:21:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E3F2F800BA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="MryoBnrh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1580044878;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=jsfHSZG1zHv4p6C/vlcY9hc5HBtWKr/hh4heHf9QvrI=;
- b=MryoBnrhMkc4N4SyooYGKTNf+Ny09FZnknU1EDdXbGkFlvmWW892CxWZfqvWvVTL6yYgZc
- 4EJa0bbCCLJwfo+itYVi7EsphkdVM4EPDNmeALNbCJA0bgZ6QGYcLt4ycodPGY42kaSxmW
- lGG5g3QTRk6ptWztcfT8+gQbRrKuNBQ=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-S4JmZtN3N26R7cr-X8j2JA-1; Sun, 26 Jan 2020 08:21:15 -0500
-Received: by mail-wm1-f69.google.com with SMTP id b133so706349wmb.2
- for <alsa-devel@alsa-project.org>; Sun, 26 Jan 2020 05:21:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=jsfHSZG1zHv4p6C/vlcY9hc5HBtWKr/hh4heHf9QvrI=;
- b=Aj5mDo2s1Tgjy3ICclu0YSQlYackVKTzaUGCu7awCIScVG/+TyLEOxeJGeZgOfNPU4
- ZDP2lgU4sH2bSfjrzj9D2Jz88OjplT6mrlWCo/c8o6YAX5/FP+8YAti68Xr6UVlJspBw
- F9/WzlgZEkq/MRCEJhh/bEm37Wy7VJ78Z3F6ULhJAj01WESHRlOMJImba6yxGSMQSU4p
- uPjRQvdksDHz3Q110Q7sZTDuONZ1nbxO41ybuyLwZIHFBfmkQW1KMqbO8RkAEbV2elp1
- IsVPywxGdhkA3nAjHwxovADy2BN9zoDisxnc9S3BdyURX/vTNoN8XobaxSlHH8zIQ3SB
- 7fkQ==
-X-Gm-Message-State: APjAAAW/kAbrhtuW6jRJDHXVYJFZuKnxxTayvbo2SqJfpMMhEFYW3yrr
- 0QOiN0m/4UArT9WhyR8Eo4Vtb0QRBOQb6lUr+gUG6ZFj/YXH+DaKx9IQ6Wu6NXfCvRKEbK8q/k9
- nis53x4Vb/sPDCMyRCfY2vvE=
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr15170246wrq.196.1580044873750; 
- Sun, 26 Jan 2020 05:21:13 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwOLjBhFohwN74d32YNsRXrTSPDHEUg9f7VcJVfW0oQG9NOzzjXvBJ78yjkvgoTpZKr+CrySw==
-X-Received: by 2002:a5d:438c:: with SMTP id i12mr15170229wrq.196.1580044873506; 
- Sun, 26 Jan 2020 05:21:13 -0800 (PST)
-Received: from shalem.localdomain
- (2001-1c00-0c0c-fe00-7e79-4dac-39d0-9c14.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c0c:fe00:7e79:4dac:39d0:9c14])
- by smtp.gmail.com with ESMTPSA id x18sm16447490wrr.75.2020.01.26.05.21.12
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 26 Jan 2020 05:21:12 -0800 (PST)
-To: Sasha Levin <sashal@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>
-References: <20200125181021.70446-1-hdegoede@redhat.com>
- <20200126013827.72B4D20709@mail.kernel.org>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <9c716170-f021-9f42-12ff-36afd4e9bc0c@redhat.com>
-Date: Sun, 26 Jan 2020 14:21:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200126013827.72B4D20709@mail.kernel.org>
-Content-Language: en-US
-X-MC-Unique: S4JmZtN3N26R7cr-X8j2JA-1
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Add Clevo W65_67SB the
-	power_save blacklist
+ id 51752F80150; Mon, 27 Jan 2020 02:49:00 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 04137F80125
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 02:48:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04137F80125
+Date: 27 Jan 2020 10:48:43 +0900
+X-IronPort-AV: E=Sophos;i="5.70,367,1574089200"; d="scan'208";a="37461076"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 27 Jan 2020 10:48:43 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7A18140078B5;
+ Mon, 27 Jan 2020 10:48:43 +0900 (JST)
+Message-ID: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH 0/7] ASoC: soc-pcm cleanup step2
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,55 +68,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-On 26-01-2020 02:38, Sasha Levin wrote:
-> Hi,
-> 
-> [This is an automated email]
-> 
-> This commit has been processed because it contains a -stable tag.
-> The stable tag indicates that it's relevant for the following trees: all
-> 
-> The bot has tested the following trees: v5.4.14, v4.19.98, v4.14.167, v4.9.211, v4.4.211.
-> 
-> v5.4.14: Build OK!
-> v4.19.98: Build OK!
-> v4.14.167: Failed to apply! Possible dependencies:
->      38d9c12c0a6d ("ALSA: hda: Add Gigabyte P55A-UD3 and Z87-D3HP to the power_save blacklist")
->      5cb6b5fc013e ("ALSA: hda: Add 2 more models to the power_save blacklist")
->      b529ef2464ad ("ALSA: hda: Add Clevo W35xSS_370SS to the power_save blacklist")
->      dd6dd5365404 ("ALSA: hda: Add Intel NUC7i3BNB to the power_save blacklist")
->      f91f1806530d ("ALSA: hda: Add Intel NUC5i7RY to the power_save blacklist")
-> 
-> v4.9.211: Failed to apply! Possible dependencies:
->      38d9c12c0a6d ("ALSA: hda: Add Gigabyte P55A-UD3 and Z87-D3HP to the power_save blacklist")
->      5cb6b5fc013e ("ALSA: hda: Add 2 more models to the power_save blacklist")
->      b529ef2464ad ("ALSA: hda: Add Clevo W35xSS_370SS to the power_save blacklist")
->      dd6dd5365404 ("ALSA: hda: Add Intel NUC7i3BNB to the power_save blacklist")
->      f91f1806530d ("ALSA: hda: Add Intel NUC5i7RY to the power_save blacklist")
-> 
-> v4.4.211: Failed to apply! Possible dependencies:
->      38d9c12c0a6d ("ALSA: hda: Add Gigabyte P55A-UD3 and Z87-D3HP to the power_save blacklist")
->      5cb6b5fc013e ("ALSA: hda: Add 2 more models to the power_save blacklist")
->      b529ef2464ad ("ALSA: hda: Add Clevo W35xSS_370SS to the power_save blacklist")
->      dd6dd5365404 ("ALSA: hda: Add Intel NUC7i3BNB to the power_save blacklist")
->      f91f1806530d ("ALSA: hda: Add Intel NUC5i7RY to the power_save blacklist")
-> 
-> 
-> NOTE: The patch will not be queued to stable trees until it is upstream.
-> 
-> How should we proceed with this patch?
+Hi Mark
 
-Just adding it to 4.19.98 and 5.4 (and 5.5) is fine.
-Regards,
+These are soc-pcm cleanup step2.
+Very random cleanup...
 
-Hans
+Kuninori Morimoto (7):
+  ASoC: soc-pcm: add snd_soc_runtime_action()
+  ASoC: soc-pcm: adjustment for DAI member 0 reset
+  ASoC: soc-pcm: add for_each_dapm_widgets() macro
+  ASoC: soc-pcm: goto error after trying for_each_rtd_codec_dai
+  ASoC: soc-pcm: goto error after trying all component open
+  ASoC: soc-pcm: move soc_pcm_close() next to soc_pcm_open()
+  ASoC: soc-pcm: tidyup soc_pcm_open() order
+
+ include/sound/soc-dapm.h |   5 +
+ sound/soc/soc-dapm.c     |   8 +-
+ sound/soc/soc-pcm.c      | 266 ++++++++++++++++++++---------------------------
+ 3 files changed, 118 insertions(+), 161 deletions(-)
+
+-- 
+2.7.4
 
 _______________________________________________
 Alsa-devel mailing list
