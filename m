@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F6A5C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:14:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C81A8C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:14:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A29452087F
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:13:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5AB272087F
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:14:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HFuUZRxc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A29452087F
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BVUqUkud"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AB272087F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09C099F6;
-	Mon, 27 Jan 2020 19:13:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09C099F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B44AD839;
+	Mon, 27 Jan 2020 19:13:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B44AD839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580148838;
-	bh=RS+hf4hMaXgHEXhZlmEFL4x2r2D6NB272ol2cDGuaiM=;
+	s=default; t=1580148877;
+	bh=FsmKDWFXV0tGXyobijWnJWLS/eAHhPjWKpQvKcsIZxY=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=HFuUZRxcnSjSy0kW06w+r7r65gQI4Lr8y2nMzY0SbCu97C1mIVsV32dKlj8g1cFYF
-	 AidWoVCidNpdy0eAl9g0TlfInSmyE7pyf/Q/QHVOJ4XFh67hzIZQTi/6nMSgQuK/RM
-	 4fnUMh3cjCAmF+JqdldhX+33AAt9huz2AZAW2hCA=
+	b=BVUqUkudjeLYuFZAIUY1uOBJuYrqJ2FOT+6EdcMqyYWaXiv/Wp0k9oG0tFAaTmQvi
+	 AFoRQxCEsMbpD8FrHaFwRjo6rRsGZfv3OD2PEE/yIQc8osGUVPP5GUfMT/SLq/wAuE
+	 0Ty91zX4KX9LuMLv0jSTujBovylqVCdsA1AzQkVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F387F80259;
-	Mon, 27 Jan 2020 19:11:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FB6AF80276;
+	Mon, 27 Jan 2020 19:11:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72B30F80256; Mon, 27 Jan 2020 19:11:28 +0100 (CET)
+ id 6C7D8F80218; Mon, 27 Jan 2020 19:11:30 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 601B9F80218
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:11:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 601B9F80218
+ by alsa1.perex.cz (Postfix) with ESMTP id 50D43F80253
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:11:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50D43F80253
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0D511045;
- Mon, 27 Jan 2020 10:11:23 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DACE101E;
+ Mon, 27 Jan 2020 10:11:26 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 59EAD3F67D;
- Mon, 27 Jan 2020 10:11:22 -0800 (PST)
-Date: Mon, 27 Jan 2020 18:11:21 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B53E43F67D;
+ Mon, 27 Jan 2020 10:11:25 -0800 (PST)
+Date: Mon, 27 Jan 2020 18:11:24 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Pan Xiuli <xiuli.pan@linux.intel.com>
-In-Reply-To: <20200124213625.30186-6-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200124213625.30186-6-pierre-louis.bossart@linux.intel.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20200124213625.30186-5-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200124213625.30186-5-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: pci: add missing default_fw_name
-	of JasperLake" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: trace: fix unconditional free in
+	trace release" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: pci: add missing default_fw_name of JasperLake
+   ASoC: SOF: trace: fix unconditional free in trace release
 
 has been applied to the asoc tree at
 
@@ -103,34 +103,41 @@ to this mail.
 Thanks,
 Mark
 
-From e3b9f5f4ef92801f62c58665283c61cece0af905 Mon Sep 17 00:00:00 2001
-From: Pan Xiuli <xiuli.pan@linux.intel.com>
-Date: Fri, 24 Jan 2020 15:36:23 -0600
-Subject: [PATCH] ASoC: SOF: pci: add missing default_fw_name of JasperLake
+From e6110114d18d330c05fd6de9f31283fd086a5a3a Mon Sep 17 00:00:00 2001
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Date: Fri, 24 Jan 2020 15:36:22 -0600
+Subject: [PATCH] ASoC: SOF: trace: fix unconditional free in trace release
 
-jsl_desc missed default_fw_name, this will fail the probe in
-nocodec or generice HDA mode due the firmware path is intel/sof/(null)
+Check if DMA pages were successfully allocated in initialization
+before calling free. For many types of memory (like sgbufs)
+the extra free is harmless, but not all backends track allocation
+state, so add an explicit check.
 
-Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200124213625.30186-6-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200124213625.30186-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/sof-pci-dev.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/trace.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index d855bc2b76ad..bf01b92f0dac 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -235,6 +235,7 @@ static const struct sof_dev_desc jsl_desc = {
- 	.chip_info = &jsl_chip_info,
- 	.default_fw_path = "intel/sof",
- 	.default_tplg_path = "intel/sof-tplg",
-+	.default_fw_filename = "sof-jsl.ri",
- 	.nocodec_tplg_filename = "sof-jsl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
- };
+diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
+index 4bb65030819d..d815090252f8 100644
+--- a/sound/soc/sof/trace.c
++++ b/sound/soc/sof/trace.c
+@@ -343,7 +343,10 @@ void snd_sof_free_trace(struct snd_sof_dev *sdev)
+ 
+ 	snd_sof_release_trace(sdev);
+ 
+-	snd_dma_free_pages(&sdev->dmatb);
+-	snd_dma_free_pages(&sdev->dmatp);
++	if (sdev->dma_trace_pages) {
++		snd_dma_free_pages(&sdev->dmatb);
++		snd_dma_free_pages(&sdev->dmatp);
++		sdev->dma_trace_pages = 0;
++	}
+ }
+ EXPORT_SYMBOL(snd_sof_free_trace);
 -- 
 2.20.1
 
