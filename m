@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B571C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B194BC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:15:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE31021739
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:14:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FDBF2087F
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 18:15:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jlmPN0Ue"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE31021739
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="veshg0cI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FDBF2087F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 033FE166D;
-	Mon, 27 Jan 2020 19:14:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 033FE166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4F6E85D;
+	Mon, 27 Jan 2020 19:14:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4F6E85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580148892;
-	bh=x9Z0Xr5r8ND60dY5tB1cUK5CKNdNJyOHf6BiNukFZ/k=;
+	s=default; t=1580148936;
+	bh=XM0mveDau5o3htoRkbTTE4gaRAkQOnRVoMZyyg3Bqqk=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=jlmPN0Ueqw9+t4rMWXFxow1NyTy9FZEhrhVmgLjuaU9x56N4Z9XO4lhyVNyEkTru0
-	 KUa8GdY/KA8y488zPXf+ae8zFWVdzNh7+NFO3P2HCWjXa6snL34dl0DGhtgeqy4InP
-	 FjlMhuDHtfCSBtaFtkvOtSl7SCp50xrkg+4/Jg+o=
+	b=veshg0cIUFaMM5c1DI7E2gqZICMXMt+/jpEtCp7qkFK/xwKLy5EEVpTsBzWN1PztS
+	 fUT9BmKUn8jp0dQPBG2lzKx6PcTJEHkn09MtklWlHMeZMVieVbgoEskVqYKoag4HTR
+	 Y5OlMJbZ9DDO+v5Qo/vlJhIrDbwrlNIO/2jYq8Pw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7632CF8027C;
-	Mon, 27 Jan 2020 19:11:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5FB0F8028A;
+	Mon, 27 Jan 2020 19:11:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA5F6F80259; Mon, 27 Jan 2020 19:11:34 +0100 (CET)
+ id 0A12BF80268; Mon, 27 Jan 2020 19:11:37 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id F39B6F80253
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:11:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F39B6F80253
+ by alsa1.perex.cz (Postfix) with ESMTP id 7A7F8F80256
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 19:11:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A7F8F80256
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A735106F;
- Mon, 27 Jan 2020 10:11:29 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEF2C101E;
+ Mon, 27 Jan 2020 10:11:32 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 781663F67D;
- Mon, 27 Jan 2020 10:11:28 -0800 (PST)
-Date: Mon, 27 Jan 2020 18:11:26 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1329E3F67D;
+ Mon, 27 Jan 2020 10:11:30 -0800 (PST)
+Date: Mon, 27 Jan 2020 18:11:29 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20200124213625.30186-4-pierre-louis.bossart@linux.intel.com>
-Message-Id: <applied-20200124213625.30186-4-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20200124213625.30186-3-pierre-louis.bossart@linux.intel.com>
+Message-Id: <applied-20200124213625.30186-3-pierre-louis.bossart@linux.intel.com>
 X-Patchwork-Hint: ignore
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
  stable@vger.kernel.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [alsa-devel] Applied "ASoC: SOF: core: release resources on errors
-	in probe_continue" to the asoc tree
+Subject: [alsa-devel] Applied "ASoC: SOF: core: free trace on errors" to the
+	asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,7 +78,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 The patch
 
-   ASoC: SOF: core: release resources on errors in probe_continue
+   ASoC: SOF: core: free trace on errors
 
 has been applied to the asoc tree at
 
@@ -103,126 +103,58 @@ to this mail.
 Thanks,
 Mark
 
-From 410e5e55c9c1c9c0d452ac5b9adb37b933a7747e Mon Sep 17 00:00:00 2001
+From 37e97e6faeabda405d0c4319f8419dcc3da14b2b Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 24 Jan 2020 15:36:21 -0600
-Subject: [PATCH] ASoC: SOF: core: release resources on errors in
- probe_continue
+Date: Fri, 24 Jan 2020 15:36:20 -0600
+Subject: [PATCH] ASoC: SOF: core: free trace on errors
 
-The initial intent of releasing resources in the .remove does not work
-well with HDaudio codecs. If the probe_continue() fails in a work
-queue, e.g. due to missing firmware or authentication issues, we don't
-release any resources, and as a result the kernel oopses during
-suspend operations.
+free_trace() is not called on probe errors, fix
 
-The suggested fix is to release all resources during errors in
-probe_continue(), and use fw_state to track resource allocation
-state, so that .remove does not attempt to release the same
-hardware resources twice. PM operations are also modified so that
-no action is done if DSP resources have been freed due to
-an error at probe.
-
-Reported-by: Takashi Iwai <tiwai@suse.de>
-Co-developed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Bugzilla:  http://bugzilla.suse.com/show_bug.cgi?id=1161246
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20200124213625.30186-4-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20200124213625.30186-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: stable@vger.kernel.org
 ---
- sound/soc/sof/core.c | 33 ++++++++++++---------------------
- sound/soc/sof/pm.c   |  4 ++++
- 2 files changed, 16 insertions(+), 21 deletions(-)
+ sound/soc/sof/core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index f517ab448a1d..34cefbaf2d2a 100644
+index 44f9c04d54aa..f517ab448a1d 100644
 --- a/sound/soc/sof/core.c
 +++ b/sound/soc/sof/core.c
-@@ -244,7 +244,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+@@ -224,12 +224,12 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+ 	if (ret < 0) {
+ 		dev_err(sdev->dev,
+ 			"error: failed to register DSP DAI driver %d\n", ret);
+-		goto fw_run_err;
++		goto fw_trace_err;
+ 	}
  
+ 	ret = snd_sof_machine_register(sdev, plat_data);
+ 	if (ret < 0)
+-		goto fw_run_err;
++		goto fw_trace_err;
+ 
+ 	/*
+ 	 * Some platforms in SOF, ex: BYT, may not have their platform PM
+@@ -245,6 +245,8 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
  	return 0;
  
--#if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
- fw_trace_err:
- 	snd_sof_free_trace(sdev);
+ #if !IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)
++fw_trace_err:
++	snd_sof_free_trace(sdev);
  fw_run_err:
-@@ -255,22 +254,10 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 	snd_sof_free_debug(sdev);
- dbg_err:
- 	snd_sof_remove(sdev);
--#else
- 
--	/*
--	 * when the probe_continue is handled in a work queue, the
--	 * probe does not fail so we don't release resources here.
--	 * They will be released with an explicit call to
--	 * snd_sof_device_remove() when the PCI/ACPI device is removed
--	 */
--
--fw_trace_err:
--fw_run_err:
--fw_load_err:
--ipc_err:
--dbg_err:
--
--#endif
-+	/* all resources freed, update state to match */
-+	sdev->fw_state = SOF_FW_BOOT_NOT_STARTED;
-+	sdev->first_boot = true;
- 
- 	return ret;
- }
-@@ -353,10 +340,12 @@ int snd_sof_device_remove(struct device *dev)
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
- 		cancel_work_sync(&sdev->probe_work);
- 
--	snd_sof_fw_unload(sdev);
--	snd_sof_ipc_free(sdev);
--	snd_sof_free_debug(sdev);
--	snd_sof_free_trace(sdev);
-+	if (sdev->fw_state > SOF_FW_BOOT_NOT_STARTED) {
-+		snd_sof_fw_unload(sdev);
-+		snd_sof_ipc_free(sdev);
-+		snd_sof_free_debug(sdev);
-+		snd_sof_free_trace(sdev);
-+	}
- 
- 	/*
- 	 * Unregister machine driver. This will unbind the snd_card which
-@@ -364,13 +353,15 @@ int snd_sof_device_remove(struct device *dev)
- 	 * before freeing the snd_card.
+ 	snd_sof_fw_unload(sdev);
+ fw_load_err:
+@@ -262,6 +264,7 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+ 	 * snd_sof_device_remove() when the PCI/ACPI device is removed
  	 */
- 	snd_sof_machine_unregister(sdev, pdata);
-+
- 	/*
- 	 * Unregistering the machine driver results in unloading the topology.
- 	 * Some widgets, ex: scheduler, attempt to power down the core they are
- 	 * scheduled on, when they are unloaded. Therefore, the DSP must be
- 	 * removed only after the topology has been unloaded.
- 	 */
--	snd_sof_remove(sdev);
-+	if (sdev->fw_state > SOF_FW_BOOT_NOT_STARTED)
-+		snd_sof_remove(sdev);
  
- 	/* release firmware */
- 	release_firmware(pdata->fw);
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 84290bbeebdd..a0cde053b61a 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -56,6 +56,10 @@ static int sof_resume(struct device *dev, bool runtime_resume)
- 	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
- 		return 0;
- 
-+	/* DSP was never successfully started, nothing to resume */
-+	if (sdev->first_boot)
-+		return 0;
-+
- 	/*
- 	 * if the runtime_resume flag is set, call the runtime_resume routine
- 	 * or else call the system resume routine
++fw_trace_err:
+ fw_run_err:
+ fw_load_err:
+ ipc_err:
 -- 
 2.20.1
 
