@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D0AC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 19:31:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17CB0C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 19:32:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7ED62467E
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 19:31:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 92E822467E
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 19:32:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JgTo8E3S"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7ED62467E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="se7abQEV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92E822467E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AC93836;
-	Mon, 27 Jan 2020 20:31:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AC93836
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFA19847;
+	Mon, 27 Jan 2020 20:31:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFA19847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580153516;
-	bh=h5v6QfXdE2HCPjE5V/jciJDjjiHjuTWuLuddxNzvuxM=;
+	s=default; t=1580153530;
+	bh=HAgeMPIXcdz7i6Mhi7k95bYKyAoWRUCjThNWzGUY0jU=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JgTo8E3SHtCaYqrT429ihJnoZF8d7nI0xa15FUHMMYgWPS+y1zYhOSKMhxfFskSS6
-	 kClDY3vcWzAb1hCLAdDYI+okuWTl9iEEdHE4Dthn3vVKWe90pJsDZ4LpfZJz8hJotk
-	 ef/UcJKvNFmI36noXDulCq7w5ZCaQGq2SsAiK00w=
+	b=se7abQEVdxlnas/8f3qMZ+zksuO760sI0q/kuOPAtVKTA71u2T91vTOC/2Gn/06BE
+	 vV237ZQhfMdd/m7cTebrsfLUBbbU5u/UAzGxvFIh18AWfeWOJtakcxGHQeezGR/dAo
+	 m69wwfReN94ArDiXWm4kNsLBV/saymzMeaWpOpsY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74BACF80276;
-	Mon, 27 Jan 2020 20:28:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9381CF8027B;
+	Mon, 27 Jan 2020 20:28:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE1F2F80253; Mon, 27 Jan 2020 20:28:44 +0100 (CET)
+ id 1AE1AF80218; Mon, 27 Jan 2020 20:28:44 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3445BF800C8
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 20:28:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3445BF800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF44FF8023F
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 20:28:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF44FF8023F
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 43175B19B;
+ by mx2.suse.de (Postfix) with ESMTP id 5BD82B1D3;
  Mon, 27 Jan 2020 19:28:38 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Date: Mon, 27 Jan 2020 20:28:29 +0100
-Message-Id: <20200127192831.14057-3-tiwai@suse.de>
+Date: Mon, 27 Jan 2020 20:28:31 +0100
+Message-Id: <20200127192831.14057-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200127192831.14057-1-tiwai@suse.de>
 References: <20200127192831.14057-1-tiwai@suse.de>
 MIME-Version: 1.0
 Cc: alsa-devel@alsa-project.org
-Subject: [alsa-devel] [PATCH 2/4] ASoC: rt700: Add __maybe_unused to PM
+Subject: [alsa-devel] [PATCH 4/4] ASoC: rt715: Add __maybe_unused to PM
 	callbacks
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,27 +78,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Rml4IHRoZSBjb21waWxlIHdhcm5pbmdzIGJ5IGFkZGluZyBfX21heWJlX3VudXNlZCB0byBQTSBj
-YWxsYmFja3M6CiAgc291bmQvc29jL2NvZGVjcy9ydDcwMC1zZHcuYzo1MDM6MTI6IHdhcm5pbmc6
-IOKAmHJ0NzAwX2Rldl9yZXN1bWXigJkgZGVmaW5lZCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWZ1
-bmN0aW9uXQogIHNvdW5kL3NvYy9jb2RlY3MvcnQ3MDAtc2R3LmM6NDg5OjEyOiB3YXJuaW5nOiDi
-gJhydDcwMF9kZXZfc3VzcGVuZOKAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtZnVu
-Y3Rpb25dCgpGaXhlczogN2QyYTVmOWFlNDFlICgiQVNvQzogcnQ3MDA6IGFkZCBydDcwMCBjb2Rl
+YWxsYmFja3M6CiAgc291bmQvc29jL2NvZGVjcy9ydDcxNS1zZHcuYzo1NjY6MTI6IHdhcm5pbmc6
+IOKAmHJ0NzE1X2Rldl9yZXN1bWXigJkgZGVmaW5lZCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWZ1
+bmN0aW9uXQogIHNvdW5kL3NvYy9jb2RlY3MvcnQ3MTUtc2R3LmM6NTUyOjEyOiB3YXJuaW5nOiDi
+gJhydDcxNV9kZXZfc3VzcGVuZOKAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVd1bnVzZWQtZnVu
+Y3Rpb25dCgpGaXhlczogZDFlZGUwNjQxYjA1ICgiQVNvQzogcnQ3MTU6IGFkZCBSVDcxNSBjb2Rl
 YyBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ci0t
-LQogc291bmQvc29jL2NvZGVjcy9ydDcwMC1zZHcuYyB8IDQgKystLQogMSBmaWxlIGNoYW5nZWQs
+LQogc291bmQvc29jL2NvZGVjcy9ydDcxNS1zZHcuYyB8IDQgKystLQogMSBmaWxlIGNoYW5nZWQs
 IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
-Y29kZWNzL3J0NzAwLXNkdy5jIGIvc291bmQvc29jL2NvZGVjcy9ydDcwMC1zZHcuYwppbmRleCBh
-NGI5NTQyNTg4NmYuLmQ0ZTBmOTUzYmNjZSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9y
-dDcwMC1zZHcuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NzAwLXNkdy5jCkBAIC00ODYsNyAr
-NDg2LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzZHdfZGV2aWNlX2lkIHJ0NzAwX2lkW10gPSB7
-CiB9OwogTU9EVUxFX0RFVklDRV9UQUJMRShzZHcsIHJ0NzAwX2lkKTsKIAotc3RhdGljIGludCBy
-dDcwMF9kZXZfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpCitzdGF0aWMgaW50IF9fbWF5YmVf
-dW51c2VkIHJ0NzAwX2Rldl9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKIHsKIAlzdHJ1Y3Qg
-cnQ3MDBfcHJpdiAqcnQ3MDAgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKIApAQCAtNTAwLDcgKzUw
-MCw3IEBAIHN0YXRpYyBpbnQgcnQ3MDBfZGV2X3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQog
-CiAjZGVmaW5lIFJUNzAwX1BST0JFX1RJTUVPVVQgMjAwMAogCi1zdGF0aWMgaW50IHJ0NzAwX2Rl
+Y29kZWNzL3J0NzE1LXNkdy5jIGIvc291bmQvc29jL2NvZGVjcy9ydDcxNS1zZHcuYwppbmRleCA2
+ZDg5MmM0NGM1MjIuLjY0ZWY1NmVmMDMxOCAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9y
+dDcxNS1zZHcuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NzE1LXNkdy5jCkBAIC01NDksNyAr
+NTQ5LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzZHdfZGV2aWNlX2lkIHJ0NzE1X2lkW10gPSB7
+CiB9OwogTU9EVUxFX0RFVklDRV9UQUJMRShzZHcsIHJ0NzE1X2lkKTsKIAotc3RhdGljIGludCBy
+dDcxNV9kZXZfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpCitzdGF0aWMgaW50IF9fbWF5YmVf
+dW51c2VkIHJ0NzE1X2Rldl9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKIHsKIAlzdHJ1Y3Qg
+cnQ3MTVfcHJpdiAqcnQ3MTUgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKIApAQCAtNTYzLDcgKzU2
+Myw3IEBAIHN0YXRpYyBpbnQgcnQ3MTVfZGV2X3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQog
+CiAjZGVmaW5lIFJUNzE1X1BST0JFX1RJTUVPVVQgMjAwMAogCi1zdGF0aWMgaW50IHJ0NzE1X2Rl
 dl9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQorc3RhdGljIGludCBfX21heWJlX3VudXNlZCBy
-dDcwMF9kZXZfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikKIHsKIAlzdHJ1Y3Qgc2R3X3NsYXZl
-ICpzbGF2ZSA9IGRldl90b19zZHdfZGV2KGRldik7CiAJc3RydWN0IHJ0NzAwX3ByaXYgKnJ0NzAw
+dDcxNV9kZXZfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikKIHsKIAlzdHJ1Y3Qgc2R3X3NsYXZl
+ICpzbGF2ZSA9IGRldl90b19zZHdfZGV2KGRldik7CiAJc3RydWN0IHJ0NzE1X3ByaXYgKnJ0NzE1
 ID0gZGV2X2dldF9kcnZkYXRhKGRldik7Ci0tIAoyLjE2LjQKCl9fX19fX19fX19fX19fX19fX19f
 X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
 ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
