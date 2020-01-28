@@ -2,68 +2,97 @@ Return-Path: <SRS0=lFLu=3S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 346D6C33CB2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39495C3F68F
 	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:51:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A30F20732
+	by mail.kernel.org (Postfix) with ESMTPS id 489D020720
 	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:51:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hjWnYSsz"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A30F20732
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JYticdVI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gWfQ/Q+5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 489D020720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A25C166C;
-	Wed, 29 Jan 2020 12:44:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A25C166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58A1A166D;
+	Wed, 29 Jan 2020 12:34:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58A1A166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580298304;
-	bh=tr8vDExogJIQhze5QhWpYTWS0fWzjfmWy3g1o6WPFik=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hjWnYSszmzaRbHIbVstQbs5UsgQw4yCshv69j8HcSf5Je9mfM1nZMuCuAa4D7Tt/e
-	 PlArZ+Bj/gE37+bMqlUvB2VKMuGwo7eoim58pMKdZOjEGho5aNkZFpt4o90F0fUQqi
-	 t9wG9Qt6JYMIvUxJ2u1Tb1dGEhL6wH/aXA79EO2c=
+	s=default; t=1580297701;
+	bh=vocIdaghoEOea0ejPWNairoF8kdBZ1rXykIPu9M/HQA=;
+	h=To:From:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JYticdVI2hjRS95v8sYxi1R9JiJ7vGKyqSPv2Jdf2ZzXPhmlMx/Pqt7c0542ESrg+
+	 FZRABEZshZj3qSdv0cVTLH3yssRfiSQ3+nXiCCgj+yaaqiKRXhWgwtWF3jOr6/N47Z
+	 nsN4o/LlAVtSDvy9SXYjgxhcwWU2L0IuUKYK67QU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B91FF80218;
-	Wed, 29 Jan 2020 12:44:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DCF7F80123;
+	Wed, 29 Jan 2020 12:33:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96CDCF8021E; Wed, 29 Jan 2020 12:44:11 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C7C10F80123
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 12:44:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7C10F80123
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A19251FB;
- Wed, 29 Jan 2020 03:44:06 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2ACD3F67D;
- Wed, 29 Jan 2020 03:43:59 -0800 (PST)
-Date: Wed, 29 Jan 2020 11:43:58 +0000
-From: Mark Brown <broonie@kernel.org>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Message-ID: <20200129114358.GC3928@sirena.org.uk>
-References: <20200128104356.16570-1-cezary.rojewski@intel.com>
- <20200128104356.16570-11-cezary.rojewski@intel.com>
- <CAFQqKeWb4X1C0fn0HckOS-fsm6OTv2onUM0yYw4ETw0qFKsWbw@mail.gmail.com>
+ id 96D6EF8014B; Tue, 28 Jan 2020 12:51:36 +0100 (CET)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DFDCEF800FF
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 12:51:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFDCEF800FF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="gWfQ/Q+5"
+Received: by mail-wm1-x32d.google.com with SMTP id a9so2194725wmj.3
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 03:51:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=to:from:subject:message-id:date:user-agent:mime-version
+ :content-transfer-encoding:content-language;
+ bh=/Nop3yhdKygAvT9F93tUxq5UTFs8tG2vCvT0L8EqIf8=;
+ b=gWfQ/Q+5/xsxtYL+lFyqO27FBSkQB+UyYaTo6EJUP6iQGWdmdSUSVYHIMY0YwRq5R/
+ wP2qqTXD1p5OHAP8G9wTKU5mEK5mMKMVWdgwarONykpwKbXVFuwJg9CHn958qBcf4umk
+ G5ROdIonPCXbhU8CAabuh4tWP72dpGBBD7N28TSX7sKgjrP709gnUy7wfCQFlMbTpcEu
+ vGHg/67V6zK/zejmLaMLh9wAiM0bByM/owva7Wge5IdwVAQ8JvHVFhAt85U3Ee84sN8F
+ ohFx+YkCMrlZWYCqvYX1lAH/JmKDYeodRX/FjWbeGnqY+t8WxgWjvw7dO+Ou41YFEnEo
+ UoaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+ :mime-version:content-transfer-encoding:content-language;
+ bh=/Nop3yhdKygAvT9F93tUxq5UTFs8tG2vCvT0L8EqIf8=;
+ b=BAcdCMn0SiRh70X4yBFnJZcUjnd8A8vAKseSIVXev8mp0I+CvNdIiFHvdpmfQ1qXbH
+ RdFD9pARHvOyua6xjOSEbBhUzrtEaXrpORwQbdPuu/0JrJ3Sj+6ubOQqhqWy4MF5qYR9
+ ZL7K2pf5//eHEY26duzRRaclEtcg29Tpem1YkblRUVXKcgXt9s001ibm18cu58hvdKsg
+ kRjGR5M0ILyIDVzZDVu+XjhBlkeOa6gp/C9EaETjQh3fWCT6hGjCkRp/yn3WaxK31syD
+ YOkDxTWUwxEhgy4aWQuEVd0KqjU5Nq2qq+NQiznMjcea/YVIQSzLuVM0HFFm8YbyIdry
+ LKUw==
+X-Gm-Message-State: APjAAAX95nLbkJmooKwKyNUI5IGdWF8jIgOoEc8EBIs/swrxXB2xBSai
+ xmcy687jZ8nC5s06EwKNZWF9lGKvscI=
+X-Google-Smtp-Source: APXvYqxTabut6u/lqGM30sgYEuvZ0DBxt5MmbpN3ieTH4Rn+qEFB4woq59CC1avcSFft8LSn0KfrpA==
+X-Received: by 2002:a05:600c:21c6:: with SMTP id
+ x6mr4607071wmj.177.1580212292418; 
+ Tue, 28 Jan 2020 03:51:32 -0800 (PST)
+Received: from [130.208.171.199] (vr2-pc38.rhi.hi.is. [130.208.171.199])
+ by smtp.gmail.com with ESMTPSA id y12sm2621905wmj.6.2020.01.28.03.51.31
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 28 Jan 2020 03:51:31 -0800 (PST)
+To: alsa-devel@alsa-project.org
+From: Pedro Costa <p.simoes.costa@gmail.com>
+Message-ID: <719056d4-aa45-8186-697c-76c1e89492ce@gmail.com>
+Date: Tue, 28 Jan 2020 11:49:53 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <CAFQqKeWb4X1C0fn0HckOS-fsm6OTv2onUM0yYw4ETw0qFKsWbw@mail.gmail.com>
-X-Cookie: Chocolate chip.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com,
- Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v3 10/11] ASoC: SOF: Provide probe debugfs
- support
+Content-Language: en-US
+X-Mailman-Approved-At: Wed, 29 Jan 2020 12:33:36 +0100
+Subject: [alsa-devel] issue with alsa lib (ucm vs ucm2 folders?)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,62 +105,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3259393945073783672=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Dear all,
 
---===============3259393945073783672==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c3bfwLpm8qysLVxt"
-Content-Disposition: inline
+My apologies in advance for a very non-technical feedback from a non-expert.
 
+I was unable to get sound output after updating alsa-lib on my Manjaro 
+Linux system. I managed to get it working after downgrading it to 
+version 1.1.9.2. It seems that I faced the same problem as reported here:
 
---c3bfwLpm8qysLVxt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+https://bbs.archlinux.org/viewtopic.php?id=251113
 
-On Tue, Jan 28, 2020 at 09:54:41AM -0800, Sridharan, Ranjani wrote:
-> On Tue, Jan 28, 2020 at 2:51 AM Cezary Rojewski <cezary.rojewski@intel.co=
-m>
-> wrote:
->=20
-> > Define debugfs subdirectory delegated for IPC communication with DSP.
-> > Input format: uint,uint,(...) which are later translated into DWORDS
-> > sequence and further into instances of struct of interest given the IPC
+You may already be aware of the issue, but just in case I would like be 
+sure that you are!
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+Best regards,
 
---c3bfwLpm8qysLVxt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4xb/0ACgkQJNaLcl1U
-h9DY8Af+NO4gs5nb0VA6mGYK1A7v3lX60E409vGN+POWWCt+VfpjsABz3oxm87iN
-VaLpRvw8SvmJXJlOuW/HjZGpoY8LhmeSILjfo/9EMUWKA9ErxIth3ymAEkD7dG8+
-4/UoWS07BgiUOw0ZmP0kPnmJJJeqS8jf1CayxTrNgT0RK8FlXkCiXoHykUm4npEj
-OX+xXj0GvCT0n2GQSu4a1TjEUQqDr1L8CeGvPCvwIiA6JxFMEI+6uu1zH+vN4R/2
-pcAiNF8BdUxypHCOWzcE4nPkq2TZN1CFkrYf9C4nAXHzhGozh2dfecQaN8xZDhWe
-fggM6ystLxAPGQ++kPmZJ8nGdaPuJg==
-=F6XX
------END PGP SIGNATURE-----
-
---c3bfwLpm8qysLVxt--
-
---===============3259393945073783672==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Pedro Costa
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3259393945073783672==--
