@@ -2,73 +2,100 @@ Return-Path: <SRS0=GCF0=3R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6C41C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 21:12:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E315C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 22:29:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 315EC22522
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 21:12:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6BF021739
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 22:29:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="smkRb+Lr"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 315EC22522
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iUyhl439";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JnBRA1xX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6BF021739
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 704091657;
-	Tue, 28 Jan 2020 22:11:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 704091657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F84A165F;
+	Tue, 28 Jan 2020 23:28:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F84A165F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580245968;
-	bh=Sk5TgSYoFadu8YlhLj7hfSJA5/KcGnktk0o3ThR+/1M=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1580250571;
+	bh=5aVFRRgYnWno60qBg45mXEz0HtTZEmuDJKW+H59kub0=;
+	h=References:In-Reply-To:From:Date:To:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=smkRb+LrhZ+Ble+itR7ip7GfF6nq0HtIzZjQyXcM7OnYryU6bPA6CpOM3/RoTHh8X
-	 cxLtn2W5jIZt2q8TNeH67yIa2WZunXUdNOkFwVwjvmr8eGtPBIp1Ls6y6W29gqzEH6
-	 sC/zBqjbbesXc4/fpqRKfPHlYMlpAGS0nqJ70xig=
+	b=iUyhl4394Tb4jCfVcj049mzPyRdz5/PqSgb03NijZ+jsTBoKefQROTRX91IIYJrmq
+	 gofWMroARi1+UqyG6XCRIaHDIYO+6ZjBNpSOtwsVPpQUemikFQOxhWHDfEp3WuLQ7o
+	 90sf0QiaUSt1FLiy1AKZ9RFQZ2QaDxbSCfBP6H8o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB595F8014B;
-	Tue, 28 Jan 2020 22:11:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 900CFF8014B;
+	Tue, 28 Jan 2020 23:28:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A13B8F80150; Tue, 28 Jan 2020 22:11:56 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 16E41F80150; Tue, 28 Jan 2020 23:28:37 +0100 (CET)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E679F800FF
- for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 22:11:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E679F800FF
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 28 Jan 2020 13:11:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,375,1574150400"; d="scan'208";a="261576935"
-Received: from lhan5-mobl.amr.corp.intel.com (HELO [10.254.38.242])
- ([10.254.38.242])
- by fmsmga002.fm.intel.com with ESMTP; 28 Jan 2020 13:11:39 -0800
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-References: <20200128104356.16570-1-cezary.rojewski@intel.com>
- <7817f679-fb6f-ad36-aeee-5ee62034a735@linux.intel.com>
- <462e700e-96e8-8941-5de1-fd8ef5f6c18f@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <450d7f9a-239a-0251-a58f-60591cc92736@linux.intel.com>
-Date: Tue, 28 Jan 2020 15:11:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 28A83F80123
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 23:28:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28A83F80123
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="JnBRA1xX"
+Received: by mail-ed1-x52b.google.com with SMTP id m13so16462811edb.6
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 14:28:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=Tab0u8Zp/wRWZyyTRm9QlUdkOU05qv/SPBWJKk6h5S0=;
+ b=JnBRA1xXbp40jmT8+/5AUEdWcwMOZISLM033h5+zMAN1uoncfRATKovFqxsjhBzL1R
+ b9TG6yKfwtLncLIthunVhzV4KCMUls/pIkBmfUbJLfXkNEHKfrZ7pXO/3hdIMdJ9BKpm
+ ndgbvu8+AzX7O/Bvp6belWGYQjR3eb2ZuIdf5qpD0dmbGpXuIlmo5Z1Evxk2v5rsq2WM
+ jJKPLaCeO6aTLdApyLzxZBQ5QtqD0DbZGVUNmYyo4fkXwajpDRfh6rg+NgojGPZmT/a1
+ 0Z6P6Sg70lr3lbA/2PUTOFswLdfaTriT99ilwfSROcB06KJnREsoxcBf/Nuh3H9zCPB2
+ Ss3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=Tab0u8Zp/wRWZyyTRm9QlUdkOU05qv/SPBWJKk6h5S0=;
+ b=f6Z0sqcWAo6xpDoeNdfOGj9Id8fGu2+qDv/xxWe+NJqs9cm698ZKouSyM7a6h46K71
+ 57F7jcCYgjW3YTJZTZ28DnmnMLMBeJfrQaGqz/JJzwI+ww9lJ/BPnje7HvI2s8r8NY0Y
+ 04PVxsQ2w2ZJJqhSqxHEC/QY1bh97HcsxC3Q1LAGuUU2nfNPfjRGMVJ70GKsBdq7ruNI
+ QmOHcnuD5lZ3Auq0yk5M4252KZY3acV7Fbhel7WDvKEecpHMeLuenEI9ea0+Rd4W/ErK
+ VyoodRbcLedYNFPsKobFbSvwSapZmwzNhWxqFF5KHVrYYbaoaVWQK3SZh+Hc7QWkBzKp
+ Rjjw==
+X-Gm-Message-State: APjAAAXDCb4JdHmogiCbj69LX44Y9b9bv3gkRzZWOOXuro6/+nKpgdSk
+ F47hBeD36Xd4hnx8QFJPO5Kezk8aAx+fV7NyKMM=
+X-Google-Smtp-Source: APXvYqxlrwEZqDPpDMnxRiyPLWtRJ+deqlwPTEV6znfaFA84m+iFLzidD0ZuiKTVgSJo8mohFTu6lpfveWRPEF+kAxc=
+X-Received: by 2002:a17:906:82cb:: with SMTP id
+ a11mr5133478ejy.206.1580250513072; 
+ Tue, 28 Jan 2020 14:28:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <462e700e-96e8-8941-5de1-fd8ef5f6c18f@intel.com>
-Content-Language: en-US
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com
-Subject: Re: [alsa-devel] [PATCH v3 00/11] ASoC: SOF: Data probing
+References: <CAK5Eu=tVQjBn+YvsHOLqSEir5aV8Q0hA1OgFiJZYdqnspdMz-Q@mail.gmail.com>
+ <CAK5Eu=snx3s9r9hoeF4Th0V0YXJYa=7PKUqDn3W4NdWZben-zg@mail.gmail.com>
+ <CAK5Eu=v2x+zFhCygKq8DPWd+CH5JTpZEayg=k2NvaTY7DUNA9g@mail.gmail.com>
+ <CAK5Eu=ucuW6Pp=+j7afPoYgPUdFXjh+PZ-PK6mc+m61M80ZndA@mail.gmail.com>
+ <20200119164335.GA11974@workstation>
+ <CAK5Eu=sS8kMe5hCPgTx+V6AjzcCo3vN73tEQ1f=kY03Y2_CcJQ@mail.gmail.com>
+ <20200120141901.GA32472@workstation>
+ <CAK5Eu=tX=87xD0xt-UdrDWTsxw9Y4xOrvAV8pHKyYC7tau==XA@mail.gmail.com>
+ <20200125031801.GA5554@workstation>
+In-Reply-To: <20200125031801.GA5554@workstation>
+From: Daniel Jozsef <daniel.jozsef@gmail.com>
+Date: Tue, 28 Jan 2020 22:28:20 +0000
+Message-ID: <CAK5Eu=tV+T4OupWNToLE8nfG00Y68kiTRcUGia9YOFtzYQNSRg@mail.gmail.com>
+To: Daniel Jozsef <daniel.jozsef@gmail.com>, ffado-user@lists.sourceforge.net, 
+ alsa-devel@alsa-project.org
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Subject: Re: [alsa-devel] Toneweal / Trigaudio FW66 device
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,66 +108,149 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hey Takashi,
 
->> I am fine with this update, but I just thought of an obscure case and 
->> couldn't find the answer on my own.
->>
->> These probe points are enabled/disabled with direct IPC calls. Once 
->> those routines have been called, I don't see any context maintained by 
->> the driver (other than the stream tag for the extractor).
-> 
-> These do not need to be maintained by the driver at all, it's FW's job 
-> actually. Notice the existence of _INFO getters for probe_points and 
-> dmas. FW caches all the necessary info for us and when required, host 
-> can request for it via IPCs.
+I'm a little baffled by what my device just did. :P
 
-D'oh. That's a major disconnect I am afraid.
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000100ffff00
+response: 000: 0c 60 02 c0 00 01 00 ff ff 00 00                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000101ffff00
+response: 000: 0c 60 02 c0 00 01 01 ff ff 00 00                .`.........
+(<- didn't fail)
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000102ffff00
+response: 000: 0c 60 02 c0 00 01 02 ff ff 00 00                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000103ffff00
+response: 000: 0c 60 02 c0 00 01 03 ff ff 00 00                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000104ffff00
+response: 000: 0c 60 02 c0 00 01 04 ff ff 00 02                .`.........
+(<- didn't fail)
 
-When the the PCI device enters D3 on APL+, the power rails are turned 
-off and the SOF firmware does not save any context. On D0 resume, the 
-power rails are turned back on, firmware is downloaded again, and 
-ALSA/ASoC/topology cores restore the context with a set of IPCs.
+In fact...
 
-The behavior you describe might be relevant for previous versions of the 
-closed-source firmware but not for SOF as of today. The 
-firmware-initiated context save/restore just does not exist.
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000105ffff00
+response: 000: 0c 60 02 c0 00 01 05 ff ff 00 03                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000106ffff00
+response: 000: 08 60 02 c0 00 01 06 ff ff 00                   .`........
+(<- shorter)
+$ ./firewire-request /dev/fw1 fcp 0x016002c0000107ffff00
+response: 000: 08 60 02 c0 00 01 07 ff ff 00                   .`........
+$ ./firewire-request /dev/fw1 fcp 0x016002c00001ffffff00
+response: 000: 08 60 02 c0 00 01 ff ff ff 00                   .`........
+(<-srsly?)
 
-I also wonder if a firmware-only solution would work, the DMA stream 
-tags are allocated on the host side, so on resume you could have a 
-coherency issue with possibly mismatches.
+As for the second batch:
 
-> Driver makes use of such operation during sof_probe_compr_free(). Before 
-> _probe_deinit() is called, all the probe_points should be disconnected 
-> and all the dmas detached. Since this patchset addresses extraction-only 
-> (from the runtime point of view), the later is ignored.
-> 
->>
->> So here's my question: what happens if there is a pm_runtime or system 
->> suspend after playing with debugfs to configure those probes? Would 
->> all context be lost and the user needs to re-enable all probes?
->>
->> Also what happens if there is a system suspend while an extractor is 
->> opened, would it be restored? I imagine a pm_runtime suspend is not 
->> possible since the device is active then.
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010100ffff00
+response: 000: 0c 60 02 c0 01 01 00 ff ff 00 00                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010101ffff00
+response: 000: 0c 60 02 c0 01 01 01 ff ff 00 00                .`.........
+(<- didn't fail)
 
-> As stated, there is no cache on the host side, caching is left up to FW 
-> alone. Debugfs files act only as a ipc-proxies. As probes require device 
-> to be up and running, suspend is not possible. After suspend, I believe 
-> FW context would be lost so all the actions had to be repeated.
-> 
-> I'd suggest consulting SOF FW team in regard to probes design if you 
-> want to pursue the suspend case - whether it is achievable or not.
+So again...
 
-That team is in your building :-)
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010102ffff00
+response: 000: 0c 60 02 c0 01 01 02 ff ff 00 00                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010103ffff00
+response: 000: 0c 60 02 c0 01 01 03 ff ff 00 02                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010104ffff00
+response: 000: 0c 60 02 c0 01 01 04 ff ff 00 03                .`.........
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010105ffff00
+response: 000: 08 60 02 c0 01 01 05 ff ff 00                   .`........
+(<- shorter)
+$ ./firewire-request /dev/fw1 fcp 0x016002c0010106ffff00
+response: 000: 08 60 02 c0 01 01 06 ff ff 00                   .`........
+$ ./firewire-request /dev/fw1 fcp 0x016002c001010fffff00
+response: 000: 08 60 02 c0 01 01 0f ff ff 00                   .`........
 
-suspend/resume support is a requirement for all SOF capabilities - no 
-exceptions. At minimum, you would want to do a pm_runtime_get_sync() to 
-prevent runtime_pm from kicking-in while probes are enabled.
+Honestly I have no idea what is going on. :D
+
+Daniel
+
+On Sat, Jan 25, 2020 at 3:18 AM Takashi Sakamoto <o-takashi@sakamocchi.jp>
+wrote:
+
+> Hi,
+>
+> On Fri, Jan 24, 2020 at 10:16:53PM +0000, Daniel Jozsef wrote:
+> > $ ./firewire-request /dev/fw1 fcp 0x01ff3000ffffffff
+> > response: 000: 0c ff 30 07 0f 00 23 27                         ..0...#'
+> > $ ./firewire-request /dev/fw1 fcp 0x01ff3100ffffffff
+> > response: 000: 0c ff 31 00 08 60 ff ff                         ..1..`..
+> > $ ./firewire-request /dev/fw1 fcp 0x01ff0200ffffffff
+> > response: 000: 0c ff 02 00 02 02 04 03                         ........
+> > $ ./firewire-request /dev/fw1 fcp 0x01080200ffffffff
+> > response: 000: 0c 08 02 00 04 01 ff ff                         ........
+> > $ ./firewire-request /dev/fw1 fcp 0x01600200ffffffff
+> > response: 000: 0c 60 02 00 06 05 ff ff                         .`......
+> >
+> > From what I gather from the reference you linked, this seems more or less
+> > what's expected, though I'm not entirely sure yet what it means for the
+> > device to have 6 destination and 5 source plugs on the music subunit...
+> :D
+> > (If I read the specs correctly...)
+>
+> You got it correctly. Here, let's back to FFADO log:
+>
+> > Error (bebob_avplug.cpp)[ 237] discoverPlugType: Plug does not implement
+> extended plug info plug type info command
+> > Error (bebob_avplug.cpp)[ 120] discover: discover: Could not discover
+> plug type (1,1,0,0,1)
+> > Error (avc_subunit.cpp)[ 189] discoverPlugs: plug discover failed
+> > Error (avc_subunit.cpp)[ 131] discoverPlugs: destination plug
+> discovering failed
+> > Error (avc_subunit.cpp)[  99] discover: plug discovery failed
+> > Error (avc_unit.cpp)[ 283] enumerateSubUnits: enumerateSubUnits: Could
+> not discover subunit_id =  0, subunit_type =  1 (Audio)
+> > Error (avc_unit.cpp)[ 177] discover: Could not enumerate sub units
+>
+> It's my mistake to interpret the target subunit to which the command
+> fails. It's 'Audio' subunit, not 'Music' subunit...
+>
+> > plug type (1,1,0,0,1)
+> 1 = node ID (=0xFF01)
+> 1 = subunit type (=audio)
+> 0 = subunit ID
+> 0 = direction (=input)
+> 1 = plug ID (=0x01)
+>
+> The EXTENDED PLUG INFO command is one of specific command for BeBoB
+> solution and its specification is closed. In your case, 4 plugs are
+> detected as destination plug and 1 plug as source plug in Audio
+> subunit by AV/C PLUG INFO command for Audio subunit, thus below
+> commands are expected to return valid information as long as
+> implemented correctly:
+>
+> (4 destination plugs = 4 input plugs)
+> (AV/C EXTENDED PLUG INFO command for input plugs of Music subunit)
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0000100ffff00
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0000101ffff00 (<-)
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0000102ffff00
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0000103ffff00
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0000104ffff00 (should fail)
+>
+> (1 source plug = 1 output plug)
+> (AV/C EXTENDED PLUG INFO command for output plugs of Music subunit)
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0010100ffff00
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0010101ffff00 (should fail)
+>
+> However, some vendors seem to implement the above with less care of
+> compatibility, as long as I know. In your case, below command might
+> fail:
+>
+> $ ./firewire-request /dev/fw1 fcp 0x016002c0000101ffff00 (<-)
+>
+> I'd like you to execute the above commands and share their responses.
+>
+>
+> Regards
+>
+> Takashi Sakamoto
+>
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
