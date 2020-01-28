@@ -6,62 +6,56 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E045C32771
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 00:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9016C32771
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 01:37:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 812DD214AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 00:32:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4BB472173E
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 01:37:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OAfI3DEt"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 812DD214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UKxXNDCO"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BB472173E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D76DA14E;
-	Tue, 28 Jan 2020 01:32:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D76DA14E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A789742;
+	Tue, 28 Jan 2020 02:36:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A789742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580171574;
-	bh=K8wd18vFeCYLjpAck0WI2cM+xHEizbxQkkD5m5y+xrQ=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=OAfI3DEtnG4LfHYuseUFvHfqppcbl6MbMtrlQSoh3LiSzvI/eY0mCwAoFye3TBOE8
-	 yhtb7JvogoK81qc6wSnkRigqlQoEhcego6O9DSEHR6h15MJe+208zUD82zEbgX12Fm
-	 4AZepjQjchXcKSZv+sUP6IP49Dipkev7lFKtGOVI=
+	s=default; t=1580175428;
+	bh=f//VRDXB+h/CgCbUQFPqDZ+jIUR92qJy2/cygY6W0kk=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UKxXNDCOJXANEAuDHo9ByvaydJZPpTgDc/3W+6nUSNXNyEx0o6Srd0vQROLV5MmIF
+	 L1VzUkFp6f6hv4c1wuUoJBUcMqRBZCEfggQFAmRBt2Wdv9YXlrsftCp0gccXWoho3F
+	 0eFlOpyasjcSwZ1ar/JO9WQGyxZayPoReUwQFJIk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A9B1F80218;
-	Tue, 28 Jan 2020 01:32:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D79FF80218;
+	Tue, 28 Jan 2020 02:36:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C982F8021E; Tue, 28 Jan 2020 01:32:03 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id CB007F80085
- for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 01:31:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB007F80085
-Date: 28 Jan 2020 09:31:52 +0900
-X-IronPort-AV: E=Sophos;i="5.70,371,1574089200"; d="scan'208";a="37760349"
+ id 83E38F8021E; Tue, 28 Jan 2020 02:36:16 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id BE725F80085
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 02:36:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE725F80085
+Date: 28 Jan 2020 10:36:06 +0900
+X-IronPort-AV: E=Sophos;i="5.70,371,1574089200"; d="scan'208";a="37551603"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 28 Jan 2020 09:31:52 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 28 Jan 2020 10:36:06 +0900
 Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E3EA84005E22;
- Tue, 28 Jan 2020 09:31:52 +0900 (JST)
-Message-ID: <877e1c4e13.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8E0824007F26;
+ Tue, 28 Jan 2020 10:36:06 +0900 (JST)
+Message-ID: <874kwg4b21.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-In-Reply-To: <CAFQqKeUjcgXQv8HdyMyefER+1A3awY3u0wabzeEYp2z5UGF4nQ@mail.gmail.com>
-References: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
- <87zhe9mzx3.wl-kuninori.morimoto.gx@renesas.com>
- <CAFQqKeUjcgXQv8HdyMyefER+1A3awY3u0wabzeEYp2z5UGF4nQ@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 5/7] ASoC: soc-pcm: goto error after trying
-	all component open
+To: Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: [alsa-devel] [PATCH v2 0/7] ASoC: soc-pcm cleanup step2
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,52 +74,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Sridharan
+Hi Mark
 
-Thank you for your feedback
+These are v2 of soc-pcm cleanup step2.
 
->     @@ -463,47 +463,32 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
->             hw->rate_max = min_not_zero(hw->rate_max, rate_max);
->      }
->    
->     -static int soc_pcm_components_open(struct snd_pcm_substream *substream,
->     -                                  struct snd_soc_component **last)
->     +static int soc_pcm_components_open(struct snd_pcm_substream *substream)
->      {
->             struct snd_soc_pcm_runtime *rtd = substream->private_data;
->             struct snd_soc_component *component;
->             int i, ret = 0;
->    
->             for_each_rtd_components(rtd, i, component) {
->     -               *last = component;
->     +               ret |= snd_soc_component_module_get_when_open(component);
->     +               ret |= snd_soc_component_open(component, substream);
->     +       }
->    
->     -               ret = snd_soc_component_module_get_when_open(component);
->     -               if (ret < 0) {
->     -                       dev_err(component->dev,
->     -                               "ASoC: can't get module %s\n",
->     -                               component->name);
->     -                       return ret;
->     -               }
->     +       if (ret < 0)
->     +               dev_err(component->dev,
->     +                       "ASoC: error happen during open component %s: %d\n",
->     +                       component->name, ret);
-> 
-> Hi Morimoto-san,
-> 
-> Wouldn't the component here always be the last component in the list of rtd components? Should this error log be moved inside
-> the for_each_rtd_components() {} above?
+Kuninori Morimoto (7):
+  ASoC: soc-pcm: add snd_soc_runtime_action()
+  ASoC: soc-pcm: adjustment for DAI member 0 reset
+  ASoC: soc-pcm: add for_each_dapm_widgets() macro
+  ASoC: soc-pcm: goto error after trying for_each_rtd_codec_dai
+  ASoC: soc-pcm: goto error after trying all component open
+  ASoC: soc-pcm: move soc_pcm_close() next to soc_pcm_open()
+  ASoC: soc-pcm: tidyup soc_pcm_open() order
 
-Yeah, indeed.
-Will fix
+ include/sound/soc-dapm.h |   5 +
+ sound/soc/soc-dapm.c     |   8 +-
+ sound/soc/soc-pcm.c      | 265 +++++++++++++++++++++--------------------------
+ 3 files changed, 123 insertions(+), 155 deletions(-)
 
-Thank you for your help !!
-Best regards
----
-Kuninori Morimoto
+-- 
+2.7.4
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
