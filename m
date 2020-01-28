@@ -2,65 +2,90 @@ Return-Path: <SRS0=GCF0=3R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9289C33CB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 09:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80C0AC33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 10:06:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 75DCD20663
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 09:51:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0C3232467B
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 10:06:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b1/UEeiD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75DCD20663
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QAzbI9F7";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="XpCBLQUb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C3232467B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A81591658;
-	Tue, 28 Jan 2020 10:50:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A81591658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AAF01658;
+	Tue, 28 Jan 2020 11:05:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AAF01658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580205066;
-	bh=HuCG5oAStQszzcjMC9RjWDs9W9I815KpTlSAfCV/IKw=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=b1/UEeiDfngHR6zo+BK3baZZ+gMYDrbz9mohsKc4Az6Q28KFz2T4qs37vYIVwl+Mu
-	 cQgjEpkEsKZqWM/IdMoTmJv/pQ3Vye7IzY6VEdcXpm2VN74aKLciKy8Enu7dA64RQ+
-	 LHsbRimA2sX3dmzD4NFPPD51XHP6Qj7jWUn7jQy0=
+	s=default; t=1580205987;
+	bh=0NFbZWrL+HHk3YRGg5C5UwbfikHfdhkb1RDHkPJKwZk=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QAzbI9F7tlaY7LsAr0N2XwkGPZTLAt7Bj5V9mFzzpL244sXYID0cmV8pjphCfN6PN
+	 go6w4r1IEgefYzTC8gH/w/CP27B9wpFl6AKtN3xQSldxy2GiwiWmZfV1aWmfcPMuy5
+	 n+JeurZmnvIOipc5earXVqhzg4zWBzRiQVY6VApM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 214C5F8014B;
-	Tue, 28 Jan 2020 10:50:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE9C1F8014B;
+	Tue, 28 Jan 2020 11:05:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE550F80150; Tue, 28 Jan 2020 10:50:13 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6D543F80082; Tue, 28 Jan 2020 06:15:40 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CFED1F800FF
- for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 10:50:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFED1F800FF
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id AFB95B188;
- Tue, 28 Jan 2020 09:50:09 +0000 (UTC)
-Date: Tue, 28 Jan 2020 10:50:09 +0100
-Message-ID: <s5hwo9boqpa.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mohan Kumar <mkumard@nvidia.com>
-In-Reply-To: <20200128051508.26064-1-mkumard@nvidia.com>
-References: <20200128051508.26064-1-mkumard@nvidia.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06ACDF80082
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 06:15:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06ACDF80082
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="XpCBLQUb"
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5e2fc3600000>; Mon, 27 Jan 2020 21:15:13 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate102.nvidia.com (PGP Universal service);
+ Mon, 27 Jan 2020 21:15:27 -0800
+X-PGP-Universal: processed;
+ by hqpgpgate102.nvidia.com on Mon, 27 Jan 2020 21:15:27 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jan
+ 2020 05:15:27 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 28 Jan 2020 05:15:27 +0000
+Received: from mkumard.nvidia.com (Not Verified[10.24.34.162]) by
+ hqnvemgw03.nvidia.com with Trustwave SEG (v7, 5, 8, 10121)
+ id <B5e2fc36d0000>; Mon, 27 Jan 2020 21:15:26 -0800
+From: Mohan Kumar <mkumard@nvidia.com>
+To: <tiwai@suse.com>, <perex@perex.cz>
+Date: Tue, 28 Jan 2020 10:45:08 +0530
+Message-ID: <20200128051508.26064-1-mkumard@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1580188513; bh=LnMsVEXJSVOaTH274LZlAyN6+SbN5kZnEjHVHfvY1Qk=;
+ h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+ MIME-Version:Content-Type;
+ b=XpCBLQUbB+N/CsLzxbpSRj5bkukcmZxIkpDUYLhIIURCZEAZaFe6/0Q38WjiFwS13
+ /coy2d0MllOHPNav7vuZMfQLEc1uPZGvxKzUSh6LWkT1ja1ZSVskliC9HMceFkSxtF
+ g4fUujrpM3sTRKS57xrHB5VzmKt6FkRcr9yZHh8Jf83Zrk5I0quCRcUkXTJM+Gxy+s
+ ONP5bJAVUnn51CuwrNFayURBzSj8Xzx/PhPltdvgOZHjEEuAAjYe4zUTV2GSJncmEe
+ W8QrGYQv7LZWfgfsdCRm3CtXeUeYjqMpNB7pkRafEABQAuelD+ajixkmk355/DuBRg
+ lK4AI2pd8xW4Q==
+X-Mailman-Approved-At: Tue, 28 Jan 2020 11:05:35 +0100
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- treding@nvidia.com, tiwai@suse.com
-Subject: Re: [alsa-devel] [PATCH] ALSA: hda: Reset stream if DMA RUN bit not
+ treding@nvidia.com, Mohan Kumar <mkumard@nvidia.com>
+Subject: [alsa-devel] [PATCH] ALSA: hda: Reset stream if DMA RUN bit not
 	cleared
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -79,41 +104,84 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Jan 2020 06:15:08 +0100,
-Mohan Kumar wrote:
-> 
-> Tegra HDA has FIFO size which can hold upto 10 audio frames to support
-> DVFS. When HDA DMA RUN bit is set to 0 to stop the stream, the DMA RUN
-> bit will be cleared to 0 only after transferring all the remaining audio
-> frames queued up in the fifo. This is not in sync with spec which states
-> the controller will stop transmitting(output) in the beginning of the
-> next frame for the relevant stream.
-> 
-> The above behavior with Tegra HDA was resulting in machine check error
-> during the system suspend flow with active audio playback with below kernel
-> error logs.
-> [ 33.524583] mc-err: [mcerr] (hda) csr_hdar: EMEM address decode error
-> [ 33.531088] mc-err: [mcerr] status = 0x20000015; addr = 0x00000000
-> [ 33.537431] mc-err: [mcerr] secure: no, access-type: read, SMMU fault: none
-> 
-> This was due to the fifo has more than one audio frame when the DMA
-> RUN bit is set to 0 during system suspend flow and the timeout handling in
-> snd_hdac_stream_sync() was not designed to handle this scenario. So the
-> DMA will continue running even after timeout hit until all remaining
-> audio frames in the fifo are transferred, but the suspend flow will try
-> to reset the controller and turn off the hda clocks without the knowledge
-> of the DMA is still running and could result in mc-err.
-> 
-> The above issue can be resolved by doing stream reset with the help of
-> snd_hdac_stream_reset() which would ensure the DMA RUN bit is cleared
-> if the timeout was hit in snd_hdac_stream_sync().
-> 
-> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+Tegra HDA has FIFO size which can hold upto 10 audio frames to support
+DVFS. When HDA DMA RUN bit is set to 0 to stop the stream, the DMA RUN
+bit will be cleared to 0 only after transferring all the remaining audio
+frames queued up in the fifo. This is not in sync with spec which states
+the controller will stop transmitting(output) in the beginning of the
+next frame for the relevant stream.
 
-Applied now.  Thanks.
+The above behavior with Tegra HDA was resulting in machine check error
+during the system suspend flow with active audio playback with below kernel
+error logs.
+[ 33.524583] mc-err: [mcerr] (hda) csr_hdar: EMEM address decode error
+[ 33.531088] mc-err: [mcerr] status = 0x20000015; addr = 0x00000000
+[ 33.537431] mc-err: [mcerr] secure: no, access-type: read, SMMU fault: none
 
+This was due to the fifo has more than one audio frame when the DMA
+RUN bit is set to 0 during system suspend flow and the timeout handling in
+snd_hdac_stream_sync() was not designed to handle this scenario. So the
+DMA will continue running even after timeout hit until all remaining
+audio frames in the fifo are transferred, but the suspend flow will try
+to reset the controller and turn off the hda clocks without the knowledge
+of the DMA is still running and could result in mc-err.
 
-Takashi
+The above issue can be resolved by doing stream reset with the help of
+snd_hdac_stream_reset() which would ensure the DMA RUN bit is cleared
+if the timeout was hit in snd_hdac_stream_sync().
+
+Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+---
+ sound/hda/hdac_stream.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
+
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index 682ed39f79b0..890ff1b7a878 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -629,20 +629,27 @@ void snd_hdac_stream_sync(struct hdac_stream *azx_dev, bool start,
+ 		nwait = 0;
+ 		i = 0;
+ 		list_for_each_entry(s, &bus->stream_list, list) {
+-			if (streams & (1 << i)) {
+-				if (start) {
+-					/* check FIFO gets ready */
+-					if (!(snd_hdac_stream_readb(s, SD_STS) &
+-					      SD_STS_FIFO_READY))
+-						nwait++;
+-				} else {
+-					/* check RUN bit is cleared */
+-					if (snd_hdac_stream_readb(s, SD_CTL) &
+-					    SD_CTL_DMA_START)
+-						nwait++;
++			if (!(streams & (1 << i++)))
++				continue;
++
++			if (start) {
++				/* check FIFO gets ready */
++				if (!(snd_hdac_stream_readb(s, SD_STS) &
++				      SD_STS_FIFO_READY))
++					nwait++;
++			} else {
++				/* check RUN bit is cleared */
++				if (snd_hdac_stream_readb(s, SD_CTL) &
++				    SD_CTL_DMA_START) {
++					nwait++;
++					/*
++					 * Perform stream reset if DMA RUN
++					 * bit not cleared within given timeout
++					 */
++					if (timeout == 1)
++						snd_hdac_stream_reset(s);
+ 				}
+ 			}
+-			i++;
+ 		}
+ 		if (!nwait)
+ 			break;
+-- 
+2.17.1
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
