@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29DE1C33CB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 10:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57E3EC33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 10:09:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7B2424686
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 10:08:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DACB824686
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 10:09:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u3pdGLJ2";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="UHwM9Ysb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7B2424686
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="K1/qJs8r";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="DsrIQovh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DACB824686
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECE2A166F;
-	Tue, 28 Jan 2020 11:07:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECE2A166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 483C8167A;
+	Tue, 28 Jan 2020 11:08:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 483C8167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580206126;
-	bh=9fEW/gZELSkUOoHC/CuDdidWYmDhJA7EpMQ/KcB8W6Y=;
+	s=default; t=1580206142;
+	bh=dFpT0U4Fu197PrkB8covKcMe9PMudeweZJoLvfKfoig=;
 	h=From:To:Date:References:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u3pdGLJ2SSUGC17B8AIh8x49vt1g6++a+UdDloTxV2QmDhQxGmYIIQJxv3yNMmwvJ
-	 FwxusF13LqntWLyBV4FIIbr1LBFHeGDGk3bnWRfB1YKSeZwuzNYHG/h2QfAX75tk6T
-	 3XYcAXFJ2t6wcq7ZZ9JxH35S4Cjk4f/7E+C6Mhw4=
+	b=K1/qJs8rJG/IDxPIkfCq3PP67NCxJ/IdncBjb0JFPzi2RL6PwDUws7VivNlKwgOz5
+	 MaajYihLg3pFqol4oYkLd5WkgBgvsdESDhQaVMHbmJewQ9YFigNahaz187yFv2V/QJ
+	 KaKC91anvkuOmAt/Hg50/zylYlcgqMb1to2lTdiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D89A9F80276;
-	Tue, 28 Jan 2020 11:05:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79811F80279;
+	Tue, 28 Jan 2020 11:05:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DCA5DF80278; Tue, 28 Jan 2020 09:06:40 +0100 (CET)
+ id EFE77F80277; Tue, 28 Jan 2020 09:06:41 +0100 (CET)
 Received: from EUR05-DB8-obe.outbound.protection.outlook.com
  (mail-db8eur05on2088.outbound.protection.outlook.com [40.107.20.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 125CFF80268
- for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 09:06:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 125CFF80268
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D468F80274
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 09:06:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D468F80274
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
- header.i=@NXP1.onmicrosoft.com header.b="UHwM9Ysb"
+ header.i=@NXP1.onmicrosoft.com header.b="DsrIQovh"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CKWBP+NDmRj1c5EF+RG7U+f3xn9WHZOSC/tKLPbP0vEGzlYqc4vKjA8C+JIY8w6M/8efW8yMIMeqJAVczTv3tUhKj64A6VuFW/UMEUf2HrdF1bYdBtaITID4L3g0XJaQIZu9BuY14T/Vo4WrLSHBDXfHcYowQckmB8kltN/v4BvwtnzmAIoCQ3Cl3CMVz+orJQJLdNW7n8Rh7IfbAQTjh+3Svyp5rSzHj85HVbinrsYY9NNQdpHE/aLL4IkCheqIZrkXJpSVODmmgJoPi/MaBU0GbxUNSQftJwr/tDIdijanR0WKoNjGVyRzoCf9RIF2oeSMnGm8rQ6CH7vtPnQ1Wg==
+ b=T53xjCvrlearSylszW3klkK3LNVtZzhsOYjrOVa7sAQa3CGk/vbVQsQ26VJEldFNWJsgLtdrxUcvKuIP6nWk2JtFsxBhYDLflJtO8FZc64VifY4rmEGUt+k+Tm7jSA0wzEkBNpttXpAFVBR2HP0HAiDnU5pJcRxyrKGI/uwizZjvTH/zMtop/wF5fEOClcY6A5fJcL+2nyCJo2Tr3JIeL8ULz84yT3S5p7BrwLkDZhlw6wcpiiGYEP/kUrWh0P0fFX90fGwSXZBUjaclNOcyBYS3SPuuIi5OxdmYLxMQsrCI2I2+b5SNWFCTsXSNUwA+0QQY8kvuagc4Nj5w9FTxsw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lJoziJ8jytSyYedncwrf8aT4bSZwWIWSs04uIQsdf/I=;
- b=DVhleadfpr0w8C9Xk3vFZ7dKOiqgxnDZszakiutWGpSuxUK/cCXO5w+TqSgLpnWTJuDZRKu32eD3TFi36UaRhHVzEhzNHz5Eh9HjrhaJRQ4udvi6sHp0NA+1/+dLc/WDAIJ17oQAx4ETy3h1eek4b1FGkuH6EvoJX+IPlKj44EgNUEh0uohvS3UHZf55aw1pJV/BEWi8EMCP8FeNfcyMhhoPEPaShkwTf52/LPELb0ggFdjto6ctlls9PfAtZQrWpjO+w9Up7xAoBC4G+u+JVMI44BkCGE+Vu1ouHKE6+huTUhzCxOogcckBWwkcUdGeIs7Y5Kc/i7Z68owMEKCxnA==
+ bh=K+ayqR7eEeOWqJWJmechoCQbclaqevN8isOa+1dk1k4=;
+ b=PUI7Oi33EdrvFdmYAq0KMjpJi+HW43U8p/umZb+65I/JvS5++GydQnEDTsY5SyxKhkPFy/xgKEGxw8yK5lE5Nh/pDO0yqtrUtqJ+OPWnWOzlGFrJpS7qUauY7kIZce712jZN2f2rGJUt552fTePihNE+VQTck44yBqB4SeWn3JP6ei1VjH1m5FwTxHap89dyI1wEdi/LL5pEm68AoqVzV2nhXhxvzcQHIVfl2QzZtTKwycLmbwUv9M9FoVmwZf/KFX7pVL5PafCV2AaBQ4VVFZq2l8PM0ggNDKch02hvJcgRGBpsw5OV1q3avAyi6vFqMtZWhAVfqXeq9KRz9neHjw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lJoziJ8jytSyYedncwrf8aT4bSZwWIWSs04uIQsdf/I=;
- b=UHwM9Ysb8pQuWux735oHmAyhPvsFuoYWIdaAmQPUbXdDjUK2kxaoJcZioOPrY45MF5Ez4NHv8zjro779ZJTwERONBGmBnfTq/H9m17kEcRhqpt4+9uFS/i3Ui3V8iqRu2BAxYtIRGo8abUCckq3oq9kPOfqmKbtBnNjjzgPeLUM=
+ bh=K+ayqR7eEeOWqJWJmechoCQbclaqevN8isOa+1dk1k4=;
+ b=DsrIQovhCNR0rYQduuZQTLJzbzWbllfeyfOlze0VQLAgLIagyTclAFTjXFSk1j5Fb2tGVB9zxf4GPO4R0QKDuLg5eO5gtzGB1VHVKHKrEaz4QAn8EBMbLd8vZq9ll4yRkztVxnYWLHk6dyabsNZ0PfUFdZKM5s/F7/PtaFyk+Yw=
 Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com (52.134.16.147) by
  VI1PR0402MB3423.eurprd04.prod.outlook.com (52.134.4.145) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2665.24; Tue, 28 Jan 2020 08:06:32 +0000
+ 15.20.2665.24; Tue, 28 Jan 2020 08:06:35 +0000
 Received: from VI1PR0402MB3839.eurprd04.prod.outlook.com
  ([fe80::8881:e155:f058:c0d1]) by VI1PR0402MB3839.eurprd04.prod.outlook.com
  ([fe80::8881:e155:f058:c0d1%4]) with mapi id 15.20.2665.026; Tue, 28 Jan 2020
- 08:06:32 +0000
+ 08:06:35 +0000
 Received: from fsr-ub1864-103.ro-buh02.nxp.com (89.37.124.34) by
  AM4PR0701CA0015.eurprd07.prod.outlook.com (2603:10a6:200:42::25) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.13 via Frontend
- Transport; Tue, 28 Jan 2020 08:06:31 +0000
+ Transport; Tue, 28 Jan 2020 08:06:34 +0000
 From: "Daniel Baluta (OSS)" <daniel.baluta@oss.nxp.com>
 To: "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org"
  <alsa-devel@alsa-project.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>
-Thread-Topic: [PATCH 2/4] ASoC: SOF: imx8: Add ops for i.MX8QM
-Thread-Index: AQHV1bHa9PHYbG+3W0m1ALyE7dW7sg==
-Date: Tue, 28 Jan 2020 08:06:32 +0000
-Message-ID: <20200128080518.29970-3-daniel.baluta@oss.nxp.com>
+Thread-Topic: [PATCH 4/4] dt-bindings: dsp: fsl: Add fsl,imx8qm-dsp entry
+Thread-Index: AQHV1bHbRYpJOmPyzUi4I6QOWXsbBQ==
+Date: Tue, 28 Jan 2020 08:06:35 +0000
+Message-ID: <20200128080518.29970-5-daniel.baluta@oss.nxp.com>
 References: <20200128080518.29970-1-daniel.baluta@oss.nxp.com>
 In-Reply-To: <20200128080518.29970-1-daniel.baluta@oss.nxp.com>
 Accept-Language: en-US
@@ -101,15 +101,15 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [89.37.124.34]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 63fab73a-2641-4986-0391-08d7a3c8fca8
+x-ms-office365-filtering-correlation-id: 429a807d-cb7a-4c2f-8d8b-08d7a3c8fe27
 x-ms-traffictypediagnostic: VI1PR0402MB3423:|VI1PR0402MB3423:
 x-ms-exchange-sharedmailbox-routingagent-processed: True
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB3423382F493700E3594D49B9B80A0@VI1PR0402MB3423.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:949;
+x-microsoft-antispam-prvs: <VI1PR0402MB3423E176AB1C668928B16A0FB80A0@VI1PR0402MB3423.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
 x-forefront-prvs: 029651C7A1
 x-forefront-antispam-report: SFV:NSPM;
- SFS:(10009020)(4636009)(376002)(136003)(366004)(39860400002)(396003)(346002)(199004)(189003)(5660300002)(6486002)(66556008)(66476007)(66446008)(64756008)(52116002)(66946007)(110136005)(316002)(54906003)(16526019)(8676002)(8936002)(81166006)(81156014)(186003)(956004)(2616005)(71200400001)(1076003)(26005)(2906002)(478600001)(6506007)(6512007)(86362001)(4326008);
+ SFS:(10009020)(4636009)(376002)(136003)(366004)(39860400002)(396003)(346002)(199004)(189003)(5660300002)(6486002)(66556008)(66476007)(66446008)(64756008)(52116002)(66946007)(110136005)(316002)(54906003)(16526019)(8676002)(8936002)(81166006)(81156014)(186003)(956004)(2616005)(71200400001)(1076003)(4744005)(26005)(2906002)(478600001)(6506007)(6512007)(86362001)(4326008)(142933001);
  DIR:OUT; SFP:1101; SCL:1; SRVR:VI1PR0402MB3423;
  H:VI1PR0402MB3839.eurprd04.prod.outlook.com; FPR:; SPF:None; LANG:en;
  PTR:InfoNoRecords; A:0; MX:1; 
@@ -117,16 +117,16 @@ received-spf: None (protection.outlook.com: oss.nxp.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bSssJ+Diz6DPLLNxfOFRYMMVpH6b0OGtU6Zy2Mmm9PWKbkIWD/pNJqMRQONqCZeyywG9Fi5s4aif0lHMQ9tIxvBEl4468XgLLkY+ebuliKaBv4XQ4DcqN0bZj4z9dcfTLC5568Ec9C3dXrHBUtDCt0k4Pc6AhwYO8KWPt3IjDsaa0YswVYpp2W95kNmi4OTgF1MYT3Wnob36s0aWLVFBZj+5kYJG4Gsb1q1IxhbUSlHQt2JjqUlJtLeSPqCLn3xYeHhZdhy74spx5csb3pMjSusScVsTq//pwvvOG2MVsDvT1ok+NK4u1+zL0T2kbJgB+ax/rRsGqr0ecEgMs64YNJmLOq9Tj3OT5SIRsJ0/AqbFRVBrt58JlY/NvTV+3YjXP+E1DYENLtg+w7YCHGC0NMKN5Fb8BeD1PbokZwgufW7OuqfXywqqEr5PU1kswpkz
-x-ms-exchange-antispam-messagedata: cVeicKpOUlun8QwAlElVHddKLjvIfYuQ4v0XNWxKfYwaGsfMoqhhdSIXFW7FH0pH1LDtU0RiD81hfiha8/mZz2iIcULmxQcwZDD4WmkULe7pQ5dGZemUmm8fW+QCUuVRDyTJ6h1BmmAK4TOkj4tSrw==
+x-microsoft-antispam-message-info: wGf8VgVUVsQxN3aohm3u3LSMWEZ5QpSQ4yn/owY7a5HEmO9t9nU7G434G80rtiGG71m4LxZzyi/3v/pFOPCTgvX+ZxA29x9XJJ8tvgQxkHKjM82mY62MiEdzNhK78WF8SAky3RO0MheEXFgctCZ2uUi0FyNPh3txHNaS0gQgd98/cZX7ylc1vBbLoio/6huk7O/Fy0248Zh7EGxhcbPB3jOHajdQZgJWv0DjyS6mS1wgyxdYAB44NkjE+j2cu1QmAMzIZUShjZsfbkZrVwIGrhe3z1VSuT/RCEx1GnHwHPXf+jO0BWTjzkATzZUACdGr070iolqdgxJvFFhVKourUhOp4xzw7/xGDWAYSJ+8b4p9h98itUsHy+g+vyL/8QEkxp56PS9JteH48z/UCGNWbAgxNR03Mj3idlMf7IsLweyoyqTpGRhD+10M+VrspTFpCPFobN0Yqjk4ItKeO2ejnsZJqM9EpL6/kOj5Ym5EKEEoCnloe+xqSI3yxyjjkMpr
+x-ms-exchange-antispam-messagedata: 120o2ZIgoBTb8m7gzPsTCRqCKeghd+mUw3qrl8sZOPgaJJ4ISeQ5X5QquPKKRyRUiw/lfdmaupN4KTu5ZHs5LIMgdi6GVBhr8tRw6j7xMfZu30oX6IpcTaQ/pcy2bWfuNDdEHZ1V79LwuWH6k7XLbw==
 MIME-Version: 1.0
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63fab73a-2641-4986-0391-08d7a3c8fca8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2020 08:06:32.6389 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 429a807d-cb7a-4c2f-8d8b-08d7a3c8fe27
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2020 08:06:35.2514 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0cbFe/5Zfx5iXO0RelSivphxNzCf5hBHxECUgstzeLdG+fahiB8od/SXlup/VvlRwNdScjNwB0Y7aFwSLNSuIQ==
+X-MS-Exchange-CrossTenant-userprincipalname: /lnZ5RoPFqVG9KF0Qv4yufFT9L7mod1Zq/LxFl2W3u+PE9rm0mBtcd4+sJLjM5isJPrwj/3DB8vA9sqxRJSQCA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3423
 X-Mailman-Approved-At: Tue, 28 Jan 2020 11:05:35 +0100
 Cc: Daniel Baluta <daniel.baluta@nxp.com>,
@@ -135,7 +135,8 @@ Cc: Daniel Baluta <daniel.baluta@nxp.com>,
  Paul Olaru <paul.olaru@nxp.com>, dl-linux-imx <linux-imx@nxp.com>,
  "festevam@gmail.com" <festevam@gmail.com>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: [alsa-devel] [PATCH 2/4] ASoC: SOF: imx8: Add ops for i.MX8QM
+Subject: [alsa-devel] [PATCH 4/4] dt-bindings: dsp: fsl: Add fsl,
+	imx8qm-dsp entry
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -155,85 +156,27 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Paul Olaru <paul.olaru@nxp.com>
 
-i.MX8QM and i.MX8QXP are mostly identical platforms with minor hardware
-differences. One of these differences affects the firmware boot process,
-requiring the run operation to differ. All other ops are reused.
+This is the same DSP from the hardware point of view, but it gets a
+different compatible string due to usage in a separate platform.
 
 Signed-off-by: Paul Olaru <paul.olaru@nxp.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- sound/soc/sof/imx/imx8.c | 51 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ Documentation/devicetree/bindings/dsp/fsl,dsp.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index 94481adc2240..a849a9380d88 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -178,6 +178,24 @@ static int imx8x_run(struct snd_sof_dev *sdev)
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+index f04870d84542..30bc0db7f539 100644
+--- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
++++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+@@ -17,6 +17,7 @@ properties:
+   compatible:
+     enum:
+       - fsl,imx8qxp-dsp
++      - fsl,imx8qm-dsp
  
-+static int imx8_run(struct snd_sof_dev *sdev)
-+{
-+	struct imx8_priv *dsp_priv = (struct imx8_priv *)sdev->private;
-+	int ret;
-+
-+	ret = imx_sc_misc_set_control(dsp_priv->sc_ipc, IMX_SC_R_DSP,
-+				      IMX_SC_C_OFS_SEL, 0);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "Error system address offset source select\n");
-+		return ret;
-+	}
-+
-+	imx_sc_pm_cpu_start(dsp_priv->sc_ipc, IMX_SC_R_DSP, true,
-+			    RESET_VECTOR_VADDR);
-+
-+	return 0;
-+}
-+
- static int imx8_probe(struct snd_sof_dev *sdev)
- {
- 	struct platform_device *pdev =
-@@ -361,6 +379,39 @@ static struct snd_soc_dai_driver imx8_dai[] = {
- },
- };
- 
-+/* i.MX8 ops */
-+struct snd_sof_dsp_ops sof_imx8_ops = {
-+	/* probe and remove */
-+	.probe		= imx8_probe,
-+	.remove		= imx8_remove,
-+	/* DSP core boot */
-+	.run		= imx8_run,
-+
-+	/* Block IO */
-+	.block_read	= sof_block_read,
-+	.block_write	= sof_block_write,
-+
-+	/* ipc */
-+	.send_msg	= imx8_send_msg,
-+	.fw_ready	= sof_fw_ready,
-+	.get_mailbox_offset	= imx8_get_mailbox_offset,
-+	.get_window_offset	= imx8_get_window_offset,
-+
-+	.ipc_msg_data	= imx8_ipc_msg_data,
-+	.ipc_pcm_params	= imx8_ipc_pcm_params,
-+
-+	/* module loading */
-+	.load_module	= snd_sof_parse_module_memcpy,
-+	.get_bar_index	= imx8_get_bar_index,
-+	/* firmware loading */
-+	.load_firmware	= snd_sof_load_firmware_memcpy,
-+
-+	/* DAI drivers */
-+	.drv = imx8_dai,
-+	.num_drv = 1, /* we have only 1 ESAI interface on i.MX8 */
-+};
-+EXPORT_SYMBOL(sof_imx8_ops);
-+
- /* i.MX8X ops */
- struct snd_sof_dsp_ops sof_imx8x_ops = {
- 	/* probe and remove */
+   reg:
+     description: Should contain register location and length
 -- 
 2.17.1
 
