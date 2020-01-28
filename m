@@ -2,63 +2,63 @@ Return-Path: <SRS0=GCF0=3R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C458C33CB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 07:02:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3F0EC33CB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 07:31:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDF072173E
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 07:02:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63D4122522
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 07:31:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qxM9WGls"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDF072173E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Mbhhut1o"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63D4122522
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20B9D852;
-	Tue, 28 Jan 2020 08:01:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B9D852
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABE4D1607;
+	Tue, 28 Jan 2020 08:30:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABE4D1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580194956;
-	bh=6CWt9Z8gh1Tcoqe0ZZ6nR2qjDJRTdz5ohb4pEqMSlp8=;
+	s=default; t=1580196690;
+	bh=oW8Mid6M5EHUC5Nt6b0jjOqtK9Q+j1L84h8bTichnXc=;
 	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qxM9WGlstMcYeo04WHMMJ5shZkbq1tlyx5nDfpPB4bLvsWVmYXbDB2wbxn7v8T2wJ
-	 fI3KQex7g5t0Mj/JcerhEkv3PPEXdnwkk8jpa9zBaQiLfkIrnHEyynM0Ma9PJTWdX/
-	 ffK4VXL6Kb60EG+28g41YzLcIVq71Z2t8NzyfH3Q=
+	b=Mbhhut1oEnPwMrZicCFFHpsHbYrt+9GD2FTWcVNA7aGPsGcAYdBnRxAGFHjFRWzvV
+	 jj5Iqt1Xv85xzloFv0pzMRiUWKreZ7UyA0CYKBZ+aODct6J2a6fohuUC380HmhfmlY
+	 LG3ElHnfMB7Qy/A2xRFAC4J2V7DkXvbGa188TQVg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C9F0F8014B;
-	Tue, 28 Jan 2020 08:01:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35BACF80123;
+	Tue, 28 Jan 2020 08:30:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95EC4F80150; Tue, 28 Jan 2020 08:01:43 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF899F80123
- for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 08:01:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF899F80123
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 25361AF32;
- Tue, 28 Jan 2020 07:01:38 +0000 (UTC)
-Date: Tue, 28 Jan 2020 08:01:37 +0100
-Message-ID: <s5himkwoyi6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <871rrloehp.wl-kuninori.morimoto.gx@renesas.com>
+ id 0D542F80150; Tue, 28 Jan 2020 08:30:38 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id EBF52F80123
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 08:30:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBF52F80123
+Date: 28 Jan 2020 16:30:29 +0900
+X-IronPort-AV: E=Sophos;i="5.70,372,1574089200"; d="scan'208";a="37583384"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 28 Jan 2020 16:30:29 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1151641CBB5E;
+ Tue, 28 Jan 2020 16:30:29 +0900 (JST)
+Message-ID: <87eevk2g2y.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <s5himkwoyi6.wl-tiwai@suse.de>
 References: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
  <871rrloehp.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+ <s5himkwoyi6.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 Subject: Re: [alsa-devel] [PATCH 4/7] ASoC: soc-pcm: goto error after
 	trying	for_each_rtd_codec_dai
@@ -79,95 +79,41 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Jan 2020 02:49:22 +0100,
-Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> soc_pcm_open() might goto error process *during* for_each_rtd_codec_dai.
-> In such case, fallback process need to care about operated/non-operated
-> codec dai.
-> 
-> But, if it goto error process *after* loop even though error happen
-> during loop, it don't need to care about operated/non-operated.
-> In such case code can be more simple.
-> This patch do it. And this is prepare for soc_snd_open() cleanup
 
-This would mean that snd_soc_dai_shutdown() is called even for the
-stream that returned the error.  This isn't the expected behavior.
+Hi Takashi
 
-Also, bit-OR-ing the multiple error codes isn't wise, they may return
-different error codes, and you'll mixed up to a different number.
+Thank you for your feedback
 
-
-thanks,
-
-Takashi
-
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > 
+> > soc_pcm_open() might goto error process *during* for_each_rtd_codec_dai.
+> > In such case, fallback process need to care about operated/non-operated
+> > codec dai.
+> > 
+> > But, if it goto error process *after* loop even though error happen
+> > during loop, it don't need to care about operated/non-operated.
+> > In such case code can be more simple.
+> > This patch do it. And this is prepare for soc_snd_open() cleanup
 > 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/soc-pcm.c | 20 ++++++++------------
->  1 file changed, 8 insertions(+), 12 deletions(-)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index f11c15f..57d2f00 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -547,25 +547,24 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
->  		goto component_err;
->  
->  	for_each_rtd_codec_dai(rtd, i, codec_dai) {
-> -		ret = snd_soc_dai_startup(codec_dai, substream);
-> -		if (ret < 0) {
-> -			dev_err(codec_dai->dev,
-> -				"ASoC: can't open codec %s: %d\n",
-> -				codec_dai->name, ret);
-> -			goto codec_dai_err;
-> -		}
-> +		ret |= snd_soc_dai_startup(codec_dai, substream);
->  
->  		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->  			codec_dai->tx_mask = 0;
->  		else
->  			codec_dai->rx_mask = 0;
->  	}
-> +	if (ret < 0) {
-> +		dev_err(codec_dai->dev, "ASoC: can't open codec %s: %d\n",
-> +			codec_dai->name, ret);
-> +		goto codec_dai_err;
-> +	}
->  
->  	ret = soc_rtd_startup(rtd, substream);
->  	if (ret < 0) {
->  		pr_err("ASoC: %s startup failed: %d\n",
->  		       rtd->dai_link->name, ret);
-> -		goto machine_err;
-> +		goto codec_dai_err;
->  	}
->  
->  	/* Dynamic PCM DAI links compat checks use dynamic capabilities */
-> @@ -634,11 +633,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
->  config_err:
->  	soc_rtd_shutdown(rtd, substream);
->  
-> -machine_err:
-> -	i = rtd->num_codecs;
-> -
->  codec_dai_err:
-> -	for_each_rtd_codec_dai_rollback(rtd, i, codec_dai)
-> +	for_each_rtd_codec_dai(rtd, i, codec_dai)
->  		snd_soc_dai_shutdown(codec_dai, substream);
->  
->  component_err:
-> -- 
-> 2.7.4
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+> This would mean that snd_soc_dai_shutdown() is called even for the
+> stream that returned the error.  This isn't the expected behavior.
+
+Yeah.
+Actually, I have plan to add such flag by other patch.
+But indeed order was reversed.
+Will fixup.
+
+> Also, bit-OR-ing the multiple error codes isn't wise, they may return
+> different error codes, and you'll mixed up to a different number.
+
+It is used at some architecture.
+But yes, let's think about better idea.
+Will return 1st error.
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
