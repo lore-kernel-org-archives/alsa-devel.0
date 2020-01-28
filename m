@@ -1,74 +1,67 @@
-Return-Path: <SRS0=qqgH=3Q=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=GCF0=3R=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16018C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 21:24:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E045C32771
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 00:32:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B11424656
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jan 2020 21:24:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 812DD214AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jan 2020 00:32:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="X2u/2n4o"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B11424656
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OAfI3DEt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 812DD214AF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3E0D41;
-	Mon, 27 Jan 2020 22:23:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3E0D41
+	by alsa0.perex.cz (Postfix) with ESMTPS id D76DA14E;
+	Tue, 28 Jan 2020 01:32:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D76DA14E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580160281;
-	bh=T4ca5mqKMjsouhlodTne+e/6OIB1NPk62m9AuNCjvYU=;
-	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1580171574;
+	bh=K8wd18vFeCYLjpAck0WI2cM+xHEizbxQkkD5m5y+xrQ=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X2u/2n4odKie7IXmmPD6PfCF2SDnDJjipTDgfRXJMsdgkGD4t2myrtCTysW33PbkI
-	 FQU/OCajRj4YnGEDkVoz//ial+O/JV8kHWZNNhHKDzbm9eqYAATwAVZ4uRjpCEMJzD
-	 BOfLc4nc9rfIT58RNZcSLPg0sRIiZCzhBAIzFrlo=
+	b=OAfI3DEtnG4LfHYuseUFvHfqppcbl6MbMtrlQSoh3LiSzvI/eY0mCwAoFye3TBOE8
+	 yhtb7JvogoK81qc6wSnkRigqlQoEhcego6O9DSEHR6h15MJe+208zUD82zEbgX12Fm
+	 4AZepjQjchXcKSZv+sUP6IP49Dipkev7lFKtGOVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 123E5F8027B;
-	Mon, 27 Jan 2020 22:21:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A9B1F80218;
+	Tue, 28 Jan 2020 01:32:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D28AFF80256; Mon, 27 Jan 2020 22:21:21 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36429F800C8
- for <alsa-devel@alsa-project.org>; Mon, 27 Jan 2020 22:21:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36429F800C8
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2020 13:21:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,371,1574150400"; d="scan'208";a="231649962"
-Received: from ngstahl-mobl1.amr.corp.intel.com (HELO [10.254.190.105])
- ([10.254.190.105])
- by orsmga006.jf.intel.com with ESMTP; 27 Jan 2020 13:21:10 -0800
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-References: <20200127121243.15813-1-cezary.rojewski@intel.com>
- <20200127121243.15813-9-cezary.rojewski@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <bff9507d-c3c3-53b8-3ee2-ce737ebadfee@linux.intel.com>
-Date: Mon, 27 Jan 2020 15:17:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200127121243.15813-9-cezary.rojewski@intel.com>
-Content-Language: en-US
-Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
-Subject: Re: [alsa-devel] [PATCH v2 08/11] ASoC: SOF: Generic probe compress
- operations
+ id 3C982F8021E; Tue, 28 Jan 2020 01:32:03 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id CB007F80085
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jan 2020 01:31:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB007F80085
+Date: 28 Jan 2020 09:31:52 +0900
+X-IronPort-AV: E=Sophos;i="5.70,371,1574089200"; d="scan'208";a="37760349"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 28 Jan 2020 09:31:52 +0900
+Received: from morimoto-PC.renesas.com (unknown [10.166.18.140])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id E3EA84005E22;
+ Tue, 28 Jan 2020 09:31:52 +0900 (JST)
+Message-ID: <877e1c4e13.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+In-Reply-To: <CAFQqKeUjcgXQv8HdyMyefER+1A3awY3u0wabzeEYp2z5UGF4nQ@mail.gmail.com>
+References: <877e1doeis.wl-kuninori.morimoto.gx@renesas.com>
+ <87zhe9mzx3.wl-kuninori.morimoto.gx@renesas.com>
+ <CAFQqKeUjcgXQv8HdyMyefER+1A3awY3u0wabzeEYp2z5UGF4nQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 Emacs/24.5 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 5/7] ASoC: soc-pcm: goto error after trying
+	all component open
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,44 +74,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-> index 827b0ec92522..0fca86164472 100644
-> --- a/sound/soc/sof/Kconfig
-> +++ b/sound/soc/sof/Kconfig
-> @@ -171,6 +171,15 @@ config SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT
->   	  Say Y if you want to retain DSP context for FW exceptions.
->   	  If unsure, select "N".
->   
-> +config SND_SOC_SOF_DEBUG_PROBES
-> +	bool "SOF enable data probing"
-> +	select SND_SOC_COMPRESS
-> +	help
-> +	  This option enables the data probing feature that can be used to
-> +	  gather data directly from specific points of the audio pipeline.
-> +	  Say Y if you want to enable probes.
-> +	  If unsure, select "N".
-> +
->   endif ## SND_SOC_SOF_DEBUG
->   
->   endif ## SND_SOC_SOF_DEVELOPER_SUPPORT
+Hi Sridharan
 
-we need to agree with firmware folks on
-a) making sure the probes are enabled on all SKL+ firmware
-b) we have a means to detect if probes are supported by the firmware.
+Thank you for your feedback
 
-I think the probes should be enabled in all distributions, even when 
-using firmware signed with a production key, it doesn't impact anything 
-until the root user explicitly configures probe points.
+>     @@ -463,47 +463,32 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+>             hw->rate_max = min_not_zero(hw->rate_max, rate_max);
+>      }
+>    
+>     -static int soc_pcm_components_open(struct snd_pcm_substream *substream,
+>     -                                  struct snd_soc_component **last)
+>     +static int soc_pcm_components_open(struct snd_pcm_substream *substream)
+>      {
+>             struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>             struct snd_soc_component *component;
+>             int i, ret = 0;
+>    
+>             for_each_rtd_components(rtd, i, component) {
+>     -               *last = component;
+>     +               ret |= snd_soc_component_module_get_when_open(component);
+>     +               ret |= snd_soc_component_open(component, substream);
+>     +       }
+>    
+>     -               ret = snd_soc_component_module_get_when_open(component);
+>     -               if (ret < 0) {
+>     -                       dev_err(component->dev,
+>     -                               "ASoC: can't get module %s\n",
+>     -                               component->name);
+>     -                       return ret;
+>     -               }
+>     +       if (ret < 0)
+>     +               dev_err(component->dev,
+>     +                       "ASoC: error happen during open component %s: %d\n",
+>     +                       component->name, ret);
+> 
+> Hi Morimoto-san,
+> 
+> Wouldn't the component here always be the last component in the list of rtd components? Should this error log be moved inside
+> the for_each_rtd_components() {} above?
 
-Since we explicitly advise distributions not to include developer 
-options, we probably need to move this Kconfig outside. of these two 
-'if' blocks.
+Yeah, indeed.
+Will fix
+
+Thank you for your help !!
+Best regards
+---
+Kuninori Morimoto
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
