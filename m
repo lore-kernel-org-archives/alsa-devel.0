@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 950B1C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 22:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD652C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 22:12:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20ECA20702
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 22:12:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 546482071E
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 22:12:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nk++owIP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20ECA20702
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WlEIweW0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 546482071E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 769A0168A;
-	Wed, 29 Jan 2020 23:11:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 769A0168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7CD81680;
+	Wed, 29 Jan 2020 23:12:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7CD81680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580335926;
-	bh=zz0TWxsvaW4G76G7TYtw4k9y6kHu6VVCJ433tkBg0sI=;
+	s=default; t=1580335970;
+	bh=pzRC0GjBMpsK1E5nbnMNp8W8txCkE0Jrk9ZgE9txGg0=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nk++owIPELggunddVOApT69rViobVyB50Kty2OG5vXKx0wCRjSaEOFMXrQyCywmCI
-	 AgOGmQe3oQOiH5iJ+XrRGyA/4V8EnaLoNhyzh725ZasIHDwpkEvWIcJ/3bma3O++4b
-	 Apnu7J7Gv/zGnZ9W1tR6lWz/GxrEqc7yqCn8Emjc=
+	b=WlEIweW0IEy3S7OnbbB8287Kn3v1++cvub5eqBiQWr8NShtfOKfpaCJ5tq0eFbE4k
+	 QWZ3yVu0GCw6VGLrbQ96rUWFYJLnn0DVSgVYppheM9YQH9TAqtL2Z7bq8J30l9nGMo
+	 PUkTnZ5S1G3TrOOa1Tkwb82wOk8J5Aq9EScUsz3g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54C8DF80291;
-	Wed, 29 Jan 2020 23:08:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C40D2F80299;
+	Wed, 29 Jan 2020 23:08:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6CE7F8027B; Wed, 29 Jan 2020 23:08:03 +0100 (CET)
+ id 5D9D3F8027C; Wed, 29 Jan 2020 23:08:03 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF1DBF80252
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 23:07:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF1DBF80252
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAC56F80229
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 23:07:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC56F80229
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 29 Jan 2020 14:07:48 -0800
+ 29 Jan 2020 14:07:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,379,1574150400"; d="scan'208";a="402122373"
+X-IronPort-AV: E=Sophos;i="5.70,379,1574150400"; d="scan'208";a="402122395"
 Received: from kjhudson-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.254.70.93])
- by orsmga005.jf.intel.com with ESMTP; 29 Jan 2020 14:07:48 -0800
+ by orsmga005.jf.intel.com with ESMTP; 29 Jan 2020 14:07:50 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Date: Wed, 29 Jan 2020 16:07:21 -0600
-Message-Id: <20200129220726.31792-5-pierre-louis.bossart@linux.intel.com>
+Date: Wed, 29 Jan 2020 16:07:24 -0600
+Message-Id: <20200129220726.31792-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200129220726.31792-1-pierre-louis.bossart@linux.intel.com>
 References: <20200129220726.31792-1-pierre-louis.bossart@linux.intel.com>
@@ -66,7 +66,8 @@ MIME-Version: 1.0
 Cc: tiwai@suse.de, broonie@kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 4/9] ASoC: SOF: pm: Introduce DSP power states
+Subject: [alsa-devel] [PATCH 7/9] ASoC: SOF: Intel: hda: Amend the DSP state
+	transition diagram
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,130 +87,71 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Add a new enum sof_dsp_power_states for all the possible
-the DSP device states. The SOF driver currently handles
-only the D0 and D3 states and support for other states
-will be added later as needed.
-
-Also, add a helper to determine the target DSP power state
-based on the system suspend target.
-The snd_sof_dsp_d0i3_on_suspend() function is renamed to
-snd_sof_stream_suspend_ignored() to be more indicative
-of what it does and it used to determine the target
-DSP state during system suspend.
+Amend the DSP state transition diagram in preparation
+for introducing the feature to support opportunistic
+DSP D0I3 state when the system is in S0.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/pm.c        | 38 +++++++++++++++++++++++++++++++++++++-
- sound/soc/sof/sof-audio.c |  2 +-
- sound/soc/sof/sof-audio.h |  2 +-
- sound/soc/sof/sof-priv.h  | 10 ++++++++++
- 4 files changed, 49 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-dsp.c | 36 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index c86ac1e84bd7..bec25cb6beec 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -12,6 +12,42 @@
- #include "sof-priv.h"
- #include "sof-audio.h"
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 8c00e128a7b0..7b8425330ae0 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -488,33 +488,31 @@ int hda_dsp_set_power_state(struct snd_sof_dev *sdev,
+ /*
+  * Audio DSP states may transform as below:-
+  *
+- *                                         D0I3 compatible stream
+- *     Runtime    +---------------------+   opened only, timeout
++ *                                         Opportunistic D0I3 in S0
++ *     Runtime    +---------------------+  Delayed D0i3 work timeout
+  *     suspend    |                     +--------------------+
+- *   +------------+       D0(active)    |                    |
++ *   +------------+       D0I0(active)  |                    |
+  *   |            |                     <---------------+    |
+- *   |   +-------->                     |               |    |
+- *   |   |Runtime +--^--+---------^--+--+ The last      |    |
+- *   |   |resume     |  |         |  |    opened D0I3   |    |
+- *   |   |           |  |         |  |    compatible    |    |
+- *   |   |     resume|  |         |  |    stream closed |    |
+- *   |   |      from |  | D3      |  |                  |    |
+- *   |   |       D3  |  |suspend  |  | d0i3             |    |
++ *   |   +-------->                     |    New IPC	|    |
++ *   |   |Runtime +--^--+---------^--+--+ (via mailbox)	|    |
++ *   |   |resume     |  |         |  |			|    |
++ *   |   |           |  |         |  |			|    |
++ *   |   |     System|  |         |  |			|    |
++ *   |   |     resume|  | S3/S0IX |  |                  |    |
++ *   |   |	     |  | suspend |  | S0IX             |    |
+  *   |   |           |  |         |  |suspend           |    |
+  *   |   |           |  |         |  |                  |    |
+  *   |   |           |  |         |  |                  |    |
+  * +-v---+-----------+--v-------+ |  |           +------+----v----+
+  * |                            | |  +----------->                |
+- * |       D3 (suspended)       | |              |      D0I3      +-----+
+- * |                            | +--------------+                |     |
+- * |                            |  resume from   |                |     |
+- * +-------------------^--------+  d0i3 suspend  +----------------+     |
+- *                     |                                                |
+- *                     |                       D3 suspend               |
+- *                     +------------------------------------------------+
++ * |       D3 (suspended)       | |              |      D0I3      |
++ * |                            | +--------------+                |
++ * |                            |  System resume |                |
++ * +----------------------------+		 +----------------+
+  *
+- * d0i3_suspend = s0_suspend && D0I3 stream opened,
+- * D3 suspend = !d0i3_suspend,
++ * S0IX suspend: The DSP is in D0I3 if any D0I3-compatible streams
++ *		 ignored the suspend trigger. Otherwise the DSP
++ *		 is in D3.
+  */
  
-+/*
-+ * Helper function to determine the target DSP state during
-+ * system suspend. This function only cares about the device
-+ * D-states. Platform-specific substates, if any, should be
-+ * handled by the platform-specific parts.
-+ */
-+static u32 snd_sof_dsp_power_target(struct snd_sof_dev *sdev)
-+{
-+	u32 target_dsp_state;
-+
-+	switch (sdev->system_suspend_target) {
-+	case SOF_SUSPEND_S3:
-+		/* DSP should be in D3 if the system is suspending to S3 */
-+		target_dsp_state = SOF_DSP_PM_D3;
-+		break;
-+	case SOF_SUSPEND_S0IX:
-+		/*
-+		 * Currently, the only criterion for retaining the DSP in D0
-+		 * is that there are streams that ignored the suspend trigger.
-+		 * Additional criteria such Soundwire clock-stop mode and
-+		 * device suspend latency considerations will be added later.
-+		 */
-+		if (snd_sof_stream_suspend_ignored(sdev))
-+			target_dsp_state = SOF_DSP_PM_D0;
-+		else
-+			target_dsp_state = SOF_DSP_PM_D3;
-+		break;
-+	default:
-+		/* This case would be during runtime suspend */
-+		target_dsp_state = SOF_DSP_PM_D3;
-+		break;
-+	}
-+
-+	return target_dsp_state;
-+}
-+
- static int sof_send_pm_ctx_ipc(struct snd_sof_dev *sdev, int cmd)
- {
- 	struct sof_ipc_pm_ctx pm_ctx;
-@@ -169,7 +205,7 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
- 		}
- 	}
- 
--	if (snd_sof_dsp_d0i3_on_suspend(sdev)) {
-+	if (snd_sof_dsp_power_target(sdev) == SOF_DSP_PM_D0) {
- 		/* suspend to D0i3 */
- 		ret = snd_sof_set_d0_substate(sdev, SOF_DSP_D0I3);
- 		if (ret < 0) {
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 345e42ee4783..d16571ca129c 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -11,7 +11,7 @@
- #include "sof-audio.h"
- #include "ops.h"
- 
--bool snd_sof_dsp_d0i3_on_suspend(struct snd_sof_dev *sdev)
-+bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_pcm *spcm;
- 
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index a62fb2da6a6e..a2702afbd9a1 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -202,7 +202,7 @@ int snd_sof_ipc_set_get_comp_data(struct snd_sof_control *scontrol,
- /* PM */
- int sof_restore_pipelines(struct device *dev);
- int sof_set_hw_params_upon_resume(struct device *dev);
--bool snd_sof_dsp_d0i3_on_suspend(struct snd_sof_dev *sdev);
-+bool snd_sof_stream_suspend_ignored(struct snd_sof_dev *sdev);
- 
- /* Machine driver enumeration */
- int sof_machine_register(struct snd_sof_dev *sdev, void *pdata);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 1839cc51957d..a7c6109acd98 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -54,6 +54,16 @@ extern int sof_core_debug;
- 	(IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE) || \
- 	 IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST))
- 
-+/* DSP power state */
-+enum sof_dsp_power_states {
-+	SOF_DSP_PM_D0,
-+	SOF_DSP_PM_D1,
-+	SOF_DSP_PM_D2,
-+	SOF_DSP_PM_D3_HOT,
-+	SOF_DSP_PM_D3,
-+	SOF_DSP_PM_D3_COLD,
-+};
-+
- /* DSP D0ix sub-state */
- enum sof_d0_substate {
- 	SOF_DSP_D0I0 = 0,	/* DSP default D0 substate */
+ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
 -- 
 2.20.1
 
