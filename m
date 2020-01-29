@@ -2,74 +2,108 @@ Return-Path: <SRS0=lFLu=3S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4AC6C33CB2
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C523C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 14:34:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11D0620720
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:56:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9292320720
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 14:34:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HaWGvziu";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=perex.cz header.i=@perex.cz header.b="F8v3etRi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11D0620720
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="agigWd33";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="MrQ/OLnZ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9292320720
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64B971663;
-	Wed, 29 Jan 2020 12:38:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64B971663
+	by alsa0.perex.cz (Postfix) with ESMTPS id E35851663;
+	Wed, 29 Jan 2020 15:33:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E35851663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580297982;
-	bh=MjL6NRHBTcjcRSemZiPhKaFNybd4U3D3B3JPAysYIT0=;
-	h=To:References:From:Date:In-Reply-To:Subject:List-Id:
+	s=default; t=1580308458;
+	bh=sduf7FXTDR13T6Pi7qDRuuwobjr+NTJc7kG+rqecT0s=;
+	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HaWGvziuOTjEE/++cHDkA+wOabYFKlgER0qQBBVTiRoTIm5Y+9E8AbvKgpDaTWeEf
-	 3RsHCGIZgwx+SpPw1ep7lxvoanZU1CKk5yeEOjf5b91m1HNGVOREJtl3dTwlEVzaJL
-	 Rvot/6+xJzBXX/F9YBii9PPcZ8PxWBXzYSRtTFsY=
+	b=agigWd334zmdk138MgeVs/WlJ050bJhrKabjSYWnqBbK7sCoLrd3aC3l77N2Pn7gT
+	 IhoCguWXpxcVE/XIdj4UOf3W2k4u99f5DfElqgtfVNVMj+z5HXa+gXlR4DfeUfvohr
+	 2pSEi+C1X/7tTzVmS8i3vW0guiw++lWa7H3MBnl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5E0AF80218;
-	Wed, 29 Jan 2020 12:38:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6882AF80218;
+	Wed, 29 Jan 2020 15:33:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50B2AF8021E; Wed, 29 Jan 2020 12:38:50 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 989B5F8021E; Wed, 29 Jan 2020 15:33:24 +0100 (CET)
+Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
+ [216.228.121.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C978CF80123
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 12:38:47 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id D70BDA003F;
- Wed, 29 Jan 2020 12:38:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz D70BDA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1580297926; bh=mZZ+8Dg0Tv8AKuGR4JAK9xBSsa9BhD8yUAbb+1ugQmI=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=F8v3etRijNuJyO7CupKX1Cd4RsO+FpzpZvhoIWgEZWs5VcHnXnqn45rXhW6lmoNF2
- idmiN3AOOoiKORSgLnxeY+oTUQwhk2JZd3rVdAhIvP5shnBHhXJ6ouNBMV54TRYs1f
- Tu375aK2+7wDurP96VRkUf65RPhiLdZn5+ITKhyM=
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 29 Jan 2020 12:38:44 +0100 (CET)
-To: Pedro Costa <p.simoes.costa@gmail.com>, alsa-devel@alsa-project.org
-References: <719056d4-aa45-8186-697c-76c1e89492ce@gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <c749eb6a-4be7-5a90-c8d1-ec51307c1996@perex.cz>
-Date: Wed, 29 Jan 2020 12:38:44 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D403F80122
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 15:33:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D403F80122
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="MrQ/OLnZ"
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+ id <B5e31979a0000>; Wed, 29 Jan 2020 06:32:58 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+ by hqpgpgate102.nvidia.com (PGP Universal service);
+ Wed, 29 Jan 2020 06:33:18 -0800
+X-PGP-Universal: processed;
+ by hqpgpgate102.nvidia.com on Wed, 29 Jan 2020 06:33:18 -0800
+Received: from [10.21.133.51] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 29 Jan
+ 2020 14:33:15 +0000
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Mark Brown <broonie@kernel.org>, Dmitry Osipenko <digetx@gmail.com>
+References: <29db3df4-6f51-7c0f-1eef-90171f1d233a@codethink.co.uk>
+ <9a5447e2-155c-7e6e-b8f1-95523c6f42c6@gmail.com>
+ <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
+ <680e2dfd-6f4f-5c96-63b7-97520961dc82@gmail.com>
+ <0e0cd260e39ad293edb881da1c565510@codethink.co.uk>
+ <507dcd5a-672b-61ac-aa7f-af5ff01accff@codethink.co.uk>
+ <a2744ea0-cf6d-d083-75e6-853746195001@gmail.com>
+ <28cafc56-095b-68c6-638d-270608a2983f@codethink.co.uk>
+ <3d8544be-af20-f382-85fd-32183365267b@nvidia.com>
+ <1b3c2af4-510e-306c-749a-efffc994b20a@gmail.com>
+ <20200128121315.GD4689@sirena.org.uk>
+ <4b90efd2-5d0c-84df-961d-80cee288e0d4@nvidia.com>
+Message-ID: <586ea2b9-c204-2bd1-f8e2-875e0974e42d@nvidia.com>
+Date: Wed, 29 Jan 2020 14:33:12 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <719056d4-aa45-8186-697c-76c1e89492ce@gmail.com>
+In-Reply-To: <4b90efd2-5d0c-84df-961d-80cee288e0d4@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
 Content-Language: en-US
-Subject: Re: [alsa-devel] issue with alsa lib (ucm vs ucm2 folders?)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1580308378; bh=q5nK7ZGYKHERyFArP7MvoxXSyWsbMp/JkPPV5Dp1yx4=;
+ h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
+ User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+ X-ClientProxiedBy:Content-Type:Content-Language:
+ Content-Transfer-Encoding;
+ b=MrQ/OLnZLkb5W5NbKyGywLti+GnNL5Kkk5EEebpVAd6FueXmDhBM4J+49TIN8rnLD
+ IT4T/+4BRnZHmiVgUq2mS5AljgriMt7iQ7L0etVq93qNwZdwqpPQwF7aTo9xNlkmYh
+ F9gIKUDPMGB5/xYtg8G6XdKGiyOzB8OBZy2I5umzFY36ZoPn0wJksOWRH+LysEB1nq
+ GoJbvPGnc/xFgWTRDtVkGvO6MrEzbNyo8GlByvaIetr8xeFFv5Vcyd7XWS2BNjef/x
+ 5WeQrrOUuPsjp4tI4e0ndWQOlpWuYX/lw2rvyu60UrSGk56I3w0vMecgnOO/XFNG9K
+ 865sd1y3Fgk8w==
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Ben Dooks <ben.dooks@codethink.co.uk>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org
+Subject: Re: [alsa-devel] [Linux-kernel] [PATCH v5 2/7] ASoC: tegra: Allow
+ 24bit and 32bit samples
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,33 +116,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 28. 01. 20 v 12:49 Pedro Costa napsal(a):
-> Dear all,
-> 
-> My apologies in advance for a very non-technical feedback from a non-expert.
-> 
-> I was unable to get sound output after updating alsa-lib on my Manjaro
-> Linux system. I managed to get it working after downgrading it to
-> version 1.1.9.2. It seems that I faced the same problem as reported here:
-> 
-> https://bbs.archlinux.org/viewtopic.php?id=251113
-> 
-> You may already be aware of the issue, but just in case I would like be
-> sure that you are!
 
-Thanks. I am working on this. Use the older ucm configuration in the meantime. 
-It should work.
+On 29/01/2020 10:49, Jon Hunter wrote:
+> 
+> On 28/01/2020 12:13, Mark Brown wrote:
+>> I really don't understand why this is all taking so long, this thread
+>> just seems to be going round in interminable circles long after it
+>> looked like the issue was understood.  I have to admit I've not read
+>> every single message in the thread but it's difficult to see why it
+>> doesn't seem to be making any progress.
+> 
+> Sorry about that. On reviewing this with the audio team at NVIDIA, I was
+> told we don't support S24_LE for I2S. The reason being that the crossbar
+> between the DMA and I2S is not able to extract the correct 24-bits from
+> the 32-bit sample to feed to the I2S interface. The Tegra documentation
+> does show support for 24-bits, but not state explicit support for S24_LE.
+> 
+> Now Ben says that he has this working, but I am unable to reproduce
+> this, so before just dropping the S24_LE support, I would like to
+> understand how this is working for Ben in case there is something that
+> we have overlooked here.
 
-					Jaroslav
+Ah, I see that part of the problem is that patches 6 and 7 are yet to be
+applied and without these the audio is completely distorted because
+there is a mismatch in the data size between the APBIF and I2S
+controller. Applying these patches it is not distorted but now I am
+observing the clocking issue Ben reported and so the tone is not quite
+right.
+
+Ben, I was able to workaround the clocking issue by making the I2S word
+clock 64 bits long and not 48.
+
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index bbf81b5aa723..3c9b4779e61b 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -143,7 +143,7 @@ static int tegra30_i2s_hw_params(struct
+snd_pcm_substream *substream,
+        case SNDRV_PCM_FORMAT_S24_LE:
+                val = TEGRA30_I2S_CTRL_BIT_SIZE_24;
+                audio_bits = TEGRA30_AUDIOCIF_BITS_24;
+-               sample_size = 24;
++               sample_size = 32;
+                break;
+        case SNDRV_PCM_FORMAT_S32_LE:
+                val = TEGRA30_I2S_CTRL_BIT_SIZE_32;
+
+For I2S I believe we only care about the edges of the word clock and so
+we make the overall period of the word clock 64 bit clocks then we no
+longer have an issue with the bit clock frequency. I assume that this
+should also be fine for TDM modes as well.
+
+Can you let me know if this works for you?
+
+Cheers
+Jon
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+nvpublic
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
