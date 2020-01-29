@@ -2,66 +2,93 @@ Return-Path: <SRS0=lFLu=3S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-2.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07DA8C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 22:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61ADCC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 23:24:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D837206D5
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 22:39:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DC8EA206D5
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 23:24:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UjiBA9yM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D837206D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CV8HejJf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWP2dPS+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC8EA206D5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF14B168B;
-	Wed, 29 Jan 2020 23:38:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF14B168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D7341657;
+	Thu, 30 Jan 2020 00:23:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D7341657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580337574;
-	bh=iSN3gDJVlV9pp7I2nSwv82C0o1GfP2Iud8zK/bOCdAo=;
-	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1580340285;
+	bh=ayMdIgu8iTe+5yZYo95rAGIPA6+L3XU5xr0MXjezaQM=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=UjiBA9yMlFalO0kb+comVLlVgA0zJLQKJVLWHY6y4U8RnNXyfIXvYXH+4juWln1oE
-	 wRGsFcO4JXCczObBAKqjED0Q+k1Y+sMpkUiNyyDUEIHa1+UluzKjZVht7trDwpkNjA
-	 kM6VbhVZNrAKKDTCA2wVTrvGb8eUwxkGly3QsPm4=
+	b=CV8HejJfB8fTAZBmWBWFSbn/mhp3u9wEwq7iuZ65By7GpXzS6y+leJzwSvDv70Xw3
+	 Tz6Fmtbx7MlYbmk+wetkp45hYPAS4gUG/jruhELSfNlP9Zkp5RYOd4LModV4CWjs2Z
+	 +vAbCWcky5eGZy5XAHOKGrR7MSIecEqu2KZC76Nc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EB1FF8027B;
-	Wed, 29 Jan 2020 23:36:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B63EDF80218;
+	Thu, 30 Jan 2020 00:23:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6D1BF80082; Wed, 29 Jan 2020 23:36:18 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 99927F8021E; Thu, 30 Jan 2020 00:23:53 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA406F8021E
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 23:36:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA406F8021E
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 29 Jan 2020 14:36:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,379,1574150400"; d="scan'208";a="223176777"
-Received: from kjhudson-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.254.70.93])
- by fmsmga007.fm.intel.com with ESMTP; 29 Jan 2020 14:36:04 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26515F80082
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 00:23:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26515F80082
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="YWP2dPS+"
+Received: by mail-wr1-x42a.google.com with SMTP id z7so1565321wrl.13
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 15:23:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:subject:message-id:mime-version:content-disposition
+ :user-agent; bh=UCwuUIZpJdWWIJQBKrqeQeynQrnrN7oA/3I8ZIUP2R4=;
+ b=YWP2dPS+LPTNBCA277T8ATpcpuXofvVGluK/wPBRCUPZoS3aIR5kMkDxEJAB3kGflV
+ 1cZj8Y5mPAJJswyyXYPgVG/xASHlE5UeNxBUqOenjzjMXHKEaum6nUh3qLXIPmvcnM00
+ Rj32Cq7I4B+/gQXmnQJFUg9oL5ehMyGCrI30y3mcsIK/dIpgPqxkc5WYRXC8/c4ljWXJ
+ 9Q+3WXvdLfFJldBWdeZsA2Tbq+5262g+xAr/Ef6jNi+pTYXJbPHIXYJjzkiem7zOZ+NY
+ use1ATB6BwCPvsj3BTPRIxln/IXmX2/pQBLNtVWrHsLCsvBFu43rYPG/pR6EikHEErMR
+ GGSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+ :content-disposition:user-agent;
+ bh=UCwuUIZpJdWWIJQBKrqeQeynQrnrN7oA/3I8ZIUP2R4=;
+ b=p5f746DaNj9UKnfrjZd+mfur61JB6Ay1Ei6dZhcfFxHS9Thkxsinp312CAmiJNriof
+ 2vwIaAQYscRDNvy43G8+XIQQ7T7jfAmNczExaNZj7dWPngqxerRVc6htmgGuySIKou25
+ y9vqf7vwZFnaST05sZtY7plvYFymPvhmllWJZOxsBP7QaUJunNBBgjyYTY1wpp+OWqSf
+ Nq7TLj5/XtNkrZ7O22p0ozD7h9Rcb+ONWIx/HvO8XUpggsr9qxDvbcRW9Uh5ememnM/z
+ nqCLx4ljW26mvleEXIpVy4G7pF/tcMAnVGD/RmMCZ3XKEoE0938yLmTlXzcc5EYPd2Tf
+ lOmQ==
+X-Gm-Message-State: APjAAAXvFkP04yzNz82aUI5W3TSc5YIqRpkE9127nAEe3xCrg5OjGa51
+ F8kwc6Gu2THeCQO/9X4eJCbVUXtn
+X-Google-Smtp-Source: APXvYqzXctPRfjfKSORFM4G9ZXz7dQcOD8QDpTGpZinCw+DLUeBKqZB5ImHaxEi1mfTBKCjOIQ2q+g==
+X-Received: by 2002:a5d:510f:: with SMTP id s15mr1308562wrt.408.1580340230013; 
+ Wed, 29 Jan 2020 15:23:50 -0800 (PST)
+Received: from localhost (108.78.124.78.rev.sfr.net. [78.124.78.108])
+ by smtp.gmail.com with ESMTPSA id x21sm3888049wmi.30.2020.01.29.15.23.49
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Jan 2020 15:23:49 -0800 (PST)
+Date: Wed, 29 Jan 2020 23:23:40 +0000
+From: sylvain.bertrand@gmail.com
 To: alsa-devel@alsa-project.org
-Date: Wed, 29 Jan 2020 16:36:00 -0600
-Message-Id: <20200129223603.2569-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
+Message-ID: <20200129232340.GA23769@freedom>
 MIME-Version: 1.0
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [alsa-devel] [PATCH 0/3] ASoC: Intel: add sof_pcm512x machine driver
+Content-Disposition: inline
+User-Agent: Mutt/ (2018-04-13)
+Subject: [alsa-devel] no period wakeup support
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,33 +106,17 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is an overdue upstream contribution for a platform used by nearly
-all SOF developers at Intel as well as the SOF CI.
+Hi,
 
-While I was the initial author in 2018, these patches were updated and
-improved by Xiuli Pan, Ranjani Sridharan, Kai Vehmanen and Guennadi
-Liakhovetski who worked on the last clean-ups. Thanks y'all.
+Nowadays, is this reasonable to consider disabling the period wakeup as default
+instead of expecting period wakeup by default?
 
-Full disclosure on the Cherrytrail/Up support: the board will only be
-detected with specific pin-configurations that are not handled by the
-mainline kernel just yet.
-
-Pierre-Louis Bossart (3):
-  ASoC: Intel: sof_pcm512x: add support for SOF platforms with pcm512x
-  ASoC: Intel: BXT: switch pcm512x based boards to sof_pcm512x
-  ASoC: Intel: CHT: add support for pcm512x boards
-
- sound/soc/intel/boards/Kconfig                |  14 +
- sound/soc/intel/boards/Makefile               |   2 +
- sound/soc/intel/boards/sof_pcm512x.c          | 428 ++++++++++++++++++
- .../intel/common/soc-acpi-intel-bxt-match.c   |   2 +-
- .../intel/common/soc-acpi-intel-cht-match.c   |   7 +
- 5 files changed, 452 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/boards/sof_pcm512x.c
+regards,
 
 -- 
-2.20.1
-
+Sylvain
+(sorry to post here, but sourceforge mailing lists are now using the google
+braindamaged javascript _only_ recaptcha)
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
