@@ -2,59 +2,64 @@ Return-Path: <SRS0=lFLu=3S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB47C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 20:00:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B5C3C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 20:02:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B26920716
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 20:00:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1B09B2067C
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 20:02:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Pm/LZQRS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B26920716
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NsktlFeD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B09B2067C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A7CA1671;
-	Wed, 29 Jan 2020 20:59:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A7CA1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F7861672;
+	Wed, 29 Jan 2020 21:01:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F7861672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580328005;
-	bh=1aHLtEM6spF/1zZTfBAXoEysm+qq6fuChT3FywQWFjk=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Pm/LZQRSC5BJJ748bp27NMKOfbIqWrg0RUZlyqYs95bCLYLhZowYFjT++t4ZJAp4h
-	 3YekIbYizRk+B0S7rKnSonCNC+08DJhN2Eglu3LyVuDCUl/wb86tU/MTfeKa05W4v+
-	 lQ1DwHxML4LfqMT1wuJDZ5eLy5f5NRk0ed9wsHPo=
+	s=default; t=1580328121;
+	bh=X8B4y/PBBY57W2Z6odmVxBZrANlQmma4b80Ti7PRRRE=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NsktlFeDotAucYjZjF18Abel0qcvevwkXHOMmkDeWAnHaMQPADIX9yHndiMhsG4UE
+	 bFVtBkIOFgsriOdvh6amz4uG2zMVf7z4pE7aPnMJ3O+yAxX1acip8HcJDTl1Z8N0SZ
+	 H6pCYdMV9raRMH/PPQ9DnsmUtmiXXrdiLsE3L/iU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6433F80218;
-	Wed, 29 Jan 2020 20:59:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1807DF80122;
+	Wed, 29 Jan 2020 21:01:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6419F8021E; Wed, 29 Jan 2020 20:59:12 +0100 (CET)
+ id A8400F8021E; Wed, 29 Jan 2020 21:01:09 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 273BCF80122
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 20:59:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 273BCF80122
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0603FF80122
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 21:01:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0603FF80122
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D42D7AE5C
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 19:59:08 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 6D56AAD72;
+ Wed, 29 Jan 2020 20:01:06 +0000 (UTC)
+Date: Wed, 29 Jan 2020 21:01:06 +0100
+Message-ID: <s5htv4ekp6l.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Date: Wed, 29 Jan 2020 20:59:07 +0100
-Message-Id: <20200129195907.12197-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.16.4
-Subject: [alsa-devel] [PATCH] ALSA: pcm: Fix memory leak at closing a stream
-	without hw_free
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20200129184448.3005-1-ranjani.sridharan@linux.intel.com>
+References: <20200129184448.3005-1-ranjani.sridharan@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Subject: Re: [alsa-devel] [PATCH] ALSA: uapi: Fix sparse warning
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,86 +72,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ALSA PCM core recently introduced a new managed PCM buffer allocation
-mode that does allocate / free automatically at hw_params and
-hw_free.  However, it overlooked the code path directly calling
-hw_free PCM ops at releasing the PCM substream, and it may result in a
-memory leak as spotted by syzkaller when no buffer preallocation is
-used (e.g. vmalloc buffer).
+On Wed, 29 Jan 2020 19:44:48 +0100,
+Ranjani Sridharan wrote:
+> 
+> Fix the following sparse warning generated due to
+> 64-bit compat type having fields defined explicitly
+> with __32:
+> sound/soc/sof/sof-audio.c:46:31: warning: incorrect type in assignment (different base types)
+> sound/soc/sof/sof-audio.c:46:31: expected restricted snd_pcm_state_t [usertype] state
+> sound/soc/sof/sof-audio.c:46:31: got signed int [usertype] state
+> 
+> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Suggested-by: Takashi Iwai <tiwai@suse.de>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-This patch papers over it with a slight refactoring.  The hw_free ops
-call and relevant tasks are unified in a new helper function, and call
-it from both places.
+Thanks, applied.
 
-Fixes: 0dba808eae26 ("ALSA: pcm: Introduce managed buffer allocation mode")
-Reported-by: syzbot+30edd0f34bfcdc548ac4@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index bb23f5066654..4ac42ee1238c 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -786,10 +786,22 @@ static int snd_pcm_hw_params_user(struct snd_pcm_substream *substream,
- 	return err;
- }
- 
-+static int do_hw_free(struct snd_pcm_substream *substream)
-+{
-+	int result = 0;
-+
-+	snd_pcm_sync_stop(substream);
-+	if (substream->ops->hw_free)
-+		result = substream->ops->hw_free(substream);
-+	if (substream->managed_buffer_alloc)
-+		snd_pcm_lib_free_pages(substream);
-+	return result;
-+}
-+
- static int snd_pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime;
--	int result = 0;
-+	int result;
- 
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
-@@ -806,11 +818,7 @@ static int snd_pcm_hw_free(struct snd_pcm_substream *substream)
- 	snd_pcm_stream_unlock_irq(substream);
- 	if (atomic_read(&substream->mmap_count))
- 		return -EBADFD;
--	snd_pcm_sync_stop(substream);
--	if (substream->ops->hw_free)
--		result = substream->ops->hw_free(substream);
--	if (substream->managed_buffer_alloc)
--		snd_pcm_lib_free_pages(substream);
-+	result = do_hw_free(substream);
- 	snd_pcm_set_state(substream, SNDRV_PCM_STATE_OPEN);
- 	pm_qos_remove_request(&substream->latency_pm_qos_req);
- 	return result;
-@@ -2529,9 +2537,7 @@ void snd_pcm_release_substream(struct snd_pcm_substream *substream)
- 
- 	snd_pcm_drop(substream);
- 	if (substream->hw_opened) {
--		if (substream->ops->hw_free &&
--		    substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
--			substream->ops->hw_free(substream);
-+		do_hw_free(substream);
- 		substream->ops->close(substream);
- 		substream->hw_opened = 0;
- 	}
--- 
-2.16.4
-
+Takashi
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
