@@ -6,65 +6,92 @@ X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A294BC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:15:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29431C35240
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:17:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D6B8206F0
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:15:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AD105206F0
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:17:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="prEDc7FU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D6B8206F0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CzMDUMys";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="zQCcBtmQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD105206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AA94166D;
-	Wed, 29 Jan 2020 18:14:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AA94166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 090561665;
+	Wed, 29 Jan 2020 18:17:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 090561665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580318121;
-	bh=8vcgZdK90H16KWpZRds4MuriH5vhrPeSS4ZbTmA/77E=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1580318277;
+	bh=H0dasW1rXAlZ9rrvme4M0qWxWkj960PU+ph8tJQnJnA=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=prEDc7FUy0O3rgmvfCRD5gqk5z0TcfmK2JqueN8nmnjlT9SQ5PLBrOo2d/rnQiylT
-	 xZ0QT9TJX9nfWxhqW5Wyrri0sNS9jUp6tAfJSyc9N2WfKtuKieqF5woumKQh04UcIf
-	 Tj43gpgavyRI7r1XQ0s+BnRiAyQoT4F0zpSqbVRI=
+	b=CzMDUMysegxgRLj9ZeqOLrqQhJTJyVd+65cdGndp2Cd2jXPP34a5W3xx7AZcJ8EgI
+	 VE6JPcHICNrWKtKCVbf5Ep6LM9EVvJbRF3+h+Cc6h6VWrtcAktTW3ziJVPVZ+BbkmD
+	 +mp8KhU1lELf6t9tdZxXxTYzqvaaj/G6sw4WNCpg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1367CF80082;
-	Wed, 29 Jan 2020 18:14:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92EB0F80218;
+	Wed, 29 Jan 2020 18:17:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D69BAF8021E; Wed, 29 Jan 2020 18:14:29 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 28E39F8021E; Wed, 29 Jan 2020 18:17:05 +0100 (CET)
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com
+ [IPv6:2607:f8b0:4864:20::d2f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7515AF80123
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 18:14:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7515AF80123
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id AD111AF2F;
- Wed, 29 Jan 2020 17:14:26 +0000 (UTC)
-Date: Wed, 29 Jan 2020 18:14:26 +0100
-Message-ID: <s5hlfpqdw25.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <s5ho8umdwdz.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE114F80082
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 18:16:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE114F80082
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="zQCcBtmQ"
+Received: by mail-io1-xd2f.google.com with SMTP id x1so552055iop.7
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 09:16:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=pkY3rJ7q3KWgPF0vkFnoBokd91LsatHYGYc1FguHOHQ=;
+ b=zQCcBtmQis6AuD+Y0l2I3wUMZTiJj48In8KxB470fY0nN8dFsy5bp0PrxqV7iWkIYB
+ Jv45cLhgptrUABNJ8c5e2e8Rv3+RLwKedrz58q8mzIHOHrjx0sBY7GyiQm8mz9ZwUW6j
+ p95WenyQIWc5T/D0zJnkPpionch7K1fpyX8olp0BIyWNFE6k84JMG8pNw2xg2Td2Mnef
+ AjpMrNttzTuCL6CZhSq/BY5ffsaBLeZU+l13CFb+a1DY9ZXTXhlstBE1bQAg3fsmZz5t
+ IM+l9K4Paa5r4QBFE6Ns0qIP6E+idrQUu49NHh8a8lsYWiWUCxLxcnkVWKAQLPUgZmpx
+ xtGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=pkY3rJ7q3KWgPF0vkFnoBokd91LsatHYGYc1FguHOHQ=;
+ b=B3X07NAOOxmGnloXg0QrIkHrUICMZqW4qWulowAWpcVan9hghUyh6DYn+cDxIVOKQq
+ 4YL1OQt3qeY73KGX6faV0cTkcZVrGTuRzviZumRwoU6A1WloIxf/8/PeniiuYwYPcgRV
+ 0w9c4gcmskypYq5YfwQZ/AagmmVBuHJ1HCXIT2yolkGykSzPkEzj4hslEn4/x25XStIL
+ Xa/BjdsERaL+y9WfhCYbpy2nLCUK5F7yh/D5hEzQx21go+y8Z/acMFrITR8ebO1fg5dE
+ N55ONtI05U+HZ7aDstG3rgCKMSKKQaY7RehzubaS3CvL7SL6unsIgl9Tl9BXTe5drjB9
+ 22Gw==
+X-Gm-Message-State: APjAAAUcr4YmB9HwPFqhAAeX2NzOg5fu2qDOutfG8YDKzpngFmnLcyKu
+ dylgwqdxL3C9wve78xs11sWRsnVQmVAVZTzhhGbnfQ==
+X-Google-Smtp-Source: APXvYqwNXxtlxqL6fnNFUTK9YD8EH5G9iggQtHHz7Bb1W3M7yZr0GZuK34/Yq3WGZO76KbRgLG0UaqJrN8wnOFBssqY=
+X-Received: by 2002:a02:7f54:: with SMTP id r81mr104095jac.121.1580318214268; 
+ Wed, 29 Jan 2020 09:16:54 -0800 (PST)
+MIME-Version: 1.0
 References: <CAFQqKeW5b5BEU1cXRzxqmmSNCQ8Qnifn3mivx4yVnrtk7Ho0Tg@mail.gmail.com>
  <s5hsgjyn1ci.wl-tiwai@suse.de>
  <aff5f7fd-13d2-b523-b3c6-a4529c4cf26e@linux.intel.com>
  <s5htv4edxf5.wl-tiwai@suse.de>
  <d143aa71-92c7-5ba7-4866-68eef82b99b0@linux.intel.com>
- <s5ho8umdwdz.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Sridharan,
- Ranjani" <ranjani.sridharan@intel.com>
+ <s5ho8umdwdz.wl-tiwai@suse.de> <s5hlfpqdw25.wl-tiwai@suse.de>
+In-Reply-To: <s5hlfpqdw25.wl-tiwai@suse.de>
+From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+Date: Wed, 29 Jan 2020 09:16:43 -0800
+Message-ID: <CAFQqKeVCKp1cSL+j_uf-dbG8y1BYCTzHdrJFQ7Vo4VAsA8dYzQ@mail.gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [alsa-devel] Question about the right fix for a sparse warning
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,66 +105,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gV2VkLCAyOSBKYW4gMjAyMCAxODowNzoyMCArMDEwMCwKVGFrYXNoaSBJd2FpIHdyb3RlOgo+
-IAo+IE9uIFdlZCwgMjkgSmFuIDIwMjAgMTg6MDE6MDAgKzAxMDAsCj4gUGllcnJlLUxvdWlzIEJv
-c3NhcnQgd3JvdGU6Cj4gPiAKPiA+IAo+ID4gCj4gPiA+Pj4+IFdlJ3JlIHNlZWluZyB0aGUgZm9s
-bG93aW5nIHNwYXJzZSB3YXJuaW5nIGluIHRoZSBTT0YgY29kZToKPiA+ID4+Pj4KPiA+ID4+Pj4g
-c291bmQvc29jL3NvZi9zb2YtYXVkaW8uYzo4NjozMTogd2FybmluZzogaW5jb3JyZWN0IHR5cGUg
-aW4gYXNzaWdubWVudCAoZGlmZmVyZW50IGJhc2UgdHlwZXMpCj4gPiA+Pj4+IHNvdW5kL3NvYy9z
-b2Yvc29mLWF1ZGlvLmM6ODY6MzE6ICAgIGV4cGVjdGVkIHJlc3RyaWN0ZWQgc25kX3BjbV9zdGF0
-ZV90IFt1c2VydHlwZV0gc3RhdGUKPiA+ID4+Pj4gc291bmQvc29jL3NvZi9zb2YtYXVkaW8uYzo4
-NjozMTogICAgZ290IHNpZ25lZCBpbnQgW3NpZ25lZF0gW3VzZXJ0eXBlXSBbZXhwbGljaXRseS1z
-aWduZWRdIHN0YXRlCj4gPiA+Pj4+Cj4gPiA+Pj4+IFRoZSBsaW5lIHVuZGVyIHNjcnV0aW55IHdo
-ZXJlIHdlIGFzc2lnbiAic3RhdGUiIGlzIGFzIGZvbGxvd3M6Cj4gPiA+Pj4+Cj4gPiA+Pj4+IHN0
-YXRlID0gc3Vic3RyZWFtLT5ydW50aW1lLT5zdGF0dXMtPnN0YXRlOwo+ID4gPj4+Pgo+ID4gPj4+
-PiBhbmQgaXQgaXMgZGVmaW5lZCBhcwo+ID4gPj4+PiBzbmRfcGNtX3N0YXRlX3Qgc3RhdGU7Cj4g
-PiA+Pj4+Cj4gPiA+Pj4+IFRoZXJlIGFyZSBvdGhlciBwbGFjZXMgKGV4IHBjbV9vc3MuYykgd2hl
-cmUgYSBzaW1pbGFyIGFzc2lnbm1lbnQgaGFzIGJlZW4gdXNlZAo+ID4gPj4+PiBhcyB3ZWxsLgo+
-ID4gPj4+Pgo+ID4gPj4+PiBXaGF0IGZpeGVzIHRoZSBpc3N1ZSBpcyBhIGZvcmNlZCBjYXN0IHRv
-IHNuZF9wY21fc3RhdGVfdCBhcyBiZWxvdyBiZWZvcmUKPiA+ID4+Pj4gYXNzaWduaW5nOgo+ID4g
-Pj4+PiAgIMKgc3RhdGUgPSAoX19mb3JjZSBzbmRfcGNtX3N0YXRlX3Qpc3Vic3RyZWFtLT5ydW50
-aW1lLT5zdGF0dXMtPnN0YXRlOwo+ID4gPj4+Pgo+ID4gPj4+PiBEbyB5b3UgdGhpbmsgdGhpcyBp
-cyBhY2NlcHRhYmxlPyBJZiBub3QsIGNvdWxkIHlvdSBwbGVhc2Ugc3VnZ2VzdCBhbgo+ID4gPj4+
-PiBhbHRlcm5hdGl2ZT8KPiA+ID4+Pgo+ID4gPj4+IEhtLCBJIGRvbid0IHNlZSB0aGUgd2Fybmlu
-ZyBpbiBteSBjb2RlLiAgRGlkIHlvdSBtZXJnZSBhbGwgdXBzdHJlYW0KPiA+ID4+PiBzdHVmZiBh
-bmQgc3RpbGwgZ2V0IGl0Pwo+ID4gPj4KPiA+ID4+IEl0J3MgYmVlbiBtZXJnZWQgaW4gdGhlIFNP
-RiB0cmVlICh0b3BpYy9zb2YtZGV2KSBhbmQgaXQnbGwgYmUgaW4gdGhlCj4gPiA+PiBuZXh0IGJh
-dGNoIEkgc2VuZC4gSXQncyBub3QgdXBzdHJlYW0ganVzdCB5ZXQgYmVjYXVzZSB3ZSB3YW50IHRv
-Cj4gPiA+PiByZW1vdmUgdGhlIHdhcm5pbmcgdG8gbWFrZSB0aGUgcGF0Y2ggbmljZSBhbmQgc2hp
-bnkgOi0pCj4gPiA+Cj4gPiA+IEkgc3RpbGwgd29uZGVyIHdoeSBJIGNvdWxkbid0IGdldCBpdCBv
-biBteSB0cmVlLiAgSSBndWVzcyB0aGUgY29kZQo+ID4gPiBhcm91bmQgdGhhdCBoYXNuJ3QgY2hh
-bmdlZCwgcmlnaHQ/Cj4gPiA+Cj4gPiA+IFdhaXQuLi4gIElzIGl0IGEgdGVzdCBvbiAzMmJpdCBh
-cmNoPyAgSWYgc28sIGl0IG1pZ2h0IGJlIGEgbmV3IHRoaW5nCj4gPiA+IGZvciB5MjAzOCBzdXBw
-b3J0LiAgVGhlbiB3ZSBtYXkgZml4IHRoZSB1YXBpIGRlZmluaXRpb24gaW5zdGVhZC4KPiA+IAo+
-ID4gSXQncyBhY3R1YWxseSBpbiB5b3VyIHRyZWUgYWxyZWFkeSwgbXkgbWlzdGFrZSwgc2VlOgo+
-ID4gCj4gPiBlZTFlNzliNzJlM2NmICgiQVNvQzogU09GOiBwYXJ0aXRpb24gYXVkaW8tcmVsYXRl
-ZCBwYXJ0cyBmcm9tIFNPRiBjb3JlIikKPiA+IAo+ID4gSXQncyB3aXRoIHBsYWluLXZhbmlsbGEg
-eDg2XzY0LCBJIGNhbiBzaGFyZSB0aGUgY29uZmlnLgo+IAo+IFNvcnJ5LCBteSBiYWQsIGl0IHNl
-ZW1zIHRoYXQgbXkgc3BhcnNlIHByb2dyYW0gd2FzIHRvbyBvbGQuICBBZnRlcgo+IHVwZ3JhZGlu
-ZyB0byB0aGUgbGF0ZXN0IHZlcnNpb24sIEkgY291bGQgc2VlIHRoZSB3YXJuaW5nLCB0b28uCgou
-Li4gYW5kIHRoZSBjYXVzZSB3YXMgd2hhdCBJIHN1c3BlY3RlZDogaXQncyBhIDY0Yml0IGNvbXBh
-dCB0eXBlIHRoYXQKZGVmaW5lcyB0aGUgZmllbGRzIGV4cGxpY2l0bHkgd2l0aCBfX3MzMi4gIEkg
-b3Zlcmxvb2tlZCB0aGF0IGl0J3MKYWx3YXlzIHVzZWQgZm9yIF9fS0VSTkVMX18uICBUaGUgdGVu
-dGF0aXZlIGZpeCBpcyBiZWxvdy4KCgp0aGFua3MsCgpUYWthc2hpCgoKLS0tIGEvaW5jbHVkZS91
-YXBpL3NvdW5kL2Fzb3VuZC5oCisrKyBiL2luY2x1ZGUvdWFwaS9zb3VuZC9hc291bmQuaApAQCAt
-NTY0LDEzICs1NjQsMTMgQEAgdHlwZWRlZiBjaGFyIF9fcGFkX2FmdGVyX3VmcmFtZVtzaXplb2Yo
-X191NjQpIC0gc2l6ZW9mKHNuZF9wY21fdWZyYW1lc190KV07CiAjZW5kaWYKIAogc3RydWN0IF9f
-c25kX3BjbV9tbWFwX3N0YXR1czY0IHsKLQlfX3MzMiBzdGF0ZTsJCQkvKiBSTzogc3RhdGUgLSBT
-TkRSVl9QQ01fU1RBVEVfWFhYWCAqLworCXNuZF9wY21fc3RhdGVfdCBzdGF0ZTsJCS8qIFJPOiBz
-dGF0ZSAtIFNORFJWX1BDTV9TVEFURV9YWFhYICovCiAJX191MzIgcGFkMTsJCQkvKiBOZWVkZWQg
-Zm9yIDY0IGJpdCBhbGlnbm1lbnQgKi8KIAlfX3BhZF9iZWZvcmVfdWZyYW1lIF9fcGFkMTsKIAlz
-bmRfcGNtX3VmcmFtZXNfdCBod19wdHI7CS8qIFJPOiBodyBwdHIgKDAuLi5ib3VuZGFyeS0xKSAq
-LwogCV9fcGFkX2FmdGVyX3VmcmFtZSBfX3BhZDI7CiAJc3RydWN0IF9fc25kX3RpbWVzcGVjNjQg
-dHN0YW1wOwkvKiBUaW1lc3RhbXAgKi8KLQlfX3MzMiBzdXNwZW5kZWRfc3RhdGU7CQkvKiBSTzog
-c3VzcGVuZGVkIHN0cmVhbSBzdGF0ZSAqLworCXNuZF9wY21fc3RhdGVfdCBzdXNwZW5kZWRfc3Rh
-dGU7CS8qIFJPOiBzdXNwZW5kZWQgc3RyZWFtIHN0YXRlICovCiAJX191MzIgcGFkMzsJCQkvKiBO
-ZWVkZWQgZm9yIDY0IGJpdCBhbGlnbm1lbnQgKi8KIAlzdHJ1Y3QgX19zbmRfdGltZXNwZWM2NCBh
-dWRpb190c3RhbXA7IC8qIHNhbXBsZSBjb3VudGVyIG9yIHdhbGwgY2xvY2sgKi8KIH07Cl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwczovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+>
+> > Sorry, my bad, it seems that my sparse program was too old.  After
+> > upgrading to the latest version, I could see the warning, too.
+>
+> ... and the cause was what I suspected: it's a 64bit compat type that
+> defines the fields explicitly with __s32.  I overlooked that it's
+> always used for __KERNEL__.  The tentative fix is below.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -564,13 +564,13 @@ typedef char __pad_after_uframe[sizeof(__u64) -
+> sizeof(snd_pcm_uframes_t)];
+>  #endif
+>
+>  struct __snd_pcm_mmap_status64 {
+> -       __s32 state;                    /* RO: state -
+> SNDRV_PCM_STATE_XXXX */
+> +       snd_pcm_state_t state;          /* RO: state -
+> SNDRV_PCM_STATE_XXXX */
+>         __u32 pad1;                     /* Needed for 64 bit alignment */
+>         __pad_before_uframe __pad1;
+>         snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
+>         __pad_after_uframe __pad2;
+>         struct __snd_timespec64 tstamp; /* Timestamp */
+> -       __s32 suspended_state;          /* RO: suspended stream state */
+> +       snd_pcm_state_t suspended_state;        /* RO: suspended stream
+> state */
+>         __u32 pad3;                     /* Needed for 64 bit alignment */
+>         struct __snd_timespec64 audio_tstamp; /* sample counter or wall
+> clock */
+>  };
+>
+
+Thanks, Takashi. I will prepare a patch with the fix.
+
+Thanks,
+Ranjani
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
