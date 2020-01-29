@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 277A6C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86A61C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:56:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ACA03206D4
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:55:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1A5F5206D4
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 17:56:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="igmhNcCu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACA03206D4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iBz663+N"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A5F5206D4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA4ED1686;
-	Wed, 29 Jan 2020 18:55:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA4ED1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 808451696;
+	Wed, 29 Jan 2020 18:55:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 808451696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580320558;
-	bh=D9/dk7ZDYpfybQt7GQwHC7Tw3fRs7NWN8hpqim3Pkgg=;
+	s=default; t=1580320602;
+	bh=4oJlaspVRzxeJDrTy3FEsuxLg2x6EcyRjoAV0B5KHlk=;
 	h=Date:From:To:In-Reply-To:Cc:Subject:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=igmhNcCuWhR2hXVuRPhJB3ajjTHeYD2wf0bpXB1NC2sH3JJ3YPwk34NwMGNRdP51e
-	 jPIxJ0uanFwGc22+CtT252sHJd2IuXW5KpRU3LGiVgR1q8I7j7vomXw1bQ/eT0xWDt
-	 vBUjHVT29uJZV+BCSHWSFN8e0ecjRJL5X2DaAbiI=
+	b=iBz663+N/q2sqOb9dXCtga8HrWkTR+jlb63afIh/5KYvD1YPEQOaIZTzMfGZjyhVG
+	 l9CZukD8hy+UQD+zBKdmmQn4PIpny7z6iqa4Mcj9eStczTbUizRvf3GE9vyleGe6Hc
+	 IVpdA87kWXDqjmzV9UXOqUYvi5kVmNUWihid7uzM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 228C4F80234;
-	Wed, 29 Jan 2020 18:54:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17A11F80276;
+	Wed, 29 Jan 2020 18:54:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A44F3F8023F; Wed, 29 Jan 2020 18:54:26 +0100 (CET)
+ id 88026F80253; Wed, 29 Jan 2020 18:54:28 +0100 (CET)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 36664F8023F
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 18:54:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36664F8023F
+ by alsa1.perex.cz (Postfix) with ESMTP id 8377CF80253
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 18:54:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8377CF80253
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAFA4328;
- Wed, 29 Jan 2020 09:54:20 -0800 (PST)
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0098E328;
+ Wed, 29 Jan 2020 09:54:24 -0800 (PST)
 Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B79FE3F67D;
- Wed, 29 Jan 2020 09:54:18 -0800 (PST)
-Date: Wed, 29 Jan 2020 17:54:15 +0000
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 241343F67D;
+ Wed, 29 Jan 2020 09:54:22 -0800 (PST)
+Date: Wed, 29 Jan 2020 17:54:21 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20200127192831.14057-3-tiwai@suse.de>
-Message-Id: <applied-20200127192831.14057-3-tiwai@suse.de>
+In-Reply-To: <20200127192831.14057-2-tiwai@suse.de>
+Message-Id: <applied-20200127192831.14057-2-tiwai@suse.de>
 X-Patchwork-Hint: ignore
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Subject: [alsa-devel] Applied "ASoC: rt700: Add __maybe_unused to PM
+Subject: [alsa-devel] Applied "ASoC: rt1308-sdw: Add __maybe_unused to PM
 	callbacks" to the asoc tree
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -70,16 +70,16 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1851433537731327082=="
+Content-Type: multipart/mixed; boundary="===============6673398832390720588=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---===============1851433537731327082==
+--===============6673398832390720588==
 Content-Type: text/plain
 
 The patch
 
-   ASoC: rt700: Add __maybe_unused to PM callbacks
+   ASoC: rt1308-sdw: Add __maybe_unused to PM callbacks
 
 has been applied to the asoc tree at
 
@@ -104,53 +104,53 @@ to this mail.
 Thanks,
 Mark
 
-From 809a9b63323278e94f73d8b1f85b64e347f639ba Mon Sep 17 00:00:00 2001
+From faa37a9318899752d85761d47e79a42f3a0aa1b9 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 27 Jan 2020 20:28:29 +0100
-Subject: [PATCH] ASoC: rt700: Add __maybe_unused to PM callbacks
+Date: Mon, 27 Jan 2020 20:28:28 +0100
+Subject: [PATCH] ASoC: rt1308-sdw: Add __maybe_unused to PM callbacks
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Fix the compile warnings by adding __maybe_unused to PM callbacks:
-  sound/soc/codecs/rt700-sdw.c:503:12: warning: ‘rt700_dev_resume’ defined but not used [-Wunused-function]
-  sound/soc/codecs/rt700-sdw.c:489:12: warning: ‘rt700_dev_suspend’ defined but not used [-Wunused-function]
+  sound/soc/codecs/rt1308-sdw.c:690:12: warning: ‘rt1308_dev_resume’ defined but not used [-Wunused-function]
+  sound/soc/codecs/rt1308-sdw.c:676:12: warning: ‘rt1308_dev_suspend’ defined but not used [-Wunused-function]
 
-Fixes: 7d2a5f9ae41e ("ASoC: rt700: add rt700 codec driver")
+Fixes: a87a6653a28c ("ASoC: rt1308-sdw: add rt1308 SdW amplifier driver")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20200127192831.14057-3-tiwai@suse.de
+Link: https://lore.kernel.org/r/20200127192831.14057-2-tiwai@suse.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt700-sdw.c | 4 ++--
+ sound/soc/codecs/rt1308-sdw.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
-index a4b95425886f..d4e0f953bcce 100644
---- a/sound/soc/codecs/rt700-sdw.c
-+++ b/sound/soc/codecs/rt700-sdw.c
-@@ -486,7 +486,7 @@ static const struct sdw_device_id rt700_id[] = {
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index 8a03dbfe7906..d930f60cb797 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -673,7 +673,7 @@ static const struct sdw_device_id rt1308_id[] = {
  };
- MODULE_DEVICE_TABLE(sdw, rt700_id);
+ MODULE_DEVICE_TABLE(sdw, rt1308_id);
  
--static int rt700_dev_suspend(struct device *dev)
-+static int __maybe_unused rt700_dev_suspend(struct device *dev)
+-static int rt1308_dev_suspend(struct device *dev)
++static int __maybe_unused rt1308_dev_suspend(struct device *dev)
  {
- 	struct rt700_priv *rt700 = dev_get_drvdata(dev);
+ 	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
  
-@@ -500,7 +500,7 @@ static int rt700_dev_suspend(struct device *dev)
+@@ -687,7 +687,7 @@ static int rt1308_dev_suspend(struct device *dev)
  
- #define RT700_PROBE_TIMEOUT 2000
+ #define RT1308_PROBE_TIMEOUT 2000
  
--static int rt700_dev_resume(struct device *dev)
-+static int __maybe_unused rt700_dev_resume(struct device *dev)
+-static int rt1308_dev_resume(struct device *dev)
++static int __maybe_unused rt1308_dev_resume(struct device *dev)
  {
  	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	struct rt700_priv *rt700 = dev_get_drvdata(dev);
+ 	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
 -- 
 2.20.1
 
 
---===============1851433537731327082==
+--===============6673398832390720588==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -161,4 +161,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============1851433537731327082==--
+--===============6673398832390720588==--
