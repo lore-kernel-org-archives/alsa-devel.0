@@ -2,108 +2,72 @@ Return-Path: <SRS0=lFLu=3S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C523C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 14:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B070EC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 14:40:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9292320720
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 14:34:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3C06B206F0
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 14:40:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="agigWd33";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="MrQ/OLnZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9292320720
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aR7zH3aA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C06B206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E35851663;
-	Wed, 29 Jan 2020 15:33:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E35851663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DE54166F;
+	Wed, 29 Jan 2020 15:40:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DE54166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580308458;
-	bh=sduf7FXTDR13T6Pi7qDRuuwobjr+NTJc7kG+rqecT0s=;
-	h=From:To:References:Date:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1580308850;
+	bh=FObd3xnJQJxlCdQR0PwTWUf5rvNqftZjeSc27T34AMY=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=agigWd334zmdk138MgeVs/WlJ050bJhrKabjSYWnqBbK7sCoLrd3aC3l77N2Pn7gT
-	 IhoCguWXpxcVE/XIdj4UOf3W2k4u99f5DfElqgtfVNVMj+z5HXa+gXlR4DfeUfvohr
-	 2pSEi+C1X/7tTzVmS8i3vW0guiw++lWa7H3MBnl8=
+	b=aR7zH3aA7nKQbq8qkK79W9I48kQBChH9BS0iTSpQaJiB8CE7qYy08YFUtGpfHm8/d
+	 fw8PvSJkYUdU+2xxTW8TlMu2OqhK3tAE2OHiYTX2qnPrMBGwyjlzkZoI1yCYyAgADt
+	 CFN38N1TluhD68L3rriJsCPFuSsRCZyQDNs6Eco4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6882AF80218;
-	Wed, 29 Jan 2020 15:33:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25626F80218;
+	Wed, 29 Jan 2020 15:40:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 989B5F8021E; Wed, 29 Jan 2020 15:33:24 +0100 (CET)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
+ id 504F7F8021E; Wed, 29 Jan 2020 15:39:58 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D403F80122
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 15:33:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D403F80122
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="MrQ/OLnZ"
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e31979a0000>; Wed, 29 Jan 2020 06:32:58 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate102.nvidia.com (PGP Universal service);
- Wed, 29 Jan 2020 06:33:18 -0800
-X-PGP-Universal: processed;
- by hqpgpgate102.nvidia.com on Wed, 29 Jan 2020 06:33:18 -0800
-Received: from [10.21.133.51] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 29 Jan
- 2020 14:33:15 +0000
-From: Jon Hunter <jonathanh@nvidia.com>
-To: Mark Brown <broonie@kernel.org>, Dmitry Osipenko <digetx@gmail.com>
-References: <29db3df4-6f51-7c0f-1eef-90171f1d233a@codethink.co.uk>
- <9a5447e2-155c-7e6e-b8f1-95523c6f42c6@gmail.com>
- <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
- <680e2dfd-6f4f-5c96-63b7-97520961dc82@gmail.com>
- <0e0cd260e39ad293edb881da1c565510@codethink.co.uk>
- <507dcd5a-672b-61ac-aa7f-af5ff01accff@codethink.co.uk>
- <a2744ea0-cf6d-d083-75e6-853746195001@gmail.com>
- <28cafc56-095b-68c6-638d-270608a2983f@codethink.co.uk>
- <3d8544be-af20-f382-85fd-32183365267b@nvidia.com>
- <1b3c2af4-510e-306c-749a-efffc994b20a@gmail.com>
- <20200128121315.GD4689@sirena.org.uk>
- <4b90efd2-5d0c-84df-961d-80cee288e0d4@nvidia.com>
-Message-ID: <586ea2b9-c204-2bd1-f8e2-875e0974e42d@nvidia.com>
-Date: Wed, 29 Jan 2020 14:33:12 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5FDCF80123
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 15:39:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5FDCF80123
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 29 Jan 2020 06:39:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,378,1574150400"; d="scan'208";a="223849746"
+Received: from rnoffsin-mobl.amr.corp.intel.com (HELO [10.252.139.181])
+ ([10.252.139.181])
+ by fmsmga008.fm.intel.com with ESMTP; 29 Jan 2020 06:39:51 -0800
+To: Takashi Iwai <tiwai@suse.de>,
+ "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
+References: <CAFQqKeW5b5BEU1cXRzxqmmSNCQ8Qnifn3mivx4yVnrtk7Ho0Tg@mail.gmail.com>
+ <s5hsgjyn1ci.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <aff5f7fd-13d2-b523-b3c6-a4529c4cf26e@linux.intel.com>
+Date: Wed, 29 Jan 2020 08:39:50 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <4b90efd2-5d0c-84df-961d-80cee288e0d4@nvidia.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <s5hsgjyn1ci.wl-tiwai@suse.de>
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1580308378; bh=q5nK7ZGYKHERyFArP7MvoxXSyWsbMp/JkPPV5Dp1yx4=;
- h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Language:
- Content-Transfer-Encoding;
- b=MrQ/OLnZLkb5W5NbKyGywLti+GnNL5Kkk5EEebpVAd6FueXmDhBM4J+49TIN8rnLD
- IT4T/+4BRnZHmiVgUq2mS5AljgriMt7iQ7L0etVq93qNwZdwqpPQwF7aTo9xNlkmYh
- F9gIKUDPMGB5/xYtg8G6XdKGiyOzB8OBZy2I5umzFY36ZoPn0wJksOWRH+LysEB1nq
- GoJbvPGnc/xFgWTRDtVkGvO6MrEzbNyo8GlByvaIetr8xeFFv5Vcyd7XWS2BNjef/x
- 5WeQrrOUuPsjp4tI4e0ndWQOlpWuYX/lw2rvyu60UrSGk56I3w0vMecgnOO/XFNG9K
- 865sd1y3Fgk8w==
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Ben Dooks <ben.dooks@codethink.co.uk>,
- Thierry Reding <thierry.reding@gmail.com>,
- Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org
-Subject: Re: [alsa-devel] [Linux-kernel] [PATCH v5 2/7] ASoC: tegra: Allow
- 24bit and 32bit samples
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Re: [alsa-devel] Question about the right fix for a sparse warning
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,70 +80,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-On 29/01/2020 10:49, Jon Hunter wrote:
-> 
-> On 28/01/2020 12:13, Mark Brown wrote:
->> I really don't understand why this is all taking so long, this thread
->> just seems to be going round in interminable circles long after it
->> looked like the issue was understood.  I have to admit I've not read
->> every single message in the thread but it's difficult to see why it
->> doesn't seem to be making any progress.
-> 
-> Sorry about that. On reviewing this with the audio team at NVIDIA, I was
-> told we don't support S24_LE for I2S. The reason being that the crossbar
-> between the DMA and I2S is not able to extract the correct 24-bits from
-> the 32-bit sample to feed to the I2S interface. The Tegra documentation
-> does show support for 24-bits, but not state explicit support for S24_LE.
-> 
-> Now Ben says that he has this working, but I am unable to reproduce
-> this, so before just dropping the S24_LE support, I would like to
-> understand how this is working for Ben in case there is something that
-> we have overlooked here.
-
-Ah, I see that part of the problem is that patches 6 and 7 are yet to be
-applied and without these the audio is completely distorted because
-there is a mismatch in the data size between the APBIF and I2S
-controller. Applying these patches it is not distorted but now I am
-observing the clocking issue Ben reported and so the tone is not quite
-right.
-
-Ben, I was able to workaround the clocking issue by making the I2S word
-clock 64 bits long and not 48.
-
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index bbf81b5aa723..3c9b4779e61b 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -143,7 +143,7 @@ static int tegra30_i2s_hw_params(struct
-snd_pcm_substream *substream,
-        case SNDRV_PCM_FORMAT_S24_LE:
-                val = TEGRA30_I2S_CTRL_BIT_SIZE_24;
-                audio_bits = TEGRA30_AUDIOCIF_BITS_24;
--               sample_size = 24;
-+               sample_size = 32;
-                break;
-        case SNDRV_PCM_FORMAT_S32_LE:
-                val = TEGRA30_I2S_CTRL_BIT_SIZE_32;
-
-For I2S I believe we only care about the edges of the word clock and so
-we make the overall period of the word clock 64 bit clocks then we no
-longer have an issue with the bit clock frequency. I assume that this
-should also be fine for TDM modes as well.
-
-Can you let me know if this works for you?
-
-Cheers
-Jon
-
--- 
-nvpublic
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CgpPbiAxLzI5LzIwIDE6NTUgQU0sIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBXZWQsIDI5IEph
+biAyMDIwIDAyOjExOjM4ICswMTAwLAo+IFNyaWRoYXJhbiwgUmFuamFuaSB3cm90ZToKPj4KPj4g
+SGkgVGFrYXNoaSwKPj4KPj4gV2UncmUgc2VlaW5nIHRoZSBmb2xsb3dpbmcgc3BhcnNlIHdhcm5p
+bmcgaW4gdGhlIFNPRiBjb2RlOgo+Pgo+PiBzb3VuZC9zb2Mvc29mL3NvZi1hdWRpby5jOjg2OjMx
+OiB3YXJuaW5nOiBpbmNvcnJlY3QgdHlwZSBpbiBhc3NpZ25tZW50IChkaWZmZXJlbnQgYmFzZSB0
+eXBlcykKPj4gc291bmQvc29jL3NvZi9zb2YtYXVkaW8uYzo4NjozMTogICAgZXhwZWN0ZWQgcmVz
+dHJpY3RlZCBzbmRfcGNtX3N0YXRlX3QgW3VzZXJ0eXBlXSBzdGF0ZQo+PiBzb3VuZC9zb2Mvc29m
+L3NvZi1hdWRpby5jOjg2OjMxOiAgICBnb3Qgc2lnbmVkIGludCBbc2lnbmVkXSBbdXNlcnR5cGVd
+IFtleHBsaWNpdGx5LXNpZ25lZF0gc3RhdGUKPj4KPj4gVGhlIGxpbmUgdW5kZXIgc2NydXRpbnkg
+d2hlcmUgd2UgYXNzaWduICJzdGF0ZSIgaXMgYXMgZm9sbG93czoKPj4KPj4gc3RhdGUgPSBzdWJz
+dHJlYW0tPnJ1bnRpbWUtPnN0YXR1cy0+c3RhdGU7Cj4+Cj4+IGFuZCBpdCBpcyBkZWZpbmVkIGFz
+Cj4+IHNuZF9wY21fc3RhdGVfdCBzdGF0ZTsKPj4KPj4gVGhlcmUgYXJlIG90aGVyIHBsYWNlcyAo
+ZXggcGNtX29zcy5jKSB3aGVyZSBhIHNpbWlsYXIgYXNzaWdubWVudCBoYXMgYmVlbiB1c2VkCj4+
+IGFzIHdlbGwuCj4+Cj4+IFdoYXQgZml4ZXMgdGhlIGlzc3VlIGlzIGEgZm9yY2VkIGNhc3QgdG8g
+c25kX3BjbV9zdGF0ZV90IGFzIGJlbG93IGJlZm9yZQo+PiBhc3NpZ25pbmc6Cj4+ICDCoHN0YXRl
+ID0gKF9fZm9yY2Ugc25kX3BjbV9zdGF0ZV90KXN1YnN0cmVhbS0+cnVudGltZS0+c3RhdHVzLT5z
+dGF0ZTsKPj4KPj4gRG8geW91IHRoaW5rIHRoaXMgaXMgYWNjZXB0YWJsZT8gSWYgbm90LCBjb3Vs
+ZCB5b3UgcGxlYXNlIHN1Z2dlc3QgYW4KPj4gYWx0ZXJuYXRpdmU/Cj4gCj4gSG0sIEkgZG9uJ3Qg
+c2VlIHRoZSB3YXJuaW5nIGluIG15IGNvZGUuICBEaWQgeW91IG1lcmdlIGFsbCB1cHN0cmVhbQo+
+IHN0dWZmIGFuZCBzdGlsbCBnZXQgaXQ/CgpJdCdzIGJlZW4gbWVyZ2VkIGluIHRoZSBTT0YgdHJl
+ZSAodG9waWMvc29mLWRldikgYW5kIGl0J2xsIGJlIGluIHRoZSAKbmV4dCBiYXRjaCBJIHNlbmQu
+IEl0J3Mgbm90IHVwc3RyZWFtIGp1c3QgeWV0IGJlY2F1c2Ugd2Ugd2FudCB0byByZW1vdmUgCnRo
+ZSB3YXJuaW5nIHRvIG1ha2UgdGhlIHBhdGNoIG5pY2UgYW5kIHNoaW55IDotKQoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
