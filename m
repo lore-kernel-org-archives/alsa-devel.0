@@ -2,103 +2,65 @@ Return-Path: <SRS0=lFLu=3S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2D32C33CB2
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C861EC33CB2
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:34:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C27D2071E
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:19:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4737920CC7
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 11:34:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hBLX7UQT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Sw3HgBhF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C27D2071E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HF4snJOS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4737920CC7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7B9F15F8;
-	Wed, 29 Jan 2020 12:18:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7B9F15F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88B4F1663;
+	Wed, 29 Jan 2020 12:33:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88B4F1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580296782;
-	bh=uaERRVi0nQDuN1slWN7YyQavuIpMrf86duBqB0gqOLc=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1580297647;
+	bh=CPSdEIVAy+ht2IkV20HjtDE/Het3Fasm08XVIT1uxkU=;
+	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hBLX7UQTsVqnyYahh769NiZxvzaawn4Gev48XM0H0dosNGselV9frUgkp9JK+Nxyk
-	 PLPIu5h60O+ImYbKZEO5tuyNlICdmhFdldmnlfpzkLdW2rzBjc+NyeyfIyujnjoJ1E
-	 XagKNje5EQPQTtiBBTHnNSwNQvi46YxtI8zgO9Is=
+	b=HF4snJOSffLdbFODEOtiO7a09bT/BwTIAXDU4iKOC6ZyDJkR0ujzu/igTjT0Ycfua
+	 B+lxa2kjAMd/dA9iqwmtBv7pCJ/o/rH7Fd4+H/iZqleuaR32uyZTBj+iNDSRWaUCf5
+	 7Gg7pdHFuv9h4W/55XiGm7wSSucRXGRSA8400lD0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15DC5F80123;
-	Wed, 29 Jan 2020 12:18:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F29B0F80218;
+	Wed, 29 Jan 2020 12:33:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8E2EF8021E; Wed, 29 Jan 2020 12:18:50 +0100 (CET)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 59E0FF8021E; Wed, 29 Jan 2020 12:33:15 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCD1EF80123
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 12:18:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCD1EF80123
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Sw3HgBhF"
-Received: by mail-wr1-x442.google.com with SMTP id t2so19714004wrr.1
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 03:18:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to
- :user-agent; bh=WdEwvXuf/f1ew5arKRFGjQIWnawCPhuYtVKO7QPsc9Y=;
- b=Sw3HgBhFTNZBQ36hs9fAypBBY7Fa4Sh5OhqWXeKEPKx1kmSDHDG26lN9LA8NuPw2qF
- p1DHCrsJ8EOijNoxlSKupI7Zxp/jNH8T5E9VvGgDRaqOitPqAwUS74HmiAa2e9jQLPbv
- 89Du9baS80tY7ud1v+dhJl/UHWfb1rsw6BinQLgP7jPdxm3FsWERhB7LLxEIdmcc48pv
- IvpJw07fjov6WMjVtkzx0qF2RvIxiyEMBsvtYuAZEu6G6dxXDSHBPJDgjeuZ9nxRC4Vq
- xKwuGm14d1NEDJdCQHvkh2GjoQQsU1G/gsuEuT6g11JkYEZpLnLFNMDd8mOBL+N7a+4f
- yEnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to:user-agent;
- bh=WdEwvXuf/f1ew5arKRFGjQIWnawCPhuYtVKO7QPsc9Y=;
- b=gqVv3y7uD7Sun4CA5rmVbauYyPMOj+G2vIhVS/91ovw8S56czaZaGHyoQsh/DRN6ZH
- HcGOeJ0hwude1aAou09TjpmcdZOxRAHSOoM5JRneTFIaLIJors7zNHNs5BXgy+l810p0
- NGRb8sRIqTu5LENpU9ZZA/7JS9L4vJC1HkdJ+ZX0ExSZOu1BCRo4eeWoNXnE0MnM5YPX
- BybFe5yTzH7RYhJp+dLnWLyd+mWkLB/sv1eSfR+1ZQmpPnzEYr/1StVNtIEuloPovLVE
- 1LRx2lRTdW+GhRWtyRenTiqYK1203KDqnAXumA48s/20wYqvecwd1Mmi5y0Nd8MpGhzR
- yBfA==
-X-Gm-Message-State: APjAAAVGdvTiDaAmSxuTf/gqzCF5TbwW9shl8uqWFSBJA+4ae6qK2PdT
- mXRhmCoAHqqJDyeRKgld8H0nsA==
-X-Google-Smtp-Source: APXvYqyMoIcsyaEqYxxW6ffIc7cM/EHFn0b6ThBfRh9LHZ4nCf4C8TEqE1Hf1HzIgoqg9YnSyuDr8A==
-X-Received: by 2002:adf:a109:: with SMTP id o9mr35424484wro.189.1580296726681; 
- Wed, 29 Jan 2020 03:18:46 -0800 (PST)
-Received: from dell ([2.27.35.227])
- by smtp.gmail.com with ESMTPSA id b17sm2448180wrx.15.2020.01.29.03.18.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jan 2020 03:18:45 -0800 (PST)
-Date: Wed, 29 Jan 2020 11:18:58 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <20200129111858.GC3548@dell>
-References: <20191219103153.14875-1-srinivas.kandagatla@linaro.org>
- <20191219103153.14875-3-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20191219103153.14875-3-srinivas.kandagatla@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- vinod.koul@linaro.org, devicetree@vger.kernel.org, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org,
- spapothi@codeaurora.org
-Subject: Re: [alsa-devel] [PATCH v6 02/11] mfd: wcd934x: add support to
- wcd9340/wcd9341 codec
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04A24F80082
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 12:33:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04A24F80082
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 6B398AE06;
+ Wed, 29 Jan 2020 11:33:06 +0000 (UTC)
+Date: Wed, 29 Jan 2020 12:33:06 +0100
+Message-ID: <s5hy2tqfqfh.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Roman =?UTF-8?B?xaBtYWthbA==?= <schmakerisko@gmail.com>
+In-Reply-To: <2520086.mvXUDI8C0e@schmakbook>
+References: <2520086.mvXUDI8C0e@schmakbook>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] [CX2075] No sound after suspend/resume from
+	front	speaker
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,24 +78,23 @@ Content-Transfer-Encoding: base64
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gVGh1LCAxOSBEZWMgMjAxOSwgU3Jpbml2YXMgS2FuZGFnYXRsYSB3cm90ZToKCj4gUXVhbGNv
-bW0gV0NEOTM0MC9XQ0Q5MzQxIENvZGVjIGlzIGEgc3RhbmRhbG9uZSBIaS1GaSBhdWRpbyBjb2Rl
-YyBJQy4KPiAKPiBUaGlzIGNvZGVjIGhhcyBpbnRlZ3JhdGVkIFNvdW5kV2lyZSBjb250cm9sbGVy
-LCBwaW4gY29udHJvbGxlciBhbmQKPiBpbnRlcnJ1cHQgY29udHJvbGxlci4KPiAKPiBTaWduZWQt
-b2ZmLWJ5OiBTcmluaXZhcyBLYW5kYWdhdGxhIDxzcmluaXZhcy5rYW5kYWdhdGxhQGxpbmFyby5v
-cmc+Cj4gQWNrZWQtZm9yLU1GRC1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9yZz4K
-PiAtLS0KPiAgZHJpdmVycy9tZmQvS2NvbmZpZyAgICAgICAgICAgICAgICAgICB8ICAxMiArCj4g
-IGRyaXZlcnMvbWZkL01ha2VmaWxlICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBkcml2ZXJz
-L21mZC93Y2Q5MzR4LmMgICAgICAgICAgICAgICAgIHwgMzA2ICsrKysrKysrKysrKysrKwo+ICBp
-bmNsdWRlL2xpbnV4L21mZC93Y2Q5MzR4L3JlZ2lzdGVycy5oIHwgNTMxICsrKysrKysrKysrKysr
-KysrKysrKysrKysrCj4gIGluY2x1ZGUvbGludXgvbWZkL3djZDkzNHgvd2NkOTM0eC5oICAgfCAg
-MzEgKysKPiAgNSBmaWxlcyBjaGFuZ2VkLCA4ODEgaW5zZXJ0aW9ucygrKQo+ICBjcmVhdGUgbW9k
-ZSAxMDA2NDQgZHJpdmVycy9tZmQvd2NkOTM0eC5jCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNs
-dWRlL2xpbnV4L21mZC93Y2Q5MzR4L3JlZ2lzdGVycy5oCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBp
-bmNsdWRlL2xpbnV4L21mZC93Y2Q5MzR4L3djZDkzNHguaAoKQXBwbGllZCwgdGhhbmtzLgoKLS0g
-CkxlZSBKb25lcyBb5p2O55C85pavXQpMaW5hcm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQKTGlu
-YXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5h
-cm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+T24gU2F0LCAyNSBKYW4gMjAyMCAyMzozMDozMiArMDEwMCwKUm9tYW4gxaBtYWthbCB3cm90ZToK
+PiAKPiBIaSwKPiAKPiB0aGlzIHN0aWxsIHNlZW0gdG8gYmUgYW4gaXNzdWUuIEFmdGVyIHN0YXJ0
+dXAgZXZlcnl0aGluZyB3b3JrcyB3ZWxsIHVudGlsIHRoZSAKPiBsYXB0b3AgZ29lcyB0byBzdXNw
+ZW5kLgo+IAo+IFRyaWVkIHByZXR0eSBtdWNoIGV2ZXJ5dGhpbmcgYmFzaWMgdXNlciBjYW4gZG8g
+KHVubXV0ZXMsIHJtbW9kcyBhbmQgc28gb24pLCAKPiBzdGlsbCBubyB3YXkgdG8gd2FrZSB0aGUg
+b3V0cHV0LiBBTFNBIHNlZW1zIHRvIGJlIHRoaW5raW5nLCB0aGF0IG91dHB1dCBpcyAKPiBhY3Rp
+dmUsIHlvdSBjYW4gc2V0IHZvbHVtZSBhbmQgc3R1ZmYsIGJ1dCBub3RoaW5nIGhhcHBlbnMuCj4g
+Cj4gQUxTQSBpbmZvOgo+IGh0dHA6Ly9hbHNhLXByb2plY3Qub3JnL2RiLz9mPTlkMWVlODFmZTAz
+N2FjYjUzY2EzODFmMmRlMjdiZTQyMGY4M2EzNzMKPiAKPiBSZWxhdGVkIGxpbmtzOgo+IGh0dHBz
+Oi8vd3d3LnJlZGRpdC5jb20vci9hcmNobGludXgvY29tbWVudHMvNG53enVhLwo+IG5vX3NvdW5k
+X2FmdGVyX3N1c3BlbmRfa2lsbGluZ19vcl9yZXN0YXJ0aW5nLwo+IGh0dHBzOi8vYnVncy5sYXVu
+Y2hwYWQubmV0L3VidW50dS8rc291cmNlL2xpbnV4LytidWcvMTYxMjkxNgo+IGh0dHBzOi8vYnVn
+cy5kZWJpYW4ub3JnL2NnaS1iaW4vYnVncmVwb3J0LmNnaT9idWc9ODUxNDA0CgpUaGUgZmlyc3Qg
+dGhpbmcgdG8gY2hlY2sgaXMgdG8gY29tcGFyZSBhbHNhLWluZm8uc2ggb3V0cHV0cyBiZWZvcmUg
+YW5kCmFmdGVyIHRoZSBzdXNwZW5kLgoKQWxzbyBwYXNzIHNuZF9oZGFfY29kZWMuZHVtcF9jb2Vm
+PTEgbW9kdWxlIG9wdGlvbiB0byBlbmFibGUgdGhlIENPRUYKZHVtcC4gIFRoaXMgd2lsbCBnaXZl
+IG1vcmUgaW5mb3JtYXRpb24gaW4gYWxzYS1pbmZvLnNoIG91dHB1dHMuCgoKVGFrYXNoaQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
