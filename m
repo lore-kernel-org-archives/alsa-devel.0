@@ -2,70 +2,77 @@ Return-Path: <SRS0=lFLu=3S=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73E9DC33CB2
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2423C33CB2
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:10:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E917420708
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:09:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 230A420708
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jan 2020 09:10:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="b1AUaOig"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E917420708
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KIaf6r9S"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 230A420708
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 424281657;
-	Wed, 29 Jan 2020 10:08:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 424281657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EB1F1678;
+	Wed, 29 Jan 2020 10:09:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EB1F1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580288979;
-	bh=7FJGiBmIOk3fKSe0VK4Y0XEGuXXhyig9Eihx6bV9M5o=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1580289033;
+	bh=oBFn66NA4Sb4R0fFmWzV/uJGRUXmHdJPkC84XbKEN1g=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b1AUaOigL2o5DcHeBKqiAuqEeb/vuFHr//trRfDnJgtbAmV8mLrLBeLAvlcTLhBGx
-	 DIfV+5kEpsrS7kegKjanErOCOiDsW5QJ9RuxYcJek8AQwESo/1Dsn+irFyPdzw9kfj
-	 Wu4+RKSPHjqKsSn5X4VjJJ1aOpHnuvHouwgnsSwU=
+	b=KIaf6r9Sv7m6Cv5o4DZ9xD9Xy6Ep222u2N9D3fQmNWqbbzOOBDsluIs/IrHBttg6g
+	 vN56J9L510WfFiTrrFJxUYqSJl2tZ7PcQDINSJ4xgbV+0wGxkNedOUn75joHsFi5Ya
+	 YYVKSXNaLc8n5eaPO6djmMZHhogEnt38dvsZS6sE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B968BF80218;
-	Wed, 29 Jan 2020 10:08:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3526F80234;
+	Wed, 29 Jan 2020 10:09:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C080AF8021E; Wed, 29 Jan 2020 10:08:47 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C55A4F8023F; Wed, 29 Jan 2020 10:09:22 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C47EF80082
- for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 10:08:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C47EF80082
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id F0FCFAE2C;
- Wed, 29 Jan 2020 09:08:43 +0000 (UTC)
-Date: Wed, 29 Jan 2020 10:08:43 +0100
-Message-ID: <s5hd0b2mxyc.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <57fa4c0d-3b64-d0c2-3d19-3b3569557069@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2E6EF80229
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jan 2020 10:09:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2E6EF80229
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 29 Jan 2020 01:09:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,377,1574150400"; d="scan'208";a="261738291"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.237.137.172])
+ ([10.237.137.172])
+ by fmsmga002.fm.intel.com with ESMTP; 29 Jan 2020 01:09:13 -0800
+To: Daniel Baluta <daniel.baluta@nxp.com>
 References: <20200128104356.16570-1-cezary.rojewski@intel.com>
- <20200128104356.16570-5-cezary.rojewski@intel.com>
- <20200128105946.GP2841@vkoul-mobl>
- <57fa4c0d-3b64-d0c2-3d19-3b3569557069@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
- Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
-Subject: Re: [alsa-devel] [PATCH v3 04/11] ALSA: core: Expand DMA buffer
-	information
+ <20200128104356.16570-10-cezary.rojewski@intel.com>
+ <e8a5f019516a7db1d42143c18d8e1c9081d4e37f.camel@nxp.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <ccc529d7-a562-c74e-76f7-d83f09cbb0fd@intel.com>
+Date: Wed, 29 Jan 2020 10:09:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+MIME-Version: 1.0
+In-Reply-To: <e8a5f019516a7db1d42143c18d8e1c9081d4e37f.camel@nxp.com>
+Content-Language: en-US
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v3 09/11] ASoC: SOF: Intel: Probe compress
+ operations
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,48 +85,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Jan 2020 12:58:18 +0100,
-Cezary Rojewski wrote:
+On 2020-01-29 08:55, Daniel Baluta wrote:
+> On Tue, 2020-01-28 at 11:43 +0100, Cezary Rojewski wrote:
+>> diff --git a/sound/soc/sof/intel/hda-compress.c
+>> b/sound/soc/sof/intel/hda-compress.c
+>> new file mode 100644
+>> index 000000000000..da7de867d0af
+>> --- /dev/null
+>> +++ b/sound/soc/sof/intel/hda-compress.c
+>> @@ -0,0 +1,132 @@
+>> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 > 
-> On 2020-01-28 11:59, Vinod Koul wrote:
-> > On 28-01-20, 11:43, Cezary Rojewski wrote:
-> >> Update DMA buffer definition for snd_compr_runtime so it is represented
-> >> similarly as in snd_pcm_runtime. While at it, modify
-> >> snd_compr_set_runtime_buffer to account for newly added members.
-> >
-> > Please run ./scripts/get_maintainer.pl, it will tell you the people you
-> > should CC on a patch.
-> >
-> > Also Takashi already acked, so you should add the acks/reviews received
-> > in subsequent versions (unless they changed)
-> >
-> > And for this:
-> >
-> > Acked-by: Vinod Koul <vkoul@kernel.org>
-> >
+> I think SPDX is enough.
 > 
-> No ALSA core & hda patches changed since v1. Sorry for missing the
-> Acked-by signature from Takashi. Should I resend and add the missing
-> ack in v4?
-
-Not necessary just for the lack of my ack.
-Of course, if you plan to submit v4 in anyway later, feel free to add
-them there :)
-
-
-thanks,
-
-Takashi
-
-
+>> +//
+>> +// This file is provided under a dual BSD/GPLv2 license.  When using
+>> or
+>> +// redistributing this file, you may do so under either license.
 > 
-> Czarek
+> No need to add this boilerplate code.
 > 
+
+Header shares structure of all other headers within sof directory. If 
+your claim is true, then all headers have to be updated, not just this 
+one. Such change should be provided in a separate patch/ series.
+
+Czarek
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
