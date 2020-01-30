@@ -6,71 +6,72 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 706E0C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:05:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAA19C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:15:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0CA4206F0
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:05:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63DEB20678
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:15:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iy8BGLH4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0CA4206F0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mL3LMWHf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63DEB20678
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23438166A;
-	Thu, 30 Jan 2020 16:05:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23438166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB9111614;
+	Thu, 30 Jan 2020 16:14:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB9111614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580396751;
-	bh=j4nmAocuXmDWTKHunBnan/xaKFyhSz2ZwecijJU8S8E=;
+	s=default; t=1580397328;
+	bh=KDcf6fecXXoyxSErp/NCQdYQ0ZC8IGXIIdLP7GjUPP4=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iy8BGLH4UNKXDQUQKdNeZA1nCaAH0U/T2c3Nk1PHnMA+HipeIeS/g/JyRTUqKNqLc
-	 IwXp/5Rrr9gyxqpgGHObHfIlHRshPlQV265Jq+ekzmfB9rADPJF3jXionM5AU9oPJO
-	 ZpcWgKp8CWOdk7iyJS2tWEACjPFHHfOk2ZIa1Flo=
+	b=mL3LMWHfcbdluK9n7wCJSEOfxCJspyS1AgaRSvYpbtNLdaomHIFOZr/xVot2vvDPO
+	 NY6ya8VqbcEPhVGN1aAmc5gdg8fqhzWhNegh4FV8WFOjC1uTr6oT6OWJnrKLcMuTf2
+	 sHqbZzxbO6Qo0D+ijn7D0TRze4lfJ3eh0yrYPkWs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97FEBF8014B;
-	Thu, 30 Jan 2020 16:05:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4582FF80123;
+	Thu, 30 Jan 2020 16:14:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 401D9F80150; Thu, 30 Jan 2020 16:04:59 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 1D987F80150; Thu, 30 Jan 2020 16:14:37 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0706F80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 16:04:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0706F80123
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02CC9F800F1
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 16:14:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02CC9F800F1
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 30 Jan 2020 07:04:53 -0800
+ by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 30 Jan 2020 07:14:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,382,1574150400"; d="scan'208";a="377069658"
+X-IronPort-AV: E=Sophos;i="5.70,382,1574150400"; d="scan'208";a="377071659"
 Received: from jsmesenc-mobl.amr.corp.intel.com (HELO [10.252.140.145])
  ([10.252.140.145])
- by orsmga004.jf.intel.com with ESMTP; 30 Jan 2020 07:04:52 -0800
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, alsa-devel@alsa-project.org
-References: <20200129220726.31792-1-pierre-louis.bossart@linux.intel.com>
- <20200129220726.31792-6-pierre-louis.bossart@linux.intel.com>
- <2c982980-32f2-60a4-a384-7b767fafab66@linux.intel.com>
+ by orsmga004.jf.intel.com with ESMTP; 30 Jan 2020 07:14:30 -0800
+To: Mark Brown <broonie@kernel.org>
+References: <20200129223603.2569-1-pierre-louis.bossart@linux.intel.com>
+ <20200129223603.2569-2-pierre-louis.bossart@linux.intel.com>
+ <20200130145548.GE6682@sirena.org.uk>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <615262ec-2515-ef6f-1ed4-8c42170490c4@linux.intel.com>
-Date: Thu, 30 Jan 2020 07:34:06 -0600
+Message-ID: <c6391973-fe6e-bd36-a2b5-c28cefc1ef75@linux.intel.com>
+Date: Thu, 30 Jan 2020 09:14:29 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <2c982980-32f2-60a4-a384-7b767fafab66@linux.intel.com>
+In-Reply-To: <20200130145548.GE6682@sirena.org.uk>
 Content-Language: en-US
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 5/9] ASoC: SOF: Move DSP power state
- transitions to platform-specific ops
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Intel: sof_pcm512x: add support
+ for SOF platforms with pcm512x
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,32 +84,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Cj4+IEBAIC00OTUsMTMgKzY0NSwyNyBAQCBpbnQgaGRhX2RzcF9yZXN1bWUoc3RydWN0IHNuZF9z
-b2ZfZGV2ICpzZGV2KQo+PiDCoMKgwqDCoMKgIH0KPj4gwqDCoMKgwqDCoCAvKiBpbml0IGhkYSBj
-b250cm9sbGVyLiBEU1AgY29yZXMgd2lsbCBiZSBwb3dlcmVkIHVwIGR1cmluZyBmdyAKPj4gYm9v
-dCAqLwo+PiAtwqDCoMKgIHJldHVybiBoZGFfcmVzdW1lKHNkZXYsIGZhbHNlKTsKPj4gK8KgwqDC
-oCByZXQgPSBoZGFfcmVzdW1lKHNkZXYsIGZhbHNlKTsKPj4gK8KgwqDCoCBpZiAocmV0IDwgMCkK
-Pj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiByZXQ7Cj4+ICsKPj4gK8KgwqDCoCBoZGFfZHNwX3Nl
-dF9wb3dlcl9zdGF0ZShzZGV2LCAmdGFyZ2V0X3N0YXRlKTsKPiAKPiBSZXR1cm4gdmFsdWXCoCBv
-ZiBoZGFfZHNwX3NldF9wb3dlcl9zdGF0ZSgpIHNlZW1zIHRvIGJlIGNoZWNrZWQgb3IgCj4gZGly
-ZWN0bHkgcmV0dXJuZWQgaW4gb3RoZXIgZnVuY3Rpb25zLCBhbnkgcmVhc29uIHRvIG5vdCBkbyBp
-dCBoZXJlPwoKR29vZCBwb2ludCBBbWFkZXVzeiwgbm90IHN1cmUgd2h5LiBBbmQgbG9va2luZyBh
-dCB0aGUgY29kZSwgSSBhbSBub3QgCnN1cmUgZWl0aGVyIHdoeSB3ZSBkb24ndCB1c2UgdGhlIGFi
-c3RyYWN0aW9uIHcvIC5zZXRfcG93ZXJfc3RhdGUoKSA/CgppbnRlbC9hcGwuYzogICAgLnNldF9w
-b3dlcl9zdGF0ZSAgICAgICAgPSBoZGFfZHNwX3NldF9wb3dlcl9zdGF0ZSwKaW50ZWwvY25sLmM6
-ICAgIC5zZXRfcG93ZXJfc3RhdGUgICAgICAgID0gaGRhX2RzcF9zZXRfcG93ZXJfc3RhdGUsCgoK
-Z2l0IGdyZXAgc25kX3NvZl9kc3Bfc2V0X3Bvd2VyX3N0YXRlCnNvZi9pcGMuYzogICAgICByZXQg
-PSBzbmRfc29mX2RzcF9zZXRfcG93ZXJfc3RhdGUoaXBjLT5zZGV2LCAmdGFyZ2V0X3N0YXRlKTsK
-c29mL29wcy5oOnNuZF9zb2ZfZHNwX3NldF9wb3dlcl9zdGF0ZShzdHJ1Y3Qgc25kX3NvZl9kZXYg
-KnNkZXYsCgpJZiB0aGUgY29kZSBjYW4gYmUgcGxhdGZvcm0tc3BlY2lmaWMsIHdlIHNob3VsZG4n
-dCBtYWtlIGEgZGlyZWN0IGNhbGwgCmJ1dCBnbyB0aHJvdWdoIHRoZSBwbGF0Zm9ybSBpbmRpcmVj
-dGlvbi4gaXQncyBmaW5lIGZvciBub3cgc2luY2UgdGhlIApzYW1lIHJvdXRpbmUgaXMgdXNlZCBp
-biBhbGwgY2FzZXMgYnV0IGl0J3Mgbm90IHNjYWxhYmxlL2Z1dHVyZS1wcm9vZi4KClJhbmphbmk/
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Thanks for the review Mark,
+
+>> +static int sof_pcm512x_codec_init(struct snd_soc_pcm_runtime *rtd)
+>> +{
+>> +	struct snd_soc_component *codec = rtd->codec_dai->component;
+>> +
+>> +	snd_soc_component_update_bits(codec, PCM512x_GPIO_EN, 0x08, 0x08);
+>> +	snd_soc_component_update_bits(codec, PCM512x_GPIO_OUTPUT_4, 0x0f, 0x02);
+>> +	snd_soc_component_update_bits(codec, PCM512x_GPIO_CONTROL_1,
+>> +				      0x08, 0x08);
+> 
+> These look like they might be a DAPM widget of some kind?
+
+it's the LED support only, turned on when you play and off when you stop.
+At some point, I added a gpiochip support in the PCM152x codec driver to 
+avoid doing this, and have a nicer way of toggling the gpios. Due to 
+lack of time, I didn't maintain this solution, but we could add it in a 
+follow-up version if that was desired. It's really not the main 
+functionality of this patch.
+-Pierre
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
