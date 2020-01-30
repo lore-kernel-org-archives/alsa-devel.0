@@ -2,68 +2,101 @@ Return-Path: <SRS0=xcY/=3T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7557DC33C9E
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:04:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A729CC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:06:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3ED420702
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:04:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3182A206F0
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:06:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HG1rKoap"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3ED420702
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="U6bZrQQ7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3182A206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40485850;
-	Thu, 30 Jan 2020 14:03:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40485850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8390A166A;
+	Thu, 30 Jan 2020 14:06:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8390A166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580389468;
-	bh=kyjVEKmh8PmRU2ar+UvPMFTeo0cXxJvKHJIBMIxilTs=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HG1rKoapqMN4mzl/TQiO+FqeNzo9eqM+bsyy19Xb51qxOBTKevTwDEbdAp8dG5Koj
-	 KwfNbachAjTFe4aGd2zsaGg5FEaymsE2h/yLcCWBUaf96X5OJQLNygQVxVSIKUTiRu
-	 gO/hCG3lK8W96vr/FbL2xepgfEEbDHpgQ1VzndZQ=
+	s=default; t=1580389611;
+	bh=DMFuWJLt4cVw+kLBW1kg/lxsmZMEcFsm0LdbCTShtmM=;
+	h=From:To:Date:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=U6bZrQQ73Pk/JRJzHsOZUWfer7otfpRZYzD8UbaGz/SC5hoN0zpUTs/psxVQWJMb/
+	 jRaMI0ouNBIY8RPIRZOazYxCh7lfT+0RE0foZ2olcllW0dGmUkg1NdDBelAwFMWsQC
+	 /vmvGcf7bXcVdwR3wxkn8mguH2/3UQEP2CTw2aEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4813F800F1;
-	Thu, 30 Jan 2020 14:03:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0942FF80123;
+	Thu, 30 Jan 2020 14:06:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C7C6F8014B; Thu, 30 Jan 2020 14:03:36 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id A43BCF80082
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 14:03:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A43BCF80082
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B2EE328;
- Thu, 30 Jan 2020 05:03:30 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D4B73F68E;
- Thu, 30 Jan 2020 05:03:29 -0800 (PST)
-Date: Thu, 30 Jan 2020 13:03:28 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Message-ID: <20200130130328.GB6682@sirena.org.uk>
-References: <20200129220726.31792-1-pierre-louis.bossart@linux.intel.com>
- <20200129220726.31792-6-pierre-louis.bossart@linux.intel.com>
- <2c982980-32f2-60a4-a384-7b767fafab66@linux.intel.com>
+ id 63189F8014B; Thu, 30 Jan 2020 14:05:59 +0100 (CET)
+Received: from esa2.microchip.iphmx.com (esa2.microchip.iphmx.com
+ [68.232.149.84])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 123F1F800F1
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 14:05:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 123F1F800F1
+Received-SPF: Pass (esa2.microchip.iphmx.com: domain of
+ Codrin.Ciubotariu@microchip.com designates 198.175.253.82 as
+ permitted sender) identity=mailfrom;
+ client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
+ envelope-from="Codrin.Ciubotariu@microchip.com";
+ x-sender="Codrin.Ciubotariu@microchip.com";
+ x-conformance=spf_only; x-record-type="v=spf1";
+ x-record-text="v=spf1 mx a:ushub1.microchip.com
+ a:smtpout.microchip.com -exists:%{i}.spf.microchip.iphmx.com
+ include:servers.mcsv.net include:mktomail.com
+ include:spf.protection.outlook.com ~all"
+Received-SPF: None (esa2.microchip.iphmx.com: no sender
+ authenticity information available from domain of
+ postmaster@email.microchip.com) identity=helo;
+ client-ip=198.175.253.82; receiver=esa2.microchip.iphmx.com;
+ envelope-from="Codrin.Ciubotariu@microchip.com";
+ x-sender="postmaster@email.microchip.com"; x-conformance=spf_only
+Authentication-Results: esa2.microchip.iphmx.com;
+ dkim=none (message not signed) header.i=none;
+ spf=Pass smtp.mailfrom=Codrin.Ciubotariu@microchip.com;
+ spf=None smtp.helo=postmaster@email.microchip.com;
+ dmarc=pass (p=none dis=none) d=microchip.com
+IronPort-SDR: BkINU+vNvBMEuPmGTZME0oxSyx9tcuNT89zZky2VclTmF1rdGfxPq2NaOpAHELikB8EOoOdifG
+ qnY131M4ZO+7LrKRQnIk4FKyhGaIwArXLQn3eIwXpumbl6SnhYyW89nJ1EGbAq34wLkBK6Xfo/
+ DQ4STD4aiq28SH5HtNUaIhbCKFnoWkhQxwqjrc1OO/n9hWXxOvbVya5vpT/RrwPfqihXPi2hm/
+ +1h6n9FDFt8jmyoB9w1DNu3GR+02Nfg8WvU0Vlllk36lnzbeLv2aQo4iE4VMdxSAbLQr4hIR1m
+ 0hg=
+X-IronPort-AV: E=Sophos;i="5.70,382,1574146800"; d="scan'208";a="64232611"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 30 Jan 2020 06:05:52 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 30 Jan 2020 06:05:52 -0700
+Received: from rob-ult-m19940.microchip.com (10.10.85.251) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Thu, 30 Jan 2020 06:05:49 -0700
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To: <alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Date: Thu, 30 Jan 2020 15:05:45 +0200
+Message-ID: <20200130130545.31148-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <2c982980-32f2-60a4-a384-7b767fafab66@linux.intel.com>
-X-Cookie: Positively no smoking.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 5/9] ASoC: SOF: Move DSP power state
- transitions to platform-specific ops
+Cc: alexandre.belloni@bootlin.com, Arnd Bergmann <arnd@arndb.de>,
+ nicolas.ferre@microchip.com, mirq-linux@rere.qmqm.pl,
+ ludovic.desroches@microchip.com, broonie@kernel.org,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [alsa-devel] [RESEND PATCH] ASoC: atmel: fix atmel_ssc_set_audio
+	link failure
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,67 +109,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5707361555911957989=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---===============5707361555911957989==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zx4FCpZtqtKETZ7O"
-Content-Disposition: inline
+The ssc audio driver can call into both pdc and dma backends.  With the
+latest rework, the logic to do this in a safe way avoiding link errors
+was removed, bringing back link errors that were fixed long ago in commit
+061981ff8cc8 ("ASoC: atmel: properly select dma driver state") such as
 
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
+atmel_ssc_dai.c:(.text+0xac): undefined reference to `atmel_pcm_pdc_platform_register'
 
---zx4FCpZtqtKETZ7O
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix it this time using Makefile hacks and a comment to prevent this
+from accidentally getting removed again rather than Kconfig hacks.
 
-On Thu, Jan 30, 2020 at 08:47:28AM +0100, Amadeusz S=C5=82awi=C5=84ski wrot=
-e:
->=20
->=20
-> On 1/29/2020 11:07 PM, Pierre-Louis Bossart wrote:
-> > From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> >=20
-> > The DSP device substates such as D0I0/D0I3
-> > are platform-specific. Therefore, the d0_substate
-> > field of struct snd_sof_dev is replaced
-> > with the dsp_power_state field which represents the current
-> > state of the DSP. This field holds both the device state
-> > and the platform-specific substate values.
+Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+Added my signed-off because I sent the patch, no other changes.
 
---zx4FCpZtqtKETZ7O
-Content-Type: application/pgp-signature; name="signature.asc"
+ sound/soc/atmel/Kconfig  |  4 ++--
+ sound/soc/atmel/Makefile | 10 ++++++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4y1B8ACgkQJNaLcl1U
-h9AVLQf/ShR1MsgXUkvCniEZrDGxaqeOM+B+1moj6Yq8qjUoVNq+dvYa2otESFR2
-dPW+/cVWofS7I1QeGaPMmoninW3wDi5yg+yUU2Y5yCOxn7TTpORvax4VOK5mQYSd
-MTpIYDT2dq+tduZljMO7JBuZBRNhF1Rk8eoW712ksRv7SW20kETfgD0mEbkfU/Wt
-X0B8E8Fv+nNFcgR4oiURtHNCi/xud24m8xtV/M5F7zJwrkN5n3nGepz0IPkgZygL
-WyH3Wyiog608Z7k4qUrLeEhNiSKaqQFI1GUMriZavNW4/XrD0QaiT2Dgv5MI4nVL
-tkyMuTgQxX81CMk1UclAaMy2SNcmTQ==
-=Bm+L
------END PGP SIGNATURE-----
-
---zx4FCpZtqtKETZ7O--
-
---===============5707361555911957989==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index d1dc8e6366dc..71f2d42188c4 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -10,11 +10,11 @@ config SND_ATMEL_SOC
+ if SND_ATMEL_SOC
+ 
+ config SND_ATMEL_SOC_PDC
+-	tristate
++	bool
+ 	depends on HAS_DMA
+ 
+ config SND_ATMEL_SOC_DMA
+-	tristate
++	bool
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 
+ config SND_ATMEL_SOC_SSC
+diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
+index 1f6890ed3738..c7d2989791be 100644
+--- a/sound/soc/atmel/Makefile
++++ b/sound/soc/atmel/Makefile
+@@ -6,8 +6,14 @@ snd-soc-atmel_ssc_dai-objs := atmel_ssc_dai.o
+ snd-soc-atmel-i2s-objs := atmel-i2s.o
+ snd-soc-mchp-i2s-mcc-objs := mchp-i2s-mcc.o
+ 
+-obj-$(CONFIG_SND_ATMEL_SOC_PDC) += snd-soc-atmel-pcm-pdc.o
+-obj-$(CONFIG_SND_ATMEL_SOC_DMA) += snd-soc-atmel-pcm-dma.o
++# pdc and dma need to both be built-in if any user of
++# ssc is built-in.
++ifdef CONFIG_SND_ATMEL_SOC_PDC
++obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel-pcm-pdc.o
++endif
++ifdef CONFIG_SND_ATMEL_SOC_DMA
++obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel-pcm-dma.o
++endif
+ obj-$(CONFIG_SND_ATMEL_SOC_SSC) += snd-soc-atmel_ssc_dai.o
+ obj-$(CONFIG_SND_ATMEL_SOC_I2S) += snd-soc-atmel-i2s.o
+ obj-$(CONFIG_SND_MCHP_SOC_I2S_MCC) += snd-soc-mchp-i2s-mcc.o
+-- 
+2.20.1
 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5707361555911957989==--
