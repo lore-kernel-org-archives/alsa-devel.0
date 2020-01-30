@@ -2,99 +2,79 @@ Return-Path: <SRS0=xcY/=3T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34256C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:34:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9806C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:39:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B19F920707
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:34:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 53D412082E
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 15:39:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DujbauUf";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel-com.20150623.gappssmtp.com header.i=@intel-com.20150623.gappssmtp.com header.b="Y7/IQyc5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B19F920707
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="feWHHcKp"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53D412082E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ABED1614;
-	Thu, 30 Jan 2020 16:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ABED1614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DE86166C;
+	Thu, 30 Jan 2020 16:38:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DE86166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580398459;
-	bh=WeL+lDV1WbY4GJvELs0WwHCMhMa9KoeM1FXrdqNywvo=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	s=default; t=1580398783;
+	bh=FhsxNX/i+9RkWaC27Pnxg7bGFkqn5pCMHJJMA9yK4DU=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DujbauUfIKsApSvbPb3uVkqjw7dlJTRkSq/9zjTCzHw4AmzzLmIfR1ccWSHZAp1uz
-	 gH6H0DSQrea0wWjQ/QSt3PjUgqHFRKmkO7vUSkYQyMl65+4kDRZoe9FHLVKefnLfPA
-	 gFfgwHt0B4V6DPF8bjTUOt4OMenkVeYTtcYrSkiM=
+	b=feWHHcKpYwACg/0LyDG8y4PksnHHWoNe0XMRq0NOI1eMHjN10oHGYRCw9IfUVZlCK
+	 pRqnLYskEIYnYpEwIV5sr9AEoGP/IkDGiUnAhJy6iyDRlHJB5cUh3sUbDEHaEPPEmi
+	 fPlIWT7XLDl7Gp+gjJI7bycs5EFaEzQgXU/LA6mg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EC20F8014B;
-	Thu, 30 Jan 2020 16:33:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08C39F80123;
+	Thu, 30 Jan 2020 16:38:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E3BEF80150; Thu, 30 Jan 2020 16:33:27 +0100 (CET)
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com
- [IPv6:2607:f8b0:4864:20::141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 76041F80150; Thu, 30 Jan 2020 16:38:51 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46768F80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 16:33:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46768F80123
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
- header.i=@intel-com.20150623.gappssmtp.com header.b="Y7/IQyc5"
-Received: by mail-il1-x141.google.com with SMTP id i7so3397659ilr.7
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 07:33:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=bV6ERLPLN+Nz5imIf2CI9p4nZIM3FMkmC+9vLhbbY+E=;
- b=Y7/IQyc5l3CYGlJX4usrdf3hPUmJ17iSnfKn6dyrD3arDCe1U6L9/TGjB+LPdO43J8
- +nLBqDlYn8D534c5wi79hQ+Y0xHXL1n7Kt8JvLHSDGR74+Acg4eN0w+wlTtvrca6BqI9
- P4fsw88V5Te2bP7bpJleV6UcvnFTdnuFkSoT6AjGBd7yI0oiiHm9Y+XtHrVeMywGQId1
- 2Q8EvURThmFzE5cy/gZnRRGpGsYOTVYettN1n+ToPbUajHQaWAe503YyVSv4CURvOpP8
- gVAJfnhamHZaLJ3lqjUwv39sODzhwNFISewprt9+Z2dCsIdJYK64pyh51nBlAq4Ta694
- Wn0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=bV6ERLPLN+Nz5imIf2CI9p4nZIM3FMkmC+9vLhbbY+E=;
- b=Lhy/SleQZpaBZDyKCdar7JOww8ISWB3NHRauiJvJwwG2/BS/y6sE92OArtXr1MN62W
- bT0A7mDhK44VqHvMd+buwDW3oJN90gRdv6SLiApSMwpXrlKOR6d31N5PBr1fCmJ4q+33
- K2+pZHUbOVK2H04FMo9LQPbVFjC8iDEQEAVHc8GdDTQR0RTy+oXqSnTDRQS8Rt/VuWeo
- RqPhu1h3fxo0/Aipd1JhNtgFdtTupDypT+ntBSUFPWai/2azTJNdd9kr+Eff7Qu3cIFM
- SCryBYrwVv9pqypOReDgWnRddAYYmaWLj1kfyP2RMiGRm3bDrIhneetcl489IV+YESEX
- sSTA==
-X-Gm-Message-State: APjAAAUYrQhFQAF+IJVZ5GRIYlYcuVA2jv5AhroWqvnbWEwR2wkWkMhl
- dpSsxHxRrw4khE3Q+rRIU0JGhfVGXv9G1VvJS6AdfA==
-X-Google-Smtp-Source: APXvYqyjpdf1DHByicNDllhahEn4Bd8DJDyOtQrL8eU0W0cuuKSn3osKTCZACn15YN3XiuU38cRo8HJgkH7khGV7y4A=
-X-Received: by 2002:a05:6e02:685:: with SMTP id
- o5mr4772578ils.209.1580398397902; 
- Thu, 30 Jan 2020 07:33:17 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCFF4F80082
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 16:38:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCFF4F80082
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 30 Jan 2020 07:38:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,382,1574150400"; d="scan'208";a="224152828"
+Received: from jsmesenc-mobl.amr.corp.intel.com (HELO [10.252.140.145])
+ ([10.252.140.145])
+ by fmsmga008.fm.intel.com with ESMTP; 30 Jan 2020 07:38:43 -0800
+To: Mark Brown <broonie@kernel.org>
+References: <20200129223603.2569-1-pierre-louis.bossart@linux.intel.com>
+ <20200129223603.2569-2-pierre-louis.bossart@linux.intel.com>
+ <20200130145548.GE6682@sirena.org.uk>
+ <c6391973-fe6e-bd36-a2b5-c28cefc1ef75@linux.intel.com>
+ <20200130151751.GF6682@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <882842ba-72c2-2e32-ec9f-0b1fb3ae45e4@linux.intel.com>
+Date: Thu, 30 Jan 2020 09:38:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200129220726.31792-1-pierre-louis.bossart@linux.intel.com>
- <20200129220726.31792-6-pierre-louis.bossart@linux.intel.com>
- <2c982980-32f2-60a4-a384-7b767fafab66@linux.intel.com>
- <615262ec-2515-ef6f-1ed4-8c42170490c4@linux.intel.com>
-In-Reply-To: <615262ec-2515-ef6f-1ed4-8c42170490c4@linux.intel.com>
-From: "Sridharan, Ranjani" <ranjani.sridharan@intel.com>
-Date: Thu, 30 Jan 2020 07:33:07 -0800
-Message-ID: <CAFQqKeV5grgKvObGf-9vYb-9M4ddq+vK=VCrPjbV9kKc1s_-Cg@mail.gmail.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Takashi Iwai <tiwai@suse.de>, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 5/9] ASoC: SOF: Move DSP power state
- transitions to platform-specific ops
+In-Reply-To: <20200130151751.GF6682@sirena.org.uk>
+Content-Language: en-US
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Intel: sof_pcm512x: add support
+ for SOF platforms with pcm512x
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,57 +87,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 30, 2020 at 7:07 AM Pierre-Louis Bossart <
-pierre-louis.bossart@linux.intel.com> wrote:
 
->
-> >> @@ -495,13 +645,27 @@ int hda_dsp_resume(struct snd_sof_dev *sdev)
-> >>       }
-> >>       /* init hda controller. DSP cores will be powered up during fw
-> >> boot */
-> >> -    return hda_resume(sdev, false);
-> >> +    ret = hda_resume(sdev, false);
-> >> +    if (ret < 0)
-> >> +        return ret;
-> >> +
-> >> +    hda_dsp_set_power_state(sdev, &target_state);
-> >
-> > Return value  of hda_dsp_set_power_state() seems to be checked or
-> > directly returned in other functions, any reason to not do it here?
->
-> Good point Amadeusz, not sure why. And looking at the code, I am not
-> sure either why we don't use the abstraction w/ .set_power_state() ?
->
-> intel/apl.c:    .set_power_state        = hda_dsp_set_power_state,
-> intel/cnl.c:    .set_power_state        = hda_dsp_set_power_state,
->
->
-> git grep snd_sof_dsp_set_power_state
-> sof/ipc.c:      ret = snd_sof_dsp_set_power_state(ipc->sdev,
-> &target_state);
-> sof/ops.h:snd_sof_dsp_set_power_state(struct snd_sof_dev *sdev,
->
-> If the code can be platform-specific, we shouldn't make a direct call
-> but go through the platform indirection. it's fine for now since the
-> same routine is used in all cases but it's not scalable/future-proof.
->
-> Ranjani?
->
-Hi Amadeusz/Pierre,
 
-This seems like a miss. We should have returned the value of
-hda_set_power_state() directly here.
+On 1/30/20 9:17 AM, Mark Brown wrote:
+> On Thu, Jan 30, 2020 at 09:14:29AM -0600, Pierre-Louis Bossart wrote:
+> 
+>>> These look like they might be a DAPM widget of some kind?
+> 
+>> it's the LED support only, turned on when you play and off when you stop.
+>> At some point, I added a gpiochip support in the PCM152x codec driver to
+>> avoid doing this, and have a nicer way of toggling the gpios. Due to lack of
+>> time, I didn't maintain this solution, but we could add it in a follow-up
+>> version if that was desired. It's really not the main functionality of this
+>> patch.
+> 
+> Followup seems fine.
 
-And to address your point, Pierre. This is the platform-specific code, so
-the use of hda_dsp_set_power_state() should be permitted no? Whereas, the
-part that uses this function in ipc.c is not platform-specific.
-Thanks,
-Ranjani
+ok, will work on it, I haven't changed the code since December 2018
+https://github.com/plbossart/sound/commits/hifiberry/gpios
+
+Another thing I didn't complete is the support for the codec master 
+mode, which would be needed for the Hifiberry DAC+ PRO versions (they 
+have 2 oscillators for 44.1 and 48kHz support). It's a bit of a 
+chicken-and-egg, during the probe the codec driver requests an mclk but 
+in the case of the hifiberry the mclk is actually enabled at the codec 
+level with a GPIO selection. I never found a clean way to do this, or an 
+example where the clock consumer is also the clock provider. So far we 
+only use these PRO boards in codec slave mode, which is a bit of a 
+waste. For once we have good clocks, we should really use them...
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
