@@ -7,91 +7,91 @@ X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CA69C3F68F
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:27:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1755C35240
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:29:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9FEA9214AF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:27:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3AE4A206D3
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 13:29:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lHpR/68F";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W1XwzAZI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9FEA9214AF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tNzaN+HE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l5AUUKCe"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3AE4A206D3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 206061672;
-	Thu, 30 Jan 2020 14:26:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 206061672
+	by alsa0.perex.cz (Postfix) with ESMTPS id E145F1616;
+	Thu, 30 Jan 2020 14:29:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E145F1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580390846;
-	bh=SzQYdKfQXREl1StkhAYvtp72JuGz4cZSR/E1L6si8DE=;
+	s=default; t=1580390996;
+	bh=M1exlalEMf+TGm2RBaCCxbXwWzu8G4VhiMy9Og8zKY4=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lHpR/68FDGfwZAZ+n12LiHujNWzngl0amQOR3N7JAotBn69C3IfNmt1RYF6Pj6ifn
-	 UsnpFZFMI0uxzeF7PR0LSIjsa2v5G55QpJzIXixiGXBKyPoXrYOjVvk2cC+A3nUJZO
-	 kc3dA7Z0y2Mz+acpJrRtgm4oDvWB7NtTy5VN/5HQ=
+	b=tNzaN+HEqPvBin4ik3gcZNl9gypA2TFeFkgeaeLaA9ZHRi98HeQfs2/O7dG91oBze
+	 tsNWweJfbEUp1NFN18mQT+uGEp6yI4EHei2nkprJ5HATYGD4AaW78Wi5iQdNDRQFBh
+	 uiKEGWFkMNUC6SSPF77vSRnkqc7KWbQu113HvMPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96E2FF801F8;
-	Thu, 30 Jan 2020 14:25:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C8D0F80082;
+	Thu, 30 Jan 2020 14:29:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBD9CF80150; Thu, 30 Jan 2020 14:17:08 +0100 (CET)
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com
- [IPv6:2a00:1450:4864:20::441])
+ id 14692F80082; Thu, 30 Jan 2020 14:29:00 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E60A0F80123
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 14:17:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E60A0F80123
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66C29F80082
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 14:28:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66C29F80082
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="W1XwzAZI"
-Received: by mail-wr1-x441.google.com with SMTP id w15so4009848wru.4
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 05:17:05 -0800 (PST)
+ header.b="l5AUUKCe"
+Received: by mail-wm1-x341.google.com with SMTP id c84so4210926wme.4
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 05:28:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=5T8LzzRsOm8cpmkE6dP/UqvJHvqM4oik3hzcCAgW8QI=;
- b=W1XwzAZIiTHXa6XWRvyzy+kKiby5kJKu+ahGns7asia+Bw/GMDXYz40EXT3lru8Fq9
- kJALqYv9JQ8S7ruwUc653qtUKpMnmNVhA6QHPi+6jKqO8r/Llg8biioAPp+skrDDe2Jj
- cKBnDBVqTNhTvuYxz/bjc/SXuKh50TuBZ/euD9INpSmzVkr9LTJHph/9QY7jKIT+Ih6y
- ALzyNoJ9nNZK5BG6T3Igcu/wAeLEnOUogWh7+ycuxGAzHWmobynJs019jLCbCkqFUvvL
- yt/wgENDuVPGlbZ+pEl4xb4uvrSR4CNb0SCOB/+4msP3iEZjsXtLWfJFVOPrHpelWZQ9
- tpcA==
+ bh=W0UI6gI3zZ5YVRMsBsggz9TV7oIUCrVzyUE7SqHgZ4g=;
+ b=l5AUUKCeh1IQ1m03Fwz3LtvuYaoMsHnfmQ/JyMewAKDF2aEKKFU4JXr/EEiRy/yuGB
+ 7Y6c5kCW+X8uaiupQXquUXtCpay1Y5xivKcTdOv7Thu2Y6g4/yDvapIsqDmqC4W42Vk/
+ irj8mobxD02fgOgrGUmdRyla82Bizgloi9S+Muq+tMBO29GBN5JnRdX/qe2l+gp5So2m
+ T7WmmLnLrpwoJ++zQ1cQA5+8oRzJiG+k4tc/05FxBzSLLQ4AQyUPh7hX+MhhPNdHwkuf
+ LrJUD+gBQYYb4ngnwlXI+yBKj6naocvARLSbCpx2t5zHBt4nnoTkfWM7xWLYPaI0tD47
+ zG6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=5T8LzzRsOm8cpmkE6dP/UqvJHvqM4oik3hzcCAgW8QI=;
- b=ZdXr8y/h2Mc4Eva3+fPAN/aQUaEM1LJRr8XkIx8ec2HrLoMRJt5q4WARR2lIMRGsRO
- EUAU0jSC8N1h12LvWPqtbQU5wGVXzpWXsrokkghkYITc2haT6AilowbCZ6OYFGbdcuEb
- nQEirtSk7w9E9i+E7qE3z8S33GkdPnyJkHrek8CSVKKaUdIZJu0faxz9Q2OQmmCQq+kE
- fUDNl+8geA+9R55ru6AocWOmrhlstOvZLilzO0YeJLnYaSle3qt8EdkqozW9CYdI+k4E
- LdeHDPLUvBstJjtR6byMKkoG6Sgcy0mrx9eTOrZSDrUdssxdw6E7EbqpNAioN/kRv1SR
- 4e/w==
-X-Gm-Message-State: APjAAAVzI5/lKmeJSDpqp4Q2A4gi+zFXKBVB59XKPTzfy+W+w8nQJ5YB
- pDsyomy7ur44RrnQqV2GzrR1Qn3f
-X-Google-Smtp-Source: APXvYqz4KzzrBKOGE+TVlSkzjR/29D93SevggEVxbw704dMb/wnpA8eFSENi5wqXeWHdWEppNq74hQ==
-X-Received: by 2002:a5d:5706:: with SMTP id a6mr5655339wrv.108.1580390224685; 
- Thu, 30 Jan 2020 05:17:04 -0800 (PST)
+ bh=W0UI6gI3zZ5YVRMsBsggz9TV7oIUCrVzyUE7SqHgZ4g=;
+ b=QJbXsdsW4/59ATEatw9kDEO4qUC6VKPTJMowN3iTm2V4ITnNknc0sZffN1AQkY8onh
+ lFFUtOnljZrlc/s5PsgBBFmQjAuCnXEEh2WaFgUUqI6YsE/PaPQ7zTkT3CfEcsfjbniD
+ k2/h1gp3x137Ysbz3gQBQJt0/5n20WcjZjkhaF7XCNEbGtWF1rYh5EqkDVYMGzPdyHne
+ u6l8TW3kQr/rKXXpOq5kQdLi9Bpy3z7geWrUu0VvdkykYqlZ9I58Fxey8qcM/Xr66Gro
+ 5+1cDHrZeSmZCPAFZRuV8m/lvooezHjKgQakAGx+JlgG+tvTa+sODND4PZ8uPxheEMtr
+ +dnA==
+X-Gm-Message-State: APjAAAVTr/lSBm73fWwHg00Rqcse8CdTuXxeQbOwm0kU5d+SouDMfEAl
+ YD/ZnsP5TLh4S0fRZ33lVwONHVXb
+X-Google-Smtp-Source: APXvYqy8m0eK+5IAC+CgEWMwelM9uNm9y0wF1cixwIS1dsHljYZAbgJNR4aghes0ojOdZaEeqo43Xg==
+X-Received: by 2002:a05:600c:228f:: with SMTP id
+ 15mr6033392wmf.56.1580390936204; 
+ Thu, 30 Jan 2020 05:28:56 -0800 (PST)
 Received: from schmakbook.localnet (router-kraduha-nat-p.pilsfree.net.
  [212.79.110.127])
- by smtp.gmail.com with ESMTPSA id z10sm6055008wmk.31.2020.01.30.05.17.03
+ by smtp.gmail.com with ESMTPSA id d12sm7464039wrp.62.2020.01.30.05.28.55
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 30 Jan 2020 05:17:03 -0800 (PST)
+ Thu, 30 Jan 2020 05:28:55 -0800 (PST)
 From: Roman =?utf-8?B?xaBtYWthbA==?= <schmakerisko@gmail.com>
 To: Takashi Iwai <tiwai@suse.de>
-Date: Thu, 30 Jan 2020 14:17:16 +0100
-Message-ID: <4504540.GXAFRqVoOG@schmakbook>
+Date: Thu, 30 Jan 2020 14:29:08 +0100
+Message-ID: <11474778.O9o76ZdvQC@schmakbook>
 In-Reply-To: <s5hzhe5cct2.wl-tiwai@suse.de>
 References: <2520086.mvXUDI8C0e@schmakbook> <5323169.DvuYhMxLoT@schmakbook>
  <s5hzhe5cct2.wl-tiwai@suse.de>
 MIME-Version: 1.0
-X-Mailman-Approved-At: Thu, 30 Jan 2020 14:25:24 +0100
 Cc: alsa-devel@alsa-project.org
 Subject: Re: [alsa-devel] [CX2075] No sound after suspend/resume from
 	front	speaker
@@ -166,9 +166,10 @@ b3BlciBtb2R1bGUgb3B0aW9ucywgbm8gYmlnIGRpZmZlcmVuY2UgdGhvdWdoLgo+IAo+IE9LLCBz
 byBpdCBoYXMgdGhlIGNvZGVjIGhhcyBDT0VGIHRoaW5ncyBhbmQgdGhlcmUgaXMgbm8gc2lnbmlm
 aWNhbnQKPiBkaWZmZXJlbmNlIGJldHdlZW4gdGhvc2UgdHdvIG91dHB1dHMuICBJdCBpbXBsaWVz
 IHRoYXQgc29tZXRoaW5nCj4gb3V0c2lkZSBIRC1hdWRpbyBidXMgaXMgbmVlZGVkIGFuZCBpdCdz
-IHByb2JhYmx5IGRvbmUgYnkgQklPUy4KPiAKPiAKPiBUYWthc2hpCgpPSywgc28gdGhpcyBtZWFu
-cyB0aGF0IHRoaXMgcmVwb3J0IGlzIGludmFsaWQgYW5kIGtlcm5lbCBkZXZlbG9wZXJzIHNob3Vs
-ZCAKY2hlY2sgdGhpcyBvdXQ/CgpIb3cgc2hvdWxkIGkgcHJvY2VlZCBub3c/CgpUaGFua3MKUm9t
-YW4KCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+IHByb2JhYmx5IGRvbmUgYnkgQklPUy4KPiAKPiAKPiBUYWthc2hpCgoKT2theSwgc28gYXJlIHRo
+ZXJlIGFueSBmdXJ0aGVyIHN0ZXBzIHJlcXVpcmVkIGZyb20gbWUsIG9yIGl0J3MganVzdCBtYXR0
+ZXIgb2YgCnRpbWUgZm9yIGRldnMgZm9yIHBpY2sgdGhpcyBidWcgdXA/CgpTb3JyeSBmb3IgYmVp
+bmcgYW5ub3lpbmcsIGFzIHNhaWQsIGknbSBuZXcgdG8gdGhpcyA6KQoKUmVnYXJkcwoKUm9tYW4K
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHBzOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
