@@ -2,68 +2,87 @@ Return-Path: <SRS0=xcY/=3T=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0F3CC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 14:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5F4CC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 14:59:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CEF42051A
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 14:56:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 231792051A
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jan 2020 14:59:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="maisFwxZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CEF42051A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LJRCLfZ2"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 231792051A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ladisch.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C93341663;
-	Thu, 30 Jan 2020 15:55:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C93341663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 836DD1664;
+	Thu, 30 Jan 2020 15:58:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 836DD1664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580396207;
-	bh=BH9Qu+8fsNgf2D3/3yfkSD7WPHM5bY91k4jv4Qiiw3o=;
-	h=Date:From:To:References:In-Reply-To:Cc:Subject:List-Id:
+	s=default; t=1580396385;
+	bh=ZMN9kOTHBshmPh6sEnrRF2TGhLO5z6ABnbBH0gw8IuA=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=maisFwxZ4OmYU1sj46Il8PRmsG2VQcz9MSyDyw622gtQBy+CkMts3nw3kRAE90yl5
-	 om+do6wBeH6i8BqqcjybP21vvdAzPECQS70qk+vAHOIKKyZGyGafjBGC9TkUOLzYwL
-	 hh1jFlpSco421onmR+asb0bx7HcNFVx9VSzk6Q04=
+	b=LJRCLfZ2JhLDkxgPA4NUkLUbWKyHGsqrRRlK6MnP0990pHCJ/R75I+Z3IRIV9phkH
+	 Cq9Jq63R8P/J/748s6haLBmCG+cikfOGjqG4pQFi5t6/8lz4WJZu9Iu2VGeF1w7q6C
+	 VJnD5XoE0QTkr9LK/m52L9pEnaW4nKkCcef37/r8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50A67F8014B;
-	Thu, 30 Jan 2020 15:55:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E48CF8014B;
+	Thu, 30 Jan 2020 15:58:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76093F80150; Thu, 30 Jan 2020 15:55:55 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 96E71F800F1
- for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 15:55:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96E71F800F1
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C81F31B;
- Thu, 30 Jan 2020 06:55:50 -0800 (PST)
-Received: from localhost (unknown [10.37.6.21])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F42A3F68E;
- Thu, 30 Jan 2020 06:55:49 -0800 (PST)
-Date: Thu, 30 Jan 2020 14:55:48 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <20200130145548.GE6682@sirena.org.uk>
-References: <20200129223603.2569-1-pierre-louis.bossart@linux.intel.com>
- <20200129223603.2569-2-pierre-louis.bossart@linux.intel.com>
+ id 36043F800F1; Thu, 30 Jan 2020 15:58:53 +0100 (CET)
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [IPv6:2a01:4f8:212:88::2])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FC3CF800F1
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jan 2020 15:58:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FC3CF800F1
+Received: from aquila.ladisch.de (x2f7f810.dyn.telefonica.de [2.247.248.16])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id 841975785909;
+ Thu, 30 Jan 2020 15:58:47 +0100 (CET)
+To: Ben Dooks <ben.dooks@codethink.co.uk>, Dmitry Osipenko
+ <digetx@gmail.com>, Jon Hunter <jonathanh@nvidia.com>,
+ Mark Brown <broonie@kernel.org>
+References: <29db3df4-6f51-7c0f-1eef-90171f1d233a@codethink.co.uk>
+ <9a5447e2-155c-7e6e-b8f1-95523c6f42c6@gmail.com>
+ <b4a416fb-f2b1-660d-27e3-aebf602178f9@codethink.co.uk>
+ <680e2dfd-6f4f-5c96-63b7-97520961dc82@gmail.com>
+ <0e0cd260e39ad293edb881da1c565510@codethink.co.uk>
+ <507dcd5a-672b-61ac-aa7f-af5ff01accff@codethink.co.uk>
+ <a2744ea0-cf6d-d083-75e6-853746195001@gmail.com>
+ <28cafc56-095b-68c6-638d-270608a2983f@codethink.co.uk>
+ <3d8544be-af20-f382-85fd-32183365267b@nvidia.com>
+ <1b3c2af4-510e-306c-749a-efffc994b20a@gmail.com>
+ <20200128121315.GD4689@sirena.org.uk>
+ <047c8caa-e715-5295-9794-67ff3e10cea2@gmail.com>
+ <70f344bf-f991-606c-55ab-bdadea27d233@nvidia.com>
+ <2ff97414-f0a5-7224-0e53-6cad2ed0ccd2@gmail.com>
+ <35667c85-67b5-6f6f-ffe8-4fe3455ea4bb@codethink.co.uk>
+ <96ed04cb-24ab-7e4d-bd44-6a4bb7c046ac@ladisch.de>
+ <8161fc88-fa8c-ec92-cc14-1caa5c6f2fe7@codethink.co.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Message-ID: <182fd434-f15a-f049-1ba1-83bd864b4590@ladisch.de>
+Date: Thu, 30 Jan 2020 15:58:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200129223603.2569-2-pierre-louis.bossart@linux.intel.com>
-X-Cookie: Positively no smoking.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: Intel: sof_pcm512x: add support
- for SOF platforms with pcm512x
+In-Reply-To: <8161fc88-fa8c-ec92-cc14-1caa5c6f2fe7@codethink.co.uk>
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 0.101.4 at webclient5
+X-Virus-Status: Clean
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Edward Cragg <edward.cragg@codethink.co.uk>, linux-tegra@vger.kernel.org
+Subject: Re: [alsa-devel] (no subject)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,60 +95,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0933446837228380972=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Ben Dooks wrote:
+> On 30/01/2020 09:31, Clemens Ladisch wrote:
+>> S24_LE:  24-bit samples in 32-bit words, aligned to the LSB
+>> S32_LE:  24-bit samples in 32-bit words, aligned to the MSB
+>>
+>> It is very unlikely that your hardware implements S24_LE.
+>
+> Which is wrong, since this is exactly what the hardware implements.
+>
+> The DMA fetches 32 bit words, and then the front end dispatches only
+> 24 bits of these to the I2S/TDM
 
---===============0933446837228380972==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6e7ZaeXHKrTJCxdu"
-Content-Disposition: inline
+Which 24 bits?  Is the padding in the first byte (S32_LE) or in the
+last byte (S24_LE)?
 
 
---6e7ZaeXHKrTJCxdu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jan 29, 2020 at 04:36:01PM -0600, Pierre-Louis Bossart wrote:
-
-> +static int sof_pcm512x_codec_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_component *codec = rtd->codec_dai->component;
-> +
-> +	snd_soc_component_update_bits(codec, PCM512x_GPIO_EN, 0x08, 0x08);
-> +	snd_soc_component_update_bits(codec, PCM512x_GPIO_OUTPUT_4, 0x0f, 0x02);
-> +	snd_soc_component_update_bits(codec, PCM512x_GPIO_CONTROL_1,
-> +				      0x08, 0x08);
-
-These look like they might be a DAPM widget of some kind?
-
---6e7ZaeXHKrTJCxdu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4y7nMACgkQJNaLcl1U
-h9BCPwf/RSPtA6f6N+XUAXvj0VTh+RlgvZU8JHOH0QmuE3AwtzphoMXnSbyuVDqB
-n3FQtpZ27mUnm4duPOHmHCPgNBIBQSmGa0VoFI2yojF2M1foLANcvpypSHYYYtwC
-8c4VuRcJcy89ccBhkJJXNig3sYTQp4UPU8yBHdoL6gHgpuSum2pmLbXlseCkW9OU
-pMDXL26pFnufnhW3bUA2S+ebVRamNOYik4iNmzzDo8/gn3aSy+27vD4bx0iMLSdA
-8JMSFmGmRaldGZxj5V+EYHNMlhxrOlzrrgM7IlZh8t2cm6ABgG0upIuhisMGxqO/
-zECxIyLajqCeA4QjwUpJ+z+NblIawQ==
-=MUP/
------END PGP SIGNATURE-----
-
---6e7ZaeXHKrTJCxdu--
-
---===============0933446837228380972==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Regards,
+Clemens
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0933446837228380972==--
