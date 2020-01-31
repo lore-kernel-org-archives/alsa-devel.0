@@ -2,70 +2,73 @@ Return-Path: <SRS0=zdUo=3U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13918C2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 17:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C515FC2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 17:07:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94475206F0
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 17:03:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 502EB206D5
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 17:07:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gk+DRRaT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94475206F0
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oXLTcDrt"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 502EB206D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0308166C;
-	Fri, 31 Jan 2020 18:03:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0308166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93670166C;
+	Fri, 31 Jan 2020 18:06:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93670166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580490235;
-	bh=736naYDReU4P2TozXWpVhYPqvpWhHbSs7sJvjgiRgxw=;
+	s=default; t=1580490451;
+	bh=5I+E9mcZL5yNoWrdYzKjH4QTfyzONvFklVo9w9g62jo=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gk+DRRaTAD6bbe1hNJRvRokeVnqKGfyOyPMPnj6WTqMej19ZRH5RwKBl5QoKFoz+U
-	 I2NH7OaDjzHU0igr1bYPm8Hz8ODo5V9GkeWUNIeuqn9DWpeF2J2uilvyNSy0XsCcht
-	 00Ofb3lsHouktIM5GGBOQkZxXnkVmcmiAP/hBdIM=
+	b=oXLTcDrtEFQQ320YMJ62ZHyVx1/JxTvob7loH4dl4xTO/tAaPDppQ9WAsLHnXx/VB
+	 P2a38XH0NgEAcrXWWsj4o8wlaKf8l3boqablXfV9oPHAfYqFaVL17MksN8AhjWMaVz
+	 WG15H/2x4bYwS1cYMYItuRiEvxMV0ZYhAg/Z0xpY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B083F80218;
-	Fri, 31 Jan 2020 18:03:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DBA0F8021E;
+	Fri, 31 Jan 2020 18:06:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F1E7F8021E; Fri, 31 Jan 2020 18:03:02 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 76D15F80082; Fri, 31 Jan 2020 18:06:40 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B963DF80116
- for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2020 18:02:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B963DF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id E813CF80082
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2020 18:06:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E813CF80082
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
- 31 Jan 2020 09:02:51 -0800
+ by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 31 Jan 2020 09:06:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,386,1574150400"; d="scan'208";a="224493578"
+X-IronPort-AV: E=Sophos;i="5.70,386,1574150400"; d="scan'208";a="224494502"
 Received: from dsankar-mobl.amr.corp.intel.com (HELO [10.252.202.81])
  ([10.252.202.81])
- by fmsmga008.fm.intel.com with ESMTP; 31 Jan 2020 09:02:50 -0800
+ by fmsmga008.fm.intel.com with ESMTP; 31 Jan 2020 09:06:33 -0800
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
 References: <20200131123115.14247-1-cezary.rojewski@intel.com>
+ <20200131123115.14247-7-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <af43385c-9aa7-4faa-e889-0c2f01b65b5a@linux.intel.com>
-Date: Fri, 31 Jan 2020 11:02:49 -0600
+Message-ID: <56ed74d5-2f03-711f-9f21-cde0ddf8ecc7@linux.intel.com>
+Date: Fri, 31 Jan 2020 10:39:21 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200131123115.14247-1-cezary.rojewski@intel.com>
+In-Reply-To: <20200131123115.14247-7-cezary.rojewski@intel.com>
 Content-Language: en-US
 Cc: vkoul@kernel.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
-Subject: Re: [alsa-devel] [PATCH v4 00/11] ASoC: SOF: Data probing
+Subject: Re: [alsa-devel] [PATCH v4 06/11] ASoC: SOF: Intel: Account for
+ compress streams when servicing IRQs
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,31 +86,67 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Maybe be a paranoid check but the types used in this patch seem to need 
+additional work:
 
-> Changes in v4:
-> - No changes to ALSA core and hda patches
-> 
-> - 'probe' source added in patch "ASoC: SOF: Implement Probe IPC API" now
->    only compiled if SND_SOC_SOF_DEBUG_PROBES is enabled. Said kconfig
->    initial declaration has been moved to that patch too
-> - 'extractor_stream_tag' field now decorated with _DEBUG_PROBES to
->    account for the change above
-> - Debugfs probe handlers now check if extractor stream is running before
->    continuing. To achieve this, 'extractor_stream_tag' is both initialized
->    and set to SOF_PROBE_INVALID_NODE_ID on sof_probe_compr_free().
->    Suggestion provided by Pierre
-> 
-> - Reverted SND_SOC_SOF_HDA_LINK requirement-removal change for HDA probes.
->    Code requires SND_HDA_EXT_CORE in order to function on Intel platforms
+> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+> index 9a8bf1eb7d69..9a24d57f0cf2 100644
+> --- a/include/sound/hdaudio.h
+> +++ b/include/sound/hdaudio.h
+> @@ -496,6 +496,7 @@ struct hdac_stream {
+>   	bool locked:1;
+>   	bool stripe:1;			/* apply stripe control */
+>   
+> +	unsigned long curr_pos;
 
-Sorry Cezary, I am not ok with this revert and the dependency on 
-HDA_LINK, see comment on Patch 9. We can talk on Monday on this to look 
-at alternate solutions, no need for multiple emails.
+'long' is an error-prone definition...
 
-Also the types used in Patch 6 need a bit more work.
+>   	/* timestamp */
+>   	unsigned long start_wallclk;	/* start + minimum wallclk */
+>   	unsigned long period_wallclk;	/* wallclk for period */
+> diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+> index c0ab9bb2a797..c8920a60e346 100644
+> --- a/sound/soc/sof/intel/hda-stream.c
+> +++ b/sound/soc/sof/intel/hda-stream.c
+> @@ -571,6 +571,23 @@ bool hda_dsp_check_stream_irq(struct snd_sof_dev *sdev)
+>   	return ret;
+>   }
+>   
+> +static void hda_dsp_set_bytes_transferred(struct hdac_stream *hstream,
+> +					  u64 buffer_size)
+> +{
+> +	unsigned int prev_pos;
+> +	int pos, num_bytes;
+> +
+> +	div_u64_rem(hstream->curr_pos, buffer_size, &prev_pos);
 
-The rest looks fine, thanks!
--Pierre
+... here you use it as a u64 value so I guess the intent was to use more 
+than 32 bits?
+
+But then the u64 for the 'buffer size' argument is also not consistent 
+with the definition of div_u64_rem, it's got to be u32, or you wanted to 
+use div64_64_rem?
+
+static inline u64 div_u64_rem(u64 dividend, u32 divisor, u32 *remainder)
+
+prev_pos should also be declared as u32 to avoid any ambiguity.
+
+> +	pos = snd_hdac_stream_get_pos_posbuf(hstream);
+> +
+> +	if (pos < prev_pos)
+> +		num_bytes = (buffer_size - prev_pos) +  pos;
+> +	else
+> +		num_bytes = pos - prev_pos;
+> +
+> +	hstream->curr_pos += num_bytes;
+
+... and here it's a never ending-increment that is likely to hit a 
+32-bit ceiling.
+
+I remember we made a mistake some time back on compressed stuff and 
+updated the counters to rely on 64 bits. Unless this is a hardware 
+counter (and then we should use u32 and deal with overflow), we should 
+use u64, no?
 
 _______________________________________________
 Alsa-devel mailing list
