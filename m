@@ -2,98 +2,70 @@ Return-Path: <SRS0=zdUo=3U=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64DAFC2D0DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 16:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13918C2D0DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 17:03:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E42FA206D5
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 16:09:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 94475206F0
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Jan 2020 17:03:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QWmGVl6+";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="iH4ZZfGZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42FA206D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Gk+DRRaT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94475206F0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 196E1166C;
-	Fri, 31 Jan 2020 17:08:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 196E1166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0308166C;
+	Fri, 31 Jan 2020 18:03:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0308166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580486961;
-	bh=K/Umyzgory3/3ahoIBSAsnGGCgamm2+VtBgnq2gwljE=;
+	s=default; t=1580490235;
+	bh=736naYDReU4P2TozXWpVhYPqvpWhHbSs7sJvjgiRgxw=;
 	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QWmGVl6+1GSAOeXxj1WbKo8ZaqS3elZzKIsJtBZ2lPUvjJLyv/Nb9A5wYsTycm9UO
-	 7X8aV2mCvlXpTP97uw6551/ml7NMlxJPxJsEEBkbfYYq/Mcal6+q2Bn08IoAkeEzD5
-	 lxGik6/YK+dn+qynPkU5TyrFgC0crJRliGxoDVuI=
+	b=Gk+DRRaTAD6bbe1hNJRvRokeVnqKGfyOyPMPnj6WTqMej19ZRH5RwKBl5QoKFoz+U
+	 I2NH7OaDjzHU0igr1bYPm8Hz8ODo5V9GkeWUNIeuqn9DWpeF2J2uilvyNSy0XsCcht
+	 00Ofb3lsHouktIM5GGBOQkZxXnkVmcmiAP/hBdIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80F73F80218;
-	Fri, 31 Jan 2020 17:08:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B083F80218;
+	Fri, 31 Jan 2020 18:03:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48796F8021E; Fri, 31 Jan 2020 17:08:29 +0100 (CET)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
+ id 2F1E7F8021E; Fri, 31 Jan 2020 18:03:02 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 757F7F80082
- for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2020 17:08:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 757F7F80082
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="iH4ZZfGZ"
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
- id <B5e3450e20000>; Fri, 31 Jan 2020 08:08:02 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
- by hqpgpgate102.nvidia.com (PGP Universal service);
- Fri, 31 Jan 2020 08:08:23 -0800
-X-PGP-Universal: processed;
- by hqpgpgate102.nvidia.com on Fri, 31 Jan 2020 08:08:23 -0800
-Received: from [10.21.133.51] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jan
- 2020 16:08:20 +0000
-To: Dmitry Osipenko <digetx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>, Ben Dooks
- <ben.dooks@codethink.co.uk>
-References: <20200131091901.13014-1-jonathanh@nvidia.com>
- <2bb53d7d-2d36-e16e-5858-24360b19f936@gmail.com>
-From: Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <7fafb8d2-8754-e5c0-8952-0253ba8b656a@nvidia.com>
-Date: Fri, 31 Jan 2020 16:08:18 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id B963DF80116
+ for <alsa-devel@alsa-project.org>; Fri, 31 Jan 2020 18:02:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B963DF80116
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384;
+ 31 Jan 2020 09:02:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,386,1574150400"; d="scan'208";a="224493578"
+Received: from dsankar-mobl.amr.corp.intel.com (HELO [10.252.202.81])
+ ([10.252.202.81])
+ by fmsmga008.fm.intel.com with ESMTP; 31 Jan 2020 09:02:50 -0800
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+References: <20200131123115.14247-1-cezary.rojewski@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <af43385c-9aa7-4faa-e889-0c2f01b65b5a@linux.intel.com>
+Date: Fri, 31 Jan 2020 11:02:49 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <2bb53d7d-2d36-e16e-5858-24360b19f936@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <20200131123115.14247-1-cezary.rojewski@intel.com>
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1580486882; bh=vjVTrlbwSymcOfbnfHt1GCkOMf6AQ7FxsbKWPEoP0Yc=;
- h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
- User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
- X-ClientProxiedBy:Content-Type:Content-Language:
- Content-Transfer-Encoding;
- b=iH4ZZfGZMTm9UMvyjN9G3vnTaBhURSOyEL+B0fFGDKJogY2P9qSTaAZLQkyzuo5QH
- Qxps5Wt/JCiW2VPPPEGbjIqnu7SsgyF8RShVivMc6NFDObggDJ7Aa9E7VBDEXhLva+
- 6ERWIsvhTQzmNiRlYHDmwV4cC9BMObCVkefclTjXkqhXnRnNshuR75RLyD7RV6KHEK
- PoMuI6+gR1uShSMKmNYskuUtcy10eZQa2zPDIXa9mY7jF2LltP+EjDWRhbXNJjTAgh
- nzsTaBGSWhj+LOCKuOfHFE7aBGENOMoKkwuIPn/NQRfq0VaJgv8znNbpBfM2/35rkJ
- IPOURsN1IYSoQ==
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [alsa-devel] [PATCH] Revert "ASoC: tegra: Allow 24bit and 32bit
-	samples"
+Cc: vkoul@kernel.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Subject: Re: [alsa-devel] [PATCH v4 00/11] ASoC: SOF: Data probing
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,34 +78,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Ck9uIDMxLzAxLzIwMjAgMTU6MzgsIERtaXRyeSBPc2lwZW5rbyB3cm90ZToKPiAzMS4wMS4yMDIw
-IDEyOjE5LCBKb24gSHVudGVyINC/0LjRiNC10YI6Cj4+IENvbW1pdCBmM2VlOTkwODdjOGNhMGVj
-ZmRkNTQ5ZWY1YTk0ZjU1N2M0MmQ1NDI4ICgiQVNvQzogdGVncmE6IEFsbG93Cj4+IDI0Yml0IGFu
-ZCAzMmJpdCBzYW1wbGVzIikgYWRkZWQgMjQtYml0IGFuZCAzMi1iaXQgc3VwcG9ydCBmb3IgdG8g
-dGhlCj4+IFRlZ3JhMzAgSTJTIGRyaXZlci4gSG93ZXZlciwgdGhlcmUgYXJlIHR3byBhZGRpdGlv
-bmFsIGNvbW1pdHMgdGhhdCBhcmUKPj4gYWxzbyBuZWVkZWQgdG8gZ2V0IDI0LWJpdCBhbmQgMzIt
-Yml0IHN1cHBvcnQgdG8gd29yayBjb3JyZWN0bHkuIFRoZXNlCj4+IGNvbW1pdHMgYXJlIG5vdCB5
-ZXQgYXBwbGllZCBiZWNhdXNlIHRoZXJlIGFyZSBzdGlsbCBzb21lIHJldmlldyBjb21tZW50cwo+
-PiB0aGF0IG5lZWQgdG8gYmUgYWRkcmVzc2VkLiBXaXRoIG9ubHkgdGhpcyBjaGFuZ2UgYXBwbGll
-ZCwgMjQtYml0IGFuZAo+PiAzMi1iaXQgc3VwcG9ydCBpcyBhZHZlcnRpc2VkIGJ5IHRoZSBJMlMg
-ZHJpdmVyLCBidXQgaXQgZG9lcyBub3Qgd29yayBhbmQKPj4gdGhlIGF1ZGlvIGlzIGRpc3RvcnRl
-ZC4gVGhlcmVmb3JlLCByZXZlcnQgdGhpcyBwYXRjaCBmb3Igbm93IHVudGlsIHRoZQo+PiBvdGhl
-ciBjaGFuZ2VzIGFyZSBhbHNvIHJlYWR5Lgo+Pgo+PiBGdXJ0aGVybW9yZSwgYSBjbG9jayBpc3N1
-ZSB3aXRoIDI0LWJpdCBzdXBwb3J0IGhhcyBiZWVuIGlkZW50aWZpZWQgd2l0aAo+PiB0aGlzIGNo
-YW5nZSBhbmQgc28gaWYgd2UgcmV2ZXJ0IHRoaXMgbm93LCB3ZSBjYW4gYWxzbyBmaXggdGhhdCBp
-biB0aGUKPj4gdXBkYXRlZCB2ZXJzaW9uLgo+Pgo+PiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9y
-Zwo+Pgo+PiBSZXBvcnRlZC1ieTogRG1pdHJ5IE9zaXBlbmtvIDxkaWdldHhAZ21haWwuY29tPgo+
-PiBTaWduZWQtb2ZmLWJ5OiBKb24gSHVudGVyIDxqb25hdGhhbmhAbnZpZGlhLmNvbT4KPj4gLS0t
-Cj4gCj4gVGhhbmtzLCBKb24hCj4gCj4gVGVzdGVkLWJ5OiBEbWl0cnkgT3NpcGVua28gPGRpZ2V0
-eEBnbWFpbC5jb20+CgpUaGFua3MuIEkganVzdCByZWFsaXNlZCBJIGZvcmdvdCB0aGUgZml4ZXMt
-dGFnIC4uLgoKRml4ZXM6IGYzZWU5OTA4N2M4YyAoIkFTb0M6IHRlZ3JhOiBBbGxvdyAyNGJpdCBh
-bmQgMzJiaXQgc2FtcGxlcyIpCgpNYXJrLCBsZXQgbWUga25vdyBpZiB5b3Ugd2FudCBtZSB0byBy
-ZXNlbmQuCgpKb24KCi0tIApudnB1YmxpYwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+> Changes in v4:
+> - No changes to ALSA core and hda patches
+> 
+> - 'probe' source added in patch "ASoC: SOF: Implement Probe IPC API" now
+>    only compiled if SND_SOC_SOF_DEBUG_PROBES is enabled. Said kconfig
+>    initial declaration has been moved to that patch too
+> - 'extractor_stream_tag' field now decorated with _DEBUG_PROBES to
+>    account for the change above
+> - Debugfs probe handlers now check if extractor stream is running before
+>    continuing. To achieve this, 'extractor_stream_tag' is both initialized
+>    and set to SOF_PROBE_INVALID_NODE_ID on sof_probe_compr_free().
+>    Suggestion provided by Pierre
+> 
+> - Reverted SND_SOC_SOF_HDA_LINK requirement-removal change for HDA probes.
+>    Code requires SND_HDA_EXT_CORE in order to function on Intel platforms
+
+Sorry Cezary, I am not ok with this revert and the dependency on 
+HDA_LINK, see comment on Patch 9. We can talk on Monday on this to look 
+at alternate solutions, no need for multiple emails.
+
+Also the types used in Patch 6 need a bit more work.
+
+The rest looks fine, thanks!
+-Pierre
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
