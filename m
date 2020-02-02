@@ -2,67 +2,62 @@ Return-Path: <SRS0=WHla=3W=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05C5EC35240
-	for <alsa-devel@archiver.kernel.org>; Sun,  2 Feb 2020 08:38:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D51C35240
+	for <alsa-devel@archiver.kernel.org>; Sun,  2 Feb 2020 09:08:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 748D32067C
-	for <alsa-devel@archiver.kernel.org>; Sun,  2 Feb 2020 08:38:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2AC84206D3
+	for <alsa-devel@archiver.kernel.org>; Sun,  2 Feb 2020 09:08:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YMvUde9J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 748D32067C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EAMLJzZB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2AC84206D3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CED641677;
-	Sun,  2 Feb 2020 09:37:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CED641677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76B001677;
+	Sun,  2 Feb 2020 10:07:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76B001677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580632723;
-	bh=XKgTlFMBabY+whhnBr9avNxE7X/6NciDHyKwuZqTvOI=;
-	h=Date:From:To:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1580634501;
+	bh=0hqja6bNPgcJI+K4I00MZNV8Ssu91/lReGWmzd3euVE=;
+	h=From:To:Date:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YMvUde9J0sSHu7bv2JmMPj8QDR3ViemGHKVdFETnev7COnTuD95cSiggbg9jHhkZd
-	 3EBMgLa65zixr5gnv1TmRAG9ZENhoqfNhsHusXNgONhJj4HF4O+RHzOlfnSu+W7u85
-	 INNDRveZpcYFuY+v3AFJKMDwR7qtO1Cggtfy/kTA=
+	b=EAMLJzZBokiNN/EKunXTuD7yii56xqFjajTtwjmibyEMFBK8BzdUuHSOV7NJ746yD
+	 68I8tr5lab6CfvF6oRTBFUtOSOqxP/Z7YB92nP44/qh2jJ8VPgGGUFogpsij5bxGrX
+	 N5S8+vNHF55p+1UgoTFU2x380J8A9t6D/9GEzBcw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EE7CF8015A;
-	Sun,  2 Feb 2020 09:37:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC0FDF8015A;
+	Sun,  2 Feb 2020 10:07:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9DCFF80162; Sun,  2 Feb 2020 09:37:51 +0100 (CET)
+ id AE694F80162; Sun,  2 Feb 2020 10:07:29 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED09AF80116
- for <alsa-devel@alsa-project.org>; Sun,  2 Feb 2020 09:37:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED09AF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0137BF800B8
+ for <alsa-devel@alsa-project.org>; Sun,  2 Feb 2020 10:07:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0137BF800B8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 78556AD14;
- Sun,  2 Feb 2020 08:37:44 +0000 (UTC)
-Date: Sun, 02 Feb 2020 09:37:44 +0100
-Message-ID: <s5hmua18jvr.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id AC734AF32
+ for <alsa-devel@alsa-project.org>; Sun,  2 Feb 2020 09:07:25 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Martin Regner <martin@larkos.de>
-In-Reply-To: <0b827293-cc8b-3c3e-9160-565037ff172b@larkos.de>
-References: <20191119084710.29267-5-nmahale@nvidia.com>
- <0b827293-cc8b-3c3e-9160-565037ff172b@larkos.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Cc: nmahale@nvidia.com, tiwai@suse.com, alsa-devel@alsa-project.org,
- aplattner@nvidia.com
-Subject: Re: [alsa-devel] [PATCH v3 4/4] ALSA: hda - Add DP-MST support for
-	NVIDIA codecs
+To: alsa-devel@alsa-project.org
+Date: Sun,  2 Feb 2020 10:07:24 +0100
+Message-Id: <20200202090724.18232-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200202090724.18232-1-tiwai@suse.de>
+References: <20200202090724.18232-1-tiwai@suse.de>
+Subject: [alsa-devel] [PATCH 2/2] ALSA: hdsp: Make the firmware loading
+	ioctl a bit more readable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,29 +70,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gU2F0LCAwMSBGZWIgMjAyMCAxNjoyODowOCArMDEwMCwKTWFydGluIFJlZ25lciB3cm90ZToK
-PiAKPiBIaSB0aGVyZSwKPiAKPiBzaW5jZSBpIHVwZGF0ZWQgdG8ga2VybmVsIDUuNSBpIGhhdmUg
-bm8gc291bmQgb3ZlciBoZG1pIGFueW1vcmUgKEdlRm9yY2UgUlRYCj4gMjA3MCkuCj4gCj4gV2l0
-aCB0aGUgcHJldmlvdXMga2VybmVsIDUuNC4xNCBldmVyeXRoaW5nIGlzIGZpbmUuCj4gCj4gQWx0
-aG91Z2ggaSBnb3Qgc291bmQgd2l0aCBzcGVha2VyLXRlc3QgLUQgaGRtaTpDQVJEPU5WaWRpYSxE
-RVY9MiAtYyAyIC1yCj4gNDQxMDAsIHBhdnVjb250cm9sIHNob3dzIGFsbCBoZG1pIHNvdW5kIGRl
-dmljZXMgYXMgdW5wbHVnZ2VkLgo+IAo+IEkgYmlzZWN0ZWQgaXQgZG93biB0byB0aGlzIGNvbW1p
-dCAoNTM5OGU5NGZiNzUzZDAyMjMwMTgyNWViZmE1ZjdjZjhhNjYwZDhlYikKPiBhbmQgY2hhbmdl
-ZCB0aGUgbGluZQo+IAo+IEhEQV9DT0RFQ19FTlRSWSgweDEwZGUwMDkzLCAiR1BVIDkzIEhETUkv
-RFAiLMKgIHBhdGNoX252aGRtaSkKPiAKPiB0bwo+IAo+IEhEQV9DT0RFQ19FTlRSWSgweDEwZGUw
-MDkzLCAiR1BVIDkzIEhETUkvRFAiLMKgIHBhdGNoX252aGRtaV9sZWdhY3kpCj4gCj4gTm93IGl0
-J3Mgd29ya2luZyBhZ2Fpbi4gSSdtIG5vdCBzdXJlIGlmIHRoaXMgaXMgYSBwcm9ibGVtIHdpdGgg
-cHVsc2VhdWRpbyBvcgo+IGlmIHRoZSBSVFggMjA3MCBkb2VzIG5vdCBzdXBwb3J0IHRoZSBtZW50
-aW9uZWQgY29kZWMuCgpUaGUgcnVudGltZSBQTSB0dXJucyBvZmYgdGhlIGxpbmssIHNvIHRoZSBo
-b3RwbHVnIG5vdGlmaWNhdGlvbiB3b24ndApiZSBkZWxpdmVyZWQgYXMgZGVmYXVsdC4gIFBsZWFz
-ZSB0cnkgcmVhZGluZyB0aGUgY29ycmVzcG9uZGluZyBwcm9jCmZpbGUsIC9wcm9jL2Fzb3VuZC9j
-YXJkKi9jb2RlYyogZmlsZS4gIFRoaXMgbWF5IHBvd2VyIHVwIHRoZSBjb2RlYyBhbmQgCnRyaWdn
-ZXIgdGhlIGhvdHBsdWcgZGV0ZWN0aW9uIGlmIHRoYXQncyB0aGUgY2F1c2UuCgoKVGFrYXNoaQpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cHM6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The firmware loading ioctl that is implemented for hdsp hwdep device
+takes the reference of the address pointer, hence the current code is
+rather confusing.  Also, due to the recent change in uapi header,
+sparse also complains about the cast.
+
+This patch tries to improve the readability by converting the
+straightforward copy_from_user of the whole struct (which contains
+only the pointer).
+
+Fixes: d63e63d42107 ("ALSA: hdsp: Make uapi/hdsp.h compilable again")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/rme9652/hdsp.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index ba2a47dd384c..25b3c5697343 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -4802,7 +4802,7 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
+ 		break;
+ 	}
+ 	case SNDRV_HDSP_IOCTL_UPLOAD_FIRMWARE: {
+-		struct hdsp_firmware __user *firmware;
++		struct hdsp_firmware firmware;
+ 		u32 __user *firmware_data;
+ 		int err;
+ 
+@@ -4815,10 +4815,9 @@ static int snd_hdsp_hwdep_ioctl(struct snd_hwdep *hw, struct file *file, unsigne
+ 
+ 		dev_info(hdsp->card->dev,
+ 			 "initializing firmware upload\n");
+-		firmware = (struct hdsp_firmware __user *)argp;
+-
+-		if (get_user(firmware_data, (__force void __user **)&firmware->firmware_data))
++		if (copy_from_user(&firmware, argp, sizeof(firmware)))
+ 			return -EFAULT;
++		firmware_data = (u32 __user *)firmware.firmware_data;
+ 
+ 		if (hdsp_check_for_iobox (hdsp))
+ 			return -EIO;
+-- 
+2.16.4
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
