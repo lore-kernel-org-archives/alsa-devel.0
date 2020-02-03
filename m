@@ -2,101 +2,105 @@ Return-Path: <SRS0=H4ho=3X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31641C33CAC
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D2C1C33CAC
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:24:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B0A482080D
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:14:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8D72F20721
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:24:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="coNhzNpS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="ShA0NrRq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0A482080D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="odI8HPWE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=yahoo.de header.i=@yahoo.de header.b="k2bR/ifL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D72F20721
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=yahoo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB5D2168E;
-	Mon,  3 Feb 2020 11:13:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB5D2168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F02271662;
+	Mon,  3 Feb 2020 11:23:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F02271662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580724843;
-	bh=7i/HCZHCZRON9TQJI9MOujS5MQtQJFa6dzwdha2Dxp8=;
-	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
+	s=default; t=1580725458;
+	bh=mlEgdvhJklOsx+3Uz+Q6ofw2nVu4JVUIU9IJ8Et2AlU=;
+	h=To:References:From:Date:In-Reply-To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=coNhzNpSuqAXVMCf+Z0PJBqwvB1GqGXBvRawTaZNfTmWdbr9LyfyIM3+URFFo7oXh
-	 pEr9z6VDMe3WoqXOPREO/g0wP6foq7qTpt9PwUbAL3F2EsPfKeb5GvdPKmiBe3wTS9
-	 1mW1Gci94/eq+KHM3Z5285O+XJ2QR9ea1WtzKK0g=
+	b=odI8HPWE4bvICyhKtNxwBcvo59M9679jpZlFYR7KFV327pBu1wQynOsLNMiH/ocuQ
+	 gSK2ze3C0U1FcmmhBM51d+qwVqkc8df0pIgccrCqZvEywcb0Ntntsh2GyTdY7muRyK
+	 dtfC5khNKHMUDLXUJCshhVRrcpJoVsQ4jJpELZ/A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A515FF8029B;
-	Mon,  3 Feb 2020 11:09:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E7E1F800B8;
+	Mon,  3 Feb 2020 11:23:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47228F80233; Mon,  3 Feb 2020 11:09:22 +0100 (CET)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A770CF80148; Mon,  3 Feb 2020 11:23:26 +0100 (CET)
+Received: from sonic306-19.consmr.mail.ir2.yahoo.com
+ (sonic306-19.consmr.mail.ir2.yahoo.com [77.238.176.205])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C941F8019B
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2020 11:09:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C941F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92648F8011D
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2020 11:23:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92648F8011D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="ShA0NrRq"
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 013A7o72019717; Mon, 3 Feb 2020 11:09:04 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
- h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=RBofiPp4R9DTfyooLMsUguafFOqr7As70nNTDt8X928=;
- b=ShA0NrRqqtRfTilhlu0v+aukPkeGjS3YyKLE5L8y7KB3dQyCga0T1GXRF/UaEwEjw0L1
- bDQc9ScM7GRWHEvlDcmpCBffUT3kfDJXhhKCwFgSSrTSyn1Ysx2YgqOIe+oEVKAthcxN
- 8XO5jDfb65l4YSgDEKQ5mo9ifMnZJWhMZPWAtwnhMwE/4pVYTZwJ/8zaifSJ7O09XCZh
- g1IR8rLNBBCpPPP9sBF0qcCg+TXOEdKzQBAAJgBbH12FNmfeoeBclfukodHA/B+o0HCl
- vddRti/pmFDo3I9eafpUnuIH10BbUFVrxMsF55RdqHzwsMjGsABNBKXjhAQm0K2sd5e7 PA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 2xvybdrs7h-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 03 Feb 2020 11:09:04 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 965E210003A;
- Mon,  3 Feb 2020 11:09:01 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8A0412BE22D;
- Mon,  3 Feb 2020 11:09:01 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG6NODE2.st.com (10.75.127.17)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2;
- Mon, 3 Feb 2020 11:09:01 +0100
-From: Olivier Moysan <olivier.moysan@st.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <mcoquelin.stm32@gmail.com>,
- <alexandre.torgue@st.com>, <alsa-devel@alsa-project.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-kernel@vger.kernel.org>, <olivier.moysan@st.com>
-Date: Mon, 3 Feb 2020 11:08:12 +0100
-Message-ID: <20200203100814.22944-5-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200203100814.22944-1-olivier.moysan@st.com>
-References: <20200203100814.22944-1-olivier.moysan@st.com>
+ dkim=pass (2048-bit key) header.d=yahoo.de header.i=@yahoo.de
+ header.b="k2bR/ifL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.de; s=s2048;
+ t=1580725401; bh=QDa5ThEOjMLGEBnbJNLEBtWf68FG/1tbRgVUs9mbo3s=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject;
+ b=k2bR/ifLZb+DRdX6L6C8/BY95cN6ynRj2SDE8K5avNAXDV67ECofpEGgVoqAE0HdBwrkYuztL1ZR/nD0JDsKGKWppnPVt0dNPhuRVdW0jr2xeUOt7JanRy6Wt19rBxsHvzwc+rlnS+3WeOVGKYhavC/clUi0yK6pd4+lCRr8UNUT8Z/oUVmT/hqWesEWCp38e7LnfchJ7APW3YUBWacIbr98nTmIQVUsjBtvVUGad98E4jks9ZGvvESPy+V07BxWKcU0n0XmqaaLkVZZUi+D8UiMj3vcFAFjEIPn8oPaPtQbp32SafMRudSxZ1rDSwjxMtCP0fgimbNp6wK86fES3Q==
+X-YMail-OSG: Vgj2rfgVM1kY5EEedoyAkWebQg.WWFsoKpmjUwPTzELOW30kOYbSVyfkwWkcLxn
+ Dusf9KCzvn7Bb6L63xyr.2U.6WHr3pxxAmXqLIbqh6TSW8kTOzQHUWwcKqLOl7DbFL0.24qgqhcI
+ Pf9yAG2CYBIm0OopFgGG_bUoh5aNJSU5rlh5sBXC30SdqP4lwyW4Zb5KLSL7auzsixIHT_1xdMdk
+ _0QweXvgSLSNW_lE45Hk_xjSlToTsZOYCzzm8dQqz7oAlLRlTuOyECoonxz6Ks7nsYbtYoaf2FJm
+ Ki4qVCWa12Nj4AC7aoHy4WbR0nMkttXmd9tDW40TrFnofDjtjYjyq2LbaXlYgLYRPCTbWOKoSIAV
+ td_5657MNHKA.TtsIrAWw6m0fKJMn.WGbAzi8J2FTZb0QhuP4XW_Frho_UE5nIZjunDFi2ATEeow
+ kGmXtZEAMEhHrQV4gfDkTOFZzrDpv_XwiIszXGav0pkKWjxrVtDCWxBmVkPMqApuuMzlKSpgjBEN
+ eyQ_bNOLkBb2HYpwv1SrckBCwE2svufDH1GLGXNZDBdrdYG9T1wAXKBCBCkmOKEQKM5Ruind4mjQ
+ oJKE30Z2tyoWysOf6jywUd14Fd2_CN1ceDD6MRcVuU.31j3uvQSZk1.iXwiP1qf43yVoA_tCbwXg
+ fL4.dBAQQA5MIv8NlgJBi3DKPNKcmbFOUfP5KtJuzAzk25HNFhOmGXGrxFSuApJmPpRFWmxVp3bm
+ 8Uc0V1UZ5gYRqxnM9Dxi9yAj5tS8qW4.vmB189si9ChKqu_2Ns4dbCCd3rOB1kYZasPZFv9JOWdS
+ Yxf0aDqGoDXIh3gI2a4qE1X79jtYbb2KF2uPoQStYeAb.AFGWaiWGshXhGMv2v44LJ7X.il8.Hhj
+ dGKsvsUh7mB8xPIsBFHHk__KbJTI5hl.Gk7reIDuuGYFyQMcYWrpIvsOxzx.TfEr4vZB9ZSSY13l
+ uwmRH5j3U37d0CAmZHpyn.GOjvmMN6bxUJqxTb4TyC6X3kTyf8XpS3xo6B3je7UV53nHKC6.BpWZ
+ qyvx_sILI4r_WjTHbyXzU2bJ6QR02gWp.cCIlHBFpUM31KF2OmprAapYtQdVXXf29.pOU6Swn3UH
+ 8DhPrZkb8cHx__OWgOwU1xA.0dYVbqwy.IG_L.IS8JJKhyYkPpddzqhVbL_W4ecd3RXe3uPzpCCU
+ BdeKb3tAyIfXh6aaA6KTNpsazEL533L5lNYijqtrIfjWu1Bafa7Q94zBNeZDEWAQyUf3OR2fQK.Q
+ LsuqnolArt_aXNPXe3ap6zaMO2UTfDU3e2aE5LxlYTRSKl7I7xaGd8ldkLiCGsyy5c8Os00LGUNe
+ xsWMT7zDSJhyy7uLWS9.cvhpENjpULUs20HGmlj5KDvaMaav_VQE_LZpvaXK2hEdIr1WSoIOgv1l
+ xxY8PYwq3OUV1208KwBI-
+Received: from sonic.gate.mail.ne1.yahoo.com by
+ sonic306.consmr.mail.ir2.yahoo.com with HTTP; Mon, 3 Feb 2020 10:23:21 +0000
+Received: by smtp415.mail.ir2.yahoo.com (Oath Hermes SMTP Server) with ESMTPA
+ ID 8f048ac4e40ba03a31a5a5d1c7ee9bcd; 
+ Mon, 03 Feb 2020 10:23:19 +0000 (UTC)
+To: "alexander@tsoy.me" <alexander@tsoy.me>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <9457db14-4084-c0dd-5c89-821b35c3db66.ref@yahoo.de>
+ <9457db14-4084-c0dd-5c89-821b35c3db66@yahoo.de>
+ <697208e751dcbcc70cf00af7b625a4109b9c66cb.camel@tsoy.me>
+ <a0e87326-839d-76df-dfd1-6d571017fc27@yahoo.de>
+ <6a0079e3343a6bc860b495d9258fada061bf83ba.camel@tsoy.me>
+ <1697977016.25666627.1579681629054@mail.yahoo.com>
+From: Tobias <toszlanyi@yahoo.de>
+Message-ID: <d9cdf599-6e53-29bc-e42f-a2a8acee85be@yahoo.de>
+Date: Mon, 3 Feb 2020 11:23:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.572
- definitions=2020-02-03_02:2020-02-02,
- 2020-02-03 signatures=0
-Cc: Etienne Carriere <etienne.carriere@st.com>
-Subject: [alsa-devel] [PATCH 4/6] ASoC: stm32: sai: improve error management
-	on probe deferral
+In-Reply-To: <1697977016.25666627.1579681629054@mail.yahoo.com>
+Content-Language: en-US
+X-Mailer: WebService/1.1.15149 hermes Apache-HttpAsyncClient/4.1.4
+ (Java/1.8.0_181)
+Cc: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [alsa-devel] USB Audio Interface / Denon MC7000 and MC8000
+ controller
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,94 +113,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Do not print an error trace when deferring probe for SAI driver.
-
-Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- sound/soc/stm/stm32_sai.c     | 12 +++++++++---
- sound/soc/stm/stm32_sai_sub.c | 11 ++++++++---
- 2 files changed, 17 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index b824ba6cb028..058757c721f0 100644
---- a/sound/soc/stm/stm32_sai.c
-+++ b/sound/soc/stm/stm32_sai.c
-@@ -174,20 +174,26 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 	if (!STM_SAI_IS_F4(sai)) {
- 		sai->pclk = devm_clk_get(&pdev->dev, "pclk");
- 		if (IS_ERR(sai->pclk)) {
--			dev_err(&pdev->dev, "missing bus clock pclk\n");
-+			if (PTR_ERR(sai->pclk) != -EPROBE_DEFER)
-+				dev_err(&pdev->dev, "missing bus clock pclk: %ld\n",
-+					PTR_ERR(sai->pclk));
- 			return PTR_ERR(sai->pclk);
- 		}
- 	}
- 
- 	sai->clk_x8k = devm_clk_get(&pdev->dev, "x8k");
- 	if (IS_ERR(sai->clk_x8k)) {
--		dev_err(&pdev->dev, "missing x8k parent clock\n");
-+		if (PTR_ERR(sai->clk_x8k) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "missing x8k parent clock: %ld\n",
-+				PTR_ERR(sai->clk_x8k));
- 		return PTR_ERR(sai->clk_x8k);
- 	}
- 
- 	sai->clk_x11k = devm_clk_get(&pdev->dev, "x11k");
- 	if (IS_ERR(sai->clk_x11k)) {
--		dev_err(&pdev->dev, "missing x11k parent clock\n");
-+		if (PTR_ERR(sai->clk_x11k) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "missing x11k parent clock: %ld\n",
-+				PTR_ERR(sai->clk_x11k));
- 		return PTR_ERR(sai->clk_x11k);
- 	}
- 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 30bcd5d3a32a..0bbf9ed5e48b 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1380,7 +1380,9 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base,
- 					    sai->regmap_config);
- 	if (IS_ERR(sai->regmap)) {
--		dev_err(&pdev->dev, "Failed to initialize MMIO\n");
-+		if (PTR_ERR(sai->regmap) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Regmap init error %ld\n",
-+				PTR_ERR(sai->regmap));
- 		return PTR_ERR(sai->regmap);
- 	}
- 
-@@ -1471,7 +1473,9 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 	of_node_put(args.np);
- 	sai->sai_ck = devm_clk_get(&pdev->dev, "sai_ck");
- 	if (IS_ERR(sai->sai_ck)) {
--		dev_err(&pdev->dev, "Missing kernel clock sai_ck\n");
-+		if (PTR_ERR(sai->sai_ck) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Missing kernel clock sai_ck: %ld\n",
-+				PTR_ERR(sai->sai_ck));
- 		return PTR_ERR(sai->sai_ck);
- 	}
- 
-@@ -1553,7 +1557,8 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
- 	if (ret) {
--		dev_err(&pdev->dev, "Could not register pcm dma\n");
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "PCM DMA register error %d\n", ret);
- 		return ret;
- 	}
- 
--- 
-2.17.1
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-https://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+RGVhciBBbGV4YW5kZXIgLSB1bmZvcnR1bmF0ZWx5IEkgZGlkIGhvdCBoZWFyIGJhY2sgZnJvbSB5
+b3UuIEkgZ3Vlc3MgCnRoaXMgbWF5IG5vdCBiZSB5b3VyIGhpZ2hlc3QgcHJpb3JpdHkgYnV0IHN0
+aWxsIC0gZG8geW91IGhhdmUgYW55IG90aGVyIAppZGVhIHRvIG1ha2UgdGhlIE1DNzAwMCBzb3Vu
+ZCBkZXZpY2Ugd29ya2luZz8gVGhhbmtzIGEgbG90LgoKCkFtIDIyLjAxLjIwIHVtIDA5OjI3IHNj
+aHJpZWIgT3N6bGFueWkgVG9iaWFzOgo+IEhlbGxvIEFsZXhhbmRlci7CoEkgY29tcGlsZWQgdGhl
+IGtlcm5lbCB3aXRoIHlvdXIgcGF0Y2ggYnV0IHRoZSByZXN1bHQgdW5mb3J0dW5hdGVseSBpdCdz
+IHRoZSBzYW1lLiBUaGUgYXVkaW8gZGV2aWNlIGlzIHN0aWxsIG5vdCB3b3JraW5nLCBkbWVzZyBz
+aG93cyB0aGUgc2FtZSBtZXNzYWdlIHRoYXQgY2xvY2sgc291cmNlIGlzIG5vdCB2YWxpZC4gQW55
+IG90aGVyIGlkZWE/Cj4gVGhhbmtzIGEgbG90VG9iaWFzCj4KPiBHZXNlbmRldCB2b24gWWFob28g
+TWFpbCBhdWYgQW5kcm9pZAo+ICAgCj4gICAgQW0gRGkuLCBKYW4uIDIxLCAyMDIwIGF0IDEyOjAw
+IHNjaHJpZWIgQWxleGFuZGVyIFRzb3k8YWxleGFuZGVyQHRzb3kubWU+OiAgIFBsZWFzZSB0cnkg
+dGhlIHBhdGNoIGJlbG93LiBNYWtlIHN1cmUgdGhhdCBubyBvdGhlciBwYXRjaGVzIGFyZSBhcHBs
+aWVkLgo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWly
+a3MuYwo+IGluZGV4IDgyMTg0MDM2NDM3Yi4uNzI2NGY1N2QzMTg4IDEwMDY0NAo+IC0tLSBhL3Nv
+dW5kL3VzYi9xdWlya3MuYwo+ICsrKyBiL3NvdW5kL3VzYi9xdWlya3MuYwo+IEBAIC0xNTUzLDYg
+KzE1NTMsMTMgQEAgdm9pZCBzbmRfdXNiX2N0bF9tc2dfcXVpcmsoc3RydWN0IHVzYl9kZXZpY2Ug
+KmRldiwgdW5zaWduZWQgaW50IHBpcGUsCj4gICDCoMKgwqAgwqAgwqAgJiYgKHJlcXVlc3R0eXBl
+ICYgVVNCX1RZUEVfTUFTSykgPT0gVVNCX1RZUEVfQ0xBU1MpCj4gICDCoMKgwqAgwqDCoMKgIG1z
+bGVlcCgyMCk7Cj4gICAKPiArwqDCoMKgIC8qCj4gK8KgwqDCoCAqIERlbm9uIE1DNzAwMAo+ICvC
+oMKgwqAgKi8KPiArwqDCoMKgIGlmIChjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MTVlNCwgMHg4
+MDA0KSAmJgo+ICvCoMKgwqAgwqAgwqAgKHJlcXVlc3R0eXBlICYgVVNCX1RZUEVfTUFTSykgPT0g
+VVNCX1RZUEVfQ0xBU1MpCj4gK8KgwqDCoCDCoMKgwqAgbXNsZWVwKDIwKTsKPiArCj4gICDCoMKg
+wqAgLyogWm9vbSBSMTYvMjQsIExvZ2l0ZWNoIEg2NTBlLCBKYWJyYSA1NTBhIG5lZWRzIGEgdGlu
+eSBkZWxheSBoZXJlLAo+ICAgwqDCoMKgICogb3RoZXJ3aXNlIHJlcXVlc3RzIGxpa2UgZ2V0L3Nl
+dCBmcmVxdWVuY3kgcmV0dXJuIGFzIGZhaWxlZCBkZXNwaXRlCj4gICDCoMKgwqAgKiBhY3R1YWxs
+eSBzdWNjZWVkaW5nLgo+Cj4KPiDQkiDQktGCLCAyMS8wMS8yMDIwINCyIDA5OjE3ICswMTAwLCBU
+b2JpYXMg0L/QuNGI0LXRgjoKPj4gVGhhbmtzIGEgbG90IGZvciB0aGUgaGludCBBbGV4YW5kZXIu
+IEFueWhvdywgSSBhbSBub3Qgc3VyZSB3aGVyZSB0byBwdXQKPj4gdGhhdC4KPj4gQWxzbyBUYWth
+c2hpIEl3YWkgd2FzIGludm9sdmVkIGFscmVhZHkgYW5kIEkgd291bGQgbGlrZSB0byBwcmV2ZW50
+Cj4+IG1peGluZyB1cCB0aGluZ3Mgb3IgZG91YmxlIHdvcmsuCj4+Cj4+IFBsZWFzZSBhZHZpc2Ug
+aW4gZGV0YWlsIHdoYXQgSSB3b3VsZCBuZWVkIHRvIGRvIGFzIEkgYW0gbm90IGEgcHJvZ3JhbW1l
+ci4KPj4KPj4gVGhhbmtzIGEgbG90Lgo+PiBUb2JpYXMKPj4KPj4gQW0gMjAuMDEuMjAgdW0gMDk6
+MjIgc2NocmllYiBBbGV4YW5kZXIgVHNveToKPj4+INCSINCh0LEsIDE0LzEyLzIwMTkg0LIgMDk6
+MjQgKzAxMDAsIFRvYmlhcyDQv9C40YjQtdGCOgo+Pj4+IEhlbGxvIGRlYXIgQUxTQSBkZXZlbG9w
+ZXJzLgo+Pj4+Cj4+Pj4gSSBoYXZlIHB1cmNoYXNlZCBhIE1DNzAwMCBjb250cm9sbGVyIGluIG9y
+ZGVyIHRvIGNvbnRyb2wgTUlYWFggb24KPj4+PiBVYnVudHUKPj4+PiAxNi4wNC4gQWNjb3JkaW5n
+IHRvIHRoZSBEZW5vbiBzcGVjaWZpY2F0aW9uIHRoZSBjb250cm9sbGVyIHNob3VsZAo+Pj4+IGhh
+dmUKPj4+PiBiZWVuIGNsYXNzIGNvbXBsaWFudCBidXQgdGhlcmUgaXMgYW4gaXNzdWUgd2l0aCB0
+aGUgQXVkaW8gaW50ZXJmYWNlCj4+Pj4gdG8KPj4+PiB3b3JrIHByb3Blcmx5IGdpdmluZyBmb2xs
+b3dpbmcgbWVzc2FnZSAuLi4KPj4+Pgo+Pj4+ICQgZG1lc2cKPj4+PiAuLi4KPj4+Pj4gW8KgIDc0
+LjUyMjgzMV0gdXNiIDEtMS4zOiBuZXcgaGlnaC1zcGVlZCBVU0IgZGV2aWNlIG51bWJlciA2IHVz
+aW5nCj4+Pj4+IHhoY2lfaGNkCj4+Pj4gW8KgIDc0LjYyMzc4NF0gdXNiIDEtMS4zOiBOZXcgVVNC
+IGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MTVlNCwKPj4+PiBpZFByb2R1Y3Q9ODAwNAo+Pj4+IFvC
+oCA3NC42MjM3ODldIHVzYiAxLTEuMzogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTEsIFBy
+b2R1Y3Q9MiwKPj4+PiBTZXJpYWxOdW1iZXI9Mwo+Pj4+IFvCoCA3NC42MjM3OTNdIHVzYiAxLTEu
+MzogUHJvZHVjdDogREVOT04gREogTUM3MDAwCj4+Pj4gW8KgIDc0LjYyMzc5Nl0gdXNiIDEtMS4z
+OiBNYW51ZmFjdHVyZXI6IERFTk9OIERKCj4+Pj4gW8KgIDc0LjYyMzc5OF0gdXNiIDEtMS4zOiBT
+ZXJpYWxOdW1iZXI6IDIwMTYwMwo+Pj4+IFvCoCA3NC42MjUxMzRdIHVzYiAxLTEuMzogY2xvY2sg
+c291cmNlIDY1IGlzIG5vdCB2YWxpZCwgY2Fubm90IHVzZQo+Pj4+Cj4+Pj4gInx8fGNsb2NrIHNv
+dXJjZSA2NSBpcyBub3QgdmFsaWQsIGNhbm5vdCB1c2UiIGlzIHJlcGVhdGVkCj4+Pj4gdW5jb3Vu
+dGFibGUKPj4+PiB0aW1lcyB0aGVuCj4+Pj4KPj4+IFBsZWFzZSB0cnkgdG8gYWRkIGRlbGF5IGFm
+dGVyIGVhY2ggY2xhc3MgY29udHJvbCByZXF1ZXN0IGluCj4+PiBzbmRfdXNiX2N0bF9tc2dfcXVp
+cmsoKToKPj4+Cj4+PiAgwqAgwqAgwqAgaWYgKGNoaXAtPnVzYl9pZCA9PSBVU0JfSUQoMHgxNWU0
+LCAweDgwMDQpICYmCj4+PiAgwqAgwqAgwqAgwqAgwqAgKHJlcXVlc3R0eXBlICYgVVNCX1RZUEVf
+TUFTSykgPT0gVVNCX1RZUEVfQ0xBU1MpCj4+PiAgwqAgwqAgwqAgwqAgwqAgbXNsZWVwKDIwKTsK
+Pj4+Cj4gICAgCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwczovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
