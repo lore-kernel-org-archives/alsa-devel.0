@@ -2,84 +2,85 @@ Return-Path: <SRS0=H4ho=3X=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
+X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A3B3C3524D
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 08:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DCF4C3F68F
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 08:30:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B967220658
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 08:29:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D13FA2080D
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 08:30:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Bvk82LqL";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="dHmF7fcp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B967220658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Yp4vB8oQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="XBtVXCyo"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D13FA2080D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA0081685;
-	Mon,  3 Feb 2020 09:28:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA0081685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30F45169C;
+	Mon,  3 Feb 2020 09:29:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30F45169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580718563;
-	bh=hfGcwF3hCb6AvpMEAc2GMl5KvVuuGjZZnxRdrz8F2lk=;
+	s=default; t=1580718610;
+	bh=M5+NSyOS47rjE4KriJWo1dm7/DTk4v7KzN5ywkfg8Ig=;
 	h=Date:In-Reply-To:References:From:To:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bvk82LqLtM7H6qasGvSSKZR0CdOXZ1Sl7nQRDCiLqiO2f2kh1PsSopA+cE4fcU2q9
-	 3YPzMk6tDNC/QYFQ5Yhp/rHTcNGHa2INjPCe+OzOR36TnVnBesi3qd0fMxIGPKeu2W
-	 R2i9n0i0vTVdLUrzLaWsnDO38sdTu69TsXnfcrbg=
+	b=Yp4vB8oQrZvs9DhQ/zpkFnwGwOBzDlOsf4cHWQOfa6QSeWtbmn+WYHmie8ow1XYwO
+	 85l6DZ+E4jOrUuvauiVBeZOWAosij0rK0U67bJ9lpgLHzUgqwgmTICiKB3Y1M7UQh2
+	 eRTYmGq7HGEE/xnk1tVJ76lut4GwZUhK8oe9FCXI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC8E2F80150;
-	Mon,  3 Feb 2020 09:27:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6E63F80274;
+	Mon,  3 Feb 2020 09:27:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8FEAF80233; Mon,  3 Feb 2020 09:27:41 +0100 (CET)
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com
- [IPv6:2607:f8b0:4864:20::649])
+ id A3560F80274; Mon,  3 Feb 2020 09:27:47 +0100 (CET)
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com
+ [IPv6:2607:f8b0:4864:20::104a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B01C0F8014C
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2020 09:27:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B01C0F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8C2BF80264
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2020 09:27:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8C2BF80264
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="dHmF7fcp"
-Received: by mail-pl1-x649.google.com with SMTP id 71so4299977plb.18
- for <alsa-devel@alsa-project.org>; Mon, 03 Feb 2020 00:27:37 -0800 (PST)
+ header.b="XBtVXCyo"
+Received: by mail-pj1-x104a.google.com with SMTP id d22so7770528pjz.0
+ for <alsa-devel@alsa-project.org>; Mon, 03 Feb 2020 00:27:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=nv/gWXMm1LPjD6+In1LaHObzpkMiIoBLQHOZAKjhzFo=;
- b=dHmF7fcp26TaKEWfqy4GWMSgHDMVu6lP0xdNny1b7CZgldNeXkOvf5w6bNk4yVDynI
- hz/uJi4LUTbyMBW8vvc5d9ZQEfAnukG0AsM8FXEt2TSV07U9jxwG6sKXH+Xwi+sOazo+
- KtC7R7l68Pv4UhE+G9uDMNzpfhs/HgtnAUCD+J8jvuJVY+w1xGWgpZQEyBusrV1FtGr0
- 5CWDAgjL87EdKTt3vpa3TToMsgP5zAMqGf1hTc+azjqSydE+4KFfLTX2zteZCxXAPVsF
- nQK/MTzoyQ6C6TVFRhp038P5Fw5I/XmsZmsXQKbWFd9P/aLif2JmZeYdozHV2zcEURWt
- M4Eg==
+ :cc; bh=jRE5YctnhREGEzvzaz37kAkC6vHVXD4/7D5M3YqRd04=;
+ b=XBtVXCyozSDljvzVOsnnk2jbQGsOD8dOpItbjzAeuiUS5eDU+yX3WnmCd+W6CTxD32
+ 3+ib0tdeRJzHZkCQY4GzzV7beh0vzuP+jn7Gme+MZ/5NoBRHwxBvV49TMtplFEmqfFdu
+ 8DCAWccyqcOQ1IBBSz0CohNaLdF3IezC4c5XInyeRtu8FUdQAUoMwte3/v+gKRLgDJZN
+ Jn5YSqYKQI8rH7FOawK+4+/ULe8t34hWnC4lW2bhEb/c9c0hVTxrF4PUcJi5Ncn7XT9i
+ lGi+JezWaR8Feo/T8WuA7Mv0ekaSlK7nxy7gaxiO+8z9KLmuN7BvoiX7Tjqz4to8UI5f
+ /kBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=nv/gWXMm1LPjD6+In1LaHObzpkMiIoBLQHOZAKjhzFo=;
- b=cP7E/e33WXYtZFpbXgf6+SNTGZJkCCkT3TnHgVKq4Q6bjQRqwYdW8bqqMRthPjGwJ3
- UVwvRsNqlI6WhJ7/e+b0Eukzi1aUMaOdUjU7b81J9IcnZpDeDPtmP3h8WIooT8w14rFH
- qnuJlGcMm2ytOJa+AswPZ87v6KZmkgyc2dqf8n8FCNr2usC/zmNqB7acWgI1lO0wDHXC
- MZrqTVw8J/azvYlBFZnREwoh5WTYEZkbeNcZ3Thn20l7+wQt6Z38QWysrXGtCJU7Ouuz
- JTTQRHC4lQEg4kQuq+ADVVv6PgTBLCqLjIRrj6Hd+YXyYX3orqLsYLoj7F/cb00wfG5e
- 4bbw==
-X-Gm-Message-State: APjAAAUeb4xoFdfZriL7OQyLRkuSEG+LBuQgjekNe0RAoL5QB9BWKx1l
- QWieUruD7aFzRgHlRamItCoY3Qoyo5W0
-X-Google-Smtp-Source: APXvYqzyHmoXCfgMHVHFR6gT9T8Azz/oAlmKEtSegXV43hookvRACho2AUKsE8tr7Kh9t3HI6jjViWjXp/D1
-X-Received: by 2002:a63:1e1d:: with SMTP id e29mr24493750pge.347.1580718454675; 
- Mon, 03 Feb 2020 00:27:34 -0800 (PST)
-Date: Mon,  3 Feb 2020 16:27:15 +0800
+ bh=jRE5YctnhREGEzvzaz37kAkC6vHVXD4/7D5M3YqRd04=;
+ b=HZT6Pq4gS1BIEG9VQW+XiAoVwE+gEHmcr4f1KJSdpbFY/jJT28IYX4bBDhYVHNegpJ
+ OfWWIkIXxeht3WevUNilbLWCemfzD4b2CtOe/WV6WKBCvBS11J1JXUEL/VKQHHgQOXvW
+ MWS59lBxlIKWikaUcWyGK/AgfaZP2UeK2yXo5G12fyj+PAZiHlNziQX0yAV+ZVvIVFVJ
+ bSM/ozKo0TUtTgwhk7LMpOX9zUNpR8U3LudKHOpj2KFEKqASUbDL6EU2o8WOSEqj20jH
+ ge/0RbgcyeoNrCrw4qXhfii/rctAR0J0xf4uAnQxQsnaPZ/cpK7k0hTiXJZvd4jJw3YO
+ pIsg==
+X-Gm-Message-State: APjAAAW8uqCVk/mEEiwxIJxdC1o7XzZUKVFA04v7LDR2TCIDMMuB8Zm5
+ tNABYK+J0lyYaAYpimWO0/Q8UCcfxTJ2
+X-Google-Smtp-Source: APXvYqzfEDnU4rS8T+YWltksmDaJW6CvAiH7kmH8K7oI4QzX2riRkywtu3IEnjj05qbxnHTZEQl71nTrvMQd
+X-Received: by 2002:a63:778f:: with SMTP id s137mr25003421pgc.49.1580718459438; 
+ Mon, 03 Feb 2020 00:27:39 -0800 (PST)
+Date: Mon,  3 Feb 2020 16:27:16 +0800
 In-Reply-To: <20200203082718.59614-1-tzungbi@google.com>
-Message-Id: <20200203151250.1.Ie5aedb9d34ebfc7f05ceb382bfe346c45331cd63@changeid>
+Message-Id: <20200203151250.2.I1d568b0c99742c6e755d051aadfd52e4be3cc0a5@changeid>
 Mime-Version: 1.0
 References: <20200203082718.59614-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
@@ -87,8 +88,8 @@ From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org
 Cc: tzungbi@google.com, alsa-devel@alsa-project.org, dgreid@google.com,
  cychiang@google.com
-Subject: [alsa-devel] [PATCH 1/4] ASoC: mediatek: mt8183-da7219: change
- supported formats of DL2 and UL1
+Subject: [alsa-devel] [PATCH 2/4] ASoC: mediatek: mt8183-da7219: pull TDM
+ GPIO pins down when probed
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,81 +107,158 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-DL2 and UL1 are for BTSCO.  Provides only 16-bit, mono, 8kHz and
-16kHz to userspace.
+1. Switch TDM GPIO pins according to playback on or off.
+2. Pull TDM GPIO pins down when probed to avoid current leakage.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- .../mediatek/mt8183/mt8183-da7219-max98357.c  | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  | 104 +++++++++++++++++-
+ 1 file changed, 98 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index c65493721e90..b7d4bfd04b37 100644
+index b7d4bfd04b37..450fb1efa239 100644
 --- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
 +++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -116,6 +116,46 @@ static int mt8183_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
+@@ -18,6 +18,22 @@
  
-+static int
-+mt8183_da7219_max98357_bt_sco_startup(
-+	struct snd_pcm_substream *substream)
-+{
-+	static const unsigned int rates[] = {
-+		8000, 16000
-+	};
-+	static const struct snd_pcm_hw_constraint_list constraints_rates = {
-+		.count = ARRAY_SIZE(rates),
-+		.list  = rates,
-+		.mask = 0,
-+	};
-+	static const unsigned int channels[] = {
-+		1,
-+	};
-+	static const struct snd_pcm_hw_constraint_list constraints_channels = {
-+		.count = ARRAY_SIZE(channels),
-+		.list = channels,
-+		.mask = 0,
-+	};
-+
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	snd_pcm_hw_constraint_list(runtime, 0,
-+			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
-+	runtime->hw.channels_max = 1;
-+	snd_pcm_hw_constraint_list(runtime, 0,
-+			SNDRV_PCM_HW_PARAM_CHANNELS,
-+			&constraints_channels);
-+
-+	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops mt8183_da7219_max98357_bt_sco_ops = {
-+	.startup = mt8183_da7219_max98357_bt_sco_startup,
+ static struct snd_soc_jack headset_jack;
+ 
++enum PINCTRL_PIN_STATE {
++	PIN_STATE_DEFAULT = 0,
++	PIN_TDM_OUT_ON,
++	PIN_TDM_OUT_OFF,
++	PIN_STATE_MAX
 +};
 +
- /* FE */
- SND_SOC_DAILINK_DEFS(playback1,
- 	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
-@@ -222,6 +262,7 @@ static struct snd_soc_dai_link mt8183_da7219_max98357_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
++static const char * const mt8183_pin_str[PIN_STATE_MAX] = {
++	"default", "aud_tdm_out_on", "aud_tdm_out_off",
++};
++
++struct mt8183_da7219_max98357_priv {
++	struct pinctrl *pinctrl;
++	struct pinctrl_state *pin_states[PIN_STATE_MAX];
++};
++
+ static int mt8183_mt6358_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				       struct snd_pcm_hw_params *params)
+ {
+@@ -244,6 +260,47 @@ SND_SOC_DAILINK_DEFS(tdm,
+ 	DAILINK_COMP_ARRAY(COMP_DUMMY()),
+ 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+ 
++static int mt8183_da7219_tdm_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mt8183_da7219_max98357_priv *priv =
++		snd_soc_card_get_drvdata(rtd->card);
++	int ret;
++
++	if (IS_ERR(priv->pin_states[PIN_TDM_OUT_ON]))
++		return PTR_ERR(priv->pin_states[PIN_TDM_OUT_ON]);
++
++	ret = pinctrl_select_state(priv->pinctrl,
++				   priv->pin_states[PIN_TDM_OUT_ON]);
++	if (ret)
++		dev_err(rtd->card->dev, "%s failed to select state %d\n",
++			__func__, ret);
++
++	return ret;
++}
++
++static void mt8183_da7219_tdm_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct mt8183_da7219_max98357_priv *priv =
++		snd_soc_card_get_drvdata(rtd->card);
++	int ret;
++
++	if (IS_ERR(priv->pin_states[PIN_TDM_OUT_OFF]))
++		return;
++
++	ret = pinctrl_select_state(priv->pinctrl,
++				   priv->pin_states[PIN_TDM_OUT_OFF]);
++	if (ret)
++		dev_err(rtd->card->dev, "%s failed to select state %d\n",
++			__func__, ret);
++}
++
++static struct snd_soc_ops mt8183_da7219_tdm_ops = {
++	.startup = mt8183_da7219_tdm_startup,
++	.shutdown = mt8183_da7219_tdm_shutdown,
++};
++
+ static struct snd_soc_dai_link mt8183_da7219_max98357_dai_links[] = {
+ 	/* FE */
+ 	{
+@@ -395,6 +452,8 @@ static struct snd_soc_dai_link mt8183_da7219_max98357_dai_links[] = {
+ 		.no_pcm = 1,
  		.dpcm_playback = 1,
-+		.ops = &mt8183_da7219_max98357_bt_sco_ops,
- 		SND_SOC_DAILINK_REG(playback2),
+ 		.ignore_suspend = 1,
++		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
++		.ops = &mt8183_da7219_tdm_ops,
+ 		SND_SOC_DAILINK_REG(tdm),
  	},
- 	{
-@@ -240,6 +281,7 @@ static struct snd_soc_dai_link mt8183_da7219_max98357_dai_links[] = {
- 			    SND_SOC_DPCM_TRIGGER_PRE},
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
-+		.ops = &mt8183_da7219_max98357_bt_sco_ops,
- 		SND_SOC_DAILINK_REG(capture1),
- 	},
- 	{
+ };
+@@ -451,7 +510,7 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+ 	struct snd_soc_card *card = &mt8183_da7219_max98357_card;
+ 	struct device_node *platform_node;
+ 	struct snd_soc_dai_link *dai_link;
+-	struct pinctrl *default_pins;
++	struct mt8183_da7219_max98357_priv *priv;
+ 	int ret, i;
+ 
+ 	card->dev = &pdev->dev;
+@@ -485,12 +544,45 @@ static int mt8183_da7219_max98357_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	default_pins =
+-		devm_pinctrl_get_select(&pdev->dev, PINCTRL_STATE_DEFAULT);
+-	if (IS_ERR(default_pins)) {
+-		dev_err(&pdev->dev, "%s set pins failed\n",
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	snd_soc_card_set_drvdata(card, priv);
++
++	priv->pinctrl = devm_pinctrl_get(&pdev->dev);
++	if (IS_ERR(priv->pinctrl)) {
++		dev_err(&pdev->dev, "%s devm_pinctrl_get failed\n",
+ 			__func__);
+-		return PTR_ERR(default_pins);
++		return PTR_ERR(priv->pinctrl);
++	}
++
++	for (i = 0; i < PIN_STATE_MAX; i++) {
++		priv->pin_states[i] = pinctrl_lookup_state(priv->pinctrl,
++							   mt8183_pin_str[i]);
++		if (IS_ERR(priv->pin_states[i])) {
++			ret = PTR_ERR(priv->pin_states[i]);
++			dev_info(&pdev->dev, "%s Can't find pin state %s %d\n",
++				 __func__, mt8183_pin_str[i], ret);
++		}
++	}
++
++	if (!IS_ERR(priv->pin_states[PIN_TDM_OUT_OFF])) {
++		ret = pinctrl_select_state(priv->pinctrl,
++					   priv->pin_states[PIN_TDM_OUT_OFF]);
++		if (ret)
++			dev_info(&pdev->dev,
++				 "%s failed to select state %d\n",
++				 __func__, ret);
++	}
++
++	if (!IS_ERR(priv->pin_states[PIN_STATE_DEFAULT])) {
++		ret = pinctrl_select_state(priv->pinctrl,
++					   priv->pin_states[PIN_STATE_DEFAULT]);
++		if (ret)
++			dev_info(&pdev->dev,
++				 "%s failed to select state %d\n",
++				 __func__, ret);
+ 	}
+ 
+ 	return ret;
 -- 
 2.25.0.341.g760bfbb309-goog
 
