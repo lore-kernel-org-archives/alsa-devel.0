@@ -7,74 +7,74 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F250C33CAC
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:13:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31641C33CAC
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:14:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0ACC920658
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:13:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B0A482080D
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Feb 2020 10:14:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ln+CwpZi";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="wzkVCfKQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ACC920658
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="coNhzNpS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=st.com header.i=@st.com header.b="ShA0NrRq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0A482080D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=st.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB3B116A2;
-	Mon,  3 Feb 2020 11:12:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB3B116A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB5D2168E;
+	Mon,  3 Feb 2020 11:13:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB5D2168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1580724796;
-	bh=tP7x3KSTUfZ+iTLrc2uqZDRzzOKkEnhI9XXXJohCZRg=;
+	s=default; t=1580724843;
+	bh=7i/HCZHCZRON9TQJI9MOujS5MQtQJFa6dzwdha2Dxp8=;
 	h=From:To:Date:In-Reply-To:References:Cc:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ln+CwpZi4YNc90QOsXcAxJH63O0KLXtcXvTRV1mZVk/CGIwaOHxSLLK9dB79BJcW8
-	 n60yU5EqYqwZH3C6y5cUqcDjveF0spDJxvM1jqlAr8v8VNEB7S0up+ZI7BR49GAW3p
-	 J3/9e3smU7LsTCWzXiJnihkAD+6qvANQeHaASGwA=
+	b=coNhzNpSuqAXVMCf+Z0PJBqwvB1GqGXBvRawTaZNfTmWdbr9LyfyIM3+URFFo7oXh
+	 pEr9z6VDMe3WoqXOPREO/g0wP6foq7qTpt9PwUbAL3F2EsPfKeb5GvdPKmiBe3wTS9
+	 1mW1Gci94/eq+KHM3Z5285O+XJ2QR9ea1WtzKK0g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4972DF80299;
-	Mon,  3 Feb 2020 11:09:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A515FF8029B;
+	Mon,  3 Feb 2020 11:09:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 192CEF8027C; Mon,  3 Feb 2020 11:09:22 +0100 (CET)
+ id 47228F80233; Mon,  3 Feb 2020 11:09:22 +0100 (CET)
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2229FF80233
- for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2020 11:09:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2229FF80233
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C941F8019B
+ for <alsa-devel@alsa-project.org>; Mon,  3 Feb 2020 11:09:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C941F8019B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="wzkVCfKQ"
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+ dkim=pass (2048-bit key) header.d=st.com header.i=@st.com header.b="ShA0NrRq"
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
  by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id
- 0139vM0F024591; Mon, 3 Feb 2020 11:09:05 +0100
+ 013A7o72019717; Mon, 3 Feb 2020 11:09:04 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com;
  h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=opqGRUisAUeNTFQFarkeIQS2xwkVHOyUZ4dQfSDAHe0=;
- b=wzkVCfKQgstkYyZWedkGMuhFtDHfXlchmK2VomNhoUMd8QdTo2oL3EgpuN/UnPmVByBJ
- nePsgLC02Gk5mQgVk9k6fvpESVBk1Z5vKN7rz0AIdMtNgndTIAvJ4yZHK2qBKCP3QbC9
- FWmk2OTan5xzUKtSPpR3iqVvbUzS4D2GFkuIJE9exMhyzEpH+1BdkWeZCrfStbLueX9r
- 4Z1edlhgoel11mPrHyQnrBZdxknQ63/RDi7pmZvndZTvDc+asF94BPJtNRUhfJY+s1f5
- I+p6O89fGadmuC4QACtZJhnxaX/yKzL6yzj268uWxLjDrjrwa4uhcaLCdCh46H7ccfj7 Aw== 
+ bh=RBofiPp4R9DTfyooLMsUguafFOqr7As70nNTDt8X928=;
+ b=ShA0NrRqqtRfTilhlu0v+aukPkeGjS3YyKLE5L8y7KB3dQyCga0T1GXRF/UaEwEjw0L1
+ bDQc9ScM7GRWHEvlDcmpCBffUT3kfDJXhhKCwFgSSrTSyn1Ysx2YgqOIe+oEVKAthcxN
+ 8XO5jDfb65l4YSgDEKQ5mo9ifMnZJWhMZPWAtwnhMwE/4pVYTZwJ/8zaifSJ7O09XCZh
+ g1IR8rLNBBCpPPP9sBF0qcCg+TXOEdKzQBAAJgBbH12FNmfeoeBclfukodHA/B+o0HCl
+ vddRti/pmFDo3I9eafpUnuIH10BbUFVrxMsF55RdqHzwsMjGsABNBKXjhAQm0K2sd5e7 PA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 2xw13ngdpw-1
+ by mx07-00178001.pphosted.com with ESMTP id 2xvybdrs7h-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 03 Feb 2020 11:09:05 +0100
+ Mon, 03 Feb 2020 11:09:04 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B203F10002A;
- Mon,  3 Feb 2020 11:09:04 +0100 (CET)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 965E210003A;
+ Mon,  3 Feb 2020 11:09:01 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A599B2BE22E;
- Mon,  3 Feb 2020 11:09:04 +0100 (CET)
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8A0412BE22D;
+ Mon,  3 Feb 2020 11:09:01 +0100 (CET)
 Received: from localhost (10.75.127.47) by SFHDAG6NODE2.st.com (10.75.127.17)
  with Microsoft SMTP Server (TLS) id 15.0.1347.2;
- Mon, 3 Feb 2020 11:09:04 +0100
+ Mon, 3 Feb 2020 11:09:01 +0100
 From: Olivier Moysan <olivier.moysan@st.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <mcoquelin.stm32@gmail.com>,
@@ -82,20 +82,20 @@ To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <linux-arm-kernel@lists.infradead.org>,
  <linux-stm32@st-md-mailman.stormreply.com>,
  <linux-kernel@vger.kernel.org>, <olivier.moysan@st.com>
-Date: Mon, 3 Feb 2020 11:08:14 +0100
-Message-ID: <20200203100814.22944-7-olivier.moysan@st.com>
+Date: Mon, 3 Feb 2020 11:08:12 +0100
+Message-ID: <20200203100814.22944-5-olivier.moysan@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200203100814.22944-1-olivier.moysan@st.com>
 References: <20200203100814.22944-1-olivier.moysan@st.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG6NODE2.st.com
+X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG6NODE2.st.com
  (10.75.127.17)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138, 18.0.572
  definitions=2020-02-03_02:2020-02-02,
  2020-02-03 signatures=0
 Cc: Etienne Carriere <etienne.carriere@st.com>
-Subject: [alsa-devel] [PATCH 6/6] ASoC: stm32: i2s: improve error management
+Subject: [alsa-devel] [PATCH 4/6] ASoC: stm32: sai: improve error management
 	on probe deferral
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -114,80 +114,85 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Do not print an error trace when deferring probe for I2S driver.
+Do not print an error trace when deferring probe for SAI driver.
 
 Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- sound/soc/stm/stm32_i2s.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ sound/soc/stm/stm32_sai.c     | 12 +++++++++---
+ sound/soc/stm/stm32_sai_sub.c | 11 ++++++++---
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index cdcc00d9a67e..2478405727c3 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -831,25 +831,33 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
- 	/* Get clocks */
- 	i2s->pclk = devm_clk_get(&pdev->dev, "pclk");
- 	if (IS_ERR(i2s->pclk)) {
--		dev_err(&pdev->dev, "Could not get pclk\n");
-+		if (PTR_ERR(i2s->pclk) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Could not get pclk: %ld\n",
-+				PTR_ERR(i2s->pclk));
- 		return PTR_ERR(i2s->pclk);
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index b824ba6cb028..058757c721f0 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -174,20 +174,26 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 	if (!STM_SAI_IS_F4(sai)) {
+ 		sai->pclk = devm_clk_get(&pdev->dev, "pclk");
+ 		if (IS_ERR(sai->pclk)) {
+-			dev_err(&pdev->dev, "missing bus clock pclk\n");
++			if (PTR_ERR(sai->pclk) != -EPROBE_DEFER)
++				dev_err(&pdev->dev, "missing bus clock pclk: %ld\n",
++					PTR_ERR(sai->pclk));
+ 			return PTR_ERR(sai->pclk);
+ 		}
  	}
  
- 	i2s->i2sclk = devm_clk_get(&pdev->dev, "i2sclk");
- 	if (IS_ERR(i2s->i2sclk)) {
--		dev_err(&pdev->dev, "Could not get i2sclk\n");
-+		if (PTR_ERR(i2s->i2sclk) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Could not get i2sclk: %ld\n",
-+				PTR_ERR(i2s->i2sclk));
- 		return PTR_ERR(i2s->i2sclk);
- 	}
- 
- 	i2s->x8kclk = devm_clk_get(&pdev->dev, "x8k");
- 	if (IS_ERR(i2s->x8kclk)) {
+ 	sai->clk_x8k = devm_clk_get(&pdev->dev, "x8k");
+ 	if (IS_ERR(sai->clk_x8k)) {
 -		dev_err(&pdev->dev, "missing x8k parent clock\n");
-+		if (PTR_ERR(i2s->x8kclk) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Could not get x8k parent clock: %ld\n",
-+				PTR_ERR(i2s->x8kclk));
- 		return PTR_ERR(i2s->x8kclk);
++		if (PTR_ERR(sai->clk_x8k) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "missing x8k parent clock: %ld\n",
++				PTR_ERR(sai->clk_x8k));
+ 		return PTR_ERR(sai->clk_x8k);
  	}
  
- 	i2s->x11kclk = devm_clk_get(&pdev->dev, "x11k");
- 	if (IS_ERR(i2s->x11kclk)) {
+ 	sai->clk_x11k = devm_clk_get(&pdev->dev, "x11k");
+ 	if (IS_ERR(sai->clk_x11k)) {
 -		dev_err(&pdev->dev, "missing x11k parent clock\n");
-+		if (PTR_ERR(i2s->x11kclk) != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Could not get x11k parent clock: %ld\n",
-+				PTR_ERR(i2s->x11kclk));
- 		return PTR_ERR(i2s->x11kclk);
++		if (PTR_ERR(sai->clk_x11k) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "missing x11k parent clock: %ld\n",
++				PTR_ERR(sai->clk_x11k));
+ 		return PTR_ERR(sai->clk_x11k);
  	}
  
-@@ -907,7 +915,9 @@ static int stm32_i2s_probe(struct platform_device *pdev)
- 	i2s->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "pclk",
- 						i2s->base, i2s->regmap_conf);
- 	if (IS_ERR(i2s->regmap)) {
--		dev_err(&pdev->dev, "regmap init failed\n");
-+		if (PTR_ERR(i2s->regmap) != -EPROBE_DEFER)
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 30bcd5d3a32a..0bbf9ed5e48b 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1380,7 +1380,9 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+ 					    sai->regmap_config);
+ 	if (IS_ERR(sai->regmap)) {
+-		dev_err(&pdev->dev, "Failed to initialize MMIO\n");
++		if (PTR_ERR(sai->regmap) != -EPROBE_DEFER)
 +			dev_err(&pdev->dev, "Regmap init error %ld\n",
-+				PTR_ERR(i2s->regmap));
- 		return PTR_ERR(i2s->regmap);
++				PTR_ERR(sai->regmap));
+ 		return PTR_ERR(sai->regmap);
  	}
  
-@@ -918,8 +928,11 @@ static int stm32_i2s_probe(struct platform_device *pdev)
+@@ -1471,7 +1473,9 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 	of_node_put(args.np);
+ 	sai->sai_ck = devm_clk_get(&pdev->dev, "sai_ck");
+ 	if (IS_ERR(sai->sai_ck)) {
+-		dev_err(&pdev->dev, "Missing kernel clock sai_ck\n");
++		if (PTR_ERR(sai->sai_ck) != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "Missing kernel clock sai_ck: %ld\n",
++				PTR_ERR(sai->sai_ck));
+ 		return PTR_ERR(sai->sai_ck);
+ 	}
  
- 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev,
- 					      &stm32_i2s_pcm_config, 0);
--	if (ret)
-+	if (ret) {
+@@ -1553,7 +1557,8 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, conf, 0);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Could not register pcm dma\n");
 +		if (ret != -EPROBE_DEFER)
 +			dev_err(&pdev->dev, "PCM DMA register error %d\n", ret);
  		return ret;
-+	}
+ 	}
  
- 	/* Set SPI/I2S in i2s mode */
- 	ret = regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
 -- 
 2.17.1
 
